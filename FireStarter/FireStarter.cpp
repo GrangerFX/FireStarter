@@ -45,6 +45,8 @@ StopWatchInterface *hTimer = NULL;
 bool haveDoubles = false;
 int numSMs = 0;                     // number of multiprocessors
 
+char statusString[1024];
+
 const char *program =
 "   extern \"C\" __global__ void RaytraceGPU(unsigned char *pixels, const unsigned int width, const unsigned int height)    \n"
 "   {                                                                                                                       \n"
@@ -60,12 +62,22 @@ const char *program =
 "       }                                                                                                                   \n"
 "   } // RaytraceGPU                                                                                                        \n";
 
-char *ptx;
-size_t ptxSize;
-CUmodule module;
-CUfunction kernel_addr;
 
-char statusString[1024];
+#define printf printf2
+
+inline int printf2(const char *format, ...)
+{
+    char str[1024];
+
+    va_list argptr;
+    va_start(argptr, format);
+    int ret = vsnprintf(str, sizeof(str), format, argptr);
+    va_end(argptr);
+
+    OutputDebugStringA(str);
+
+    return ret;
+} // printf2
 
 // Raytrace pixels
 FrameBuffer theBuffer;
@@ -99,6 +111,67 @@ void FreeFrameBuffer(FrameBuffer &theBuffer)
     theBuffer.base = NULL;
 } // FreeFrameBuffer
 
+void CompileAndRun(const char *source, unsigned char *buffer, unsigned int width, unsigned int height)
+{
+    // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
+    nvrtcProgram prog;
+    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, program, "FireStarter", 0, NULL, NULL));
+    nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
+    NVRTC_SAFE_CALL("nvrtcCompileProgram", res);
+
+    // Output the compile log.
+    size_t logSize;
+    NVRTC_SAFE_CALL("nvrtcGetProgramLogSize", nvrtcGetProgramLogSize(prog, &logSize));
+    char *log = reinterpret_cast<char *>(malloc(sizeof(char) * logSize + 1));
+    NVRTC_SAFE_CALL("nvrtcGetProgramLog", nvrtcGetProgramLog(prog, log));
+    log[logSize] = '\x0';
+    if (strlen(log) >= 2) {
+        std::cerr << "\n compilation log ---\n";
+        std::cerr << log;
+        std::cerr << "\n end log ---\n";
+    }
+    free(log);
+    printf("Data initialization done.\n");
+
+    // Fetch PTX
+    char *ptx;
+    size_t ptxSize;
+    NVRTC_SAFE_CALL("nvrtcGetPTXSize", nvrtcGetPTXSize(prog, &ptxSize));
+    ptx = reinterpret_cast<char *>(malloc(sizeof(char) * ptxSize));
+    NVRTC_SAFE_CALL("nvrtcGetPTX", nvrtcGetPTX(prog, ptx));
+    NVRTC_SAFE_CALL("nvrtcDestroyProgram", nvrtcDestroyProgram(&prog));
+
+    CUmodule module;
+    checkCudaErrors(cuModuleLoadDataEx(&module, ptx, 0, 0, 0));
+    free(ptx);
+    ptx = NULL;
+
+    CUfunction kernel_addr;
+    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "RaytraceGPU"));
+
+    // Launch the kernel
+    int threadsPerBlock = 256;
+    int blocksPerGrid = (width * height + threadsPerBlock - 1) / threadsPerBlock;
+    printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+
+    void *arr[] = {reinterpret_cast<void *>(&buffer),
+                    reinterpret_cast<void *>(&width),
+                    reinterpret_cast<void *>(&height)};
+
+    checkCudaErrors(cuLaunchKernel(kernel_addr, cudaGridSize.x, cudaGridSize.y,
+                                    cudaGridSize.z, /* grid dim */
+                                    cudaBlockSize.x, cudaBlockSize.y,
+                                    cudaBlockSize.z, /* block dim */
+                                    0, 0,            /* shared mem, stream */
+                                    &arr[0],         /* arguments */
+                                    0));
+
+    checkCudaErrors(cuCtxSynchronize());
+    checkCudaErrors(cuModuleUnload(module));
+} // CompileAndRun
+
 // This is specifically to enable the application to enable/disable vsync
 typedef BOOL (WINAPI *PFNWGLSWAPINTERVALFARPROC)(int);
 
@@ -109,26 +182,7 @@ void renderImage(void)
 
     if (RUN_GPU) {
 #if 1
-        // Launch the Vector Add CUDA Kernel
-        int threadsPerBlock = 256;
-        unsigned int width = RAYTRACE_WIDTH;
-        unsigned int height = RAYTRACE_HEIGHT;
-        int blocksPerGrid = (width * height + threadsPerBlock - 1) / threadsPerBlock;
-        printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
-        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-        dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
-        void *arr[] = {reinterpret_cast<void *>(&theBuffer.base),
-                       reinterpret_cast<void *>(&width),
-                       reinterpret_cast<void *>(&height)};
-        checkCudaErrors(cuLaunchKernel(kernel_addr, cudaGridSize.x, cudaGridSize.y,
-                                        cudaGridSize.z, /* grid dim */
-                                        cudaBlockSize.x, cudaBlockSize.y,
-                                        cudaBlockSize.z, /* block dim */
-                                        0, 0,            /* shared mem, stream */
-                                        &arr[0],         /* arguments */
-                                        0));
-        checkCudaErrors(cuCtxSynchronize());
+        CompileAndRun(program, theBuffer.base, RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
 #else
         RunRaytraceGold(theBuffer.base, RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
 #endif
@@ -137,7 +191,7 @@ void renderImage(void)
         cudaDeviceSynchronize();
     }
     float time = sdkGetTimerValue(&hTimer);
-    sprintf(statusString, "Time=%5.8f\n", time);
+    sprintf(statusString, "Time=%.2f Seconds\n", time * 0.001f);
 } // renderImage
 
 void cleanup()
@@ -167,39 +221,6 @@ void initData(int argc, char **argv)
 
     sdkCreateTimer(&hTimer);
     sdkStartTimer(&hTimer);
-
-    // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
-    nvrtcProgram prog;
-    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, program, "FireStarter", 0, NULL, NULL));
-    nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
-    NVRTC_SAFE_CALL("nvrtcCompileProgram", res);
-
-    // Output the compile log.
-    size_t logSize;
-    NVRTC_SAFE_CALL("nvrtcGetProgramLogSize", nvrtcGetProgramLogSize(prog, &logSize));
-    char *log = reinterpret_cast<char *>(malloc(sizeof(char) * logSize + 1));
-    NVRTC_SAFE_CALL("nvrtcGetProgramLog", nvrtcGetProgramLog(prog, log));
-    log[logSize] = '\x0';
-    if (strlen(log) >= 2) {
-        std::cerr << "\n compilation log ---\n";
-        std::cerr << log;
-        std::cerr << "\n end log ---\n";
-    }
-    free(log);
-    printf("Data initialization done.\n");
-
-    // Fetch PTX
-    NVRTC_SAFE_CALL("nvrtcGetPTXSize", nvrtcGetPTXSize(prog, &ptxSize));
-    ptx = reinterpret_cast<char *>(malloc(sizeof(char) * ptxSize));
-    NVRTC_SAFE_CALL("nvrtcGetPTX", nvrtcGetPTX(prog, ptx));
-    NVRTC_SAFE_CALL("nvrtcDestroyProgram", nvrtcDestroyProgram(&prog));
-
-    checkCudaErrors(cuModuleLoadDataEx(&module, ptx, 0, 0, 0));
-    free(ptx);
-    ptx = NULL;
-
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "RaytraceGPU"));
-
 } // initData
 
 void Draw(HWND hwnd)
@@ -221,7 +242,7 @@ void Draw(HWND hwnd)
 	HDC hdc = GetDC(hwnd);
 	if (hdc) {
 	    SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
-//	    TextOut(hdc, 0, 0, statusString, (int)(strlen(statusString)));
+        printf(statusString);
 	    GdiFlush();
     }
 } // Draw
