@@ -154,7 +154,7 @@ void FireStarter::RenderImage(void)
 #if 1
         CompileAndRun(program, theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
 #else
-        RunTest(theBuffer.base, RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
+        RunTest(theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
 #endif
     } else
         RunTest(theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
