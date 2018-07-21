@@ -84,8 +84,7 @@ HRESULT Initialize(HINSTANCE hInstance) {
 
 	DragAcceptFiles(hwnd, 1);
 
-    strcpy_s(fireStarter.statusString, "Initializing...");
-    fireStarter.InitData(0, NULL);
+    fireStarter.Init();
 
 	ShowWindow(hwnd, SW_SHOW);
 

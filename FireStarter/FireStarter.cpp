@@ -186,11 +186,13 @@ void FireStarter::Draw(HWND hwnd)
     }
 } // Draw
 
-void FireStarter::InitData(int argc, char **argv)
+void FireStarter::Init(void)
 {
+    strcpy_s(statusString, "Initializing...");
+
     // check for hardware double precision support
     int dev = 0;
-    dev = findCudaDevice(argc, (const char **)argv);
+    dev = findCudaDevice(0, NULL);
 
     cudaDeviceProp deviceProp;
     checkCudaErrors(cudaGetDeviceProperties(&deviceProp, dev));
@@ -205,4 +207,4 @@ void FireStarter::InitData(int argc, char **argv)
     numSMs = deviceProp.multiProcessorCount;
 
     InitFrameBuffer(theBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
-} // InitData
+} // Init

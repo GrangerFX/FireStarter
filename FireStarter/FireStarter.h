@@ -51,6 +51,6 @@ public:
     void CompileAndRun(const char *source, unsigned char *buffer, unsigned int width, unsigned int height);
     void RenderImage(void);
     void Draw(HWND hwnd);
-    void InitData(int argc, char **argv);
+    void Init(void);
     FireStarter(void);
 }; // class FireStarter
