@@ -109,14 +109,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FireStarter.cpp" />
-    <CudaCompile Include="FireStarter_cuda.cu">
+    <ClCompile Include="WindowsMain.cpp" />
+    <CudaCompile Include="Test.cu">
       <Include Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">./;$(NVCUDASAMPLES_ROOT)/common/inc;$(CudaToolkitDir)/include</Include>
       <Include Condition="'$(Configuration)|$(Platform)'=='Release|x64'">./;$(NVCUDASAMPLES_ROOT)/common/inc;$(CudaToolkitDir)/include</Include>
     </CudaCompile>
-    <ClCompile Include="FireStarter_gold.cpp" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="FireStarter.h" />
-    <ClInclude Include="FireStarter_gold.h" />
-    <ClInclude Include="FireStarter_kernel.h" />
+    <ClInclude Include="PrintF.h" />
+    <ClInclude Include="Test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,51 +1,37 @@
-// Windows Header Files:
-#include <windows.h>
-// C RunTime Header Files
-#include <stdlib.h>
-#include <malloc.h>
-#include <memory.h>
-#include <tchar.h>
+#include "FireStarter.h"
+#include "Test.h"
+#include "PrintF.h"
 
 // CUDA runtime
 // CUDA utilities and system includes
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <nvrtc.h>
-#include <helper_functions.h>
 #include <helper_cuda.h>
 #include <nvrtc_helper.h>
 
-// Includes
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <cstdio>
+// 32 bit cryptographic hash function.
+// From Thomas Wang's paper:
+// http://www.concentric.net/~Ttwang/tech/inthash.htm
+GPU_FUNCTION unsigned int Hash(unsigned int hash)
+{
+    hash = (hash ^ 61) ^ (hash >> 16);
+    hash += hash << 3;
+    hash ^= hash >> 4;
+    hash *= 0x27d4eb2d; // a prime or an odd constant
+    hash ^= hash >> 15;
+    return hash;
+} // Hash
 
-#include "FireStarter.h"
-#include "FireStarter_kernel.h"
-#include "FireStarter_gold.h"
-
-#define RUN_GPU 1
-#define USE_GPU_MEMORY 1
-
-#define RAYTRACE_WIDTH 640
-#define RAYTRACE_HEIGHT 480
-#define RAYTRACE_SAMPLES 1
-
-typedef struct FrameBuffer {
-	unsigned char *base;			// Pointer to the alligned native pixel format buffer
-	long rowbytes;					// Number of bytes per row
-	unsigned long width;			// Number of columns
-	unsigned long height;			// Number of rows
-} FrameBuffer;
-
-// Timer ID
-StopWatchInterface *hTimer = NULL;
-
-bool haveDoubles = false;
-int numSMs = 0;                     // number of multiprocessors
-
-char statusString[1024];
+#if 1
+#define RANDOMSEED(seed) Hash(seed++)
+#else
+#define RANDOMSEED(seed) ((seed) = (unsigned int)((int)(seed) * 1103515245 + 12345))	// pick a new random seed
+#endif
+#define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits
+#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1
+#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1
+#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5
 
 const char *program =
 "   extern \"C\" __global__ void RaytraceGPU(unsigned char *pixels, const unsigned int width, const unsigned int height)    \n"
@@ -62,56 +48,45 @@ const char *program =
 "       }                                                                                                                   \n"
 "   } // RaytraceGPU                                                                                                        \n";
 
-
-#define printf printf2
-
-inline int printf2(const char *format, ...)
+FireStarter::FireStarter(void)
 {
-    char str[1024];
+    // Timer ID
+    haveDoubles = false;
+    numSMs = 0;                     // number of multiprocessors
 
-    va_list argptr;
-    va_start(argptr, format);
-    int ret = vsnprintf(str, sizeof(str), format, argptr);
-    va_end(argptr);
+    statusString[0] = 0;
+} // FireStarter
 
-    OutputDebugStringA(str);
-
-    return ret;
-} // printf2
-
-// Raytrace pixels
-FrameBuffer theBuffer;
-
-void InitFrameBuffer(FrameBuffer &theBuffer, unsigned long width, unsigned long height)
+void FireStarter::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height)
 {
-	theBuffer.width = width;
-	theBuffer.height = height;
-	theBuffer.rowbytes = width * 4;
-    theBuffer.base = NULL;
+	buffer.width = width;
+	buffer.height = height;
+	buffer.rowbytes = width * 4;
+    buffer.base = NULL;
 
-    cudaError_t err = cudaMallocManaged(&theBuffer.base, RAYTRACE_WIDTH * RAYTRACE_HEIGHT * 4);
+    cudaError_t err = cudaMallocManaged(&buffer.base, BUFFER_WIDTH * BUFFER_HEIGHT * 4);
     if (err != cudaSuccess) {
         fprintf(stderr, "Failed to allocate pixels (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
 } // InitBuffer
 
-void FreeFrameBuffer(FrameBuffer &theBuffer)
+void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
 {
-    if (theBuffer.base) {
-        cudaError_t err = cudaFree(theBuffer.base);
+    if (buffer.base) {
+        cudaError_t err = cudaFree(buffer.base);
         if (err != cudaSuccess) {
             fprintf(stderr, "Failed to free frame buffer (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
     }
-    theBuffer.width = 0;
-    theBuffer.height = 0;
-    theBuffer.rowbytes = 0;
-    theBuffer.base = NULL;
+    buffer.width = 0;
+    buffer.height = 0;
+    buffer.rowbytes = 0;
+    buffer.base = NULL;
 } // FreeFrameBuffer
 
-void CompileAndRun(const char *source, unsigned char *buffer, unsigned int width, unsigned int height)
+void FireStarter::CompileAndRun(const char *source, unsigned char *buffer, unsigned int width, unsigned int height)
 {
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
@@ -160,70 +135,34 @@ void CompileAndRun(const char *source, unsigned char *buffer, unsigned int width
                     reinterpret_cast<void *>(&width),
                     reinterpret_cast<void *>(&height)};
 
-    checkCudaErrors(cuLaunchKernel(kernel_addr, cudaGridSize.x, cudaGridSize.y,
-                                    cudaGridSize.z, /* grid dim */
-                                    cudaBlockSize.x, cudaBlockSize.y,
-                                    cudaBlockSize.z, /* block dim */
-                                    0, 0,            /* shared mem, stream */
-                                    &arr[0],         /* arguments */
-                                    0));
+    checkCudaErrors(cuLaunchKernel(kernel_addr,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+        0, 0,                                               // shared mem, stream */
+        &arr[0],                                            // arguments */
+        0));
 
     checkCudaErrors(cuCtxSynchronize());
     checkCudaErrors(cuModuleUnload(module));
 } // CompileAndRun
 
-// This is specifically to enable the application to enable/disable vsync
-typedef BOOL (WINAPI *PFNWGLSWAPINTERVALFARPROC)(int);
-
-// Run the Sinewave Simulator using CUDA or CPU
-void renderImage(void)
+void FireStarter::RenderImage(void)
 {
-    sdkResetTimer(&hTimer);
+    timer.Start();
 
     if (RUN_GPU) {
 #if 1
-        CompileAndRun(program, theBuffer.base, RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
+        CompileAndRun(program, theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
 #else
-        RunRaytraceGold(theBuffer.base, RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
+        RunTest(theBuffer.base, RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
 #endif
-    } else {
-        RunRaytraceGPU(theBuffer.base, RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
-        cudaDeviceSynchronize();
-    }
-    float time = sdkGetTimerValue(&hTimer);
-    sprintf(statusString, "Time=%.2f Seconds\n", time * 0.001f);
-} // renderImage
+    } else
+        RunTest(theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
+    double time = timer.Duration();
+    sprintf_s(statusString, "Time=%.2f Seconds\n", time * 0.001);
+} // RenderImage
 
-void cleanup()
-{
-    sdkDeleteTimer(&hTimer);
-} // cleanup
-
-void initData(int argc, char **argv)
-{
-    // check for hardware double precision support
-    int dev = 0;
-    dev = findCudaDevice(argc, (const char **)argv);
-
-    cudaDeviceProp deviceProp;
-    checkCudaErrors(cudaGetDeviceProperties(&deviceProp, dev));
-    int version = deviceProp.major*10 + deviceProp.minor;
-
-    if (version < 11) {
-        printf("GPU compute capability is too low (1.0), program is waived\n");
-        exit(EXIT_WAIVED);
-    }
-
-    haveDoubles = (version >= 13);
-    numSMs = deviceProp.multiProcessorCount;
-
-    InitFrameBuffer(theBuffer, RAYTRACE_WIDTH, RAYTRACE_HEIGHT);
-
-    sdkCreateTimer(&hTimer);
-    sdkStartTimer(&hTimer);
-} // initData
-
-void Draw(HWND hwnd)
+void FireStarter::Draw(HWND hwnd)
 {
 	unsigned char buffer[4096];
 	BITMAPINFO*	bm = (BITMAPINFO*)buffer;
@@ -247,118 +186,23 @@ void Draw(HWND hwnd)
     }
 } // Draw
 
-// ----------------------------------------------------------------------------
-LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+void FireStarter::InitData(int argc, char **argv)
 {
-	switch (message) {   
-		case WM_DROPFILES:
-			{
-				char name[256];
-				unsigned long count;
-				long i;
+    // check for hardware double precision support
+    int dev = 0;
+    dev = findCudaDevice(argc, (const char **)argv);
 
-				count = DragQueryFile((HDROP)wParam, (UINT)-1, name, 255);
-				i = 0;
-				while (count > 0) {
-					count--;
-					DragQueryFile((HDROP)wParam, i, name, 255);
-					i++;
-//				    DoSomethingWithFile(name, hwnd);
-				}
-			}
-			DragFinish((HDROP)wParam);
-			return 0;
+    cudaDeviceProp deviceProp;
+    checkCudaErrors(cudaGetDeviceProperties(&deviceProp, dev));
+    int version = deviceProp.major*10 + deviceProp.minor;
 
-		case WM_KEYDOWN:
-			if (wParam == 'Q')
-				PostQuitMessage(0);
-			return 0;
+    if (version < 11) {
+        printf("GPU compute capability is too low (1.0), program is waived\n");
+        exit(EXIT_WAIVED);
+    }
 
-		case WM_DESTROY:
-			PostQuitMessage(0);
-			break;
-            
-		default:
-			return DefWindowProc(hwnd, message, wParam, lParam);
-	}
+    haveDoubles = (version >= 13);
+    numSMs = deviceProp.multiProcessorCount;
 
-	return 0;
-} // Winproc
-
-// ----------------------------------------------------------------------------
-HRESULT Initialize(HINSTANCE hInstance) {
-	WNDCLASS	wc;
-	RECT		rect;
-	HWND		hwnd;
-
-	// Alloc Window
-    wc.style = 0;
-    wc.lpfnWndProc = Winproc;
-    wc.cbClsExtra = 4;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = LoadIcon(NULL,IDI_APPLICATION);
-    wc.hCursor = LoadCursor(NULL,IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = "comp_class";
-	
-    if (!RegisterClass(&wc))
-        goto fail;
-
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = RAYTRACE_WIDTH;
-	rect.bottom = RAYTRACE_HEIGHT;
-	AdjustWindowRect(&rect, WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX, 0);
-	rect.right -= rect.left;
-	rect.bottom -= rect.top;
-
-    hwnd = CreateWindow("comp_class",
-                        "Drag effects into this window to convert .tfx files or preview .vfx files.",
-						//WS_POPUP,//WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX,
-						WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX,
-                        0,0,
-						rect.right, rect.bottom,
-                        NULL,NULL,
-						hInstance,
-						NULL);
-
-	if (!hwnd)
-        goto fail;
-
-//	SetWindowLong(hwnd, GWL_USERDATA, (long)this);
-
-	DragAcceptFiles(hwnd, 1);
-
-    strcpy(statusString, "Initializing...");
-    initData(0, NULL);
-
-	ShowWindow(hwnd, SW_SHOW);
-
-	do {
-		MSG	 msg;
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-			if (msg.message == WM_QUIT)
-                break;
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		} else {
-//            WaitMessage();
-            renderImage();
-            Draw(hwnd);
-        }
-	} while (1);
-
-	return S_OK;
-
-fail:
-	return E_FAIL;
-} // Initialize
-
-// ----------------------------------------------------------------------------
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
-{
-	Initialize(hInstance);
-	return 0;
-} // WinMain
+    InitFrameBuffer(theBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
+} // InitData

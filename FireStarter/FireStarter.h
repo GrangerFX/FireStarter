@@ -1,37 +1,56 @@
 #pragma once
+#include "Defines.h"
+#include <time.h>
+#include <windows.h>
 
-#ifdef __CUDACC__
-#define GPU_FUNCTION __device__
-#else
-#include <math.h>
-#define GPU_FUNCTION static inline
-#endif
+class SimpleTimer {
+public:
+    time_t m_second;
+    long m_nanosecond;
+    
+    inline void Start(void)
+    {
+        timespec time;
+        timespec_get(&time, TIME_UTC);
+        m_second = time.tv_sec;
+        m_nanosecond = time.tv_nsec;
+    } // Start
+    
+    inline double Duration(void)
+    {
+        timespec time;
+        timespec_get(&time, TIME_UTC);
+        return (double)(time.tv_sec - m_second) + (double)(time.tv_nsec - m_nanosecond) * 0.000000001;
+    } // Duration
+    
+    inline SimpleTimer(void)
+    {
+        Start();
+    } // Start
+}; // SimpleTimer
+    
+typedef struct FrameBuffer {
+	unsigned char *base;			// Pointer to the alligned native pixel format buffer
+	long rowbytes;					// Number of bytes per row
+	unsigned long width;			// Number of columns
+	unsigned long height;			// Number of rows
+} FrameBuffer;
 
-#ifdef OPENCL
-#define GPU_DATA global
-#else
-#define GPU_DATA
-#endif
+class FireStarter {
+public:
+    SimpleTimer timer;
+    FrameBuffer theBuffer;
 
-// 32 bit cryptographic hash function.
-// From Thomas Wang's paper:
-// http://www.concentric.net/~Ttwang/tech/inthash.htm
-GPU_FUNCTION unsigned int Hash(unsigned int hash)
-{
-    hash = (hash ^ 61) ^ (hash >> 16);
-    hash += hash << 3;
-    hash ^= hash >> 4;
-    hash *= 0x27d4eb2d; // a prime or an odd constant
-    hash ^= hash >> 15;
-    return hash;
-} // Hash
+    bool haveDoubles;
+    int numSMs;                     // number of multiprocessors
 
-#if 1
-#define RANDOMSEED(seed) Hash(seed++)
-#else
-#define RANDOMSEED(seed) ((seed) = (unsigned int)((int)(seed) * 1103515245 + 12345))	// pick a new random seed
-#endif
-#define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits
-#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1
-#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1
-#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5
+    char statusString[1024];
+
+    void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
+    void FreeFrameBuffer(FrameBuffer &buffer);
+    void CompileAndRun(const char *source, unsigned char *buffer, unsigned int width, unsigned int height);
+    void RenderImage(void);
+    void Draw(HWND hwnd);
+    void InitData(int argc, char **argv);
+    FireStarter(void);
+}; // class FireStarter
