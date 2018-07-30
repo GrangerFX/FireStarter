@@ -153,7 +153,7 @@ void FireStarter::RandomProgram(void)
 {
     unsigned int seed = (unsigned int)generation;
     seed = RANDOMSEED(seed);
-    if (generation = 0) {
+    if (generation == 0) {
         for (int i = 0; i < PROGRAM_DATA; i++)
             data[i] = (int)(RANDOMSEED(seed) % 5) - 2;
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
@@ -188,22 +188,22 @@ void FireStarter::MakeProgram(void)
 {
     RandomProgram();
     program =
-        "   extern \"C\" __global__ void RaytraceGPU(unsigned char *pixels, const unsigned int width, const unsigned int height)    \n"
-        "   {                                                                                                                       \n"
-        "       unsigned int pixel = blockDim.x * blockIdx.x + threadIdx.x;                                                         \n"
-        "       unsigned int y = pixel / width;                                                                                     \n"
-        "       if (y < height) {                                                                                                   \n"
-        "           unsigned int x = pixel % width;                                                                                 \n"
-        "           pixel *= 4;                                                                                                     \n";
+        "extern \"C\" __global__ void RaytraceGPU(unsigned char *pixels, const unsigned int width, const unsigned int height)\n"
+        "{\n"
+        "    unsigned int pixel = blockDim.x * blockIdx.x + threadIdx.x;\n"
+        "    unsigned int y = pixel / width;\n"
+        "    if (y < height) {\n"
+        "        unsigned int x = pixel % width;\n"
+        "        pixel *= 4;\n";
 #if TEST_PROGRAM
     program +=
-        "           pixels[pixel + 0] = x & 255;                                                                                    \n"
-        "           pixels[pixel + 1] = y & 255;                                                                                    \n"
-        "           pixels[pixel + 2] = (x ^ y) & 255;                                                                              \n"
-        "           pixels[pixel + 3] = 255;                                                                                        \n";
+        "        pixels[pixel + 0] = x & 255;\n"
+        "        pixels[pixel + 1] = y & 255;\n"
+        "        pixels[pixel + 2] = (x ^ y) & 255;\n"
+        "        pixels[pixel + 3] = 255;\n";
 #else
-    program += Format("          int data[%d] = {%d", PROGRAM_DATA, data[0]);
-    for (int i = 1; i < PROGRAM_DATA; i++)
+    program += Format("        int data[%d] = {x, y", PROGRAM_DATA, data[0]);
+    for (int i = 2; i < PROGRAM_DATA; i++)
         program += Format(", %d", data[i]);
     program += "};\n";
 
@@ -213,46 +213,46 @@ void FireStarter::MakeProgram(void)
         case Instruction_noop:
             break;
         case Instruction_add:
-            program += Format("          data[%d] = data[%d] + data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] + data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_subtract:
-            program += Format("          data[%d] = data[%d] - data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] - data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_multiply:
-            program += Format("          data[%d] = data[%d] * data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] * data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_divide:
-            program += Format("          data[%d] = data[%d] / data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] / data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_mod:
-            program += Format("          data[%d] = data[%d] % data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] %% data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_and:
-            program += Format("          data[%d] = data[%d] & data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] & data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_or:
-            program += Format("          data[%d] = data[%d] | data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] | data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_xor:
-            program += Format("          data[%d] = data[%d] ^ data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] ^ data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_max:
-            program += Format("          data[%d] = data[%d] >= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] >= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
             break;
         case Instruction_min:
-            program += Format("          data[%d] = data[%d] <= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
+            program += Format("        data[%d] = data[%d] <= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
             break;
         }
     }
     program +=
-        "           pixels[pixel + 0] = data[0] & 255;                                                                              \n"
-        "           pixels[pixel + 1] = data[1] & 255;                                                                              \n"
-        "           pixels[pixel + 2] = data[2] & 255;                                                                              \n"
-        "           pixels[pixel + 3] = 255;                                                                                        \n";
+        "        pixels[pixel + 0] = data[0] & 255;\n"
+        "        pixels[pixel + 1] = data[1] & 255;\n"
+        "        pixels[pixel + 2] = data[2] & 255;\n"
+        "        pixels[pixel + 3] = 255;\n";
 #endif
     program +=
-        "       }                                                                                                                   \n"
-        "   } // RaytraceGPU                                                                                                        \n";
+        "    }\n"
+        "} // RaytraceGPU\n";
 } // MakeProgram
 
 void FireStarter::RenderImage(void)
