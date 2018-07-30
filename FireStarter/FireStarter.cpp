@@ -1,6 +1,9 @@
 #include "FireStarter.h"
 #include "Test.h"
 #include "PrintF.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <stdio.h>
 
 // CUDA runtime
 // CUDA utilities and system includes
@@ -33,20 +36,20 @@ GPU_FUNCTION unsigned int Hash(unsigned int hash)
 #define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1
 #define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5
 
-const char *program =
-"   extern \"C\" __global__ void RaytraceGPU(unsigned char *pixels, const unsigned int width, const unsigned int height)    \n"
-"   {                                                                                                                       \n"
-"       unsigned int pixel = blockDim.x * blockIdx.x + threadIdx.x;                                                         \n"
-"       unsigned int y = pixel / width;                                                                                     \n"
-"       if (y < height) {                                                                                                   \n"
-"           unsigned int x = pixel % width;                                                                                 \n"
-"           pixel *= 4;                                                                                                     \n"
-"           pixels[pixel + 0] = x & 255;                                                                                    \n"
-"           pixels[pixel + 1] = y & 255;                                                                                    \n"
-"           pixels[pixel + 2] = (x ^ y) & 255;                                                                              \n"
-"           pixels[pixel + 3] = 255;                                                                                        \n"
-"       }                                                                                                                   \n"
-"   } // RaytraceGPU                                                                                                        \n";
+std::string Format(const char *format, ...)
+{
+    char str[1024];
+    va_list argptr;
+    va_start(argptr, format);
+    int ret = vsnprintf(str, sizeof(str), format, argptr);
+    va_end(argptr);
+    return std::string(str);
+} // Format
+
+std::string Format(const std::string formatString, ...)
+{
+    return Format(formatString.c_str());
+} // Format
 
 FireStarter::FireStarter(void)
 {
@@ -90,7 +93,7 @@ void FireStarter::CompileAndRun(const char *source, unsigned char *buffer, unsig
 {
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
-    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, program, "FireStarter", 0, NULL, NULL));
+    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, source, "FireStarter", 0, NULL, NULL));
     nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
     NVRTC_SAFE_CALL("nvrtcCompileProgram", res);
 
@@ -146,18 +149,120 @@ void FireStarter::CompileAndRun(const char *source, unsigned char *buffer, unsig
     checkCudaErrors(cuModuleUnload(module));
 } // CompileAndRun
 
+void FireStarter::RandomProgram(void)
+{
+    unsigned int seed = (unsigned int)generation;
+    seed = RANDOMSEED(seed);
+    if (generation = 0) {
+        for (int i = 0; i < PROGRAM_DATA; i++)
+            data[i] = (int)(RANDOMSEED(seed) % 5) - 2;
+        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+            ProgramInstruction &instruction = instructions[i];
+            instruction.instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
+            instruction.srcA = RANDOMSEED(seed) % PROGRAM_DATA;
+            instruction.srcB = RANDOMSEED(seed) % PROGRAM_DATA;
+            instruction.dst = RANDOMSEED(seed) % PROGRAM_DATA;
+        }
+    } else {
+        switch (RANDOMSEED(seed) % 5) {
+            case 0:
+                instructions[RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
+                break;
+            case 1:
+                instructions[RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS].dst = RANDOMSEED(seed) % PROGRAM_DATA;
+                break;
+            case 2:
+                instructions[RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS].srcA = RANDOMSEED(seed) % PROGRAM_DATA;
+                break;
+            case 3:
+                instructions[RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS].srcB = RANDOMSEED(seed) % PROGRAM_DATA;
+                break;
+            default:
+                data[RANDOMSEED(seed) % PROGRAM_DATA] += (int)(RANDOMSEED(seed) % 5) - 2;
+        }
+    }
+    generation++;
+} // RandomProgram
+
+void FireStarter::MakeProgram(void)
+{
+    RandomProgram();
+    program =
+        "   extern \"C\" __global__ void RaytraceGPU(unsigned char *pixels, const unsigned int width, const unsigned int height)    \n"
+        "   {                                                                                                                       \n"
+        "       unsigned int pixel = blockDim.x * blockIdx.x + threadIdx.x;                                                         \n"
+        "       unsigned int y = pixel / width;                                                                                     \n"
+        "       if (y < height) {                                                                                                   \n"
+        "           unsigned int x = pixel % width;                                                                                 \n"
+        "           pixel *= 4;                                                                                                     \n";
+#if TEST_PROGRAM
+    program +=
+        "           pixels[pixel + 0] = x & 255;                                                                                    \n"
+        "           pixels[pixel + 1] = y & 255;                                                                                    \n"
+        "           pixels[pixel + 2] = (x ^ y) & 255;                                                                              \n"
+        "           pixels[pixel + 3] = 255;                                                                                        \n";
+#else
+    program += Format("          int data[%d] = {%d", PROGRAM_DATA, data[0]);
+    for (int i = 1; i < PROGRAM_DATA; i++)
+        program += Format(", %d", data[i]);
+    program += "};\n";
+
+    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        const ProgramInstruction &instruction = instructions[i];
+        switch (instruction.instruction) {
+        case Instruction_noop:
+            break;
+        case Instruction_add:
+            program += Format("          data[%d] = data[%d] + data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_subtract:
+            program += Format("          data[%d] = data[%d] - data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_multiply:
+            program += Format("          data[%d] = data[%d] * data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_divide:
+            program += Format("          data[%d] = data[%d] / data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_mod:
+            program += Format("          data[%d] = data[%d] % data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_and:
+            program += Format("          data[%d] = data[%d] & data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_or:
+            program += Format("          data[%d] = data[%d] | data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_xor:
+            program += Format("          data[%d] = data[%d] ^ data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_max:
+            program += Format("          data[%d] = data[%d] >= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
+            break;
+        case Instruction_min:
+            program += Format("          data[%d] = data[%d] <= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
+            break;
+        }
+    }
+    program +=
+        "           pixels[pixel + 0] = data[0] & 255;                                                                              \n"
+        "           pixels[pixel + 1] = data[1] & 255;                                                                              \n"
+        "           pixels[pixel + 2] = data[2] & 255;                                                                              \n"
+        "           pixels[pixel + 3] = 255;                                                                                        \n";
+#endif
+    program +=
+        "       }                                                                                                                   \n"
+        "   } // RaytraceGPU                                                                                                        \n";
+} // MakeProgram
+
 void FireStarter::RenderImage(void)
 {
+    MakeProgram();
     timer.Start();
-
-    if (RUN_GPU) {
-#if 1
-        CompileAndRun(program, theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
-#else
+    if (!RUN_GPU || RUN_TEST)
         RunTest(theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
-#endif
-    } else
-        RunTest(theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
+    else
+        CompileAndRun(program.c_str(), theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
     double time = timer.Duration();
     sprintf_s(statusString, "Time=%.2f Seconds\n", time * 0.001);
 } // RenderImage
@@ -207,4 +312,7 @@ void FireStarter::Init(void)
     numSMs = deviceProp.multiProcessorCount;
 
     InitFrameBuffer(theBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
+
+    generation = 0;
+    RandomProgram();
 } // Init

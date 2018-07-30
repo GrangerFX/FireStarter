@@ -2,6 +2,32 @@
 #include "Defines.h"
 #include <time.h>
 #include <windows.h>
+#include <string>
+
+#define PROGRAM_DATA 8
+#define PROGRAM_INSTRUCTIONS 16
+
+typedef enum {
+    Instruction_noop = 0,
+    Instruction_add,        // dst = srcA + srcB;
+    Instruction_subtract,   // dst = srcA - srcB;
+    Instruction_multiply,   // dst = srcA * srcB;
+    Instruction_divide,     // dst = srcA / srcB;
+    Instruction_mod,        // dst = srcA % srcB;
+    Instruction_and,        // dst = srcA & srcB;
+    Instruction_or,         // dst = srcA | srcB;
+    Instruction_xor,        // dst = srcA ^ srcB;
+    Instruction_max,        // dst = srcA >= srcB ? srcA : srcB;
+    Instruction_min,        // dst = srcA <= srcB ? srcA : srcB;
+    NumInstructions
+} Instruction;
+
+typedef struct {
+    Instruction instruction;
+    int srcA;
+    int srcB;
+    int dst;
+} ProgramInstruction;
 
 class SimpleTimer {
 public:
@@ -40,6 +66,10 @@ class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
+    std::string program;
+    ProgramInstruction instructions[PROGRAM_INSTRUCTIONS];
+    int data[PROGRAM_DATA];
+    long long generation;
 
     bool haveDoubles;
     int numSMs;                     // number of multiprocessors
@@ -49,6 +79,8 @@ public:
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
     void CompileAndRun(const char *source, unsigned char *buffer, unsigned int width, unsigned int height);
+    void RandomProgram(void);
+    void MakeProgram(void);
     void RenderImage(void);
     void Draw(HWND hwnd);
     void Init(void);
