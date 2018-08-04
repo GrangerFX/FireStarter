@@ -13,10 +13,6 @@ typedef enum {
     Instruction_subtract,   // dst = srcA - srcB;
     Instruction_multiply,   // dst = srcA * srcB;
     Instruction_divide,     // dst = srcA / srcB;
-    Instruction_mod,        // dst = srcA % srcB;
-    Instruction_and,        // dst = srcA & srcB;
-    Instruction_or,         // dst = srcA | srcB;
-    Instruction_xor,        // dst = srcA ^ srcB;
     Instruction_max,        // dst = srcA >= srcB ? srcA : srcB;
     Instruction_min,        // dst = srcA <= srcB ? srcA : srcB;
     NumInstructions
@@ -68,7 +64,7 @@ public:
     FrameBuffer theBuffer;
     std::string program;
     ProgramInstruction instructions[PROGRAM_INSTRUCTIONS];
-    int data[PROGRAM_DATA];
+    float data[PROGRAM_DATA];
     long long generation;
 
     bool haveDoubles;

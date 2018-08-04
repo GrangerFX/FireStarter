@@ -98,6 +98,11 @@ HRESULT Initialize(HINSTANCE hInstance) {
 		} else {
             fireStarter.RenderImage();
             fireStarter.Draw(hwnd);
+
+            char status[1024];
+            sprintf_s(status, "FireStarter Generation=%lld", fireStarter.generation);
+            SetWindowText(hwnd, status);
+
         }
 	} while (1);
 
