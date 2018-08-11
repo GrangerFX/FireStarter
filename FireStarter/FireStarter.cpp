@@ -26,11 +26,7 @@ inline unsigned int Hash(unsigned int hash)
     return hash;
 } // Hash
 
-#if 1
 #define RANDOMSEED(seed) Hash(seed++)
-#else
-#define RANDOMSEED(seed) ((seed) = (unsigned int)((int)(seed) * 1103515245 + 12345))	// pick a new random seed
-#endif
 #define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits
 #define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1
 #define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1
@@ -205,12 +201,29 @@ void FireStarter::MakeProgram(void)
     program =  "";
     program += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
     program += "\n"
+               "__device__ unsigned int Hash(unsigned int hash)\n"
+               "{\n"
+               "    hash = (hash ^ 61) ^ (hash >> 16);\n"
+               "    hash += hash << 3;\n"
+               "    hash ^= hash >> 4;\n"
+               "    hash *= 0x27d4eb2d; // a prime or an odd constant\n"
+               "    hash ^= hash >> 15;\n"
+               "    return hash;\n"
+               "} // Hash\n"
+               "\n"
+               "#define RANDOMSEED(seed) Hash(seed++)\n"
+               "#define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits\n"
+               "#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1\n"
+               "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
+               "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
+               "\n"
                "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height)\n"
                "{\n"
                "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
                "    unsigned int y = index / width;\n"
                "    if (y < height) {\n"
                "        unsigned int x = index % width;\n";
+
     program += Format("        float data[%d] = {x / 256.0f, y / 256.0f", PROGRAM_DATA, data[0]);
     for (int i = 2; i < PROGRAM_DATA; i++)
         program += Format(", %f", data[i]);
