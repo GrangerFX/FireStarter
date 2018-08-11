@@ -95,7 +95,7 @@ void FireStarter::CompileAndRun(const char *source, uchar4 *pixels, unsigned int
     nvrtcProgram prog;
     NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, source, "FireStarter", 0, NULL, NULL));
     nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
-    NVRTC_SAFE_CALL("nvrtcCompileProgram", res);
+//    NVRTC_SAFE_CALL("nvrtcCompileProgram", res);
 
     // Output the compile log.
     size_t logSize;
@@ -202,8 +202,10 @@ void FireStarter::MakeProgram(void)
                "    }\n"
                "} // FireStarterGPU\n";
 #else
-    program = Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
-    program += "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height)\n"
+    program =  "";
+    program += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
+    program += "\n"
+               "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height)\n"
                "{\n"
                "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
                "    unsigned int y = index / width;\n"
@@ -247,10 +249,10 @@ void FireStarter::MakeProgram(void)
     program += Format("            error += fabsf(data[%d] - sinf(theta));\n", instructions[PROGRAM_INSTRUCTIONS - 1].dst);
     program += "        }\n"
                "        error /= PROGRAM_ITERATIONS;\n"
-               "        uchar4 &pixel = pixels[pixel];\n"
-               "        pixel.x = (int)(error * 256.0f);\n"
-               "        pixel.y = (int)(error * 128.0f);\n"
-               "        pixel.z = (int)(error * 64.0f);\n"
+               "        uchar4 &pixel = pixels[index];\n"
+               "        pixel.x = (unsigned char)(error * 256.0f);\n"
+               "        pixel.y = (unsigned char)(error * 128.0f);\n"
+               "        pixel.z = (unsigned char)(error * 64.0f);\n"
                "        pixel.w = 255;\n"
                "    }\n"
                "} // FireStarterGPU\n";
