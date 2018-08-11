@@ -200,6 +200,7 @@ void FireStarter::MakeProgram(void)
 #else
     program =  "";
     program += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
+    program += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
     program += "\n"
                "__device__ unsigned int Hash(unsigned int hash)\n"
                "{\n"
@@ -222,17 +223,22 @@ void FireStarter::MakeProgram(void)
                "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
                "    unsigned int y = index / width;\n"
                "    if (y < height) {\n"
-               "        unsigned int x = index % width;\n";
+               "        unsigned int x = index % width;\n"
+               "        unsigned int seed = Hash(index);\n";
 
     program += Format("        float data[%d] = {x / 256.0f, y / 256.0f", PROGRAM_DATA, data[0]);
     for (int i = 2; i < PROGRAM_DATA; i++)
         program += Format(", %f", data[i]);
     program += "};\n";
 
-    program += "        float error = 0.0f;\n"
-               "        for (int i = 0; i < PROGRAM_ITERATIONS; i++) {\n"
-               "            float theta = i * 3.14159265f / PROGRAM_ITERATIONS;\n"
-               "            data[0] = theta;\n";
+    program += "        float minError = 1.0E+10f;\n"
+               "        unsigned int d = 0;\n"
+               "        float oldValue = data[d];\n"
+               "        for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
+               "            float error = 0.0f;\n"
+               "            for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
+               "                float theta = i * 3.14159265f / SAMPLE_ITERATIONS;\n"
+               "                data[0] = theta;\n";
 
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         const ProgramInstruction &instruction = instructions[i];
@@ -240,32 +246,43 @@ void FireStarter::MakeProgram(void)
         case Instruction_noop:
             break;
         case Instruction_add:
-            program += Format("            data[%d] = data[%d] + data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("                data[%d] = data[%d] + data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_subtract:
-            program += Format("            data[%d] = data[%d] - data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("                data[%d] = data[%d] - data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_multiply:
-            program += Format("            data[%d] = data[%d] * data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("                data[%d] = data[%d] * data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_divide:
-            program += Format("            data[%d] = data[%d] / data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("                data[%d] = data[%d] / data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_max:
-            program += Format("            data[%d] = data[%d] >= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
+            program += Format("                data[%d] = data[%d] >= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
             break;
         case Instruction_min:
-            program += Format("            data[%d] = data[%d] <= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
+            program += Format("                data[%d] = data[%d] <= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
             break;
         }
     }
-    program += Format("            error += fabsf(data[%d] - sinf(theta));\n", instructions[PROGRAM_INSTRUCTIONS - 1].dst);
-    program += "        }\n"
-               "        error /= PROGRAM_ITERATIONS;\n"
+    program += Format("                error += fabsf(data[%d] - sinf(theta));\n", instructions[PROGRAM_INSTRUCTIONS - 1].dst);
+    program += "            }\n"
+               "            error /= SAMPLE_ITERATIONS;\n"
+               "            if (error < minError)\n"
+               "                minError = error;\n"
+               "            else\n"
+               "                data[d] = oldValue;\n";
+    program += Format("            d = RANDOMSEED(seed) & %d;\n", PROGRAM_DATA - 1);
+    program += "            oldValue = data[d];\n"
+               "            data[d] += RANDOMFACTOR(seed) * minError * 0.1f;\n"
+               "        }\n"
                "        uchar4 &pixel = pixels[index];\n"
-               "        pixel.x = (unsigned char)(error * 256.0f);\n"
-               "        pixel.y = (unsigned char)(error * 128.0f);\n"
-               "        pixel.z = (unsigned char)(error * 64.0f);\n"
+               "        float e1 = minError * 256.0f;\n"
+               "        float e2 = minError * 128.0f;\n"
+               "        float e3 = minError * 64.0f;\n"
+               "        pixel.x = e1 < 256.0f ? (unsigned char)(e1) : 255;\n"
+               "        pixel.y = e2 < 256.0f ? (unsigned char)(e2) : 255;\n"
+               "        pixel.z = e3 < 256.0f ? (unsigned char)(e3) : 255;\n"
                "        pixel.w = 255;\n"
                "    }\n"
                "} // FireStarterGPU\n";

@@ -6,7 +6,8 @@
 
 #define PROGRAM_DATA 8
 #define PROGRAM_INSTRUCTIONS 16
-#define PROGRAM_ITERATIONS 16
+#define PROGRAM_ITERATIONS 1024
+#define SAMPLE_ITERATIONS 16
 
 typedef enum {
     Instruction_noop = 0,
