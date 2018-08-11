@@ -16,7 +16,7 @@
 // 32 bit cryptographic hash function.
 // From Thomas Wang's paper:
 // http://www.concentric.net/~Ttwang/tech/inthash.htm
-GPU_FUNCTION unsigned int Hash(unsigned int hash)
+inline unsigned int Hash(unsigned int hash)
 {
     hash = (hash ^ 61) ^ (hash >> 16);
     hash += hash << 3;
@@ -89,7 +89,7 @@ void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
-void FireStarter::CompileAndRun(const char *source, unsigned char *buffer, unsigned int width, unsigned int height)
+void FireStarter::CompileAndRun(const char *source, uchar4 *pixels, unsigned int width, unsigned int height)
 {
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
@@ -125,7 +125,7 @@ void FireStarter::CompileAndRun(const char *source, unsigned char *buffer, unsig
     ptx = NULL;
 
     CUfunction kernel_addr;
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "RaytraceGPU"));
+    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarterGPU"));
 
     // Launch the kernel
     int threadsPerBlock = 256;
@@ -134,9 +134,9 @@ void FireStarter::CompileAndRun(const char *source, unsigned char *buffer, unsig
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    void *arr[] = {reinterpret_cast<void *>(&buffer),
-                    reinterpret_cast<void *>(&width),
-                    reinterpret_cast<void *>(&height)};
+    void *arr[] = {reinterpret_cast<void *>(&pixels),
+                   reinterpret_cast<void *>(&width),
+                   reinterpret_cast<void *>(&height)};
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -187,25 +187,37 @@ void FireStarter::RandomProgram(void)
 void FireStarter::MakeProgram(void)
 {
     RandomProgram();
-    program =
-        "extern \"C\" __global__ void RaytraceGPU(unsigned char *pixels, const unsigned int width, const unsigned int height)\n"
-        "{\n"
-        "    unsigned int pixel = blockDim.x * blockIdx.x + threadIdx.x;\n"
-        "    unsigned int y = pixel / width;\n"
-        "    if (y < height) {\n"
-        "        unsigned int x = pixel % width;\n"
-        "        pixel *= 4;\n";
 #if TEST_PROGRAM
-    program +=
-        "        pixels[pixel + 0] = x & 255;\n"
-        "        pixels[pixel + 1] = y & 255;\n"
-        "        pixels[pixel + 2] = (x ^ y) & 255;\n"
-        "        pixels[pixel + 3] = 255;\n";
+    program =  "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height)\n"
+               "{\n"
+               "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
+               "    unsigned int y = index / width;\n"
+               "    if (y < height) {\n"
+               "        unsigned int x = index % width;\n"
+               "        uchar4 &pixel = pixels[index];\n"
+               "        pixel.x = x & 255;\n"
+               "        pixel.y = y & 255;\n"
+               "        pixel.z = (x ^ y) & 255;\n"
+               "        pixel.w = 255;\n";
+               "    }\n"
+               "} // FireStarterGPU\n";
 #else
+    program = Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
+    program += "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height)\n"
+               "{\n"
+               "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
+               "    unsigned int y = index / width;\n"
+               "    if (y < height) {\n"
+               "        unsigned int x = index % width;\n";
     program += Format("        float data[%d] = {x / 256.0f, y / 256.0f", PROGRAM_DATA, data[0]);
     for (int i = 2; i < PROGRAM_DATA; i++)
-        program += Format(", %d", data[i]);
+        program += Format(", %f", data[i]);
     program += "};\n";
+
+    program += "        float error = 0.0f;\n"
+               "        for (int i = 0; i < PROGRAM_ITERATIONS; i++) {\n"
+               "            float theta = i * 3.14159265f / PROGRAM_ITERATIONS;\n"
+               "            data[0] = theta;\n";
 
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         const ProgramInstruction &instruction = instructions[i];
@@ -213,34 +225,36 @@ void FireStarter::MakeProgram(void)
         case Instruction_noop:
             break;
         case Instruction_add:
-            program += Format("        data[%d] = data[%d] + data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("            data[%d] = data[%d] + data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_subtract:
-            program += Format("        data[%d] = data[%d] - data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("            data[%d] = data[%d] - data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_multiply:
-            program += Format("        data[%d] = data[%d] * data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("            data[%d] = data[%d] * data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_divide:
-            program += Format("        data[%d] = data[%d] / data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
+            program += Format("            data[%d] = data[%d] / data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
             break;
         case Instruction_max:
-            program += Format("        data[%d] = data[%d] >= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
+            program += Format("            data[%d] = data[%d] >= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
             break;
         case Instruction_min:
-            program += Format("        data[%d] = data[%d] <= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
+            program += Format("            data[%d] = data[%d] <= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
             break;
         }
     }
-    program +=
-        "        pixels[pixel + 0] = (int)(data[0] * 256.0f);\n"
-        "        pixels[pixel + 1] = (int)(data[1] * 256.0f);\n"
-        "        pixels[pixel + 2] = (int)(data[2] * 256.0f);\n"
-        "        pixels[pixel + 3] = 255;\n";
+    program += Format("            error += fabsf(data[%d] - sinf(theta));\n", instructions[PROGRAM_INSTRUCTIONS - 1].dst);
+    program += "        }\n"
+               "        error /= PROGRAM_ITERATIONS;\n"
+               "        uchar4 &pixel = pixels[pixel];\n"
+               "        pixel.x = (int)(error * 256.0f);\n"
+               "        pixel.y = (int)(error * 128.0f);\n"
+               "        pixel.z = (int)(error * 64.0f);\n"
+               "        pixel.w = 255;\n"
+               "    }\n"
+               "} // FireStarterGPU\n";
 #endif
-    program +=
-        "    }\n"
-        "} // RaytraceGPU\n";
 } // MakeProgram
 
 void FireStarter::RenderImage(void)

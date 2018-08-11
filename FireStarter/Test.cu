@@ -2,13 +2,13 @@
 #include <cuda_runtime.h>
 #include "Test.h"
 
-__global__ void TestGPU(unsigned char *pixels, const unsigned int width, const unsigned int height)
+__global__ void TestGPU(uchar4 *pixels, const unsigned int width, const unsigned int height)
 {
     unsigned int pixel = blockDim.x * blockIdx.x + threadIdx.x;
     TestFunction(pixels, width, height, pixel);
 } // RaytraceGPU
 
-extern "C" void RunTest(unsigned char *pixels, const unsigned int width, const unsigned int height)
+extern "C" void RunTest(uchar4 *pixels, const unsigned int width, const unsigned int height)
 {
     unsigned int size = width * height;
 #if RUN_GPU

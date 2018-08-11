@@ -1,19 +1,19 @@
 #pragma once
 #include "Defines.h"
 
-GPU_FUNCTION void TestFunction(unsigned char *pixels, unsigned int width, unsigned int height, unsigned int pixel)
+GPU_FUNCTION void TestFunction(uchar4 *pixels, unsigned int width, unsigned int height, unsigned int index)
 {
-    unsigned int y = pixel / width;
+    unsigned int y = index / width;
     if (y < height) {
-        unsigned int x = pixel % width;
-        pixel *= 4;
-        pixels[pixel + 0] = x & 255;
-        pixels[pixel + 1] = y & 255;
-        pixels[pixel + 2] = (x ^ y) & 255;
-        pixels[pixel + 3] = 255;
+        unsigned int x = index % width;
+        uchar4 &pixel = pixels[index];
+        pixel.x = x & 255;
+        pixel.y = y & 255;
+        pixel.z = (x ^ y) & 255;
+        pixel.w = 255;
     }
 } // TestFunction
 
 #ifndef __CUDACC__
-extern "C" void RunTest(unsigned char *pixels, const unsigned int width, const unsigned int height);
+extern "C" void RunTest(uchar4 *pixels, const unsigned int width, const unsigned int height);
 #endif

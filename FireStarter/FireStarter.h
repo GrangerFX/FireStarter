@@ -6,6 +6,7 @@
 
 #define PROGRAM_DATA 8
 #define PROGRAM_INSTRUCTIONS 16
+#define PROGRAM_ITERATIONS 16
 
 typedef enum {
     Instruction_noop = 0,
@@ -52,7 +53,7 @@ public:
 }; // SimpleTimer
     
 typedef struct FrameBuffer {
-	unsigned char *base;			// Pointer to the alligned native pixel format buffer
+	uchar4 *base;			        // Pointer to the alligned native pixel format buffer
 	long rowbytes;					// Number of bytes per row
 	unsigned long width;			// Number of columns
 	unsigned long height;			// Number of rows
@@ -74,7 +75,7 @@ public:
 
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    void CompileAndRun(const char *source, unsigned char *buffer, unsigned int width, unsigned int height);
+    void CompileAndRun(const char *source, uchar4 *buffer, unsigned int width, unsigned int height);
     void RandomProgram(void);
     void MakeProgram(void);
     void RenderImage(void);
