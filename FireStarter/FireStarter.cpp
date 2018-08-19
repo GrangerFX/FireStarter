@@ -26,7 +26,8 @@ inline unsigned int Hash(unsigned int hash)
     return hash;
 } // Hash
 
-#define RANDOMSEED(seed) Hash(seed++)
+#define RANDOMHASH(seed) Hash(seed)
+#define RANDOMSEED(seed) RANDOMHASH(seed++)
 #define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits
 #define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1
 #define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1
@@ -47,15 +48,6 @@ std::string Format(const std::string formatString, ...)
     return Format(formatString.c_str());
 } // Format
 
-FireStarter::FireStarter(void)
-{
-    // Timer ID
-    haveDoubles = false;
-    numSMs = 0;                     // number of multiprocessors
-
-    statusString[0] = 0;
-} // FireStarter
-
 void FireStarter::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height)
 {
 	buffer.width = width;
@@ -63,7 +55,7 @@ void FireStarter::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsi
 	buffer.rowbytes = width * 4;
     buffer.base = NULL;
 
-    cudaError_t err = cudaMallocManaged(&buffer.base, BUFFER_WIDTH * BUFFER_HEIGHT * 4);
+    cudaError_t err = cudaMallocManaged(&buffer.base, BUFFER_WIDTH * BUFFER_HEIGHT * sizeof(uchar4));
     if (err != cudaSuccess) {
         fprintf(stderr, "Failed to allocate pixels (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
@@ -85,27 +77,65 @@ void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
-void FireStarter::CompileAndRun(const char *source, uchar4 *pixels, unsigned int width, unsigned int height)
+unsigned int FireStarter::GetResults(Results &results)
 {
+    unsigned int error = 0;
+    checkCudaErrors(cudaMemcpy(&error, results.minError, sizeof(unsigned int), cudaMemcpyDeviceToHost));
+    return error;
+} // GetResults
+
+void FireStarter::ResetResults(Results &results)
+{
+    checkCudaErrors(cudaMemset(results.minError, 0xFF, sizeof(unsigned int)));
+} // ResetResults
+
+void FireStarter::InitResults(Results &results)
+{
+    cudaError_t err = cudaMallocManaged(&results.minError, sizeof(unsigned int));
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Failed to allocate results (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+    ResetResults(results);
+} // InitResults
+
+void FireStarter::FreeResults(Results &results)
+{
+    if (results.minError) {
+        cudaError_t err = cudaFree(results.minError);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to free results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        results.minError = NULL;
+    }
+} // FreeResults
+
+void FireStarter::CompileAndRun(const char *source, uchar4 *pixels, unsigned int width, unsigned int height, unsigned int *minError)
+{
+    // Reset the results
+//    ResetResults(theResults);
+
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
     NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, source, "FireStarter", 0, NULL, NULL));
     nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
-//    NVRTC_SAFE_CALL("nvrtcCompileProgram", res);
-
-    // Output the compile log.
-    size_t logSize;
-    NVRTC_SAFE_CALL("nvrtcGetProgramLogSize", nvrtcGetProgramLogSize(prog, &logSize));
-    char *log = reinterpret_cast<char *>(malloc(sizeof(char) * logSize + 1));
-    NVRTC_SAFE_CALL("nvrtcGetProgramLog", nvrtcGetProgramLog(prog, log));
-    log[logSize] = '\x0';
-    if (strlen(log) >= 2) {
-        std::cerr << "\n compilation log ---\n";
-        std::cerr << log;
-        std::cerr << "\n end log ---\n";
+    if (res != 0) {
+        // Output the compile log.
+        size_t logSize;
+        NVRTC_SAFE_CALL("nvrtcGetProgramLogSize", nvrtcGetProgramLogSize(prog, &logSize));
+        char *log = reinterpret_cast<char *>(malloc(sizeof(char) * logSize + 1));
+        NVRTC_SAFE_CALL("nvrtcGetProgramLog", nvrtcGetProgramLog(prog, log));
+        log[logSize] = '\x0';
+        if (strlen(log) >= 2) {
+            std::cerr << "\n compilation log ---\n";
+            std::cerr << log;
+            std::cerr << "\n end log ---\n";
+        }
+        free(log);
+        NVRTC_SAFE_CALL("nvrtcCompileProgram", res);
     }
-    free(log);
-    printf("Data initialization done.\n");
+//  printf("Data initialization done.\n");
 
     // Fetch PTX
     char *ptx;
@@ -126,13 +156,14 @@ void FireStarter::CompileAndRun(const char *source, uchar4 *pixels, unsigned int
     // Launch the kernel
     int threadsPerBlock = 256;
     int blocksPerGrid = (width * height + threadsPerBlock - 1) / threadsPerBlock;
-    printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
+//  printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     void *arr[] = {reinterpret_cast<void *>(&pixels),
                    reinterpret_cast<void *>(&width),
-                   reinterpret_cast<void *>(&height)};
+                   reinterpret_cast<void *>(&height),
+                   reinterpret_cast<void *>(&minError)};
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -148,33 +179,65 @@ void FireStarter::CompileAndRun(const char *source, uchar4 *pixels, unsigned int
 void FireStarter::RandomProgram(void)
 {
     unsigned int seed = (unsigned int)generation;
-    seed = RANDOMSEED(seed);
+    seed = RANDOMHASH(seed) + 1;
+    printf("seed=%d\n", seed);
     if (generation == 0) {
-        for (int i = 0; i < PROGRAM_DATA; i++)
-            data[i] = RANDOMFACTOR(seed);
+        for (int i = 0; i < PROGRAM_DATA; i++) {
+           printf("i=%d  seed=%d\n", i, seed);
+           bestData[i] = RANDOMFACTOR(seed);
+        }
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-            ProgramInstruction &instruction = instructions[i];
+            ProgramInstruction &instruction = bestInstructions[i];
             instruction.instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
-            instruction.srcA = RANDOMSEED(seed) % PROGRAM_DATA;
-            instruction.srcB = RANDOMSEED(seed) % PROGRAM_DATA;
-            instruction.dst = RANDOMSEED(seed) % PROGRAM_DATA;
+            instruction.d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
     } else {
-        switch (RANDOMSEED(seed) % 5) {
+        if (curError < minError) {
+            minError = curError;
+            for (int i = 0; i < PROGRAM_DATA; i++)
+                bestData[i] = curData[i];
+            for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+                bestInstructions[i] = curInstructions[i];
+        } else {
+            for (int i = 0; i < PROGRAM_DATA; i++)
+                curData[i] = bestData[i];
+            for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+                curInstructions[i] = bestInstructions[i];
+        }
+        switch (RANDOMSEED(seed) % 3) {
             case 0:
-                instructions[RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
+                {
+                    unsigned int seedA = seed;
+                    unsigned int seedB = seed;
+                    unsigned int index = RANDOMSEED(seedA) % PROGRAM_INSTRUCTIONS;
+                    unsigned int instruction = RANDOMSEED(seedB) % NumInstructions;
+                    curInstructions[index].instruction = (Instruction)(instruction);
+                    seed += 2;
+                    printf("Generation=%d  Index=%d  Instruction=%d  Seed=%d\n", generation, index, curInstructions[index].instruction, seed);
+                }
                 break;
             case 1:
-                instructions[RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS].dst = RANDOMSEED(seed) % PROGRAM_DATA;
-                break;
-            case 2:
-                instructions[RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS].srcA = RANDOMSEED(seed) % PROGRAM_DATA;
-                break;
-            case 3:
-                instructions[RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS].srcB = RANDOMSEED(seed) % PROGRAM_DATA;
+                {
+                    unsigned int seedA = seed;
+                    unsigned int seedB = seed;
+                    unsigned int index = RANDOMSEED(seedA) % PROGRAM_INSTRUCTIONS;
+                    unsigned int d = RANDOMSEED(seedB) % PROGRAM_DATA;
+                    curInstructions[index].d = d;
+                    seed += 2;
+                    printf("Generation=%d  Index=%d  Source=%d  Seed=%d\n", generation, index, curInstructions[index].d, seed);
+                }
                 break;
             default:
-                data[RANDOMSEED(seed) % PROGRAM_DATA] += RANDOMFACTOR(seed) * 0.1f;
+                {
+                    unsigned int seedA = seed;
+                    unsigned int seedB = seed;
+                    unsigned int index = RANDOMSEED(seedA) % PROGRAM_DATA;
+                    float data = RANDOMFACTOR(seedB) * 0.1f;
+                    curData[index] += data;
+                    seed += 2;
+                    printf("Generation=%d  Index=%d  Data=%f  Seed=%d\n", generation, index, curData[index], seed);
+                }
+                break;
         }
     }
     generation++;
@@ -212,23 +275,24 @@ void FireStarter::MakeProgram(void)
                "    return hash;\n"
                "} // Hash\n"
                "\n"
-               "#define RANDOMSEED(seed) Hash(seed++)\n"
+               "#define RANDOMHASH(seed) Hash(seed)\n"
+               "#define RANDOMSEED(seed) RANDOMHASH(seed++)\n"
                "#define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits\n"
                "#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1\n"
                "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
                "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
                "\n"
-               "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height)\n"
+               "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height, unsigned int *results)\n"
                "{\n"
                "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
                "    unsigned int y = index / width;\n"
                "    if (y < height) {\n"
                "        unsigned int x = index % width;\n"
-               "        unsigned int seed = Hash(index);\n";
+               "        unsigned int seed = RANDOMHASH(index);\n";
 
-    program += Format("        float data[%d] = {x / 256.0f, y / 256.0f", PROGRAM_DATA, data[0]);
-    for (int i = 2; i < PROGRAM_DATA; i++)
-        program += Format(", %f", data[i]);
+    program += Format("        float data[%d] = {%f", PROGRAM_DATA, curData[0]);
+    for (int i = 1; i < PROGRAM_DATA; i++)
+        program += Format(", %f", curData[i]);
     program += "};\n";
 
     program += "        float minError = 1.0E+10f;\n"
@@ -238,34 +302,40 @@ void FireStarter::MakeProgram(void)
                "            float error = 0.0f;\n"
                "            for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
                "                float theta = i * 3.14159265f / SAMPLE_ITERATIONS;\n"
-               "                data[0] = theta;\n";
+               "                float r = theta;\n";
 
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        const ProgramInstruction &instruction = instructions[i];
+        const ProgramInstruction &instruction = curInstructions[i];
         switch (instruction.instruction) {
-        case Instruction_noop:
-            break;
-        case Instruction_add:
-            program += Format("                data[%d] = data[%d] + data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
-            break;
-        case Instruction_subtract:
-            program += Format("                data[%d] = data[%d] - data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
-            break;
-        case Instruction_multiply:
-            program += Format("                data[%d] = data[%d] * data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
-            break;
-        case Instruction_divide:
-            program += Format("                data[%d] = data[%d] / data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB);
-            break;
-        case Instruction_max:
-            program += Format("                data[%d] = data[%d] >= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
-            break;
-        case Instruction_min:
-            program += Format("                data[%d] = data[%d] <= data[%d] ? data[%d] : data[%d];\n", instruction.dst, instruction.srcA, instruction.srcB, instruction.srcA, instruction.srcB);
-            break;
+            case Instruction_noop:
+                break;
+            case Instruction_store:
+                program += Format("                data[%d] = r;\n", instruction.d);
+                break;
+            case Instruction_square:
+                program += Format("                r *= r;\n");
+                break;
+            case Instruction_add:
+                program += Format("                r += data[%d];\n", instruction.d);
+                break;
+            case Instruction_subtract:
+                program += Format("                r -= data[%d];\n", instruction.d);
+                break;
+            case Instruction_multiply:
+                program += Format("                r *= data[%d];\n", instruction.d);
+                break;
+            case Instruction_divide:
+                program += Format("                r /= data[%d];\n", instruction.d);
+                break;
+            case Instruction_max:
+                program += Format("                r = r >= data[%d] ? r : data[%d];\n", instruction.d, instruction.d);
+                break;
+            case Instruction_min:
+                program += Format("                r = r <= data[%d] ? r : data[%d];\n", instruction.d, instruction.d);
+                break;
         }
     }
-    program += Format("                error += fabsf(data[%d] - sinf(theta));\n", instructions[PROGRAM_INSTRUCTIONS - 1].dst);
+    program += Format("                error += fabsf(r - sinf(theta));\n");
     program += "            }\n"
                "            error /= SAMPLE_ITERATIONS;\n"
                "            if (error < minError)\n"
@@ -277,53 +347,64 @@ void FireStarter::MakeProgram(void)
                "            data[d] += RANDOMFACTOR(seed) * minError * 0.1f;\n"
                "        }\n"
                "        uchar4 &pixel = pixels[index];\n"
-               "        float e1 = minError * 256.0f;\n"
-               "        float e2 = minError * 128.0f;\n"
-               "        float e3 = minError * 64.0f;\n"
-               "        pixel.x = e1 < 256.0f ? (unsigned char)(e1) : 255;\n"
-               "        pixel.y = e2 < 256.0f ? (unsigned char)(e2) : 255;\n"
-               "        pixel.z = e3 < 256.0f ? (unsigned char)(e3) : 255;\n"
+               "        unsigned int result = minError < 1.0f ? (unsigned int)(minError * 0x40000000) : 0x40000000;\n"
+               "        if (result < *results)\n"
+//             "            *results = result;\n"
+               "            __uAtomicMin(results, result);\n"
+               "        result = *results;\n"
+               "        result >>= 6;\n"
+               "        pixel.z = result >= 255 ? 255 : result;\n"
+               "        result >>= 8;\n"
+               "        pixel.y = result >= 255 ? 255 : result;\n"
+               "        result >>= 8;\n"
+               "        pixel.x = result >= 255 ? 255 : result;\n"
                "        pixel.w = 255;\n"
                "    }\n"
                "} // FireStarterGPU\n";
 #endif
 } // MakeProgram
 
-void FireStarter::RenderImage(void)
+void FireStarter::RenderImage(HWND hwnd)
 {
     MakeProgram();
     timer.Start();
-    if (!RUN_GPU || RUN_TEST)
+    bool update;
+    if (!RUN_GPU || RUN_TEST) {
         RunTest(theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
-    else
-        CompileAndRun(program.c_str(), theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
-    double time = timer.Duration();
-    sprintf_s(statusString, "Time=%.2f Seconds\n", time * 0.001);
-} // RenderImage
-
-void FireStarter::Draw(HWND hwnd)
-{
-	unsigned char buffer[4096];
-	BITMAPINFO*	bm = (BITMAPINFO*)buffer;
-	bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bm->bmiHeader.biHeight = -(int)theBuffer.height;
-	bm->bmiHeader.biPlanes = 1;
-	bm->bmiHeader.biCompression = BI_RGB;
-	bm->bmiHeader.biSizeImage = 0; 
-	bm->bmiHeader.biXPelsPerMeter = 0; 
-	bm->bmiHeader.biYPelsPerMeter = 0; 
-	bm->bmiHeader.biClrUsed = 0; 
-	bm->bmiHeader.biClrImportant = 0;					
-	bm->bmiHeader.biWidth = theBuffer.width;
-	bm->bmiHeader.biBitCount = 32;
-
-	HDC hdc = GetDC(hwnd);
-	if (hdc) {
-	    SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
-        printf(statusString);
-	    GdiFlush();
+        update = true;
+    } else {
+        CompileAndRun(program.c_str(), theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT, theResults.minError);
+        curError = GetResults(theResults);
+        update = curError < minError;
     }
-} // Draw
+    double time = timer.Duration();
+    sprintf_s(statusString, "FireStarter: Generation=%lld  error=%f  Time=%.4f Seconds", generation, (double)curError / (double)0x40000000, time * 0.001);
+
+    if (update) {
+        printf("//%s\n", statusString);
+        printf("%s\n", program.c_str());
+
+	    unsigned char buffer[4096];
+	    BITMAPINFO*	bm = (BITMAPINFO*)buffer;
+	    bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	    bm->bmiHeader.biHeight = -(int)theBuffer.height;
+	    bm->bmiHeader.biPlanes = 1;
+	    bm->bmiHeader.biCompression = BI_RGB;
+	    bm->bmiHeader.biSizeImage = 0; 
+	    bm->bmiHeader.biXPelsPerMeter = 0; 
+	    bm->bmiHeader.biYPelsPerMeter = 0; 
+	    bm->bmiHeader.biClrUsed = 0; 
+	    bm->bmiHeader.biClrImportant = 0;					
+	    bm->bmiHeader.biWidth = theBuffer.width;
+	    bm->bmiHeader.biBitCount = 32;
+
+	    HDC hdc = GetDC(hwnd);
+	    if (hdc) {
+	        SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
+	        GdiFlush();
+        }
+    }
+} // RenderImage
 
 void FireStarter::Init(void)
 {
@@ -346,7 +427,24 @@ void FireStarter::Init(void)
     numSMs = deviceProp.multiProcessorCount;
 
     InitFrameBuffer(theBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
+    InitResults(theResults);
 
     generation = 0;
     RandomProgram();
 } // Init
+
+FireStarter::FireStarter(void)
+{
+    // Timer ID
+    haveDoubles = false;
+    numSMs = 0;                     // number of multiprocessors
+    statusString[0] = 0;
+    minError = curError = (unsigned int)-1;
+    Init();
+} // FireStarter
+
+FireStarter::~FireStarter(void)
+{
+    FreeFrameBuffer(theBuffer);
+    FreeResults(theResults);
+} // ~FireStarter

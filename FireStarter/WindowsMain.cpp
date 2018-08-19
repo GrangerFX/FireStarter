@@ -84,8 +84,6 @@ HRESULT Initialize(HINSTANCE hInstance) {
 
 	DragAcceptFiles(hwnd, 1);
 
-    fireStarter.Init();
-
 	ShowWindow(hwnd, SW_SHOW);
 
 	do {
@@ -96,13 +94,8 @@ HRESULT Initialize(HINSTANCE hInstance) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else {
-            fireStarter.RenderImage();
-            fireStarter.Draw(hwnd);
-
-            char status[1024];
-            sprintf_s(status, "FireStarter Generation=%lld", fireStarter.generation);
-            SetWindowText(hwnd, status);
-
+            fireStarter.RenderImage(hwnd);
+            SetWindowText(hwnd, fireStarter.statusString);
         }
 	} while (1);
 

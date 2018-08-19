@@ -7,7 +7,7 @@
 
 inline int printf2(const char *format, ...)
 {
-    char str[1024];
+    char str[65536];
 
     va_list argptr;
     va_start(argptr, format);

@@ -6,25 +6,25 @@
 
 #define PROGRAM_DATA 8
 #define PROGRAM_INSTRUCTIONS 16
-#define PROGRAM_ITERATIONS 1024
+#define PROGRAM_ITERATIONS 4096
 #define SAMPLE_ITERATIONS 16
 
 typedef enum {
     Instruction_noop = 0,
-    Instruction_add,        // dst = srcA + srcB;
-    Instruction_subtract,   // dst = srcA - srcB;
-    Instruction_multiply,   // dst = srcA * srcB;
-    Instruction_divide,     // dst = srcA / srcB;
-    Instruction_max,        // dst = srcA >= srcB ? srcA : srcB;
-    Instruction_min,        // dst = srcA <= srcB ? srcA : srcB;
+    Instruction_store,      // data[d] = r;
+    Instruction_square,     // r *= r;
+    Instruction_add,        // r += data[d];
+    Instruction_subtract,   // r -= data[d];
+    Instruction_multiply,   // r *= data[d];
+    Instruction_divide,     // r /= data[d];
+    Instruction_max,        // r = data[d] >= r ? data[d] : r;
+    Instruction_min,        // r = data[d] <= r ? data[d] : r;
     NumInstructions
 } Instruction;
 
 typedef struct {
     Instruction instruction;
-    int srcA;
-    int srcB;
-    int dst;
+    int d;
 } ProgramInstruction;
 
 class SimpleTimer {
@@ -60,14 +60,23 @@ typedef struct FrameBuffer {
 	unsigned long height;			// Number of rows
 } FrameBuffer;
 
+typedef struct Results {
+    unsigned int *minError;
+} Results;
+
 class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
+    Results theResults;
     std::string program;
-    ProgramInstruction instructions[PROGRAM_INSTRUCTIONS];
-    float data[PROGRAM_DATA];
+    ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
+    ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
+    float bestData[PROGRAM_DATA];
+    float curData[PROGRAM_DATA];
     long long generation;
+    unsigned int minError;
+    unsigned int curError;
 
     bool haveDoubles;
     int numSMs;                     // number of multiprocessors
@@ -76,11 +85,15 @@ public:
 
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    void CompileAndRun(const char *source, uchar4 *buffer, unsigned int width, unsigned int height);
+    unsigned int GetResults(Results &results);
+    void ResetResults(Results &results);
+    void InitResults(Results &results);
+    void FreeResults(Results &results);
+    void CompileAndRun(const char *source, uchar4 *buffer, unsigned int width, unsigned int height, unsigned int *minError);
     void RandomProgram(void);
     void MakeProgram(void);
-    void RenderImage(void);
-    void Draw(HWND hwnd);
+    void RenderImage(HWND hwnd);
     void Init(void);
     FireStarter(void);
+    ~FireStarter(void);
 }; // class FireStarter
