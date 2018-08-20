@@ -7,7 +7,9 @@
 #define PROGRAM_DATA 8
 #define PROGRAM_INSTRUCTIONS 16
 #define PROGRAM_ITERATIONS 4096
+#define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 16
+#define MAX_RESULTS 1024
 
 typedef enum {
     Instruction_noop = 0,
@@ -60,15 +62,23 @@ typedef struct FrameBuffer {
 	unsigned long height;			// Number of rows
 } FrameBuffer;
 
+typedef struct Result {
+    float error;
+    float data[PROGRAM_DATA];
+} Result;
+
 typedef struct Results {
-    unsigned int *minError;
+    unsigned int numResults;
+    float minError;
+    Result results[MAX_RESULTS];
 } Results;
 
 class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
-    Results theResults;
+    Results hostResults;
+    Results *deviceResults;
     std::string program;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
@@ -85,11 +95,11 @@ public:
 
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    unsigned int GetResults(Results &results);
-    void ResetResults(Results &results);
-    void InitResults(Results &results);
-    void FreeResults(Results &results);
-    void CompileAndRun(const char *source, uchar4 *buffer, unsigned int width, unsigned int height, unsigned int *minError);
+    void GetResults(void);
+    void ResetResults(void);
+    void InitResults(void);
+    void FreeResults(void);
+    void CompileAndRun(const char *source, unsigned int population, unsigned int maxResults, Results *results);
     void RandomProgram(void);
     void MakeProgram(void);
     void RenderImage(HWND hwnd);

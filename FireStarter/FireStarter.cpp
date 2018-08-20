@@ -77,41 +77,42 @@ void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
-unsigned int FireStarter::GetResults(Results &results)
+void FireStarter::GetResults(void)
 {
-    unsigned int error = 0;
-    checkCudaErrors(cudaMemcpy(&error, results.minError, sizeof(unsigned int), cudaMemcpyDeviceToHost));
-    return error;
+    checkCudaErrors(cudaMemcpy(&hostResults, deviceResults, sizeof(Results), cudaMemcpyDeviceToHost));
 } // GetResults
 
-void FireStarter::ResetResults(Results &results)
+void FireStarter::ResetResults(void)
 {
-    checkCudaErrors(cudaMemset(results.minError, 0xFF, sizeof(unsigned int)));
+    hostResults.numResults = 0;
+    checkCudaErrors(cudaMemcpy(deviceResults, &hostResults, sizeof(unsigned int) + sizeof(float), cudaMemcpyHostToDevice));
 } // ResetResults
 
-void FireStarter::InitResults(Results &results)
+void FireStarter::InitResults(void)
 {
-    cudaError_t err = cudaMallocManaged(&results.minError, sizeof(unsigned int));
+    memset(&hostResults, 0, sizeof(Results));
+    hostResults.minError = 1.0E+10f;
+    cudaError_t err = cudaMallocManaged(&deviceResults, sizeof(Results));
     if (err != cudaSuccess) {
         fprintf(stderr, "Failed to allocate results (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
-    ResetResults(results);
+    checkCudaErrors(cudaMemcpy(deviceResults, &hostResults, sizeof(Results), cudaMemcpyHostToDevice));
 } // InitResults
 
-void FireStarter::FreeResults(Results &results)
+void FireStarter::FreeResults(void)
 {
-    if (results.minError) {
-        cudaError_t err = cudaFree(results.minError);
+    if (deviceResults) {
+        cudaError_t err = cudaFree(deviceResults);
         if (err != cudaSuccess) {
             fprintf(stderr, "Failed to free results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
-        results.minError = NULL;
+        deviceResults = NULL;
     }
 } // FreeResults
 
-void FireStarter::CompileAndRun(const char *source, uchar4 *pixels, unsigned int width, unsigned int height, unsigned int *minError)
+void FireStarter::CompileAndRun(const char *source, unsigned int population, unsigned int maxResults, Results *results)
 {
     // Reset the results
 //    ResetResults(theResults);
@@ -155,15 +156,14 @@ void FireStarter::CompileAndRun(const char *source, uchar4 *pixels, unsigned int
 
     // Launch the kernel
     int threadsPerBlock = 256;
-    int blocksPerGrid = (width * height + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
 //  printf("CUDA kernel launch with %d blocks of %d threads\n", blocksPerGrid, threadsPerBlock);
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    void *arr[] = {reinterpret_cast<void *>(&pixels),
-                   reinterpret_cast<void *>(&width),
-                   reinterpret_cast<void *>(&height),
-                   reinterpret_cast<void *>(&minError)};
+    void *arr[] = {reinterpret_cast<void *>(&population),
+                   reinterpret_cast<void *>(&maxResults),
+                   reinterpret_cast<void *>(&results)};
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -246,21 +246,6 @@ void FireStarter::RandomProgram(void)
 void FireStarter::MakeProgram(void)
 {
     RandomProgram();
-#if TEST_PROGRAM
-    program =  "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height)\n"
-               "{\n"
-               "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
-               "    unsigned int y = index / width;\n"
-               "    if (y < height) {\n"
-               "        unsigned int x = index % width;\n"
-               "        uchar4 &pixel = pixels[index];\n"
-               "        pixel.x = x & 255;\n"
-               "        pixel.y = y & 255;\n"
-               "        pixel.z = (x ^ y) & 255;\n"
-               "        pixel.w = 255;\n";
-               "    }\n"
-               "} // FireStarterGPU\n";
-#else
     program =  "";
     program += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
     program += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
@@ -281,16 +266,27 @@ void FireStarter::MakeProgram(void)
                "#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1\n"
                "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
                "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
+               "\n";
+    program += Format("#define PROGRAM_DATA %d\n", PROGRAM_DATA);
                "\n"
-               "extern \"C\" __global__ void FireStarterGPU(uchar4 *pixels, const unsigned int width, const unsigned int height, unsigned int *results)\n"
+               "typedef struct Result {\n"
+               "    float error;\n"
+               "    float data[PROGRAM_DATA];\n"
+               "} Result;\n"
+               "\n"
+               "typedef struct Results {\n"
+               "    unsigned int numResults;\n"
+               "    float minError;\n"
+               "    Result results[];\n"
+               "} Results;\n"
+               "\n"
+               "extern \"C\" __global__ void FireStarterGPU(const unsigned int population, const unsigned int maxResults, Results *results)\n"
                "{\n"
                "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
-               "    unsigned int y = index / width;\n"
-               "    if (y < height) {\n"
-               "        unsigned int x = index % width;\n"
+               "    if (index < population) {\n"
                "        unsigned int seed = RANDOMHASH(index);\n";
 
-    program += Format("        float data[%d] = {%f", PROGRAM_DATA, curData[0]);
+    program += Format("        float data[PROGRAM_DATA] = {%f", curData[0]);
     for (int i = 1; i < PROGRAM_DATA; i++)
         program += Format(", %f", curData[i]);
     program += "};\n";
@@ -346,22 +342,16 @@ void FireStarter::MakeProgram(void)
     program += "            oldValue = data[d];\n"
                "            data[d] += RANDOMFACTOR(seed) * minError * 0.1f;\n"
                "        }\n"
-               "        uchar4 &pixel = pixels[index];\n"
-               "        unsigned int result = minError < 1.0f ? (unsigned int)(minError * 0x40000000) : 0x40000000;\n"
-               "        if (result < *results)\n"
-//             "            *results = result;\n"
-               "            __uAtomicMin(results, result);\n"
-               "        result = *results;\n"
-               "        result >>= 6;\n"
-               "        pixel.z = result >= 255 ? 255 : result;\n"
-               "        result >>= 8;\n"
-               "        pixel.y = result >= 255 ? 255 : result;\n"
-               "        result >>= 8;\n"
-               "        pixel.x = result >= 255 ? 255 : result;\n"
-               "        pixel.w = 255;\n"
+               "        if (minError < results->minError) {\n"
+               "            unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
+               "            if (index < maxResults) {\n"
+               "                results->results[index].error = minError;\n"
+               "                for (int i = 0; i < PROGRAM_DATA; i++)\n"
+               "                    results->results[index].data[i] = data[i];\n"
+               "            }\n"
+               "        }\n"
                "    }\n"
                "} // FireStarterGPU\n";
-#endif
 } // MakeProgram
 
 void FireStarter::RenderImage(HWND hwnd)
@@ -373,9 +363,9 @@ void FireStarter::RenderImage(HWND hwnd)
         RunTest(theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT);
         update = true;
     } else {
-        CompileAndRun(program.c_str(), theBuffer.base, BUFFER_WIDTH, BUFFER_HEIGHT, theResults.minError);
-        curError = GetResults(theResults);
-        update = curError < minError;
+        CompileAndRun(program.c_str(), PROGRAM_POPULATION, MAX_RESULTS, deviceResults);
+        GetResults();
+        update = curError < hostResults.minError;
     }
     double time = timer.Duration();
     sprintf_s(statusString, "FireStarter: Generation=%lld  error=%f  Time=%.4f Seconds", generation, (double)curError / (double)0x40000000, time * 0.001);
@@ -427,7 +417,7 @@ void FireStarter::Init(void)
     numSMs = deviceProp.multiProcessorCount;
 
     InitFrameBuffer(theBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
-    InitResults(theResults);
+    InitResults();
 
     generation = 0;
     RandomProgram();
@@ -446,5 +436,5 @@ FireStarter::FireStarter(void)
 FireStarter::~FireStarter(void)
 {
     FreeFrameBuffer(theBuffer);
-    FreeResults(theResults);
+    FreeResults();
 } // ~FireStarter
