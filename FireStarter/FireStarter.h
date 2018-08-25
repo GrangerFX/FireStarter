@@ -62,28 +62,37 @@ typedef struct FrameBuffer {
 	unsigned long height;			// Number of rows
 } FrameBuffer;
 
-typedef struct Result {
-    float error;
-    float data[PROGRAM_DATA];
-} Result;
+typedef struct FireStarterData {
+    float d[PROGRAM_DATA];
 
-typedef struct Results {
+    inline float& operator[](int i)
+    {
+        return d[i];
+    } // operator[]
+} FireStarterData;
+
+typedef struct FireStarterResult {
+    float error;
+    FireStarterData data;
+} FireStarterResult;
+
+typedef struct FireStarterResults {
     unsigned int numResults;
     float minError;
-    Result results[MAX_RESULTS];
-} Results;
+    FireStarterResult results[1];
+} FireStarterResults;
 
 class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
-    Results hostResults;
-    Results *deviceResults;
+    FireStarterResults *hostResults;
+    FireStarterResults *deviceResults;
     std::string program;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
-    float bestData[PROGRAM_DATA];
-    float curData[PROGRAM_DATA];
+    FireStarterData bestData;
+    FireStarterData curData;
     long long generation;
     unsigned int minError;
     unsigned int curError;
@@ -99,7 +108,7 @@ public:
     void ResetResults(void);
     void InitResults(void);
     void FreeResults(void);
-    void CompileAndRun(const char *source, unsigned int population, unsigned int maxResults, Results *results);
+    void CompileAndRun(const char *source, unsigned int population, unsigned int maxResults, FireStarterResults *results);
     void RandomProgram(void);
     void MakeProgram(void);
     void RenderImage(HWND hwnd);
