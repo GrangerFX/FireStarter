@@ -277,7 +277,7 @@ void FireStarter::RandomProgram(void)
                     unsigned int seedA = seed;
                     unsigned int seedB = seed;
                     unsigned int index = RANDOMSEED(seedA) % PROGRAM_DATA;
-                    float data = RANDOMFACTOR(seedB) * 0.1f;
+                    float data = RANDOMFACTOR(seedB) * SMART_RANDOM_FACTOR;
                     curData[index] += data;
                     seed += 2;
                     printf("Generation=%d  Index=%d  Data=%f  Seed=%d\n", generation, index, curData[index], seed);
@@ -314,6 +314,7 @@ void FireStarter::MakeProgram(void)
             "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
             "\n";
     code += Format("#define PROGRAM_DATA %d\n", PROGRAM_DATA);
+    code += Format("#define SMART_RANDOM_FACTOR %f\n", SMART_RANDOM_FACTOR);
     code += "\n"
             "typedef struct FireStarterData {\n"
             "    float d[PROGRAM_DATA];\n"
@@ -389,8 +390,8 @@ void FireStarter::MakeProgram(void)
             "        unsigned int d = 0;\n"
             "        float oldValue = data[d];\n"
             "        for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
-            "            float error = 0.0f;\n"
-            "            for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
+            "            float error = fabsf(Evaluate(data, 0.0f) - sinf(0.0f));\n"
+            "            for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
             "                float theta = i * (3.14159265f / SAMPLE_ITERATIONS);\n"
             "                float delta = fabsf(Evaluate(data, theta) - sinf(theta));\n"
             "                error = delta > error ? delta : error;\n"
@@ -401,7 +402,7 @@ void FireStarter::MakeProgram(void)
             "                data[d] = oldValue;\n"
             "            d = RANDOMSEED(seed) & (PROGRAM_DATA - 1);\n"
             "            oldValue = data[d];\n"
-            "            data[d] += RANDOMFACTOR(seed) * minError * 0.1f;\n"
+            "            data[d] += RANDOMFACTOR(seed) * minError * SMART_RANDOM_FACTOR;\n"
             "        }\n"
             "        if (minError < results->curError) {\n"
             "            unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
@@ -414,19 +415,29 @@ void FireStarter::MakeProgram(void)
             "    }\n"
             "} // FireStarterGPU\n"
             "\n"
-            "extern \"C\" __global__ void FireShowGPU(FireStarterResults *results, unsigned int *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+            "extern \"C\" __global__ void FireShowGPU(FireStarterResults *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
             "{\n"
             "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
             "    if (x < bufferWidth) {\n"
             "       float theta = (x - bufferWidth * 0.5f) * (3.14159265f / 100.0f);\n"
             "       float n = sinf(theta);\n"
             "       int y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
-            "       if ((y >= 0) && (y < bufferHeight))\n"
-            "           bufferPixels[y * bufferWidth + x] = 0xFF8000FF;\n"
+            "       if ((y >= 0) && (y < bufferHeight)) {\n"
+            "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+            "           pixel.x = 255;\n"
+            "           pixel.y = pixel.y < 128 ? 128 : pixel.y;\n"
+            "           pixel.w = 255;\n"
+            "       };\n"
             "       n = Evaluate(results->results[0].data, theta);\n"
             "       y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
-            "       if ((y >= 0) && (y < bufferHeight))\n"
-            "           bufferPixels[y * bufferWidth + x] = (!results->numResults || results->results[0].error > results->minError) ? 0x0080FFFF : 0xFFFFFFFF;\n"
+            "       if ((y >= 0) && (y < bufferHeight)) {\n"
+            "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+            "           if (!results->numResults || results->results[0].error > results->minError) {\n"
+            "               pixel.y = pixel.y < 128 ? 128 : pixel.y;\n"
+            "               pixel.z = 255;\n"
+            "           } else\n"
+            "               pixel.x = pixel.y = pixel.z = pixel.w = 255;\n"
+             "       };\n"
             "   }\n"
             "} // FireShowGPU\n";
 } // MakeProgram

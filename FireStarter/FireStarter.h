@@ -10,6 +10,7 @@
 #define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 16
 #define MAX_RESULTS 16384
+#define SMART_RANDOM_FACTOR 0.1f
 
 typedef enum {
     Instruction_noop = 0,
