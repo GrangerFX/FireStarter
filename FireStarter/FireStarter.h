@@ -79,6 +79,9 @@ typedef struct FireStarterResult {
 typedef struct FireStarterResults {
     unsigned int numResults;
     float minError;
+    float curError;
+    float startError;
+    FireStarterData bestData;
     FireStarterResult results[1];
 } FireStarterResults;
 
@@ -86,17 +89,13 @@ class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
-    FireStarterResults *hostResults;
-    FireStarterResults *deviceResults;
+    FireStarterResults *results;
     std::string code;
     CUmodule module;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
-    FireStarterData bestData;
     FireStarterData curData;
     long long generation;
-    float minError;
-    bool update;
 
     bool haveDoubles;
     int numSMs;                     // number of multiprocessors
@@ -106,12 +105,12 @@ public:
     void EraseFrameBuffer(FrameBuffer &buffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    void GetResults(void);
+    bool GetResults(void);
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const char *source);
-    void RunProgram(unsigned int population, unsigned int maxResults, FireStarterResults *results);
-    void DrawGraph(FireStarterResults *results);
+    void RunProgram(unsigned int population, unsigned int maxResults);
+    void DrawGraph(void);
     void RandomProgram(void);
     void MakeProgram(void);
     void RenderImage(HWND hwnd);
