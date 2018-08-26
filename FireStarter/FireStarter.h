@@ -88,7 +88,7 @@ public:
     FrameBuffer theBuffer;
     FireStarterResults *hostResults;
     FireStarterResults *deviceResults;
-    std::string program;
+    std::string code;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
     FireStarterData bestData;
@@ -102,6 +102,7 @@ public:
 
     char statusString[1024];
 
+    void EraseFrameBuffer(FrameBuffer &buffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
     void GetResults(void);
