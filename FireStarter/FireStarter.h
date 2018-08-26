@@ -9,7 +9,7 @@
 #define PROGRAM_ITERATIONS 4096
 #define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 16
-#define MAX_RESULTS 1024
+#define MAX_RESULTS 16384
 
 typedef enum {
     Instruction_noop = 0,
@@ -89,6 +89,7 @@ class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
+    FrameBuffer bestBuffer;
     FireStarterResults *results;
     std::string code;
     CUmodule module;
@@ -103,6 +104,7 @@ public:
     char statusString[1024];
 
     void EraseFrameBuffer(FrameBuffer &buffer);
+    void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
     bool GetResults(void);

@@ -52,6 +52,12 @@ void FireStarter::EraseFrameBuffer(FrameBuffer &buffer)
     memset(buffer.base, 0, BUFFER_WIDTH * BUFFER_HEIGHT * sizeof(uchar4));
 } // EraseFrameBuffer
 
+void FireStarter::CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer)
+{
+    if ((srcBuffer.rowbytes == dstBuffer.rowbytes) && (srcBuffer.height = dstBuffer.height))
+        memcpy(dstBuffer.base, srcBuffer.base, srcBuffer.rowbytes * srcBuffer.height);
+} // CopyFrameBuffer
+
 void FireStarter::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height)
 {
 	buffer.width = width;
@@ -94,15 +100,14 @@ bool FireStarter::GetResults(void)
             }
         }
         results->results[0] = results->results[index];
-        results->numResults = 0;
         if (error < results->minError) {
             results->minError = error;
-            results->curError = results->minError;
             results->bestData = results->results[0].data;
             for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
                 bestInstructions[i] = curInstructions[i];
+            return true;
         }
-        return true;
+        results->curError = results->startError;
     }
     return false;
 } // GetResults
@@ -174,6 +179,8 @@ void FireStarter::CompileProgram(const char *source)
 
 void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 {
+    results->numResults = 0;
+
     // Launch the calculation kernel
     int threadsPerBlock = 256;
     int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
@@ -191,7 +198,7 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
         0, 0,                                               // shared mem, stream */
-        &arr2[0],                                            // arguments */
+        &arr2[0],                                           // arguments */
         0));
 
     checkCudaErrors(cuCtxSynchronize());
@@ -199,9 +206,6 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 
 void FireStarter::DrawGraph(void)
 {
-    // Erase the frame buffer
-    EraseFrameBuffer(theBuffer);
-
     // Launch the display kernel
     int threadsPerBlock = 32;
     int blocksPerGrid = (theBuffer.width + threadsPerBlock - 1) / threadsPerBlock;
@@ -220,7 +224,7 @@ void FireStarter::DrawGraph(void)
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
         0, 0,                                               // shared mem, stream */
-        &arr1[0],                                            // arguments */
+        &arr1[0],                                           // arguments */
         0));
 
     checkCudaErrors(cuCtxSynchronize());
@@ -404,6 +408,7 @@ void FireStarter::MakeProgram(void)
             "            if (index < maxResults) {\n"
             "                results->results[index].data = data;\n"
             "                results->results[index].error = minError;\n"
+            "                results->curError = minError;\n"
             "            }\n"
             "        }\n"
             "    }\n"
@@ -421,11 +426,7 @@ void FireStarter::MakeProgram(void)
             "       n = Evaluate(results->results[0].data, theta);\n"
             "       y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
             "       if ((y >= 0) && (y < bufferHeight))\n"
-            "           bufferPixels[y * bufferWidth + x] = 0x0080FFFF;\n"
-            "       n = Evaluate(results->bestData, theta);\n"
-            "       y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
-            "       if ((y >= 0) && (y < bufferHeight))\n"
-            "           bufferPixels[y * bufferWidth + x] = 0xFFFFFFFF;\n"
+            "           bufferPixels[y * bufferWidth + x] = (!results->numResults || results->results[0].error > results->minError) ? 0x0080FFFF : 0xFFFFFFFF;\n"
             "   }\n"
             "} // FireShowGPU\n";
 } // MakeProgram
@@ -441,30 +442,34 @@ void FireStarter::RenderImage(HWND hwnd)
     sprintf_s(statusString, "FireStarter: Generation=%lld  error=%f  Time=%.4f Seconds", generation, results->minError, time);
 
     if (update) {
-//        printf("//%s\n", statusString);
-//        printf("%s\n", code.c_str());
-
+        EraseFrameBuffer(theBuffer);
         DrawGraph();
+        CopyFrameBuffer(bestBuffer, theBuffer);
+    } else {
+        CopyFrameBuffer(theBuffer, bestBuffer);
+        DrawGraph();
+    }
+//  printf("//%s\n", statusString);
+//  printf("%s\n", code.c_str());
 
-	    unsigned char buffer[4096];
-	    BITMAPINFO*	bm = (BITMAPINFO*)buffer;
-	    bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	    bm->bmiHeader.biHeight = -(int)theBuffer.height;
-	    bm->bmiHeader.biPlanes = 1;
-	    bm->bmiHeader.biCompression = BI_RGB;
-	    bm->bmiHeader.biSizeImage = 0; 
-	    bm->bmiHeader.biXPelsPerMeter = 0; 
-	    bm->bmiHeader.biYPelsPerMeter = 0; 
-	    bm->bmiHeader.biClrUsed = 0; 
-	    bm->bmiHeader.biClrImportant = 0;					
-	    bm->bmiHeader.biWidth = theBuffer.width;
-	    bm->bmiHeader.biBitCount = 32;
+	unsigned char buffer[4096];
+	BITMAPINFO*	bm = (BITMAPINFO*)buffer;
+	bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bm->bmiHeader.biHeight = -(int)theBuffer.height;
+	bm->bmiHeader.biPlanes = 1;
+	bm->bmiHeader.biCompression = BI_RGB;
+	bm->bmiHeader.biSizeImage = 0; 
+	bm->bmiHeader.biXPelsPerMeter = 0; 
+	bm->bmiHeader.biYPelsPerMeter = 0; 
+	bm->bmiHeader.biClrUsed = 0; 
+	bm->bmiHeader.biClrImportant = 0;					
+	bm->bmiHeader.biWidth = theBuffer.width;
+	bm->bmiHeader.biBitCount = 32;
 
-	    HDC hdc = GetDC(hwnd);
-	    if (hdc) {
-	        SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
-	        GdiFlush();
-        }
+	HDC hdc = GetDC(hwnd);
+	if (hdc) {
+	    SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
+	    GdiFlush();
     }
 } // RenderImage
 
@@ -489,6 +494,7 @@ void FireStarter::Init(void)
     numSMs = deviceProp.multiProcessorCount;
 
     InitFrameBuffer(theBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
+    InitFrameBuffer(bestBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
     InitResults();
 
     generation = 0;
