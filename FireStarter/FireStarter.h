@@ -105,7 +105,6 @@ public:
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
     void GetResults(void);
-    void ResetResults(void);
     void InitResults(void);
     void FreeResults(void);
     void CompileAndRun(const char *source, unsigned int population, unsigned int maxResults, FireStarterResults *results);

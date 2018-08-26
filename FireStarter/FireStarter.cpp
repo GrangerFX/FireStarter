@@ -91,13 +91,9 @@ void FireStarter::GetResults(void)
     }
     hostResults->results[0] = hostResults->results[index];
     hostResults->minError = curError = error;
-} // GetResults
-
-void FireStarter::ResetResults(void)
-{
     hostResults->numResults = 0;
     checkCudaErrors(cudaMemcpy(deviceResults, hostResults, sizeof(FireStarterResults), cudaMemcpyHostToDevice));
-} // ResetResults
+} // GetResults
 
 void FireStarter::InitResults(void)
 {
@@ -132,9 +128,6 @@ void FireStarter::FreeResults(void)
 
 void FireStarter::CompileAndRun(const char *source, unsigned int population, unsigned int maxResults, FireStarterResults *results)
 {
-    // Reset the results
-    ResetResults();
-
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
     NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, source, "FireStarter", 0, NULL, NULL));
