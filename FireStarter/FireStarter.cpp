@@ -80,6 +80,17 @@ void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
 void FireStarter::GetResults(void)
 {
     checkCudaErrors(cudaMemcpy(hostResults, deviceResults, sizeof(FireStarterResults) + sizeof(FireStarterResult) * (MAX_RESULTS - 1), cudaMemcpyDeviceToHost));
+    unsigned int numResults = min(hostResults->numResults, MAX_RESULTS);
+    unsigned int index = 0;
+    float error = hostResults->results[0].error;
+    for (unsigned int i = 1; i < numResults; i++) {
+        if (hostResults->results[i].error < error) {
+            error = hostResults->results[i].error;
+            index = i;
+        }
+    }
+    hostResults->results[0] = hostResults->results[index];
+    hostResults->minError = curError = error;
 } // GetResults
 
 void FireStarter::ResetResults(void)
@@ -284,8 +295,8 @@ void FireStarter::MakeProgram(void)
                "} FireStarterData;\n"
                "\n"
                "typedef struct FireStarterResult {\n"
-               "    float error;\n"
                "    FireStarterData data;\n"
+               "    float error;\n"
                "} FireStarterResult;\n"
                "\n"
                "typedef struct FireStarterResults {\n"
@@ -361,8 +372,9 @@ void FireStarter::MakeProgram(void)
                "        if (minError < results->minError) {\n"
                "            unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
                "            if (index < maxResults) {\n"
-               "                results->results[index].error = minError;\n"
+               "                results->minError = minError;\n"
                "                results->results[index].data = data;\n"
+               "                results->results[index].error = minError;\n"
                "            }\n"
                "        }\n"
                "    }\n"
@@ -380,10 +392,10 @@ void FireStarter::RenderImage(HWND hwnd)
     } else {
         CompileAndRun(program.c_str(), PROGRAM_POPULATION, MAX_RESULTS, deviceResults);
         GetResults();
-        update = curError < hostResults->minError;
+        update = curError < minError;
     }
     double time = timer.Duration();
-    sprintf_s(statusString, "FireStarter: Generation=%lld  error=%f  Time=%.4f Seconds", generation, (double)curError / (double)0x40000000, time * 0.001);
+    sprintf_s(statusString, "FireStarter: Generation=%lld  error=%f  Time=%.4f Seconds", generation, curError, time * 0.001);
 
     if (update) {
         printf("//%s\n", statusString);
@@ -424,7 +436,7 @@ void FireStarter::Init(void)
     int version = deviceProp.major*10 + deviceProp.minor;
 
     if (version < 11) {
-        printf("GPU compute capability is too low (1.0), program is waived\n");
+        printf("GPU compute capability is too low (%d), program is waived\n", version);
         exit(EXIT_WAIVED);
     }
 
@@ -444,7 +456,7 @@ FireStarter::FireStarter(void)
     haveDoubles = false;
     numSMs = 0;                     // number of multiprocessors
     statusString[0] = 0;
-    minError = curError = (unsigned int)-1;
+    minError = curError = 1.0E+10f;
     hostResults = NULL;
     deviceResults = NULL;
     Init();

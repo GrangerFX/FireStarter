@@ -72,8 +72,8 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterResult {
-    float error;
     FireStarterData data;
+    float error;
 } FireStarterResult;
 
 typedef struct FireStarterResults {
@@ -94,8 +94,8 @@ public:
     FireStarterData bestData;
     FireStarterData curData;
     long long generation;
-    unsigned int minError;
-    unsigned int curError;
+    float minError;
+    float curError;
 
     bool haveDoubles;
     int numSMs;                     // number of multiprocessors
