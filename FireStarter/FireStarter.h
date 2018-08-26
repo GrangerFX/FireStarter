@@ -89,13 +89,14 @@ public:
     FireStarterResults *hostResults;
     FireStarterResults *deviceResults;
     std::string code;
+    CUmodule module;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
     FireStarterData bestData;
     FireStarterData curData;
     long long generation;
     float minError;
-    float curError;
+    bool update;
 
     bool haveDoubles;
     int numSMs;                     // number of multiprocessors
@@ -108,7 +109,9 @@ public:
     void GetResults(void);
     void InitResults(void);
     void FreeResults(void);
-    void CompileAndRun(const char *source, unsigned int population, unsigned int maxResults, FireStarterResults *results);
+    void CompileProgram(const char *source);
+    void RunProgram(unsigned int population, unsigned int maxResults, FireStarterResults *results);
+    void DrawGraph(FireStarterResults *results);
     void RandomProgram(void);
     void MakeProgram(void);
     void RenderImage(HWND hwnd);

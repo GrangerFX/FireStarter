@@ -2,9 +2,6 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-#define RUN_GPU 1
-#define RUN_TEST 0
-
 #define BUFFER_WIDTH 640
 #define BUFFER_HEIGHT 480
 
