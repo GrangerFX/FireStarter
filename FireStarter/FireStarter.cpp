@@ -456,12 +456,12 @@ void FireStarter::RenderImage(HWND hwnd)
         EraseFrameBuffer(theBuffer);
         DrawGraph();
         CopyFrameBuffer(bestBuffer, theBuffer);
+//      printf("//%s\n", statusString);
+//      printf("%s\n", code.c_str());
     } else {
         CopyFrameBuffer(theBuffer, bestBuffer);
         DrawGraph();
     }
-//  printf("//%s\n", statusString);
-//  printf("%s\n", code.c_str());
 
 	unsigned char buffer[4096];
 	BITMAPINFO*	bm = (BITMAPINFO*)buffer;
