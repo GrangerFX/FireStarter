@@ -238,7 +238,7 @@ void FireStarter::RandomProgram(void)
     if (generation == 0) {
         for (int i = 0; i < PROGRAM_DATA; i++) {
            printf("i=%d  seed=%d\n", i, seed);
-           curData[i] = results->bestData[i] = RANDOMFACTOR(seed);
+           results->bestData[i] = RANDOMFACTOR(seed);
         }
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
             bestInstructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
@@ -246,44 +246,13 @@ void FireStarter::RandomProgram(void)
             curInstructions[i] = bestInstructions[i];
         }
     } else {
-        curData = results->bestData;
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             curInstructions[i] = bestInstructions[i];
-        switch (RANDOMSEED(seed) % 3) {
-            case 0:
-                {
-                    unsigned int seedA = seed;
-                    unsigned int seedB = seed;
-                    unsigned int index = RANDOMSEED(seedA) % PROGRAM_INSTRUCTIONS;
-                    unsigned int instruction = RANDOMSEED(seedB) % NumInstructions;
-                    curInstructions[index].instruction = (Instruction)(instruction);
-                    seed += 2;
-                    printf("Generation=%d  Index=%d  Instruction=%d  Seed=%d\n", generation, index, curInstructions[index].instruction, seed);
-                }
-                break;
-            case 1:
-                {
-                    unsigned int seedA = seed;
-                    unsigned int seedB = seed;
-                    unsigned int index = RANDOMSEED(seedA) % PROGRAM_INSTRUCTIONS;
-                    unsigned int d = RANDOMSEED(seedB) % PROGRAM_DATA;
-                    curInstructions[index].d = d;
-                    seed += 2;
-                    printf("Generation=%d  Index=%d  Source=%d  Seed=%d\n", generation, index, curInstructions[index].d, seed);
-                }
-                break;
-            default:
-                {
-                    unsigned int seedA = seed;
-                    unsigned int seedB = seed;
-                    unsigned int index = RANDOMSEED(seedA) % PROGRAM_DATA;
-                    float data = RANDOMFACTOR(seedB) * SMART_RANDOM_FACTOR;
-                    curData[index] += data;
-                    seed += 2;
-                    printf("Generation=%d  Index=%d  Data=%f  Seed=%d\n", generation, index, curData[index], seed);
-                }
-                break;
-        }
+        unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
+        unsigned int instruction = RANDOMSEED(seed) % NumInstructions;
+        unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
+        curInstructions[index].instruction = (Instruction)(instruction);
+        printf("Generation=%d  Index=%d  Instruction=%d  Source=%d  Seed=%d\n", generation, index, curInstructions[index].instruction, curInstructions[index].d, seed);
     }
     generation++;
 } // RandomProgram
@@ -381,11 +350,8 @@ void FireStarter::MakeProgram(void)
             "{\n"
             "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
             "    if (index < population) {\n"
-            "        unsigned int seed = RANDOMHASH(index);\n";
-    code += Format("        FireStarterData data = {%f", curData[0]);
-    for (int i = 1; i < PROGRAM_DATA; i++)
-        code += Format(", %f", curData[i]);
-    code += "};\n"
+            "        unsigned int seed = RANDOMHASH(index);\n"
+            "        FireStarterData data(results->bestData);\n"
             "        float minError = results->startError;\n"
             "        unsigned int d = 0;\n"
             "        float oldValue = data[d];\n"

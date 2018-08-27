@@ -96,7 +96,6 @@ public:
     CUmodule module;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
-    FireStarterData curData;
     long long generation;
 
     bool haveDoubles;
