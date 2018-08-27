@@ -90,13 +90,15 @@ class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
-    FrameBuffer bestBuffer;
     FireStarterResults *results;
+    float *curValues;
+    float *bestValues;
     std::string code;
     CUmodule module;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
     long long generation;
+    long long lastGeneration;
 
     bool haveDoubles;
     int numSMs;                     // number of multiprocessors
@@ -112,7 +114,7 @@ public:
     void FreeResults(void);
     void CompileProgram(const char *source);
     void RunProgram(unsigned int population, unsigned int maxResults);
-    void DrawGraph(void);
+    void DrawGraph(bool update);
     void RandomProgram(void);
     void MakeProgram(void);
     void RenderImage(HWND hwnd);
