@@ -5,7 +5,7 @@
 #include <string>
 
 #define PROGRAM_DATA 8
-#define PROGRAM_INSTRUCTIONS 16
+#define PROGRAM_INSTRUCTIONS 15
 #define PROGRAM_ITERATIONS 4096
 #define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 16
@@ -91,18 +91,12 @@ public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
     FireStarterResults *results;
-    float *curValues;
-    float *bestValues;
     std::string code;
     CUmodule module;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
     long long generation;
     long long lastGeneration;
-
-    bool haveDoubles;
-    int numSMs;                     // number of multiprocessors
-
     char statusString[1024];
 
     void EraseFrameBuffer(FrameBuffer &buffer);

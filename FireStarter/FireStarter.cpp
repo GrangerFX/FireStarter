@@ -94,21 +94,20 @@ bool FireStarter::GetResults(void)
         unsigned int index = 0;
         float error = results->results[0].error;
         for (unsigned int i = 1; i < numResults; i++) {
-            if (results->results[i].error < error) {
-                error = results->results[i].error;
+            float curError = results->results[i].error;
+            if (curError < error) {
+                error = curError;
                 index = i;
             }
         }
-        results->results[0] = results->results[index];
-        if (error < results->minError) {
+        if ((error > 1.0E-8f) && (error < results->minError)) {
             results->minError = error;
-            results->bestData = results->results[0].data;
+            results->bestData = results->results[index].data;
             for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
                 bestInstructions[i] = curInstructions[i];
             lastGeneration = generation;
             return true;
         }
-        results->curError = results->startError;
     }
     return false;
 } // GetResults
@@ -181,6 +180,7 @@ void FireStarter::CompileProgram(const char *source)
 void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 {
     results->numResults = 0;
+    results->curError = results->minError;
 
     // Launch the calculation kernel
     int threadsPerBlock = 256;
@@ -208,6 +208,9 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 
 void FireStarter::DrawGraph(bool update)
 {
+    // Erase the frame buffer
+    EraseFrameBuffer(theBuffer);
+
     // Launch the display kernel
     int threadsPerBlock = 32;
     int blocksPerGrid = (theBuffer.width + threadsPerBlock - 1) / threadsPerBlock;
@@ -215,8 +218,6 @@ void FireStarter::DrawGraph(bool update)
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     void *arr[] = {reinterpret_cast<void *>(&results),
-                    reinterpret_cast<void *>(update ? &bestValues : &curValues),
-                    reinterpret_cast<void *>(&bestValues),
                     reinterpret_cast<void *>(&theBuffer.base),
                     reinterpret_cast<void *>(&theBuffer.width),
                     reinterpret_cast<void *>(&theBuffer.height)};
@@ -364,64 +365,54 @@ void FireStarter::MakeProgram(void)
             "    if (index < population) {\n"
             "        unsigned int seed = RANDOMHASH(RANDOMHASH(index) + generation);\n"
             "        FireStarterData data(results->bestData);\n"
-            "        float minError = results->startError;\n"
-            "        unsigned int d = 0;\n"
-            "        unsigned int age = 1;\n"
-            "        float oldValue = data[d];\n"
+            "        float error = results->startError;\n"
+            "        unsigned int age = 0;\n"
             "        for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
-            "            float error = fabsf(Evaluate(data, 0.0f) - sinf(0.0f));\n"
+            "            unsigned int d = RANDOMSEED(seed) & (PROGRAM_DATA - 1);\n"
+            "            float oldValue = data[d];\n"
+            "            data[d] += (RANDOMFACTOR(seed) * error * (1.0f + age / 10.0f) * SMART_RANDOM_FACTOR);\n"
+            "            float curError = fabsf(Evaluate(data, 0.0f) - sinf(0.0f));\n"
             "            for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
             "                float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
             "                float delta = fabsf(Evaluate(data, theta) - sinf(theta));\n"
-            "                error = delta > error ? delta : error;\n"
+            "                curError = delta > curError ? delta : curError;\n"
             "            }\n"
-            "            if (error < minError) {\n"
-            "                minError = error;\n"
-            "                age = 1;\n"
+            "            if (curError < error) {\n"
+            "                error = curError;\n"
+            "                age = 0;\n"
             "            } else {\n"
             "                data[d] = oldValue;\n"
             "                age++;\n"
             "            }\n"
-            "            d = RANDOMSEED(seed) & (PROGRAM_DATA - 1);\n"
-            "            oldValue = data[d];\n"
-            "            data[d] += RANDOMFACTOR(seed) * minError * (1.0f + age / 10.0f) * SMART_RANDOM_FACTOR;\n"
             "        }\n"
-            "        if (minError < results->curError) {\n"
+            "        if (error < results->curError) {\n"
+            "            results->curError = error;\n"
             "            unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
             "            if (index < maxResults) {\n"
             "                results->results[index].data = data;\n"
-            "                results->results[index].error = minError;\n"
-            "                results->curError = minError;\n"
+            "                results->results[index].error = error;\n"
             "            }\n"
             "        }\n"
             "    }\n"
             "} // FireStarterGPU\n"
             "\n"
-            "extern \"C\" __global__ void FireShowGPU(FireStarterResults *results, float *curValues, float *bestValues, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+            "extern \"C\" __global__ void FireShowGPU(FireStarterResults *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
             "{\n"
             "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
             "    if (x < bufferWidth) {\n"
             "       float theta = (x - bufferWidth * 0.5f) * (3.14159265f / 100.0f);\n"
-            "       float n = curValues[x] = Evaluate(results->results[0].data, theta);\n"
+            "       float n = sinf(theta);\n"
             "       int y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
             "       if ((y >= 0) && (y < bufferHeight)) {\n"
             "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-            "           pixel.y = pixel.y < 128 ? 128 : pixel.y;\n"
-            "           pixel.z = 255;\n"
-            "       };\n"
-            "       n = sinf(theta);\n"
-            "       y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
-            "       if ((y >= 0) && (y < bufferHeight)) {\n"
-            "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
             "           pixel.x = 255;\n"
-            "           pixel.y = pixel.y < 128 ? 128 : pixel.y;\n"
-            "           pixel.w = 255;\n"
+            "           pixel.y = 128;\n"
             "       };\n"
-            "       n = bestValues[x];\n"
-            "       y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
+            "       float m = Evaluate(results->bestData, theta);\n"
+            "       y = (int)(bufferHeight * 0.5 + m * 50.0f);\n"
             "       if ((y >= 0) && (y < bufferHeight)) {\n"
             "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-            "           pixel.x = pixel.y = pixel.z = pixel.w = 255;\n"
+            "           pixel.x = pixel.y = pixel.z = 255;\n"
             "       };\n"
             "   }\n"
             "} // FireShowGPU\n";
@@ -437,31 +428,30 @@ void FireStarter::RenderImage(HWND hwnd)
     double time = timer.Duration();
     sprintf_s(statusString, "FireStarter: Generation=%lld  Age=%lld  error=%f  Time=%.4f Seconds", generation, generation - lastGeneration, results->minError, time);
 
-    EraseFrameBuffer(theBuffer);
-    DrawGraph(update);
     if (update) {
+        DrawGraph(update);
 //      printf("//%s\n", statusString);
 //      printf("%s\n", code.c_str());
-    }
 
-	unsigned char buffer[4096];
-	BITMAPINFO*	bm = (BITMAPINFO*)buffer;
-	bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bm->bmiHeader.biHeight = -(int)theBuffer.height;
-	bm->bmiHeader.biPlanes = 1;
-	bm->bmiHeader.biCompression = BI_RGB;
-	bm->bmiHeader.biSizeImage = 0; 
-	bm->bmiHeader.biXPelsPerMeter = 0; 
-	bm->bmiHeader.biYPelsPerMeter = 0; 
-	bm->bmiHeader.biClrUsed = 0; 
-	bm->bmiHeader.biClrImportant = 0;					
-	bm->bmiHeader.biWidth = theBuffer.width;
-	bm->bmiHeader.biBitCount = 32;
+        unsigned char buffer[4096];
+        BITMAPINFO*	bm = (BITMAPINFO*)buffer;
+        bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bm->bmiHeader.biHeight = -(int)theBuffer.height;
+        bm->bmiHeader.biPlanes = 1;
+        bm->bmiHeader.biCompression = BI_RGB;
+        bm->bmiHeader.biSizeImage = 0; 
+        bm->bmiHeader.biXPelsPerMeter = 0; 
+        bm->bmiHeader.biYPelsPerMeter = 0; 
+        bm->bmiHeader.biClrUsed = 0; 
+        bm->bmiHeader.biClrImportant = 0;					
+        bm->bmiHeader.biWidth = theBuffer.width;
+        bm->bmiHeader.biBitCount = 32;
 
-	HDC hdc = GetDC(hwnd);
-	if (hdc) {
-	    SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
-	    GdiFlush();
+        HDC hdc = GetDC(hwnd);
+        if (hdc) {
+	        SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
+	        GdiFlush();
+        }
     }
 } // RenderImage
 
@@ -482,23 +472,8 @@ void FireStarter::Init(void)
         exit(EXIT_WAIVED);
     }
 
-    haveDoubles = (version >= 13);
-    numSMs = deviceProp.multiProcessorCount;
-
     InitFrameBuffer(theBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
     InitResults();
-
-    cudaError_t err = cudaMallocManaged(&bestValues, BUFFER_WIDTH * sizeof(float));
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Failed to allocate best pixel values (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
-    err = cudaMallocManaged(&curValues, BUFFER_WIDTH * sizeof(float));
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Failed to allocate current pixel values (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
-
     generation = 0;
     lastGeneration = 0;
     RandomProgram();
@@ -507,12 +482,8 @@ void FireStarter::Init(void)
 FireStarter::FireStarter(void)
 {
     // Timer ID
-    haveDoubles = false;
-    numSMs = 0;                     // number of multiprocessors
     statusString[0] = 0;
     results = NULL;
-    bestValues = NULL;
-    curValues = NULL;
     module = NULL;
     Init();
 } // FireStarter
@@ -523,19 +494,4 @@ FireStarter::~FireStarter(void)
         checkCudaErrors(cuModuleUnload(module));
     FreeFrameBuffer(theBuffer);
     FreeResults();
-
-    if (bestValues) {
-        cudaError_t err = cudaFree(bestValues);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free best pixel values (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
-        }
-    }
-    if (curValues) {
-        cudaError_t err = cudaFree(curValues);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free current pixel values (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
-        }
-    }
 } // ~FireStarter
