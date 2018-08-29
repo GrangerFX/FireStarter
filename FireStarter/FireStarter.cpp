@@ -333,6 +333,9 @@ void FireStarter::MakeProgram(void)
             case Instruction_store:
                 code += Format("    data[%d] = r;\n", instruction.d);
                 break;
+            case Instruction_fetch:
+                code += Format("    r = data[%d];\n", instruction.d);
+                break;
             case Instruction_square:
                 code += Format("    r *= r;\n");
                 break;
@@ -383,7 +386,7 @@ void FireStarter::MakeProgram(void)
             "                data[d] = oldValue;\n"
             "                age++;\n"
             "            }\n"
-            "            d = RANDOMSEED(seed) & (PROGRAM_DATA - 1);\n"
+            "            d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
             "            oldValue = data[d];\n"
             "            data[d] += (RANDOMFACTOR(seed) * error * (1.0f + age / 100.0f) * SMART_RANDOM_FACTOR);\n"
             "        }\n"

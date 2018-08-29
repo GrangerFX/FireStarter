@@ -4,25 +4,26 @@
 #include <windows.h>
 #include <string>
 
-#define PROGRAM_DATA 8
-#define PROGRAM_INSTRUCTIONS 15
+#define PROGRAM_DATA 6
+#define PROGRAM_INSTRUCTIONS 16
 #define PROGRAM_ITERATIONS 4096
 #define PROGRAM_POPULATION 262144
-#define SAMPLE_ITERATIONS 16
+#define SAMPLE_ITERATIONS 15
 #define MAX_RESULTS 16384
 #define SMART_RANDOM_FACTOR 0.1f
 
 typedef enum {
     Instruction_noop = 0,
     Instruction_store,      // data[d] = r;
-    Instruction_square,     // r *= r;
+    Instruction_fetch,      // r = data[d];
     Instruction_add,        // r += data[d];
     Instruction_subtract,   // r -= data[d];
     Instruction_multiply,   // r *= data[d];
+    Instruction_square,     // r *= r;
+    NumInstructions,
     Instruction_divide,     // r /= data[d];
     Instruction_max,        // r = data[d] >= r ? data[d] : r;
     Instruction_min,        // r = data[d] <= r ? data[d] : r;
-    NumInstructions
 } Instruction;
 
 typedef struct {
