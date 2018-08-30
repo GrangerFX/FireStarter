@@ -100,7 +100,7 @@ bool FireStarter::GetResults(void)
                 index = i;
             }
         }
-        if ((error > 1.0E-8f) && (error < results->minError)) {
+        if (error < results->minError) {
             results->minError = error;
             results->bestData = results->results[index].data;
             for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
@@ -328,8 +328,6 @@ void FireStarter::MakeProgram(void)
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         const ProgramInstruction &instruction = curInstructions[i];
         switch (instruction.instruction) {
-            case Instruction_noop:
-                break;
             case Instruction_store:
                 code += Format("    data[%d] = r;\n", instruction.d);
                 break;
@@ -359,7 +357,7 @@ void FireStarter::MakeProgram(void)
                 break;
         }
     }
-    code += "    return r;\n"
+    code += "    return isnan(r) ? 0.0f : r;\n"
             "} //Evaluate\n"
             "\n"
             "extern \"C\" __global__ void FireStarterGPU(FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation)\n"
@@ -406,7 +404,7 @@ void FireStarter::MakeProgram(void)
             "{\n"
             "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
             "    if (x < bufferWidth) {\n"
-            "       float theta = (x - bufferWidth * 0.5f) * (3.14159265f / 100.0f);\n"
+            "       float theta = (x - bufferWidth * 0.25f) * (3.14159265f / 100.0f);\n"
             "       float n = sinf(theta);\n"
             "       int y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
             "       if ((y >= 0) && (y < bufferHeight)) {\n"
