@@ -100,9 +100,11 @@ bool FireStarter::GetResults(void)
                 index = i;
             }
         }
+        results->bestData = results->results[index].data;
+        results->curError = results->startError;
         if (error < results->minError) {
-            results->minError = error;
-            results->bestData = results->results[index].data;
+            bestData = results->bestData;
+            bestError = results->minError = error;
             for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
                 bestInstructions[i] = curInstructions[i];
             lastGeneration = generation;
@@ -120,8 +122,24 @@ void FireStarter::InitResults(void)
         fprintf(stderr, "Failed to allocate results (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
+    cudaMemset(results, 0, resultsSize);
     results->numResults = 0;
     results->minError = results->curError = results->startError = 10.0f;
+
+    unsigned int valuesSize = theBuffer.width * sizeof(float);
+    err = cudaMallocManaged(&lastValues, valuesSize);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Failed to allocate lastValues (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+    cudaMemset(lastValues, 0, valuesSize);
+
+    err = cudaMallocManaged(&bestValues, valuesSize);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Failed to allocate bestValues (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+    cudaMemset(bestValues, 0, valuesSize);
 } // InitResults
 
 void FireStarter::FreeResults(void)
@@ -134,6 +152,22 @@ void FireStarter::FreeResults(void)
         }
         results = NULL;
     }
+    if (lastValues) {
+        cudaError_t err = cudaFree(lastValues);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to free lastValues (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        lastValues = NULL;
+   }
+    if (bestValues) {
+        cudaError_t err = cudaFree(bestValues);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to free bestValues (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        bestValues = NULL;
+   }
 } // FreeResults
 
 void FireStarter::CompileProgram(const char *source)
@@ -180,7 +214,6 @@ void FireStarter::CompileProgram(const char *source)
 void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 {
     results->numResults = 0;
-    results->curError = results->minError;
 
     // Launch the calculation kernel
     int threadsPerBlock = 256;
@@ -218,9 +251,11 @@ void FireStarter::DrawGraph(bool update)
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     void *arr[] = {reinterpret_cast<void *>(&results),
-                    reinterpret_cast<void *>(&theBuffer.base),
-                    reinterpret_cast<void *>(&theBuffer.width),
-                    reinterpret_cast<void *>(&theBuffer.height)};
+                   reinterpret_cast<void *>(update ? &bestValues : &lastValues),
+                   reinterpret_cast<void *>(&bestValues),
+                   reinterpret_cast<void *>(&theBuffer.base),
+                   reinterpret_cast<void *>(&theBuffer.width),
+                   reinterpret_cast<void *>(&theBuffer.height)};
 
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShowGPU"));
@@ -400,7 +435,7 @@ void FireStarter::MakeProgram(void)
             "    }\n"
             "} // FireStarterGPU\n"
             "\n"
-            "extern \"C\" __global__ void FireShowGPU(FireStarterResults *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+            "extern \"C\" __global__ void FireShowGPU(FireStarterResults *results, float *lastValues, float *bestValues, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
             "{\n"
             "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
             "    if (x < bufferWidth) {\n"
@@ -412,8 +447,15 @@ void FireStarter::MakeProgram(void)
             "           pixel.x = 255;\n"
             "           pixel.y = 128;\n"
             "       };\n"
-            "       float m = Evaluate(results->bestData, theta);\n"
+            "       float m = lastValues[x] = Evaluate(results->bestData, theta);\n"
             "       y = (int)(bufferHeight * 0.5 + m * 50.0f);\n"
+            "       if ((y >= 0) && (y < bufferHeight)) {\n"
+            "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+            "           pixel.z = 255;\n"
+            "           pixel.y = 128;\n"
+            "       };\n"
+            "       float o = bestValues[x];\n"
+            "       y = (int)(bufferHeight * 0.5 + o * 50.0f);\n"
             "       if ((y >= 0) && (y < bufferHeight)) {\n"
             "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
             "           pixel.x = pixel.y = pixel.z = 255;\n"
@@ -432,10 +474,12 @@ void FireStarter::RenderImage(HWND hwnd)
     double time = timer.Duration();
     sprintf_s(statusString, "FireStarter: Generation=%lld  Age=%lld  error=%f  Time=%.4f Seconds", generation, generation - lastGeneration, results->minError, time);
 
-    if (update) {
+    if (results->numResults) {
         DrawGraph(update);
-//      printf("//%s\n", statusString);
-//      printf("%s\n", code.c_str());
+//      if (update) {
+//          printf("//%s\n", statusString);
+//          printf("%s\n", code.c_str());
+//      }
 
         unsigned char buffer[4096];
         BITMAPINFO*	bm = (BITMAPINFO*)buffer;
@@ -488,6 +532,8 @@ FireStarter::FireStarter(void)
     // Timer ID
     statusString[0] = 0;
     results = NULL;
+    lastValues = NULL;
+    bestValues = NULL;
     module = NULL;
     Init();
 } // FireStarter

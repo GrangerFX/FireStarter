@@ -91,12 +91,16 @@ public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
     FireStarterResults *results;
-    std::string code;
-    CUmodule module;
+    float *lastValues;
+    float *bestValues;
+    FireStarterData bestData;
     ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
     ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
+    std::string code;
+    CUmodule module;
     long long generation;
     long long lastGeneration;
+    float bestError;
     char statusString[1024];
 
     void EraseFrameBuffer(FrameBuffer &buffer);
