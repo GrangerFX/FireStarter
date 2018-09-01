@@ -214,6 +214,7 @@ void FireStarter::CompileProgram(const char *source)
 void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 {
     results->numResults = 0;
+    results->bestData = bestData;
 
     // Launch the calculation kernel
     int threadsPerBlock = 256;
@@ -278,7 +279,7 @@ void FireStarter::RandomProgram(void)
     if (generation == 0) {
         for (int i = 0; i < PROGRAM_DATA; i++) {
            printf("i=%d  seed=%d\n", i, seed);
-           results->bestData[i] = RANDOMFACTOR(seed);
+           bestData[i] = RANDOMFACTOR(seed);
         }
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
             bestInstructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
