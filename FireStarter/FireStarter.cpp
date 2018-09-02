@@ -389,7 +389,7 @@ void FireStarter::MakeProgram(std::string &code)
         }
     }
     code += "    return isnan(r) ? 0.0f : r;\n"
-            "} //Evaluate\n"
+            "} // Evaluate\n"
             "\n"
             "extern \"C\" __global__ void FireStarterGPU(FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation)\n"
             "{\n"
@@ -473,7 +473,7 @@ void FireStarter::RenderImage(HWND hwnd)
         DrawGraph(update);
 //      if (update) {
 //          printf("//%s\n", statusString);
-//          printf("%s\n", code.c_str());
+//          printf("%s\n\n", code.c_str());
 //      }
 
         unsigned char buffer[4096];
