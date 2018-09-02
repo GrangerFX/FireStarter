@@ -284,7 +284,6 @@ void FireStarter::RandomProgram(void)
         states.push_back(curState);
         results->bestData = curState.data;
     } else {
-        curState = states.back();
         int numChanges = 1;
         int degree = SMART_EVOLVE_POWER;
         long long age = generation - lastGeneration;
@@ -292,6 +291,7 @@ void FireStarter::RandomProgram(void)
             degree *= SMART_EVOLVE_POWER;
             numChanges++;
         }
+        curState = states.back();
         while (numChanges--) {
             unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
             curState.instructions[index].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
