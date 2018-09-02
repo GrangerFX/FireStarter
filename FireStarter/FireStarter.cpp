@@ -213,8 +213,6 @@ void FireStarter::CompileProgram(const char *source)
 
 void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 {
-    results->numResults = 0;
-
     // Launch the calculation kernel
     int threadsPerBlock = 256;
     int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
@@ -282,7 +280,6 @@ void FireStarter::RandomProgram(void)
             curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
         states.push_back(curState);
-        results->bestData = curState.data;
     } else {
         int numChanges = 1;
         int degree = SMART_EVOLVE_POWER;
@@ -298,6 +295,8 @@ void FireStarter::RandomProgram(void)
             curState.instructions[index].d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
     }
+    results->numResults = 0;
+    results->bestData = curState.data;
     if (!generation++)
         bestState = curState;
 } // RandomProgram
