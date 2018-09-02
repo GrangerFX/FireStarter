@@ -100,13 +100,13 @@ bool FireStarter::GetResults(void)
                 index = i;
             }
         }
-        results->bestData = results->results[index].data;
-        results->curError = results->startError;
+        curState.data = results->bestData = results->results[index].data;
+        curState.error = results->curError = results->startError;
+        if (error < bestState.error)
+            bestState = curState;
         if (error < results->minError) {
-            bestData = results->bestData;
-            bestError = results->minError = error;
-            for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-                bestInstructions[i] = curInstructions[i];
+            results->minError = error;
+            states.push_back(curState);
             lastGeneration = generation;
             return true;
         }
@@ -214,7 +214,6 @@ void FireStarter::CompileProgram(const char *source)
 void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 {
     results->numResults = 0;
-    results->bestData = bestData;
 
     // Launch the calculation kernel
     int threadsPerBlock = 256;
@@ -275,38 +274,35 @@ void FireStarter::RandomProgram(void)
 {
     unsigned int seed = (unsigned int)generation;
     seed = RANDOMHASH(seed) + 1;
-    printf("seed=%d\n", seed);
-    if (generation == 0) {
-        for (int i = 0; i < PROGRAM_DATA; i++) {
-           printf("i=%d  seed=%d\n", i, seed);
-           bestData[i] = RANDOMFACTOR(seed);
-        }
+    if (!states.size()) {
+        for (int i = 0; i < PROGRAM_DATA; i++)
+           curState.data[i] = RANDOMFACTOR(seed);
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-            bestInstructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
-            bestInstructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
-            curInstructions[i] = bestInstructions[i];
+            curState.instructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
+            curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
+        states.push_back(curState);
+        results->bestData = curState.data;
     } else {
-        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-            curInstructions[i] = bestInstructions[i];
+        curState = states.back();
         int numChanges = 1;
-        int degree = 10;
+        int degree = SMART_EVOLVE_POWER;
         long long age = generation - lastGeneration;
         while (degree <= age) {
-            degree *= 10;
+            degree *= SMART_EVOLVE_POWER;
             numChanges++;
         }
         while (numChanges--) {
             unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-            curInstructions[index].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
-            curInstructions[index].d = RANDOMSEED(seed) % PROGRAM_DATA;
-            printf("Generation=%d  Index=%d  Instruction=%d  Source=%d  Seed=%d\n", generation, index, curInstructions[index].instruction, curInstructions[index].d, seed);
+            curState.instructions[index].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
+            curState.instructions[index].d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
     }
-    generation++;
+    if (!generation++)
+        bestState = curState;
 } // RandomProgram
 
-void FireStarter::MakeProgram(void)
+void FireStarter::MakeProgram(std::string &code)
 {
     RandomProgram();
 
@@ -362,7 +358,7 @@ void FireStarter::MakeProgram(void)
             "    FireStarterData data(workData);\n";
 
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        const ProgramInstruction &instruction = curInstructions[i];
+        const ProgramInstruction &instruction = curState.instructions[i];
         switch (instruction.instruction) {
             case Instruction_store:
                 code += Format("    data[%d] = r;\n", instruction.d);
@@ -465,7 +461,8 @@ void FireStarter::MakeProgram(void)
 
 void FireStarter::RenderImage(HWND hwnd)
 {
-    MakeProgram();
+    std::string code;
+    MakeProgram(code);
     timer.Start();
     CompileProgram(code.c_str());
     RunProgram(PROGRAM_POPULATION, MAX_RESULTS);

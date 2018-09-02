@@ -3,6 +3,7 @@
 #include <time.h>
 #include <windows.h>
 #include <string>
+#include <vector>
 
 #define PROGRAM_DATA 8
 #define PROGRAM_INSTRUCTIONS 32
@@ -11,6 +12,7 @@
 #define SAMPLE_ITERATIONS 15
 #define MAX_RESULTS 16384
 #define SMART_RANDOM_FACTOR 0.1f
+#define SMART_EVOLVE_POWER 10
 
 typedef enum {
     Instruction_add = 0,    // r += data[d];
@@ -86,6 +88,14 @@ typedef struct FireStarterResults {
     FireStarterResult results[1];
 } FireStarterResults;
 
+typedef struct FireStarterState {
+    ProgramInstruction instructions[PROGRAM_INSTRUCTIONS];
+    FireStarterData data;
+    float error;
+} FireStarterState;
+
+typedef std::vector<FireStarterState> FireStarterStates;
+
 class FireStarter {
 public:
     SimpleTimer timer;
@@ -93,14 +103,12 @@ public:
     FireStarterResults *results;
     float *lastValues;
     float *bestValues;
-    FireStarterData bestData;
-    ProgramInstruction bestInstructions[PROGRAM_INSTRUCTIONS];
-    ProgramInstruction curInstructions[PROGRAM_INSTRUCTIONS];
-    std::string code;
+    FireStarterStates states;
+    FireStarterState curState;
+    FireStarterState bestState;
     CUmodule module;
     long long generation;
     long long lastGeneration;
-    float bestError;
     char statusString[1024];
 
     void EraseFrameBuffer(FrameBuffer &buffer);
@@ -114,7 +122,7 @@ public:
     void RunProgram(unsigned int population, unsigned int maxResults);
     void DrawGraph(bool update);
     void RandomProgram(void);
-    void MakeProgram(void);
+    void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);
     void Init(void);
     FireStarter(void);
