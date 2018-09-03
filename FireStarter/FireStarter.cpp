@@ -99,15 +99,17 @@ bool FireStarter::GetResults(void)
         for (unsigned int i = 1; i < numResults; i++) {
             float curError = results->results[i].error;
             unsigned int curMember = results->results[i].member;
+ //           printf("Generation=%d  i=%d  member=%d  error=%f\n", generation, i, curMember, curError);
             if ((curError < error) || ((curError == error) && (curMember < member))) {
                 error = curError;
                 member = curMember;
                 index = i;
             }
         }
+        printf("\n");
+
         results->bestData = results->results[index].data;
         if (error < results->minError) {
-            results->minError = error;
             curState.data = results->bestData;
             curState.error = error;
             states.push_back(curState);
@@ -129,8 +131,6 @@ void FireStarter::InitResults(void)
         exit(EXIT_FAILURE);
     }
     cudaMemset(results, 0, resultsSize);
-    results->numResults = 0;
-    results->minError = results->curError = results->startError = 10.0f;
 
     unsigned int valuesSize = theBuffer.width * sizeof(float);
     err = cudaMallocManaged(&lastValues, valuesSize);
@@ -285,7 +285,7 @@ void FireStarter::RandomProgram(void)
             curState.instructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
             curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
-        curState.error = results->startError;
+        curState.error = START_ERROR;
         states.push_back(curState);
     } else {
         int numChanges = 1;
@@ -302,9 +302,11 @@ void FireStarter::RandomProgram(void)
             curState.instructions[index].d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
     }
-    results->numResults = 0;
+//  memset(results, 0, sizeof(FireStarterResults) + sizeof(FireStarterResult) * (MAX_RESULTS - 1));
     results->bestData = curState.data;
-    results->curError = results->startError;
+    results->minError = curState.error;
+    results->curError = results->startError = START_ERROR;
+    results->numResults = 0;
     generation++;
 } // RandomProgram
 
@@ -408,8 +410,8 @@ void FireStarter::MakeProgram(std::string &src)
            "    FireStarterData data(results->bestData);\n"
            "    float error = results->startError;\n"
            "    unsigned int age = 0;\n"
-           "    unsigned int d;\n"
-           "    float oldValue;\n"
+           "    unsigned int d = 0;\n"
+           "    float oldValue = data[d];\n"
            "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
            "        float curError = fabsf(Evaluate(data, 0.0f) - Target(0.0f));\n"
            "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
@@ -481,12 +483,28 @@ void FireStarter::RenderImage(HWND hwnd)
     double time = timer.Duration();
     sprintf_s(statusString, "FireStarter: Generation=%lld  Age=%lld  error=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.error, time);
 
+#if 0
+    printf("%s\n", statusString);
+    printf("generation=%d  data: ", generation);
+    for (int i = 0; i < PROGRAM_DATA; i++)
+        printf("%f ", results->bestData[i]);
+    printf("\n");
+//    printf("%s\n\n", code.c_str());
+//    printf("\n");
+#endif
+
     if (results->numResults) {
         DrawGraph(update);
-      if (update) {
-          printf("//%s\n", statusString);
-//          printf("%s\n\n", code.c_str());
-      }
+#if 0
+        if (update) {
+            printf("// %s\n", statusString);
+            printf("// generation=%d  data: ", generation);
+            for (int i = 0; i < PROGRAM_DATA; i++)
+                printf("%f ", curState.data[i]);
+            printf("\n");
+            printf("%s\n\n", code.c_str());
+        }
+#endif
 
         unsigned char buffer[4096];
         BITMAPINFO*	bm = (BITMAPINFO*)buffer;

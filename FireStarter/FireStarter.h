@@ -13,6 +13,7 @@
 #define MAX_RESULTS 16384
 #define SMART_RANDOM_FACTOR 0.15f
 #define SMART_EVOLVE_POWER 10
+#define START_ERROR 10.0f
 
 typedef enum {
     Instruction_add = 0,    // r += data[d];
