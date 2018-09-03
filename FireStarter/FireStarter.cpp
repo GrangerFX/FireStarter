@@ -93,11 +93,16 @@ bool FireStarter::GetResults(void)
         unsigned int numResults = min(results->numResults, MAX_RESULTS);
         unsigned int index = 0;
         float error = results->results[0].error;
+        unsigned int member = results->results[0].member;
         for (unsigned int i = 1; i < numResults; i++) {
             float curError = results->results[i].error;
+            unsigned int curMember = results->results[i].member;
             if (curError < error) {
                 error = curError;
-                index = i;
+                member = curMember;
+            } else if ((curError == error) && (curMember < member)) {
+                error = curError;
+                member = curMember;
             }
         }
         curState.data = results->bestData = results->results[index].data;
@@ -327,8 +332,7 @@ void FireStarter::MakeProgram(std::string &code)
             "#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1\n"
             "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
             "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
-            "\n";
-    code += "\n"
+            "\n"
             "typedef struct FireStarterData {\n"
             "    float d[PROGRAM_DATA];\n"
             "\n"
@@ -341,6 +345,7 @@ void FireStarter::MakeProgram(std::string &code)
             "typedef struct FireStarterResult {\n"
             "    FireStarterData data;\n"
             "    float error;\n"
+            "    unsigned int member;\n"
             "} FireStarterResult;\n"
             "\n"
             "typedef struct FireStarterResults {\n"
@@ -351,6 +356,10 @@ void FireStarter::MakeProgram(std::string &code)
             "    FireStarterData bestData;\n"
             "    FireStarterResult results[1];\n"
             "} FireStarterResults;\n"
+            "\n"
+            "__device__ float Target(float n) {\n"
+            "   return sinf(n);\n"
+            "}\n"
             "\n"
             "__device__ float Evaluate(const FireStarterData &workData, float r)\n"
             "{\n"
@@ -393,18 +402,18 @@ void FireStarter::MakeProgram(std::string &code)
             "\n"
             "extern \"C\" __global__ void FireStarterGPU(FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation)\n"
             "{\n"
-            "    unsigned int index = blockDim.x * blockIdx.x + threadIdx.x;\n"
-            "    unsigned int seed = RANDOMHASH(RANDOMHASH(index) + generation);\n"
+            "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
+            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
             "    FireStarterData data(results->bestData);\n"
             "    float error = results->startError;\n"
             "    unsigned int age = 0;\n"
             "    unsigned int d;\n"
             "    float oldValue;\n"
             "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
-            "        float curError = fabsf(Evaluate(data, 0.0f) - sinf(0.0f));\n"
+            "        float curError = fabsf(Evaluate(data, 0.0f) - Target(0.0f));\n"
             "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
             "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
-            "            float delta = fabsf(Evaluate(data, theta) - sinf(theta));\n"
+            "            float delta = fabsf(Evaluate(data, theta) - Target(theta));\n"
             "            curError = delta > curError ? delta : curError;\n"
             "        }\n"
             "        if (curError < error) {\n"
@@ -425,6 +434,7 @@ void FireStarter::MakeProgram(std::string &code)
             "        if (index < maxResults) {\n"
             "            results->results[index].data = data;\n"
             "            results->results[index].error = error;\n"
+            "            results->results[index].member = member;\n"
             "        }\n"
             "    }\n"
             "} // FireStarterGPU\n"
@@ -434,7 +444,7 @@ void FireStarter::MakeProgram(std::string &code)
             "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
             "    if (x < bufferWidth) {\n"
             "       float theta = (x - bufferWidth * 0.25f) * (3.14159265f / 100.0f);\n"
-            "       float n = sinf(theta);\n"
+            "       float n = Target(theta);\n"
             "       int y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
             "       if ((y >= 0) && (y < bufferHeight)) {\n"
             "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"

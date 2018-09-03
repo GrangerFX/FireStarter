@@ -6,7 +6,7 @@
 #include <vector>
 
 #define PROGRAM_DATA 8
-#define PROGRAM_INSTRUCTIONS 24
+#define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_ITERATIONS 4096
 #define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 15
@@ -77,6 +77,7 @@ typedef struct FireStarterData {
 typedef struct FireStarterResult {
     FireStarterData data;
     float error;
+    unsigned int member;
 } FireStarterResult;
 
 typedef struct FireStarterResults {
