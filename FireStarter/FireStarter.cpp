@@ -99,24 +99,24 @@ bool FireStarter::GetResults(void)
         for (unsigned int i = 1; i < numResults; i++) {
             float curError = results->results[i].error;
             unsigned int curMember = results->results[i].member;
- //           printf("Generation=%d  i=%d  member=%d  error=%f\n", generation, i, curMember, curError);
             if ((curError < error) || ((curError == error) && (curMember < member))) {
                 error = curError;
                 member = curMember;
                 index = i;
             }
         }
-        printf("\n");
 
         results->bestData = results->results[index].data;
-        if (error < results->minError) {
+        results->curError = error;
+        if (error < curState.error) {
             curState.data = results->bestData;
             curState.error = error;
-            states.push_back(curState);
-            if (error < bestState.error)
-                bestState = curState;
             lastGeneration = generation;
-            return true;
+            states.push_back(curState);
+            if (error < bestState.error) {
+                bestState = curState;
+                return true;
+            }
         }
     }
     return false;
@@ -288,6 +288,8 @@ void FireStarter::RandomProgram(void)
         curState.error = START_ERROR;
         states.push_back(curState);
     } else {
+        int state = (unsigned int)states.size() - 1;
+#if 0
         int numChanges = 1;
         int degree = SMART_EVOLVE_POWER;
         long long age = generation - lastGeneration;
@@ -295,7 +297,15 @@ void FireStarter::RandomProgram(void)
             degree *= SMART_EVOLVE_POWER;
             numChanges++;
         }
-        curState = states.back();
+#else
+        int numChanges = 1;
+        long long age = generation - lastGeneration;
+        if (state && (age > SMART_EVOLVE_POWER * SMART_EVOLVE_POWER)) {
+            states.pop_back();
+            state--;
+        }
+#endif
+        curState = states[state];
         while (numChanges--) {
             unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
             curState.instructions[index].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
@@ -481,7 +491,7 @@ void FireStarter::RenderImage(HWND hwnd)
     RunProgram(PROGRAM_POPULATION, MAX_RESULTS);
     bool update = GetResults();
     double time = timer.Duration();
-    sprintf_s(statusString, "FireStarter: Generation=%lld  Age=%lld  error=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.error, time);
+    sprintf_s(statusString, "FireStarter: Generation=%lld  Age=%lld  error=%f  best=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.error, bestState.error, time);
 
 #if 0
     printf("%s\n", statusString);
