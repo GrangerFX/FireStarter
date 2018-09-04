@@ -12,7 +12,8 @@
 #define SAMPLE_ITERATIONS 15
 #define MAX_RESULTS 16384
 #define SMART_RANDOM_FACTOR 0.15f
-#define SMART_EVOLVE_POWER 10
+#define SMART_EVOLVE_AGE 10
+#define SMART_DEVOLVE_AGE 50
 #define START_ERROR 10.0f
 
 typedef enum {
@@ -111,6 +112,7 @@ public:
     CUmodule module;
     long long generation;
     long long lastGeneration;
+    long long bestGeneration;
     char statusString[1024];
 
     void EraseFrameBuffer(FrameBuffer &buffer);

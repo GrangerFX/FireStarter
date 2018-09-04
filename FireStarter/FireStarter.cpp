@@ -115,6 +115,7 @@ bool FireStarter::GetResults(void)
             states.push_back(curState);
             if (error < bestState.error) {
                 bestState = curState;
+                bestGeneration = generation;
                 return true;
             }
         }
@@ -289,20 +290,20 @@ void FireStarter::RandomProgram(void)
         states.push_back(curState);
     } else {
         int state = (unsigned int)states.size() - 1;
-#if 0
         int numChanges = 1;
-        int degree = SMART_EVOLVE_POWER;
-        long long age = generation - lastGeneration;
-        while (degree <= age) {
-            degree *= SMART_EVOLVE_POWER;
+#if 1
+        long long bestAge = generation - bestGeneration;
+        if (bestAge > SMART_EVOLVE_AGE)
             numChanges++;
-        }
-#else
-        int numChanges = 1;
-        long long age = generation - lastGeneration;
-        if (state && (age > SMART_EVOLVE_POWER * SMART_EVOLVE_POWER)) {
+        if (bestAge > SMART_EVOLVE_AGE * SMART_EVOLVE_AGE)
+            numChanges++;
+#endif
+#if 1
+        long long lastAge = generation - lastGeneration;
+        if (state && (lastAge > SMART_DEVOLVE_AGE)) {
             states.pop_back();
             state--;
+            lastGeneration = generation;
         }
 #endif
         curState = states[state];
@@ -559,6 +560,7 @@ void FireStarter::Init(void)
     InitResults();
     generation = 0;
     lastGeneration = 0;
+    bestGeneration = 0;
     RandomProgram();
     bestState = curState;
 } // Init
