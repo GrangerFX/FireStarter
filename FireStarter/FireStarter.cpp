@@ -291,21 +291,17 @@ void FireStarter::RandomProgram(void)
     } else {
         int state = (unsigned int)states.size() - 1;
         int numChanges = 1;
-#if 1
         long long bestAge = generation - bestGeneration;
         if (bestAge > SMART_EVOLVE_AGE)
             numChanges++;
         if (bestAge > SMART_EVOLVE_AGE * SMART_EVOLVE_AGE)
             numChanges++;
-#endif
-#if 1
         long long lastAge = generation - lastGeneration;
         if (state && (lastAge > SMART_DEVOLVE_AGE)) {
             states.pop_back();
             state--;
             lastGeneration = generation;
         }
-#endif
         curState = states[state];
         while (numChanges--) {
             unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
