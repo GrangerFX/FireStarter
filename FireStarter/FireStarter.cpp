@@ -292,11 +292,11 @@ void FireStarter::RandomProgram(void)
         int state = (unsigned int)states.size() - 1;
         int numChanges = 1;
         long long bestAge = generation - bestGeneration;
+        long long lastAge = generation - lastGeneration;
         if (bestAge > SMART_EVOLVE_AGE)
             numChanges++;
         if (bestAge > SMART_EVOLVE_AGE * SMART_EVOLVE_AGE)
             numChanges++;
-        long long lastAge = generation - lastGeneration;
         if (state && (lastAge > SMART_DEVOLVE_AGE)) {
             states.pop_back();
             state--;
@@ -323,6 +323,7 @@ void FireStarter::MakeProgram(std::string &src)
     src += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
     src += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
     src += Format("#define SMART_RANDOM_FACTOR %f\n", SMART_RANDOM_FACTOR);
+    src += Format("#define SMART_AGE_FACTOR %f\n", SMART_AGE_FACTOR);
     src += "\n"
            "__device__ unsigned int Hash(unsigned int hash)\n"
            "{\n"
@@ -435,7 +436,7 @@ void FireStarter::MakeProgram(std::string &src)
            "        }\n"
            "        d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
            "        oldValue = data[d];\n"
-           "        data[d] += (RANDOMFACTOR(seed) * error * (1.0f + age / 100.0f) * SMART_RANDOM_FACTOR);\n"
+           "        data[d] += (RANDOMFACTOR(seed) * error * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
            "    }\n"
            "    data[d] = oldValue;\n"
            "    if (error < results->curError) {\n"
