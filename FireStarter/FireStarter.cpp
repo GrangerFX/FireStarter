@@ -49,7 +49,7 @@ std::string Format(const std::string formatString, ...)
 
 void FireStarter::EraseFrameBuffer(FrameBuffer &buffer)
 {
-    memset(buffer.base, 0, BUFFER_WIDTH * BUFFER_HEIGHT * sizeof(uchar4));
+    memset(buffer.base, 0, buffer.width * buffer.height * sizeof(uchar4));
 } // EraseFrameBuffer
 
 void FireStarter::CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer)
@@ -65,7 +65,7 @@ void FireStarter::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsi
 	buffer.rowbytes = width * 4;
     buffer.base = NULL;
 
-    cudaError_t err = cudaMallocManaged(&buffer.base, BUFFER_WIDTH * BUFFER_HEIGHT * sizeof(uchar4));
+    cudaError_t err = cudaMallocManaged(&buffer.base, buffer.width * buffer.height * sizeof(uchar4));
     if (err != cudaSuccess) {
         fprintf(stderr, "Failed to allocate pixels (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
@@ -453,24 +453,42 @@ void FireStarter::MakeProgram(std::string &src)
            "extern \"C\" __global__ void FireShowGPU(FireStarterResults *results, float *lastValues, float *bestValues, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
            "{\n"
            "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
+           "    int xScale = bufferHeight / 8;\n"
+           "    int yScale = bufferHeight / 16;\n"
+           "    if (x < bufferHeight) {\n"
+           "        int x0 = (bufferWidth / 2) - xScale;\n"
+           "        int x1 = (bufferWidth / 2) + xScale;\n"
+           "        if (x0 >= 0) {\n"
+           "            uchar4 &pixel(bufferPixels[x * bufferWidth + x0]);\n"
+           "            pixel.x = 64;\n"
+           "            pixel.y = 128;\n"
+           "            pixel.z = 64;\n"
+           "        };\n"
+           "        if (x1 < bufferWidth) {\n"
+           "            uchar4 &pixel(bufferPixels[x * bufferWidth + x1]);\n"
+           "            pixel.x = 64;\n"
+           "            pixel.y = 128;\n"
+           "            pixel.z = 64;\n"
+           "        };\n"
+           "    }\n"
            "    if (x < bufferWidth) {\n"
-           "       float theta = (x - bufferWidth * 0.25f) * (3.14159265f / 100.0f);\n"
-           "       float n = Target(theta);\n"
-           "       int y = (int)(bufferHeight * 0.5 + n * 50.0f);\n"
-           "       if ((y >= 0) && (y < bufferHeight)) {\n"
-           "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "           pixel.x = 255;\n"
-           "           pixel.y = 128;\n"
-           "       };\n"
-           "       float m = lastValues[x] = Evaluate(results->bestData, theta);\n"
-           "       y = (int)(bufferHeight * 0.5 + m * 50.0f);\n"
-           "       if ((y >= 0) && (y < bufferHeight)) {\n"
-           "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "           pixel.z = 255;\n"
-           "           pixel.y = 128;\n"
+           "        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;\n"
+           "        float n = Target(theta);\n"
+           "        int y = (int)(bufferHeight * 0.5 + n * yScale);\n"
+           "        if ((y >= 0) && (y < bufferHeight)) {\n"
+           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+           "            pixel.x = 255;\n"
+           "            pixel.y = 128;\n"
+           "        };\n"
+           "        float m = lastValues[x] = Evaluate(results->bestData, theta);\n"
+           "        y = (int)(bufferHeight * 0.5 + m * yScale);\n"
+           "        if ((y >= 0) && (y < bufferHeight)) {\n"
+           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+           "            pixel.z = 255;\n"
+           "            pixel.y = 128;\n"
            "       };\n"
            "       float o = bestValues[x];\n"
-           "       y = (int)(bufferHeight * 0.5 + o * 50.0f);\n"
+           "       y = (int)(bufferHeight * 0.5 + o * yScale);\n"
            "       if ((y >= 0) && (y < bufferHeight)) {\n"
            "           uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "           pixel.x = pixel.y = pixel.z = 255;\n"
@@ -483,38 +501,16 @@ void FireStarter::RenderImage(HWND hwnd)
 {
     if (bestState.error < 1.0E-6f)
         return;
+    timer.Start();
     RandomProgram();
     std::string code;
     MakeProgram(code);
-    timer.Start();
     CompileProgram(code.c_str());
     RunProgram(PROGRAM_POPULATION, MAX_RESULTS);
     bool update = GetResults();
-    double time = timer.Duration();
-    sprintf_s(statusString, "FireStarter: Generation=%lld  Age=%lld  error=%f  best=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.error, bestState.error, time);
-
-#if 0
-    printf("%s\n", statusString);
-    printf("generation=%d  data: ", generation);
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        printf("%f ", results->bestData[i]);
-    printf("\n");
-//    printf("%s\n\n", code.c_str());
-//    printf("\n");
-#endif
 
     if (results->numResults) {
         DrawGraph(update);
-#if 0
-        if (update) {
-            printf("// %s\n", statusString);
-            printf("// generation=%d  data: ", generation);
-            for (int i = 0; i < PROGRAM_DATA; i++)
-                printf("%f ", curState.data[i]);
-            printf("\n");
-            printf("%s\n\n", code.c_str());
-        }
-#endif
 
         unsigned char buffer[4096];
         BITMAPINFO*	bm = (BITMAPINFO*)buffer;
@@ -536,9 +532,22 @@ void FireStarter::RenderImage(HWND hwnd)
 	        GdiFlush();
         }
     }
+
+    double time = timer.Duration();
+    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, states.size(), generation - lastGeneration, curState.error, generation - bestGeneration, bestState.error, time);
+#if 0
+    if (update) {
+        printf("// %s\n", statusString);
+        printf("// generation=%d  data: ", generation);
+        for (int i = 0; i < PROGRAM_DATA; i++)
+            printf("%f ", curState.data[i]);
+        printf("\n");
+        printf("%s\n\n", code.c_str());
+    }
+#endif
 } // RenderImage
 
-void FireStarter::Init(void)
+void FireStarter::Init(unsigned long width, unsigned long height)
 {
     strcpy_s(statusString, "Initializing...");
 
@@ -555,7 +564,7 @@ void FireStarter::Init(void)
         exit(EXIT_WAIVED);
     }
 
-    InitFrameBuffer(theBuffer, BUFFER_WIDTH, BUFFER_HEIGHT);
+    InitFrameBuffer(theBuffer, width, height);
     InitResults();
     generation = 0;
     lastGeneration = 0;
@@ -572,7 +581,6 @@ FireStarter::FireStarter(void)
     lastValues = NULL;
     bestValues = NULL;
     module = NULL;
-    Init();
 } // FireStarter
 
 FireStarter::~FireStarter(void)

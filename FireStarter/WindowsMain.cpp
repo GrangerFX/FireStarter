@@ -61,19 +61,21 @@ HRESULT Initialize(HINSTANCE hInstance) {
     if (!RegisterClass(&wc))
         goto fail;
 
+    LONG imageWidth = GetSystemMetrics(SM_CXSCREEN);
+    LONG imageHeight = GetSystemMetrics(SM_CYSCREEN) - 70;
+    fireStarter.Init(imageWidth, imageHeight);
 	rect.left = 0;
 	rect.top = 0;
-	rect.right = BUFFER_WIDTH;
-	rect.bottom = BUFFER_HEIGHT;
+	rect.right = imageWidth;
+	rect.bottom = imageHeight;
 	AdjustWindowRect(&rect, WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX, 0);
 	rect.right -= rect.left;
 	rect.bottom -= rect.top;
 
     hwnd = CreateWindow("comp_class",
-                        "Drag effects into this window to convert .tfx files or preview .vfx files.",
-						//WS_POPUP,//WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX,
+                        "FireStarter",
 						WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX,
-                        0,0,
+                        rect.left, 0,
 						rect.right, rect.bottom,
                         NULL,NULL,
 						hInstance,

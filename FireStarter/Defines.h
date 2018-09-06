@@ -2,9 +2,6 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-#define BUFFER_WIDTH 640
-#define BUFFER_HEIGHT 480
-
 #ifdef __CUDACC__
 #define GPU_FUNCTION __device__
 #define GPU_ENTRY(grid, block) <<<grid, block>>>

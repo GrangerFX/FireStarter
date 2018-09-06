@@ -14,7 +14,7 @@
 #define SMART_RANDOM_FACTOR 0.1f
 #define SMART_AGE_FACTOR 0.01f
 #define SMART_EVOLVE_AGE 10
-#define SMART_DEVOLVE_AGE 50
+#define SMART_DEVOLVE_AGE 100
 #define START_ERROR 10.0f
 
 typedef enum {
@@ -129,7 +129,7 @@ public:
     void RandomProgram(void);
     void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);
-    void Init(void);
+    void Init(unsigned long width, unsigned long height);
     FireStarter(void);
     ~FireStarter(void);
 }; // class FireStarter
