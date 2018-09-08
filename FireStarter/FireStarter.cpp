@@ -87,6 +87,56 @@ void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
+void FireStarter::FreeSequenceData(void)
+{
+    if (sequenceData) {
+        cudaFree(sequenceData);
+        sequenceData = NULL;
+    }
+} // FreeSequenceData
+
+void FireStarter::ReadSequenceData(char *filePath)
+{
+    FreeSequenceData();
+
+    FILE *file = NULL;
+    errno_t err = fopen_s(&file, filePath, "r");
+	if (file) {
+		char title[256];
+		fgets(title, 255, file);
+
+        std::vector<float>theData;
+        for (;;) {
+			char line[1024];
+            int year, month, day;
+			float open = 0.0f;
+			float high = 0.0f;
+			float low = 0.0f;
+			float close = 0.0f;
+			float adjClose = 0.0f;
+			int volume = 0;
+
+			if (!fgets(line, 1023, file))
+				break;
+			if (sscanf_s(line, "%d-%d-%d,%f,%f,%f,%f,%f,%d", &year, &month, &day, &open, &high, &low, &close, &adjClose, &volume) != 9)
+				break;
+			theData.push_back(adjClose);
+		}
+		fclose(file);
+        
+        unsigned int dataSize = (unsigned int)theData.size();
+        unsigned int sequenceSize = min(dataSize, SEQUENCE_SIZE);
+        cudaError_t err = cudaMallocManaged(&sequenceData, sizeof(SequenceData) + (sequenceSize - 1) * sizeof(float));
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to allocate pixels (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        sequenceData->size = sequenceSize;
+        unsigned int skipSize = dataSize - sequenceSize;
+        memcpy(&sequenceData->data[0], &theData[dataSize - sequenceSize], sequenceSize * sizeof(float));
+    }
+} // ReadSequenceData
+
 bool FireStarter::GetResults(void)
 {
     if (results->numResults) {
@@ -565,6 +615,7 @@ void FireStarter::Init(unsigned long width, unsigned long height)
     }
 
     InitFrameBuffer(theBuffer, width, height);
+    ReadSequenceData("./Stocks/NVDA.csv");
     InitResults();
     generation = 0;
     lastGeneration = 0;
@@ -577,6 +628,7 @@ FireStarter::FireStarter(void)
 {
     // Timer ID
     statusString[0] = 0;
+    sequenceData = NULL;
     results = NULL;
     lastValues = NULL;
     bestValues = NULL;
@@ -588,5 +640,6 @@ FireStarter::~FireStarter(void)
     if (module)
         checkCudaErrors(cuModuleUnload(module));
     FreeFrameBuffer(theBuffer);
+    FreeSequenceData();
     FreeResults();
 } // ~FireStarter

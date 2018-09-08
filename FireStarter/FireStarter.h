@@ -9,6 +9,8 @@
 #define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_ITERATIONS 4096
 #define PROGRAM_POPULATION 262144
+#define SEQUENCE_SIZE 2048
+#define SEQUENCE_TEST 1024
 #define SAMPLE_ITERATIONS 15
 #define MAX_RESULTS 16384
 #define SMART_RANDOM_FACTOR 0.1f
@@ -68,6 +70,11 @@ typedef struct FrameBuffer {
 	unsigned long height;			// Number of rows
 } FrameBuffer;
 
+typedef struct SequenceData {
+    unsigned int size;
+    float data[1];
+} SequenceData;
+
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
 
@@ -104,6 +111,7 @@ class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
+    SequenceData *sequenceData;
     FireStarterResults *results;
     float *lastValues;
     float *bestValues;
@@ -120,6 +128,8 @@ public:
     void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
+    void FreeSequenceData(void);
+    void ReadSequenceData(char *filePath);
     bool GetResults(void);
     void InitResults(void);
     void FreeResults(void);
