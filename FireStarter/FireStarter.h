@@ -17,7 +17,7 @@
 #define SMART_AGE_FACTOR 0.01f
 #define SMART_EVOLVE_AGE 10
 #define SMART_DEVOLVE_AGE 100
-#define START_ERROR 10.0f
+#define START_RESULT 10.0f
 
 typedef enum {
     Instruction_add = 0,    // r += data[d];
@@ -86,15 +86,15 @@ typedef struct FireStarterData {
 
 typedef struct FireStarterResult {
     FireStarterData data;
-    float error;
+    float result;
     unsigned int member;
 } FireStarterResult;
 
 typedef struct FireStarterResults {
     unsigned int numResults;
-    float minError;
-    float curError;
-    float startError;
+    float minResult;
+    float curResult;
+    float startResult;
     FireStarterData bestData;
     FireStarterResult results[1];
 } FireStarterResults;
@@ -102,7 +102,7 @@ typedef struct FireStarterResults {
 typedef struct FireStarterState {
     ProgramInstruction instructions[PROGRAM_INSTRUCTIONS];
     FireStarterData data;
-    float error;
+    float result;
 } FireStarterState;
 
 typedef std::vector<FireStarterState> FireStarterStates;

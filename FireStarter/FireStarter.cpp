@@ -144,26 +144,26 @@ bool FireStarter::GetResults(void)
         if (numResults > MAX_RESULTS)
             numResults = MAX_RESULTS;
         unsigned int index = 0;
-        float error = results->results[0].error;
+        float result = results->results[0].result;
         unsigned int member = results->results[0].member;
         for (unsigned int i = 1; i < numResults; i++) {
-            float curError = results->results[i].error;
+            float curResult = results->results[i].result;
             unsigned int curMember = results->results[i].member;
-            if ((curError < error) || ((curError == error) && (curMember < member))) {
-                error = curError;
+            if ((curResult < result) || ((curResult == result) && (curMember < member))) {
+                result = curResult;
                 member = curMember;
                 index = i;
             }
         }
 
         results->bestData = results->results[index].data;
-        results->curError = error;
-        if (error < curState.error) {
+        results->curResult = result;
+        if (result < curState.result) {
             curState.data = results->bestData;
-            curState.error = error;
+            curState.result = result;
             lastGeneration = generation;
             states.push_back(curState);
-            if (error < bestState.error) {
+            if (result < bestState.result) {
                 bestState = curState;
                 bestGeneration = generation;
                 return true;
@@ -282,7 +282,7 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
                    reinterpret_cast<void *>(&generation)};
 
     CUfunction kernel_addr;
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarterGPU"));
+    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter"));
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -313,7 +313,7 @@ void FireStarter::DrawGraph(bool update)
                    reinterpret_cast<void *>(&theBuffer.height)};
 
     CUfunction kernel_addr;
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShowGPU"));
+    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow"));
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -336,7 +336,7 @@ void FireStarter::RandomProgram(void)
             curState.instructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
             curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
-        curState.error = START_ERROR;
+        curState.result = START_RESULT;
         states.push_back(curState);
     } else {
         int state = (unsigned int)states.size() - 1;
@@ -361,8 +361,8 @@ void FireStarter::RandomProgram(void)
     }
 //  memset(results, 0, sizeof(FireStarterResults) + sizeof(FireStarterResult) * (MAX_RESULTS - 1));
     results->bestData = curState.data;
-    results->minError = curState.error;
-    results->curError = results->startError = START_ERROR;
+    results->minResult = curState.result;
+    results->curResult = results->startResult = START_RESULT;
     results->numResults = 0;
     generation++;
 } // RandomProgram
@@ -392,6 +392,11 @@ void FireStarter::MakeProgram(std::string &src)
            "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
            "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
            "\n"
+           "typedef struct SequenceData {\n"
+           "    unsigned int size;\n"
+           "    float data[1];\n"
+           "} SequenceData;\n"
+           "\n"
            "typedef struct FireStarterData {\n"
            "    float d[PROGRAM_DATA];\n"
            "\n"
@@ -403,26 +408,25 @@ void FireStarter::MakeProgram(std::string &src)
            "\n"
            "typedef struct FireStarterResult {\n"
            "    FireStarterData data;\n"
-           "    float error;\n"
+           "    float result;\n"
            "    unsigned int member;\n"
            "} FireStarterResult;\n"
            "\n"
            "typedef struct FireStarterResults {\n"
            "    unsigned int numResults;\n"
-           "    float minError;\n"
-           "    float curError;\n"
-           "    float startError;\n"
+           "    float minResult;\n"
+           "    float curResult;\n"
+           "    float startResult;\n"
            "    FireStarterData bestData;\n"
            "    FireStarterResult results[1];\n"
            "} FireStarterResults;\n"
            "\n"
            "__device__ float Target(float n) {\n"
            "   return sinf(n);\n"
-           "}\n"
+           "} // Target\n"
            "\n"
-           "__device__ float Evaluate(const FireStarterData &workData, float r)\n"
-           "{\n"
-           "    FireStarterData data(workData);\n";
+           "__device__ float Evaluate(FireStarterData &data, float r)\n"
+           "{\n";
 
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         const ProgramInstruction &instruction = curState.instructions[i];
@@ -459,26 +463,28 @@ void FireStarter::MakeProgram(std::string &src)
     src += "    return isnan(r) ? 0.0f : r;\n"
            "} // Evaluate\n"
            "\n"
-           "extern \"C\" __global__ void FireStarterGPU(FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation)\n"
+           "extern \"C\" __global__ void FireStarter(FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation)\n"
            "{\n"
            "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
            "    if (member >= population)\n"
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
            "    FireStarterData data(results->bestData);\n"
-           "    float error = results->startError;\n"
+           "    float result = results->startResult;\n"
            "    unsigned int age = 0;\n"
            "    unsigned int d = 0;\n"
            "    float oldValue = data[d];\n"
            "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
-           "        float curError = fabsf(Evaluate(data, 0.0f) - Target(0.0f));\n"
+           "        FireStarterData evalData(data);\n"
+           "        float curResult = fabsf(Evaluate(evalData, 0.0f) - Target(0.0f));\n"
            "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
            "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
-           "            float delta = fabsf(Evaluate(data, theta) - Target(theta));\n"
-           "            curError = delta > curError ? delta : curError;\n"
+           "            evalData = data;\n"
+           "            float delta = fabsf(Evaluate(evalData, theta) - Target(theta));\n"
+           "            curResult = delta > curResult ? delta : curResult;\n"
            "        }\n"
-           "        if (curError < error) {\n"
-           "            error = curError;\n"
+           "        if (curResult < result) {\n"
+           "            result = curResult;\n"
            "            age = 0;\n"
            "        } else {\n"
            "            data[d] = oldValue;\n"
@@ -486,21 +492,64 @@ void FireStarter::MakeProgram(std::string &src)
            "        }\n"
            "        d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
            "        oldValue = data[d];\n"
-           "        data[d] += (RANDOMFACTOR(seed) * error * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
+           "        data[d] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
            "    }\n"
            "    data[d] = oldValue;\n"
-           "    if (error < results->curError) {\n"
-           "        results->curError = error;\n"
+           "    if (result < results->curResult) {\n"
+           "        results->curResult = result;\n"
            "        unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
            "        if (index < maxResults) {\n"
            "            results->results[index].data = data;\n"
-           "            results->results[index].error = error;\n"
+           "            results->results[index].result = result;\n"
            "            results->results[index].member = member;\n"
            "        }\n"
            "    }\n"
-           "} // FireStarterGPU\n"
+           "} // FireStarter\n"
            "\n"
-           "extern \"C\" __global__ void FireShowGPU(FireStarterResults *results, float *lastValues, float *bestValues, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+           "extern \"C\" __global__ void MoneyMaker(SequenceData *sequenceData, unsigned int testDays, unsigned int holdDays, FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation)\n"
+           "{\n"
+           "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
+           "    if (member >= population)\n"
+           "        return;\n"
+           "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
+           "    FireStarterData data(results->bestData);\n"
+           "    float result = 0.0f;\n"
+           "    unsigned int age = 0;\n"
+           "    unsigned int d = 0;\n"
+           "    float oldValue = data[d];\n"
+           "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
+           "        float alpha = 0.0f;\n"
+           "        for (int i = 0; i < testDays; i++) {\n"
+           "            float curValue = sequenceData->data[i];\n"
+           "            float holdValue = sequenceData->data[holdDays];\n"
+           "            if (Evaluate(data, curValue) >= 1.0f)\n"
+           "                alpha += (holdValue - curValue) / curValue;\n"
+           "        }\n"
+           "        float earningsRate = alpha / testDays;\n"
+           "        if (earningsRate > result) {\n"
+           "            result = earningsRate;\n"
+           "            age = 0;\n"
+           "        } else {\n"
+           "            data[d] = oldValue;\n"
+           "            age++;\n"
+           "        }\n"
+           "        d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
+           "        oldValue = data[d];\n"
+           "        data[d] += (RANDOMFACTOR(seed) * fabsf(data[d]) * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
+           "    }\n"
+           "    data[d] = oldValue;\n"
+           "    if (result < results->curResult) {\n"
+           "        results->curResult = result;\n"
+           "        unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
+           "        if (index < maxResults) {\n"
+           "            results->results[index].data = data;\n"
+           "            results->results[index].result = result;\n"
+           "            results->results[index].member = member;\n"
+           "        }\n"
+           "    }\n"
+           "} // MoneyMaker\n"
+           "\n"
+           "extern \"C\" __global__ void FireShow(FireStarterResults *results, float *lastValues, float *bestValues, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
            "{\n"
            "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
            "    int xScale = bufferHeight / 8;\n"
@@ -530,7 +579,8 @@ void FireStarter::MakeProgram(std::string &src)
            "            pixel.x = 255;\n"
            "            pixel.y = 128;\n"
            "        };\n"
-           "        float m = lastValues[x] = Evaluate(results->bestData, theta);\n"
+           "        FireStarterData evalData(results->bestData);\n"
+           "        float m = lastValues[x] = Evaluate(evalData, theta);\n"
            "        y = (int)(bufferHeight * 0.5 + m * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
@@ -544,12 +594,12 @@ void FireStarter::MakeProgram(std::string &src)
            "           pixel.x = pixel.y = pixel.z = 255;\n"
            "       };\n"
            "   }\n"
-           "} // FireShowGPU\n";
+           "} // FireShow\n";
 } // MakeProgram
 
 void FireStarter::RenderImage(HWND hwnd)
 {
-    if (bestState.error < 1.0E-6f)
+    if (bestState.result < 1.0E-6f)
         return;
     timer.Start();
     RandomProgram();
@@ -584,7 +634,7 @@ void FireStarter::RenderImage(HWND hwnd)
     }
 
     double time = timer.Duration();
-    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, states.size(), generation - lastGeneration, curState.error, generation - bestGeneration, bestState.error, time);
+    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, states.size(), generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, time);
 #if 0
     if (update) {
         printf("// %s\n", statusString);
