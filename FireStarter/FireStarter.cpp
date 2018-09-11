@@ -87,56 +87,6 @@ void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
-void FireStarter::FreeSequenceData(void)
-{
-    if (sequenceData) {
-        cudaFree(sequenceData);
-        sequenceData = NULL;
-    }
-} // FreeSequenceData
-
-void FireStarter::ReadSequenceData(char *filePath)
-{
-    FreeSequenceData();
-
-    FILE *file = NULL;
-    errno_t err = fopen_s(&file, filePath, "r");
-	if (file) {
-		char title[256];
-		fgets(title, 255, file);
-
-        std::vector<float>theData;
-        for (;;) {
-			char line[1024];
-            int year, month, day;
-			float open = 0.0f;
-			float high = 0.0f;
-			float low = 0.0f;
-			float close = 0.0f;
-			float adjClose = 0.0f;
-			int volume = 0;
-
-			if (!fgets(line, 1023, file))
-				break;
-			if (sscanf_s(line, "%d-%d-%d,%f,%f,%f,%f,%f,%d", &year, &month, &day, &open, &high, &low, &close, &adjClose, &volume) != 9)
-				break;
-			theData.push_back(adjClose);
-		}
-		fclose(file);
-        
-        unsigned int dataSize = (unsigned int)theData.size();
-        unsigned int sequenceSize = min(dataSize, SEQUENCE_SIZE);
-        cudaError_t err = cudaMallocManaged(&sequenceData, sizeof(SequenceData) + (sequenceSize - 1) * sizeof(float));
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to allocate pixels (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
-        }
-        sequenceData->size = sequenceSize;
-        unsigned int skipSize = dataSize - sequenceSize;
-        memcpy(&sequenceData->data[0], &theData[dataSize - sequenceSize], sequenceSize * sizeof(float));
-    }
-} // ReadSequenceData
-
 bool FireStarter::GetResults(void)
 {
     if (results->numResults) {
@@ -374,6 +324,8 @@ void FireStarter::MakeProgram(std::string &src)
     src += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
     src += Format("#define SMART_RANDOM_FACTOR %gf\n", SMART_RANDOM_FACTOR);
     src += Format("#define SMART_AGE_FACTOR %gf\n", SMART_AGE_FACTOR);
+    src += Format("#define EVOLUTION_SIZE %d\n", EVOLUTION_SIZE);
+    src += Format("#define SMART_DEVOLVE_AGE %d\n", SMART_DEVOLVE_AGE);
     src += "\n"
            "__device__ unsigned int Hash(unsigned int hash)\n"
            "{\n"
@@ -391,11 +343,6 @@ void FireStarter::MakeProgram(std::string &src)
            "#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1\n"
            "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
            "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
-           "\n"
-           "typedef struct SequenceData {\n"
-           "    unsigned int size;\n"
-           "    float data[1];\n"
-           "} SequenceData;\n"
            "\n"
            "typedef struct FireStarterData {\n"
            "    float d[PROGRAM_DATA];\n"
@@ -420,6 +367,11 @@ void FireStarter::MakeProgram(std::string &src)
            "    FireStarterData bestData;\n"
            "    FireStarterResult results[1];\n"
            "} FireStarterResults;\n"
+           "\n"
+           "typedef struct Evolution {\n"
+           "    unsigned int index;\n"
+           "    float value;\n"
+           "} Evolution;\n"
            "\n"
            "__device__ float Target(float n) {\n"
            "   return sinf(n);\n"
@@ -471,11 +423,14 @@ void FireStarter::MakeProgram(std::string &src)
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
            "    FireStarterData data(results->bestData);\n"
+           "    Evolution evolution[EVOLUTION_SIZE];\n"
            "    float result = results->startResult;\n"
            "    unsigned int age = 0;\n"
            "    unsigned int d = 0;\n"
            "    float oldValue = data[d];\n"
            "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
+           "        unsigned int startEvolution = 0;\n"
+           "        unsigned int curEvolution = 0;\n"
            "        float curResult = fabsf(Evaluate(data, 0.0f) - Target(0.0f));\n"
            "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
            "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
@@ -485,9 +440,19 @@ void FireStarter::MakeProgram(std::string &src)
            "        if (curResult < result) {\n"
            "            result = curResult;\n"
            "            age = 0;\n"
+           "            evolution[curEvolution].index = d;\n"
+           "            evolution[curEvolution].value = oldValue;\n"
+           "            curEvolution = (curEvolution + 1) % EVOLUTION_SIZE;\n"
+           "            if (curEvolution == startEvolution)\n"
+           "                startEvolution = (startEvolution + 1) % EVOLUTION_SIZE;\n"
            "        } else {\n"
            "            data[d] = oldValue;\n"
            "            age++;\n"
+           "        }\n"
+           "        if ((age >= SMART_DEVOLVE_AGE) && (curEvolution != startEvolution)) {\n"
+           "            curEvolution = (curEvolution - 1) % EVOLUTION_SIZE;\n"
+           "            data[evolution[curEvolution].index] = evolution[curEvolution].value;\n"
+           "            age = 0;\n"
            "        }\n"
            "        d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
            "        oldValue = data[d];\n"
@@ -554,15 +519,16 @@ void FireStarter::MakeProgram(std::string &src)
 
 void FireStarter::RenderImage(HWND hwnd)
 {
-    if (bestState.result < 1.0E-6f)
-        return;
     timer.Start();
-    RandomProgram();
-    std::string code;
-    MakeProgram(code);
-    CompileProgram(code.c_str());
-    RunProgram(PROGRAM_POPULATION, MAX_RESULTS);
-    bool update = GetResults();
+    bool update = false;
+    if (bestState.result >= 1.0E-6f) {
+        RandomProgram();
+        std::string code;
+        MakeProgram(code);
+        CompileProgram(code.c_str());
+        RunProgram(PROGRAM_POPULATION, MAX_RESULTS);
+        update = GetResults();
+    }
 
     if (results->numResults) {
         DrawGraph(update);
@@ -620,7 +586,6 @@ void FireStarter::Init(unsigned long width, unsigned long height)
     }
 
     InitFrameBuffer(theBuffer, width, height);
-    ReadSequenceData("./Stocks/NVDA.csv");
     InitResults();
     generation = 0;
     lastGeneration = 0;
@@ -633,7 +598,6 @@ FireStarter::FireStarter(void)
 {
     // Timer ID
     statusString[0] = 0;
-    sequenceData = NULL;
     results = NULL;
     lastValues = NULL;
     bestValues = NULL;
@@ -645,6 +609,5 @@ FireStarter::~FireStarter(void)
     if (module)
         checkCudaErrors(cuModuleUnload(module));
     FreeFrameBuffer(theBuffer);
-    FreeSequenceData();
     FreeResults();
 } // ~FireStarter
