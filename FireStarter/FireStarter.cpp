@@ -8,8 +8,7 @@
 // CUDA utilities and system includes
 #include <cuda.h>
 #include <cuda_runtime.h>
-#include <nvrtc.h>
-#include <helper_cuda.h>
+#include <helper_functions.h>
 #include <nvrtc_helper.h>
 
 // 32 bit cryptographic hash function.
@@ -552,19 +551,6 @@ void FireStarter::RenderImage(HWND hwnd)
 void FireStarter::Init(unsigned long width, unsigned long height)
 {
     strcpy_s(statusString, "Initializing...");
-
-    // check for hardware double precision support
-    int dev = 0;
-    dev = findCudaDevice(0, NULL);
-
-    cudaDeviceProp deviceProp;
-    checkCudaErrors(cudaGetDeviceProperties(&deviceProp, dev));
-    int version = deviceProp.major*10 + deviceProp.minor;
-
-    if (version < 11) {
-        printf("GPU compute capability is too low (%d), program is waived\n", version);
-        exit(EXIT_WAIVED);
-    }
 
     InitFrameBuffer(theBuffer, width, height);
     InitResults();
