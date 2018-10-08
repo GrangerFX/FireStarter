@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#define PROGRAM_DATA 8
-#define PROGRAM_INSTRUCTIONS 32
+#define PROGRAM_DATA 16
+#define PROGRAM_INSTRUCTIONS 16
 #define PROGRAM_ITERATIONS 4096
 #define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 15
@@ -17,22 +17,8 @@
 #define SMART_DEVOLVE_AGE 100
 #define START_RESULT 10.0f
 
-typedef enum {
-    Instruction_add = 0,    // r += data[d];
-    Instruction_multiply,   // r *= data[d];
-    Instruction_store,      // data[d] = r;
-    NumInstructions,
-    Instruction_fetch,      // r = data[d];
-    Instruction_subtract,   // r -= data[d];
-    Instruction_square,     // r *= r;
-    Instruction_divide,     // r /= data[d];
-    Instruction_max,        // r = data[d] >= r ? data[d] : r;
-    Instruction_min,        // r = data[d] <= r ? data[d] : r;
-} Instruction;
-
 typedef struct {
-    Instruction instruction;
-    int d;
+    int a, b, c;
 } ProgramInstruction;
 
 class SimpleTimer {

@@ -282,8 +282,9 @@ void FireStarter::RandomProgram(void)
         for (int i = 0; i < PROGRAM_DATA; i++)
            curState.data[i] = RANDOMFACTOR(seed);
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-            curState.instructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
-            curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
         }
         curState.result = START_RESULT;
         states.push_back(curState);
@@ -303,12 +304,24 @@ void FireStarter::RandomProgram(void)
         }
         curState = states[state];
         while (numChanges--) {
-            unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-            curState.instructions[index].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
-            curState.instructions[index].d = RANDOMSEED(seed) % PROGRAM_DATA;
+            unsigned int changes = 1 + (unsigned int)(((generation - lastGeneration) * 3) / SMART_DEVOLVE_AGE);
+            for (unsigned int n = 0; n < changes; n++) { 
+                unsigned int i = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
+                unsigned int j = RANDOMSEED(seed) % 3;
+                switch (j) {
+                    case 0:
+                        curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
+                        break;
+                    case 1:
+                        curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
+                        break;
+                    case 2:
+                        curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
+                        break;
+                }
+            }
         }
     }
-//  memset(results, 0, sizeof(FireStarterResults) + sizeof(FireStarterResult) * (MAX_RESULTS - 1));
     results->bestData = curState.data;
     results->minResult = curState.result;
     results->curResult = results->startResult = START_RESULT;
@@ -373,38 +386,9 @@ void FireStarter::MakeProgram(std::string &src)
            "__device__ float Evaluate(const FireStarterData &workData, float r)\n"
            "{\n"
            "    FireStarterData data(workData);\n";
-
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         const ProgramInstruction &instruction = curState.instructions[i];
-        switch (instruction.instruction) {
-            case Instruction_store:
-                src += Format("    data[%d] = r;\n", instruction.d);
-                break;
-            case Instruction_fetch:
-                src += Format("    r = data[%d];\n", instruction.d);
-                break;
-            case Instruction_square:
-                src += Format("    r *= r;\n");
-                break;
-            case Instruction_add:
-                src += Format("    r += data[%d];\n", instruction.d);
-                break;
-            case Instruction_subtract:
-                src += Format("    r -= data[%d];\n", instruction.d);
-                break;
-            case Instruction_multiply:
-                src += Format("    r *= data[%d];\n", instruction.d);
-                break;
-            case Instruction_divide:
-                src += Format("    r /= data[%d];\n", instruction.d);
-                break;
-            case Instruction_max:
-                src += Format("    r = r >= data[%d] ? r : data[%d];\n", instruction.d, instruction.d);
-                break;
-            case Instruction_min:
-                src += Format("    r = r <= data[%d] ? r : data[%d];\n", instruction.d, instruction.d);
-                break;
-        }
+        src += Format("    r = data[%d] = data[%d] + data[%d] * r;\n", instruction.a, instruction.b, instruction.c);
     }
     src += "    return isnan(r) ? 0.0f : r;\n"
            "} // Evaluate\n"
