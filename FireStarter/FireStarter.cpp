@@ -280,7 +280,11 @@ void FireStarter::RandomProgram(void)
     seed = RANDOMHASH(seed) + 1;
     if (!states.size()) {
         for (int i = 0; i < PROGRAM_DATA; i++)
+#if RESET_DATA
+           curState.data[i] = 1.0f;
+#else
            curState.data[i] = RANDOMFACTOR(seed);
+#endif
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
             curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
             curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
@@ -304,25 +308,27 @@ void FireStarter::RandomProgram(void)
         }
         curState = states[state];
         while (numChanges--) {
-            unsigned int changes = 1 + (unsigned int)(((generation - lastGeneration) * 3) / SMART_DEVOLVE_AGE);
-            for (unsigned int n = 0; n < changes; n++) { 
-                unsigned int i = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-                unsigned int j = RANDOMSEED(seed) % 3;
-                switch (j) {
-                    case 0:
-                        curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
-                        break;
-                    case 1:
-                        curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
-                        break;
-                    case 2:
-                        curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
-                        break;
-                }
+            unsigned int i = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
+            unsigned int j = RANDOMSEED(seed) % 3;
+            switch (j) {
+                case 0:
+                    curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
+                    break;
+                case 1:
+                    curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
+                    break;
+                case 2:
+                    curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
+                    break;
             }
         }
     }
+#if RESET_DATA
+    for (int i = 0; i < PROGRAM_DATA; i++)
+        results->bestData[i] = 1.0f;
+#else
     results->bestData = curState.data;
+#endif
     results->minResult = curState.result;
     results->curResult = results->startResult = START_RESULT;
     results->numResults = 0;

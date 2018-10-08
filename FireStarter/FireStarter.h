@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#define PROGRAM_DATA 16
-#define PROGRAM_INSTRUCTIONS 16
+#define PROGRAM_DATA 8
+#define PROGRAM_INSTRUCTIONS 8
 #define PROGRAM_ITERATIONS 4096
 #define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 15
@@ -14,8 +14,9 @@
 #define SMART_RANDOM_FACTOR 0.1f
 #define SMART_AGE_FACTOR 0.01f
 #define SMART_EVOLVE_AGE 10
-#define SMART_DEVOLVE_AGE 100
+#define SMART_DEVOLVE_AGE 50
 #define START_RESULT 10.0f
+#define RESET_DATA 1
 
 typedef struct {
     int a, b, c;
