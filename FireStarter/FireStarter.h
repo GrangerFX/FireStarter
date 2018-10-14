@@ -92,8 +92,7 @@ public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
     FireStarterResults *results;
-    float *lastValues;
-    float *bestValues;
+    FireStarterResults *results1;
     FireStarterStates states;
     FireStarterState curState;
     FireStarterState bestState;
@@ -108,11 +107,16 @@ public:
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
     bool GetResults(void);
+    bool GetResults1(void);
     void InitResults(void);
+    void InitResults1(void);
     void FreeResults(void);
+    void FreeResults1(void);
     void CompileProgram(const char *source);
     void RunProgram(unsigned int population, unsigned int maxResults);
-    void DrawGraph(bool update);
+    void RunProgram1(unsigned int population, unsigned int maxResults);
+    void DrawGraph(void);
+    void DrawGraph1(void);
     void RandomProgram(void);
     void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);
