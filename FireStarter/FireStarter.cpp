@@ -374,6 +374,7 @@ void FireStarter::RandomProgram(void)
             curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
             curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
             curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
         }
         curState.result = START_RESULT;
         states.push_back(curState);
@@ -394,7 +395,7 @@ void FireStarter::RandomProgram(void)
         curState = states[state];
         while (numChanges--) {
             unsigned int i = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-            unsigned int j = RANDOMSEED(seed) % 3;
+            unsigned int j = RANDOMSEED(seed) % 4;
             switch (j) {
                 case 0:
                     curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
@@ -404,6 +405,9 @@ void FireStarter::RandomProgram(void)
                     break;
                 case 2:
                     curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
+                    break;
+                case 3:
+                    curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
                     break;
             }
         }
@@ -471,22 +475,26 @@ void FireStarter::MakeProgram(std::string &src)
            "\n"
            "__device__ float Evaluate(const FireStarterData &workData, float r)\n"
            "{\n"
-           "    FireStarterData data(workData);\n";
-        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-            const ProgramInstruction &instruction = curState.instructions[i];
-            src += Format("    r = data[%d] = data[%d] + data[%d] * r;\n", instruction.a, instruction.b, instruction.c);
-        }
-        src += "    return isnan(r) ? 0.0f : r;\n"
+           "    FireStarterData data(workData);\n";    
+    src += "    data[0] += r;\n";
+    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        const ProgramInstruction &instruction = curState.instructions[i];
+        src += Format("    data[%d] = data[%d] + data[%d] * data[%d];\n", instruction.a, instruction.b, instruction.c, instruction.d);
+    }
+    src += Format("    r = data[%d];\n", curState.instructions[PROGRAM_INSTRUCTIONS - 1].a);
+    src += "    return isnan(r) ? 0.0f : r;\n"
            "} // Evaluate\n"
            "\n"
            "__device__ float BestEvaluate(const FireStarterData &workData, float r)\n"
            "{\n"
            "    FireStarterData data(workData);\n";
-        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-            const ProgramInstruction &instruction = bestState.instructions[i];
-            src += Format("    r = data[%d] = data[%d] + data[%d] * r;\n", instruction.a, instruction.b, instruction.c);
-        }
-        src += "    return isnan(r) ? 0.0f : r;\n"
+    src += "    data[0] += r;\n";
+    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        const ProgramInstruction &instruction = bestState.instructions[i];
+        src += Format("    data[%d] = data[%d] + data[%d] * data[%d];\n", instruction.a, instruction.b, instruction.c, instruction.d);
+    }
+    src += Format("    r = data[%d];\n", bestState.instructions[PROGRAM_INSTRUCTIONS - 1].a);
+    src += "    return isnan(r) ? 0.0f : r;\n"
            "} // BestEvaluate\n"
            "\n"
            "extern \"C\" __global__ void FireStarter(FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"

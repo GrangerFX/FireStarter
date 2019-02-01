@@ -19,7 +19,7 @@
 #define RESET_DATA 1
 
 typedef struct {
-    int a, b, c;
+    int a, b, c, d;
 } ProgramInstruction;
 
 class SimpleTimer {
