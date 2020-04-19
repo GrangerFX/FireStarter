@@ -317,7 +317,7 @@ void FireStarter::DrawGraph(void)
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow"));
 
-    void *arr[] = {reinterpret_cast<void *>(&results->bestData),
+    void *arr[] = {reinterpret_cast<void *>(&results),
                    reinterpret_cast<void *>(&bestState.data),
                    reinterpret_cast<void *>(&theBuffer.base),
                    reinterpret_cast<void *>(&theBuffer.width),
@@ -344,7 +344,7 @@ void FireStarter::DrawGraph1(void)
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow1"));
 
-    void *arr[] = {reinterpret_cast<void *>(&results1->bestData),
+    void *arr[] = {reinterpret_cast<void *>(&results1),
                    reinterpret_cast<void *>(&theBuffer.base),
                    reinterpret_cast<void *>(&theBuffer.width),
                    reinterpret_cast<void *>(&theBuffer.height)};
@@ -543,7 +543,7 @@ void FireStarter::MakeProgram(std::string &src)
            "    }\n"
            "} // FireStarter\n"
            "\n"
-           "extern \"C\" __global__ void FireShow(const FireStarterData data, const FireStarterData bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+           "extern \"C\" __global__ void FireShow(const FireStarterResults *results, const FireStarterData bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
            "{\n"
            "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
            "    int xScale = bufferHeight / 8;\n"
@@ -573,7 +573,7 @@ void FireStarter::MakeProgram(std::string &src)
            "            pixel.x = 255;\n"
            "            pixel.y = 128;\n"
            "        };\n"
-           "        y = (int)(center + Evaluate(data, theta) * yScale);\n"
+           "        y = (int)(center + Evaluate(results->bestData, theta) * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "            pixel.z = 255;\n"
@@ -587,7 +587,7 @@ void FireStarter::MakeProgram(std::string &src)
            "    }\n"
            "} // FireShow\n"
            "\n"
-           "extern \"C\" __global__ void FireShow1(const FireStarterData data, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+           "extern \"C\" __global__ void FireShow1(const FireStarterResults *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
            "{\n"
            "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
            "    int xScale = bufferHeight / 8;\n"
@@ -601,7 +601,7 @@ void FireStarter::MakeProgram(std::string &src)
            "            pixel.x = 255;\n"
            "            pixel.y = 128;\n"
            "        };\n"
-           "        y = (int)(center + BestEvaluate(data, theta) * yScale);\n"
+           "        y = (int)(center + BestEvaluate(results->bestData, theta) * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "            pixel.x = pixel.y = pixel.z = 255;\n"
