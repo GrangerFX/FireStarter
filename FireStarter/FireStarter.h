@@ -18,10 +18,6 @@
 #define START_RESULT 10.0f
 #define RESET_DATA 1
 
-typedef struct {
-    int a, b, c, d;
-} ProgramInstruction;
-
 class SimpleTimer {
 public:
     time_t m_second;
@@ -79,8 +75,14 @@ typedef struct FireStarterResults {
     FireStarterResult results[1];
 } FireStarterResults;
 
+typedef struct {
+    int a, b, c, d;
+} ProgramInstruction;
+
+typedef ProgramInstruction ProgramInstructions[PROGRAM_INSTRUCTIONS];
+
 typedef struct FireStarterState {
-    ProgramInstruction instructions[PROGRAM_INSTRUCTIONS];
+    ProgramInstructions instructions;
     FireStarterData data;
     float result;
 } FireStarterState;
