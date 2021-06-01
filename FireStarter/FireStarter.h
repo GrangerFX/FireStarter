@@ -6,7 +6,6 @@
 #include <vector>
 
 #define PROGRAM_DATA 8
-#define PROGRAM_INSTRUCTIONS 8
 #define PROGRAM_ITERATIONS 16384
 #define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 15
@@ -79,7 +78,7 @@ typedef struct {
     int a, b, c, d;
 } ProgramInstruction;
 
-typedef ProgramInstruction ProgramInstructions[PROGRAM_INSTRUCTIONS];
+typedef ProgramInstruction ProgramInstructions[PROGRAM_DATA];
 
 typedef struct FireStarterState {
     ProgramInstructions instructions;

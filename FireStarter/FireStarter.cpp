@@ -370,8 +370,8 @@ void FireStarter::RandomProgram(void)
 #else
            curState.data[i] = RANDOMFACTOR(seed);
 #endif
-        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-            curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
+        for (int i = 0; i < PROGRAM_DATA; i++) {
+            curState.instructions[i].a = i;
             curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
             curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
             curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
@@ -394,19 +394,16 @@ void FireStarter::RandomProgram(void)
         }
         curState = states[state];
         while (numChanges--) {
-            unsigned int i = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-            unsigned int j = RANDOMSEED(seed) % 4;
+            unsigned int i = RANDOMSEED(seed) % PROGRAM_DATA;
+            unsigned int j = RANDOMSEED(seed) % 3;
             switch (j) {
                 case 0:
-                    curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
-                    break;
-                case 1:
                     curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
                     break;
-                case 2:
+                case 1:
                     curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
                     break;
-                case 3:
+                case 2:
                     curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
                     break;
             }
@@ -418,7 +415,6 @@ void FireStarter::RandomProgram(void)
 void FireStarter::MakeProgram(std::string& src)
 {
     src += Format("#define PROGRAM_DATA %d\n", PROGRAM_DATA);
-    src += Format("#define PROGRAM_INSTRUCTIONS %d\n", PROGRAM_INSTRUCTIONS);
     src += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
     src += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
     src += Format("#define SMART_RANDOM_FACTOR %gf\n", SMART_RANDOM_FACTOR);
@@ -446,7 +442,7 @@ void FireStarter::MakeProgram(std::string& src)
         "    int a, b, c, d;\n"
         "} FireStarterInstruction;\n"
         "\n"
-        "typedef FireStarterInstruction FireStarterInstructions[PROGRAM_INSTRUCTIONS];\n"
+        "typedef FireStarterInstruction FireStarterInstructions[PROGRAM_DATA];\n"
         "\n"
         "typedef struct FireStarterData {\n"
         "    float d[PROGRAM_DATA];\n"
@@ -484,7 +480,7 @@ void FireStarter::MakeProgram(std::string& src)
         "{\n"
         "    FireStarterData data(workData);\n";
     src += "    data[0] = r;\n";
-    src += "    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\n";
+    src += "    for (int i = 0; i < PROGRAM_DATA; i++)\n";
     src += "        data[instructions[i].a] = data[instructions[i].b] + data[instructions[i].c] * data[instructions[i].d];\n";
     src += "    r = data[PROGRAM_DATA - 1];\n";
     src += "    return isnan(r) ? 0.0f : r;\n"
@@ -497,7 +493,7 @@ void FireStarter::MakeProgram(std::string& src)
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
            "    const FireStarterInstructions instructions = {\n";
-    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+    for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d, %d,\n", curState.instructions[i].a, curState.instructions[i].b, curState.instructions[i].c, curState.instructions[i].d);
     src += "    };\n"
            "    FireStarterData data(results->bestData);\n"
@@ -543,11 +539,11 @@ void FireStarter::MakeProgram(std::string& src)
            "extern \"C\" __global__ void FireShow(const FireStarterResults *results, const FireStarterData bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
            "{\n"
            "    const FireStarterInstructions instructions = {\n";
-    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+    for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d, %d,\n", curState.instructions[i].a, curState.instructions[i].b, curState.instructions[i].c, curState.instructions[i].d);
     src += "    };\n"
            "    const FireStarterInstructions bestInstructions = {\n";
-    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+    for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d, %d,\n", bestState.instructions[i].a, bestState.instructions[i].b, bestState.instructions[i].c, bestState.instructions[i].d);
     src += "    };\n"
            "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
@@ -595,7 +591,7 @@ void FireStarter::MakeProgram(std::string& src)
            "extern \"C\" __global__ void FireShow1(const FireStarterResults *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
            "{\n"
            "    const FireStarterInstructions bestInstructions = {\n";
-    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+    for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d, %d,\n", bestState.instructions[i].a, bestState.instructions[i].b, bestState.instructions[i].c, bestState.instructions[i].d);
     src += "    };\n"
            "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
