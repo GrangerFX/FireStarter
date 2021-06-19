@@ -3,53 +3,53 @@
 #include "FireStarterUtil.h"
 #include <vector>
 
-typedef struct FireStarterData {
+typedef struct FireStarter2Data {
     float d[PROGRAM_DATA];
 
     inline float& operator[](int i)
     {
         return d[i];
     } // operator[]
-} FireStarterData;
+} FireStarter2Data;
 
-typedef struct FireStarterResult {
-    FireStarterData data;
+typedef struct FireStarter2Result {
+    FireStarter2Data data;
     float result;
     unsigned int member;
-} FireStarterResult;
+} FireStarter2Result;
 
-typedef struct FireStarterResults {
+typedef struct FireStarter2Results {
     unsigned int numResults;
     float minResult;
     float curResult;
     float startResult;
-    FireStarterData bestData;
-    FireStarterResult results[1];
-} FireStarterResults;
+    FireStarter2Data bestData;
+    FireStarter2Result results[1];
+} FireStarter2Results;
 
 typedef struct {
     int a, b, c, d;
-} FireStarterInstruction;
+} FireStarter2Instruction;
 
-typedef FireStarterInstruction FireStarterInstructions[PROGRAM_DATA];
+typedef FireStarter2Instruction FireStarter2Instructions[PROGRAM_DATA];
 
-typedef struct FireStarterState {
-    FireStarterInstructions instructions;
-    FireStarterData data;
+typedef struct FireStarter2State {
+    FireStarter2Instructions instructions;
+    FireStarter2Data data;
     float result;
-} FireStarterState;
+} FireStarter1State;
 
-typedef std::vector<FireStarterState> FireStarterStates;
+typedef std::vector<FireStarter2State> FireStarter2States;
 
-class FireStarter {
+class FireStarter2 {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
-    FireStarterResults *results;
-    FireStarterResults *results1;
-    FireStarterStates states;
-    FireStarterState curState;
-    FireStarterState bestState;
+    FireStarter2Results *results;
+    FireStarter2Results *results1;
+    FireStarter2States states;
+    FireStarter2State curState;
+    FireStarter2State bestState;
     CUmodule module;
     long long generation;
     long long lastGeneration;
@@ -75,6 +75,6 @@ public:
     void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);
     void Init(unsigned long width, unsigned long height);
-    FireStarter(void);
-    ~FireStarter(void);
-}; // class FireStarter
+    FireStarter2(void);
+    ~FireStarter2(void);
+}; // class FireStarter2
