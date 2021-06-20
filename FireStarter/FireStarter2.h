@@ -1,15 +1,21 @@
 #pragma once
-#include "Defines.h"
 #include "FireStarterUtil.h"
 #include <vector>
+#include <cuda.h>
+
+#define FS2_PROGRAM_DATA 8
+#define FS2_PROGRAM_ITERATIONS 16000
+#define FS2_PROGRAM_POPULATION 4352
+#define FS2_SAMPLE_ITERATIONS 15
+#define FS2_MAX_RESULTS 16384
+#define FS2_SMART_RANDOM_FACTOR 0.1f
+#define FS2_SMART_AGE_FACTOR 0.01f
+#define FS2_SMART_EVOLVE_AGE 10
+#define FS2_SMART_DEVOLVE_AGE 50
+#define FS2_START_RESULT 10.0f
 
 typedef struct FireStarter2Data {
-    float d[PROGRAM_DATA];
-
-    inline float& operator[](int i)
-    {
-        return d[i];
-    } // operator[]
+    float d[FS2_PROGRAM_DATA][FS2_PROGRAM_DATA];
 } FireStarter2Data;
 
 typedef struct FireStarter2Result {
@@ -27,14 +33,7 @@ typedef struct FireStarter2Results {
     FireStarter2Result results[1];
 } FireStarter2Results;
 
-typedef struct {
-    int a, b, c, d;
-} FireStarter2Instruction;
-
-typedef FireStarter2Instruction FireStarter2Instructions[PROGRAM_DATA];
-
 typedef struct FireStarter2State {
-    FireStarter2Instructions instructions;
     FireStarter2Data data;
     float result;
 } FireStarter1State;
@@ -71,6 +70,7 @@ public:
     void RunProgram1(unsigned int population, unsigned int maxResults);
     void DrawGraph(void);
     void DrawGraph1(void);
+    void InitProgram(void);
     void RandomProgram(void);
     void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);

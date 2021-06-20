@@ -6,7 +6,6 @@
 
 // CUDA runtime
 // CUDA utilities and system includes
-#include <cuda.h>
 #include <cuda_runtime.h>
 #include <helper_functions.h>
 #include <helper_cuda_drvapi.h>
@@ -66,8 +65,8 @@ bool FireStarter2::GetResults(void)
 {
     if (results->numResults) {
         unsigned int numResults = results->numResults;
-        if (numResults > MAX_RESULTS)
-            numResults = MAX_RESULTS;
+        if (numResults > FS2_MAX_RESULTS)
+            numResults = FS2_MAX_RESULTS;
         unsigned int index = 0;
         float result = results->results[0].result;
         unsigned int member = results->results[0].member;
@@ -99,8 +98,8 @@ bool FireStarter2::GetResults1(void)
 {
     if (results1->numResults) {
         unsigned int numResults = results1->numResults;
-        if (numResults > MAX_RESULTS)
-            numResults = MAX_RESULTS;
+        if (numResults > FS2_MAX_RESULTS)
+            numResults = FS2_MAX_RESULTS;
         unsigned int index = 0;
         float result = results1->results[0].result;
         unsigned int member = results1->results[0].member;
@@ -122,7 +121,7 @@ bool FireStarter2::GetResults1(void)
 
 void FireStarter2::InitResults(void)
 {
-    unsigned int resultsSize = sizeof(FireStarter2Results) + sizeof(FireStarter2Result) * (MAX_RESULTS - 1);
+    unsigned int resultsSize = sizeof(FireStarter2Results) + sizeof(FireStarter2Result) * (FS2_MAX_RESULTS - 1);
     cudaError_t err = cudaMallocManaged(&results, resultsSize);
     if (err != cudaSuccess) {
         fprintf(stderr, "Failed to allocate results (error code %s)!\n", cudaGetErrorString(err));
@@ -133,7 +132,7 @@ void FireStarter2::InitResults(void)
 
 void FireStarter2::InitResults1(void)
 {
-    unsigned int resultsSize = sizeof(FireStarter2Results) + sizeof(FireStarter2Result) * (MAX_RESULTS - 1);
+    unsigned int resultsSize = sizeof(FireStarter2Results) + sizeof(FireStarter2Result) * (FS2_MAX_RESULTS - 1);
     cudaError_t err = cudaMallocManaged(&results1, resultsSize);
     if (err != cudaSuccess) {
         fprintf(stderr, "Failed to allocate results1 (error code %s)!\n", cudaGetErrorString(err));
@@ -216,7 +215,7 @@ void FireStarter2::RunProgram(unsigned int population, unsigned int maxResults)
     results->bestData = curState.data;
 #endif
     results->minResult = curState.result;
-    results->curResult = results->startResult = START_RESULT;
+    results->curResult = results->startResult = FS2_START_RESULT;
     results->numResults = 0;
 
     // Launch the calculation kernel
@@ -247,10 +246,10 @@ void FireStarter2::RunProgram(unsigned int population, unsigned int maxResults)
 
 void FireStarter2::RunProgram1(unsigned int population, unsigned int maxResults)
 {
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        results1->bestData[i] = 1.0f;
+    for (int i = 0; i < FS2_PROGRAM_DATA; i++)
+        results1->bestData.d[i][0] = 1.0f;
     results1->minResult = results1->curResult;
-    results1->curResult = results1->startResult = START_RESULT;
+    results1->curResult = results1->startResult = FS2_START_RESULT;
     results1->numResults = 0;
 
     // Launch the calculation kernel
@@ -335,67 +334,58 @@ void FireStarter2::DrawGraph1(void)
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph1
 
+void FireStarter2::InitProgram(void)
+{
+    unsigned int seed = 0;
+    seed = RANDOMHASH(seed) + 1;
+    for (int i = 0; i < FS2_PROGRAM_DATA; i++) {
+        curState.data.d[i][0] = 1.0f;
+        for (int j = 1; j < FS2_PROGRAM_DATA; j++)
+            curState.data.d[i][j] = 1.0f / FS2_PROGRAM_DATA;
+    }
+    curState.result = FS2_START_RESULT;
+    states.push_back(curState);
+
+    std::string code;
+    MakeProgram(code);
+    CompileProgram(code.c_str());
+} // InitProgram
+
 void FireStarter2::RandomProgram(void)
 {
     unsigned int seed = (unsigned int)generation;
     seed = RANDOMHASH(seed) + 1;
-    if (!states.size()) {
-        for (int i = 0; i < PROGRAM_DATA; i++)
-#if RESET_DATA
-           curState.data[i] = 1.0f;
-#else
-           curState.data[i] = RANDOMFACTOR(seed);
-#endif
-        for (int i = 0; i < PROGRAM_DATA; i++) {
-            curState.instructions[i].a = i;
-            curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
-            curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
-            curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
-        }
-        curState.result = START_RESULT;
-        states.push_back(curState);
-    } else {
-        int state = (unsigned int)states.size() - 1;
-        int numChanges = 1;
-        long long bestAge = generation - bestGeneration;
-        long long lastAge = generation - lastGeneration;
-        if (lastAge > SMART_EVOLVE_AGE)
-            numChanges++;
-        if (lastAge > SMART_EVOLVE_AGE * SMART_EVOLVE_AGE)
-            numChanges++;
-        if (state && (lastAge > SMART_DEVOLVE_AGE)) {
-            states.pop_back();
-            state--;
-            lastGeneration = generation;
-        }
-        curState = states[state];
-        while (numChanges--) {
-            unsigned int i = RANDOMSEED(seed) % PROGRAM_DATA;
-            unsigned int j = RANDOMSEED(seed) % 3;
-            switch (j) {
-                case 0:
-                    curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
-                    break;
-                case 1:
-                    curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
-                    break;
-                case 2:
-                    curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
-                    break;
-            }
-        }
+    int state = (unsigned int)states.size() - 1;
+    int numChanges = 1;
+    long long bestAge = generation - bestGeneration;
+    long long lastAge = generation - lastGeneration;
+    if (lastAge > FS2_SMART_EVOLVE_AGE)
+        numChanges++;
+    if (lastAge > FS2_SMART_EVOLVE_AGE * FS2_SMART_EVOLVE_AGE)
+        numChanges++;
+    if (state && (lastAge > FS2_SMART_DEVOLVE_AGE)) {
+        states.pop_back();
+        state--;
+        lastGeneration = generation;
+    }
+    curState = states[state];
+    while (numChanges--) {
+        unsigned int d = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+        unsigned int i = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+        unsigned int j = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+        curState.data.d[i][j] = RANDOMFACTOR(seed) / FS2_PROGRAM_DATA;
     }
     generation++;
 } // RandomProgram
 
 void FireStarter2::MakeProgram(std::string& src)
 {
-    src += Format("#define PROGRAM_DATA %d\n", PROGRAM_DATA);
-    src += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
-    src += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
-    src += Format("#define SMART_RANDOM_FACTOR %gf\n", SMART_RANDOM_FACTOR);
-    src += Format("#define SMART_AGE_FACTOR %gf\n", SMART_AGE_FACTOR);
-    src += Format("#define SMART_DEVOLVE_AGE %d\n", SMART_DEVOLVE_AGE);
+    src += Format("#define PROGRAM_DATA %d\n", FS2_PROGRAM_DATA);
+    src += Format("#define PROGRAM_ITERATIONS %d\n", FS2_PROGRAM_ITERATIONS);
+    src += Format("#define SAMPLE_ITERATIONS %d\n", FS2_SAMPLE_ITERATIONS);
+    src += Format("#define SMART_RANDOM_FACTOR %gf\n", FS2_SMART_RANDOM_FACTOR);
+    src += Format("#define SMART_AGE_FACTOR %gf\n", FS2_SMART_AGE_FACTOR);
+    src += Format("#define SMART_DEVOLVE_AGE %d\n", FS2_SMART_DEVOLVE_AGE);
     src += "\n"
         "__device__ unsigned int Hash(unsigned int hash)\n"
         "{\n"
@@ -421,12 +411,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "typedef FireStarter2Instruction FireStarter2Instructions[PROGRAM_DATA];\n"
         "\n"
         "typedef struct FireStarter2Data {\n"
-        "    float d[PROGRAM_DATA];\n"
-        "\n"
-        "    __device__ float& operator[](int i)\n"
-        "    {\n"
-        "        return d[i];\n"
-        "    } // operator[]\n"
+        "    float d[PROGRAM_DATA][PROGRAM_DATA];\n"
         "} FireStarter2Data;\n"
         "\n"
         "typedef struct FireStarter2Result {\n"
@@ -452,143 +437,133 @@ void FireStarter2::MakeProgram(std::string& src)
         "   return sinf(n * 1.3f) + n * 0.1f;\n"
         "} // Target1\n"
         "\n"
-        "__device__ float Evaluate(const FireStarter2Instructions &instructions, const FireStarter2Data &workData, float r)\n"
+        "__device__ float Evaluate(const FireStarter2Data &workData, float n)\n"
         "{\n"
-        "    FireStarter2Data data(workData);\n";
-    src += "    data[0] = r;\n";
-    src += "    for (int i = 0; i < PROGRAM_DATA; i++)\n";
-    src += "        data[instructions[i].a] = data[instructions[i].b] + data[instructions[i].c] * data[instructions[i].d];\n";
-    src += "    r = data[PROGRAM_DATA - 1];\n";
-    src += "    return isnan(r) ? 0.0f : r;\n"
-           "} // Evaluate\n"
-           "\n"
-           "extern \"C\" __global__ void FireStarter2(FireStarter2Results *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"
-           "{\n"
-           "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
-           "    if (member >= population)\n"
-           "        return;\n"
-           "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-           "    const FireStarter2Instructions instructions = {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d, %d,\n", curState.instructions[i].a, curState.instructions[i].b, curState.instructions[i].c, curState.instructions[i].d);
-    src += "    };\n"
-           "    FireStarter2Data data(results->bestData);\n"
-           "    float target[SAMPLE_ITERATIONS];\n"
-           "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
-           "        float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
-           "        target[i] = variation ? Target1(theta) : Target(theta);\n"
-           "    }\n"
-           "    float result = results->startResult;\n"
-           "    unsigned int age = 0;\n"
-           "    unsigned int d = 0;\n"
-           "    float oldValue = data[d];\n"
-           "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
-           "        float curResult = fabsf(Evaluate(instructions, data, 0.0f) - target[0]);\n"
-           "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
-           "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
-           "            float delta = fabsf(Evaluate(instructions, data, theta) - target[i]);\n"
-           "            curResult = delta > curResult ? delta : curResult;\n"
-           "        }\n"
-           "        if (curResult < result) {\n"
-           "            result = curResult;\n"
-           "            age = 0;\n"
-           "        } else {\n"
-           "            data[d] = oldValue;\n"
-           "            age++;\n"
-           "        }\n"
-           "        d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
-           "        oldValue = data[d];\n"
-           "        data[d] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
-           "    }\n"
-           "    data[d] = oldValue;\n"
-           "    if (result < results->curResult) {\n"
-           "        results->curResult = result;\n"
-           "        unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
-           "        if (index < maxResults) {\n"
-           "            results->results[index].data = data;\n"
-           "            results->results[index].result = result;\n"
-           "            results->results[index].member = member;\n"
-           "        }\n"
-           "    }\n"
-           "} // FireStarter2\n"
-           "\n"
-           "extern \"C\" __global__ void FireShow(const FireStarter2Results *results, const FireStarter2Data bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
-           "{\n"
-           "    const FireStarter2Instructions instructions = {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d, %d,\n", curState.instructions[i].a, curState.instructions[i].b, curState.instructions[i].c, curState.instructions[i].d);
-    src += "    };\n"
-           "    const FireStarter2Instructions bestInstructions = {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d, %d,\n", bestState.instructions[i].a, bestState.instructions[i].b, bestState.instructions[i].c, bestState.instructions[i].d);
-    src += "    };\n"
-           "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
-           "    int xScale = bufferHeight / 8;\n"
-           "    int yScale = bufferHeight / 16;\n"
-           "    if (x < bufferHeight) {\n"
-           "        int x0 = (bufferWidth / 2) - xScale;\n"
-           "        int x1 = (bufferWidth / 2) + xScale;\n"
-           "        if (x0 >= 0) {\n"
-           "            uchar4 &pixel(bufferPixels[x * bufferWidth + x0]);\n"
-           "            pixel.x = 64;\n"
-           "            pixel.y = 128;\n"
-           "            pixel.z = 64;\n"
-           "        };\n"
-           "        if (x1 < bufferWidth) {\n"
-           "            uchar4 &pixel(bufferPixels[x * bufferWidth + x1]);\n"
-           "            pixel.x = 64;\n"
-           "            pixel.y = 128;\n"
-           "            pixel.z = 64;\n"
-           "        };\n"
-           "    }\n"
-           "    if (x < bufferWidth) {\n"
-           "        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;\n"
-           "        float center = bufferHeight * 0.66f;\n"
-           "        int y = (int)(center + Target(theta) * yScale);\n"
-           "        if ((y >= 0) && (y < bufferHeight)) {\n"
-           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "            pixel.x = 255;\n"
-           "            pixel.y = 128;\n"
-           "        };\n"
-           "        y = (int)(center + Evaluate(instructions, results->bestData, theta) * yScale);\n"
-           "        if ((y >= 0) && (y < bufferHeight)) {\n"
-           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "            pixel.z = 255;\n"
-           "            pixel.y = 128;\n"
-           "        };\n"
-           "        y = (int)(center + Evaluate(bestInstructions, bestData, theta) * yScale);\n"
-           "        if ((y >= 0) && (y < bufferHeight)) {\n"
-           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "            pixel.x = pixel.y = pixel.z = 255;\n"
-           "        };\n"
-           "    }\n"
-           "} // FireShow\n"
-           "\n"
-           "extern \"C\" __global__ void FireShow1(const FireStarter2Results *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
-           "{\n"
-           "    const FireStarter2Instructions bestInstructions = {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d, %d,\n", bestState.instructions[i].a, bestState.instructions[i].b, bestState.instructions[i].c, bestState.instructions[i].d);
-    src += "    };\n"
-           "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
-           "    int xScale = bufferHeight / 8;\n"
-           "    int yScale = bufferHeight / 16;\n"
-           "    if (x < bufferWidth) {\n"
-           "        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;\n"
-           "        float center = bufferHeight * 0.33f;\n"
-           "        int y = (int)(center + Target1(theta) * yScale);\n"
-           "        if ((y >= 0) && (y < bufferHeight)) {\n"
-           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "            pixel.x = 255;\n"
-           "            pixel.y = 128;\n"
-           "        };\n"
-           "        y = (int)(center + Evaluate(bestInstructions, results->bestData, theta) * yScale);\n"
-           "        if ((y >= 0) && (y < bufferHeight)) {\n"
-           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "            pixel.x = pixel.y = pixel.z = 255;\n"
-           "        };\n"
-           "    }\n"
-           "} // FireShow1\n";
+        "    FireStarter2Data data(workData);\n"
+        "    data.d[0][0] = n;\n"
+        "    for (int i = 1; i < PROGRAM_DATA; i++) {\n"
+        "        float sum = 0.0f;\n"
+        "        for (int j = 0; j <= i; j++)\n"
+        "            sum += data.d[i][j] * data.d[j][0];\n"
+        "        data.d[i][0] = sum;\n"
+        "    }\n"
+        "    float result = data.d[PROGRAM_DATA - 1][0];\n"
+        "    return isnan(result) ? 0.0f : result;\n"
+        "} // Evaluate\n"
+        "\n"
+        "extern \"C\" __global__ void FireStarter2(FireStarter2Results *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"
+        "{\n"
+        "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
+        "    if (member >= population)\n"
+        "        return;\n"
+        "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
+        "    FireStarter2Data data(results->bestData);\n"
+        "    float target[SAMPLE_ITERATIONS];\n"
+        "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
+        "        float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
+        "        target[i] = variation ? Target1(theta) : Target(theta);\n"
+        "    }\n"
+        "    float result = results->startResult;\n"
+        "    unsigned int age = 0;\n"
+        "    unsigned int di = 0;\n"
+        "    unsigned int dj = 0;\n"
+        "    float oldData = data.d[di][dj];\n"
+        "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
+        "        float curResult = fabsf(Evaluate(data, 0.0f) - target[0]);\n"
+        "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
+        "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
+        "            float delta = fabsf(Evaluate(data, theta) - target[i]);\n"
+        "            curResult = delta > curResult ? delta : curResult;\n"
+        "        }\n"
+        "        if (curResult < result) {\n"
+        "            result = curResult;\n"
+        "            age = 0;\n"
+        "        } else {\n"
+        "            data.d[di][dj] = oldData;\n"
+        "            age++;\n"
+        "        }\n"
+        "        di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
+        "        dj = RANDOMSEED(seed) % PROGRAM_DATA;\n"
+        "        oldData = data.d[di][dj];\n"
+        "        data.d[di][dj] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
+        "    }\n"
+        "    data.d[di][dj] = oldData;\n"
+        "    if (result < results->curResult) {\n"
+        "        results->curResult = result;\n"
+        "        unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
+        "        if (index < maxResults) {\n"
+        "            results->results[index].data = data;\n"
+        "            results->results[index].result = result;\n"
+        "            results->results[index].member = member;\n"
+        "        }\n"
+        "    }\n"
+        "} // FireStarter2\n"
+        "\n"
+        "extern \"C\" __global__ void FireShow(const FireStarter2Results *results, const FireStarter2Data bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+        "{\n"
+        "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
+        "    int xScale = bufferHeight / 8;\n"
+        "    int yScale = bufferHeight / 16;\n"
+        "    if (x < bufferHeight) {\n"
+        "        int x0 = (bufferWidth / 2) - xScale;\n"
+        "        int x1 = (bufferWidth / 2) + xScale;\n"
+        "        if (x0 >= 0) {\n"
+        "            uchar4 &pixel(bufferPixels[x * bufferWidth + x0]);\n"
+        "            pixel.x = 64;\n"
+        "            pixel.y = 128;\n"
+        "            pixel.z = 64;\n"
+        "        };\n"
+        "        if (x1 < bufferWidth) {\n"
+        "            uchar4 &pixel(bufferPixels[x * bufferWidth + x1]);\n"
+        "            pixel.x = 64;\n"
+        "            pixel.y = 128;\n"
+        "            pixel.z = 64;\n"
+        "        };\n"
+        "    }\n"
+        "    if (x < bufferWidth) {\n"
+        "        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;\n"
+        "        float center = bufferHeight * 0.66f;\n"
+        "        int y = (int)(center + Target(theta) * yScale);\n"
+        "        if ((y >= 0) && (y < bufferHeight)) {\n"
+        "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+        "            pixel.x = 255;\n"
+        "            pixel.y = 128;\n"
+        "        };\n"
+        "        y = (int)(center + Evaluate(results->bestData, theta) * yScale);\n"
+        "        if ((y >= 0) && (y < bufferHeight)) {\n"
+        "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+        "            pixel.z = 255;\n"
+        "            pixel.y = 128;\n"
+        "        };\n"
+        "        y = (int)(center + Evaluate(bestData, theta) * yScale);\n"
+        "        if ((y >= 0) && (y < bufferHeight)) {\n"
+        "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+        "            pixel.x = pixel.y = pixel.z = 255;\n"
+        "        };\n"
+        "    }\n"
+        "} // FireShow\n"
+        "\n"
+        "extern \"C\" __global__ void FireShow1(const FireStarter2Results *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+        "{\n"
+        "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
+        "    int xScale = bufferHeight / 8;\n"
+        "    int yScale = bufferHeight / 16;\n"
+        "    if (x < bufferWidth) {\n"
+        "        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;\n"
+        "        float center = bufferHeight * 0.33f;\n"
+        "        int y = (int)(center + Target1(theta) * yScale);\n"
+        "        if ((y >= 0) && (y < bufferHeight)) {\n"
+        "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+        "            pixel.x = 255;\n"
+        "            pixel.y = 128;\n"
+        "        };\n"
+        "        y = (int)(center + Evaluate(results->bestData, theta) * yScale);\n"
+        "        if ((y >= 0) && (y < bufferHeight)) {\n"
+        "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
+        "            pixel.x = pixel.y = pixel.z = 255;\n"
+        "        };\n"
+        "    }\n"
+        "} // FireShow1\n";
 } // MakeProgram
 
 void FireStarter2::RenderImage(HWND hwnd)
@@ -597,10 +572,7 @@ void FireStarter2::RenderImage(HWND hwnd)
     bool update = false;
     if (bestState.result >= 1.0E-6f) {
         RandomProgram();
-        std::string code;
-        MakeProgram(code);
-        CompileProgram(code.c_str());
-        RunProgram(PROGRAM_POPULATION, MAX_RESULTS);
+        RunProgram(FS2_PROGRAM_POPULATION, FS2_MAX_RESULTS);
         update = GetResults();
     }
 
@@ -608,7 +580,7 @@ void FireStarter2::RenderImage(HWND hwnd)
         DrawGraph();
         DrawGraph1();
         if (update) {
-            RunProgram1(PROGRAM_POPULATION, MAX_RESULTS);
+            RunProgram1(FS2_PROGRAM_POPULATION, FS2_MAX_RESULTS);
             GetResults1();
             bestState = curState;
             bestGeneration = generation;
@@ -659,7 +631,7 @@ void FireStarter2::Init(unsigned long width, unsigned long height)
     generation = 0;
     lastGeneration = 0;
     bestGeneration = 0;
-    RandomProgram();
+    InitProgram();
     bestState = curState;
 } // Init
 

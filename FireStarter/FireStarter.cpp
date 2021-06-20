@@ -6,7 +6,6 @@
 
 // CUDA runtime
 // CUDA utilities and system includes
-#include <cuda.h>
 #include <cuda_runtime.h>
 #include <helper_functions.h>
 #include <nvrtc.h>

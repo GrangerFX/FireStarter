@@ -1,7 +1,19 @@
 #pragma once
-#include "Defines.h"
 #include "FireStarterUtil.h"
 #include <vector>
+#include <cuda.h>
+
+#define PROGRAM_DATA 8
+#define PROGRAM_ITERATIONS 16384
+#define PROGRAM_POPULATION 262144
+#define SAMPLE_ITERATIONS 15
+#define MAX_RESULTS 16384
+#define SMART_RANDOM_FACTOR 0.1f
+#define SMART_AGE_FACTOR 0.01f
+#define SMART_EVOLVE_AGE 10
+#define SMART_DEVOLVE_AGE 50
+#define START_RESULT 10.0f
+#define RESET_DATA 1
 
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];

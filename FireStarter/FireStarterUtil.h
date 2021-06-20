@@ -51,7 +51,7 @@ public:
 }; // SimpleTimer
 
 typedef struct FrameBuffer {
-    uchar4* base;			        // Pointer to the alligned native pixel format buffer
+    unsigned char* base;			// Pointer to the alligned native pixel format buffer
     long rowbytes;					// Number of bytes per row
     unsigned long width;			// Number of columns
     unsigned long height;			// Number of rows
