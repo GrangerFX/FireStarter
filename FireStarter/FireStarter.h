@@ -3,7 +3,7 @@
 #include <vector>
 #include <cuda.h>
 
-#define PROGRAM_DATA 8
+#define PROGRAM_DATA 6
 #define PROGRAM_ITERATIONS 16384
 #define PROGRAM_POPULATION 262144
 #define SAMPLE_ITERATIONS 15

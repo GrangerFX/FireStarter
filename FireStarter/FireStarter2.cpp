@@ -341,7 +341,8 @@ void FireStarter2::InitProgram(void)
     for (int i = 0; i < FS2_PROGRAM_DATA; i++) {
         curState.data.d[i][0] = 1.0f;
         for (int j = 1; j < FS2_PROGRAM_DATA; j++)
-            curState.data.d[i][j] = j <= i ? 1.0f / FS2_PROGRAM_DATA : 0.0f;
+            curState.data.d[i][j] = j <= i ? 1.0f : 0.0f;
+//          curState.data.d[i][j] = j <= i ? 1.0f / FS2_PROGRAM_DATA : 0.0f;
     }
     curState.result = FS2_START_RESULT;
     states.push_back(curState);
@@ -369,11 +370,13 @@ void FireStarter2::RandomProgram(void)
         lastGeneration = generation;
     }
     curState = states[state];
+#if 0
     while (numChanges--) {
         unsigned int i = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
         unsigned int j = RANDOMSEED(seed) % (i + 1);
         curState.data.d[i][j] = RANDOMFACTOR(seed) / FS2_PROGRAM_DATA;
     }
+#endif
     generation++;
 } // RandomProgram
 
@@ -402,12 +405,6 @@ void FireStarter2::MakeProgram(std::string& src)
         "#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1\n"
         "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
         "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
-        "\n"
-        "typedef struct {\n"
-        "    int a, b, c, d;\n"
-        "} FireStarter2Instruction;\n"
-        "\n"
-        "typedef FireStarter2Instruction FireStarter2Instructions[PROGRAM_DATA];\n"
         "\n"
         "typedef struct FireStarter2Data {\n"
         "    float d[PROGRAM_DATA][PROGRAM_DATA];\n"
@@ -455,8 +452,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
         "    if (member >= population)\n"
         "        return;\n"
-        "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-        "    FireStarter2Data data(results->bestData);\n"
+        "    unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);\n"
         "    float target[SAMPLE_ITERATIONS];\n"
         "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
         "        float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
@@ -464,10 +460,12 @@ void FireStarter2::MakeProgram(std::string& src)
         "    }\n"
         "    float result = results->startResult;\n"
         "    unsigned int age = 0;\n"
-        "    unsigned int di = 0;\n"
-        "    unsigned int dj = 0;\n"
-        "    float oldData = data.d[di][dj];\n"
+        "    FireStarter2Data data(results->bestData);\n"
         "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
+        "        unsigned int di = 1 + (RANDOMSEED(seed) % (PROGRAM_DATA - 1));\n"
+        "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
+        "        float oldData = data.d[di][dj];\n"
+        "        data.d[di][dj] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
         "        float curResult = fabsf(Evaluate(data, 0.0f) - target[0]);\n"
         "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
         "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
@@ -481,12 +479,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "            data.d[di][dj] = oldData;\n"
         "            age++;\n"
         "        }\n"
-        "        di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
-        "        dj = RANDOMSEED(seed) % (di + 1);\n"
-        "        oldData = data.d[di][dj];\n"
-        "        data.d[di][dj] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
         "    }\n"
-        "    data.d[di][dj] = oldData;\n"
         "    if (result < results->curResult) {\n"
         "        results->curResult = result;\n"
         "        unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"
