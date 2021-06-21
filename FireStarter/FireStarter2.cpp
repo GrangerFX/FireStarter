@@ -341,7 +341,8 @@ void FireStarter2::InitProgram(void)
     for (int i = 0; i < FS2_PROGRAM_DATA; i++) {
         curState.data.d[i][0] = 1.0f;
         for (int j = 1; j < FS2_PROGRAM_DATA; j++)
-            curState.data.d[i][j] = j <= i ? 1.0f : 0.0f;
+            curState.data.d[i][j] = 0.0f;
+//          curState.data.d[i][j] = j <= i ? 1.0f : 0.0f;
 //          curState.data.d[i][j] = j <= i ? 1.0f / FS2_PROGRAM_DATA : 0.0f;
     }
     curState.result = FS2_START_RESULT;
@@ -438,8 +439,8 @@ void FireStarter2::MakeProgram(std::string& src)
         "    FireStarter2Data data(workData);\n"
         "    data.d[0][0] = n;\n"
         "    for (int i = 1; i < PROGRAM_DATA; i++) {\n"
-        "        float sum = 0.0f;\n"
-        "        for (int j = 0; j <= i; j++)\n"
+        "        float sum = data.d[i][i];\n"
+        "        for (int j = 0; j < i; j++)\n"
         "            sum += data.d[i][j] * data.d[j][0];\n"
         "        data.d[i][0] = sum;\n"
         "    }\n"
@@ -465,7 +466,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "        unsigned int di = 1 + (RANDOMSEED(seed) % (PROGRAM_DATA - 1));\n"
         "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
         "        float oldData = data.d[di][dj];\n"
-        "        data.d[di][dj] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
+        "        data.d[di][dj] = oldData + (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
         "        float curResult = fabsf(Evaluate(data, 0.0f) - target[0]);\n"
         "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
         "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"

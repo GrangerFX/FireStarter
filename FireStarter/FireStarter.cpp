@@ -533,7 +533,7 @@ void FireStarter::MakeProgram(std::string& src)
            "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
            "        unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
            "        float oldValue = data[d];\n"
-           "        data[d] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
+           "        data[d] = oldValue + (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
            "        float curResult = fabsf(Evaluate(instructions, data, 0.0f) - target[0]);\n"
            "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
            "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
