@@ -13,7 +13,6 @@
 #define SMART_EVOLVE_AGE 10
 #define SMART_DEVOLVE_AGE 50
 #define START_RESULT 10.0f
-#define RESET_DATA 1
 
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
@@ -40,7 +39,7 @@ typedef struct FireStarterResults {
 } FireStarterResults;
 
 typedef struct {
-    int a, b, c, d;
+    int a, b, c;
 } FireStarterInstruction;
 
 typedef FireStarterInstruction FireStarterInstructions[PROGRAM_DATA];

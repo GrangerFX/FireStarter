@@ -341,7 +341,7 @@ void FireStarter2::InitProgram(void)
     for (int i = 0; i < FS2_PROGRAM_DATA; i++) {
         curState.data.d[i][0] = 1.0f;
         for (int j = 1; j < FS2_PROGRAM_DATA; j++)
-            curState.data.d[i][j] = 1.0f / FS2_PROGRAM_DATA;
+            curState.data.d[i][j] = j <= i ? 1.0f / FS2_PROGRAM_DATA : 0.0f;
     }
     curState.result = FS2_START_RESULT;
     states.push_back(curState);
@@ -370,9 +370,8 @@ void FireStarter2::RandomProgram(void)
     }
     curState = states[state];
     while (numChanges--) {
-        unsigned int d = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
         unsigned int i = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
-        unsigned int j = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+        unsigned int j = RANDOMSEED(seed) % (i + 1);
         curState.data.d[i][j] = RANDOMFACTOR(seed) / FS2_PROGRAM_DATA;
     }
     generation++;
@@ -483,7 +482,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "            age++;\n"
         "        }\n"
         "        di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
-        "        dj = RANDOMSEED(seed) % PROGRAM_DATA;\n"
+        "        dj = RANDOMSEED(seed) % (di + 1);\n"
         "        oldData = data.d[di][dj];\n"
         "        data.d[di][dj] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
         "    }\n"
