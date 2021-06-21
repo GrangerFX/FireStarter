@@ -340,7 +340,7 @@ void FireStarter::RandomProgram(void)
     seed = RANDOMHASH(seed) + 1;
     if (!states.size()) {
         for (int i = 0; i < PROGRAM_DATA; i++)
-           curState.data[i] = 1.0f;
+           curState.data[i] = 0.0f;
 #if 0
         curState.instructions[0].a = 0;
         curState.instructions[0].b = 5;
