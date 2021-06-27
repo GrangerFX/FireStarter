@@ -38,12 +38,15 @@ typedef struct FireStarter2State {
     float result;
 } FireStarter1State;
 
+typedef std::vector<FireStarter2State> FireStarter2States;
+
 class FireStarter2 {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
     FireStarter2Results *results;
     FireStarter2Results *results1;
+    FireStarter2States states;
     FireStarter2State curState;
     FireStarter2State bestState;
     CUmodule module;
@@ -68,6 +71,7 @@ public:
     void DrawGraph(void);
     void DrawGraph1(void);
     void InitProgram(void);
+    void RandomProgram(void);
     void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);
     void Init(unsigned long width, unsigned long height);

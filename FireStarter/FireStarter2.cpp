@@ -86,6 +86,7 @@ bool FireStarter2::GetResults(void)
             curState.data = results->bestData;
             curState.result = result;
             lastGeneration = generation;
+            states.push_back(curState);
             if (result < bestState.result)
                 return true;
         }
@@ -336,11 +337,18 @@ void FireStarter2::InitProgram(void)
         for (int j = 0; j < FS2_PROGRAM_DATA; j++)
             curState.data.d[i][j] = 0.0f;
     curState.result = FS2_START_RESULT;
+    states.push_back(curState);
 
     std::string code;
     MakeProgram(code);
     CompileProgram(code.c_str());
 } // InitProgram
+
+void FireStarter2::RandomProgram(void)
+{
+    curState = states.back();
+    generation++;
+} // RandomProgram
 
 void FireStarter2::MakeProgram(std::string& src)
 {
@@ -527,7 +535,9 @@ void FireStarter2::RenderImage(HWND hwnd)
     timer.Start();
     bool update = false;
     if (bestState.result >= 1.0E-6f) {
-        generation++;
+ //       curState = states.back();
+ //       generation++;
+        RandomProgram();
         RunProgram(FS2_PROGRAM_POPULATION, FS2_MAX_RESULTS);
         update = GetResults();
     }
@@ -564,7 +574,7 @@ void FireStarter2::RenderImage(HWND hwnd)
     }
 
     double time = timer.Duration();
-    sprintf_s(statusString, "FireStarter2: Generation=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, time);
+    sprintf_s(statusString, "FireStarter2: Generation=%lld  States=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, states.size(), generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, time);
 #if 0
     if (update) {
         printf("// %s\n", statusString);
