@@ -86,7 +86,6 @@ bool FireStarter2::GetResults(void)
             curState.data = results->bestData;
             curState.result = result;
             lastGeneration = generation;
-            states.push_back(curState);
             if (result < bestState.result)
                 return true;
         }
@@ -333,22 +332,17 @@ void FireStarter2::InitProgram(void)
 {
     unsigned int seed = 0;
     seed = RANDOMHASH(seed) + 1;
-    for (int i = 0; i < FS2_PROGRAM_DATA; i++)
-        for (int j = 0; j < FS2_PROGRAM_DATA; j++)
+    for (int i = 0; i < FS2_PROGRAM_DATA; i++) {
+        curState.data.d[i][0] = 1.0f;
+        for (int j = 1; j < FS2_PROGRAM_DATA; j++)
             curState.data.d[i][j] = 0.0f;
+    }
     curState.result = FS2_START_RESULT;
-    states.push_back(curState);
 
     std::string code;
     MakeProgram(code);
     CompileProgram(code.c_str());
 } // InitProgram
-
-void FireStarter2::RandomProgram(void)
-{
-    curState = states.back();
-    generation++;
-} // RandomProgram
 
 void FireStarter2::MakeProgram(std::string& src)
 {
@@ -434,7 +428,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "    unsigned int age = 0;\n"
         "    FireStarter2Data data(results->bestData);\n"
         "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
-        "        unsigned int di = (RANDOMSEED(seed) % PROGRAM_DATA);\n"
+        "        unsigned int di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
         "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
         "        float oldData = data.d[di][dj];\n"
         "        data.d[di][dj] = oldData + (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
@@ -535,9 +529,9 @@ void FireStarter2::RenderImage(HWND hwnd)
     timer.Start();
     bool update = false;
     if (bestState.result >= 1.0E-6f) {
- //       curState = states.back();
- //       generation++;
-        RandomProgram();
+//        curState = states.back();
+        generation++;
+ //       RandomProgram();
         RunProgram(FS2_PROGRAM_POPULATION, FS2_MAX_RESULTS);
         update = GetResults();
     }
@@ -574,7 +568,7 @@ void FireStarter2::RenderImage(HWND hwnd)
     }
 
     double time = timer.Duration();
-    sprintf_s(statusString, "FireStarter2: Generation=%lld  States=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, states.size(), generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, time);
+    sprintf_s(statusString, "FireStarter2: Generation=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, time);
 #if 0
     if (update) {
         printf("// %s\n", statusString);
