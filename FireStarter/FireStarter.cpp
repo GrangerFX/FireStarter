@@ -341,7 +341,7 @@ void FireStarter::RandomProgram(void)
     if (!states.size()) {
         for (int i = 0; i < PROGRAM_DATA; i++)
            curState.data[i] = 0.0f;
-#if 0
+#if PROGRAM_FIXED
         curState.instructions[0].a = 1;
         curState.instructions[0].b = 0;
         curState.instructions[0].c = 2;
@@ -360,8 +360,7 @@ void FireStarter::RandomProgram(void)
         curState.instructions[5].a = 2;
         curState.instructions[5].b = 2;
         curState.instructions[5].c = 4;
-#endif
-#if 1
+#else
         for (int i = 0; i < PROGRAM_DATA; i++) {
             curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
             curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
@@ -375,18 +374,21 @@ void FireStarter::RandomProgram(void)
         int numChanges = 1;
         long long bestAge = generation - bestGeneration;
         long long lastAge = generation - lastGeneration;
-        if (lastAge > SMART_EVOLVE_AGE)
-            numChanges++;
-        if (lastAge > SMART_EVOLVE_AGE * SMART_EVOLVE_AGE)
-            numChanges++;
         if (state && (lastAge > SMART_DEVOLVE_AGE)) {
             states.pop_back();
             state--;
             lastGeneration = generation;
         }
         curState = states[state];
+#if DATA_FIXED
         for (int i = 0; i < PROGRAM_DATA; i++)
             curState.data[i] = 1.0f;
+#endif
+#if !PROGRAM_FIXED
+        if (lastAge > SMART_EVOLVE_AGE)
+            numChanges++;
+        if (lastAge > SMART_EVOLVE_AGE * SMART_EVOLVE_AGE)
+            numChanges++;
         while (numChanges--) {
             unsigned int i = RANDOMSEED(seed) % PROGRAM_DATA;
             unsigned int j = RANDOMSEED(seed) % 3;
@@ -402,6 +404,7 @@ void FireStarter::RandomProgram(void)
                     break;
             }
         }
+#endif
     }
     generation++;
 } // RandomProgram

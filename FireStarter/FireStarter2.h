@@ -4,8 +4,8 @@
 #include <cuda.h>
 
 #define FS2_PROGRAM_DATA 6
-#define FS2_PROGRAM_ITERATIONS 16000
-#define FS2_PROGRAM_POPULATION 4352 * 16
+#define FS2_PROGRAM_ITERATIONS 16000 * 16
+#define FS2_PROGRAM_POPULATION 4352
 #define FS2_SAMPLE_ITERATIONS 15
 #define FS2_MAX_RESULTS 16384
 #define FS2_SMART_RANDOM_FACTOR 0.1f
@@ -38,15 +38,12 @@ typedef struct FireStarter2State {
     float result;
 } FireStarter1State;
 
-typedef std::vector<FireStarter2State> FireStarter2States;
-
 class FireStarter2 {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
     FireStarter2Results *results;
     FireStarter2Results *results1;
-    FireStarter2States states;
     FireStarter2State curState;
     FireStarter2State bestState;
     CUmodule module;
@@ -71,7 +68,6 @@ public:
     void DrawGraph(void);
     void DrawGraph1(void);
     void InitProgram(void);
-    void RandomProgram(void);
     void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);
     void Init(unsigned long width, unsigned long height);
