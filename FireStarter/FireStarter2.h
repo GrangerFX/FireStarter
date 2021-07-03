@@ -18,13 +18,13 @@ typedef struct FireStarter2Data {
     float d[FS2_PROGRAM_DATA][FS2_PROGRAM_DATA];
 } FireStarter2Data;
 
-typedef struct FireStarter2Result {
+typedef struct {
     FireStarter2Data data;
     float result;
     unsigned int member;
 } FireStarter2Result;
 
-typedef struct FireStarter2Results {
+typedef struct {
     unsigned int numResults;
     float minResult;
     float curResult;
@@ -33,11 +33,10 @@ typedef struct FireStarter2Results {
     FireStarter2Result results[1];
 } FireStarter2Results;
 
-typedef struct FireStarter2State {
+typedef struct {
     FireStarter2Data data;
     float result;
-} FireStarter1State;
-
+} FireStarter2State;
 
 class FireStarter2 {
 public:

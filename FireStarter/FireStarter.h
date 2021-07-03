@@ -16,22 +16,17 @@
 #define SMART_DEVOLVE_AGE 50
 #define START_RESULT 10.0f
 
-typedef struct FireStarterData {
+typedef struct {
     float d[PROGRAM_DATA];
-
-    inline float& operator[](int i)
-    {
-        return d[i];
-    } // operator[]
 } FireStarterData;
 
-typedef struct FireStarterResult {
+typedef struct {
     FireStarterData data;
     float result;
     unsigned int member;
 } FireStarterResult;
 
-typedef struct FireStarterResults {
+typedef struct {
     unsigned int numResults;
     float minResult;
     float curResult;
@@ -44,9 +39,11 @@ typedef struct {
     int a, b, c;
 } FireStarterInstruction;
 
-typedef FireStarterInstruction FireStarterInstructions[PROGRAM_DATA];
+typedef struct {
+    FireStarterInstruction d[PROGRAM_DATA];
+} FireStarterInstructions;
 
-typedef struct FireStarterState {
+typedef struct {
     FireStarterInstructions instructions;
     FireStarterData data;
     float result;
