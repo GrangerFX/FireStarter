@@ -481,7 +481,7 @@ void FireStarter::MakeProgram(std::string& src)
            "\n"
            "__device__ float EvaluateInstructions(const FireStarterInstructions &instructions, const FireStarterData &curData, float r)\n"
            "{\n"
-           "    __shared__ FireStarterData data;\n"
+           "    FireStarterData data;\n"
            "    data = curData;\n"
            "    data.d[0] = r;\n"
            "    for (int i = 0; i < PROGRAM_DATA; i++)\n"
@@ -496,7 +496,7 @@ void FireStarter::MakeProgram(std::string& src)
            "    if (member >= population)\n"
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-#if 0
+#if 1
            "    const FireStarterInstructions instructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d,\n", curState->instructions.d[i].a, curState->instructions.d[i].b, curState->instructions.d[i].c);
