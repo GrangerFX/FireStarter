@@ -603,7 +603,7 @@ void FireStarter::MakeProgram(std::string& src)
            "            pixel.z = 255;\n"
            "            pixel.y = 128;\n"
            "        };\n"
-           "        workData = results->bestData;\n"
+           "        workData = bestData;\n"
            "        y = (int)(center + EvaluateInstructions(bestInstructions, workData, theta) * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
