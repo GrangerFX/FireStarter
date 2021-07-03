@@ -82,11 +82,11 @@ bool FireStarter::GetResults(void)
 
         results->bestData = results->results[index].data;
         results->curResult = result;
-        if (result < curState.result) {
-            curState.data = results->bestData;
-            curState.result = result;
+        if (result < curState->result) {
+            curState->data = results->bestData;
+            curState->result = result;
             lastGeneration = generation;
-            states.push_back(curState);
+            states.push_back(*curState);
             if (result < bestState.result)
                 return true;
         }
@@ -212,9 +212,9 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
     for (int i = 0; i < PROGRAM_DATA; i++)
         results->bestData[i] = 1.0f;
 #else
-    results->bestData = curState.data;
+    results->bestData = curState->data;
 #endif
-    results->minResult = curState.result;
+    results->minResult = curState->result;
     results->curResult = results->startResult = START_RESULT;
     results->numResults = 0;
 
@@ -225,11 +225,12 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     unsigned int variation = 0;
-    void *arr[] = {reinterpret_cast<void *>(&results),
-                   reinterpret_cast<void *>(&maxResults),
-                   reinterpret_cast<void *>(&population),
-                   reinterpret_cast<void *>(&generation),
-                   reinterpret_cast<void *>(&variation)};
+    void *arr[] = {reinterpret_cast<void*>(&curState),
+                   reinterpret_cast<void*>(&results),
+                   reinterpret_cast<void*>(&maxResults),
+                   reinterpret_cast<void*>(&population),
+                   reinterpret_cast<void*>(&generation),
+                   reinterpret_cast<void*>(&variation)};
 
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter"));
@@ -259,11 +260,12 @@ void FireStarter::RunProgram1(unsigned int population, unsigned int maxResults)
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     unsigned int variation = 1;
-    void *arr[] = {reinterpret_cast<void *>(&results1),
-                   reinterpret_cast<void *>(&maxResults),
-                   reinterpret_cast<void *>(&population),
-                   reinterpret_cast<void *>(&generation),
-                   reinterpret_cast<void *>(&variation)};
+    void *arr[] = {reinterpret_cast<void*>(&curState),
+                   reinterpret_cast<void*>(&results1),
+                   reinterpret_cast<void*>(&maxResults),
+                   reinterpret_cast<void*>(&population),
+                   reinterpret_cast<void*>(&generation),
+                   reinterpret_cast<void*>(&variation)};
 
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter"));
@@ -292,11 +294,11 @@ void FireStarter::DrawGraph(void)
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow"));
 
-    void *arr[] = {reinterpret_cast<void *>(&results),
-                   reinterpret_cast<void *>(&bestState.data),
-                   reinterpret_cast<void *>(&theBuffer.base),
-                   reinterpret_cast<void *>(&theBuffer.width),
-                   reinterpret_cast<void *>(&theBuffer.height)};
+    void *arr[] = {reinterpret_cast<void*>(&results),
+                   reinterpret_cast<void*>(&bestState.data),
+                   reinterpret_cast<void*>(&theBuffer.base),
+                   reinterpret_cast<void*>(&theBuffer.width),
+                   reinterpret_cast<void*>(&theBuffer.height)};
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -319,10 +321,10 @@ void FireStarter::DrawGraph1(void)
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow1"));
 
-    void *arr[] = {reinterpret_cast<void *>(&results1),
-                   reinterpret_cast<void *>(&theBuffer.base),
-                   reinterpret_cast<void *>(&theBuffer.width),
-                   reinterpret_cast<void *>(&theBuffer.height)};
+    void *arr[] = {reinterpret_cast<void*>(&results1),
+                   reinterpret_cast<void*>(&theBuffer.base),
+                   reinterpret_cast<void*>(&theBuffer.width),
+                   reinterpret_cast<void*>(&theBuffer.height)};
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -339,36 +341,37 @@ void FireStarter::RandomProgram(void)
     unsigned int seed = (unsigned int)generation;
     seed = RANDOMHASH(seed) + 1;
     if (!states.size()) {
+        cudaError_t err = cudaMallocManaged(&curState, sizeof(FireStarterState));
         for (int i = 0; i < PROGRAM_DATA; i++)
-           curState.data[i] = 0.0f;
+           curState->data[i] = 0.0f;
 #if PROGRAM_FIXED
-        curState.instructions[0].a = 1;
-        curState.instructions[0].b = 0;
-        curState.instructions[0].c = 2;
-        curState.instructions[1].a = 1;
-        curState.instructions[1].b = 2;
-        curState.instructions[1].c = 3;
-        curState.instructions[2].a = 0;
-        curState.instructions[2].b = 1;
-        curState.instructions[2].c = 0;
-        curState.instructions[3].a = 5;
-        curState.instructions[3].b = 2;
-        curState.instructions[3].c = 0;
-        curState.instructions[4].a = 1;
-        curState.instructions[4].b = 3;
-        curState.instructions[4].c = 3;
-        curState.instructions[5].a = 2;
-        curState.instructions[5].b = 2;
-        curState.instructions[5].c = 4;
+        curState->instructions[0].a = 1;
+        curState->instructions[0].b = 0;
+        curState->instructions[0].c = 2;
+        curState->instructions[1].a = 1;
+        curState->instructions[1].b = 2;
+        curState->instructions[1].c = 3;
+        curState->instructions[2].a = 0;
+        curState->instructions[2].b = 1;
+        curState->instructions[2].c = 0;
+        curState->instructions[3].a = 5;
+        curState->instructions[3].b = 2;
+        curState->instructions[3].c = 0;
+        curState->instructions[4].a = 1;
+        curState->instructions[4].b = 3;
+        curState->instructions[4].c = 3;
+        curState->instructions[5].a = 2;
+        curState->instructions[5].b = 2;
+        curState->instructions[5].c = 4;
 #else
         for (int i = 0; i < PROGRAM_DATA; i++) {
-            curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
-            curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
-            curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState->instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState->instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState->instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
         }
 #endif
-        curState.result = START_RESULT;
-        states.push_back(curState);
+        curState->result = START_RESULT;
+        states.push_back(*curState);
     } else {
         int state = (unsigned int)states.size() - 1;
         int numChanges = 1;
@@ -379,10 +382,10 @@ void FireStarter::RandomProgram(void)
             state--;
             lastGeneration = generation;
         }
-        curState = states[state];
+        *curState = states[state];
 #if DATA_FIXED
         for (int i = 0; i < PROGRAM_DATA; i++)
-            curState.data[i] = 1.0f;
+            curState->data[i] = 1.0f;
 #endif
 #if !PROGRAM_FIXED
         if (lastAge > SMART_EVOLVE_AGE)
@@ -394,13 +397,13 @@ void FireStarter::RandomProgram(void)
             unsigned int j = RANDOMSEED(seed) % 3;
             switch (j) {
                 case 0:
-                    curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
+                    curState->instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
                     break;
                 case 1:
-                    curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
+                    curState->instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
                     break;
                 case 2:
-                    curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
+                    curState->instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
                     break;
             }
         }
@@ -435,6 +438,15 @@ void FireStarter::MakeProgram(std::string& src)
            "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
            "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
            "\n"
+           "typedef struct FireStarterData {\n"
+           "    float d[PROGRAM_DATA];\n"
+           "\n"
+           "    __device__ float& operator[](int i)\n"
+           "    {\n"
+           "        return d[i];\n"
+           "    } // operator[]\n"
+           "} FireStarterData;\n"
+           "\n"
            "typedef struct {\n"
            "    int a, b, c;\n"
            "} FireStarterInstruction;\n"
@@ -447,14 +459,11 @@ void FireStarter::MakeProgram(std::string& src)
            "\n"
            "typedef FireStarterCode FireStarterCodes[PROGRAM_DATA];\n"
            "\n"
-           "typedef struct FireStarterData {\n"
-           "    float d[PROGRAM_DATA];\n"
-           "\n"
-           "    __device__ float& operator[](int i)\n"
-           "    {\n"
-           "        return d[i];\n"
-           "    } // operator[]\n"
-           "} FireStarterData;\n"
+           "typedef struct FireStarterState {\n"
+           "    FireStarterInstructions instructions;\n"
+           "    FireStarterData data;\n"
+           "    float result;\n"
+           "} FireStarterState;\n"
            "\n"
            "typedef struct FireStarterResult {\n"
            "    FireStarterData data;\n"
@@ -506,20 +515,20 @@ void FireStarter::MakeProgram(std::string& src)
            "    return isnan(r) ? 0.0f : r;\n"
            "} // EvaluateCodes\n"
            "\n"
-           "extern \"C\" __global__ void FireStarter(FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"
+           "extern \"C\" __global__ void FireStarter(const FireStarterState *state, FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"
            "{\n"
            "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
            "    if (member >= population)\n"
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-           "    const FireStarterInstructions instructions = {\n";
+         "    const FireStarterInstructions instructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d,\n", curState.instructions[i].a, curState.instructions[i].b, curState.instructions[i].c);
+        src += Format("        %d, %d, %d,\n", curState->instructions[i].a, curState->instructions[i].b, curState->instructions[i].c);
     src += "    };\n"
            "    FireStarterData curData(results->bestData);\n"
            "    FireStarterData workData(curData);\n"
            "    FireStarterCodes codes;"
-           "    CompileInstructions(instructions, workData, codes);\n"
+           "    CompileInstructions(state->instructions, workData, codes);\n"
            "    float target[SAMPLE_ITERATIONS];\n"
            "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
            "        float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
@@ -536,6 +545,7 @@ void FireStarter::MakeProgram(std::string& src)
            "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
            "            workData = curData;\n"
            "            float delta = fabsf(EvaluateInstructions(instructions, workData, theta) - target[i]);\n"
+//         "            float delta = fabsf(EvaluateCodes(codes, workData, theta) - target[i]);\n"
            "            curResult = delta > curResult ? delta : curResult;\n"
            "        }\n"
            "        if (curResult < result) {\n"
@@ -561,7 +571,7 @@ void FireStarter::MakeProgram(std::string& src)
            "{\n"
            "    const FireStarterInstructions instructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d,\n", curState.instructions[i].a, curState.instructions[i].b, curState.instructions[i].c);
+        src += Format("        %d, %d, %d,\n", curState->instructions[i].a, curState->instructions[i].b, curState->instructions[i].c);
     src += "    };\n"
            "    const FireStarterInstructions bestInstructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
@@ -660,7 +670,7 @@ void FireStarter::RenderImage(HWND hwnd)
         if (update) {
             RunProgram1(PROGRAM_POPULATION, MAX_RESULTS);
             GetResults1();
-            bestState = curState;
+            bestState = *curState;
             bestGeneration = generation;
         }
 
@@ -686,13 +696,13 @@ void FireStarter::RenderImage(HWND hwnd)
     }
 
     double time = timer.Duration();
-    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, states.size(), generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, time);
+    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, states.size(), generation - lastGeneration, curState->result, generation - bestGeneration, bestState.result, time);
 #if 0
     if (update) {
         printf("// %s\n", statusString);
         printf("// generation=%d  data: ", generation);
         for (int i = 0; i < PROGRAM_DATA; i++)
-            printf("%f ", curState.data[i]);
+            printf("%f ", curState->data[i]);
         printf("\n");
         printf("%s\n\n", code.c_str());
     }
@@ -710,7 +720,7 @@ void FireStarter::Init(unsigned long width, unsigned long height)
     lastGeneration = 0;
     bestGeneration = 0;
     RandomProgram();
-    bestState = curState;
+    bestState = *curState;
 } // Init
 
 FireStarter::FireStarter(void)

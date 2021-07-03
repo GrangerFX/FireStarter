@@ -61,7 +61,7 @@ public:
     FireStarterResults *results;
     FireStarterResults *results1;
     FireStarterStates states;
-    FireStarterState curState;
+    FireStarterState *curState;
     FireStarterState bestState;
     CUmodule module;
     long long generation;
