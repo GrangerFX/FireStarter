@@ -11,8 +11,6 @@
 #define FS2_MAX_RESULTS 16384
 #define FS2_SMART_RANDOM_FACTOR 0.1f
 #define FS2_SMART_AGE_FACTOR 0.01f
-#define FS2_SMART_EVOLVE_AGE 10
-#define FS2_SMART_DEVOLVE_AGE 50
 #define FS2_START_RESULT 10.0f
 
 typedef struct FireStarter2Data {

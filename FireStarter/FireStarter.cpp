@@ -312,7 +312,6 @@ void FireStarter::MakeProgram(std::string& src)
     src += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
     src += Format("#define SMART_RANDOM_FACTOR %gf\n", SMART_RANDOM_FACTOR);
     src += Format("#define SMART_AGE_FACTOR %gf\n", SMART_AGE_FACTOR);
-    src += Format("#define SMART_DEVOLVE_AGE %d\n", SMART_DEVOLVE_AGE);
     src += Format("#define BLOCK_SIZE %d\n", BLOCK_SIZE);
     src += "\n"
            "__device__ unsigned int Hash(unsigned int hash)\n"
