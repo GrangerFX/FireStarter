@@ -3,7 +3,7 @@
 #include <vector>
 #include <cuda.h>
 
-#define FS2_VARIATION 0
+#define FS2_VARIATION 1
 #define FS2_PROGRAM_DATA 6
 #define FS2_PROGRAM_ITERATIONS 8000
 #define FS2_PROGRAM_POPULATION 4352 * 32
@@ -61,7 +61,6 @@ public:
     void FreeResults(void);
     void CompileProgram(const char *source);
     void RunProgram(unsigned int population, unsigned int maxResults);
-    void RunProgram1(unsigned int population, unsigned int maxResults);
     void DrawGraph(void);
     void InitProgram(void);
     void MakeProgram(std::string &code);

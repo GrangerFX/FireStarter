@@ -114,7 +114,7 @@ void FireStarter2::FreeResults(void)
         }
         results = NULL;
     }
-} // FreeResults
+ } // FreeResults
 
 void FireStarter2::CompileProgram(const char *source)
 {
@@ -315,7 +315,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "    unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);\n"
         "    float target[SAMPLE_ITERATIONS];\n"
         "    float theta[SAMPLE_ITERATIONS];\n"
-        "    for (int i = 0; i <= SAMPLE_ITERATIONS; i++) {\n"
+        "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
         "        theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));\n"
         "        target[i] = variation ? Target1(theta[i]) : Target(theta[i]);\n"
         "    }\n"

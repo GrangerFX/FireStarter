@@ -1,7 +1,7 @@
 #include "FireStarter.h"
 #include "FireStarter2.h"
 
-#if 1
+#if 0
 static FireStarter2 fireStarter;
 #else
 static FireStarter fireStarter;
