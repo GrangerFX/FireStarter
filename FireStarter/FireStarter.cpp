@@ -495,21 +495,24 @@ void FireStarter::MakeProgram(std::string& src)
            "    if (member >= population)\n"
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-#if 0
+#if 1
            "    const FireStarterInstructions instructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d,\n", curState->instructions.d[i].a, curState->instructions.d[i].b, curState->instructions.d[i].c);
     src += "    };\n"
-           "    FireStarterData workData;\n"
-           "    FireStarterData curData(results->bestData);\n"
 #else
            "    const FireStarterInstructions instructions(state->instructions);\n"
+#endif
+#if 1
+           "    FireStarterData workData;\n"
+           "    FireStarterData curData;\n"
+#else
            "    __shared__ FireStarterData workDataMemory[BLOCK_SIZE];\n"
            "    __shared__ FireStarterData curDataMemory[BLOCK_SIZE];\n"
-           "    FireStarterData &workData = workDataMemory[threadIdx.x];"
-           "    FireStarterData &curData = curDataMemory[threadIdx.x];"
-           "    curData = results->bestData;\n"
+           "    FireStarterData &workData = workDataMemory[threadIdx.x % BLOCK_SIZE];"
+           "    FireStarterData &curData = curDataMemory[threadIdx.x % BLOCK_SIZE];"
 #endif
+           "    curData = results->bestData;\n"
            "    float target[SAMPLE_ITERATIONS];\n"
            "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
            "        float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
