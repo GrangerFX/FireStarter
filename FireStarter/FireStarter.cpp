@@ -94,31 +94,6 @@ bool FireStarter::GetResults(void)
     return false;
 } // GetResults
 
-bool FireStarter::GetResults1(void)
-{
-    if (results1->numResults) {
-        unsigned int numResults = results1->numResults;
-        if (numResults > MAX_RESULTS)
-            numResults = MAX_RESULTS;
-        unsigned int index = 0;
-        float result = results1->results[0].result;
-        unsigned int member = results1->results[0].member;
-        for (unsigned int i = 1; i < numResults; i++) {
-            float curResult = results1->results[i].result;
-            unsigned int curMember = results1->results[i].member;
-            if ((curResult < result) || ((curResult == result) && (curMember < member))) {
-                result = curResult;
-                member = curMember;
-                index = i;
-            }
-        }
-
-        results1->bestData = results1->results[index].data;
-        results1->curResult = result;
-     }
-    return false;
-} // GetResults1
-
 void FireStarter::InitResults(void)
 {
     unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (MAX_RESULTS - 1);
@@ -130,17 +105,6 @@ void FireStarter::InitResults(void)
     cudaMemset(results, 0, resultsSize);
 } // InitResults
 
-void FireStarter::InitResults1(void)
-{
-    unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (MAX_RESULTS - 1);
-    cudaError_t err = cudaMallocManaged(&results1, resultsSize);
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Failed to allocate results1 (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
-    cudaMemset(results1, 0, resultsSize);
-} // InitResults1
-
 void FireStarter::FreeResults(void)
 {
     if (results) {
@@ -151,19 +115,7 @@ void FireStarter::FreeResults(void)
         }
         results = NULL;
     }
- } // FreeResults
-
-void FireStarter::FreeResults1(void)
-{
-    if (results1) {
-        cudaError_t err = cudaFree(results1);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free results1 (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
-        }
-        results1 = NULL;
-    }
-} // FreeResults1
+} // FreeResults
 
 void FireStarter::CompileProgram(const char *source)
 {
@@ -224,7 +176,7 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    unsigned int variation = 0;
+    unsigned int variation = FS1_VARIATION;
     void *arr[] = {reinterpret_cast<void*>(&curState),
                    reinterpret_cast<void*>(&results),
                    reinterpret_cast<void*>(&maxResults),
@@ -245,41 +197,6 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
     checkCudaErrors(cuCtxSynchronize());
 } // RunProgram
 
-void FireStarter::RunProgram1(unsigned int population, unsigned int maxResults)
-{
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        results1->bestData.d[i] = 1.0f;
-    results1->minResult = results1->curResult;
-    results1->curResult = results1->startResult = START_RESULT;
-    results1->numResults = 0;
-
-    // Launch the calculation kernel
-    int threadsPerBlock = BLOCK_SIZE;
-    int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
-    unsigned int variation = 1;
-    void *arr[] = {reinterpret_cast<void*>(&curState),
-                   reinterpret_cast<void*>(&results1),
-                   reinterpret_cast<void*>(&maxResults),
-                   reinterpret_cast<void*>(&population),
-                   reinterpret_cast<void*>(&generation),
-                   reinterpret_cast<void*>(&variation)};
-
-    CUfunction kernel_addr;
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter"));
-
-    checkCudaErrors(cuLaunchKernel(kernel_addr,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, 0,                                               // shared mem, stream */
-        &arr[0],                                            // arguments */
-        0));
-
-    checkCudaErrors(cuCtxSynchronize());
-} // RunProgram1
-
 void FireStarter::DrawGraph(void)
 {
     // Erase the frame buffer
@@ -294,11 +211,13 @@ void FireStarter::DrawGraph(void)
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow"));
 
+    unsigned int variation = FS1_VARIATION;
     void *arr[] = {reinterpret_cast<void*>(&results),
                    reinterpret_cast<void*>(&bestState.data),
                    reinterpret_cast<void*>(&theBuffer.base),
                    reinterpret_cast<void*>(&theBuffer.width),
-                   reinterpret_cast<void*>(&theBuffer.height)};
+                   reinterpret_cast<void*>(&theBuffer.height),
+                   reinterpret_cast<void*>(&variation)};
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -309,32 +228,6 @@ void FireStarter::DrawGraph(void)
 
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph
-
-void FireStarter::DrawGraph1(void)
-{
-    // Launch the display kernel
-    int threadsPerBlock = BLOCK_SIZE;
-    int blocksPerGrid = (theBuffer.width + threadsPerBlock - 1) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
-    CUfunction kernel_addr;
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow1"));
-
-    void *arr[] = {reinterpret_cast<void*>(&results1),
-                   reinterpret_cast<void*>(&theBuffer.base),
-                   reinterpret_cast<void*>(&theBuffer.width),
-                   reinterpret_cast<void*>(&theBuffer.height)};
-
-    checkCudaErrors(cuLaunchKernel(kernel_addr,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, 0,                                               // shared mem, stream */
-        &arr[0],                                            // arguments */
-        0));
-
-    checkCudaErrors(cuCtxSynchronize());
-} // DrawGraph1
 
 void FireStarter::RandomProgram(void)
 {
@@ -516,7 +409,7 @@ void FireStarter::MakeProgram(std::string& src)
            "    float target[SAMPLE_ITERATIONS];\n"
            "    float theta[SAMPLE_ITERATIONS];\n"
            "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
-           "        theta[i] = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
+           "        theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));\n"
            "        target[i] = variation ? Target1(theta[i]) : Target(theta[i]);\n"
            "    }\n"
            "    float result = results->startResult;\n"
@@ -550,7 +443,7 @@ void FireStarter::MakeProgram(std::string& src)
            "    }\n"
            "} // FireStarter\n"
            "\n"
-           "extern \"C\" __global__ void FireShow(const FireStarterResults *results, const FireStarterData bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
+           "extern \"C\" __global__ void FireShow(const FireStarterResults *results, const FireStarterData bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
            "{\n"
            "    const FireStarterInstructions instructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
@@ -582,7 +475,8 @@ void FireStarter::MakeProgram(std::string& src)
            "    if (x < bufferWidth) {\n"
            "        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;\n"
            "        float center = bufferHeight * 0.66f;\n"
-           "        int y = (int)(center + Target(theta) * yScale);\n"
+           "        float target = variation ? Target1(theta) : Target(theta);\n"
+           "        int y = (int)(center + target * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "            pixel.x = 255;\n"
@@ -602,34 +496,7 @@ void FireStarter::MakeProgram(std::string& src)
            "            pixel.x = pixel.y = pixel.z = 255;\n"
            "        };\n"
            "    }\n"
-           "} // FireShow\n"
-           "\n"
-           "extern \"C\" __global__ void FireShow1(const FireStarterResults *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight)\n"
-           "{\n"
-           "    const FireStarterInstructions bestInstructions = {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d,\n", bestState.instructions.d[i].a, bestState.instructions.d[i].b, bestState.instructions.d[i].c);
-    src += "    };\n"
-           "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
-           "    int xScale = bufferHeight / 8;\n"
-           "    int yScale = bufferHeight / 16;\n"
-           "    if (x < bufferWidth) {\n"
-           "        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;\n"
-           "        float center = bufferHeight * 0.33f;\n"
-           "        int y = (int)(center + Target1(theta) * yScale);\n"
-           "        if ((y >= 0) && (y < bufferHeight)) {\n"
-           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "            pixel.x = 255;\n"
-           "            pixel.y = 128;\n"
-           "        };\n"
-           "        FireStarterData workData(results->bestData) ;\n"
-           "        y = (int)(center + EvaluateInstructions(bestInstructions, workData, theta) * yScale);\n"
-           "        if ((y >= 0) && (y < bufferHeight)) {\n"
-           "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-           "            pixel.x = pixel.y = pixel.z = 255;\n"
-           "        };\n"
-           "    }\n"
-           "} // FireShow1\n";
+           "} // FireShow\n";
 } // MakeProgram
 
 void FireStarter::RenderImage(HWND hwnd)
@@ -647,10 +514,7 @@ void FireStarter::RenderImage(HWND hwnd)
 
     if (results->numResults) {
         DrawGraph();
-        DrawGraph1();
         if (update) {
-            RunProgram1(PROGRAM_POPULATION, MAX_RESULTS);
-            GetResults1();
             bestState = *curState;
             bestGeneration = generation;
         }
@@ -696,7 +560,6 @@ void FireStarter::Init(unsigned long width, unsigned long height)
 
     InitFrameBuffer(theBuffer, width, height);
     InitResults();
-    InitResults1();
     generation = 0;
     lastGeneration = 0;
     bestGeneration = 0;
@@ -709,7 +572,6 @@ FireStarter::FireStarter(void)
     // Timer ID
     statusString[0] = 0;
     results = NULL;
-    results1 = NULL;
     module = NULL;
 } // FireStarter
 
@@ -719,5 +581,4 @@ FireStarter::~FireStarter(void)
         checkCudaErrors(cuModuleUnload(module));
     FreeFrameBuffer(theBuffer);
     FreeResults();
-    FreeResults1();
 } // ~FireStarter

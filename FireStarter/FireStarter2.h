@@ -3,6 +3,7 @@
 #include <vector>
 #include <cuda.h>
 
+#define FS2_VARIATION 0
 #define FS2_PROGRAM_DATA 6
 #define FS2_PROGRAM_ITERATIONS 8000
 #define FS2_PROGRAM_POPULATION 4352 * 32
@@ -43,7 +44,6 @@ public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
     FireStarter2Results *results;
-    FireStarter2Results *results1;
     FireStarter2State curState;
     FireStarter2State bestState;
     CUmodule module;
@@ -57,16 +57,12 @@ public:
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
     bool GetResults(void);
-    bool GetResults1(void);
     void InitResults(void);
-    void InitResults1(void);
     void FreeResults(void);
-    void FreeResults1(void);
     void CompileProgram(const char *source);
     void RunProgram(unsigned int population, unsigned int maxResults);
     void RunProgram1(unsigned int population, unsigned int maxResults);
     void DrawGraph(void);
-    void DrawGraph1(void);
     void InitProgram(void);
     void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);
