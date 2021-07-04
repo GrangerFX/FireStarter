@@ -219,7 +219,7 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
     results->numResults = 0;
 
     // Launch the calculation kernel
-    int threadsPerBlock = 256;
+    int threadsPerBlock = BLOCK_SIZE;
     int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -254,7 +254,7 @@ void FireStarter::RunProgram1(unsigned int population, unsigned int maxResults)
     results1->numResults = 0;
 
     // Launch the calculation kernel
-    int threadsPerBlock = 256;
+    int threadsPerBlock = BLOCK_SIZE;
     int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -286,7 +286,7 @@ void FireStarter::DrawGraph(void)
     EraseFrameBuffer(theBuffer);
 
     // Launch the display kernel
-    int threadsPerBlock = 32;
+    int threadsPerBlock = BLOCK_SIZE;
     int blocksPerGrid = (theBuffer.width + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -313,7 +313,7 @@ void FireStarter::DrawGraph(void)
 void FireStarter::DrawGraph1(void)
 {
     // Launch the display kernel
-    int threadsPerBlock = 32;
+    int threadsPerBlock = BLOCK_SIZE;
     int blocksPerGrid = (theBuffer.width + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -420,6 +420,7 @@ void FireStarter::MakeProgram(std::string& src)
     src += Format("#define SMART_RANDOM_FACTOR %gf\n", SMART_RANDOM_FACTOR);
     src += Format("#define SMART_AGE_FACTOR %gf\n", SMART_AGE_FACTOR);
     src += Format("#define SMART_DEVOLVE_AGE %d\n", SMART_DEVOLVE_AGE);
+    src += Format("#define BLOCK_SIZE %d\n", BLOCK_SIZE);
     src += "\n"
            "__device__ unsigned int Hash(unsigned int hash)\n"
            "{\n"
@@ -479,10 +480,8 @@ void FireStarter::MakeProgram(std::string& src)
            "   return sinf(n * 1.3f) + n * 0.1f;\n"
            "} // Target1\n"
            "\n"
-           "__device__ float EvaluateInstructions(const FireStarterInstructions &instructions, const FireStarterData &curData, float r)\n"
+           "__device__ float EvaluateInstructions(const FireStarterInstructions &instructions, FireStarterData &data, float r)\n"
            "{\n"
-           "    FireStarterData data;\n"
-           "    data = curData;\n"
            "    data.d[0] = r;\n"
            "    for (int i = 0; i < PROGRAM_DATA; i++)\n"
            "        data.d[i] = data.d[instructions.d[i].a] + data.d[instructions.d[i].b] * data.d[instructions.d[i].c];\n"
@@ -496,16 +495,21 @@ void FireStarter::MakeProgram(std::string& src)
            "    if (member >= population)\n"
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-#if 1
+#if 0
            "    const FireStarterInstructions instructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d,\n", curState->instructions.d[i].a, curState->instructions.d[i].b, curState->instructions.d[i].c);
     src += "    };\n"
+           "    FireStarterData workData;\n"
+           "    FireStarterData curData(results->bestData);\n"
 #else
            "    const FireStarterInstructions instructions(state->instructions);\n"
-#endif
-           "    FireStarterData curData;\n"
+           "    __shared__ FireStarterData workDataMemory[BLOCK_SIZE];\n"
+           "    __shared__ FireStarterData curDataMemory[BLOCK_SIZE];\n"
+           "    FireStarterData &workData = workDataMemory[threadIdx.x];"
+           "    FireStarterData &curData = curDataMemory[threadIdx.x];"
            "    curData = results->bestData;\n"
+#endif
            "    float target[SAMPLE_ITERATIONS];\n"
            "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
            "        float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
@@ -520,7 +524,8 @@ void FireStarter::MakeProgram(std::string& src)
            "        float curResult = 0.0f;\n"
            "        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
            "            float theta = i * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);\n"
-           "            float delta = fabsf(EvaluateInstructions(instructions, curData, theta) - target[i]);\n"
+           "            workData = curData;\n"
+           "            float delta = fabsf(EvaluateInstructions(instructions, workData, theta) - target[i]);\n"
            "            curResult = delta > curResult ? delta : curResult;\n"
            "        }\n"
            "        if (curResult < result) {\n"
@@ -580,13 +585,15 @@ void FireStarter::MakeProgram(std::string& src)
            "            pixel.x = 255;\n"
            "            pixel.y = 128;\n"
            "        };\n"
-           "        y = (int)(center + EvaluateInstructions(instructions, results->bestData, theta) * yScale);\n"
+           "        FireStarterData workData1(results->bestData) ;\n"
+           "        y = (int)(center + EvaluateInstructions(instructions, workData1, theta) * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "            pixel.z = 255;\n"
            "            pixel.y = 128;\n"
            "        };\n"
-           "        y = (int)(center + EvaluateInstructions(bestInstructions, bestData, theta) * yScale);\n"
+           "        FireStarterData workData2(bestData) ;\n"
+           "        y = (int)(center + EvaluateInstructions(bestInstructions, workData2, theta) * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "            pixel.x = pixel.y = pixel.z = 255;\n"
@@ -612,7 +619,8 @@ void FireStarter::MakeProgram(std::string& src)
            "            pixel.x = 255;\n"
            "            pixel.y = 128;\n"
            "        };\n"
-           "        y = (int)(center + EvaluateInstructions(bestInstructions, results->bestData, theta) * yScale);\n"
+           "        FireStarterData workData(results->bestData) ;\n"
+           "        y = (int)(center + EvaluateInstructions(bestInstructions, workData, theta) * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "            pixel.x = pixel.y = pixel.z = 255;\n"

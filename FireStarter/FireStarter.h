@@ -15,6 +15,7 @@
 #define SMART_EVOLVE_AGE 10
 #define SMART_DEVOLVE_AGE 50
 #define START_RESULT 10.0f
+#define BLOCK_SIZE 32
 
 typedef struct {
     float d[PROGRAM_DATA];
