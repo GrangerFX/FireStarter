@@ -42,8 +42,9 @@ typedef struct {
     int a, b, c;
 } FireStarterInstruction;
 
-typedef struct {
+typedef struct FireStarterInstructions {
     FireStarterInstruction d[PROGRAM_DATA];
+    FireStarterInstruction& operator[](int i) { return d[i]; }
 } FireStarterInstructions;
 
 typedef struct {
