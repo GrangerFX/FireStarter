@@ -256,7 +256,8 @@ void FireStarter::InitProgram(void)
     curState->instructions[5].b = 2;
     curState->instructions[5].c = 4;
 #else
-    unsigned int seed = 0;
+    unsigned int seed = (unsigned int)generation;
+    seed = RANDOMHASH(seed) + 1;
     for (int i = 0; i < PROGRAM_DATA; i++) {
         curState->instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
         curState->instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
