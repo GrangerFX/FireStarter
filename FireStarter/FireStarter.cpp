@@ -265,7 +265,7 @@ void FireStarter::InitProgram(void)
 #endif
     curState->result = START_RESULT;
     states.push_back(*curState);
-#if !EMBED_DATA
+#if !EMBED_INSTRUCTIONS
     std::string code;
     MakeProgram(code);
     CompileProgram(code.c_str());
