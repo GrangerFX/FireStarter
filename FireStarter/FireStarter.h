@@ -4,6 +4,7 @@
 #include <cuda.h>
 
 #define FS1_VARIATION 1
+#define EMBED_INSTRUCTIONS 1
 #define PROGRAM_DATA 6
 #define PROGRAM_ITERATIONS 8000
 #define PROGRAM_POPULATION 4352 * 64
@@ -62,7 +63,7 @@ public:
     FireStarterResults *results;
     FireStarterStates states;
     FireStarterState *curState;
-    FireStarterState bestState;
+    FireStarterState *bestState;
     CUmodule module;
     long long generation;
     long long lastGeneration;
@@ -79,6 +80,7 @@ public:
     void CompileProgram(const char *source);
     void RunProgram(unsigned int population, unsigned int maxResults);
     void DrawGraph(void);
+    void InitProgram(void);
     void RandomProgram(void);
     void MakeProgram(std::string &code);
     void RenderImage(HWND hwnd);
