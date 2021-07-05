@@ -18,8 +18,9 @@
 #define START_RESULT 10.0f
 #define BLOCK_SIZE 32
 
-typedef struct {
+typedef struct FireStarterData {
     float d[PROGRAM_DATA];
+    float& operator[](int i) { return d[i]; }
 } FireStarterData;
 
 typedef struct {

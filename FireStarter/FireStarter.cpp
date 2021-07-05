@@ -162,7 +162,7 @@ void FireStarter::RunProgram(unsigned int population, unsigned int maxResults)
 {
 #if RESET_DATA
     for (int i = 0; i < PROGRAM_DATA; i++)
-        results->bestData.d[i] = 1.0f;
+        results->bestData[i] = 1.0f;
 #else
     results->bestData = curState->data;
 #endif
@@ -236,7 +236,7 @@ void FireStarter::RandomProgram(void)
     if (!states.size()) {
         cudaError_t err = cudaMallocManaged(&curState, sizeof(FireStarterState));
         for (int i = 0; i < PROGRAM_DATA; i++)
-           curState->data.d[i] = 0.0f;
+           curState->data[i] = 0.0f;
 #if PROGRAM_FIXED
         curState->instructions[0].a = 1;
         curState->instructions[0].b = 0;
@@ -331,8 +331,16 @@ void FireStarter::MakeProgram(std::string& src)
            "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
            "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
            "\n"
-           "typedef struct {\n"
+           "typedef struct FireStarterData {\n"
            "    float d[PROGRAM_DATA];\n"
+           "\n"
+           "    __device__ float& operator[](int i)\n"
+           "    {\n"
+           "        switch (i) {\n";
+    for (int i = 0; i < PROGRAM_DATA; i++)
+        src += Format("        case %d: return d[%d];\n", i, i);
+    src += "        }\n"
+           "    } // operator[]\n"
            "} FireStarterData;\n"
            "\n"
            "typedef struct {\n"
@@ -374,10 +382,10 @@ void FireStarter::MakeProgram(std::string& src)
            "\n"
            "__device__ float EvaluateInstructions(const FireStarterInstructions &instructions, FireStarterData &data, float r)\n"
            "{\n"
-           "    data.d[0] = r;\n"
+           "    data[0] = r;\n"
            "    for (int i = 0; i < PROGRAM_DATA; i++)\n"
-           "        data.d[i] = data.d[instructions.d[i].a] + data.d[instructions.d[i].b] * data.d[instructions.d[i].c];\n"
-           "    r = data.d[PROGRAM_DATA - 1];\n"
+           "        data[i] = data[instructions.d[i].a] + data[instructions.d[i].b] * data[instructions.d[i].c];\n"
+           "    r = data[PROGRAM_DATA - 1];\n"
            "    return isnan(r) ? 0.0f : r;\n"
            "} // EvaluateInstructions\n"
            "\n"
@@ -387,7 +395,7 @@ void FireStarter::MakeProgram(std::string& src)
            "    if (member >= population)\n"
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-#if 1
+#if 0
            "    const FireStarterInstructions instructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d,\n", curState->instructions.d[i].a, curState->instructions.d[i].b, curState->instructions.d[i].c);
@@ -415,8 +423,8 @@ void FireStarter::MakeProgram(std::string& src)
            "    unsigned int age = 0;\n"
            "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
            "        unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
-           "        float oldValue = curData.d[d];\n"
-           "        curData.d[d] = oldValue + (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
+           "        float oldValue = curData[d];\n"
+           "        curData[d] = oldValue + (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
            "        float curResult = 0.0f;\n"
            "        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
            "            workData = curData;\n"
@@ -427,7 +435,7 @@ void FireStarter::MakeProgram(std::string& src)
            "            result = curResult;\n"
            "            age = 0;\n"
            "        } else {\n"
-           "            curData.d[d] = oldValue;\n"
+           "            curData[d] = oldValue;\n"
            "            age++;\n"
            "        }\n"
            "    }\n"
