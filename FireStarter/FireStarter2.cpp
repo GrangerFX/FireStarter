@@ -244,7 +244,6 @@ void FireStarter2::MakeProgram(std::string& src)
     src += Format("#define PROGRAM_ITERATIONS %d\n", FS2_PROGRAM_ITERATIONS);
     src += Format("#define SAMPLE_ITERATIONS %d\n", FS2_SAMPLE_ITERATIONS);
     src += Format("#define SMART_RANDOM_FACTOR %gf\n", FS2_SMART_RANDOM_FACTOR);
-    src += Format("#define SMART_AGE_FACTOR %gf\n", FS2_SMART_AGE_FACTOR);
     src += "\n"
         "__device__ unsigned int Hash(unsigned int hash)\n"
         "{\n"
@@ -325,7 +324,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "        unsigned int di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
         "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
         "        float oldData = data.d[di][dj];\n"
-        "        data.d[di][dj] = oldData + (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
+        "        data.d[di][dj] = oldData + (RANDOMFACTOR(seed) * result * SMART_RANDOM_FACTOR);\n"
         "        float curResult = 0.0f;\n"
         "        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
         "            float delta = fabsf(Evaluate(data, theta[i]) - target[i]);\n"

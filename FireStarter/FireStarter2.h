@@ -3,14 +3,13 @@
 #include <vector>
 #include <cuda.h>
 
-#define FS2_VARIATION 1
+#define FS2_VARIATION 0
 #define FS2_PROGRAM_DATA 6
-#define FS2_PROGRAM_ITERATIONS 8000
+#define FS2_PROGRAM_ITERATIONS 4000
 #define FS2_PROGRAM_POPULATION 4352 * 32
 #define FS2_SAMPLE_ITERATIONS 15
 #define FS2_MAX_RESULTS 16384
 #define FS2_SMART_RANDOM_FACTOR 0.1f
-#define FS2_SMART_AGE_FACTOR 0.01f
 #define FS2_START_RESULT 10.0f
 
 typedef struct FireStarter2Data {
