@@ -8,7 +8,6 @@
 #define FS2_PROGRAM_ITERATIONS 4000
 #define FS2_PROGRAM_POPULATION 4352 * 32
 #define FS2_SAMPLE_ITERATIONS 15
-#define FS2_MAX_RESULTS 16384
 #define FS2_SMART_RANDOM_FACTOR 0.1f
 #define FS2_START_RESULT 10.0f
 
@@ -19,11 +18,9 @@ typedef struct FireStarter2Data {
 typedef struct {
     FireStarter2Data data;
     float result;
-    unsigned int member;
 } FireStarter2Result;
 
 typedef struct {
-    unsigned int numResults;
     float minResult;
     float curResult;
     float startResult;
@@ -57,7 +54,7 @@ public:
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const char *source);
-    void RunProgram(unsigned int population, unsigned int maxResults);
+    void RunProgram(unsigned int population);
     void DrawGraph(void);
     void InitProgram(void);
     void MakeProgram(std::string &code);
