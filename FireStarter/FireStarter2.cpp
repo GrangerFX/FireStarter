@@ -223,6 +223,11 @@ void FireStarter2::InitProgram(void)
     }
     curState.result = FS2_START_RESULT;
 
+    for (unsigned int i = 1; i < FS2_PROGRAM_POPULATION; i++) {
+        results->results[i].result = curState.result;
+        results->results[i].data = curState.data;
+     }
+
     std::string code;
     MakeProgram(code);
     CompileProgram(code.c_str());
@@ -305,9 +310,9 @@ void FireStarter2::MakeProgram(std::string& src)
         "        theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));\n"
         "        target[i] = variation ? Target1(theta[i]) : Target(theta[i]);\n"
         "    }\n"
-        "    float startResult = results->startResult;\n"
+        "    float startResult = results->results[member].result;\n"
         "    float result = startResult;\n"
-        "    FireStarter2Data data(results->bestData);\n"
+        "    FireStarter2Data data(results->results[member].data);\n"
         "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
         "        unsigned int di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
         "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
@@ -323,8 +328,13 @@ void FireStarter2::MakeProgram(std::string& src)
         "        else\n"
         "            data.d[di][dj] = oldData;\n"
         "    }\n"
-        "    results->results[member].data = data;\n"
-        "    results->results[member].result = result;\n"
+        "    if (result < startResult) {\n"
+        "        results->results[member].data = data;\n"
+        "        results->results[member].result = result;\n"
+        "    } else {\n"
+        "        results->results[member].data = results->bestData;"
+        "        results->results[member].result = results->startResult;\n"
+        "    }\n"
         "} // FireStarter2\n"
         "\n"
         "extern \"C\" __global__ void FireShow(const FireStarter2Results *results, const FireStarter2Data bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
