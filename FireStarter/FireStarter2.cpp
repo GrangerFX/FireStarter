@@ -73,9 +73,8 @@ bool FireStarter2::GetResults(void)
         }
     }
 
-    results->bestResult = results->results[index];
     if (result < curState.result) {
-        curState = results->bestResult;
+        curState = results->results[index];
         lastGeneration = generation;
         if (result < bestState.result)
             return true;
@@ -149,8 +148,6 @@ void FireStarter2::CompileProgram(const char *source)
 
 void FireStarter2::RunProgram(unsigned int population)
 {
-    results->bestResult = curState;
-
     // Launch the calculation kernel
     int threadsPerBlock = 256;
     int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
@@ -191,8 +188,7 @@ void FireStarter2::DrawGraph(void)
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow"));
 
     unsigned int variation = FS2_VARIATION;
-    void *arr[] = {reinterpret_cast<void*>(&results),
-                   reinterpret_cast<void*>(&bestState),
+    void *arr[] = {reinterpret_cast<void*>(&bestState),
                    reinterpret_cast<void*>(&theBuffer.base),
                    reinterpret_cast<void*>(&theBuffer.width),
                    reinterpret_cast<void*>(&theBuffer.height),
@@ -264,7 +260,6 @@ void FireStarter2::MakeProgram(std::string& src)
         "} FireStarter2Result;\n"
         "\n"
         "typedef struct {\n"
-        "    FireStarter2Result bestResult;\n"
         "    FireStarter2Result results[1];\n"
         "} FireStarter2Results;\n"
         "\n"
@@ -310,7 +305,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "        unsigned int di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
         "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
         "        float oldData = data.d[di][dj];\n"
-        "        data.d[di][dj] = oldData + (RANDOMFACTOR(seed) * result * SMART_RANDOM_FACTOR);\n"
+        "        data.d[di][dj] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);\n"
         "        float curResult = 0.0f;\n"
         "        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
         "            float delta = fabsf(Evaluate(data, theta[i]) - target[i]);\n"
@@ -325,12 +320,21 @@ void FireStarter2::MakeProgram(std::string& src)
         "        results->results[member].data = data;\n"
         "        results->results[member].result = result;\n"
         "    } else {\n"
-        "        results->results[member].data = results->bestResult.data;"
+        "        unsigned int best = member;\n"
+        "        for (int i = 0; i < 32; i++) {"
+        "            unsigned int index = RANDOMSEED(seed) % population;\n"
+        "            float curResult = results->results[index].result;\n"
+        "            if (curResult < result) {\n"
+        "                result = curResult;\n"
+        "                best = index;"
+        "            }\n"
+        "        }\n"
+        "        results->results[member].data = results->results[best].data;"
         "        results->results[member].result = FS2_START_RESULT;"
         "    }\n"
         "} // FireStarter2\n"
         "\n"
-        "extern \"C\" __global__ void FireShow(const FireStarter2Results *results, const FireStarter2Result bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
+        "extern \"C\" __global__ void FireShow(const FireStarter2Result bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
         "{\n"
         "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
         "    int xScale = bufferHeight / 8;\n"
@@ -359,12 +363,6 @@ void FireStarter2::MakeProgram(std::string& src)
         "        if ((y >= 0) && (y < bufferHeight)) {\n"
         "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
         "            pixel.x = 255;\n"
-        "            pixel.y = 128;\n"
-        "        };\n"
-        "        y = (int)(center + Evaluate(results->bestResult.data, theta) * yScale);\n"
-        "        if ((y >= 0) && (y < bufferHeight)) {\n"
-        "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-        "            pixel.z = 255;\n"
         "            pixel.y = 128;\n"
         "        };\n"
         "        y = (int)(center + Evaluate(bestResult.data, theta) * yScale);\n"

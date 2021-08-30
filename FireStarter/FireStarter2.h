@@ -21,7 +21,6 @@ typedef struct {
 } FireStarter2Result;
 
 typedef struct {
-    FireStarter2Result bestResult;
     FireStarter2Result results[1];
 } FireStarter2Results;
 
