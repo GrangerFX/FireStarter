@@ -21,25 +21,17 @@ typedef struct {
 } FireStarter2Result;
 
 typedef struct {
-    float minResult;
-    float curResult;
-    float startResult;
-    FireStarter2Data bestData;
+    FireStarter2Result bestResult;
     FireStarter2Result results[1];
 } FireStarter2Results;
-
-typedef struct {
-    FireStarter2Data data;
-    float result;
-} FireStarter2State;
 
 class FireStarter2 {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
     FireStarter2Results *results;
-    FireStarter2State curState;
-    FireStarter2State bestState;
+    FireStarter2Result curState;
+    FireStarter2Result bestState;
     CUmodule module;
     long long generation;
     long long lastGeneration;

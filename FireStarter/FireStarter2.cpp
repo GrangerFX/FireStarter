@@ -73,11 +73,9 @@ bool FireStarter2::GetResults(void)
         }
     }
 
-    results->bestData = results->results[index].data;
-    results->curResult = result;
+    results->bestResult = results->results[index];
     if (result < curState.result) {
-        curState.data = results->bestData;
-        curState.result = result;
+        curState = results->bestResult;
         lastGeneration = generation;
         if (result < bestState.result)
             return true;
@@ -151,9 +149,7 @@ void FireStarter2::CompileProgram(const char *source)
 
 void FireStarter2::RunProgram(unsigned int population)
 {
-    results->bestData = curState.data;
-    results->minResult = curState.result;
-    results->curResult = results->startResult = FS2_START_RESULT;
+    results->bestResult = curState;
 
     // Launch the calculation kernel
     int threadsPerBlock = 256;
@@ -196,7 +192,7 @@ void FireStarter2::DrawGraph(void)
 
     unsigned int variation = FS2_VARIATION;
     void *arr[] = {reinterpret_cast<void*>(&results),
-                   reinterpret_cast<void*>(&bestState.data),
+                   reinterpret_cast<void*>(&bestState),
                    reinterpret_cast<void*>(&theBuffer.base),
                    reinterpret_cast<void*>(&theBuffer.width),
                    reinterpret_cast<void*>(&theBuffer.height),
@@ -239,6 +235,7 @@ void FireStarter2::MakeProgram(std::string& src)
     src += Format("#define PROGRAM_ITERATIONS %d\n", FS2_PROGRAM_ITERATIONS);
     src += Format("#define SAMPLE_ITERATIONS %d\n", FS2_SAMPLE_ITERATIONS);
     src += Format("#define SMART_RANDOM_FACTOR %gf\n", FS2_SMART_RANDOM_FACTOR);
+    src += Format("#define FS2_START_RESULT %f\n", FS2_START_RESULT);
     src += "\n"
         "__device__ unsigned int Hash(unsigned int hash)\n"
         "{\n"
@@ -267,10 +264,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "} FireStarter2Result;\n"
         "\n"
         "typedef struct {\n"
-        "    float minResult;\n"
-        "    float curResult;\n"
-        "    float startResult;\n"
-        "    FireStarter2Data bestData;\n"
+        "    FireStarter2Result bestResult;\n"
         "    FireStarter2Result results[1];\n"
         "} FireStarter2Results;\n"
         "\n"
@@ -310,9 +304,9 @@ void FireStarter2::MakeProgram(std::string& src)
         "        theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));\n"
         "        target[i] = variation ? Target1(theta[i]) : Target(theta[i]);\n"
         "    }\n"
+        "    FireStarter2Data data(results->results[member].data);\n"
         "    float startResult = results->results[member].result;\n"
         "    float result = startResult;\n"
-        "    FireStarter2Data data(results->results[member].data);\n"
         "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
         "        unsigned int di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
         "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
@@ -332,12 +326,12 @@ void FireStarter2::MakeProgram(std::string& src)
         "        results->results[member].data = data;\n"
         "        results->results[member].result = result;\n"
         "    } else {\n"
-        "        results->results[member].data = results->bestData;"
-        "        results->results[member].result = results->startResult;\n"
+        "        results->results[member].data = results->bestResult.data;"
+        "        results->results[member].result = FS2_START_RESULT;"
         "    }\n"
         "} // FireStarter2\n"
         "\n"
-        "extern \"C\" __global__ void FireShow(const FireStarter2Results *results, const FireStarter2Data bestData, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
+        "extern \"C\" __global__ void FireShow(const FireStarter2Results *results, const FireStarter2Result bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
         "{\n"
         "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
         "    int xScale = bufferHeight / 8;\n"
@@ -368,13 +362,13 @@ void FireStarter2::MakeProgram(std::string& src)
         "            pixel.x = 255;\n"
         "            pixel.y = 128;\n"
         "        };\n"
-        "        y = (int)(center + Evaluate(results->bestData, theta) * yScale);\n"
+        "        y = (int)(center + Evaluate(results->bestResult.data, theta) * yScale);\n"
         "        if ((y >= 0) && (y < bufferHeight)) {\n"
         "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
         "            pixel.z = 255;\n"
         "            pixel.y = 128;\n"
         "        };\n"
-        "        y = (int)(center + Evaluate(bestData, theta) * yScale);\n"
+        "        y = (int)(center + Evaluate(bestResult.data, theta) * yScale);\n"
         "        if ((y >= 0) && (y < bufferHeight)) {\n"
         "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
         "            pixel.x = pixel.y = pixel.z = 255;\n"
