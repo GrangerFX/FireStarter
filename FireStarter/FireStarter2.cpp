@@ -206,19 +206,16 @@ void FireStarter2::DrawGraph(void)
 
 void FireStarter2::InitProgram(void)
 {
-    unsigned int seed = 0;
-    seed = RANDOMHASH(seed) + 1;
     for (int i = 0; i < FS2_PROGRAM_DATA; i++) {
         curState.data.d[i][0] = 1.0f;
         for (int j = 1; j < FS2_PROGRAM_DATA; j++)
             curState.data.d[i][j] = 0.0f;
     }
     curState.result = FS2_START_RESULT;
+    bestState = curState;
 
-    for (unsigned int i = 1; i < FS2_PROGRAM_POPULATION; i++) {
-        results->results[i].result = curState.result;
-        results->results[i].data = curState.data;
-     }
+    for (unsigned int i = 0; i < FS2_PROGRAM_POPULATION; i++)
+        results->results[i] = curState;
 
     std::string code;
     MakeProgram(code);
@@ -329,7 +326,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "                best = index;\n"
         "            }\n"
         "        }\n"
-        "        results->results[member].data = results->results[best].data;\n"
+        "        results->results[member] = results->results[best];\n"
         "        results->results[member].result = FS2_START_RESULT;\n"
         "    }\n"
         "} // FireStarter2\n"
@@ -436,7 +433,6 @@ void FireStarter2::Init(unsigned long width, unsigned long height)
     lastGeneration = 0;
     bestGeneration = 0;
     InitProgram();
-    bestState = curState;
 } // Init
 
 FireStarter2::FireStarter2(void)
