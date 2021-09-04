@@ -9,6 +9,7 @@
 #define FS2_PROGRAM_POPULATION 4352 * 32
 #define FS2_SAMPLE_ITERATIONS 15
 #define FS2_SMART_RANDOM_FACTOR 0.1f
+#define FS2_EVOLUTION_SAMPLES 16
 #define FS2_START_RESULT 10.0f
 
 typedef struct FireStarter2Data {

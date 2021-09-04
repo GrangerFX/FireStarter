@@ -249,6 +249,7 @@ void FireStarter2::MakeProgram(std::string& src)
     src += Format("#define PROGRAM_ITERATIONS %d\n", FS2_PROGRAM_ITERATIONS);
     src += Format("#define SAMPLE_ITERATIONS %d\n", FS2_SAMPLE_ITERATIONS);
     src += Format("#define SMART_RANDOM_FACTOR %gf\n", FS2_SMART_RANDOM_FACTOR);
+    src += Format("#define EVOLUTION_SAMPLES %d\n", FS2_EVOLUTION_SAMPLES);
     src += Format("#define FS2_START_RESULT %f\n", FS2_START_RESULT);
     src += "\n"
         "__device__ unsigned int Hash(unsigned int hash)\n"
@@ -340,7 +341,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "        newResults->results[member].result = result;\n"
         "    } else {\n"
         "        unsigned int best = member;\n"
-        "        for (int i = 0; i < 16; i++) {\n"
+        "        for (int i = 0; i < EVOLUTION_SAMPLES; i++) {\n"
         "            unsigned int index = RANDOMSEED(seed) % population;\n"
         "            float curResult = oldResults->results[index].result;\n"
         "            if (curResult < result) {\n"
