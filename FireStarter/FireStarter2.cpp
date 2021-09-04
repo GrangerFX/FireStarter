@@ -64,9 +64,9 @@ void FireStarter2::FreeFrameBuffer(FrameBuffer &buffer)
 bool FireStarter2::GetResults(void)
 {
     unsigned int index = 0;
-    float result = results->results[0].result;
+    float result = newResults->results[0].result;
     for (unsigned int i = 1; i < FS2_PROGRAM_POPULATION; i++) {
-        float curResult = results->results[i].result;
+        float curResult = newResults->results[i].result;
         if (curResult < result) {
             result = curResult;
             index = i;
@@ -74,7 +74,7 @@ bool FireStarter2::GetResults(void)
     }
 
     if (result < curState.result) {
-        curState = results->results[index];
+        curState = newResults->results[index];
         lastGeneration = generation;
         if (result < bestState.result)
             return true;
@@ -85,25 +85,43 @@ bool FireStarter2::GetResults(void)
 void FireStarter2::InitResults(void)
 {
     unsigned int resultsSize = sizeof(FireStarter2Results) + sizeof(FireStarter2Result) * (FS2_PROGRAM_POPULATION - 1);
-    cudaError_t err = cudaMallocManaged(&results, resultsSize);
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Failed to allocate results (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
+    if (!oldResults) {
+        cudaError_t err = cudaMallocManaged(&oldResults, resultsSize);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to allocate old results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
     }
-    cudaMemset(results, 0, resultsSize);
+    if (!newResults) {
+        cudaError_t err = cudaMallocManaged(&newResults, resultsSize);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to allocate new results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+    }
+    cudaMemset(oldResults, 0, resultsSize);
+    cudaMemset(newResults, 0, resultsSize);
 } // InitResults
 
 void FireStarter2::FreeResults(void)
 {
-    if (results) {
-        cudaError_t err = cudaFree(results);
+    if (oldResults) {
+        cudaError_t err = cudaFree(oldResults);
         if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free results (error code %s)!\n", cudaGetErrorString(err));
+            fprintf(stderr, "Failed to free old results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
-        results = NULL;
+        oldResults = NULL;
     }
- } // FreeResults
+    if (newResults) {
+        cudaError_t err = cudaFree(newResults);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to free new results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        newResults = NULL;
+    }
+} // FreeResults
 
 void FireStarter2::CompileProgram(const char *source)
 {
@@ -155,7 +173,8 @@ void FireStarter2::RunProgram(unsigned int population)
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     unsigned int variation = FS2_VARIATION;
-    void *arr[] = {reinterpret_cast<void*>(&results),
+    void *arr[] = {reinterpret_cast<void*>(&oldResults),
+                   reinterpret_cast<void*>(&newResults),
                    reinterpret_cast<void*>(&population),
                    reinterpret_cast<void*>(&generation),
                    reinterpret_cast<void*>(&variation)};
@@ -214,8 +233,10 @@ void FireStarter2::InitProgram(void)
     curState.result = FS2_START_RESULT;
     bestState = curState;
 
-    for (unsigned int i = 0; i < FS2_PROGRAM_POPULATION; i++)
-        results->results[i] = curState;
+    for (unsigned int i = 0; i < FS2_PROGRAM_POPULATION; i++) {
+        oldResults->results[i] = curState;
+        newResults->results[i] = curState;
+    }
 
     std::string code;
     MakeProgram(code);
@@ -284,7 +305,7 @@ void FireStarter2::MakeProgram(std::string& src)
         "    return isnan(result) ? 0.0f : result;\n"
         "} // Evaluate\n"
         "\n"
-        "extern \"C\" __global__ void FireStarter2(FireStarter2Results *results, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"
+        "extern \"C\" __global__ void FireStarter2(FireStarter2Results *oldResults, FireStarter2Results *newResults, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"
         "{\n"
         "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
         "    if (member >= population)\n"
@@ -296,8 +317,9 @@ void FireStarter2::MakeProgram(std::string& src)
         "        theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));\n"
         "        target[i] = variation ? Target1(theta[i]) : Target(theta[i]);\n"
         "    }\n"
-        "    FireStarter2Data data(results->results[member].data);\n"
-        "    float result = results->results[member].result;\n"
+        "    FireStarter2Data data(oldResults->results[member].data);\n"
+        "    float oldResult = oldResults->results[member].result;\n"
+        "    float result = oldResult;\n"
         "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
         "        unsigned int di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
         "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
@@ -313,21 +335,21 @@ void FireStarter2::MakeProgram(std::string& src)
         "        else\n"
         "            data.d[di][dj] = oldData;\n"
         "    }\n"
-        "    if (result < results->results[member].result) {\n"
-        "        results->results[member].data = data;\n"
-        "        results->results[member].result = result;\n"
+        "    if (result < oldResult) {\n"
+        "        newResults->results[member].data = data;\n"
+        "        newResults->results[member].result = result;\n"
         "    } else {\n"
         "        unsigned int best = member;\n"
         "        for (int i = 0; i < 16; i++) {\n"
         "            unsigned int index = RANDOMSEED(seed) % population;\n"
-        "            float curResult = results->results[index].result;\n"
+        "            float curResult = oldResults->results[index].result;\n"
         "            if (curResult < result) {\n"
         "                result = curResult;\n"
         "                best = index;\n"
         "            }\n"
         "        }\n"
-        "        results->results[member] = results->results[best];\n"
-        "        results->results[member].result = FS2_START_RESULT;\n"
+        "        newResults->results[member] = oldResults->results[best];\n"
+        "        newResults->results[member].result = FS2_START_RESULT;\n"
         "    }\n"
         "} // FireStarter2\n"
         "\n"
@@ -376,9 +398,17 @@ void FireStarter2::RenderImage(HWND hwnd)
     timer.Start();
     bool update = false;
     if (bestState.result >= 1.0E-6f) {
+        // Run the next generation on the GPU.
         generation++;
         RunProgram(FS2_PROGRAM_POPULATION);
+
+        // Find the best results for display only.
         update = GetResults();
+
+        // Swap the old and new results.
+        FireStarter2Results* results = oldResults;
+        oldResults = newResults;
+        newResults = results;
     }
 
     if (update) {
@@ -439,7 +469,8 @@ FireStarter2::FireStarter2(void)
 {
     // Timer ID
     statusString[0] = 0;
-    results = NULL;
+    oldResults = NULL;
+    newResults = NULL;
     module = NULL;
 } // FireStarter2
 

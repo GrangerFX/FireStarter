@@ -28,7 +28,8 @@ class FireStarter2 {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
-    FireStarter2Results *results;
+    FireStarter2Results* oldResults;
+    FireStarter2Results* newResults;
     FireStarter2Result curState;
     FireStarter2Result bestState;
     CUmodule module;
