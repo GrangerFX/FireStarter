@@ -83,7 +83,7 @@ public:
     void InitProgram(void);
     void RandomProgram(void);
     void MakeProgram(std::string &code);
-    void RenderImage(HWND hwnd);
+    void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);
     FireStarter(void);
     ~FireStarter(void);

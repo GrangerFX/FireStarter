@@ -1,4 +1,5 @@
 #include "FireStarter.h"
+#include "HashRandom.h"
 #include "PrintF.h"
 #include <stdio.h>
 #include <stdarg.h>
@@ -521,7 +522,7 @@ void FireStarter::MakeProgram(std::string& src)
            "} // FireShow\n";
 } // MakeProgram
 
-void FireStarter::RenderImage(HWND hwnd)
+void FireStarter::RenderImage(void* hwnd)
 {
     timer.Start();
     bool update = false;
@@ -558,7 +559,7 @@ void FireStarter::RenderImage(HWND hwnd)
         bm->bmiHeader.biWidth = theBuffer.width;
         bm->bmiHeader.biBitCount = 32;
 
-        HDC hdc = GetDC(hwnd);
+        HDC hdc = GetDC((HWND)hwnd);
         if (hdc) {
 	        SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
 	        GdiFlush();

@@ -1,9 +1,10 @@
-#include "FireStarter.h"
-#include "FireStarter2.h"
+#include <Windows.h>
 
 #if 1
+#include "FireStarter2.h"
 static FireStarter2 fireStarter;
 #else
+#include "FireStarter.h"
 static FireStarter fireStarter;
 #endif
 

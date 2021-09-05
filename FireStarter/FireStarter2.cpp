@@ -1,4 +1,6 @@
 #include "FireStarter2.h"
+#include "FireStarterUtil.h"
+#include "HashRandom.h"
 #include "PrintF.h"
 #include <stdio.h>
 #include <stdarg.h>
@@ -239,219 +241,83 @@ void FireStarter2::InitProgram(void)
     }
 
     std::string code;
-    MakeProgram(code);
+    LoadProgram(code);
     CompileProgram(code.c_str());
 } // InitProgram
 
-void FireStarter2::MakeProgram(std::string& src)
+void FireStarter2::LoadProgram(std::string& src)
 {
-    src += Format("#define PROGRAM_DATA %d\n", FS2_PROGRAM_DATA);
-    src += Format("#define PROGRAM_ITERATIONS %d\n", FS2_PROGRAM_ITERATIONS);
-    src += Format("#define SAMPLE_ITERATIONS %d\n", FS2_SAMPLE_ITERATIONS);
-    src += Format("#define SMART_RANDOM_FACTOR %gf\n", FS2_SMART_RANDOM_FACTOR);
-    src += Format("#define EVOLUTION_SAMPLES %d\n", FS2_EVOLUTION_SAMPLES);
-    src += Format("#define FS2_START_RESULT %f\n", FS2_START_RESULT);
-    src += "\n"
-        "__device__ unsigned int Hash(unsigned int hash)\n"
-        "{\n"
-        "    hash = (hash ^ 61) ^ (hash >> 16);\n"
-        "    hash += hash << 3;\n"
-        "    hash ^= hash >> 4;\n"
-        "    hash *= 0x27d4eb2d; // a prime or an odd constant\n"
-        "    hash ^= hash >> 15;\n"
-        "    return hash;\n"
-        "} // Hash\n"
-        "\n"
-        "#define RANDOMHASH(seed) Hash(seed)\n"
-        "#define RANDOMSEED(seed) RANDOMHASH(seed++)\n"
-        "#define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits\n"
-        "#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1\n"
-        "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
-        "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
-        "\n"
-        "typedef struct {\n"
-        "    float d[PROGRAM_DATA][PROGRAM_DATA];\n"
-        "} FireStarter2Data;\n"
-        "\n"
-        "typedef struct {\n"
-        "    FireStarter2Data data;\n"
-        "    float result;\n"
-        "} FireStarter2Result;\n"
-        "\n"
-        "typedef struct {\n"
-        "    FireStarter2Result results[1];\n"
-        "} FireStarter2Results;\n"
-        "\n"
-        "__device__ float Target(float n) {\n"
-        "   return sinf(n);\n"
-        "} // Target\n"
-        "\n"
-        "__device__ float Target1(float n) {\n"
-        "   return sinf(n * 1.3f) + n * 0.1f;\n"
-        "} // Target1\n"
-        "\n"
-        "__device__ float Evaluate(const FireStarter2Data &workData, float n)\n"
-        "{\n"
-        "    FireStarter2Data data(workData);\n"
-        "    float power = n;\n"
-        "    data.d[0][0] *= power;\n"
-        "    for (int i = 1; i < PROGRAM_DATA; i++) {\n"
-        "        power *= n;\n"
-        "        float sum = data.d[i][i] * power;\n"
-        "        for (int j = 0; j < i; j++)\n"
-        "            sum += data.d[i][j] * data.d[j][0];\n"
-        "        data.d[i][0] = sum;\n"
-        "    }\n"
-        "    float result = data.d[PROGRAM_DATA - 1][0];\n"
-        "    return isnan(result) ? 0.0f : result;\n"
-        "} // Evaluate\n"
-        "\n"
-        "extern \"C\" __global__ void FireStarter2(FireStarter2Results *oldResults, FireStarter2Results *newResults, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"
-        "{\n"
-        "    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;\n"
-        "    if (member >= population)\n"
-        "        return;\n"
-        "    unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);\n"
-        "    float target[SAMPLE_ITERATIONS];\n"
-        "    float theta[SAMPLE_ITERATIONS];\n"
-        "    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
-        "        theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));\n"
-        "        target[i] = variation ? Target1(theta[i]) : Target(theta[i]);\n"
-        "    }\n"
-        "    FireStarter2Data data(oldResults->results[member].data);\n"
-        "    float oldResult = oldResults->results[member].result;\n"
-        "    float result = oldResult;\n"
-        "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
-        "        unsigned int di = RANDOMSEED(seed) % PROGRAM_DATA;\n"
-        "        unsigned int dj = RANDOMSEED(seed) % (di + 1);\n"
-        "        float oldData = data.d[di][dj];\n"
-        "        data.d[di][dj] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);\n"
-        "        float curResult = 0.0f;\n"
-        "        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
-        "            float delta = fabsf(Evaluate(data, theta[i]) - target[i]);\n"
-        "            curResult = delta > curResult ? delta : curResult;\n"
-        "        }\n"
-        "        if (curResult < result)\n"
-        "            result = curResult;\n"
-        "        else\n"
-        "            data.d[di][dj] = oldData;\n"
-        "    }\n"
-        "    if (result < oldResult) {\n"
-        "        newResults->results[member].data = data;\n"
-        "        newResults->results[member].result = result;\n"
-        "    } else {\n"
-        "        unsigned int best = member;\n"
-        "        for (int i = 0; i < EVOLUTION_SAMPLES; i++) {\n"
-        "            unsigned int index = RANDOMSEED(seed) % population;\n"
-        "            float curResult = oldResults->results[index].result;\n"
-        "            if (curResult < result) {\n"
-        "                result = curResult;\n"
-        "                best = index;\n"
-        "            }\n"
-        "        }\n"
-        "        newResults->results[member] = oldResults->results[best];\n"
-        "        newResults->results[member].result = FS2_START_RESULT;\n"
-        "    }\n"
-        "} // FireStarter2\n"
-        "\n"
-        "extern \"C\" __global__ void FireShow(const FireStarter2Result bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
-        "{\n"
-        "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
-        "    int xScale = bufferHeight / 8;\n"
-        "    int yScale = bufferHeight / 16;\n"
-        "    if (x < bufferHeight) {\n"
-        "        int x0 = (bufferWidth / 2) - xScale;\n"
-        "        int x1 = (bufferWidth / 2) + xScale;\n"
-        "        if (x0 >= 0) {\n"
-        "            uchar4 &pixel(bufferPixels[x * bufferWidth + x0]);\n"
-        "            pixel.x = 64;\n"
-        "            pixel.y = 128;\n"
-        "            pixel.z = 64;\n"
-        "        };\n"
-        "        if (x1 < bufferWidth) {\n"
-        "            uchar4 &pixel(bufferPixels[x * bufferWidth + x1]);\n"
-        "            pixel.x = 64;\n"
-        "            pixel.y = 128;\n"
-        "            pixel.z = 64;\n"
-        "        };\n"
-        "    }\n"
-        "    if (x < bufferWidth) {\n"
-        "        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;\n"
-        "        float center = bufferHeight * 0.66f;\n"
-        "        float target = variation ? Target1(theta) : Target(theta);\n"
-        "        int y = (int)(center + target * yScale);\n"
-        "        if ((y >= 0) && (y < bufferHeight)) {\n"
-        "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-        "            pixel.x = 255;\n"
-        "            pixel.y = 128;\n"
-        "        };\n"
-        "        y = (int)(center + Evaluate(bestResult.data, theta) * yScale);\n"
-        "        if ((y >= 0) && (y < bufferHeight)) {\n"
-        "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
-        "            pixel.x = pixel.y = pixel.z = 255;\n"
-        "        };\n"
-        "    }\n"
-        "} // FireShow\n";
-} // MakeProgram
+    std::ifstream file("FireStarter2.cu", std::ios::ate | std::ios::binary);
+    if (file.is_open()) {
+        // Found usable source file
+        file.seekg(0, std::ios::end);
+        src.reserve(file.tellg());
+        file.seekg(0, std::ios::beg);
+        src.assign((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
+        file.close();
+    }
+} // LoadProgram
 
-void FireStarter2::RenderImage(HWND hwnd)
+void FireStarter2::RenderImage(void* hwnd)
 {
-    timer.Start();
-    bool update = false;
     if (bestState.result >= 1.0E-6f) {
-        // Run the next generation on the GPU.
-        generation++;
-        RunProgram(FS2_PROGRAM_POPULATION);
+        timer.Start();
+        double time = 0;
+        long long startGeneration = generation;
+        
+        do {
+            // Swap the old and new results.
+            FireStarter2Results* results = oldResults;
+            oldResults = newResults;
+            newResults = results;
+            generation++;
+
+            // Run the next generation on the GPU.
+            RunProgram(FS2_PROGRAM_POPULATION);
+            time = timer.Duration();
+        } while (time < 0.2);
 
         // Find the best results for display only.
-        update = GetResults();
-
-        // Swap the old and new results.
-        FireStarter2Results* results = oldResults;
-        oldResults = newResults;
-        newResults = results;
-    }
-
-    if (update) {
-        DrawGraph();
+        bool update = GetResults();
         if (update) {
+            DrawGraph();
             bestState = curState;
             bestGeneration = generation;
+
+            unsigned char buffer[4096];
+            BITMAPINFO* bm = (BITMAPINFO*)buffer;
+            bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+            bm->bmiHeader.biHeight = -(int)theBuffer.height;
+            bm->bmiHeader.biPlanes = 1;
+            bm->bmiHeader.biCompression = BI_RGB;
+            bm->bmiHeader.biSizeImage = 0;
+            bm->bmiHeader.biXPelsPerMeter = 0;
+            bm->bmiHeader.biYPelsPerMeter = 0;
+            bm->bmiHeader.biClrUsed = 0;
+            bm->bmiHeader.biClrImportant = 0;
+            bm->bmiHeader.biWidth = theBuffer.width;
+            bm->bmiHeader.biBitCount = 32;
+
+            HDC hdc = GetDC((HWND)hwnd);
+            if (hdc) {
+                SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID*)theBuffer.base, bm, DIB_RGB_COLORS);
+                GdiFlush();
+            }
         }
 
-        unsigned char buffer[4096];
-        BITMAPINFO*	bm = (BITMAPINFO*)buffer;
-        bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bm->bmiHeader.biHeight = -(int)theBuffer.height;
-        bm->bmiHeader.biPlanes = 1;
-        bm->bmiHeader.biCompression = BI_RGB;
-        bm->bmiHeader.biSizeImage = 0; 
-        bm->bmiHeader.biXPelsPerMeter = 0; 
-        bm->bmiHeader.biYPelsPerMeter = 0; 
-        bm->bmiHeader.biClrUsed = 0; 
-        bm->bmiHeader.biClrImportant = 0;					
-        bm->bmiHeader.biWidth = theBuffer.width;
-        bm->bmiHeader.biBitCount = 32;
-
-        HDC hdc = GetDC(hwnd);
-        if (hdc) {
-	        SetDIBitsToDevice(hdc, 0, 0, theBuffer.width, theBuffer.height, 0, 0, 0, theBuffer.height, (CONST VOID *)theBuffer.base, bm, DIB_RGB_COLORS);
-	        GdiFlush();
-        }
-    }
-
-    double time = timer.Duration();
-    sprintf_s(statusString, "FireStarter2: Generation=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, time);
+        double averageTime = time / (double)(generation - startGeneration);
+        sprintf_s(statusString, "FireStarter2: Generation=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, averageTime);
 #if 0
-    if (update) {
-        printf("// %s\n", statusString);
-        printf("// generation=%d  data: ", generation);
-        for (int i = 0; i < PROGRAM_DATA; i++)
-            printf("%f ", curState.data[i]);
-        printf("\n");
-        printf("%s\n\n", code.c_str());
-    }
+        if (update) {
+            printf("// %s\n", statusString);
+            printf("// generation=%d  data: ", generation);
+            for (int i = 0; i < PROGRAM_DATA; i++)
+                printf("%f ", curState.data[i]);
+            printf("\n");
+            printf("%s\n\n", code.c_str());
+        }
 #endif
+    }
 } // RenderImage
 
 void FireStarter2::Init(unsigned long width, unsigned long height)

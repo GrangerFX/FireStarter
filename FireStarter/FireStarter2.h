@@ -1,29 +1,8 @@
 #pragma once
-#include "FireStarterUtil.h"
 #include <vector>
 #include <cuda.h>
-
-#define FS2_VARIATION 0
-#define FS2_PROGRAM_DATA 6
-#define FS2_PROGRAM_ITERATIONS 4000
-#define FS2_PROGRAM_POPULATION 4352 * 32
-#define FS2_SAMPLE_ITERATIONS 15
-#define FS2_SMART_RANDOM_FACTOR 0.1f
-#define FS2_EVOLUTION_SAMPLES 16
-#define FS2_START_RESULT 10.0f
-
-typedef struct FireStarter2Data {
-    float d[FS2_PROGRAM_DATA][FS2_PROGRAM_DATA];
-} FireStarter2Data;
-
-typedef struct {
-    FireStarter2Data data;
-    float result;
-} FireStarter2Result;
-
-typedef struct {
-    FireStarter2Result results[1];
-} FireStarter2Results;
+#include "FireStarter2Defines.h"
+#include "FireStarterUtil.h"
 
 class FireStarter2 {
 public:
@@ -50,8 +29,8 @@ public:
     void RunProgram(unsigned int population);
     void DrawGraph(void);
     void InitProgram(void);
-    void MakeProgram(std::string &code);
-    void RenderImage(HWND hwnd);
+    void LoadProgram(std::string &code);
+    void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);
     FireStarter2(void);
     ~FireStarter2(void);

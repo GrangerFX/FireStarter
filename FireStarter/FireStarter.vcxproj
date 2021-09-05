@@ -90,11 +90,16 @@
     <ClCompile Include="FireStarter.cpp" />
     <ClCompile Include="FireStarter2.cpp" />
     <ClCompile Include="WindowsMain.cpp" />
-    <ClInclude Include="Defines.h" />
+    <ClInclude Include="CUDADefines.h" />
     <ClInclude Include="FireStarter.h" />
     <ClInclude Include="FireStarter2.h" />
+    <ClInclude Include="FireStarter2Defines.h" />
     <ClInclude Include="FireStarterUtil.h" />
+    <ClInclude Include="HashRandom.h" />
     <ClInclude Include="PrintF.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FireStarter2.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
