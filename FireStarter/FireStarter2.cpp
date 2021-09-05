@@ -307,16 +307,6 @@ void FireStarter2::RenderImage(void* hwnd)
 
         double averageTime = time / (double)(generation - startGeneration);
         sprintf_s(statusString, "FireStarter2: Generation=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, averageTime);
-#if 0
-        if (update) {
-            printf("// %s\n", statusString);
-            printf("// generation=%d  data: ", generation);
-            for (int i = 0; i < PROGRAM_DATA; i++)
-                printf("%f ", curState.data[i]);
-            printf("\n");
-            printf("%s\n\n", code.c_str());
-        }
-#endif
     }
 } // RenderImage
 
