@@ -32,46 +32,53 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *oldResults, FireStarter2Result
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-    unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
-    float target[FS2_SAMPLE_ITERATIONS];
-    float theta[FS2_SAMPLE_ITERATIONS];
-    for (int i = 0; i < FS2_SAMPLE_ITERATIONS; i++) {
-        theta[i] = i * ((2.0f * 3.14159265f) / (FS2_SAMPLE_ITERATIONS - 1));
-        target[i] = variation ? Target1(theta[i]) : Target(theta[i]);
-    }
-    FireStarter2Data data(oldResults->results[member].data);
-    float oldResult = oldResults->results[member].result;
-    float result = oldResult;
-    for (int p = 0; p < FS2_PROGRAM_ITERATIONS; p++) {
-        unsigned int di = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
-        unsigned int dj = RANDOMSEED(seed) % (di + 1);
-        float oldData = data.d[di][dj];
-        data.d[di][dj] = oldData + (FS2_SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
-        float curResult = 0.0f;
+    for (unsigned int g = 0; g < FS2_PROGRAM_GENERATIONS; g++) {
+        unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
+        float target[FS2_SAMPLE_ITERATIONS];
+        float theta[FS2_SAMPLE_ITERATIONS];
         for (int i = 0; i < FS2_SAMPLE_ITERATIONS; i++) {
-            float delta = fabsf(Evaluate(data, theta[i]) - target[i]);
-            curResult = delta > curResult ? delta : curResult;
+            theta[i] = i * ((2.0f * 3.14159265f) / (FS2_SAMPLE_ITERATIONS - 1));
+            target[i] = variation ? Target1(theta[i]) : Target(theta[i]);
         }
-        if (curResult < result)
-            result = curResult;
-        else
-            data.d[di][dj] = oldData;
-    }
-    if (result < oldResult) {
-        newResults->results[member].data = data;
-        newResults->results[member].result = result;
-    } else {
-        unsigned int best = member;
-        for (int i = 0; i < FS2_EVOLUTION_SAMPLES; i++) {
-            unsigned int index = RANDOMSEED(seed) % population;
-            float curResult = oldResults->results[index].result;
-            if (curResult < result) {
-                result = curResult;
-                best = index;
+        FireStarter2Data data(oldResults->results[member].data);
+        float oldResult = oldResults->results[member].result;
+        float result = oldResult;
+        for (int p = 0; p < FS2_PROGRAM_ITERATIONS; p++) {
+            unsigned int di = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+            unsigned int dj = RANDOMSEED(seed) % (di + 1);
+            float oldData = data.d[di][dj];
+            data.d[di][dj] = oldData + (FS2_SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
+            float curResult = 0.0f;
+            for (int i = 0; i < FS2_SAMPLE_ITERATIONS; i++) {
+                float delta = fabsf(Evaluate(data, theta[i]) - target[i]);
+                curResult = delta > curResult ? delta : curResult;
             }
+            if (curResult < result)
+                result = curResult;
+            else
+                data.d[di][dj] = oldData;
         }
-        newResults->results[member] = oldResults->results[best];
-        newResults->results[member].result = FS2_START_RESULT;
+        if (result < oldResult) {
+            newResults->results[member].data = data;
+            newResults->results[member].result = result;
+        }
+        else {
+            unsigned int best = member;
+            for (int i = 0; i < FS2_EVOLUTION_SAMPLES; i++) {
+                unsigned int index = RANDOMSEED(seed) % population;
+                float curResult = oldResults->results[index].result;
+                if (curResult < result) {
+                    result = curResult;
+                    best = index;
+                }
+            }
+            newResults->results[member] = oldResults->results[best];
+            newResults->results[member].result = FS2_START_RESULT;
+        }
+        GPU_SYNCTHREADS();
+        FireStarter2Results* results = oldResults;
+        oldResults = newResults;
+        newResults = results;
     }
 } // FireStarter2
 

@@ -270,10 +270,10 @@ void FireStarter2::RenderImage(void* hwnd)
             FireStarter2Results* results = oldResults;
             oldResults = newResults;
             newResults = results;
-            generation++;
 
             // Run the next generation on the GPU.
             RunProgram(FS2_PROGRAM_POPULATION);
+            generation += FS2_PROGRAM_GENERATIONS;
             time = timer.Duration();
         } while (time < 0.2);
 

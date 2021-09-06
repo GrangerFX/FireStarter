@@ -1,6 +1,6 @@
 #include <Windows.h>
 
-#if 0
+#if 1
 #include "FireStarter2.h"
 static FireStarter2 fireStarter;
 #else

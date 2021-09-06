@@ -237,26 +237,6 @@ void FireStarter::InitProgram(void)
     err = cudaMallocManaged(&bestState, sizeof(FireStarterState));
     for (int i = 0; i < PROGRAM_DATA; i++)
         curState->data.d[i] = 0.0f;
-#if PROGRAM_FIXED
-    curState->instructions[0].a = 1;
-    curState->instructions[0].b = 0;
-    curState->instructions[0].c = 2;
-    curState->instructions[1].a = 1;
-    curState->instructions[1].b = 2;
-    curState->instructions[1].c = 3;
-    curState->instructions[2].a = 0;
-    curState->instructions[2].b = 1;
-    curState->instructions[2].c = 0;
-    curState->instructions[3].a = 5;
-    curState->instructions[3].b = 2;
-    curState->instructions[3].c = 0;
-    curState->instructions[4].a = 1;
-    curState->instructions[4].b = 3;
-    curState->instructions[4].c = 3;
-    curState->instructions[5].a = 2;
-    curState->instructions[5].b = 2;
-    curState->instructions[5].c = 4;
-#else
     unsigned int seed = (unsigned int)generation;
     seed = RANDOMHASH(seed) + 1;
     for (int i = 0; i < PROGRAM_DATA; i++) {
@@ -264,7 +244,6 @@ void FireStarter::InitProgram(void)
         curState->instructions.d[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
         curState->instructions.d[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
     }
-#endif
     curState->result = START_RESULT;
     states.push_back(*curState);
 } // InitProgram
