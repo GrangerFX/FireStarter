@@ -33,7 +33,7 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *oldResults, FireStarter2Result
     if (member >= population)
         return;
     for (unsigned int g = 0; g < FS2_PROGRAM_GENERATIONS; g++) {
-        unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
+        unsigned int seed = RANDOMHASH(RANDOMHASH(generation + g) + member);
         float target[FS2_SAMPLE_ITERATIONS];
         float theta[FS2_SAMPLE_ITERATIONS];
         for (int i = 0; i < FS2_SAMPLE_ITERATIONS; i++) {
