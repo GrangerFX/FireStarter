@@ -359,14 +359,6 @@ void FireStarter::MakeProgram(std::string& src)
            "\n"
            "typedef struct FireStarterInstructions {\n"
            "    FireStarterInstruction d[PROGRAM_DATA];\n"
-           "\n"
-           "    __device__ FireStarterInstruction& operator[](int i)\n"
-           "    {\n"
-           "        switch (i) {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        case %d: return d[%d];\n", i, i);
-    src += "        }\n"
-           "    } // operator[]\n"
            "} FireStarterInstructions;\n"
            "\n"
            "typedef struct {\n"

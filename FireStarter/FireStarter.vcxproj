@@ -94,6 +94,7 @@
     <ClInclude Include="FireStarter.h" />
     <ClInclude Include="FireStarter2.h" />
     <ClInclude Include="FireStarter2Defines.h" />
+    <ClInclude Include="FireStarterDefines.h" />
     <ClInclude Include="FireStarterUtil.h" />
     <ClInclude Include="HashRandom.h" />
     <ClInclude Include="PrintF.h" />
