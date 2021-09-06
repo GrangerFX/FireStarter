@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 
 #define FS1_VARIATION 0
 #define PROGRAM_DATA 6
@@ -46,5 +45,3 @@ typedef struct {
     FireStarterData data;
     float result;
 } FireStarterState;
-
-typedef std::vector<FireStarterState> FireStarterStates;

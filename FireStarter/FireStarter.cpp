@@ -306,13 +306,7 @@ void FireStarter::RandomProgram(void)
 
 void FireStarter::MakeProgram(std::string& src)
 {
-    src += Format("#define PROGRAM_DATA %d\n", PROGRAM_DATA);
-    src += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
-    src += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
-    src += Format("#define SMART_RANDOM_FACTOR %gf\n", SMART_RANDOM_FACTOR);
-    src += Format("#define SMART_AGE_FACTOR %gf\n", SMART_AGE_FACTOR);
-    src += Format("#define BLOCK_SIZE %d\n", BLOCK_SIZE);
-    src += "\n"
+    src += "#include \"FireStarterDefines.h\"\n"
            "__device__ unsigned int Hash(unsigned int hash)\n"
            "{\n"
            "    hash = (hash ^ 61) ^ (hash >> 16);\n"
@@ -329,39 +323,6 @@ void FireStarter::MakeProgram(std::string& src)
            "#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1\n"
            "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
            "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
-           "\n"
-           "typedef struct FireStarterData {\n"
-           "    float d[PROGRAM_DATA];\n"
-           "} FireStarterData;\n"
-           "\n"
-           "typedef struct {\n"
-           "    int a, b, c;\n"
-           "} FireStarterInstruction;\n"
-           "\n"
-           "typedef struct FireStarterInstructions {\n"
-           "    FireStarterInstruction d[PROGRAM_DATA];\n"
-           "} FireStarterInstructions;\n"
-           "\n"
-           "typedef struct {\n"
-           "    FireStarterInstructions instructions;\n"
-           "    FireStarterData data;\n"
-           "    float result;\n"
-           "} FireStarterState;\n"
-           "\n"
-           "typedef struct {\n"
-           "    FireStarterData data;\n"
-           "    float result;\n"
-           "    unsigned int member;\n"
-           "} FireStarterResult;\n"
-           "\n"
-           "typedef struct {\n"
-           "    unsigned int numResults;\n"
-           "    float minResult;\n"
-           "    float curResult;\n"
-           "    float startResult;\n"
-           "    FireStarterData bestData;\n"
-           "    FireStarterResult results[1];\n"
-           "} FireStarterResults;\n"
            "\n"
            "__device__ float Target(float n) {\n"
            "   return sinf(n);\n"

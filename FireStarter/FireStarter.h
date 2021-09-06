@@ -2,6 +2,9 @@
 #include "FireStarterUtil.h"
 #include "FireStarterDefines.h"
 #include <cuda.h>
+#include <vector>
+
+typedef std::vector<FireStarterState> FireStarterStates;
 
 class FireStarter {
 public:
