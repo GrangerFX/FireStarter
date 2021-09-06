@@ -2,7 +2,6 @@
 #include <vector>
 
 #define FS1_VARIATION 0
-#define EMBED_INSTRUCTIONS 1
 #define PROGRAM_DATA 6
 #define PROGRAM_ITERATIONS 8000
 #define PROGRAM_POPULATION 4352 * 64

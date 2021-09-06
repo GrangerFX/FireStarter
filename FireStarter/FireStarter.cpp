@@ -267,11 +267,6 @@ void FireStarter::InitProgram(void)
 #endif
     curState->result = START_RESULT;
     states.push_back(*curState);
-#if !EMBED_INSTRUCTIONS
-    std::string code;
-    MakeProgram(code);
-    CompileProgram(code.c_str());
-#endif
 } // InitProgram
 
 void FireStarter::RandomProgram(void)
@@ -343,14 +338,6 @@ void FireStarter::MakeProgram(std::string& src)
            "\n"
            "typedef struct FireStarterData {\n"
            "    float d[PROGRAM_DATA];\n"
-           "\n"
-           "    __device__ float operator[](int i)\n"
-           "    {\n"
-           "        switch (i) {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        case %d: return d[%d];\n", i, i);
-    src += "        }\n"
-           "    } // operator[]\n"
            "} FireStarterData;\n"
            "\n"
            "typedef struct {\n"
@@ -394,7 +381,7 @@ void FireStarter::MakeProgram(std::string& src)
            "{\n"
            "    data.d[0] = r;\n"
            "    for (int i = 0; i < PROGRAM_DATA; i++)\n"
-           "        data.d[i] = data[instructions.d[i].a] + data[instructions.d[i].b] * data[instructions.d[i].c];\n"
+           "        data.d[i] = data.d[instructions.d[i].a] + data.d[instructions.d[i].b] * data.d[instructions.d[i].c];\n"
            "    r = data.d[PROGRAM_DATA - 1];\n"
            "    return isnan(r) ? 0.0f : r;\n"
            "} // EvaluateInstructions\n"
@@ -405,14 +392,10 @@ void FireStarter::MakeProgram(std::string& src)
            "    if (member >= population)\n"
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-#if EMBED_INSTRUCTIONS
            "    FireStarterInstructions instructions = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d,\n", curState->instructions[i].a, curState->instructions[i].b, curState->instructions[i].c);
     src += "    };\n"
-#else
-           "    FireStarterInstructions instructions(bestState->instructions);\n"
-#endif
            "    FireStarterData workData;\n"
            "    FireStarterData curData;\n"
            "    curData = results->bestData;\n"
@@ -426,7 +409,7 @@ void FireStarter::MakeProgram(std::string& src)
            "    unsigned int age = 0;\n"
            "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
            "        unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
-           "        float oldValue = curData[d];\n"
+           "        float oldValue = curData.d[d];\n"
            "        curData.d[d] = oldValue + (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
            "        float curResult = 0.0f;\n"
            "        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
@@ -455,7 +438,6 @@ void FireStarter::MakeProgram(std::string& src)
            "\n"
            "extern \"C\" __global__ void FireShow(FireStarterState *curState, FireStarterState *bestState, const FireStarterResults *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
            "{\n"
-#if EMBED_INSTRUCTIONS
            "    FireStarterInstructions instructions0 = {\n";
     for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d,\n", curState->instructions[i].a, curState->instructions[i].b, curState->instructions[i].c);
@@ -464,10 +446,6 @@ void FireStarter::MakeProgram(std::string& src)
     for (int i = 0; i < PROGRAM_DATA; i++)
         src += Format("        %d, %d, %d,\n", bestState->instructions[i].a, bestState->instructions[i].b, bestState->instructions[i].c);
     src += "    };\n"
-#else
-           "    FireStarterInstructions instructions0(curState->instructions);\n"
-           "    FireStarterInstructions instructions1(bestState->instructions);\n"
-#endif
            "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
            "    int xScale = bufferHeight / 8;\n"
            "    int yScale = bufferHeight / 16;\n"
@@ -520,11 +498,9 @@ void FireStarter::RenderImage(void* hwnd)
     bool update = false;
     if (bestState->result >= 1.0E-6f) {
         RandomProgram();
-#if EMBED_INSTRUCTIONS
         std::string code;
         MakeProgram(code);
         CompileProgram(code.c_str());
-#endif
         RunProgram(PROGRAM_POPULATION, MAX_RESULTS);
         update = GetResults();
         generation++;
