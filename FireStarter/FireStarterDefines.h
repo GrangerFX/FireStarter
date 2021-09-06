@@ -3,10 +3,8 @@
 
 #define FS1_VARIATION 0
 #define PROGRAM_DATA 6
-#define PROGRAM_ITERATIONS 8000
-#define PROGRAM_POPULATION 4352 * 64
-#define PROGRAM_FIXED 0
-#define DATA_FIXED 0
+#define PROGRAM_ITERATIONS 4000
+#define PROGRAM_POPULATION 4352 * 32
 #define SAMPLE_ITERATIONS 15
 #define MAX_RESULTS 16384
 #define SMART_RANDOM_FACTOR 0.1f
@@ -18,7 +16,6 @@
 
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
-    float& operator[](int i) { return d[i]; }
 } FireStarterData;
 
 typedef struct {
@@ -42,7 +39,6 @@ typedef struct {
 
 typedef struct FireStarterInstructions {
     FireStarterInstruction d[PROGRAM_DATA];
-    FireStarterInstruction& operator[](int i) { return d[i]; }
 } FireStarterInstructions;
 
 typedef struct {
