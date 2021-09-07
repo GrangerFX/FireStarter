@@ -61,8 +61,7 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *oldResults, FireStarter2Result
         if (result < oldResult) {
             newResults->results[member].data = data;
             newResults->results[member].result = result;
-        }
-        else {
+        } else {
             unsigned int best = member;
             for (int i = 0; i < FS2_EVOLUTION_SAMPLES; i++) {
                 unsigned int index = RANDOMSEED(seed) % population;

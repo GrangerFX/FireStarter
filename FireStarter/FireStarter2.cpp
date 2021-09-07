@@ -101,8 +101,19 @@ void FireStarter2::InitResults(void)
             exit(EXIT_FAILURE);
         }
     }
-    cudaMemset(oldResults, 0, resultsSize);
-    cudaMemset(newResults, 0, resultsSize);
+
+    for (int i = 0; i < FS2_PROGRAM_DATA; i++) {
+        curState.data.d[i][0] = 1.0f;
+        for (int j = 1; j < FS2_PROGRAM_DATA; j++)
+            curState.data.d[i][j] = 0.0f;
+    }
+    curState.result = FS2_START_RESULT;
+    bestState = curState;
+
+    for (unsigned int i = 0; i < FS2_PROGRAM_POPULATION; i++) {
+        oldResults->results[i] = curState;
+        newResults->results[i] = curState;
+    }
 } // InitResults
 
 void FireStarter2::FreeResults(void)
@@ -227,19 +238,6 @@ void FireStarter2::DrawGraph(void)
 
 void FireStarter2::InitProgram(void)
 {
-    for (int i = 0; i < FS2_PROGRAM_DATA; i++) {
-        curState.data.d[i][0] = 1.0f;
-        for (int j = 1; j < FS2_PROGRAM_DATA; j++)
-            curState.data.d[i][j] = 0.0f;
-    }
-    curState.result = FS2_START_RESULT;
-    bestState = curState;
-
-    for (unsigned int i = 0; i < FS2_PROGRAM_POPULATION; i++) {
-        oldResults->results[i] = curState;
-        newResults->results[i] = curState;
-    }
-
     std::string code;
     LoadProgram(code);
     CompileProgram(code.c_str());
