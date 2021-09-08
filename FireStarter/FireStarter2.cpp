@@ -77,7 +77,6 @@ bool FireStarter2::GetResults(FireStarter2Results* results)
 
     if (result < curState.result) {
         curState = results->results[index];
-        lastGeneration = generation;
         if (result < bestState.result)
             return true;
     }
@@ -299,7 +298,7 @@ void FireStarter2::RenderImage(void* hwnd)
         }
 
         double averageTime = time / (double)(generation - startGeneration);
-        sprintf_s(statusString, "FireStarter2: Generation=%lld  Age=%lld  Error=%f  Best Age %lld  Best=%f  Time=%.4f Seconds", generation, generation - lastGeneration, curState.result, generation - bestGeneration, bestState.result, averageTime);
+        sprintf_s(statusString, "FireStarter2: Generation=%lld  Age=%lld  Error=%f  Time=%.4f Seconds", generation, generation - bestGeneration, bestState.result, averageTime);
     }
 } // RenderImage
 
@@ -310,7 +309,6 @@ void FireStarter2::Init(unsigned long width, unsigned long height)
     InitFrameBuffer(theBuffer, width, height);
     InitResults();
     generation = 0;
-    lastGeneration = 0;
     bestGeneration = 0;
     InitProgram();
 } // Init

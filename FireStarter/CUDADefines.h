@@ -5,6 +5,7 @@
 #define GPU_GLOBAL extern "C" __global__
 #define GPU_ENTRY(grid, block) <<<grid, block>>>
 #define GPU_SYNCTHREADS() __threadfence()
+//#define GPU_SYNCTHREADS() __syncthreads
 #else
 #include <cuda.h>
 #include <cuda_runtime.h>

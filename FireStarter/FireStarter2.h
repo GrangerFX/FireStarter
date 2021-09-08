@@ -14,7 +14,6 @@ public:
     FireStarter2Result bestState;
     CUmodule module;
     long long generation;
-    long long lastGeneration;
     long long bestGeneration;
     char statusString[1024];
 
