@@ -78,7 +78,8 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *results0, FireStarter2Results 
         FireStarter2Results* results = oldResults;
         oldResults = newResults;
         newResults = results;
-        GPU_SYNCTHREADS();
+        if (FS2_PROGRAM_GENERATIONS > 1)
+            GPU_SYNCTHREADS();
     }
 } // FireStarter2
 
