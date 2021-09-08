@@ -27,30 +27,30 @@ GPU_FUNCTION float Evaluate(const FireStarter2Data &workData, float n)
     return isnan(result) ? 0.0f : result;
 } // Evaluate
 
-GPU_GLOBAL void FireStarter2(FireStarter2Results *results0, FireStarter2Results *results1, const unsigned int population, const unsigned int generation0, const unsigned int variation)
+GPU_GLOBAL void FireStarter2(FireStarter2Results *results0, FireStarter2Results *results1, const unsigned int population, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
+    FireStarter2Results *oldResults, *newResults;
+    if (generation & 1) {
+        oldResults = results0;
+        newResults = results1;
+    }
+    else {
+        oldResults = results1;
+        newResults = results0;
+    }
+    FireStarter2Data data(oldResults->results[member].data);
+    float oldResult = oldResults->results[member].result;
     for (unsigned int g = 0; g < FS2_PROGRAM_GENERATIONS; g++) {
-        FireStarter2Results *oldResults, *newResults;
-        unsigned int generation = generation0 + g;
-        if (generation & 1) {
-            oldResults = results0;
-            newResults = results1;
-        } else {
-            oldResults = results1;
-            newResults = results0;
-        }
-        unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
+        unsigned int seed = RANDOMHASH(RANDOMHASH(generation + g) + member);
         float target[FS2_SAMPLE_ITERATIONS];
         float theta[FS2_SAMPLE_ITERATIONS];
         for (int i = 0; i < FS2_SAMPLE_ITERATIONS; i++) {
             theta[i] = i * ((2.0f * 3.14159265f) / (FS2_SAMPLE_ITERATIONS - 1));
             target[i] = variation ? Target1(theta[i]) : Target(theta[i]);
         }
-        FireStarter2Data data(oldResults->results[member].data);
-        float oldResult = oldResults->results[member].result;
         float result = oldResult;
         for (int p = 0; p < FS2_PROGRAM_ITERATIONS; p++) {
             unsigned int di = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
@@ -67,10 +67,7 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *results0, FireStarter2Results 
             else
                 data.d[di][dj] = oldData;
         }
-        if (result < oldResult) {
-            newResults->results[member].data = data;
-            newResults->results[member].result = result;
-        } else {
+        if (result >= oldResult) {
             unsigned int best = member;
             for (int i = 0; i < FS2_EVOLUTION_SAMPLES; i++) {
                 unsigned int index = RANDOMSEED(seed) % population;
@@ -80,11 +77,15 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *results0, FireStarter2Results 
                     best = index;
                 }
             }
-            newResults->results[member] = oldResults->results[best];
-            newResults->results[member].result = FS2_START_RESULT;
+            data = oldResults->results[best].data;
+            result = FS2_START_RESULT;
         }
-        GPU_SYNCTHREADS();
+        newResults->results[member].data = data;
+        newResults->results[member].result = result;
         FireStarter2Results* results = oldResults;
+        oldResults = newResults;
+        newResults = results;
+        GPU_SYNCTHREADS();
     }
 } // FireStarter2
 
