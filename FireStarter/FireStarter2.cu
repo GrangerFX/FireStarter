@@ -32,15 +32,8 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *results0, FireStarter2Results 
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-    FireStarter2Results *oldResults, *newResults;
-    if (generation & 1) {
-        oldResults = results0;
-        newResults = results1;
-    }
-    else {
-        oldResults = results1;
-        newResults = results0;
-    }
+    FireStarter2Results *oldResults = generation & 1 ? results0 : results1;
+    FireStarter2Results* newResults = generation & 1 ? results1 : results0;
     FireStarter2Data data(oldResults->results[member].data);
     float oldResult = oldResults->results[member].result;
     for (unsigned int g = 0; g < FS2_PROGRAM_GENERATIONS; g++) {
