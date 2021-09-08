@@ -63,12 +63,12 @@ void FireStarter2::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
-bool FireStarter2::GetResults(void)
+bool FireStarter2::GetResults(FireStarter2Results* results)
 {
     unsigned int index = 0;
-    float result = newResults->results[0].result;
+    float result = results->results[0].result;
     for (unsigned int i = 1; i < FS2_PROGRAM_POPULATION; i++) {
-        float curResult = newResults->results[i].result;
+        float curResult = results->results[i].result;
         if (curResult < result) {
             result = curResult;
             index = i;
@@ -76,7 +76,7 @@ bool FireStarter2::GetResults(void)
     }
 
     if (result < curState.result) {
-        curState = newResults->results[index];
+        curState = results->results[index];
         lastGeneration = generation;
         if (result < bestState.result)
             return true;
@@ -87,15 +87,15 @@ bool FireStarter2::GetResults(void)
 void FireStarter2::InitResults(void)
 {
     unsigned int resultsSize = sizeof(FireStarter2Results) + sizeof(FireStarter2Result) * (FS2_PROGRAM_POPULATION - 1);
-    if (!oldResults) {
-        cudaError_t err = cudaMallocManaged(&oldResults, resultsSize);
+    if (!results0) {
+        cudaError_t err = cudaMallocManaged(&results0, resultsSize);
         if (err != cudaSuccess) {
             fprintf(stderr, "Failed to allocate old results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
     }
-    if (!newResults) {
-        cudaError_t err = cudaMallocManaged(&newResults, resultsSize);
+    if (!results1) {
+        cudaError_t err = cudaMallocManaged(&results1, resultsSize);
         if (err != cudaSuccess) {
             fprintf(stderr, "Failed to allocate new results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
@@ -111,28 +111,28 @@ void FireStarter2::InitResults(void)
     bestState = curState;
 
     for (unsigned int i = 0; i < FS2_PROGRAM_POPULATION; i++) {
-        oldResults->results[i] = curState;
-        newResults->results[i] = curState;
+        results0->results[i] = curState;
+        results1->results[i] = curState;
     }
 } // InitResults
 
 void FireStarter2::FreeResults(void)
 {
-    if (oldResults) {
-        cudaError_t err = cudaFree(oldResults);
+    if (results0) {
+        cudaError_t err = cudaFree(results0);
         if (err != cudaSuccess) {
             fprintf(stderr, "Failed to free old results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
-        oldResults = NULL;
+        results0 = NULL;
     }
-    if (newResults) {
-        cudaError_t err = cudaFree(newResults);
+    if (results1) {
+        cudaError_t err = cudaFree(results1);
         if (err != cudaSuccess) {
             fprintf(stderr, "Failed to free new results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
-        newResults = NULL;
+        results1 = NULL;
     }
 } // FreeResults
 
@@ -186,8 +186,8 @@ void FireStarter2::RunProgram(unsigned int population)
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     unsigned int variation = FS2_VARIATION;
-    void *arr[] = {reinterpret_cast<void*>(&oldResults),
-                   reinterpret_cast<void*>(&newResults),
+    void *arr[] = {reinterpret_cast<void*>(&results0),
+                   reinterpret_cast<void*>(&results1),
                    reinterpret_cast<void*>(&population),
                    reinterpret_cast<void*>(&generation),
                    reinterpret_cast<void*>(&variation)};
@@ -264,11 +264,6 @@ void FireStarter2::RenderImage(void* hwnd)
         long long startGeneration = generation;
         
         do {
-            // Swap the old and new results.
-            FireStarter2Results* results = oldResults;
-            oldResults = newResults;
-            newResults = results;
-
             // Run the next generation on the GPU.
             RunProgram(FS2_PROGRAM_POPULATION);
             generation += FS2_PROGRAM_GENERATIONS;
@@ -276,7 +271,7 @@ void FireStarter2::RenderImage(void* hwnd)
         } while (time < 0.2);
 
         // Find the best results for display only.
-        bool update = GetResults();
+        bool update = GetResults(generation & 1 ? results1 : results0);
         if (update) {
             DrawGraph();
             bestState = curState;
@@ -324,8 +319,8 @@ FireStarter2::FireStarter2(void)
 {
     // Timer ID
     statusString[0] = 0;
-    oldResults = NULL;
-    newResults = NULL;
+    results0 = NULL;
+    results1 = NULL;
     module = NULL;
 } // FireStarter2
 

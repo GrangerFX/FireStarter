@@ -8,8 +8,8 @@ class FireStarter2 {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
-    FireStarter2Results* oldResults;
-    FireStarter2Results* newResults;
+    FireStarter2Results* results0;
+    FireStarter2Results* results1;
     FireStarter2Result curState;
     FireStarter2Result bestState;
     CUmodule module;
@@ -22,7 +22,7 @@ public:
     void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    bool GetResults(void);
+    bool GetResults(FireStarter2Results* results);
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const char *source);
