@@ -270,7 +270,7 @@ void FireStarter2::RenderImage(void* hwnd)
         } while (time < 0.2);
 
         // Find the best results for display only.
-        bool update = GetResults(generation & 1 ? results1 : results0);
+        bool update = GetResults(generation & 1 ? results0 : results1);
         if (update) {
             DrawGraph();
             bestState = curState;

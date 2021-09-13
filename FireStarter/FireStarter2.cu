@@ -62,26 +62,28 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *results0, FireStarter2Results 
             else
                 data.d[di][dj] = oldData;
         }
-        if (result == oldResult) {
-            unsigned int best = member;
-            for (int i = 0; i < FS2_EVOLUTION_SAMPLES; i++) {
-                unsigned int index = RANDOMSEED(seed) % population;
-                float curResult = oldResults->results[index].result;
-                if (curResult < result) {
-                    result = curResult;
-                    best = index;
-                }
+        if (result < oldResult) {
+            newResults->results[member].data = data;
+            newResults->results[member].result = result;
+        }
+        unsigned int bestIndex = member;
+        float bestResult = result;
+        for (int i = 0; i < FS2_EVOLUTION_SAMPLES; i++) {
+            unsigned int index = RANDOMSEED(seed) % population;
+            float curResult = oldResults->results[index].result;
+            if (curResult < bestResult) {
+                bestResult = curResult;
+                bestIndex = index;
             }
-            data = oldResults->results[best].data;
+        }
+        if (bestResult < result) {
+            data = oldResults->results[bestIndex].data;
             result = FS2_START_RESULT;
         }
-        newResults->results[member].data = data;
-        newResults->results[member].result = result;
+        GPU_THREADFENCE();
         FireStarter2Results* tempResults = oldResults;
         oldResults = newResults;
         newResults = tempResults;
-        if (FS2_PROGRAM_GENERATIONS > 1)
-            GPU_SYNCTHREADS();
     }
 } // FireStarter2
 
