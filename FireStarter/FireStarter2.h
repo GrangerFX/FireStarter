@@ -25,7 +25,7 @@ public:
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const char *source);
-    void RunProgram(unsigned int population);
+    void RunProgram(unsigned int population, unsigned int generations);
     void DrawGraph(void);
     void InitProgram(void);
     void LoadProgram(std::string &code);

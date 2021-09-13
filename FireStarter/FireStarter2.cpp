@@ -176,32 +176,33 @@ void FireStarter2::CompileProgram(const char *source)
     ptx = NULL;
 } // CompileProgram
 
-void FireStarter2::RunProgram(unsigned int population)
+void FireStarter2::RunProgram(unsigned int population, unsigned int generations)
 {
     // Launch the calculation kernel
     int threadsPerBlock = 256;
     int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
     unsigned int variation = FS2_VARIATION;
-    void *arr[] = {reinterpret_cast<void*>(&results0),
-                   reinterpret_cast<void*>(&results1),
-                   reinterpret_cast<void*>(&population),
-                   reinterpret_cast<void*>(&generation),
-                   reinterpret_cast<void*>(&variation)};
 
-    CUfunction kernel_addr;
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter2"));
+    for (unsigned int i = 0; i < generations; i++) {
+        void* arr[] = { reinterpret_cast<void*>(&results0),
+                       reinterpret_cast<void*>(&results1),
+                       reinterpret_cast<void*>(&population),
+                       reinterpret_cast<void*>(&generation),
+                       reinterpret_cast<void*>(&variation) };
 
-    checkCudaErrors(cuLaunchKernel(kernel_addr,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, 0,                                               // shared mem, stream */
-        &arr[0],                                            // arguments */
-        0));
+        CUfunction kernel_addr;
+        checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter2"));
 
-    checkCudaErrors(cuCtxSynchronize());
+        checkCudaErrors(cuLaunchKernel(kernel_addr,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+            0, 0,                                               // shared mem, stream */
+            &arr[0],                                            // arguments */
+            0));
+        generation++;
+    }
 } // RunProgram
 
 void FireStarter2::DrawGraph(void)
@@ -264,8 +265,8 @@ void FireStarter2::RenderImage(void* hwnd)
         
         do {
             // Run the next generation on the GPU.
-            RunProgram(FS2_PROGRAM_POPULATION);
-            generation += FS2_PROGRAM_GENERATIONS;
+            RunProgram(FS2_PROGRAM_POPULATION, FS2_PROGRAM_GENERATIONS);
+            checkCudaErrors(cuCtxSynchronize());
             time = timer.Duration();
         } while (time < 0.2);
 
