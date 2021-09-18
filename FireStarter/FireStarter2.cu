@@ -77,7 +77,6 @@ GPU_GLOBAL void FireStarter2(FireStarter2Results *results0, FireStarter2Results 
         unsigned int dj = RANDOMSEED(seed) % (di + 1);
         data.d[di][dj] += (FS2_SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * bestResult);
         result = FS2_START_RESULT;
-//        result = bestResult + FS2_START_RESULT * RANDOMNUM(seed);
     }
     newResults->results[member].data = data;
     newResults->results[member].result = result;
