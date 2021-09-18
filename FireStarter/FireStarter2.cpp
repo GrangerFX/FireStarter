@@ -186,11 +186,11 @@ void FireStarter2::RunProgram(unsigned int population, unsigned int generations)
     unsigned int variation = FS2_VARIATION;
 
     for (unsigned int i = 0; i < generations; i++) {
-        void* arr[] = { reinterpret_cast<void*>(&results0),
+        void* arr[] = {reinterpret_cast<void*>(&results0),
                        reinterpret_cast<void*>(&results1),
                        reinterpret_cast<void*>(&population),
                        reinterpret_cast<void*>(&generation),
-                       reinterpret_cast<void*>(&variation) };
+                       reinterpret_cast<void*>(&variation)};
 
         CUfunction kernel_addr;
         checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter2"));
