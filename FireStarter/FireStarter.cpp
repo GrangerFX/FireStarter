@@ -296,14 +296,23 @@ void FireStarter::MakeProgram(std::string& src)
            "   return sinf(n * 1.3f) + n * 0.1f;\n"
            "} // Target1\n"
            "\n"
-           "__device__ float EvaluateInstructions(FireStarterInstructions &instructions, FireStarterData &data, float r)\n"
+           "__device__ float EvaluateInstructions(FireStarterData &data, float r)\n"
            "{\n"
-           "    data.d[0] = r;\n"
-           "    for (int i = 0; i < PROGRAM_DATA; i++)\n"
-           "        data.d[i] = data.d[instructions.d[i].a] + data.d[instructions.d[i].b] * data.d[instructions.d[i].c];\n"
-           "    r = data.d[PROGRAM_DATA - 1];\n"
+           "    data.d[0] = r;\n";
+    for (int i = 0; i < PROGRAM_DATA; i++)
+        src += Format("    data.d[%d] = data.d[%d] + data.d[%d] * data.d[%d];\n", i, curState->instructions.d[i].a, curState->instructions.d[i].b, curState->instructions.d[i].c);
+    src += "    r = data.d[PROGRAM_DATA - 1];\n"
            "    return isnan(r) ? 0.0f : r;\n"
            "} // EvaluateInstructions\n"
+           "\n"
+           "__device__ float EvaluateBestInstructions(FireStarterData &data, float r)\n"
+           "{\n"
+           "    data.d[0] = r;\n";
+    for (int i = 0; i < PROGRAM_DATA; i++)
+        src += Format("    data.d[%d] = data.d[%d] + data.d[%d] * data.d[%d];\n", i, bestState->instructions.d[i].a, bestState->instructions.d[i].b, bestState->instructions.d[i].c);
+    src += "    r = data.d[PROGRAM_DATA - 1];\n"
+           "    return isnan(r) ? 0.0f : r;\n"
+           "} // EvaluateBestInstructions\n"
            "\n"
            "extern \"C\" __global__ void FireStarter(FireStarterState *bestState, FireStarterResults *results, const unsigned int maxResults, const unsigned int population, const unsigned int generation, const unsigned int variation)\n"
            "{\n"
@@ -311,10 +320,6 @@ void FireStarter::MakeProgram(std::string& src)
            "    if (member >= population)\n"
            "        return;\n"
            "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
-           "    FireStarterInstructions instructions = {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d,\n", curState->instructions.d[i].a, curState->instructions.d[i].b, curState->instructions.d[i].c);
-    src += "    };\n"
            "    FireStarterData workData;\n"
            "    FireStarterData curData;\n"
            "    curData = results->bestData;\n"
@@ -333,7 +338,7 @@ void FireStarter::MakeProgram(std::string& src)
            "        float curResult = 0.0f;\n"
            "        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {\n"
            "            workData = curData;\n"
-           "            float delta = fabsf(EvaluateInstructions(instructions, workData, theta[i]) - target[i]);\n"
+           "            float delta = fabsf(EvaluateInstructions(workData, theta[i]) - target[i]);\n"
            "            curResult = delta > curResult ? delta : curResult;\n"
            "        }\n"
            "        if (curResult < result) {\n"
@@ -357,14 +362,6 @@ void FireStarter::MakeProgram(std::string& src)
            "\n"
            "extern \"C\" __global__ void FireShow(FireStarterState *curState, FireStarterState *bestState, const FireStarterResults *results, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)\n"
            "{\n"
-           "    FireStarterInstructions instructions0 = {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d,\n", curState->instructions.d[i].a, curState->instructions.d[i].b, curState->instructions.d[i].c);
-    src += "    };\n"
-           "    FireStarterInstructions instructions1 = {\n";
-    for (int i = 0; i < PROGRAM_DATA; i++)
-        src += Format("        %d, %d, %d,\n", bestState->instructions.d[i].a, bestState->instructions.d[i].b, bestState->instructions.d[i].c);
-    src += "    };\n"
            "    int x = blockDim.x * blockIdx.x + threadIdx.x;\n"
            "    int xScale = bufferHeight / 8;\n"
            "    int yScale = bufferHeight / 16;\n"
@@ -395,14 +392,14 @@ void FireStarter::MakeProgram(std::string& src)
            "            pixel.y = 128;\n"
            "        };\n"
            "        FireStarterData workData1(results->bestData) ;\n"
-           "        y = (int)(center + EvaluateInstructions(instructions0, workData1, theta) * yScale);\n"
+           "        y = (int)(center + EvaluateInstructions(workData1, theta) * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "            pixel.z = 255;\n"
            "            pixel.y = 128;\n"
            "        };\n"
            "        FireStarterData workData2(bestState->data) ;\n"
-           "        y = (int)(center + EvaluateInstructions(instructions1, workData2, theta) * yScale);\n"
+           "        y = (int)(center + EvaluateBestInstructions(workData2, theta) * yScale);\n"
            "        if ((y >= 0) && (y < bufferHeight)) {\n"
            "            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);\n"
            "            pixel.x = pixel.y = pixel.z = 255;\n"
