@@ -135,7 +135,7 @@ void FireStarter2::FreeResults(void)
     }
 } // FreeResults
 
-void FireStarter2::CompileProgram(const char *source)
+void FireStarter2::CompileProgram(const std::string& program)
 {
     if (module) {
         checkCudaErrors(cuModuleUnload(module));
@@ -144,7 +144,7 @@ void FireStarter2::CompileProgram(const char *source)
 
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
-    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, source, "FireStarter2", 0, NULL, NULL));
+    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, program.c_str(), "FireStarter2", 0, NULL, NULL));
     nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
     if (res != 0) {
         // Output the compile log.
@@ -236,25 +236,40 @@ void FireStarter2::DrawGraph(void)
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph
 
-void FireStarter2::InitProgram(void)
-{
-    std::string code;
-    LoadProgram(code);
-    CompileProgram(code.c_str());
-} // InitProgram
-
-void FireStarter2::LoadProgram(std::string& src)
+void FireStarter2::LoadProgram(void)
 {
     std::ifstream file("FireStarter2.cu", std::ios::ate | std::ios::binary);
     if (file.is_open()) {
         // Found usable source file
         file.seekg(0, std::ios::end);
-        src.reserve(file.tellg());
+        sourceCode.reserve(file.tellg());
         file.seekg(0, std::ios::beg);
-        src.assign((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
+        sourceCode.assign((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
         file.close();
     }
 } // LoadProgram
+
+void FireStarter2::InitProgram(void)
+{
+    LoadProgram();
+    CompileProgram(sourceCode);
+} // InitProgram
+
+void FireStarter2::UpdateProgram(const std::string& replacementCode)
+{
+    std::string updatedCode = sourceCode;
+    std::string startString = FS2_REPLACMENT_START;
+    size_t startPos = updatedCode.find(startString);
+    if (startPos != std::string::npos) {
+        std::string endString = FS2_REPLACMENT_END;
+        size_t endPos = updatedCode.find(endString, startPos + startString.length());
+        if (endPos != std::string::npos) {
+            endPos += endString.length();
+            updatedCode.replace(startPos, endPos - startPos, replacementCode);
+            CompileProgram(updatedCode);
+        }
+    }
+} // UpdateProgram
 
 void FireStarter2::RenderImage(void* hwnd)
 {
@@ -312,6 +327,20 @@ void FireStarter2::Init(unsigned long width, unsigned long height)
     generation = 0;
     bestGeneration = 0;
     InitProgram();
+
+    std::string replacementCode =
+        "    float power = n;\n"
+        "    data.d[0][0] *= power;\n"
+        "    for (int i = 1; i < FS2_PROGRAM_DATA; i++) {\n"
+        "        power *= n;\n"
+        "        float sum = data.d[i][i] * power;\n"
+        "        for (int j = 0; j < i; j++)\n"
+        "            sum += data.d[i][j] * data.d[j][0];\n"
+        "        data.d[i][0] = sum;\n"
+        "    }\n"
+        "    float result = data.d[FS2_PROGRAM_DATA - 1][0];";
+    UpdateProgram(replacementCode);
+
 } // Init
 
 FireStarter2::FireStarter2(void)

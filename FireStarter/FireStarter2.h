@@ -13,6 +13,7 @@ public:
     FireStarter2Result curState;
     FireStarter2Result bestState;
     CUmodule module;
+    std::string sourceCode;
     long long generation;
     long long bestGeneration;
     char statusString[1024];
@@ -24,11 +25,12 @@ public:
     bool GetResults(FireStarter2Results* results);
     void InitResults(void);
     void FreeResults(void);
-    void CompileProgram(const char *source);
+    void CompileProgram(const std::string& program);
     void RunProgram(unsigned int population, unsigned int generations);
     void DrawGraph(void);
+    void LoadProgram(void);
     void InitProgram(void);
-    void LoadProgram(std::string &code);
+    void UpdateProgram(const std::string& replacementCode);
     void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);
     FireStarter2(void);
