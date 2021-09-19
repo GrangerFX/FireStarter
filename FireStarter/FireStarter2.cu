@@ -11,9 +11,9 @@ GPU_FUNCTION float Target1(float n)
    return sinf(n * 1.3f) + n * 0.1f;
 } // Target1
 
-GPU_FUNCTION float Evaluate(const FireStarter2Data &workData, float n)
+GPU_FUNCTION float Evaluate(FireStarter2Data data, float n)
 {
-    FireStarter2Data data(workData);
+    // FS2_PROGRAM_START
     float power = n;
     data.d[0][0] *= power;
     for (int i = 1; i < FS2_PROGRAM_DATA; i++) {
@@ -24,6 +24,7 @@ GPU_FUNCTION float Evaluate(const FireStarter2Data &workData, float n)
         data.d[i][0] = sum;
     }
     float result = data.d[FS2_PROGRAM_DATA - 1][0];
+    // FS2_PROGRAM_END
     return isnan(result) ? 0.0f : result;
 } // Evaluate
 
