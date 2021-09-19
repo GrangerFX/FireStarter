@@ -8,7 +8,7 @@ GPU_FUNCTION float Target(float n)
 
 GPU_FUNCTION float Target1(float n)
 {
-   return sinf(n * 1.3f) + n * 0.1f;
+   return sinf(n * 1.2f) + n * 0.2f;
 } // Target1
 
 GPU_FUNCTION float Evaluate(FireStarter2Data data, float n)
