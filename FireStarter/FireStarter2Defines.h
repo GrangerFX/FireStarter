@@ -1,10 +1,10 @@
 #pragma once
 
-#define FS2_PROGRAM_EVOLVE 0
+#define FS2_PROGRAM_EVOLVE 1
 
 #define FS2_VARIATION 0
-#define FS2_PROGRAM_DATA 6
-#define FS2_PROGRAM_INSTRUCTIONS 12
+#define FS2_PROGRAM_DATA 8
+#define FS2_PROGRAM_INSTRUCTIONS 16
 #define FS2_PROGRAM_GENERATIONS 100
 #define FS2_PROGRAM_ITERATIONS 1000
 #define FS2_PROGRAM_POPULATION 4352
@@ -37,6 +37,8 @@ typedef struct {
 
 typedef struct {
     FireStarter2Instruction instructions[FS2_PROGRAM_INSTRUCTIONS];
-    FireStarter2Result result;
+    FireStarter2Result result0;
+    FireStarter2Result result1;
+    float maxResult;
     unsigned long long generation;
 } FireStarter2State;

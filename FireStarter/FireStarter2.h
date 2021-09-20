@@ -25,12 +25,13 @@ public:
     void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    bool GetResults(FireStarter2Results* results);
+    void GetResults(FireStarter2Results* results, FireStarter2Result& bestResult);
+    bool SaveResults(FireStarter2Result& result0, FireStarter2Result& result1);
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const std::string& program);
-    bool RunProgram(unsigned int population, unsigned int generations);
-    void DrawGraph(void);
+    void RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarter2Result& result);
+    void DrawGraph(unsigned int variation);
     void LoadProgram(void);
     void SaveProgram(void);
     void InitProgram(void);

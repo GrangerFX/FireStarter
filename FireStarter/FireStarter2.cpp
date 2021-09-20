@@ -63,7 +63,7 @@ void FireStarter2::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
-bool FireStarter2::GetResults(FireStarter2Results* results)
+void FireStarter2::GetResults(FireStarter2Results* results, FireStarter2Result& bestResult)
 {
     unsigned int index = 0;
     float result = results->results[0].result;
@@ -74,20 +74,27 @@ bool FireStarter2::GetResults(FireStarter2Results* results)
             index = i;
         }
     }
+    bestResult = results->results[index];
+} // GetResults
 
-    if (result < curState.result.result) {
-        curState.result = results->results[index];
+bool FireStarter2::SaveResults(FireStarter2Result& result0, FireStarter2Result& result1)
+{
+    float maxResult = MAX(result0.result, result1.result);
+    if (maxResult < curState.maxResult) {
+        curState.result0 = result0;
+        curState.result1 = result1;
+        curState.maxResult = maxResult;
         curState.generation = generation;
         states.push_back(curState);
         lastGeneration = generation;
-        if (result < bestState.result.result) {
+        if (maxResult < bestState.maxResult) {
             bestState = curState;
             bestState.generation = generation;
             return true;
         }
     }
     return false;
-} // GetResults
+} // SaveResults
 
 void FireStarter2::InitResults(void)
 {
@@ -124,15 +131,19 @@ void FireStarter2::InitResults(void)
     }
 
     // Initialize the evolving program data values.
-    for (unsigned int i = 0; i < FS2_PROGRAM_DATA; i++)
-        curState.result.data.d[i] = 1.0f;
-    curState.result.result = FS2_START_RESULT;
+    for (unsigned int i = 0; i < FS2_PROGRAM_DATA; i++) {
+        curState.result0.data.d[i] = 1.0f;
+        curState.result1.data.d[i] = 1.0f;
+    }
+    curState.result0.result = FS2_START_RESULT;
+    curState.result1.result = FS2_START_RESULT;
+    curState.maxResult = FS2_START_RESULT;
     bestState = curState;
     states.push_back(curState);
 
     for (unsigned int i = 0; i < FS2_PROGRAM_POPULATION; i++) {
-        results0->results[i] = curState.result;
-        results1->results[i] = curState.result;
+        results0->results[i] = curState.result0;
+        results1->results[i] = curState.result1;
     }
 } // InitResults
 
@@ -196,14 +207,13 @@ void FireStarter2::CompileProgram(const std::string& program)
     ptx = NULL;
 } // CompileProgram
 
-bool FireStarter2::RunProgram(unsigned int population, unsigned int generations)
+void FireStarter2::RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarter2Result &result)
 {
     // Launch the calculation kernel
     int threadsPerBlock = 256;
     int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned int variation = FS2_VARIATION;
 
     for (unsigned int dataGeneration = 0; dataGeneration < generations; dataGeneration++) {
         void* arr[] = {reinterpret_cast<void*>(&results0),
@@ -224,14 +234,11 @@ bool FireStarter2::RunProgram(unsigned int population, unsigned int generations)
             0));
     }
     checkCudaErrors(cuCtxSynchronize());
-    return GetResults(generations & 1 ? results1 : results0);
+    GetResults(generations & 1 ? results1 : results0, result);
 } // RunProgram
 
-void FireStarter2::DrawGraph(void)
+void FireStarter2::DrawGraph(unsigned int variation)
 {
-    // Erase the frame buffer
-    EraseFrameBuffer(theBuffer);
-
     // Launch the display kernel
     int threadsPerBlock = 32;
     int blocksPerGrid = (theBuffer.width + threadsPerBlock - 1) / threadsPerBlock;
@@ -241,8 +248,7 @@ void FireStarter2::DrawGraph(void)
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow"));
 
-    unsigned int variation = FS2_VARIATION;
-    void *arr[] = {reinterpret_cast<void*>(&bestState.result),
+    void *arr[] = {reinterpret_cast<void*>(variation ? &bestState.result1 : &bestState.result0),
                    reinterpret_cast<void*>(&theBuffer.base),
                    reinterpret_cast<void*>(&theBuffer.width),
                    reinterpret_cast<void*>(&theBuffer.height),
@@ -369,12 +375,19 @@ void FireStarter2::RenderImage(void* hwnd)
     EvolveProgram();
         
     // Run the next generation on the GPU.
-    bool update = RunProgram(FS2_PROGRAM_POPULATION, FS2_PROGRAM_GENERATIONS);
+    FireStarter2Result results0;
+    FireStarter2Result results1;
+    RunProgram(FS2_PROGRAM_POPULATION, FS2_PROGRAM_GENERATIONS, 0, results0);
+    RunProgram(FS2_PROGRAM_POPULATION, FS2_PROGRAM_GENERATIONS, 1, results1);
+    bool update = SaveResults(results0, results1);
     time = timer.Duration();
 
     // Find the best results for display only.
     if (update) {
-        DrawGraph();
+        // Erase the frame buffer
+        EraseFrameBuffer(theBuffer);
+        DrawGraph(0);
+        DrawGraph(1);
         SaveProgram();
 
         unsigned char buffer[4096];
@@ -400,7 +413,7 @@ void FireStarter2::RenderImage(void* hwnd)
 
     // Update the status.
     double averageTime = time / (double)(generation - startGeneration);
-    sprintf_s(statusString, "FireStarter2: Generation=%lld  States=%lld  Age=%lld  Error=%f  Time=%.4f Seconds", generation, states.size(), generation - bestState.generation, bestState.result.result, averageTime);
+    sprintf_s(statusString, "FireStarter2: Generation=%lld  States=%lld  Age=%lld  Error=%f  Time=%.4f Seconds", generation, states.size(), generation - bestState.generation, bestState.maxResult, averageTime);
 } // RenderImage
 
 void FireStarter2::Init(unsigned long width, unsigned long height)
