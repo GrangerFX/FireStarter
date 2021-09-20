@@ -1,6 +1,6 @@
 #pragma once
 
-#define FS2_PROGRAM_EVOLVE 1
+#define FS2_PROGRAM_EVOLVE 0
 
 #define FS2_VARIATION 0
 #define FS2_PROGRAM_DATA 8
