@@ -15,7 +15,19 @@ GPU_FUNCTION float Evaluate(FireStarter2Data data, float n)
 {
     float result = 0.0f;
     data.d[0] = n;
-// FS2_PROGRAM //
+    data.d[0] = data.d[4] + data.d[0] * data.d[5];
+    data.d[2] = data.d[0] + data.d[2] * data.d[4];
+    data.d[5] = data.d[3] + data.d[2] * data.d[3];
+    data.d[0] = data.d[4] + data.d[2] * data.d[4];
+    data.d[2] = data.d[3] + data.d[5] * data.d[0];
+    data.d[2] = data.d[5] + data.d[5] * data.d[2];
+    data.d[4] = data.d[1] + data.d[2] * data.d[2];
+    data.d[2] = data.d[2] + data.d[5] * data.d[4];
+    data.d[0] = data.d[2] + data.d[1] * data.d[4];
+    data.d[1] = data.d[4] + data.d[5] * data.d[5];
+    data.d[3] = data.d[1] + data.d[1] * data.d[4];
+    data.d[1] = data.d[5] + data.d[2] * data.d[3];
+    result = data.d[1];
     return isnan(result) ? 0.0f : result;
 } // Evaluate
 

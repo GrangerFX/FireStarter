@@ -1,7 +1,10 @@
 #pragma once
 
+#define FS2_PROGRAM_EVOLVE 1
+
 #define FS2_VARIATION 0
 #define FS2_PROGRAM_DATA 6
+#define FS2_PROGRAM_INSTRUCTIONS 12
 #define FS2_PROGRAM_GENERATIONS 100
 #define FS2_PROGRAM_ITERATIONS 1000
 #define FS2_PROGRAM_POPULATION 4352
@@ -10,12 +13,13 @@
 #define FS2_SMART_RANDOM_FACTOR 0.1f
 #define FS2_EVOLUTION_SAMPLES 16
 #define FS2_START_RESULT 10.0f
+#define FS2_SMART_EVOLVE_AGE 10
+#define FS2_SMART_DEVOLVE_AGE 50
 
-#define FS2_REPLACMENT_START "// FS2_PROGRAM_START //"
-#define FS2_REPLACMENT_END "// FS2_PROGRAM_END //"
+#define FS2_REPLACMENT_CODE "// FS2_PROGRAM //"
 
 typedef struct FireStarter2Data {
-    float d[FS2_PROGRAM_DATA][FS2_PROGRAM_DATA];
+    float d[FS2_PROGRAM_DATA];
 } FireStarter2Data;
 
 typedef struct {
@@ -26,3 +30,13 @@ typedef struct {
 typedef struct {
     FireStarter2Result results[1];
 } FireStarter2Results;
+
+typedef struct {
+    unsigned int a, b, c, d;
+} FireStarter2Instruction;
+
+typedef struct {
+    FireStarter2Instruction instructions[FS2_PROGRAM_INSTRUCTIONS];
+    FireStarter2Result result;
+    unsigned long long generation;
+} FireStarter2State;

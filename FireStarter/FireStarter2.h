@@ -10,12 +10,15 @@ public:
     FrameBuffer theBuffer;
     FireStarter2Results* results0;
     FireStarter2Results* results1;
-    FireStarter2Result curState;
-    FireStarter2Result bestState;
+    std::vector<FireStarter2State> states;
+    FireStarter2State curState;
+    FireStarter2State bestState;
     CUmodule module;
     std::string sourceCode;
-    long long generation;
-    long long bestGeneration;
+    std::string updatedCode;
+    std::string bestCode;
+    unsigned long long generation;
+    unsigned long long lastGeneration;
     char statusString[1024];
 
     void EraseFrameBuffer(FrameBuffer &buffer);
@@ -26,11 +29,13 @@ public:
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const std::string& program);
-    void RunProgram(unsigned int population, unsigned int generations);
+    bool RunProgram(unsigned int population, unsigned int generations);
     void DrawGraph(void);
     void LoadProgram(void);
+    void SaveProgram(void);
     void InitProgram(void);
     void UpdateProgram(const std::string& replacementCode);
+    void EvolveProgram(void);
     void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);
     FireStarter2(void);
