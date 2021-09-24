@@ -1,7 +1,7 @@
 #include <Windows.h>
 
-#include "FireStarter2.h"
-static FireStarter2 fireStarter;
+#include "FireStarter.h"
+static FireStarter fireStarter;
 
 // ----------------------------------------------------------------------------
 LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

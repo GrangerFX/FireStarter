@@ -1,18 +1,18 @@
 #pragma once
 #include <vector>
 #include <cuda.h>
-#include "FireStarter2Defines.h"
+#include "FireStarterDefines.h"
 #include "FireStarterUtil.h"
 
-class FireStarter2 {
+class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
-    FireStarter2Results* results0;
-    FireStarter2Results* results1;
-    std::vector<FireStarter2State> states;
-    FireStarter2State curState;
-    FireStarter2State bestState;
+    FireStarterResults* results0;
+    FireStarterResults* results1;
+    std::vector<FireStarterState> states;
+    FireStarterState curState;
+    FireStarterState bestState;
     CUmodule module;
     std::string sourceCode;
     std::string updatedCode;
@@ -25,12 +25,12 @@ public:
     void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    void GetResults(FireStarter2Results* results, FireStarter2Result& bestResult);
-    bool SaveResults(FireStarter2Result& result0, FireStarter2Result& result1);
+    void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
+    bool SaveResults(FireStarterResult& result0, FireStarterResult& result1);
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const std::string& program);
-    void RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarter2Result& result);
+    void RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarterResult& result);
     void DrawGraph(unsigned int variation);
     void LoadProgram(void);
     void SaveProgram(void);
@@ -39,6 +39,6 @@ public:
     void EvolveProgram(void);
     void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);
-    FireStarter2(void);
-    ~FireStarter2(void);
-}; // class FireStarter2
+    FireStarter(void);
+    ~FireStarter(void);
+}; // class FireStarter

@@ -1,4 +1,4 @@
-#include "FireStarter2.h"
+#include "FireStarter.h"
 #include "FireStarterUtil.h"
 #include "HashRandom.h"
 #include "PrintF.h"
@@ -13,28 +13,27 @@
 #include <helper_cuda_drvapi.h>
 #include <nvrtc.h>
 
-#define NVRTC_SAFE_CALL(Name, x)                                \
-  do {                                                          \
-    nvrtcResult result = x;                                     \
-    if (result != NVRTC_SUCCESS) {                              \
-      std::cerr << "\nerror: " << Name << " failed with error " \
-                << nvrtcGetErrorString(result);                 \
-      exit(1);                                                  \
-    }                                                           \
-  } while (0)
+#define NVRTC_SAFE_CALL(Name, x) \
+do { \
+    nvrtcResult result = x; \
+    if (result != NVRTC_SUCCESS) { \
+        std::cerr << "\nerror: " << Name << " failed with error " << nvrtcGetErrorString(result); \
+        exit(1); \
+    } \
+} while (0)
 
-void FireStarter2::EraseFrameBuffer(FrameBuffer &buffer)
+void FireStarter::EraseFrameBuffer(FrameBuffer &buffer)
 {
     memset(buffer.base, 0, buffer.width * buffer.height * sizeof(uchar4));
 } // EraseFrameBuffer
 
-void FireStarter2::CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer)
+void FireStarter::CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer)
 {
     if ((srcBuffer.rowbytes == dstBuffer.rowbytes) && (srcBuffer.height = dstBuffer.height))
         memcpy(dstBuffer.base, srcBuffer.base, srcBuffer.rowbytes * srcBuffer.height);
 } // CopyFrameBuffer
 
-void FireStarter2::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height)
+void FireStarter::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height)
 {
 	buffer.width = width;
 	buffer.height = height;
@@ -48,7 +47,7 @@ void FireStarter2::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, uns
     }
 } // InitBuffer
 
-void FireStarter2::FreeFrameBuffer(FrameBuffer &buffer)
+void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
 {
     if (buffer.base) {
         cudaError_t err = cudaFree(buffer.base);
@@ -63,11 +62,11 @@ void FireStarter2::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
-void FireStarter2::GetResults(FireStarter2Results* results, FireStarter2Result& bestResult)
+void FireStarter::GetResults(FireStarterResults* results, FireStarterResult& bestResult)
 {
     unsigned int index = 0;
     float result = results->results[0].result;
-    for (unsigned int i = 1; i < FS2_PROGRAM_POPULATION; i++) {
+    for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
         float curResult = results->results[i].result;
         if (curResult < result) {
             result = curResult;
@@ -77,7 +76,7 @@ void FireStarter2::GetResults(FireStarter2Results* results, FireStarter2Result& 
     bestResult = results->results[index];
 } // GetResults
 
-bool FireStarter2::SaveResults(FireStarter2Result& result0, FireStarter2Result& result1)
+bool FireStarter::SaveResults(FireStarterResult& result0, FireStarterResult& result1)
 {
     float maxResult = MAX(result0.result, result1.result);
     if (maxResult < curState.maxResult) {
@@ -96,9 +95,9 @@ bool FireStarter2::SaveResults(FireStarter2Result& result0, FireStarter2Result& 
     return false;
 } // SaveResults
 
-void FireStarter2::InitResults(void)
+void FireStarter::InitResults(void)
 {
-    unsigned int resultsSize = sizeof(FireStarter2Results) + sizeof(FireStarter2Result) * (FS2_PROGRAM_POPULATION - 1);
+    unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
     if (!results0) {
         cudaError_t err = cudaMallocManaged(&results0, resultsSize);
         if (err != cudaSuccess) {
@@ -116,38 +115,38 @@ void FireStarter2::InitResults(void)
 
     // Initialize the evolving program instructions.
     unsigned int seed = RANDOMHASH((unsigned int)generation);
-    for (unsigned int i = 0; i < FS2_PROGRAM_INSTRUCTIONS; i++) {
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
 #if 0
-        curState.instructions[i].a = (i - 1) % FS2_PROGRAM_DATA;
-        curState.instructions[i].b = (i - 2) % FS2_PROGRAM_DATA;
-        curState.instructions[i].c = (i - 3) % FS2_PROGRAM_DATA;
-        curState.instructions[i].d = (i - 4) % FS2_PROGRAM_DATA;
+        curState.instructions[i].a = (i - 1) % PROGRAM_DATA;
+        curState.instructions[i].b = (i - 2) % PROGRAM_DATA;
+        curState.instructions[i].c = (i - 3) % PROGRAM_DATA;
+        curState.instructions[i].d = (i - 4) % PROGRAM_DATA;
 #else
-        curState.instructions[i].a = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
-        curState.instructions[i].b = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
-        curState.instructions[i].c = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
-        curState.instructions[i].d = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+        curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
+        curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
+        curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
+        curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
 #endif
     }
 
     // Initialize the evolving program data values.
-    for (unsigned int i = 0; i < FS2_PROGRAM_DATA; i++) {
+    for (unsigned int i = 0; i < PROGRAM_DATA; i++) {
         curState.result0.data.d[i] = 1.0f;
         curState.result1.data.d[i] = 1.0f;
     }
-    curState.result0.result = FS2_START_RESULT;
-    curState.result1.result = FS2_START_RESULT;
-    curState.maxResult = FS2_START_RESULT;
+    curState.result0.result = START_RESULT;
+    curState.result1.result = START_RESULT;
+    curState.maxResult = START_RESULT;
     bestState = curState;
     states.push_back(curState);
 
-    for (unsigned int i = 0; i < FS2_PROGRAM_POPULATION; i++) {
+    for (unsigned int i = 0; i < PROGRAM_POPULATION; i++) {
         results0->results[i] = curState.result0;
         results1->results[i] = curState.result1;
     }
 } // InitResults
 
-void FireStarter2::FreeResults(void)
+void FireStarter::FreeResults(void)
 {
     if (results0) {
         cudaError_t err = cudaFree(results0);
@@ -167,7 +166,7 @@ void FireStarter2::FreeResults(void)
     }
 } // FreeResults
 
-void FireStarter2::CompileProgram(const std::string& program)
+void FireStarter::CompileProgram(const std::string& program)
 {
     if (module) {
         checkCudaErrors(cuModuleUnload(module));
@@ -176,7 +175,7 @@ void FireStarter2::CompileProgram(const std::string& program)
 
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
-    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, program.c_str(), "FireStarter2", 0, NULL, NULL));
+    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, program.c_str(), "FireStarter", 0, NULL, NULL));
     nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
     if (res != 0) {
         // Output the compile log.
@@ -207,7 +206,7 @@ void FireStarter2::CompileProgram(const std::string& program)
     ptx = NULL;
 } // CompileProgram
 
-void FireStarter2::RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarter2Result &result)
+void FireStarter::RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarterResult &result)
 {
     // Launch the calculation kernel
     int threadsPerBlock = 256;
@@ -224,7 +223,7 @@ void FireStarter2::RunProgram(unsigned int population, unsigned int generations,
                        reinterpret_cast<void*>(&variation)};
 
         CUfunction kernel_addr;
-        checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter2"));
+        checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireStarter"));
 
         checkCudaErrors(cuLaunchKernel(kernel_addr,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -237,7 +236,7 @@ void FireStarter2::RunProgram(unsigned int population, unsigned int generations,
     GetResults(generations & 1 ? results1 : results0, result);
 } // RunProgram
 
-void FireStarter2::DrawGraph(unsigned int variation)
+void FireStarter::DrawGraph(unsigned int variation)
 {
     // Launch the display kernel
     int threadsPerBlock = 32;
@@ -264,12 +263,12 @@ void FireStarter2::DrawGraph(unsigned int variation)
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph
 
-void FireStarter2::LoadProgram(void)
+void FireStarter::LoadProgram(void)
 {
-#if FS2_PROGRAM_EVOLVE
-    std::ifstream file("FireStarter2.cu", std::ios::ate | std::ios::binary);
+#if PROGRAM_EVOLVE
+    std::ifstream file("FireStarter.cu", std::ios::ate | std::ios::binary);
 #else
-    std::ifstream file("FireStarter2_Best.cu", std::ios::ate | std::ios::binary);
+    std::ifstream file("FireStarter_Best.cu", std::ios::ate | std::ios::binary);
 #endif
     if (file.is_open()) {
         // Found usable source file
@@ -283,11 +282,11 @@ void FireStarter2::LoadProgram(void)
     }
 } // LoadProgram
 
-void FireStarter2::SaveProgram(void)
+void FireStarter::SaveProgram(void)
 {
     bestCode = updatedCode;
-#if FS2_PROGRAM_EVOLVE
-    std::ofstream file("FireStarter2_Best.cu", std::ios::out | std::ios::binary);
+#if PROGRAM_EVOLVE
+    std::ofstream file("FireStarter_Best.cu", std::ios::out | std::ios::binary);
     if (file.is_open()) {
         file << bestCode;
         file.close();
@@ -295,15 +294,15 @@ void FireStarter2::SaveProgram(void)
 #endif
 } // SaveProgram
 
-void FireStarter2::InitProgram(void)
+void FireStarter::InitProgram(void)
 {
     LoadProgram();
     CompileProgram(sourceCode);
 } // InitProgram
 
-void FireStarter2::UpdateProgram(const std::string& replacementCode)
+void FireStarter::UpdateProgram(const std::string& replacementCode)
 {
-    std::string startString = FS2_REPLACMENT_CODE;
+    std::string startString = REPLACMENT_CODE;
     updatedCode = sourceCode;
     size_t startPos = updatedCode.find(startString);
     if (startPos != std::string::npos) {
@@ -313,7 +312,7 @@ void FireStarter2::UpdateProgram(const std::string& replacementCode)
     }
 } // UpdateProgram
 
-void FireStarter2::EvolveProgram(void)
+void FireStarter::EvolveProgram(void)
 {
     unsigned long long bestAge = generation - bestState.generation;
     unsigned long long lastAge = generation - lastGeneration;
@@ -321,7 +320,7 @@ void FireStarter2::EvolveProgram(void)
 
     // Devolve to an earlier state if too many generations have elapsed without improvement.
     // This prevents dead-end evolution.
-    if (state && (lastAge > FS2_SMART_DEVOLVE_AGE)) {
+    if (state && (lastAge > SMART_DEVOLVE_AGE)) {
         states.pop_back();
         state--;
         lastGeneration = generation;
@@ -330,42 +329,42 @@ void FireStarter2::EvolveProgram(void)
 
     // Determine how many changes to make to the instructions.
     unsigned int numChanges = 1;
-    if (lastAge > FS2_SMART_EVOLVE_AGE)
+    if (lastAge > SMART_EVOLVE_AGE)
         numChanges++;
-    if (lastAge > FS2_SMART_EVOLVE_AGE * FS2_SMART_EVOLVE_AGE)
+    if (lastAge > SMART_EVOLVE_AGE * SMART_EVOLVE_AGE)
         numChanges++;
 
     // Make random changes to the program instructions.
     unsigned int seed = RANDOMHASH((unsigned int)generation);
     curState.generation = generation;
     while (numChanges--) {
-        unsigned int i = RANDOMSEED(seed) % FS2_PROGRAM_INSTRUCTIONS;
+        unsigned int i = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
         unsigned int j = RANDOMSEED(seed) % 4;
         switch (j) {
         case 0:
-            curState.instructions[i].a = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+            curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
             break;
         case 1:
-            curState.instructions[i].b = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+            curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
             break;
         case 2:
-            curState.instructions[i].c = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+            curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
             break;
         case 3:
-            curState.instructions[i].d = RANDOMSEED(seed) % FS2_PROGRAM_DATA;
+            curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
             break;
         }
     }
     
     // Generate the replacement code and update the program.
     std::string replacementCode;
-    for (unsigned int i = 0; i < FS2_PROGRAM_INSTRUCTIONS; i++)
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         replacementCode += Format("    data.d[%d] = data.d[%d] + data.d[%d] * data.d[%d];\n", curState.instructions[i].a, curState.instructions[i].b, curState.instructions[i].c, curState.instructions[i].d);
-    replacementCode += Format("    result = data.d[%d];", curState.instructions[FS2_PROGRAM_INSTRUCTIONS - 1].a);
+    replacementCode += Format("    result = data.d[%d];", curState.instructions[PROGRAM_INSTRUCTIONS - 1].a);
     UpdateProgram(replacementCode);
 } // EvolveProgram
 
-void FireStarter2::RenderImage(void* hwnd)
+void FireStarter::RenderImage(void* hwnd)
 {
     double time = 0.0;
     timer.Start();
@@ -375,10 +374,10 @@ void FireStarter2::RenderImage(void* hwnd)
     EvolveProgram();
         
     // Run the next generation on the GPU.
-    FireStarter2Result results0;
-    FireStarter2Result results1;
-    RunProgram(FS2_PROGRAM_POPULATION, FS2_PROGRAM_GENERATIONS, 0, results0);
-    RunProgram(FS2_PROGRAM_POPULATION, FS2_PROGRAM_GENERATIONS, 1, results1);
+    FireStarterResult results0;
+    FireStarterResult results1;
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, 0, results0);
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, 1, results1);
     bool update = SaveResults(results0, results1);
     time = timer.Duration();
 
@@ -413,10 +412,10 @@ void FireStarter2::RenderImage(void* hwnd)
 
     // Update the status.
     double averageTime = time / (double)(generation - startGeneration);
-    sprintf_s(statusString, "FireStarter2: Generation=%lld  States=%lld  Age=%lld  Error=%f  Time=%.4f Seconds", generation, states.size(), generation - bestState.generation, bestState.maxResult, averageTime);
+    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Time=%.4f Seconds", generation, states.size(), generation - bestState.generation, bestState.maxResult, averageTime);
 } // RenderImage
 
-void FireStarter2::Init(unsigned long width, unsigned long height)
+void FireStarter::Init(unsigned long width, unsigned long height)
 {
     strcpy_s(statusString, "Initializing...");
 
@@ -427,19 +426,19 @@ void FireStarter2::Init(unsigned long width, unsigned long height)
     InitProgram();
 } // Init
 
-FireStarter2::FireStarter2(void)
+FireStarter::FireStarter(void)
 {
     // Timer ID
     statusString[0] = 0;
     results0 = NULL;
     results1 = NULL;
     module = NULL;
-} // FireStarter2
+} // FireStarter
 
-FireStarter2::~FireStarter2(void)
+FireStarter::~FireStarter(void)
 {
     if (module)
         checkCudaErrors(cuModuleUnload(module));
     FreeFrameBuffer(theBuffer);
     FreeResults();
-} // ~FireStarter2
+} // ~FireStarter
