@@ -374,11 +374,11 @@ void FireStarter::RenderImage(void* hwnd)
     EvolveProgram();
         
     // Run the next generation on the GPU.
-    FireStarterResult results0;
-    FireStarterResult results1;
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, 0, results0);
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, 1, results1);
-    bool update = SaveResults(results0, results1);
+    FireStarterResult result0;
+    FireStarterResult result1;
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, 0, result0);
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, 1, result1);
+    bool update = SaveResults(result0, result1);
     time = timer.Duration();
 
     // Find the best results for display only.
