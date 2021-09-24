@@ -87,11 +87,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FireStarter.cpp" />
     <ClCompile Include="FireStarter2.cpp" />
     <ClCompile Include="WindowsMain.cpp" />
     <ClInclude Include="CUDADefines.h" />
-    <ClInclude Include="FireStarter.h" />
     <ClInclude Include="FireStarter2.h" />
     <ClInclude Include="FireStarter2Defines.h" />
     <ClInclude Include="FireStarterDefines.h" />
