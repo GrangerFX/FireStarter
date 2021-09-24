@@ -84,7 +84,9 @@ bool FireStarter::SaveResults(FireStarterResult& result0, FireStarterResult& res
         curState.result1 = result1;
         curState.maxResult = maxResult;
         curState.generation = generation;
+#if PROGRAM_EVOLVE
         states.push_back(curState);
+#endif
         lastGeneration = generation;
         if (maxResult < bestState.maxResult) {
             bestState = curState;
@@ -371,7 +373,9 @@ void FireStarter::RenderImage(void* hwnd)
 
     // Evolve the program instructions.
     long long startGeneration = generation++;
+#if PROGRAM_EVOLVE
     EvolveProgram();
+#endif
         
     // Run the next generation on the GPU.
     FireStarterResult result0;
