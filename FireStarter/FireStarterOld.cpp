@@ -372,14 +372,13 @@ void FireStarter::MakeProgram(std::string &src)
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         const ProgramInstruction &instruction = curState.instructions[i];
         switch (instruction.instruction) {
-            case Instruction_store:
-                src += Format("    data.d[%d] = r;\n", instruction.d);
-                break;
-            case Instruction_add:
-                src += Format("    r += data.d[%d];\n", instruction.d);
+             case Instruction_add:
+                src += Format("    data.d[%d] += r;\n", instruction.d);
+                src += Format("    r = data.d[%d];\n", instruction.d);
                 break;
             case Instruction_multiply:
-                src += Format("    r *= data.d[%d];\n", instruction.d);
+                src += Format("    data.d[%d] *= r;\n", instruction.d);
+                src += Format("    r = data.d[%d];\n", instruction.d);
                 break;
         }
     }

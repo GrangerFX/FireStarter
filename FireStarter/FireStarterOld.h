@@ -18,8 +18,6 @@
 #define START_RESULT 10.0f
 
 typedef enum {
-    Instruction_store = 0,  // data[d] = r;
-    Instruction_fetch,      // r = data[d];
     Instruction_add,        // r += data[d];
     Instruction_multiply,   // r *= data[d];
     NumInstructions,
