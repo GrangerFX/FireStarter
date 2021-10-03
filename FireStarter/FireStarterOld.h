@@ -18,14 +18,14 @@
 #define START_RESULT 10.0f
 
 typedef enum {
-    Instruction_add = 0,    // r += data[d];
-    Instruction_multiply,   // r *= data[d];
-    Instruction_store,      // data[d] = r;
-    NumInstructions,
+    Instruction_store = 0,  // data[d] = r;
     Instruction_fetch,      // r = data[d];
+    Instruction_add,        // r += data[d];
+    Instruction_multiply,   // r *= data[d];
+    NumInstructions,
+    Instruction_divide,     // r /= data[d];
     Instruction_subtract,   // r -= data[d];
     Instruction_square,     // r *= r;
-    Instruction_divide,     // r /= data[d];
     Instruction_max,        // r = data[d] >= r ? data[d] : r;
     Instruction_min,        // r = data[d] <= r ? data[d] : r;
 } Instruction;
