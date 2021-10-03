@@ -280,7 +280,7 @@ void FireStarter::RandomProgram(void)
     seed = RANDOMHASH(seed) + 1;
     if (!states.size()) {
         for (int i = 0; i < PROGRAM_DATA; i++)
-           curState.data[i] = RANDOMFACTOR(seed);
+           curState.data.d[i] = RANDOMFACTOR(seed);
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
             curState.instructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
             curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
@@ -344,11 +344,6 @@ void FireStarter::MakeProgram(std::string &src)
            "\n"
            "typedef struct FireStarterData {\n"
            "    float d[PROGRAM_DATA];\n"
-           "\n"
-           "    __device__ float& operator[](int i)\n"
-           "    {\n"
-           "        return d[i];\n"
-           "    } // operator[]\n"
            "} FireStarterData;\n"
            "\n"
            "typedef struct FireStarterResult {\n"
@@ -378,31 +373,13 @@ void FireStarter::MakeProgram(std::string &src)
         const ProgramInstruction &instruction = curState.instructions[i];
         switch (instruction.instruction) {
             case Instruction_store:
-                src += Format("    data[%d] = r;\n", instruction.d);
-                break;
-            case Instruction_fetch:
-                src += Format("    r = data[%d];\n", instruction.d);
-                break;
-            case Instruction_square:
-                src += Format("    r *= r;\n");
+                src += Format("    data.d[%d] = r;\n", instruction.d);
                 break;
             case Instruction_add:
-                src += Format("    r += data[%d];\n", instruction.d);
-                break;
-            case Instruction_subtract:
-                src += Format("    r -= data[%d];\n", instruction.d);
+                src += Format("    r += data.d[%d];\n", instruction.d);
                 break;
             case Instruction_multiply:
-                src += Format("    r *= data[%d];\n", instruction.d);
-                break;
-            case Instruction_divide:
-                src += Format("    r /= data[%d];\n", instruction.d);
-                break;
-            case Instruction_max:
-                src += Format("    r = r >= data[%d] ? r : data[%d];\n", instruction.d, instruction.d);
-                break;
-            case Instruction_min:
-                src += Format("    r = r <= data[%d] ? r : data[%d];\n", instruction.d, instruction.d);
+                src += Format("    r *= data.d[%d];\n", instruction.d);
                 break;
         }
     }
@@ -424,8 +401,8 @@ void FireStarter::MakeProgram(std::string &src)
            "        target[i] = Target(theta[i]);\n"
            "    };\n"
            "    unsigned int age = 0;\n"
-           "    unsigned int d = 0;\n"
-           "    float oldValue = data[d];\n"
+           "    unsigned int index = 0;\n"
+           "    float oldValue = data.d[index];\n"
            "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
            "        float curResult = fabsf(Evaluate(data, 0.0f) - Target(0.0f));\n"
            "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
@@ -436,14 +413,14 @@ void FireStarter::MakeProgram(std::string &src)
            "            result = curResult;\n"
            "            age = 0;\n"
            "        } else {\n"
-           "            data[d] = oldValue;\n"
+           "            data.d[index] = oldValue;\n"
            "            age++;\n"
            "        }\n"
-           "        d = RANDOMSEED(seed) % PROGRAM_DATA;\n"
-           "        oldValue = data[d];\n"
-           "        data[d] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
+           "        index = RANDOMSEED(seed) % PROGRAM_DATA;\n"
+           "        oldValue = data.d[index];\n"
+           "        data.d[index] += (RANDOMFACTOR(seed) * result * (1.0f + age * SMART_AGE_FACTOR) * SMART_RANDOM_FACTOR);\n"
            "    }\n"
-           "    data[d] = oldValue;\n"
+           "    data.d[index] = oldValue;\n"
            "    if (result < results->curResult) {\n"
            "        results->curResult = result;\n"
            "        unsigned int index = __uAtomicInc(&results->numResults, 0xFFFFFFFF);\n"

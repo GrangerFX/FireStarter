@@ -23,11 +23,6 @@ typedef enum {
     Instruction_add,        // r += data[d];
     Instruction_multiply,   // r *= data[d];
     NumInstructions,
-    Instruction_divide,     // r /= data[d];
-    Instruction_subtract,   // r -= data[d];
-    Instruction_square,     // r *= r;
-    Instruction_max,        // r = data[d] >= r ? data[d] : r;
-    Instruction_min,        // r = data[d] <= r ? data[d] : r;
 } Instruction;
 
 typedef struct {
@@ -70,11 +65,6 @@ typedef struct FrameBuffer {
 
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
-
-    inline float& operator[](int i)
-    {
-        return d[i];
-    } // operator[]
 } FireStarterData;
 
 typedef struct FireStarterResult {
