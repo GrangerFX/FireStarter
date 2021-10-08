@@ -282,8 +282,8 @@ void FireStarter::RandomProgram(void)
         for (int i = 0; i < PROGRAM_DATA; i++)
            curState.data.d[i] = RANDOMFACTOR(seed);
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-            curState.instructions[i].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
-            curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState.program.instruction[i].operation = (FireStarterOperation)(RANDOMSEED(seed) % Operator_num);
+            curState.program.instruction[i].data = RANDOMSEED(seed) % PROGRAM_DATA;
         }
         curState.result = START_RESULT;
         states.push_back(curState);
@@ -304,11 +304,12 @@ void FireStarter::RandomProgram(void)
         curState = states[state];
         while (numChanges--) {
             unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-            curState.instructions[index].instruction = (Instruction)(RANDOMSEED(seed) % NumInstructions);
-            curState.instructions[index].d = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState.program.instruction[index].operation = (FireStarterOperation)(RANDOMSEED(seed) % Operator_num);
+            curState.program.instruction[index].data = RANDOMSEED(seed) % PROGRAM_DATA;
         }
     }
 //  memset(results, 0, sizeof(FireStarterResults) + sizeof(FireStarterResult) * (MAX_RESULTS - 1));
+    results->program = curState.program;
     results->bestData = curState.data;
     results->minResult = curState.result;
     results->curResult = results->startResult = START_RESULT;
@@ -318,6 +319,7 @@ void FireStarter::RandomProgram(void)
 
 void FireStarter::MakeProgram(std::string &src)
 {
+    src += Format("#define PROGRAM_INSTRUCTIONS %d\n", PROGRAM_INSTRUCTIONS);
     src += Format("#define PROGRAM_DATA %d\n", PROGRAM_DATA);
     src += Format("#define PROGRAM_ITERATIONS %d\n", PROGRAM_ITERATIONS);
     src += Format("#define SAMPLE_ITERATIONS %d\n", SAMPLE_ITERATIONS);
@@ -343,6 +345,21 @@ void FireStarter::MakeProgram(std::string &src)
         "#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1\n"
         "#define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5\n"
         "\n"
+        "typedef enum {\n"
+        "    Operator_add,\n"
+        "    Operator_multiply,\n"
+        "    Operator_num,\n"
+        "} FireStarterOperation;\n"
+        "\n"
+        "typedef struct {\n"
+        "    FireStarterOperation operation;\n"
+        "    int data;\n"
+        "} FireStarterInstruction;\n"
+        "\n"
+        "typedef struct {\n"
+        "    FireStarterInstruction instruction[PROGRAM_INSTRUCTIONS];\n"
+        "} FireStarterProgram;\n"
+        "\n"
         "typedef struct FireStarterData {\n"
         "    float d[PROGRAM_DATA];\n"
         "} FireStarterData;\n"
@@ -354,6 +371,7 @@ void FireStarter::MakeProgram(std::string &src)
         "} FireStarterResult;\n"
         "\n"
         "typedef struct FireStarterResults {\n"
+        "    FireStarterProgram program;\n"
         "    unsigned int numResults;\n"
         "    float minResult;\n"
         "    float curResult;\n"
@@ -381,13 +399,13 @@ void FireStarter::MakeProgram(std::string &src)
         "    FireStarterData data(workData);\n";
 
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        const ProgramInstruction &instruction = curState.instructions[i];
-        switch (instruction.instruction) {
-             case Instruction_add:
-                src += Format("    r = data.d[%d] += r;\n", instruction.d);
+        const FireStarterInstruction &instruction = curState.program.instruction[i];
+        switch (instruction.operation) {
+             case Operator_add:
+                src += Format("    r = data.d[%d] += r;\n", instruction.data);
                 break;
-            case Instruction_multiply:
-                src += Format("    r = data.d[%d] *= r;\n", instruction.d);
+            case Operator_multiply:
+                src += Format("    r = data.d[%d] *= r;\n", instruction.data);
                 break;
         }
     }

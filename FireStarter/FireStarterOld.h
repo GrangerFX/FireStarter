@@ -17,17 +17,6 @@
 #define SMART_DEVOLVE_AGE 100
 #define START_RESULT 10.0f
 
-typedef enum {
-    Instruction_add,        // r += data[d];
-    Instruction_multiply,   // r *= data[d];
-    NumInstructions,
-} Instruction;
-
-typedef struct {
-    Instruction instruction;
-    int d;
-} ProgramInstruction;
-
 class SimpleTimer {
 public:
     time_t m_second;
@@ -54,24 +43,40 @@ public:
     } // Start
 }; // SimpleTimer
     
-typedef struct FrameBuffer {
+typedef struct {
 	uchar4 *base;			        // Pointer to the alligned native pixel format buffer
 	long rowbytes;					// Number of bytes per row
 	unsigned long width;			// Number of columns
 	unsigned long height;			// Number of rows
 } FrameBuffer;
 
+typedef enum {
+    Operator_add,
+    Operator_multiply,
+    Operator_num,
+} FireStarterOperation;
+
+typedef struct {
+    FireStarterOperation operation;
+    int data;
+} FireStarterInstruction;
+
+typedef struct {
+    FireStarterInstruction instruction[PROGRAM_INSTRUCTIONS];
+} FireStarterProgram;
+
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
 } FireStarterData;
 
-typedef struct FireStarterResult {
+typedef struct {
     FireStarterData data;
     float result;
     unsigned int member;
 } FireStarterResult;
 
-typedef struct FireStarterResults {
+typedef struct {
+    FireStarterProgram program;
     unsigned int numResults;
     float minResult;
     float curResult;
@@ -80,8 +85,8 @@ typedef struct FireStarterResults {
     FireStarterResult results[1];
 } FireStarterResults;
 
-typedef struct FireStarterState {
-    ProgramInstruction instructions[PROGRAM_INSTRUCTIONS];
+typedef struct {
+    FireStarterProgram program;
     FireStarterData data;
     float result;
 } FireStarterState;
