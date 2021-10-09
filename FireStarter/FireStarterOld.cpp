@@ -383,53 +383,35 @@ void FireStarter::MakeProgram(std::string &src)
         "__device__ float Target(float n) {\n"
         "   return sinf(n);\n"
         "} // Target\n"
-        "\n";
-
-    int index = 0;
-    for (int d = 0; d < PROGRAM_DATA; d++)
-        src += Format("__device__ void Function%d(FireStarterData &data, float &n) { n = data.d[%d] += n; }\n", index++, d);
-    for (int d = 0; d < PROGRAM_DATA; d++)
-        src += Format("__device__ void Function%d(FireStarterData &data, float &n) { n = data.d[%d] *= n; }\n", index++, d);
-
-    src +=
-        "\n"
-        "typedef void (*InstructionProc)(FireStarterData &data, float &n);\n"
-        "\n"
-        "class FireStarterProcs {\n"
-        "public:\n"
-        "    InstructionProc p[PROGRAM_OPERATIONS * PROGRAM_DATA];\n"
-        "    __device__ FireStarterProcs(void)\n"
-        "    {\n";
-    for (int i = 0; i < PROGRAM_OPERATIONS * PROGRAM_DATA; i++)
-        src += Format("        p[%d] = Function%d;\n", i, i);
-    src +=
-        "    }\n"
-        "}; // class FireStarterProcs\n"
         "\n"
         "class FireStarterProgram {\n"
         "public:\n"
-        "    FireStarterSource source;\n"
-        "    FireStarterProcs procs;\n"
-        "    InstructionProc instruction[PROGRAM_INSTRUCTIONS];\n"
+        "    int instruction[PROGRAM_INSTRUCTIONS];\n"
         "\n"
-        "    __device__ void Compile(void)\n"
+        "    __device__ void Compile(const FireStarterSource &source)\n"
         "    {\n"
         "        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\n"
-        "            instruction[i] = procs.p[source.instruction[i].operation * PROGRAM_DATA + source.instruction[i].data];\n"
-        "    }\n"
+        "            instruction[i] = source.instruction[i].operation * PROGRAM_DATA + source.instruction[i].data;\n"
+        "    } // Compile\n"
         "\n"
         "    __device__ float Execute(const FireStarterData &workData, float r)\n"
         "    {\n"
         "        FireStarterData data(workData);\n"
         "        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\n"
-        "            (*instruction[i])(data, r);\n"
+        "            switch(instruction[i]) {\n";
+    for (int d = 0; d < PROGRAM_DATA; d++)
+        src += Format("                case %d: r = data.d[%d] += r; break;\n", d, d);
+    for (int d = 0; d < PROGRAM_DATA; d++)
+        src += Format("                case %d: r = data.d[%d] *= r; break;\n", PROGRAM_DATA + d, d);
+    src +=
+        "            }\n"
         "        return isnan(r) ? 0.0f : r;\n"
-        "    }\n"
+        "    } // Execute\n"
         "\n"
-        "    __device__ FireStarterProgram(const FireStarterSource &sourceCode) : source(sourceCode)\n"
+        "    __device__ FireStarterProgram(const FireStarterSource &source)\n"
         "    {\n"
-        "        Compile();\n"
-        "    }\n"
+        "        Compile(source);\n"
+        "    } // FireStarterProgram\n"
         "}; // class FireStarterProgram\n"
         "\n"
         "__device__ float Evaluate(const FireStarterData &workData, float r)\n"
@@ -458,7 +440,7 @@ void FireStarter::MakeProgram(std::string &src)
         "        return;\n"
         "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
         "    FireStarterData data(results->bestData);\n"
-        "    FireStarterProgram evaluateProgram(results->program);\n"
+        "    FireStarterProgram evaluate(results->program);\n"
         "    float result = results->startResult;\n"
         "    float theta[SAMPLE_ITERATIONS];\n"
         "    float target[SAMPLE_ITERATIONS];\n"
@@ -473,7 +455,7 @@ void FireStarter::MakeProgram(std::string &src)
         "        float curResult = fabsf(Evaluate(data, 0.0f) - Target(0.0f));\n"
         "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
 #if 1
-        "            float delta = fabsf(evaluateProgram.Execute(data, theta[i]) - target[i]);\n"
+        "            float delta = fabsf(evaluate.Execute(data, theta[i]) - target[i]);\n"
 #else
         "            float delta = fabsf(Evaluate(data, theta[i]) - target[i]);\n"
 #endif
