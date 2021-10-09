@@ -51,9 +51,9 @@ typedef struct {
 } FrameBuffer;
 
 typedef enum {
-    Operator_add,
-    Operator_multiply,
-    Operator_num,
+    Operation_add,
+    Operation_multiply,
+    PROGRAM_OPERATIONS
 } FireStarterOperation;
 
 typedef struct {
@@ -63,7 +63,7 @@ typedef struct {
 
 typedef struct {
     FireStarterInstruction instruction[PROGRAM_INSTRUCTIONS];
-} FireStarterProgram;
+} FireStarterSource;
 
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
@@ -76,7 +76,7 @@ typedef struct {
 } FireStarterResult;
 
 typedef struct {
-    FireStarterProgram program;
+    FireStarterSource program;
     unsigned int numResults;
     float minResult;
     float curResult;
@@ -86,7 +86,7 @@ typedef struct {
 } FireStarterResults;
 
 typedef struct {
-    FireStarterProgram program;
+    FireStarterSource program;
     FireStarterData data;
     float result;
 } FireStarterState;
