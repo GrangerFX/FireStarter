@@ -472,7 +472,7 @@ void FireStarter::MakeProgram(std::string &src)
         "    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {\n"
         "        float curResult = fabsf(Evaluate(data, 0.0f) - Target(0.0f));\n"
         "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
-#if 0
+#if 1
         "            float delta = fabsf(evaluateProgram.Execute(data, theta[i]) - target[i]);\n"
 #else
         "            float delta = fabsf(Evaluate(data, theta[i]) - target[i]);\n"
