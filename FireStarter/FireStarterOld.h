@@ -56,14 +56,11 @@ typedef enum {
     PROGRAM_OPERATIONS
 } FireStarterOperation;
 
-typedef struct {
-    FireStarterOperation operation;
-    int data;
-} FireStarterInstruction;
+#define PROGRAM_OPCODES (PROGRAM_DATA * PROGRAM_OPERATIONS)
 
 typedef struct {
-    FireStarterInstruction instruction[PROGRAM_INSTRUCTIONS];
-} FireStarterSource;
+    int instruction[PROGRAM_INSTRUCTIONS];
+} FireStarterProgram;
 
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
@@ -76,7 +73,7 @@ typedef struct {
 } FireStarterResult;
 
 typedef struct {
-    FireStarterSource program;
+    FireStarterProgram program;
     unsigned int numResults;
     float minResult;
     float curResult;
@@ -86,7 +83,7 @@ typedef struct {
 } FireStarterResults;
 
 typedef struct {
-    FireStarterSource program;
+    FireStarterProgram program;
     FireStarterData data;
     float result;
 } FireStarterState;

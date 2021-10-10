@@ -281,10 +281,8 @@ void FireStarter::RandomProgram(void)
     if (!states.size()) {
         for (int i = 0; i < PROGRAM_DATA; i++)
            curState.data.d[i] = RANDOMFACTOR(seed);
-        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-            curState.program.instruction[i].operation = (FireStarterOperation)(RANDOMSEED(seed) % PROGRAM_OPERATIONS);
-            curState.program.instruction[i].data = RANDOMSEED(seed) % PROGRAM_DATA;
-        }
+        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            curState.program.instruction[i] = RANDOMSEED(seed) % PROGRAM_OPCODES;
         curState.result = START_RESULT;
         states.push_back(curState);
     } else {
@@ -304,8 +302,7 @@ void FireStarter::RandomProgram(void)
         curState = states[state];
         while (numChanges--) {
             unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-            curState.program.instruction[index].operation = (FireStarterOperation)(RANDOMSEED(seed) % PROGRAM_OPERATIONS);
-            curState.program.instruction[index].data = RANDOMSEED(seed) % PROGRAM_DATA;
+            curState.program.instruction[index] = RANDOMSEED(seed) % PROGRAM_OPCODES;
         }
     }
 //  memset(results, 0, sizeof(FireStarterResults) + sizeof(FireStarterResult) * (MAX_RESULTS - 1));
@@ -351,14 +348,11 @@ void FireStarter::MakeProgram(std::string &src)
         "    PROGRAM_OPERATIONS\n"
         "} FireStarterOperation;\n"
         "\n"
-        "typedef struct {\n"
-        "    FireStarterOperation operation;\n"
-        "    int data;\n"
-        "} FireStarterInstruction;\n"
+        "#define PROGRAM_OPCODES PROGRAM_DATA * PROGRAM OPERATIONS\n"
         "\n"
         "typedef struct {\n"
-        "    FireStarterInstruction instruction[PROGRAM_INSTRUCTIONS];\n"
-        "} FireStarterSource;\n"
+        "    int instruction[PROGRAM_INSTRUCTIONS];\n"
+        "} FireStarterProgram;\n"
         "\n"
         "typedef struct FireStarterData {\n"
         "    float d[PROGRAM_DATA];\n"
@@ -371,7 +365,7 @@ void FireStarter::MakeProgram(std::string &src)
         "} FireStarterResult;\n"
         "\n"
         "typedef struct {\n"
-        "    FireStarterSource program;\n"
+        "    FireStarterProgram program;\n"
         "    unsigned int numResults;\n"
         "    float minResult;\n"
         "    float curResult;\n"
@@ -384,48 +378,32 @@ void FireStarter::MakeProgram(std::string &src)
         "   return sinf(n);\n"
         "} // Target\n"
         "\n"
-        "class FireStarterProgram {\n"
-        "public:\n"
-        "    int instruction[PROGRAM_INSTRUCTIONS];\n"
-        "\n"
-        "    __device__ void Compile(const FireStarterSource &source)\n"
-        "    {\n"
-        "        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\n"
-        "            instruction[i] = source.instruction[i].operation * PROGRAM_DATA + source.instruction[i].data;\n"
-        "    } // Compile\n"
-        "\n"
-        "    __device__ float Execute(const FireStarterData &workData, float r)\n"
-        "    {\n"
-        "        FireStarterData data(workData);\n"
-        "        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\n"
-        "            switch(instruction[i]) {\n";
+        "__device__ float Execute(const FireStarterProgram &program, const FireStarterData &workData, float r)\n"
+        "{\n"
+        "    FireStarterData data(workData);\n"
+        "    for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\n"
+        "        switch(program.instruction[i]) {\n";
     for (int d = 0; d < PROGRAM_DATA; d++)
-        src += Format("                case %d: r = data.d[%d] += r; break;\n", d, d);
+        src += Format("            case %d: r = data.d[%d] += r; break;\n", d, d);
     for (int d = 0; d < PROGRAM_DATA; d++)
-        src += Format("                case %d: r = data.d[%d] *= r; break;\n", PROGRAM_DATA + d, d);
+        src += Format("            case %d: r = data.d[%d] *= r; break;\n", PROGRAM_DATA + d, d);
     src +=
-        "            }\n"
-        "        return isnan(r) ? 0.0f : r;\n"
-        "    } // Execute\n"
-        "\n"
-        "    __device__ FireStarterProgram(const FireStarterSource &source)\n"
-        "    {\n"
-        "        Compile(source);\n"
-        "    } // FireStarterProgram\n"
-        "}; // class FireStarterProgram\n"
+        "        }\n"
+        "    return isnan(r) ? 0.0f : r;\n"
+        "} // Execute\n"
         "\n"
         "__device__ float Evaluate(const FireStarterData &workData, float r)\n"
         "{\n"
         "    FireStarterData data(workData);\n";
 
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        const FireStarterInstruction &instruction = curState.program.instruction[i];
-        switch (instruction.operation) {
+        int instruction = curState.program.instruction[i];
+        switch (instruction / PROGRAM_DATA) {
              case Operation_add:
-                src += Format("    r = data.d[%d] += r;\n", instruction.data);
+                src += Format("    r = data.d[%d] += r;\n", instruction % PROGRAM_DATA);
                 break;
             case Operation_multiply:
-                src += Format("    r = data.d[%d] *= r;\n", instruction.data);
+                src += Format("    r = data.d[%d] *= r;\n", instruction % PROGRAM_DATA);
                 break;
         }
     }
@@ -439,8 +417,8 @@ void FireStarter::MakeProgram(std::string &src)
         "    if (member >= population)\n"
         "        return;\n"
         "    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);\n"
+        "    FireStarterProgram program(results->program);\n"
         "    FireStarterData data(results->bestData);\n"
-        "    FireStarterProgram evaluate(results->program);\n"
         "    float result = results->startResult;\n"
         "    float theta[SAMPLE_ITERATIONS];\n"
         "    float target[SAMPLE_ITERATIONS];\n"
@@ -455,7 +433,7 @@ void FireStarter::MakeProgram(std::string &src)
         "        float curResult = fabsf(Evaluate(data, 0.0f) - Target(0.0f));\n"
         "        for (int i = 1; i < SAMPLE_ITERATIONS; i++) {\n"
 #if 1
-        "            float delta = fabsf(evaluate.Execute(data, theta[i]) - target[i]);\n"
+        "            float delta = fabsf(Execute(program, data, theta[i]) - target[i]);\n"
 #else
         "            float delta = fabsf(Evaluate(data, theta[i]) - target[i]);\n"
 #endif
