@@ -39,10 +39,17 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     if (member >= population)
         return;
 
+    unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(programGeneration) + dataGeneration) + member);
     float target[SAMPLE_ITERATIONS];
     float theta[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+#if 0
+        // Randomize the theta samples.
+        theta[i] = (i + RANDOMNUM(seed)) * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);
+#else
+        // Fixed theta samples.
         theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));
+#endif
         target[i] = variation ? Target1(theta[i]) : Target(theta[i]);
     }
 
@@ -58,7 +65,6 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         data = oldResults->results[member].data;
         result = oldResults->results[member].result;
     }
-    unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(programGeneration) + dataGeneration) + member);
     float oldResult = result;
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
