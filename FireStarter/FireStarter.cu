@@ -1,20 +1,22 @@
 #include "FireStarterDefines.h"
 #include "HashRandom.h"
 
-GPU_FUNCTION float Target(float n)
+GPU_FUNCTION float Target(unsigned int variation, float n)
 {
-   return sinf(n);
+    switch (variation) {
+        case 0:
+            return sinf(n);
+        case 1:
+            return sinf(n * 1.2f) + n * 0.2f;
+        case 2:
+            return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
+    }
 } // Target
-
-GPU_FUNCTION float Target1(float n)
-{
-   return sinf(n * 1.2f) + n * 0.2f;
-} // Target1
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
 // PROGRAM //
-    return isnan(n) ? 0.0f : n;
+    return n;
 } // Evaluate
 
 GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
@@ -34,7 +36,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         // Fixed theta samples.
         theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));
 #endif
-        target[i] = variation ? Target1(theta[i]) : Target(theta[i]);
+        target[i] = Target(variation, theta[i]);
     }
 
     FireStarterResults *oldResults = dataGeneration & 1 ? results0 : results1;
@@ -108,7 +110,7 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
     if (x < bufferWidth) {
         float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
         float center = bufferHeight * 0.66f;
-        float target = variation ? Target1(theta) : Target(theta);
+        float target = Target(variation, theta);
         int y = (int)(center + target * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);

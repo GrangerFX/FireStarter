@@ -365,10 +365,15 @@ void FireStarter::RenderImage(void* hwnd)
 #endif
         
     // Run the next generation on the GPU.
-    FireStarterResult result0;
-    FireStarterResult result1;
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, 0, result0);
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, 1, result1);
+    unsigned int varaition0 = 0;
+#if PROGRAM_EVOLVE
+    unsigned int varaition1 = 1;
+#else
+    unsigned int varaition1 = 2;
+#endif
+    FireStarterResult result0, result1;
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition0, result0);
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition1, result1);
     bool update = SaveResults(result0, result1);
     time = timer.Duration();
 
@@ -376,8 +381,8 @@ void FireStarter::RenderImage(void* hwnd)
     if (update) {
         // Erase the frame buffer
         EraseFrameBuffer(theBuffer);
-        DrawGraph(0);
-        DrawGraph(1);
+        DrawGraph(varaition0);
+        DrawGraph(varaition1);
         SaveProgram();
 
         unsigned char buffer[4096];
