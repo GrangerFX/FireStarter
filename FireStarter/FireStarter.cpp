@@ -118,17 +118,8 @@ void FireStarter::InitResults(void)
     // Initialize the evolving program instructions.
     unsigned int seed = RANDOMHASH((unsigned int)generation);
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-#if 0
-        curState.instructions[i].a = (i - 1) % PROGRAM_DATA;
-        curState.instructions[i].b = (i - 2) % PROGRAM_DATA;
-        curState.instructions[i].c = (i - 3) % PROGRAM_DATA;
-        curState.instructions[i].d = (i - 4) % PROGRAM_DATA;
-#else
-        curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
-        curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
-        curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
-        curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
-#endif
+        curState.instructions[i].opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
+        curState.instructions[i].data = RANDOMSEED(seed) % PROGRAM_DATA;
     }
 
     // Initialize the evolving program data values.
@@ -299,6 +290,9 @@ void FireStarter::SaveProgram(void)
 void FireStarter::InitProgram(void)
 {
     LoadProgram();
+#if PROGRAM_EVOLVE
+    EvolveProgram();
+#endif
     CompileProgram(sourceCode);
 } // InitProgram
 
@@ -340,29 +334,22 @@ void FireStarter::EvolveProgram(void)
     unsigned int seed = RANDOMHASH((unsigned int)generation);
     curState.generation = generation;
     while (numChanges--) {
-        unsigned int i = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-        unsigned int j = RANDOMSEED(seed) % 4;
-        switch (j) {
-        case 0:
-            curState.instructions[i].a = RANDOMSEED(seed) % PROGRAM_DATA;
-            break;
-        case 1:
-            curState.instructions[i].b = RANDOMSEED(seed) % PROGRAM_DATA;
-            break;
-        case 2:
-            curState.instructions[i].c = RANDOMSEED(seed) % PROGRAM_DATA;
-            break;
-        case 3:
-            curState.instructions[i].d = RANDOMSEED(seed) % PROGRAM_DATA;
-            break;
-        }
+        unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
+        curState.instructions[index].opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
+        curState.instructions[index].data = RANDOMSEED(seed) % PROGRAM_DATA;
     }
     
     // Generate the replacement code and update the program.
     std::string replacementCode;
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        replacementCode += Format("    data.d[%d] = data.d[%d] + data.d[%d] * data.d[%d];\n", curState.instructions[i].a, curState.instructions[i].b, curState.instructions[i].c, curState.instructions[i].d);
-    replacementCode += Format("    result = data.d[%d];", curState.instructions[PROGRAM_INSTRUCTIONS - 1].a);
+        switch (curState.instructions[i].opcode) {
+            case Operation_add:
+                replacementCode += Format("    n = data.d[%d] += n;\n", curState.instructions[i].data);
+                break;
+            case Operation_multiply:
+                replacementCode += Format("    n = data.d[%d] *= n;\n", curState.instructions[i].data);
+                break;
+        }
     UpdateProgram(replacementCode);
 } // EvolveProgram
 

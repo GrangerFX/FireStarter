@@ -13,26 +13,24 @@ GPU_FUNCTION float Target1(float n)
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-    float result = 0.0f;
-    data.d[0] = n;
-    data.d[1] = data.d[1] + data.d[3] * data.d[0];
-    data.d[6] = data.d[7] + data.d[6] * data.d[7];
-    data.d[3] = data.d[1] + data.d[0] * data.d[5];
-    data.d[7] = data.d[1] + data.d[7] * data.d[1];
-    data.d[1] = data.d[3] + data.d[2] * data.d[7];
-    data.d[5] = data.d[6] + data.d[5] * data.d[0];
-    data.d[7] = data.d[6] + data.d[5] * data.d[1];
-    data.d[7] = data.d[7] + data.d[7] * data.d[7];
-    data.d[2] = data.d[5] + data.d[6] * data.d[2];
-    data.d[0] = data.d[3] + data.d[6] * data.d[3];
-    data.d[6] = data.d[2] + data.d[2] * data.d[7];
-    data.d[4] = data.d[7] + data.d[4] * data.d[3];
-    data.d[0] = data.d[5] + data.d[5] * data.d[6];
-    data.d[2] = data.d[7] + data.d[0] * data.d[1];
-    data.d[5] = data.d[7] + data.d[2] * data.d[6];
-    data.d[3] = data.d[3] + data.d[0] * data.d[4];
-    result = data.d[3];
-    return isnan(result) ? 0.0f : result;
+    n = data.d[0] *= n;
+    n = data.d[7] *= n;
+    n = data.d[0] *= n;
+    n = data.d[3] += n;
+    n = data.d[1] *= n;
+    n = data.d[5] += n;
+    n = data.d[1] *= n;
+    n = data.d[1] *= n;
+    n = data.d[0] += n;
+    n = data.d[6] += n;
+    n = data.d[6] *= n;
+    n = data.d[0] *= n;
+    n = data.d[4] += n;
+    n = data.d[1] *= n;
+    n = data.d[7] *= n;
+    n = data.d[0] *= n;
+
+    return isnan(n) ? 0.0f : n;
 } // Evaluate
 
 GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)

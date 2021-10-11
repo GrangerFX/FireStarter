@@ -1,6 +1,6 @@
 #pragma once
 
-#define PROGRAM_EVOLVE 0
+#define PROGRAM_EVOLVE 1
 
 #define PROGRAM_DATA 8
 #define PROGRAM_INSTRUCTIONS 16
@@ -30,8 +30,15 @@ typedef struct {
     FireStarterResult results[1];
 } FireStarterResults;
 
+typedef enum {
+    Operation_add,
+    Operation_multiply,
+    PROGRAM_OPCODES
+} FireStarterOpcode;
+
 typedef struct {
-    unsigned int a, b, c, d;
+    FireStarterOpcode opcode;
+    unsigned int data;
 } FireStarterInstruction;
 
 typedef struct {

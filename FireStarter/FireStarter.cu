@@ -13,10 +13,8 @@ GPU_FUNCTION float Target1(float n)
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-    float result = 0.0f;
-    data.d[0] = n;
 // PROGRAM //
-    return isnan(result) ? 0.0f : result;
+    return isnan(n) ? 0.0f : n;
 } // Evaluate
 
 GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
