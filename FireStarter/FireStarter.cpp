@@ -296,13 +296,16 @@ void FireStarter::InitProgram(void)
     CompileProgram(sourceCode);
 } // InitProgram
 
-void FireStarter::UpdateProgram(const std::string& replacementCode)
+void FireStarter::UpdateProgram(const std::string& replacementCode, std::string startString)
 {
-    std::string startString = REPLACMENT_CODE;
     updatedCode = sourceCode;
     size_t startPos = updatedCode.find(startString);
     if (startPos != std::string::npos) {
-        size_t endPos = startPos + startString.length();
+        size_t endPos = updatedCode.find(END_CODE, startPos);
+        if (endPos != std::string::npos)
+            startPos += startString.length() + 1;
+        else
+            endPos = startPos + startString.length() + 1;
         updatedCode.replace(startPos, endPos - startPos, replacementCode);
         CompileProgram(updatedCode);
     }
@@ -350,7 +353,7 @@ void FireStarter::EvolveProgram(void)
                 replacementCode += Format("    n = data.d[%d] *= n;\n", curState.instructions[i].data);
                 break;
         }
-    UpdateProgram(replacementCode);
+    UpdateProgram(replacementCode, EVALUATE_CODE);
 } // EvolveProgram
 
 void FireStarter::RenderImage(void* hwnd)

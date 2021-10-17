@@ -15,7 +15,9 @@
 #define SMART_EVOLVE_AGE 10
 #define SMART_DEVOLVE_AGE 50
 
-#define REPLACMENT_CODE "// PROGRAM //"
+#define EVALUATE_CODE "// EVALUATE //"
+#define EVOLVE_CODE "// EVOLVE //"
+#define END_CODE "// END //"
 
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];

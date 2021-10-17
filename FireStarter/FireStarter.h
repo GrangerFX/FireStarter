@@ -35,7 +35,7 @@ public:
     void LoadProgram(void);
     void SaveProgram(void);
     void InitProgram(void);
-    void UpdateProgram(const std::string& replacementCode);
+    void UpdateProgram(const std::string& replacementCode, std::string startString);
     void EvolveProgram(void);
     void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);
