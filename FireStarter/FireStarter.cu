@@ -55,6 +55,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 GPU_FUNCTION float Evolve(FireStarterData data, float n)
 {
 // EVOLVE //
+// END //
     return n;
 } // Evolve
 

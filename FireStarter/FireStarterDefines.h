@@ -45,8 +45,12 @@ typedef struct {
 
 typedef struct {
     FireStarterInstruction instructions[PROGRAM_INSTRUCTIONS];
+    unsigned long long generation;
+} FireStarterProgram;
+
+typedef struct {
+    FireStarterProgram program;
     FireStarterResult result0;
     FireStarterResult result1;
     float maxResult;
-    unsigned long long generation;
 } FireStarterState;

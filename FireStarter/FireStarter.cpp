@@ -83,14 +83,14 @@ bool FireStarter::SaveResults(FireStarterResult& result0, FireStarterResult& res
         curState.result0 = result0;
         curState.result1 = result1;
         curState.maxResult = maxResult;
-        curState.generation = generation;
+        curState.program.generation = generation;
 #if PROGRAM_EVOLVE
         states.push_back(curState);
 #endif
         lastGeneration = generation;
         if (maxResult < bestState.maxResult) {
             bestState = curState;
-            bestState.generation = generation;
+            bestState.program.generation = generation;
             return true;
         }
     }
@@ -118,8 +118,8 @@ void FireStarter::InitResults(void)
     // Initialize the evolving program instructions.
     unsigned int seed = RANDOMHASH((unsigned int)generation);
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        curState.instructions[i].opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
-        curState.instructions[i].data = RANDOMSEED(seed) % PROGRAM_DATA;
+        curState.program.instructions[i].opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
+        curState.program.instructions[i].data = RANDOMSEED(seed) % PROGRAM_DATA;
     }
 
     // Initialize the evolving program data values.
@@ -311,9 +311,8 @@ void FireStarter::UpdateProgram(const std::string& replacementCode, std::string 
     }
 } // UpdateProgram
 
-void FireStarter::EvolveProgram(void)
+void FireStarter::DevolveProgram(void)
 {
-    unsigned long long bestAge = generation - bestState.generation;
     unsigned long long lastAge = generation - lastGeneration;
     unsigned int state = (unsigned int)states.size() - 1;
 
@@ -325,8 +324,11 @@ void FireStarter::EvolveProgram(void)
         lastGeneration = generation;
     }
     curState = states[state];
-
+}
+void FireStarter::EvolveProgram(void)
+{
     // Determine how many changes to make to the instructions.
+    unsigned long long lastAge = generation - lastGeneration;
     unsigned int numChanges = 1;
     if (lastAge > SMART_EVOLVE_AGE)
         numChanges++;
@@ -335,22 +337,22 @@ void FireStarter::EvolveProgram(void)
 
     // Make random changes to the program instructions.
     unsigned int seed = RANDOMHASH((unsigned int)generation);
-    curState.generation = generation;
+    curState.program.generation = generation;
     while (numChanges--) {
         unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-        curState.instructions[index].opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
-        curState.instructions[index].data = RANDOMSEED(seed) % PROGRAM_DATA;
+        curState.program.instructions[index].opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
+        curState.program.instructions[index].data = RANDOMSEED(seed) % PROGRAM_DATA;
     }
     
     // Generate the replacement code and update the program.
     std::string replacementCode;
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        switch (curState.instructions[i].opcode) {
+        switch (curState.program.instructions[i].opcode) {
             case Operation_add:
-                replacementCode += Format("    n = data.d[%d] += n;\n", curState.instructions[i].data);
+                replacementCode += Format("    n = data.d[%d] += n;\n", curState.program.instructions[i].data);
                 break;
             case Operation_multiply:
-                replacementCode += Format("    n = data.d[%d] *= n;\n", curState.instructions[i].data);
+                replacementCode += Format("    n = data.d[%d] *= n;\n", curState.program.instructions[i].data);
                 break;
         }
     UpdateProgram(replacementCode, EVALUATE_CODE);
@@ -411,7 +413,7 @@ void FireStarter::RenderImage(void* hwnd)
 
     // Update the status.
     double averageTime = time / (double)(generation - startGeneration);
-    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Time=%.4f Seconds", generation, states.size(), generation - bestState.generation, bestState.maxResult, averageTime);
+    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Time=%.4f Seconds", generation, states.size(), generation - bestState.program.generation, bestState.maxResult, averageTime);
 } // RenderImage
 
 void FireStarter::Init(unsigned long width, unsigned long height)
@@ -421,7 +423,7 @@ void FireStarter::Init(unsigned long width, unsigned long height)
     InitFrameBuffer(theBuffer, width, height);
     InitResults();
     generation = 0;
-    bestState.generation = 0;
+    bestState.program.generation = 0;
     InitProgram();
 } // Init
 
