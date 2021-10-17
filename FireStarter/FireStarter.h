@@ -26,7 +26,7 @@ public:
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
-    bool SaveResults(FireStarterResult& result0, FireStarterResult& result1);
+    bool SaveResults(void);
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const std::string& program);

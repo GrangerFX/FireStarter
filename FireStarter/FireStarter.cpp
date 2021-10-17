@@ -76,21 +76,17 @@ void FireStarter::GetResults(FireStarterResults* results, FireStarterResult& bes
     bestResult = results->results[index];
 } // GetResults
 
-bool FireStarter::SaveResults(FireStarterResult& result0, FireStarterResult& result1)
+bool FireStarter::SaveResults()
 {
-    float maxResult = MAX(result0.result, result1.result);
+    float maxResult = MAX(curState.result0.result, curState.result1.result);
     if (maxResult < curState.maxResult) {
-        curState.result0 = result0;
-        curState.result1 = result1;
         curState.maxResult = maxResult;
-        curState.program.generation = generation;
 #if PROGRAM_EVOLVE
         states.push_back(curState);
 #endif
         lastGeneration = generation;
-        if (maxResult < bestState.maxResult) {
+        if (curState.maxResult < bestState.maxResult) {
             bestState = curState;
-            bestState.program.generation = generation;
             return true;
         }
     }
@@ -324,7 +320,8 @@ void FireStarter::DevolveProgram(void)
         lastGeneration = generation;
     }
     curState = states[state];
-}
+} // DevolveProgram
+
 void FireStarter::EvolveProgram(void)
 {
     // Determine how many changes to make to the instructions.
@@ -366,6 +363,7 @@ void FireStarter::RenderImage(void* hwnd)
     // Evolve the program instructions.
     long long startGeneration = generation++;
 #if PROGRAM_EVOLVE
+    DevolveProgram();
     EvolveProgram();
 #endif
         
@@ -376,10 +374,9 @@ void FireStarter::RenderImage(void* hwnd)
 #else
     unsigned int varaition1 = 2;
 #endif
-    FireStarterResult result0, result1;
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition0, result0);
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition1, result1);
-    bool update = SaveResults(result0, result1);
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition0, curState.result0);
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition1, curState.result1);
+    bool update = SaveResults();
     time = timer.Duration();
 
     // Find the best results for display only.
