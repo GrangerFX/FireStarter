@@ -1,6 +1,7 @@
 #pragma once
 
 #define EVALUATE_EVOLVE 1
+#define EVOLVE_EVOLVE 0
 
 #define PROGRAM_DATA 32
 #define PROGRAM_INSTRUCTIONS 32
@@ -22,6 +23,10 @@
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
 } FireStarterData;
+
+typedef struct FireStarterSamples {
+    float s[SAMPLE_ITERATIONS];
+} FireStarterSamples;
 
 typedef struct {
     FireStarterData data;
