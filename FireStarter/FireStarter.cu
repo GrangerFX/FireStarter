@@ -77,13 +77,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     FireStarterSamples theta;
     FireStarterSamples target;
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-#if 1
-        // Randomized theta samples.
         theta.s[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
-#else
-        // Fixed theta samples.
-        theta.s[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));
-#endif
         target.s[i] = Target(theta.s[i], variation);
     }
 
@@ -95,15 +89,9 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         data = oldResults->results[member].data;
         result = oldResults->results[member].result;
     } else {
-#if 1
         for (int i = 0; i < PROGRAM_DATA; i++)
             data.d[i] = RANDOMFACTOR(seed);
         result = START_RESULT;
-#else
-        for (int i = 0; i < PROGRAM_DATA; i++)
-            data.d[i] = 1.0f;
-        result = START_RESULT;
-#endif
     }
     float oldResult = result;
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
