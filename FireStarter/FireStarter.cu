@@ -1,7 +1,7 @@
 #include "FireStarterDefines.h"
 #include "HashRandom.h"
 
-GPU_FUNCTION float Target(unsigned int variation, float n)
+GPU_FUNCTION float Target(float n, unsigned int variation)
 {
     switch (variation) {
         case 0:
@@ -69,27 +69,27 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     float target[SAMPLE_ITERATIONS];
     float theta[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-#if 0
-        // Randomize the theta samples.
-        theta[i] = (i + RANDOMNUM(seed)) * ((2.0f * 3.14159265f) / SAMPLE_ITERATIONS);
+#if 1
+        // Randomized theta samples.
+        theta[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
 #else
         // Fixed theta samples.
         theta[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));
 #endif
-        target[i] = Target(variation, theta[i]);
+        target[i] = Target(theta[i], variation);
     }
 
     FireStarterResults *oldResults = dataGeneration & 1 ? results0 : results1;
     FireStarterResults *newResults = dataGeneration & 1 ? results1 : results0;
     FireStarterData data;
     float result;
-    if (!dataGeneration) {
+    if (dataGeneration) {
+        data = oldResults->results[member].data;
+        result = oldResults->results[member].result;
+    } else {
         for (int i = 0; i < PROGRAM_DATA; i++)
             data.d[i] = 1.0f;
         result = START_RESULT;
-    } else {
-        data = oldResults->results[member].data;
-        result = oldResults->results[member].result;
     }
     float oldResult = result;
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
@@ -97,10 +97,8 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         float oldData = data.d[d];
         data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
         float curResult = 0.0f;
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-            float delta = fabsf(Evaluate(data, theta[i]) - target[i]);
-            curResult = delta > curResult ? delta : curResult;
-        }
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+            curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
         if (curResult < result)
             result = curResult;
         else
@@ -150,7 +148,7 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
     if (x < bufferWidth) {
         float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
         float center = bufferHeight * 0.66f;
-        float target = Target(variation, theta);
+        float target = Target(theta, variation);
         int y = (int)(center + target * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);

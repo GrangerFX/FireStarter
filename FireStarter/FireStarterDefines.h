@@ -1,6 +1,6 @@
 #pragma once
 
-#define PROGRAM_EVOLVE 1
+#define EVALUATE_EVOLVE 1
 
 #define PROGRAM_DATA 32
 #define PROGRAM_INSTRUCTIONS 32

@@ -76,23 +76,6 @@ void FireStarter::GetResults(FireStarterResults* results, FireStarterResult& bes
     bestResult = results->results[index];
 } // GetResults
 
-bool FireStarter::SaveResults()
-{
-    float maxResult = MAX(curState.result0.result, curState.result1.result);
-    if (maxResult < curState.maxResult) {
-        curState.maxResult = maxResult;
-#if PROGRAM_EVOLVE
-        states.push_back(curState);
-#endif
-        lastGeneration = generation;
-        if (curState.maxResult < bestState.maxResult) {
-            bestState = curState;
-            return true;
-        }
-    }
-    return false;
-} // SaveResults
-
 void FireStarter::InitResults(void)
 {
     unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
@@ -254,7 +237,7 @@ void FireStarter::DrawGraph(unsigned int variation)
 
 void FireStarter::LoadProgram(void)
 {
-#if PROGRAM_EVOLVE
+#if EVALUATE_EVOLVE
     std::ifstream file("FireStarter.cu", std::ios::ate | std::ios::binary);
 #else
     std::ifstream file("FireStarter_Best.cu", std::ios::ate | std::ios::binary);
@@ -271,22 +254,35 @@ void FireStarter::LoadProgram(void)
     }
 } // LoadProgram
 
-void FireStarter::SaveProgram(void)
+bool FireStarter::SaveProgram(void)
 {
-    bestCode = updatedCode;
-#if PROGRAM_EVOLVE
-    std::ofstream file("FireStarter_Best.cu", std::ios::out | std::ios::binary);
-    if (file.is_open()) {
-        file << bestCode;
-        file.close();
-    }
+    float maxResult = MAX(curState.result0.result, curState.result1.result);
+    if (maxResult < curState.maxResult) {
+        curState.maxResult = maxResult;
+#if EVALUATE_EVOLVE
+        states.push_back(curState);
 #endif
+        lastGeneration = generation;
+        if (curState.maxResult < bestState.maxResult) {
+            bestState = curState;
+            bestCode = updatedCode;
+#if EVALUATE_EVOLVE
+            std::ofstream file("FireStarter_Best.cu", std::ios::out | std::ios::binary);
+            if (file.is_open()) {
+                file << bestCode;
+                file.close();
+            }
+#endif
+            return true;
+        }
+    }
+    return false;
 } // SaveProgram
 
 void FireStarter::InitProgram(void)
 {
     LoadProgram();
-#if PROGRAM_EVOLVE
+#if EVALUATE_EVOLVE
     EvolveProgram();
 #endif
     CompileProgram(sourceCode);
@@ -362,21 +358,21 @@ void FireStarter::RenderImage(void* hwnd)
 
     // Evolve the program instructions.
     long long startGeneration = generation++;
-#if PROGRAM_EVOLVE
+#if EVALUATE_EVOLVE
     DevolveProgram();
     EvolveProgram();
 #endif
         
     // Run the next generation on the GPU.
     unsigned int varaition0 = 0;
-#if PROGRAM_EVOLVE
+#if EVALUATE_EVOLVE
     unsigned int varaition1 = 1;
 #else
     unsigned int varaition1 = 2;
 #endif
     RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition0, curState.result0);
     RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition1, curState.result1);
-    bool update = SaveResults();
+    bool update = SaveProgram();
     time = timer.Duration();
 
     // Find the best results for display only.
@@ -385,7 +381,6 @@ void FireStarter::RenderImage(void* hwnd)
         EraseFrameBuffer(theBuffer);
         DrawGraph(varaition0);
         DrawGraph(varaition1);
-        SaveProgram();
 
         unsigned char buffer[4096];
         BITMAPINFO* bm = (BITMAPINFO*)buffer;

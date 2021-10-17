@@ -26,14 +26,13 @@ public:
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
-    bool SaveResults(void);
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const std::string& program);
     void RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarterResult& result);
     void DrawGraph(unsigned int variation);
     void LoadProgram(void);
-    void SaveProgram(void);
+    bool SaveProgram(void);
     void InitProgram(void);
     void UpdateProgram(const std::string& replacementCode, std::string startString);
     void DevolveProgram(void);
