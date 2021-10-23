@@ -16,9 +16,9 @@ GPU_FUNCTION float Target(float n, unsigned int variation)
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
 // EVALUATE //
-    n = data.d[24] *= n;
+    n = data.d[1] += n;
     n = data.d[4] *= n;
-    n = data.d[10] += n;
+    n = data.d[31] += n;
     n = data.d[11] += n;
     n = data.d[9] *= n;
     n = data.d[13] += n;
@@ -28,25 +28,25 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n = data.d[30] += n;
     n = data.d[6] *= n;
     n = data.d[16] *= n;
-    n = data.d[27] *= n;
-    n = data.d[9] *= n;
+    n = data.d[15] *= n;
+    n = data.d[8] *= n;
     n = data.d[23] *= n;
     n = data.d[13] *= n;
     n = data.d[13] += n;
-    n = data.d[23] *= n;
-    n = data.d[25] *= n;
-    n = data.d[19] *= n;
+    n = data.d[26] += n;
+    n = data.d[18] *= n;
+    n = data.d[27] += n;
     n = data.d[18] += n;
     n = data.d[22] += n;
-    n = data.d[26] += n;
+    n = data.d[1] *= n;
     n = data.d[27] *= n;
     n = data.d[10] *= n;
     n = data.d[14] += n;
     n = data.d[13] *= n;
-    n = data.d[21] += n;
+    n = data.d[9] += n;
     n = data.d[7] *= n;
     n = data.d[22] += n;
-    n = data.d[2] *= n;
+    n = data.d[27] *= n;
     n = data.d[7] *= n;
 // END //
     return n;
@@ -93,14 +93,15 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
             data.d[i] = RANDOMFACTOR(seed);
         result = START_RESULT;
     }
+
     float oldResult = result;
-    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
 #if EVOLVE_EVOLVE
-        float curResult = Sample(data, theta, target);
-        Evolve(data, curResult);
-        if (curResult < result)
-            result = curResult;
+    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
+        result = Sample(data, theta, target);
+        Evolve(data, result);
+    }
 #else
+    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
         float oldData = data.d[d];
         data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
@@ -109,9 +110,9 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
             result = curResult;
         else
             data.d[d] = oldData;
-#endif
     }
-    if (result == oldResult) {
+#endif
+    if (result >= oldResult) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
         unsigned int bestIndex = member;

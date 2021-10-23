@@ -1,7 +1,8 @@
 #pragma once
 
-#define EVALUATE_EVOLVE 1
-#define EVOLVE_EVOLVE 0
+#define EVALUATE_EVOLVE 0
+#define EVOLVE_EVOLVE 1
+#define EVOLVE (EVALUATE_EVOLVE | EVOLVE_EVOLVE)
 
 #define PROGRAM_DATA 32
 #define PROGRAM_INSTRUCTIONS 32
@@ -16,9 +17,9 @@
 #define SMART_EVOLVE_AGE 10
 #define SMART_DEVOLVE_AGE 50
 
-#define EVALUATE_CODE "// EVALUATE //"
-#define EVOLVE_CODE "// EVOLVE //"
-#define END_CODE "// END //"
+#define EVALUATE_CODE   "// EVALUATE //"
+#define EVOLVE_CODE     "// EVOLVE //"
+#define END_CODE        "// END //"
 
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];

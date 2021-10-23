@@ -15,7 +15,8 @@ GPU_FUNCTION float Target(float n, unsigned int variation)
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-// EVALUATE //    n = data.d[1] += n;
+// EVALUATE //
+    n = data.d[1] += n;
     n = data.d[4] *= n;
     n = data.d[31] += n;
     n = data.d[11] += n;
@@ -61,7 +62,38 @@ GPU_FUNCTION float Sample(FireStarterData data, FireStarterSamples theta, FireSt
 
 GPU_FUNCTION float Evolve(FireStarterData data, float n)
 {
-// EVOLVE //
+// EVOLVE //    n = data.d[30] *= n;
+    n = data.d[4] *= n;
+    n = data.d[26] += n;
+    n = data.d[11] += n;
+    n = data.d[9] *= n;
+    n = data.d[13] += n;
+    n = data.d[23] *= n;
+    n = data.d[11] *= n;
+    n = data.d[16] += n;
+    n = data.d[30] += n;
+    n = data.d[21] *= n;
+    n = data.d[16] *= n;
+    n = data.d[15] *= n;
+    n = data.d[8] *= n;
+    n = data.d[13] *= n;
+    n = data.d[13] *= n;
+    n = data.d[13] += n;
+    n = data.d[26] += n;
+    n = data.d[18] *= n;
+    n = data.d[27] += n;
+    n = data.d[7] += n;
+    n = data.d[22] += n;
+    n = data.d[1] *= n;
+    n = data.d[24] += n;
+    n = data.d[10] *= n;
+    n = data.d[2] += n;
+    n = data.d[26] += n;
+    n = data.d[9] += n;
+    n = data.d[7] *= n;
+    n = data.d[22] += n;
+    n = data.d[13] += n;
+    n = data.d[7] *= n;
 // END //
     return n;
 } // Evolve
@@ -76,13 +108,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     FireStarterSamples theta;
     FireStarterSamples target;
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-#if 1
-        // Randomized theta samples.
         theta.s[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
-#else
-        // Fixed theta samples.
-        theta.s[i] = i * ((2.0f * 3.14159265f) / (SAMPLE_ITERATIONS - 1));
-#endif
         target.s[i] = Target(theta.s[i], variation);
     }
 
@@ -94,25 +120,19 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         data = oldResults->results[member].data;
         result = oldResults->results[member].result;
     } else {
-#if 1
         for (int i = 0; i < PROGRAM_DATA; i++)
             data.d[i] = RANDOMFACTOR(seed);
-//        result = Sample(data, theta, target);
         result = START_RESULT;
-#else
-        for (int i = 0; i < PROGRAM_DATA; i++)
-            data.d[i] = 1.0f;
-        result = START_RESULT;
-#endif
     }
+
     float oldResult = result;
-    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
 #if EVOLVE_EVOLVE
-        float curResult = Sample(data, theta, target);
-        Evolve(data, curResult);
-        if (curResult < result)
-            result = curResult;
+    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
+        result = Sample(data, theta, target);
+        Evolve(data, result);
+    }
 #else
+    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
         float oldData = data.d[d];
         data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
@@ -121,9 +141,9 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
             result = curResult;
         else
             data.d[d] = oldData;
-#endif
     }
-    if (result == oldResult) {
+#endif
+    if (result >= oldResult) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
         unsigned int bestIndex = member;

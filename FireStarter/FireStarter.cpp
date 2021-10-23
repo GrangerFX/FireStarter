@@ -237,7 +237,7 @@ void FireStarter::DrawGraph(unsigned int variation)
 
 void FireStarter::LoadProgram(void)
 {
-#if EVALUATE_EVOLVE
+#if EVOLVE
     std::ifstream file("FireStarter.cu", std::ios::ate | std::ios::binary);
 #else
     std::ifstream file("FireStarter_Best.cu", std::ios::ate | std::ios::binary);
@@ -259,14 +259,14 @@ bool FireStarter::SaveProgram(void)
     float maxResult = MAX(curState.result0.result, curState.result1.result);
     if (maxResult < curState.maxResult) {
         curState.maxResult = maxResult;
-#if EVALUATE_EVOLVE
+#if EVOLVE
         states.push_back(curState);
 #endif
         lastGeneration = generation;
         if (curState.maxResult < bestState.maxResult) {
             bestState = curState;
             bestCode = updatedCode;
-#if EVALUATE_EVOLVE
+#if EVOLVE
             std::ofstream file("FireStarter_Best.cu", std::ios::out | std::ios::binary);
             if (file.is_open()) {
                 file << bestCode;
@@ -282,7 +282,7 @@ bool FireStarter::SaveProgram(void)
 void FireStarter::InitProgram(void)
 {
     LoadProgram();
-#if EVALUATE_EVOLVE
+#if EVOLVE
     EvolveProgram();
 #endif
     CompileProgram(sourceCode);
@@ -348,7 +348,7 @@ void FireStarter::EvolveProgram(void)
                 replacementCode += Format("    n = data.d[%d] *= n;\n", curState.program.instructions[i].data);
                 break;
         }
-    UpdateProgram(replacementCode, EVALUATE_CODE);
+    UpdateProgram(replacementCode, EVALUATE_EVOLVE ? EVALUATE_CODE : EVOLVE_CODE);
 } // EvolveProgram
 
 void FireStarter::RenderImage(void* hwnd)
@@ -358,14 +358,14 @@ void FireStarter::RenderImage(void* hwnd)
 
     // Evolve the program instructions.
     long long startGeneration = generation++;
-#if EVALUATE_EVOLVE
+#if EVOLVE
     DevolveProgram();
     EvolveProgram();
 #endif
         
     // Run the next generation on the GPU.
     unsigned int varaition0 = 0;
-#if EVALUATE_EVOLVE
+#if EVOLVE
     unsigned int varaition1 = 1;
 #else
     unsigned int varaition1 = 2;
