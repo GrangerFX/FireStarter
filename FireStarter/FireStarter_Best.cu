@@ -62,7 +62,8 @@ GPU_FUNCTION float Sample(FireStarterData data, FireStarterSamples theta, FireSt
 
 GPU_FUNCTION float Evolve(FireStarterData data, float n)
 {
-// EVOLVE //    n = data.d[30] *= n;
+// EVOLVE //
+    n = data.d[30] *= n;
     n = data.d[4] *= n;
     n = data.d[26] += n;
     n = data.d[11] += n;
@@ -128,9 +129,12 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     float oldResult = result;
 #if EVOLVE_EVOLVE
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
-        result = Sample(data, theta, target);
-        Evolve(data, result);
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+            float curResult = fabsf(Evaluate(data, theta.s[i]) - target.s[i]);
+            Evolve(data, curResult);
+        }
     }
+    result = Sample(data, theta, target);
 #else
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
