@@ -19,6 +19,7 @@ public:
     std::string bestCode;
     unsigned long long generation;
     unsigned long long lastGeneration;
+    unsigned long long bestGeneration;
     char statusString[1024];
 
     void EraseFrameBuffer(FrameBuffer &buffer);

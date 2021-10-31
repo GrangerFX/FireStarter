@@ -16,7 +16,7 @@
 #define EVOLUTION_SAMPLES 16
 #define START_RESULT 10.0f
 #define SMART_EVOLVE_AGE 10
-#define SMART_DEVOLVE_AGE 50
+#define SMART_DEVOLVE_AGE 20
 
 #define EVALUATE_CODE   "// EVALUATE //"
 #define EVOLVE_CODE     "// EVOLVE //"
@@ -64,4 +64,5 @@ typedef struct {
     FireStarterResult result0;
     FireStarterResult result1;
     float maxResult;
+    unsigned int devolve;
 } FireStarterState;

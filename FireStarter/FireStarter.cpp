@@ -109,6 +109,7 @@ void FireStarter::InitResults(void)
     curState.result0.result = START_RESULT;
     curState.result1.result = START_RESULT;
     curState.maxResult = START_RESULT;
+    curState.devolve = 0;
     bestState = curState;
     states.push_back(curState);
 
@@ -258,12 +259,14 @@ bool FireStarter::SaveProgram(void)
 {
     float maxResult = MAX(curState.result0.result, curState.result1.result);
     if (maxResult < curState.maxResult) {
+        lastGeneration = generation;
         curState.maxResult = maxResult;
+        curState.devolve = 0;
 #if EVOLVE
         states.push_back(curState);
 #endif
-        lastGeneration = generation;
         if (curState.maxResult < bestState.maxResult) {
+            bestGeneration = generation;
             bestState = curState;
             bestCode = updatedCode;
 #if EVOLVE
@@ -307,12 +310,15 @@ void FireStarter::DevolveProgram(void)
 {
     unsigned long long lastAge = generation - lastGeneration;
     unsigned int state = (unsigned int)states.size() - 1;
-
-    // Devolve to an earlier state if too many generations have elapsed without improvement.
-    // This prevents dead-end evolution.
-    if (state && (lastAge > SMART_DEVOLVE_AGE)) {
-        states.pop_back();
-        state--;
+    if (lastAge > SMART_DEVOLVE_AGE) {
+        // Devolve to an earlier state if too many generations have elapsed without improvement.
+        // This prevents dead-end evolution.
+        unsigned int devolve = 1;
+        while (state && (++states[state].devolve >= devolve)) {
+            states.pop_back();
+            state--;
+            devolve++;
+        }
         lastGeneration = generation;
     }
     curState = states[state];
@@ -324,8 +330,6 @@ void FireStarter::EvolveProgram(void)
     unsigned long long lastAge = generation - lastGeneration;
     unsigned int numChanges = 1;
     if (lastAge > SMART_EVOLVE_AGE)
-        numChanges++;
-    if (lastAge > SMART_EVOLVE_AGE * SMART_EVOLVE_AGE)
         numChanges++;
 
     // Make random changes to the program instructions.
@@ -422,7 +426,7 @@ void FireStarter::Init(unsigned long width, unsigned long height)
 
     InitFrameBuffer(theBuffer, width, height);
     InitResults();
-    generation = 0;
+    generation = lastGeneration = bestGeneration =0;
     bestState.program.generation = 0;
     InitProgram();
 } // Init
