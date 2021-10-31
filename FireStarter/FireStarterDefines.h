@@ -1,7 +1,7 @@
 #pragma once
 
-#define EVALUATE_EVOLVE 0
-#define EVOLVE_EVOLVE 1
+#define EVALUATE_EVOLVE 1
+#define EVOLVE_EVOLVE 0
 #define EVOLVE (EVALUATE_EVOLVE | EVOLVE_EVOLVE)
 
 #define PROGRAM_DATA 32
@@ -9,6 +9,7 @@
 #define PROGRAM_GENERATIONS 100
 #define PROGRAM_ITERATIONS 1000
 #define PROGRAM_POPULATION 4352
+#define PROGRAM_LOAD_STORE 1
 #define PROGRAM_SEED 0
 #define SAMPLE_ITERATIONS 15
 #define SMART_RANDOM_FACTOR 0.1f
@@ -41,6 +42,10 @@ typedef struct {
 typedef enum {
     Operation_add,
     Operation_multiply,
+#if PROGRAM_LOAD_STORE
+    Operation_load,
+    Operation_store,
+#endif
     PROGRAM_OPCODES
 } FireStarterOpcode;
 

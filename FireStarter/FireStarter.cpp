@@ -347,6 +347,14 @@ void FireStarter::EvolveProgram(void)
             case Operation_multiply:
                 replacementCode += Format("    n = data.d[%d] *= n;\n", curState.program.instructions[i].data);
                 break;
+#if PROGRAM_LOAD_STORE
+            case Operation_load:
+                replacementCode += Format("    n = data.d[%d];\n", curState.program.instructions[i].data);
+                break;
+            case Operation_store:
+                replacementCode += Format("    data.d[%d] = n;\n", curState.program.instructions[i].data);
+                break;
+#endif
         }
     UpdateProgram(replacementCode, EVALUATE_EVOLVE ? EVALUATE_CODE : EVOLVE_CODE);
 } // EvolveProgram
