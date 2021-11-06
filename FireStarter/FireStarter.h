@@ -30,14 +30,15 @@ public:
     void InitResults(void);
     void FreeResults(void);
     void CompileProgram(const std::string& program);
-    void RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarterResult& result);
+    void RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult& result);
     void DrawGraph(unsigned int variation);
     void LoadProgram(void);
     bool SaveProgram(void);
-    void InitProgram(void);
-    void UpdateProgram(const std::string& replacementCode, std::string startString);
+    void UpdateProgram(std::string& updatedCode, const std::string& replacementCode, std::string startString);
+    void UpdateData(std::string& updatedCode, const FireStarterResult& result, std::string startString);
     void DevolveProgram(void);
     void EvolveProgram(void);
+    void InitProgram(void);
     void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);
     FireStarter(void);

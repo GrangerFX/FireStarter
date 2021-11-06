@@ -179,15 +179,16 @@ void FireStarter::CompileProgram(const std::string& program)
     ptx = NULL;
 } // CompileProgram
 
-void FireStarter::RunProgram(unsigned int population, unsigned int generations, unsigned int variation, FireStarterResult &result)
+void FireStarter::RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult &result)
 {
     // Launch the calculation kernel
     int threadsPerBlock = 256;
     int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long dataGeneration = generation0;
 
-    for (unsigned int dataGeneration = 0; dataGeneration < generations; dataGeneration++) {
+    for (unsigned int g = 0; g < generations; g++) {
         void* arr[] = {reinterpret_cast<void*>(&results0),
                        reinterpret_cast<void*>(&results1),
                        reinterpret_cast<void*>(&population),
@@ -204,9 +205,10 @@ void FireStarter::RunProgram(unsigned int population, unsigned int generations, 
             0, 0,                                               // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
+        dataGeneration++;
     }
     checkCudaErrors(cuCtxSynchronize());
-    GetResults(generations & 1 ? results1 : results0, result);
+    GetResults(dataGeneration & 1 ? results1 : results0, result);
 } // RunProgram
 
 void FireStarter::DrawGraph(unsigned int variation)
@@ -269,6 +271,8 @@ bool FireStarter::SaveProgram(void)
             bestGeneration = generation;
             bestState = curState;
             bestCode = updatedCode;
+            UpdateData(bestCode, bestState.result0, DATA0_CODE);
+            UpdateData(bestCode, bestState.result1, DATA1_CODE);
 #if EVOLVE
             std::ofstream file("FireStarter_Best.cu", std::ios::out | std::ios::binary);
             if (file.is_open()) {
@@ -282,29 +286,27 @@ bool FireStarter::SaveProgram(void)
     return false;
 } // SaveProgram
 
-void FireStarter::InitProgram(void)
+void FireStarter::UpdateProgram(std::string &code, const std::string& replacementCode, std::string startString)
 {
-    LoadProgram();
-#if EVOLVE
-    EvolveProgram();
-#endif
-    CompileProgram(sourceCode);
-} // InitProgram
-
-void FireStarter::UpdateProgram(const std::string& replacementCode, std::string startString)
-{
-    updatedCode = sourceCode;
-    size_t startPos = updatedCode.find(startString);
+    size_t startPos = code.find(startString);
     if (startPos != std::string::npos) {
-        size_t endPos = updatedCode.find(END_CODE, startPos);
+        size_t endPos = code.find(END_CODE, startPos);
         if (endPos != std::string::npos)
             startPos += startString.length() + 1;
         else
             endPos = startPos + startString.length() + 1;
-        updatedCode.replace(startPos, endPos - startPos, replacementCode);
-        CompileProgram(updatedCode);
+        code.replace(startPos, endPos - startPos, replacementCode);
     }
 } // UpdateProgram
+
+void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
+{
+    std::string replacementData;
+    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
+        replacementData += Format("    data.d[%d] = %f;\n", i, result.data.d[i]);
+    replacementData += Format("    return %f;\n", result.result);
+    UpdateProgram(code, replacementData, startString);
+} // UpdateData
 
 void FireStarter::DevolveProgram(void)
 {
@@ -360,8 +362,17 @@ void FireStarter::EvolveProgram(void)
                 break;
 #endif
         }
-    UpdateProgram(replacementCode, EVALUATE_EVOLVE ? EVALUATE_CODE : EVOLVE_CODE);
+
+    updatedCode = sourceCode;
+    UpdateProgram(updatedCode, replacementCode, EVALUATE_EVOLVE ? EVALUATE_CODE : EVOLVE_CODE);
+    CompileProgram(updatedCode);
 } // EvolveProgram
+
+void FireStarter::InitProgram(void)
+{
+    LoadProgram();
+    CompileProgram(sourceCode);
+} // InitProgram
 
 void FireStarter::RenderImage(void* hwnd)
 {
@@ -369,7 +380,7 @@ void FireStarter::RenderImage(void* hwnd)
     timer.Start();
 
     // Evolve the program instructions.
-    long long startGeneration = generation++;
+    long long startGeneration = generation;
 #if EVOLVE
     DevolveProgram();
     EvolveProgram();
@@ -379,11 +390,13 @@ void FireStarter::RenderImage(void* hwnd)
     unsigned int varaition0 = 0;
 #if EVOLVE
     unsigned int varaition1 = 1;
+    unsigned int generation0 = 0;
 #else
     unsigned int varaition1 = 2;
+    unsigned long long generation0 = generation;
 #endif
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition0, curState.result0);
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, varaition1, curState.result1);
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition0, curState.result0);
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition1, curState.result1);
     bool update = SaveProgram();
     time = timer.Duration();
 
@@ -414,10 +427,11 @@ void FireStarter::RenderImage(void* hwnd)
             GdiFlush();
         }
     }
+    generation++;
 
     // Update the status.
     double averageTime = time / (double)(generation - startGeneration);
-    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error=%f  Time=%.4f Seconds", generation, states.size(), generation - bestState.program.generation, bestState.maxResult, averageTime);
+    sprintf_s(statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", generation, states.size(), generation - bestState.program.generation, bestState.result0.result, bestState.result1.result, averageTime);
 } // RenderImage
 
 void FireStarter::Init(unsigned long width, unsigned long height)
