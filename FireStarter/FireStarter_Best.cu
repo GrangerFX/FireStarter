@@ -15,7 +15,8 @@ GPU_FUNCTION float Target(float n, unsigned int variation)
 
 GPU_FUNCTION float InitData0(FireStarterData &data)
 {
-// DATA0 //    data.d[0] = -0.211381;
+// DATA0 //
+    data.d[0] = -0.211381;
     data.d[1] = -1.182487;
     data.d[2] = 0.886450;
     data.d[3] = 0.319841;
@@ -53,7 +54,8 @@ GPU_FUNCTION float InitData0(FireStarterData &data)
 
 GPU_FUNCTION float InitData1(FireStarterData &data)
 {
-// DATA1 //    data.d[0] = -0.166160;
+// DATA1 //
+    data.d[0] = -0.166160;
     data.d[1] = -2.278813;
     data.d[2] = 0.859754;
     data.d[3] = 0.340734;
@@ -91,7 +93,8 @@ GPU_FUNCTION float InitData1(FireStarterData &data)
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-// EVALUATE //    n = data.d[22] += n;
+// EVALUATE //
+    n = data.d[22] += n;
     n = data.d[4] *= n;
     n = data.d[10] += n;
     n = data.d[11] += n;
