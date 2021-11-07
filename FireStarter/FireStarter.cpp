@@ -335,7 +335,7 @@ void FireStarter::EvolveProgram(void)
         numChanges++;
 
     // Make random changes to the program instructions.
-    unsigned int seed = RANDOMHASH((unsigned int)generation);
+    unsigned int seed = RANDOMHASH((unsigned int)(generation * 2));
     curState.program.generation = generation;
     while (numChanges--) {
         unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
