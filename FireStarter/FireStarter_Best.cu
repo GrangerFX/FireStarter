@@ -15,83 +15,84 @@ GPU_FUNCTION float Target(float n, unsigned int variation)
 
 GPU_FUNCTION float InitData0(FireStarterData &data)
 {
-// DATA0 //    data.d[0] = 0.927622;
-    data.d[1] = -0.019519;
-    data.d[2] = -0.613796;
-    data.d[3] = 0.772795;
-    data.d[4] = -0.869031;
-    data.d[5] = -0.999986;
-    data.d[6] = 0.265807;
-    data.d[7] = -0.340821;
-    data.d[8] = 0.184753;
-    data.d[9] = 0.092929;
-    data.d[10] = -0.704486;
-    data.d[11] = 1.366664;
-    data.d[12] = -1.119227;
-    data.d[13] = 0.788228;
-    data.d[14] = 0.390716;
-    data.d[15] = 1.354912;
-    data.d[16] = 0.000528;
-    data.d[17] = 0.500048;
-    data.d[18] = 0.480474;
-    data.d[19] = 0.689613;
-    data.d[20] = -1.119500;
-    data.d[21] = 0.956548;
-    data.d[22] = -0.613120;
-    data.d[23] = 0.920774;
-    data.d[24] = -1.537065;
-    data.d[25] = -0.730224;
-    data.d[26] = -0.932235;
-    data.d[27] = 0.042150;
-    data.d[28] = 0.613801;
-    data.d[29] = -1.154581;
-    data.d[30] = 0.891486;
-    data.d[31] = -1.485052;
-    return 0.000001;
+// DATA0 //    data.d[0] = 0.891492;
+    data.d[1] = 0.245320;
+    data.d[2] = 0.618226;
+    data.d[3] = -0.294338;
+    data.d[4] = 0.283906;
+    data.d[5] = -1.086076;
+    data.d[6] = -0.076248;
+    data.d[7] = -0.320815;
+    data.d[8] = -0.269088;
+    data.d[9] = -0.407430;
+    data.d[10] = 0.514511;
+    data.d[11] = -0.223165;
+    data.d[12] = -0.049077;
+    data.d[13] = 0.139534;
+    data.d[14] = -0.195106;
+    data.d[15] = 0.043455;
+    data.d[16] = -0.747685;
+    data.d[17] = -0.211189;
+    data.d[18] = 0.155581;
+    data.d[19] = 1.380643;
+    data.d[20] = 0.229932;
+    data.d[21] = 0.961421;
+    data.d[22] = 0.054780;
+    data.d[23] = -0.348247;
+    data.d[24] = -0.500646;
+    data.d[25] = -0.179011;
+    data.d[26] = 2.417139;
+    data.d[27] = -0.517217;
+    data.d[28] = -0.942655;
+    data.d[29] = 0.527133;
+    data.d[30] = 0.654831;
+    data.d[31] = -0.405870;
+    return 0.014177;
 // END //
 } // InitData0
 
 GPU_FUNCTION float InitData1(FireStarterData &data)
 {
-// DATA1 //    data.d[0] = 1.132334;
-    data.d[1] = -0.634421;
-    data.d[2] = -0.639973;
-    data.d[3] = 0.054430;
-    data.d[4] = 0.216692;
-    data.d[5] = -0.982720;
-    data.d[6] = -0.196895;
-    data.d[7] = -1.726521;
-    data.d[8] = -2.640679;
-    data.d[9] = 0.126899;
-    data.d[10] = -0.687082;
-    data.d[11] = 0.636036;
-    data.d[12] = -0.297008;
-    data.d[13] = 0.975595;
-    data.d[14] = -0.153143;
-    data.d[15] = 1.265803;
-    data.d[16] = 0.268154;
-    data.d[17] = -2.228866;
-    data.d[18] = 0.791172;
-    data.d[19] = 0.550411;
-    data.d[20] = -1.567142;
-    data.d[21] = 0.994826;
-    data.d[22] = -0.631285;
-    data.d[23] = -0.357125;
-    data.d[24] = -0.111860;
-    data.d[25] = -1.479260;
-    data.d[26] = -0.671718;
-    data.d[27] = 2.997513;
-    data.d[28] = 0.481037;
-    data.d[29] = -0.294268;
-    data.d[30] = 1.163771;
-    data.d[31] = -0.940212;
-    return 0.000009;
+// DATA1 //    data.d[0] = 0.889432;
+    data.d[1] = 0.246334;
+    data.d[2] = 0.656334;
+    data.d[3] = -0.288559;
+    data.d[4] = 0.283716;
+    data.d[5] = -1.081064;
+    data.d[6] = -0.053741;
+    data.d[7] = -0.319566;
+    data.d[8] = -0.265834;
+    data.d[9] = -0.454408;
+    data.d[10] = 0.588704;
+    data.d[11] = -0.227417;
+    data.d[12] = 0.027661;
+    data.d[13] = 0.135928;
+    data.d[14] = -0.196414;
+    data.d[15] = 0.041793;
+    data.d[16] = -0.748363;
+    data.d[17] = -0.228617;
+    data.d[18] = 0.145100;
+    data.d[19] = 1.378029;
+    data.d[20] = 0.229204;
+    data.d[21] = 0.998786;
+    data.d[22] = 0.051274;
+    data.d[23] = -0.347233;
+    data.d[24] = -0.498180;
+    data.d[25] = -0.185620;
+    data.d[26] = 2.412731;
+    data.d[27] = -0.518710;
+    data.d[28] = -0.960335;
+    data.d[29] = 0.532356;
+    data.d[30] = 0.655138;
+    data.d[31] = -0.403652;
+    return 0.016383;
 // END //
 } // InitData1
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-// EVALUATE //    n = data.d[25] *= n;
+// EVALUATE //
+    n = data.d[25] *= n;
     n = data.d[22] += n;
     n = data.d[18] += n;
     n = data.d[25] += n;
@@ -137,38 +138,37 @@ GPU_FUNCTION float Sample(FireStarterData data, FireStarterSamples theta, FireSt
 
 GPU_FUNCTION float Evolve(FireStarterData data, float n)
 {
-// EVOLVE //
-    n = data.d[30] *= n;
-    n = data.d[4] *= n;
-    n = data.d[26] += n;
-    n = data.d[11] += n;
-    n = data.d[9] *= n;
-    n = data.d[13] += n;
-    n = data.d[23] *= n;
-    n = data.d[11] *= n;
-    n = data.d[16] += n;
-    n = data.d[30] += n;
-    n = data.d[21] *= n;
-    n = data.d[16] *= n;
-    n = data.d[15] *= n;
-    n = data.d[8] *= n;
-    n = data.d[13] *= n;
-    n = data.d[13] *= n;
-    n = data.d[13] += n;
-    n = data.d[26] += n;
-    n = data.d[18] *= n;
-    n = data.d[27] += n;
-    n = data.d[7] += n;
-    n = data.d[22] += n;
-    n = data.d[1] *= n;
-    n = data.d[24] += n;
-    n = data.d[10] *= n;
+// EVOLVE //    n = data.d[12] *= n;
+    n = data.d[5];
+    n = data.d[6] += n;
     n = data.d[2] += n;
-    n = data.d[26] += n;
-    n = data.d[9] += n;
-    n = data.d[7] *= n;
-    n = data.d[22] += n;
-    n = data.d[13] += n;
+    n = data.d[9] *= n;
+    n = data.d[11] *= n;
+    data.d[17] = n;
+    n = data.d[6] += n;
+    data.d[28] = n;
+    n = data.d[30] *= n;
+    n = data.d[29];
+    n = data.d[6];
+    n = data.d[4];
+    n = data.d[9] *= n;
+    data.d[23] = n;
+    n = data.d[13] *= n;
+    n = data.d[13];
+    n = data.d[26];
+    n = data.d[18] *= n;
+    n = data.d[27];
+    data.d[17] = n;
+    n = data.d[16] *= n;
+    n = data.d[29] *= n;
+    data.d[27] = n;
+    n = data.d[15];
+    n = data.d[6];
+    n = data.d[13] *= n;
+    n = data.d[28] += n;
+    data.d[7] = n;
+    data.d[24] = n;
+    data.d[27] = n;
     n = data.d[7] *= n;
 // END //
     return n;
@@ -196,7 +196,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         data = oldResults->results[member].data;
         result = oldResults->results[member].result;
     } else {
-#if EVALUATE_EVOLVE
+#if EVOLVE
         for (int i = 0; i < PROGRAM_DATA; i++)
             data.d[i] = RANDOMFACTOR(seed);
         result = START_RESULT;

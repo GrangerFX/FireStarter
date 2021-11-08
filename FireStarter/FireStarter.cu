@@ -199,7 +199,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         data = oldResults->results[member].data;
         result = oldResults->results[member].result;
     } else {
-#if EVALUATE_EVOLVE
+#if EVOLVE
         for (int i = 0; i < PROGRAM_DATA; i++)
             data.d[i] = RANDOMFACTOR(seed);
         result = START_RESULT;
