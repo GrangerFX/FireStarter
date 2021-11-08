@@ -15,115 +15,114 @@ GPU_FUNCTION float Target(float n, unsigned int variation)
 
 GPU_FUNCTION float InitData0(FireStarterData &data)
 {
-// DATA0 //    data.d[0] = 0.891492;
-    data.d[1] = 0.245320;
-    data.d[2] = 0.618226;
-    data.d[3] = -0.294338;
-    data.d[4] = 0.283906;
-    data.d[5] = -1.086076;
-    data.d[6] = -0.076248;
-    data.d[7] = -0.320815;
-    data.d[8] = -0.269088;
-    data.d[9] = -0.407430;
-    data.d[10] = 0.514511;
-    data.d[11] = -0.223165;
-    data.d[12] = -0.049077;
-    data.d[13] = 0.139534;
-    data.d[14] = -0.195106;
-    data.d[15] = 0.043455;
-    data.d[16] = -0.747685;
-    data.d[17] = -0.211189;
-    data.d[18] = 0.155581;
-    data.d[19] = 1.380643;
-    data.d[20] = 0.229932;
-    data.d[21] = 0.961421;
-    data.d[22] = 0.054780;
-    data.d[23] = -0.348247;
-    data.d[24] = -0.500646;
-    data.d[25] = -0.179011;
-    data.d[26] = 2.417139;
-    data.d[27] = -0.517217;
-    data.d[28] = -0.942655;
-    data.d[29] = 0.527133;
-    data.d[30] = 0.654831;
-    data.d[31] = -0.405870;
-    return 0.014177;
+// DATA0 //    data.d[0] = -0.337220;
+    data.d[1] = -0.127229;
+    data.d[2] = -0.302102;
+    data.d[3] = -0.833672;
+    data.d[4] = 0.771003;
+    data.d[5] = -0.094546;
+    data.d[6] = -0.538713;
+    data.d[7] = -0.655370;
+    data.d[8] = 0.883021;
+    data.d[9] = -0.992215;
+    data.d[10] = 0.880311;
+    data.d[11] = 0.680229;
+    data.d[12] = -0.322745;
+    data.d[13] = 0.105938;
+    data.d[14] = 0.345092;
+    data.d[15] = 0.938742;
+    data.d[16] = 0.205617;
+    data.d[17] = 0.704369;
+    data.d[18] = 0.170157;
+    data.d[19] = 0.109533;
+    data.d[20] = 0.375438;
+    data.d[21] = -0.850939;
+    data.d[22] = -1.018806;
+    data.d[23] = -0.741873;
+    data.d[24] = 0.439227;
+    data.d[25] = -0.760130;
+    data.d[26] = 0.351746;
+    data.d[27] = 0.530039;
+    data.d[28] = 0.348915;
+    data.d[29] = -0.689322;
+    data.d[30] = 0.099837;
+    data.d[31] = 0.610040;
+    return 0.356891;
 // END //
 } // InitData0
 
 GPU_FUNCTION float InitData1(FireStarterData &data)
 {
-// DATA1 //    data.d[0] = 0.889432;
-    data.d[1] = 0.246334;
-    data.d[2] = 0.656334;
-    data.d[3] = -0.288559;
-    data.d[4] = 0.283716;
-    data.d[5] = -1.081064;
-    data.d[6] = -0.053741;
-    data.d[7] = -0.319566;
-    data.d[8] = -0.265834;
-    data.d[9] = -0.454408;
-    data.d[10] = 0.588704;
-    data.d[11] = -0.227417;
-    data.d[12] = 0.027661;
-    data.d[13] = 0.135928;
-    data.d[14] = -0.196414;
-    data.d[15] = 0.041793;
-    data.d[16] = -0.748363;
-    data.d[17] = -0.228617;
-    data.d[18] = 0.145100;
-    data.d[19] = 1.378029;
-    data.d[20] = 0.229204;
-    data.d[21] = 0.998786;
-    data.d[22] = 0.051274;
-    data.d[23] = -0.347233;
-    data.d[24] = -0.498180;
-    data.d[25] = -0.185620;
-    data.d[26] = 2.412731;
-    data.d[27] = -0.518710;
-    data.d[28] = -0.960335;
-    data.d[29] = 0.532356;
-    data.d[30] = 0.655138;
-    data.d[31] = -0.403652;
-    return 0.016383;
+// DATA1 //    data.d[0] = 0.269834;
+    data.d[1] = -0.172258;
+    data.d[2] = 0.334809;
+    data.d[3] = -0.147649;
+    data.d[4] = -0.208712;
+    data.d[5] = -0.037736;
+    data.d[6] = 0.459064;
+    data.d[7] = -0.064369;
+    data.d[8] = -0.271912;
+    data.d[9] = -0.649465;
+    data.d[10] = -0.476086;
+    data.d[11] = 0.640687;
+    data.d[12] = -0.558609;
+    data.d[13] = -0.069103;
+    data.d[14] = 0.109150;
+    data.d[15] = 0.204861;
+    data.d[16] = -0.344943;
+    data.d[17] = 0.894434;
+    data.d[18] = 0.277514;
+    data.d[19] = -0.393075;
+    data.d[20] = -0.841112;
+    data.d[21] = 0.893529;
+    data.d[22] = -0.965265;
+    data.d[23] = -0.051932;
+    data.d[24] = 0.107575;
+    data.d[25] = 0.128336;
+    data.d[26] = 0.783648;
+    data.d[27] = 0.608352;
+    data.d[28] = -0.168361;
+    data.d[29] = -0.135213;
+    data.d[30] = -0.270703;
+    data.d[31] = -0.701585;
+    return 0.443544;
 // END //
 } // InitData1
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-// EVALUATE //
-    n = data.d[25] *= n;
-    n = data.d[22] += n;
-    n = data.d[18] += n;
-    n = data.d[25] += n;
-    n = data.d[9] *= n;
-    n = data.d[13] += n;
-    n = data.d[5] += n;
-    data.d[11] = n;
-    n = data.d[28] *= n;
-    n = data.d[2] += n;
-    n = data.d[21] *= n;
-    n = data.d[21] += n;
-    data.d[16] = n;
-    n = data.d[13] *= n;
-    n = data.d[13] *= n;
-    n = data.d[11] *= n;
-    n = data.d[26];
-    n = data.d[6] += n;
+// EVALUATE //    n = data.d[1] += n;
+    n = data.d[4] *= n;
+    n = data.d[31];
     n = data.d[11];
+    n = data.d[31] *= n;
+    n = data.d[13] += n;
+    n = data.d[23] *= n;
+    data.d[11] = n;
+    n = data.d[5] *= n;
+    n = data.d[30];
+    n = data.d[6] *= n;
+    n = data.d[16] *= n;
+    n = data.d[4];
+    n = data.d[8] *= n;
+    data.d[23] = n;
+    n = data.d[13] *= n;
+    n = data.d[13];
+    n = data.d[26];
+    n = data.d[18] += n;
+    n = data.d[27];
+    n = data.d[18] += n;
+    n = data.d[22];
     n = data.d[20] += n;
-    data.d[14] = n;
-    n = data.d[10];
-    n = data.d[22] += n;
-    n = data.d[10] += n;
+    n = data.d[21] *= n;
     n = data.d[14] += n;
-    n = data.d[19] *= n;
+    n = data.d[14];
     n = data.d[13] *= n;
-    data.d[27] = n;
-    n = data.d[11] *= n;
-    n = data.d[26] += n;
-    data.d[14] = n;
-    n = data.d[13] *= n;
+    n = data.d[9] += n;
+    data.d[7] = n;
+    n = data.d[22];
+    data.d[2] = n;
+    n = data.d[7] *= n;
 // END //
     return n;
 } // Evaluate
@@ -138,7 +137,8 @@ GPU_FUNCTION float Sample(FireStarterData data, FireStarterSamples theta, FireSt
 
 GPU_FUNCTION float Evolve(FireStarterData data, float n)
 {
-// EVOLVE //    n = data.d[12] *= n;
+// EVOLVE //
+    n = data.d[12] *= n;
     n = data.d[5];
     n = data.d[6] += n;
     n = data.d[2] += n;
@@ -214,7 +214,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     }
 
     float oldResult = result;
-#if EVOLVE_EVOLVE
+#if EVOLVE_EVOLVE || TEST_EVOLVE
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
             float curResult = fabsf(Evaluate(data, theta.s[i]) - target.s[i]);

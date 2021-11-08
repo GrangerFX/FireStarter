@@ -1,7 +1,8 @@
 #pragma once
 
-#define EVALUATE_EVOLVE 0
-#define EVOLVE_EVOLVE 1
+#define EVALUATE_EVOLVE 1
+#define EVOLVE_EVOLVE 0
+#define TEST_EVOLVE 0
 #define EVOLVE (EVALUATE_EVOLVE | EVOLVE_EVOLVE)
 
 #define PROGRAM_DATA 32
