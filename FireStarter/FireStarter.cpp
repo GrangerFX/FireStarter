@@ -62,6 +62,14 @@ void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
+void FireStarter::RandomInstruction(unsigned int index, unsigned int &seed)
+{
+    unsigned int operation = curState.program.instructions[index];
+    unsigned int opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
+    unsigned int data = RANDOMSEED(seed) % PROGRAM_DATA;
+    curState.program.instructions[index] = data * PROGRAM_OPCODES + opcode;
+ } // RandomInstruction
+
 void FireStarter::GetResults(FireStarterResults* results, FireStarterResult& bestResult)
 {
     unsigned int index = 0;
@@ -96,10 +104,8 @@ void FireStarter::InitResults(void)
 
     // Initialize the evolving program instructions.
     unsigned int seed = RANDOMHASH((unsigned int)generation);
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        curState.program.instructions[i].opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
-        curState.program.instructions[i].data = RANDOMSEED(seed) % PROGRAM_DATA;
-    }
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        RandomInstruction(i, seed);
 
     // Initialize the evolving program data values.
     for (unsigned int i = 0; i < PROGRAM_DATA; i++) {
@@ -148,7 +154,8 @@ void FireStarter::CompileProgram(const std::string& program)
 
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
-    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, program.c_str(), "FireStarter", 0, NULL, NULL));
+    const char* code = program.c_str();
+    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, code, "FireStarter", 0, NULL, NULL));
     nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
     if (res != 0) {
         // Output the compile log.
@@ -290,21 +297,54 @@ void FireStarter::UpdateProgram(std::string &code, const std::string& replacemen
 {
     size_t startPos = code.find(startString);
     if (startPos != std::string::npos) {
+        size_t startStringLength = startString.length();
+        if (code[startPos + startStringLength] == '\r')
+            startStringLength++;
+        if (code[startPos + startStringLength] == '\n')
+            startStringLength++;
         size_t endPos = code.find(END_CODE, startPos);
         if (endPos != std::string::npos)
-            startPos += startString.length() + 1;
+            startPos += startStringLength;
         else
-            endPos = startPos + startString.length() + 1;
+            endPos = startPos + startStringLength;
         code.replace(startPos, endPos - startPos, replacementCode);
     }
 } // UpdateProgram
+
+void FireStarter::UpdateOperations(std::string& code)
+{
+    std::string replacementOperations;
+    replacementOperations += "    switch (operation) {\r\n";
+    for (unsigned int data = 0; data < PROGRAM_DATA; data++)
+        for (unsigned int opcode = 0; opcode < PROGRAM_OPCODES; opcode++) {
+            unsigned int operation = data * PROGRAM_OPCODES + opcode;
+            switch (opcode) {
+                case Operation_add:
+                    replacementOperations += Format("        case %d: return data.d[%d] += n;\r\n", operation, data);
+                    break;
+                case Operation_multiply:
+                    replacementOperations += Format("        case %d: return data.d[%d] *= n;\r\n", operation, data);
+                    break;
+#if PROGRAM_LOAD_STORE
+                case Operation_load:
+                    replacementOperations += Format("        case %d: return data.d[%d];\r\n", operation, data);
+                    break;
+                case Operation_store:
+                    replacementOperations += Format("        case %d: return data.d[%d] = n;\r\n", operation, data);
+                    break;
+#endif
+            }
+        }
+    replacementOperations += "    }\r\n";
+    UpdateProgram(code, replacementOperations, OPERATIONS_CODE);
+} // UpdateOperations
 
 void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
 {
     std::string replacementData;
     for (unsigned int i = 0; i < PROGRAM_DATA; i++)
-        replacementData += Format("    data.d[%d] = %f;\n", i, result.data.d[i]);
-    replacementData += Format("    return %f;\n", result.result);
+        replacementData += Format("    data.d[%d] = %f;\r\n", i, result.data.d[i]);
+    replacementData += Format("    return %f;\r\n", result.result);
     UpdateProgram(code, replacementData, startString);
 } // UpdateData
 
@@ -339,29 +379,33 @@ void FireStarter::EvolveProgram(void)
     curState.program.generation = generation;
     while (numChanges--) {
         unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-        curState.program.instructions[index].opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
-        curState.program.instructions[index].data = RANDOMSEED(seed) % PROGRAM_DATA;
+        RandomInstruction(index, seed);
     }
     
     // Generate the replacement code and update the program.
     std::string replacementCode;
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        switch (curState.program.instructions[i].opcode) {
-            case Operation_add:
-                replacementCode += Format("    n = data.d[%d] += n;\n", curState.program.instructions[i].data);
-                break;
-            case Operation_multiply:
-                replacementCode += Format("    n = data.d[%d] *= n;\n", curState.program.instructions[i].data);
-                break;
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        unsigned int operation = curState.program.instructions[i];
+        unsigned int opcode = operation % PROGRAM_OPCODES;
+        unsigned int data = operation / PROGRAM_OPCODES;
+
+        switch (opcode) {
+        case Operation_add:
+            replacementCode += Format("    n = data.d[%d] += n;\r\n", data);
+            break;
+        case Operation_multiply:
+            replacementCode += Format("    n = data.d[%d] *= n;\r\n", data);
+            break;
 #if PROGRAM_LOAD_STORE
-            case Operation_load:
-                replacementCode += Format("    n = data.d[%d];\n", curState.program.instructions[i].data);
-                break;
-            case Operation_store:
-                replacementCode += Format("    data.d[%d] = n;\n", curState.program.instructions[i].data);
-                break;
+        case Operation_load:
+            replacementCode += Format("    n = data.d[%d];\r\n", data);
+            break;
+        case Operation_store:
+            replacementCode += Format("    data.d[%d] = n;\r\n", data);
+            break;
 #endif
         }
+    }
 
     updatedCode = sourceCode;
     UpdateProgram(updatedCode, replacementCode, EVALUATE_EVOLVE ? EVALUATE_CODE : EVOLVE_CODE);
@@ -371,6 +415,7 @@ void FireStarter::EvolveProgram(void)
 void FireStarter::InitProgram(void)
 {
     LoadProgram();
+    UpdateOperations(sourceCode);
     CompileProgram(sourceCode);
 } // InitProgram
 

@@ -26,6 +26,7 @@ public:
     void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
+    void RandomInstruction(unsigned int index, unsigned int &seed);
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
     void InitResults(void);
     void FreeResults(void);
@@ -34,8 +35,9 @@ public:
     void DrawGraph(unsigned int variation);
     void LoadProgram(void);
     bool SaveProgram(void);
-    void UpdateProgram(std::string& updatedCode, const std::string& replacementCode, std::string startString);
-    void UpdateData(std::string& updatedCode, const FireStarterResult& result, std::string startString);
+    void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
+    void UpdateOperations(std::string& code);
+    void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
     void DevolveProgram(void);
     void EvolveProgram(void);
     void InitProgram(void);

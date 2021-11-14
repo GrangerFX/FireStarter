@@ -10,7 +10,7 @@
 #define PROGRAM_GENERATIONS 100
 #define PROGRAM_ITERATIONS 1000
 #define PROGRAM_POPULATION 4352
-#define PROGRAM_LOAD_STORE 1
+#define PROGRAM_LOAD_STORE 0
 #define PROGRAM_SEED 0
 #define SAMPLE_ITERATIONS 15
 #define SMART_RANDOM_FACTOR 0.1f
@@ -19,6 +19,7 @@
 #define SMART_EVOLVE_AGE 10
 #define SMART_DEVOLVE_AGE 50
 
+#define OPERATIONS_CODE "// OPERATIONS //"
 #define EVALUATE_CODE   "// EVALUATE //"
 #define EVOLVE_CODE     "// EVOLVE //"
 #define DATA0_CODE      "// DATA0 //"
@@ -52,13 +53,10 @@ typedef enum {
     PROGRAM_OPCODES
 } FireStarterOpcode;
 
-typedef struct {
-    FireStarterOpcode opcode;
-    unsigned int data;
-} FireStarterInstruction;
+#define PROGRAM_OPERATIONS (PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS * PROGRAM_DATA)
 
 typedef struct {
-    FireStarterInstruction instructions[PROGRAM_INSTRUCTIONS];
+    unsigned int instructions[PROGRAM_OPERATIONS];
     unsigned long long generation;
 } FireStarterProgram;
 
