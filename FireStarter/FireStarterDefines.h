@@ -56,7 +56,7 @@ typedef enum {
 #define PROGRAM_OPERATIONS (PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS * PROGRAM_DATA)
 
 typedef struct {
-    unsigned int instructions[PROGRAM_OPERATIONS];
+    unsigned int instructions[PROGRAM_INSTRUCTIONS];
     unsigned long long generation;
 } FireStarterProgram;
 

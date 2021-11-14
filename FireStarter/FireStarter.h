@@ -8,6 +8,7 @@ class FireStarter {
 public:
     SimpleTimer timer;
     FrameBuffer theBuffer;
+    FireStarterProgram* program;
     FireStarterResults* results0;
     FireStarterResults* results1;
     std::vector<FireStarterState> states;

@@ -204,11 +204,26 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     return n;
 } // Evaluate
 
+GPU_FUNCTION float Evaluate(const FireStarterProgram &program, FireStarterData data, float n)
+{
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        n = Operation(data, program.instructions[i], n);
+    return n;
+} // Evaluate
+
 GPU_FUNCTION float Sample(const FireStarterData &data, const FireStarterSamples &theta, const FireStarterSamples &target)
 {
     float result = 0.0f;
     for (int i = 0; i < SAMPLE_ITERATIONS; i++)
         result = fmaxf(fabsf(Evaluate(data, theta.s[i]) - target.s[i]), result);
+    return result;
+} // Sample
+
+GPU_FUNCTION float Sample(const FireStarterProgram &program, const FireStarterData &data, const FireStarterSamples &theta, const FireStarterSamples &target)
+{
+    float result = 0.0f;
+    for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+        result = fmaxf(fabsf(Evaluate(program, data, theta.s[i]) - target.s[i]), result);
     return result;
 } // Sample
 
@@ -251,7 +266,7 @@ GPU_FUNCTION float Evolve(FireStarterData data, float n)
     return n;
 } // Evolve
 
-GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
+GPU_GLOBAL void FireStarter(FireStarterProgram *program, FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -265,6 +280,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         target.s[i] = Target(theta.s[i], variation);
     }
 
+    FireStarterProgram curProgram = *program;
     FireStarterResults *oldResults = dataGeneration & 1 ? results0 : results1;
     FireStarterResults *newResults = dataGeneration & 1 ? results1 : results0;
     FireStarterData data;
@@ -294,7 +310,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
 #if EVOLVE_EVOLVE || TEST_EVOLVE
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-            float curResult = fabsf(Evaluate(data, theta.s[i]) - target.s[i]);
+            float curResult = fabsf(Evaluate(curProgram, data, theta.s[i]) - target.s[i]);
             Evolve(data, curResult);
         }
     }
@@ -304,7 +320,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
         float oldData = data.d[d];
         data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
-        float curResult = Sample(data, theta, target);
+        float curResult = Sample(curProgram, data, theta, target);
         if (curResult < result)
             result = curResult;
         else
@@ -333,7 +349,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     newResults->results[member].result = result;
 } // FireStarter
 
-GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
+GPU_GLOBAL void FireShow(FireStarterProgram *program, const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int xScale = bufferHeight / 8;
@@ -364,6 +380,7 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
         else
             InitData0(data);
 #endif
+        FireStarterProgram curProgram = *program;
         float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
         float center = bufferHeight * 0.66f;
         float target = Target(theta, variation);
@@ -373,7 +390,7 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
             pixel.x = 255;
             pixel.y = 128;
         };
-        y = (int)(center + Evaluate(bestResult.data, theta) * yScale);
+        y = (int)(center + Evaluate(curProgram, bestResult.data, theta) * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = pixel.y = pixel.z = 255;

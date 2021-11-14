@@ -86,6 +86,14 @@ void FireStarter::GetResults(FireStarterResults* results, FireStarterResult& bes
 
 void FireStarter::InitResults(void)
 {
+    if (!program) {
+        cudaError_t err = cudaMallocManaged(&program, sizeof(FireStarterProgram));
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to allocate program (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+    }
+
     unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
     if (!results0) {
         cudaError_t err = cudaMallocManaged(&results0, resultsSize);
@@ -127,6 +135,14 @@ void FireStarter::InitResults(void)
 
 void FireStarter::FreeResults(void)
 {
+    if (program) {
+        cudaError_t err = cudaFree(program);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to free program (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        program = NULL;
+    }
     if (results0) {
         cudaError_t err = cudaFree(results0);
         if (err != cudaSuccess) {
@@ -196,7 +212,8 @@ void FireStarter::RunProgram(unsigned int population, unsigned int generations, 
     unsigned long long dataGeneration = generation0;
 
     for (unsigned int g = 0; g < generations; g++) {
-        void* arr[] = {reinterpret_cast<void*>(&results0),
+        void* arr[] = {reinterpret_cast<void*>(&program),
+                       reinterpret_cast<void*>(&results0),
                        reinterpret_cast<void*>(&results1),
                        reinterpret_cast<void*>(&population),
                        reinterpret_cast<void*>(&dataGeneration),
@@ -229,7 +246,8 @@ void FireStarter::DrawGraph(unsigned int variation)
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, "FireShow"));
 
-    void *arr[] = {reinterpret_cast<void*>(variation ? &bestState.result1 : &bestState.result0),
+    void *arr[] = {reinterpret_cast<void*>(&program),
+                   reinterpret_cast<void*>(variation ? &bestState.result1 : &bestState.result0),
                    reinterpret_cast<void*>(&theBuffer.base),
                    reinterpret_cast<void*>(&theBuffer.width),
                    reinterpret_cast<void*>(&theBuffer.height),
@@ -406,6 +424,7 @@ void FireStarter::EvolveProgram(void)
 #endif
         }
     }
+    *program = curState.program;
 
     updatedCode = sourceCode;
     UpdateProgram(updatedCode, replacementCode, EVALUATE_EVOLVE ? EVALUATE_CODE : EVOLVE_CODE);
@@ -494,6 +513,7 @@ FireStarter::FireStarter(void)
 {
     // Timer ID
     statusString[0] = 0;
+    program = NULL;
     results0 = NULL;
     results1 = NULL;
     module = NULL;
