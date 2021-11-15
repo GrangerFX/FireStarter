@@ -1,4 +1,5 @@
 #pragma once
+#include "CUDADefines.h"
 
 #define EVALUATE_EVOLVE 1
 #define EVOLVE_EVOLVE 0

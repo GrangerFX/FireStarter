@@ -331,6 +331,7 @@ void FireStarter::UpdateProgram(std::string &code, const std::string& replacemen
 
 void FireStarter::UpdateOperations(std::string& code)
 {
+#if 0
     std::string replacementOperations;
     replacementOperations += "    switch (operation) {\r\n";
     for (unsigned int data = 0; data < PROGRAM_DATA; data++)
@@ -355,6 +356,7 @@ void FireStarter::UpdateOperations(std::string& code)
         }
     replacementOperations += "    }\r\n";
     UpdateProgram(code, replacementOperations, OPERATIONS_CODE);
+#endif
 } // UpdateOperations
 
 void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
