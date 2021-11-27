@@ -112,7 +112,9 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long dataGeneration = generation0;
-    std::string functionFireStarter = "FireStarter" + std::to_string(m_unitIndex);
+    std::string functionFireStarter = "FireStarter";
+    if (m_unitIndex)
+        functionFireStarter += std::to_string(m_unitIndex);
 
     for (unsigned int g = 0; g < PROGRAM_GENERATIONS; g++) {
         void* arr[] = {reinterpret_cast<void*>(dataGeneration & 1 ? &m_results0 : &m_results1),
@@ -144,7 +146,9 @@ void FireStarter::FireStarterUnit::DrawGraph(CUmodule module, FrameBuffer& buffe
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     CUfunction kernel_addr;
-    std::string functionFireShow = "FireShow" + std::to_string(m_unitIndex);
+    std::string functionFireShow = "FireShow";
+    if (m_unitIndex)
+        functionFireShow += std::to_string(m_unitIndex);
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, functionFireShow.c_str()));
 
     void* arr[] = {reinterpret_cast<void*>(variation ? &m_bestState.m_result0 : &m_bestState.m_result1),
@@ -496,6 +500,7 @@ bool FireStarter::TestProgram(void)
         EraseFrameBuffer(m_buffer);
         bestUnit0->DrawGraph(m_module, m_buffer, varaition0);
         bestUnit1->DrawGraph(m_module, m_buffer, varaition1);
+        checkCudaErrors(cuCtxSynchronize());
         return true;
     }
     return false;
@@ -521,14 +526,6 @@ void FireStarter::RenderImage(void* hwnd)
 #endif
         
     // Run the next generation on the GPU.
-    unsigned int varaition0 = 0;
-#if EVOLVE
-    unsigned int varaition1 = 1;
-    unsigned int generation0 = 0;
-#else
-    unsigned int varaition1 = 2;
-    unsigned long long generation0 = generation;
-#endif
     bool update = TestProgram();
     time = m_timer.Duration();
 
