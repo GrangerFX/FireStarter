@@ -131,7 +131,7 @@ public:
         n = data.d[13] *= n;
 // END //
         data.d[0] = t;
-        return fabsf(n - t);
+        return n;
     } // Evaluate
 
     GPU_FUNCTION void FireStarter(FireStarterResults *oldResults, FireStarterResults *newResults, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
@@ -156,8 +156,10 @@ public:
         float oldResult = result;
         for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
             result = 0.0f;
-            for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-                result = fmaxf(Evaluate(data, theta.s[i], target.s[i]), result);
+            for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+                float n = Evaluate(data, theta.s[i], target.s[i]);
+                result = fmaxf(fabsf(n - target.s[i]), result);
+            }
         }
 
         if (result >= oldResult) {
