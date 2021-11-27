@@ -208,17 +208,17 @@ void FireStarter::FireStarterUnit::EvolveProgram(unsigned long long generation, 
 
         switch (opcode) {
         case Operation_add:
-            replacementCode += Format("    n = data.d[%d] += n;\r\n", data);
+            replacementCode += Format("        n = data.d[%d] += n;\r\n", data);
             break;
         case Operation_multiply:
-            replacementCode += Format("    n = data.d[%d] *= n;\r\n", data);
+            replacementCode += Format("        n = data.d[%d] *= n;\r\n", data);
             break;
 #if PROGRAM_LOAD_STORE
         case Operation_load:
-            replacementCode += Format("    n = data.d[%d];\r\n", data);
+            replacementCode += Format("        n = data.d[%d];\r\n", data);
             break;
         case Operation_store:
-            replacementCode += Format("    data.d[%d] = n;\r\n", data);
+            replacementCode += Format("        data.d[%d] = n;\r\n", data);
             break;
 #endif
         }
@@ -273,8 +273,8 @@ FireStarter::FireStarterUnit::FireStarterUnit(void)
     m_results0 = nullptr;
     m_results1 = nullptr;
     m_unitCode =
-        "    // EVALUATE //\n"
-        "    // END //\n";
+        "// EVALUATE //\r\n"
+        "// END //\r\n";
     m_unitIndex = 0;
     m_unitGeneration = 0;
 } // FireStarterUnit
@@ -450,8 +450,8 @@ void FireStarter::UpdateData(std::string& code, const FireStarterResult& result,
 {
     std::string replacementData;
     for (unsigned int i = 0; i < PROGRAM_DATA; i++)
-        replacementData += Format("    data.d[%d] = %f;\r\n", i, result.data.d[i]);
-    replacementData += Format("    return %f;\r\n", result.result);
+        replacementData += Format("        data.d[%d] = %f;\r\n", i, result.data.d[i]);
+    replacementData += Format("        return %f;\r\n", result.result);
     UpdateProgram(code, replacementData, startString);
 } // UpdateData
 
