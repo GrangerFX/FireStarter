@@ -21,6 +21,7 @@
 #define OPERATIONS_CODE "// OPERATIONS //"
 #define EVALUATE_CODE   "// EVALUATE //"
 #define UNITS_CODE      "// UNITS //"
+#define BEST_CODE       "// BEST //"
 #define DATA0_CODE      "// DATA0 //"
 #define DATA1_CODE      "// DATA1 //"
 #define END_CODE        "// END //"

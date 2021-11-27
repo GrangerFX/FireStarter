@@ -1,107 +1,9 @@
-#include "FireStarterDefines.h"
-#include "HashRandom.h"
-
-GPU_FUNCTION float Target(float n, unsigned int variation)
-{
-    switch (variation) {
-        default:
-        case 0:
-            return sinf(n);
-        case 1:
-            return sinf(n * 1.2f) + n * 0.2f;
-        case 2:
-            return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
-    }
-} // Target
-
-GPU_FUNCTION float InitData0(FireStarterData &data)
-{
-// DATA0 //
-    data.d[0] = 0.927622;
-    data.d[1] = -0.019519;
-    data.d[2] = -0.613796;
-    data.d[3] = 0.772795;
-    data.d[4] = -0.869031;
-    data.d[5] = -0.999986;
-    data.d[6] = 0.265807;
-    data.d[7] = -0.340821;
-    data.d[8] = 0.184753;
-    data.d[9] = 0.092929;
-    data.d[10] = -0.704486;
-    data.d[11] = 1.366664;
-    data.d[12] = -1.119227;
-    data.d[13] = 0.788228;
-    data.d[14] = 0.390716;
-    data.d[15] = 1.354912;
-    data.d[16] = 0.000528;
-    data.d[17] = 0.500048;
-    data.d[18] = 0.480474;
-    data.d[19] = 0.689613;
-    data.d[20] = -1.119500;
-    data.d[21] = 0.956548;
-    data.d[22] = -0.613120;
-    data.d[23] = 0.920774;
-    data.d[24] = -1.537065;
-    data.d[25] = -0.730224;
-    data.d[26] = -0.932235;
-    data.d[27] = 0.042150;
-    data.d[28] = 0.613801;
-    data.d[29] = -1.154581;
-    data.d[30] = 0.891486;
-    data.d[31] = -1.485052;
-    return 0.000001;
-// END //
-} // InitData0
-
-GPU_FUNCTION float InitData1(FireStarterData &data)
-{
-// DATA1 //
-    data.d[0] = 1.132334;
-    data.d[1] = -0.634421;
-    data.d[2] = -0.639973;
-    data.d[3] = 0.054430;
-    data.d[4] = 0.216692;
-    data.d[5] = -0.982720;
-    data.d[6] = -0.196895;
-    data.d[7] = -1.726521;
-    data.d[8] = -2.640679;
-    data.d[9] = 0.126899;
-    data.d[10] = -0.687082;
-    data.d[11] = 0.636036;
-    data.d[12] = -0.297008;
-    data.d[13] = 0.975595;
-    data.d[14] = -0.153143;
-    data.d[15] = 1.265803;
-    data.d[16] = 0.268154;
-    data.d[17] = -2.228866;
-    data.d[18] = 0.791172;
-    data.d[19] = 0.550411;
-    data.d[20] = -1.567142;
-    data.d[21] = 0.994826;
-    data.d[22] = -0.631285;
-    data.d[23] = -0.357125;
-    data.d[24] = -0.111860;
-    data.d[25] = -1.479260;
-    data.d[26] = -0.671718;
-    data.d[27] = 2.997513;
-    data.d[28] = 0.481037;
-    data.d[29] = -0.294268;
-    data.d[30] = 1.163771;
-    data.d[31] = -0.940212;
-    return 0.000009;
-// END //
-} // InitData1
-
-// XUNITS //
-#define FIRESTARTERUNIT FireStarterUnit0
-#define FIRESTARTER FireStarter0
-#define FIRESHOW FireShow0
 
 class FIRESTARTERUNIT {
 public:
     GPU_FUNCTION float Evaluate(FireStarterData data, float n, float t)
     {
-// UNITS //
+        // UNITS //
         n = data.d[25] *= n;
         n = data.d[22] += n;
         n = data.d[18] += n;
@@ -134,12 +36,12 @@ public:
         n = data.d[26] += n;
         data.d[14] = n;
         n = data.d[13] *= n;
-// END //
+        // END //
         data.d[0] = t;
         return n;
     } // Evaluate
 
-    GPU_FUNCTION void FireStarter(FireStarterResults *oldResults, FireStarterResults *newResults, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
+    GPU_FUNCTION void FireStarter(FireStarterResults* oldResults, FireStarterResults* newResults, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
     {
         unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
         if (member >= population)
@@ -189,7 +91,7 @@ public:
         newResults->results[member].result = result;
     } // FireStarter
 
-    GPU_FUNCTION void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
+    GPU_FUNCTION void FireShow(const FireStarterResult bestResult, uchar4* bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
     {
         int x = blockDim.x * blockIdx.x + threadIdx.x;
         int xScale = bufferHeight / 8;
@@ -198,13 +100,13 @@ public:
             int x0 = (bufferWidth / 2) - xScale;
             int x1 = (bufferWidth / 2) + xScale;
             if (x0 >= 0) {
-                uchar4 &pixel(bufferPixels[x * bufferWidth + x0]);
+                uchar4& pixel(bufferPixels[x * bufferWidth + x0]);
                 pixel.x = 64;
                 pixel.y = 128;
                 pixel.z = 64;
             };
             if (x1 < bufferWidth) {
-                uchar4 &pixel(bufferPixels[x * bufferWidth + x1]);
+                uchar4& pixel(bufferPixels[x * bufferWidth + x1]);
                 pixel.x = 64;
                 pixel.y = 128;
                 pixel.z = 64;
@@ -221,29 +123,27 @@ public:
             float target = Target(theta, variation);
             int y = (int)(center + target * yScale);
             if ((y >= 0) && (y < bufferHeight)) {
-                uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
+                uchar4& pixel(bufferPixels[y * bufferWidth + x]);
                 pixel.x = 255;
                 pixel.y = 128;
             };
             y = (int)(center + Evaluate(bestResult.data, theta, target) * yScale);
             if ((y >= 0) && (y < bufferHeight)) {
-                uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
+                uchar4& pixel(bufferPixels[y * bufferWidth + x]);
                 pixel.x = pixel.y = pixel.z = 255;
             };
         }
     } // FireShow
 }; // clase FIRESTARTERUNIT
 
-GPU_GLOBAL void FIRESTARTER(FireStarterResults *oldResults, FireStarterResults *newResults, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
+GPU_GLOBAL void FIRESTARTER(FireStarterResults* oldResults, FireStarterResults* newResults, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
 {
     FIRESTARTERUNIT fireStarterObject;
     fireStarterObject.FireStarter(oldResults, newResults, population, dataGeneration, programGeneration, variation);
 } // FIRESTARTER
 
-GPU_GLOBAL void FIRESHOW(const FireStarterResult bestResult, uchar4 *bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
+GPU_GLOBAL void FIRESHOW(const FireStarterResult bestResult, uchar4* bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
 {
     FIRESTARTERUNIT fireStarterObject;
     fireStarterObject.FireShow(bestResult, bufferPixels, bufferWidth, bufferHeight, variation);
 } // FIRESHOW
-
-// XEND // 

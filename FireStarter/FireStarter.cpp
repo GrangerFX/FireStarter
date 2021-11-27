@@ -113,7 +113,7 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long dataGeneration = generation0;
     std::string functionFireStarter = "FireStarter";
-    if (m_unitIndex)
+//    if (m_unitIndex)
         functionFireStarter += std::to_string(m_unitIndex);
 
     for (unsigned int g = 0; g < PROGRAM_GENERATIONS; g++) {
@@ -147,7 +147,7 @@ void FireStarter::FireStarterUnit::DrawGraph(CUmodule module, FrameBuffer& buffe
 
     CUfunction kernel_addr;
     std::string functionFireShow = "FireShow";
-    if (m_unitIndex)
+//    if (m_unitIndex)
         functionFireShow += std::to_string(m_unitIndex);
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, functionFireShow.c_str()));
 
