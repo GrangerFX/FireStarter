@@ -134,7 +134,7 @@ public:
         return fabsf(n - t);
     } // Evaluate
 
-    GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *newResults, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
+    GPU_FUNCTION void FireStarter(FireStarterResults *oldResults, FireStarterResults *newResults, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
     {
         unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
         if (member >= population)
@@ -182,7 +182,7 @@ public:
         newResults->results[member].result = result;
     } // FireStarter
 
-    GPU_GLOBAL void FireShow(const FireStarterResult bestResult, const uchar4 *bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
+    GPU_FUNCTION void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
     {
         int x = blockDim.x * blockIdx.x + threadIdx.x;
         int xScale = bufferHeight / 8;
@@ -218,7 +218,7 @@ public:
                 pixel.x = 255;
                 pixel.y = 128;
             };
-            y = (int)(center + Evaluate(bestResult.data, theta) * yScale);
+            y = (int)(center + Evaluate(bestResult.data, theta, target) * yScale);
             if ((y >= 0) && (y < bufferHeight)) {
                 uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
                 pixel.x = pixel.y = pixel.z = 255;
@@ -233,7 +233,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
     fireStarterObject.FireStarter(oldResults, newResults, population, dataGeneration, programGeneration, variation);
 } // FireStarter
 
-GPU_GLOBAL void FireShow(const FireStarterResult bestResult, const uchar4 *bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
+GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
 {
     FireStarterBase fireStarterObject;
     fireStarterObject.FireShow(bestResult, bufferPixels, bufferWidth, bufferHeight, variation);
