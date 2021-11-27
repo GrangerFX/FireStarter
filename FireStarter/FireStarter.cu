@@ -18,7 +18,7 @@ public:
 
     GPU_FUNCTION float InitData0(FireStarterData &data)
     {
-    // DATA0 //
+// DATA0 //
         data.d[0] = 0.927622;
         data.d[1] = -0.019519;
         data.d[2] = -0.613796;
@@ -52,12 +52,12 @@ public:
         data.d[30] = 0.891486;
         data.d[31] = -1.485052;
         return 0.000001;
-    // END //
+// END //
     } // InitData0
 
     GPU_FUNCTION float InitData1(FireStarterData &data)
     {
-    // DATA1 //
+// DATA1 //
         data.d[0] = 1.132334;
         data.d[1] = -0.634421;
         data.d[2] = -0.639973;
@@ -91,12 +91,12 @@ public:
         data.d[30] = 1.163771;
         data.d[31] = -0.940212;
         return 0.000009;
-    // END //
+// END //
     } // InitData1
 
     GPU_FUNCTION float Evaluate(FireStarterData data, float n, float t)
     {
-    // UNITS //
+// UNITS //
         n = data.d[25] *= n;
         n = data.d[22] += n;
         n = data.d[18] += n;
@@ -129,7 +129,7 @@ public:
         n = data.d[26] += n;
         data.d[14] = n;
         n = data.d[13] *= n;
-    // END //
+// END //
         data.d[0] = t;
         return fabsf(n - t);
     } // Evaluate

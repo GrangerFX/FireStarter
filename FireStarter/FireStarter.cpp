@@ -137,7 +137,7 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
     }
 } // RunProgram
 
-void FireStarter::FireStarterUnit::DrawGraph(CUmodule module, FrameBuffer& buffer, unsigned int variation)
+void FireStarter::FireStarterUnit::DrawGraph(CUmodule module, FrameBuffer& buffer, FireStarterResult& result, unsigned int variation)
 {
     // Launch the display kernel
     int threadsPerBlock = 32;
@@ -151,7 +151,7 @@ void FireStarter::FireStarterUnit::DrawGraph(CUmodule module, FrameBuffer& buffe
         functionFireShow += std::to_string(m_unitIndex);
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, functionFireShow.c_str()));
 
-    void* arr[] = {reinterpret_cast<void*>(variation ? &m_bestState.m_result0 : &m_bestState.m_result1),
+    void* arr[] = {reinterpret_cast<void*>(&result),
                    reinterpret_cast<void*>(&buffer.base),
                    reinterpret_cast<void*>(&buffer.width),
                    reinterpret_cast<void*>(&buffer.height),
@@ -256,8 +256,6 @@ void FireStarter::FireStarterUnit::InitUnit(unsigned long long unitIndex, unsign
     for (unsigned int i = 0; i < PROGRAM_DATA; i++)
         startResult.data.d[i] = RANDOMFACTOR(seed);
     startResult.result = START_RESULT;
-    m_curState.m_result0 = startResult;
-    m_curState.m_result1 = startResult;
     m_curState.m_devolve = 0;
     m_bestState = m_curState;
     m_states.push_back(m_curState);
@@ -394,9 +392,9 @@ void FireStarter::RunProgram(unsigned long long generation0, unsigned int variat
     checkCudaErrors(cuCtxSynchronize());
 } // RunProgram
 
-void FireStarter::DrawGraph(FireStarter::FireStarterUnit *unit, unsigned int variation)
+void FireStarter::DrawGraph(FireStarter::FireStarterUnit *unit, FireStarterResult& result, unsigned int variation)
 {
-    unit->DrawGraph(m_module, m_buffer, variation);
+    unit->DrawGraph(m_module, m_buffer, result, variation);
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph
 
@@ -475,17 +473,17 @@ void FireStarter::EvolveProgram(void)
 
 bool FireStarter::TestProgram(void)
 {
-    unsigned int varaition0 = 0;
+    unsigned int variation0 = 0;
 #if EVOLVE
-    unsigned int varaition1 = 1;
+    unsigned int variation1 = 1;
 #else
     unsigned int varaition1 = 2;
 #endif
     unsigned int generation0 = 0;
-    RunProgram(generation0, varaition0);
+    RunProgram(generation0, variation0);
     FireStarterUnit* bestUnit0 = GetResults(generation0 + PROGRAM_GENERATIONS);
     FireStarterResult bestResult0 = bestUnit0->m_bestResult;
-    RunProgram(generation0, varaition1);
+    RunProgram(generation0, variation1);
     FireStarterUnit* bestUnit1 = GetResults(generation0 + PROGRAM_GENERATIONS);
     FireStarterResult bestResult1 = bestUnit1->m_bestResult;
     float bestResult = MAX(bestResult0.result, bestResult1.result);
@@ -498,8 +496,8 @@ bool FireStarter::TestProgram(void)
 
         // Erase the frame buffer
         EraseFrameBuffer(m_buffer);
-        bestUnit0->DrawGraph(m_module, m_buffer, varaition0);
-        bestUnit1->DrawGraph(m_module, m_buffer, varaition1);
+        bestUnit0->DrawGraph(m_module, m_buffer, bestResult0, variation0);
+        bestUnit1->DrawGraph(m_module, m_buffer, bestResult1, variation1);
         checkCudaErrors(cuCtxSynchronize());
         return true;
     }

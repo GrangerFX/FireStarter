@@ -9,8 +9,6 @@ public:
     class FireStarterState {
     public: 
         FireStarterProgram m_program;
-        FireStarterResult m_result0;
-        FireStarterResult m_result1;
         unsigned int m_devolve;
 
         FireStarterState(void);
@@ -33,7 +31,7 @@ public:
         float GetResults(unsigned int dataGeneration);
         void FreeResults(void);
         void RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation);
-        void DrawGraph(CUmodule module, FrameBuffer &buffer, unsigned int variation);
+        void DrawGraph(CUmodule module, FrameBuffer &buffer, FireStarterResult &result, unsigned int variation);
         void DevolveProgram(unsigned long long generation);
         void EvolveProgram(unsigned long long generation, std::string &code);
         void InitUnit(unsigned long long unitIndex, unsigned int generation = 0);
@@ -62,7 +60,7 @@ public:
     FireStarterUnit* GetResults(unsigned int dataGeneration);
     void CompileProgram(const std::string& program);
     void RunProgram(unsigned long long generation0, unsigned int variation);
-    void DrawGraph(FireStarterUnit* unit, unsigned int variation);
+    void DrawGraph(FireStarterUnit* unit, FireStarterResult& result, unsigned int variation);
     void LoadProgram(void);
     void SaveProgram(void);
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
