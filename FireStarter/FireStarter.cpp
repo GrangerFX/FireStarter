@@ -22,34 +22,6 @@ do { \
     } \
 } while (0)
 
-class TestBaseClass {
-public:
-    virtual float TestVirtualMethod(float n)
-    {
-        return n;
-    }; // TestVirtualMethod
-
-    float TestMethod(float n)
-    {
-        return TestVirtualMethod(n);
-    }
-}; // class TestBaseClass
-
-class TestDependentClass : public TestBaseClass {
-public:
-    float TestVirtualMethod(float n) final
-    {
-        return n * 2.0f;
-    }; // TestVirtualMethod
-}; // class TestDependentClass
-
-static bool TestFunction(void)
-{
-    TestDependentClass testObject;
-    float n = testObject.TestMethod(123.0f);
-    return n == 246.0f;
-} // TestFunction
-
 FireStarter::FireStarterState::FireStarterState(void)
 {
 } // FireStarterState
@@ -230,6 +202,11 @@ void FireStarter::FireStarterUnit::EvolveProgram(unsigned long long generation, 
 void FireStarter::FireStarterUnit::InitUnit(unsigned long long unitIndex, unsigned int generation)
 {
     m_unitIndex = unitIndex;
+    LoadCode("FireStarterUnit.cu", m_unitCode);
+    ReplaceCode(m_unitCode, "EVALUATE", "Evaluate" + std::to_string(m_unitIndex));
+    ReplaceCode(m_unitCode, "FIRESTARTER", "FireStarter" + std::to_string(m_unitIndex));
+    ReplaceCode(m_unitCode, "FIRESHOW", "FireShow" + std::to_string(m_unitIndex));
+        
     unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
     if (!m_results0) {
         cudaError_t err = cudaMallocManaged(&m_results0, resultsSize);
@@ -272,9 +249,6 @@ FireStarter::FireStarterUnit::FireStarterUnit(void)
     m_bestState.m_program.generation = 0;
     m_results0 = nullptr;
     m_results1 = nullptr;
-    m_unitCode =
-        "// EVALUATE //\r\n"
-        "// END //\r\n";
     m_unitIndex = 0;
     m_unitGeneration = 0;
 } // FireStarterUnit
@@ -398,20 +372,51 @@ void FireStarter::DrawGraph(FireStarter::FireStarterUnit *unit, FireStarterResul
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph
 
-void FireStarter::LoadProgram(void)
+bool FireStarter::LoadCode(const std::string &filePath, std::string &code)
 {
 #if EVOLVE
-    std::ifstream file("FireStarter.cu", std::ios::ate | std::ios::binary);
+    std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
 #else
     std::ifstream file("FireStarter_Best.cu", std::ios::ate | std::ios::binary);
 #endif
     if (file.is_open()) {
         // Found usable source file
         file.seekg(0, std::ios::end);
-        m_sourceCode.reserve(file.tellg());
+        code.reserve(code.length() + file.tellg());
         file.seekg(0, std::ios::beg);
-        m_sourceCode.assign((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
+        code.append((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
         file.close();
+        return true;
+    }
+    return false;
+} // LoadCode
+
+void FireStarter::SaveCode(const std::string& filePath, const std::string& code)
+{
+    std::ofstream file(filePath.c_str(), std::ios::out | std::ios::binary);
+    if (file.is_open()) {
+        file << code;
+        file.close();
+    }
+} // SaveCode
+
+void FireStarter::ReplaceCode(std::string& code, const std::string& search, const std::string& replace)
+{
+    // Get the first occurrence
+    size_t pos = code.find(search);
+
+    // Repeat till end is reached
+    while (pos != std::string::npos) {
+        // Replace this occurrence of Sub String
+        code.replace(pos, search.size(), replace);
+        // Get the next occurrence from the current position
+        pos = code.find(search, pos + replace.size());
+    }
+} // ReplaceCode
+
+void FireStarter::LoadProgram(void)
+{
+    if (EVOLVE ? LoadCode("FireStarter.cu", m_sourceCode) : LoadCode("FireStarter_Best.cu", m_sourceCode)) {
         m_updatedCode = m_sourceCode;
         m_bestCode = m_sourceCode;
     }
@@ -420,11 +425,7 @@ void FireStarter::LoadProgram(void)
 void FireStarter::SaveProgram(void)
 {
 #if EVOLVE
-    std::ofstream file("FireStarter_Best.cu", std::ios::out | std::ios::binary);
-    if (file.is_open()) {
-        file << m_bestCode;
-        file.close();
-    }
+    SaveCode("FireStarter_Best.cu", m_bestCode);
 #endif
 } // SaveProgram
 

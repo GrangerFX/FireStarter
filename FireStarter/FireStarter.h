@@ -61,6 +61,9 @@ public:
     void CompileProgram(const std::string& program);
     void RunProgram(unsigned long long generation0, unsigned int variation);
     void DrawGraph(FireStarterUnit* unit, FireStarterResult& result, unsigned int variation);
+    static bool LoadCode(const std::string& filePath, std::string& code);
+    static void SaveCode(const std::string& filePath, const std::string& code);
+    static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
     void LoadProgram(void);
     void SaveProgram(void);
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
