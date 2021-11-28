@@ -92,7 +92,6 @@ GPU_FUNCTION float InitData1(FireStarterData &data)
 // END //
 } // InitData1
 
-// UNITS //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n, float t)
 {
     n = data.d[25] *= n;
@@ -153,6 +152,29 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
     result = oldResults->results[member].result;
 
     float oldResult = result;
+#if 1
+    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
+        unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
+        float oldData = data.d[d];
+        data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
+        float curResult = 0.0f;
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+#if PROGRAM_RANDOM_SAMPLES
+            float n = Evaluate(data, theta[i], target[i]);
+            curResult = fmaxf(fabsf(n - target[i]), curResult);
+#else
+            float theta = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
+            float target = Target(theta, variation);
+            float n = Evaluate(data, theta, target);
+            curResult = fmaxf(fabsf(n - target), curResult);
+#endif
+        }
+        if (curResult < result)
+            result = curResult;
+        else
+            data.d[d] = oldData;
+    }
+#else
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         result = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
@@ -167,6 +189,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
 #endif
         }
     }
+#endif
 
     if (result >= oldResult) {
         // The genetic part of genetic programming and a major optimization:
@@ -234,4 +257,5 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
     }
 } // FireShow
 
+// UNITS //
 // END // 

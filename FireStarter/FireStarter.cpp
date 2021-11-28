@@ -79,13 +79,15 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
     // Launch the calculation kernel
     int threadsPerBlock = 256;
     unsigned int population = PROGRAM_POPULATION;
+    if (PROGRAM_UNITS)
+        population /= PROGRAM_UNITS;
     unsigned int generations = PROGRAM_GENERATIONS;
     int blocksPerGrid = (PROGRAM_POPULATION + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long dataGeneration = generation0;
     std::string functionFireStarter = "FireStarter";
-//    if (m_unitIndex)
+    if (PROGRAM_UNITS)
         functionFireStarter += std::to_string(m_unitIndex);
 
     for (unsigned int g = 0; g < PROGRAM_GENERATIONS; g++) {
@@ -119,7 +121,7 @@ void FireStarter::FireStarterUnit::DrawGraph(CUmodule module, FrameBuffer& buffe
 
     CUfunction kernel_addr;
     std::string functionFireShow = "FireShow";
-//    if (m_unitIndex)
+    if (PROGRAM_UNITS)
         functionFireShow += std::to_string(m_unitIndex);
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, functionFireShow.c_str()));
 
@@ -572,7 +574,7 @@ void FireStarter::Init(unsigned long width, unsigned long height)
 FireStarter::FireStarter(void)
 {
     // Timer ID
-    m_units.resize(PROGRAM_UNITS);
+    m_units.resize(MAX(PROGRAM_UNITS, 1));
     m_statusString[0] = 0;
     m_module = NULL;
     m_bestResult = START_RESULT;
