@@ -525,7 +525,7 @@ void FireStarter::InitProgram(void)
 
 void FireStarter::RenderImage(void* hwnd)
 {
-    double time = 0.0;
+    // Start the computation timer.
     m_timer.Start();
 
     // Evolve the program instructions.
@@ -538,7 +538,9 @@ void FireStarter::RenderImage(void* hwnd)
         
     // Run the next generation on the GPU.
     bool update = TestProgram();
-    time = m_timer.Duration();
+
+    // Get the computation time.
+    double time = m_timer.Duration();
 
     // Find the best results for display only.
     if (update) {
