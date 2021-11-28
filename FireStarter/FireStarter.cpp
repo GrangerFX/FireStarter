@@ -174,7 +174,7 @@ void FireStarter::FireStarterUnit::EvolveProgram(unsigned long long generation, 
     }
 
     // Generate the replacement code and update the program.
-    std::string replacementCode;
+    m_evaluateCode.clear();
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         unsigned int operation = m_curState.m_program.instructions[i];
         unsigned int opcode = operation % PROGRAM_OPCODES;
@@ -182,22 +182,22 @@ void FireStarter::FireStarterUnit::EvolveProgram(unsigned long long generation, 
 
         switch (opcode) {
         case Operation_add:
-            replacementCode += Format("        n = data.d[%d] += n;\r\n", data);
+            m_evaluateCode += Format("        n = data.d[%d] += n;\r\n", data);
             break;
         case Operation_multiply:
-            replacementCode += Format("        n = data.d[%d] *= n;\r\n", data);
+            m_evaluateCode += Format("        n = data.d[%d] *= n;\r\n", data);
             break;
 #if PROGRAM_LOAD_STORE
         case Operation_load:
-            replacementCode += Format("        n = data.d[%d];\r\n", data);
+            m_evaluateCode += Format("        n = data.d[%d];\r\n", data);
             break;
         case Operation_store:
-            replacementCode += Format("        data.d[%d] = n;\r\n", data);
+            m_evaluateCode += Format("        data.d[%d] = n;\r\n", data);
             break;
 #endif
         }
     }
-    UpdateProgram(m_unitCode, replacementCode, EVALUATE_CODE);
+    UpdateProgram(m_unitCode, m_evaluateCode, EVALUATE_CODE);
     code += m_unitCode;
 } // EvolveProgram
 
@@ -494,6 +494,7 @@ bool FireStarter::TestProgram(void)
         m_bestResult = bestResult;
         m_bestGeneration = m_generation;
         m_bestCode = m_updatedCode;
+        UpdateProgram(m_bestCode, bestUnit0->m_evaluateCode, EVALUATE_CODE);
         UpdateData(m_bestCode, bestResult0, DATA0_CODE);
         UpdateData(m_bestCode, bestResult1, DATA1_CODE);
 

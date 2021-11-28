@@ -24,6 +24,7 @@ public:
         FireStarterResults* m_results1;
         FireStarterResult m_bestResult;
         std::string m_unitCode;
+        std::string m_evaluateCode;
         unsigned long long m_unitIndex;
         unsigned long long m_unitGeneration;
 

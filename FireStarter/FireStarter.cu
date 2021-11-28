@@ -92,8 +92,9 @@ GPU_FUNCTION float InitData1(FireStarterData &data)
 // END //
 } // InitData1
 
-GPU_FUNCTION float Evaluate(FireStarterData data, float n, float t)
+GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
+// EVALUATE //
     n = data.d[25] *= n;
     n = data.d[22] += n;
     n = data.d[18] += n;
@@ -126,7 +127,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n, float t)
     n = data.d[26] += n;
     data.d[14] = n;
     n = data.d[13] *= n;
-    data.d[0] = t;
+// END //
     return n;
 } // Evaluate
 
@@ -165,12 +166,12 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
         float curResult = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
 #if PROGRAM_RANDOM_SAMPLES
-            float n = Evaluate(data, theta[i], target[i]);
+            float n = Evaluate(data, theta[i]);
             curResult = fmaxf(fabsf(n - target[i]), curResult);
 #else
             float theta = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
             float target = Target(theta, variation);
-            float n = Evaluate(data, theta, target);
+            float n = Evaluate(data, theta);
             curResult = fmaxf(fabsf(n - target), curResult);
 #endif
         }
@@ -187,7 +188,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
         result = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
 #if PROGRAM_RANDOM_SAMPLES
-            float n = Evaluate(data, theta[i], target[i]);
+            float n = Evaluate(data, theta[i]);
             result = fmaxf(fabsf(n - target[i]), result);
 #else
             float theta = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
@@ -257,7 +258,7 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
             pixel.x = 255;
             pixel.y = 128;
         };
-        y = (int)(center + Evaluate(bestResult.data, theta, target) * yScale);
+        y = (int)(center + Evaluate(bestResult.data, theta) * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = pixel.y = pixel.z = 255;

@@ -1,6 +1,6 @@
 GPU_FUNCTION float EVALUATE(FireStarterData data, float n, float t)
 {
-    // UNITS //
+// EVALUATE //
     n = data.d[25] *= n;
     n = data.d[22] += n;
     n = data.d[18] += n;
@@ -33,7 +33,7 @@ GPU_FUNCTION float EVALUATE(FireStarterData data, float n, float t)
     n = data.d[26] += n;
     data.d[14] = n;
     n = data.d[13] *= n;
-    // END //
+// END //
     data.d[0] = t;
     return n;
 } // EVALUATE
@@ -70,11 +70,10 @@ GPU_GLOBAL void FIRESTARTER(FireStarterResults* oldResults, FireStarterResults* 
             float theta = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
             float target = Target(theta, variation);
             float n = EVALUATE(data, theta, target);
-            result += fabsf(n - target);
+            result = fmaxf(fabsf(n - target), result);
 #endif
         }
     }
-    result /= SAMPLE_ITERATIONS;
 
     if (result >= oldResult) {
         // The genetic part of genetic programming and a major optimization:
