@@ -3,14 +3,15 @@
 
 #define EVOLVE 1
 
+#define PROGRAM_UNITS 1
 #define PROGRAM_DATA 32
 #define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_GENERATIONS 100
-#define PROGRAM_ITERATIONS 1000
+#define PROGRAM_ITERATIONS (1024 / PROGRAM_UNITS)
 #define PROGRAM_POPULATION 4352
-#define PROGRAM_UNITS 1
 #define PROGRAM_LOAD_STORE 0
 #define PROGRAM_SEED 0
+#define PROGRAM_RANDOM_SAMPLES 0
 #define SAMPLE_ITERATIONS 15
 #define SMART_RANDOM_FACTOR 0.1f
 #define EVOLUTION_SAMPLES 16
@@ -29,10 +30,6 @@
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
 } FireStarterData;
-
-typedef struct FireStarterSamples {
-    float s[SAMPLE_ITERATIONS];
-} FireStarterSamples;
 
 typedef struct {
     FireStarterData data;

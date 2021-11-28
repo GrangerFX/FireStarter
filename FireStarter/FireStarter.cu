@@ -138,12 +138,14 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
         return;
 
     unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(programGeneration) + dataGeneration) + member);
-    FireStarterSamples theta;
-    FireStarterSamples target;
+#if PROGRAM_RANDOM_SAMPLES
+    float theta[SAMPLE_ITERATIONS];
+    float target[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta.s[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
-        target.s[i] = Target(theta.s[i], variation);
+        theta[i] = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
+        target[i] = Target(theta[i], variation);
     }
+#endif
 
     FireStarterData data;
     float result;
@@ -154,8 +156,15 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         result = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-            float n = Evaluate(data, theta.s[i], target.s[i]);
-            result = fmaxf(fabsf(n - target.s[i]), result);
+#if PROGRAM_RANDOM_SAMPLES
+            float n = Evaluate(data, theta[i], target[i]);
+            result = fmaxf(fabsf(n - target[i]), result);
+#else
+            float theta = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
+            float target = Target(theta, variation);
+            float n = Evaluate(data, theta, target);
+            result = fmaxf(fabsf(n - target), result);
+#endif
         }
     }
 

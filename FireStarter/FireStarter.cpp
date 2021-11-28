@@ -78,7 +78,7 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
 {
     // Launch the calculation kernel
     int threadsPerBlock = 256;
-    unsigned int population = PROGRAM_GENERATIONS;
+    unsigned int population = PROGRAM_POPULATION;
     unsigned int generations = PROGRAM_GENERATIONS;
     int blocksPerGrid = (PROGRAM_POPULATION + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
