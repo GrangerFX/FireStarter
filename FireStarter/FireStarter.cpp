@@ -182,17 +182,17 @@ void FireStarter::FireStarterUnit::EvolveProgram(unsigned long long generation, 
 
         switch (opcode) {
         case Operation_add:
-            m_evaluateCode += Format("        n = data.d[%d] += n;\r\n", data);
+            m_evaluateCode += Format("    n = data.d[%d] += n;\r\n", data);
             break;
         case Operation_multiply:
-            m_evaluateCode += Format("        n = data.d[%d] *= n;\r\n", data);
+            m_evaluateCode += Format("    n = data.d[%d] *= n;\r\n", data);
             break;
 #if PROGRAM_LOAD_STORE
         case Operation_load:
-            m_evaluateCode += Format("        n = data.d[%d];\r\n", data);
+            m_evaluateCode += Format("    n = data.d[%d];\r\n", data);
             break;
         case Operation_store:
-            m_evaluateCode += Format("        data.d[%d] = n;\r\n", data);
+            m_evaluateCode += Format("    data.d[%d] = n;\r\n", data);
             break;
 #endif
         }
@@ -470,7 +470,11 @@ void FireStarter::EvolveProgram(void)
     for (FireStarterUnit& unit : m_units)
         unit.EvolveProgram(m_generation, replacementCode);
     m_updatedCode = m_sourceCode;
+#if PROGRAM_UNITS
     UpdateProgram(m_updatedCode, replacementCode, UNITS_CODE);
+#else
+    UpdateProgram(m_updatedCode, m_units[0].m_evaluateCode, EVALUATE_CODE);
+#endif
     CompileProgram(m_updatedCode);
 } // EvolveProgram
 
