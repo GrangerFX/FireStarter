@@ -146,13 +146,18 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
     }
 #endif
 
+#if 1
     FireStarterData data;
     float result;
-    data = oldResults->results[member].data;
-    result = oldResults->results[member].result;
-
+    if (dataGeneration) {
+        data = oldResults->results[member].data;
+        result = oldResults->results[member].result;
+    } else {
+        for (int i = 0; i < PROGRAM_DATA; i++)
+            data.d[i] = RANDOMFACTOR(seed);
+        result = START_RESULT;
+    }
     float oldResult = result;
-#if 1
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
         float oldData = data.d[d];
@@ -175,6 +180,9 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
             data.d[d] = oldData;
     }
 #else
+    FireStarterData data = oldResults->results[member].data;
+    float result = oldResults->results[member].result;
+    float oldResult = result;
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         result = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
