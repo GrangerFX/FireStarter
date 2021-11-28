@@ -32,7 +32,7 @@ public:
         float GetResults(unsigned int dataGeneration);
         void FreeResults(void);
         void RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation);
-        void DrawGraph(CUmodule module, FrameBuffer &buffer, FireStarterResult &result, unsigned int variation);
+        void DrawGraph(CUmodule module, FrameBuffer &buffer, FireStarterResult& result, unsigned int variation);
         void DevolveProgram(unsigned long long generation);
         void EvolveProgram(unsigned long long generation, std::string &code);
         void InitUnit(unsigned long long unitIndex, unsigned int generation = 0);
@@ -41,6 +41,10 @@ public:
     }; // class FireStarterUnit
 
     std::vector<FireStarterUnit> m_units;
+    FireStarterUnit* m_bestUnit0;
+    FireStarterUnit* m_bestUnit1;
+    FireStarterResult m_bestResult0;
+    FireStarterResult m_bestResult1;
     SimpleTimer m_timer;
     FrameBuffer m_buffer;
     CUmodule m_module;
@@ -61,7 +65,6 @@ public:
     FireStarterUnit* GetResults(unsigned int dataGeneration);
     void CompileProgram(const std::string& program);
     void RunProgram(unsigned long long generation0, unsigned int variation);
-    void DrawGraph(FireStarterUnit* unit, FireStarterResult& result, unsigned int variation);
     static bool LoadCode(const std::string& filePath, std::string& code);
     static void SaveCode(const std::string& filePath, const std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
@@ -72,6 +75,7 @@ public:
     void DevolveProgram(void);
     void EvolveProgram(void);
     bool TestProgram(void);
+    void DrawGraph(void);
     void InitProgram(void);
     void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);

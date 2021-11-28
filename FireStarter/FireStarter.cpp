@@ -368,12 +368,6 @@ void FireStarter::RunProgram(unsigned long long generation0, unsigned int variat
     checkCudaErrors(cuCtxSynchronize());
 } // RunProgram
 
-void FireStarter::DrawGraph(FireStarter::FireStarterUnit *unit, FireStarterResult& result, unsigned int variation)
-{
-    unit->DrawGraph(m_module, m_buffer, result, variation);
-    checkCudaErrors(cuCtxSynchronize());
-} // DrawGraph
-
 bool FireStarter::LoadCode(const std::string &filePath, std::string &code)
 {
 #if EVOLVE
@@ -427,6 +421,10 @@ void FireStarter::LoadProgram(void)
 void FireStarter::SaveProgram(void)
 {
 #if EVOLVE
+    m_bestCode = m_updatedCode;
+    UpdateProgram(m_bestCode, m_bestUnit0->m_evaluateCode, EVALUATE_CODE);
+    UpdateData(m_bestCode, m_bestUnit0->m_bestResult, DATA0_CODE);
+    UpdateData(m_bestCode, m_bestUnit1->m_bestResult, DATA1_CODE);
     SaveCode("FireStarter_Best.cu", m_bestCode);
 #endif
 } // SaveProgram
@@ -487,30 +485,37 @@ bool FireStarter::TestProgram(void)
     unsigned int varaition1 = 2;
 #endif
     unsigned int generation0 = 0;
+
     RunProgram(generation0, variation0);
-    FireStarterUnit* bestUnit0 = GetResults(generation0 + PROGRAM_GENERATIONS);
-    FireStarterResult bestResult0 = bestUnit0->m_bestResult;
+    m_bestUnit0 = GetResults(generation0 + PROGRAM_GENERATIONS);
+    m_bestResult0 = m_bestUnit0->m_bestResult;
     RunProgram(generation0, variation1);
-    FireStarterUnit* bestUnit1 = GetResults(generation0 + PROGRAM_GENERATIONS);
-    FireStarterResult bestResult1 = bestUnit1->m_bestResult;
-    float bestResult = MAX(bestResult0.result, bestResult1.result);
+    m_bestUnit1 = GetResults(generation0 + PROGRAM_GENERATIONS);
+    m_bestResult1 = m_bestUnit1->m_bestResult;
+    float bestResult = MAX(m_bestResult0.result, m_bestResult1.result);
     if (bestResult < m_bestResult) {
         m_bestResult = bestResult;
         m_bestGeneration = m_generation;
-        m_bestCode = m_updatedCode;
-        UpdateProgram(m_bestCode, bestUnit0->m_evaluateCode, EVALUATE_CODE);
-        UpdateData(m_bestCode, bestResult0, DATA0_CODE);
-        UpdateData(m_bestCode, bestResult1, DATA1_CODE);
-
-        // Erase the frame buffer
-        EraseFrameBuffer(m_buffer);
-        bestUnit0->DrawGraph(m_module, m_buffer, bestResult0, variation0);
-        bestUnit1->DrawGraph(m_module, m_buffer, bestResult1, variation1);
-        checkCudaErrors(cuCtxSynchronize());
         return true;
     }
     return false;
 } // TestProgram
+
+void FireStarter::DrawGraph(void)
+{
+    unsigned int variation0 = 0;
+#if EVOLVE
+    unsigned int variation1 = 1;
+#else
+    unsigned int varaition1 = 2;
+#endif
+
+    // Erase the frame buffer
+    EraseFrameBuffer(m_buffer);
+    m_bestUnit0->DrawGraph(m_module, m_buffer, m_bestResult0, variation0);
+    m_bestUnit1->DrawGraph(m_module, m_buffer, m_bestResult1, variation1);
+    checkCudaErrors(cuCtxSynchronize());
+} // DrawGraph
 
 void FireStarter::InitProgram(void)
 {
@@ -538,6 +543,7 @@ void FireStarter::RenderImage(void* hwnd)
     // Find the best results for display only.
     if (update) {
         SaveProgram();
+        DrawGraph();
 
         unsigned char buffer[4096];
         BITMAPINFO* bm = (BITMAPINFO*)buffer;
