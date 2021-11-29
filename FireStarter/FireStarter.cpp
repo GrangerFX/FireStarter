@@ -82,7 +82,7 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
     if (PROGRAM_UNITS)
         population /= PROGRAM_UNITS;
     unsigned int generations = PROGRAM_GENERATIONS;
-    int blocksPerGrid = (PROGRAM_POPULATION + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long dataGeneration = generation0;
@@ -90,7 +90,7 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
     if (PROGRAM_UNITS)
         functionFireStarter += std::to_string(m_unitIndex);
 
-    for (unsigned int g = 0; g < PROGRAM_GENERATIONS; g++) {
+    for (unsigned int g = 0; g < generations; g++) {
         void* arr[] = {reinterpret_cast<void*>(dataGeneration & 1 ? &m_results0 : &m_results1),
                        reinterpret_cast<void*>(dataGeneration & 1 ? &m_results1 : &m_results0),
                        reinterpret_cast<void*>(&population),
