@@ -533,7 +533,6 @@ void FireStarter::RenderImage(void* hwnd)
 #if EVOLVE
     DevolveProgram();
     EvolveProgram();
-    CompileProgram(m_updatedCode);
 #endif
         
     // Run the next generation on the GPU.
