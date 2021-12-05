@@ -111,34 +111,6 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
     }
 } // RunProgram
 
-void FireStarter::FireStarterUnit::DrawGraph(CUmodule module, FrameBuffer& buffer, FireStarterResult& result, unsigned int variation)
-{
-    // Launch the display kernel
-    int threadsPerBlock = 32;
-    int blocksPerGrid = (buffer.width + threadsPerBlock - 1) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
-    CUfunction kernel_addr;
-    std::string functionFireShow = "FireShow";
-    if (PROGRAM_UNITS)
-        functionFireShow += std::to_string(m_unitIndex);
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, functionFireShow.c_str()));
-
-    void* arr[] = {reinterpret_cast<void*>(&result),
-                   reinterpret_cast<void*>(&buffer.base),
-                   reinterpret_cast<void*>(&buffer.width),
-                   reinterpret_cast<void*>(&buffer.height),
-                   reinterpret_cast<void*>(&variation)};
-
-    checkCudaErrors(cuLaunchKernel(kernel_addr,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, 0,                                               // shared mem, stream */
-        &arr[0],                                            // arguments */
-        0));
-} // DrawGraph
-
 void FireStarter::FireStarterUnit::DevolveProgram(unsigned long long generation)
 {
     unsigned long long lastAge = generation - m_unitGeneration;
@@ -412,21 +384,23 @@ void FireStarter::ReplaceCode(std::string& code, const std::string& search, cons
 
 void FireStarter::LoadProgram(void)
 {
-    if (EVOLVE ? LoadCode("FireStarter.cu", m_sourceCode) : LoadCode("FireStarter_Best.cu", m_sourceCode)) {
-        m_updatedCode = m_sourceCode;
-        m_bestCode = m_sourceCode;
+    if (LoadCode("FireStarter.cu", m_fireStarterCode) && LoadCode("FireShow.cu", m_fireShowCode)) {
+        m_updatedCode = m_fireStarterCode;
+        m_bestShowCode = m_fireShowCode;
     }
 } // LoadProgram
 
 void FireStarter::SaveProgram(void)
 {
+    m_bestShowCode = m_fireShowCode;
+    UpdateProgram(m_bestShowCode, m_bestUnit0->m_evaluateCode, EVALUATE_CODE);
+    UpdateData(m_bestShowCode, m_bestResult0, DATA0_CODE);
+    UpdateData(m_bestShowCode, m_bestResult1, DATA1_CODE);
 #if EVOLVE
-    m_bestCode = m_updatedCode;
-    UpdateProgram(m_bestCode, m_bestUnit0->m_evaluateCode, EVALUATE_CODE);
-    UpdateData(m_bestCode, m_bestUnit0->m_bestResult, DATA0_CODE);
-    UpdateData(m_bestCode, m_bestUnit1->m_bestResult, DATA1_CODE);
-    SaveCode("FireStarter_Best.cu", m_bestCode);
+    SaveCode("FireShow_Best.cu", m_bestShowCode);
+    SaveCode("FireStarter_Best.cu", m_updatedCode);
 #endif
+    CompileProgram(m_bestShowCode);
 } // SaveProgram
 
 void FireStarter::UpdateProgram(std::string &code, const std::string& replacementCode, std::string startString)
@@ -451,8 +425,8 @@ void FireStarter::UpdateData(std::string& code, const FireStarterResult& result,
 {
     std::string replacementData;
     for (unsigned int i = 0; i < PROGRAM_DATA; i++)
-        replacementData += Format("        data.d[%d] = %f;\r\n", i, result.data.d[i]);
-    replacementData += Format("        return %f;\r\n", result.result);
+        replacementData += Format("    data.d[%d] = %f;\r\n", i, result.data.d[i]);
+    replacementData += Format("    return %f;\r\n", result.result);
     UpdateProgram(code, replacementData, startString);
 } // UpdateData
 
@@ -467,29 +441,19 @@ void FireStarter::EvolveProgram(void)
     std::string replacementCode;
     for (FireStarterUnit& unit : m_units)
         unit.EvolveProgram(m_generation, replacementCode);
-    m_updatedCode = m_sourceCode;
-#if PROGRAM_UNITS
+    m_updatedCode = m_fireStarterCode;
     UpdateProgram(m_updatedCode, replacementCode, UNITS_CODE);
-#else
-    UpdateProgram(m_updatedCode, m_units[0].m_evaluateCode, EVALUATE_CODE);
-#endif
     CompileProgram(m_updatedCode);
 } // EvolveProgram
 
 bool FireStarter::TestProgram(void)
 {
-    unsigned int variation0 = 0;
-#if EVOLVE
-    unsigned int variation1 = 1;
-#else
-    unsigned int varaition1 = 2;
-#endif
     unsigned int generation0 = 0;
 
-    RunProgram(generation0, variation0);
+    RunProgram(generation0, m_variation0);
     m_bestUnit0 = GetResults(generation0 + PROGRAM_GENERATIONS);
     m_bestResult0 = m_bestUnit0->m_bestResult;
-    RunProgram(generation0, variation1);
+    RunProgram(generation0, m_variation1);
     m_bestUnit1 = GetResults(generation0 + PROGRAM_GENERATIONS);
     m_bestResult1 = m_bestUnit1->m_bestResult;
     float bestResult = MAX(m_bestResult0.result, m_bestResult1.result);
@@ -512,15 +476,34 @@ void FireStarter::DrawGraph(void)
 
     // Erase the frame buffer
     EraseFrameBuffer(m_buffer);
-    m_bestUnit0->DrawGraph(m_module, m_buffer, m_bestResult0, variation0);
-    m_bestUnit1->DrawGraph(m_module, m_buffer, m_bestResult1, variation1);
+
+    // Launch the display kernel
+    int threadsPerBlock = 32;
+    int blocksPerGrid = (m_buffer.width + threadsPerBlock - 1) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+
+    CUfunction kernel_addr;
+    std::string functionFireShow = "FireShow";
+    checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_module, functionFireShow.c_str()));
+
+    // Display variation0
+    void* arr0[] = { reinterpret_cast<void*>(&m_buffer.base),
+                   reinterpret_cast<void*>(&m_buffer.width),
+                   reinterpret_cast<void*>(&m_buffer.height) };
+    checkCudaErrors(cuLaunchKernel(kernel_addr,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+        0, 0,                                               // shared mem, stream */
+        &arr0[0],                                            // arguments */
+        0));
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph
 
 void FireStarter::InitProgram(void)
 {
     LoadProgram();
-    CompileProgram(m_sourceCode);
+    CompileProgram(m_fireShowCode);
 } // InitProgram
 
 void FireStarter::RenderImage(void* hwnd)
@@ -590,6 +573,12 @@ FireStarter::FireStarter(void)
     m_statusString[0] = 0;
     m_module = NULL;
     m_bestResult = START_RESULT;
+    m_variation0 = 0;
+#if EVOLVE
+    m_variation1 = 1;
+#else
+    m_varaition1 = 2;
+#endif
 } // FireStarter
 
 FireStarter::~FireStarter(void)

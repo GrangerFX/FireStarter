@@ -3,7 +3,7 @@
 
 #define EVOLVE 1
 
-#define PROGRAM_UNITS 0
+#define PROGRAM_UNITS 1
 #define PROGRAM_DATA 32
 #define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_GENERATIONS 100
@@ -21,6 +21,8 @@
 
 #define OPERATIONS_CODE "// OPERATIONS //"
 #define EVALUATE_CODE   "// EVALUATE //"
+#define EVALUATE0_CODE  "// EVALUATE0 //"
+#define EVALUATE1_CODE  "// EVALUATE1 //"
 #define UNITS_CODE      "// UNITS //"
 #define BEST_CODE       "// BEST //"
 #define DATA0_CODE      "// DATA0 //"
@@ -56,3 +58,16 @@ typedef struct {
     unsigned int instructions[PROGRAM_INSTRUCTIONS];
     unsigned long long generation;
 } FireStarterProgram;
+
+GPU_FUNCTION float Target(float n, unsigned int variation)
+{
+    switch (variation) {
+    default:
+    case 0:
+        return sinf(n);
+    case 1:
+        return sinf(n * 1.2f) + n * 0.2f;
+    case 2:
+        return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
+    }
+} // Target

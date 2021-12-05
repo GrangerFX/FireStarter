@@ -32,7 +32,6 @@ public:
         float GetResults(unsigned int dataGeneration);
         void FreeResults(void);
         void RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation);
-        void DrawGraph(CUmodule module, FrameBuffer &buffer, FireStarterResult& result, unsigned int variation);
         void DevolveProgram(unsigned long long generation);
         void EvolveProgram(unsigned long long generation, std::string &code);
         void InitUnit(unsigned long long unitIndex, unsigned int generation = 0);
@@ -48,14 +47,17 @@ public:
     SimpleTimer m_timer;
     FrameBuffer m_buffer;
     CUmodule m_module;
-    std::string m_sourceCode;
+    std::string m_fireStarterCode;
+    std::string m_fireShowCode;
     std::string m_updatedCode;
-    std::string m_bestCode;
+    std::string m_bestShowCode;
     unsigned long long m_generation;
     unsigned long long m_lastGeneration;
     unsigned long long m_bestGeneration;
     char m_statusString[1024];
     float m_bestResult;
+    unsigned int m_variation0;
+    unsigned int m_variation1;
 
     void EraseFrameBuffer(FrameBuffer &buffer);
     void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);

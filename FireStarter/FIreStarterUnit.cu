@@ -54,11 +54,8 @@ GPU_GLOBAL void FIRESTARTER(FireStarterResults* oldResults, FireStarterResults* 
     }
 #endif
 
-    FireStarterData data;
-    float result;
-    data = oldResults->results[member].data;
-    result = oldResults->results[member].result;
-
+    FireStarterData data = oldResults->results[member].data;
+    float result = oldResults->results[member].result;
     float oldResult = result;
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         result = 0.0f;
@@ -97,46 +94,3 @@ GPU_GLOBAL void FIRESTARTER(FireStarterResults* oldResults, FireStarterResults* 
     newResults->results[member].result = result;
 } // FIRESTARTER
 
-GPU_GLOBAL void FIRESHOW(const FireStarterResult bestResult, uchar4 *bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight, const unsigned int variation)
-{
-    int x = blockDim.x * blockIdx.x + threadIdx.x;
-    int xScale = bufferHeight / 8;
-    int yScale = bufferHeight / 16;
-    if (x < bufferHeight) {
-        int x0 = (bufferWidth / 2) - xScale;
-        int x1 = (bufferWidth / 2) + xScale;
-        if (x0 >= 0) {
-            uchar4& pixel(bufferPixels[x * bufferWidth + x0]);
-            pixel.x = 64;
-            pixel.y = 128;
-            pixel.z = 64;
-        };
-        if (x1 < bufferWidth) {
-            uchar4& pixel(bufferPixels[x * bufferWidth + x1]);
-            pixel.x = 64;
-            pixel.y = 128;
-            pixel.z = 64;
-        };
-    }
-    if (x < bufferWidth) {
-        FireStarterData data;
-        if (variation)
-            InitData1(data);
-        else
-            InitData0(data);
-        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
-        float center = bufferHeight * 0.66f;
-        float target = Target(theta, variation);
-        int y = (int)(center + target * yScale);
-        if ((y >= 0) && (y < bufferHeight)) {
-            uchar4& pixel(bufferPixels[y * bufferWidth + x]);
-            pixel.x = 255;
-            pixel.y = 128;
-        };
-        y = (int)(center + EVALUATE(bestResult.data, theta, target) * yScale);
-        if ((y >= 0) && (y < bufferHeight)) {
-            uchar4& pixel(bufferPixels[y * bufferWidth + x]);
-            pixel.x = pixel.y = pixel.z = 255;
-        };
-    }
-} // FIRESHOW
