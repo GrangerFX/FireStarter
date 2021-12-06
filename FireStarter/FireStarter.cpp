@@ -40,41 +40,45 @@ void FireStarter::FireStarterUnit::RandomInstruction(unsigned int index, unsigne
 
 float FireStarter::FireStarterUnit::GetResults(unsigned int dataGeneration)
 {
-    FireStarterResults* results = dataGeneration & 1 ? m_results1 : m_results0;
+    FireStarterResults* results0 = dataGeneration & 1 ? m_variations[0].m_results1 : m_variations[0].m_results0;
+    FireStarterResults* results1 = dataGeneration & 1 ? m_variations[1].m_results1 : m_variations[1].m_results0;
     unsigned int index = 0;
-    float result = results->results[0].result;
+    float result = MAX(results0->results[0].result, results1->results[0].result);
     for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
-        float curResult = results->results[i].result;
+        float curResult = MAX(results0->results[i].result, results1->results[i].result);
         if (curResult < result) {
             result = curResult;
             index = i;
         }
     }
-    m_bestResult = results->results[index];
+    m_bestResult[0] = results0->results[index];
+    m_bestResult[1] = results1->results[index];
     return result;
 } // GetResults
 
 void FireStarter::FireStarterUnit::FreeResults(void)
 {
-    if (m_results0) {
-        cudaError_t err = cudaFree(m_results0);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free old results (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
+    for (unsigned int v = 0; v < 2; v++) {
+        if (m_variations[v].m_results0) {
+            cudaError_t err = cudaFree(m_variations[v].m_results0);
+            if (err != cudaSuccess) {
+                fprintf(stderr, "Failed to free old results (error code %s)!\n", cudaGetErrorString(err));
+                exit(EXIT_FAILURE);
+            }
+            m_variations[v].m_results0 = NULL;
         }
-        m_results0 = NULL;
-    }
-    if (m_results1) {
-        cudaError_t err = cudaFree(m_results1);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free new results (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
+        if (m_variations[v].m_results1) {
+            cudaError_t err = cudaFree(m_variations[v].m_results1);
+            if (err != cudaSuccess) {
+                fprintf(stderr, "Failed to free new results (error code %s)!\n", cudaGetErrorString(err));
+                exit(EXIT_FAILURE);
+            }
+            m_variations[v].m_results1 = NULL;
         }
-        m_results1 = NULL;
     }
 } // FreeResults
 
-void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation)
+void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation0, unsigned int variation1)
 {
     // Launch the calculation kernel
     int threadsPerBlock = 256;
@@ -90,24 +94,26 @@ void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long lon
     if (PROGRAM_UNITS)
         functionFireStarter += std::to_string(m_unitIndex);
 
-    for (unsigned int g = 0; g < generations; g++) {
-        void* arr[] = {reinterpret_cast<void*>(dataGeneration & 1 ? &m_results0 : &m_results1),
-                       reinterpret_cast<void*>(dataGeneration & 1 ? &m_results1 : &m_results0),
-                       reinterpret_cast<void*>(&population),
-                       reinterpret_cast<void*>(&dataGeneration),
-                       reinterpret_cast<void*>(&generation),
-                       reinterpret_cast<void*>(&variation)};
+    for (unsigned int v = 0; v < 2; v++) {
+        for (unsigned int g = 0; g < generations; g++) {
+            void* arr[] = { reinterpret_cast<void*>(dataGeneration & 1 ? &m_variations[v].m_results0 : &m_variations[v].m_results1),
+                           reinterpret_cast<void*>(dataGeneration & 1 ? &m_variations[v].m_results1 : &m_variations[v].m_results0),
+                           reinterpret_cast<void*>(&population),
+                           reinterpret_cast<void*>(&dataGeneration),
+                           reinterpret_cast<void*>(&generation),
+                           reinterpret_cast<void*>(v ? &variation1 : &variation0) };
 
-        CUfunction kernel_addr;
-        checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, functionFireStarter.c_str()));
+            CUfunction kernel_addr;
+            checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, functionFireStarter.c_str()));
 
-        checkCudaErrors(cuLaunchKernel(kernel_addr,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, 0,                                               // shared mem, stream */
-            &arr[0],                                            // arguments */
-            0));
-        dataGeneration++;
+            checkCudaErrors(cuLaunchKernel(kernel_addr,
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+                0, 0,                                               // shared mem, stream */
+                &arr[0],                                            // arguments */
+                0));
+            dataGeneration++;
+        }
     }
 } // RunProgram
 
@@ -182,18 +188,20 @@ void FireStarter::FireStarterUnit::InitUnit(unsigned long long unitIndex, unsign
     ReplaceCode(m_unitCode, "FIRESHOW", "FireShow" + std::to_string(m_unitIndex));
         
     unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
-    if (!m_results0) {
-        cudaError_t err = cudaMallocManaged(&m_results0, resultsSize);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to allocate old results (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
+    for (unsigned int v = 0; v < 2; v++) {
+        if (!m_variations[v].m_results0) {
+            cudaError_t err = cudaMallocManaged(&m_variations[v].m_results0, resultsSize);
+            if (err != cudaSuccess) {
+                fprintf(stderr, "Failed to allocate old results (error code %s)!\n", cudaGetErrorString(err));
+                exit(EXIT_FAILURE);
+            }
         }
-    }
-    if (!m_results1) {
-        cudaError_t err = cudaMallocManaged(&m_results1, resultsSize);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to allocate new results (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
+        if (!m_variations[v].m_results1) {
+            cudaError_t err = cudaMallocManaged(&m_variations[v].m_results1, resultsSize);
+            if (err != cudaSuccess) {
+                fprintf(stderr, "Failed to allocate new results (error code %s)!\n", cudaGetErrorString(err));
+                exit(EXIT_FAILURE);
+            }
         }
     }
 
@@ -211,9 +219,11 @@ void FireStarter::FireStarterUnit::InitUnit(unsigned long long unitIndex, unsign
     m_bestState = m_curState;
     m_states.push_back(m_curState);
 
-    for (unsigned int i = 0; i < PROGRAM_POPULATION; i++) {
-        m_results0->results[i] = startResult;
-        m_results1->results[i] = startResult;
+    for (unsigned int v = 0; v < 2; v++) {
+        for (unsigned int i = 0; i < PROGRAM_POPULATION; i++) {
+            m_variations[v].m_results0->results[i] = startResult;
+            m_variations[v].m_results1->results[i] = startResult;
+        }
     }
 } // InitUnit
 
@@ -221,8 +231,10 @@ FireStarter::FireStarterUnit::FireStarterUnit(void)
 {
     m_curState.m_program.generation = 0;
     m_bestState.m_program.generation = 0;
-    m_results0 = nullptr;
-    m_results1 = nullptr;
+    for (unsigned int v = 0; v < 2; v++) {
+        m_variations[v].m_results0 = nullptr;
+        m_variations[v].m_results1 = nullptr;
+    }
     m_unitIndex = 0;
     m_unitGeneration = 0;
 } // FireStarterUnit
@@ -333,10 +345,10 @@ void FireStarter::CompileProgram(const std::string& program)
     ptx = NULL;
 } // CompileProgram
 
-void FireStarter::RunProgram(unsigned long long generation0, unsigned int variation)
+void FireStarter::RunProgram(unsigned long long generation0, unsigned int variation0, unsigned int variation1)
 {
     for (FireStarterUnit& unit : m_units)
-        unit.RunProgram(m_module, generation0, m_generation, variation);
+        unit.RunProgram(m_module, generation0, m_generation, variation0, variation1);
     checkCudaErrors(cuCtxSynchronize());
 } // RunProgram
 
@@ -393,7 +405,7 @@ void FireStarter::LoadProgram(void)
 void FireStarter::SaveProgram(void)
 {
     m_bestShowCode = m_fireShowCode;
-    UpdateProgram(m_bestShowCode, m_bestUnit0->m_evaluateCode, EVALUATE_CODE);
+    UpdateProgram(m_bestShowCode, m_bestUnit->m_evaluateCode, EVALUATE_CODE);
     UpdateData(m_bestShowCode, m_bestResult0, DATA0_CODE);
     UpdateData(m_bestShowCode, m_bestResult1, DATA1_CODE);
 #if EVOLVE
@@ -450,12 +462,10 @@ bool FireStarter::TestProgram(void)
 {
     unsigned int generation0 = 0;
 
-    RunProgram(generation0, m_variation0);
-    m_bestUnit0 = GetResults(generation0 + PROGRAM_GENERATIONS);
-    m_bestResult0 = m_bestUnit0->m_bestResult;
-    RunProgram(generation0, m_variation1);
-    m_bestUnit1 = GetResults(generation0 + PROGRAM_GENERATIONS);
-    m_bestResult1 = m_bestUnit1->m_bestResult;
+    RunProgram(generation0, m_variation0, m_variation1);
+    m_bestUnit = GetResults(generation0 + PROGRAM_GENERATIONS);
+    m_bestResult0 = m_bestUnit->m_bestResult[0];
+    m_bestResult1 = m_bestUnit->m_bestResult[1];
     float bestResult = MAX(m_bestResult0.result, m_bestResult1.result);
     if (bestResult < m_bestResult) {
         m_bestResult = bestResult;

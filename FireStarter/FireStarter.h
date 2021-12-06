@@ -13,16 +13,22 @@ public:
 
         FireStarterState(void);
         ~FireStarterState(void);
-    }; class FireStarterState;
+    }; // class FireStarterState;
+
+    class FireStarterVariation {
+    public:
+        FireStarterResults* m_results0;
+        FireStarterResults* m_results1;
+        unsigned int m_variation;
+    }; // ClassFireStarterVariation
 
     class FireStarterUnit {
     public:
         std::vector<FireStarterState> m_states;
+        FireStarterVariation m_variations[2];
         FireStarterState m_curState;
         FireStarterState m_bestState;
-        FireStarterResults* m_results0;
-        FireStarterResults* m_results1;
-        FireStarterResult m_bestResult;
+        FireStarterResult m_bestResult[2];
         std::string m_unitCode;
         std::string m_evaluateCode;
         unsigned long long m_unitIndex;
@@ -31,7 +37,7 @@ public:
         void RandomInstruction(unsigned int index, unsigned int& seed);
         float GetResults(unsigned int dataGeneration);
         void FreeResults(void);
-        void RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation);
+        void RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation0, unsigned int variation1);
         void DevolveProgram(unsigned long long generation);
         void EvolveProgram(unsigned long long generation, std::string &code);
         void InitUnit(unsigned long long unitIndex, unsigned int generation = 0);
@@ -40,8 +46,7 @@ public:
     }; // class FireStarterUnit
 
     std::vector<FireStarterUnit> m_units;
-    FireStarterUnit* m_bestUnit0;
-    FireStarterUnit* m_bestUnit1;
+    FireStarterUnit* m_bestUnit;
     FireStarterResult m_bestResult0;
     FireStarterResult m_bestResult1;
     SimpleTimer m_timer;
@@ -66,7 +71,7 @@ public:
     void InitUnits(unsigned int generation = 0);
     FireStarterUnit* GetResults(unsigned int dataGeneration);
     void CompileProgram(const std::string& program);
-    void RunProgram(unsigned long long generation0, unsigned int variation);
+    void RunProgram(unsigned long long generation0, unsigned int variation0, unsigned int variation1);
     static bool LoadCode(const std::string& filePath, std::string& code);
     static void SaveCode(const std::string& filePath, const std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
