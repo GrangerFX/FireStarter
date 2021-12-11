@@ -97,9 +97,7 @@
     <ClInclude Include="PrintF.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FireShow.cu" />
     <None Include="FireStarter.cu" />
-    <None Include="FIreStarterUnit.cu" />
     <None Include="FireStarter_Best.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

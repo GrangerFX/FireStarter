@@ -22,228 +22,6 @@ do { \
     } \
 } while (0)
 
-FireStarter::FireStarterState::FireStarterState(void)
-{
-} // FireStarterState
-
-FireStarter::FireStarterState::~FireStarterState(void)
-{
-} // ~FireStarterState
-
-void FireStarter::FireStarterUnit::RandomInstruction(unsigned int index, unsigned int& seed)
-{
-    unsigned int operation = m_curState.m_program.instructions[index];
-    unsigned int opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
-    unsigned int data = RANDOMSEED(seed) % PROGRAM_DATA;
-    m_curState.m_program.instructions[index] = data * PROGRAM_OPCODES + opcode;
-} // RandomInstruction
-
-float FireStarter::FireStarterUnit::GetResults(unsigned int dataGeneration)
-{
-    FireStarterResults* results0 = dataGeneration & 1 ? m_variations[0].m_results1 : m_variations[0].m_results0;
-    FireStarterResults* results1 = dataGeneration & 1 ? m_variations[1].m_results1 : m_variations[1].m_results0;
-    unsigned int index = 0;
-    float result = MAX(results0->results[0].result, results1->results[0].result);
-    for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
-        float curResult = MAX(results0->results[i].result, results1->results[i].result);
-        if (curResult < result) {
-            result = curResult;
-            index = i;
-        }
-    }
-    m_bestResult[0] = results0->results[index];
-    m_bestResult[1] = results1->results[index];
-    return result;
-} // GetResults
-
-void FireStarter::FireStarterUnit::FreeResults(void)
-{
-    for (unsigned int v = 0; v < 2; v++) {
-        if (m_variations[v].m_results0) {
-            cudaError_t err = cudaFree(m_variations[v].m_results0);
-            if (err != cudaSuccess) {
-                fprintf(stderr, "Failed to free old results (error code %s)!\n", cudaGetErrorString(err));
-                exit(EXIT_FAILURE);
-            }
-            m_variations[v].m_results0 = NULL;
-        }
-        if (m_variations[v].m_results1) {
-            cudaError_t err = cudaFree(m_variations[v].m_results1);
-            if (err != cudaSuccess) {
-                fprintf(stderr, "Failed to free new results (error code %s)!\n", cudaGetErrorString(err));
-                exit(EXIT_FAILURE);
-            }
-            m_variations[v].m_results1 = NULL;
-        }
-    }
-} // FreeResults
-
-void FireStarter::FireStarterUnit::RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation0, unsigned int variation1)
-{
-    // Launch the calculation kernel
-    int threadsPerBlock = 256;
-    unsigned int population = PROGRAM_POPULATION;
-    if (PROGRAM_UNITS)
-        population /= PROGRAM_UNITS;
-    unsigned int generations = PROGRAM_GENERATIONS;
-    int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned long long dataGeneration = generation0;
-    std::string functionFireStarter = "FireStarter";
-    if (PROGRAM_UNITS)
-        functionFireStarter += std::to_string(m_unitIndex);
-
-    for (unsigned int v = 0; v < 2; v++) {
-        for (unsigned int g = 0; g < generations; g++) {
-            void* arr[] = { reinterpret_cast<void*>(dataGeneration & 1 ? &m_variations[v].m_results0 : &m_variations[v].m_results1),
-                           reinterpret_cast<void*>(dataGeneration & 1 ? &m_variations[v].m_results1 : &m_variations[v].m_results0),
-                           reinterpret_cast<void*>(&population),
-                           reinterpret_cast<void*>(&dataGeneration),
-                           reinterpret_cast<void*>(&generation),
-                           reinterpret_cast<void*>(v ? &variation1 : &variation0) };
-
-            CUfunction kernel_addr;
-            checkCudaErrors(cuModuleGetFunction(&kernel_addr, module, functionFireStarter.c_str()));
-
-            checkCudaErrors(cuLaunchKernel(kernel_addr,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-                0, 0,                                               // shared mem, stream */
-                &arr[0],                                            // arguments */
-                0));
-            dataGeneration++;
-        }
-    }
-} // RunProgram
-
-void FireStarter::FireStarterUnit::DevolveProgram(unsigned long long generation)
-{
-    unsigned long long lastAge = generation - m_unitGeneration;
-    unsigned int state = (unsigned int)m_states.size() - 1;
-    if (lastAge > SMART_DEVOLVE_AGE) {
-        // Devolve to an earlier state if too many generations have elapsed without improvement.
-        // This prevents dead-end evolution.
-        unsigned int devolve = 1;
-        while (state && (++m_states[state].m_devolve >= devolve)) {
-            m_states.pop_back();
-            state--;
-            devolve++;
-        }
-        m_unitGeneration = generation;
-    }
-    m_curState = m_states[state];
-} // DevolveProgram
-
-void FireStarter::FireStarterUnit::EvolveProgram(unsigned long long generation, std::string& code)
-{
-    // Determine how many changes to make to the instructions.
-    unsigned long long lastAge = generation - m_unitGeneration;
-    unsigned int numChanges = 1;
-    if (lastAge > SMART_EVOLVE_AGE)
-        numChanges++;
-
-    // Make random changes to the program instructions.
-    unsigned int seed = RANDOMHASH((unsigned int)(generation * 2));
-    m_curState.m_program.generation = generation;
-    while (numChanges--) {
-        unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-        RandomInstruction(index, seed);
-    }
-
-    // Generate the replacement code and update the program.
-    m_evaluateCode.clear();
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        unsigned int operation = m_curState.m_program.instructions[i];
-        unsigned int opcode = operation % PROGRAM_OPCODES;
-        unsigned int data = operation / PROGRAM_OPCODES;
-
-        switch (opcode) {
-        case Operation_add:
-            m_evaluateCode += Format("    n = data.d[%d] += n;\r\n", data);
-            break;
-        case Operation_multiply:
-            m_evaluateCode += Format("    n = data.d[%d] *= n;\r\n", data);
-            break;
-#if PROGRAM_LOAD_STORE
-        case Operation_load:
-            m_evaluateCode += Format("    n = data.d[%d];\r\n", data);
-            break;
-        case Operation_store:
-            m_evaluateCode += Format("    data.d[%d] = n;\r\n", data);
-            break;
-#endif
-        }
-    }
-    UpdateProgram(m_unitCode, m_evaluateCode, EVALUATE_CODE);
-    code += m_unitCode;
-} // EvolveProgram
-
-void FireStarter::FireStarterUnit::InitUnit(unsigned long long unitIndex, unsigned int generation)
-{
-    m_unitIndex = unitIndex;
-    LoadCode("FireStarterUnit.cu", m_unitCode);
-    ReplaceCode(m_unitCode, "EVALUATE", "Evaluate" + std::to_string(m_unitIndex));
-    ReplaceCode(m_unitCode, "FIRESTARTER", "FireStarter" + std::to_string(m_unitIndex));
-    ReplaceCode(m_unitCode, "FIRESHOW", "FireShow" + std::to_string(m_unitIndex));
-        
-    unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
-    for (unsigned int v = 0; v < 2; v++) {
-        if (!m_variations[v].m_results0) {
-            cudaError_t err = cudaMallocManaged(&m_variations[v].m_results0, resultsSize);
-            if (err != cudaSuccess) {
-                fprintf(stderr, "Failed to allocate old results (error code %s)!\n", cudaGetErrorString(err));
-                exit(EXIT_FAILURE);
-            }
-        }
-        if (!m_variations[v].m_results1) {
-            cudaError_t err = cudaMallocManaged(&m_variations[v].m_results1, resultsSize);
-            if (err != cudaSuccess) {
-                fprintf(stderr, "Failed to allocate new results (error code %s)!\n", cudaGetErrorString(err));
-                exit(EXIT_FAILURE);
-            }
-        }
-    }
-
-    // Initialize the evolving program instructions.
-    unsigned int seed = RANDOMHASH(RANDOMHASH((unsigned int)generation) + (unsigned int)m_unitIndex);
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        RandomInstruction(i, seed);
-
-    // Initialize the evolving program data values.
-    FireStarterResult startResult;
-    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
-        startResult.data.d[i] = RANDOMFACTOR(seed);
-    startResult.result = START_RESULT;
-    m_curState.m_devolve = 0;
-    m_bestState = m_curState;
-    m_states.push_back(m_curState);
-
-    for (unsigned int v = 0; v < 2; v++) {
-        for (unsigned int i = 0; i < PROGRAM_POPULATION; i++) {
-            m_variations[v].m_results0->results[i] = startResult;
-            m_variations[v].m_results1->results[i] = startResult;
-        }
-    }
-} // InitUnit
-
-FireStarter::FireStarterUnit::FireStarterUnit(void)
-{
-    m_curState.m_program.generation = 0;
-    m_bestState.m_program.generation = 0;
-    for (unsigned int v = 0; v < 2; v++) {
-        m_variations[v].m_results0 = nullptr;
-        m_variations[v].m_results1 = nullptr;
-    }
-    m_unitIndex = 0;
-    m_unitGeneration = 0;
-} // FireStarterUnit
-
-FireStarter::FireStarterUnit::~FireStarterUnit(void)
-{
-    FreeResults();
-} // ~FireStarterUnit
-
 void FireStarter::EraseFrameBuffer(FrameBuffer &buffer)
 {
     memset(buffer.base, 0, buffer.width * buffer.height * sizeof(uchar4));
@@ -284,25 +62,88 @@ void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
     buffer.base = NULL;
 } // FreeFrameBuffer
 
-void FireStarter::InitUnits(unsigned int generation)
+void FireStarter::RandomInstruction(unsigned int index, unsigned int &seed)
 {
-    for (FireStarterUnit& unit : m_units)
-        unit.InitUnit((unsigned long long)(&unit - &m_units[0]), generation);
-} // InitUnits
+    unsigned int operation = m_curState.program.instructions[index];
+    unsigned int opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
+    unsigned int data = RANDOMSEED(seed) % PROGRAM_DATA;
+    m_curState.program.instructions[index] = data * PROGRAM_OPCODES + opcode;
+ } // RandomInstruction
 
-FireStarter::FireStarterUnit* FireStarter::GetResults(unsigned int dataGeneration)
+void FireStarter::GetResults(FireStarterResults* results, FireStarterResult& bestResult)
 {
-    float bestResult = START_RESULT;
-    FireStarterUnit* bestUnit = &m_units[0];
-    for (FireStarterUnit& unit : m_units) {
-        float result = unit.GetResults(dataGeneration);
-        if (result < bestResult) {
-            bestResult = result;
-            bestUnit = &unit;
+    unsigned int index = 0;
+    float result = results->results[0].result;
+    for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
+        float curResult = results->results[i].result;
+        if (curResult < result) {
+            result = curResult;
+            index = i;
         }
     }
-    return bestUnit;
+    bestResult = results->results[index];
 } // GetResults
+
+void FireStarter::InitResults(void)
+{
+    unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
+    if (!m_results0) {
+        cudaError_t err = cudaMallocManaged(&m_results0, resultsSize);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to allocate old results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+    }
+    if (!m_results1) {
+        cudaError_t err = cudaMallocManaged(&m_results1, resultsSize);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to allocate new results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Initialize the evolving program instructions.
+    unsigned int seed = RANDOMHASH((unsigned int)m_generation);
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        RandomInstruction(i, seed);
+
+    // Initialize the evolving program data values.
+    for (unsigned int i = 0; i < PROGRAM_DATA; i++) {
+        m_curState.result0.data.d[i] = 1.0f;
+        m_curState.result1.data.d[i] = 1.0f;
+    }
+    m_curState.result0.result = START_RESULT;
+    m_curState.result1.result = START_RESULT;
+    m_curState.maxResult = START_RESULT;
+    m_curState.devolve = 0;
+    m_bestState = m_curState;
+    m_states.push_back(m_curState);
+
+    for (unsigned int i = 0; i < PROGRAM_POPULATION; i++) {
+        m_results0->results[i] = m_curState.result0;
+        m_results1->results[i] = m_curState.result1;
+    }
+} // InitResults
+
+void FireStarter::FreeResults(void)
+{
+    if (m_results0) {
+        cudaError_t err = cudaFree(m_results0);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to free old results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        m_results0 = NULL;
+    }
+    if (m_results1) {
+        cudaError_t err = cudaFree(m_results1);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to free new results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        m_results1 = NULL;
+    }
+} // FreeResults
 
 void FireStarter::CompileProgram(const std::string& program)
 {
@@ -345,74 +186,111 @@ void FireStarter::CompileProgram(const std::string& program)
     ptx = NULL;
 } // CompileProgram
 
-void FireStarter::RunProgram(unsigned long long generation0, unsigned int variation0, unsigned int variation1)
+void FireStarter::RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult &result)
 {
-    for (FireStarterUnit& unit : m_units)
-        unit.RunProgram(m_module, generation0, m_generation, variation0, variation1);
+    // Launch the calculation kernel
+    int threadsPerBlock = 256;
+    int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long dataGeneration = generation0;
+
+    for (unsigned int g = 0; g < generations; g++) {
+        void* arr[] = {reinterpret_cast<void*>(&m_results0),
+                       reinterpret_cast<void*>(&m_results1),
+                       reinterpret_cast<void*>(&population),
+                       reinterpret_cast<void*>(&dataGeneration),
+                       reinterpret_cast<void*>(&m_generation),
+                       reinterpret_cast<void*>(&variation)};
+
+        CUfunction kernel_addr;
+        checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_module, "FireStarter"));
+
+        checkCudaErrors(cuLaunchKernel(kernel_addr,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+            0, 0,                                               // shared mem, stream */
+            &arr[0],                                            // arguments */
+            0));
+        dataGeneration++;
+    }
     checkCudaErrors(cuCtxSynchronize());
+    GetResults(dataGeneration & 1 ? m_results1 : m_results0, result);
 } // RunProgram
 
-bool FireStarter::LoadCode(const std::string &filePath, std::string &code)
+void FireStarter::DrawGraph(unsigned int variation)
+{
+    // Launch the display kernel
+    int threadsPerBlock = 32;
+    int blocksPerGrid = (m_buffer.width + threadsPerBlock - 1) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+
+    CUfunction kernel_addr;
+    checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_module, "FireShow"));
+
+    void *arr[] = {reinterpret_cast<void*>(variation ? &m_bestState.result1 : &m_bestState.result0),
+                   reinterpret_cast<void*>(&m_buffer.base),
+                   reinterpret_cast<void*>(&m_buffer.width),
+                   reinterpret_cast<void*>(&m_buffer.height),
+                   reinterpret_cast<void*>(&variation)};
+
+    checkCudaErrors(cuLaunchKernel(kernel_addr,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+        0, 0,                                               // shared mem, stream */
+        &arr[0],                                            // arguments */
+        0));
+
+    checkCudaErrors(cuCtxSynchronize());
+} // DrawGraph
+
+void FireStarter::LoadProgram(void)
 {
 #if EVOLVE
-    std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
+    std::ifstream file("FireStarter.cu", std::ios::ate | std::ios::binary);
 #else
     std::ifstream file("FireStarter_Best.cu", std::ios::ate | std::ios::binary);
 #endif
     if (file.is_open()) {
         // Found usable source file
         file.seekg(0, std::ios::end);
-        code.reserve(code.length() + file.tellg());
+        m_sourceCode.reserve(file.tellg());
         file.seekg(0, std::ios::beg);
-        code.append((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
+        m_sourceCode.assign((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
         file.close();
-        return true;
-    }
-    return false;
-} // LoadCode
-
-void FireStarter::SaveCode(const std::string& filePath, const std::string& code)
-{
-    std::ofstream file(filePath.c_str(), std::ios::out | std::ios::binary);
-    if (file.is_open()) {
-        file << code;
-        file.close();
-    }
-} // SaveCode
-
-void FireStarter::ReplaceCode(std::string& code, const std::string& search, const std::string& replace)
-{
-    // Get the first occurrence
-    size_t pos = code.find(search);
-
-    // Repeat till end is reached
-    while (pos != std::string::npos) {
-        // Replace this occurrence of Sub String
-        code.replace(pos, search.size(), replace);
-        // Get the next occurrence from the current position
-        pos = code.find(search, pos + replace.size());
-    }
-} // ReplaceCode
-
-void FireStarter::LoadProgram(void)
-{
-    if (LoadCode("FireStarter.cu", m_fireStarterCode) && LoadCode("FireShow.cu", m_fireShowCode)) {
-        m_updatedCode = m_fireStarterCode;
-        m_bestShowCode = m_fireShowCode;
+        m_updatedCode = m_sourceCode;
+        m_bestCode = m_sourceCode;
     }
 } // LoadProgram
 
-void FireStarter::SaveProgram(void)
+bool FireStarter::SaveProgram(void)
 {
-    m_bestShowCode = m_fireShowCode;
-    UpdateProgram(m_bestShowCode, m_bestUnit->m_evaluateCode, EVALUATE_CODE);
-    UpdateData(m_bestShowCode, m_bestResult0, DATA0_CODE);
-    UpdateData(m_bestShowCode, m_bestResult1, DATA1_CODE);
+    float maxResult = MAX(m_curState.result0.result, m_curState.result1.result);
+    if (maxResult < m_curState.maxResult) {
+        m_lastGeneration = m_generation;
+        m_curState.maxResult = maxResult;
+        m_curState.devolve = 0;
 #if EVOLVE
-    SaveCode("FireShow_Best.cu", m_bestShowCode);
-    SaveCode("FireStarter_Best.cu", m_updatedCode);
+        m_states.push_back(m_curState);
 #endif
-    CompileProgram(m_bestShowCode);
+        if (m_curState.maxResult < m_bestState.maxResult) {
+            m_bestGeneration = m_generation;
+            m_bestState = m_curState;
+            m_bestCode = m_updatedCode;
+            UpdateData(m_bestCode, m_bestState.result0, DATA0_CODE);
+            UpdateData(m_bestCode, m_bestState.result1, DATA1_CODE);
+#if EVOLVE
+            std::ofstream file("FireStarter_Best.cu", std::ios::out | std::ios::binary);
+            if (file.is_open()) {
+                file << m_bestCode;
+                file.close();
+            }
+#endif
+            return true;
+        }
+    }
+    return false;
 } // SaveProgram
 
 void FireStarter::UpdateProgram(std::string &code, const std::string& replacementCode, std::string startString)
@@ -433,6 +311,34 @@ void FireStarter::UpdateProgram(std::string &code, const std::string& replacemen
     }
 } // UpdateProgram
 
+void FireStarter::UpdateOperations(std::string& code)
+{
+    std::string replacementOperations;
+    replacementOperations += "    switch (operation) {\r\n";
+    for (unsigned int data = 0; data < PROGRAM_DATA; data++)
+        for (unsigned int opcode = 0; opcode < PROGRAM_OPCODES; opcode++) {
+            unsigned int operation = data * PROGRAM_OPCODES + opcode;
+            switch (opcode) {
+                case Operation_add:
+                    replacementOperations += Format("        case %d: return data.d[%d] += n;\r\n", operation, data);
+                    break;
+                case Operation_multiply:
+                    replacementOperations += Format("        case %d: return data.d[%d] *= n;\r\n", operation, data);
+                    break;
+#if PROGRAM_LOAD_STORE
+                case Operation_load:
+                    replacementOperations += Format("        case %d: return data.d[%d];\r\n", operation, data);
+                    break;
+                case Operation_store:
+                    replacementOperations += Format("        case %d: return data.d[%d] = n;\r\n", operation, data);
+                    break;
+#endif
+            }
+        }
+    replacementOperations += "    }\r\n";
+    UpdateProgram(code, replacementOperations, OPERATIONS_CODE);
+} // UpdateOperations
+
 void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
 {
     std::string replacementData;
@@ -444,81 +350,78 @@ void FireStarter::UpdateData(std::string& code, const FireStarterResult& result,
 
 void FireStarter::DevolveProgram(void)
 {
-    for (FireStarterUnit& unit : m_units)
-        unit.DevolveProgram(m_generation);
+    unsigned long long lastAge = m_generation - m_lastGeneration;
+    unsigned int state = (unsigned int)m_states.size() - 1;
+    if (lastAge > SMART_DEVOLVE_AGE) {
+        // Devolve to an earlier state if too many generations have elapsed without improvement.
+        // This prevents dead-end evolution.
+        unsigned int devolve = 1;
+        while (state && (++m_states[state].devolve >= devolve)) {
+            m_states.pop_back();
+            state--;
+            devolve++;
+        }
+        m_lastGeneration = m_generation;
+    }
+    m_curState = m_states[state];
 } // DevolveProgram
 
 void FireStarter::EvolveProgram(void)
 {
+    // Determine how many changes to make to the instructions.
+    unsigned long long lastAge = m_generation - m_lastGeneration;
+    unsigned int numChanges = 1;
+    if (lastAge > SMART_EVOLVE_AGE)
+        numChanges++;
+
+    // Make random changes to the program instructions.
+    unsigned int seed = RANDOMHASH((unsigned int)(m_generation * 2));
+    m_curState.program.generation = m_generation;
+    while (numChanges--) {
+        unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
+        RandomInstruction(index, seed);
+    }
+    
+    // Generate the replacement code and update the program.
     std::string replacementCode;
-    for (FireStarterUnit& unit : m_units)
-        unit.EvolveProgram(m_generation, replacementCode);
-    m_updatedCode = m_fireStarterCode;
-    UpdateProgram(m_updatedCode, replacementCode, UNITS_CODE);
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        unsigned int operation = m_curState.program.instructions[i];
+        unsigned int opcode = operation % PROGRAM_OPCODES;
+        unsigned int data = operation / PROGRAM_OPCODES;
+
+        switch (opcode) {
+        case Operation_add:
+            replacementCode += Format("    n = data.d[%d] += n;\r\n", data);
+            break;
+        case Operation_multiply:
+            replacementCode += Format("    n = data.d[%d] *= n;\r\n", data);
+            break;
+#if PROGRAM_LOAD_STORE
+        case Operation_load:
+            replacementCode += Format("    n = data.d[%d];\r\n", data);
+            break;
+        case Operation_store:
+            replacementCode += Format("    data.d[%d] = n;\r\n", data);
+            break;
+#endif
+        }
+    }
+
+    m_updatedCode = m_sourceCode;
+    UpdateProgram(m_updatedCode, replacementCode, EVALUATE_EVOLVE ? EVALUATE_CODE : EVOLVE_CODE);
     CompileProgram(m_updatedCode);
 } // EvolveProgram
-
-bool FireStarter::TestProgram(void)
-{
-    unsigned int generation0 = 0;
-
-    RunProgram(generation0, m_variation0, m_variation1);
-    m_bestUnit = GetResults(generation0 + PROGRAM_GENERATIONS);
-    m_bestResult0 = m_bestUnit->m_bestResult[0];
-    m_bestResult1 = m_bestUnit->m_bestResult[1];
-    float bestResult = MAX(m_bestResult0.result, m_bestResult1.result);
-    if (bestResult < m_bestResult) {
-        m_bestResult = bestResult;
-        m_bestGeneration = m_generation;
-        return true;
-    }
-    return false;
-} // TestProgram
-
-void FireStarter::DrawGraph(void)
-{
-    unsigned int variation0 = 0;
-#if EVOLVE
-    unsigned int variation1 = 1;
-#else
-    unsigned int varaition1 = 2;
-#endif
-
-    // Erase the frame buffer
-    EraseFrameBuffer(m_buffer);
-
-    // Launch the display kernel
-    int threadsPerBlock = 32;
-    int blocksPerGrid = (m_buffer.width + threadsPerBlock - 1) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
-    CUfunction kernel_addr;
-    std::string functionFireShow = "FireShow";
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_module, functionFireShow.c_str()));
-
-    // Display variation0
-    void* arr0[] = { reinterpret_cast<void*>(&m_buffer.base),
-                   reinterpret_cast<void*>(&m_buffer.width),
-                   reinterpret_cast<void*>(&m_buffer.height) };
-    checkCudaErrors(cuLaunchKernel(kernel_addr,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, 0,                                               // shared mem, stream */
-        &arr0[0],                                            // arguments */
-        0));
-    checkCudaErrors(cuCtxSynchronize());
-} // DrawGraph
 
 void FireStarter::InitProgram(void)
 {
     LoadProgram();
-    CompileProgram(m_fireShowCode);
+    UpdateOperations(m_sourceCode);
+    CompileProgram(m_sourceCode);
 } // InitProgram
 
 void FireStarter::RenderImage(void* hwnd)
 {
-    // Start the computation timer.
+    double time = 0.0;
     m_timer.Start();
 
     // Evolve the program instructions.
@@ -529,15 +432,25 @@ void FireStarter::RenderImage(void* hwnd)
 #endif
         
     // Run the next generation on the GPU.
-    bool update = TestProgram();
-
-    // Get the computation time.
-    double time = m_timer.Duration();
+    unsigned int varaition0 = 0;
+#if EVOLVE
+    unsigned int varaition1 = 1;
+    unsigned int generation0 = 0;
+#else
+    unsigned int varaition1 = 2;
+    unsigned long long generation0 = generation;
+#endif
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition0, m_curState.result0);
+    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition1, m_curState.result1);
+    bool update = SaveProgram();
+    time = m_timer.Duration();
 
     // Find the best results for display only.
     if (update) {
-        SaveProgram();
-        DrawGraph();
+        // Erase the frame buffer
+        EraseFrameBuffer(m_buffer);
+        DrawGraph(varaition0);
+        DrawGraph(varaition1);
 
         unsigned char buffer[4096];
         BITMAPINFO* bm = (BITMAPINFO*)buffer;
@@ -563,7 +476,7 @@ void FireStarter::RenderImage(void* hwnd)
 
     // Update the status.
     double averageTime = time / (double)(m_generation - startGeneration);
-    sprintf_s(m_statusString, "FireStarter: Generation=%lld  Best=%f  Time=%.4f Seconds", m_generation, m_bestResult, averageTime);
+    sprintf_s(m_statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", m_generation, m_states.size(), m_generation - m_bestState.program.generation, m_bestState.result0.result, m_bestState.result1.result, averageTime);
 } // RenderImage
 
 void FireStarter::Init(unsigned long width, unsigned long height)
@@ -571,24 +484,19 @@ void FireStarter::Init(unsigned long width, unsigned long height)
     strcpy_s(m_statusString, "Initializing...");
 
     InitFrameBuffer(m_buffer, width, height);
-    m_generation = m_lastGeneration = m_bestGeneration = 0;
+    InitResults();
+    m_generation = m_lastGeneration = m_bestGeneration =0;
+    m_bestState.program.generation = 0;
     InitProgram();
-    InitUnits();
 } // Init
 
 FireStarter::FireStarter(void)
 {
     // Timer ID
-    m_units.resize(MAX(PROGRAM_UNITS, 1));
     m_statusString[0] = 0;
+    m_results0 = NULL;
+    m_results1 = NULL;
     m_module = NULL;
-    m_bestResult = START_RESULT;
-    m_variation0 = 0;
-#if EVOLVE
-    m_variation1 = 1;
-#else
-    m_varaition1 = 2;
-#endif
 } // FireStarter
 
 FireStarter::~FireStarter(void)
@@ -596,4 +504,5 @@ FireStarter::~FireStarter(void)
     if (m_module)
         checkCudaErrors(cuModuleUnload(m_module));
     FreeFrameBuffer(m_buffer);
+    FreeResults();
 } // ~FireStarter

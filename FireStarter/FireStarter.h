@@ -6,83 +6,40 @@
 
 class FireStarter {
 public:
-    class FireStarterState {
-    public: 
-        FireStarterProgram m_program;
-        unsigned int m_devolve;
-
-        FireStarterState(void);
-        ~FireStarterState(void);
-    }; // class FireStarterState;
-
-    class FireStarterVariation {
-    public:
-        FireStarterResults* m_results0;
-        FireStarterResults* m_results1;
-        unsigned int m_variation;
-    }; // ClassFireStarterVariation
-
-    class FireStarterUnit {
-    public:
-        std::vector<FireStarterState> m_states;
-        FireStarterVariation m_variations[2];
-        FireStarterState m_curState;
-        FireStarterState m_bestState;
-        FireStarterResult m_bestResult[2];
-        std::string m_unitCode;
-        std::string m_evaluateCode;
-        unsigned long long m_unitIndex;
-        unsigned long long m_unitGeneration;
-
-        void RandomInstruction(unsigned int index, unsigned int& seed);
-        float GetResults(unsigned int dataGeneration);
-        void FreeResults(void);
-        void RunProgram(CUmodule module, unsigned long long generation0, unsigned long long generation, unsigned int variation0, unsigned int variation1);
-        void DevolveProgram(unsigned long long generation);
-        void EvolveProgram(unsigned long long generation, std::string &code);
-        void InitUnit(unsigned long long unitIndex, unsigned int generation = 0);
-        FireStarterUnit(void);
-        ~FireStarterUnit(void);
-    }; // class FireStarterUnit
-
-    std::vector<FireStarterUnit> m_units;
-    FireStarterUnit* m_bestUnit;
-    FireStarterResult m_bestResult0;
-    FireStarterResult m_bestResult1;
     SimpleTimer m_timer;
     FrameBuffer m_buffer;
+    FireStarterResults* m_results0;
+    FireStarterResults* m_results1;
+    std::vector<FireStarterState> m_states;
+    FireStarterState m_curState;
+    FireStarterState m_bestState;
     CUmodule m_module;
-    std::string m_fireStarterCode;
-    std::string m_fireShowCode;
+    std::string m_sourceCode;
     std::string m_updatedCode;
-    std::string m_bestShowCode;
+    std::string m_bestCode;
     unsigned long long m_generation;
     unsigned long long m_lastGeneration;
     unsigned long long m_bestGeneration;
     char m_statusString[1024];
-    float m_bestResult;
-    unsigned int m_variation0;
-    unsigned int m_variation1;
 
     void EraseFrameBuffer(FrameBuffer &buffer);
     void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    void InitUnits(unsigned int generation = 0);
-    FireStarterUnit* GetResults(unsigned int dataGeneration);
+    void RandomInstruction(unsigned int index, unsigned int &seed);
+    void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
+    void InitResults(void);
+    void FreeResults(void);
     void CompileProgram(const std::string& program);
-    void RunProgram(unsigned long long generation0, unsigned int variation0, unsigned int variation1);
-    static bool LoadCode(const std::string& filePath, std::string& code);
-    static void SaveCode(const std::string& filePath, const std::string& code);
-    static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
+    void RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult& result);
+    void DrawGraph(unsigned int variation);
     void LoadProgram(void);
-    void SaveProgram(void);
-    static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
+    bool SaveProgram(void);
+    void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
+    void UpdateOperations(std::string& code);
     void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
     void DevolveProgram(void);
     void EvolveProgram(void);
-    bool TestProgram(void);
-    void DrawGraph(void);
     void InitProgram(void);
     void RenderImage(void* hwnd);
     void Init(unsigned long width, unsigned long height);

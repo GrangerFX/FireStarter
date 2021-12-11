@@ -1,17 +1,17 @@
 #pragma once
-#include "CUDADefines.h"
 
-#define EVOLVE 1
+#define EVALUATE_EVOLVE 1
+#define EVOLVE_EVOLVE 0
+#define TEST_EVOLVE 0
+#define EVOLVE (EVALUATE_EVOLVE | EVOLVE_EVOLVE)
 
-#define PROGRAM_UNITS 1
 #define PROGRAM_DATA 32
 #define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_GENERATIONS 100
-#define PROGRAM_ITERATIONS 1024
+#define PROGRAM_ITERATIONS 1000
 #define PROGRAM_POPULATION 4352
 #define PROGRAM_LOAD_STORE 0
 #define PROGRAM_SEED 0
-#define PROGRAM_RANDOM_SAMPLES 1
 #define SAMPLE_ITERATIONS 15
 #define SMART_RANDOM_FACTOR 0.1f
 #define EVOLUTION_SAMPLES 16
@@ -21,10 +21,7 @@
 
 #define OPERATIONS_CODE "// OPERATIONS //"
 #define EVALUATE_CODE   "// EVALUATE //"
-#define EVALUATE0_CODE  "// EVALUATE0 //"
-#define EVALUATE1_CODE  "// EVALUATE1 //"
-#define UNITS_CODE      "// UNITS //"
-#define BEST_CODE       "// BEST //"
+#define EVOLVE_CODE     "// EVOLVE //"
 #define DATA0_CODE      "// DATA0 //"
 #define DATA1_CODE      "// DATA1 //"
 #define END_CODE        "// END //"
@@ -32,6 +29,10 @@
 typedef struct FireStarterData {
     float d[PROGRAM_DATA];
 } FireStarterData;
+
+typedef struct FireStarterSamples {
+    float s[SAMPLE_ITERATIONS];
+} FireStarterSamples;
 
 typedef struct {
     FireStarterData data;
@@ -55,19 +56,14 @@ typedef enum {
 #define PROGRAM_OPERATIONS (PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS * PROGRAM_DATA)
 
 typedef struct {
-    unsigned int instructions[PROGRAM_INSTRUCTIONS];
+    unsigned int instructions[PROGRAM_OPERATIONS];
     unsigned long long generation;
 } FireStarterProgram;
 
-GPU_FUNCTION float Target(float n, unsigned int variation)
-{
-    switch (variation) {
-    default:
-    case 0:
-        return sinf(n);
-    case 1:
-        return sinf(n * 1.2f) + n * 0.2f;
-    case 2:
-        return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
-    }
-} // Target
+typedef struct {
+    FireStarterProgram program;
+    FireStarterResult result0;
+    FireStarterResult result1;
+    float maxResult;
+    unsigned int devolve;
+} FireStarterState;
