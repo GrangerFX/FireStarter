@@ -408,7 +408,7 @@ void FireStarter::EvolveProgram(void)
     }
 
     m_updatedCode = m_sourceCode;
-    UpdateProgram(m_updatedCode, replacementCode, EVALUATE_EVOLVE ? EVALUATE_CODE : EVOLVE_CODE);
+    UpdateProgram(m_updatedCode, replacementCode, EVALUATE_CODE);
     CompileProgram(m_updatedCode);
 } // EvolveProgram
 

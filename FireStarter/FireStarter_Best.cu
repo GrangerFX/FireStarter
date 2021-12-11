@@ -212,45 +212,6 @@ GPU_FUNCTION float Sample(const FireStarterData &data, const FireStarterSamples 
     return result;
 } // Sample
 
-GPU_FUNCTION float Evolve(FireStarterData data, float n)
-{
-// EVOLVE //
-    n = data.d[12] *= n;
-    n = data.d[5];
-    n = data.d[6] += n;
-    n = data.d[2] += n;
-    n = data.d[9] *= n;
-    n = data.d[11] *= n;
-    data.d[17] = n;
-    n = data.d[6] += n;
-    data.d[28] = n;
-    n = data.d[30] *= n;
-    n = data.d[29];
-    n = data.d[6];
-    n = data.d[4];
-    n = data.d[9] *= n;
-    data.d[23] = n;
-    n = data.d[13] *= n;
-    n = data.d[13];
-    n = data.d[26];
-    n = data.d[18] *= n;
-    n = data.d[27];
-    data.d[17] = n;
-    n = data.d[16] *= n;
-    n = data.d[29] *= n;
-    data.d[27] = n;
-    n = data.d[15];
-    n = data.d[6];
-    n = data.d[13] *= n;
-    n = data.d[28] += n;
-    data.d[7] = n;
-    data.d[24] = n;
-    data.d[27] = n;
-    n = data.d[7] *= n;
-// END //
-    return n;
-} // Evolve
-
 GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -291,15 +252,6 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     }
 
     float oldResult = result;
-#if EVOLVE_EVOLVE || TEST_EVOLVE
-    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-            float curResult = fabsf(Evaluate(data, theta.s[i]) - target.s[i]);
-            Evolve(data, curResult);
-        }
-    }
-    result = Sample(data, theta, target);
-#else
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
         float oldData = data.d[d];
@@ -310,7 +262,6 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         else
             data.d[d] = oldData;
     }
-#endif
     if (result >= oldResult) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
