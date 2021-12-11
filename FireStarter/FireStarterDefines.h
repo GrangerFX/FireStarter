@@ -1,4 +1,5 @@
 #pragma once
+#include "CUDADefines.h"
 
 #define EVOLVE 1
 
@@ -39,27 +40,15 @@ typedef struct {
     FireStarterResult results[1];
 } FireStarterResults;
 
-typedef enum {
-    Operation_add,
-    Operation_multiply,
-#if PROGRAM_LOAD_STORE
-    Operation_load,
-    Operation_store,
-#endif
-    PROGRAM_OPCODES
-} FireStarterOpcode;
-
-#define PROGRAM_OPERATIONS (PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS * PROGRAM_DATA)
-
-typedef struct {
-    unsigned int instructions[PROGRAM_OPERATIONS];
-    unsigned long long generation;
-} FireStarterProgram;
-
-typedef struct {
-    FireStarterProgram program;
-    FireStarterResult result0;
-    FireStarterResult result1;
-    float maxResult;
-    unsigned int devolve;
-} FireStarterState;
+GPU_FUNCTION float Target(float n, unsigned int variation)
+{
+    switch (variation) {
+        default:
+        case 0:
+            return sinf(n);
+        case 1:
+            return sinf(n * 1.2f) + n * 0.2f;
+        case 2:
+            return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
+    }
+} // Target

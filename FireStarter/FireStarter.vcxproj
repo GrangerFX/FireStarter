@@ -97,6 +97,8 @@
     <ClInclude Include="PrintF.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="FireShow.cu" />
+    <None Include="FireShow_Best.cu" />
     <None Include="FireStarter.cu" />
     <None Include="FireStarter_Best.cu" />
   </ItemGroup>

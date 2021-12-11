@@ -1,9 +1,9 @@
 #include "FireStarterDefines.h"
 #include "HashRandom.h"
 
-GPU_FUNCTION float InitData0(FireStarterData& data)
+GPU_FUNCTION float InitData0(FireStarterData &data)
 {
-    // DATA0 //
+// DATA0 //
     data.d[0] = 0.927622;
     data.d[1] = -0.019519;
     data.d[2] = -0.613796;
@@ -37,12 +37,12 @@ GPU_FUNCTION float InitData0(FireStarterData& data)
     data.d[30] = 0.891486;
     data.d[31] = -1.485052;
     return 0.000001;
-    // END //
+// END //
 } // InitData0
 
-GPU_FUNCTION float InitData1(FireStarterData& data)
+GPU_FUNCTION float InitData1(FireStarterData &data)
 {
-    // DATA1 //
+// DATA1 //
     data.d[0] = 1.132334;
     data.d[1] = -0.634421;
     data.d[2] = -0.639973;
@@ -76,12 +76,12 @@ GPU_FUNCTION float InitData1(FireStarterData& data)
     data.d[30] = 1.163771;
     data.d[31] = -0.940212;
     return 0.000009;
-    // END //
+// END //
 } // InitData1
 
-GPU_FUNCTION float Evaluate0(FireStarterData data, float n, float t)
+GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-// EVALUATE0 //
+// EVALUATE //
     n = data.d[25] *= n;
     n = data.d[22] += n;
     n = data.d[18] += n;
@@ -115,101 +115,54 @@ GPU_FUNCTION float Evaluate0(FireStarterData data, float n, float t)
     data.d[14] = n;
     n = data.d[13] *= n;
 // END //
-    data.d[0] = t;
     return n;
-} // Evaluate0
+} // Evaluate
 
-GPU_FUNCTION float Evaluate1(FireStarterData data, float n, float t)
-{
-// EVALUATE0 //
-    n = data.d[25] *= n;
-    n = data.d[22] += n;
-    n = data.d[18] += n;
-    n = data.d[25] += n;
-    n = data.d[9] *= n;
-    n = data.d[13] += n;
-    n = data.d[5] += n;
-    data.d[11] = n;
-    n = data.d[28] *= n;
-    n = data.d[2] += n;
-    n = data.d[21] *= n;
-    n = data.d[21] += n;
-    data.d[16] = n;
-    n = data.d[13] *= n;
-    n = data.d[13] *= n;
-    n = data.d[11] *= n;
-    n = data.d[26];
-    n = data.d[6] += n;
-    n = data.d[11];
-    n = data.d[20] += n;
-    data.d[14] = n;
-    n = data.d[10];
-    n = data.d[22] += n;
-    n = data.d[10] += n;
-    n = data.d[14] += n;
-    n = data.d[19] *= n;
-    n = data.d[13] *= n;
-    data.d[27] = n;
-    n = data.d[11] *= n;
-    n = data.d[26] += n;
-    data.d[14] = n;
-    n = data.d[13] *= n;
-// END //
-    data.d[0] = t;
-    return n;
-} // Evaluate1
-
-GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *newResults, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
+GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
 
     unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(programGeneration) + dataGeneration) + member);
-#if PROGRAM_RANDOM_SAMPLES
-    float theta[SAMPLE_ITERATIONS];
-    float target[SAMPLE_ITERATIONS];
+    FireStarterSamples theta;
+    FireStarterSamples target;
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta[i] = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
-        target[i] = Target(theta[i], variation);
+        theta.s[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
+        target.s[i] = Target(theta.s[i], variation);
     }
-#endif
 
-    FireStarterData data = oldResults->results[member].data;
-    float result = oldResults->results[member].result;
-    float oldResult = result;
-    if (variation == 0) {
-        for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
-            result = 0.0f;
-            for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-#if PROGRAM_RANDOM_SAMPLES
-                float n = Evaluate0(data, theta[i], target[i]);
-                result = fmaxf(fabsf(n - target[i]), result);
-#else
-                float theta = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
-                float target = Target(theta, variation);
-                float n = Evaluate(data, theta, target);
-                result = fmaxf(fabsf(n - target), result);
-#endif
-            }
-        }
+    FireStarterResults *oldResults = dataGeneration & 1 ? results0 : results1;
+    FireStarterResults *newResults = dataGeneration & 1 ? results1 : results0;
+    FireStarterData data;
+    float result;
+    if (dataGeneration) {
+        data = oldResults->results[member].data;
+        result = oldResults->results[member].result;
     } else {
-        for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
-            result = 0.0f;
-            for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-#if PROGRAM_RANDOM_SAMPLES
-                float n = Evaluate1(data, theta[i], target[i]);
-                result = fmaxf(fabsf(n - target[i]), result);
-#else
-                float theta = FASTRANDOMNUM(seed) * (2.0f * 3.14159265f);
-                float target = Target(theta, variation);
-                float n = Evaluate(data, theta, target);
-                result = fmaxf(fabsf(n - target), result);
-#endif
-            }
+        if (variation == 0)
+            result = InitData0(data);
+        else if (variation == 1)
+            result = InitData1(data);
+        else {
+            for (int i = 0; i < PROGRAM_DATA; i++)
+                data.d[i] = RANDOMFACTOR(seed);
+            result = START_RESULT;
         }
     }
-
+    float oldResult = result;
+    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
+        unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
+        float oldData = data.d[d];
+        data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
+        float curResult = 0.0f;
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+            curResult = fmaxf(fabsf(Evaluate(data, theta.s[i]) - target.s[i]), curResult);
+        if (curResult < result)
+            result = curResult;
+        else
+            data.d[d] = oldData;
+    }
     if (result >= oldResult) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
@@ -232,7 +185,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *oldResults, FireStarterResults *
     newResults->results[member].result = result;
 } // FireStarter
 
-GPU_GLOBAL void FireShow(uchar4* bufferPixels, const unsigned int bufferWidth, const unsigned int bufferHeight)
+GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int xScale = bufferHeight / 8;
@@ -241,47 +194,43 @@ GPU_GLOBAL void FireShow(uchar4* bufferPixels, const unsigned int bufferWidth, c
         int x0 = (bufferWidth / 2) - xScale;
         int x1 = (bufferWidth / 2) + xScale;
         if (x0 >= 0) {
-            uchar4& pixel(bufferPixels[x * bufferWidth + x0]);
+            uchar4 &pixel(bufferPixels[x * bufferWidth + x0]);
             pixel.x = 64;
             pixel.y = 128;
             pixel.z = 64;
         };
         if (x1 < bufferWidth) {
-            uchar4& pixel(bufferPixels[x * bufferWidth + x1]);
+            uchar4 &pixel(bufferPixels[x * bufferWidth + x1]);
             pixel.x = 64;
             pixel.y = 128;
             pixel.z = 64;
         };
     }
     if (x < bufferWidth) {
-        FireStarterData data0;
-        FireStarterData data1;
-        InitData0(data0);
-        InitData1(data1);
+        FireStarterData data;
+        switch (variation) {
+            case 0:
+                InitData0(data);
+                break;
+            case 1:
+                InitData1(data);
+                break;
+            case 2:
+                data = bestResult.data;
+                break;
+        }
         float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
         float center = bufferHeight * 0.66f;
-        float target0 = Target(theta, 0);
-        int y = (int)(center + target0 * yScale);
+        float target = Target(theta, variation);
+        int y = (int)(center + target * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
-            uchar4& pixel(bufferPixels[y * bufferWidth + x]);
+            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = 255;
             pixel.y = 128;
         };
-        float target1 = Target(theta, 1);
-        y = (int)(center + target1 * yScale);
+        y = (int)(center + Evaluate(bestResult.data, theta) * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
-            uchar4& pixel(bufferPixels[y * bufferWidth + x]);
-            pixel.x = 255;
-            pixel.y = 128;
-        };
-        y = (int)(center + Evaluate0(data0, theta, target0) * yScale);
-        if ((y >= 0) && (y < bufferHeight)) {
-            uchar4& pixel(bufferPixels[y * bufferWidth + x]);
-            pixel.x = pixel.y = pixel.z = 255;
-        };
-        y = (int)(center + Evaluate1(data1, theta, target1) * yScale);
-        if ((y >= 0) && (y < bufferHeight)) {
-            uchar4& pixel(bufferPixels[y * bufferWidth + x]);
+            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = pixel.y = pixel.z = 255;
         };
     }

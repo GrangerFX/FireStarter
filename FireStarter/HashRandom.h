@@ -1,5 +1,4 @@
 #pragma once
-#include "CUDADefines.h"
 
 GPU_FUNCTION unsigned int Hash(unsigned int hash)
 {

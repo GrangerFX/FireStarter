@@ -4,6 +4,31 @@
 #include "FireStarterDefines.h"
 #include "FireStarterUtil.h"
 
+typedef enum {
+    Operation_add,
+    Operation_multiply,
+#if PROGRAM_LOAD_STORE
+    Operation_load,
+    Operation_store,
+#endif
+    PROGRAM_OPCODES
+} FireStarterOpcode;
+
+#define PROGRAM_OPERATIONS (PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS * PROGRAM_DATA)
+
+typedef struct {
+    unsigned int instructions[PROGRAM_OPERATIONS];
+    unsigned long long generation;
+} FireStarterProgram;
+
+typedef struct {
+    FireStarterProgram program;
+    FireStarterResult result0;
+    FireStarterResult result1;
+    float maxResult;
+    unsigned int devolve;
+} FireStarterState;
+
 class FireStarter {
 public:
     SimpleTimer m_timer;
@@ -14,9 +39,11 @@ public:
     FireStarterState m_curState;
     FireStarterState m_bestState;
     CUmodule m_module;
-    std::string m_sourceCode;
+    std::string m_fireStarterCode;
+    std::string m_fireShowCode;
+    std::string m_evaluateCode;
     std::string m_updatedCode;
-    std::string m_bestCode;
+    std::string m_bestShowCode;
     unsigned long long m_generation;
     unsigned long long m_lastGeneration;
     unsigned long long m_bestGeneration;
@@ -33,10 +60,13 @@ public:
     void CompileProgram(const std::string& program);
     void RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult& result);
     void DrawGraph(unsigned int variation);
+    bool LoadCode(const std::string& filePath, std::string& code);
+    void SaveCode(const std::string& filePath, const std::string& code);
+    void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
     void LoadProgram(void);
-    bool SaveProgram(void);
+    void SaveProgram(void);
+    bool EvaluateProgram(void);
     void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
-    void UpdateOperations(std::string& code);
     void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
     void DevolveProgram(void);
     void EvolveProgram(void);

@@ -245,55 +245,70 @@ void FireStarter::DrawGraph(unsigned int variation)
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph
 
-void FireStarter::LoadProgram(void)
+bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
 {
 #if EVOLVE
-    std::ifstream file("FireStarter.cu", std::ios::ate | std::ios::binary);
+    std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
 #else
     std::ifstream file("FireStarter_Best.cu", std::ios::ate | std::ios::binary);
 #endif
     if (file.is_open()) {
         // Found usable source file
         file.seekg(0, std::ios::end);
-        m_sourceCode.reserve(file.tellg());
+        code.reserve(code.length() + file.tellg());
         file.seekg(0, std::ios::beg);
-        m_sourceCode.assign((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
+        code.append((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
         file.close();
-        m_updatedCode = m_sourceCode;
-        m_bestCode = m_sourceCode;
+        return true;
+    }
+    return false;
+} // LoadCode
+
+void FireStarter::SaveCode(const std::string& filePath, const std::string& code)
+{
+    std::ofstream file(filePath.c_str(), std::ios::out | std::ios::binary);
+    if (file.is_open()) {
+        file << code;
+        file.close();
+    }
+} // SaveCode
+
+void FireStarter::ReplaceCode(std::string& code, const std::string& search, const std::string& replace)
+{
+    // Get the first occurrence
+    size_t pos = code.find(search);
+
+    // Repeat till end is reached
+    while (pos != std::string::npos) {
+        // Replace this occurrence of Sub String
+        code.replace(pos, search.size(), replace);
+        // Get the next occurrence from the current position
+        pos = code.find(search, pos + replace.size());
+    }
+} // ReplaceCode
+
+void FireStarter::LoadProgram(void)
+{
+    if (LoadCode("FireStarter.cu", m_fireStarterCode) && LoadCode("FireShow.cu", m_fireShowCode)) {
+        m_updatedCode = m_fireStarterCode;
+        m_bestShowCode = m_fireShowCode;
     }
 } // LoadProgram
 
-bool FireStarter::SaveProgram(void)
+void FireStarter::SaveProgram(void)
 {
-    float maxResult = MAX(m_curState.result0.result, m_curState.result1.result);
-    if (maxResult < m_curState.maxResult) {
-        m_lastGeneration = m_generation;
-        m_curState.maxResult = maxResult;
-        m_curState.devolve = 0;
+    m_bestShowCode = m_fireShowCode;
+    UpdateProgram(m_bestShowCode, m_evaluateCode, EVALUATE_CODE);
+    UpdateData(m_bestShowCode, m_bestState.result0, DATA0_CODE);
+    UpdateData(m_bestShowCode, m_bestState.result1, DATA1_CODE);
 #if EVOLVE
-        m_states.push_back(m_curState);
+    SaveCode("FireShow_Best.cu", m_bestShowCode);
+    SaveCode("FireStarter_Best.cu", m_updatedCode);
 #endif
-        if (m_curState.maxResult < m_bestState.maxResult) {
-            m_bestGeneration = m_generation;
-            m_bestState = m_curState;
-            m_bestCode = m_updatedCode;
-            UpdateData(m_bestCode, m_bestState.result0, DATA0_CODE);
-            UpdateData(m_bestCode, m_bestState.result1, DATA1_CODE);
-#if EVOLVE
-            std::ofstream file("FireStarter_Best.cu", std::ios::out | std::ios::binary);
-            if (file.is_open()) {
-                file << m_bestCode;
-                file.close();
-            }
-#endif
-            return true;
-        }
-    }
-    return false;
+    CompileProgram(m_bestShowCode);
 } // SaveProgram
 
-void FireStarter::UpdateProgram(std::string &code, const std::string& replacementCode, std::string startString)
+void FireStarter::UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString)
 {
     size_t startPos = code.find(startString);
     if (startPos != std::string::npos) {
@@ -311,34 +326,6 @@ void FireStarter::UpdateProgram(std::string &code, const std::string& replacemen
     }
 } // UpdateProgram
 
-void FireStarter::UpdateOperations(std::string& code)
-{
-    std::string replacementOperations;
-    replacementOperations += "    switch (operation) {\r\n";
-    for (unsigned int data = 0; data < PROGRAM_DATA; data++)
-        for (unsigned int opcode = 0; opcode < PROGRAM_OPCODES; opcode++) {
-            unsigned int operation = data * PROGRAM_OPCODES + opcode;
-            switch (opcode) {
-                case Operation_add:
-                    replacementOperations += Format("        case %d: return data.d[%d] += n;\r\n", operation, data);
-                    break;
-                case Operation_multiply:
-                    replacementOperations += Format("        case %d: return data.d[%d] *= n;\r\n", operation, data);
-                    break;
-#if PROGRAM_LOAD_STORE
-                case Operation_load:
-                    replacementOperations += Format("        case %d: return data.d[%d];\r\n", operation, data);
-                    break;
-                case Operation_store:
-                    replacementOperations += Format("        case %d: return data.d[%d] = n;\r\n", operation, data);
-                    break;
-#endif
-            }
-        }
-    replacementOperations += "    }\r\n";
-    UpdateProgram(code, replacementOperations, OPERATIONS_CODE);
-} // UpdateOperations
-
 void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
 {
     std::string replacementData;
@@ -347,6 +334,30 @@ void FireStarter::UpdateData(std::string& code, const FireStarterResult& result,
     replacementData += Format("    return %f;\r\n", result.result);
     UpdateProgram(code, replacementData, startString);
 } // UpdateData
+
+bool FireStarter::EvaluateProgram(void)
+{
+    float maxResult = MAX(m_curState.result0.result, m_curState.result1.result);
+    if (maxResult < m_curState.maxResult) {
+        m_lastGeneration = m_generation;
+        m_curState.maxResult = maxResult;
+        m_curState.devolve = 0;
+        m_states.push_back(m_curState);
+        if (m_curState.maxResult < m_bestState.maxResult) {
+            m_bestGeneration = m_generation;
+            m_bestState = m_curState;
+            m_bestShowCode = m_fireShowCode;
+            UpdateData(m_bestShowCode, m_bestState.result0, DATA0_CODE);
+            UpdateData(m_bestShowCode, m_bestState.result1, DATA1_CODE);
+            UpdateProgram(m_bestShowCode, m_evaluateCode, EVALUATE_CODE);
+            CompileProgram(m_bestShowCode);
+            SaveCode("FireStarter_Best.cu", m_updatedCode);
+            SaveCode("FireShow_Best.cu", m_bestShowCode);
+            return true;
+        }
+    }
+    return false;
+} // EvaluateProgram
 
 void FireStarter::DevolveProgram(void)
 {
@@ -383,7 +394,7 @@ void FireStarter::EvolveProgram(void)
     }
     
     // Generate the replacement code and update the program.
-    std::string replacementCode;
+    m_evaluateCode.clear();
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         unsigned int operation = m_curState.program.instructions[i];
         unsigned int opcode = operation % PROGRAM_OPCODES;
@@ -391,32 +402,30 @@ void FireStarter::EvolveProgram(void)
 
         switch (opcode) {
         case Operation_add:
-            replacementCode += Format("    n = data.d[%d] += n;\r\n", data);
+            m_evaluateCode += Format("    n = data.d[%d] += n;\r\n", data);
             break;
         case Operation_multiply:
-            replacementCode += Format("    n = data.d[%d] *= n;\r\n", data);
+            m_evaluateCode += Format("    n = data.d[%d] *= n;\r\n", data);
             break;
 #if PROGRAM_LOAD_STORE
         case Operation_load:
-            replacementCode += Format("    n = data.d[%d];\r\n", data);
+            m_evaluateCode += Format("    n = data.d[%d];\r\n", data);
             break;
         case Operation_store:
-            replacementCode += Format("    data.d[%d] = n;\r\n", data);
+            m_evaluateCode += Format("    data.d[%d] = n;\r\n", data);
             break;
 #endif
         }
     }
 
-    m_updatedCode = m_sourceCode;
-    UpdateProgram(m_updatedCode, replacementCode, EVALUATE_CODE);
+    m_updatedCode = m_fireStarterCode;
+    UpdateProgram(m_updatedCode, m_evaluateCode, EVALUATE_CODE);
     CompileProgram(m_updatedCode);
 } // EvolveProgram
 
 void FireStarter::InitProgram(void)
 {
     LoadProgram();
-    UpdateOperations(m_sourceCode);
-    CompileProgram(m_sourceCode);
 } // InitProgram
 
 void FireStarter::RenderImage(void* hwnd)
@@ -442,11 +451,10 @@ void FireStarter::RenderImage(void* hwnd)
 #endif
     RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition0, m_curState.result0);
     RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition1, m_curState.result1);
-    bool update = SaveProgram();
     time = m_timer.Duration();
 
     // Find the best results for display only.
-    if (update) {
+    if (EvaluateProgram()) {
         // Erase the frame buffer
         EraseFrameBuffer(m_buffer);
         DrawGraph(varaition0);
