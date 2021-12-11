@@ -92,79 +92,6 @@ GPU_FUNCTION float InitData1(FireStarterData &data)
 // END //
 } // InitData1
 
-GPU_FUNCTION float Operation(FireStarterData &data, unsigned int operation, float n)
-{
-// OPERATIONS //
-    switch (operation) {
-        case 0: return data.d[0] += n;
-        case 1: return data.d[0] *= n;
-        case 2: return data.d[1] += n;
-        case 3: return data.d[1] *= n;
-        case 4: return data.d[2] += n;
-        case 5: return data.d[2] *= n;
-        case 6: return data.d[3] += n;
-        case 7: return data.d[3] *= n;
-        case 8: return data.d[4] += n;
-        case 9: return data.d[4] *= n;
-        case 10: return data.d[5] += n;
-        case 11: return data.d[5] *= n;
-        case 12: return data.d[6] += n;
-        case 13: return data.d[6] *= n;
-        case 14: return data.d[7] += n;
-        case 15: return data.d[7] *= n;
-        case 16: return data.d[8] += n;
-        case 17: return data.d[8] *= n;
-        case 18: return data.d[9] += n;
-        case 19: return data.d[9] *= n;
-        case 20: return data.d[10] += n;
-        case 21: return data.d[10] *= n;
-        case 22: return data.d[11] += n;
-        case 23: return data.d[11] *= n;
-        case 24: return data.d[12] += n;
-        case 25: return data.d[12] *= n;
-        case 26: return data.d[13] += n;
-        case 27: return data.d[13] *= n;
-        case 28: return data.d[14] += n;
-        case 29: return data.d[14] *= n;
-        case 30: return data.d[15] += n;
-        case 31: return data.d[15] *= n;
-        case 32: return data.d[16] += n;
-        case 33: return data.d[16] *= n;
-        case 34: return data.d[17] += n;
-        case 35: return data.d[17] *= n;
-        case 36: return data.d[18] += n;
-        case 37: return data.d[18] *= n;
-        case 38: return data.d[19] += n;
-        case 39: return data.d[19] *= n;
-        case 40: return data.d[20] += n;
-        case 41: return data.d[20] *= n;
-        case 42: return data.d[21] += n;
-        case 43: return data.d[21] *= n;
-        case 44: return data.d[22] += n;
-        case 45: return data.d[22] *= n;
-        case 46: return data.d[23] += n;
-        case 47: return data.d[23] *= n;
-        case 48: return data.d[24] += n;
-        case 49: return data.d[24] *= n;
-        case 50: return data.d[25] += n;
-        case 51: return data.d[25] *= n;
-        case 52: return data.d[26] += n;
-        case 53: return data.d[26] *= n;
-        case 54: return data.d[27] += n;
-        case 55: return data.d[27] *= n;
-        case 56: return data.d[28] += n;
-        case 57: return data.d[28] *= n;
-        case 58: return data.d[29] += n;
-        case 59: return data.d[29] *= n;
-        case 60: return data.d[30] += n;
-        case 61: return data.d[30] *= n;
-        case 62: return data.d[31] += n;
-        case 63: return data.d[31] *= n;
-    }
-// END //
-    return n;
-} // Operation
-
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
 // EVALUATE //
@@ -256,7 +183,9 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
         float oldData = data.d[d];
         data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
-        float curResult = Sample(data, theta, target);
+        float curResult = 0.0f;
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+            curResult = fmaxf(fabsf(Evaluate(data, theta.s[i]) - target.s[i]), curResult);
         if (curResult < result)
             result = curResult;
         else
