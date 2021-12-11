@@ -131,14 +131,6 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     return n;
 } // Evaluate
 
-GPU_FUNCTION float Sample(const FireStarterData &data, const FireStarterSamples &theta, const FireStarterSamples &target)
-{
-    float result = 0.0f;
-    for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-        result = fmaxf(fabsf(Evaluate(data, theta.s[i]) - target.s[i]), result);
-    return result;
-} // Sample
-
 GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
