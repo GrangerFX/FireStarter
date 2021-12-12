@@ -1,7 +1,7 @@
 #pragma once
 #include "CUDADefines.h"
 
-#define EVOLVE 0
+#define EVOLVE 1
 
 #define PROGRAM_DATA 32
 #define PROGRAM_INSTRUCTIONS 32
