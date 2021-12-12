@@ -247,11 +247,7 @@ void FireStarter::DrawGraph(unsigned int variation)
 
 bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
 {
-#if EVOLVE
     std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
-#else
-    std::ifstream file("FireStarter_Best.cu", std::ios::ate | std::ios::binary);
-#endif
     if (file.is_open()) {
         // Found usable source file
         file.seekg(0, std::ios::end);
@@ -287,12 +283,19 @@ void FireStarter::ReplaceCode(std::string& code, const std::string& search, cons
     }
 } // ReplaceCode
 
-void FireStarter::LoadProgram(void)
+bool FireStarter::LoadProgram(void)
 {
-    if (LoadCode("FireStarter.cu", m_fireStarterCode) && LoadCode("FireShow.cu", m_fireShowCode)) {
-        m_updatedCode = m_fireStarterCode;
-        m_bestShowCode = m_fireShowCode;
-    }
+#if EVOLVE
+    if (!LoadCode("FireStarter.cu", m_fireStarterCode) || !LoadCode("FireShow.cu", m_fireShowCode))
+        return false;
+#else
+    if (!LoadCode("FireStarter_Best.cu", m_fireStarterCode) || !LoadCode("FireShow_Best.cu", m_fireShowCode))
+        return false;
+    CompileProgram(m_fireShowCode);
+#endif
+    m_updatedCode = m_fireStarterCode;
+    m_bestShowCode = m_fireShowCode;
+    return true;
 } // LoadProgram
 
 void FireStarter::SaveProgram(void)
@@ -347,12 +350,14 @@ bool FireStarter::EvaluateProgram(void)
             m_bestGeneration = m_generation;
             m_bestState = m_curState;
             m_bestShowCode = m_fireShowCode;
+#if EVOLVE
             UpdateData(m_bestShowCode, m_bestState.result0, DATA0_CODE);
             UpdateData(m_bestShowCode, m_bestState.result1, DATA1_CODE);
             UpdateProgram(m_bestShowCode, m_evaluateCode, EVALUATE_CODE);
             CompileProgram(m_bestShowCode);
             SaveCode("FireStarter_Best.cu", m_updatedCode);
             SaveCode("FireShow_Best.cu", m_bestShowCode);
+#endif
             return true;
         }
     }
@@ -423,11 +428,6 @@ void FireStarter::EvolveProgram(void)
     CompileProgram(m_updatedCode);
 } // EvolveProgram
 
-void FireStarter::InitProgram(void)
-{
-    LoadProgram();
-} // InitProgram
-
 void FireStarter::RenderImage(void* hwnd)
 {
     double time = 0.0;
@@ -447,7 +447,7 @@ void FireStarter::RenderImage(void* hwnd)
     unsigned int generation0 = 0;
 #else
     unsigned int varaition1 = 2;
-    unsigned long long generation0 = generation;
+    unsigned long long generation0 = m_generation;
 #endif
     RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition0, m_curState.result0);
     RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition1, m_curState.result1);
@@ -487,7 +487,7 @@ void FireStarter::RenderImage(void* hwnd)
     sprintf_s(m_statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", m_generation, m_states.size(), m_generation - m_bestState.program.generation, m_bestState.result0.result, m_bestState.result1.result, averageTime);
 } // RenderImage
 
-void FireStarter::Init(unsigned long width, unsigned long height)
+bool FireStarter::Init(unsigned long width, unsigned long height)
 {
     strcpy_s(m_statusString, "Initializing...");
 
@@ -495,7 +495,7 @@ void FireStarter::Init(unsigned long width, unsigned long height)
     InitResults();
     m_generation = m_lastGeneration = m_bestGeneration =0;
     m_bestState.program.generation = 0;
-    InitProgram();
+    return LoadProgram();
 } // Init
 
 FireStarter::FireStarter(void)

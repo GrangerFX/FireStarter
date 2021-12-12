@@ -64,7 +64,9 @@ HRESULT Initialize(HINSTANCE hInstance) {
 
     LONG imageWidth = GetSystemMetrics(SM_CXSCREEN);
     LONG imageHeight = GetSystemMetrics(SM_CYSCREEN) - 70;
-    fireStarter.Init(imageWidth, imageHeight);
+    if (!fireStarter.Init(imageWidth, imageHeight))
+		goto fail;
+
 	rect.left = 0;
 	rect.top = 0;
 	rect.right = imageWidth;

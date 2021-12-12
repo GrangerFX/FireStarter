@@ -4,78 +4,78 @@
 GPU_FUNCTION float InitData0(FireStarterData &data)
 {
 // DATA0 //
-    data.d[0] = 0.135509;
-    data.d[1] = -0.008065;
-    data.d[2] = 0.759827;
-    data.d[3] = -1.022437;
-    data.d[4] = -0.412418;
-    data.d[5] = 0.211364;
-    data.d[6] = -0.950983;
-    data.d[7] = -0.812977;
-    data.d[8] = -0.073789;
-    data.d[9] = -0.493751;
-    data.d[10] = 0.143981;
-    data.d[11] = 0.975852;
-    data.d[12] = 0.771900;
-    data.d[13] = -0.952487;
-    data.d[14] = -0.217571;
-    data.d[15] = -1.590719;
-    data.d[16] = 0.710459;
-    data.d[17] = 0.559066;
-    data.d[18] = -0.162267;
-    data.d[19] = -0.406709;
-    data.d[20] = 0.943891;
-    data.d[21] = 0.910275;
-    data.d[22] = -1.708117;
-    data.d[23] = -0.710923;
-    data.d[24] = 0.627226;
-    data.d[25] = -2.691236;
-    data.d[26] = 1.103740;
-    data.d[27] = 0.859745;
-    data.d[28] = 0.912159;
-    data.d[29] = -0.630900;
-    data.d[30] = 0.754516;
-    data.d[31] = 1.147630;
-    return 0.000239;
+    data.d[0] = -0.295293;
+    data.d[1] = 0.000074;
+    data.d[2] = 1.703755;
+    data.d[3] = -0.109123;
+    data.d[4] = -0.486119;
+    data.d[5] = -0.078535;
+    data.d[6] = 0.489754;
+    data.d[7] = -0.437806;
+    data.d[8] = -0.036958;
+    data.d[9] = 0.766143;
+    data.d[10] = -1.988164;
+    data.d[11] = 0.679022;
+    data.d[12] = -1.143087;
+    data.d[13] = -0.850597;
+    data.d[14] = -0.851114;
+    data.d[15] = 0.911351;
+    data.d[16] = -1.005253;
+    data.d[17] = 0.009188;
+    data.d[18] = 0.456678;
+    data.d[19] = -1.131497;
+    data.d[20] = 1.197553;
+    data.d[21] = -1.818129;
+    data.d[22] = -0.648024;
+    data.d[23] = -1.021434;
+    data.d[24] = 1.862041;
+    data.d[25] = 1.288801;
+    data.d[26] = -0.712072;
+    data.d[27] = -1.162377;
+    data.d[28] = -0.982848;
+    data.d[29] = -0.180974;
+    data.d[30] = 0.198489;
+    data.d[31] = 1.311061;
+    return 0.000023;
 // END //
 } // InitData0
 
 GPU_FUNCTION float InitData1(FireStarterData &data)
 {
 // DATA1 //
-    data.d[0] = 1.103613;
-    data.d[1] = 1.169052;
-    data.d[2] = -0.817093;
-    data.d[3] = -0.679481;
-    data.d[4] = -0.385091;
-    data.d[5] = -1.709860;
-    data.d[6] = 0.405826;
-    data.d[7] = -0.756673;
-    data.d[8] = 0.003515;
-    data.d[9] = 0.728435;
-    data.d[10] = 0.860597;
-    data.d[11] = 0.332663;
-    data.d[12] = -0.280752;
-    data.d[13] = -0.586117;
-    data.d[14] = 0.177817;
-    data.d[15] = 0.631594;
-    data.d[16] = -0.616785;
-    data.d[17] = 1.018392;
-    data.d[18] = -0.589305;
-    data.d[19] = 0.104504;
-    data.d[20] = -0.057400;
-    data.d[21] = -0.621962;
-    data.d[22] = -2.658392;
-    data.d[23] = 0.410915;
-    data.d[24] = -0.402254;
-    data.d[25] = 0.795799;
-    data.d[26] = 1.129401;
-    data.d[27] = 1.504204;
-    data.d[28] = 1.034147;
-    data.d[29] = -0.508388;
-    data.d[30] = -1.073485;
-    data.d[31] = 1.356175;
-    return 0.000222;
+    data.d[0] = 0.366407;
+    data.d[1] = 0.000234;
+    data.d[2] = 0.556274;
+    data.d[3] = -1.069298;
+    data.d[4] = -0.404244;
+    data.d[5] = 0.220449;
+    data.d[6] = 0.448149;
+    data.d[7] = -0.504425;
+    data.d[8] = 2.007938;
+    data.d[9] = 0.880840;
+    data.d[10] = 1.302696;
+    data.d[11] = -0.129301;
+    data.d[12] = 1.391559;
+    data.d[13] = -0.753595;
+    data.d[14] = -1.035093;
+    data.d[15] = 0.993351;
+    data.d[16] = -1.017360;
+    data.d[17] = -0.026323;
+    data.d[18] = 0.372406;
+    data.d[19] = 0.694986;
+    data.d[20] = 0.700242;
+    data.d[21] = 0.411657;
+    data.d[22] = -1.157929;
+    data.d[23] = -0.881027;
+    data.d[24] = -0.483248;
+    data.d[25] = 1.259369;
+    data.d[26] = -0.919940;
+    data.d[27] = -1.148401;
+    data.d[28] = -1.143507;
+    data.d[29] = -0.164094;
+    data.d[30] = 0.123090;
+    data.d[31] = 1.178886;
+    return 0.000017;
 // END //
 } // InitData1
 
@@ -85,33 +85,33 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n = data.d[1] += n;
     n = data.d[4] *= n;
     n = data.d[31] += n;
-    n = data.d[11] += n;
+    n = data.d[25] += n;
     n = data.d[9] *= n;
     n = data.d[13] += n;
     n = data.d[17] *= n;
     n = data.d[11] *= n;
-    n = data.d[5] *= n;
-    n = data.d[30] += n;
+    n = data.d[28] += n;
+    n = data.d[15] *= n;
     n = data.d[6] *= n;
     n = data.d[16] *= n;
     n = data.d[27] *= n;
-    n = data.d[8] *= n;
+    n = data.d[30] += n;
     n = data.d[23] *= n;
     n = data.d[13] *= n;
-    n = data.d[13] += n;
+    n = data.d[18] += n;
     n = data.d[26] += n;
     n = data.d[18] *= n;
     n = data.d[27] += n;
-    n = data.d[18] += n;
+    n = data.d[0] += n;
     n = data.d[22] += n;
     n = data.d[1] *= n;
     n = data.d[27] *= n;
     n = data.d[14] += n;
     n = data.d[14] += n;
-    n = data.d[13] *= n;
+    n = data.d[29] *= n;
     n = data.d[9] += n;
     n = data.d[7] *= n;
-    n = data.d[2] += n;
+    n = data.d[0] += n;
     n = data.d[27] *= n;
     n = data.d[7] *= n;
 // END //
@@ -136,50 +136,50 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     FireStarterResults *newResults = dataGeneration & 1 ? results1 : results0;
     FireStarterData data;
     float result;
-    if (dataGeneration) {
-        data = oldResults->results[member].data;
-        result = oldResults->results[member].result;
-    } else {
-        if (variation == 0)
-            result = InitData0(data);
-        else if (variation == 1)
-            result = InitData1(data);
-        else {
+    if (variation == 0)
+        result = InitData0(data);
+    else if (variation == 1)
+        result = InitData1(data);
+    else {
+        if (dataGeneration) {
+            data = oldResults->results[member].data;
+            result = oldResults->results[member].result;
+        } else {
             for (int i = 0; i < PROGRAM_DATA; i++)
                 data.d[i] = RANDOMFACTOR(seed);
             result = START_RESULT;
         }
-    }
-    float oldResult = result;
-    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
-        unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
-        float oldData = data.d[d];
-        data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
-        float curResult = 0.0f;
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-            curResult = fmaxf(fabsf(Evaluate(data, theta.s[i]) - target.s[i]), curResult);
-        if (curResult < result)
-            result = curResult;
-        else
-            data.d[d] = oldData;
-    }
-    if (result >= oldResult) {
-        // The genetic part of genetic programming and a major optimization:
-        // Copy the best data from among a random set of members.
-        unsigned int bestIndex = member;
-        float bestResult = oldResult;
-        for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
-            unsigned int index = RANDOMSEED(seed) % population;
-            float curResult = oldResults->results[index].result;
-            if (curResult < bestResult) {
-                bestResult = curResult;
-                bestIndex = index;
-            }
+        float oldResult = result;
+        for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
+            unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
+            float oldData = data.d[d];
+            data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
+            float curResult = 0.0f;
+            for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+                curResult = fmaxf(fabsf(Evaluate(data, theta.s[i]) - target.s[i]), curResult);
+            if (curResult < result)
+                result = curResult;
+            else
+                data.d[d] = oldData;
         }
-        data = oldResults->results[bestIndex].data;
-        unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
-        data.d[d] += (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * bestResult);
-        result = START_RESULT;
+        if (result >= oldResult) {
+            // The genetic part of genetic programming and a major optimization:
+            // Copy the best data from among a random set of members.
+            unsigned int bestIndex = member;
+            float bestResult = oldResult;
+            for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
+                unsigned int index = RANDOMSEED(seed) % population;
+                float curResult = oldResults->results[index].result;
+                if (curResult < bestResult) {
+                    bestResult = curResult;
+                    bestIndex = index;
+                }
+            }
+            data = oldResults->results[bestIndex].data;
+            unsigned int d = RANDOMSEED(seed) % PROGRAM_DATA;
+            data.d[d] += (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * bestResult);
+            result = START_RESULT;
+        }
     }
     newResults->results[member].data = data;
     newResults->results[member].result = result;

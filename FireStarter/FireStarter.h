@@ -63,16 +63,15 @@ public:
     bool LoadCode(const std::string& filePath, std::string& code);
     void SaveCode(const std::string& filePath, const std::string& code);
     void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
-    void LoadProgram(void);
+    bool LoadProgram(void);
     void SaveProgram(void);
     bool EvaluateProgram(void);
     void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
     void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
     void DevolveProgram(void);
     void EvolveProgram(void);
-    void InitProgram(void);
     void RenderImage(void* hwnd);
-    void Init(unsigned long width, unsigned long height);
+    bool Init(unsigned long width, unsigned long height);
     FireStarter(void);
     ~FireStarter(void);
 }; // class FireStarter
