@@ -22,47 +22,77 @@ do { \
     } \
 } while (0)
 
-void FireStarter::EraseFrameBuffer(FrameBuffer &buffer)
+void FireStarterUnit::EraseFrameBuffer(FrameBuffer &buffer)
 {
-    memset(buffer.base, 0, buffer.width * buffer.height * sizeof(uchar4));
+    memset(buffer.hostBase, 0, buffer.width * buffer.height * sizeof(uchar4));
+    cudaMemset(buffer.deviceBase, 0, buffer.width * buffer.height * sizeof(uchar4));
 } // EraseFrameBuffer
 
-void FireStarter::CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer)
-{
-    if ((srcBuffer.rowbytes == dstBuffer.rowbytes) && (srcBuffer.height = dstBuffer.height))
-        memcpy(dstBuffer.base, srcBuffer.base, srcBuffer.rowbytes * srcBuffer.height);
-} // CopyFrameBuffer
-
-void FireStarter::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height)
+void FireStarterUnit::InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height)
 {
 	buffer.width = width;
 	buffer.height = height;
 	buffer.rowbytes = width * 4;
-    buffer.base = NULL;
+    buffer.hostBase = nullptr;
+    buffer.deviceBase = nullptr;
 
-    cudaError_t err = cudaMallocManaged(&buffer.base, buffer.width * buffer.height * sizeof(uchar4));
+    size_t bufferSize = buffer.width * buffer.height * sizeof(uchar4);
+#if 0
+    cudaError_t err = cudaMallocManaged(&buffer.hostBase, bufferSize);
     if (err != cudaSuccess) {
         fprintf(stderr, "Failed to allocate pixels (error code %s)!\n", cudaGetErrorString(err));
         exit(EXIT_FAILURE);
     }
+    buffer.deviceBase = buffer.hostBase;
+#else
+    cudaError_t err = cudaMalloc(&buffer.deviceBase, bufferSize);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Failed to allocate device pixels (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+    err = cudaMallocHost(&buffer.hostBase, bufferSize);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Failed to allocate host pixels (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+#endif
 } // InitBuffer
 
-void FireStarter::FreeFrameBuffer(FrameBuffer &buffer)
+void FireStarterUnit::FreeFrameBuffer(FrameBuffer &buffer)
 {
-    if (buffer.base) {
-        cudaError_t err = cudaFree(buffer.base);
+    if (buffer.hostBase) {
+        cudaError_t err = cudaFreeHost(buffer.hostBase);
         if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free frame buffer (error code %s)!\n", cudaGetErrorString(err));
+            fprintf(stderr, "Failed to free host frame buffer (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+    }
+    if (buffer.deviceBase) {
+        cudaError_t err = cudaFree(buffer.deviceBase);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to free device frame buffer (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
     }
     buffer.width = 0;
     buffer.height = 0;
     buffer.rowbytes = 0;
-    buffer.base = NULL;
+    buffer.deviceBase = nullptr;
 } // FreeFrameBuffer
 
-void FireStarter::RandomInstruction(unsigned int index, unsigned int &seed)
+void* FireStarterUnit::GetFrameBuffer(FrameBuffer& buffer)
+{
+#if 1
+    cudaError_t err = cudaMemcpy(buffer.hostBase, buffer.deviceBase, buffer.width * buffer.height * sizeof(uchar4), cudaMemcpyDeviceToHost);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Could not copy buffer from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+#endif
+    return buffer.hostBase;
+} // GetFrameBuffer
+
+void FireStarterUnit::RandomInstruction(unsigned int index, unsigned int &seed)
 {
     unsigned int operation = m_curState.program.instructions[index];
     unsigned int opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
@@ -70,7 +100,7 @@ void FireStarter::RandomInstruction(unsigned int index, unsigned int &seed)
     m_curState.program.instructions[index] = data * PROGRAM_OPCODES + opcode;
  } // RandomInstruction
 
-void FireStarter::GetResults(FireStarterResults* results, FireStarterResult& bestResult)
+void FireStarterUnit::GetResults(FireStarterResults* results, FireStarterResult& bestResult)
 {
     unsigned int index = 0;
     float result = results->results[0].result;
@@ -84,23 +114,52 @@ void FireStarter::GetResults(FireStarterResults* results, FireStarterResult& bes
     bestResult = results->results[index];
 } // GetResults
 
-void FireStarter::InitResults(void)
+void FireStarterUnit::CopyResultsHostToDevice(void)
+{
+    cudaError_t err = cudaMemcpy(m_deviceResults, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Could not copy results from host to device (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+} // CopyResultsHostToDevice
+
+void FireStarterUnit::CopyResultsDeviceToHost(void)
+{
+    cudaError_t err = cudaMemcpy(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Could not copy results from device to host (error code %s)!\n", cudaGetErrorString(err));
+        exit(EXIT_FAILURE);
+    }
+} // CopyResultsDeviceToHost
+
+void FireStarterUnit::InitResults(void)
 {
     unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
-    if (!m_results0) {
-        cudaError_t err = cudaMallocManaged(&m_results0, resultsSize);
+    m_resultsSize = resultsSize * 2;
+    if (!m_deviceResults) {
+        cudaError_t err = cudaMalloc(&m_deviceResults, m_resultsSize);
         if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to allocate old results (error code %s)!\n", cudaGetErrorString(err));
+            fprintf(stderr, "Failed to allocate device results (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+        err = cudaMemset(m_deviceResults, 0, m_resultsSize);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Failed to memset device results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
     }
-    if (!m_results1) {
-        cudaError_t err = cudaMallocManaged(&m_results1, resultsSize);
+    if (!m_hostResults) {
+        cudaError_t err = cudaMallocHost(&m_hostResults, m_resultsSize);
         if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to allocate new results (error code %s)!\n", cudaGetErrorString(err));
+            fprintf(stderr, "Failed to allocate device results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
+        memset(m_hostResults, 0, m_resultsSize);
     }
+    m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
+    m_deviceResults1 = (FireStarterResults*)(m_deviceResults + resultsSize);
+    m_hostResults0 = (FireStarterResults*)(m_hostResults);
+    m_hostResults1 = (FireStarterResults*)(m_hostResults + resultsSize);
 
     // Initialize the evolving program instructions.
     unsigned int seed = RANDOMHASH((unsigned int)m_generation);
@@ -118,45 +177,42 @@ void FireStarter::InitResults(void)
     m_curState.devolve = 0;
     m_bestState = m_curState;
     m_states.push_back(m_curState);
-
-    for (unsigned int i = 0; i < PROGRAM_POPULATION; i++) {
-        m_results0->results[i] = m_curState.result0;
-        m_results1->results[i] = m_curState.result1;
-    }
 } // InitResults
 
-void FireStarter::FreeResults(void)
+void FireStarterUnit::FreeResults(void)
 {
-    if (m_results0) {
-        cudaError_t err = cudaFree(m_results0);
+    if (m_deviceResults) {
+        cudaError_t err = cudaFree(m_deviceResults);
         if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free old results (error code %s)!\n", cudaGetErrorString(err));
+            fprintf(stderr, "Failed to free device results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
-        m_results0 = NULL;
+        m_deviceResults = nullptr;
     }
-    if (m_results1) {
-        cudaError_t err = cudaFree(m_results1);
+    if (m_hostResults) {
+        cudaError_t err = cudaFreeHost(m_hostResults);
         if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free new results (error code %s)!\n", cudaGetErrorString(err));
+            fprintf(stderr, "Failed to free host results (error code %s)!\n", cudaGetErrorString(err));
             exit(EXIT_FAILURE);
         }
-        m_results1 = NULL;
+        m_hostResults = nullptr;
     }
+    m_deviceResults0 = m_deviceResults1 = nullptr;
+    m_hostResults0 = m_hostResults1 = nullptr;
 } // FreeResults
 
-void FireStarter::CompileProgram(const std::string& program)
+void FireStarterUnit::CompileProgram(const std::string& program, CUmodule& cuda_module)
 {
-    if (m_module) {
-        checkCudaErrors(cuModuleUnload(m_module));
-        m_module = NULL;
+    if (cuda_module) {
+        checkCudaErrors(cuModuleUnload(cuda_module));
+        cuda_module = nullptr;
     }
 
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
     const char* code = program.c_str();
-    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, code, "FireStarter", 0, NULL, NULL));
-    nvrtcResult res = nvrtcCompileProgram(prog, 0, NULL);
+    NVRTC_SAFE_CALL("nvrtcCreateProgram", nvrtcCreateProgram(&prog, code, "FireStarter", 0, nullptr, nullptr));
+    nvrtcResult res = nvrtcCompileProgram(prog, 0, nullptr);
     if (res != 0) {
         // Output the compile log.
         size_t logSize;
@@ -181,12 +237,12 @@ void FireStarter::CompileProgram(const std::string& program)
     NVRTC_SAFE_CALL("nvrtcGetPTX", nvrtcGetPTX(prog, ptx));
     NVRTC_SAFE_CALL("nvrtcDestroyProgram", nvrtcDestroyProgram(&prog));
 
-    checkCudaErrors(cuModuleLoadDataEx(&m_module, ptx, 0, 0, 0));
+    checkCudaErrors(cuModuleLoadDataEx(&cuda_module, ptx, 0, 0, 0));
     free(ptx);
-    ptx = NULL;
+    ptx = nullptr;
 } // CompileProgram
 
-void FireStarter::RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult &result)
+void FireStarterUnit::RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult &result)
 {
     // Launch the calculation kernel
     int threadsPerBlock = 256;
@@ -196,15 +252,15 @@ void FireStarter::RunProgram(unsigned int population, unsigned int generations, 
     unsigned long long dataGeneration = generation0;
 
     for (unsigned int g = 0; g < generations; g++) {
-        void* arr[] = {reinterpret_cast<void*>(&m_results0),
-                       reinterpret_cast<void*>(&m_results1),
+        void* arr[] = {reinterpret_cast<void*>(&m_deviceResults0),
+                       reinterpret_cast<void*>(&m_deviceResults1),
                        reinterpret_cast<void*>(&population),
                        reinterpret_cast<void*>(&dataGeneration),
                        reinterpret_cast<void*>(&m_generation),
                        reinterpret_cast<void*>(&variation)};
 
         CUfunction kernel_addr;
-        checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_module, "FireStarter"));
+        checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_fireStarterModule, "FireStarter"));
 
         checkCudaErrors(cuLaunchKernel(kernel_addr,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -215,10 +271,11 @@ void FireStarter::RunProgram(unsigned int population, unsigned int generations, 
         dataGeneration++;
     }
     checkCudaErrors(cuCtxSynchronize());
-    GetResults(dataGeneration & 1 ? m_results1 : m_results0, result);
+    CopyResultsDeviceToHost();
+    GetResults(dataGeneration & 1 ? m_hostResults1 : m_hostResults0, result);
 } // RunProgram
 
-void FireStarter::DrawGraph(unsigned int variation)
+void FireStarterUnit::DrawGraph(unsigned int variation)
 {
     // Launch the display kernel
     int threadsPerBlock = 32;
@@ -227,10 +284,10 @@ void FireStarter::DrawGraph(unsigned int variation)
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     CUfunction kernel_addr;
-    checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_module, "FireShow"));
+    checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_fireShowModule, "FireShow"));
 
     void *arr[] = {reinterpret_cast<void*>(variation ? &m_bestState.result1 : &m_bestState.result0),
-                   reinterpret_cast<void*>(&m_buffer.base),
+                   reinterpret_cast<void*>(&m_buffer.deviceBase),
                    reinterpret_cast<void*>(&m_buffer.width),
                    reinterpret_cast<void*>(&m_buffer.height),
                    reinterpret_cast<void*>(&variation)};
@@ -245,7 +302,7 @@ void FireStarter::DrawGraph(unsigned int variation)
     checkCudaErrors(cuCtxSynchronize());
 } // DrawGraph
 
-bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
+bool FireStarterUnit::LoadCode(const std::string& filePath, std::string& code)
 {
     std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
     if (file.is_open()) {
@@ -260,7 +317,7 @@ bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
     return false;
 } // LoadCode
 
-void FireStarter::SaveCode(const std::string& filePath, const std::string& code)
+void FireStarterUnit::SaveCode(const std::string& filePath, const std::string& code)
 {
     std::ofstream file(filePath.c_str(), std::ios::out | std::ios::binary);
     if (file.is_open()) {
@@ -269,7 +326,7 @@ void FireStarter::SaveCode(const std::string& filePath, const std::string& code)
     }
 } // SaveCode
 
-void FireStarter::ReplaceCode(std::string& code, const std::string& search, const std::string& replace)
+void FireStarterUnit::ReplaceCode(std::string& code, const std::string& search, const std::string& replace)
 {
     // Get the first occurrence
     size_t pos = code.find(search);
@@ -283,7 +340,7 @@ void FireStarter::ReplaceCode(std::string& code, const std::string& search, cons
     }
 } // ReplaceCode
 
-bool FireStarter::LoadProgram(void)
+bool FireStarterUnit::LoadProgram(void)
 {
 #if EVOLVE
     if (!LoadCode("FireStarter.cu", m_fireStarterCode) || !LoadCode("FireShow.cu", m_fireShowCode))
@@ -293,25 +350,26 @@ bool FireStarter::LoadProgram(void)
         return false;
     CompileProgram(m_fireShowCode);
 #endif
-    m_updatedCode = m_fireStarterCode;
-    m_bestShowCode = m_fireShowCode;
     return true;
 } // LoadProgram
 
-void FireStarter::SaveProgram(void)
+void FireStarterUnit::SaveProgram(const std::string& evaluateCode)
 {
-    m_bestShowCode = m_fireShowCode;
-    UpdateProgram(m_bestShowCode, m_evaluateCode, EVALUATE_CODE);
-    UpdateData(m_bestShowCode, m_bestState.result0, DATA0_CODE);
-    UpdateData(m_bestShowCode, m_bestState.result1, DATA1_CODE);
 #if EVOLVE
-    SaveCode("FireShow_Best.cu", m_bestShowCode);
-    SaveCode("FireStarter_Best.cu", m_updatedCode);
+    std::string bestFireStarterCode = m_fireStarterCode;
+    UpdateProgram(bestFireStarterCode, evaluateCode, EVALUATE_CODE);
+    SaveCode("FireStarter_Best.cu", bestFireStarterCode);
+
+    std::string bestFireShowCode = m_fireShowCode;
+    UpdateData(bestFireShowCode, m_bestState.result0, DATA0_CODE);
+    UpdateData(bestFireShowCode, m_bestState.result1, DATA1_CODE);
+    UpdateProgram(bestFireShowCode, evaluateCode, EVALUATE_CODE);
+    SaveCode("FireShow_Best.cu", bestFireShowCode);
+    CompileProgram(bestFireShowCode, m_fireShowModule);
 #endif
-    CompileProgram(m_bestShowCode);
 } // SaveProgram
 
-void FireStarter::UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString)
+void FireStarterUnit::UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString)
 {
     size_t startPos = code.find(startString);
     if (startPos != std::string::npos) {
@@ -329,7 +387,7 @@ void FireStarter::UpdateProgram(std::string& code, const std::string& replacemen
     }
 } // UpdateProgram
 
-void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
+void FireStarterUnit::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
 {
     std::string replacementData;
     for (unsigned int i = 0; i < PROGRAM_DATA; i++)
@@ -338,33 +396,7 @@ void FireStarter::UpdateData(std::string& code, const FireStarterResult& result,
     UpdateProgram(code, replacementData, startString);
 } // UpdateData
 
-bool FireStarter::EvaluateProgram(void)
-{
-    float maxResult = MAX(m_curState.result0.result, m_curState.result1.result);
-    if (maxResult < m_curState.maxResult) {
-        m_lastGeneration = m_generation;
-        m_curState.maxResult = maxResult;
-        m_curState.devolve = 0;
-        m_states.push_back(m_curState);
-        if (m_curState.maxResult < m_bestState.maxResult) {
-            m_bestGeneration = m_generation;
-            m_bestState = m_curState;
-            m_bestShowCode = m_fireShowCode;
-#if EVOLVE
-            UpdateData(m_bestShowCode, m_bestState.result0, DATA0_CODE);
-            UpdateData(m_bestShowCode, m_bestState.result1, DATA1_CODE);
-            UpdateProgram(m_bestShowCode, m_evaluateCode, EVALUATE_CODE);
-            CompileProgram(m_bestShowCode);
-            SaveCode("FireStarter_Best.cu", m_updatedCode);
-            SaveCode("FireShow_Best.cu", m_bestShowCode);
-#endif
-            return true;
-        }
-    }
-    return false;
-} // EvaluateProgram
-
-void FireStarter::DevolveProgram(void)
+void FireStarterUnit::DevolveProgram(void)
 {
     unsigned long long lastAge = m_generation - m_lastGeneration;
     unsigned int state = (unsigned int)m_states.size() - 1;
@@ -382,7 +414,7 @@ void FireStarter::DevolveProgram(void)
     m_curState = m_states[state];
 } // DevolveProgram
 
-void FireStarter::EvolveProgram(void)
+void FireStarterUnit::EvolveProgram(void)
 {
     // Determine how many changes to make to the instructions.
     unsigned long long lastAge = m_generation - m_lastGeneration;
@@ -423,94 +455,178 @@ void FireStarter::EvolveProgram(void)
         }
     }
 
-    m_updatedCode = m_fireStarterCode;
-    UpdateProgram(m_updatedCode, m_evaluateCode, EVALUATE_CODE);
-    CompileProgram(m_updatedCode);
+    std::string updatedCode = m_fireStarterCode;
+    UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
+    CompileProgram(updatedCode, m_fireStarterModule);
 } // EvolveProgram
 
-void FireStarter::RenderImage(void* hwnd)
+void FireStarterUnit::EvaluateProgram(void)
 {
-    double time = 0.0;
-    m_timer.Start();
-
-    // Evolve the program instructions.
-    long long startGeneration = m_generation;
-#if EVOLVE
-    DevolveProgram();
-    EvolveProgram();
-#endif
-        
-    // Run the next generation on the GPU.
-    unsigned int varaition0 = 0;
-#if EVOLVE
-    unsigned int varaition1 = 1;
-    unsigned int generation0 = 0;
-#else
-    unsigned int varaition1 = 2;
-    unsigned long long generation0 = m_generation;
-#endif
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition0, m_curState.result0);
-    RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, varaition1, m_curState.result1);
-    time = m_timer.Duration();
-
-    // Find the best results for display only.
-    if (EvaluateProgram()) {
-        // Erase the frame buffer
-        EraseFrameBuffer(m_buffer);
-        DrawGraph(varaition0);
-        DrawGraph(varaition1);
-
-        unsigned char buffer[4096];
-        BITMAPINFO* bm = (BITMAPINFO*)buffer;
-        bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bm->bmiHeader.biHeight = -(int)m_buffer.height;
-        bm->bmiHeader.biPlanes = 1;
-        bm->bmiHeader.biCompression = BI_RGB;
-        bm->bmiHeader.biSizeImage = 0;
-        bm->bmiHeader.biXPelsPerMeter = 0;
-        bm->bmiHeader.biYPelsPerMeter = 0;
-        bm->bmiHeader.biClrUsed = 0;
-        bm->bmiHeader.biClrImportant = 0;
-        bm->bmiHeader.biWidth = m_buffer.width;
-        bm->bmiHeader.biBitCount = 32;
-
-        HDC hdc = GetDC((HWND)hwnd);
-        if (hdc) {
-            SetDIBitsToDevice(hdc, 0, 0, m_buffer.width, m_buffer.height, 0, 0, 0, m_buffer.height, (CONST VOID*)m_buffer.base, bm, DIB_RGB_COLORS);
-            GdiFlush();
+    float maxResult = MAX(m_curState.result0.result, m_curState.result1.result);
+    if (maxResult < m_curState.maxResult) {
+        m_lastGeneration = m_generation;
+        m_curState.maxResult = maxResult;
+        m_curState.devolve = 0;
+        m_states.push_back(m_curState);
+        if (m_curState.maxResult < m_bestState.maxResult) {
+            m_mutex.lock();
+            m_bestGeneration = m_generation;
+            m_bestState = m_curState;
+            m_bestEvaluateCode = m_evaluateCode;
+            m_update = true;
+            m_mutex.unlock();
         }
     }
-    m_generation++;
+} // EvaluateProgram
 
-    // Update the status.
-    double averageTime = time / (double)(m_generation - startGeneration);
-    sprintf_s(m_statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", m_generation, m_states.size(), m_generation - m_bestState.program.generation, m_bestState.result0.result, m_bestState.result1.result, averageTime);
+void FireStarterUnit::ProcessThread(void)
+{
+    checkCudaErrors(cuCtxCreate(&m_fireStarterContext, CU_CTX_SCHED_BLOCKING_SYNC, m_device));
+    InitResults();
+    while (!m_quitThread) {
+        m_timer.Start();
+
+        // Evolve the program instructions.
+#if EVOLVE
+        DevolveProgram();
+        EvolveProgram();
+#endif
+
+        // Run the next generation on the GPU.
+#if EVOLVE
+        unsigned int generation0 = 0;
+#else
+        unsigned long long generation0 = m_generation;
+#endif
+        RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, m_variation0, m_curState.result0);
+        RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, m_variation1, m_curState.result1);
+        m_processingTime = m_timer.Duration();
+        EvaluateProgram();
+        m_generation++;
+    }
+    if (m_fireStarterModule) {
+        checkCudaErrors(cuModuleUnload(m_fireStarterModule));
+        m_fireStarterModule = nullptr;
+    }
+    FreeResults();
+    if (m_fireStarterContext) {
+        checkCudaErrors(cuCtxDestroy(m_fireStarterContext));
+        m_fireStarterContext = nullptr;
+    }
+} // ProcessThread
+
+void FireStarterUnit::StopThread(void)
+{
+    m_quitThread = true;
+    m_thread.join();
+} // StopThread
+
+void FireStarterUnit::RenderImage(void* hwnd)
+{
+    if (m_update) {
+        m_mutex.lock();
+        std::string evaluateCode = m_bestEvaluateCode;
+        m_update = false;
+        m_mutex.unlock();
+        SaveProgram(evaluateCode);
+        if (m_fireShowModule) {
+            // Erase the frame buffer
+            EraseFrameBuffer(m_buffer);
+            DrawGraph(m_variation0);
+            DrawGraph(m_variation1);
+
+            unsigned char buffer[4096];
+            BITMAPINFO* bm = (BITMAPINFO*)buffer;
+            bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+            bm->bmiHeader.biHeight = -(int)m_buffer.height;
+            bm->bmiHeader.biPlanes = 1;
+            bm->bmiHeader.biCompression = BI_RGB;
+            bm->bmiHeader.biSizeImage = 0;
+            bm->bmiHeader.biXPelsPerMeter = 0;
+            bm->bmiHeader.biYPelsPerMeter = 0;
+            bm->bmiHeader.biClrUsed = 0;
+            bm->bmiHeader.biClrImportant = 0;
+            bm->bmiHeader.biWidth = m_buffer.width;
+            bm->bmiHeader.biBitCount = 32;
+
+            HDC hdc = GetDC((HWND)hwnd);
+            if (hdc) {
+                SetDIBitsToDevice(hdc, 0, 0, m_buffer.width, m_buffer.height, 0, 0, 0, m_buffer.height, GetFrameBuffer(m_buffer), bm, DIB_RGB_COLORS);
+                GdiFlush();
+            }
+        }
+    }
 } // RenderImage
+
+bool FireStarterUnit::Init(unsigned long width, unsigned long height)
+{
+    checkCudaErrors(cuInit(0));
+    checkCudaErrors(cuDeviceGet(&m_device, 0));
+    checkCudaErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_BLOCKING_SYNC, m_device));
+    InitFrameBuffer(m_buffer, width, height);
+    EraseFrameBuffer(m_buffer);
+    m_generation = m_lastGeneration = m_bestGeneration =0;
+    m_bestState.program.generation = 0;
+    if (!LoadProgram())
+        return false;
+    m_thread = std::thread([this] { ProcessThread(); });
+    return true;
+} // Init
+
+FireStarterUnit::FireStarterUnit(void)
+{
+    // Timer ID
+    m_device = 0;
+    m_fireStarterContext = nullptr;
+    m_fireShowContext = nullptr;
+    m_deviceResults0 = nullptr;
+    m_deviceResults1 = nullptr;
+    m_hostResults0 = nullptr;
+    m_hostResults1 = nullptr;
+    m_fireStarterModule = nullptr;
+    m_fireShowModule = nullptr;
+    m_variation0 = 0;
+#if EVOLVE
+    m_variation1 = 1;
+#else
+    m_variation1 = 2;
+#endif
+    m_quitThread = false;
+} // FireStarter
+
+FireStarterUnit::~FireStarterUnit(void)
+{
+    StopThread();
+    if (m_fireShowModule)
+        checkCudaErrors(cuModuleUnload(m_fireShowModule));
+    if (m_fireShowContext)
+        checkCudaErrors(cuCtxDestroy(m_fireShowContext));
+    FreeFrameBuffer(m_buffer);
+} // ~FireStarterUnit
 
 bool FireStarter::Init(unsigned long width, unsigned long height)
 {
-    strcpy_s(m_statusString, "Initializing...");
-
-    InitFrameBuffer(m_buffer, width, height);
-    InitResults();
-    m_generation = m_lastGeneration = m_bestGeneration =0;
-    m_bestState.program.generation = 0;
-    return LoadProgram();
+    return m_unit.Init(width, height);
 } // Init
+
+void FireStarter::RenderImage(void* hwnd)
+{
+    // Render the image if there was an update.
+    m_unit.RenderImage(hwnd);
+} // RenderImage
+
+const char* FireStarter::RenderStatus(void)
+{
+    // Update the status.
+    sprintf_s(m_statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", m_unit.m_generation, m_unit.m_states.size(), m_unit.m_generation - m_unit.m_bestState.program.generation, m_unit.m_bestState.result0.result, m_unit.m_bestState.result1.result, m_unit.m_processingTime);
+    return m_statusString;
+} // RenderStatus
 
 FireStarter::FireStarter(void)
 {
-    // Timer ID
     m_statusString[0] = 0;
-    m_results0 = NULL;
-    m_results1 = NULL;
-    m_module = NULL;
 } // FireStarter
 
 FireStarter::~FireStarter(void)
 {
-    if (m_module)
-        checkCudaErrors(cuModuleUnload(m_module));
-    FreeFrameBuffer(m_buffer);
-    FreeResults();
 } // ~FireStarter

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
-#include <cuda.h>
+#include <mutex>
+#include <thread>
 #include "FireStarterDefines.h"
 #include "FireStarterUtil.h"
 
@@ -29,49 +30,79 @@ typedef struct {
     unsigned int devolve;
 } FireStarterState;
 
-class FireStarter {
+class FireStarterUnit {
 public:
+    std::mutex m_mutex;
+    std::thread m_thread;
     SimpleTimer m_timer;
     FrameBuffer m_buffer;
-    FireStarterResults* m_results0;
-    FireStarterResults* m_results1;
+    char* m_deviceResults;
+    char* m_hostResults;
+    FireStarterResults* m_deviceResults0;
+    FireStarterResults* m_deviceResults1;
+    FireStarterResults* m_hostResults0;
+    FireStarterResults* m_hostResults1;
     std::vector<FireStarterState> m_states;
     FireStarterState m_curState;
     FireStarterState m_bestState;
-    CUmodule m_module;
+    CUdevice m_device;
+    CUcontext m_fireStarterContext;
+    CUcontext m_fireShowContext;
+    CUmodule m_fireStarterModule;
+    CUmodule m_fireShowModule;
     std::string m_fireStarterCode;
     std::string m_fireShowCode;
     std::string m_evaluateCode;
-    std::string m_updatedCode;
-    std::string m_bestShowCode;
+    std::string m_bestEvaluateCode;
+    size_t m_resultsSize;
     unsigned long long m_generation;
     unsigned long long m_lastGeneration;
     unsigned long long m_bestGeneration;
-    char m_statusString[1024];
+    double m_processingTime;
+    unsigned int m_variation0;
+    unsigned int m_variation1;
+    volatile bool m_quitThread;
+    volatile bool m_update;
 
     void EraseFrameBuffer(FrameBuffer &buffer);
-    void CopyFrameBuffer(FrameBuffer &dstBuffer, FrameBuffer &srcBuffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
+    void* GetFrameBuffer(FrameBuffer& buffer);
     void RandomInstruction(unsigned int index, unsigned int &seed);
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
+    void CopyResultsHostToDevice(void);
+    void CopyResultsDeviceToHost(void);
     void InitResults(void);
     void FreeResults(void);
-    void CompileProgram(const std::string& program);
+    void CompileProgram(const std::string& program, CUmodule& cuda_module);
     void RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult& result);
     void DrawGraph(unsigned int variation);
     bool LoadCode(const std::string& filePath, std::string& code);
     void SaveCode(const std::string& filePath, const std::string& code);
     void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
     bool LoadProgram(void);
-    void SaveProgram(void);
-    bool EvaluateProgram(void);
+    void SaveProgram(const std::string& evaluateCode);
     void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
     void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
     void DevolveProgram(void);
     void EvolveProgram(void);
+    void EvaluateProgram(void);
+    void ProcessThread(void);
+    void StopThread(void);
     void RenderImage(void* hwnd);
     bool Init(unsigned long width, unsigned long height);
+    FireStarterUnit(void);
+    ~FireStarterUnit(void);
+}; // class FireStarterUnit
+
+class FireStarter {
+public:
+    FireStarterUnit m_unit;
+    char m_statusString[1024];
+
+    bool Init(unsigned long width, unsigned long height);
+    void RenderImage(void* hwnd);
+    const char* RenderStatus(void);
     FireStarter(void);
     ~FireStarter(void);
 }; // class FireStarter

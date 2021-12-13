@@ -7,6 +7,7 @@
 #define GPU_THREADFENCE() __threadfence()
 #define GPU_SYNCTHREADS() __syncthreads
 #else
+#define CUDA_API_PER_THREAD_DEFAULT_STREAM
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <math.h>

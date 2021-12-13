@@ -100,7 +100,7 @@ HRESULT Initialize(HINSTANCE hInstance) {
 			DispatchMessage(&msg);
 		} else {
             fireStarter.RenderImage(hwnd);
-			SetWindowText(hwnd, fireStarter.m_statusString);
+			SetWindowText(hwnd, fireStarter.RenderStatus());
         }
 	} while (1);
 

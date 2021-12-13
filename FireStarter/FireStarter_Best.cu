@@ -7,33 +7,33 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n = data.d[1] += n;
     n = data.d[4] *= n;
     n = data.d[31] += n;
-    n = data.d[25] += n;
+    n = data.d[11] += n;
     n = data.d[9] *= n;
     n = data.d[13] += n;
     n = data.d[17] *= n;
     n = data.d[11] *= n;
-    n = data.d[28] += n;
-    n = data.d[15] *= n;
+    n = data.d[5] *= n;
+    n = data.d[30] += n;
     n = data.d[6] *= n;
     n = data.d[16] *= n;
     n = data.d[27] *= n;
-    n = data.d[30] += n;
+    n = data.d[8] *= n;
     n = data.d[23] *= n;
     n = data.d[13] *= n;
-    n = data.d[18] += n;
+    n = data.d[13] += n;
     n = data.d[26] += n;
     n = data.d[18] *= n;
     n = data.d[27] += n;
-    n = data.d[0] += n;
+    n = data.d[18] += n;
     n = data.d[22] += n;
     n = data.d[1] *= n;
     n = data.d[27] *= n;
     n = data.d[14] += n;
     n = data.d[14] += n;
-    n = data.d[29] *= n;
+    n = data.d[13] *= n;
     n = data.d[9] += n;
     n = data.d[7] *= n;
-    n = data.d[0] += n;
+    n = data.d[22] += n;
     n = data.d[27] *= n;
     n = data.d[7] *= n;
 // END //
@@ -80,7 +80,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         else
             data.d[d] = oldData;
     }
-    if (result >= oldResult) {
+    if (dataGeneration && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
         unsigned int bestIndex = member;
