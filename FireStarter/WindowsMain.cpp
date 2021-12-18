@@ -101,8 +101,11 @@ HRESULT Initialize(HINSTANCE hInstance) {
 		} else {
             fireStarter.RenderImage(hwnd);
 			SetWindowText(hwnd, fireStarter.RenderStatus());
+			Sleep(100);
         }
 	} while (1);
+
+	fireStarter.Quit();
 
 	return S_OK;
 

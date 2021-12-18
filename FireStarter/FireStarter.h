@@ -48,6 +48,8 @@ public:
     CUdevice m_device;
     CUcontext m_fireStarterContext;
     CUcontext m_fireShowContext;
+    CUstream m_fireStarterStream;
+    CUstream m_fireShowStream;
     CUmodule m_fireStarterModule;
     CUmodule m_fireShowModule;
     std::string m_fireStarterCode;
@@ -67,10 +69,9 @@ public:
     void EraseFrameBuffer(FrameBuffer &buffer);
     void InitFrameBuffer(FrameBuffer &buffer, unsigned long width, unsigned long height);
     void FreeFrameBuffer(FrameBuffer &buffer);
-    void* GetFrameBuffer(FrameBuffer& buffer);
+    const unsigned char* GetFrameBuffer(FrameBuffer& buffer);
     void RandomInstruction(unsigned int index, unsigned int &seed);
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
-    void CopyResultsHostToDevice(void);
     void CopyResultsDeviceToHost(void);
     void InitResults(void);
     void FreeResults(void);
@@ -100,9 +101,10 @@ public:
     FireStarterUnit m_unit;
     char m_statusString[1024];
 
-    bool Init(unsigned long width, unsigned long height);
     void RenderImage(void* hwnd);
     const char* RenderStatus(void);
+    bool Init(unsigned long width, unsigned long height);
+    void Quit(void);
     FireStarter(void);
     ~FireStarter(void);
 }; // class FireStarter
