@@ -40,13 +40,13 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     return n;
 } // Evaluate
 
-GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
+GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
 
-    unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(programGeneration) + dataGeneration) + member);
+    unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
     FireStarterSamples theta;
     FireStarterSamples target;
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
@@ -54,11 +54,11 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         target.s[i] = Target(theta.s[i], variation);
     }
 
-    FireStarterResults *oldResults = dataGeneration & 1 ? results0 : results1;
-    FireStarterResults *newResults = dataGeneration & 1 ? results1 : results0;
+    FireStarterResults *oldResults = generation & 1 ? results0 : results1;
+    FireStarterResults *newResults = generation & 1 ? results1 : results0;
     FireStarterData data;
     float result;
-    if (dataGeneration) {
+    if (generation) {
         data = oldResults->results[member].data;
         result = oldResults->results[member].result;
     } else {
@@ -80,7 +80,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         else
             data.d[d] = oldData;
     }
-    if (dataGeneration && (result >= oldResult)) {
+    if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
         unsigned int bestIndex = member;

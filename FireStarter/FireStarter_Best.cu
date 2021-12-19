@@ -4,49 +4,49 @@
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
 // EVALUATE //
-    n = data.d[2] += n;
-    n = data.d[19] += n;
-    n = data.d[0] += n;
-    n = data.d[6] += n;
-    n = data.d[22] += n;
-    n = data.d[20] += n;
-    n = data.d[17] *= n;
-    n = data.d[9] += n;
-    n = data.d[5] *= n;
-    n = data.d[12] *= n;
-    n = data.d[11] += n;
-    n = data.d[12] += n;
+    n = data.d[31] *= n;
     n = data.d[27] *= n;
-    n = data.d[9] *= n;
-    n = data.d[19] *= n;
-    n = data.d[12] += n;
-    n = data.d[27] += n;
-    n = data.d[27] += n;
-    n = data.d[17] += n;
-    n = data.d[23] += n;
-    n = data.d[29] *= n;
     n = data.d[29] += n;
-    n = data.d[18] *= n;
-    n = data.d[12] += n;
-    n = data.d[14] += n;
+    n = data.d[22] *= n;
+    n = data.d[31] += n;
+    n = data.d[27] *= n;
+    n = data.d[24] *= n;
     n = data.d[7] *= n;
-    n = data.d[23] *= n;
-    n = data.d[15] += n;
-    n = data.d[25] *= n;
-    n = data.d[17] *= n;
+    n = data.d[5] *= n;
     n = data.d[11] *= n;
-    n = data.d[7] *= n;
+    n = data.d[17] *= n;
+    n = data.d[6] *= n;
+    n = data.d[6] += n;
+    n = data.d[9] *= n;
+    n = data.d[8] += n;
+    n = data.d[11] *= n;
+    n = data.d[12] *= n;
+    n = data.d[15] *= n;
+    n = data.d[28] *= n;
+    n = data.d[27] *= n;
+    n = data.d[0] *= n;
+    n = data.d[15] += n;
+    n = data.d[15] += n;
+    n = data.d[16] += n;
+    n = data.d[14] += n;
+    n = data.d[6] += n;
+    n = data.d[14] *= n;
+    n = data.d[22] += n;
+    n = data.d[1] *= n;
+    n = data.d[2] *= n;
+    n = data.d[9] += n;
+    n = data.d[19] *= n;
 // END //
     return n;
 } // Evaluate
 
-GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int dataGeneration, const unsigned int programGeneration, const unsigned int variation)
+GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
 
-    unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(programGeneration) + dataGeneration) + member);
+    unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
     FireStarterSamples theta;
     FireStarterSamples target;
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
@@ -54,11 +54,11 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         target.s[i] = Target(theta.s[i], variation);
     }
 
-    FireStarterResults *oldResults = dataGeneration & 1 ? results0 : results1;
-    FireStarterResults *newResults = dataGeneration & 1 ? results1 : results0;
+    FireStarterResults *oldResults = generation & 1 ? results0 : results1;
+    FireStarterResults *newResults = generation & 1 ? results1 : results0;
     FireStarterData data;
     float result;
-    if (dataGeneration) {
+    if (generation) {
         data = oldResults->results[member].data;
         result = oldResults->results[member].result;
     } else {
@@ -80,7 +80,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         else
             data.d[d] = oldData;
     }
-    if (dataGeneration && (result >= oldResult)) {
+    if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
         unsigned int bestIndex = member;

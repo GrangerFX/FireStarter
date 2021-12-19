@@ -76,7 +76,7 @@ public:
     void CopyResultsDeviceToHost(void);
     void InitResults(void);
     void FreeResults(void);
-    void RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult& result);
+    void RunProgram(unsigned int variation, FireStarterResult& result);
     bool LoadFireStarterCode(void);
     void SaveFireStarterCode(const std::string& bestEvaluateCode);
     void DevolveProgram(void);

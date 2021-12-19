@@ -145,21 +145,26 @@ void FireStarterUnit::FreeResults(void)
     m_hostResults0 = m_hostResults1 = nullptr;
 } // FreeResults
 
-void FireStarterUnit::RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult &result)
+void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &result)
 {
+
     // Launch the calculation kernel
+    unsigned int programPopulation = PROGRAM_POPULATION;
+#if EVOLVE
+    unsigned int programGeneration = 0;
+#else
+    unsigned int programGeneration = (unsigned int)(m_generation * PROGRAM_GENERATIONS);
+#endif
     int threadsPerBlock = 256;
-    int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = (programPopulation + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned long long dataGeneration = generation0;
-
-    for (unsigned int g = 0; g < generations; g++) {
+ 
+    for (unsigned int g = 0; g < PROGRAM_GENERATIONS; g++) {
         void* arr[] = {reinterpret_cast<void*>(&m_deviceResults0),
                        reinterpret_cast<void*>(&m_deviceResults1),
-                       reinterpret_cast<void*>(&population),
-                       reinterpret_cast<void*>(&dataGeneration),
-                       reinterpret_cast<void*>(&m_generation),
+                       reinterpret_cast<void*>(&programPopulation),
+                       reinterpret_cast<void*>(&programGeneration),
                        reinterpret_cast<void*>(&variation)};
 
         CUfunction kernel_addr;
@@ -171,10 +176,10 @@ void FireStarterUnit::RunProgram(unsigned int population, unsigned int generatio
             0, m_fireStarterStream,                             // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
-        dataGeneration++;
+        programGeneration++;
     }
     CopyResultsDeviceToHost();
-    GetResults(dataGeneration & 1 ? m_hostResults1 : m_hostResults0, result);
+    GetResults(m_hostResults0, result);
 } // RunProgram
 
 bool FireStarterUnit::LoadFireStarterCode(void)
@@ -291,16 +296,13 @@ void FireStarterUnit::ProcessThread(void)
 
         // Evolve the program instructions.
 #if EVOLVE
-        unsigned long long generation0 = 0;
         DevolveProgram();
         EvolveProgram();
-#else
-        unsigned long long generation0 = m_generation;
 #endif
 
         // Run the next generation on the GPU.
-        RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, m_variation0, m_curState.m_result0);
-        RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, m_variation1, m_curState.m_result1);
+        RunProgram(m_variation0, m_curState.m_result0);
+        RunProgram(m_variation1, m_curState.m_result1);
         m_curState.m_processingTime = m_timer.Duration();
         EvaluateProgram();
         m_generation++;
@@ -608,17 +610,19 @@ void FireStarter::DrawGraph(unsigned int variation)
 void FireStarter::RenderImage(void* hwnd)
 {
     // Render the image if there was an update.
-    m_bestUnit = m_units[0];
+    m_bestUnit = nullptr;
     float bestResult = START_RESULT;
     
     for (FireStarterUnit* unit : m_units) {
-        float result = MAX(unit->m_bestEvaluateState.m_result0.result, unit->m_bestEvaluateState.m_result1.result);
-        if (result < bestResult) {
-            bestResult = result;
-            m_bestUnit = unit;
+        if (unit->m_generation) {
+            float result = MAX(unit->m_bestEvaluateState.m_result0.result, unit->m_bestEvaluateState.m_result1.result);
+            if (result < bestResult) {
+                bestResult = result;
+                m_bestUnit = unit;
+            }
         }
     }
-    if (m_bestUnit->Update(m_bestEvaluateCode, m_bestEvaluateState)) {
+    if (m_bestUnit && m_bestUnit->Update(m_bestEvaluateCode, m_bestEvaluateState)) {
         SaveFireShowCode();
         CompileProgram(m_bestFireShowCode, m_fireShowModule);
         if (m_fireShowModule) {
@@ -655,7 +659,9 @@ const char* FireStarter::RenderStatus(void)
 {
     // Update the status.
     static long long update = 0;
-    sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", ++update, m_bestUnit->m_generation, m_bestUnit->m_states.size(), m_bestUnit->m_generation - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_bestEvaluateState.m_processingTime);
+    ++update;
+    if (m_bestUnit)
+        sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", update, m_bestUnit->m_generation, m_bestUnit->m_states.size(), m_bestUnit->m_generation - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_bestEvaluateState.m_processingTime);
     return m_statusString;
 } // RenderStatus
 
