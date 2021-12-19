@@ -17,18 +17,29 @@ typedef enum {
 
 #define PROGRAM_OPERATIONS (PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS * PROGRAM_DATA)
 
-typedef struct {
-    unsigned int instructions[PROGRAM_OPERATIONS];
-    unsigned long long generation;
-} FireStarterProgram;
+class FireStarterProgram {
+public:
+    unsigned int m_instructions[PROGRAM_OPERATIONS];
+    unsigned long long m_generation;
 
-typedef struct {
-    FireStarterProgram program;
-    FireStarterResult result0;
-    FireStarterResult result1;
-    float maxResult;
-    unsigned int devolve;
-} FireStarterState;
+    void RandomInstruction(unsigned int index, unsigned int& seed);
+    void RandomProgram(unsigned int seed);
+    FireStarterProgram(void);
+}; // class FireStarterProgram
+
+class FireStarterState {
+public:
+    FireStarterProgram m_program;
+    FireStarterResult m_result0;
+    FireStarterResult m_result1;
+    double m_processingTime;
+    float  m_maxResult;
+    int m_unitIndex;
+    unsigned int m_devolve;
+
+    void Init(void);
+    FireStarterState(int unitIndex = -1);
+}; /// class FireStarterState;
 
 class FireStarterUnit {
 public:
@@ -43,7 +54,7 @@ public:
     FireStarterResults* m_hostResults1;
     std::vector<FireStarterState> m_states;
     FireStarterState m_curState;
-    FireStarterState m_bestState;
+    FireStarterState m_bestEvaluateState;
     CUdevice m_device;
     CUcontext m_fireStarterContext;
     CUstream m_fireStarterStream;
@@ -55,30 +66,27 @@ public:
     unsigned long long m_generation;
     unsigned long long m_lastGeneration;
     unsigned long long m_bestGeneration;
-    double m_processingTime;
+    unsigned int m_unitIndex;
     unsigned int m_variation0;
     unsigned int m_variation1;
     volatile bool m_quitThread;
     volatile bool m_update;
 
-    void RandomInstruction(unsigned int index, unsigned int &seed);
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
     void CopyResultsDeviceToHost(void);
     void InitResults(void);
     void FreeResults(void);
     void RunProgram(unsigned int population, unsigned int generations, unsigned long long generation0, unsigned int variation, FireStarterResult& result);
     bool LoadFireStarterCode(void);
-    void SaveProgram(const std::string& evaluateCode, std::string& fireShowCode);
-    void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
-    void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
+    void SaveFireStarterCode(const std::string& bestEvaluateCode);
     void DevolveProgram(void);
     void EvolveProgram(void);
     void EvaluateProgram(void);
     void ProcessThread(void);
     void StopThread(void);
-    bool Update(std::string& fireShowCode);
+    bool Update(std::string& bestEvaluateCode, FireStarterState& bestState);
     bool Init(CUdevice device, unsigned long width, unsigned long height);
-    FireStarterUnit(void);
+    FireStarterUnit(unsigned int unitIndex);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
 
@@ -89,6 +97,9 @@ public:
     CUstream m_fireShowStream;
     CUmodule m_fireShowModule;
     std::string m_fireShowCode;
+    std::string m_bestFireShowCode;
+    std::string m_bestEvaluateCode;
+    FireStarterState m_bestEvaluateState;
     std::vector<FireStarterUnit*> m_units;
     FireStarterUnit* m_bestUnit;
     FrameBuffer m_buffer;
@@ -101,8 +112,11 @@ public:
     static bool LoadCode(const std::string& filePath, std::string& code);
     static void SaveCode(const std::string& filePath, const std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
+    static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
+    static void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
     static void CompileProgram(const std::string& program, CUmodule& cuda_module);
     bool LoadFireShowCode(void);
+    void SaveFireShowCode(void);
     void DrawGraph(unsigned int variation);
     void RenderImage(void* hwnd);
     const char* RenderStatus(void);

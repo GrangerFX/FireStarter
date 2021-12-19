@@ -22,13 +22,48 @@ do { \
     } \
 } while (0)
 
-void FireStarterUnit::RandomInstruction(unsigned int index, unsigned int &seed)
+void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& seed)
 {
-    unsigned int operation = m_curState.program.instructions[index];
+    unsigned int operation = m_instructions[index];
     unsigned int opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
     unsigned int data = RANDOMSEED(seed) % PROGRAM_DATA;
-    m_curState.program.instructions[index] = data * PROGRAM_OPCODES + opcode;
- } // RandomInstruction
+    m_instructions[index] = data * PROGRAM_OPCODES + opcode;
+} // RandomInstruction
+
+void FireStarterProgram::RandomProgram(unsigned int seed)
+{
+    seed = RANDOMHASH(RANDOMHASH(seed) + (unsigned int)m_generation);
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        RandomInstruction(i, seed);
+} // RandomProgram
+
+FireStarterProgram::FireStarterProgram(void)
+{
+    m_generation = 0;
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        m_instructions[i] = 0;
+} // FireStarterProgram
+
+void FireStarterState::Init(void)
+{
+    m_program.RandomProgram(RANDOMHASH(m_unitIndex));
+} // Init
+
+FireStarterState::FireStarterState(int unitIndex)
+{
+    m_unitIndex = unitIndex;
+
+    // Initialize the evolving program data values.
+    for (unsigned int i = 0; i < PROGRAM_DATA; i++) {
+        m_result0.data.d[i] = 1.0f;
+        m_result1.data.d[i] = 1.0f;
+    }
+    m_result0.result = START_RESULT;
+    m_result1.result = START_RESULT;
+    m_processingTime = 0.0;
+    m_maxResult = START_RESULT;
+    m_devolve = 0;
+} // FireStarterState
 
 void FireStarterUnit::GetResults(FireStarterResults* results, FireStarterResult& bestResult)
 {
@@ -83,22 +118,9 @@ void FireStarterUnit::InitResults(void)
     m_hostResults0 = (FireStarterResults*)(m_hostResults);
     m_hostResults1 = (FireStarterResults*)(m_hostResults + resultsSize);
 
-    // Initialize the evolving program instructions.
-    unsigned int seed = RANDOMHASH((unsigned int)m_generation);
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        RandomInstruction(i, seed);
-
-    // Initialize the evolving program data values.
-    for (unsigned int i = 0; i < PROGRAM_DATA; i++) {
-        m_curState.result0.data.d[i] = 1.0f;
-        m_curState.result1.data.d[i] = 1.0f;
-    }
-    m_curState.result0.result = START_RESULT;
-    m_curState.result1.result = START_RESULT;
-    m_curState.maxResult = START_RESULT;
-    m_curState.devolve = 0;
-    m_bestState = m_curState;
+    m_curState.Init();
     m_states.push_back(m_curState);
+    m_bestEvaluateState = m_curState;
 } // InitResults
 
 void FireStarterUnit::FreeResults(void)
@@ -167,46 +189,14 @@ bool FireStarterUnit::LoadFireStarterCode(void)
     return true;
 } // LoadFireStarterCode
 
-void FireStarterUnit::SaveProgram(const std::string& evaluateCode, std::string& fireShowCode)
+void FireStarterUnit::SaveFireStarterCode(const std::string& bestEvaluateCode)
 {
 #if EVOLVE
     std::string bestFireStarterCode = m_fireStarterCode;
-    UpdateProgram(bestFireStarterCode, evaluateCode, EVALUATE_CODE);
+    FireStarter::UpdateProgram(bestFireStarterCode, bestEvaluateCode, EVALUATE_CODE);
     FireStarter::SaveCode("FireStarter_Best.cu", bestFireStarterCode);
-
-    UpdateData(fireShowCode, m_bestState.result0, DATA0_CODE);
-    UpdateData(fireShowCode, m_bestState.result1, DATA1_CODE);
-    UpdateProgram(fireShowCode, evaluateCode, EVALUATE_CODE);
-    FireStarter::SaveCode("FireShow_Best.cu", fireShowCode);
 #endif
-} // SaveProgram
-
-void FireStarterUnit::UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString)
-{
-    size_t startPos = code.find(startString);
-    if (startPos != std::string::npos) {
-        size_t startStringLength = startString.length();
-        if (code[startPos + startStringLength] == '\r')
-            startStringLength++;
-        if (code[startPos + startStringLength] == '\n')
-            startStringLength++;
-        size_t endPos = code.find(END_CODE, startPos);
-        if (endPos != std::string::npos)
-            startPos += startStringLength;
-        else
-            endPos = startPos + startStringLength;
-        code.replace(startPos, endPos - startPos, replacementCode);
-    }
-} // UpdateProgram
-
-void FireStarterUnit::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
-{
-    std::string replacementData;
-    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
-        replacementData += Format("    data.d[%d] = %f;\r\n", i, result.data.d[i]);
-    replacementData += Format("    return %f;\r\n", result.result);
-    UpdateProgram(code, replacementData, startString);
-} // UpdateData
+} // SaveFireStarterCode
 
 void FireStarterUnit::DevolveProgram(void)
 {
@@ -216,7 +206,7 @@ void FireStarterUnit::DevolveProgram(void)
         // Devolve to an earlier state if too many generations have elapsed without improvement.
         // This prevents dead-end evolution.
         unsigned int devolve = 1;
-        while (state && (++m_states[state].devolve >= devolve)) {
+        while (state && (++m_states[state].m_devolve >= devolve)) {
             m_states.pop_back();
             state--;
             devolve++;
@@ -236,16 +226,16 @@ void FireStarterUnit::EvolveProgram(void)
 
     // Make random changes to the program instructions.
     unsigned int seed = RANDOMHASH((unsigned int)(m_generation * 2));
-    m_curState.program.generation = m_generation;
+    m_curState.m_program.m_generation = m_generation;
     while (numChanges--) {
         unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-        RandomInstruction(index, seed);
+        m_curState.m_program.RandomInstruction(index, seed);
     }
     
     // Generate the replacement code and update the program.
     m_evaluateCode.clear();
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        unsigned int operation = m_curState.program.instructions[i];
+        unsigned int operation = m_curState.m_program.m_instructions[i];
         unsigned int opcode = operation % PROGRAM_OPCODES;
         unsigned int data = operation / PROGRAM_OPCODES;
 
@@ -268,22 +258,22 @@ void FireStarterUnit::EvolveProgram(void)
     }
 
     std::string updatedCode = m_fireStarterCode;
-    UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
+    FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
     FireStarter::CompileProgram(updatedCode, m_fireStarterModule);
 } // EvolveProgram
 
 void FireStarterUnit::EvaluateProgram(void)
 {
-    float maxResult = MAX(m_curState.result0.result, m_curState.result1.result);
-    if (maxResult < m_curState.maxResult) {
+    float maxResult = MAX(m_curState.m_result0.result, m_curState.m_result1.result);
+    if (maxResult < m_curState.m_maxResult) {
         m_lastGeneration = m_generation;
-        m_curState.maxResult = maxResult;
-        m_curState.devolve = 0;
+        m_curState.m_maxResult = maxResult;
+        m_curState.m_devolve = 0;
         m_states.push_back(m_curState);
-        if (m_curState.maxResult < m_bestState.maxResult) {
+        if (m_curState.m_maxResult < m_bestEvaluateState.m_maxResult) {
             m_mutex.lock();
             m_bestGeneration = m_generation;
-            m_bestState = m_curState;
+            m_bestEvaluateState = m_curState;
             m_bestEvaluateCode = m_evaluateCode;
             m_update = true;
             m_mutex.unlock();
@@ -309,9 +299,9 @@ void FireStarterUnit::ProcessThread(void)
 #endif
 
         // Run the next generation on the GPU.
-        RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, m_variation0, m_curState.result0);
-        RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, m_variation1, m_curState.result1);
-        m_processingTime = m_timer.Duration();
+        RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, m_variation0, m_curState.m_result0);
+        RunProgram(PROGRAM_POPULATION, PROGRAM_GENERATIONS, generation0, m_variation1, m_curState.m_result1);
+        m_curState.m_processingTime = m_timer.Duration();
         EvaluateProgram();
         m_generation++;
     }
@@ -331,14 +321,15 @@ void FireStarterUnit::StopThread(void)
     m_quitThread = true;
 } // StopThread
 
-bool FireStarterUnit::Update(std::string &fireShowCode)
+bool FireStarterUnit::Update(std::string &bestEvaluateCode, FireStarterState &bestEvaluateState)
 {
     if (m_update) {
         m_mutex.lock();
-        std::string evaluateCode = m_bestEvaluateCode;
+        bestEvaluateCode = m_bestEvaluateCode;
+        bestEvaluateState = m_bestEvaluateState;
         m_update = false;
         m_mutex.unlock();
-        SaveProgram(evaluateCode, fireShowCode);
+        SaveFireStarterCode(bestEvaluateCode);
         return true;
     }
     return false;
@@ -347,8 +338,7 @@ bool FireStarterUnit::Update(std::string &fireShowCode)
 bool FireStarterUnit::Init(CUdevice device, unsigned long width, unsigned long height)
 {
     m_device = device;
-    m_generation = m_lastGeneration = m_bestGeneration =0;
-    m_bestState.program.generation = 0;
+    m_generation = m_lastGeneration = m_bestGeneration = 0;
     if (!LoadFireStarterCode())
         return false;
     m_quitThread = false;
@@ -356,9 +346,9 @@ bool FireStarterUnit::Init(CUdevice device, unsigned long width, unsigned long h
     return true;
 } // Init
 
-FireStarterUnit::FireStarterUnit(void)
+FireStarterUnit::FireStarterUnit(unsigned int unitIndex) : m_curState(unitIndex), m_bestEvaluateState(unitIndex)
 {
-    // Timer ID
+    m_unitIndex = unitIndex;
     m_device = 0;
     m_fireStarterContext = nullptr;
     m_deviceResults = nullptr;
@@ -539,6 +529,33 @@ void FireStarter::ReplaceCode(std::string& code, const std::string& search, cons
     }
 } // ReplaceCode
 
+void FireStarter::UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString)
+{
+    size_t startPos = code.find(startString);
+    if (startPos != std::string::npos) {
+        size_t startStringLength = startString.length();
+        if (code[startPos + startStringLength] == '\r')
+            startStringLength++;
+        if (code[startPos + startStringLength] == '\n')
+            startStringLength++;
+        size_t endPos = code.find(END_CODE, startPos);
+        if (endPos != std::string::npos)
+            startPos += startStringLength;
+        else
+            endPos = startPos + startStringLength;
+        code.replace(startPos, endPos - startPos, replacementCode);
+    }
+} // UpdateProgram
+
+void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
+{
+    std::string replacementData;
+    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
+        replacementData += Format("    data.d[%d] = %f;\r\n", i, result.data.d[i]);
+    replacementData += Format("    return %f;\r\n", result.result);
+    UpdateProgram(code, replacementData, startString);
+} // UpdateData
+
 bool FireStarter::LoadFireShowCode(void)
 {
 #if EVOLVE
@@ -552,6 +569,17 @@ bool FireStarter::LoadFireShowCode(void)
     return true;
 } // LoadFireShowCode
 
+void FireStarter::SaveFireShowCode(void)
+{
+#if EVOLVE
+    m_bestFireShowCode = m_fireShowCode;
+    UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result0, DATA0_CODE);
+    UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result1, DATA1_CODE);
+    UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
+    FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
+#endif
+} // SaveFireShowCode
+
 void FireStarter::DrawGraph(unsigned int variation)
 {
     // Launch the display kernel
@@ -563,7 +591,7 @@ void FireStarter::DrawGraph(unsigned int variation)
     CUfunction kernel_addr;
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_fireShowModule, "FireShow"));
 
-    void* arr[] = { reinterpret_cast<void*>(variation ? &m_bestUnit->m_bestState.result1 : &m_bestUnit->m_bestState.result0),
+    void* arr[] = { reinterpret_cast<void*>(variation ? &m_bestEvaluateState.m_result1 : &m_bestEvaluateState.m_result0),
                    reinterpret_cast<void*>(&m_buffer.deviceBase),
                    reinterpret_cast<void*>(&m_buffer.width),
                    reinterpret_cast<void*>(&m_buffer.height),
@@ -584,15 +612,15 @@ void FireStarter::RenderImage(void* hwnd)
     float bestResult = START_RESULT;
     
     for (FireStarterUnit* unit : m_units) {
-        float result = MAX(unit->m_bestState.result0.result, unit->m_bestState.result1.result);
+        float result = MAX(unit->m_bestEvaluateState.m_result0.result, unit->m_bestEvaluateState.m_result1.result);
         if (result < bestResult) {
             bestResult = result;
             m_bestUnit = unit;
         }
     }
-    std::string fireShowCode = m_fireShowCode;
-    if (m_bestUnit->Update(fireShowCode)) {
-        CompileProgram(fireShowCode, m_fireShowModule);
+    if (m_bestUnit->Update(m_bestEvaluateCode, m_bestEvaluateState)) {
+        SaveFireShowCode();
+        CompileProgram(m_bestFireShowCode, m_fireShowModule);
         if (m_fireShowModule) {
             // Erase the frame buffer
             EraseFrameBuffer(m_buffer);
@@ -627,7 +655,7 @@ const char* FireStarter::RenderStatus(void)
 {
     // Update the status.
     static long long update = 0;
-    sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", ++update, m_bestUnit->m_generation, m_bestUnit->m_states.size(), m_bestUnit->m_generation - m_bestUnit->m_bestState.program.generation, m_bestUnit->m_bestState.result0.result, m_bestUnit->m_bestState.result1.result, m_bestUnit->m_processingTime);
+    sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", ++update, m_bestUnit->m_generation, m_bestUnit->m_states.size(), m_bestUnit->m_generation - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_bestEvaluateState.m_processingTime);
     return m_statusString;
 } // RenderStatus
 
@@ -659,7 +687,7 @@ FireStarter::FireStarter(void)
     if (!processor_count)   // May return zero on some systems.
         processor_count = 1;
     for (unsigned int i = 0; i < processor_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit();
+        FireStarterUnit* unit = new FireStarterUnit(i);
         m_units.push_back(unit);
     }
     m_bestUnit = m_units[0];

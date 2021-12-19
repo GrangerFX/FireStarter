@@ -10,7 +10,7 @@ GPU_FUNCTION unsigned int Hash(unsigned int hash)
     return hash;
 } // Hash
 
-#define RANDOMHASH(seed) Hash(seed)
+#define RANDOMHASH(seed) Hash((unsigned int)(seed))
 #define RANDOMSEED(seed) RANDOMHASH(seed++)
 #define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits
 #define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1
