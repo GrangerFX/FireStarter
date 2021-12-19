@@ -17,6 +17,13 @@
 #define SMART_EVOLVE_AGE 10
 #define SMART_DEVOLVE_AGE 50
 
+#define VARIATION0 0
+#if EVOLVE
+#define VARIATION1 1
+#else
+#define VARIATION1 2
+#endif
+
 #define OPERATIONS_CODE "// OPERATIONS //"
 #define EVALUATE_CODE   "// EVALUATE //"
 #define DATA0_CODE      "// DATA0 //"

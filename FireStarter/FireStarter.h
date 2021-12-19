@@ -67,8 +67,6 @@ public:
     unsigned long long m_lastGeneration;
     unsigned long long m_bestGeneration;
     unsigned int m_unitIndex;
-    unsigned int m_variation0;
-    unsigned int m_variation1;
     volatile bool m_quitThread;
     volatile bool m_update;
 
@@ -101,9 +99,11 @@ public:
     std::string m_bestEvaluateCode;
     FireStarterState m_bestEvaluateState;
     std::vector<FireStarterUnit*> m_units;
-    FireStarterUnit* m_bestUnit;
     FrameBuffer m_buffer;
     char m_statusString[1024];
+    unsigned long long m_bestGeneration;
+    size_t m_bestStates;
+    float m_bestResult;
 
     void EraseFrameBuffer(FrameBuffer& buffer);
     void InitFrameBuffer(FrameBuffer& buffer, unsigned long width, unsigned long height);

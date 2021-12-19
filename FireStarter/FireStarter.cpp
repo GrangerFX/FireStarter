@@ -301,8 +301,8 @@ void FireStarterUnit::ProcessThread(void)
 #endif
 
         // Run the next generation on the GPU.
-        RunProgram(m_variation0, m_curState.m_result0);
-        RunProgram(m_variation1, m_curState.m_result1);
+        RunProgram(VARIATION0, m_curState.m_result0);
+        RunProgram(VARIATION1, m_curState.m_result1);
         m_curState.m_processingTime = m_timer.Duration();
         EvaluateProgram();
         m_generation++;
@@ -360,12 +360,6 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex) : m_curState(unitIndex)
     m_hostResults0 = nullptr;
     m_hostResults1 = nullptr;
     m_fireStarterModule = nullptr;
-    m_variation0 = 0;
-#if EVOLVE
-    m_variation1 = 1;
-#else
-    m_variation1 = 2;
-#endif
     m_quitThread = true;
 } // FireStarter
 
@@ -594,10 +588,10 @@ void FireStarter::DrawGraph(unsigned int variation)
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_fireShowModule, "FireShow"));
 
     void* arr[] = { reinterpret_cast<void*>(variation ? &m_bestEvaluateState.m_result1 : &m_bestEvaluateState.m_result0),
-                   reinterpret_cast<void*>(&m_buffer.deviceBase),
-                   reinterpret_cast<void*>(&m_buffer.width),
-                   reinterpret_cast<void*>(&m_buffer.height),
-                   reinterpret_cast<void*>(&variation) };
+                    reinterpret_cast<void*>(&m_buffer.deviceBase),
+                    reinterpret_cast<void*>(&m_buffer.width),
+                    reinterpret_cast<void*>(&m_buffer.height),
+                    reinterpret_cast<void*>(&variation) };
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -610,26 +604,32 @@ void FireStarter::DrawGraph(unsigned int variation)
 void FireStarter::RenderImage(void* hwnd)
 {
     // Render the image if there was an update.
-    m_bestUnit = nullptr;
-    float bestResult = START_RESULT;
-    
+    bool update = false;
     for (FireStarterUnit* unit : m_units) {
         if (unit->m_generation) {
-            float result = MAX(unit->m_bestEvaluateState.m_result0.result, unit->m_bestEvaluateState.m_result1.result);
-            if (result < bestResult) {
-                bestResult = result;
-                m_bestUnit = unit;
+            std::string unitBestEvaluateCode;
+            FireStarterState unitBestEvaluateState;
+            if (unit->Update(unitBestEvaluateCode, unitBestEvaluateState)) {
+                float result = MAX(unitBestEvaluateState.m_result0.result, unitBestEvaluateState.m_result1.result);
+                if (result < m_bestResult) {
+                    m_bestResult = result;
+                    m_bestStates = unit->m_states.size();
+                    m_bestGeneration = unit->m_generation;
+                    m_bestEvaluateCode = unitBestEvaluateCode;
+                    m_bestEvaluateState = unitBestEvaluateState;
+                    update = true;
+                }
             }
         }
     }
-    if (m_bestUnit && m_bestUnit->Update(m_bestEvaluateCode, m_bestEvaluateState)) {
+    if (update) {
         SaveFireShowCode();
         CompileProgram(m_bestFireShowCode, m_fireShowModule);
         if (m_fireShowModule) {
             // Erase the frame buffer
             EraseFrameBuffer(m_buffer);
-            DrawGraph(m_bestUnit->m_variation0);
-            DrawGraph(m_bestUnit->m_variation1);
+            DrawGraph(VARIATION0);
+            DrawGraph(VARIATION1);
             const unsigned char* bufferData = GetFrameBuffer(m_buffer);
 
             unsigned char buffer[4096];
@@ -660,8 +660,8 @@ const char* FireStarter::RenderStatus(void)
     // Update the status.
     static long long update = 0;
     ++update;
-    if (m_bestUnit)
-        sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", update, m_bestUnit->m_generation, m_bestUnit->m_states.size(), m_bestUnit->m_generation - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_bestEvaluateState.m_processingTime);
+    if (m_bestGeneration)
+        sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", update, m_bestGeneration, m_bestStates, m_bestGeneration - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_bestEvaluateState.m_processingTime);
     return m_statusString;
 } // RenderStatus
 
@@ -696,10 +696,12 @@ FireStarter::FireStarter(void)
         FireStarterUnit* unit = new FireStarterUnit(i);
         m_units.push_back(unit);
     }
-    m_bestUnit = m_units[0];
     m_fireShowContext = nullptr;
     m_fireShowModule = nullptr;
     m_statusString[0] = 0;
+    m_bestGeneration = 0;
+    m_bestStates = 0;
+    m_bestResult = START_RESULT;
 } // FireStarter
 
 FireStarter::~FireStarter(void)
