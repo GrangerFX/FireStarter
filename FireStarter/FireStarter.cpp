@@ -182,27 +182,6 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
     GetResults(m_hostResults0, result);
 } // RunProgram
 
-bool FireStarterUnit::LoadFireStarterCode(void)
-{
-#if EVOLVE
-    if (!FireStarter::LoadCode("FireStarter.cu", m_fireStarterCode))
-        return false;
-#else
-    if (!FireStarter::LoadCode("FireStarter_Best.cu", m_fireStarterCode))
-        return false;
-#endif
-    return true;
-} // LoadFireStarterCode
-
-void FireStarterUnit::SaveFireStarterCode(const std::string& bestEvaluateCode)
-{
-#if EVOLVE
-    std::string bestFireStarterCode = m_fireStarterCode;
-    FireStarter::UpdateProgram(bestFireStarterCode, bestEvaluateCode, EVALUATE_CODE);
-    FireStarter::SaveCode("FireStarter_Best.cu", bestFireStarterCode);
-#endif
-} // SaveFireStarterCode
-
 void FireStarterUnit::DevolveProgram(void)
 {
     unsigned long long lastAge = m_generation - m_lastGeneration;
@@ -331,21 +310,18 @@ bool FireStarterUnit::Update(std::string &bestEvaluateCode, FireStarterState &be
         bestEvaluateState = m_bestEvaluateState;
         m_update = false;
         m_mutex.unlock();
-        SaveFireStarterCode(bestEvaluateCode);
         return true;
     }
     return false;
 } // Update
 
-bool FireStarterUnit::Init(CUdevice device, unsigned long width, unsigned long height)
+void FireStarterUnit::Init(CUdevice device, const std::string &fireStarterCode)
 {
     m_device = device;
     m_generation = m_lastGeneration = m_bestGeneration = 0;
-    if (!LoadFireStarterCode())
-        return false;
+    m_fireStarterCode = fireStarterCode;
     m_quitThread = false;
     m_thread = std::thread([this] { ProcessThread(); });
-    return true;
 } // Init
 
 FireStarterUnit::FireStarterUnit(unsigned int unitIndex) : m_curState(unitIndex), m_bestEvaluateState(unitIndex)
@@ -552,6 +528,27 @@ void FireStarter::UpdateData(std::string& code, const FireStarterResult& result,
     UpdateProgram(code, replacementData, startString);
 } // UpdateData
 
+bool FireStarter::LoadFireStarterCode(void)
+{
+#if EVOLVE
+    if (!FireStarter::LoadCode("FireStarter.cu", m_fireStarterCode))
+        return false;
+#else
+    if (!FireStarter::LoadCode("FireStarter_Best.cu", m_fireStarterCode))
+        return false;
+#endif
+    return true;
+} // LoadFireStarterCode
+
+void FireStarter::SaveFireStarterCode(void)
+{
+#if EVOLVE
+    m_bestFireStarterCode = m_fireStarterCode;
+    FireStarter::UpdateProgram(m_bestFireStarterCode, m_bestEvaluateCode, EVALUATE_CODE);
+    FireStarter::SaveCode("FireStarter_Best.cu", m_bestFireStarterCode);
+#endif
+} // SaveFireStarterCode
+
 bool FireStarter::LoadFireShowCode(void)
 {
 #if EVOLVE
@@ -623,6 +620,7 @@ void FireStarter::RenderImage(void* hwnd)
         }
     }
     if (update) {
+        SaveFireStarterCode();
         SaveFireShowCode();
         CompileProgram(m_bestFireShowCode, m_fireShowModule);
         if (m_fireShowModule) {
@@ -665,6 +663,27 @@ const char* FireStarter::RenderStatus(void)
     return m_statusString;
 } // RenderStatus
 
+void FireStarter::ControlThread(void)
+{
+    unsigned int processor_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
+    if (!processor_count)   // May return zero on some systems.
+        processor_count = 1;
+    for (unsigned int i = 0; i < processor_count; i++) {
+        FireStarterUnit* unit = new FireStarterUnit(i);
+        unit->Init(m_device, m_fireStarterCode);
+        m_units.push_back(unit);
+    }
+
+    while (!m_quitControlThread)
+        Sleep(100);
+
+    for (FireStarterUnit* unit : m_units)
+        unit->StopThread();
+    for (FireStarterUnit* unit : m_units)
+        delete unit;
+    m_units.clear();
+} // ControlThread
+
 bool FireStarter::Init(unsigned long width, unsigned long height)
 {
     checkCudaErrors(cuInit(0));
@@ -673,29 +692,20 @@ bool FireStarter::Init(unsigned long width, unsigned long height)
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
     InitFrameBuffer(m_buffer, width, height);
     EraseFrameBuffer(m_buffer);
-    if (LoadFireShowCode()) {
-        for (FireStarterUnit* unit : m_units)
-            if (!unit->Init(m_device, width, height))
-                return false;
-    }
+    if (LoadFireStarterCode() && LoadFireShowCode())
+        m_controlThread = std::thread([this] { ControlThread(); });
     return true;
 } // Init
 
 void FireStarter::Quit(void)
 {
-    for (FireStarterUnit* unit : m_units)
-        unit->StopThread();
+    m_quitControlThread = true;
+    if (m_controlThread.joinable())
+        m_controlThread.join();
 } // Quit
 
 FireStarter::FireStarter(void)
 {
-    unsigned int processor_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
-    if (!processor_count)   // May return zero on some systems.
-        processor_count = 1;
-    for (unsigned int i = 0; i < processor_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i);
-        m_units.push_back(unit);
-    }
     m_fireShowContext = nullptr;
     m_fireShowModule = nullptr;
     m_statusString[0] = 0;

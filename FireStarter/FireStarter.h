@@ -75,26 +75,28 @@ public:
     void InitResults(void);
     void FreeResults(void);
     void RunProgram(unsigned int variation, FireStarterResult& result);
-    bool LoadFireStarterCode(void);
-    void SaveFireStarterCode(const std::string& bestEvaluateCode);
     void DevolveProgram(void);
     void EvolveProgram(void);
     void EvaluateProgram(void);
     void ProcessThread(void);
     void StopThread(void);
     bool Update(std::string& bestEvaluateCode, FireStarterState& bestState);
-    bool Init(CUdevice device, unsigned long width, unsigned long height);
+    void Init(CUdevice device, const std::string &fireStarterCode);
     FireStarterUnit(unsigned int unitIndex);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
 
 class FireStarter {
 public:
+    std::mutex m_controlMutex;
+    std::thread m_controlThread;
     CUdevice m_device;
     CUcontext m_fireShowContext;
     CUstream m_fireShowStream;
     CUmodule m_fireShowModule;
+    std::string m_fireStarterCode;
     std::string m_fireShowCode;
+    std::string m_bestFireStarterCode;
     std::string m_bestFireShowCode;
     std::string m_bestEvaluateCode;
     FireStarterState m_bestEvaluateState;
@@ -104,6 +106,7 @@ public:
     unsigned long long m_bestGeneration;
     size_t m_bestStates;
     float m_bestResult;
+    volatile bool m_quitControlThread;
 
     void EraseFrameBuffer(FrameBuffer& buffer);
     void InitFrameBuffer(FrameBuffer& buffer, unsigned long width, unsigned long height);
@@ -115,11 +118,14 @@ public:
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
     static void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
     static void CompileProgram(const std::string& program, CUmodule& cuda_module);
+    bool LoadFireStarterCode(void);
+    void SaveFireStarterCode(void);
     bool LoadFireShowCode(void);
     void SaveFireShowCode(void);
     void DrawGraph(unsigned int variation);
     void RenderImage(void* hwnd);
     const char* RenderStatus(void);
+    void ControlThread(void);
     bool Init(unsigned long width, unsigned long height);
     void Quit(void);
     FireStarter(void);
