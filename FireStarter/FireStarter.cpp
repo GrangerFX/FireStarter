@@ -265,44 +265,25 @@ void FireStarterUnit::EvaluateProgram(void)
     }
 } // EvaluateProgram
 
-void FireStarterUnit::ProcessThread(void)
+void FireStarterUnit::ExecuteProgram(void)
 {
-    checkCudaErrors(cuCtxCreate(&m_fireStarterContext, CU_CTX_SCHED_AUTO, m_device));
-    checkCUDAErrors(cudaStreamCreate(&m_fireStarterStream));
-    InitResults();
-    while (!m_quitThread) {
-        m_timer.Start();
+    m_timer.Start();
 
-        // Evolve the program instructions.
+    // Evolve the program instructions.
 #if EVOLVE
-        DevolveProgram();
-        EvolveProgram();
+    DevolveProgram();
+    EvolveProgram();
 #endif
 
-        // Run the next generation on the GPU.
-        RunProgram(VARIATION0, m_curState.m_result0);
-        RunProgram(VARIATION1, m_curState.m_result1);
-        m_curState.m_processingTime = m_timer.Duration();
-        EvaluateProgram();
-        m_generation++;
-    }
-    if (m_fireStarterModule) {
-        checkCudaErrors(cuModuleUnload(m_fireStarterModule));
-        m_fireStarterModule = nullptr;
-    }
-    FreeResults();
-    if (m_fireStarterContext) {
-        checkCudaErrors(cuCtxDestroy(m_fireStarterContext));
-        m_fireStarterContext = nullptr;
-    }
-} // ProcessThread
+    // Run the next generation on the GPU.
+    RunProgram(VARIATION0, m_curState.m_result0);
+    RunProgram(VARIATION1, m_curState.m_result1);
+    m_curState.m_processingTime = m_timer.Duration();
+    EvaluateProgram();
+    m_generation++;
+ } // ExecuteProgram
 
-void FireStarterUnit::StopThread(void)
-{
-    m_quitThread = true;
-} // StopThread
-
-bool FireStarterUnit::Update(std::string &bestEvaluateCode, FireStarterState &bestEvaluateState)
+bool FireStarterUnit::UpdateProgram(std::string &bestEvaluateCode, FireStarterState &bestEvaluateState)
 {
     if (m_update) {
         m_mutex.lock();
@@ -315,19 +296,31 @@ bool FireStarterUnit::Update(std::string &bestEvaluateCode, FireStarterState &be
     return false;
 } // Update
 
-void FireStarterUnit::Init(CUdevice device, const std::string &fireStarterCode)
+void FireStarterUnit::InitProgram(void)
 {
-    m_device = device;
-    m_generation = m_lastGeneration = m_bestGeneration = 0;
-    m_fireStarterCode = fireStarterCode;
-    m_quitThread = false;
-    m_thread = std::thread([this] { ProcessThread(); });
-} // Init
+    checkCudaErrors(cuCtxCreate(&m_fireStarterContext, CU_CTX_SCHED_AUTO, m_device));
+    checkCUDAErrors(cudaStreamCreate(&m_fireStarterStream));
+    InitResults();
+} // InitProgram
 
-FireStarterUnit::FireStarterUnit(unsigned int unitIndex) : m_curState(unitIndex), m_bestEvaluateState(unitIndex)
+void FireStarterUnit::FinishProgram(void)
+{
+    if (m_fireStarterModule) {
+        checkCudaErrors(cuModuleUnload(m_fireStarterModule));
+        m_fireStarterModule = nullptr;
+    }
+    FreeResults();
+    if (m_fireStarterContext) {
+        checkCudaErrors(cuCtxDestroy(m_fireStarterContext));
+        m_fireStarterContext = nullptr;
+    }
+} // FinishProgram
+
+FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode) : SerialThread(), m_curState(unitIndex), m_bestEvaluateState(unitIndex)
 {
     m_unitIndex = unitIndex;
-    m_device = 0;
+    m_device = device;
+    m_fireStarterCode = fireStarterCode;
     m_fireStarterContext = nullptr;
     m_deviceResults = nullptr;
     m_deviceResults0 = nullptr;
@@ -336,13 +329,13 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex) : m_curState(unitIndex)
     m_hostResults0 = nullptr;
     m_hostResults1 = nullptr;
     m_fireStarterModule = nullptr;
-    m_quitThread = true;
+    m_generation = 0;
+    m_lastGeneration = 0;
+    m_bestGeneration = 0;
 } // FireStarter
 
 FireStarterUnit::~FireStarterUnit(void)
 {
-    if (m_thread.joinable())
-        m_thread.join();
 } // ~FireStarterUnit
 
 void FireStarter::EraseFrameBuffer(FrameBuffer& buffer)
@@ -606,7 +599,7 @@ void FireStarter::RenderImage(void* hwnd)
         if (unit->m_generation) {
             std::string unitBestEvaluateCode;
             FireStarterState unitBestEvaluateState;
-            if (unit->Update(unitBestEvaluateCode, unitBestEvaluateState)) {
+            if (unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState)) {
                 float result = MAX(unitBestEvaluateState.m_result0.result, unitBestEvaluateState.m_result1.result);
                 if (result < m_bestResult) {
                     m_bestResult = result;
@@ -669,16 +662,20 @@ void FireStarter::ControlThread(void)
     if (!processor_count)   // May return zero on some systems.
         processor_count = 1;
     for (unsigned int i = 0; i < processor_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i);
-        unit->Init(m_device, m_fireStarterCode);
+        FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_fireStarterCode);
         m_units.push_back(unit);
     }
+    for (FireStarterUnit* unit : m_units)
+        unit->Dispatch([this, unit] { unit->InitProgram(); });
 
-    while (!m_quitControlThread)
+    while (!m_quitControlThread) {
+        for (FireStarterUnit* unit : m_units)
+            unit->Dispatch([unit] { unit->ExecuteProgram(); });
         Sleep(100);
+    }
 
     for (FireStarterUnit* unit : m_units)
-        unit->StopThread();
+        unit->Dispatch([unit] { unit->FinishProgram(); });
     for (FireStarterUnit* unit : m_units)
         delete unit;
     m_units.clear();

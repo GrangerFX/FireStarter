@@ -1,9 +1,8 @@
 #pragma once
 #include <vector>
-#include <mutex>
-#include <thread>
 #include "FireStarterDefines.h"
 #include "FireStarterUtil.h"
+#include "SerialThread.h"
 
 typedef enum {
     Operation_add,
@@ -41,10 +40,9 @@ public:
     FireStarterState(int unitIndex = -1);
 }; /// class FireStarterState;
 
-class FireStarterUnit {
+class FireStarterUnit : public SerialThread {
 public:
     std::mutex m_mutex;
-    std::thread m_thread;
     SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
@@ -67,7 +65,6 @@ public:
     unsigned long long m_lastGeneration;
     unsigned long long m_bestGeneration;
     unsigned int m_unitIndex;
-    volatile bool m_quitThread;
     volatile bool m_update;
 
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
@@ -78,11 +75,11 @@ public:
     void DevolveProgram(void);
     void EvolveProgram(void);
     void EvaluateProgram(void);
-    void ProcessThread(void);
-    void StopThread(void);
-    bool Update(std::string& bestEvaluateCode, FireStarterState& bestState);
-    void Init(CUdevice device, const std::string &fireStarterCode);
-    FireStarterUnit(unsigned int unitIndex);
+    void ExecuteProgram(void);
+    bool UpdateProgram(std::string& bestEvaluateCode, FireStarterState& bestState);
+    void InitProgram(void);
+    void FinishProgram(void);
+    FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
 

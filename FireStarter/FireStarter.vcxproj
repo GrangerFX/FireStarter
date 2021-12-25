@@ -85,9 +85,13 @@
     <Link>
       <AdditionalDependencies>cuda.lib;nvrtc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ClCompile>
+      <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Release|x64'">stdcpp20</LanguageStandard>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FireStarter.cpp" />
+    <ClCompile Include="SerialThread.cpp" />
     <ClCompile Include="WindowsMain.cpp" />
     <ClInclude Include="CUDADefines.h" />
     <ClInclude Include="FireStarter.h" />
@@ -95,6 +99,7 @@
     <ClInclude Include="FireStarterUtil.h" />
     <ClInclude Include="HashRandom.h" />
     <ClInclude Include="PrintF.h" />
+    <ClInclude Include="SerialThread.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FireShow.cu" />
