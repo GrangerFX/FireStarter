@@ -44,16 +44,51 @@ public:
 
 class SerialThread {
 private:
+    Semaphore m_semaphore;
     std::thread m_thread;
     std::mutex m_mutex;
     std::queue<std::function<void(void)>> m_workQueue;
     volatile bool m_terminate;
-    Semaphore m_semaphore;
-
-    void Thread(void);
+ 
+    inline void Thread(void)
+    {
+        for (;;) {
+            m_semaphore.wait();
+            if (m_terminate)
+                return;
+            m_mutex.lock();
+            std::function<void(void)> work(m_workQueue.front());
+            m_workQueue.pop();
+            m_mutex.unlock();
+            work();
+        }
+    } // Thread
 public:
-    void Dispatch(std::function<void(void)> work);
-    void Terminate(void);
-    SerialThread(void);
-    ~SerialThread(void);
+    inline void Dispatch(std::function<void(void)> work)
+    {
+        m_mutex.lock();
+        m_workQueue.push(work);
+        m_mutex.unlock();
+        m_semaphore.notify();
+    } // Dispatch
+
+    inline void Terminate(void)
+    {
+        if (!m_terminate) {
+            m_terminate = true;
+            m_semaphore.notify();
+            m_thread.join();
+        }
+    } // Terminate
+
+    inline SerialThread(void)
+    {
+        m_terminate = false;
+        m_thread = std::thread([this] { Thread(); });
+    } // SerialThread
+
+    inline ~SerialThread(void)
+    {
+        Terminate();
+    } // ~SerialThread
 }; // class SerialThread

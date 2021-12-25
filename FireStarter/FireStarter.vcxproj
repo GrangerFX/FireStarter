@@ -91,7 +91,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FireStarter.cpp" />
-    <ClCompile Include="SerialThread.cpp" />
     <ClCompile Include="WindowsMain.cpp" />
     <ClInclude Include="CUDADefines.h" />
     <ClInclude Include="FireStarter.h" />
