@@ -42,75 +42,69 @@ LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 } // Winproc
 
 // ----------------------------------------------------------------------------
-HRESULT Initialize(HINSTANCE hInstance) {
-	WNDCLASS	wc;
-	RECT		rect;
-	HWND		hwnd;
+HRESULT Initialize(HINSTANCE hInstance)
+{
+	HRESULT result = E_FAIL;
 
 	// Alloc Window
-    wc.style = 0;
-    wc.lpfnWndProc = Winproc;
-    wc.cbClsExtra = 4;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = LoadIcon(NULL,IDI_APPLICATION);
-    wc.hCursor = LoadCursor(NULL,IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = "comp_class";
-	
-    if (!RegisterClass(&wc))
-        goto fail;
+	WNDCLASS wc;
+	wc.style = 0;
+	wc.lpfnWndProc = Winproc;
+	wc.cbClsExtra = 4;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = "comp_class";
 
-    LONG imageWidth = GetSystemMetrics(SM_CXSCREEN);
-    LONG imageHeight = GetSystemMetrics(SM_CYSCREEN) - 70;
-    if (!fireStarter.Init(imageWidth, imageHeight))
-		goto fail;
+	if (RegisterClass(&wc)) {
+		LONG imageWidth = GetSystemMetrics(SM_CXSCREEN);
+		LONG imageHeight = GetSystemMetrics(SM_CYSCREEN) - 70;
+		RECT rect = { 0, 0, imageWidth, imageHeight };
+		AdjustWindowRect(&rect, WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX, 0);
+		rect.right -= rect.left;
+		rect.bottom -= rect.top;
 
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = imageWidth;
-	rect.bottom = imageHeight;
-	AdjustWindowRect(&rect, WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX, 0);
-	rect.right -= rect.left;
-	rect.bottom -= rect.top;
+		HWND hwnd = CreateWindow("comp_class",
+			"FireStarter",
+			WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX,
+			rect.left, 0,
+			rect.right, rect.bottom,
+			NULL, NULL,
+			hInstance,
+			NULL);
 
-    hwnd = CreateWindow("comp_class",
-                        "FireStarter",
-						WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX,
-                        rect.left, 0,
-						rect.right, rect.bottom,
-                        NULL,NULL,
-						hInstance,
-						NULL);
+		if (hwnd) {
+			DragAcceptFiles(hwnd, 1);
+			ShowWindow(hwnd, SW_SHOW);
 
-	if (!hwnd)
-        goto fail;
+			SerialThread mainSerialThread(true);
+			SerialThread::SetMainThread(&mainSerialThread);
+			if (fireStarter.Init(imageWidth, imageHeight)) {
+				do {
+					MSG	msg;
+					if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+						if (msg.message == WM_QUIT)
+							break;
+						TranslateMessage(&msg);
+						DispatchMessage(&msg);
+					} else {
+						fireStarter.RenderImage(hwnd);
+						SetWindowText(hwnd, fireStarter.RenderStatus());
+						if (!mainSerialThread.PollThread())
+							Sleep(100);
+					}
+				} while (1);
 
-	DragAcceptFiles(hwnd, 1);
+				fireStarter.Quit();
 
-	ShowWindow(hwnd, SW_SHOW);
-
-	do {
-		MSG	 msg;
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-			if (msg.message == WM_QUIT)
-                break;
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		} else {
-            fireStarter.RenderImage(hwnd);
-			SetWindowText(hwnd, fireStarter.RenderStatus());
-			Sleep(100);
-        }
-	} while (1);
-
-	fireStarter.Quit();
-
-	return S_OK;
-
-fail:
-	return E_FAIL;
+				result = S_OK;
+			}
+		}
+	}
+	return result;
 } // Initialize
 
 // ----------------------------------------------------------------------------

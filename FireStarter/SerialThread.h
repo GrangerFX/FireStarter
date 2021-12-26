@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <mutex>
 #include <thread>
 #include <functional>
@@ -34,7 +35,6 @@ public:
     {
         std::unique_lock<std::mutex> lock(mtx);
         if (count) {
-            cv.wait(lock);
             --count;
             return true;
         }
@@ -44,47 +44,150 @@ public:
 
 class SerialThread {
 private:
+    typedef std::function<void(void)> SerialThreadWork;
+    class SerialThreadTimer {
+    public:
+        SerialThreadTimer* m_prev;
+        SerialThreadTimer* m_next;
+        std::jthread m_thread;
+        SerialThreadWork m_work;
+        double m_duration;
+
+        inline SerialThreadTimer(SerialThreadTimer* timers, double duration, const SerialThreadWork& work) : m_prev(timers), m_next(timers->m_next), m_duration(duration), m_work(work)
+        {
+            if (timers->m_next)
+                timers->m_next->m_prev = this;
+            timers->m_next = this;
+        } // SerialThreadTimer
+
+        inline SerialThreadTimer(void) : m_prev(nullptr), m_next(nullptr), m_duration(0.0), m_work() {}
+ 
+        inline ~SerialThreadTimer(void)
+        {
+            if (m_prev)
+                m_prev->m_next = m_next;
+            if (m_next)
+                m_next->m_prev = m_prev;
+        } // ~SerialThreadTimer
+    }; // SerialThreadTimer;
+
     Semaphore m_semaphore;
     std::thread m_thread;
     std::mutex m_mutex;
-    std::queue<std::function<void(void)>> m_workQueue;
+    std::queue<SerialThreadWork> m_workQueue;
+    SerialThreadTimer m_timers;
+    inline static SerialThread* g_mainThread = nullptr;
+    bool m_pollThread;
     volatile bool m_terminate;
  
+    inline void DoWork(void)
+    {
+        while (!m_workQueue.empty()) {
+            m_mutex.lock();
+            SerialThreadWork work(m_workQueue.front());
+            m_workQueue.pop();
+            m_mutex.unlock();
+            work();
+        }
+    } // DoWork
+
     inline void Thread(void)
     {
         for (;;) {
             m_semaphore.wait();
             if (m_terminate)
                 return;
-            m_mutex.lock();
-            std::function<void(void)> work(m_workQueue.front());
-            m_workQueue.pop();
-            m_mutex.unlock();
-            work();
+            DoWork();
         }
     } // Thread
+
 public:
-    inline void Dispatch(std::function<void(void)> work)
+    inline bool PollThread(void)
+    {
+        if (m_pollThread && m_semaphore.trywait()) {
+            if (m_terminate)
+                return false;
+            DoWork();
+            return true;
+        }
+        return false;
+    } // PollThread
+
+    inline void DispatchAsync(const SerialThreadWork& work)
     {
         m_mutex.lock();
         m_workQueue.push(work);
         m_mutex.unlock();
         m_semaphore.notify();
-    } // Dispatch
+    } // DispatchAsync
+
+    inline void DispatchSync(const SerialThreadWork& work)
+    {
+        Semaphore sync;
+        m_mutex.lock();
+        m_workQueue.push([this, &sync, work] {
+            work();
+            sync.notify();
+        });
+        m_mutex.unlock();
+        m_semaphore.notify();
+        if (m_pollThread)
+            PollThread();
+        sync.wait();
+    } // DispatchSync
+
+    inline void DisptachAfter(double duration, const SerialThreadWork& work)
+    {
+        DispatchAsync([this, duration, work] {
+            SerialThreadTimer* timer = new SerialThreadTimer(&m_timers, duration, work);
+            timer->m_thread = std::jthread([this, timer](std::stop_token stopToken) {
+                std::stop_token interruptDisabled;
+//              std::stop_callback callBack(stopToken, [] {});
+                std::this_thread::sleep_for(std::chrono::duration<double>(timer->m_duration));
+                std::swap(stopToken, interruptDisabled);
+                DispatchAsync([timer] {
+                    timer->m_work();
+                    delete timer;
+                });
+            });
+            timer->m_thread.detach();
+         });
+    } // DisptachAfter
 
     inline void Terminate(void)
     {
         if (!m_terminate) {
+            DispatchSync([this] {
+                while (m_timers.m_next) {
+                    m_timers.m_next->m_thread.request_stop();
+                    delete m_timers.m_next;
+                }
+            });
             m_terminate = true;
             m_semaphore.notify();
-            m_thread.join();
+            if (m_pollThread)
+                PollThread();
+            else
+                m_thread.join();
         }
     } // Terminate
 
-    inline SerialThread(void)
+    static inline SerialThread* GetMainThread(void)
+    {
+        return g_mainThread;
+    } // GetMainThread
+
+    static inline void SetMainThread(SerialThread *mainThread)
+    {
+        g_mainThread = mainThread;
+    } // SetMainThread
+
+    inline SerialThread(bool pollThread = false)
     {
         m_terminate = false;
-        m_thread = std::thread([this] { Thread(); });
+        m_pollThread = pollThread;
+        if (!m_pollThread)
+            m_thread = std::thread([this] { Thread(); });
     } // SerialThread
 
     inline ~SerialThread(void)

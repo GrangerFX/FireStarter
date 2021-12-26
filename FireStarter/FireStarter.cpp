@@ -666,16 +666,18 @@ void FireStarter::ControlThread(void)
         m_units.push_back(unit);
     }
     for (FireStarterUnit* unit : m_units)
-        unit->Dispatch([this, unit] { unit->InitProgram(); });
+        unit->DispatchAsync([this, unit] { unit->InitProgram(); });
 
     while (!m_quitControlThread) {
         for (FireStarterUnit* unit : m_units)
-            unit->Dispatch([unit] { unit->ExecuteProgram(); });
+            unit->DispatchAsync([unit] { unit->ExecuteProgram(); });
+        for (FireStarterUnit* unit : m_units)
+            unit->DispatchSync([]{});
         Sleep(100);
     }
 
     for (FireStarterUnit* unit : m_units)
-        unit->Dispatch([unit] { unit->FinishProgram(); });
+        unit->DispatchAsync([unit] { unit->FinishProgram(); });
     for (FireStarterUnit* unit : m_units)
         delete unit;
     m_units.clear();
