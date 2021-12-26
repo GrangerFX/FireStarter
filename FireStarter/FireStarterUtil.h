@@ -30,14 +30,6 @@ public:
     } // Start
 }; // SimpleTimer
 
-typedef struct FrameBuffer {
-    unsigned char* hostBase;		// Pointer to the alligned native pixel format buffer in host memory
-    unsigned char* deviceBase;	    // Pointer to the alligned native pixel format buffer in device memory
-    long rowbytes;					// Number of bytes per row
-    unsigned long width;			// Number of columns
-    unsigned long height;			// Number of rows
-} FrameBuffer;
-
 inline std::string Format(const char* format, ...)
 {
     char str[1024];

@@ -22,6 +22,79 @@ do { \
     } \
 } while (0)
 
+void FrameBuffer::Erase(void)
+{
+    if (m_size)
+        cudaMemset(m_deviceBase, 0, m_width * m_height * sizeof(uchar4));
+} // EraseFrameBuffer
+
+const unsigned char* FrameBuffer::Get(void)
+{
+    if (m_size) {
+        cudaError_t err = cudaMemcpy(m_hostBase, m_deviceBase, m_size, cudaMemcpyDeviceToHost);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Could not copy buffer from device to host (error code %s)!\n", cudaGetErrorString(err));
+            exit(EXIT_FAILURE);
+        }
+    }
+    return m_hostBase;
+} // GetFrameBuffer
+
+void FrameBuffer::Resize(unsigned long width, unsigned long height)
+{
+    if ((m_width != width) || (m_height != height)) {
+        if (m_hostBase) {
+            cudaError_t err = cudaFreeHost(m_hostBase);
+            if (err != cudaSuccess) {
+                fprintf(stderr, "Failed to free host frame buffer (error code %s)!\n", cudaGetErrorString(err));
+                exit(EXIT_FAILURE);
+            }
+            m_hostBase = nullptr;
+        }
+        if (m_deviceBase) {
+            cudaError_t err = cudaFree(m_deviceBase);
+            if (err != cudaSuccess) {
+                fprintf(stderr, "Failed to free device frame buffer (error code %s)!\n", cudaGetErrorString(err));
+                exit(EXIT_FAILURE);
+            }
+            m_deviceBase = nullptr;
+        }
+        m_width = width;
+        m_height = height;
+        m_rowbytes = width * sizeof(uchar4);
+        m_size = m_width * m_height * sizeof(uchar4);
+
+        if (m_size) {
+            cudaError_t err = cudaMalloc(&m_deviceBase, m_size);
+            if (err != cudaSuccess) {
+                fprintf(stderr, "Failed to allocate device pixels (error code %s)!\n", cudaGetErrorString(err));
+                exit(EXIT_FAILURE);
+            }
+            err = cudaMallocHost(&m_hostBase, m_size);
+            if (err != cudaSuccess) {
+                fprintf(stderr, "Failed to allocate host pixels (error code %s)!\n", cudaGetErrorString(err));
+                exit(EXIT_FAILURE);
+            }
+            memset(m_hostBase, 0, m_width * m_height * sizeof(uchar4));
+        }
+    }
+} // Resize
+
+FrameBuffer::FrameBuffer(void)
+{
+    m_hostBase = nullptr;
+    m_deviceBase = nullptr;
+    m_width = 0;
+    m_height = 0;
+    m_rowbytes = 0;
+    m_size = 0;
+} // FrameBuffer
+
+FrameBuffer::~FrameBuffer(void)
+{
+    Resize(0, 0);
+} // ~FrameBuffer
+
 void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& seed)
 {
     unsigned int operation = m_instructions[index];
@@ -338,78 +411,6 @@ FireStarterUnit::~FireStarterUnit(void)
 {
 } // ~FireStarterUnit
 
-void FireStarter::EraseFrameBuffer(FrameBuffer& buffer)
-{
-    cudaMemsetAsync(buffer.deviceBase, 0, buffer.width * buffer.height * sizeof(uchar4), m_fireShowStream);
-} // EraseFrameBuffer
-
-void FireStarter::InitFrameBuffer(FrameBuffer& buffer, unsigned long width, unsigned long height)
-{
-    buffer.width = width;
-    buffer.height = height;
-    buffer.rowbytes = width * 4;
-    buffer.hostBase = nullptr;
-    buffer.deviceBase = nullptr;
-
-    size_t bufferSize = buffer.width * buffer.height * sizeof(uchar4);
-#if 0
-    cudaError_t err = cudaMallocManaged(&buffer.hostBase, bufferSize);
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Failed to allocate pixels (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
-    buffer.deviceBase = buffer.hostBase;
-#else
-    cudaError_t err = cudaMalloc(&buffer.deviceBase, bufferSize);
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Failed to allocate device pixels (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
-    err = cudaMallocHost(&buffer.hostBase, bufferSize);
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Failed to allocate host pixels (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
-    memset(buffer.hostBase, 0, buffer.width * buffer.height * sizeof(uchar4));
-#endif
-} // InitBuffer
-
-void FireStarter::FreeFrameBuffer(FrameBuffer& buffer)
-{
-    if (buffer.hostBase) {
-        cudaError_t err = cudaFreeHost(buffer.hostBase);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free host frame buffer (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
-        }
-    }
-    if (buffer.deviceBase) {
-        cudaError_t err = cudaFree(buffer.deviceBase);
-        if (err != cudaSuccess) {
-            fprintf(stderr, "Failed to free device frame buffer (error code %s)!\n", cudaGetErrorString(err));
-            exit(EXIT_FAILURE);
-        }
-    }
-    buffer.width = 0;
-    buffer.height = 0;
-    buffer.rowbytes = 0;
-    buffer.deviceBase = nullptr;
-} // FreeFrameBuffer
-
-const unsigned char* FireStarter::GetFrameBuffer(FrameBuffer& buffer)
-{
-#if 1
-    cudaError_t err = cudaMemcpyAsync(buffer.hostBase, buffer.deviceBase, buffer.width * buffer.height * sizeof(uchar4), cudaMemcpyDeviceToHost, m_fireShowStream);
-    if (err == cudaSuccess)
-        err = cudaStreamSynchronize(m_fireShowStream);
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Could not copy buffer from device to host (error code %s)!\n", cudaGetErrorString(err));
-        exit(EXIT_FAILURE);
-    }
-#endif
-    return buffer.hostBase;
-} // GetFrameBuffer
-
 void FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_module)
 {
     if (cuda_module) {
@@ -570,7 +571,7 @@ void FireStarter::DrawGraph(unsigned int variation)
 {
     // Launch the display kernel
     int threadsPerBlock = 32;
-    int blocksPerGrid = (m_buffer.width + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
@@ -578,9 +579,9 @@ void FireStarter::DrawGraph(unsigned int variation)
     checkCudaErrors(cuModuleGetFunction(&kernel_addr, m_fireShowModule, "FireShow"));
 
     void* arr[] = { reinterpret_cast<void*>(variation ? &m_bestEvaluateState.m_result1 : &m_bestEvaluateState.m_result0),
-                    reinterpret_cast<void*>(&m_buffer.deviceBase),
-                    reinterpret_cast<void*>(&m_buffer.width),
-                    reinterpret_cast<void*>(&m_buffer.height),
+                    reinterpret_cast<void*>(&m_buffer.m_deviceBase),
+                    reinterpret_cast<void*>(&m_buffer.m_width),
+                    reinterpret_cast<void*>(&m_buffer.m_height),
                     reinterpret_cast<void*>(&variation) };
 
     checkCudaErrors(cuLaunchKernel(kernel_addr,
@@ -593,56 +594,29 @@ void FireStarter::DrawGraph(unsigned int variation)
 
 void FireStarter::RenderImage(void* hwnd)
 {
-    // Render the image if there was an update.
-    bool update = false;
-    for (FireStarterUnit* unit : m_units) {
-        if (unit->m_generation) {
-            std::string unitBestEvaluateCode;
-            FireStarterState unitBestEvaluateState;
-            if (unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState)) {
-                float result = MAX(unitBestEvaluateState.m_result0.result, unitBestEvaluateState.m_result1.result);
-                if (result < m_bestResult) {
-                    m_bestResult = result;
-                    m_bestStates = unit->m_states.size();
-                    m_bestGeneration = unit->m_generation;
-                    m_bestEvaluateCode = unitBestEvaluateCode;
-                    m_bestEvaluateState = unitBestEvaluateState;
-                    update = true;
-                }
-            }
-        }
-    }
-    if (update) {
-        SaveFireStarterCode();
-        SaveFireShowCode();
-        CompileProgram(m_bestFireShowCode, m_fireShowModule);
-        if (m_fireShowModule) {
-            // Erase the frame buffer
-            EraseFrameBuffer(m_buffer);
-            DrawGraph(VARIATION0);
-            DrawGraph(VARIATION1);
-            const unsigned char* bufferData = GetFrameBuffer(m_buffer);
+    if (m_bufferUpdate) {
+        const unsigned char* bufferData = m_buffer.Get();
 
-            unsigned char buffer[4096];
-            BITMAPINFO* bm = (BITMAPINFO*)buffer;
-            bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-            bm->bmiHeader.biHeight = -(int)m_buffer.height;
-            bm->bmiHeader.biPlanes = 1;
-            bm->bmiHeader.biCompression = BI_RGB;
-            bm->bmiHeader.biSizeImage = 0;
-            bm->bmiHeader.biXPelsPerMeter = 0;
-            bm->bmiHeader.biYPelsPerMeter = 0;
-            bm->bmiHeader.biClrUsed = 0;
-            bm->bmiHeader.biClrImportant = 0;
-            bm->bmiHeader.biWidth = m_buffer.width;
-            bm->bmiHeader.biBitCount = 32;
+        unsigned char buffer[4096];
+        BITMAPINFO* bm = (BITMAPINFO*)buffer;
+        bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bm->bmiHeader.biHeight = -(int)m_buffer.m_height;
+        bm->bmiHeader.biPlanes = 1;
+        bm->bmiHeader.biCompression = BI_RGB;
+        bm->bmiHeader.biSizeImage = 0;
+        bm->bmiHeader.biXPelsPerMeter = 0;
+        bm->bmiHeader.biYPelsPerMeter = 0;
+        bm->bmiHeader.biClrUsed = 0;
+        bm->bmiHeader.biClrImportant = 0;
+        bm->bmiHeader.biWidth = m_buffer.m_width;
+        bm->bmiHeader.biBitCount = 32;
 
-            HDC hdc = GetDC((HWND)hwnd);
-            if (hdc) {
-                SetDIBitsToDevice(hdc, 0, 0, m_buffer.width, m_buffer.height, 0, 0, 0, m_buffer.height, bufferData, bm, DIB_RGB_COLORS);
-                GdiFlush();
-            }
+        HDC hdc = GetDC((HWND)hwnd);
+        if (hdc) {
+            SetDIBitsToDevice(hdc, 0, 0, m_buffer.m_width, m_buffer.m_height, 0, 0, 0, m_buffer.m_height, bufferData, bm, DIB_RGB_COLORS);
+            GdiFlush();
         }
+        m_bufferUpdate = false;
     }
 } // RenderImage
 
@@ -652,47 +626,97 @@ const char* FireStarter::RenderStatus(void)
     static long long update = 0;
     ++update;
     if (m_bestGeneration)
-        sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", update, m_bestGeneration, m_bestStates, m_bestGeneration - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_bestEvaluateState.m_processingTime);
+        sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", update, m_bestGeneration, m_bestStates, m_bestGeneration - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_controlTime);
     return m_statusString;
 } // RenderStatus
 
 void FireStarter::ControlThread(void)
 {
-    unsigned int processor_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
-    if (!processor_count)   // May return zero on some systems.
-        processor_count = 1;
-    for (unsigned int i = 0; i < processor_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_fireStarterCode);
-        m_units.push_back(unit);
-    }
-    for (FireStarterUnit* unit : m_units)
-        unit->DispatchAsync([this, unit] { unit->InitProgram(); });
-
-    while (!m_quitControlThread) {
-        for (FireStarterUnit* unit : m_units)
-            unit->DispatchAsync([unit] { unit->ExecuteProgram(); });
-        for (FireStarterUnit* unit : m_units)
-            unit->DispatchSync([]{});
-        Sleep(100);
-    }
-
-    for (FireStarterUnit* unit : m_units)
-        unit->DispatchAsync([unit] { unit->FinishProgram(); });
-    for (FireStarterUnit* unit : m_units)
-        delete unit;
-    m_units.clear();
-} // ControlThread
-
-bool FireStarter::Init(unsigned long width, unsigned long height)
-{
     checkCudaErrors(cuInit(0));
     checkCudaErrors(cuDeviceGet(&m_device, 0));
     checkCudaErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
-    InitFrameBuffer(m_buffer, width, height);
-    EraseFrameBuffer(m_buffer);
-    if (LoadFireStarterCode() && LoadFireShowCode())
-        m_controlThread = std::thread([this] { ControlThread(); });
+    m_buffer.Resize(m_width, m_height);
+    m_buffer.Erase();
+
+    if (LoadFireStarterCode() && LoadFireShowCode()) {
+        unsigned int processor_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
+        if (!processor_count)   // May return zero on some systems.
+            processor_count = 1;
+
+        // Create and initialize a unit for each processor thread.
+        for (unsigned int i = 0; i < processor_count; i++) {
+            FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_fireStarterCode);
+            m_units.push_back(unit);
+        }
+        for (FireStarterUnit* unit : m_units)
+            unit->DispatchAsync([this, unit] { unit->InitProgram(); });
+
+        // Loop until the the host program is quit.
+        while (!m_quitControlThread) {
+            // Asyncronously execute a generation for all the units.
+            m_controlTimer.Start();
+            for (FireStarterUnit* unit : m_units)
+                unit->DispatchAsync([unit] { unit->ExecuteProgram(); });
+
+            // Syncronously update the best data for all the units.
+            for (FireStarterUnit* unit : m_units) {
+                unit->DispatchSync([this, unit] {
+                    std::string unitBestEvaluateCode;
+                    FireStarterState unitBestEvaluateState;
+                    if (unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState)) {
+                        float result = MAX(unitBestEvaluateState.m_result0.result, unitBestEvaluateState.m_result1.result);
+                        if (result < m_bestResult) {
+                            m_bestResult = result;
+                            m_bestStates = unit->m_states.size();
+                            m_bestGeneration = unit->m_generation;
+                            m_bestEvaluateCode = unitBestEvaluateCode;
+                            m_bestEvaluateState = unitBestEvaluateState;
+                            m_controlUpdate = true;
+                        }
+                    }
+                    });
+            }
+            m_controlTime = m_controlTimer.Duration();
+
+            // Render the buffer if the best data was updated and the previous buffer was displayed.
+            if (m_controlUpdate && !m_bufferUpdate) {
+                SaveFireStarterCode();
+                SaveFireShowCode();
+                CompileProgram(m_bestFireShowCode, m_fireShowModule);
+                if (m_fireShowModule) {
+                    // Erase the frame buffer
+                    m_buffer.Erase();
+
+                    // Draw the graphs for both variations.
+                    DrawGraph(VARIATION0);
+                    DrawGraph(VARIATION1);
+                    m_controlUpdate = false;
+                    m_bufferUpdate = true;
+                }
+            }
+        }
+
+        // Finish processing and terminate each unit.
+        for (FireStarterUnit* unit : m_units)
+            unit->DispatchAsync([unit] { unit->FinishProgram(); });
+        for (FireStarterUnit* unit : m_units)
+            delete unit;
+        m_units.clear();
+
+        // Unload the fire show code and destroy the CUDA context.
+        if (m_fireShowModule)
+            checkCudaErrors(cuModuleUnload(m_fireShowModule));
+        if (m_fireShowContext)
+            checkCudaErrors(cuCtxDestroy(m_fireShowContext));
+    }
+} // ControlThread
+
+bool FireStarter::Init(unsigned long width, unsigned long height)
+{
+    m_width = width;
+    m_height = height;
+    m_controlThread = std::thread([this] { ControlThread(); });
     return true;
 } // Init
 
@@ -711,13 +735,11 @@ FireStarter::FireStarter(void)
     m_bestGeneration = 0;
     m_bestStates = 0;
     m_bestResult = START_RESULT;
+    m_controlTime = 0.0;
+    m_controlUpdate = false;
+    m_bufferUpdate = false;
 } // FireStarter
 
 FireStarter::~FireStarter(void)
 {
-    if (m_fireShowModule)
-        checkCudaErrors(cuModuleUnload(m_fireShowModule));
-    if (m_fireShowContext)
-        checkCudaErrors(cuCtxDestroy(m_fireShowContext));
-    FreeFrameBuffer(m_buffer);
 } // ~FireStarter

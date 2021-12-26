@@ -16,6 +16,23 @@ typedef enum {
 
 #define PROGRAM_OPERATIONS (PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS * PROGRAM_DATA)
 
+class FrameBuffer {
+public:
+    unsigned char* m_hostBase;		// Pointer to the alligned native pixel format buffer in host memory
+    unsigned char* m_deviceBase;	// Pointer to the alligned native pixel format buffer in device memory
+    unsigned long m_width;			// Number of columns
+    unsigned long m_height;			// Number of rows
+    long m_rowbytes;			    // Number of bytes per row
+    size_t m_size;                  // The total size of the buffer in bytes
+
+    void Erase(void);
+    const unsigned char* Get(void);
+    void Resize(unsigned long width, unsigned long height);
+
+    FrameBuffer(void);
+    ~FrameBuffer(void);
+}; // class FrameBuffer
+
 class FireStarterProgram {
 public:
     unsigned int m_instructions[PROGRAM_OPERATIONS];
@@ -87,6 +104,8 @@ class FireStarter {
 public:
     std::mutex m_controlMutex;
     std::thread m_controlThread;
+    SimpleTimer m_controlTimer;
+    double m_controlTime;
     CUdevice m_device;
     CUcontext m_fireShowContext;
     CUstream m_fireShowStream;
@@ -103,12 +122,12 @@ public:
     unsigned long long m_bestGeneration;
     size_t m_bestStates;
     float m_bestResult;
+    unsigned long m_width;
+    unsigned long m_height;
+    bool m_controlUpdate;
+    volatile bool m_bufferUpdate;
     volatile bool m_quitControlThread;
 
-    void EraseFrameBuffer(FrameBuffer& buffer);
-    void InitFrameBuffer(FrameBuffer& buffer, unsigned long width, unsigned long height);
-    void FreeFrameBuffer(FrameBuffer& buffer);
-    const unsigned char* GetFrameBuffer(FrameBuffer& buffer);
     static bool LoadCode(const std::string& filePath, std::string& code);
     static void SaveCode(const std::string& filePath, const std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
