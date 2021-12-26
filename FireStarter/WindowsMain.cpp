@@ -82,7 +82,7 @@ HRESULT Initialize(HINSTANCE hInstance)
 
 			SerialThread mainSerialThread(true);
 			SerialThread::SetMainThread(&mainSerialThread);
-			if (fireStarter.Init(imageWidth, imageHeight)) {
+			if (fireStarter.Init(hwnd, imageWidth, imageHeight)) {
 				do {
 					MSG	msg;
 					if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
@@ -90,12 +90,8 @@ HRESULT Initialize(HINSTANCE hInstance)
 							break;
 						TranslateMessage(&msg);
 						DispatchMessage(&msg);
-					} else {
-						fireStarter.RenderImage(hwnd);
-						SetWindowText(hwnd, fireStarter.RenderStatus());
-						if (!mainSerialThread.PollThread())
-							Sleep(100);
-					}
+					} else if (!mainSerialThread.PollThread())
+						Sleep(100);
 				} while (1);
 
 				fireStarter.Quit();

@@ -592,42 +592,33 @@ void FireStarter::DrawGraph(unsigned int variation)
         0));
 } // DrawGraph
 
-void FireStarter::RenderImage(void* hwnd)
+void FireStarter::RenderImage(void)
 {
-    if (m_bufferUpdate) {
-        const unsigned char* bufferData = m_buffer.Get();
+    unsigned char buffer[4096];
+    BITMAPINFO* bm = (BITMAPINFO*)buffer;
+    bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bm->bmiHeader.biHeight = -(int)m_buffer.m_height;
+    bm->bmiHeader.biPlanes = 1;
+    bm->bmiHeader.biCompression = BI_RGB;
+    bm->bmiHeader.biSizeImage = 0;
+    bm->bmiHeader.biXPelsPerMeter = 0;
+    bm->bmiHeader.biYPelsPerMeter = 0;
+    bm->bmiHeader.biClrUsed = 0;
+    bm->bmiHeader.biClrImportant = 0;
+    bm->bmiHeader.biWidth = m_buffer.m_width;
+    bm->bmiHeader.biBitCount = 32;
 
-        unsigned char buffer[4096];
-        BITMAPINFO* bm = (BITMAPINFO*)buffer;
-        bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bm->bmiHeader.biHeight = -(int)m_buffer.m_height;
-        bm->bmiHeader.biPlanes = 1;
-        bm->bmiHeader.biCompression = BI_RGB;
-        bm->bmiHeader.biSizeImage = 0;
-        bm->bmiHeader.biXPelsPerMeter = 0;
-        bm->bmiHeader.biYPelsPerMeter = 0;
-        bm->bmiHeader.biClrUsed = 0;
-        bm->bmiHeader.biClrImportant = 0;
-        bm->bmiHeader.biWidth = m_buffer.m_width;
-        bm->bmiHeader.biBitCount = 32;
-
-        HDC hdc = GetDC((HWND)hwnd);
-        if (hdc) {
-            SetDIBitsToDevice(hdc, 0, 0, m_buffer.m_width, m_buffer.m_height, 0, 0, 0, m_buffer.m_height, bufferData, bm, DIB_RGB_COLORS);
-            GdiFlush();
-        }
-        m_bufferUpdate = false;
+    HDC hdc = GetDC((HWND)m_window);
+    if (hdc) {
+        SetDIBitsToDevice(hdc, 0, 0, m_buffer.m_width, m_buffer.m_height, 0, 0, 0, m_buffer.m_height, m_buffer.Get(), bm, DIB_RGB_COLORS);
+        GdiFlush();
     }
 } // RenderImage
 
-const char* FireStarter::RenderStatus(void)
+void FireStarter::RenderStatus(void)
 {
     // Update the status.
-    static long long update = 0;
-    ++update;
-    if (m_bestGeneration)
-        sprintf_s(m_statusString, "FireStarter:%lld Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", update, m_bestGeneration, m_bestStates, m_bestGeneration - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_controlTime);
-    return m_statusString;
+    sprintf_s(m_statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", m_bestGeneration, m_bestStates, m_bestGeneration - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_controlTime);
 } // RenderStatus
 
 void FireStarter::ControlThread(void)
@@ -636,95 +627,98 @@ void FireStarter::ControlThread(void)
     checkCudaErrors(cuDeviceGet(&m_device, 0));
     checkCudaErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
+    unsigned int processor_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
+    if (!processor_count)   // May return zero on some systems.
+        processor_count = 1;
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
 
-    if (LoadFireStarterCode() && LoadFireShowCode()) {
-        unsigned int processor_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
-        if (!processor_count)   // May return zero on some systems.
-            processor_count = 1;
-
-        // Create and initialize a unit for each processor thread.
-        for (unsigned int i = 0; i < processor_count; i++) {
-            FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_fireStarterCode);
-            m_units.push_back(unit);
-        }
-        for (FireStarterUnit* unit : m_units)
-            unit->DispatchAsync([this, unit] { unit->InitProgram(); });
-
-        // Loop until the the host program is quit.
-        while (!m_quitControlThread) {
-            // Asyncronously execute a generation for all the units.
-            m_controlTimer.Start();
-            for (FireStarterUnit* unit : m_units)
-                unit->DispatchAsync([unit] { unit->ExecuteProgram(); });
-
-            // Syncronously update the best data for all the units.
-            for (FireStarterUnit* unit : m_units) {
-                unit->DispatchSync([this, unit] {
-                    std::string unitBestEvaluateCode;
-                    FireStarterState unitBestEvaluateState;
-                    if (unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState)) {
-                        float result = MAX(unitBestEvaluateState.m_result0.result, unitBestEvaluateState.m_result1.result);
-                        if (result < m_bestResult) {
-                            m_bestResult = result;
-                            m_bestStates = unit->m_states.size();
-                            m_bestGeneration = unit->m_generation;
-                            m_bestEvaluateCode = unitBestEvaluateCode;
-                            m_bestEvaluateState = unitBestEvaluateState;
-                            m_controlUpdate = true;
-                        }
-                    }
-                    });
-            }
-            m_controlTime = m_controlTimer.Duration();
-
-            // Render the buffer if the best data was updated and the previous buffer was displayed.
-            if (m_controlUpdate && !m_bufferUpdate) {
-                SaveFireStarterCode();
-                SaveFireShowCode();
-                CompileProgram(m_bestFireShowCode, m_fireShowModule);
-                if (m_fireShowModule) {
-                    // Erase the frame buffer
-                    m_buffer.Erase();
-
-                    // Draw the graphs for both variations.
-                    DrawGraph(VARIATION0);
-                    DrawGraph(VARIATION1);
-                    m_controlUpdate = false;
-                    m_bufferUpdate = true;
-                }
-            }
-        }
-
-        // Finish processing and terminate each unit.
-        for (FireStarterUnit* unit : m_units)
-            unit->DispatchAsync([unit] { unit->FinishProgram(); });
-        for (FireStarterUnit* unit : m_units)
-            delete unit;
-        m_units.clear();
-
-        // Unload the fire show code and destroy the CUDA context.
-        if (m_fireShowModule)
-            checkCudaErrors(cuModuleUnload(m_fireShowModule));
-        if (m_fireShowContext)
-            checkCudaErrors(cuCtxDestroy(m_fireShowContext));
+    // Create and initialize a unit for each processor thread.
+    for (unsigned int i = 0; i < processor_count; i++) {
+        FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_fireStarterCode);
+        m_units.push_back(unit);
     }
+    for (FireStarterUnit* unit : m_units)
+        unit->DispatchAsync([this, unit] { unit->InitProgram(); });
+
+    // Loop until the the host program is quit.
+    while (!m_quitControlThread) {
+        // Asyncronously execute a generation for all the units.
+        m_controlTimer.Start();
+        for (FireStarterUnit* unit : m_units)
+            unit->DispatchAsync([unit] { unit->ExecuteProgram(); });
+
+        // Syncronously update the best data for all the units.
+        for (FireStarterUnit* unit : m_units) {
+            unit->DispatchSync([this, unit] {
+                std::string unitBestEvaluateCode;
+                FireStarterState unitBestEvaluateState;
+                if (unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState)) {
+                    float result = MAX(unitBestEvaluateState.m_result0.result, unitBestEvaluateState.m_result1.result);
+                    if (result < m_bestResult) {
+                        m_bestResult = result;
+                        m_bestStates = unit->m_states.size();
+                        m_bestGeneration = unit->m_generation;
+                        m_bestEvaluateCode = unitBestEvaluateCode;
+                        m_bestEvaluateState = unitBestEvaluateState;
+                        m_controlUpdate = true;
+                    }
+                }
+            });
+        }
+        m_controlTime = m_controlTimer.Duration();
+
+        // Render the buffer if the best data was updated and the previous buffer was displayed.
+        if (m_controlUpdate) {
+            SaveFireStarterCode();
+            SaveFireShowCode();
+            CompileProgram(m_bestFireShowCode, m_fireShowModule);
+            if (m_fireShowModule) {
+                // Erase the frame buffer
+                m_buffer.Erase();
+
+                // Draw the graphs for both variations.
+                DrawGraph(VARIATION0);
+                DrawGraph(VARIATION1);
+                m_controlUpdate = false;
+                GetMainThread()->DispatchAsync([this] { RenderImage(); });
+            }
+        }
+
+        RenderStatus();
+        GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString); });
+    }
+
+    // Finish processing and terminate each unit.
+    for (FireStarterUnit* unit : m_units)
+        unit->DispatchAsync([unit] { unit->FinishProgram(); });
+    for (FireStarterUnit* unit : m_units)
+        delete unit;
+    m_units.clear();
+
+    // Unload the fire show code and destroy the CUDA context.
+    if (m_fireShowModule)
+        checkCudaErrors(cuModuleUnload(m_fireShowModule));
+    if (m_fireShowContext)
+        checkCudaErrors(cuCtxDestroy(m_fireShowContext));
 } // ControlThread
 
-bool FireStarter::Init(unsigned long width, unsigned long height)
+bool FireStarter::Init(void* window, unsigned long width, unsigned long height)
 {
+    m_window = window;
     m_width = width;
     m_height = height;
-    m_controlThread = std::thread([this] { ControlThread(); });
-    return true;
+    if (LoadFireStarterCode() && LoadFireShowCode()) {
+        DispatchAsync([this] { ControlThread(); });
+        return true;
+    }
+    return false;
 } // Init
 
 void FireStarter::Quit(void)
 {
     m_quitControlThread = true;
-    if (m_controlThread.joinable())
-        m_controlThread.join();
+    Terminate();
 } // Quit
 
 FireStarter::FireStarter(void)
@@ -737,7 +731,6 @@ FireStarter::FireStarter(void)
     m_bestResult = START_RESULT;
     m_controlTime = 0.0;
     m_controlUpdate = false;
-    m_bufferUpdate = false;
 } // FireStarter
 
 FireStarter::~FireStarter(void)

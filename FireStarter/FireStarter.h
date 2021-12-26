@@ -100,10 +100,8 @@ public:
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
 
-class FireStarter {
+class FireStarter : public SerialThread {
 public:
-    std::mutex m_controlMutex;
-    std::thread m_controlThread;
     SimpleTimer m_controlTimer;
     double m_controlTime;
     CUdevice m_device;
@@ -122,10 +120,10 @@ public:
     unsigned long long m_bestGeneration;
     size_t m_bestStates;
     float m_bestResult;
+    void* m_window;
     unsigned long m_width;
     unsigned long m_height;
     bool m_controlUpdate;
-    volatile bool m_bufferUpdate;
     volatile bool m_quitControlThread;
 
     static bool LoadCode(const std::string& filePath, std::string& code);
@@ -139,10 +137,10 @@ public:
     bool LoadFireShowCode(void);
     void SaveFireShowCode(void);
     void DrawGraph(unsigned int variation);
-    void RenderImage(void* hwnd);
-    const char* RenderStatus(void);
+    void RenderImage(void);
+    void RenderStatus(void);
     void ControlThread(void);
-    bool Init(unsigned long width, unsigned long height);
+    bool Init(void* window, unsigned long width, unsigned long height);
     void Quit(void);
     FireStarter(void);
     ~FireStarter(void);
