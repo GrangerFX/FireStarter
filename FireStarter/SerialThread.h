@@ -71,66 +71,83 @@ private:
         } // ~SerialThreadTimer
     }; // SerialThreadTimer;
 
-    Semaphore m_semaphore;
+    class SerialWorkQueue {
+    private:
+        std::queue<SerialThreadWork> m_workQueue;
+        std::mutex m_mutex;
+        std::condition_variable m_cv;
+    public:
+        inline void Push(const SerialThreadWork& work)
+        {
+            std::unique_lock<std::mutex> lock(m_mutex);
+            m_workQueue.push(work);
+            m_cv.notify_one();
+        } // Push
+
+        inline void Wait(SerialThreadWork& work)
+        {
+            std::unique_lock<std::mutex> lock(m_mutex);
+            while (m_workQueue.empty())
+                m_cv.wait(lock);
+            work = m_workQueue.front();
+            m_workQueue.pop();
+        } // Wait
+
+        inline bool TryWait(SerialThreadWork& work)
+        {
+            std::unique_lock<std::mutex> lock(m_mutex);
+            if (!m_workQueue.empty()) {
+                work = m_workQueue.front();
+                m_workQueue.pop();
+                return true;
+            }
+            return false;
+        } // TryWait
+    }; // class SerialWorkQueue
+
     std::thread m_thread;
-    std::mutex m_mutex;
-    std::queue<SerialThreadWork> m_workQueue;
+    SerialWorkQueue m_workQueue;
     SerialThreadTimer m_timers;
     inline static SerialThread* g_mainThread = nullptr;
     bool m_pollThread;
     volatile bool m_terminate;
  
-    inline void DoWork(void)
-    {
-        while (!m_workQueue.empty()) {
-            m_mutex.lock();
-            SerialThreadWork work(m_workQueue.front());
-            m_workQueue.pop();
-            m_mutex.unlock();
-            work();
-        }
-    } // DoWork
-
     inline void Thread(void)
     {
-        for (;;) {
-            m_semaphore.wait();
-            if (m_terminate)
-                return;
-            DoWork();
+        while (!m_terminate) {
+            SerialThreadWork work;
+            m_workQueue.Wait(work);
+            work();
         }
+        SerialThreadWork work;
+        while (m_workQueue.TryWait(work))
+            work();
     } // Thread
 
 public:
     inline bool PollThread(void)
     {
-        if (m_pollThread && m_semaphore.trywait()) {
-            if (m_terminate)
-                return false;
-            DoWork();
-            return true;
+        bool result = false;
+        SerialThreadWork work;
+        while (m_workQueue.TryWait(work)) {
+            work();
+            result = true;
         }
-        return false;
+        return result;
     } // PollThread
 
     inline void DispatchAsync(const SerialThreadWork& work)
     {
-        m_mutex.lock();
-        m_workQueue.push(work);
-        m_mutex.unlock();
-        m_semaphore.notify();
+        m_workQueue.Push(work);
     } // DispatchAsync
 
     inline void DispatchSync(const SerialThreadWork& work)
     {
         Semaphore sync;
-        m_mutex.lock();
-        m_workQueue.push([this, &sync, work] {
+        DispatchAsync([this, &sync, work] {
             work();
             sync.notify();
         });
-        m_mutex.unlock();
-        m_semaphore.notify();
         if (m_pollThread)
             PollThread();
         sync.wait();
@@ -162,9 +179,8 @@ public:
                     m_timers.m_next->m_thread.request_stop();
                     delete m_timers.m_next;
                 }
+                m_terminate = true;
             });
-            m_terminate = true;
-            m_semaphore.notify();
             if (m_pollThread)
                 PollThread();
             else
