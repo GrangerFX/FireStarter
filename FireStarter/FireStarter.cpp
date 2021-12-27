@@ -328,12 +328,9 @@ void FireStarterUnit::EvaluateProgram(void)
         m_curState.m_devolve = 0;
         m_states.push_back(m_curState);
         if (m_curState.m_maxResult < m_bestEvaluateState.m_maxResult) {
-            m_mutex.lock();
             m_bestGeneration = m_generation;
             m_bestEvaluateState = m_curState;
             m_bestEvaluateCode = m_evaluateCode;
-            m_update = true;
-            m_mutex.unlock();
         }
     }
 } // EvaluateProgram
@@ -356,17 +353,11 @@ void FireStarterUnit::ExecuteProgram(void)
     m_generation++;
  } // ExecuteProgram
 
-bool FireStarterUnit::UpdateProgram(std::string &bestEvaluateCode, FireStarterState &bestEvaluateState)
+float FireStarterUnit::UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestEvaluateState)
 {
-    if (m_update) {
-        m_mutex.lock();
-        bestEvaluateCode = m_bestEvaluateCode;
-        bestEvaluateState = m_bestEvaluateState;
-        m_update = false;
-        m_mutex.unlock();
-        return true;
-    }
-    return false;
+    bestEvaluateCode = &m_bestEvaluateCode;
+    bestEvaluateState = &m_bestEvaluateState;
+    return MAX(m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result);
 } // Update
 
 void FireStarterUnit::InitProgram(void)
@@ -618,7 +609,7 @@ void FireStarter::RenderImage(void)
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
-    sprintf_s(m_statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Error0=%f  Error1=%f  Time=%.4f Seconds", m_bestGeneration, m_bestStates, m_bestGeneration - m_bestEvaluateState.m_program.m_generation, m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result, m_controlTime);
+    sprintf_s(m_statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Best=%f  Worst=%f  Time=%.4f Seconds", m_bestGeneration, m_bestStates, m_bestGeneration - m_bestEvaluateState.m_program.m_generation, m_bestResult, m_worstResult, m_controlTime);
 } // RenderStatus
 
 void FireStarter::ControlThread(void)
@@ -649,21 +640,22 @@ void FireStarter::ControlThread(void)
             unit->DispatchAsync([unit] { unit->ExecuteProgram(); });
 
         // Syncronously update the best data for all the units.
+        m_worstResult = 0.0f;
         for (FireStarterUnit* unit : m_units) {
             unit->DispatchSync([this, unit] {
-                std::string unitBestEvaluateCode;
-                FireStarterState unitBestEvaluateState;
-                if (unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState)) {
-                    float result = MAX(unitBestEvaluateState.m_result0.result, unitBestEvaluateState.m_result1.result);
-                    if (result < m_bestResult) {
-                        m_bestResult = result;
-                        m_bestStates = unit->m_states.size();
-                        m_bestGeneration = unit->m_generation;
-                        m_bestEvaluateCode = unitBestEvaluateCode;
-                        m_bestEvaluateState = unitBestEvaluateState;
-                        m_controlUpdate = true;
-                    }
+                std::string *unitBestEvaluateCode;
+                FireStarterState *unitBestEvaluateState;
+                float result = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState);
+                if (result < m_bestResult) {
+                    m_bestResult = result;
+                    m_bestStates = unit->m_states.size();
+                    m_bestGeneration = unit->m_generation;
+                    m_bestEvaluateCode = *unitBestEvaluateCode;
+                    m_bestEvaluateState = *unitBestEvaluateState;
+                    m_controlUpdate = true;
                 }
+                if (result > m_worstResult)
+                    m_worstResult = result;
             });
         }
         m_controlTime = m_controlTimer.Duration();
@@ -736,6 +728,7 @@ FireStarter::FireStarter(void)
     m_bestGeneration = 0;
     m_bestStates = 0;
     m_bestResult = START_RESULT;
+    m_worstResult = 0.0f;
     m_controlTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;

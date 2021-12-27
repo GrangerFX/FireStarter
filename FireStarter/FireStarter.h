@@ -59,7 +59,6 @@ public:
 
 class FireStarterUnit : public SerialThread {
 public:
-    std::mutex m_mutex;
     SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
@@ -82,7 +81,6 @@ public:
     unsigned long long m_lastGeneration;
     unsigned long long m_bestGeneration;
     unsigned int m_unitIndex;
-    volatile bool m_update;
 
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
     void CopyResultsDeviceToHost(void);
@@ -93,7 +91,7 @@ public:
     void EvolveProgram(void);
     void EvaluateProgram(void);
     void ExecuteProgram(void);
-    bool UpdateProgram(std::string& bestEvaluateCode, FireStarterState& bestState);
+    float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState);
     void InitProgram(void);
     void FinishProgram(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
@@ -120,6 +118,7 @@ public:
     unsigned long long m_bestGeneration;
     size_t m_bestStates;
     float m_bestResult;
+    float m_worstResult;
     void* m_window;
     unsigned long m_width;
     unsigned long m_height;
