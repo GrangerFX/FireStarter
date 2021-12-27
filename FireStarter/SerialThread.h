@@ -8,6 +8,8 @@
 
 class SerialThread {
 private:
+    // This gets around a missing feature of std::list: The trivial deletion of a single element by reference.
+    // Note: TODO: Turn this into a templated linked list class.
     typedef std::function<void(void)> SerialThreadWork;
     class SerialThreadTimer {
     public:
