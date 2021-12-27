@@ -136,13 +136,13 @@ public:
         sync.wait();
     } // DispatchSync
 
-    inline void DisptachAfter(double duration, const SerialThreadWork& work)
+    inline void DispatchAfter(double duration, const SerialThreadWork& work)
     {
         DispatchAsync([this, duration, work] {
             SerialThreadTimer* timer = new SerialThreadTimer(&m_timers, duration, work);
             timer->m_thread = std::jthread([this, timer](std::stop_token stopToken) {
                 std::stop_token interruptDisabled;
-//              std::stop_callback callBack(stopToken, [] {});
+//              std::stop_callback callBack(stopToken, []{});
                 std::this_thread::sleep_for(std::chrono::duration<double>(timer->m_duration));
                 std::swap(stopToken, interruptDisabled);
                 DispatchAsync([timer] {
@@ -152,7 +152,7 @@ public:
             });
             timer->m_thread.detach();
          });
-    } // DisptachAfter
+    } // DispatchAfter
 
     inline void Terminate(void)
     {

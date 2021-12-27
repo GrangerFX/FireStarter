@@ -17,7 +17,7 @@ public:
         m_nanosecond = time.tv_nsec;
     } // Start
 
-    inline double Duration(void)
+    inline double Duration(void) const
     {
         timespec time;
         timespec_get(&time, TIME_UTC);
