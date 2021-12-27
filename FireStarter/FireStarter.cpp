@@ -668,25 +668,32 @@ void FireStarter::ControlThread(void)
         }
         m_controlTime = m_controlTimer.Duration();
 
-        // Render the buffer if the best data was updated and the previous buffer was displayed.
+        // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate) {
             SaveFireStarterCode();
             SaveFireShowCode();
             CompileProgram(m_bestFireShowCode, m_fireShowModule);
-            if (m_fireShowModule) {
-                // Erase the frame buffer
-                m_buffer.Erase();
-
-                // Draw the graphs for both variations.
-                DrawGraph(VARIATION0);
-                DrawGraph(VARIATION1);
-                m_controlUpdate = false;
-                GetMainThread()->DispatchAsync([this] { RenderImage(); });
-            }
         }
 
+        // Update the render status after every pass.
         RenderStatus();
         GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString); });
+
+        // Render the buffer if the best data was updated and the previous buffer was displayed.
+        if (m_fireShowModule && !m_bufferUpdate) {
+            if (!m_bufferUpdate)
+            // Erase the frame buffer
+            m_buffer.Erase();
+
+            // Draw the graphs for both variations.
+            DrawGraph(VARIATION0);
+            DrawGraph(VARIATION1);
+            m_controlUpdate = false;
+            GetMainThread()->DispatchAsync([this] {
+                RenderImage();
+                m_bufferUpdate = false;
+            });
+        }
     }
 
     // Finish processing and terminate each unit.
@@ -731,6 +738,7 @@ FireStarter::FireStarter(void)
     m_bestResult = START_RESULT;
     m_controlTime = 0.0;
     m_controlUpdate = false;
+    m_bufferUpdate = false;
 } // FireStarter
 
 FireStarter::~FireStarter(void)

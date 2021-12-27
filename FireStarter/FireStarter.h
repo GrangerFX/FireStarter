@@ -124,6 +124,7 @@ public:
     unsigned long m_width;
     unsigned long m_height;
     bool m_controlUpdate;
+    volatile bool m_bufferUpdate;
     volatile bool m_quitControlThread;
 
     static bool LoadCode(const std::string& filePath, std::string& code);
