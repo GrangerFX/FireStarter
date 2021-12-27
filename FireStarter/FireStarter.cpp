@@ -725,7 +725,7 @@ bool FireStarter::Init(void* window, unsigned long width, unsigned long height)
 void FireStarter::Quit(void)
 {
     m_quitControlThread = true;
-    Terminate();
+    DispatchSync([]{}); // This will wait for ControlThread() to exit.
 } // Quit
 
 FireStarter::FireStarter(void)

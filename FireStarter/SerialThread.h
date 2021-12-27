@@ -110,10 +110,11 @@ private:
     SerialThreadTimer m_timers;
     inline static SerialThread* g_mainThread = nullptr;
     bool m_pollThread;
-    volatile bool m_terminate;
+    bool m_terminate;
  
     inline void Thread(void)
     {
+        m_terminate = false;
         while (!m_terminate) {
             SerialThreadWork work;
             m_workQueue.Wait(work);
@@ -171,23 +172,6 @@ public:
          });
     } // DispatchAfter
 
-    inline void Terminate(void)
-    {
-        if (!m_terminate) {
-            DispatchSync([this] {
-                while (m_timers.m_next) {
-                    m_timers.m_next->m_thread.request_stop();
-                    delete m_timers.m_next;
-                }
-                m_terminate = true;
-            });
-            if (m_pollThread)
-                PollThread();
-            else
-                m_thread.join();
-        }
-    } // Terminate
-
     static inline SerialThread* GetMainThread(void)
     {
         return g_mainThread;
@@ -208,6 +192,16 @@ public:
 
     inline ~SerialThread(void)
     {
-        Terminate();
+        DispatchSync([this] {
+            while (m_timers.m_next) {
+                m_timers.m_next->m_thread.request_stop();
+                delete m_timers.m_next;
+            }
+            m_terminate = true;
+        });
+        if (m_pollThread)
+            PollThread();
+        else
+            m_thread.join();
     } // ~SerialThread
 }; // class SerialThread
