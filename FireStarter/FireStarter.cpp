@@ -596,7 +596,7 @@ void FireStarter::ControlThread(void)
     checkCudaErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
     unsigned int processor_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
-    if (!processor_count)   // May return zero on some systems.
+//    if (!processor_count)   // May return zero on some systems.
         processor_count = 1;
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();

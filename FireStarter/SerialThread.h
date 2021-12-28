@@ -11,46 +11,80 @@ private:
     // This gets around a missing feature of std::list: The trivial deletion of a single element by reference.
     // Note: TODO: Turn this into a templated linked list class.
     typedef std::function<void(void)> SerialThreadWork;
-    class SerialThreadTimer {
-    public:
-        SerialThreadTimer* m_prev;
-        SerialThreadTimer* m_next;
-        std::jthread m_thread;
-        SerialThreadWork m_work;
-        double m_duration;
 
-        inline SerialThreadTimer(SerialThreadTimer* timers, double duration, const SerialThreadWork& work) : m_prev(timers), m_next(timers->m_next), m_duration(duration), m_work(work)
-        {
-            if (timers->m_next)
-                timers->m_next->m_prev = this;
-            timers->m_next = this;
-        } // SerialThreadTimer
+    class SerialThreadTimers {
+    private:
+        class SerialThreadTimer {
+        public:
+            SerialThreadTimer* m_prev;
+            SerialThreadTimer* m_next;
+            std::jthread m_thread;
+            SerialThreadWork m_work;
+            double m_duration;
 
-        inline SerialThreadTimer(void) : m_prev(nullptr), m_next(nullptr), m_duration(0.0), m_work() {}
+            inline SerialThreadTimer(SerialThreadTimer* timers, double duration, const SerialThreadWork& work) : m_prev(timers), m_next(timers->m_next), m_duration(duration), m_work(work)
+            {
+                if (timers->m_next)
+                    timers->m_next->m_prev = this;
+                timers->m_next = this;
+            } // SerialThreadTimer
+
+            inline SerialThreadTimer(void) : m_prev(nullptr), m_next(nullptr), m_duration(0.0), m_work() {}
  
-        inline ~SerialThreadTimer(void)
+            inline ~SerialThreadTimer(void)
+            {
+                if (m_prev)
+                    m_prev->m_next = m_next;
+                if (m_next)
+                    m_next->m_prev = m_prev;
+            } // ~SerialThreadTimer
+        }; // SerialThreadTimer;
+
+        SerialThreadTimer m_timers;
+
+    public:
+        void AddTimer(SerialThread* thread, double duration, const SerialThreadWork& work)
         {
-            if (m_prev)
-                m_prev->m_next = m_next;
-            if (m_next)
-                m_next->m_prev = m_prev;
-        } // ~SerialThreadTimer
-    }; // SerialThreadTimer;
+            thread->DispatchAsync([this, thread, duration, work] {
+                SerialThreadTimer* timer = new SerialThreadTimer(&m_timers, duration, work);
+                timer->m_thread = std::jthread([this, thread, timer](std::stop_token stopToken) {
+                    std::stop_token interruptDisabled;
+                    std::this_thread::sleep_for(std::chrono::duration<double>(timer->m_duration));
+                    std::swap(stopToken, interruptDisabled);
+                    thread->DispatchAsync([timer] {
+                        timer->m_work();
+                        delete timer;
+                    });
+                });
+                timer->m_thread.detach();
+            });
+        } // AddTimer
+
+        void StopTimers(void)
+        {
+            while (m_timers.m_next) {
+                m_timers.m_next->m_thread.request_stop();
+                delete m_timers.m_next;
+            }
+        } // StopTimers
+    }; // class SerialThreadTimers
 
     std::thread m_thread;
     std::mutex m_mutex;
     std::condition_variable m_cv;
     std::queue<SerialThreadWork> m_workQueue;
-    SerialThreadTimer m_timers;
+    SerialThreadTimers m_timers;
     inline static SerialThread* g_mainThread = nullptr;
     bool m_pollThread;
-    bool m_terminate;
+    volatile bool m_terminate;
 
     inline void Push(const SerialThreadWork& work)
     {
         std::unique_lock<std::mutex> lock(m_mutex);
-        m_workQueue.push(work);
-        m_cv.notify_one();
+        if (!m_terminate) {
+            m_workQueue.push(work);
+            m_cv.notify_one();
+        }
     } // Push
 
     inline void Wait(SerialThreadWork& work)
@@ -87,10 +121,7 @@ private:
 
     inline void TerminateThread(void)
     {
-        while (m_timers.m_next) {
-            m_timers.m_next->m_thread.request_stop();
-            delete m_timers.m_next;
-        }
+        m_timers.StopTimers();
         m_terminate = true;
     } // TerminateThread
 
@@ -130,17 +161,7 @@ public:
     inline void DispatchAfter(double duration, const SerialThreadWork& work)
     {
         DispatchAsync([this, duration, work] {
-            SerialThreadTimer* timer = new SerialThreadTimer(&m_timers, duration, work);
-            timer->m_thread = std::jthread([this, timer](std::stop_token stopToken) {
-                std::stop_token interruptDisabled;
-                std::this_thread::sleep_for(std::chrono::duration<double>(timer->m_duration));
-                std::swap(stopToken, interruptDisabled);
-                DispatchAsync([timer] {
-                    timer->m_work();
-                    delete timer;
-                });
-            });
-            timer->m_thread.detach();
+            m_timers.AddTimer(this, duration, work);
          });
     } // DispatchAfter
 
@@ -159,7 +180,7 @@ public:
         m_terminate = false;
         m_pollThread = pollThread;
         if (!m_pollThread)
-            m_thread = std::thread([this] { Thread(); });
+            m_thread = std::thread([this]{ Thread(); });
     } // SerialThread
 
     inline ~SerialThread(void)

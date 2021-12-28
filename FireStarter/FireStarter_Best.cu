@@ -12,13 +12,13 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n = data.d[23] *= n;
     n = data.d[14] += n;
     n = data.d[9] += n;
-    n = data.d[12] += n;
+    n = data.d[24] *= n;
     n = data.d[11] *= n;
     n = data.d[2] += n;
     n = data.d[12] += n;
     n = data.d[10] *= n;
     n = data.d[29] *= n;
-    n = data.d[11] += n;
+    n = data.d[16] += n;
     n = data.d[7] += n;
     n = data.d[2] *= n;
     n = data.d[7] *= n;
