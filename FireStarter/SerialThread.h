@@ -8,10 +8,10 @@
 
 class SerialThread {
 private:
-    // This gets around a missing feature of std::list: The trivial deletion of a single element by reference.
-    // Note: TODO: Turn this into a templated linked list class.
+    // Currently the work function has no parameters and no return value.
     typedef std::function<void(void)> SerialThreadWork;
 
+    // This gets around a missing feature of std::list: The trivial deletion of a single element by reference.
     class SerialThreadTimers {
     private:
         class SerialThreadTimer {
@@ -45,6 +45,7 @@ private:
     public:
         void AddTimer(SerialThread* thread, double duration, const SerialThreadWork& work)
         {
+            // Reference: https://www.modernescpp.com/index.php/cooperative-interruption-of-a-thread-in-c-20
             thread->DispatchAsync([this, thread, duration, work] {
                 SerialThreadTimer* timer = new SerialThreadTimer(&m_timers, duration, work);
                 timer->m_thread = std::jthread([this, thread, timer](std::stop_token stopToken) {
@@ -78,6 +79,7 @@ private:
     bool m_pollThread;
     volatile bool m_terminate;
 
+    // Reference: https://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
     inline void Push(const SerialThreadWork& work)
     {
         std::unique_lock<std::mutex> lock(m_mutex);
