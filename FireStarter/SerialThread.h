@@ -6,6 +6,45 @@
 #include <functional>
 #include <condition_variable>
 
+// SerialThread is a simplified implementation of the thread model from Apple's Grand Central Dispatch implemented in portable C++20 code.
+// Example:
+// 
+// Declare a thread.
+// SerialThread m_thread;
+//
+// You can also create a polling version of SerialThread for the main event loop.
+// SerialThread m_mainThread(true);
+//
+// Call this from the main thread.
+// SerialThread::SetMainThread(&mainThread);
+// This will allow you to call functions on the main thread from other threads.
+// 
+// Do some work on the thread asyncronously.
+// The work will be performed in the order it was received.
+// m_thread.DispatchAsync([this]{
+//     Do work here.
+// });
+//
+// Do some work on the thread syncronously blocking the current thread.
+// All pending asyncronous work will be completed before the syncrhonous work is done.
+// m_thread.DispatchSync([this]{
+//     Do work here.
+// });
+//
+// Do some work after a period of time in seconds.
+// m_thread.DispatchAfter(1.0, [this]{
+//     Do work here.
+// });
+// Pending delayed work will get canceled if the thread is deleted.
+//
+// Nesting of thread calls works fine.
+// m_thread.DispatchAsync([this]{
+//     Do work here.
+//     m_anotherThread.DispatchAsync([this]{
+//         Do more work here.
+//     });
+// });
+
 class SerialThread {
 private:
     // Currently the work function has no parameters and no return value.
