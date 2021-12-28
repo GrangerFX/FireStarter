@@ -105,27 +105,24 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
 
 void FireStarterProgram::RandomProgram(unsigned int seed)
 {
-    seed = RANDOMHASH(RANDOMHASH(seed) + (unsigned int)m_generation);
+    seed = RANDOMHASH(RANDOMHASH(seed));
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         RandomInstruction(i, seed);
 } // RandomProgram
 
 FireStarterProgram::FireStarterProgram(void)
 {
-    m_generation = 0;
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         m_instructions[i] = 0;
 } // FireStarterProgram
 
-void FireStarterState::Init(void)
+void FireStarterState::Init(unsigned int &seed)
 {
-    m_program.RandomProgram(RANDOMHASH(m_unitIndex));
+    m_program.RandomProgram(RANDOMSEED(seed));
 } // Init
 
-FireStarterState::FireStarterState(int unitIndex)
+FireStarterState::FireStarterState(void)
 {
-    m_unitIndex = unitIndex;
-
     // Initialize the evolving program data values.
     for (unsigned int i = 0; i < PROGRAM_DATA; i++) {
         m_result0.data.d[i] = 1.0f;
@@ -135,7 +132,6 @@ FireStarterState::FireStarterState(int unitIndex)
     m_result1.result = START_RESULT;
     m_processingTime = 0.0;
     m_maxResult = START_RESULT;
-    m_devolve = 0;
 } // FireStarterState
 
 void FireStarterUnit::GetResults(FireStarterResults* results, FireStarterResult& bestResult)
@@ -191,9 +187,8 @@ void FireStarterUnit::InitResults(void)
     m_hostResults0 = (FireStarterResults*)(m_hostResults);
     m_hostResults1 = (FireStarterResults*)(m_hostResults + resultsSize);
 
-    m_curState.Init();
-    m_states.push_back(m_curState);
-    m_bestEvaluateState = m_curState;
+    m_curState.Init(m_seed);
+    m_bestState = m_curState;
 } // InitResults
 
 void FireStarterUnit::FreeResults(void)
@@ -257,36 +252,22 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
 
 void FireStarterUnit::DevolveProgram(void)
 {
-    unsigned long long lastAge = m_generation - m_lastGeneration;
-    unsigned int state = (unsigned int)m_states.size() - 1;
-    if (lastAge > SMART_DEVOLVE_AGE) {
-        // Devolve to an earlier state if too many generations have elapsed without improvement.
-        // This prevents dead-end evolution.
-        unsigned int devolve = 1;
-        while (state && (++m_states[state].m_devolve >= devolve)) {
-            m_states.pop_back();
-            state--;
-            devolve++;
-        }
-        m_lastGeneration = m_generation;
+    if (m_generation > SMART_DEVOLVE_AGE) {
     }
-    m_curState = m_states[state];
 } // DevolveProgram
 
 void FireStarterUnit::EvolveProgram(void)
 {
     // Determine how many changes to make to the instructions.
-    unsigned long long lastAge = m_generation - m_lastGeneration;
     unsigned int numChanges = 1;
-    if (lastAge > SMART_EVOLVE_AGE)
+    if (m_generation > SMART_EVOLVE_AGE)
         numChanges++;
 
     // Make random changes to the program instructions.
-    unsigned int seed = RANDOMHASH((unsigned int)(m_generation * 2));
-    m_curState.m_program.m_generation = m_generation;
+    m_curState = m_bestState;
     while (numChanges--) {
-        unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-        m_curState.m_program.RandomInstruction(index, seed);
+        unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
+        m_curState.m_program.RandomInstruction(index, m_seed);
     }
     
     // Generate the replacement code and update the program.
@@ -317,21 +298,17 @@ void FireStarterUnit::EvolveProgram(void)
     std::string updatedCode = m_fireStarterCode;
     FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
     FireStarter::CompileProgram(updatedCode, m_fireStarterModule);
+    m_generation++;
+    m_age++;
 } // EvolveProgram
 
 void FireStarterUnit::EvaluateProgram(void)
 {
-    float maxResult = MAX(m_curState.m_result0.result, m_curState.m_result1.result);
-    if (maxResult < m_curState.m_maxResult) {
-        m_lastGeneration = m_generation;
-        m_curState.m_maxResult = maxResult;
-        m_curState.m_devolve = 0;
-        m_states.push_back(m_curState);
-        if (m_curState.m_maxResult < m_bestEvaluateState.m_maxResult) {
-            m_bestGeneration = m_generation;
-            m_bestEvaluateState = m_curState;
-            m_bestEvaluateCode = m_evaluateCode;
-        }
+    m_curState.m_maxResult = MAX(m_curState.m_result0.result, m_curState.m_result1.result);
+    if (m_curState.m_maxResult < m_bestState.m_maxResult) {
+        m_bestState = m_curState;
+        m_bestEvaluateCode = m_evaluateCode;
+        m_age = 0;
     }
 } // EvaluateProgram
 
@@ -350,14 +327,14 @@ void FireStarterUnit::ExecuteProgram(void)
     RunProgram(VARIATION1, m_curState.m_result1);
     m_curState.m_processingTime = m_timer.Duration();
     EvaluateProgram();
-    m_generation++;
  } // ExecuteProgram
 
-float FireStarterUnit::UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestEvaluateState)
+float FireStarterUnit::UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &age)
 {
     bestEvaluateCode = &m_bestEvaluateCode;
-    bestEvaluateState = &m_bestEvaluateState;
-    return MAX(m_bestEvaluateState.m_result0.result, m_bestEvaluateState.m_result1.result);
+    bestState = &m_bestState;
+    age = &m_age;
+    return MAX(m_bestState.m_result0.result, m_bestState.m_result1.result);
 } // Update
 
 void FireStarterUnit::InitProgram(void)
@@ -380,9 +357,10 @@ void FireStarterUnit::FinishProgram(void)
     }
 } // FinishProgram
 
-FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode) : SerialThread(), m_curState(unitIndex), m_bestEvaluateState(unitIndex)
+FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode) : SerialThread(), m_curState(), m_bestState()
 {
     m_unitIndex = unitIndex;
+    m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
     m_device = device;
     m_fireStarterCode = fireStarterCode;
     m_fireStarterContext = nullptr;
@@ -394,8 +372,7 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const 
     m_hostResults1 = nullptr;
     m_fireStarterModule = nullptr;
     m_generation = 0;
-    m_lastGeneration = 0;
-    m_bestGeneration = 0;
+    m_age = 0;
 } // FireStarter
 
 FireStarterUnit::~FireStarterUnit(void)
@@ -609,7 +586,7 @@ void FireStarter::RenderImage(void)
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
-    sprintf_s(m_statusString, "FireStarter: Generation=%lld  States=%lld  Age=%lld  Best=%f  Worst=%f  Time=%.4f Seconds", m_bestGeneration, m_bestStates, m_bestGeneration - m_bestEvaluateState.m_program.m_generation, m_bestResult, m_worstResult, m_controlTime);
+    sprintf_s(m_statusString, "FireStarter: Generation=%lld  Age=%lld  Best=%f  Worst=%f  Time=%.4f Seconds", m_generation, m_bestGeneration, m_bestResult, m_worstResult, m_controlTime);
 } // RenderStatus
 
 void FireStarter::ControlThread(void)
@@ -630,29 +607,44 @@ void FireStarter::ControlThread(void)
         m_units.push_back(unit);
     }
     for (FireStarterUnit* unit : m_units)
-        unit->DispatchAsync([this, unit] { unit->InitProgram(); });
+        unit->DispatchAsync([this, unit] {
+            unit->InitProgram();
+        });
 
     // Loop until the the host program is quit.
     while (!m_quitControlThread) {
         // Asyncronously execute a generation for all the units.
         m_controlTimer.Start();
         for (FireStarterUnit* unit : m_units)
-            unit->DispatchAsync([unit] { unit->ExecuteProgram(); });
+            unit->DispatchAsync([unit] {
+                unit->ExecuteProgram();
+            });
 
         // Syncronously update the best data for all the units.
         m_worstResult = 0.0f;
         for (FireStarterUnit* unit : m_units) {
             unit->DispatchSync([this, unit] {
-                std::string *unitBestEvaluateCode;
-                FireStarterState *unitBestEvaluateState;
-                float result = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState);
+                std::string* unitBestEvaluateCode = nullptr;
+                FireStarterState *unitBestEvaluateState = nullptr;
+                unsigned long long *unitAge = nullptr;
+                float result = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState, unitAge);
                 if (result < m_bestResult) {
                     m_bestResult = result;
-                    m_bestStates = unit->m_states.size();
-                    m_bestGeneration = unit->m_generation;
                     m_bestEvaluateCode = *unitBestEvaluateCode;
                     m_bestEvaluateState = *unitBestEvaluateState;
+                    m_bestGeneration = m_generation;
                     m_controlUpdate = true;
+                } else if (*unitAge >= SMART_DEVOLVE_AGE) {
+                    FireStarterUnit* randomUnit = m_units[RANDOMSEED(m_seed) % m_units.size()];
+                    std::string* randomEvaluateCode = nullptr;
+                    FireStarterState* randomEvaluateState = nullptr;
+                    unsigned long long *randomAge = nullptr;
+                    randomUnit->UpdateProgram(randomEvaluateCode, randomEvaluateState, randomAge);
+                    if (*randomAge < *unitAge) {
+                        *unitBestEvaluateCode = *randomEvaluateCode;
+                        *unitBestEvaluateState = *randomEvaluateState;
+                        *unitAge = *randomAge;
+                    }
                 }
                 if (result > m_worstResult)
                     m_worstResult = result;
@@ -668,6 +660,7 @@ void FireStarter::ControlThread(void)
         }
 
         // Update the render status after every pass.
+        m_generation++;
         RenderStatus();
         GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString); });
 
@@ -725,11 +718,12 @@ FireStarter::FireStarter(void)
     m_fireShowContext = nullptr;
     m_fireShowModule = nullptr;
     m_statusString[0] = 0;
+    m_generation = 0;
     m_bestGeneration = 0;
-    m_bestStates = 0;
     m_bestResult = START_RESULT;
     m_worstResult = 0.0f;
     m_controlTime = 0.0;
+    m_seed = RANDOMHASH(123);
     m_controlUpdate = false;
     m_bufferUpdate = false;
 } // FireStarter

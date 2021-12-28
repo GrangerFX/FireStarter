@@ -36,7 +36,6 @@ public:
 class FireStarterProgram {
 public:
     unsigned int m_instructions[PROGRAM_OPERATIONS];
-    unsigned long long m_generation;
 
     void RandomInstruction(unsigned int index, unsigned int& seed);
     void RandomProgram(unsigned int seed);
@@ -49,12 +48,10 @@ public:
     FireStarterResult m_result0;
     FireStarterResult m_result1;
     double m_processingTime;
-    float  m_maxResult;
-    int m_unitIndex;
-    unsigned int m_devolve;
+    float m_maxResult;
 
-    void Init(void);
-    FireStarterState(int unitIndex = -1);
+    void Init(unsigned int& seed);
+    FireStarterState(void);
 }; /// class FireStarterState;
 
 class FireStarterUnit : public SerialThread {
@@ -66,9 +63,8 @@ public:
     FireStarterResults* m_deviceResults1;
     FireStarterResults* m_hostResults0;
     FireStarterResults* m_hostResults1;
-    std::vector<FireStarterState> m_states;
     FireStarterState m_curState;
-    FireStarterState m_bestEvaluateState;
+    FireStarterState m_bestState;
     CUdevice m_device;
     CUcontext m_fireStarterContext;
     CUstream m_fireStarterStream;
@@ -78,9 +74,9 @@ public:
     std::string m_bestEvaluateCode;
     size_t m_resultsSize;
     unsigned long long m_generation;
-    unsigned long long m_lastGeneration;
-    unsigned long long m_bestGeneration;
+    unsigned long long m_age;
     unsigned int m_unitIndex;
+    unsigned int m_seed;
 
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
     void CopyResultsDeviceToHost(void);
@@ -91,7 +87,7 @@ public:
     void EvolveProgram(void);
     void EvaluateProgram(void);
     void ExecuteProgram(void);
-    float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState);
+    float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &age);
     void InitProgram(void);
     void FinishProgram(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
@@ -115,11 +111,12 @@ public:
     std::vector<FireStarterUnit*> m_units;
     FrameBuffer m_buffer;
     char m_statusString[1024];
+    unsigned long long m_generation;
     unsigned long long m_bestGeneration;
-    size_t m_bestStates;
     float m_bestResult;
     float m_worstResult;
     void* m_window;
+    unsigned int m_seed;
     unsigned long m_width;
     unsigned long m_height;
     bool m_controlUpdate;
