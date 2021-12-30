@@ -334,13 +334,13 @@ void FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_modu
         // Output the compile log.
         size_t logSize;
         checkNVRTCErrors(nvrtcGetProgramLogSize(prog, &logSize));
-        char* log = reinterpret_cast<char*>(malloc(logSize + 1));
-        checkNVRTCErrors(nvrtcGetProgramLog(prog, log));
-        log[logSize] = '\x0';
-        if (logSize > 0) {
+        if (logSize) {
+            char* log = reinterpret_cast<char*>(malloc(logSize + 1));
+            checkNVRTCErrors(nvrtcGetProgramLog(prog, log));
+            log[logSize] = '\x0';
             printf("compilation log ---\n%s\nend log---\n", log);
+            free(log);
         }
-        free(log);
         checkNVRTCErrors(res);
     }
 
