@@ -6,6 +6,10 @@
 #include <functional>
 #include <condition_variable>
 
+// SerialThread by Mark Granger.
+// Contact: grangerfx@gmail.com
+// This code may be used, modified, copied and distributed freely by anyone and without attribution.
+// 
 // SerialThread is a simplified implementation of the thread model from Apple's Grand Central Dispatch implemented in portable C++20 code.
 // Example:
 // 
