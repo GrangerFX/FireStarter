@@ -73,10 +73,11 @@ public:
     std::string m_evaluateCode;
     std::string m_bestEvaluateCode;
     size_t m_resultsSize;
-    unsigned long long m_generation;
-    unsigned long long m_age;
+    unsigned long long m_programGeneration;
+    unsigned long long m_unitGeneration;
     unsigned int m_unitIndex;
     unsigned int m_seed;
+    volatile bool m_quit;
 
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
     void CopyResultsDeviceToHost(void);
@@ -87,7 +88,7 @@ public:
     void EvolveProgram(void);
     void EvaluateProgram(void);
     void ExecuteProgram(void);
-    float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &age);
+    float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
     void InitProgram(void);
     void FinishProgram(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);

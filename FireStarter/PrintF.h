@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <windows.h>
+#include <iostream>
 
 #define printf printf2
 
@@ -15,6 +16,6 @@ inline int printf2(const char *format, ...)
     va_end(argptr);
 
     OutputDebugStringA(str);
-
+    std::cerr << str;
     return ret;
 } // printf2
