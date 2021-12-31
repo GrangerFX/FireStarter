@@ -114,8 +114,10 @@ private:
     }; // class SerialThreadTimers
 
     std::thread m_thread;
-    std::mutex m_mutex;
-    std::condition_variable m_cv;
+    std::mutex m_sync_mutex;
+    std::mutex m_async_mutex;
+    std::condition_variable m_sync_cv;
+    std::condition_variable m_async_cv;
     std::queue<SerialThreadWork> m_workQueue;
     SerialThreadTimers m_timers;
     inline static SerialThread* g_mainThread = nullptr;
@@ -125,25 +127,25 @@ private:
     // Reference: https://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
     inline void Push(const SerialThreadWork& work)
     {
-        std::unique_lock<std::mutex> lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_async_mutex);
         if (!m_terminate) {
             m_workQueue.push(work);
-            m_cv.notify_one();
+            m_async_cv.notify_one();
         }
     } // Push
 
     inline void Wait(SerialThreadWork& work)
     {
-        std::unique_lock<std::mutex> lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_async_mutex);
         while (m_workQueue.empty())
-            m_cv.wait(lock);
+            m_async_cv.wait(lock);
         work = m_workQueue.front();
         m_workQueue.pop();
     } // Wait
 
     inline bool TryWait(SerialThreadWork& work)
     {
-        std::unique_lock<std::mutex> lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_async_mutex);
         if (!m_workQueue.empty()) {
             work = m_workQueue.front();
             m_workQueue.pop();
@@ -189,18 +191,17 @@ public:
 
     inline void DispatchSync(const SerialThreadWork& work)
     {
-        std::condition_variable cv;
-        DispatchAsync([this, &cv, work] {
+        DispatchAsync([this, work] {
             work();
-            cv.notify_one();
+            std::unique_lock<std::mutex> lock(m_sync_mutex);
+            m_sync_cv.notify_one();
         });
         if (m_pollThread)
             PollThread();
 
         // Wait for the contditional variable to be notified.
-        std::mutex mutex;
-        std::unique_lock<std::mutex> lock(mutex);
-        cv.wait(lock);
+        std::unique_lock<std::mutex> lock(m_sync_mutex);
+        m_sync_cv.wait(lock);
     } // DispatchSync
 
     inline void DispatchAfter(double duration, const SerialThreadWork& work)
