@@ -49,12 +49,49 @@
 //     });
 // });
 
+// A semaphore is needed when syncronizing work on a serialized thread.
+// Reference: https://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
+class SerialThreadSemaphore {
+private:
+    std::mutex mtx;
+    std::condition_variable cv;
+    int count;
+public:
+    SerialThreadSemaphore(int start_count = 0) : count(start_count) {}
+
+    inline void notify()
+    {
+        std::unique_lock<std::mutex> lock(mtx);
+        count++;
+        cv.notify_one();
+    } // notify
+
+    inline void wait()
+    {
+        std::unique_lock<std::mutex> lock(mtx);
+        while (count == 0)
+            cv.wait(lock);
+        count--;
+    } // wait
+
+    inline bool trywait()
+    {
+        std::unique_lock<std::mutex> lock(mtx);
+        if (count) {
+            --count;
+            return true;
+        }
+        return false;
+    } // trywait
+}; // class SerialThreadSemaphore
+
 class SerialThread {
 private:
     // Currently the work function has no parameters and no return value.
     typedef std::function<void(void)> SerialThreadWork;
 
     // This gets around a missing feature of std::list: The trivial deletion of a single element by reference.
+    // Reference: https://www.modernescpp.com/index.php/cooperative-interruption-of-a-thread-in-c-20
     class SerialThreadTimers {
     private:
         class SerialThreadTimer {
@@ -88,17 +125,17 @@ private:
     public:
         void AddTimer(SerialThread* thread, double duration, const SerialThreadWork& work)
         {
-            // Reference: https://www.modernescpp.com/index.php/cooperative-interruption-of-a-thread-in-c-20
             thread->DispatchAsync([this, thread, duration, work] {
                 SerialThreadTimer* timer = new SerialThreadTimer(&m_timers, duration, work);
                 timer->m_thread = std::jthread([this, thread, timer](std::stop_token stopToken) {
                     std::stop_token interruptDisabled;
                     std::this_thread::sleep_for(std::chrono::duration<double>(timer->m_duration));
                     std::swap(stopToken, interruptDisabled);
-                    thread->DispatchAsync([timer] {
-                        timer->m_work();
-                        delete timer;
-                    });
+                    if (!thread->m_terminate)
+                        thread->DispatchAsync([timer] {
+                            timer->m_work();
+                            delete timer;
+                        });
                 });
                 timer->m_thread.detach();
             });
@@ -114,38 +151,26 @@ private:
     }; // class SerialThreadTimers
 
     std::thread m_thread;
-    std::mutex m_sync_mutex;
-    std::mutex m_async_mutex;
-    std::condition_variable m_sync_cv;
-    std::condition_variable m_async_cv;
+    std::mutex m_mutex;
+    std::condition_variable m_cv;
     std::queue<SerialThreadWork> m_workQueue;
     SerialThreadTimers m_timers;
     inline static SerialThread* g_mainThread = nullptr;
     bool m_pollThread;
     volatile bool m_terminate;
 
-    // Reference: https://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
-    inline void Push(const SerialThreadWork& work)
-    {
-        std::unique_lock<std::mutex> lock(m_async_mutex);
-        if (!m_terminate) {
-            m_workQueue.push(work);
-            m_async_cv.notify_one();
-        }
-    } // Push
-
     inline void Wait(SerialThreadWork& work)
     {
-        std::unique_lock<std::mutex> lock(m_async_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
         while (m_workQueue.empty())
-            m_async_cv.wait(lock);
+            m_cv.wait(lock);
         work = m_workQueue.front();
         m_workQueue.pop();
     } // Wait
 
     inline bool TryWait(SerialThreadWork& work)
     {
-        std::unique_lock<std::mutex> lock(m_async_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
         if (!m_workQueue.empty()) {
             work = m_workQueue.front();
             m_workQueue.pop();
@@ -162,8 +187,6 @@ private:
             Wait(work);
             work();
         }
-        while (TryWait(work))
-            work();
     } // Thread
 
     inline void TerminateThread(void)
@@ -186,30 +209,31 @@ public:
 
     inline void DispatchAsync(const SerialThreadWork& work)
     {
-        Push(work);
+        std::unique_lock<std::mutex> lock(m_mutex);
+        m_workQueue.push(work);
+        m_cv.notify_one();
     } // DispatchAsync
-
-    inline void DispatchSync(const SerialThreadWork& work)
-    {
-        DispatchAsync([this, work] {
-            work();
-            std::unique_lock<std::mutex> lock(m_sync_mutex);
-            m_sync_cv.notify_one();
-        });
-        if (m_pollThread)
-            PollThread();
-
-        // Wait for the contditional variable to be notified.
-        std::unique_lock<std::mutex> lock(m_sync_mutex);
-        m_sync_cv.wait(lock);
-    } // DispatchSync
 
     inline void DispatchAfter(double duration, const SerialThreadWork& work)
     {
         DispatchAsync([this, duration, work] {
             m_timers.AddTimer(this, duration, work);
-         });
+        });
     } // DispatchAfter
+
+    inline void DispatchSync(const SerialThreadWork& work)
+    {
+        SerialThreadSemaphore syncSemaphore;
+        DispatchAsync([this, &syncSemaphore, work] {
+            work();
+            syncSemaphore.notify();
+        });
+        if (m_pollThread)
+            PollThread();
+
+        // Wait for the contditional variable to be notified.
+        syncSemaphore.wait();
+    } // DispatchSync
 
     static inline SerialThread* GetMainThread(void)
     {
