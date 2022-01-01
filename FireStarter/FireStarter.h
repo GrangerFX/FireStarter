@@ -3,18 +3,7 @@
 #include "FireStarterDefines.h"
 #include "FireStarterUtil.h"
 #include "SerialThread.h"
-
-typedef enum {
-    Operation_add,
-    Operation_multiply,
-#if PROGRAM_LOAD_STORE
-    Operation_load,
-    Operation_store,
-#endif
-    PROGRAM_OPCODES
-} FireStarterOpcode;
-
-#define PROGRAM_OPERATIONS (PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS * PROGRAM_DATA)
+#include "HashRandom.h"
 
 class FrameBuffer {
 public:
@@ -33,11 +22,58 @@ public:
     ~FrameBuffer(void);
 }; // class FrameBuffer
 
+typedef enum {
+    Operation_add,
+    Operation_multiply,
+#if PROGRAM_LOAD_STORE
+    Operation_load,
+    Operation_store,
+#endif
+    PROGRAM_OPCODES
+} FireStarterOpcode;
+
+union FireStarterInstruction {
+    unsigned int opcode;
+    unsigned char opdata[4];    // operation, dataA, dataB, dataC
+
+    inline unsigned char Operation(void)
+    {
+        return opdata[0];
+    } // Operation
+
+    inline unsigned char DataA(void)
+    {
+        return opdata[1];
+    } // DataA
+
+    inline unsigned char DataB(void)
+    {
+        return opdata[2];
+    } // DataB
+
+    inline unsigned char DataC(void)
+    {
+        return opdata[3];
+    } // DataC
+
+    inline FireStarterInstruction(unsigned char operation, unsigned char dataA, unsigned char dataB = 0, unsigned char dataC = 0)
+    {
+        opdata[0] = operation;
+        opdata[1] = dataA;
+        opdata[2] = dataB;
+        opdata[3] = dataC;
+    } // FireStarterInstruction
+
+    inline FireStarterInstruction(unsigned int code = 0) : opcode(code)
+    {
+    } // FireStarterInstruction
+}; // union FireStarterInstruction
+
 class FireStarterProgram {
 public:
-    unsigned int m_instructions[PROGRAM_OPERATIONS];
+    FireStarterInstruction m_instructions[PROGRAM_INSTRUCTIONS];
 
-    void RandomInstruction(unsigned int index, unsigned int& seed);
+    void RandomInstruction(FireStarterInstruction& instruction, unsigned int& seed);
     void RandomProgram(unsigned int& seed);
     FireStarterProgram(void);
 }; // class FireStarterProgram

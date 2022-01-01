@@ -1,6 +1,5 @@
 #include "FireStarter.h"
 #include "FireStarterUtil.h"
-#include "HashRandom.h"
 #include "CUDAErrors.h"
 #include <fstream>
 #include <sstream>
@@ -57,18 +56,17 @@ FrameBuffer::~FrameBuffer(void)
     Resize(0, 0);
 } // ~FrameBuffer
 
-void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& seed)
+void FireStarterProgram::RandomInstruction(FireStarterInstruction &instruction, unsigned int& seed)
 {
-    unsigned int operation = m_instructions[index];
-    unsigned int opcode = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
-    unsigned int data = RANDOMSEED(seed) % PROGRAM_DATA;
-    m_instructions[index] = data * PROGRAM_OPCODES + opcode;
+    unsigned char operation = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
+    unsigned char dataA = RANDOMSEED(seed) % PROGRAM_DATA;
+    instruction = FireStarterInstruction(operation, dataA);
 } // RandomInstruction
 
 void FireStarterProgram::RandomProgram(unsigned int& seed)
 {
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        RandomInstruction(i, seed);
+    for (FireStarterInstruction &instruction : m_instructions)
+        RandomInstruction(instruction, seed);
 } // RandomProgram
 
 FireStarterProgram::FireStarterProgram(void)
@@ -186,25 +184,24 @@ void FireStarterUnit::GenerateProgram(void)
 {
     // Generate the replacement code and update the program.
     m_evaluateCode.clear();
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        unsigned int operation = m_curState.m_program.m_instructions[i];
-        unsigned int opcode = operation % PROGRAM_OPCODES;
-        unsigned int data = operation / PROGRAM_OPCODES;
+    for (FireStarterInstruction &instruction : m_curState.m_program.m_instructions) {
+        unsigned int operation = instruction.Operation();
+        unsigned int dataA = instruction.DataA();
 
-        switch (opcode) {
-        case Operation_add:
-            m_evaluateCode += Format("    n = data.d[%d] += n;\r\n", data);
-            break;
-        case Operation_multiply:
-            m_evaluateCode += Format("    n = data.d[%d] *= n;\r\n", data);
-            break;
+        switch (operation) {
+            case Operation_add:
+                m_evaluateCode += Format("    n = data.d[%d] += n;\r\n", dataA);
+                break;
+            case Operation_multiply:
+                m_evaluateCode += Format("    n = data.d[%d] *= n;\r\n", dataA);
+                break;
 #if PROGRAM_LOAD_STORE
-        case Operation_load:
-            m_evaluateCode += Format("    n = data.d[%d];\r\n", data);
-            break;
-        case Operation_store:
-            m_evaluateCode += Format("    data.d[%d] = n;\r\n", data);
-            break;
+            case Operation_load:
+                m_evaluateCode += Format("    n = data.d[%d];\r\n", dataA);
+                break;
+            case Operation_store:
+                m_evaluateCode += Format("    data.d[%d] = n;\r\n", dataA);
+                break;
 #endif
         }
     }
@@ -226,7 +223,7 @@ void FireStarterUnit::EvolveProgram(void)
     m_curState = m_bestState;
     while (numChanges--) {
         unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-        m_curState.m_program.RandomInstruction(index, m_seed);
+        m_curState.m_program.RandomInstruction(m_curState.m_program.m_instructions[index], m_seed);
     }
     GenerateProgram();
 } // EvolveProgram
@@ -531,14 +528,19 @@ void FireStarter::ControlThread(void)
     checkCUDAErrors(cuDeviceGet(&m_device, 0));
     checkCUDAErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
-    unsigned int processor_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
-    if (!processor_count)   // May return zero on some systems.
-        processor_count = 1;
+#if EVOLVE
+    unsigned int unit_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
+    if (!unit_count)   // May return zero on some systems.
+        unit_count = 1;
+#else
+    unsigned int unit_count = 1;
+#endif
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
 
     // Create and initialize a unit for each processor thread.
-    for (unsigned int i = 0; i < processor_count; i++) {
+
+    for (unsigned int i = 0; i < unit_count; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_fireStarterCode);
         m_units.push_back(unit);
     }
