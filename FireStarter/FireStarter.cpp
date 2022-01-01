@@ -65,9 +65,8 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
     m_instructions[index] = data * PROGRAM_OPCODES + opcode;
 } // RandomInstruction
 
-void FireStarterProgram::RandomProgram(unsigned int seed)
+void FireStarterProgram::RandomProgram(unsigned int& seed)
 {
-    seed = RANDOMHASH(RANDOMHASH(seed));
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         RandomInstruction(i, seed);
 } // RandomProgram
@@ -77,11 +76,6 @@ FireStarterProgram::FireStarterProgram(void)
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         m_instructions[i] = 0;
 } // FireStarterProgram
-
-void FireStarterState::Init(unsigned int &seed)
-{
-    m_program.RandomProgram(RANDOMSEED(seed));
-} // Init
 
 FireStarterState::FireStarterState(void)
 {
@@ -133,7 +127,7 @@ void FireStarterUnit::InitResults(void)
     m_hostResults0 = (FireStarterResults*)(m_hostResults);
     m_hostResults1 = (FireStarterResults*)(m_hostResults + resultsSize);
 
-    m_curState.Init(m_seed);
+    m_curState.m_program.RandomProgram(m_seed);
     m_bestState = m_curState;
 } // InitResults
 
@@ -155,7 +149,7 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
 {
     // Launch the calculation kernel
     unsigned int programPopulation = PROGRAM_POPULATION;
-#if EVOLVE
+#if EVOLVE || TEST
     m_programGeneration = 0;
 #endif
     int threadsPerBlock = 256;
@@ -185,27 +179,11 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
         }
         CopyResultsDeviceToHost();
         GetResults(m_hostResults0, result);
-    } while ((result.result < lastResult) && !m_quit);
+    } while (!TEST && (result.result < lastResult) && !m_quit);
 } // RunProgram
 
-void FireStarterUnit::DevolveProgram(void)
+void FireStarterUnit::GenerateProgram(void)
 {
-} // DevolveProgram
-
-void FireStarterUnit::EvolveProgram(void)
-{
-    // Determine how many changes to make to the instructions.
-    unsigned int numChanges = 1;
-    if (m_unitGeneration > SMART_EVOLVE_AGE)
-        numChanges++;
-
-    // Make random changes to the program instructions.
-    m_curState = m_bestState;
-    while (numChanges--) {
-        unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-        m_curState.m_program.RandomInstruction(index, m_seed);
-    }
-
     // Generate the replacement code and update the program.
     m_evaluateCode.clear();
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
@@ -235,7 +213,29 @@ void FireStarterUnit::EvolveProgram(void)
     FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
     FireStarter::CompileProgram(updatedCode, m_fireStarterModule);
     m_unitGeneration++;
+} // GenerateProgram
+
+void FireStarterUnit::EvolveProgram(void)
+{
+    // Determine how many changes to make to the instructions.
+    unsigned int numChanges = 1;
+    if (m_unitGeneration > SMART_EVOLVE_AGE)
+        numChanges++;
+
+    // Make random changes to the program instructions.
+    m_curState = m_bestState;
+    while (numChanges--) {
+        unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
+        m_curState.m_program.RandomInstruction(index, m_seed);
+    }
+    GenerateProgram();
 } // EvolveProgram
+
+void FireStarterUnit::RandomProgram(void)
+{
+    m_curState.m_program.RandomProgram(m_seed);
+    GenerateProgram();
+} // RandomProgram
 
 void FireStarterUnit::EvaluateProgram(void)
 {
@@ -253,8 +253,10 @@ void FireStarterUnit::ExecuteProgram(void)
 
     // Evolve the program instructions.
 #if EVOLVE
-    DevolveProgram();
     EvolveProgram();
+#endif
+#if TEST
+    RandomProgram();
 #endif
 
     // Run the next generation on the GPU.
@@ -292,7 +294,7 @@ void FireStarterUnit::FinishProgram(void)
     }
 } // FinishProgram
 
-FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode) : SerialThread(), m_curState(), m_bestState()
+FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode)
 {
     m_unitIndex = unitIndex;
     m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
@@ -426,7 +428,7 @@ void FireStarter::UpdateData(std::string& code, const FireStarterResult& result,
 
 bool FireStarter::LoadFireStarterCode(void)
 {
-#if EVOLVE
+#if EVOLVE || TEST
     if (!FireStarter::LoadCode("FireStarter.cu", m_fireStarterCode))
         return false;
 #else
@@ -438,33 +440,33 @@ bool FireStarter::LoadFireStarterCode(void)
 
 void FireStarter::SaveFireStarterCode(void)
 {
-#if EVOLVE
     m_bestFireStarterCode = m_fireStarterCode;
     FireStarter::UpdateProgram(m_bestFireStarterCode, m_bestEvaluateCode, EVALUATE_CODE);
+#if EVOLVE
     FireStarter::SaveCode("FireStarter_Best.cu", m_bestFireStarterCode);
 #endif
 } // SaveFireStarterCode
 
 bool FireStarter::LoadFireShowCode(void)
 {
-#if EVOLVE
+#if EVOLVE || TEST
     if (!LoadCode("FireShow.cu", m_fireShowCode))
         return false;
 #else
     if (!LoadCode("FireShow_Best.cu", m_fireShowCode))
         return false;
-    CompileProgram(m_fireShowCode);
+    CompileProgram(m_fireShowCode, m_fireShowModule);
 #endif
     return true;
 } // LoadFireShowCode
 
 void FireStarter::SaveFireShowCode(void)
 {
-#if EVOLVE
     m_bestFireShowCode = m_fireShowCode;
     UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result0, DATA0_CODE);
     UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result1, DATA1_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
+#if EVOLVE
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
 #endif
 } // SaveFireShowCode
@@ -570,6 +572,7 @@ void FireStarter::ControlThread(void)
                         m_bestGeneration = m_generation;
                         m_controlUpdate = true;
                     }
+#if EVOLVE
                     else if (*unitGeneration >= SMART_DEVOLVE_AGE) {
                         FireStarterUnit* randomUnit = m_units[RANDOMSEED(m_seed) % m_units.size()];
                         std::string* randomEvaluateCode = nullptr;
@@ -582,6 +585,7 @@ void FireStarter::ControlThread(void)
                             *unitGeneration = *randomGeneration;
                         }
                     }
+#endif
                     if (result > m_worstResult)
                         m_worstResult = result;
                 });

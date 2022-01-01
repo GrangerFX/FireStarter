@@ -38,7 +38,7 @@ public:
     unsigned int m_instructions[PROGRAM_OPERATIONS];
 
     void RandomInstruction(unsigned int index, unsigned int& seed);
-    void RandomProgram(unsigned int seed);
+    void RandomProgram(unsigned int& seed);
     FireStarterProgram(void);
 }; // class FireStarterProgram
 
@@ -50,7 +50,6 @@ public:
     double m_processingTime;
     float m_maxResult;
 
-    void Init(unsigned int& seed);
     FireStarterState(void);
 }; /// class FireStarterState;
 
@@ -84,8 +83,9 @@ public:
     void InitResults(void);
     void FreeResults(void);
     void RunProgram(unsigned int variation, FireStarterResult& result);
-    void DevolveProgram(void);
+    void GenerateProgram(void);
     void EvolveProgram(void);
+    void RandomProgram(void);
     void EvaluateProgram(void);
     void ExecuteProgram(void);
     float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);

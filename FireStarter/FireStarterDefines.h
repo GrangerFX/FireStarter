@@ -1,11 +1,16 @@
 #pragma once
 #include "CUDADefines.h"
 
-#define EVOLVE 1
+#define EVOLVE 0
+#define TEST 1
 
 #define PROGRAM_DATA 32
 #define PROGRAM_INSTRUCTIONS 32
+#if EVOLVE
 #define PROGRAM_GENERATIONS 10 // Must be even!
+#else
+#define PROGRAM_GENERATIONS 100 // Must be even!
+#endif
 #define PROGRAM_ITERATIONS 1000
 #define PROGRAM_POPULATION 4352
 #define PROGRAM_LOAD_STORE 0
