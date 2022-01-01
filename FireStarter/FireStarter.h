@@ -34,34 +34,46 @@ typedef enum {
 
 union FireStarterInstruction {
     unsigned int opcode;
-    unsigned char opdata[4];    // operation, dataA, dataB, dataC
+    struct {
+        unsigned operation : 4;
+        unsigned dataA : 7;
+        unsigned dataB : 7;
+        unsigned dataC : 7;
+        unsigned dataD : 7;
+    } opdata;
 
     inline unsigned char Operation(void)
     {
-        return opdata[0];
+        return opdata.operation;
     } // Operation
 
     inline unsigned char DataA(void)
     {
-        return opdata[1];
+        return opdata.dataA;
     } // DataA
 
     inline unsigned char DataB(void)
     {
-        return opdata[2];
+        return opdata.dataB;
     } // DataB
 
     inline unsigned char DataC(void)
     {
-        return opdata[3];
+        return opdata.dataC;
     } // DataC
 
-    inline FireStarterInstruction(unsigned char operation, unsigned char dataA, unsigned char dataB = 0, unsigned char dataC = 0)
+    inline unsigned char DataD(void)
     {
-        opdata[0] = operation;
-        opdata[1] = dataA;
-        opdata[2] = dataB;
-        opdata[3] = dataC;
+        return opdata.dataD;
+    } // DataD
+
+    inline FireStarterInstruction(unsigned char operation, unsigned char dataA, unsigned char dataB = 0, unsigned char dataC = 0, unsigned char dataD = 0)
+    {
+        opdata.operation = operation;
+        opdata.dataA = dataA;
+        opdata.dataB = dataB;
+        opdata.dataC = dataC;
+        opdata.dataD = dataD;
     } // FireStarterInstruction
 
     inline FireStarterInstruction(unsigned int code = 0) : opcode(code)
