@@ -6,7 +6,11 @@
 void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& seed)
 {
     FireStarterInstruction& instruction = m_instructions[index];
+#if PROGRAM_RANDOM
     instruction.opdata.operation = m_opcodes[RANDOMSEED(seed) % m_opcodes.size()];
+#else
+    instruction.opdata.operation = m_opcodes[index % m_opcodes.size()];
+#endif
     instruction.opdata.dataA = RANDOMSEED(seed) % PROGRAM_DATA;
     instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
     instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;

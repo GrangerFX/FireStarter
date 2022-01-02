@@ -17,6 +17,7 @@ typedef enum {
 } FireStarterProgramMode;
 
 #define PROGRAM_MODE Program_accumulate
+#define PROGRAM_RANDOM 0
 
 typedef enum {
     Operation_multiply_add_store,
