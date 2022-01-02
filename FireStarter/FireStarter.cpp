@@ -19,9 +19,11 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
 #else
     instruction.opdata.dataA = index % PROGRAM_DATA;
 #endif
-    instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
-    instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
-    instruction.opdata.dataD = RANDOMSEED(seed) % PROGRAM_DATA;
+    if ((m_programMode == Program_multiply_add) || (m_programMode != Program_multiply_add_store)) {
+        instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
+        instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
+        instruction.opdata.dataD = RANDOMSEED(seed) % PROGRAM_DATA;
+    }
 } // RandomInstruction
 
 void FireStarterProgram::EvolveInstruction(unsigned int index, unsigned int& seed)
@@ -42,10 +44,36 @@ void FireStarterProgram::EvolveInstruction(unsigned int index, unsigned int& see
     instruction.opdata.dataA = instructionB.opdata.dataA;
     instructionB.opdata.dataA = dataA;
 #endif
-    instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
-    instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
-    instruction.opdata.dataD = RANDOMSEED(seed) % PROGRAM_DATA;
+    if ((m_programMode == Program_multiply_add) || (m_programMode != Program_multiply_add_store)) {
+        instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
+        instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
+        instruction.opdata.dataD = RANDOMSEED(seed) % PROGRAM_DATA;
+    }
 } // EvolveInstruction
+
+void FireStarterProgram::OptimizeData(void)
+{
+    if ((m_programMode != Program_multiply_add) && (m_programMode != Program_multiply_add_store)) {
+        std::vector<unsigned char> dataIndex;
+        std::vector<unsigned char> dataUsed;
+        dataIndex.reserve(PROGRAM_DATA);
+        for (unsigned int i = 0; i < m_instructions.size(); i++) {
+            unsigned char data = m_instructions[i].opdata.dataA;
+            int index = -1;
+            for (unsigned int j = 0; j < dataIndex.size(); j++)
+                if (dataIndex[j] == data) {
+                    index = j;
+                    break;
+                }
+            if (index == -1)  {
+                index = (int)dataIndex.size();
+                dataIndex.push_back(data);
+            }
+            m_instructions[i].opdata.dataA = index;
+        }
+        m_dataSize = (unsigned int)dataUsed.size();
+    }
+} // OptimizeData
 
 void FireStarterProgram::InitProgram(unsigned int& seed)
 {
@@ -55,6 +83,7 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
     for (unsigned int i = 0; i < m_instructions.size(); i++)
         EvolveInstruction(i, seed);
 #endif
+    OptimizeData();
 } // InitProgram
 
 void FireStarterProgram::GenerateProgram(std::string &code)
@@ -71,6 +100,7 @@ void FireStarterProgram::GenerateProgram(std::string &code)
             break;
         case Operation_add:
             code += Format("    n = data.d[%d] += n;\r\n", instruction.DataA());
+ //         code += Format("    n += data.d[%d];\r\n", instruction.DataA());
             break;
         case Operation_multiply:
             code += Format("    n = data.d[%d] *= n;\r\n", instruction.DataA());
@@ -88,6 +118,7 @@ void FireStarterProgram::GenerateProgram(std::string &code)
 FireStarterProgram::FireStarterProgram(void)
 {
     m_programMode = PROGRAM_MODE;
+    m_dataSize = PROGRAM_DATA;
     switch (m_programMode) {
         case Program_accumulate:
             m_opcodes.push_back(Operation_multiply);
@@ -253,6 +284,7 @@ void FireStarterUnit::EvolveProgram(void)
         unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
         m_curState.m_program.EvolveInstruction(index, m_seed);
     }
+    m_curState.m_program.OptimizeData();
     GenerateProgram();
 } // EvolveProgram
 

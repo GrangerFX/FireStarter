@@ -5,7 +5,7 @@
 #include "SerialThread.h"
 #include "HashRandom.h"
 
-#define PROGRAM_INSTRUCTIONS PROGRAM_DATA * 2
+#define PROGRAM_INSTRUCTIONS PROGRAM_DATA
 
 typedef enum {
     Program_accumulate,
@@ -84,9 +84,11 @@ private:
 public:
     std::vector<FireStarterInstruction> m_instructions;
     FireStarterProgramMode m_programMode;
+    unsigned int m_dataSize;
 
     void RandomInstruction(unsigned int index, unsigned int& seed);
     void EvolveInstruction(unsigned int index, unsigned int& seed);
+    void OptimizeData(void);
     void InitProgram(unsigned int& seed);
     void GenerateProgram(std::string& code);
     FireStarterProgram(void);
