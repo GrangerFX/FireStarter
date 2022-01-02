@@ -1,27 +1,89 @@
 #include "FireStarter.h"
 #include "FireStarterUtil.h"
+#if DEBUG
+#include "FireShow_Best.cu"
+#endif
 #include <fstream>
 #include <sstream>
 
 void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& seed)
 {
     FireStarterInstruction& instruction = m_instructions[index];
-#if PROGRAM_RANDOM
+#if PROGRAM_RANDOM_INSTRUCTIONS
     instruction.opdata.operation = m_opcodes[RANDOMSEED(seed) % m_opcodes.size()];
 #else
     instruction.opdata.operation = m_opcodes[index % m_opcodes.size()];
 #endif
+#if PROGRAM_RANDOM_DATA
     instruction.opdata.dataA = RANDOMSEED(seed) % PROGRAM_DATA;
+#else
+    instruction.opdata.dataA = index % PROGRAM_DATA;
+#endif
     instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
     instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
     instruction.opdata.dataD = RANDOMSEED(seed) % PROGRAM_DATA;
 } // RandomInstruction
 
-void FireStarterProgram::RandomProgram(unsigned int& seed)
+void FireStarterProgram::EvolveInstruction(unsigned int index, unsigned int& seed)
+{
+    FireStarterInstruction& instruction = m_instructions[index];
+#if PROGRAM_RANDOM_DATA
+    instruction.opdata.dataA = RANDOMSEED(seed) % PROGRAM_DATA;
+#else
+    // Find two different instruction indexes.
+    unsigned int indexB;
+    do {
+        indexB = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
+    } while (indexB == index);
+
+    // Swap the two data indexes.
+    FireStarterInstruction &instructionB = m_instructions[indexB];
+    unsigned int dataA = instruction.opdata.dataA;
+    instruction.opdata.dataA = instructionB.opdata.dataA;
+    instructionB.opdata.dataA = dataA;
+#endif
+    instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
+    instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
+    instruction.opdata.dataD = RANDOMSEED(seed) % PROGRAM_DATA;
+} // EvolveInstruction
+
+void FireStarterProgram::InitProgram(unsigned int& seed)
 {
     for (unsigned int i = 0; i < m_instructions.size(); i++)
         RandomInstruction(i, seed);
-} // RandomProgram
+#if !PROGRAM_RANDOM_DATA
+    for (unsigned int i = 0; i < m_instructions.size(); i++)
+        EvolveInstruction(i, seed);
+#endif
+} // InitProgram
+
+void FireStarterProgram::GenerateProgram(std::string &code)
+{
+    // Generate the replacement code and update the program.
+    code.clear();
+    for (FireStarterInstruction& instruction : m_instructions) {
+        switch (instruction.Operation()) {
+        case Operation_multiply_add_store:
+            code += Format("    n = data.d[%d] = data.d[%d] * data.d[%d] + data.d[%d];\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
+            break;
+        case Operation_multiply_add:
+            code += Format("    n = data.d[%d] = data.d[%d] * data.d[%d] + data.d[%d];\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
+            break;
+        case Operation_add:
+            code += Format("    n = data.d[%d] += n;\r\n", instruction.DataA());
+            break;
+        case Operation_multiply:
+            code += Format("    n = data.d[%d] *= n;\r\n", instruction.DataA());
+            break;
+        case Operation_load:
+            code += Format("    n = data.d[%d];\r\n", instruction.DataA());
+            break;
+        case Operation_store:
+            code += Format("    data.d[%d] = n;\r\n", instruction.DataA());
+            break;
+        }
+    }
+} // GenerateProgram
 
 FireStarterProgram::FireStarterProgram(void)
 {
@@ -109,7 +171,7 @@ void FireStarterUnit::InitResults(void)
     m_hostResults0 = (FireStarterResults*)(m_hostResults);
     m_hostResults1 = (FireStarterResults*)(m_hostResults + resultsSize);
 
-    m_curState.m_program.RandomProgram(m_seed);
+    m_curState.m_program.InitProgram(m_seed);
     m_bestState = m_curState;
 } // InitResults
 
@@ -166,34 +228,15 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
 
 void FireStarterUnit::GenerateProgram(void)
 {
-    // Generate the replacement code and update the program.
-    m_evaluateCode.clear();
-    for (FireStarterInstruction &instruction : m_curState.m_program.m_instructions) {
-        switch (instruction.Operation()) {
-            case Operation_multiply_add_store:
-                m_evaluateCode += Format("    n = data.d[%d] = data.d[%d] * data.d[%d] + data.d[%d];\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
-                break;
-            case Operation_multiply_add:
-                m_evaluateCode += Format("    n = data.d[%d] = data.d[%d] * data.d[%d] + data.d[%d];\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
-                break;
-            case Operation_add:
-                m_evaluateCode += Format("    n = data.d[%d] += n;\r\n", instruction.DataA());
-                break;
-            case Operation_multiply:
-                m_evaluateCode += Format("    n = data.d[%d] *= n;\r\n", instruction.DataA());
-                break;
-            case Operation_load:
-                m_evaluateCode += Format("    n = data.d[%d];\r\n", instruction.DataA());
-                break;
-            case Operation_store:
-                m_evaluateCode += Format("    data.d[%d] = n;\r\n", instruction.DataA());
-                break;
-        }
-    }
+    // Generate the replacement code.
+    m_curState.m_program.GenerateProgram(m_evaluateCode);
 
+    // Update and compile the program.
     std::string updatedCode = m_fireStarterCode;
     FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
     FireStarter::CompileProgram(updatedCode, m_fireStarterModule);
+
+    // Increment the unit generation counter.
     m_unitGeneration++;
 } // GenerateProgram
 
@@ -208,14 +251,14 @@ void FireStarterUnit::EvolveProgram(void)
     m_curState = m_bestState;
     while (numChanges--) {
         unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-        m_curState.m_program.RandomInstruction(index, m_seed);
+        m_curState.m_program.EvolveInstruction(index, m_seed);
     }
     GenerateProgram();
 } // EvolveProgram
 
 void FireStarterUnit::RandomProgram(void)
 {
-    m_curState.m_program.RandomProgram(m_seed);
+    m_curState.m_program.InitProgram(m_seed);
     GenerateProgram();
 } // RandomProgram
 
@@ -598,8 +641,7 @@ void FireStarter::ControlThread(void)
         // Render the buffer if the best data was updated and the previous buffer was displayed.
         if (m_fireShowModule && !m_bufferUpdate && !m_quitControlThread) {
             // Erase the frame buffer
-            if (!m_bufferUpdate)
-                m_buffer.Erase();
+            m_buffer.Erase();
 
             // Draw the graphs for both variations.
             DrawGraph(VARIATION0);
@@ -620,6 +662,9 @@ void FireStarter::ControlThread(void)
     for (FireStarterUnit* unit : m_units)
         delete unit;
     m_units.clear();
+
+    // Free the frame buffer memory.
+    m_buffer.Resize(0, 0);
 
     // Unload the fire show code and destroy the CUDA context.
     if (m_fireShowModule)
@@ -659,6 +704,14 @@ FireStarter::FireStarter(void)
     m_seed = RANDOMHASH(123);
     m_controlUpdate = false;
     m_bufferUpdate = false;
+#if DEBUG
+    FireStarterData data0, data1;
+    InitData0(data0);
+    InitData1(data1);
+    float result0 = Evaluate(data0, 0.5f);
+    float result1 = Evaluate(data1, 0.5f);
+    float foo = 1.0f;
+#endif
 } // FireStarter
 
 FireStarter::~FireStarter(void)

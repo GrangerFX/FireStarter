@@ -115,7 +115,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n = data.d[27] *= n;
     n = data.d[7] *= n;
 // END //
-    return n;
+    return isnan(n) ? 0.0f : n;
 } // Evaluate
 
 GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int population, const unsigned int generation, const unsigned int variation)

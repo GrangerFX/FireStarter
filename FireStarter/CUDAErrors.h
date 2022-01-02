@@ -11,7 +11,7 @@ template <typename T> void __check_cuda_errors(T result, char const* const func,
 			errorString = cudaGetErrorString((cudaError_t)result);
 		}
 		printf("CUDA error at %s:%d code=%d: \"%s\": \"%s\" \"%s\"\n", file, line, static_cast<unsigned int>(result), errorName, errorString, func);
-		exit(EXIT_FAILURE);
+		std::terminate();
 	}
 }
 #define checkCUDAErrors(val) __check_cuda_errors((val), #val, __FILE__, __LINE__)
@@ -20,7 +20,7 @@ template <typename T> void __check_nvrtc_errors(T result, char const* const func
 	if (result) {
 		const char* errorString = nvrtcGetErrorString((nvrtcResult)result);
 		printf("NVRTC error at %s:%d code=%d: \"%s\" \"%s\"\n", file, line, static_cast<unsigned int>(result), errorString, func);
-		exit(EXIT_FAILURE);
+		std::terminate();
 	}
 }
 #define checkNVRTCErrors(val) __check_nvrtc_errors((val), #val, __FILE__, __LINE__)

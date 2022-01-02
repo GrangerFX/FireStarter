@@ -3,8 +3,9 @@
 
 #define EVOLVE 0
 #define TEST 1
+#define DEBUG 0
 
-#define PROGRAM_DATA 32
+#define PROGRAM_DATA 16
 #if EVOLVE
 #define PROGRAM_GENERATIONS 10 // Must be even!
 #else
