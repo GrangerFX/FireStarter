@@ -5,7 +5,7 @@
 #define TEST 1
 #define DEBUG 0
 
-#define PROGRAM_DATA 16
+#define PROGRAM_DATA 32
 #if EVOLVE
 #define PROGRAM_GENERATIONS 10 // Must be even!
 #else
