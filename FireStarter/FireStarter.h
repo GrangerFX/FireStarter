@@ -5,44 +5,39 @@
 #include "SerialThread.h"
 #include "HashRandom.h"
 
-class FrameBuffer {
-public:
-    unsigned char* m_hostBase;		// Pointer to the alligned native pixel format buffer in host memory
-    unsigned char* m_deviceBase;	// Pointer to the alligned native pixel format buffer in device memory
-    unsigned long m_width;			// Number of columns
-    unsigned long m_height;			// Number of rows
-    long m_rowbytes;			    // Number of bytes per row
-    size_t m_size;                  // The total size of the buffer in bytes
-
-    void Erase(void);
-    const unsigned char* Get(void);
-    void Resize(unsigned long width, unsigned long height);
-
-    FrameBuffer(void);
-    ~FrameBuffer(void);
-}; // class FrameBuffer
+#define PROGRAM_INSTRUCTIONS 32
 
 typedef enum {
-    Operation_add,
+    Program_accumulate,
+    Program_accumulate_load,
+    Program_accumulate_store,
+    Program_accumulate_load_store,
+    Program_multiply_add,
+    Program_multiply_add_store
+} FireStarterProgramMode;
+
+#define PROGRAM_MODE Program_accumulate
+
+typedef enum {
+    Operation_multiply_add_store,
+    Operation_multiply_add,
     Operation_multiply,
-#if PROGRAM_LOAD_STORE
+    Operation_add,
     Operation_load,
     Operation_store,
-#endif
-    PROGRAM_OPCODES
 } FireStarterOpcode;
 
 union FireStarterInstruction {
     unsigned int opcode;
     struct {
-        unsigned operation : 4;
+        FireStarterOpcode operation : 4;
         unsigned dataA : 7;
         unsigned dataB : 7;
         unsigned dataC : 7;
         unsigned dataD : 7;
     } opdata;
 
-    inline unsigned char Operation(void)
+    inline FireStarterOpcode Operation(void)
     {
         return opdata.operation;
     } // Operation
@@ -67,7 +62,7 @@ union FireStarterInstruction {
         return opdata.dataD;
     } // DataD
 
-    inline FireStarterInstruction(unsigned char operation, unsigned char dataA, unsigned char dataB = 0, unsigned char dataC = 0, unsigned char dataD = 0)
+    inline FireStarterInstruction(FireStarterOpcode operation, unsigned char dataA, unsigned char dataB = 0, unsigned char dataC = 0, unsigned char dataD = 0)
     {
         opdata.operation = operation;
         opdata.dataA = dataA;
@@ -82,10 +77,13 @@ union FireStarterInstruction {
 }; // union FireStarterInstruction
 
 class FireStarterProgram {
+private:
+    std::vector<FireStarterOpcode> m_opcodes;
 public:
-    FireStarterInstruction m_instructions[PROGRAM_INSTRUCTIONS];
+    std::vector<FireStarterInstruction> m_instructions;
+    FireStarterProgramMode m_programMode;
 
-    void RandomInstruction(FireStarterInstruction& instruction, unsigned int& seed);
+    void RandomInstruction(unsigned int index, unsigned int& seed);
     void RandomProgram(unsigned int& seed);
     FireStarterProgram(void);
 }; // class FireStarterProgram

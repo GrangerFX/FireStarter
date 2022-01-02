@@ -1,76 +1,56 @@
 #include "FireStarter.h"
 #include "FireStarterUtil.h"
-#include "CUDAErrors.h"
 #include <fstream>
 #include <sstream>
 
-void FrameBuffer::Erase(void)
+void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& seed)
 {
-    if (m_size)
-        cudaMemset(m_deviceBase, 0, m_width * m_height * sizeof(uchar4));
-} // EraseFrameBuffer
-
-const unsigned char* FrameBuffer::Get(void)
-{
-    if (m_size)
-        checkCUDAErrors(cudaMemcpy(m_hostBase, m_deviceBase, m_size, cudaMemcpyDeviceToHost));
-    return m_hostBase;
-} // GetFrameBuffer
-
-void FrameBuffer::Resize(unsigned long width, unsigned long height)
-{
-    if ((m_width != width) || (m_height != height)) {
-        if (m_hostBase) {
-            checkCUDAErrors(cudaFreeHost(m_hostBase));
-            m_hostBase = nullptr;
-        }
-        if (m_deviceBase) {
-            checkCUDAErrors(cudaFree(m_deviceBase));
-            m_deviceBase = nullptr;
-        }
-        m_width = width;
-        m_height = height;
-        m_rowbytes = width * sizeof(uchar4);
-        m_size = m_width * m_height * sizeof(uchar4);
-
-        if (m_size) {
-            checkCUDAErrors(cudaMalloc(&m_deviceBase, m_size));
-            checkCUDAErrors(cudaMallocHost(&m_hostBase, m_size));
-             memset(m_hostBase, 0, m_width * m_height * sizeof(uchar4));
-        }
-    }
-} // Resize
-
-FrameBuffer::FrameBuffer(void)
-{
-    m_hostBase = nullptr;
-    m_deviceBase = nullptr;
-    m_width = 0;
-    m_height = 0;
-    m_rowbytes = 0;
-    m_size = 0;
-} // FrameBuffer
-
-FrameBuffer::~FrameBuffer(void)
-{
-    Resize(0, 0);
-} // ~FrameBuffer
-
-void FireStarterProgram::RandomInstruction(FireStarterInstruction &instruction, unsigned int& seed)
-{
-    unsigned char operation = FireStarterOpcode(RANDOMSEED(seed) % PROGRAM_OPCODES);
-    unsigned char dataA = RANDOMSEED(seed) % PROGRAM_DATA;
-    instruction = FireStarterInstruction(operation, dataA);
+    FireStarterInstruction& instruction = m_instructions[index];
+    instruction.opdata.operation = m_opcodes[RANDOMSEED(seed) % m_opcodes.size()];
+    instruction.opdata.dataA = RANDOMSEED(seed) % PROGRAM_DATA;
+    instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
+    instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
+    instruction.opdata.dataD = RANDOMSEED(seed) % PROGRAM_DATA;
 } // RandomInstruction
 
 void FireStarterProgram::RandomProgram(unsigned int& seed)
 {
-    for (FireStarterInstruction &instruction : m_instructions)
-        RandomInstruction(instruction, seed);
+    for (unsigned int i = 0; i < m_instructions.size(); i++)
+        RandomInstruction(i, seed);
 } // RandomProgram
 
 FireStarterProgram::FireStarterProgram(void)
 {
+    m_programMode = PROGRAM_MODE;
+    switch (m_programMode) {
+        case Program_accumulate:
+            m_opcodes.push_back(Operation_multiply);
+            m_opcodes.push_back(Operation_add);
+            break;
+        case Program_accumulate_load:
+            m_opcodes.push_back(Operation_multiply);
+            m_opcodes.push_back(Operation_add);
+            m_opcodes.push_back(Operation_load);
+            break;
+        case Program_accumulate_store:
+            m_opcodes.push_back(Operation_multiply);
+            m_opcodes.push_back(Operation_add);
+            m_opcodes.push_back(Operation_store);
+            break;
+        case Program_accumulate_load_store:
+            m_opcodes.push_back(Operation_multiply);
+            m_opcodes.push_back(Operation_add);
+            m_opcodes.push_back(Operation_load);
+            m_opcodes.push_back(Operation_store);
+            break;
+        case Program_multiply_add:
+            m_opcodes.push_back(Operation_multiply_add);
+            break;
+        case Program_multiply_add_store:
+            m_opcodes.push_back(Operation_multiply_add_store);
+            break;
+    }
+    m_instructions.resize(PROGRAM_INSTRUCTIONS);
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         m_instructions[i] = 0;
 } // FireStarterProgram
@@ -185,24 +165,25 @@ void FireStarterUnit::GenerateProgram(void)
     // Generate the replacement code and update the program.
     m_evaluateCode.clear();
     for (FireStarterInstruction &instruction : m_curState.m_program.m_instructions) {
-        unsigned int operation = instruction.Operation();
-        unsigned int dataA = instruction.DataA();
-
-        switch (operation) {
+        switch (instruction.Operation()) {
+            case Operation_multiply_add_store:
+                m_evaluateCode += Format("    n = data.d[%d] = data.d[%d] * data.d[%d] + data.d[%d];\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
+                break;
+            case Operation_multiply_add:
+                m_evaluateCode += Format("    n = data.d[%d] = data.d[%d] * data.d[%d] + data.d[%d];\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
+                break;
             case Operation_add:
-                m_evaluateCode += Format("    n = data.d[%d] += n;\r\n", dataA);
+                m_evaluateCode += Format("    n = data.d[%d] += n;\r\n", instruction.DataA());
                 break;
             case Operation_multiply:
-                m_evaluateCode += Format("    n = data.d[%d] *= n;\r\n", dataA);
+                m_evaluateCode += Format("    n = data.d[%d] *= n;\r\n", instruction.DataA());
                 break;
-#if PROGRAM_LOAD_STORE
             case Operation_load:
-                m_evaluateCode += Format("    n = data.d[%d];\r\n", dataA);
+                m_evaluateCode += Format("    n = data.d[%d];\r\n", instruction.DataA());
                 break;
             case Operation_store:
-                m_evaluateCode += Format("    data.d[%d] = n;\r\n", dataA);
+                m_evaluateCode += Format("    data.d[%d] = n;\r\n", instruction.DataA());
                 break;
-#endif
         }
     }
 
@@ -223,7 +204,7 @@ void FireStarterUnit::EvolveProgram(void)
     m_curState = m_bestState;
     while (numChanges--) {
         unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-        m_curState.m_program.RandomInstruction(m_curState.m_program.m_instructions[index], m_seed);
+        m_curState.m_program.RandomInstruction(index, m_seed);
     }
     GenerateProgram();
 } // EvolveProgram
@@ -439,7 +420,7 @@ void FireStarter::SaveFireStarterCode(void)
 {
     m_bestFireStarterCode = m_fireStarterCode;
     FireStarter::UpdateProgram(m_bestFireStarterCode, m_bestEvaluateCode, EVALUATE_CODE);
-#if EVOLVE
+#if EVOLVE || TEST
     FireStarter::SaveCode("FireStarter_Best.cu", m_bestFireStarterCode);
 #endif
 } // SaveFireStarterCode
@@ -463,7 +444,7 @@ void FireStarter::SaveFireShowCode(void)
     UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result0, DATA0_CODE);
     UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result1, DATA1_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
-#if EVOLVE
+#if EVOLVE || TEST
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
 #endif
 } // SaveFireShowCode
