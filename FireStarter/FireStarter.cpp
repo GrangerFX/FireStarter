@@ -55,7 +55,6 @@ void FireStarterProgram::OptimizeData(void)
 {
     if ((m_programMode != Program_multiply_add) && (m_programMode != Program_multiply_add_store)) {
         std::vector<unsigned char> dataIndex;
-        std::vector<unsigned char> dataUsed;
         dataIndex.reserve(PROGRAM_DATA);
         for (unsigned int i = 0; i < m_instructions.size(); i++) {
             unsigned char data = m_instructions[i].opdata.dataA;
@@ -71,7 +70,7 @@ void FireStarterProgram::OptimizeData(void)
             }
             m_instructions[i].opdata.dataA = index;
         }
-        m_dataSize = (unsigned int)dataUsed.size();
+        m_dataSize = (unsigned int)dataIndex.size();
     }
 } // OptimizeData
 
@@ -237,6 +236,7 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
         for (unsigned int g = 0; g < PROGRAM_GENERATIONS; g++) {
             void* arr[] = {reinterpret_cast<void*>(&m_deviceResults0),
                            reinterpret_cast<void*>(&m_deviceResults1),
+                           reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
                            reinterpret_cast<void*>(&programPopulation),
                            reinterpret_cast<void*>(&m_programGeneration),
                            reinterpret_cast<void*>(&variation)};
