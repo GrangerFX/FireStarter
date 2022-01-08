@@ -14,11 +14,7 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
 #else
     instruction.opdata.operation = m_opcodes[index % m_opcodes.size()];
 #endif
-#if PROGRAM_RANDOM_DATA
     instruction.opdata.dataA = RANDOMSEED(seed) % PROGRAM_DATA;
-#else
-    instruction.opdata.dataA = index % PROGRAM_DATA;
-#endif
     if ((m_programMode == Program_multiply_add) || (m_programMode != Program_multiply_add_store)) {
         instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
         instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
@@ -29,22 +25,8 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
 void FireStarterProgram::EvolveInstruction(unsigned int index, unsigned int& seed)
 {
     FireStarterInstruction& instruction = m_instructions[index];
-#if PROGRAM_RANDOM_DATA
     instruction.opdata.dataA = RANDOMSEED(seed) % PROGRAM_DATA;
-#else
-    // Find two different instruction indexes.
-    unsigned int indexB;
-    do {
-        indexB = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-    } while (indexB == index);
-
-    // Swap the two data indexes.
-    FireStarterInstruction &instructionB = m_instructions[indexB];
-    unsigned int dataA = instruction.opdata.dataA;
-    instruction.opdata.dataA = instructionB.opdata.dataA;
-    instructionB.opdata.dataA = dataA;
-#endif
-    if ((m_programMode == Program_multiply_add) || (m_programMode != Program_multiply_add_store)) {
+    if ((m_programMode == Program_multiply_add) || (m_programMode == Program_multiply_add_store)) {
         instruction.opdata.dataB = RANDOMSEED(seed) % PROGRAM_DATA;
         instruction.opdata.dataC = RANDOMSEED(seed) % PROGRAM_DATA;
         instruction.opdata.dataD = RANDOMSEED(seed) % PROGRAM_DATA;
@@ -78,10 +60,6 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
 {
     for (unsigned int i = 0; i < m_instructions.size(); i++)
         RandomInstruction(i, seed);
-#if !PROGRAM_RANDOM_DATA
-    for (unsigned int i = 0; i < m_instructions.size(); i++)
-        EvolveInstruction(i, seed);
-#endif
     OptimizeData();
 } // InitProgram
 
@@ -230,9 +208,9 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
     int blocksPerGrid = (programPopulation + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    float lastResult;
+    unsigned int failCount = 0;
     do {
-        lastResult = result.result;
+        float lastResult = result.result;
         for (unsigned int g = 0; g < PROGRAM_GENERATIONS; g++) {
             void* arr[] = {reinterpret_cast<void*>(&m_deviceResults0),
                            reinterpret_cast<void*>(&m_deviceResults1),
@@ -254,7 +232,9 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
         }
         CopyResultsDeviceToHost();
         GetResults(m_hostResults0, result);
-    } while (!TEST && (result.result < lastResult) && !m_quit);
+        if (result.result >= lastResult)
+            failCount++;
+    } while (!TEST && (failCount < 2) && !m_quit);
 } // RunProgram
 
 void FireStarterUnit::GenerateProgram(void)
@@ -274,9 +254,9 @@ void FireStarterUnit::GenerateProgram(void)
 void FireStarterUnit::EvolveProgram(void)
 {
     // Determine how many changes to make to the instructions.
-    unsigned int numChanges = 1;
-    if (m_unitGeneration > SMART_EVOLVE_AGE)
-        numChanges++;
+    unsigned int numChanges = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
+//    if (m_unitGeneration > SMART_EVOLVE_AGE)
+//        numChanges++;
 
     // Make random changes to the program instructions.
     m_curState = m_bestState;
@@ -589,7 +569,9 @@ void FireStarter::ControlThread(void)
     checkCUDAErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
 #if EVOLVE
-    unsigned int unit_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
+    unsigned int unit_count = PROGRAM_UNITS;
+    if (!unit_count)
+        unit_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
 #else
@@ -635,13 +617,13 @@ void FireStarter::ControlThread(void)
                         m_controlUpdate = true;
                     }
 #if EVOLVE
-                    else if (*unitGeneration >= SMART_DEVOLVE_AGE) {
+                    else /* if (*unitGeneration >= SMART_DEVOLVE_AGE) */ {
                         FireStarterUnit* randomUnit = m_units[RANDOMSEED(m_seed) % m_units.size()];
                         std::string* randomEvaluateCode = nullptr;
                         FireStarterState* randomEvaluateState = nullptr;
                         unsigned long long* randomGeneration = nullptr;
                         randomUnit->UpdateProgram(randomEvaluateCode, randomEvaluateState, randomGeneration);
-                        if (*randomGeneration < *unitGeneration) {
+                        if (randomEvaluateState->m_maxResult < unitBestEvaluateState->m_maxResult) {
                             *unitBestEvaluateCode = *randomEvaluateCode;
                             *unitBestEvaluateState = *randomEvaluateState;
                             *unitGeneration = *randomGeneration;

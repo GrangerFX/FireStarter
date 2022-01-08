@@ -80,7 +80,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         else
             data.d[d] = oldData;
     }
-    if (generation && (result >= oldResult)) {
+    if (generation && (result == oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
         unsigned int bestIndex = member;

@@ -18,7 +18,6 @@ typedef enum {
 
 #define PROGRAM_MODE Program_accumulate
 #define PROGRAM_RANDOM_INSTRUCTIONS 0
-#define PROGRAM_RANDOM_DATA 1
 
 typedef enum {
     Operation_multiply_add_store,
