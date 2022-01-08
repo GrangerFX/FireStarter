@@ -99,6 +99,7 @@
     <ClInclude Include="FireStarter.h" />
     <ClInclude Include="FireStarterDefines.h" />
     <ClInclude Include="FireStarterUtil.h" />
+    <ClInclude Include="FireStarter_LoadState.h" />
     <ClInclude Include="HashRandom.h" />
     <ClInclude Include="PrintF.h" />
     <ClInclude Include="SerialThread.h" />

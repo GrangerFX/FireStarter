@@ -78,9 +78,8 @@ union FireStarterInstruction {
 }; // union FireStarterInstruction
 
 class FireStarterProgram {
-private:
-    std::vector<FireStarterOpcode> m_opcodes;
 public:
+    std::vector<FireStarterOpcode> m_opcodes;
     std::vector<FireStarterInstruction> m_instructions;
     FireStarterProgramMode m_programMode;
     unsigned int m_dataSize;
@@ -90,6 +89,7 @@ public:
     void OptimizeData(void);
     void InitProgram(unsigned int& seed);
     void GenerateProgram(std::string& code);
+    void SaveProgram(std::string& code);
     FireStarterProgram(void);
 }; // class FireStarterProgram
 
@@ -101,6 +101,7 @@ public:
     double m_processingTime;
     float m_maxResult;
 
+    void SaveState(std::string& code);
     FireStarterState(void);
 }; /// class FireStarterState;
 
@@ -185,6 +186,7 @@ public:
     void SaveFireStarterCode(void);
     bool LoadFireShowCode(void);
     void SaveFireShowCode(void);
+    void SaveBestState(void);
     void DrawGraph(unsigned int variation);
     void RenderImage(void);
     void RenderStatus(void);

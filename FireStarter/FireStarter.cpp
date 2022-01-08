@@ -92,6 +92,27 @@ void FireStarterProgram::GenerateProgram(std::string &code)
     }
 } // GenerateProgram
 
+void FireStarterProgram::SaveProgram(std::string& code)
+{
+    code += "void LoadProgram(FireStarterProgram& program)\r\n";
+    code += "{\r\n";
+
+    unsigned int numOpcodes = (unsigned int)m_opcodes.size();
+    code += Format("    program.m_opcodes.resize(%u);\r\n", numOpcodes);
+    for (unsigned int i = 0; i < numOpcodes; i++)
+        code += Format("    program.m_opcodes[%u] = (FireStarterOpcode)%u;\r\n", i, m_opcodes[i]);
+
+    unsigned int numInstructions = (unsigned int)m_instructions.size();
+    code += Format("    program.m_instructions.resize(%u);\r\n", numInstructions);
+    for (unsigned int i = 0; i < numInstructions; i++)
+        code += Format("    program.m_instructions[%u].opcode = %u;\r\n", i, m_instructions[i].opcode);
+
+    code += Format("    program.m_programMode = (FireStarterProgramMode)%u;\r\n", m_programMode);
+    code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
+    code += "} // LoadProgram\r\n";
+    code += "\r\n";
+} // SaveProgram
+
 FireStarterProgram::FireStarterProgram(void)
 {
     m_programMode = PROGRAM_MODE;
@@ -128,6 +149,29 @@ FireStarterProgram::FireStarterProgram(void)
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         m_instructions[i] = 0;
 } // FireStarterProgram
+
+void FireStarterState::SaveState(std::string& code)
+{
+    code += "#include \"FireStarter.h\"\r\n";
+    code += "\r\n";
+    m_program.SaveProgram(code);
+    code += "void LoadState(FireStarterState& state)\r\n";
+    code += "{\r\n";
+    code += "    LoadProgram(state.m_program);\r\n";
+    code += "\r\n";
+    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
+        code += Format("    state.m_result0.data.d[%u] = %f;\r\n", i, m_result0.data.d[i]);
+    code += Format("    state.m_result0.result = %f;\r\n", m_result0.result);
+    code += "\r\n";
+    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
+        code += Format("    state.m_result1.data.d[%d] = %f;\r\n", i, m_result1.data.d[i]);
+    code += Format("    state.m_result1.result = %f;\r\n", m_result1.result);
+    code += "\r\n";
+    code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
+    code += Format("    state.m_maxResult = %f;\r\n", m_maxResult);
+    code += "} // LoadState\r\n";
+    code += "\r\n";
+} // SaveState
 
 FireStarterState::FireStarterState(void)
 {
@@ -508,6 +552,13 @@ void FireStarter::SaveFireShowCode(void)
 #endif
 } // SaveFireShowCode
 
+void FireStarter::SaveBestState(void)
+{
+    std::string bestStateCode;
+    m_bestEvaluateState.SaveState(bestStateCode);
+    FireStarter::SaveCode("FireStarter_LoadState.h", bestStateCode);
+} // SaveBestState
+
 void FireStarter::DrawGraph(unsigned int variation)
 {
     // Launch the display kernel
@@ -643,6 +694,9 @@ void FireStarter::ControlThread(void)
             SaveFireStarterCode();
             SaveFireShowCode();
             CompileProgram(m_bestFireShowCode, m_fireShowModule);
+#if EVOLVE || TEST
+            SaveBestState();
+#endif
         }
 
         // Update the render status after every pass.
