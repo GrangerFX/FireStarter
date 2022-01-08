@@ -8,34 +8,34 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n = data.d[1] += n;
     n = data.d[2] *= n;
     n = data.d[3] += n;
-    n = data.d[1] *= n;
-    n = data.d[3] += n;
     n = data.d[4] *= n;
-    n = data.d[5] += n;
-    n = data.d[6] *= n;
-    n = data.d[7] += n;
+    n = data.d[3] += n;
     n = data.d[5] *= n;
-    n = data.d[5] += n;
-    n = data.d[8] *= n;
-    n = data.d[9] += n;
+    n = data.d[6] += n;
+    n = data.d[7] *= n;
+    n = data.d[8] += n;
+    n = data.d[9] *= n;
+    n = data.d[6] += n;
     n = data.d[10] *= n;
     n = data.d[11] += n;
     n = data.d[12] *= n;
-    n = data.d[10] += n;
-    n = data.d[11] *= n;
-    n = data.d[11] += n;
+    n = data.d[13] += n;
+    n = data.d[10] *= n;
+    n = data.d[8] += n;
+    n = data.d[14] *= n;
+    n = data.d[13] += n;
+    n = data.d[10] *= n;
+    n = data.d[15] += n;
+    n = data.d[16] *= n;
+    n = data.d[17] += n;
+    n = data.d[6] *= n;
+    n = data.d[12] += n;
     n = data.d[13] *= n;
+    n = data.d[18] += n;
+    n = data.d[19] *= n;
     n = data.d[14] += n;
     n = data.d[12] *= n;
-    n = data.d[7] += n;
-    n = data.d[5] *= n;
-    n = data.d[15] += n;
-    n = data.d[3] *= n;
-    n = data.d[16] += n;
-    n = data.d[15] *= n;
-    n = data.d[4] += n;
-    n = data.d[2] *= n;
-    n = data.d[17] += n;
+    n = data.d[1] += n;
 // END //
     return isnan(n) ? 0.0f : n;
 } // Evaluate
@@ -47,11 +47,11 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         return;
 
     unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
-    FireStarterSamples theta;
-    FireStarterSamples target;
+    float theta[SAMPLE_ITERATIONS];
+    float target[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta.s[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
-        target.s[i] = Target(theta.s[i], variation);
+        theta[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
+        target[i] = Target(theta[i], variation);
     }
 
     FireStarterResults *oldResults = generation & 1 ? results0 : results1;
@@ -74,7 +74,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
         float curResult = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-            curResult = fmaxf(fabsf(Evaluate(data, theta.s[i]) - target.s[i]), curResult);
+            curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
         if (curResult < result)
             result = curResult;
         else

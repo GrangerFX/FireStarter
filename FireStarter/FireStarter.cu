@@ -47,11 +47,11 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         return;
 
     unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
-    FireStarterSamples theta;
-    FireStarterSamples target;
+    float theta[SAMPLE_ITERATIONS];
+    float target[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta.s[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
-        target.s[i] = Target(theta.s[i], variation);
+        theta[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
+        target[i] = Target(theta[i], variation);
     }
 
     FireStarterResults *oldResults = generation & 1 ? results0 : results1;
@@ -74,7 +74,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
         float curResult = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-            curResult = fmaxf(fabsf(Evaluate(data, theta.s[i]) - target.s[i]), curResult);
+            curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
         if (curResult < result)
             result = curResult;
         else

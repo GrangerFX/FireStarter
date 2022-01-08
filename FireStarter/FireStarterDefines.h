@@ -41,10 +41,6 @@ typedef struct FireStarterData {
     float d[PROGRAM_DATA];
 } FireStarterData;
 
-typedef struct FireStarterSamples {
-    float s[SAMPLE_ITERATIONS];
-} FireStarterSamples;
-
 typedef struct {
     FireStarterData data;
     float result;
