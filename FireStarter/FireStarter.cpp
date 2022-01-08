@@ -66,35 +66,62 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
 void FireStarterProgram::GenerateProgram(std::string &code)
 {
     // Generate the replacement code and update the program.
-    code.clear();
     for (FireStarterInstruction& instruction : m_instructions) {
         switch (instruction.Operation()) {
         case Operation_multiply_add_store:
-            code += Format("    n = data.d[%d] = data.d[%d] * data.d[%d] + data.d[%d];\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
+            code += Format("    n = data.d[%u] = data.d[%u] * data.d[%u] + data.d[%u];\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
             break;
         case Operation_multiply_add:
-            code += Format("    n = data.d[%d] = data.d[%d] * data.d[%d] + data.d[%d];\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
+            code += Format("    n = data.d[%u] = data.d[%u] * data.d[%u] + data.d[%u];\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
             break;
         case Operation_add:
-            code += Format("    n = data.d[%d] += n;\r\n", instruction.DataA());
- //         code += Format("    n += data.d[%d];\r\n", instruction.DataA());
+            code += Format("    n = data.d[%u] += n;\r\n", instruction.DataA());
+//          code += Format("    n += data.d[%u];\r\n", instruction.DataA());
             break;
         case Operation_multiply:
-            code += Format("    n = data.d[%d] *= n;\r\n", instruction.DataA());
+            code += Format("    n = data.d[%u] *= n;\r\n", instruction.DataA());
             break;
         case Operation_load:
-            code += Format("    n = data.d[%d];\r\n", instruction.DataA());
+            code += Format("    n = data.d[%u];\r\n", instruction.DataA());
             break;
         case Operation_store:
-            code += Format("    data.d[%d] = n;\r\n", instruction.DataA());
+            code += Format("    data.d[%u] = n;\r\n", instruction.DataA());
             break;
         }
     }
 } // GenerateProgram
 
+void FireStarterProgram::GenerateSolution(std::string& code)
+{
+    // Generate the replacement code and update the program.
+    for (FireStarterInstruction& instruction : m_instructions) {
+        switch (instruction.Operation()) {
+        case Operation_multiply_add_store:
+            code += Format("    n = d%u = d%u * d%u + d%u;\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
+            break;
+        case Operation_multiply_add:
+            code += Format("    n = d%u = d%u * d%u + d%u;\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
+            break;
+        case Operation_add:
+            code += Format("    n = d%u += n;\r\n", instruction.DataA());
+//          code += Format("    n += d%u;\r\n", instruction.DataA());
+            break;
+        case Operation_multiply:
+            code += Format("    n = d%u *= n;\r\n", instruction.DataA());
+            break;
+        case Operation_load:
+            code += Format("    n = d%u;\r\n", instruction.DataA());
+            break;
+        case Operation_store:
+            code += Format("    d%u = n;\r\n", instruction.DataA());
+            break;
+        }
+    }
+} // GenerateSolution
+
 void FireStarterProgram::SaveProgram(std::string& code)
 {
-    code += "void LoadProgram(FireStarterProgram& program)\r\n";
+    code += "inline void LoadProgram(FireStarterProgram& program)\r\n";
     code += "{\r\n";
 
     unsigned int numOpcodes = (unsigned int)m_opcodes.size();
@@ -155,7 +182,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "#include \"FireStarter.h\"\r\n";
     code += "\r\n";
     m_program.SaveProgram(code);
-    code += "void LoadState(FireStarterState& state)\r\n";
+    code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "\r\n";
@@ -170,8 +197,26 @@ void FireStarterState::SaveState(std::string& code)
     code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
     code += Format("    state.m_maxResult = %f;\r\n", m_maxResult);
     code += "} // LoadState\r\n";
-    code += "\r\n";
 } // SaveState
+
+void FireStarterState::SaveSolution(std::string& code)
+{
+    code += "inline float Solution0(float n)\r\n";
+    code += "{\r\n";
+    for (unsigned int i = 0; i < m_program.m_dataSize; i++)
+        code += Format("    float d%u = %f;\r\n", i, m_result0.data.d[i]);
+    m_program.GenerateSolution(code);
+    code += "    return n;\r\n";
+    code += "} // Solution0\r\n";
+    code += "\r\n";
+    code += "inline float Solution1(float n)\r\n";
+    code += "{\r\n";
+    for (unsigned int i = 0; i < m_program.m_dataSize; i++)
+        code += Format("    float d%u = %f;\r\n", i, m_result1.data.d[i]);
+    m_program.GenerateSolution(code);
+    code += "    return n;\r\n";
+    code += "} // Solution1\r\n";
+} // SaveSolution
 
 FireStarterState::FireStarterState(void)
 {
@@ -284,6 +329,7 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
 void FireStarterUnit::GenerateProgram(void)
 {
     // Generate the replacement code.
+    m_evaluateCode.clear();
     m_curState.m_program.GenerateProgram(m_evaluateCode);
 
     // Update and compile the program.
@@ -559,6 +605,13 @@ void FireStarter::SaveBestState(void)
     FireStarter::SaveCode("FireStarter_LoadState.h", bestStateCode);
 } // SaveBestState
 
+void FireStarter::SaveSolution(void)
+{
+    std::string solutionCode;
+    m_bestEvaluateState.SaveSolution(solutionCode);
+    FireStarter::SaveCode("FireStarter_Solution.h", solutionCode);
+} // SaveSolution
+
 void FireStarter::DrawGraph(unsigned int variation)
 {
     // Launch the display kernel
@@ -696,6 +749,7 @@ void FireStarter::ControlThread(void)
             CompileProgram(m_bestFireShowCode, m_fireShowModule);
 #if EVOLVE || TEST
             SaveBestState();
+            SaveSolution();
 #endif
         }
 

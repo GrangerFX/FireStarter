@@ -89,6 +89,7 @@ public:
     void OptimizeData(void);
     void InitProgram(unsigned int& seed);
     void GenerateProgram(std::string& code);
+    void GenerateSolution(std::string& code);
     void SaveProgram(std::string& code);
     FireStarterProgram(void);
 }; // class FireStarterProgram
@@ -102,6 +103,7 @@ public:
     float m_maxResult;
 
     void SaveState(std::string& code);
+    void SaveSolution(std::string& code);
     FireStarterState(void);
 }; /// class FireStarterState;
 
@@ -187,6 +189,7 @@ public:
     bool LoadFireShowCode(void);
     void SaveFireShowCode(void);
     void SaveBestState(void);
+    void SaveSolution(void);
     void DrawGraph(unsigned int variation);
     void RenderImage(void);
     void RenderStatus(void);
