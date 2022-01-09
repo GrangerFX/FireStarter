@@ -1,6 +1,21 @@
 #include "FireStarterDefines.h"
 #include "HashRandom.h"
 
+// TARGET //
+inline float Target(float n, unsigned int variation)
+{
+    switch (variation) {
+    default:
+    case 0:
+        return sinf(n);
+    case 1:
+        return sinf(n * 1.2f) + n * 0.2f;
+    case 2:
+        return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
+    }
+} // Target
+// END //
+
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
 // EVALUATE //
@@ -50,7 +65,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     float theta[SAMPLE_ITERATIONS];
     float target[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta[i] = RANDOMNUM(seed) * (2.0f * 3.14159265f);
+        theta[i] = SAMPLE_MIN + RANDOMNUM(seed) * (SAMPLE_MAX - SAMPLE_MIN);
         target[i] = Target(theta[i], variation);
     }
 

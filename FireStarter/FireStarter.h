@@ -158,6 +158,7 @@ public:
     CUstream m_fireShowStream;
     CUmodule m_fireShowModule;
     std::string m_fireStarterCode;
+    std::string m_targetCode;
     std::string m_fireShowCode;
     std::string m_bestFireStarterCode;
     std::string m_bestFireShowCode;
@@ -184,6 +185,7 @@ public:
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
     static void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
     static void CompileProgram(const std::string& program, CUmodule& cuda_module);
+    bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
     void SaveFireStarterCode(void);
     bool LoadFireShowCode(void);

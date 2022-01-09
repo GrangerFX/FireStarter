@@ -1,13 +1,15 @@
 #pragma once
 #include "CUDADefines.h"
 
-#define EVOLVE 1
-#define TEST 0
-#define DEBUG 0
+#define FIRESTARTER_EVOLVE   0
+#define FIRESTARTER_OPTIMIZE 1
+#define FIRESTARTER_TEST     2
+#define FIRESTARTER_DEBUG    3
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #define PROGRAM_UNITS 16
 #define PROGRAM_DATA 32
-#if EVOLVE
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
 #define PROGRAM_GENERATIONS 10 // Must be even!
 #else
 #define PROGRAM_GENERATIONS 100 // Must be even!
@@ -17,6 +19,8 @@
 #define PROGRAM_LOAD_STORE 0
 #define PROGRAM_SEED 0
 
+#define SAMPLE_MIN 0.0f
+#define SAMPLE_MAX (2.0f * 3.14159265f)
 #define SAMPLE_ITERATIONS 15
 #define SMART_RANDOM_FACTOR 0.1f
 #define EVOLUTION_SAMPLES 16
@@ -25,7 +29,7 @@
 #define SMART_DEVOLVE_AGE 50
 
 #define VARIATION0 0
-#if EVOLVE
+#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE)
 #define VARIATION1 1
 #else
 #define VARIATION1 2
@@ -33,6 +37,7 @@
 
 #define OPERATIONS_CODE "// OPERATIONS //"
 #define EVALUATE_CODE   "// EVALUATE //"
+#define TARGET_CODE     "// TARGET //"
 #define DATA0_CODE      "// DATA0 //"
 #define DATA1_CODE      "// DATA1 //"
 #define END_CODE        "// END //"
@@ -49,16 +54,3 @@ typedef struct {
 typedef struct {
     FireStarterResult results[1];
 } FireStarterResults;
-
-GPU_FUNCTION float Target(float n, unsigned int variation)
-{
-    switch (variation) {
-        default:
-        case 0:
-            return sinf(n);
-        case 1:
-            return sinf(n * 1.2f) + n * 0.2f;
-        case 2:
-            return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
-    }
-} // Target

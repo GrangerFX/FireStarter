@@ -10,8 +10,6 @@
 #define CUDA_API_PER_THREAD_DEFAULT_STREAM
 #include <cuda.h>
 #include <cuda_runtime.h>
-#include <nvrtc.h>
-#include <math.h>
 #define GPU_FUNCTION static inline
 #define GPU_GLOBAL extern "C"
 #define GPU_ENTRY(grid, block)

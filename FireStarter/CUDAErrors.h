@@ -1,6 +1,7 @@
 #pragma once
 #include "CUDADefines.h"
 #include "PrintF.h"
+#include <nvrtc.h>
 
 template <typename T> void __check_cuda_errors(T result, char const* const func, const char* const file, int const line) {
 	if (result) {

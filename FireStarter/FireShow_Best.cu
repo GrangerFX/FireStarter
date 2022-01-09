@@ -1,81 +1,96 @@
 #include "FireStarterDefines.h"
 #include "HashRandom.h"
 
+// TARGET //
+inline float Target(float n, unsigned int variation)
+{
+    switch (variation) {
+    default:
+    case 0:
+        return sinf(n);
+    case 1:
+        return sinf(n * 1.2f) + n * 0.2f;
+    case 2:
+        return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
+    }
+} // Target
+// END //
+
 GPU_FUNCTION float InitData0(FireStarterData &data)
 {
 // DATA0 //
-    data.d[0] = 0.147631;
-    data.d[1] = -0.059146;
-    data.d[2] = -2.231767;
-    data.d[3] = 1.304104;
-    data.d[4] = 0.570817;
-    data.d[5] = 0.536862;
-    data.d[6] = -0.960582;
-    data.d[7] = 0.604844;
-    data.d[8] = 0.810656;
-    data.d[9] = -0.287727;
-    data.d[10] = -0.790731;
-    data.d[11] = -1.196499;
-    data.d[12] = -1.875646;
-    data.d[13] = 0.936001;
-    data.d[14] = 0.779106;
-    data.d[15] = -0.599340;
-    data.d[16] = 0.607282;
-    data.d[17] = -0.180131;
-    data.d[18] = 1.823968;
-    data.d[19] = -0.073667;
-    data.d[20] = 0.749525;
-    data.d[21] = 0.000000;
-    data.d[22] = 0.000000;
-    data.d[23] = 0.000000;
-    data.d[24] = 0.000000;
-    data.d[25] = 0.000000;
-    data.d[26] = 0.000000;
-    data.d[27] = 0.000000;
-    data.d[28] = 0.000000;
-    data.d[29] = 0.000000;
-    data.d[30] = 0.000000;
-    data.d[31] = 0.000000;
-    return 0.000218;
+    data.d[0] = 0.166358f;
+    data.d[1] = -0.367194f;
+    data.d[2] = -3.583327f;
+    data.d[3] = 0.441628f;
+    data.d[4] = 2.826514f;
+    data.d[5] = 0.117001f;
+    data.d[6] = -0.547351f;
+    data.d[7] = 0.840405f;
+    data.d[8] = 0.827456f;
+    data.d[9] = -0.191815f;
+    data.d[10] = -0.921262f;
+    data.d[11] = -1.476278f;
+    data.d[12] = -1.848571f;
+    data.d[13] = 0.753720f;
+    data.d[14] = 0.551162f;
+    data.d[15] = -1.100033f;
+    data.d[16] = 0.729146f;
+    data.d[17] = -0.022982f;
+    data.d[18] = -0.736473f;
+    data.d[19] = -0.034231f;
+    data.d[20] = 0.000000f;
+    data.d[21] = 0.000000f;
+    data.d[22] = 0.000000f;
+    data.d[23] = 0.000000f;
+    data.d[24] = 0.000000f;
+    data.d[25] = 0.000000f;
+    data.d[26] = 0.000000f;
+    data.d[27] = 0.000000f;
+    data.d[28] = 0.000000f;
+    data.d[29] = 0.000000f;
+    data.d[30] = 0.000000f;
+    data.d[31] = 0.000000f;
+    return 0.000133;
 // END //
 } // InitData0
 
 GPU_FUNCTION float InitData1(FireStarterData &data)
 {
 // DATA1 //
-    data.d[0] = 0.868628;
-    data.d[1] = -0.277484;
-    data.d[2] = -0.965830;
-    data.d[3] = 1.389340;
-    data.d[4] = -0.095932;
-    data.d[5] = 0.571882;
-    data.d[6] = -1.401554;
-    data.d[7] = 0.763038;
-    data.d[8] = 0.204349;
-    data.d[9] = 1.885065;
-    data.d[10] = -0.390096;
-    data.d[11] = -1.517491;
-    data.d[12] = 0.329436;
-    data.d[13] = 0.289943;
-    data.d[14] = -0.813003;
-    data.d[15] = 0.129184;
-    data.d[16] = 0.408802;
-    data.d[17] = -1.188487;
-    data.d[18] = -0.549903;
-    data.d[19] = -0.380334;
-    data.d[20] = 0.749525;
-    data.d[21] = 0.000000;
-    data.d[22] = 0.000000;
-    data.d[23] = 0.000000;
-    data.d[24] = 0.000000;
-    data.d[25] = 0.000000;
-    data.d[26] = 0.000000;
-    data.d[27] = 0.000000;
-    data.d[28] = 0.000000;
-    data.d[29] = 0.000000;
-    data.d[30] = 0.000000;
-    data.d[31] = 0.000000;
-    return 0.000394;
+    data.d[0] = 0.895871f;
+    data.d[1] = -0.217696f;
+    data.d[2] = -1.026493f;
+    data.d[3] = 1.890561f;
+    data.d[4] = 0.912404f;
+    data.d[5] = 0.226375f;
+    data.d[6] = -1.495189f;
+    data.d[7] = 0.732986f;
+    data.d[8] = 0.205553f;
+    data.d[9] = 1.723023f;
+    data.d[10] = -0.407971f;
+    data.d[11] = -1.587290f;
+    data.d[12] = 0.429032f;
+    data.d[13] = 0.359117f;
+    data.d[14] = -0.742859f;
+    data.d[15] = 0.739383f;
+    data.d[16] = 0.397729f;
+    data.d[17] = -1.263418f;
+    data.d[18] = -0.458699f;
+    data.d[19] = -0.668602f;
+    data.d[20] = 0.000000f;
+    data.d[21] = 0.000000f;
+    data.d[22] = 0.000000f;
+    data.d[23] = 0.000000f;
+    data.d[24] = 0.000000f;
+    data.d[25] = 0.000000f;
+    data.d[26] = 0.000000f;
+    data.d[27] = 0.000000f;
+    data.d[28] = 0.000000f;
+    data.d[29] = 0.000000f;
+    data.d[30] = 0.000000f;
+    data.d[31] = 0.000000f;
+    return 0.000397;
 // END //
 } // InitData1
 
