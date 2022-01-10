@@ -134,6 +134,7 @@ public:
 
     void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
     void CopyResultsDeviceToHost(void);
+    void CopyResultsHostToDevice(void);
     void InitResults(void);
     void FreeResults(void);
     void RunProgram(unsigned int variation, FireStarterResult& result);

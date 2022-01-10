@@ -3,6 +3,9 @@
 #if FIRESTARTER_MODE == FIRESTARTER_DEBUG
 #include "FireShow_Best.cu"
 #endif
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+#include "FireStarter_LoadState.h"
+#endif
 #include <iomanip>
 #include <fstream>
 #include <sstream>
@@ -189,14 +192,14 @@ void FireStarterState::SaveState(std::string& code)
     code += "\r\n";
     for (unsigned int i = 0; i < PROGRAM_DATA; i++)
         code += Format("    state.m_result0.data.d[%u] = %ff;\r\n", i, m_result0.data.d[i]);
-    code += Format("    state.m_result0.result = %f;\r\n", m_result0.result);
+    code += Format("    state.m_result0.result = %ff;\r\n", m_result0.result);
     code += "\r\n";
     for (unsigned int i = 0; i < PROGRAM_DATA; i++)
         code += Format("    state.m_result1.data.d[%d] = %ff;\r\n", i, m_result1.data.d[i]);
-    code += Format("    state.m_result1.result = %f;\r\n", m_result1.result);
+    code += Format("    state.m_result1.result = %ff;\r\n", m_result1.result);
     code += "\r\n";
     code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
-    code += Format("    state.m_maxResult = %f;\r\n", m_maxResult);
+    code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
     code += "} // LoadState\r\n";
 } // SaveState
 
@@ -271,7 +274,12 @@ void FireStarterUnit::InitResults(void)
     m_hostResults0 = (FireStarterResults*)(m_hostResults);
     m_hostResults1 = (FireStarterResults*)(m_hostResults + resultsSize);
 
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+    LoadProgram(m_curState.m_program);
+    m_curState.m_program.GenerateProgram(m_evaluateCode);
+#else
     m_curState.m_program.InitProgram(m_seed);
+#endif
     m_bestState = m_curState;
 } // InitResults
 
@@ -394,6 +402,9 @@ void FireStarterUnit::ExecuteProgram(void)
 #if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE)
     EvolveProgram();
 #endif
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+    FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule);
+#endif
 #if (FIRESTARTER_MODE == FIRESTARTER_TEST)
     RandomProgram();
 #endif
@@ -464,9 +475,6 @@ void FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_modu
     }
 
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
-    long long compile = 0;
-    printf("Start Compile: %lld\n", ++compile);
-
     nvrtcProgram prog;
     const char* code = program.c_str();
     checkNVRTCErrors(nvrtcCreateProgram(&prog, code, "FireStarter", 0, nullptr, nullptr));
@@ -499,8 +507,6 @@ void FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_modu
     checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx, 0, 0, 0));
     free(ptx);
     ptx = nullptr;
-
-    printf("Finish Compile: %lld\n", compile);
 } // CompileProgram
 
 bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
@@ -605,7 +611,6 @@ bool FireStarter::LoadFireShowCode(void)
 #else
     if (!LoadCode("FireShow_Best.cu", m_fireShowCode))
         return false;
-    CompileProgram(m_fireShowCode, m_fireShowModule);
 #endif
     UpdateProgram(m_fireShowCode, m_targetCode, TARGET_CODE);
     return true;
@@ -617,7 +622,7 @@ void FireStarter::SaveFireShowCode(void)
     UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result0, DATA0_CODE);
     UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result1, DATA1_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE) || (FIRESTARTER_MODE == FIRESTARTER_TEST)
+#if (FIRESTARTER_MODE != FIRESTARTER_DEBUG)
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
 #endif
 } // SaveFireShowCode
@@ -717,7 +722,7 @@ void FireStarter::ControlThread(void)
     checkCUDAErrors(cuDeviceGet(&m_device, 0));
     checkCUDAErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE)
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     unsigned int unit_count = PROGRAM_UNITS;
     if (!unit_count)
         unit_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
@@ -793,7 +798,7 @@ void FireStarter::ControlThread(void)
             SaveFireStarterCode();
             SaveFireShowCode();
             CompileProgram(m_bestFireShowCode, m_fireShowModule);
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE) || (FIRESTARTER_MODE == FIRESTARTER_TEST)
+#if (FIRESTARTER_MODE != FIRESTARTER_DEBUG)
             SaveBestState();
             SaveSolution();
 #endif
