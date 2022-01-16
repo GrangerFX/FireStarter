@@ -61,11 +61,16 @@ public:
             cudaMemset(m_deviceBase, 0, m_width * m_height * sizeof(uchar4));
     } // EraseFrameBuffer
 
-    inline const unsigned char* Get(void)
+    inline const unsigned char* GetDevice(void)
     {
         if (m_size)
             checkCUDAErrors(cudaMemcpy(m_hostBase, m_deviceBase, m_size, cudaMemcpyDeviceToHost));
         return m_hostBase;
+    } // GetFrameBuffer
+
+    inline const unsigned char* GetHost(void)
+    {
+         return m_hostBase;
     } // GetFrameBuffer
 
     inline void Resize(unsigned long width, unsigned long height)

@@ -6,6 +6,9 @@
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
 #include "FireStarter_LoadState.h"
 #endif
+#if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
+#include "FireStarter_Solution.h"
+#endif
 #include <iomanip>
 #include <fstream>
 #include <sstream>
@@ -40,23 +43,24 @@ void FireStarterProgram::EvolveInstruction(unsigned int index, unsigned int& see
 void FireStarterProgram::OptimizeData(void)
 {
     if ((m_programMode != Program_multiply_add) && (m_programMode != Program_multiply_add_store)) {
-        std::vector<unsigned char> dataIndex;
-        dataIndex.reserve(PROGRAM_DATA);
+        m_registers.clear();
+        m_registers.reserve(PROGRAM_DATA);
         for (unsigned int i = 0; i < m_instructions.size(); i++) {
             unsigned char data = m_instructions[i].opdata.dataA;
             int index = -1;
-            for (unsigned int j = 0; j < dataIndex.size(); j++)
-                if (dataIndex[j] == data) {
+            for (unsigned int j = 0; j < m_registers.size(); j++)
+                if (m_registers[j].dataIndex == data) {
+                    m_registers[j].instructionLast = i;
                     index = j;
                     break;
                 }
             if (index == -1)  {
-                index = (int)dataIndex.size();
-                dataIndex.push_back(data);
+                index = (int)m_registers.size();
+                m_registers.push_back(FireStarterRegister(index, i, i));
             }
             m_instructions[i].opdata.dataA = index;
         }
-        m_dataSize = (unsigned int)dataIndex.size();
+        m_dataSize = (unsigned int)m_registers.size();
     }
 } // OptimizeData
 
@@ -67,58 +71,96 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
     OptimizeData();
 } // InitProgram
 
-void FireStarterProgram::GenerateProgram(std::string &code)
+void FireStarterProgram::GenerateProgram(std::string &code, bool optimize)
 {
     // Generate the replacement code and update the program.
-    for (FireStarterInstruction& instruction : m_instructions) {
+    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
+        FireStarterInstruction& instruction = m_instructions[i];
         switch (instruction.Operation()) {
-        case Operation_multiply_add_store:
-            code += Format("    n = data.d[%u] = data.d[%u] * data.d[%u] + data.d[%u];\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
-            break;
-        case Operation_multiply_add:
-            code += Format("    n = data.d[%u] = data.d[%u] * data.d[%u] + data.d[%u];\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
-            break;
-        case Operation_add:
-            code += Format("    n = data.d[%u] += n;\r\n", instruction.DataA());
-//          code += Format("    n += data.d[%u];\r\n", instruction.DataA());
-            break;
-        case Operation_multiply:
-            code += Format("    n = data.d[%u] *= n;\r\n", instruction.DataA());
-            break;
-        case Operation_load:
-            code += Format("    n = data.d[%u];\r\n", instruction.DataA());
-            break;
-        case Operation_store:
-            code += Format("    data.d[%u] = n;\r\n", instruction.DataA());
-            break;
+            case Operation_multiply_add_store:
+                code += Format("    n = data.d[%u] = data.d[%u] * data.d[%u] + data.d[%u];\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
+                break;
+            case Operation_multiply_add:
+                code += Format("    n = data.d[%u] = data.d[%u] * data.d[%u] + data.d[%u];\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
+                break;
+            case Operation_add:
+                if (optimize && (i == m_registers[instruction.DataA()].instructionLast))
+                    code += Format("    n += data.d[%u];\r\n", instruction.DataA());
+                else
+                    code += Format("    n = data.d[%u] += n;\r\n", instruction.DataA());
+                break;
+            case Operation_multiply:
+                if (optimize && (i == m_registers[instruction.DataA()].instructionLast))
+                    code += Format("    n *= data.d[%u];\r\n", instruction.DataA());
+                else
+                    code += Format("    n = data.d[%u] *= n;\r\n", instruction.DataA());
+                break;
+            case Operation_load:
+                code += Format("    n = data.d[%u];\r\n", instruction.DataA());
+                break;
+            case Operation_store:
+                code += Format("    data.d[%u] = n;\r\n", instruction.DataA());
+                break;
         }
     }
 } // GenerateProgram
 
-void FireStarterProgram::GenerateSolution(std::string& code)
+void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data, bool optimize)
 {
     // Generate the replacement code and update the program.
-    for (FireStarterInstruction& instruction : m_instructions) {
+    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
+        FireStarterInstruction& instruction = m_instructions[i];
         switch (instruction.Operation()) {
-        case Operation_multiply_add_store:
-            code += Format("    n = d%u = d%u * d%u + d%u;\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
-            break;
-        case Operation_multiply_add:
-            code += Format("    n = d%u = d%u * d%u + d%u;\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
-            break;
-        case Operation_add:
-            code += Format("    n = d%u += n;\r\n", instruction.DataA());
-//          code += Format("    n += d%u;\r\n", instruction.DataA());
-            break;
-        case Operation_multiply:
-            code += Format("    n = d%u *= n;\r\n", instruction.DataA());
-            break;
-        case Operation_load:
-            code += Format("    n = d%u;\r\n", instruction.DataA());
-            break;
-        case Operation_store:
-            code += Format("    d%u = n;\r\n", instruction.DataA());
-            break;
+            case Operation_multiply_add_store:
+                code += Format("    n = d%u = d%u * d%u + d%u;\r\n", instruction.DataA(), instruction.DataB(), instruction.DataC(), instruction.DataD());
+                break;
+            case Operation_multiply_add:
+                code += Format("    n = d%u = d%u * d%u + d%u;\r\n", instruction.DataA(), instruction.DataA(), instruction.DataB(), instruction.DataC());
+                break;
+            case Operation_add:
+                if (optimize) {
+                    unsigned int r = instruction.DataA();
+                    if (i == m_registers[r].instructionFirst)
+                        if (i == m_registers[r].instructionLast)
+                            code += Format("    n += %ff;\r\n", data.d[r]);
+                        else {
+                            code += Format("    n += %ff;\r\n", data.d[r]);
+                            code += Format("    float d%u = n;\r\n", r, data.d[r]);
+                        }
+                    else if (i == m_registers[r].instructionLast)
+                        code += Format("    n += d%u;\r\n", r);
+                    else {
+                        code += Format("    n += d%u;\r\n", r);
+                        code += Format("    d%u = n;\r\n", r);
+                    }
+                } else
+                    code += Format("    n = d%u += n;\r\n", instruction.DataA());
+                break;
+            case Operation_multiply:
+                if (optimize) {
+                    unsigned int r = instruction.DataA();
+                    if (i == m_registers[r].instructionFirst)
+                        if (i == m_registers[r].instructionLast)
+                            code += Format("    n *= %ff;\r\n", data.d[r]);
+                        else {
+                            code += Format("    n *= %ff;\r\n", data.d[r]);
+                            code += Format("    float d%u = n;\r\n", r, data.d[r]);
+                        }
+                    else if (i == m_registers[r].instructionLast)
+                        code += Format("    n *= d%u;\r\n", r);
+                    else {
+                        code += Format("    n *= d%u;\r\n", r);
+                        code += Format("    d%u = n;\r\n", r);
+                    }
+                } else
+                    code += Format("    n = d%u *= n;\r\n", instruction.DataA());
+                break;
+            case Operation_load:
+                code += Format("    n = d%u;\r\n", instruction.DataA());
+                break;
+            case Operation_store:
+                code += Format("    d%u = n;\r\n", instruction.DataA());
+                break;
         }
     }
 } // GenerateSolution
@@ -208,18 +250,14 @@ void FireStarterState::SaveSolution(std::string& code)
     code += Format("// Solution0 precision = %f\r\n", m_result0.result);
     code += "inline float Solution0(float n)\r\n";
     code += "{\r\n";
-    for (unsigned int i = 0; i < m_program.m_dataSize; i++)
-        code += Format("    float d%u = %ff;\r\n", i, m_result0.data.d[i]);
-    m_program.GenerateSolution(code);
+    m_program.GenerateSolution(code, m_result0.data, true);
     code += "    return n;\r\n";
     code += "} // Solution0\r\n";
     code += "\r\n";
     code += Format("// Solution1 precision = %f\r\n", m_result1.result);
     code += "inline float Solution1(float n)\r\n";
     code += "{\r\n";
-    for (unsigned int i = 0; i < m_program.m_dataSize; i++)
-        code += Format("    float d%u = %ff;\r\n", i, m_result1.data.d[i]);
-    m_program.GenerateSolution(code);
+    m_program.GenerateSolution(code, m_result1.data, true);
     code += "    return n;\r\n";
     code += "} // Solution1\r\n";
 } // SaveSolution
@@ -276,7 +314,8 @@ void FireStarterUnit::InitResults(void)
 
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     LoadProgram(m_curState.m_program);
-    m_curState.m_program.GenerateProgram(m_evaluateCode);
+    m_curState.m_program.OptimizeData();
+    m_curState.m_program.GenerateProgram(m_evaluateCode, true);
 #else
     m_curState.m_program.InitProgram(m_seed);
 #endif
@@ -311,11 +350,9 @@ void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &resu
     unsigned int failCount = 0;
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     unsigned int failMax = 2;
-#endif
-#if FIRESTARTER_MODE == FIRESTARTER_DEBUG
+#elif FIRESTARTER_MODE == FIRESTARTER_DEBUG
     unsigned int failMax = 1;
-#endif
-#if (FIRESTARTER_MODE == FIRESTARTER_TEST) || (FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE)
+#else
     unsigned int failMax = 0;
 #endif
     do {
@@ -350,7 +387,7 @@ void FireStarterUnit::GenerateProgram(void)
 {
     // Generate the replacement code.
     m_evaluateCode.clear();
-    m_curState.m_program.GenerateProgram(m_evaluateCode);
+    m_curState.m_program.GenerateProgram(m_evaluateCode, true);
 
     // Update and compile the program.
     std::string updatedCode = m_fireStarterCode;
@@ -653,8 +690,8 @@ void FireStarter::SaveSolution(void)
     solutionCode += Format("// Run iterations = %d\r\n", SAMPLE_ITERATIONS);
     solutionCode += Format("// Run generations = %d\r\n", PROGRAM_GENERATIONS);
     solutionCode += "\r\n";
-    solutionCode += Format("#define SAMPLE_MIN %f\r\n", SAMPLE_MIN);
-    solutionCode += Format("#define SAMPLE_MAX %f\r\n", SAMPLE_MAX);
+    solutionCode += Format("#define SOLUTION_MIN %f\r\n", SAMPLE_MIN);
+    solutionCode += Format("#define SOLUTION_MAX %f\r\n", SAMPLE_MAX);
     solutionCode += "\r\n";
     solutionCode += m_targetCode;
     solutionCode += "\r\n";
@@ -705,7 +742,11 @@ void FireStarter::RenderImage(void)
 
     HDC hdc = GetDC((HWND)m_window);
     if (hdc) {
-        SetDIBitsToDevice(hdc, 0, 0, m_buffer.m_width, m_buffer.m_height, 0, 0, 0, m_buffer.m_height, m_buffer.Get(), bm, DIB_RGB_COLORS);
+#if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
+        SetDIBitsToDevice(hdc, 0, 0, m_buffer.m_width, m_buffer.m_height, 0, 0, 0, m_buffer.m_height, m_buffer.GetHost(), bm, DIB_RGB_COLORS);
+#else
+        SetDIBitsToDevice(hdc, 0, 0, m_buffer.m_width, m_buffer.m_height, 0, 0, 0, m_buffer.m_height, m_buffer.GetDevice(), bm, DIB_RGB_COLORS);
+#endif
         GdiFlush();
     }
 } // RenderImage
@@ -845,16 +886,74 @@ void FireStarter::ControlThread(void)
         checkCUDAErrors(cuCtxDestroy(m_fireShowContext));
 } // ControlThread
 
+void FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation)
+{
+#if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
+    int xScale = bufferHeight / 8;
+    int yScale = bufferHeight / 16;
+    for (unsigned int y = 0; y < bufferHeight; y++) {
+        int x0 = (bufferWidth / 2) - xScale;
+        int x1 = (bufferWidth / 2) + xScale;
+        if (x0 >= 0) {
+            uchar4& pixel(bufferPixels[y * bufferWidth + x0]);
+            pixel.x = 64;
+            pixel.y = 128;
+            pixel.z = 64;
+        };
+        if (x1 < (int)bufferWidth) {
+            uchar4& pixel(bufferPixels[y * bufferWidth + x1]);
+            pixel.x = 64;
+            pixel.y = 128;
+            pixel.z = 64;
+        };
+    }
+    for (unsigned int x = 0; x < bufferWidth; x++) {
+        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
+        float center = bufferHeight * 0.66f;
+        float target = Target(theta, variation);
+        float solution = 0.0f;
+        switch (variation) {
+            case 0:
+                solution = Solution0(theta);
+                break;
+            default:
+                solution = Solution1(theta);
+                break;
+        }
+        int y = (int)(center + target * yScale);
+        if ((y >= 0) && (y < (int)bufferHeight)) {
+            uchar4& pixel(bufferPixels[y * bufferWidth + x]);
+            pixel.x = 255;
+            pixel.y = 128;
+        };
+        y = (int)(center + solution * yScale);
+        if ((y >= 0) && (y < (int)bufferHeight)) {
+            uchar4& pixel(bufferPixels[y * bufferWidth + x]);
+            pixel.x = pixel.y = pixel.z = 255;
+        };
+    }
+#endif
+} // DrawSolution
+
 bool FireStarter::Init(void* window, unsigned long width, unsigned long height)
 {
     m_window = window;
     m_width = width;
     m_height = height;
+#if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
+    m_buffer.Resize(m_width, m_height);
+    m_buffer.Erase();
+    DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, VARIATION0);
+    DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, VARIATION1);
+    RenderImage();
+    return true;
+#else
     if (LoadTargetCode() && LoadFireStarterCode() && LoadFireShowCode()) {
         DispatchAsync([this] { ControlThread(); });
         return true;
     }
     return false;
+#endif
 } // Init
 
 void FireStarter::Quit(void)

@@ -77,10 +77,19 @@ union FireStarterInstruction {
     } // FireStarterInstruction
 }; // union FireStarterInstruction
 
+struct FireStarterRegister {
+    unsigned int dataIndex;
+    unsigned int instructionFirst;
+    unsigned int instructionLast;
+}; // struct FireStarterRegister
+
 class FireStarterProgram {
 public:
     std::vector<FireStarterOpcode> m_opcodes;
     std::vector<FireStarterInstruction> m_instructions;
+    std::vector<FireStarterRegister> m_registers;
+    std::vector<unsigned int> m_registerFirstInstruction;
+    std::vector<unsigned int> m_registerLastInstruction;
     FireStarterProgramMode m_programMode;
     unsigned int m_dataSize;
 
@@ -88,8 +97,8 @@ public:
     void EvolveInstruction(unsigned int index, unsigned int& seed);
     void OptimizeData(void);
     void InitProgram(unsigned int& seed);
-    void GenerateProgram(std::string& code);
-    void GenerateSolution(std::string& code);
+    void GenerateProgram(std::string& code, bool optimize);
+    void GenerateSolution(std::string& code, FireStarterData& data, bool optimize);
     void SaveProgram(std::string& code);
     FireStarterProgram(void);
 }; // class FireStarterProgram
@@ -197,6 +206,7 @@ public:
     void RenderImage(void);
     void RenderStatus(void);
     void ControlThread(void);
+    void DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
     bool Init(void* window, unsigned long width, unsigned long height);
     void Quit(void);
     FireStarter(void);
