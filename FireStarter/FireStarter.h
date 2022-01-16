@@ -146,7 +146,8 @@ public:
     void CopyResultsHostToDevice(void);
     void InitResults(void);
     void FreeResults(void);
-    void RunProgram(unsigned int variation, FireStarterResult& result);
+    void RunGenerations(unsigned int generations, unsigned int variation, FireStarterResult& result);
+    void RunEvolve(unsigned int variation, FireStarterResult& result);
     void GenerateProgram(void);
     void EvolveProgram(void);
     void RandomProgram(void);

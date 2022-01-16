@@ -21,35 +21,35 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 // EVALUATE //
     n *= data.d[0];
     n = data.d[1] += n;
-    n = data.d[2] *= n;
-    n += data.d[3];
-    n *= data.d[4];
+    n *= data.d[2];
+    n = data.d[3] += n;
+    n = data.d[4] *= n;
+    n = data.d[5] += n;
+    n *= data.d[6];
+    n = data.d[1] += n;
+    n *= data.d[7];
     n += data.d[5];
-    n = data.d[6] *= n;
-    n = data.d[2] += n;
-    n = data.d[7] *= n;
-    n += data.d[2];
-    n *= data.d[1];
+    n = data.d[1] *= n;
     n += data.d[8];
     n *= data.d[9];
     n = data.d[10] += n;
     n *= data.d[11];
-    n += data.d[12];
-    n = data.d[10] *= n;
+    n = data.d[12] += n;
+    n *= data.d[12];
     n += data.d[13];
-    n = data.d[14] *= n;
-    n = data.d[14] += n;
-    n *= data.d[6];
-    n += data.d[10];
-    n *= data.d[15];
-    n += data.d[16];
-    n = data.d[17] *= n;
+    n = data.d[4] *= n;
     n += data.d[14];
+    n *= data.d[3];
+    n += data.d[15];
+    n *= data.d[16];
+    n = data.d[17] += n;
     n *= data.d[17];
+    n += data.d[1];
+    n *= data.d[10];
     n = data.d[18] += n;
     n *= data.d[18];
     n += data.d[19];
-    n *= data.d[7];
+    n *= data.d[4];
     n += data.d[20];
 // END //
     return isnan(n) ? 0.0f : n;
@@ -86,7 +86,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
         unsigned int d = RANDOMSEED(seed) % dataSize;
         float oldData = data.d[d];
-        data.d[d] = oldData + (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * result);
+        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
         float curResult = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
             curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
@@ -110,7 +110,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         }
         data = oldResults->results[bestIndex].data;
         unsigned int d = RANDOMSEED(seed) % dataSize;
-        data.d[d] += (SMART_RANDOM_FACTOR * RANDOMFACTOR(seed) * bestResult);
+        data.d[d] += (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * bestResult);
         result = START_RESULT;
     }
     newResults->results[member].data = data;

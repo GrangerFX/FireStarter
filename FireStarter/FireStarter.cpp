@@ -336,52 +336,50 @@ void FireStarterUnit::FreeResults(void)
     m_hostResults0 = m_hostResults1 = nullptr;
 } // FreeResults
 
-void FireStarterUnit::RunProgram(unsigned int variation, FireStarterResult &result)
+void FireStarterUnit::RunGenerations(unsigned int generations, unsigned int variation, FireStarterResult& result)
 {
     // Launch the calculation kernel
     unsigned int programPopulation = PROGRAM_POPULATION;
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE) || (FIRESTARTER_MODE == FIRESTARTER_TEST)
-    m_programGeneration = 0;
-#endif
     int threadsPerBlock = 256;
     int blocksPerGrid = (programPopulation + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    float lastResult = result.result;
+    for (unsigned int g = 0; g < generations; g++) {
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceResults0),
+                        reinterpret_cast<void*>(&m_deviceResults1),
+                        reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
+                        reinterpret_cast<void*>(&programPopulation),
+                        reinterpret_cast<void*>(&m_programGeneration),
+                        reinterpret_cast<void*>(&variation) };
+
+        CUfunction kernel_addr;
+        checkCUDAErrors(cuModuleGetFunction(&kernel_addr, m_fireStarterModule, "FireStarter"));
+
+        checkCUDAErrors(cuLaunchKernel(kernel_addr,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+            0, m_fireStarterStream,                             // shared mem, stream */
+            &arr[0],                                            // arguments */
+            0));
+        m_programGeneration++;
+    }
+    CopyResultsDeviceToHost();
+    GetResults(m_hostResults0, result);
+} // RunGenerations
+
+void FireStarterUnit::RunEvolve(unsigned int variation, FireStarterResult &result)
+{
     unsigned int failCount = 0;
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     unsigned int failMax = 2;
-#elif FIRESTARTER_MODE == FIRESTARTER_DEBUG
-    unsigned int failMax = 1;
-#else
-    unsigned int failMax = 0;
-#endif
+    m_programGeneration = 0;
     do {
         float lastResult = result.result;
-        for (unsigned int g = 0; g < PROGRAM_GENERATIONS; g++) {
-            void* arr[] = {reinterpret_cast<void*>(&m_deviceResults0),
-                           reinterpret_cast<void*>(&m_deviceResults1),
-                           reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
-                           reinterpret_cast<void*>(&programPopulation),
-                           reinterpret_cast<void*>(&m_programGeneration),
-                           reinterpret_cast<void*>(&variation)};
-
-            CUfunction kernel_addr;
-            checkCUDAErrors(cuModuleGetFunction(&kernel_addr, m_fireStarterModule, "FireStarter"));
-
-            checkCUDAErrors(cuLaunchKernel(kernel_addr,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-                0, m_fireStarterStream,                             // shared mem, stream */
-                &arr[0],                                            // arguments */
-                0));
-            m_programGeneration++;
-        }
-        CopyResultsDeviceToHost();
-        GetResults(m_hostResults0, result);
+        RunGenerations(PROGRAM_GENERATIONS, variation, result);
         if (result.result >= lastResult)
             failCount++;
     } while ((failCount < failMax) && !m_quit);
-} // RunProgram
+} // RunEvolve
 
 void FireStarterUnit::GenerateProgram(void)
 {
@@ -402,8 +400,6 @@ void FireStarterUnit::EvolveProgram(void)
 {
     // Determine how many changes to make to the instructions.
     unsigned int numChanges = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-//    if (m_unitGeneration > SMART_EVOLVE_AGE)
-//        numChanges++;
 
     // Make random changes to the program instructions.
     m_curState = m_bestState;
@@ -447,8 +443,13 @@ void FireStarterUnit::ExecuteProgram(void)
 #endif
 
     // Run the next generation on the GPU.
-    RunProgram(VARIATION0, m_curState.m_result0);
-    RunProgram(VARIATION1, m_curState.m_result1);
+#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE)
+    RunEvolve(VARIATION0, m_curState.m_result0);
+    RunEvolve(VARIATION1, m_curState.m_result1);
+#else
+    RunGenerations(PROGRAM_GENERATIONS, VARIATION0, m_curState.m_result0);
+    RunGenerations(PROGRAM_GENERATIONS, VARIATION1, m_curState.m_result1);
+#endif
     m_curState.m_processingTime = m_timer.Duration();
     EvaluateProgram();
  } // ExecuteProgram
