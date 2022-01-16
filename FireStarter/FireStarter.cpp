@@ -45,22 +45,40 @@ void FireStarterProgram::OptimizeData(void)
     if ((m_programMode != Program_multiply_add) && (m_programMode != Program_multiply_add_store)) {
         m_registers.clear();
         m_registers.reserve(PROGRAM_DATA);
+        int dataRegisters[PROGRAM_DATA];
+        memset(dataRegisters, -1, sizeof(dataRegisters));
         for (unsigned int i = 0; i < m_instructions.size(); i++) {
-            unsigned char data = m_instructions[i].opdata.dataA;
-            int index = -1;
-            for (unsigned int j = 0; j < m_registers.size(); j++)
-                if (m_registers[j].dataIndex == data) {
-                    m_registers[j].instructionLast = i;
-                    index = j;
-                    break;
-                }
+            unsigned int dataIndex = m_instructions[i].opdata.dataA;
+            int index = dataRegisters[dataIndex];
             if (index == -1)  {
                 index = (int)m_registers.size();
-                m_registers.push_back(FireStarterRegister(index, i, i));
-            }
+                dataRegisters[dataIndex] = index;
+                m_registers.push_back(FireStarterRegister(index, 0, i, i));
+            } else
+                m_registers[index].instructionLast = i;
             m_instructions[i].opdata.dataA = index;
         }
         m_dataSize = (unsigned int)m_registers.size();
+
+        std::vector<unsigned int> freeRegisters;
+        unsigned int numActiveRegisters = 0;
+        for (unsigned int i = 0; i < m_instructions.size(); i++) {
+            unsigned int index = m_instructions[i].opdata.dataA;
+            FireStarterRegister& r = m_registers[index];
+            if (r.instructionLast > r.instructionFirst)
+                if (r.instructionFirst == i) {
+                    if (!freeRegisters.empty()) {
+                        r.registerIndex = freeRegisters.back();
+                        freeRegisters.pop_back();
+                    } else
+                        r.registerIndex = numActiveRegisters;
+                    numActiveRegisters++;
+                } else if (r.instructionLast == i) {
+                    freeRegisters.push_back(r.registerIndex);
+                    numActiveRegisters--;
+                }
+        }
+        int foo = 1;
     }
 } // OptimizeData
 
@@ -108,6 +126,7 @@ void FireStarterProgram::GenerateProgram(std::string &code, bool optimize)
 void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data, bool optimize)
 {
     // Generate the replacement code and update the program.
+    unsigned int rMax = 0;
     for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
         FireStarterInstruction& instruction = m_instructions[i];
         switch (instruction.Operation()) {
@@ -119,15 +138,21 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
                 break;
             case Operation_add:
                 if (optimize) {
-                    unsigned int r = instruction.DataA();
-                    if (i == m_registers[r].instructionFirst)
-                        if (i == m_registers[r].instructionLast)
-                            code += Format("    n += %ff;\r\n", data.d[r]);
+                    unsigned int d = instruction.DataA();
+                    FireStarterRegister& dataRegister = m_registers[d];
+                    unsigned int r = dataRegister.registerIndex;
+                    if (i == dataRegister.instructionFirst)
+                        if (i == dataRegister.instructionLast)
+                            code += Format("    n += %ff;\r\n", data.d[d]);
                         else {
-                            code += Format("    n += %ff;\r\n", data.d[r]);
-                            code += Format("    float d%u = n;\r\n", r, data.d[r]);
+                            code += Format("    n += %ff;\r\n", data.d[d]);
+                            if (r == rMax) {
+                                code += Format("    float d%u = n;\r\n", r);
+                                rMax = r + 1;
+                            } else
+                                code += Format("    d%u = n;\r\n", r);
                         }
-                    else if (i == m_registers[r].instructionLast)
+                    else if (i == dataRegister.instructionLast)
                         code += Format("    n += d%u;\r\n", r);
                     else {
                         code += Format("    n += d%u;\r\n", r);
@@ -138,15 +163,21 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
                 break;
             case Operation_multiply:
                 if (optimize) {
-                    unsigned int r = instruction.DataA();
-                    if (i == m_registers[r].instructionFirst)
-                        if (i == m_registers[r].instructionLast)
-                            code += Format("    n *= %ff;\r\n", data.d[r]);
+                    unsigned int d = instruction.DataA();
+                    FireStarterRegister& dataRegister = m_registers[d];
+                    unsigned int r = dataRegister.registerIndex;
+                    if (i == dataRegister.instructionFirst)
+                        if (i == dataRegister.instructionLast)
+                            code += Format("    n *= %ff;\r\n", data.d[d]);
                         else {
-                            code += Format("    n *= %ff;\r\n", data.d[r]);
-                            code += Format("    float d%u = n;\r\n", r, data.d[r]);
+                            code += Format("    n *= %ff;\r\n", data.d[d]);
+                            if (r == rMax) {
+                                code += Format("    float d%u = n;\r\n", r);
+                                rMax = r + 1;
+                            } else
+                                code += Format("    d%u = n;\r\n", r);
                         }
-                    else if (i == m_registers[r].instructionLast)
+                    else if (i == dataRegister.instructionLast)
                         code += Format("    n *= d%u;\r\n", r);
                     else {
                         code += Format("    n *= d%u;\r\n", r);

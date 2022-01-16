@@ -79,6 +79,7 @@ union FireStarterInstruction {
 
 struct FireStarterRegister {
     unsigned int dataIndex;
+    unsigned int registerIndex;
     unsigned int instructionFirst;
     unsigned int instructionLast;
 }; // struct FireStarterRegister
