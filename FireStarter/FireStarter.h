@@ -8,34 +8,25 @@
 #define PROGRAM_INSTRUCTIONS PROGRAM_DATA
 
 typedef enum {
-    Program_accumulate,
-    Program_accumulate_load,
-    Program_accumulate_store,
-    Program_accumulate_load_store,
     Program_multiply_add,
-    Program_multiply_add_store
+    Program_multiply_add_abs_mod,
 } FireStarterProgramMode;
 
-#define PROGRAM_MODE Program_accumulate
+#define PROGRAM_MODE Program_multiply_add_abs_mod
 #define PROGRAM_RANDOM_INSTRUCTIONS 0
 
 typedef enum {
-    Operation_multiply_add_store,
-    Operation_multiply_add,
     Operation_multiply,
     Operation_add,
-    Operation_load,
-    Operation_store,
+    Operation_abs,
+    Operation_mod,
 } FireStarterOpcode;
 
 union FireStarterInstruction {
     unsigned int opcode;
     struct {
-        FireStarterOpcode operation : 4;
-        unsigned dataA : 7;
-        unsigned dataB : 7;
-        unsigned dataC : 7;
-        unsigned dataD : 7;
+        FireStarterOpcode operation : 16;
+        unsigned data : 16;
     } opdata;
 
     inline FireStarterOpcode Operation(void)
@@ -43,33 +34,15 @@ union FireStarterInstruction {
         return opdata.operation;
     } // Operation
 
-    inline unsigned char DataA(void)
+    inline unsigned char Data(void)
     {
-        return opdata.dataA;
-    } // DataA
+        return opdata.data;
+    } // Data
 
-    inline unsigned char DataB(void)
-    {
-        return opdata.dataB;
-    } // DataB
-
-    inline unsigned char DataC(void)
-    {
-        return opdata.dataC;
-    } // DataC
-
-    inline unsigned char DataD(void)
-    {
-        return opdata.dataD;
-    } // DataD
-
-    inline FireStarterInstruction(FireStarterOpcode operation, unsigned char dataA, unsigned char dataB = 0, unsigned char dataC = 0, unsigned char dataD = 0)
+    inline FireStarterInstruction(FireStarterOpcode operation, unsigned char data)
     {
         opdata.operation = operation;
-        opdata.dataA = dataA;
-        opdata.dataB = dataB;
-        opdata.dataC = dataC;
-        opdata.dataD = dataD;
+        opdata.data = data;
     } // FireStarterInstruction
 
     inline FireStarterInstruction(unsigned int code = 0) : opcode(code)
@@ -93,13 +66,14 @@ public:
     std::vector<unsigned int> m_registerLastInstruction;
     FireStarterProgramMode m_programMode;
     unsigned int m_dataSize;
+    unsigned int m_maxRegisters;
 
     void RandomInstruction(unsigned int index, unsigned int& seed);
     void EvolveInstruction(unsigned int index, unsigned int& seed);
     void OptimizeData(void);
     void InitProgram(unsigned int& seed);
-    void GenerateProgram(std::string& code, bool optimize);
-    void GenerateSolution(std::string& code, FireStarterData& data, bool optimize);
+    void GenerateProgram(std::string& code, bool optimize = true);
+    void GenerateSolution(std::string& code, FireStarterData& data);
     void SaveProgram(std::string& code);
     FireStarterProgram(void);
 }; // class FireStarterProgram
