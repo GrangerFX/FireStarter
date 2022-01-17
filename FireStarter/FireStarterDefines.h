@@ -29,9 +29,9 @@
 
 #define VARIATION0 0
 #if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE)
-#define VARIATION1 1
+#define VARIATION1 3
 #else
-#define VARIATION1 2
+#define VARIATION1 3
 #endif
 
 #define OPERATIONS_CODE "// OPERATIONS //"

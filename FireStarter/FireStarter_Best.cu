@@ -2,6 +2,8 @@
 #include "HashRandom.h"
 
 // TARGET //
+#define TARGET_PI 3.14159265f
+
 inline float Target(float n, unsigned int variation)
 {
     switch (variation) {
@@ -12,6 +14,8 @@ inline float Target(float n, unsigned int variation)
         return sinf(n * 1.2f) + n * 0.2f;
     case 2:
         return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
+    case 3:
+        return fabsf(fmodf(fabsf(n - TARGET_PI * 0.5f), TARGET_PI * 2.0f) - TARGET_PI) - TARGET_PI * 0.5f;
     }
 } // Target
 // END //
@@ -23,34 +27,34 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n = data.d[1] += n;
     n = data.d[2] *= n;
     n = data.d[3] += n;
-    n *= data.d[1];
-    n = data.d[3] += n;
     n = data.d[4] *= n;
     n = data.d[5] += n;
-    n *= data.d[6];
-    n = data.d[7] += n;
     n = data.d[5] *= n;
-    n = data.d[5] += n;
-    n *= data.d[8];
-    n += data.d[9];
-    n = data.d[10] *= n;
-    n = data.d[11] += n;
-    n = data.d[12] *= n;
+    n = data.d[6] += n;
+    n = data.d[4] *= n;
+    n += data.d[2];
+    n = data.d[7] *= n;
+    n += data.d[3];
+    n *= data.d[4];
+    n = data.d[8] += n;
+    n = data.d[9] *= n;
     n += data.d[10];
     n *= data.d[11];
     n += data.d[12];
-    n *= data.d[13];
-    n += data.d[14];
-    n *= data.d[15];
-    n += data.d[7];
-    n *= data.d[5];
-    n = data.d[16] += n;
-    n *= data.d[3];
-    n += data.d[17];
+    n = data.d[13] *= n;
+    n = data.d[8] += n;
+    n *= data.d[14];
+    n += data.d[15];
     n *= data.d[16];
-    n += data.d[4];
-    n *= data.d[2];
+    n += data.d[5];
+    n *= data.d[6];
+    n += data.d[8];
+    n *= data.d[1];
+    n += data.d[17];
+    n *= data.d[13];
     n += data.d[18];
+    n *= data.d[9];
+    n += data.d[7];
 // END //
     return isnan(n) ? 0.0f : n;
 } // Evaluate
