@@ -143,9 +143,9 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
                     unsigned int r = dataRegister.registerIndex;
                     if (i == dataRegister.instructionFirst)
                         if (i == dataRegister.instructionLast)
-                            code += Format("    n += %ff;\r\n", data.d[d]);
+                            code += Format("    n += %.8ff;\r\n", data.d[d]);
                         else {
-                            code += Format("    n += %ff;\r\n", data.d[d]);
+                            code += Format("    n += %.8ff;\r\n", data.d[d]);
                             if (r == rMax) {
                                 code += Format("    float d%u = n;\r\n", r);
                                 rMax = r + 1;
@@ -168,9 +168,9 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
                     unsigned int r = dataRegister.registerIndex;
                     if (i == dataRegister.instructionFirst)
                         if (i == dataRegister.instructionLast)
-                            code += Format("    n *= %ff;\r\n", data.d[d]);
+                            code += Format("    n *= %.8ff;\r\n", data.d[d]);
                         else {
-                            code += Format("    n *= %ff;\r\n", data.d[d]);
+                            code += Format("    n *= %.8ff;\r\n", data.d[d]);
                             if (r == rMax) {
                                 code += Format("    float d%u = n;\r\n", r);
                                 rMax = r + 1;
@@ -918,8 +918,9 @@ void FireStarter::ControlThread(void)
         checkCUDAErrors(cuCtxDestroy(m_fireShowContext));
 } // ControlThread
 
-void FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation)
+float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation)
 {
+    float maxError = 0.0f;
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
     int xScale = bufferHeight / 8;
     int yScale = bufferHeight / 16;
@@ -952,6 +953,10 @@ void FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, u
                 solution = Solution1(theta);
                 break;
         }
+        if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
+            float error = fabsf(solution - target);
+            maxError = max(maxError, error);
+        }
         int y = (int)(center + target * yScale);
         if ((y >= 0) && (y < (int)bufferHeight)) {
             uchar4& pixel(bufferPixels[y * bufferWidth + x]);
@@ -965,6 +970,7 @@ void FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, u
         };
     }
 #endif
+    return maxError;
 } // DrawSolution
 
 bool FireStarter::Init(void* window, unsigned long width, unsigned long height)
@@ -975,9 +981,11 @@ bool FireStarter::Init(void* window, unsigned long width, unsigned long height)
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
-    DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, VARIATION0);
-    DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, VARIATION1);
+    float maxError0 = DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, VARIATION0);
+    float maxError1 = DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, VARIATION1);
     RenderImage();
+    sprintf_s(m_statusString, "FireStarter: Solution0=%f Solution1=%f", maxError0, maxError1);
+    SetWindowText((HWND)m_window, m_statusString);
     return true;
 #else
     if (LoadTargetCode() && LoadFireStarterCode() && LoadFireShowCode()) {

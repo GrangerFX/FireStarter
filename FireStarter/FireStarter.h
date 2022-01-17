@@ -208,7 +208,7 @@ public:
     void RenderImage(void);
     void RenderStatus(void);
     void ControlThread(void);
-    void DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
+    float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
     bool Init(void* window, unsigned long width, unsigned long height);
     void Quit(void);
     FireStarter(void);
