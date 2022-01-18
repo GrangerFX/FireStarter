@@ -73,7 +73,7 @@ public:
     void OptimizeData(void);
     void InitProgram(unsigned int& seed);
     void GenerateProgram(std::string& code, bool optimize = true);
-    void GenerateSolution(std::string& code, FireStarterData& data);
+    void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code);
     FireStarterProgram(void);
 }; // class FireStarterProgram
@@ -116,13 +116,12 @@ public:
     unsigned int m_seed;
     volatile bool m_quit;
 
-    void GetResults(FireStarterResults* results, FireStarterResult& bestResult);
-    void CopyResultsDeviceToHost(void);
-    void CopyResultsHostToDevice(void);
+    void GetResults(FireStarterResult& result);
     void InitResults(void);
     void FreeResults(void);
     void RunGenerations(unsigned int generations, unsigned int variation, FireStarterResult& result);
     void RunEvolve(unsigned int variation, FireStarterResult& result);
+    void RunOptimize(unsigned int variation, FireStarterResult& result);
     void GenerateProgram(void);
     void EvolveProgram(void);
     void RandomProgram(void);

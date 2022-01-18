@@ -1,20 +1,6 @@
 #include "FireStarterDefines.h"
 #include "HashRandom.h"
-
-// TARGET //
-inline float Target(float n, unsigned int variation)
-{
-    switch (variation) {
-    default:
-    case 0:
-        return sinf(n);
-    case 1:
-        return sinf(n * 1.2f) + n * 0.2f;
-    case 2:
-        return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
-    }
-} // Target
-// END //
+#include "FireStarterTarget.h"
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
@@ -70,34 +56,30 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         data = oldResults->results[member].data;
         result = oldResult = oldResults->results[member].result;
     } else {
-        unsigned int dataSeed = RANDOMHASH(seed);
         for (int i = 0; i < dataSize; i++)
-            data.d[i] = RANDOMFACTOR(dataSeed);
+            data.d[i] = RANDOMFACTOR(seed);
         result = oldResult = START_RESULT;
     }
 
-    unsigned int iterations = (unsigned int)sqrtf((float)PROGRAM_ITERATIONS);
-    for (unsigned int p = 0; p < PROGRAM_ITERATIONS; p += iterations) {
-        float theta[SAMPLE_ITERATIONS];
-        float target[SAMPLE_ITERATIONS];
-        float sampleStep = 1.0f / SAMPLE_ITERATIONS;
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-            theta[i] = SAMPLE_MIN + sampleStep * (i + RANDOMNUM(seed)) * (SAMPLE_MAX - SAMPLE_MIN);
-            target[i] = Target(theta[i], variation);
-        }
+    float theta[SAMPLE_ITERATIONS];
+    float target[SAMPLE_ITERATIONS];
+    float sampleStep = 1.0f / (SAMPLE_ITERATIONS - 1);
+    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+        theta[i] = SAMPLE_MIN + i * sampleStep * (SAMPLE_MAX - SAMPLE_MIN);
+        target[i] = Target(theta[i], variation);
+    }
 
-        for (int i = 0; i < iterations; i++) {
-            unsigned int d = RANDOMSEED(seed) % dataSize;
-            float oldData = data.d[d];
-            data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
-            float curResult = 0.0f;
-            for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-                curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
-            if (curResult < result)
-                result = curResult;
-            else
-                data.d[d] = oldData;
-        }
+    for (unsigned int p = 0; p < PROGRAM_ITERATIONS; p ++) {
+        unsigned int d = RANDOMSEED(seed) % dataSize;
+        float oldData = data.d[d];
+        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
+        float curResult = 0.0f;
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+            curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
+        if (curResult < result)
+            result = curResult;
+        else
+            data.d[d] = oldData;
     }
 
     if (generation && (result == oldResult)) {
@@ -114,6 +96,8 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
             }
         }
         data = oldResults->results[bestIndex].data;
+//      unsigned int d = RANDOMSEED(seed) % dataSize;
+//      data.d[d] += (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * bestResult);
         result = START_RESULT;
     }
     newResults->results[member].data = data;

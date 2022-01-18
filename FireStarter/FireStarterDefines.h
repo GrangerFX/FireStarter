@@ -6,7 +6,7 @@
 #define FIRESTARTER_TEST     2
 #define FIRESTARTER_DEBUG    3
 #define FIRESTARTER_SOLUTION 4
-#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #define PROGRAM_UNITS 16
 #define PROGRAM_DATA 32
@@ -36,7 +36,6 @@
 
 #define OPERATIONS_CODE "// OPERATIONS //"
 #define EVALUATE_CODE   "// EVALUATE //"
-#define TARGET_CODE     "// TARGET //"
 #define DATA0_CODE      "// DATA0 //"
 #define DATA1_CODE      "// DATA1 //"
 #define END_CODE        "// END //"

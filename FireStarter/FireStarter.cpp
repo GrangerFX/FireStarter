@@ -85,65 +85,90 @@ void FireStarterProgram::GenerateProgram(std::string &code, bool optimize)
     // Generate the replacement code and update the program.
     for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
         FireStarterInstruction& instruction = m_instructions[i];
+        unsigned int d = instruction.Data();
         switch (instruction.Operation()) {
              case Operation_add:
-                code += Format("    n += data.d[%u];\r\n", instruction.Data());
+                code += Format("    n += data.d[%u];\r\n", d);
                 break;
             case Operation_multiply:
-                code += Format("    n *= data.d[%u];\r\n", instruction.Data());
+                code += Format("    n *= data.d[%u];\r\n", d);
                 break;
             case Operation_abs:
                 code += Format("    n = fabsf(n);\r\n");
                 break;
             case Operation_mod:
-                code += Format("    n = fmodf(n, data.d[%u]);\r\n", instruction.Data());
+                code += Format("    n = fmodf(n, data.d[%u]);\r\n", d);
                 break;
         }
-        if (!optimize || (i != m_registers[instruction.Data()].instructionLast))
-            code += Format("    data.d[%u] = n;\r\n", instruction.Data());
+        if (!optimize || (i != m_registers[d].instructionLast))
+            code += Format("    data.d[%u] = n;\r\n", d);
     }
 } // GenerateProgram
 
-void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data)
+void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data, bool optimize)
 {
     // Generate the replacement code and update the program.
-    code += "    float r0";
-    for (unsigned int i = 1; i < m_maxRegisters; i++)
-        code += Format(", r%u", i);
-    code += ";\r\n";
+    if (optimize) {
+        code += "    float r0";
+        for (unsigned int i = 1; i < m_maxRegisters; i++)
+            code += Format(", r%u", i);
+        code += ";\r\n";
+    } else
+        for (unsigned int i = 0; i < m_registers.size(); i++)
+            code += Format("    float d%u = %.12ff;\r\n", i, data.d[m_registers[i].dataIndex]);
     code += "\r\n";
+
     for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
         FireStarterInstruction& instruction = m_instructions[i];
         unsigned int d = instruction.Data();
-        float f = data.d[d];
-        FireStarterRegister& dataRegister = m_registers[d];
-        unsigned int r = dataRegister.registerIndex;
+        if (optimize) {
+            float f = data.d[d];
+            FireStarterRegister& dataRegister = m_registers[d];
+            unsigned int r = dataRegister.registerIndex;
 
-        switch (instruction.Operation()) {
-            case Operation_add:
-                if (i == dataRegister.instructionFirst)
-                    code += Format("    n += %.8ff;\r\n", f);
-                else
-                    code += Format("    n += r%u;\r\n", r);
-                break;
-            case Operation_multiply:
-                if (i == dataRegister.instructionFirst)
-                    code += Format("    n *= %.8ff;\r\n", data.d[d]);
-                else
-                    code += Format("    n *= r%u;\r\n", r);
-                break;
-            case Operation_abs:
-                code += Format("    n = fabsf(n);\r\n");
-                break;
-            case Operation_mod:
-                if (i == dataRegister.instructionFirst)
-                    code += Format("    n = fmodf(n, %.8ff);\r\n", data.d[d]);
-                else
-                    code += Format("    n = fmodf(n, r%u);\r\n", r);
-                break;
+            switch (instruction.Operation()) {
+                case Operation_add:
+                    if (i == dataRegister.instructionFirst)
+                        code += Format("    n += %.8ff;\r\n", f);
+                    else
+                        code += Format("    n += r%u;\r\n", r);
+                    break;
+                case Operation_multiply:
+                    if (i == dataRegister.instructionFirst)
+                        code += Format("    n *= %.8ff;\r\n", f);
+                    else
+                        code += Format("    n *= r%u;\r\n", r);
+                    break;
+                case Operation_abs:
+                    code += Format("    n = fabsf(n);\r\n");
+                    break;
+                case Operation_mod:
+                    if (i == dataRegister.instructionFirst)
+                        code += Format("    n = fmodf(n, %.8ff);\r\n", f);
+                    else
+                        code += Format("    n = fmodf(n, r%u);\r\n", r);
+                    break;
+            }
+            if (i < dataRegister.instructionLast)
+                code += Format("    r%u = n;\r\n", r);
+        } else {
+            switch (instruction.Operation()) {
+                case Operation_add:
+                    code += Format("    n += d%u;\r\n", d);
+                    break;
+                case Operation_multiply:
+                    code += Format("    n *= d%u;\r\n", d);
+                    break;
+                case Operation_abs:
+                    code += Format("    n = fabsf(n);\r\n");
+                    break;
+                case Operation_mod:
+                    code += Format("    n = fmodf(n, d%u);\r\n", d);
+                    break;
+            }
+            if (i != m_registers[d].instructionLast)
+                code += Format("    d%u = n;\r\n", d);
         }
-        if (i < dataRegister.instructionLast)
-            code += Format("    r%u = n;\r\n", r);
     }
 } // GenerateSolution
 
@@ -251,47 +276,44 @@ FireStarterState::FireStarterState(void)
     m_maxResult = START_RESULT;
 } // FireStarterState
 
-void FireStarterUnit::GetResults(FireStarterResults* results, FireStarterResult& bestResult)
+void FireStarterUnit::GetResults(FireStarterResult& result)
 {
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_fireStarterStream));
+    checkCUDAErrors(cudaStreamSynchronize(m_fireStarterStream));
     unsigned int index = 0;
-    float result = results->results[0].result;
+    float minResult = m_hostResults0->results[0].result;
     for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
-        float curResult = results->results[i].result;
-        if (curResult < result) {
-            result = curResult;
+        float curResult = m_hostResults0->results[i].result;
+        if (curResult < minResult) {
+            minResult = curResult;
             index = i;
         }
     }
-    bestResult = results->results[index];
+    result = m_hostResults0->results[index];
 } // GetResults
-
-void FireStarterUnit::CopyResultsDeviceToHost(void)
-{
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, m_fireStarterStream));
-    checkCUDAErrors(cudaStreamSynchronize(m_fireStarterStream));
-} // CopyResultsDeviceToHost
 
 void FireStarterUnit::InitResults(void)
 {
-    unsigned int resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
-    m_resultsSize = resultsSize * 2;
+    m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
+    size_t totalSize = m_resultsSize * 2;
     if (!m_deviceResults) {
-        checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize));
-        checkCUDAErrors(cudaMemset(m_deviceResults, 0, m_resultsSize));
+        checkCUDAErrors(cudaMalloc(&m_deviceResults, totalSize));
+        checkCUDAErrors(cudaMemset(m_deviceResults, 0, totalSize));
     }
     if (!m_hostResults) {
-        checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
-        memset(m_hostResults, 0, m_resultsSize);
+        checkCUDAErrors(cudaMallocHost(&m_hostResults, totalSize));
+        memset(m_hostResults, 0, totalSize);
     }
     m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
-    m_deviceResults1 = (FireStarterResults*)(m_deviceResults + resultsSize);
+    m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
     m_hostResults0 = (FireStarterResults*)(m_hostResults);
-    m_hostResults1 = (FireStarterResults*)(m_hostResults + resultsSize);
+    m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
 
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     LoadProgram(m_curState.m_program);
     m_curState.m_program.OptimizeData();
     m_curState.m_program.GenerateProgram(m_evaluateCode);
+    FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule);
 #else
     m_curState.m_program.InitProgram(m_seed);
 #endif
@@ -340,8 +362,7 @@ void FireStarterUnit::RunGenerations(unsigned int generations, unsigned int vari
             0));
         m_programGeneration++;
     }
-    CopyResultsDeviceToHost();
-    GetResults(m_hostResults0, result);
+    GetResults(result);
 } // RunGenerations
 
 void FireStarterUnit::RunEvolve(unsigned int variation, FireStarterResult &result)
@@ -356,6 +377,12 @@ void FireStarterUnit::RunEvolve(unsigned int variation, FireStarterResult &resul
             failCount++;
     } while ((failCount < failMax) && !m_quit);
 } // RunEvolve
+
+void FireStarterUnit::RunOptimize(unsigned int variation, FireStarterResult& result)
+{
+    m_programGeneration = 0;
+    RunGenerations(PROGRAM_GENERATIONS, variation, result);
+ } // RunOptimize
 
 void FireStarterUnit::GenerateProgram(void)
 {
@@ -399,7 +426,6 @@ void FireStarterUnit::EvaluateProgram(void)
     if (m_curState.m_maxResult < m_bestState.m_maxResult) {
         m_bestState = m_curState;
         m_bestEvaluateCode = m_evaluateCode;
-        m_unitGeneration = 0;
     }
 } // EvaluateProgram
 
@@ -411,9 +437,6 @@ void FireStarterUnit::ExecuteProgram(void)
 #if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE)
     EvolveProgram();
 #endif
-#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
-    FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule);
-#endif
 #if (FIRESTARTER_MODE == FIRESTARTER_TEST)
     RandomProgram();
 #endif
@@ -423,8 +446,8 @@ void FireStarterUnit::ExecuteProgram(void)
     RunEvolve(VARIATION0, m_curState.m_result0);
     RunEvolve(VARIATION1, m_curState.m_result1);
 #else
-    RunGenerations(PROGRAM_GENERATIONS, VARIATION0, m_curState.m_result0);
-    RunGenerations(PROGRAM_GENERATIONS, VARIATION1, m_curState.m_result1);
+    RunOptimize(VARIATION0, m_curState.m_result0);
+    RunOptimize(VARIATION1, m_curState.m_result1);
 #endif
     m_curState.m_processingTime = m_timer.Duration();
     EvaluateProgram();
@@ -435,7 +458,7 @@ float FireStarterUnit::UpdateProgram(std::string* &bestEvaluateCode, FireStarter
     bestEvaluateCode = &m_bestEvaluateCode;
     bestState = &m_bestState;
     generation = &m_unitGeneration;
-    return max(m_bestState.m_result0.result, m_bestState.m_result1.result);
+    return m_bestState.m_maxResult;
 } // Update
 
 void FireStarterUnit::InitProgram(void)
@@ -590,7 +613,7 @@ void FireStarter::UpdateData(std::string& code, const FireStarterResult& result,
 
 bool FireStarter::LoadTargetCode(void)
 {
-    if (!FireStarter::LoadCode("FireStarter_Target.h", m_targetCode))
+    if (!FireStarter::LoadCode("FireStarterTarget.h", m_targetCode))
         return false;
     return true;
 } // LoadTargetCode
@@ -604,7 +627,6 @@ bool FireStarter::LoadFireStarterCode(void)
     if (!FireStarter::LoadCode("FireStarter_Best.cu", m_fireStarterCode))
         return false;
 #endif
-    UpdateProgram(m_fireStarterCode, m_targetCode, TARGET_CODE);
     return true;
 } // LoadFireStarterCode
 
@@ -626,7 +648,6 @@ bool FireStarter::LoadFireShowCode(void)
     if (!LoadCode("FireShow_Best.cu", m_fireShowCode))
         return false;
 #endif
-    UpdateProgram(m_fireShowCode, m_targetCode, TARGET_CODE);
     return true;
 } // LoadFireShowCode
 
@@ -886,15 +907,15 @@ float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, 
         };
     }
     for (unsigned int x = 0; x < bufferWidth; x++) {
-        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
+        float theta = TARGET_PI * ((x - bufferWidth * 0.5f)  / xScale + 1.0f);
         float center = bufferHeight * 0.66f;
         float target = Target(theta, variation);
         float solution = 0.0f;
         switch (variation) {
-            case 0:
+            case VARIATION0:
                 solution = Solution0(theta);
                 break;
-            default:
+            case VARIATION1:
                 solution = Solution1(theta);
                 break;
         }
