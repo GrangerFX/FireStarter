@@ -96,8 +96,6 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
             }
         }
         data = oldResults->results[bestIndex].data;
-        unsigned int d = RANDOMSEED(seed) % dataSize;
-        data.d[d] += (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * bestResult);
         result = START_RESULT;
     }
     newResults->results[member].data = data;
