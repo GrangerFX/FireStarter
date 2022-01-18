@@ -12,7 +12,11 @@ typedef enum {
     Program_multiply_add_abs_mod,
 } FireStarterProgramMode;
 
+#if VARAITION1 == 3
 #define PROGRAM_MODE Program_multiply_add_abs_mod
+#else
+#define PROGRAM_MODE Program_multiply_add
+#endif
 #define PROGRAM_RANDOM_INSTRUCTIONS 0
 
 typedef enum {
@@ -116,20 +120,20 @@ public:
     unsigned int m_seed;
     volatile bool m_quit;
 
+    void GenerateProgram(void);
     void GetResults(FireStarterResult& result);
     void InitResults(void);
     void FreeResults(void);
     void RunGenerations(unsigned int generations, unsigned int variation, FireStarterResult& result);
     void RunEvolve(unsigned int variation, FireStarterResult& result);
     void RunOptimize(unsigned int variation, FireStarterResult& result);
-    void GenerateProgram(void);
     void EvolveProgram(void);
     void RandomProgram(void);
     void EvaluateProgram(void);
     void ExecuteProgram(void);
     float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
-    void InitProgram(void);
-    void FinishProgram(void);
+    void InitUnit(void);
+    void FinishUnit(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

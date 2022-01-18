@@ -77,7 +77,6 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
 {
     for (unsigned int i = 0; i < m_instructions.size(); i++)
         RandomInstruction(i, seed);
-    OptimizeData();
 } // InitProgram
 
 void FireStarterProgram::GenerateProgram(std::string &code, bool optimize)
@@ -276,6 +275,24 @@ FireStarterState::FireStarterState(void)
     m_maxResult = START_RESULT;
 } // FireStarterState
 
+void FireStarterUnit::GenerateProgram(void)
+{
+    // Optimize the program data and registers.
+    m_curState.m_program.OptimizeData();
+
+    // Generate the replacement code.
+    m_evaluateCode.clear();
+    m_curState.m_program.GenerateProgram(m_evaluateCode);
+
+    // Update and compile the program.
+    std::string updatedCode = m_fireStarterCode;
+    FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
+    FireStarter::CompileProgram(updatedCode, m_fireStarterModule);
+
+    // Increment the unit generation counter.
+    m_unitGeneration++;
+} // GenerateProgram
+
 void FireStarterUnit::GetResults(FireStarterResult& result)
 {
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_fireStarterStream));
@@ -311,9 +328,7 @@ void FireStarterUnit::InitResults(void)
 
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     LoadProgram(m_curState.m_program);
-    m_curState.m_program.OptimizeData();
-    m_curState.m_program.GenerateProgram(m_evaluateCode);
-    FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule);
+    GenerateProgram();
 #else
     m_curState.m_program.InitProgram(m_seed);
 #endif
@@ -384,21 +399,6 @@ void FireStarterUnit::RunOptimize(unsigned int variation, FireStarterResult& res
     RunGenerations(PROGRAM_GENERATIONS, variation, result);
  } // RunOptimize
 
-void FireStarterUnit::GenerateProgram(void)
-{
-    // Generate the replacement code.
-    m_evaluateCode.clear();
-    m_curState.m_program.GenerateProgram(m_evaluateCode);
-
-    // Update and compile the program.
-    std::string updatedCode = m_fireStarterCode;
-    FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
-    FireStarter::CompileProgram(updatedCode, m_fireStarterModule);
-
-    // Increment the unit generation counter.
-    m_unitGeneration++;
-} // GenerateProgram
-
 void FireStarterUnit::EvolveProgram(void)
 {
     // Determine how many changes to make to the instructions.
@@ -410,7 +410,6 @@ void FireStarterUnit::EvolveProgram(void)
         unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
         m_curState.m_program.EvolveInstruction(index, m_seed);
     }
-    m_curState.m_program.OptimizeData();
     GenerateProgram();
 } // EvolveProgram
 
@@ -461,14 +460,14 @@ float FireStarterUnit::UpdateProgram(std::string* &bestEvaluateCode, FireStarter
     return m_bestState.m_maxResult;
 } // Update
 
-void FireStarterUnit::InitProgram(void)
+void FireStarterUnit::InitUnit(void)
 {
     checkCUDAErrors(cuCtxCreate(&m_fireStarterContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireStarterStream));
     InitResults();
-} // InitProgram
+} // InitUnit
 
-void FireStarterUnit::FinishProgram(void)
+void FireStarterUnit::FinishUnit(void)
 {
     if (m_fireStarterModule) {
         checkCUDAErrors(cuModuleUnload(m_fireStarterModule));
@@ -479,7 +478,7 @@ void FireStarterUnit::FinishProgram(void)
         checkCUDAErrors(cuCtxDestroy(m_fireStarterContext));
         m_fireStarterContext = nullptr;
     }
-} // FinishProgram
+} // FinishUnit
 
 FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode)
 {
@@ -781,7 +780,7 @@ void FireStarter::ControlThread(void)
     }
     for (FireStarterUnit* unit : m_units)
         unit->DispatchAsync([this, unit] {
-            unit->InitProgram();
+            unit->InitUnit();
         });
 
     // Loop until the the host program is quit.
@@ -868,7 +867,7 @@ void FireStarter::ControlThread(void)
     // Finish processing and terminate each unit.
     for (FireStarterUnit* unit : m_units) {
         unit->m_quit = true;    // This allows the program loop to exit faster.
-        unit->DispatchAsync([unit] { unit->FinishProgram(); });
+        unit->DispatchAsync([unit] { unit->FinishUnit(); });
     }
     for (FireStarterUnit* unit : m_units)
         delete unit;
