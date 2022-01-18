@@ -24,51 +24,48 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
 // EVALUATE //
     n *= data.d[0];
-    data.d[0] = n;
     n += data.d[1];
-    data.d[1] = n;
     n *= data.d[2];
-    data.d[2] = n;
     n += data.d[3];
     data.d[3] = n;
     n *= data.d[4];
-    n += data.d[2];
-    data.d[2] = n;
-    n *= data.d[5];
-    data.d[5] = n;
-    n += data.d[6];
-    n *= data.d[5];
+    data.d[4] = n;
+    n += data.d[5];
+    n *= data.d[6];
+    data.d[6] = n;
     n += data.d[7];
     data.d[7] = n;
     n *= data.d[8];
-    n += data.d[0];
-    n = fabsf(n);
-    data.d[9] = n;
-    n *= data.d[3];
-    data.d[3] = n;
-    n += data.d[7];
-    data.d[7] = n;
-    n *= data.d[1];
     n += data.d[9];
-    n *= data.d[10];
+    data.d[9] = n;
+    n *= data.d[4];
+    data.d[4] = n;
+    n += data.d[3];
+    n = fabsf(n);
     data.d[10] = n;
-    n += data.d[11];
-    n *= data.d[10];
-    data.d[10] = n;
-    n += data.d[12];
-    n *= data.d[7];
+    n *= data.d[11];
     n += data.d[10];
-    n *= data.d[13];
+    data.d[10] = n;
+    n *= data.d[4];
+    n += data.d[6];
+    data.d[6] = n;
+    n *= data.d[12];
+    n += data.d[13];
+    n *= data.d[10];
     n += data.d[14];
     data.d[14] = n;
+    n *= data.d[7];
+    n += data.d[15];
+    n *= data.d[14];
+    n += data.d[16];
     n = fabsf(n);
-    n *= data.d[15];
-    data.d[15] = n;
-    n += data.d[3];
-    n *= data.d[16];
-    n += data.d[17];
-    n *= data.d[15];
-    n += data.d[2];
+    n *= data.d[9];
+    n += data.d[18];
+    data.d[18] = n;
+    n *= data.d[19];
+    n += data.d[6];
+    n *= data.d[20];
+    n += data.d[18];
 // END //
     return isnan(n) ? 0.0f : n;
 } // Evaluate
@@ -78,41 +75,47 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-
-    unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
-    float theta[SAMPLE_ITERATIONS];
-    float target[SAMPLE_ITERATIONS];
-    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta[i] = SAMPLE_MIN + RANDOMNUM(seed) * (SAMPLE_MAX - SAMPLE_MIN);
-        target[i] = Target(theta[i], variation);
-    }
+    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);
 
     FireStarterResults *oldResults = generation & 1 ? results0 : results1;
     FireStarterResults *newResults = generation & 1 ? results1 : results0;
     FireStarterData data;
-    float result;
+    float result, oldResult;
     if (generation) {
         data = oldResults->results[member].data;
-        result = oldResults->results[member].result;
+        result = oldResult = oldResults->results[member].result;
     } else {
+        unsigned int dataSeed = RANDOMHASH(seed);
         for (int i = 0; i < dataSize; i++)
-            data.d[i] = RANDOMFACTOR(seed);
-        result = START_RESULT;
+            data.d[i] = RANDOMFACTOR(dataSeed);
+        result = oldResult = START_RESULT;
     }
 
-    float oldResult = result;
-    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
-        unsigned int d = RANDOMSEED(seed) % dataSize;
-        float oldData = data.d[d];
-        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
-        float curResult = 0.0f;
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-            curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
-        if (curResult < result)
-            result = curResult;
-        else
-            data.d[d] = oldData;
+    unsigned int iterations = (unsigned int)sqrtf((float)PROGRAM_ITERATIONS);
+    unsigned int p = 0;
+    while (p < PROGRAM_ITERATIONS) {
+        float theta[SAMPLE_ITERATIONS];
+        float target[SAMPLE_ITERATIONS];
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+            theta[i] = SAMPLE_MIN + RANDOMNUM(seed) * (SAMPLE_MAX - SAMPLE_MIN);
+            target[i] = Target(theta[i], variation);
+        }
+
+        for (int i = 0; i < iterations; i++) {
+            unsigned int d = RANDOMSEED(seed) % dataSize;
+            float oldData = data.d[d];
+            data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
+            float curResult = 0.0f;
+            for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+                curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
+            if (curResult < result)
+                result = curResult;
+            else
+                data.d[d] = oldData;
+        }
+        p += iterations;
     }
+
     if (generation && (result == oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.

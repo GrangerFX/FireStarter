@@ -731,7 +731,7 @@ void FireStarter::RenderImage(void)
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
-    sprintf_s(m_statusString, "FireStarter: Generation=%lld  Age=%lld  Best=%f  Worst=%f  Time=%.4f Seconds", m_generation, m_bestGeneration, m_bestResult, m_worstResult, m_controlTime);
+    sprintf_s(m_statusString, "FireStarter: Generation=%lld  Age=%lld  Best=%f  Worst=%f  Time=%.4f Seconds", m_generation, m_generation - m_bestGeneration, m_bestResult, m_worstResult, m_controlTime);
 } // RenderStatus
 
 void FireStarter::ControlThread(void)

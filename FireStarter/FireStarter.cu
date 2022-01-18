@@ -60,41 +60,46 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-
-    unsigned int seed = RANDOMHASH(RANDOMHASH(generation) + member);
-    float theta[SAMPLE_ITERATIONS];
-    float target[SAMPLE_ITERATIONS];
-    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta[i] = SAMPLE_MIN + RANDOMNUM(seed) * (SAMPLE_MAX - SAMPLE_MIN);
-        target[i] = Target(theta[i], variation);
-    }
+    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);
 
     FireStarterResults *oldResults = generation & 1 ? results0 : results1;
     FireStarterResults *newResults = generation & 1 ? results1 : results0;
     FireStarterData data;
-    float result;
+    float result, oldResult;
     if (generation) {
         data = oldResults->results[member].data;
-        result = oldResults->results[member].result;
+        result = oldResult = oldResults->results[member].result;
     } else {
+        unsigned int dataSeed = RANDOMHASH(seed);
         for (int i = 0; i < dataSize; i++)
-            data.d[i] = RANDOMFACTOR(seed);
-        result = START_RESULT;
+            data.d[i] = RANDOMFACTOR(dataSeed);
+        result = oldResult = START_RESULT;
     }
 
-    float oldResult = result;
-    for (int p = 0; p < PROGRAM_ITERATIONS; p++) {
-        unsigned int d = RANDOMSEED(seed) % dataSize;
-        float oldData = data.d[d];
-        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
-        float curResult = 0.0f;
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-            curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
-        if (curResult < result)
-            result = curResult;
-        else
-            data.d[d] = oldData;
+    unsigned int iterations = (unsigned int)sqrtf((float)PROGRAM_ITERATIONS);
+    for (unsigned int p = 0; p < PROGRAM_ITERATIONS; p += iterations) {
+        float theta[SAMPLE_ITERATIONS];
+        float target[SAMPLE_ITERATIONS];
+        float sampleStep = 1.0f / SAMPLE_ITERATIONS;
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+            theta[i] = SAMPLE_MIN + sampleStep * (i + RANDOMNUM(seed)) * (SAMPLE_MAX - SAMPLE_MIN);
+            target[i] = Target(theta[i], variation);
+        }
+
+        for (int i = 0; i < iterations; i++) {
+            unsigned int d = RANDOMSEED(seed) % dataSize;
+            float oldData = data.d[d];
+            data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
+            float curResult = 0.0f;
+            for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+                curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
+            if (curResult < result)
+                result = curResult;
+            else
+                data.d[d] = oldData;
+        }
     }
+
     if (generation && (result == oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
@@ -109,8 +114,6 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
             }
         }
         data = oldResults->results[bestIndex].data;
-        unsigned int d = RANDOMSEED(seed) % dataSize;
-        data.d[d] += (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * bestResult);
         result = START_RESULT;
     }
     newResults->results[member].data = data;
