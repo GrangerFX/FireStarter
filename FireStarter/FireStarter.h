@@ -5,19 +5,41 @@
 #include "SerialThread.h"
 #include "HashRandom.h"
 
+#define FIRESTARTER_EVOLVE   0
+#define FIRESTARTER_OPTIMIZE 1
+#define FIRESTARTER_TEST     2
+#define FIRESTARTER_DEBUG    3
+#define FIRESTARTER_SOLUTION 4
+#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
+
 #define PROGRAM_INSTRUCTIONS PROGRAM_DATA
+#define PROGRAM_UNITS 16
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
+#define PROGRAM_GENERATIONS 10  // Must be even!
+#else
+#define PROGRAM_GENERATIONS 100 // Must be even!
+#endif
+
+#define VARIATION0 0
+#define VARIATION1 3
+
+#define EVALUATE_CODE   "// EVALUATE //"
+#define DATA0_CODE      "// DATA0 //"
+#define DATA1_CODE      "// DATA1 //"
+#define END_CODE        "// END //"
 
 typedef enum {
     Program_multiply_add,
-    Program_multiply_add_abs_mod,
+    Program_multiply_add_abs,
 } FireStarterProgramMode;
 
-#if VARAITION1 == 3
-#define PROGRAM_MODE Program_multiply_add_abs_mod
+#if VARIATION1 == 3
+#define PROGRAM_MODE Program_multiply_add_abs
+#define PROGRAM_RANDOM_INSTRUCTIONS 1
 #else
 #define PROGRAM_MODE Program_multiply_add
-#endif
 #define PROGRAM_RANDOM_INSTRUCTIONS 0
+#endif
 
 typedef enum {
     Operation_multiply,
@@ -73,12 +95,12 @@ public:
     unsigned int m_maxRegisters;
 
     void RandomInstruction(unsigned int index, unsigned int& seed);
-    void EvolveInstruction(unsigned int index, unsigned int& seed);
     void OptimizeData(void);
     void InitProgram(unsigned int& seed);
     void GenerateProgram(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code);
+    float EmulateProgram(FireStarterData& data, float n);
     FireStarterProgram(void);
 }; // class FireStarterProgram
 

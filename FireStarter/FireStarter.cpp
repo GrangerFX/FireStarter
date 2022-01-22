@@ -24,12 +24,6 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
     instruction.opdata.data = RANDOMSEED(seed) % PROGRAM_DATA;
 } // RandomInstruction
 
-void FireStarterProgram::EvolveInstruction(unsigned int index, unsigned int& seed)
-{
-    FireStarterInstruction& instruction = m_instructions[index];
-    instruction.opdata.data = RANDOMSEED(seed) % PROGRAM_DATA;
-} // EvolveInstruction
-
 void FireStarterProgram::OptimizeData(void)
 {
     // Delete the unused registers and sort the remaining ones.
@@ -192,6 +186,31 @@ void FireStarterProgram::SaveProgram(std::string& code)
     code += "\r\n";
 } // SaveProgram
 
+float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
+{
+    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
+        FireStarterInstruction& instruction = m_instructions[i];
+        float& f = data.d[instruction.Data()];
+
+        switch (instruction.Operation()) {
+            case Operation_add:
+                n += f;
+                break;
+            case Operation_multiply:
+                n *= f;
+                break;
+            case Operation_abs:
+                n = fabsf(n);
+                break;
+            case Operation_mod:
+                n = fmodf(n, f);
+                break;
+        }
+        f = n;
+    }
+    return n;
+} // EmulateProgram
+
 FireStarterProgram::FireStarterProgram(void)
 {
     m_programMode = PROGRAM_MODE;
@@ -201,7 +220,7 @@ FireStarterProgram::FireStarterProgram(void)
             m_opcodes.push_back(Operation_multiply);
             m_opcodes.push_back(Operation_add);
             break;
-        case Program_multiply_add_abs_mod:
+        case Program_multiply_add_abs:
             m_opcodes.push_back(Operation_multiply);
             m_opcodes.push_back(Operation_add);
             m_opcodes.push_back(Operation_multiply);
@@ -408,7 +427,7 @@ void FireStarterUnit::EvolveProgram(void)
     m_curState = m_bestState;
     while (numChanges--) {
         unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-        m_curState.m_program.EvolveInstruction(index, m_seed);
+        m_curState.m_program.RandomInstruction(index, m_seed);
     }
     GenerateProgram();
 } // EvolveProgram
