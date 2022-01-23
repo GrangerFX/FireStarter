@@ -1,8 +1,5 @@
 #include "FireStarter.h"
 #include "FireStarterUtil.h"
-#if FIRESTARTER_MODE == FIRESTARTER_DEBUG
-#include "FireShow_Best.cu"
-#endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
 #include "FireStarter_LoadState.h"
 #endif
@@ -368,7 +365,7 @@ void FireStarterUnit::FreeResults(void)
     m_hostResults0 = m_hostResults1 = nullptr;
 } // FreeResults
 
-void FireStarterUnit::RunGenerations(unsigned int generations, unsigned int variation, FireStarterResult& result)
+void FireStarterUnit::RunGenerations(unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result)
 {
     // Launch the calculation kernel
     unsigned int programPopulation = PROGRAM_POPULATION;
@@ -377,7 +374,6 @@ void FireStarterUnit::RunGenerations(unsigned int generations, unsigned int vari
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     float lastResult = result.result;
-    unsigned long long generation = m_programGeneration;
     for (unsigned int g = 0; g < generations; g++) {
         void* arr[] = { reinterpret_cast<void*>(&m_deviceResults0),
                         reinterpret_cast<void*>(&m_deviceResults1),
@@ -403,23 +399,24 @@ void FireStarterUnit::RunGenerations(unsigned int generations, unsigned int vari
 void FireStarterUnit::RunEvolve(unsigned int variation, FireStarterResult &result)
 {
 #if 0
-    RunGenerations(PROGRAM_GENERATIONS, variation, result);
+    RunGenerations(PROGRAM_GENERATIONS, 0, variation, result);
 #else
     unsigned int failCount = 0;
     unsigned int failMax = 0;
-    m_programGeneration = 0;
+    unsigned long long generation = 0;
     do {
         float lastResult = result.result;
-        RunGenerations(PROGRAM_GENERATIONS, variation, result);
+        RunGenerations(PROGRAM_GENERATIONS, generation, variation, result);
         if (result.result >= lastResult)
             failCount++;
+        generation += PROGRAM_GENERATIONS;
     } while ((failCount < failMax) && !m_quit);
 #endif
 } // RunEvolve
 
 void FireStarterUnit::RunOptimize(unsigned int variation, FireStarterResult& result)
 {
-    RunGenerations(PROGRAM_GENERATIONS, variation, result);
+    RunGenerations(PROGRAM_GENERATIONS, m_programGeneration, variation, result);
  } // RunOptimize
 
 void FireStarterUnit::EvolveProgram(void)
@@ -455,26 +452,23 @@ void FireStarterUnit::ExecuteProgram(void)
 {
     m_timer.Start();
 
-    // Evolve the program instructions.
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE)
-    EvolveProgram();
-#endif
-#if (FIRESTARTER_MODE == FIRESTARTER_TEST)
-    RandomProgram();
-#endif
-
     // Run the next generation on the GPU.
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE)
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
+    EvolveProgram(); // Evolve the program instructions.
     RunEvolve(VARIATION0, m_curState.m_result0);
     RunEvolve(VARIATION1, m_curState.m_result1);
-#else
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     RunOptimize(VARIATION0, m_curState.m_result0);
     RunOptimize(VARIATION1, m_curState.m_result1);
 #endif
+
+    // Evaluate the results to see if they improved.
+    EvaluateProgram();
+
     m_programGeneration += PROGRAM_GENERATIONS;
     m_curState.m_processingTime = m_timer.Duration();
-    EvaluateProgram();
- } // ExecuteProgram
+} // ExecuteProgram
 
 float FireStarterUnit::UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation)
 {
@@ -643,7 +637,7 @@ bool FireStarter::LoadTargetCode(void)
 
 bool FireStarter::LoadFireStarterCode(void)
 {
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE) || (FIRESTARTER_MODE == FIRESTARTER_TEST)
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     if (!FireStarter::LoadCode("FireStarter.cu", m_fireStarterCode))
         return false;
 #else
@@ -657,14 +651,14 @@ void FireStarter::SaveFireStarterCode(void)
 {
     m_bestFireStarterCode = m_fireStarterCode;
     FireStarter::UpdateProgram(m_bestFireStarterCode, m_bestEvaluateCode, EVALUATE_CODE);
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE) || (FIRESTARTER_MODE == FIRESTARTER_TEST)
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     FireStarter::SaveCode("FireStarter_Best.cu", m_bestFireStarterCode);
 #endif
 } // SaveFireStarterCode
 
 bool FireStarter::LoadFireShowCode(void)
 {
-#if (FIRESTARTER_MODE == FIRESTARTER_EVOLVE) || (FIRESTARTER_MODE == FIRESTARTER_TEST)
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     if (!LoadCode("FireShow.cu", m_fireShowCode))
         return false;
 #else
@@ -680,9 +674,7 @@ void FireStarter::SaveFireShowCode(void)
     UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result0, m_bestEvaluateState.m_program.m_dataSize, DATA0_CODE);
     UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result1, m_bestEvaluateState.m_program.m_dataSize, DATA1_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
-#if (FIRESTARTER_MODE != FIRESTARTER_DEBUG)
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
-#endif
 } // SaveFireShowCode
 
 void FireStarter::SaveBestState(void)
@@ -819,51 +811,56 @@ void FireStarter::ControlThread(void)
         // Syncronously update the best data for all the units.
         m_worstResult = 0.0f;
         for (FireStarterUnit* unit : m_units) {
-            if (!m_quitControlThread) {
-                unit->DispatchSync([this, unit] {
-                    std::string* unitBestEvaluateCode = nullptr;
-                    FireStarterState* unitBestEvaluateState = nullptr;
-                    unsigned long long* unitGeneration = nullptr;
-                    float result = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
-                    if (result < m_bestResult) {
-                        m_bestResult = result;
-                        m_bestEvaluateCode = *unitBestEvaluateCode;
-                        m_bestEvaluateState = *unitBestEvaluateState;
-                        m_bestGeneration = m_generation;
-                        m_controlUpdate = true;
-                    }
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-                    else {
-                        FireStarterUnit* randomUnit = m_units[RANDOMSEED(m_seed) % m_units.size()];
-                        std::string* randomEvaluateCode = nullptr;
-                        FireStarterState* randomEvaluateState = nullptr;
-                        unsigned long long* randomGeneration = nullptr;
-                        randomUnit->UpdateProgram(randomEvaluateCode, randomEvaluateState, randomGeneration);
-                        if (randomEvaluateState->m_maxResult < unitBestEvaluateState->m_maxResult) {
-                            *unitBestEvaluateCode = *randomEvaluateCode;
-                            *unitBestEvaluateState = *randomEvaluateState;
-                            *unitGeneration = *randomGeneration;
-                        }
-                    }
-#endif
-                    if (result > m_worstResult)
-                        m_worstResult = result;
-                });
-            } else
-                break;
+            unit->DispatchSync([this, unit] {
+                std::string* unitBestEvaluateCode = nullptr;
+                FireStarterState* unitBestEvaluateState = nullptr;
+                unsigned long long* unitGeneration = nullptr;
+                float result = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
+                if (result < m_bestResult) {
+                    m_bestResult = result;
+                    m_bestEvaluateCode = *unitBestEvaluateCode;
+                    m_bestEvaluateState = *unitBestEvaluateState;
+                    m_bestGeneration = m_generation;
+                    m_controlUpdate = true;
+                } else if (result > m_worstResult)
+                    m_worstResult = result;
+            });
         }
         m_controlTime = m_controlTimer.Duration();
         m_generation++;
+
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
+        // Note: This code can run in the control thread because the unit threads are all idle at this point.
+        for (FireStarterUnit* unit : m_units) {
+            std::string* unitBestEvaluateCode = nullptr;
+            FireStarterState* unitBestEvaluateState = nullptr;
+            unsigned long long* unitGeneration = nullptr;
+            float unitResult = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
+            if (unitResult > m_bestResult) {
+                FireStarterUnit* randomUnit;
+                do {
+                    randomUnit = m_units[RANDOMSEED(m_seed) % m_units.size()];
+                } while (randomUnit == unit);
+                std::string* randomEvaluateCode = nullptr;
+                FireStarterState* randomEvaluateState = nullptr;
+                unsigned long long* randomGeneration = nullptr;
+                float randomResult = randomUnit->UpdateProgram(randomEvaluateCode, randomEvaluateState, randomGeneration);
+                if (randomResult < unitResult) {
+                    *unitBestEvaluateCode = *randomEvaluateCode;
+                    *unitBestEvaluateState = *randomEvaluateState;
+                    *unitGeneration = *randomGeneration;
+                }
+            }
+        }
+#endif
 
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
             SaveFireStarterCode();
             SaveFireShowCode();
             CompileProgram(m_bestFireShowCode, m_fireShowModule);
-#if (FIRESTARTER_MODE != FIRESTARTER_DEBUG)
             SaveBestState();
             SaveSolution();
-#endif
         }
 
         // Update the render status after every pass.
@@ -1004,14 +1001,6 @@ FireStarter::FireStarter(void)
     m_seed = RANDOMHASH(123);
     m_controlUpdate = false;
     m_bufferUpdate = false;
-#if FIRESTARTER_MODE == FIRESTARTER_DEBUG
-    FireStarterData data0, data1;
-    InitData0(data0);
-    InitData1(data1);
-    float result0 = Evaluate(data0, 0.5f);
-    float result1 = Evaluate(data1, 0.5f);
-    float foo = 1.0f;
-#endif
 } // FireStarter
 
 FireStarter::~FireStarter(void)

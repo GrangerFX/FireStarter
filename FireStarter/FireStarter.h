@@ -7,9 +7,7 @@
 
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
-#define FIRESTARTER_TEST     2
-#define FIRESTARTER_DEBUG    3
-#define FIRESTARTER_SOLUTION 4
+#define FIRESTARTER_SOLUTION 2
 #define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
 
 #define PROGRAM_INSTRUCTIONS 32
@@ -149,7 +147,7 @@ public:
     void GetResults(FireStarterResult& result);
     void InitResults(void);
     void FreeResults(void);
-    void RunGenerations(unsigned int generations, unsigned int variation, FireStarterResult& result);
+    void RunGenerations(unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result);
     void RunEvolve(unsigned int variation, FireStarterResult& result);
     void RunOptimize(unsigned int variation, FireStarterResult& result);
     void EvolveProgram(void);

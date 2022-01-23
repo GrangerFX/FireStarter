@@ -5,55 +5,55 @@
 GPU_FUNCTION float InitData0(FireStarterData &data)
 {
 // DATA0 //
-    data.d[0] = -0.289090f;
-    data.d[1] = -1.303467f;
-    data.d[2] = -1.838125f;
-    data.d[3] = 0.373037f;
-    data.d[4] = -3.141582f;
-    data.d[5] = -0.510863f;
-    data.d[6] = -0.559002f;
-    data.d[7] = -1.110430f;
-    data.d[8] = -1.000000f;
-    data.d[9] = 1.168224f;
-    data.d[10] = 0.495580f;
-    data.d[11] = -1.299237f;
-    data.d[12] = -0.421746f;
-    data.d[13] = 0.622736f;
-    data.d[14] = -0.553655f;
-    data.d[15] = -2.226254f;
-    data.d[16] = -0.880161f;
-    data.d[17] = -0.798907f;
-    data.d[18] = 2.567938f;
-    data.d[19] = 0.191024f;
-    data.d[20] = -0.873333f;
-    return 0.000014;
+    data.d[0] = -0.756416f;
+    data.d[1] = -1.767132f;
+    data.d[2] = -1.374461f;
+    data.d[3] = 1.143578f;
+    data.d[4] = -3.141592f;
+    data.d[5] = -1.859303f;
+    data.d[6] = -0.604994f;
+    data.d[7] = 2.216021f;
+    data.d[8] = -0.986223f;
+    data.d[9] = 0.042945f;
+    data.d[10] = -0.318405f;
+    data.d[11] = 0.361162f;
+    data.d[12] = -0.379067f;
+    data.d[13] = 0.000000f;
+    data.d[14] = 0.021517f;
+    data.d[15] = -0.430862f;
+    data.d[16] = -1.494115f;
+    data.d[17] = 0.694912f;
+    data.d[18] = 4.112866f;
+    data.d[19] = 1.184538f;
+    data.d[20] = -0.301428f;
+    return 0.000001;
 // END //
 } // InitData0
 
 GPU_FUNCTION float InitData1(FireStarterData &data)
 {
 // DATA1 //
-    data.d[0] = 0.098999f;
-    data.d[1] = -0.451570f;
-    data.d[2] = -1.119227f;
-    data.d[3] = 2.685291f;
+    data.d[0] = 0.392095f;
+    data.d[1] = -0.122252f;
+    data.d[2] = -1.448544f;
+    data.d[3] = 5.573698f;
     data.d[4] = -3.141593f;
-    data.d[5] = 0.566262f;
-    data.d[6] = 0.858579f;
-    data.d[7] = -0.763691f;
-    data.d[8] = 1.056848f;
-    data.d[9] = -3.845915f;
-    data.d[10] = -3.357795f;
-    data.d[11] = -0.738411f;
-    data.d[12] = 2.972141f;
-    data.d[13] = 0.653228f;
-    data.d[14] = 0.718845f;
-    data.d[15] = 1.455028f;
-    data.d[16] = 3.087654f;
-    data.d[17] = -0.353678f;
-    data.d[18] = -4.670408f;
-    data.d[19] = 2.857769f;
-    data.d[20] = 0.000000f;
+    data.d[5] = 1.182368f;
+    data.d[6] = 0.940891f;
+    data.d[7] = 1.930147f;
+    data.d[8] = -1.460912f;
+    data.d[9] = 0.763858f;
+    data.d[10] = -1.552419f;
+    data.d[11] = -1.267499f;
+    data.d[12] = 0.243507f;
+    data.d[13] = 0.609684f;
+    data.d[14] = -2.135434f;
+    data.d[15] = -0.818564f;
+    data.d[16] = -0.168106f;
+    data.d[17] = -2.915506f;
+    data.d[18] = 1.734677f;
+    data.d[19] = -5.996959f;
+    data.d[20] = -0.000000f;
     return 0.000000;
 // END //
 } // InitData1
@@ -71,39 +71,39 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n *= data.d[5];
     data.d[5] = n;
     n *= data.d[6];
-    data.d[6] = n;
     n = fabsf(n);
-    n += data.d[7];
+    n *= data.d[7];
     data.d[7] = n;
-    n *= data.d[8];
-    data.d[8] = n;
+    n = fabsf(n);
     n *= data.d[9];
     data.d[9] = n;
     n += data.d[10];
-    data.d[10] = n;
     n += data.d[11];
-    data.d[11] = n;
+    n += data.d[12];
+    data.d[12] = n;
+    n *= data.d[13];
+    data.d[13] = n;
+    n += data.d[14];
+    data.d[14] = n;
+    n *= data.d[7];
+    n += data.d[9];
     n *= data.d[12];
-    n += data.d[13];
-    n *= data.d[10];
-    data.d[10] = n;
-    n *= data.d[14];
     n += data.d[15];
-    n *= data.d[9];
-    n *= data.d[6];
-    data.d[6] = n;
-    n = fabsf(n);
-    n += data.d[16];
+    data.d[15] = n;
+    n += data.d[14];
+    data.d[14] = n;
+    n += data.d[14];
+    n *= data.d[16];
     n *= data.d[17];
-    n += data.d[6];
-    n *= data.d[10];
+    n *= data.d[15];
     n = fabsf(n);
+    data.d[18] = n;
     n += data.d[19];
     n *= data.d[5];
+    n *= data.d[18];
     n *= data.d[20];
     n *= data.d[2];
-    n += data.d[7];
-    n += data.d[8];
+    n += data.d[13];
 // END //
     return isnan(n) ? 0.0f : n;
 } // Evaluate
