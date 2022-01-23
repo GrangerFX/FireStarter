@@ -21,15 +21,15 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
 #else
     instruction.opdata.operation = m_opcodes[index % m_opcodes.size()];
 #endif
-    instruction.opdata.data = RANDOMSEED(seed) % PROGRAM_DATA;
+    instruction.opdata.data = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
 } // RandomInstruction
 
 void FireStarterProgram::OptimizeData(void)
 {
     // Delete the unused registers and sort the remaining ones.
     m_registers.clear();
-    m_registers.reserve(PROGRAM_DATA);
-    int dataRegisters[PROGRAM_DATA];
+    m_registers.reserve(PROGRAM_MAX_DATA);
+    int dataRegisters[PROGRAM_MAX_DATA];
     memset(dataRegisters, -1, sizeof(dataRegisters));
     for (unsigned int i = 0; i < m_instructions.size(); i++) {
         unsigned int dataIndex = m_instructions[i].opdata.data;
@@ -214,7 +214,7 @@ float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
 FireStarterProgram::FireStarterProgram(void)
 {
     m_programMode = PROGRAM_MODE;
-    m_dataSize = PROGRAM_DATA;
+    m_dataSize = PROGRAM_INSTRUCTIONS;
     switch (m_programMode) {
         case Program_multiply_add:
             m_opcodes.push_back(Operation_multiply);
@@ -251,11 +251,11 @@ void FireStarterState::SaveState(std::string& code)
     code += "{\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "\r\n";
-    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         code += Format("    state.m_result0.data.d[%u] = %ff;\r\n", i, m_result0.data.d[i]);
     code += Format("    state.m_result0.result = %ff;\r\n", m_result0.result);
     code += "\r\n";
-    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         code += Format("    state.m_result1.data.d[%d] = %ff;\r\n", i, m_result1.data.d[i]);
     code += Format("    state.m_result1.result = %ff;\r\n", m_result1.result);
     code += "\r\n";
@@ -284,7 +284,7 @@ void FireStarterState::SaveSolution(std::string& code)
 FireStarterState::FireStarterState(void)
 {
     // Initialize the evolving program data values.
-    for (unsigned int i = 0; i < PROGRAM_DATA; i++) {
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
         m_result0.data.d[i] = 1.0f;
         m_result1.data.d[i] = 1.0f;
     }
@@ -377,12 +377,13 @@ void FireStarterUnit::RunGenerations(unsigned int generations, unsigned int vari
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     float lastResult = result.result;
+    unsigned long long generation = m_programGeneration;
     for (unsigned int g = 0; g < generations; g++) {
         void* arr[] = { reinterpret_cast<void*>(&m_deviceResults0),
                         reinterpret_cast<void*>(&m_deviceResults1),
                         reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
                         reinterpret_cast<void*>(&programPopulation),
-                        reinterpret_cast<void*>(&m_programGeneration),
+                        reinterpret_cast<void*>(&generation),
                         reinterpret_cast<void*>(&variation) };
 
         CUfunction kernel_addr;
@@ -394,15 +395,18 @@ void FireStarterUnit::RunGenerations(unsigned int generations, unsigned int vari
             0, m_fireStarterStream,                             // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
-        m_programGeneration++;
+        generation++;
     }
     GetResults(result);
 } // RunGenerations
 
 void FireStarterUnit::RunEvolve(unsigned int variation, FireStarterResult &result)
 {
+#if 0
+    RunGenerations(PROGRAM_GENERATIONS, variation, result);
+#else
     unsigned int failCount = 0;
-    unsigned int failMax = 2;
+    unsigned int failMax = 0;
     m_programGeneration = 0;
     do {
         float lastResult = result.result;
@@ -410,18 +414,18 @@ void FireStarterUnit::RunEvolve(unsigned int variation, FireStarterResult &resul
         if (result.result >= lastResult)
             failCount++;
     } while ((failCount < failMax) && !m_quit);
+#endif
 } // RunEvolve
 
 void FireStarterUnit::RunOptimize(unsigned int variation, FireStarterResult& result)
 {
-    m_programGeneration = 0;
     RunGenerations(PROGRAM_GENERATIONS, variation, result);
  } // RunOptimize
 
 void FireStarterUnit::EvolveProgram(void)
 {
     // Determine how many changes to make to the instructions.
-    unsigned int numChanges = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
+    unsigned int numChanges = 1;// RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
 
     // Make random changes to the program instructions.
     m_curState = m_bestState;
@@ -467,6 +471,7 @@ void FireStarterUnit::ExecuteProgram(void)
     RunOptimize(VARIATION0, m_curState.m_result0);
     RunOptimize(VARIATION1, m_curState.m_result1);
 #endif
+    m_programGeneration += PROGRAM_GENERATIONS;
     m_curState.m_processingTime = m_timer.Duration();
     EvaluateProgram();
  } // ExecuteProgram
@@ -620,10 +625,10 @@ void FireStarter::UpdateProgram(std::string& code, const std::string& replacemen
     }
 } // UpdateProgram
 
-void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, std::string startString)
+void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, unsigned int dataSize, std::string startString)
 {
     std::string replacementData;
-    for (unsigned int i = 0; i < PROGRAM_DATA; i++)
+    for (unsigned int i = 0; i < dataSize; i++)
         replacementData += Format("    data.d[%d] = %ff;\r\n", i, result.data.d[i]);
     replacementData += Format("    return %f;\r\n", result.result);
     UpdateProgram(code, replacementData, startString);
@@ -672,8 +677,8 @@ bool FireStarter::LoadFireShowCode(void)
 void FireStarter::SaveFireShowCode(void)
 {
     m_bestFireShowCode = m_fireShowCode;
-    UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result0, DATA0_CODE);
-    UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result1, DATA1_CODE);
+    UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result0, m_bestEvaluateState.m_program.m_dataSize, DATA0_CODE);
+    UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result1, m_bestEvaluateState.m_program.m_dataSize, DATA1_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
 #if (FIRESTARTER_MODE != FIRESTARTER_DEBUG)
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);

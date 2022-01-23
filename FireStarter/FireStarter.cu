@@ -63,9 +63,9 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
 
     float theta[SAMPLE_ITERATIONS];
     float target[SAMPLE_ITERATIONS];
-    float sampleStep = 1.0f / (SAMPLE_ITERATIONS - 1);
+    float sampleStep = (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta[i] = SAMPLE_MIN + i * sampleStep * (SAMPLE_MAX - SAMPLE_MIN);
+        theta[i] = SAMPLE_MIN + i * sampleStep;
         target[i] = Target(theta[i], variation);
     }
 
@@ -82,7 +82,14 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
             data.d[d] = oldData;
     }
 
-    if (generation && (result == oldResult)) {
+    // Calculate a more accure estimate of the result.
+    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (PRECISION_ITERATIONS - 1);
+    for (int i = 0; i < PRECISION_ITERATIONS; i++) {
+        float theta = SAMPLE_MIN + i * precisionStep;
+        float target = Target(theta, variation);
+        result = fmaxf(fabsf(Evaluate(data, theta) - target), result);
+    }
+    if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
         unsigned int bestIndex = member;

@@ -5,47 +5,49 @@
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
 // EVALUATE //
-    n += data.d[0];
+    n = fabsf(n);
     n += data.d[1];
+    data.d[1] = n;
     n += data.d[2];
+    data.d[2] = n;
     n = fabsf(n);
-    n *= data.d[4];
-    n += data.d[5];
+    n += data.d[4];
+    n *= data.d[5];
+    data.d[5] = n;
     n *= data.d[6];
     data.d[6] = n;
+    n = fabsf(n);
     n += data.d[7];
+    data.d[7] = n;
     n *= data.d[8];
-    n = fabsf(n);
-    data.d[6] = n;
-    n += data.d[9];
-    n *= data.d[10];
+    data.d[8] = n;
+    n *= data.d[9];
+    data.d[9] = n;
+    n += data.d[10];
+    data.d[10] = n;
     n += data.d[11];
     data.d[11] = n;
     n *= data.d[12];
-    data.d[12] = n;
-    n *= data.d[13];
-    data.d[13] = n;
-    n += data.d[14];
-    n *= data.d[15];
-    n = fabsf(n);
-    n *= data.d[12];
-    n += data.d[6];
-    data.d[6] = n;
-    n *= data.d[17];
-    n += data.d[11];
-    data.d[11] = n;
-    n += data.d[18];
-    data.d[18] = n;
-    n += data.d[19];
-    n *= data.d[20];
-    n = fabsf(n);
-    data.d[21] = n;
     n += data.d[13];
-    n += data.d[18];
+    n *= data.d[10];
+    data.d[10] = n;
+    n *= data.d[14];
+    n += data.d[15];
+    n *= data.d[9];
     n *= data.d[6];
-    n *= data.d[22];
-    n *= data.d[21];
-    n *= data.d[11];
+    data.d[6] = n;
+    n = fabsf(n);
+    n += data.d[16];
+    n *= data.d[17];
+    n += data.d[6];
+    n *= data.d[10];
+    n = fabsf(n);
+    n += data.d[19];
+    n *= data.d[5];
+    n *= data.d[20];
+    n *= data.d[2];
+    n += data.d[7];
+    n += data.d[8];
 // END //
     return isnan(n) ? 0.0f : n;
 } // Evaluate
@@ -72,9 +74,9 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
 
     float theta[SAMPLE_ITERATIONS];
     float target[SAMPLE_ITERATIONS];
-    float sampleStep = 1.0f / (SAMPLE_ITERATIONS - 1);
+    float sampleStep = (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta[i] = SAMPLE_MIN + i * sampleStep * (SAMPLE_MAX - SAMPLE_MIN);
+        theta[i] = SAMPLE_MIN + i * sampleStep;
         target[i] = Target(theta[i], variation);
     }
 
@@ -91,7 +93,14 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
             data.d[d] = oldData;
     }
 
-    if (generation && (result == oldResult)) {
+    // Calculate a more accure estimate of the result.
+    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (PRECISION_ITERATIONS - 1);
+    for (int i = 0; i < PRECISION_ITERATIONS; i++) {
+        float theta = SAMPLE_MIN + i * precisionStep;
+        float target = Target(theta, variation);
+        result = fmaxf(fabsf(Evaluate(data, theta) - target), result);
+    }
+    if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.
         unsigned int bestIndex = member;

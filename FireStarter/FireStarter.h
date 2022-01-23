@@ -12,12 +12,15 @@
 #define FIRESTARTER_SOLUTION 4
 #define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
 
-#define PROGRAM_INSTRUCTIONS PROGRAM_DATA
+#define PROGRAM_INSTRUCTIONS 32
+#if PROGRAM_INSTRUCTIONS > PROGRAM_MAX_DATA
+# error PROGRAM_INSTRUCTIONS must not be larger than PROGRAM_MAX_DATA!
+#endif
 #define PROGRAM_UNITS 16
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-#define PROGRAM_GENERATIONS 10  // Must be even!
+#define PROGRAM_GENERATIONS 50  // Must be even!
 #else
-#define PROGRAM_GENERATIONS 100 // Must be even!
+#define PROGRAM_GENERATIONS 500 // Must be even!
 #endif
 
 #define VARIATION0 0
@@ -194,7 +197,7 @@ public:
     static void SaveCode(const std::string& filePath, const std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
-    static void UpdateData(std::string& code, const FireStarterResult& result, std::string startString);
+    static void UpdateData(std::string& code, const FireStarterResult& result, unsigned int dataSize, std::string startString);
     static void CompileProgram(const std::string& program, CUmodule& cuda_module);
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
