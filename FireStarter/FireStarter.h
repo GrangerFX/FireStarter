@@ -168,6 +168,7 @@ public:
 
 class FireStarter : public SerialThread {
 public:
+    SimpleTimer m_runTimer;
     SimpleTimer m_controlTimer;
     double m_controlTime;
     CUdevice m_device;

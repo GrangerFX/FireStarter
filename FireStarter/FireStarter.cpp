@@ -785,7 +785,7 @@ void FireStarter::RenderImage(void)
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
-    sprintf_s(m_statusString, "FireStarter: Generation=%lld  Age=%lld  Best=%f  Worst=%f  Time=%.4f Seconds", m_generation, m_generation - m_bestGeneration, m_bestResult, m_worstResult, m_controlTime);
+    sprintf_s(m_statusString, "FireStarter: Generation=%lld  Age=%lld  Best=%f  Worst=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_generation, m_generation - m_bestGeneration, m_bestResult, m_worstResult, m_controlTime, m_runTimer.Duration());
 } // RenderStatus
 
 void FireStarter::ControlThread(void)
@@ -797,7 +797,7 @@ void FireStarter::ControlThread(void)
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     unsigned int unit_count = PROGRAM_UNITS;
     if (!unit_count)
-        unit_count = std::thread::hardware_concurrency() / 2; // Returns logical core count not physical core count.
+        unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
 #else
@@ -818,6 +818,7 @@ void FireStarter::ControlThread(void)
         });
 
     // Loop until the the host program is quit.
+    m_runTimer.Start();
     while (!m_quitControlThread) {
         // Asyncronously execute a generation for all the units.
         m_controlTimer.Start();
