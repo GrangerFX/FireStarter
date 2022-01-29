@@ -2,8 +2,7 @@
 #include "CUDADefines.h"
 
 #define PROGRAM_MAX_DATA 32
-#define PROGRAM_ITERATIONS 1024
-#define PROGRAM_POPULATION 4352
+#define PROGRAM_POPULATION 4352 * 32
 
 #define SAMPLE_MIN 0.0f
 #define SAMPLE_MAX (2.0f * 3.14159265f)

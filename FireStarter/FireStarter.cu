@@ -41,15 +41,13 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     return isnan(n) ? 0.0f : n;
 } // Evaluate
 
-GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *results1, const unsigned int dataSize, const unsigned int population, const unsigned int generation, const unsigned int variation)
+GPU_GLOBAL void FireStarter(float *betterResult, FireStarterResults* newResults, FireStarterResults *oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
     unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);
 
-    FireStarterResults *oldResults = generation & 1 ? results0 : results1;
-    FireStarterResults *newResults = generation & 1 ? results1 : results0;
     FireStarterData data;
     float result, oldResult;
     if (generation) {
@@ -69,7 +67,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         target[i] = Target(theta[i], variation);
     }
 
-    for (unsigned int p = 0; p < PROGRAM_ITERATIONS; p ++) {
+    for (unsigned int p = 0; p < iterations; p ++) {
         unsigned int d = RANDOMSEED(seed) % dataSize;
         float oldData = data.d[d];
         data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
@@ -89,6 +87,8 @@ GPU_GLOBAL void FireStarter(FireStarterResults *results0, FireStarterResults *re
         float target = Target(theta, variation);
         result = fmaxf(fabsf(Evaluate(data, theta) - target), result);
     }
+    if (result < *betterResult)
+        *betterResult = result;
     if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.

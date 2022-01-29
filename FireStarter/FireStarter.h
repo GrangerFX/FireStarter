@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #define PROGRAM_INSTRUCTIONS 32
 #if PROGRAM_INSTRUCTIONS > PROGRAM_MAX_DATA
@@ -23,6 +23,9 @@
 
 #define VARIATION0 0
 #define VARIATION1 3
+
+#define EVOLVE_ITERATIONS 128
+#define OPTIMIZE_ITERATIONS 1024
 
 #define EVALUATE_CODE   "// EVALUATE //"
 #define DATA0_CODE      "// DATA0 //"
@@ -123,6 +126,7 @@ public:
     SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
+    float* m_betterResult;
     FireStarterResults* m_deviceResults0;
     FireStarterResults* m_deviceResults1;
     FireStarterResults* m_hostResults0;
@@ -133,6 +137,7 @@ public:
     CUcontext m_fireStarterContext;
     CUstream m_fireStarterStream;
     CUmodule m_fireStarterModule;
+    CUfunction m_fireStarterAddr;
     std::string m_fireStarterCode;
     std::string m_evaluateCode;
     std::string m_bestEvaluateCode;
@@ -147,7 +152,7 @@ public:
     void GetResults(FireStarterResult& result);
     void InitResults(void);
     void FreeResults(void);
-    void RunGenerations(unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result);
+    void RunGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result);
     void RunEvolve(unsigned int variation, FireStarterResult& result);
     void RunOptimize(unsigned int variation, FireStarterResult& result);
     void EvolveProgram(void);
@@ -169,6 +174,7 @@ public:
     CUcontext m_fireShowContext;
     CUstream m_fireShowStream;
     CUmodule m_fireShowModule;
+    CUfunction m_fireShowAddr;
     std::string m_fireStarterCode;
     std::string m_targetCode;
     std::string m_fireShowCode;
