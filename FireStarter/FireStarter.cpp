@@ -3,9 +3,6 @@
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
 #include "FireStarter_LoadState.h"
 #endif
-#if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
-#include "FireStarter_Solution.h"
-#endif
 #include <iomanip>
 #include <fstream>
 #include <sstream>
@@ -248,14 +245,12 @@ void FireStarterState::SaveState(std::string& code)
     code += "{\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "\r\n";
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        code += Format("    state.m_result0.data.d[%u] = %ff;\r\n", i, m_result0.data.d[i]);
-    code += Format("    state.m_result0.result = %ff;\r\n", m_result0.result);
-    code += "\r\n";
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        code += Format("    state.m_result1.data.d[%d] = %ff;\r\n", i, m_result1.data.d[i]);
-    code += Format("    state.m_result1.result = %ff;\r\n", m_result1.result);
-    code += "\r\n";
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
+        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            code += Format("    state.m_result[%d].data.d[%u] = %ff;\r\n", t, i, m_result[t].data.d[i]);
+        code += Format("    state.m_result[%d].result = %ff;\r\n", t, m_result[t].result);
+        code += "\r\n";
+    }
     code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
     code += "} // LoadState\r\n";
@@ -263,30 +258,25 @@ void FireStarterState::SaveState(std::string& code)
 
 void FireStarterState::SaveSolution(std::string& code)
 {
-    code += Format("// Solution0 precision = %f\r\n", m_result0.result);
-    code += "inline float Solution0(float n)\r\n";
-    code += "{\r\n";
-    m_program.GenerateSolution(code, m_result0.data);
-    code += "    return n;\r\n";
-    code += "} // Solution0\r\n";
-    code += "\r\n";
-    code += Format("// Solution1 precision = %f\r\n", m_result1.result);
-    code += "inline float Solution1(float n)\r\n";
-    code += "{\r\n";
-    m_program.GenerateSolution(code, m_result1.data);
-    code += "    return n;\r\n";
-    code += "} // Solution1\r\n";
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
+        code += Format("// Solution%d precision = %f\r\n", t, m_result[t].result);
+        code += Format("inline float Solution%d(float n)\r\n", t);
+        code += "{\r\n";
+        m_program.GenerateSolution(code, m_result[t].data);
+        code += "    return n;\r\n";
+        code += Format("} // Solution%d\r\n", t);
+        code += "\r\n";
+    }
 } // SaveSolution
 
 FireStarterState::FireStarterState(void)
 {
     // Initialize the evolving program data values.
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        m_result0.data.d[i] = 1.0f;
-        m_result1.data.d[i] = 1.0f;
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
+        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            m_result[t].data.d[i] = 1.0f;
+        m_result[t].result = START_RESULT;
     }
-    m_result0.result = START_RESULT;
-    m_result1.result = START_RESULT;
     m_processingTime = 0.0;
     m_maxResult = START_RESULT;
 } // FireStarterState
@@ -303,7 +293,7 @@ void FireStarterUnit::GenerateProgram(void)
     // Update and compile the program.
     std::string updatedCode = m_fireStarterCode;
     FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
-    FireStarter::CompileProgram(updatedCode, m_fireStarterModule);
+    FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter");
     checkCUDAErrors(cuModuleGetFunction(&m_fireStarterAddr, m_fireStarterModule, "FireStarter"));
 
     // Increment the unit generation counter.
@@ -457,7 +447,9 @@ void FireStarterUnit::RandomProgram(void)
 
 void FireStarterUnit::EvaluateProgram(void)
 {
-    m_curState.m_maxResult = max(m_curState.m_result0.result, m_curState.m_result1.result);
+    m_curState.m_maxResult = m_curState.m_result[0].result;
+    for (unsigned int t = 1; t < TARGET_VARIATIONS; t++)
+        m_curState.m_maxResult = max(m_curState.m_maxResult, m_curState.m_result[t].result);
     if (m_curState.m_maxResult < m_bestState.m_maxResult) {
         m_bestState = m_curState;
         m_bestEvaluateCode = m_evaluateCode;
@@ -471,12 +463,12 @@ void FireStarterUnit::ExecuteProgram(void)
     // Run the next generation on the GPU.
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     EvolveProgram(); // Evolve the program instructions.
-    RunEvolve(VARIATION0, m_curState.m_result0);
-    RunEvolve(VARIATION1, m_curState.m_result1);
+    for (int i = 0; i < TARGET_VARIATIONS; i++)
+        RunEvolve(i, m_curState.m_result[i]);
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
-    RunOptimize(VARIATION0, m_curState.m_result0);
-    RunOptimize(VARIATION1, m_curState.m_result1);
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++)
+        RunOptimize(t, m_curState.m_result[t]);
 #endif
 
     // Evaluate the results to see if they improved.
@@ -540,7 +532,7 @@ FireStarterUnit::~FireStarterUnit(void)
 {
 } // ~FireStarterUnit
 
-void FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_module)
+void FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_module, const char *name)
 {
     if (cuda_module) {
         checkCUDAErrors(cuModuleUnload(cuda_module));
@@ -550,7 +542,7 @@ void FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_modu
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
     const char* code = program.c_str();
-    checkNVRTCErrors(nvrtcCreateProgram(&prog, code, "FireStarter", 0, nullptr, nullptr));
+    checkNVRTCErrors(nvrtcCreateProgram(&prog, code, name, 0, nullptr, nullptr));
 
     std::vector<const char*> options;
     options.push_back("-default-device");
@@ -638,14 +630,17 @@ void FireStarter::UpdateProgram(std::string& code, const std::string& replacemen
     }
 } // UpdateProgram
 
-void FireStarter::UpdateData(std::string& code, const FireStarterResult& result, unsigned int dataSize, std::string startString)
+void FireStarter::BuildData(std::string& code, unsigned int variation, const FireStarterResult& result, unsigned int dataSize)
 {
     std::string replacementData;
+    code += Format("GPU_FUNCTION float InitData%d(FireStarterData &data)\r\n", variation);
+    code += "{\r\n";
     for (unsigned int i = 0; i < dataSize; i++)
-        replacementData += Format("    data.d[%d] = %ff;\r\n", i, result.data.d[i]);
-    replacementData += Format("    return %f;\r\n", result.result);
-    UpdateProgram(code, replacementData, startString);
-} // UpdateData
+        code += Format("    data.d[%d] = %ff;\r\n", i, result.data.d[i]);
+    code += Format("    return %f;\r\n", result.result);
+    code += Format("} // InitData%d\r\n", variation);
+    code += "\r\n";
+} // BuildData
 
 bool FireStarter::LoadTargetCode(void)
 {
@@ -690,8 +685,10 @@ bool FireStarter::LoadFireShowCode(void)
 void FireStarter::SaveFireShowCode(void)
 {
     m_bestFireShowCode = m_fireShowCode;
-    UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result0, m_bestEvaluateState.m_program.m_dataSize, DATA0_CODE);
-    UpdateData(m_bestFireShowCode, m_bestEvaluateState.m_result1, m_bestEvaluateState.m_program.m_dataSize, DATA1_CODE);
+    std::string dataCode;
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++)
+        BuildData(dataCode, t, m_bestEvaluateState.m_result[t], m_bestEvaluateState.m_program.m_dataSize);
+    UpdateProgram(m_bestFireShowCode, dataCode, DATA_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
 } // SaveFireShowCode
@@ -741,7 +738,7 @@ void FireStarter::DrawGraph(unsigned int variation)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    void* arr[] = { reinterpret_cast<void*>(variation ? &m_bestEvaluateState.m_result1 : &m_bestEvaluateState.m_result0),
+    void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_result[variation]),
                     reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                     reinterpret_cast<void*>(&m_buffer.m_width),
                     reinterpret_cast<void*>(&m_buffer.m_height),
@@ -877,7 +874,7 @@ void FireStarter::ControlThread(void)
         if (m_controlUpdate && !m_quitControlThread) {
             SaveFireStarterCode();
             SaveFireShowCode();
-            CompileProgram(m_bestFireShowCode, m_fireShowModule);
+            CompileProgram(m_bestFireShowCode, m_fireShowModule, "FireShow");
             checkCUDAErrors(cuModuleGetFunction(&m_fireShowAddr, m_fireShowModule, "FireShow"));
             SaveBestState();
             SaveSolution();
@@ -895,8 +892,8 @@ void FireStarter::ControlThread(void)
             m_buffer.Erase();
 
             // Draw the graphs for both variations.
-            DrawGraph(VARIATION0);
-            DrawGraph(VARIATION1);
+            for (unsigned int t = 0; t < TARGET_VARIATIONS; t++)
+                DrawGraph(t);
             m_controlUpdate = false;
             GetMainThread()->DispatchAsync([this] {
                 RenderImage();
@@ -953,11 +950,17 @@ float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, 
         float target = Target(theta, variation);
         float solution = 0.0f;
         switch (variation) {
-            case VARIATION0:
+            case 0:
                 solution = Solution0(theta);
                 break;
-            case VARIATION1:
+            case 1:
                 solution = Solution1(theta);
+                break;
+            case 2:
+                solution = Solution2(theta);
+                break;
+            case 3:
+                solution = Solution3(theta);
                 break;
         }
         if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
@@ -988,11 +991,13 @@ bool FireStarter::Init(void* window, unsigned long width, unsigned long height)
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
-    float maxError0 = DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, VARIATION0);
-    float maxError1 = DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, VARIATION1);
+    std::string statusString = "FireStarter:";
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
+        float error = DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, t);
+        statusString += Format(" Solution %d = %f", t, error);
+    }
     RenderImage();
-    sprintf_s(m_statusString, "FireStarter: Solution0=%f Solution1=%f", maxError0, maxError1);
-    SetWindowText((HWND)m_window, m_statusString);
+    SetWindowText((HWND)m_window, statusString.c_str());
     return true;
 #else
     if (LoadTargetCode() && LoadFireStarterCode() && LoadFireShowCode()) {

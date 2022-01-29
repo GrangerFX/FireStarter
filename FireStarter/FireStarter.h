@@ -8,7 +8,13 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
+
+#if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
+#include "FireStarter_Solution.h"
+#else
+#include "FireStarterTarget.h"
+#endif
 
 #define PROGRAM_INSTRUCTIONS 32
 #if PROGRAM_INSTRUCTIONS > PROGRAM_MAX_DATA
@@ -21,15 +27,11 @@
 #define PROGRAM_GENERATIONS 500 // Must be even!
 #endif
 
-#define VARIATION0 0
-#define VARIATION1 3
-
 #define EVOLVE_ITERATIONS 128
 #define OPTIMIZE_ITERATIONS 1024
 
 #define EVALUATE_CODE   "// EVALUATE //"
-#define DATA0_CODE      "// DATA0 //"
-#define DATA1_CODE      "// DATA1 //"
+#define DATA_CODE       "// DATA //"
 #define END_CODE        "// END //"
 
 typedef enum {
@@ -37,7 +39,7 @@ typedef enum {
     Program_multiply_add_abs,
 } FireStarterProgramMode;
 
-#if VARIATION1 == 3
+#if 1
 #define PROGRAM_MODE Program_multiply_add_abs
 #define PROGRAM_RANDOM_INSTRUCTIONS 1
 #else
@@ -111,8 +113,7 @@ public:
 class FireStarterState {
 public:
     FireStarterProgram m_program;
-    FireStarterResult m_result0;
-    FireStarterResult m_result1;
+    FireStarterResult m_result[TARGET_VARIATIONS];
     double m_processingTime;
     float m_maxResult;
 
@@ -202,8 +203,8 @@ public:
     static void SaveCode(const std::string& filePath, const std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
-    static void UpdateData(std::string& code, const FireStarterResult& result, unsigned int dataSize, std::string startString);
-    static void CompileProgram(const std::string& program, CUmodule& cuda_module);
+    static void BuildData(std::string& code, unsigned int variation, const FireStarterResult& result, unsigned int dataSize);
+    static void CompileProgram(const std::string& program, CUmodule& cuda_module, const char* name);
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
     void SaveFireStarterCode(void);

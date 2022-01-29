@@ -2,9 +2,9 @@
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
 
+// DATA //
 GPU_FUNCTION float InitData0(FireStarterData &data)
 {
-// DATA0 //
     data.d[0] = -0.295293;
     data.d[1] = 0.000074;
     data.d[2] = 1.703755;
@@ -38,12 +38,10 @@ GPU_FUNCTION float InitData0(FireStarterData &data)
     data.d[30] = 0.198489;
     data.d[31] = 1.311061;
     return 0.000023;
-// END //
 } // InitData0
 
 GPU_FUNCTION float InitData1(FireStarterData &data)
 {
-// DATA1 //
     data.d[0] = 0.366407;
     data.d[1] = 0.000234;
     data.d[2] = 0.556274;
@@ -77,8 +75,8 @@ GPU_FUNCTION float InitData1(FireStarterData &data)
     data.d[30] = 0.123090;
     data.d[31] = 1.178886;
     return 0.000017;
-// END //
 } // InitData1
+// END //
 
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
