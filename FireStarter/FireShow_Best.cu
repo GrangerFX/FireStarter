@@ -5,54 +5,58 @@
 GPU_FUNCTION float InitData0(FireStarterData &data)
 {
 // DATA0 //
-    data.d[0] = 1.824402f;
-    data.d[1] = -0.594824f;
-    data.d[2] = 0.776090f;
-    data.d[3] = -1.336579f;
-    data.d[4] = 0.672240f;
-    data.d[5] = -0.219930f;
-    data.d[6] = 0.849391f;
-    data.d[7] = -0.418158f;
-    data.d[8] = -1.087505f;
-    data.d[9] = -0.898604f;
-    data.d[10] = 0.182356f;
-    data.d[11] = -0.426272f;
-    data.d[12] = 0.331210f;
-    data.d[13] = 1.077876f;
-    data.d[14] = -0.015527f;
-    data.d[15] = -0.914903f;
-    data.d[16] = 1.183160f;
-    data.d[17] = -1.511452f;
-    data.d[18] = -0.754128f;
-    data.d[19] = 0.207467f;
-    return 0.000858;
+    data.d[0] = -0.469605f;
+    data.d[1] = -0.131099f;
+    data.d[2] = 0.281184f;
+    data.d[3] = 0.811615f;
+    data.d[4] = -0.243416f;
+    data.d[5] = -0.290672f;
+    data.d[6] = -1.045902f;
+    data.d[7] = -1.261326f;
+    data.d[8] = 0.787845f;
+    data.d[9] = 0.686401f;
+    data.d[10] = -0.835511f;
+    data.d[11] = 0.519882f;
+    data.d[12] = -1.263028f;
+    data.d[13] = 0.817187f;
+    data.d[14] = 1.191949f;
+    data.d[15] = -0.801394f;
+    data.d[16] = -0.166946f;
+    data.d[17] = -0.759551f;
+    data.d[18] = -0.727626f;
+    data.d[19] = -0.062394f;
+    data.d[20] = -0.179360f;
+    data.d[21] = 0.154454f;
+    return 0.001473;
 // END //
 } // InitData0
 
 GPU_FUNCTION float InitData1(FireStarterData &data)
 {
 // DATA1 //
-    data.d[0] = 0.830636f;
-    data.d[1] = -0.780500f;
-    data.d[2] = -0.790298f;
-    data.d[3] = 0.252760f;
-    data.d[4] = -0.627750f;
-    data.d[5] = 0.278061f;
-    data.d[6] = 0.000002f;
-    data.d[7] = -0.156182f;
-    data.d[8] = -0.723393f;
-    data.d[9] = -0.295245f;
-    data.d[10] = 0.547860f;
-    data.d[11] = 1.599175f;
-    data.d[12] = 0.166673f;
-    data.d[13] = -2.086456f;
-    data.d[14] = -0.675812f;
-    data.d[15] = -1.828263f;
-    data.d[16] = -1.455341f;
-    data.d[17] = -0.197079f;
-    data.d[18] = -1.570790f;
-    data.d[19] = 0.000000f;
-    return 0.000003;
+    data.d[0] = -0.199038f;
+    data.d[1] = -0.699677f;
+    data.d[2] = -0.871119f;
+    data.d[3] = 1.809560f;
+    data.d[4] = 0.155934f;
+    data.d[5] = -1.155334f;
+    data.d[6] = 0.780454f;
+    data.d[7] = -0.405062f;
+    data.d[8] = -0.404652f;
+    data.d[9] = 1.241222f;
+    data.d[10] = 1.289948f;
+    data.d[11] = -0.675349f;
+    data.d[12] = 0.612408f;
+    data.d[13] = -0.000000f;
+    data.d[14] = 0.469565f;
+    data.d[15] = -1.156235f;
+    data.d[16] = 0.773867f;
+    data.d[17] = -1.231633f;
+    data.d[18] = 1.158339f;
+    data.d[19] = -0.919971f;
+    data.d[20] = -1.570798f;
+    data.d[21] = 0.000000f;
+    return 0.000002;
 // END //
 } // InitData1
 
@@ -72,37 +76,35 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     data.d[6] = n;
     n = fabsf(n);
     n += data.d[7];
-    data.d[7] = n;
-    n *= data.d[7];
-    n += data.d[5];
-    data.d[5] = n;
-    n += data.d[8];
-    data.d[8] = n;
-    n += data.d[9];
+    n *= data.d[8];
+    n *= data.d[9];
+    n += data.d[10];
+    data.d[10] = n;
+    n += data.d[11];
     n *= data.d[6];
     data.d[6] = n;
-    n += data.d[10];
-    n *= data.d[11];
-    n *= data.d[12];
-    data.d[12] = n;
-    n += data.d[13];
     n += data.d[12];
+    n *= data.d[13];
+    data.d[13] = n;
+    n *= data.d[14];
+    n += data.d[15];
+    n *= data.d[13];
     n *= data.d[6];
-    n += data.d[14];
-    data.d[14] = n;
-    n += data.d[14];
-    n *= data.d[15];
-    n *= data.d[16];
-    data.d[16] = n;
-    n *= data.d[8];
-    n = fabsf(n);
-    n += data.d[18];
-    data.d[18] = n;
-    n *= data.d[5];
     n += data.d[16];
-    n *= data.d[19];
-    n *= data.d[2];
+    data.d[16] = n;
+    n += data.d[16];
+    n *= data.d[17];
+    n *= data.d[18];
+    data.d[18] = n;
+    n *= data.d[10];
+    n = fabsf(n);
+    n += data.d[20];
+    data.d[20] = n;
+    n *= data.d[5];
     n += data.d[18];
+    n *= data.d[21];
+    n *= data.d[2];
+    n += data.d[20];
 // END //
     return isnan(n) ? 0.0f : n;
 } // Evaluate
