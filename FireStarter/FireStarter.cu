@@ -2,6 +2,17 @@
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
 
+// Reference: https://stackoverflow.com/questions/17399119/how-do-i-use-atomicmax-on-floating-point-values-in-cuda
+GPU_FUNCTION float atomicMin(float* addr, float value)
+{
+    return (value >= 0) ? __int_as_float(atomicMin((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMax((unsigned int*)addr, __float_as_uint(value)));
+} // atomicMin
+
+GPU_FUNCTION float atomicMax(float* addr, float value)
+{
+    return (value >= 0) ? __int_as_float(atomicMax((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMin((unsigned int*)addr, __float_as_uint(value)));
+} // atomicMax
+
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
 // EVALUATE //
@@ -41,7 +52,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     return isnan(n) ? 0.0f : n;
 } // Evaluate
 
-GPU_GLOBAL void FireStarter(float *betterResult, FireStarterResults* newResults, FireStarterResults *oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
+GPU_GLOBAL void FireStarter(FireStarterResults* newResults, FireStarterResults *oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -87,8 +98,6 @@ GPU_GLOBAL void FireStarter(float *betterResult, FireStarterResults* newResults,
         float target = Target(theta, variation);
         result = fmaxf(fabsf(Evaluate(data, theta) - target), result);
     }
-    if (result < *betterResult)
-        *betterResult = result;
     if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.

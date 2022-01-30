@@ -11,6 +11,7 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cmath>
+#include <atomic>
 #define GPU_FUNCTION static inline
 #define GPU_GLOBAL extern "C"
 #define GPU_ENTRY(grid, block)
@@ -19,4 +20,13 @@
 static uint3 blockIdx;
 static dim3 blockDim;
 static uint3 threadIdx;
+inline float __int_as_float(int x) { union int_float { int i; float f; } u; u.i = x; return u.f; }
+inline int __float_as_int(float x) { union int_float { int i; float f; } u; u.f = x; return u.i; }
+inline float __uint_as_float(unsigned int x) { union int_float { unsigned int i; float f; } u; u.i = x; return u.f; }
+inline unsigned int __float_as_uint(float x) { union int_float { unsigned int i; float f; } u; u.f = x; return u.i; }
+// Note: Not thead safe! Code is to simply allow the cuda code to compile on the host.
+inline int atomicMin(int* addr, int x) { int old = *addr; if (x < old) *addr = old; return old; }
+inline int atomicMax(int* addr, int x) { int old = *addr; if (x > old) *addr = old; return old; }
+inline unsigned int atomicMin(unsigned int* addr, unsigned int x) { unsigned int old = *addr; if (x < old) *addr = old; return old; }
+inline unsigned int atomicMax(unsigned int* addr, unsigned int x) { unsigned int old = *addr; if (x > old) *addr = old; return old; }
 #endif

@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -24,7 +24,7 @@
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
 #define PROGRAM_GENERATIONS 50  // Must be even!
 #else
-#define PROGRAM_GENERATIONS 500 // Must be even!
+#define PROGRAM_GENERATIONS 100 // Must be even!
 #endif
 
 #define EVOLVE_ITERATIONS 128
@@ -114,11 +114,13 @@ class FireStarterState {
 public:
     FireStarterProgram m_program;
     FireStarterResult m_result[TARGET_VARIATIONS];
+    unsigned int m_order[TARGET_VARIATIONS];
     double m_processingTime;
     float m_maxResult;
 
     void SaveState(std::string& code);
     void SaveSolution(std::string& code);
+    void SortResults(void);
     FireStarterState(void);
 }; /// class FireStarterState;
 
@@ -127,7 +129,6 @@ public:
     SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
-    float* m_betterResult;
     FireStarterResults* m_deviceResults0;
     FireStarterResults* m_deviceResults1;
     FireStarterResults* m_hostResults0;
@@ -138,7 +139,7 @@ public:
     CUcontext m_fireStarterContext;
     CUstream m_fireStarterStream;
     CUmodule m_fireStarterModule;
-    CUfunction m_fireStarterAddr;
+    CUfunction m_fireStarterFunction;
     std::string m_fireStarterCode;
     std::string m_evaluateCode;
     std::string m_bestEvaluateCode;
@@ -150,15 +151,13 @@ public:
     volatile bool m_quit;
 
     void GenerateProgram(void);
+    void EvolveProgram(void);
+    void RandomProgram(void);
     void GetResults(FireStarterResult& result);
     void InitResults(void);
     void FreeResults(void);
     void RunGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result);
-    void RunEvolve(unsigned int variation, FireStarterResult& result);
-    void RunOptimize(unsigned int variation, FireStarterResult& result);
-    void EvolveProgram(void);
-    void RandomProgram(void);
-    void EvaluateProgram(void);
+    void RunVariations(unsigned int iterations);
     void ExecuteProgram(void);
     float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
     void InitUnit(void);
@@ -176,7 +175,7 @@ public:
     CUcontext m_fireShowContext;
     CUstream m_fireShowStream;
     CUmodule m_fireShowModule;
-    CUfunction m_fireShowAddr;
+    CUfunction m_fireShowFunction;
     std::string m_fireStarterCode;
     std::string m_targetCode;
     std::string m_fireShowCode;
@@ -204,7 +203,7 @@ public:
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
     static void BuildData(std::string& code, unsigned int variation, const FireStarterResult& result, unsigned int dataSize);
-    static void CompileProgram(const std::string& program, CUmodule& cuda_module, const char* name);
+    static CUfunction CompileProgram(const std::string& program, CUmodule& cuda_module, const char* functionName);
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
     void SaveFireStarterCode(void);
