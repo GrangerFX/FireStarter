@@ -22,8 +22,8 @@ void FireStarterProgram::OptimizeData(void)
 {
     // Delete the unused registers and sort the remaining ones.
     m_registers.clear();
-    m_registers.reserve(PROGRAM_MAX_DATA);
-    int dataRegisters[PROGRAM_MAX_DATA];
+    m_registers.reserve(PROGRAM_INSTRUCTIONS);
+    int dataRegisters[PROGRAM_INSTRUCTIONS];
     memset(dataRegisters, -1, sizeof(dataRegisters));
     for (unsigned int i = 0; i < m_instructions.size(); i++) {
         unsigned int dataIndex = m_instructions[i].opdata.data;

@@ -1,7 +1,7 @@
 #pragma once
 #include "CUDADefines.h"
 
-#define PROGRAM_MAX_DATA 32
+#define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_POPULATION 4352 * 16    // Half GPU thread utilization to allow more than one unit's stream to operate at once.
 
 #define SAMPLE_MIN 0.0f
@@ -13,7 +13,7 @@
 #define START_RESULT 10.0f
 
 typedef struct FireStarterData {
-    float d[PROGRAM_MAX_DATA];
+    float d[PROGRAM_INSTRUCTIONS];
 } FireStarterData;
 
 typedef struct {

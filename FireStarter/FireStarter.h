@@ -16,10 +16,6 @@
 #include "FireStarterTarget.h"
 #endif
 
-#define PROGRAM_INSTRUCTIONS 32
-#if PROGRAM_INSTRUCTIONS > PROGRAM_MAX_DATA
-# error PROGRAM_INSTRUCTIONS must not be larger than PROGRAM_MAX_DATA!
-#endif
 #define PROGRAM_UNITS 16
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
 #define PROGRAM_GENERATIONS 50  // Must be even!
