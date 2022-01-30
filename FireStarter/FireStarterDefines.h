@@ -2,7 +2,7 @@
 #include "CUDADefines.h"
 
 #define PROGRAM_INSTRUCTIONS 32
-#define PROGRAM_POPULATION 4352 * 16    // Half GPU thread utilization to allow more than one unit's stream to operate at once.
+#define PROGRAM_POPULATION 4352 // * 16    // Half GPU thread utilization to allow more than one unit's stream to operate at once.
 
 #define SAMPLE_MIN 0.0f
 #define SAMPLE_MAX (2.0f * 3.14159265f)

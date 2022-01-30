@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -23,7 +23,7 @@
 #define PROGRAM_GENERATIONS 100 // Must be even!
 #endif
 
-#define EVOLVE_ITERATIONS 128
+#define EVOLVE_ITERATIONS 1024
 #define OPTIMIZE_ITERATIONS 1024
 
 #define EVALUATE_CODE   "// EVALUATE //"
@@ -35,7 +35,7 @@ typedef enum {
     Program_multiply_add_abs,
 } FireStarterProgramMode;
 
-#if 1
+#if 0
 #define PROGRAM_MODE Program_multiply_add_abs
 #define PROGRAM_RANDOM_INSTRUCTIONS 1
 #else
@@ -198,7 +198,7 @@ public:
     static void SaveCode(const std::string& filePath, const std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
-    static void BuildData(std::string& code, unsigned int variation, const FireStarterResult& result, unsigned int dataSize);
+    void BuildData(std::string& code);
     static CUfunction CompileProgram(const std::string& program, CUmodule& cuda_module, const char* functionName);
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);

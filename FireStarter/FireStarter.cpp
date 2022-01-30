@@ -619,15 +619,18 @@ void FireStarter::UpdateProgram(std::string& code, const std::string& replacemen
     }
 } // UpdateProgram
 
-void FireStarter::BuildData(std::string& code, unsigned int variation, const FireStarterResult& result, unsigned int dataSize)
+void FireStarter::BuildData(std::string& code)
 {
     std::string replacementData;
-    code += Format("GPU_FUNCTION float InitData%d(FireStarterData &data)\r\n", variation);
+    code += "GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)\r\n";
     code += "{\r\n";
-    for (unsigned int i = 0; i < dataSize; i++)
-        code += Format("    data.d[%d] = %ff;\r\n", i, result.data.d[i]);
-    code += Format("    return %f;\r\n", result.result);
-    code += Format("} // InitData%d\r\n", variation);
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
+        code += Format("    if (variation == %d) {\r\n", t);
+        for (unsigned int i = 0; i < m_bestEvaluateState.m_program.m_dataSize; i++)
+            code += Format("        data.d[%d] = %ff;\r\n", i, m_bestEvaluateState.m_result[t].data.d[i]);
+        code += "    }\r\n";
+    }
+    code += "} // InitData\r\n";
     code += "\r\n";
 } // BuildData
 
@@ -675,8 +678,7 @@ void FireStarter::SaveFireShowCode(void)
 {
     m_bestFireShowCode = m_fireShowCode;
     std::string dataCode;
-    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++)
-        BuildData(dataCode, t, m_bestEvaluateState.m_result[t], m_bestEvaluateState.m_program.m_dataSize);
+        BuildData(dataCode);
     UpdateProgram(m_bestFireShowCode, dataCode, DATA_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
