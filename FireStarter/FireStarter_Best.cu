@@ -13,56 +13,55 @@ GPU_FUNCTION float atomicMax(float* addr, float value)
     return (value >= 0) ? __int_as_float(atomicMax((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMin((unsigned int*)addr, __float_as_uint(value)));
 } // atomicMax
 
+// EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-// EVALUATE //
-    n *= data.d[0];
+    n = fabsf(n);
     n += data.d[1];
-    n *= data.d[2];
+    data.d[1] = n;
+    n += data.d[2];
     data.d[2] = n;
-    n += data.d[3];
-    data.d[3] = n;
-    n *= data.d[4];
-    n += data.d[5];
-    data.d[5] = n;
+    n = fabsf(n);
+    n += data.d[4];
     n *= data.d[5];
     data.d[5] = n;
-    n += data.d[6];
+    n *= data.d[6];
+    data.d[6] = n;
+    n = fabsf(n);
     n *= data.d[7];
     data.d[7] = n;
-    n += data.d[5];
     n *= data.d[8];
-    data.d[8] = n;
-    n += data.d[9];
-    n *= data.d[2];
+    n *= data.d[9];
+    data.d[9] = n;
     n += data.d[10];
     data.d[10] = n;
-    n *= data.d[7];
     n += data.d[11];
     data.d[11] = n;
-    n *= data.d[12];
-    data.d[12] = n;
-    n += data.d[13];
-    n *= data.d[8];
-    n += data.d[3];
+    n *= data.d[6];
+    data.d[6] = n;
+    n += data.d[12];
+    n *= data.d[13];
     n *= data.d[14];
+    n += data.d[7];
+    n *= data.d[9];
+    n *= data.d[6];
+    n += data.d[15];
+    data.d[15] = n;
     n += data.d[15];
     n *= data.d[11];
-    data.d[11] = n;
-    n += data.d[11];
     n *= data.d[16];
-    data.d[16] = n;
-    n += data.d[16];
     data.d[16] = n;
     n *= data.d[10];
-    n += data.d[12];
-    n *= data.d[16];
-    n += data.d[17];
-    n *= data.d[18];
-    n += data.d[19];
-// END //
+    n = fabsf(n);
+    n += data.d[18];
+    n *= data.d[5];
+    n += data.d[16];
+    n *= data.d[19];
+    n *= data.d[2];
+    n += data.d[20];
     return isnan(n) ? 0.0f : n;
 } // Evaluate
+// END //
 
 GPU_GLOBAL void FireStarter(FireStarterResults* newResults, FireStarterResults *oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
 {

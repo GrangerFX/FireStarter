@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -34,7 +34,7 @@ typedef enum {
     Program_multiply_add_abs,
 } FireStarterProgramMode;
 
-#if 0
+#if 1
 #define PROGRAM_MODE Program_multiply_add_abs
 #define PROGRAM_RANDOM_INSTRUCTIONS 1
 #else

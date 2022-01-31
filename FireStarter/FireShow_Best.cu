@@ -2,129 +2,155 @@
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
 
+// Note: Data is not used by FireShow. It is here so that the best data can be checked into git.
 // DATA //
 GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)
 {
     if (variation == 0) {
-        data.d[0] = 5.969586f;
-        data.d[1] = -5.110033f;
-        data.d[2] = 0.519661f;
-        data.d[3] = -11.498133f;
-        data.d[4] = -0.020073f;
-        data.d[5] = 0.348248f;
-        data.d[6] = -0.850531f;
-        data.d[7] = -0.332598f;
-        data.d[8] = -1.048695f;
-        data.d[9] = 0.600303f;
-        data.d[10] = -3.226162f;
-        data.d[11] = -1.461043f;
-        data.d[12] = -4.363666f;
-        data.d[13] = -3.617711f;
-        data.d[14] = 1.178481f;
-        data.d[15] = 9.419980f;
-        data.d[16] = 0.037142f;
-        data.d[17] = 3.829350f;
-        data.d[18] = 0.087937f;
-        data.d[19] = 0.093597f;
+        data.d[0] = 0.529534f;
+        data.d[1] = -1.527844f;
+        data.d[2] = -1.613804f;
+        data.d[3] = -0.722196f;
+        data.d[4] = -2.233782f;
+        data.d[5] = -1.605893f;
+        data.d[6] = 0.322315f;
+        data.d[7] = 1.059479f;
+        data.d[8] = -0.203387f;
+        data.d[9] = -0.326751f;
+        data.d[10] = 0.761151f;
+        data.d[11] = 0.305714f;
+        data.d[12] = 0.709119f;
+        data.d[13] = -1.078450f;
+        data.d[14] = 1.185426f;
+        data.d[15] = -0.639157f;
+        data.d[16] = 0.719359f;
+        data.d[17] = 0.339158f;
+        data.d[18] = -1.508838f;
+        data.d[19] = 0.358487f;
+        data.d[20] = -0.000013f;
     }
     if (variation == 1) {
-        data.d[0] = 7.011803f;
-        data.d[1] = -7.022340f;
-        data.d[2] = 0.434879f;
-        data.d[3] = -11.853927f;
-        data.d[4] = -0.015081f;
-        data.d[5] = 0.267947f;
-        data.d[6] = -0.753388f;
-        data.d[7] = -0.484046f;
-        data.d[8] = -1.434955f;
-        data.d[9] = 0.751815f;
-        data.d[10] = -2.505546f;
-        data.d[11] = -1.193880f;
-        data.d[12] = -4.931779f;
-        data.d[13] = -4.689807f;
-        data.d[14] = 1.192049f;
-        data.d[15] = 9.268222f;
-        data.d[16] = 0.028339f;
-        data.d[17] = 2.681547f;
-        data.d[18] = 0.160557f;
-        data.d[19] = -0.533647f;
+        data.d[0] = -0.913199f;
+        data.d[1] = -1.469916f;
+        data.d[2] = -1.620601f;
+        data.d[3] = -0.739386f;
+        data.d[4] = 0.815319f;
+        data.d[5] = 0.159717f;
+        data.d[6] = 0.697929f;
+        data.d[7] = -0.666331f;
+        data.d[8] = -1.911094f;
+        data.d[9] = 1.680714f;
+        data.d[10] = 0.551736f;
+        data.d[11] = 1.081342f;
+        data.d[12] = -0.800870f;
+        data.d[13] = -0.751739f;
+        data.d[14] = -0.390989f;
+        data.d[15] = 0.460968f;
+        data.d[16] = -1.251301f;
+        data.d[17] = 0.962080f;
+        data.d[18] = -0.695102f;
+        data.d[19] = 0.565013f;
+        data.d[20] = -0.118066f;
     }
     if (variation == 2) {
-        data.d[0] = 6.788815f;
-        data.d[1] = -6.368399f;
-        data.d[2] = 0.495317f;
-        data.d[3] = -12.538713f;
-        data.d[4] = -0.023921f;
-        data.d[5] = 0.272381f;
-        data.d[6] = -0.600497f;
-        data.d[7] = -0.314053f;
-        data.d[8] = -1.084521f;
-        data.d[9] = 0.605465f;
-        data.d[10] = -2.441021f;
-        data.d[11] = -1.606661f;
-        data.d[12] = -3.823837f;
-        data.d[13] = -4.079471f;
-        data.d[14] = 1.226390f;
-        data.d[15] = 9.867546f;
-        data.d[16] = 0.039343f;
-        data.d[17] = 1.139551f;
-        data.d[18] = 0.121385f;
-        data.d[19] = 0.459872f;
+        data.d[0] = -0.615886f;
+        data.d[1] = -2.067012f;
+        data.d[2] = -0.550941f;
+        data.d[3] = 0.652221f;
+        data.d[4] = -0.288310f;
+        data.d[5] = 0.897855f;
+        data.d[6] = -0.456377f;
+        data.d[7] = -0.697929f;
+        data.d[8] = -1.199489f;
+        data.d[9] = -0.559555f;
+        data.d[10] = 0.035648f;
+        data.d[11] = 1.240395f;
+        data.d[12] = -0.561976f;
+        data.d[13] = 1.481788f;
+        data.d[14] = 0.201228f;
+        data.d[15] = 0.993646f;
+        data.d[16] = -0.634690f;
+        data.d[17] = -0.231525f;
+        data.d[18] = 0.199657f;
+        data.d[19] = 0.613483f;
+        data.d[20] = 0.523445f;
+    }
+    if (variation == 3) {
+        data.d[0] = 0.751736f;
+        data.d[1] = -1.499430f;
+        data.d[2] = -1.642138f;
+        data.d[3] = 0.001558f;
+        data.d[4] = 0.724583f;
+        data.d[5] = 1.124990f;
+        data.d[6] = 0.377835f;
+        data.d[7] = 0.687801f;
+        data.d[8] = 0.719175f;
+        data.d[9] = -1.260583f;
+        data.d[10] = 0.606172f;
+        data.d[11] = 0.670769f;
+        data.d[12] = -1.061388f;
+        data.d[13] = -1.138493f;
+        data.d[14] = -1.596375f;
+        data.d[15] = 0.289652f;
+        data.d[16] = -1.595204f;
+        data.d[17] = 2.387019f;
+        data.d[18] = -0.047255f;
+        data.d[19] = 1.247126f;
+        data.d[20] = 0.000023f;
     }
 } // InitData
 
 // END //
 
+// EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-// EVALUATE //
-    n *= data.d[0];
+    n = fabsf(n);
     n += data.d[1];
-    n *= data.d[2];
+    data.d[1] = n;
+    n += data.d[2];
     data.d[2] = n;
-    n += data.d[3];
-    data.d[3] = n;
-    n *= data.d[4];
-    n += data.d[5];
-    data.d[5] = n;
+    n = fabsf(n);
+    n += data.d[4];
     n *= data.d[5];
     data.d[5] = n;
-    n += data.d[6];
+    n *= data.d[6];
+    data.d[6] = n;
+    n = fabsf(n);
     n *= data.d[7];
     data.d[7] = n;
-    n += data.d[5];
     n *= data.d[8];
-    data.d[8] = n;
-    n += data.d[9];
-    n *= data.d[2];
+    n *= data.d[9];
+    data.d[9] = n;
     n += data.d[10];
     data.d[10] = n;
-    n *= data.d[7];
     n += data.d[11];
     data.d[11] = n;
-    n *= data.d[12];
-    data.d[12] = n;
-    n += data.d[13];
-    n *= data.d[8];
-    n += data.d[3];
+    n *= data.d[6];
+    data.d[6] = n;
+    n += data.d[12];
+    n *= data.d[13];
     n *= data.d[14];
+    n += data.d[7];
+    n *= data.d[9];
+    n *= data.d[6];
+    n += data.d[15];
+    data.d[15] = n;
     n += data.d[15];
     n *= data.d[11];
-    data.d[11] = n;
-    n += data.d[11];
     n *= data.d[16];
-    data.d[16] = n;
-    n += data.d[16];
     data.d[16] = n;
     n *= data.d[10];
-    n += data.d[12];
-    n *= data.d[16];
-    n += data.d[17];
-    n *= data.d[18];
-    n += data.d[19];
-// END //
+    n = fabsf(n);
+    n += data.d[18];
+    n *= data.d[5];
+    n += data.d[16];
+    n *= data.d[19];
+    n *= data.d[2];
+    n += data.d[20];
     return isnan(n) ? 0.0f : n;
 } // Evaluate
+// END //
 
 GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {

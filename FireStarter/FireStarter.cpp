@@ -69,7 +69,9 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
 
 void FireStarterProgram::GenerateProgram(std::string &code, bool optimize)
 {
-    // Generate the replacement code and update the program.
+    // Generate the evaluate function.
+    code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n)\r\n";
+    code += "{\r\n";
     for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
         FireStarterInstruction& instruction = m_instructions[i];
         unsigned int d = instruction.Data();
@@ -90,6 +92,8 @@ void FireStarterProgram::GenerateProgram(std::string &code, bool optimize)
         if (!optimize || (i != m_registers[d].instructionLast))
             code += Format("    data.d[%u] = n;\r\n", d);
     }
+    code += "    return isnan(n) ? 0.0f : n;\r\n";
+    code += "} // Evaluate\r\n";
 } // GenerateProgram
 
 void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data, bool optimize)
@@ -228,7 +232,7 @@ FireStarterProgram::FireStarterProgram(void)
             m_opcodes.push_back(Operation_multiply);
             m_opcodes.push_back(Operation_add);
             m_opcodes.push_back(Operation_abs);
-//            m_opcodes.push_back(Operation_mod);
+//          m_opcodes.push_back(Operation_mod);
             break;
     }
     m_instructions.resize(PROGRAM_INSTRUCTIONS);

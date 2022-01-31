@@ -1,19 +1,19 @@
 #include <math.h>
 
-// Run date: 01/30/22 18:28:19 Pacific Standard Time
-// Run duration = 0.481160 seconds
-// Run count = 421
-// Run units = 1
+// Run date: 01/31/22 10:44:33 Pacific Standard Time
+// Run duration = 3.417294 seconds
+// Run count = 2
+// Run units = 16
 // Run population = 4352
 // Run iterations = 1024
-// Run generations = 100
+// Run generations = 50
 // Run samples = 15
 
 #define SOLUTION_MIN 0.000000
 #define SOLUTION_MAX 6.283185
 
 #define TARGET_PI 3.14159265f
-#define TARGET_VARIATIONS 3
+#define TARGET_VARIATIONS 4
 
 inline float Target(float n, unsigned int variation)
 {
@@ -30,159 +30,207 @@ inline float Target(float n, unsigned int variation)
     }
 } // Target
 
-// Solution0 precision = 0.000066
+// Solution0 precision = 0.002675
 inline float Solution0(float n)
 {
-    float r0, r1, r2, r3, r4;
+    float r0, r1, r2, r3, r4, r5, r6;
 
-    n *= 5.96958590f;
-    n += -5.11003304f;
-    n *= 0.51966101f;
+    n = fabsf(n);
+    n += -1.52784395f;
     r0 = n;
-    n += -11.49813271f;
+    n += -1.61380374f;
     r1 = n;
-    n *= -0.02007259f;
-    n += 0.34824780f;
+    n = fabsf(n);
+    n += -2.23378229f;
+    n *= -1.60589254f;
     r2 = n;
-    n *= r2;
-    r2 = n;
-    n += -0.85053116f;
-    n *= -0.33259755f;
+    n *= 0.32231516f;
     r3 = n;
-    n += r2;
-    n *= -1.04869533f;
-    r2 = n;
-    n += 0.60030252f;
-    n *= r0;
-    n += -3.22616196f;
+    n = fabsf(n);
+    n *= 1.05947852f;
     r0 = n;
-    n *= r3;
-    n += -1.46104348f;
-    r3 = n;
-    n *= -4.36366606f;
+    n *= -0.20338671f;
+    n *= -0.32675096f;
     r4 = n;
-    n += -3.61771107f;
+    n += 0.76115143f;
+    r5 = n;
+    n += 0.30571443f;
+    r6 = n;
+    n *= r3;
+    r3 = n;
+    n += 0.70911866f;
+    n *= -1.07844996f;
+    n *= 1.18542564f;
+    n += r0;
+    n *= r4;
+    n *= r3;
+    n += -0.63915730f;
+    r3 = n;
+    n += r3;
+    n *= r6;
+    n *= 0.71935886f;
+    r6 = n;
+    n *= r5;
+    n = fabsf(n);
+    n += -1.50883758f;
     n *= r2;
-    n += r1;
-    n *= 1.17848051f;
-    n += 9.41998005f;
-    n *= r3;
-    r3 = n;
-    n += r3;
-    n *= 0.03714212f;
-    r3 = n;
-    n += r3;
-    r3 = n;
-    n *= r0;
-    n += r4;
-    n *= r3;
-    n += 3.82934999f;
-    n *= 0.08793661f;
-    n += 0.09359682f;
+    n += r6;
+    n *= 0.35848665f;
+    n *= r1;
+    n += -0.00001266f;
     return n;
 } // Solution0
 
-// Solution1 precision = 0.000067
+// Solution1 precision = 0.000899
 inline float Solution1(float n)
 {
-    float r0, r1, r2, r3, r4;
+    float r0, r1, r2, r3, r4, r5, r6;
 
-    n *= 7.01180267f;
-    n += -7.02233982f;
-    n *= 0.43487865f;
+    n = fabsf(n);
+    n += -1.46991563f;
     r0 = n;
-    n += -11.85392666f;
+    n += -1.62060094f;
     r1 = n;
-    n *= -0.01508076f;
-    n += 0.26794711f;
+    n = fabsf(n);
+    n += 0.81531936f;
+    n *= 0.15971714f;
     r2 = n;
-    n *= r2;
-    r2 = n;
-    n += -0.75338757f;
-    n *= -0.48404571f;
+    n *= 0.69792938f;
     r3 = n;
-    n += r2;
-    n *= -1.43495524f;
-    r2 = n;
-    n += 0.75181472f;
-    n *= r0;
-    n += -2.50554562f;
+    n = fabsf(n);
+    n *= -0.66633058f;
     r0 = n;
-    n *= r3;
-    n += -1.19388032f;
-    r3 = n;
-    n *= -4.93177891f;
+    n *= -1.91109419f;
+    n *= 1.68071353f;
     r4 = n;
-    n += -4.68980742f;
+    n += 0.55173552f;
+    r5 = n;
+    n += 1.08134186f;
+    r6 = n;
+    n *= r3;
+    r3 = n;
+    n += -0.80086952f;
+    n *= -0.75173891f;
+    n *= -0.39098948f;
+    n += r0;
+    n *= r4;
+    n *= r3;
+    n += 0.46096843f;
+    r3 = n;
+    n += r3;
+    n *= r6;
+    n *= -1.25130117f;
+    r6 = n;
+    n *= r5;
+    n = fabsf(n);
+    n += -0.69510156f;
     n *= r2;
-    n += r1;
-    n *= 1.19204915f;
-    n += 9.26822186f;
-    n *= r3;
-    r3 = n;
-    n += r3;
-    n *= 0.02833894f;
-    r3 = n;
-    n += r3;
-    r3 = n;
-    n *= r0;
-    n += r4;
-    n *= r3;
-    n += 2.68154693f;
-    n *= 0.16055743f;
-    n += -0.53364736f;
+    n += r6;
+    n *= 0.56501335f;
+    n *= r1;
+    n += -0.11806571f;
     return n;
 } // Solution1
 
-// Solution2 precision = 0.000077
+// Solution2 precision = 0.003419
 inline float Solution2(float n)
 {
-    float r0, r1, r2, r3, r4;
+    float r0, r1, r2, r3, r4, r5, r6;
 
-    n *= 6.78881502f;
-    n += -6.36839867f;
-    n *= 0.49531654f;
+    n = fabsf(n);
+    n += -2.06701159f;
     r0 = n;
-    n += -12.53871346f;
+    n += -0.55094093f;
     r1 = n;
-    n *= -0.02392094f;
-    n += 0.27238125f;
+    n = fabsf(n);
+    n += -0.28830966f;
+    n *= 0.89785463f;
     r2 = n;
-    n *= r2;
-    r2 = n;
-    n += -0.60049742f;
-    n *= -0.31405297f;
+    n *= -0.45637676f;
     r3 = n;
-    n += r2;
-    n *= -1.08452141f;
-    r2 = n;
-    n += 0.60546541f;
-    n *= r0;
-    n += -2.44102144f;
+    n = fabsf(n);
+    n *= -0.69792879f;
     r0 = n;
-    n *= r3;
-    n += -1.60666060f;
-    r3 = n;
-    n *= -3.82383728f;
+    n *= -1.19948852f;
+    n *= -0.55955470f;
     r4 = n;
-    n += -4.07947063f;
+    n += 0.03564849f;
+    r5 = n;
+    n += 1.24039531f;
+    r6 = n;
+    n *= r3;
+    r3 = n;
+    n += -0.56197613f;
+    n *= 1.48178768f;
+    n *= 0.20122823f;
+    n += r0;
+    n *= r4;
+    n *= r3;
+    n += 0.99364597f;
+    r3 = n;
+    n += r3;
+    n *= r6;
+    n *= -0.63469046f;
+    r6 = n;
+    n *= r5;
+    n = fabsf(n);
+    n += 0.19965708f;
     n *= r2;
-    n += r1;
-    n *= 1.22639036f;
-    n += 9.86754608f;
-    n *= r3;
-    r3 = n;
-    n += r3;
-    n *= 0.03934307f;
-    r3 = n;
-    n += r3;
-    r3 = n;
-    n *= r0;
-    n += r4;
-    n *= r3;
-    n += 1.13955116f;
-    n *= 0.12138498f;
-    n += 0.45987225f;
+    n += r6;
+    n *= 0.61348337f;
+    n *= r1;
+    n += 0.52344477f;
     return n;
 } // Solution2
+
+// Solution3 precision = 0.008250
+inline float Solution3(float n)
+{
+    float r0, r1, r2, r3, r4, r5, r6;
+
+    n = fabsf(n);
+    n += -1.49942970f;
+    r0 = n;
+    n += -1.64213789f;
+    r1 = n;
+    n = fabsf(n);
+    n += 0.72458327f;
+    n *= 1.12499022f;
+    r2 = n;
+    n *= 0.37783498f;
+    r3 = n;
+    n = fabsf(n);
+    n *= 0.68780130f;
+    r0 = n;
+    n *= 0.71917486f;
+    n *= -1.26058340f;
+    r4 = n;
+    n += 0.60617238f;
+    r5 = n;
+    n += 0.67076892f;
+    r6 = n;
+    n *= r3;
+    r3 = n;
+    n += -1.06138825f;
+    n *= -1.13849282f;
+    n *= -1.59637487f;
+    n += r0;
+    n *= r4;
+    n *= r3;
+    n += 0.28965250f;
+    r3 = n;
+    n += r3;
+    n *= r6;
+    n *= -1.59520364f;
+    r6 = n;
+    n *= r5;
+    n = fabsf(n);
+    n += -0.04725452f;
+    n *= r2;
+    n += r6;
+    n *= 1.24712598f;
+    n *= r1;
+    n += 0.00002332f;
+    return n;
+} // Solution3
 

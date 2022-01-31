@@ -2,15 +2,16 @@
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
 
+// Note: Data is not used by FireShow. It is here so that the best data can be checked into git.
 // DATA //
 // END //
 
+// EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-// EVALUATE //
-// END //
     return isnan(n) ? 0.0f : n;
 } // Evaluate
+// END //
 
 GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {
