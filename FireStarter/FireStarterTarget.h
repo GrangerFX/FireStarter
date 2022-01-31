@@ -1,5 +1,5 @@
 #define TARGET_PI 3.14159265f
-#define TARGET_VARIATIONS 1
+#define TARGET_VARIATIONS 3
 
 inline float Target(float n, unsigned int variation)
 {

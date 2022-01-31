@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -23,8 +23,7 @@
 #define PROGRAM_GENERATIONS 100 // Must be even!
 #endif
 
-#define EVOLVE_ITERATIONS 1024
-#define OPTIMIZE_ITERATIONS 1024
+#define PROGRAM_ITERATIONS 1024
 
 #define EVALUATE_CODE   "// EVALUATE //"
 #define DATA_CODE       "// DATA //"
@@ -153,7 +152,7 @@ public:
     void InitResults(void);
     void FreeResults(void);
     void RunGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result);
-    void RunVariations(unsigned int iterations);
+    void RunVariations(void);
     void ExecuteProgram(void);
     float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
     void InitUnit(void);

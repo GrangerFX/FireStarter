@@ -428,14 +428,14 @@ void FireStarterUnit::RunGenerations(unsigned int population, unsigned int itera
     GetResults(result);
 } // RunGenerations
 
-void FireStarterUnit::RunVariations(unsigned int iterations)
+void FireStarterUnit::RunVariations(void)
 {
     // Run each varaition for the current generaiton from worst to best.
     float bestResult = m_bestState.m_maxResult;
     float maxResult = 0.0f;
     for (int t = 0; t < TARGET_VARIATIONS; t++) {
         unsigned int variation = m_curState.m_order[t];
-        RunGenerations(PROGRAM_POPULATION, iterations, PROGRAM_GENERATIONS, m_programGeneration, variation, m_curState.m_result[variation]);
+        RunGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration, variation, m_curState.m_result[variation]);
         float result = m_curState.m_result[variation].result;
         if (result >= bestResult) // If the results were worse than the previous generation, fail immediately.
             return;
@@ -455,11 +455,11 @@ void FireStarterUnit::ExecuteProgram(void)
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     // Evolve the program instructions.
     EvolveProgram();
-    RunVariations(EVOLVE_ITERATIONS);
+    RunVariations();
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
-    RunVariations(OPTIMIZE_ITERATIONS);
-    m_programGeneration += PROGRAM_GENERATIONS;
+    RunVariations();
+    m_programGeneration += PROGRAM_ITERATIONS;
 #endif
 
     m_curState.m_processingTime = m_timer.Duration();
@@ -707,8 +707,9 @@ void FireStarter::SaveSolution(void)
     solutionCode += Format("// Run count = %d\r\n", m_generation);
     solutionCode += Format("// Run units = %d\r\n", (unsigned int)m_units.size());
     solutionCode += Format("// Run population = %d\r\n", PROGRAM_POPULATION);
-    solutionCode += Format("// Run iterations = %d\r\n", SAMPLE_ITERATIONS);
+    solutionCode += Format("// Run iterations = %d\r\n", PROGRAM_ITERATIONS);
     solutionCode += Format("// Run generations = %d\r\n", PROGRAM_GENERATIONS);
+    solutionCode += Format("// Run samples = %d\r\n", SAMPLE_ITERATIONS);
     solutionCode += "\r\n";
     solutionCode += Format("#define SOLUTION_MIN %f\r\n", SAMPLE_MIN);
     solutionCode += Format("#define SOLUTION_MAX %f\r\n", SAMPLE_MAX);
