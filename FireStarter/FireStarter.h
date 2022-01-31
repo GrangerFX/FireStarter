@@ -42,41 +42,6 @@ typedef enum {
 #define PROGRAM_RANDOM_INSTRUCTIONS 0
 #endif
 
-typedef enum {
-    Operation_multiply,
-    Operation_add,
-    Operation_abs,
-    Operation_mod,
-} FireStarterOpcode;
-
-union FireStarterInstruction {
-    unsigned int opcode;
-    struct {
-        FireStarterOpcode operation : 16;
-        unsigned data : 16;
-    } opdata;
-
-    inline FireStarterOpcode Operation(void)
-    {
-        return opdata.operation;
-    } // Operation
-
-    inline unsigned char Data(void)
-    {
-        return opdata.data;
-    } // Data
-
-    inline FireStarterInstruction(FireStarterOpcode operation, unsigned char data)
-    {
-        opdata.operation = operation;
-        opdata.data = data;
-    } // FireStarterInstruction
-
-    inline FireStarterInstruction(unsigned int code = 0) : opcode(code)
-    {
-    } // FireStarterInstruction
-}; // union FireStarterInstruction
-
 struct FireStarterRegister {
     unsigned int dataIndex;
     unsigned int registerIndex;
@@ -98,7 +63,7 @@ public:
     void RandomInstruction(unsigned int index, unsigned int& seed);
     void OptimizeData(void);
     void InitProgram(unsigned int& seed);
-    void GenerateProgram(std::string& code, bool optimize = true);
+    void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code);
     float EmulateProgram(FireStarterData& data, float n);

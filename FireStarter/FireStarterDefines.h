@@ -3,6 +3,7 @@
 
 #define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_POPULATION 4352 // * 16    // Half GPU thread utilization to allow more than one unit's stream to operate at once.
+#define PROGRAM_DYANAMIC 0
 
 #define SAMPLE_MIN 0.0f
 #define SAMPLE_MAX (2.0f * 3.14159265f)
@@ -12,9 +13,53 @@
 #define EVOLUTION_SAMPLES 16
 #define START_RESULT 10.0f
 
+typedef enum {
+    Operation_multiply,
+    Operation_add,
+    Operation_abs,
+    Operation_mod,
+} FireStarterOpcode;
+
+struct FireStarterInstruction {
+    unsigned int operation;
+
+    inline FireStarterOpcode Opcode(void)
+    {
+        return (FireStarterOpcode)(operation / PROGRAM_INSTRUCTIONS);
+    } // Opcode
+
+    inline unsigned int Register(void)
+    {
+        return operation % PROGRAM_INSTRUCTIONS;
+    } // Register
+
+    inline void SetOpcode(FireStarterOpcode opcode)
+    {
+        operation = (opcode * PROGRAM_INSTRUCTIONS) + Register();
+    } // SetOpcode
+
+    inline void SetRegister(unsigned int reg)
+    {
+        operation = Opcode() * PROGRAM_INSTRUCTIONS + reg;
+    } // SetRegister
+
+    inline FireStarterInstruction(FireStarterOpcode opcode, unsigned int reg)
+    {
+        operation = (unsigned int)opcode * PROGRAM_INSTRUCTIONS + reg;
+     } // FireStarterInstruction
+
+    inline FireStarterInstruction(unsigned int opcode = 0) : operation(opcode * PROGRAM_INSTRUCTIONS)
+    {
+    } // FireStarterInstruction
+}; // union FireStarterInstruction
+
 typedef struct FireStarterData {
     float d[PROGRAM_INSTRUCTIONS];
 } FireStarterData;
+
+typedef struct FireStarterInstructions {
+    int i[PROGRAM_INSTRUCTIONS];
+} FireStarterInstructions;
 
 typedef struct {
     FireStarterData data;
