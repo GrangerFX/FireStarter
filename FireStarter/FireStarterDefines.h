@@ -3,7 +3,7 @@
 
 #define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_POPULATION 4352 // * 16    // Half GPU thread utilization to allow more than one unit's stream to operate at once.
-#define PROGRAM_DYNAMIC 1
+#define PROGRAM_DYNAMIC 0
 
 #define SAMPLE_MIN 0.0f
 #define SAMPLE_MAX (2.0f * 3.14159265f)
@@ -72,5 +72,6 @@ typedef struct {
 } FireStarterResult;
 
 typedef struct {
+    FireStarterInstructions instructions;
     FireStarterResult results[1];
 } FireStarterResults;

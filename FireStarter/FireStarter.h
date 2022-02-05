@@ -23,7 +23,11 @@
 #define PROGRAM_GENERATIONS 100 // Must be even!
 #endif
 
+#if PROGRAM_DYNAMIC
+#define PROGRAM_ITERATIONS 128
+#else
 #define PROGRAM_ITERATIONS 1024
+#endif
 
 #define PROGRAM_CODE    "// PROGRAM //"
 #define EVALUATE_CODE   "// EVALUATE //"
@@ -53,7 +57,7 @@ struct FireStarterRegister {
 class FireStarterProgram {
 public:
     std::vector<FireStarterOpcode> m_opcodes;
-    std::vector<FireStarterInstruction> m_instructions;
+    FireStarterInstructions m_instructions;
     std::vector<FireStarterRegister> m_registers;
     std::vector<unsigned int> m_registerFirstInstruction;
     std::vector<unsigned int> m_registerLastInstruction;

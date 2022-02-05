@@ -15,7 +15,7 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
     FireStarterOpcode opcode = m_opcodes[index % m_opcodes.size()];
 #endif
     unsigned int data = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-    m_instructions[index] = FireStarterInstruction(opcode, data);
+    m_instructions.i[index] = FireStarterInstruction(opcode, data);
 } // RandomInstruction
 
 void FireStarterProgram::OptimizeData(void)
@@ -25,8 +25,8 @@ void FireStarterProgram::OptimizeData(void)
     m_registers.reserve(PROGRAM_INSTRUCTIONS);
     int dataRegisters[PROGRAM_INSTRUCTIONS];
     memset(dataRegisters, -1, sizeof(dataRegisters));
-    for (unsigned int i = 0; i < m_instructions.size(); i++) {
-        unsigned int reg = m_instructions[i].Register();
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        unsigned int reg = m_instructions.i[i].Register();
         int index = dataRegisters[reg];
         if (index == -1)  {
             index = (int)m_registers.size();
@@ -34,7 +34,7 @@ void FireStarterProgram::OptimizeData(void)
             m_registers.push_back(FireStarterRegister(index, index, i, i));
         } else
             m_registers[index].instructionLast = i;
-        m_instructions[i].SetRegister(index);
+        m_instructions.i[i].SetRegister(index);
     }
     m_dataSize = (unsigned int)m_registers.size();
 
@@ -42,8 +42,8 @@ void FireStarterProgram::OptimizeData(void)
     std::vector<unsigned int> freeRegisters;
     unsigned int numActiveRegisters = 0;
     m_maxRegisters = 0;
-    for (unsigned int i = 0; i < m_instructions.size(); i++) {
-        unsigned int reg = m_instructions[i].Register();
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        unsigned int reg = m_instructions.i[i].Register();
         FireStarterRegister& r = m_registers[reg];
         if (r.instructionLast > r.instructionFirst)
             if (r.instructionFirst == i) {
@@ -63,11 +63,10 @@ void FireStarterProgram::OptimizeData(void)
 
 void FireStarterProgram::InitProgram(unsigned int& seed)
 {
-    for (unsigned int i = 0; i < m_instructions.size(); i++)
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         RandomInstruction(i, seed);
 } // InitProgram
 
-#if PROGRAM_DYNAMIC
 void FireStarterProgram::GenerateProgram(std::string& code)
 {
     // Generate the evaluate function.
@@ -99,15 +98,14 @@ void FireStarterProgram::GenerateProgram(std::string& code)
     code += "    return isnan(n) ? 0.0f : n;\r\n";
     code += "} // Program\r\n";
 } // GenerateProgram
-#endif
 
 void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
 {
     // Generate the evaluate function.
     code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n)\r\n";
     code += "{\r\n";
-    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
-        FireStarterInstruction& instruction = m_instructions[i];
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        FireStarterInstruction& instruction = m_instructions.i[i];
         unsigned int reg = instruction.Register();
         switch (instruction.Opcode()) {
             case Operation_multiply:
@@ -140,8 +138,8 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
             code += Format("    float d%u = %.12ff;\r\n", i, data.d[m_registers[i].dataIndex]);
     code += "\r\n";
 
-    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
-        FireStarterInstruction& instruction = m_instructions[i];
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        FireStarterInstruction& instruction = m_instructions.i[i];
         unsigned int reg = instruction.Register();
         if (optimize) {
             float f = data.d[reg];
@@ -198,10 +196,10 @@ void FireStarterProgram::SaveProgram(std::string& code)
     for (unsigned int i = 0; i < numOpcodes; i++)
         code += Format("    program.m_opcodes[%u] = (FireStarterOpcode)%u;\r\n", i, m_opcodes[i]);
 
-    unsigned int numInstructions = (unsigned int)m_instructions.size();
+    unsigned int numInstructions = PROGRAM_INSTRUCTIONS;
     code += Format("    program.m_instructions.resize(%u);\r\n", numInstructions);
     for (unsigned int i = 0; i < numInstructions; i++)
-        code += Format("    program.m_instructions[%u].operation = %u;\r\n", i, m_instructions[i].operation);
+        code += Format("    program.m_instructions[%u].operation = %u;\r\n", i, m_instructions.i[i].operation);
 
     code += Format("    program.m_programMode = (FireStarterProgramMode)%u;\r\n", m_programMode);
     code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
@@ -211,8 +209,8 @@ void FireStarterProgram::SaveProgram(std::string& code)
 
 float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
 {
-    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
-        FireStarterInstruction& instruction = m_instructions[i];
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+        FireStarterInstruction& instruction = m_instructions.i[i];
         float& f = data.d[instruction.Register()];
 
         switch (instruction.Opcode()) {
@@ -256,9 +254,8 @@ FireStarterProgram::FireStarterProgram(void)
             m_opcodes.push_back(Operation_add_abs);
             break;
     }
-    m_instructions.resize(PROGRAM_INSTRUCTIONS);
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        m_instructions[i] = 0;
+        m_instructions.i[i] = 0;
 } // FireStarterProgram
 
 void FireStarterState::SaveState(std::string& code)
@@ -345,7 +342,17 @@ void FireStarterUnit::GenerateProgram(void)
     FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
 
     // Compile the program
+#if PROGRAM_DYNAMIC
+    m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter2");
+#else
     m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter");
+#endif
+
+    // Update the instructions in the old results.
+//    m_hostResults0->instructions = m_curState.m_program.m_instructions;
+    m_hostResults1->instructions = m_curState.m_program.m_instructions;
+//    checkCUDAErrors(cudaMemcpyAsync(m_deviceResults0, m_hostResults0, sizeof(FireStarterInstructions), cudaMemcpyHostToDevice, m_fireStarterStream));
+    checkCUDAErrors(cudaMemcpyAsync(m_deviceResults1, m_hostResults1, sizeof(FireStarterInstructions), cudaMemcpyHostToDevice, m_fireStarterStream));
 
     // Increment the unit generation counter.
     m_unitGeneration++;
@@ -713,7 +720,6 @@ void FireStarter::SaveFireShowCode(void)
     std::string dataCode;
         BuildData(dataCode);
     UpdateProgram(m_bestFireShowCode, dataCode, DATA_CODE);
-    UpdateProgram(m_bestFireShowCode, m_bestProgramCode, PROGRAM_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
 } // SaveFireShowCode
