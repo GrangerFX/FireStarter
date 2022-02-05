@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -63,6 +63,7 @@ public:
     void RandomInstruction(unsigned int index, unsigned int& seed);
     void OptimizeData(void);
     void InitProgram(unsigned int& seed);
+    void GenerateProgram(std::string& code);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code);

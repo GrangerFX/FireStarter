@@ -67,65 +67,65 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
         RandomInstruction(i, seed);
 } // InitProgram
 
-#if PROGRAM_DYANAMIC
-void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
+#if PROGRAM_DYNAMIC
+void FireStarterProgram::GenerateProgram(std::string& code)
 {
     // Generate the evaluate function.
-    code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n)\r\n";
+    code += "GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)\r\n";
     code += "{\r\n";
-    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
-        FireStarterInstruction& instruction = m_instructions[i];
-        unsigned int reg = instruction.Register();
-        switch (instruction.Opcode()) {
-        case Operation_add:
-            code += Format("    n += data.d[%u];\r\n", reg);
-            break;
-        case Operation_multiply:
-            code += Format("    n *= data.d[%u];\r\n", reg);
-            break;
-        case Operation_abs:
-            code += Format("    n = fabsf(n);\r\n");
-            break;
-        case Operation_mod:
-            code += Format("    n = fmodf(n, data.d[%u]);\r\n", reg);
-            break;
+    code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {\r\n";
+    code += "        switch (instructions[i].operation) {\r\n";
+    for (unsigned int op = 0; op < m_opcodes.size(); op++) {
+        for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++) {
+            FireStarterOpcode opcode = m_opcodes[op];
+            FireStarterInstruction instruction(opcode, reg);
+            code += Format("        case %u:\r\n", op * PROGRAM_INSTRUCTIONS + reg);
+            switch (opcode) {
+            case Operation_multiply:
+                code += Format("            n *= data.d[%u];\r\n", reg);
+                break;
+            case Operation_add:
+                code += Format("            n += data.d[%u];\r\n", reg);
+                break;
+            case Operation_add_abs:
+                code += Format("            n += fabsf(data.d[%u]);\r\n", reg);
+                break;
+            }
         }
-        if (!optimize || (i != m_registers[reg].instructionLast))
-            code += Format("    data.d[%u] = n;\r\n", reg);
     }
+    code += "        default: break;\r\n";
+    code += "        }\r\n";
+    code += "    }\r\n";
     code += "    return isnan(n) ? 0.0f : n;\r\n";
-    code += "} // Evaluate\r\n";
-} // GenerateEvaluate
-#else
-void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
-{
-    // Generate the evaluate function.
-    code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n)\r\n";
-    code += "{\r\n";
-    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
-        FireStarterInstruction& instruction = m_instructions[i];
-        unsigned int reg = instruction.Register();
-        switch (instruction.Opcode()) {
-        case Operation_add:
-            code += Format("    n += data.d[%u];\r\n", reg);
-            break;
-        case Operation_multiply:
-            code += Format("    n *= data.d[%u];\r\n", reg);
-            break;
-        case Operation_abs:
-            code += Format("    n = fabsf(n);\r\n");
-            break;
-        case Operation_mod:
-            code += Format("    n = fmodf(n, data.d[%u]);\r\n", reg);
-            break;
-        }
-        if (!optimize || (i != m_registers[reg].instructionLast))
-            code += Format("    data.d[%u] = n;\r\n", reg);
-    }
-    code += "    return isnan(n) ? 0.0f : n;\r\n";
-    code += "} // Evaluate\r\n";
-} // GenerateEvaluate
+    code += "} // Program\r\n";
+} // GenerateProgram
 #endif
+
+void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
+{
+    // Generate the evaluate function.
+    code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n)\r\n";
+    code += "{\r\n";
+    for (unsigned int i = 0; i < (unsigned int)m_instructions.size(); i++) {
+        FireStarterInstruction& instruction = m_instructions[i];
+        unsigned int reg = instruction.Register();
+        switch (instruction.Opcode()) {
+            case Operation_multiply:
+                code += Format("    n *= data.d[%u];\r\n", reg);
+                break;
+            case Operation_add:
+                code += Format("    n += data.d[%u];\r\n", reg);
+                break;
+            case Operation_add_abs:
+                code += Format("    n += fabsf(data.d[%u]);\r\n", reg);
+                break;
+        }
+        if (!optimize || (i != m_registers[reg].instructionLast))
+            code += Format("    data.d[%u] = n;\r\n", reg);
+    }
+    code += "    return isnan(n) ? 0.0f : n;\r\n";
+    code += "} // Evaluate\r\n";
+} // GenerateEvaluate
 
 void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data, bool optimize)
 {
@@ -149,43 +149,37 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
             unsigned int r = dataRegister.registerIndex;
 
             switch (instruction.Opcode()) {
-                case Operation_add:
-                    if (i == dataRegister.instructionFirst)
-                        code += Format("    n += %.8ff;\r\n", f);
-                    else
-                        code += Format("    n += r%u;\r\n", r);
-                    break;
                 case Operation_multiply:
                     if (i == dataRegister.instructionFirst)
                         code += Format("    n *= %.8ff;\r\n", f);
                     else
                         code += Format("    n *= r%u;\r\n", r);
                     break;
-                case Operation_abs:
-                    code += Format("    n = fabsf(n);\r\n");
-                    break;
-                case Operation_mod:
+                case Operation_add:
                     if (i == dataRegister.instructionFirst)
-                        code += Format("    n = fmodf(n, %.8ff);\r\n", f);
+                        code += Format("    n += %.8ff;\r\n", f);
                     else
-                        code += Format("    n = fmodf(n, r%u);\r\n", r);
+                        code += Format("    n += r%u;\r\n", r);
+                    break;
+                case Operation_add_abs:
+                    if (i == dataRegister.instructionFirst)
+                        code += Format("    n += fabsf(%.8ff);\r\n", f);
+                    else
+                        code += Format("    n += fabsf(r%u);\r\n", r);
                     break;
             }
             if (i < dataRegister.instructionLast)
                 code += Format("    r%u = n;\r\n", r);
         } else {
             switch (instruction.Opcode()) {
-                case Operation_add:
-                    code += Format("    n += d%u;\r\n", reg);
-                    break;
                 case Operation_multiply:
                     code += Format("    n *= d%u;\r\n", reg);
                     break;
-                case Operation_abs:
-                    code += Format("    n = fabsf(n);\r\n");
+                case Operation_add:
+                    code += Format("    n += d%u;\r\n", reg);
                     break;
-                case Operation_mod:
-                    code += Format("    n = fmodf(n, d%u);\r\n", reg);
+                case Operation_add_abs:
+                    code += Format("    n += fabsf(d%u);\r\n", reg);
                     break;
             }
             if (i != m_registers[reg].instructionLast)
@@ -222,17 +216,14 @@ float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
         float& f = data.d[instruction.Register()];
 
         switch (instruction.Opcode()) {
-            case Operation_add:
-                n += f;
-                break;
             case Operation_multiply:
                 n *= f;
                 break;
-            case Operation_abs:
-                n = fabsf(n);
+            case Operation_add:
+                n += f;
                 break;
-            case Operation_mod:
-                n = fmodf(n, f);
+            case Operation_add_abs:
+                n += fabsf(f);
                 break;
         }
         f = n;
@@ -262,8 +253,7 @@ FireStarterProgram::FireStarterProgram(void)
             m_opcodes.push_back(Operation_add);
             m_opcodes.push_back(Operation_multiply);
             m_opcodes.push_back(Operation_add);
-            m_opcodes.push_back(Operation_abs);
-//          m_opcodes.push_back(Operation_mod);
+            m_opcodes.push_back(Operation_add_abs);
             break;
     }
     m_instructions.resize(PROGRAM_INSTRUCTIONS);
@@ -345,6 +335,9 @@ void FireStarterUnit::GenerateProgram(void)
 
     // Generate the replacement code.
     m_evaluateCode.clear();
+#if PROGRAM_DYNAMIC
+    m_curState.m_program.GenerateProgram(m_evaluateCode);
+#endif
     m_curState.m_program.GenerateEvaluate(m_evaluateCode);
 
     // Update and compile the program.
