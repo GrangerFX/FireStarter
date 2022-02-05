@@ -82,17 +82,24 @@ void FireStarterProgram::GenerateProgram(std::string& code)
             switch (opcode) {
                 case Operation_multiply:
                     code += Format("            n *= data.d[%u];\r\n", reg);
+                    code += Format("            data.d[%u] = n;\r\n", reg);
+                    code += "            break;\r\n";
                     break;
                 case Operation_add:
                     code += Format("            n += data.d[%u];\r\n", reg);
+                    code += Format("            data.d[%u] = n;\r\n", reg);
+                    code += "            break;\r\n";
                     break;
                 case Operation_add_abs:
                     code += Format("            n += fabsf(data.d[%u]);\r\n", reg);
+                    code += Format("            data.d[%u] = n;\r\n", reg);
+                    code += "            break;\r\n";
                     break;
             }
         }
     }
-    code += "        default: break;\r\n";
+    code += "        default:;\r\n";
+    code += "        return START_RESULT;\r\n";
     code += "        }\r\n";
     code += "    }\r\n";
     code += "    return isnan(n) ? 0.0f : n;\r\n";
@@ -753,6 +760,8 @@ void FireStarter::SaveSolution(void)
     solutionCode += "\r\n";
     solutionCode += Format("#define SOLUTION_MIN %f\r\n", SAMPLE_MIN);
     solutionCode += Format("#define SOLUTION_MAX %f\r\n", SAMPLE_MAX);
+    solutionCode += "\r\n";
+    solutionCode += Format("#define TARGET_VARIATIONS %d\r\n", TARGET_VARIATIONS);
     solutionCode += "\r\n";
     solutionCode += m_targetCode;
     solutionCode += "\r\n";

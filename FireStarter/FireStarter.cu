@@ -139,7 +139,7 @@ GPU_GLOBAL void FireStarter2(FireStarterResults* newResults, FireStarterResults*
     for (int i = 0; i < PRECISION_ITERATIONS; i++) {
         float theta = SAMPLE_MIN + i * precisionStep;
         float target = Target(theta, variation);
-        result = fmaxf(fabsf(Evaluate(data, theta) - target), result);
+        result = fmaxf(fabsf(Program(instructions, data, theta) - target), result);
     }
     if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:

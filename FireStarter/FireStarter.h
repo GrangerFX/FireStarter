@@ -16,7 +16,11 @@
 #include "FireStarterTarget.h"
 #endif
 
+#if PROGRAM_DYNAMIC
+#define PROGRAM_UNITS 1
+#else
 #define PROGRAM_UNITS 16
+#endif
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
 #define PROGRAM_GENERATIONS 50  // Must be even!
 #else
@@ -27,6 +31,12 @@
 #define PROGRAM_ITERATIONS 128
 #else
 #define PROGRAM_ITERATIONS 1024
+#endif
+
+#if PROGRAM_DYNAMIC
+#define TARGET_VARIATIONS 1
+#else
+#define TARGET_VARIATIONS 4
 #endif
 
 #define PROGRAM_CODE    "// PROGRAM //"
