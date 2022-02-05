@@ -16,10 +16,16 @@
 #include "FireStarterTarget.h"
 #endif
 
+#define PROGRAM_POPULATION 4352
+#define PROGRAM_PRECISION 1024
+#define PROGRAM_DYNAMIC 1
+
 #if PROGRAM_DYNAMIC
 #define PROGRAM_UNITS 1
+#define PROGRAM_VARIATIONS 4
 #else
 #define PROGRAM_UNITS 16
+#define PROGRAM_VARIATIONS 1
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
 #define PROGRAM_GENERATIONS 50  // Must be even!
@@ -28,13 +34,13 @@
 #endif
 
 #if PROGRAM_DYNAMIC
-#define PROGRAM_ITERATIONS 128
+#define PROGRAM_ITERATIONS 512
 #else
 #define PROGRAM_ITERATIONS 1024
 #endif
 
 #if PROGRAM_DYNAMIC
-#define TARGET_VARIATIONS 1
+#define TARGET_VARIATIONS 4
 #else
 #define TARGET_VARIATIONS 4
 #endif
@@ -134,7 +140,7 @@ public:
     void GetResults(FireStarterResult& result);
     void InitResults(void);
     void FreeResults(void);
-    void RunGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result);
+    void RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result);
     void RunVariations(void);
     void ExecuteProgram(void);
     float UpdateProgram(std::string*& bestProgramCode, std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);

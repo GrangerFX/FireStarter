@@ -2,22 +2,11 @@
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
 
-// Reference: https://stackoverflow.com/questions/17399119/how-do-i-use-atomicmax-on-floating-point-values-in-cuda
-GPU_FUNCTION float atomicMin(float* addr, float value)
-{
-    return (value >= 0) ? __int_as_float(atomicMin((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMax((unsigned int*)addr, __float_as_uint(value)));
-} // atomicMin
-
-GPU_FUNCTION float atomicMax(float* addr, float value)
-{
-    return (value >= 0) ? __int_as_float(atomicMax((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMin((unsigned int*)addr, __float_as_uint(value)));
-} // atomicMax
-
 // PROGRAM //
 GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
 {
     return isnan(n) ? 0.0f : n;
-}
+} // Program
 // END //
 
 // EVALUATE //
@@ -27,7 +16,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
-GPU_GLOBAL void FireStarter(FireStarterResults* newResults, FireStarterResults *oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
+GPU_GLOBAL void FireStarter(FireStarterResults* newResults, FireStarterResults *oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -67,8 +56,8 @@ GPU_GLOBAL void FireStarter(FireStarterResults* newResults, FireStarterResults *
     }
 
     // Calculate a more accure estimate of the result.
-    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (PRECISION_ITERATIONS - 1);
-    for (int i = 0; i < PRECISION_ITERATIONS; i++) {
+    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
+    for (int i = 0; i < precision; i++) {
         float theta = SAMPLE_MIN + i * precisionStep;
         float target = Target(theta, variation);
         result = fmaxf(fabsf(Evaluate(data, theta) - target), result);
@@ -93,7 +82,7 @@ GPU_GLOBAL void FireStarter(FireStarterResults* newResults, FireStarterResults *
     newResults->results[member].result = result;
 } // FireStarter
 
-GPU_GLOBAL void FireStarter2(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
+GPU_GLOBAL void FireStarter2(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -135,8 +124,8 @@ GPU_GLOBAL void FireStarter2(FireStarterResults* newResults, FireStarterResults*
     }
 
     // Calculate a more accure estimate of the result.
-    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (PRECISION_ITERATIONS - 1);
-    for (int i = 0; i < PRECISION_ITERATIONS; i++) {
+    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
+    for (int i = 0; i < precision; i++) {
         float theta = SAMPLE_MIN + i * precisionStep;
         float target = Target(theta, variation);
         result = fmaxf(fabsf(Program(instructions, data, theta) - target), result);

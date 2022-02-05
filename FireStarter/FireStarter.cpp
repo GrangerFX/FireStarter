@@ -441,7 +441,7 @@ void FireStarterUnit::FreeResults(void)
     m_hostResults0 = m_hostResults1 = nullptr;
 } // FreeResults
 
-void FireStarterUnit::RunGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result)
+void FireStarterUnit::RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = 256;
@@ -458,6 +458,7 @@ void FireStarterUnit::RunGenerations(unsigned int population, unsigned int itera
                         reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
                         reinterpret_cast<void*>(&population),
                         reinterpret_cast<void*>(&iterations),
+                        reinterpret_cast<void*>(&precision),
                         reinterpret_cast<void*>(&generation),
                         reinterpret_cast<void*>(&variation) };
 
@@ -479,7 +480,7 @@ void FireStarterUnit::RunVariations(void)
     float maxResult = 0.0f;
     for (int t = 0; t < TARGET_VARIATIONS; t++) {
         unsigned int variation = m_curState.m_order[t];
-        RunGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration, variation, m_curState.m_result[variation]);
+        RunGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration, variation, m_curState.m_result[variation]);
         float result = m_curState.m_result[variation].result;
         if (result >= bestResult) // If the results were worse than the previous generation, fail immediately.
             return;
