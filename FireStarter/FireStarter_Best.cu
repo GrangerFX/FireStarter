@@ -13,6 +13,13 @@ GPU_FUNCTION float atomicMax(float* addr, float value)
     return (value >= 0) ? __int_as_float(atomicMax((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMin((unsigned int*)addr, __float_as_uint(value)));
 } // atomicMax
 
+// PROGRAM //
+GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
+{
+    return isnan(n) ? 0.0f : n;
+}
+// END //
+
 // EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
@@ -34,35 +41,35 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n *= data.d[8];
     data.d[8] = n;
     n *= data.d[4];
+    data.d[4] = n;
     n += data.d[9];
     data.d[9] = n;
     n += data.d[2];
     n *= data.d[10];
     n *= data.d[8];
+    n *= data.d[4];
+    n *= data.d[1];
+    n *= data.d[11];
+    data.d[11] = n;
     n += data.d[11];
     data.d[11] = n;
-    n *= data.d[1];
-    n *= data.d[12];
-    data.d[12] = n;
     n += data.d[12];
     data.d[12] = n;
-    n += data.d[13];
-    data.d[13] = n;
     n += fabsf(data.d[9]);
     data.d[9] = n;
-    n += data.d[14];
+    n += data.d[13];
+    n *= data.d[14];
     n += data.d[15];
-    n += data.d[16];
     n *= data.d[5];
-    n += data.d[12];
+    n += data.d[11];
     n += data.d[3];
     data.d[3] = n;
     n += data.d[3];
-    n *= data.d[13];
-    data.d[13] = n;
-    n += data.d[11];
+    n *= data.d[12];
+    data.d[12] = n;
+    n += data.d[16];
     n *= data.d[9];
-    n += data.d[13];
+    n += data.d[12];
     return isnan(n) ? 0.0f : n;
 } // Evaluate
 // END //

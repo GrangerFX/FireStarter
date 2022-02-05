@@ -74,22 +74,22 @@ void FireStarterProgram::GenerateProgram(std::string& code)
     code += "GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)\r\n";
     code += "{\r\n";
     code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {\r\n";
-    code += "        switch (instructions[i].operation) {\r\n";
-    for (unsigned int op = 0; op < m_opcodes.size(); op++) {
+    code += "        switch (instructions.i[i].operation) {\r\n";
+    for (unsigned int op = 0; op < PROGRAM_OPCODES; op++) {
         for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++) {
-            FireStarterOpcode opcode = m_opcodes[op];
+            FireStarterOpcode opcode = FireStarterOpcode(op);
             FireStarterInstruction instruction(opcode, reg);
             code += Format("        case %u:\r\n", op * PROGRAM_INSTRUCTIONS + reg);
             switch (opcode) {
-            case Operation_multiply:
-                code += Format("            n *= data.d[%u];\r\n", reg);
-                break;
-            case Operation_add:
-                code += Format("            n += data.d[%u];\r\n", reg);
-                break;
-            case Operation_add_abs:
-                code += Format("            n += fabsf(data.d[%u]);\r\n", reg);
-                break;
+                case Operation_multiply:
+                    code += Format("            n *= data.d[%u];\r\n", reg);
+                    break;
+                case Operation_add:
+                    code += Format("            n += data.d[%u];\r\n", reg);
+                    break;
+                case Operation_add_abs:
+                    code += Format("            n += fabsf(data.d[%u]);\r\n", reg);
+                    break;
             }
         }
     }
@@ -332,17 +332,19 @@ void FireStarterUnit::GenerateProgram(void)
 {
     // Optimize the program data and registers.
     m_curState.m_program.OptimizeData();
-
-    // Generate the replacement code.
-    m_evaluateCode.clear();
-#if PROGRAM_DYNAMIC
-    m_curState.m_program.GenerateProgram(m_evaluateCode);
-#endif
-    m_curState.m_program.GenerateEvaluate(m_evaluateCode);
-
-    // Update and compile the program.
     std::string updatedCode = m_fireStarterCode;
+
+    // Update the Program function.
+    m_programCode.clear();
+    m_curState.m_program.GenerateProgram(m_programCode);
+    FireStarter::UpdateProgram(updatedCode, m_programCode, PROGRAM_CODE);
+ 
+    // Update the Evaluate funtion.
+    m_evaluateCode.clear();
+    m_curState.m_program.GenerateEvaluate(m_evaluateCode);
     FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
+
+    // Compile the program
     m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter");
 
     // Increment the unit generation counter.
@@ -472,6 +474,7 @@ void FireStarterUnit::RunVariations(void)
     m_curState.m_maxResult = maxResult;
     m_curState.SortResults();    // Sort the results worst first. This allows the generation to fail early.
     m_bestState = m_curState;
+    m_bestProgramCode = m_programCode;
     m_bestEvaluateCode = m_evaluateCode;
 } // RunVariations
 
@@ -493,8 +496,9 @@ void FireStarterUnit::ExecuteProgram(void)
     m_curState.m_processingTime = m_timer.Duration();
 } // ExecuteProgram
 
-float FireStarterUnit::UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation)
+float FireStarterUnit::UpdateProgram(std::string*& bestProgramCode, std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation)
 {
+    bestProgramCode = &m_bestProgramCode;
     bestEvaluateCode = &m_bestEvaluateCode;
     bestState = &m_bestState;
     generation = &m_unitGeneration;
@@ -684,6 +688,7 @@ bool FireStarter::LoadFireStarterCode(void)
 void FireStarter::SaveFireStarterCode(void)
 {
     m_bestFireStarterCode = m_fireStarterCode;
+    FireStarter::UpdateProgram(m_bestFireStarterCode, m_bestProgramCode, PROGRAM_CODE);
     FireStarter::UpdateProgram(m_bestFireStarterCode, m_bestEvaluateCode, EVALUATE_CODE);
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     FireStarter::SaveCode("FireStarter_Best.cu", m_bestFireStarterCode);
@@ -708,6 +713,7 @@ void FireStarter::SaveFireShowCode(void)
     std::string dataCode;
         BuildData(dataCode);
     UpdateProgram(m_bestFireShowCode, dataCode, DATA_CODE);
+    UpdateProgram(m_bestFireShowCode, m_bestProgramCode, PROGRAM_CODE);
     UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
     FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
 } // SaveFireShowCode
@@ -846,12 +852,14 @@ void FireStarter::ControlThread(void)
         m_worstResult = 0.0f;
         for (FireStarterUnit* unit : m_units) {
             unit->DispatchSync([this, unit] {
+                std::string* unitBestProgramCode = nullptr;
                 std::string* unitBestEvaluateCode = nullptr;
                 FireStarterState* unitBestEvaluateState = nullptr;
                 unsigned long long* unitGeneration = nullptr;
-                float result = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
+                float result = unit->UpdateProgram(unitBestProgramCode, unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
                 if (result < m_bestResult) {
                     m_bestResult = result;
+                    m_bestProgramCode = *unitBestProgramCode;
                     m_bestEvaluateCode = *unitBestEvaluateCode;
                     m_bestEvaluateState = *unitBestEvaluateState;
                     m_bestGeneration = m_generation;
@@ -866,20 +874,23 @@ void FireStarter::ControlThread(void)
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
         // Note: This code can run in the control thread because the unit threads are all idle at this point.
         for (FireStarterUnit* unit : m_units) {
+            std::string* unitBestProgramCode = nullptr;
             std::string* unitBestEvaluateCode = nullptr;
             FireStarterState* unitBestEvaluateState = nullptr;
             unsigned long long* unitGeneration = nullptr;
-            float unitResult = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
+            float unitResult = unit->UpdateProgram(unitBestProgramCode, unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
             if (unitResult > m_bestResult) {
                 FireStarterUnit* randomUnit;
                 do {
                     randomUnit = m_units[RANDOMSEED(m_seed) % m_units.size()];
                 } while (randomUnit == unit);
+                std::string* randomProgramCode = nullptr;
                 std::string* randomEvaluateCode = nullptr;
                 FireStarterState* randomEvaluateState = nullptr;
                 unsigned long long* randomGeneration = nullptr;
-                float randomResult = randomUnit->UpdateProgram(randomEvaluateCode, randomEvaluateState, randomGeneration);
+                float randomResult = randomUnit->UpdateProgram(randomProgramCode, randomEvaluateCode, randomEvaluateState, randomGeneration);
                 if (randomResult < unitResult) {
+                    *unitBestProgramCode = *randomProgramCode;
                     *unitBestEvaluateCode = *randomEvaluateCode;
                     *unitBestEvaluateState = *randomEvaluateState;
                     *unitGeneration = *randomGeneration;

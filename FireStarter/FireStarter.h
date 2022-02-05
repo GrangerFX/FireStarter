@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -25,6 +25,7 @@
 
 #define PROGRAM_ITERATIONS 1024
 
+#define PROGRAM_CODE    "// PROGRAM //"
 #define EVALUATE_CODE   "// EVALUATE //"
 #define DATA_CODE       "// DATA //"
 #define END_CODE        "// END //"
@@ -102,7 +103,9 @@ public:
     CUmodule m_fireStarterModule;
     CUfunction m_fireStarterFunction;
     std::string m_fireStarterCode;
+    std::string m_programCode;
     std::string m_evaluateCode;
+    std::string m_bestProgramCode;
     std::string m_bestEvaluateCode;
     size_t m_resultsSize;
     unsigned long long m_programGeneration;
@@ -120,7 +123,7 @@ public:
     void RunGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned long long generation, unsigned int variation, FireStarterResult& result);
     void RunVariations(void);
     void ExecuteProgram(void);
-    float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
+    float UpdateProgram(std::string*& bestProgramCode, std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
     void InitUnit(void);
     void FinishUnit(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
@@ -142,6 +145,7 @@ public:
     std::string m_fireShowCode;
     std::string m_bestFireStarterCode;
     std::string m_bestFireShowCode;
+    std::string m_bestProgramCode;
     std::string m_bestEvaluateCode;
     FireStarterState m_bestEvaluateState;
     std::vector<FireStarterUnit*> m_units;

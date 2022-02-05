@@ -3,7 +3,7 @@
 
 #define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_POPULATION 4352 // * 16    // Half GPU thread utilization to allow more than one unit's stream to operate at once.
-#define PROGRAM_DYNAMIC 0
+#define PROGRAM_DYNAMIC 1
 
 #define SAMPLE_MIN 0.0f
 #define SAMPLE_MAX (2.0f * 3.14159265f)
@@ -14,9 +14,10 @@
 #define START_RESULT 10.0f
 
 typedef enum {
-    Operation_multiply,
+    Operation_multiply = 0,
     Operation_add,
     Operation_add_abs,
+    PROGRAM_OPCODES
 } FireStarterOpcode;
 
 struct FireStarterInstruction {
@@ -59,6 +60,11 @@ typedef struct FireStarterData {
 typedef struct FireStarterInstructions {
     FireStarterInstruction i[PROGRAM_INSTRUCTIONS];
 } FireStarterInstructions;
+
+typedef struct FireStarterOpcodes {
+    unsigned int count;
+    FireStarterOpcode i[1];
+} FireStarterOpcodes;
 
 typedef struct {
     FireStarterData data;

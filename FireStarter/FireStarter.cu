@@ -13,6 +13,13 @@ GPU_FUNCTION float atomicMax(float* addr, float value)
     return (value >= 0) ? __int_as_float(atomicMax((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMin((unsigned int*)addr, __float_as_uint(value)));
 } // atomicMax
 
+// PROGRAM //
+GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
+{
+    return isnan(n) ? 0.0f : n;
+}
+// END //
+
 // EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {

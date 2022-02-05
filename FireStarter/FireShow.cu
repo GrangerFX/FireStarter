@@ -6,6 +6,13 @@
 // DATA //
 // END //
 
+// PROGRAM //
+GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
+{
+    return isnan(n) ? 0.0f : n;
+}
+// END //
+
 // EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {

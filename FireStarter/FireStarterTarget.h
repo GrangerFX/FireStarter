@@ -1,3 +1,7 @@
+#ifndef __CUDACC__
+#include <cmath>
+#endif
+
 #define TARGET_PI 3.14159265f
 #define TARGET_VARIATIONS 4
 
