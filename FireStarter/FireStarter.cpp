@@ -195,7 +195,10 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
 
 void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
 {
-    code += Format("inline void LoadProgram%d(FireStarterProgram& program)\r\n", species);
+    if (species == 0xFFFFFFFF)
+        code += "inline void LoadProgram(FireStarterProgram& program)\r\n";
+    else
+        code += Format("inline void LoadProgram%d(FireStarterProgram& program)\r\n", species);
     code += "{\r\n";
 
     unsigned int numOpcodes = (unsigned int)m_opcodes.size();
@@ -210,7 +213,10 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
 
     code += Format("    program.m_programMode = (FireStarterProgramMode)%u;\r\n", m_programMode);
     code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
-    code += Format("} // LoadProgram\r\n", species);
+    if (species == 0xFFFFFFFF)
+        code += "} // LoadProgram\r\n";
+    else
+        code += Format("} // LoadProgram%d\r\n", species);
     code += "\r\n";
 } // SaveProgram
 
@@ -292,11 +298,13 @@ void FireStarterState::SaveState(std::string& code)
 {
     code += "#include \"FireStarter.h\"\r\n";
     code += "\r\n";
+    m_species[m_bestSpecies].m_program.SaveProgram(code);
+    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++)
+        m_species[s].m_program.SaveProgram(code, s);
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
     for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        m_species[s].m_program.SaveProgram(code, s);
-        code += Format("    LoadProgram%d(state.m_program);\r\n", s);
+        code += Format("    LoadProgram%d(state.m_species[%d].m_program);\r\n", s);
         code += "\r\n";
         for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
             for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
@@ -307,6 +315,8 @@ void FireStarterState::SaveState(std::string& code)
     }
     code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
+    code += Format("    state.m_bestSpecies = %d;\r\n", m_bestSpecies);
+    code += "    state.SortResults();\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 

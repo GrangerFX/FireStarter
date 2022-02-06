@@ -73,7 +73,7 @@ public:
     static void GenerateProgram(std::string& code);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
-    void SaveProgram(std::string& code, unsigned int species);
+    void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
     float EmulateProgram(FireStarterData& data, float n);
     FireStarterProgram(void);
 }; // class FireStarterProgram
@@ -94,6 +94,7 @@ public:
     double m_processingTime;
     float m_maxResult;
     unsigned int m_bestSpecies;
+
     void SaveState(std::string& code);
     void SaveSolution(std::string& code);
     void SortResults(void);
