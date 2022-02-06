@@ -98,8 +98,6 @@ void FireStarterProgram::GenerateProgram(std::string& code)
             }
         }
     }
-    code += "        default:;\r\n";
-    code += "        return START_RESULT;\r\n";
     code += "        }\r\n";
     code += "    }\r\n";
     code += "    return isnan(n) ? 0.0f : n;\r\n";
@@ -201,18 +199,23 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
         code += Format("inline void LoadProgram%d(FireStarterProgram& program)\r\n", species);
     code += "{\r\n";
 
+    unsigned int numInstructions = PROGRAM_INSTRUCTIONS;
+    for (unsigned int i = 0; i < numInstructions; i++)
+        code += Format("    program.m_instructions.i[%u].operation = %u;\r\n", i, m_instructions.i[i].operation);
+
     unsigned int numOpcodes = (unsigned int)m_opcodes.size();
     code += Format("    program.m_opcodes.resize(%u);\r\n", numOpcodes);
     for (unsigned int i = 0; i < numOpcodes; i++)
         code += Format("    program.m_opcodes[%u] = (FireStarterOpcode)%u;\r\n", i, m_opcodes[i]);
 
-    unsigned int numInstructions = PROGRAM_INSTRUCTIONS;
-    code += Format("    program.m_instructions.resize(%u);\r\n", numInstructions);
-    for (unsigned int i = 0; i < numInstructions; i++)
-        code += Format("    program.m_instructions[%u].operation = %u;\r\n", i, m_instructions.i[i].operation);
+    unsigned int numRegisters = (unsigned int)m_registers.size();
+    code += Format("    program.m_registers.resize(%u);\r\n", numRegisters);
+    for (unsigned int i = 0; i < numRegisters; i++)
+        code += Format("    program.m_registers[%u] = {%u, %u, %u, %u};\r\n", i, m_registers[i].dataIndex, m_registers[i].registerIndex, m_registers[i].instructionFirst, m_registers[i].instructionLast);
 
     code += Format("    program.m_programMode = (FireStarterProgramMode)%u;\r\n", m_programMode);
     code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
+    code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
     if (species == 0xFFFFFFFF)
         code += "} // LoadProgram\r\n";
     else
@@ -304,7 +307,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
     for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        code += Format("    LoadProgram%d(state.m_species[%d].m_program);\r\n", s);
+        code += Format("    LoadProgram%d(state.m_species[%d].m_program);\r\n", s, s);
         code += "\r\n";
         for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
             for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
@@ -382,9 +385,9 @@ void FireStarterUnit::GenerateProgram(unsigned int species)
         std::string updatedCode = m_fireStarterCode;
         FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-        m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter2");
+        m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "Evolve");
 #else
-        m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter");
+        m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "Optimize");
 #endif
     }
 
@@ -735,7 +738,6 @@ void FireStarter::BuildData(std::string& code)
         code += "    }\r\n";
     }
     code += "} // InitData\r\n";
-    code += "\r\n";
 } // BuildData
 
 bool FireStarter::LoadTargetCode(void)
@@ -747,46 +749,37 @@ bool FireStarter::LoadTargetCode(void)
 
 bool FireStarter::LoadFireStarterCode(void)
 {
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-    if (!FireStarter::LoadCode("FireStarter.cu", m_fireStarterCode))
+    if (!FireStarter::LoadCode("Evolve.cu", m_evolveCode))
         return false;
-#else
-    if (!FireStarter::LoadCode("FireStarter_Best.cu", m_fireStarterCode))
+    if (!FireStarter::LoadCode("Optimize.cu", m_optimizeCode))
         return false;
-#endif
     return true;
 } // LoadFireStarterCode
 
 void FireStarter::SaveFireStarterCode(void)
 {
-    m_bestFireStarterCode = m_fireStarterCode;
-    FireStarter::UpdateProgram(m_bestFireStarterCode, m_bestProgramCode, PROGRAM_CODE);
-    FireStarter::UpdateProgram(m_bestFireStarterCode, m_bestEvaluateCode, EVALUATE_CODE);
+    FireStarter::UpdateProgram(m_evolveCode, m_bestProgramCode, PROGRAM_CODE);
+    FireStarter::UpdateProgram(m_optimizeCode, m_bestEvaluateCode, EVALUATE_CODE);
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-    FireStarter::SaveCode("FireStarter_Best.cu", m_bestFireStarterCode);
+    FireStarter::SaveCode("Evolve.cu", m_evolveCode);
+    FireStarter::SaveCode("Optimize.cu", m_optimizeCode);
 #endif
 } // SaveFireStarterCode
 
 bool FireStarter::LoadFireShowCode(void)
 {
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     if (!LoadCode("FireShow.cu", m_fireShowCode))
         return false;
-#else
-    if (!LoadCode("FireShow_Best.cu", m_fireShowCode))
-        return false;
-#endif
     return true;
 } // LoadFireShowCode
 
 void FireStarter::SaveFireShowCode(void)
 {
-    m_bestFireShowCode = m_fireShowCode;
     std::string dataCode;
         BuildData(dataCode);
-    UpdateProgram(m_bestFireShowCode, dataCode, DATA_CODE);
-    UpdateProgram(m_bestFireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
-    FireStarter::SaveCode("FireShow_Best.cu", m_bestFireShowCode);
+    UpdateProgram(m_fireShowCode, dataCode, DATA_CODE);
+    UpdateProgram(m_fireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
+    FireStarter::SaveCode("FireShow.cu", m_fireShowCode);
 } // SaveFireShowCode
 
 void FireStarter::SaveBestState(void)
@@ -888,24 +881,28 @@ void FireStarter::ControlThread(void)
     checkCUDAErrors(cuDeviceGet(&m_device, 0));
     checkCUDAErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
+    m_buffer.Resize(m_width, m_height);
+    m_buffer.Erase();
+
+    // Create and initialize a unit for each processor thread.
+
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     unsigned int unit_count = PROGRAM_UNITS;
     if (!unit_count)
         unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
-#else
-    unsigned int unit_count = 1;
-#endif
-    m_buffer.Resize(m_width, m_height);
-    m_buffer.Erase();
-
-    // Create and initialize a unit for each processor thread.
-
     for (unsigned int i = 0; i < unit_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_fireStarterCode);
+        FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_evolveCode);
         m_units.push_back(unit);
     }
+#else
+    unsigned int unit_count = 1;
+    for (unsigned int i = 0; i < unit_count; i++) {
+        FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_optimizeCode);
+        m_units.push_back(unit);
+    }
+#endif
     for (FireStarterUnit* unit : m_units)
         unit->DispatchAsync([this, unit] {
             unit->InitUnit();
@@ -976,7 +973,7 @@ void FireStarter::ControlThread(void)
         if (m_controlUpdate && !m_quitControlThread) {
             SaveFireStarterCode();
             SaveFireShowCode();
-            m_fireShowFunction = CompileProgram(m_bestFireShowCode, m_fireShowModule, "FireShow");
+            m_fireShowFunction = CompileProgram(m_fireShowCode, m_fireShowModule, "FireShow");
             SaveBestState();
             SaveSolution();
         }

@@ -58,11 +58,9 @@ struct FireStarterRegister {
 
 class FireStarterProgram {
 public:
-    std::vector<FireStarterOpcode> m_opcodes;
     FireStarterInstructions m_instructions;
+    std::vector<FireStarterOpcode> m_opcodes;
     std::vector<FireStarterRegister> m_registers;
-    std::vector<unsigned int> m_registerFirstInstruction;
-    std::vector<unsigned int> m_registerLastInstruction;
     FireStarterProgramMode m_programMode;
     unsigned int m_dataSize;
     unsigned int m_maxRegisters;
@@ -155,11 +153,10 @@ public:
     CUstream m_fireShowStream;
     CUmodule m_fireShowModule;
     CUfunction m_fireShowFunction;
-    std::string m_fireStarterCode;
     std::string m_targetCode;
+    std::string m_evolveCode;
+    std::string m_optimizeCode;
     std::string m_fireShowCode;
-    std::string m_bestFireStarterCode;
-    std::string m_bestFireShowCode;
     std::string m_bestProgramCode;
     std::string m_bestEvaluateCode;
     FireStarterState m_bestEvaluateState;
