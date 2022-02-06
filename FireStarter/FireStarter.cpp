@@ -373,18 +373,20 @@ void FireStarterUnit::GenerateProgram(unsigned int species)
     // Optimize the program data and registers.
     m_curState.m_species[species].m_program.OptimizeData();
 
-    // Compile the program
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-    if (!m_fireStarterFunction)
-        m_fireStarterFunction = FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule, "FireStarter2");
-#else
     // Update the Evaluate funtion.
     m_evaluateCode.clear();
-    m_curState.m_program.GenerateEvaluate(m_evaluateCode);
-    std::string updatedCode = m_fireStarterCode;
-    FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
-    m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter");
+    m_curState.m_species[m_curState.m_bestSpecies].m_program.GenerateEvaluate(m_evaluateCode);
+
+    // Compile the program
+    if (!m_fireStarterFunction) {
+        std::string updatedCode = m_fireStarterCode;
+        FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
+        m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter2");
+#else
+        m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "FireStarter");
 #endif
+    }
 
     // Update the instructions in the old results.
     m_hostResults1[species]->instructions = m_curState.m_species[species].m_program.m_instructions;

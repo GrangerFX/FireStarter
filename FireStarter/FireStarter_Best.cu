@@ -444,7 +444,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n *= data.d[12];
     n += data.d[2];
     n *= data.d[17];
-    n *= data.d[15];
+    n += data.d[15];
     n += data.d[5];
     n += data.d[18];
     return isnan(n) ? 0.0f : n;
