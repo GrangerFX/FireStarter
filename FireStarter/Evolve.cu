@@ -397,14 +397,13 @@ GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStar
 } // Program
 // END //
 
-GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation, const unsigned int variation)
+GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
     unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);
 
-    FireStarterInstructions instructions = oldResults->instructions;
     FireStarterData data;
     float result, oldResult;
     if (generation) {
@@ -461,7 +460,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         data = oldResults->results[bestIndex].data;
         result = START_RESULT;
     }
-    newResults->instructions = instructions;
     newResults->results[member].data = data;
     newResults->results[member].result = result;
 } // Evolve

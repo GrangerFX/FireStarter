@@ -391,10 +391,6 @@ void FireStarterUnit::GenerateProgram(unsigned int species)
 #endif
     }
 
-    // Update the instructions in the old results.
-    m_hostResults1[species]->instructions = m_curState.m_species[species].m_program.m_instructions;
-    checkCUDAErrors(cudaMemcpyAsync(m_deviceResults1[species], m_hostResults1[species], sizeof(FireStarterInstructions), cudaMemcpyHostToDevice, m_fireStarterStream));
-
     // Increment the unit generation counter.
     m_unitGeneration++;
 } // GenerateProgram
@@ -504,7 +500,8 @@ void FireStarterUnit::RunGenerations(unsigned int population, unsigned int itera
         for (unsigned int g = 0; g < generations; g++) {
             FireStarterResults* newResults = g & 1 ? m_deviceResults1[s] : m_deviceResults0[s];
             FireStarterResults* oldResults = g & 1 ? m_deviceResults0[s] : m_deviceResults1[s];
-            void* arr[] = { reinterpret_cast<void*>(&newResults),
+            void* arr[] = { reinterpret_cast<void*>(&m_curState.m_species[s].m_program.m_instructions),
+                            reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
                             reinterpret_cast<void*>(&m_curState.m_species[s].m_program.m_dataSize),
                             reinterpret_cast<void*>(&population),
@@ -735,6 +732,8 @@ void FireStarter::BuildData(std::string& code)
         code += Format("    if (variation == %d) {\r\n", t);
         for (unsigned int i = 0; i < species.m_program.m_dataSize; i++)
             code += Format("        data.d[%d] = %ff;\r\n", i, species.m_result[t].data.d[i]);
+        for (unsigned int i = species.m_program.m_dataSize; i < PROGRAM_INSTRUCTIONS; i++)
+            code += Format("        data.d[%d] = 0.0f;\r\n", i);
         code += "    }\r\n";
     }
     code += "} // InitData\r\n";
@@ -776,8 +775,9 @@ bool FireStarter::LoadFireShowCode(void)
 void FireStarter::SaveFireShowCode(void)
 {
     std::string dataCode;
-        BuildData(dataCode);
+    BuildData(dataCode);
     UpdateProgram(m_fireShowCode, dataCode, DATA_CODE);
+    UpdateProgram(m_fireShowCode, m_bestProgramCode, PROGRAM_CODE);
     UpdateProgram(m_fireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
     FireStarter::SaveCode("FireShow.cu", m_fireShowCode);
 } // SaveFireShowCode
@@ -828,7 +828,8 @@ void FireStarter::DrawGraph(unsigned int variation)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_species[m_bestEvaluateState.m_bestSpecies].m_result[variation]),
+    void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_species[m_bestEvaluateState.m_bestSpecies].m_program.m_instructions),
+                    reinterpret_cast<void*>(&m_bestEvaluateState.m_species[m_bestEvaluateState.m_bestSpecies].m_result[variation]),
                     reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                     reinterpret_cast<void*>(&m_buffer.m_width),
                     reinterpret_cast<void*>(&m_buffer.m_height),

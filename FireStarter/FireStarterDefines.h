@@ -69,6 +69,5 @@ typedef struct {
 } FireStarterResult;
 
 typedef struct {
-    FireStarterInstructions instructions;
     FireStarterResult results[1];
 } FireStarterResults;
