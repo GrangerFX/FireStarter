@@ -579,175 +579,73 @@ inline void Operation95(FireStarterData &data, float &n)
     data.d[31] = n;
 } // Operation95
 
-__device__ FireStarterOperation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {
-    Operation0,
-    Operation1,
-    Operation2,
-    Operation3,
-    Operation4,
-    Operation5,
-    Operation6,
-    Operation7,
-    Operation8,
-    Operation9,
-    Operation10,
-    Operation11,
-    Operation12,
-    Operation13,
-    Operation14,
-    Operation15,
-    Operation16,
-    Operation17,
-    Operation18,
-    Operation19,
-    Operation20,
-    Operation21,
-    Operation22,
-    Operation23,
-    Operation24,
-    Operation25,
-    Operation26,
-    Operation27,
-    Operation28,
-    Operation29,
-    Operation30,
-    Operation31,
-    Operation32,
-    Operation33,
-    Operation34,
-    Operation35,
-    Operation36,
-    Operation37,
-    Operation38,
-    Operation39,
-    Operation40,
-    Operation41,
-    Operation42,
-    Operation43,
-    Operation44,
-    Operation45,
-    Operation46,
-    Operation47,
-    Operation48,
-    Operation49,
-    Operation50,
-    Operation51,
-    Operation52,
-    Operation53,
-    Operation54,
-    Operation55,
-    Operation56,
-    Operation57,
-    Operation58,
-    Operation59,
-    Operation60,
-    Operation61,
-    Operation62,
-    Operation63,
-    Operation64,
-    Operation65,
-    Operation66,
-    Operation67,
-    Operation68,
-    Operation69,
-    Operation70,
-    Operation71,
-    Operation72,
-    Operation73,
-    Operation74,
-    Operation75,
-    Operation76,
-    Operation77,
-    Operation78,
-    Operation79,
-    Operation80,
-    Operation81,
-    Operation82,
-    Operation83,
-    Operation84,
-    Operation85,
-    Operation86,
-    Operation87,
-    Operation88,
-    Operation89,
-    Operation90,
-    Operation91,
-    Operation92,
-    Operation93,
-    Operation94,
-    Operation95,
-}; // operationFunctions
+__device__ FireStarterOperation instruction0 = Operation0;
+__device__ FireStarterOperation instruction1 = Operation1;
+__device__ FireStarterOperation instruction2 = Operation2;
+__device__ FireStarterOperation instruction3 = Operation3;
+__device__ FireStarterOperation instruction4 = Operation4;
+__device__ FireStarterOperation instruction5 = Operation5;
+__device__ FireStarterOperation instruction6 = Operation6;
+__device__ FireStarterOperation instruction7 = Operation7;
+__device__ FireStarterOperation instruction8 = Operation8;
+__device__ FireStarterOperation instruction9 = Operation9;
+__device__ FireStarterOperation instruction10 = Operation10;
+__device__ FireStarterOperation instruction11 = Operation11;
+__device__ FireStarterOperation instruction12 = Operation12;
+__device__ FireStarterOperation instruction13 = Operation13;
+__device__ FireStarterOperation instruction14 = Operation14;
+__device__ FireStarterOperation instruction15 = Operation15;
+__device__ FireStarterOperation instruction16 = Operation16;
+__device__ FireStarterOperation instruction17 = Operation17;
+__device__ FireStarterOperation instruction18 = Operation18;
+__device__ FireStarterOperation instruction19 = Operation19;
+__device__ FireStarterOperation instruction20 = Operation20;
+__device__ FireStarterOperation instruction21 = Operation21;
+__device__ FireStarterOperation instruction22 = Operation22;
+__device__ FireStarterOperation instruction23 = Operation23;
+__device__ FireStarterOperation instruction24 = Operation24;
+__device__ FireStarterOperation instruction25 = Operation25;
+__device__ FireStarterOperation instruction26 = Operation26;
+__device__ FireStarterOperation instruction27 = Operation27;
+__device__ FireStarterOperation instruction28 = Operation28;
+__device__ FireStarterOperation instruction29 = Operation29;
+__device__ FireStarterOperation instruction30 = Operation30;
+__device__ FireStarterOperation instruction31 = Operation31;
 
-inline void TranslateInstructions(const FireStarterInstructions& instructions, FireStarterOperations &operations)
+inline float Program(FireStarterData data, float n)
 {
-    operations.op[0] = operationFunctions[instructions.i[0].operation];
-    operations.op[1] = operationFunctions[instructions.i[1].operation];
-    operations.op[2] = operationFunctions[instructions.i[2].operation];
-    operations.op[3] = operationFunctions[instructions.i[3].operation];
-    operations.op[4] = operationFunctions[instructions.i[4].operation];
-    operations.op[5] = operationFunctions[instructions.i[5].operation];
-    operations.op[6] = operationFunctions[instructions.i[6].operation];
-    operations.op[7] = operationFunctions[instructions.i[7].operation];
-    operations.op[8] = operationFunctions[instructions.i[8].operation];
-    operations.op[9] = operationFunctions[instructions.i[9].operation];
-    operations.op[10] = operationFunctions[instructions.i[10].operation];
-    operations.op[11] = operationFunctions[instructions.i[11].operation];
-    operations.op[12] = operationFunctions[instructions.i[12].operation];
-    operations.op[13] = operationFunctions[instructions.i[13].operation];
-    operations.op[14] = operationFunctions[instructions.i[14].operation];
-    operations.op[15] = operationFunctions[instructions.i[15].operation];
-    operations.op[16] = operationFunctions[instructions.i[16].operation];
-    operations.op[17] = operationFunctions[instructions.i[17].operation];
-    operations.op[18] = operationFunctions[instructions.i[18].operation];
-    operations.op[19] = operationFunctions[instructions.i[19].operation];
-    operations.op[20] = operationFunctions[instructions.i[20].operation];
-    operations.op[21] = operationFunctions[instructions.i[21].operation];
-    operations.op[22] = operationFunctions[instructions.i[22].operation];
-    operations.op[23] = operationFunctions[instructions.i[23].operation];
-    operations.op[24] = operationFunctions[instructions.i[24].operation];
-    operations.op[25] = operationFunctions[instructions.i[25].operation];
-    operations.op[26] = operationFunctions[instructions.i[26].operation];
-    operations.op[27] = operationFunctions[instructions.i[27].operation];
-    operations.op[28] = operationFunctions[instructions.i[28].operation];
-    operations.op[29] = operationFunctions[instructions.i[29].operation];
-    operations.op[30] = operationFunctions[instructions.i[30].operation];
-    operations.op[31] = operationFunctions[instructions.i[31].operation];
-} // TranslateInstructions
-
-inline float Program(const FireStarterOperations& operations, FireStarterData data, float n)
-{
-    operations.op[0](data, n);
-    operations.op[1](data, n);
-    operations.op[2](data, n);
-    operations.op[3](data, n);
-    operations.op[4](data, n);
-    operations.op[5](data, n);
-    operations.op[6](data, n);
-    operations.op[7](data, n);
-    operations.op[8](data, n);
-    operations.op[9](data, n);
-    operations.op[10](data, n);
-    operations.op[11](data, n);
-    operations.op[12](data, n);
-    operations.op[13](data, n);
-    operations.op[14](data, n);
-    operations.op[15](data, n);
-    operations.op[16](data, n);
-    operations.op[17](data, n);
-    operations.op[18](data, n);
-    operations.op[19](data, n);
-    operations.op[20](data, n);
-    operations.op[21](data, n);
-    operations.op[22](data, n);
-    operations.op[23](data, n);
-    operations.op[24](data, n);
-    operations.op[25](data, n);
-    operations.op[26](data, n);
-    operations.op[27](data, n);
-    operations.op[28](data, n);
-    operations.op[29](data, n);
-    operations.op[30](data, n);
-    operations.op[31](data, n);
+    instruction0(data, n);
+    instruction1(data, n);
+    instruction2(data, n);
+    instruction3(data, n);
+    instruction4(data, n);
+    instruction5(data, n);
+    instruction6(data, n);
+    instruction7(data, n);
+    instruction8(data, n);
+    instruction9(data, n);
+    instruction10(data, n);
+    instruction11(data, n);
+    instruction12(data, n);
+    instruction13(data, n);
+    instruction14(data, n);
+    instruction15(data, n);
+    instruction16(data, n);
+    instruction17(data, n);
+    instruction18(data, n);
+    instruction19(data, n);
+    instruction20(data, n);
+    instruction21(data, n);
+    instruction22(data, n);
+    instruction23(data, n);
+    instruction24(data, n);
+    instruction25(data, n);
+    instruction26(data, n);
+    instruction27(data, n);
+    instruction28(data, n);
+    instruction29(data, n);
+    instruction30(data, n);
+    instruction31(data, n);
     return isnan(n) ? 0.0f : n;
 } // Program
 // END //
@@ -779,6 +677,28 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
     }
 
 #if 1
+    for (unsigned int p = 0; p < iterations; p++) {
+        unsigned int d = RANDOMSEED(seed) % dataSize;
+        float oldData = data.d[d];
+        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
+        float curResult = 0.0f;
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+            curResult = fmaxf(fabsf(Program(data, theta[i]) - target[i]), curResult);
+        if (curResult < result)
+            result = curResult;
+        else
+            data.d[d] = oldData;
+    }
+
+    // Calculate a more accure estimate of the result.
+    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
+    for (int i = 0; i < precision; i++) {
+        float theta = SAMPLE_MIN + i * precisionStep;
+        float target = Target(theta, variation);
+        result = fmaxf(fabsf(Program(data, theta) - target), result);
+    }
+#endif
+#if 0
     FireStarterOperations operations;
     TranslateInstructions(instructions, operations);
     for (unsigned int p = 0; p < iterations; p++) {
@@ -801,7 +721,8 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         float target = Target(theta, variation);
         result = fmaxf(fabsf(Program(operations, data, theta) - target), result);
     }
-#else
+#endif
+#if 0
     for (unsigned int p = 0; p < iterations; p++) {
         unsigned int d = RANDOMSEED(seed) % dataSize;
         float oldData = data.d[d];
