@@ -579,73 +579,109 @@ inline void Operation95(FireStarterData &data, float &n)
     data.d[31] = n;
 } // Operation95
 
-__device__ FireStarterOperation instruction0 = Operation0;
-__device__ FireStarterOperation instruction1 = Operation1;
-__device__ FireStarterOperation instruction2 = Operation2;
-__device__ FireStarterOperation instruction3 = Operation3;
-__device__ FireStarterOperation instruction4 = Operation4;
-__device__ FireStarterOperation instruction5 = Operation5;
-__device__ FireStarterOperation instruction6 = Operation6;
-__device__ FireStarterOperation instruction7 = Operation7;
-__device__ FireStarterOperation instruction8 = Operation8;
-__device__ FireStarterOperation instruction9 = Operation9;
-__device__ FireStarterOperation instruction10 = Operation10;
-__device__ FireStarterOperation instruction11 = Operation11;
-__device__ FireStarterOperation instruction12 = Operation12;
-__device__ FireStarterOperation instruction13 = Operation13;
-__device__ FireStarterOperation instruction14 = Operation14;
-__device__ FireStarterOperation instruction15 = Operation15;
-__device__ FireStarterOperation instruction16 = Operation16;
-__device__ FireStarterOperation instruction17 = Operation17;
-__device__ FireStarterOperation instruction18 = Operation18;
-__device__ FireStarterOperation instruction19 = Operation19;
-__device__ FireStarterOperation instruction20 = Operation20;
-__device__ FireStarterOperation instruction21 = Operation21;
-__device__ FireStarterOperation instruction22 = Operation22;
-__device__ FireStarterOperation instruction23 = Operation23;
-__device__ FireStarterOperation instruction24 = Operation24;
-__device__ FireStarterOperation instruction25 = Operation25;
-__device__ FireStarterOperation instruction26 = Operation26;
-__device__ FireStarterOperation instruction27 = Operation27;
-__device__ FireStarterOperation instruction28 = Operation28;
-__device__ FireStarterOperation instruction29 = Operation29;
-__device__ FireStarterOperation instruction30 = Operation30;
-__device__ FireStarterOperation instruction31 = Operation31;
+const FireStarterOperation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {
+    Operation0,
+    Operation1,
+    Operation2,
+    Operation3,
+    Operation4,
+    Operation5,
+    Operation6,
+    Operation7,
+    Operation8,
+    Operation9,
+    Operation10,
+    Operation11,
+    Operation12,
+    Operation13,
+    Operation14,
+    Operation15,
+    Operation16,
+    Operation17,
+    Operation18,
+    Operation19,
+    Operation20,
+    Operation21,
+    Operation22,
+    Operation23,
+    Operation24,
+    Operation25,
+    Operation26,
+    Operation27,
+    Operation28,
+    Operation29,
+    Operation30,
+    Operation31,
+    Operation32,
+    Operation33,
+    Operation34,
+    Operation35,
+    Operation36,
+    Operation37,
+    Operation38,
+    Operation39,
+    Operation40,
+    Operation41,
+    Operation42,
+    Operation43,
+    Operation44,
+    Operation45,
+    Operation46,
+    Operation47,
+    Operation48,
+    Operation49,
+    Operation50,
+    Operation51,
+    Operation52,
+    Operation53,
+    Operation54,
+    Operation55,
+    Operation56,
+    Operation57,
+    Operation58,
+    Operation59,
+    Operation60,
+    Operation61,
+    Operation62,
+    Operation63,
+    Operation64,
+    Operation65,
+    Operation66,
+    Operation67,
+    Operation68,
+    Operation69,
+    Operation70,
+    Operation71,
+    Operation72,
+    Operation73,
+    Operation74,
+    Operation75,
+    Operation76,
+    Operation77,
+    Operation78,
+    Operation79,
+    Operation80,
+    Operation81,
+    Operation82,
+    Operation83,
+    Operation84,
+    Operation85,
+    Operation86,
+    Operation87,
+    Operation88,
+    Operation89,
+    Operation90,
+    Operation91,
+    Operation92,
+    Operation93,
+    Operation94,
+    Operation95,
+}; // operationFunctions
 
-inline float Program(FireStarterData data, float n)
+inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
 {
-    instruction0(data, n);
-    instruction1(data, n);
-    instruction2(data, n);
-    instruction3(data, n);
-    instruction4(data, n);
-    instruction5(data, n);
-    instruction6(data, n);
-    instruction7(data, n);
-    instruction8(data, n);
-    instruction9(data, n);
-    instruction10(data, n);
-    instruction11(data, n);
-    instruction12(data, n);
-    instruction13(data, n);
-    instruction14(data, n);
-    instruction15(data, n);
-    instruction16(data, n);
-    instruction17(data, n);
-    instruction18(data, n);
-    instruction19(data, n);
-    instruction20(data, n);
-    instruction21(data, n);
-    instruction22(data, n);
-    instruction23(data, n);
-    instruction24(data, n);
-    instruction25(data, n);
-    instruction26(data, n);
-    instruction27(data, n);
-    instruction28(data, n);
-    instruction29(data, n);
-    instruction30(data, n);
-    instruction31(data, n);
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+       operationFunctions[instructions.i[i].operation](data, n);
     return isnan(n) ? 0.0f : n;
 } // Program
 // END //
@@ -676,7 +712,7 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         target[i] = Target(theta[i], variation);
     }
 
-#if 1
+#if 0
     for (unsigned int p = 0; p < iterations; p++) {
         unsigned int d = RANDOMSEED(seed) % dataSize;
         float oldData = data.d[d];
@@ -722,7 +758,7 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         result = fmaxf(fabsf(Program(operations, data, theta) - target), result);
     }
 #endif
-#if 0
+#if 1
     for (unsigned int p = 0; p < iterations; p++) {
         unsigned int d = RANDOMSEED(seed) % dataSize;
         float oldData = data.d[d];

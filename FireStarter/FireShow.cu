@@ -6,25 +6,25 @@
 GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)
 {
     if (variation == 0) {
-        data.d[0] = -0.553137f;
-        data.d[1] = -0.052649f;
-        data.d[2] = 0.344298f;
-        data.d[3] = -1.139374f;
-        data.d[4] = 0.594957f;
-        data.d[5] = 0.757051f;
-        data.d[6] = -0.442215f;
-        data.d[7] = -0.710774f;
-        data.d[8] = -0.268189f;
-        data.d[9] = -0.151088f;
-        data.d[10] = -0.946208f;
-        data.d[11] = -0.005989f;
-        data.d[12] = 0.383800f;
-        data.d[13] = -0.815512f;
-        data.d[14] = -0.119136f;
-        data.d[15] = -0.489752f;
-        data.d[16] = 0.229520f;
-        data.d[17] = -1.175349f;
-        data.d[18] = -1.008888f;
+        data.d[0] = -1.071393f;
+        data.d[1] = 0.178957f;
+        data.d[2] = 0.752222f;
+        data.d[3] = -0.455129f;
+        data.d[4] = -0.105304f;
+        data.d[5] = 0.678899f;
+        data.d[6] = -0.225647f;
+        data.d[7] = 0.078584f;
+        data.d[8] = 0.687086f;
+        data.d[9] = 0.893288f;
+        data.d[10] = -1.060378f;
+        data.d[11] = 0.423247f;
+        data.d[12] = -0.894063f;
+        data.d[13] = 0.405222f;
+        data.d[14] = 0.405523f;
+        data.d[15] = 0.512572f;
+        data.d[16] = -0.295672f;
+        data.d[17] = -0.605587f;
+        data.d[18] = 0.138542f;
         data.d[19] = 0.0f;
         data.d[20] = 0.0f;
         data.d[21] = 0.0f;
@@ -40,25 +40,25 @@ GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)
         data.d[31] = 0.0f;
     }
     if (variation == 1) {
-        data.d[0] = -0.553137f;
-        data.d[1] = -0.052649f;
-        data.d[2] = 0.344298f;
-        data.d[3] = -1.139374f;
-        data.d[4] = 0.594957f;
-        data.d[5] = 0.757051f;
-        data.d[6] = -0.442215f;
-        data.d[7] = -0.710774f;
-        data.d[8] = -0.268189f;
-        data.d[9] = -0.151088f;
-        data.d[10] = -0.946208f;
-        data.d[11] = -0.005989f;
-        data.d[12] = 0.383800f;
-        data.d[13] = -0.815512f;
-        data.d[14] = -0.119136f;
-        data.d[15] = -0.489752f;
-        data.d[16] = 0.229520f;
-        data.d[17] = -1.175349f;
-        data.d[18] = -1.008888f;
+        data.d[0] = -0.418744f;
+        data.d[1] = 0.679817f;
+        data.d[2] = 0.848620f;
+        data.d[3] = -1.032346f;
+        data.d[4] = -0.891693f;
+        data.d[5] = -0.230704f;
+        data.d[6] = -2.440952f;
+        data.d[7] = -0.901650f;
+        data.d[8] = 0.207363f;
+        data.d[9] = -0.247618f;
+        data.d[10] = -0.587304f;
+        data.d[11] = 0.796318f;
+        data.d[12] = -1.253612f;
+        data.d[13] = 0.048657f;
+        data.d[14] = -1.001368f;
+        data.d[15] = -0.216748f;
+        data.d[16] = -0.956515f;
+        data.d[17] = 0.243031f;
+        data.d[18] = 0.127839f;
         data.d[19] = 0.0f;
         data.d[20] = 0.0f;
         data.d[21] = 0.0f;
@@ -74,25 +74,25 @@ GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)
         data.d[31] = 0.0f;
     }
     if (variation == 2) {
-        data.d[0] = -0.553137f;
-        data.d[1] = -0.052649f;
-        data.d[2] = 0.344298f;
-        data.d[3] = -1.139374f;
-        data.d[4] = 0.594957f;
-        data.d[5] = 0.757051f;
-        data.d[6] = -0.442215f;
-        data.d[7] = -0.710774f;
-        data.d[8] = -0.268189f;
-        data.d[9] = -0.151088f;
-        data.d[10] = -0.946208f;
-        data.d[11] = -0.005989f;
-        data.d[12] = 0.383800f;
-        data.d[13] = -0.815512f;
-        data.d[14] = -0.119136f;
-        data.d[15] = -0.489752f;
-        data.d[16] = 0.229520f;
-        data.d[17] = -1.175349f;
-        data.d[18] = -1.008888f;
+        data.d[0] = 1.189609f;
+        data.d[1] = 0.445425f;
+        data.d[2] = 0.003999f;
+        data.d[3] = 0.138460f;
+        data.d[4] = 0.407641f;
+        data.d[5] = -0.700217f;
+        data.d[6] = -0.118608f;
+        data.d[7] = 0.299345f;
+        data.d[8] = 0.691603f;
+        data.d[9] = 0.908452f;
+        data.d[10] = -0.034873f;
+        data.d[11] = 0.038944f;
+        data.d[12] = 0.924352f;
+        data.d[13] = 0.284977f;
+        data.d[14] = -0.214091f;
+        data.d[15] = -0.405603f;
+        data.d[16] = -0.859724f;
+        data.d[17] = 0.840676f;
+        data.d[18] = 0.688361f;
         data.d[19] = 0.0f;
         data.d[20] = 0.0f;
         data.d[21] = 0.0f;
@@ -108,25 +108,25 @@ GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)
         data.d[31] = 0.0f;
     }
     if (variation == 3) {
-        data.d[0] = -0.553137f;
-        data.d[1] = -0.052649f;
-        data.d[2] = 0.344298f;
-        data.d[3] = -1.139374f;
-        data.d[4] = 0.594957f;
-        data.d[5] = 0.757051f;
-        data.d[6] = -0.442215f;
-        data.d[7] = -0.710774f;
-        data.d[8] = -0.268189f;
-        data.d[9] = -0.151088f;
-        data.d[10] = -0.946208f;
-        data.d[11] = -0.005989f;
-        data.d[12] = 0.383800f;
-        data.d[13] = -0.815512f;
-        data.d[14] = -0.119136f;
-        data.d[15] = -0.489752f;
-        data.d[16] = 0.229520f;
-        data.d[17] = -1.175349f;
-        data.d[18] = -1.008888f;
+        data.d[0] = 0.241234f;
+        data.d[1] = -0.098757f;
+        data.d[2] = -0.731473f;
+        data.d[3] = -0.821017f;
+        data.d[4] = -1.905133f;
+        data.d[5] = 0.062168f;
+        data.d[6] = -1.274883f;
+        data.d[7] = -0.679742f;
+        data.d[8] = 2.899965f;
+        data.d[9] = 0.367704f;
+        data.d[10] = 2.163547f;
+        data.d[11] = 0.232237f;
+        data.d[12] = -0.263929f;
+        data.d[13] = -0.538203f;
+        data.d[14] = 0.513906f;
+        data.d[15] = 0.231920f;
+        data.d[16] = -0.174085f;
+        data.d[17] = -0.455868f;
+        data.d[18] = 0.419858f;
         data.d[19] = 0.0f;
         data.d[20] = 0.0f;
         data.d[21] = 0.0f;
@@ -721,73 +721,109 @@ inline void Operation95(FireStarterData &data, float &n)
     data.d[31] = n;
 } // Operation95
 
-__device__ FireStarterOperation instruction0 = Operation0;
-__device__ FireStarterOperation instruction1 = Operation1;
-__device__ FireStarterOperation instruction2 = Operation2;
-__device__ FireStarterOperation instruction3 = Operation3;
-__device__ FireStarterOperation instruction4 = Operation4;
-__device__ FireStarterOperation instruction5 = Operation5;
-__device__ FireStarterOperation instruction6 = Operation6;
-__device__ FireStarterOperation instruction7 = Operation7;
-__device__ FireStarterOperation instruction8 = Operation8;
-__device__ FireStarterOperation instruction9 = Operation9;
-__device__ FireStarterOperation instruction10 = Operation10;
-__device__ FireStarterOperation instruction11 = Operation11;
-__device__ FireStarterOperation instruction12 = Operation12;
-__device__ FireStarterOperation instruction13 = Operation13;
-__device__ FireStarterOperation instruction14 = Operation14;
-__device__ FireStarterOperation instruction15 = Operation15;
-__device__ FireStarterOperation instruction16 = Operation16;
-__device__ FireStarterOperation instruction17 = Operation17;
-__device__ FireStarterOperation instruction18 = Operation18;
-__device__ FireStarterOperation instruction19 = Operation19;
-__device__ FireStarterOperation instruction20 = Operation20;
-__device__ FireStarterOperation instruction21 = Operation21;
-__device__ FireStarterOperation instruction22 = Operation22;
-__device__ FireStarterOperation instruction23 = Operation23;
-__device__ FireStarterOperation instruction24 = Operation24;
-__device__ FireStarterOperation instruction25 = Operation25;
-__device__ FireStarterOperation instruction26 = Operation26;
-__device__ FireStarterOperation instruction27 = Operation27;
-__device__ FireStarterOperation instruction28 = Operation28;
-__device__ FireStarterOperation instruction29 = Operation29;
-__device__ FireStarterOperation instruction30 = Operation30;
-__device__ FireStarterOperation instruction31 = Operation31;
+const FireStarterOperation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {
+    Operation0,
+    Operation1,
+    Operation2,
+    Operation3,
+    Operation4,
+    Operation5,
+    Operation6,
+    Operation7,
+    Operation8,
+    Operation9,
+    Operation10,
+    Operation11,
+    Operation12,
+    Operation13,
+    Operation14,
+    Operation15,
+    Operation16,
+    Operation17,
+    Operation18,
+    Operation19,
+    Operation20,
+    Operation21,
+    Operation22,
+    Operation23,
+    Operation24,
+    Operation25,
+    Operation26,
+    Operation27,
+    Operation28,
+    Operation29,
+    Operation30,
+    Operation31,
+    Operation32,
+    Operation33,
+    Operation34,
+    Operation35,
+    Operation36,
+    Operation37,
+    Operation38,
+    Operation39,
+    Operation40,
+    Operation41,
+    Operation42,
+    Operation43,
+    Operation44,
+    Operation45,
+    Operation46,
+    Operation47,
+    Operation48,
+    Operation49,
+    Operation50,
+    Operation51,
+    Operation52,
+    Operation53,
+    Operation54,
+    Operation55,
+    Operation56,
+    Operation57,
+    Operation58,
+    Operation59,
+    Operation60,
+    Operation61,
+    Operation62,
+    Operation63,
+    Operation64,
+    Operation65,
+    Operation66,
+    Operation67,
+    Operation68,
+    Operation69,
+    Operation70,
+    Operation71,
+    Operation72,
+    Operation73,
+    Operation74,
+    Operation75,
+    Operation76,
+    Operation77,
+    Operation78,
+    Operation79,
+    Operation80,
+    Operation81,
+    Operation82,
+    Operation83,
+    Operation84,
+    Operation85,
+    Operation86,
+    Operation87,
+    Operation88,
+    Operation89,
+    Operation90,
+    Operation91,
+    Operation92,
+    Operation93,
+    Operation94,
+    Operation95,
+}; // operationFunctions
 
-inline float Program(FireStarterData data, float n)
+inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
 {
-    instruction0(data, n);
-    instruction1(data, n);
-    instruction2(data, n);
-    instruction3(data, n);
-    instruction4(data, n);
-    instruction5(data, n);
-    instruction6(data, n);
-    instruction7(data, n);
-    instruction8(data, n);
-    instruction9(data, n);
-    instruction10(data, n);
-    instruction11(data, n);
-    instruction12(data, n);
-    instruction13(data, n);
-    instruction14(data, n);
-    instruction15(data, n);
-    instruction16(data, n);
-    instruction17(data, n);
-    instruction18(data, n);
-    instruction19(data, n);
-    instruction20(data, n);
-    instruction21(data, n);
-    instruction22(data, n);
-    instruction23(data, n);
-    instruction24(data, n);
-    instruction25(data, n);
-    instruction26(data, n);
-    instruction27(data, n);
-    instruction28(data, n);
-    instruction29(data, n);
-    instruction30(data, n);
-    instruction31(data, n);
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+       operationFunctions[instructions.i[i].operation](data, n);
     return isnan(n) ? 0.0f : n;
 } // Program
 // END //
@@ -881,7 +917,7 @@ GPU_GLOBAL void FireShow(const FireStarterInstructions instructions, const FireS
             pixel.x = 255;
             pixel.y = 128;
         };
-#if 1
+#if 0
         y = (int)(center + Program(bestResult.data, theta) * yScale);
 #endif
 #if 0
@@ -889,8 +925,8 @@ GPU_GLOBAL void FireShow(const FireStarterInstructions instructions, const FireS
         TranslateInstructions(instructions, operations);
         y = (int)(center + Program(operations, bestResult.data, theta) * yScale);
 #endif
-#if 0
-        y = (int)(center + Program(operations, bestResult.data, theta) * yScale);
+#if 1
+        y = (int)(center + Program(instructions, bestResult.data, theta) * yScale);
 #endif
 #if 0
         y = (int)(center + Evaluate(bestResult.data, theta) * yScale);
