@@ -712,53 +712,6 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         target[i] = Target(theta[i], variation);
     }
 
-#if 0
-    for (unsigned int p = 0; p < iterations; p++) {
-        unsigned int d = RANDOMSEED(seed) % dataSize;
-        float oldData = data.d[d];
-        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
-        float curResult = 0.0f;
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-            curResult = fmaxf(fabsf(Program(data, theta[i]) - target[i]), curResult);
-        if (curResult < result)
-            result = curResult;
-        else
-            data.d[d] = oldData;
-    }
-
-    // Calculate a more accure estimate of the result.
-    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
-    for (int i = 0; i < precision; i++) {
-        float theta = SAMPLE_MIN + i * precisionStep;
-        float target = Target(theta, variation);
-        result = fmaxf(fabsf(Program(data, theta) - target), result);
-    }
-#endif
-#if 0
-    FireStarterOperations operations;
-    TranslateInstructions(instructions, operations);
-    for (unsigned int p = 0; p < iterations; p++) {
-        unsigned int d = RANDOMSEED(seed) % dataSize;
-        float oldData = data.d[d];
-        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
-        float curResult = 0.0f;
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-            curResult = fmaxf(fabsf(Program(operations, data, theta[i]) - target[i]), curResult);
-        if (curResult < result)
-            result = curResult;
-        else
-            data.d[d] = oldData;
-    }
-
-    // Calculate a more accure estimate of the result.
-    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
-    for (int i = 0; i < precision; i++) {
-        float theta = SAMPLE_MIN + i * precisionStep;
-        float target = Target(theta, variation);
-        result = fmaxf(fabsf(Program(operations, data, theta) - target), result);
-    }
-#endif
-#if 1
     for (unsigned int p = 0; p < iterations; p++) {
         unsigned int d = RANDOMSEED(seed) % dataSize;
         float oldData = data.d[d];
@@ -779,7 +732,6 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         float target = Target(theta, variation);
         result = fmaxf(fabsf(Program(instructions, data, theta) - target), result);
     }
-#endif
 
     if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:

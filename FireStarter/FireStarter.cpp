@@ -91,10 +91,10 @@ void FireStarterProgram::GenerateProgram(std::string& code)
                 break;
             }
             code += Format("} // Operation%d\r\n", operation);
-//          code += Format("__device__ FireStarterOperation operation%d = Operation%d;\r\n", operation, operation);
             code += "\r\n";
         }
     }
+
     code += "const FireStarterOperation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {\r\n";
     for (unsigned int op = 0; op < PROGRAM_OPCODES; op++)
         for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++)
@@ -102,76 +102,12 @@ void FireStarterProgram::GenerateProgram(std::string& code)
     code += "}; // operationFunctions\r\n";
     code += "\r\n";
 
-#if 0
-    for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++)
-        code += Format("__device__ FireStarterOperation instruction%d = Operation%d;\r\n", reg, reg);
-    code += "\r\n";
-
-    code += "inline float Program(FireStarterData data, float n)\r\n";
-    code += "{\r\n";
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        code += Format("    instruction%d(data, n);\r\n", i);
-    code += "    return isnan(n) ? 0.0f : n;\r\n";
-    code += "} // Program\r\n";
-#endif
-#if 0
-    code += "inline void TranslateInstructions(const FireStarterInstructions& instructions, FireStarterOperations &operations)\r\n";
-    code += "{\r\n";
-    code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\r\n";
-    code += "        operations.op[i] = operationFunctions[instructions.i[i].operation];\r\n";
-    code += "} // TranslateInstructions\r\n";
-    code += "\r\n";
-
-    code += "inline float Program(const FireStarterOperations& operations, FireStarterData data, float n)\r\n";
-    code += "{\r\n";
-    code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\r\n";
-    code += "        operations.op[i](data, n);\r\n";
-    code += "    return isnan(n) ? 0.0f : n;\r\n";
-    code += "} // Program\r\n";
-#endif
-#if 1
     code += "inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)\r\n";
     code += "{\r\n";
     code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\r\n";
     code += "       operationFunctions[instructions.i[i].operation](data, n);\r\n";
     code += "    return isnan(n) ? 0.0f : n;\r\n";
     code += "} // Program\r\n";
-#endif
-#if 0
-    // Generate the evaluate function.
-    code += "inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)\r\n";
-    code += "{\r\n";
-    code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {\r\n";
-    code += "        switch (instructions.i[i].operation) {\r\n";
-    for (unsigned int op = 0; op < PROGRAM_OPCODES; op++) {
-        for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++) {
-            FireStarterOpcode opcode = FireStarterOpcode(op);
-            FireStarterInstruction instruction(opcode, reg);
-            code += Format("        case %u:\r\n", op * PROGRAM_INSTRUCTIONS + reg);
-            switch (opcode) {
-                case Operation_multiply:
-                    code += Format("            n *= data.d[%u];\r\n", reg);
-                    code += Format("            data.d[%u] = n;\r\n", reg);
-                    code += "            break;\r\n";
-                    break;
-                case Operation_add:
-                    code += Format("            n += data.d[%u];\r\n", reg);
-                    code += Format("            data.d[%u] = n;\r\n", reg);
-                    code += "            break;\r\n";
-                    break;
-                case Operation_add_abs:
-                    code += Format("            n += fabsf(data.d[%u]);\r\n", reg);
-                    code += Format("            data.d[%u] = n;\r\n", reg);
-                    code += "            break;\r\n";
-                    break;
-            }
-        }
-    }
-    code += "        }\r\n";
-    code += "    }\r\n";
-    code += "    return isnan(n) ? 0.0f : n;\r\n";
-    code += "} // Program\r\n";
-#endif
 } // GenerateProgram
 
 void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)

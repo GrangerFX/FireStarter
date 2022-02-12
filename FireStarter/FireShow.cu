@@ -917,14 +917,6 @@ GPU_GLOBAL void FireShow(const FireStarterInstructions instructions, const FireS
             pixel.x = 255;
             pixel.y = 128;
         };
-#if 0
-        y = (int)(center + Program(bestResult.data, theta) * yScale);
-#endif
-#if 0
-        FireStarterOperations operations;
-        TranslateInstructions(instructions, operations);
-        y = (int)(center + Program(operations, bestResult.data, theta) * yScale);
-#endif
 #if 1
         y = (int)(center + Program(instructions, bestResult.data, theta) * yScale);
 #endif
