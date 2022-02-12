@@ -1,6 +1,6 @@
 #pragma once
 
-GPU_FUNCTION unsigned int Hash(unsigned int hash)
+inline unsigned int Hash(unsigned int hash)
 {
     hash = (hash ^ 61) ^ (hash >> 16);
     hash += hash << 3;

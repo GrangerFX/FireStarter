@@ -32,12 +32,12 @@ inline unsigned int atomicMax(unsigned int* addr, unsigned int x) { unsigned int
 #endif
 
 // Reference: https://stackoverflow.com/questions/17399119/how-do-i-use-atomicmax-on-floating-point-values-in-cuda
-GPU_FUNCTION float atomicMin(float* addr, float value)
+inline float atomicMin(float* addr, float value)
 {
     return (value >= 0) ? __int_as_float(atomicMin((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMax((unsigned int*)addr, __float_as_uint(value)));
 } // atomicMin
 
-GPU_FUNCTION float atomicMax(float* addr, float value)
+inline float atomicMax(float* addr, float value)
 {
     return (value >= 0) ? __int_as_float(atomicMax((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMin((unsigned int*)addr, __float_as_uint(value)));
 } // atomicMax

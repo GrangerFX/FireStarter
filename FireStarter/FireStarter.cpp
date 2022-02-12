@@ -69,8 +69,63 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
 
 void FireStarterProgram::GenerateProgram(std::string& code)
 {
+#if 1
+    for (unsigned int op = 0; op < PROGRAM_OPCODES; op++) {
+        for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++) {
+            unsigned int operation = op * PROGRAM_INSTRUCTIONS + reg;
+            code += Format("inline void Operation%d(FireStarterData &data, float &n)\r\n", operation);
+            code += "{\r\n";
+            FireStarterOpcode opcode = FireStarterOpcode(op);
+            FireStarterInstruction instruction(opcode, reg);
+            switch (opcode) {
+                case Operation_multiply:
+                    code += Format("    n *= data.d[%u];\r\n", reg);
+                    code += Format("    data.d[%u] = n;\r\n", reg);
+                    break;
+                case Operation_add:
+                    code += Format("    n += data.d[%u];\r\n", reg);
+                    code += Format("    data.d[%u] = n;\r\n", reg);
+                    break;
+                case Operation_add_abs:
+                    code += Format("    n += fabsf(data.d[%u]);\r\n", reg);
+                    code += Format("    data.d[%u] = n;\r\n", reg);
+                    break;
+            }
+            code += Format("} // Operation%d\r\n", operation);
+            code += "\r\n";
+        }
+    }
+    code += "typedef void (*Operation) (FireStarterData&, float&);\r\n";
+    code += "\r\n";
+
+    code += "__device__ Operation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {\r\n";
+    for (unsigned int op = 0; op < PROGRAM_OPCODES; op++)
+        for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++)
+            code += Format("    Operation%d,\r\n", op * PROGRAM_INSTRUCTIONS + reg);
+    code += "}; // operationFunctions\r\n";
+    code += "\r\n";
+
+    code += "typedef struct {\r\n";
+    code += "    Operation op[PROGRAM_INSTRUCTIONS];\r\n";
+    code += "} Operations;\r\n";
+    code += "\r\n";
+
+    code += "inline void TranslateInstructions(const FireStarterInstructions& instructions, Operations &operations)\r\n";
+    code += "{\r\n";
+    code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\r\n";
+    code += "        operations.op[i] = operationFunctions[instructions.i[i].operation];\r\n";
+    code += "} // TranslateInstructions\r\n";
+    code += "\r\n";
+
+    code += "inline float Program(const Operations& operations, FireStarterData data, float n)\r\n";
+    code += "{\r\n";
+    code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\r\n";
+    code += "        operations.op[i](data, n);\r\n";
+    code += "    return isnan(n) ? 0.0f : n;\r\n";
+    code += "} // Program\r\n";
+#else
     // Generate the evaluate function.
-    code += "GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)\r\n";
+    code += "inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)\r\n";
     code += "{\r\n";
     code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {\r\n";
     code += "        switch (instructions.i[i].operation) {\r\n";
@@ -102,6 +157,7 @@ void FireStarterProgram::GenerateProgram(std::string& code)
     code += "    }\r\n";
     code += "    return isnan(n) ? 0.0f : n;\r\n";
     code += "} // Program\r\n";
+#endif
 } // GenerateProgram
 
 void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)

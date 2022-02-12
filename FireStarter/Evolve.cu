@@ -3,396 +3,697 @@
 #include "FireStarterTarget.h"
 
 // PROGRAM //
-GPU_FUNCTION float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
+inline void Operation0(FireStarterData &data, float &n)
 {
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        switch (instructions.i[i].operation) {
-        case 0:
-            n *= data.d[0];
-            data.d[0] = n;
-            break;
-        case 1:
-            n *= data.d[1];
-            data.d[1] = n;
-            break;
-        case 2:
-            n *= data.d[2];
-            data.d[2] = n;
-            break;
-        case 3:
-            n *= data.d[3];
-            data.d[3] = n;
-            break;
-        case 4:
-            n *= data.d[4];
-            data.d[4] = n;
-            break;
-        case 5:
-            n *= data.d[5];
-            data.d[5] = n;
-            break;
-        case 6:
-            n *= data.d[6];
-            data.d[6] = n;
-            break;
-        case 7:
-            n *= data.d[7];
-            data.d[7] = n;
-            break;
-        case 8:
-            n *= data.d[8];
-            data.d[8] = n;
-            break;
-        case 9:
-            n *= data.d[9];
-            data.d[9] = n;
-            break;
-        case 10:
-            n *= data.d[10];
-            data.d[10] = n;
-            break;
-        case 11:
-            n *= data.d[11];
-            data.d[11] = n;
-            break;
-        case 12:
-            n *= data.d[12];
-            data.d[12] = n;
-            break;
-        case 13:
-            n *= data.d[13];
-            data.d[13] = n;
-            break;
-        case 14:
-            n *= data.d[14];
-            data.d[14] = n;
-            break;
-        case 15:
-            n *= data.d[15];
-            data.d[15] = n;
-            break;
-        case 16:
-            n *= data.d[16];
-            data.d[16] = n;
-            break;
-        case 17:
-            n *= data.d[17];
-            data.d[17] = n;
-            break;
-        case 18:
-            n *= data.d[18];
-            data.d[18] = n;
-            break;
-        case 19:
-            n *= data.d[19];
-            data.d[19] = n;
-            break;
-        case 20:
-            n *= data.d[20];
-            data.d[20] = n;
-            break;
-        case 21:
-            n *= data.d[21];
-            data.d[21] = n;
-            break;
-        case 22:
-            n *= data.d[22];
-            data.d[22] = n;
-            break;
-        case 23:
-            n *= data.d[23];
-            data.d[23] = n;
-            break;
-        case 24:
-            n *= data.d[24];
-            data.d[24] = n;
-            break;
-        case 25:
-            n *= data.d[25];
-            data.d[25] = n;
-            break;
-        case 26:
-            n *= data.d[26];
-            data.d[26] = n;
-            break;
-        case 27:
-            n *= data.d[27];
-            data.d[27] = n;
-            break;
-        case 28:
-            n *= data.d[28];
-            data.d[28] = n;
-            break;
-        case 29:
-            n *= data.d[29];
-            data.d[29] = n;
-            break;
-        case 30:
-            n *= data.d[30];
-            data.d[30] = n;
-            break;
-        case 31:
-            n *= data.d[31];
-            data.d[31] = n;
-            break;
-        case 32:
-            n += data.d[0];
-            data.d[0] = n;
-            break;
-        case 33:
-            n += data.d[1];
-            data.d[1] = n;
-            break;
-        case 34:
-            n += data.d[2];
-            data.d[2] = n;
-            break;
-        case 35:
-            n += data.d[3];
-            data.d[3] = n;
-            break;
-        case 36:
-            n += data.d[4];
-            data.d[4] = n;
-            break;
-        case 37:
-            n += data.d[5];
-            data.d[5] = n;
-            break;
-        case 38:
-            n += data.d[6];
-            data.d[6] = n;
-            break;
-        case 39:
-            n += data.d[7];
-            data.d[7] = n;
-            break;
-        case 40:
-            n += data.d[8];
-            data.d[8] = n;
-            break;
-        case 41:
-            n += data.d[9];
-            data.d[9] = n;
-            break;
-        case 42:
-            n += data.d[10];
-            data.d[10] = n;
-            break;
-        case 43:
-            n += data.d[11];
-            data.d[11] = n;
-            break;
-        case 44:
-            n += data.d[12];
-            data.d[12] = n;
-            break;
-        case 45:
-            n += data.d[13];
-            data.d[13] = n;
-            break;
-        case 46:
-            n += data.d[14];
-            data.d[14] = n;
-            break;
-        case 47:
-            n += data.d[15];
-            data.d[15] = n;
-            break;
-        case 48:
-            n += data.d[16];
-            data.d[16] = n;
-            break;
-        case 49:
-            n += data.d[17];
-            data.d[17] = n;
-            break;
-        case 50:
-            n += data.d[18];
-            data.d[18] = n;
-            break;
-        case 51:
-            n += data.d[19];
-            data.d[19] = n;
-            break;
-        case 52:
-            n += data.d[20];
-            data.d[20] = n;
-            break;
-        case 53:
-            n += data.d[21];
-            data.d[21] = n;
-            break;
-        case 54:
-            n += data.d[22];
-            data.d[22] = n;
-            break;
-        case 55:
-            n += data.d[23];
-            data.d[23] = n;
-            break;
-        case 56:
-            n += data.d[24];
-            data.d[24] = n;
-            break;
-        case 57:
-            n += data.d[25];
-            data.d[25] = n;
-            break;
-        case 58:
-            n += data.d[26];
-            data.d[26] = n;
-            break;
-        case 59:
-            n += data.d[27];
-            data.d[27] = n;
-            break;
-        case 60:
-            n += data.d[28];
-            data.d[28] = n;
-            break;
-        case 61:
-            n += data.d[29];
-            data.d[29] = n;
-            break;
-        case 62:
-            n += data.d[30];
-            data.d[30] = n;
-            break;
-        case 63:
-            n += data.d[31];
-            data.d[31] = n;
-            break;
-        case 64:
-            n += fabsf(data.d[0]);
-            data.d[0] = n;
-            break;
-        case 65:
-            n += fabsf(data.d[1]);
-            data.d[1] = n;
-            break;
-        case 66:
-            n += fabsf(data.d[2]);
-            data.d[2] = n;
-            break;
-        case 67:
-            n += fabsf(data.d[3]);
-            data.d[3] = n;
-            break;
-        case 68:
-            n += fabsf(data.d[4]);
-            data.d[4] = n;
-            break;
-        case 69:
-            n += fabsf(data.d[5]);
-            data.d[5] = n;
-            break;
-        case 70:
-            n += fabsf(data.d[6]);
-            data.d[6] = n;
-            break;
-        case 71:
-            n += fabsf(data.d[7]);
-            data.d[7] = n;
-            break;
-        case 72:
-            n += fabsf(data.d[8]);
-            data.d[8] = n;
-            break;
-        case 73:
-            n += fabsf(data.d[9]);
-            data.d[9] = n;
-            break;
-        case 74:
-            n += fabsf(data.d[10]);
-            data.d[10] = n;
-            break;
-        case 75:
-            n += fabsf(data.d[11]);
-            data.d[11] = n;
-            break;
-        case 76:
-            n += fabsf(data.d[12]);
-            data.d[12] = n;
-            break;
-        case 77:
-            n += fabsf(data.d[13]);
-            data.d[13] = n;
-            break;
-        case 78:
-            n += fabsf(data.d[14]);
-            data.d[14] = n;
-            break;
-        case 79:
-            n += fabsf(data.d[15]);
-            data.d[15] = n;
-            break;
-        case 80:
-            n += fabsf(data.d[16]);
-            data.d[16] = n;
-            break;
-        case 81:
-            n += fabsf(data.d[17]);
-            data.d[17] = n;
-            break;
-        case 82:
-            n += fabsf(data.d[18]);
-            data.d[18] = n;
-            break;
-        case 83:
-            n += fabsf(data.d[19]);
-            data.d[19] = n;
-            break;
-        case 84:
-            n += fabsf(data.d[20]);
-            data.d[20] = n;
-            break;
-        case 85:
-            n += fabsf(data.d[21]);
-            data.d[21] = n;
-            break;
-        case 86:
-            n += fabsf(data.d[22]);
-            data.d[22] = n;
-            break;
-        case 87:
-            n += fabsf(data.d[23]);
-            data.d[23] = n;
-            break;
-        case 88:
-            n += fabsf(data.d[24]);
-            data.d[24] = n;
-            break;
-        case 89:
-            n += fabsf(data.d[25]);
-            data.d[25] = n;
-            break;
-        case 90:
-            n += fabsf(data.d[26]);
-            data.d[26] = n;
-            break;
-        case 91:
-            n += fabsf(data.d[27]);
-            data.d[27] = n;
-            break;
-        case 92:
-            n += fabsf(data.d[28]);
-            data.d[28] = n;
-            break;
-        case 93:
-            n += fabsf(data.d[29]);
-            data.d[29] = n;
-            break;
-        case 94:
-            n += fabsf(data.d[30]);
-            data.d[30] = n;
-            break;
-        case 95:
-            n += fabsf(data.d[31]);
-            data.d[31] = n;
-            break;
-        }
-    }
+    n *= data.d[0];
+    data.d[0] = n;
+} // Operation0
+
+inline void Operation1(FireStarterData &data, float &n)
+{
+    n *= data.d[1];
+    data.d[1] = n;
+} // Operation1
+
+inline void Operation2(FireStarterData &data, float &n)
+{
+    n *= data.d[2];
+    data.d[2] = n;
+} // Operation2
+
+inline void Operation3(FireStarterData &data, float &n)
+{
+    n *= data.d[3];
+    data.d[3] = n;
+} // Operation3
+
+inline void Operation4(FireStarterData &data, float &n)
+{
+    n *= data.d[4];
+    data.d[4] = n;
+} // Operation4
+
+inline void Operation5(FireStarterData &data, float &n)
+{
+    n *= data.d[5];
+    data.d[5] = n;
+} // Operation5
+
+inline void Operation6(FireStarterData &data, float &n)
+{
+    n *= data.d[6];
+    data.d[6] = n;
+} // Operation6
+
+inline void Operation7(FireStarterData &data, float &n)
+{
+    n *= data.d[7];
+    data.d[7] = n;
+} // Operation7
+
+inline void Operation8(FireStarterData &data, float &n)
+{
+    n *= data.d[8];
+    data.d[8] = n;
+} // Operation8
+
+inline void Operation9(FireStarterData &data, float &n)
+{
+    n *= data.d[9];
+    data.d[9] = n;
+} // Operation9
+
+inline void Operation10(FireStarterData &data, float &n)
+{
+    n *= data.d[10];
+    data.d[10] = n;
+} // Operation10
+
+inline void Operation11(FireStarterData &data, float &n)
+{
+    n *= data.d[11];
+    data.d[11] = n;
+} // Operation11
+
+inline void Operation12(FireStarterData &data, float &n)
+{
+    n *= data.d[12];
+    data.d[12] = n;
+} // Operation12
+
+inline void Operation13(FireStarterData &data, float &n)
+{
+    n *= data.d[13];
+    data.d[13] = n;
+} // Operation13
+
+inline void Operation14(FireStarterData &data, float &n)
+{
+    n *= data.d[14];
+    data.d[14] = n;
+} // Operation14
+
+inline void Operation15(FireStarterData &data, float &n)
+{
+    n *= data.d[15];
+    data.d[15] = n;
+} // Operation15
+
+inline void Operation16(FireStarterData &data, float &n)
+{
+    n *= data.d[16];
+    data.d[16] = n;
+} // Operation16
+
+inline void Operation17(FireStarterData &data, float &n)
+{
+    n *= data.d[17];
+    data.d[17] = n;
+} // Operation17
+
+inline void Operation18(FireStarterData &data, float &n)
+{
+    n *= data.d[18];
+    data.d[18] = n;
+} // Operation18
+
+inline void Operation19(FireStarterData &data, float &n)
+{
+    n *= data.d[19];
+    data.d[19] = n;
+} // Operation19
+
+inline void Operation20(FireStarterData &data, float &n)
+{
+    n *= data.d[20];
+    data.d[20] = n;
+} // Operation20
+
+inline void Operation21(FireStarterData &data, float &n)
+{
+    n *= data.d[21];
+    data.d[21] = n;
+} // Operation21
+
+inline void Operation22(FireStarterData &data, float &n)
+{
+    n *= data.d[22];
+    data.d[22] = n;
+} // Operation22
+
+inline void Operation23(FireStarterData &data, float &n)
+{
+    n *= data.d[23];
+    data.d[23] = n;
+} // Operation23
+
+inline void Operation24(FireStarterData &data, float &n)
+{
+    n *= data.d[24];
+    data.d[24] = n;
+} // Operation24
+
+inline void Operation25(FireStarterData &data, float &n)
+{
+    n *= data.d[25];
+    data.d[25] = n;
+} // Operation25
+
+inline void Operation26(FireStarterData &data, float &n)
+{
+    n *= data.d[26];
+    data.d[26] = n;
+} // Operation26
+
+inline void Operation27(FireStarterData &data, float &n)
+{
+    n *= data.d[27];
+    data.d[27] = n;
+} // Operation27
+
+inline void Operation28(FireStarterData &data, float &n)
+{
+    n *= data.d[28];
+    data.d[28] = n;
+} // Operation28
+
+inline void Operation29(FireStarterData &data, float &n)
+{
+    n *= data.d[29];
+    data.d[29] = n;
+} // Operation29
+
+inline void Operation30(FireStarterData &data, float &n)
+{
+    n *= data.d[30];
+    data.d[30] = n;
+} // Operation30
+
+inline void Operation31(FireStarterData &data, float &n)
+{
+    n *= data.d[31];
+    data.d[31] = n;
+} // Operation31
+
+inline void Operation32(FireStarterData &data, float &n)
+{
+    n += data.d[0];
+    data.d[0] = n;
+} // Operation32
+
+inline void Operation33(FireStarterData &data, float &n)
+{
+    n += data.d[1];
+    data.d[1] = n;
+} // Operation33
+
+inline void Operation34(FireStarterData &data, float &n)
+{
+    n += data.d[2];
+    data.d[2] = n;
+} // Operation34
+
+inline void Operation35(FireStarterData &data, float &n)
+{
+    n += data.d[3];
+    data.d[3] = n;
+} // Operation35
+
+inline void Operation36(FireStarterData &data, float &n)
+{
+    n += data.d[4];
+    data.d[4] = n;
+} // Operation36
+
+inline void Operation37(FireStarterData &data, float &n)
+{
+    n += data.d[5];
+    data.d[5] = n;
+} // Operation37
+
+inline void Operation38(FireStarterData &data, float &n)
+{
+    n += data.d[6];
+    data.d[6] = n;
+} // Operation38
+
+inline void Operation39(FireStarterData &data, float &n)
+{
+    n += data.d[7];
+    data.d[7] = n;
+} // Operation39
+
+inline void Operation40(FireStarterData &data, float &n)
+{
+    n += data.d[8];
+    data.d[8] = n;
+} // Operation40
+
+inline void Operation41(FireStarterData &data, float &n)
+{
+    n += data.d[9];
+    data.d[9] = n;
+} // Operation41
+
+inline void Operation42(FireStarterData &data, float &n)
+{
+    n += data.d[10];
+    data.d[10] = n;
+} // Operation42
+
+inline void Operation43(FireStarterData &data, float &n)
+{
+    n += data.d[11];
+    data.d[11] = n;
+} // Operation43
+
+inline void Operation44(FireStarterData &data, float &n)
+{
+    n += data.d[12];
+    data.d[12] = n;
+} // Operation44
+
+inline void Operation45(FireStarterData &data, float &n)
+{
+    n += data.d[13];
+    data.d[13] = n;
+} // Operation45
+
+inline void Operation46(FireStarterData &data, float &n)
+{
+    n += data.d[14];
+    data.d[14] = n;
+} // Operation46
+
+inline void Operation47(FireStarterData &data, float &n)
+{
+    n += data.d[15];
+    data.d[15] = n;
+} // Operation47
+
+inline void Operation48(FireStarterData &data, float &n)
+{
+    n += data.d[16];
+    data.d[16] = n;
+} // Operation48
+
+inline void Operation49(FireStarterData &data, float &n)
+{
+    n += data.d[17];
+    data.d[17] = n;
+} // Operation49
+
+inline void Operation50(FireStarterData &data, float &n)
+{
+    n += data.d[18];
+    data.d[18] = n;
+} // Operation50
+
+inline void Operation51(FireStarterData &data, float &n)
+{
+    n += data.d[19];
+    data.d[19] = n;
+} // Operation51
+
+inline void Operation52(FireStarterData &data, float &n)
+{
+    n += data.d[20];
+    data.d[20] = n;
+} // Operation52
+
+inline void Operation53(FireStarterData &data, float &n)
+{
+    n += data.d[21];
+    data.d[21] = n;
+} // Operation53
+
+inline void Operation54(FireStarterData &data, float &n)
+{
+    n += data.d[22];
+    data.d[22] = n;
+} // Operation54
+
+inline void Operation55(FireStarterData &data, float &n)
+{
+    n += data.d[23];
+    data.d[23] = n;
+} // Operation55
+
+inline void Operation56(FireStarterData &data, float &n)
+{
+    n += data.d[24];
+    data.d[24] = n;
+} // Operation56
+
+inline void Operation57(FireStarterData &data, float &n)
+{
+    n += data.d[25];
+    data.d[25] = n;
+} // Operation57
+
+inline void Operation58(FireStarterData &data, float &n)
+{
+    n += data.d[26];
+    data.d[26] = n;
+} // Operation58
+
+inline void Operation59(FireStarterData &data, float &n)
+{
+    n += data.d[27];
+    data.d[27] = n;
+} // Operation59
+
+inline void Operation60(FireStarterData &data, float &n)
+{
+    n += data.d[28];
+    data.d[28] = n;
+} // Operation60
+
+inline void Operation61(FireStarterData &data, float &n)
+{
+    n += data.d[29];
+    data.d[29] = n;
+} // Operation61
+
+inline void Operation62(FireStarterData &data, float &n)
+{
+    n += data.d[30];
+    data.d[30] = n;
+} // Operation62
+
+inline void Operation63(FireStarterData &data, float &n)
+{
+    n += data.d[31];
+    data.d[31] = n;
+} // Operation63
+
+inline void Operation64(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[0]);
+    data.d[0] = n;
+} // Operation64
+
+inline void Operation65(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[1]);
+    data.d[1] = n;
+} // Operation65
+
+inline void Operation66(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[2]);
+    data.d[2] = n;
+} // Operation66
+
+inline void Operation67(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[3]);
+    data.d[3] = n;
+} // Operation67
+
+inline void Operation68(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[4]);
+    data.d[4] = n;
+} // Operation68
+
+inline void Operation69(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[5]);
+    data.d[5] = n;
+} // Operation69
+
+inline void Operation70(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[6]);
+    data.d[6] = n;
+} // Operation70
+
+inline void Operation71(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[7]);
+    data.d[7] = n;
+} // Operation71
+
+inline void Operation72(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[8]);
+    data.d[8] = n;
+} // Operation72
+
+inline void Operation73(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[9]);
+    data.d[9] = n;
+} // Operation73
+
+inline void Operation74(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[10]);
+    data.d[10] = n;
+} // Operation74
+
+inline void Operation75(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[11]);
+    data.d[11] = n;
+} // Operation75
+
+inline void Operation76(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[12]);
+    data.d[12] = n;
+} // Operation76
+
+inline void Operation77(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[13]);
+    data.d[13] = n;
+} // Operation77
+
+inline void Operation78(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[14]);
+    data.d[14] = n;
+} // Operation78
+
+inline void Operation79(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[15]);
+    data.d[15] = n;
+} // Operation79
+
+inline void Operation80(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[16]);
+    data.d[16] = n;
+} // Operation80
+
+inline void Operation81(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[17]);
+    data.d[17] = n;
+} // Operation81
+
+inline void Operation82(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[18]);
+    data.d[18] = n;
+} // Operation82
+
+inline void Operation83(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[19]);
+    data.d[19] = n;
+} // Operation83
+
+inline void Operation84(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[20]);
+    data.d[20] = n;
+} // Operation84
+
+inline void Operation85(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[21]);
+    data.d[21] = n;
+} // Operation85
+
+inline void Operation86(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[22]);
+    data.d[22] = n;
+} // Operation86
+
+inline void Operation87(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[23]);
+    data.d[23] = n;
+} // Operation87
+
+inline void Operation88(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[24]);
+    data.d[24] = n;
+} // Operation88
+
+inline void Operation89(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[25]);
+    data.d[25] = n;
+} // Operation89
+
+inline void Operation90(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[26]);
+    data.d[26] = n;
+} // Operation90
+
+inline void Operation91(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[27]);
+    data.d[27] = n;
+} // Operation91
+
+inline void Operation92(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[28]);
+    data.d[28] = n;
+} // Operation92
+
+inline void Operation93(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[29]);
+    data.d[29] = n;
+} // Operation93
+
+inline void Operation94(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[30]);
+    data.d[30] = n;
+} // Operation94
+
+inline void Operation95(FireStarterData &data, float &n)
+{
+    n += fabsf(data.d[31]);
+    data.d[31] = n;
+} // Operation95
+
+typedef void (*Operation) (FireStarterData&, float&);
+
+__device__ Operation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {
+    Operation0,
+    Operation1,
+    Operation2,
+    Operation3,
+    Operation4,
+    Operation5,
+    Operation6,
+    Operation7,
+    Operation8,
+    Operation9,
+    Operation10,
+    Operation11,
+    Operation12,
+    Operation13,
+    Operation14,
+    Operation15,
+    Operation16,
+    Operation17,
+    Operation18,
+    Operation19,
+    Operation20,
+    Operation21,
+    Operation22,
+    Operation23,
+    Operation24,
+    Operation25,
+    Operation26,
+    Operation27,
+    Operation28,
+    Operation29,
+    Operation30,
+    Operation31,
+    Operation32,
+    Operation33,
+    Operation34,
+    Operation35,
+    Operation36,
+    Operation37,
+    Operation38,
+    Operation39,
+    Operation40,
+    Operation41,
+    Operation42,
+    Operation43,
+    Operation44,
+    Operation45,
+    Operation46,
+    Operation47,
+    Operation48,
+    Operation49,
+    Operation50,
+    Operation51,
+    Operation52,
+    Operation53,
+    Operation54,
+    Operation55,
+    Operation56,
+    Operation57,
+    Operation58,
+    Operation59,
+    Operation60,
+    Operation61,
+    Operation62,
+    Operation63,
+    Operation64,
+    Operation65,
+    Operation66,
+    Operation67,
+    Operation68,
+    Operation69,
+    Operation70,
+    Operation71,
+    Operation72,
+    Operation73,
+    Operation74,
+    Operation75,
+    Operation76,
+    Operation77,
+    Operation78,
+    Operation79,
+    Operation80,
+    Operation81,
+    Operation82,
+    Operation83,
+    Operation84,
+    Operation85,
+    Operation86,
+    Operation87,
+    Operation88,
+    Operation89,
+    Operation90,
+    Operation91,
+    Operation92,
+    Operation93,
+    Operation94,
+    Operation95,
+}; // operationFunctions
+
+typedef struct {
+    Operation op[PROGRAM_INSTRUCTIONS];
+} Operations;
+
+inline void TranslateInstructions(const FireStarterInstructions& instructions, Operations &operations)
+{
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        operations.op[i] = operationFunctions[instructions.i[i].operation];
+} // TranslateInstructions
+
+inline float Program(const Operations& operations, FireStarterData data, float n)
+{
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        operations.op[i](data, n);
     return isnan(n) ? 0.0f : n;
 } // Program
 // END //
@@ -409,8 +710,7 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
     if (generation) {
         data = oldResults->results[member].data;
         result = oldResult = oldResults->results[member].result;
-    }
-    else {
+    } else {
         for (int i = 0; i < dataSize; i++)
             data.d[i] = RANDOMFACTOR(seed);
         result = oldResult = START_RESULT;
@@ -424,6 +724,30 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         target[i] = Target(theta[i], variation);
     }
 
+#if 1
+    Operations operations;
+    TranslateInstructions(instructions, operations);
+    for (unsigned int p = 0; p < iterations; p++) {
+        unsigned int d = RANDOMSEED(seed) % dataSize;
+        float oldData = data.d[d];
+        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
+        float curResult = 0.0f;
+        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+            curResult = fmaxf(fabsf(Program(operations, data, theta[i]) - target[i]), curResult);
+        if (curResult < result)
+            result = curResult;
+        else
+            data.d[d] = oldData;
+    }
+
+    // Calculate a more accure estimate of the result.
+    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
+    for (int i = 0; i < precision; i++) {
+        float theta = SAMPLE_MIN + i * precisionStep;
+        float target = Target(theta, variation);
+        result = fmaxf(fabsf(Program(operations, data, theta) - target), result);
+    }
+#else
     for (unsigned int p = 0; p < iterations; p++) {
         unsigned int d = RANDOMSEED(seed) % dataSize;
         float oldData = data.d[d];
@@ -444,6 +768,8 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         float target = Target(theta, variation);
         result = fmaxf(fabsf(Program(instructions, data, theta) - target), result);
     }
+#endif
+
     if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of members.

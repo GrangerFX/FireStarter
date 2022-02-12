@@ -50,15 +50,15 @@ struct FireStarterInstruction {
     } // FireStarterInstruction
 }; // union FireStarterInstruction
 
-typedef struct FireStarterData {
+typedef struct {
     float d[PROGRAM_INSTRUCTIONS];
 } FireStarterData;
 
-typedef struct FireStarterInstructions {
+typedef struct {
     FireStarterInstruction i[PROGRAM_INSTRUCTIONS];
 } FireStarterInstructions;
 
-typedef struct FireStarterOpcodes {
+typedef struct {
     unsigned int count;
     FireStarterOpcode i[1];
 } FireStarterOpcodes;

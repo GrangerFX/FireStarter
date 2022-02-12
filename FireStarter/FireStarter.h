@@ -16,6 +16,7 @@
 #include "FireStarterTarget.h"
 #endif
 
+//#define PROGRAM_POPULATION 4352
 #define PROGRAM_POPULATION 4352
 #define PROGRAM_PRECISION 1024
 
