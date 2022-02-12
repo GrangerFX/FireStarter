@@ -95,32 +95,35 @@ void FireStarterProgram::GenerateProgram(std::string& code)
             code += "\r\n";
         }
     }
-    code += "typedef void (*Operation) (FireStarterData&, float&);\r\n";
-    code += "\r\n";
 
-    code += "__device__ Operation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {\r\n";
+    code += "__device__ FireStarterOperation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {\r\n";
     for (unsigned int op = 0; op < PROGRAM_OPCODES; op++)
         for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++)
             code += Format("    Operation%d,\r\n", op * PROGRAM_INSTRUCTIONS + reg);
     code += "}; // operationFunctions\r\n";
     code += "\r\n";
 
-    code += "typedef struct {\r\n";
-    code += "    Operation op[PROGRAM_INSTRUCTIONS];\r\n";
-    code += "} Operations;\r\n";
-    code += "\r\n";
-
-    code += "inline void TranslateInstructions(const FireStarterInstructions& instructions, Operations &operations)\r\n";
+    code += "inline void TranslateInstructions(const FireStarterInstructions& instructions, FireStarterOperations &operations)\r\n";
     code += "{\r\n";
+#if 0
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        code += Format("    operations.op[%d] = operationFunctions[instructions.i[%d].operation];\r\n", i, i);
+#else
     code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\r\n";
     code += "        operations.op[i] = operationFunctions[instructions.i[i].operation];\r\n";
+#endif
     code += "} // TranslateInstructions\r\n";
     code += "\r\n";
 
-    code += "inline float Program(const Operations& operations, FireStarterData data, float n)\r\n";
+    code += "inline float Program(const FireStarterOperations& operations, FireStarterData data, float n)\r\n";
     code += "{\r\n";
+#if 0
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        code += Format("    operations.op[%d](data, n);\r\n", i);
+#else
     code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\r\n";
     code += "        operations.op[i](data, n);\r\n";
+#endif
     code += "    return isnan(n) ? 0.0f : n;\r\n";
     code += "} // Program\r\n";
 #else

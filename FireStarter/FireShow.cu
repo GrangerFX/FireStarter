@@ -721,9 +721,7 @@ inline void Operation95(FireStarterData &data, float &n)
     data.d[31] = n;
 } // Operation95
 
-typedef void (*Operation) (FireStarterData&, float&);
-
-__device__ Operation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {
+__device__ FireStarterOperation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {
     Operation0,
     Operation1,
     Operation2,
@@ -822,20 +820,76 @@ __device__ Operation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] 
     Operation95,
 }; // operationFunctions
 
-typedef struct {
-    Operation op[PROGRAM_INSTRUCTIONS];
-} Operations;
-
-inline void TranslateInstructions(const FireStarterInstructions& instructions, Operations &operations)
+inline void TranslateInstructions(const FireStarterInstructions& instructions, FireStarterOperations &operations)
 {
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        operations.op[i] = operationFunctions[instructions.i[i].operation];
+    operations.op[0] = operationFunctions[instructions.i[0].operation];
+    operations.op[1] = operationFunctions[instructions.i[1].operation];
+    operations.op[2] = operationFunctions[instructions.i[2].operation];
+    operations.op[3] = operationFunctions[instructions.i[3].operation];
+    operations.op[4] = operationFunctions[instructions.i[4].operation];
+    operations.op[5] = operationFunctions[instructions.i[5].operation];
+    operations.op[6] = operationFunctions[instructions.i[6].operation];
+    operations.op[7] = operationFunctions[instructions.i[7].operation];
+    operations.op[8] = operationFunctions[instructions.i[8].operation];
+    operations.op[9] = operationFunctions[instructions.i[9].operation];
+    operations.op[10] = operationFunctions[instructions.i[10].operation];
+    operations.op[11] = operationFunctions[instructions.i[11].operation];
+    operations.op[12] = operationFunctions[instructions.i[12].operation];
+    operations.op[13] = operationFunctions[instructions.i[13].operation];
+    operations.op[14] = operationFunctions[instructions.i[14].operation];
+    operations.op[15] = operationFunctions[instructions.i[15].operation];
+    operations.op[16] = operationFunctions[instructions.i[16].operation];
+    operations.op[17] = operationFunctions[instructions.i[17].operation];
+    operations.op[18] = operationFunctions[instructions.i[18].operation];
+    operations.op[19] = operationFunctions[instructions.i[19].operation];
+    operations.op[20] = operationFunctions[instructions.i[20].operation];
+    operations.op[21] = operationFunctions[instructions.i[21].operation];
+    operations.op[22] = operationFunctions[instructions.i[22].operation];
+    operations.op[23] = operationFunctions[instructions.i[23].operation];
+    operations.op[24] = operationFunctions[instructions.i[24].operation];
+    operations.op[25] = operationFunctions[instructions.i[25].operation];
+    operations.op[26] = operationFunctions[instructions.i[26].operation];
+    operations.op[27] = operationFunctions[instructions.i[27].operation];
+    operations.op[28] = operationFunctions[instructions.i[28].operation];
+    operations.op[29] = operationFunctions[instructions.i[29].operation];
+    operations.op[30] = operationFunctions[instructions.i[30].operation];
+    operations.op[31] = operationFunctions[instructions.i[31].operation];
 } // TranslateInstructions
 
-inline float Program(const Operations& operations, FireStarterData data, float n)
+inline float Program(const FireStarterOperations& operations, FireStarterData data, float n)
 {
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        operations.op[i](data, n);
+    operations.op[0](data, n);
+    operations.op[1](data, n);
+    operations.op[2](data, n);
+    operations.op[3](data, n);
+    operations.op[4](data, n);
+    operations.op[5](data, n);
+    operations.op[6](data, n);
+    operations.op[7](data, n);
+    operations.op[8](data, n);
+    operations.op[9](data, n);
+    operations.op[10](data, n);
+    operations.op[11](data, n);
+    operations.op[12](data, n);
+    operations.op[13](data, n);
+    operations.op[14](data, n);
+    operations.op[15](data, n);
+    operations.op[16](data, n);
+    operations.op[17](data, n);
+    operations.op[18](data, n);
+    operations.op[19](data, n);
+    operations.op[20](data, n);
+    operations.op[21](data, n);
+    operations.op[22](data, n);
+    operations.op[23](data, n);
+    operations.op[24](data, n);
+    operations.op[25](data, n);
+    operations.op[26](data, n);
+    operations.op[27](data, n);
+    operations.op[28](data, n);
+    operations.op[29](data, n);
+    operations.op[30](data, n);
+    operations.op[31](data, n);
     return isnan(n) ? 0.0f : n;
 } // Program
 // END //
@@ -931,7 +985,7 @@ GPU_GLOBAL void FireShow(const FireStarterInstructions instructions, const FireS
         };
 #if 1
 #if 1
-        Operations operations;
+        FireStarterOperations operations;
         TranslateInstructions(instructions, operations);
         y = (int)(center + Program(operations, bestResult.data, theta) * yScale);
 #else

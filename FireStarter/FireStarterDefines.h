@@ -17,6 +17,11 @@ typedef enum {
     PROGRAM_OPCODES
 } FireStarterOpcode;
 
+typedef struct {
+    unsigned int count;
+    FireStarterOpcode i[1];
+} FireStarterOpcodes;
+
 struct FireStarterInstruction {
     unsigned int operation;
 
@@ -58,10 +63,10 @@ typedef struct {
     FireStarterInstruction i[PROGRAM_INSTRUCTIONS];
 } FireStarterInstructions;
 
+typedef void (*FireStarterOperation) (FireStarterData&, float&);
 typedef struct {
-    unsigned int count;
-    FireStarterOpcode i[1];
-} FireStarterOpcodes;
+    FireStarterOperation op[PROGRAM_INSTRUCTIONS];
+} FireStarterOperations;
 
 typedef struct {
     FireStarterData data;
