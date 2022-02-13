@@ -41,9 +41,6 @@ inline void FireStarterOperation2(float& data, float& n)
     data = n += fabsf(data);
 } // FireStarterOperation2
 
-typedef void (*FireStarterOperation) (float&, float&);
-const FireStarterOperation fireStarterOperations[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = { FireStarterOperation0, FireStarterOperation1, FireStarterOperation2 };
-
 struct FireStarterInstruction {
     unsigned short op;
     unsigned short reg;
@@ -81,7 +78,17 @@ struct FireStarterInstruction {
 
     inline void Execute(FireStarterData& data, float &n) const
     {
-        fireStarterOperations[op](data.d[reg], n);
+        switch (op) {
+            case 0:
+                FireStarterOperation0(data.d[reg], n);
+                break;
+            case 1:
+                FireStarterOperation1(data.d[reg], n);
+                break;
+            case 2:
+                FireStarterOperation2(data.d[reg], n);
+                break;
+        }
     } // Execute
 
     inline FireStarterInstruction(FireStarterOpcode o, unsigned int r = 0)
@@ -102,6 +109,7 @@ typedef struct {
 } FireStarterInstructions;
 
 typedef struct {
+    FireStarterInstructions instructions;
     FireStarterData data;
     float result;
 } FireStarterResult;
