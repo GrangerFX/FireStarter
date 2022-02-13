@@ -13,10 +13,16 @@ inline float Program(const FireStarterInstructions& instructions, FireStarterDat
 
 GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation, const unsigned int variation)
 {
-    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
+    const unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);
+    const unsigned int blockIndex = (blockDim.x * blockIdx.x) / 32;
+    const unsigned int threadIndex = threadIdx.x & 31;
+    unsigned int blockSeed = RANDOMHASH(RANDOMHASH(blockIndex) + generation);
+    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
+
+//    GPU_SHARED FireStarterInstructions threadInstructions;
+//    threadInstructions = instructions;
 
     FireStarterData data;
     float result, oldResult;
@@ -25,7 +31,7 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         result = oldResult = oldResults->results[member].result;
     } else {
         for (int i = 0; i < dataSize; i++)
-            data.d[i] = RANDOMFACTOR(seed);
+            data.d[i] = RANDOMFACTOR(memberSeed);
         result = oldResult = START_RESULT;
     }
 
@@ -38,9 +44,9 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
     }
 
     for (unsigned int p = 0; p < iterations; p++) {
-        unsigned int d = RANDOMSEED(seed) % dataSize;
+        unsigned int d = RANDOMSEED(blockSeed) % dataSize;
         float oldData = data.d[d];
-        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
+        data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(memberSeed) * result);
         float curResult = 0.0f;
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
             curResult = fmaxf(fabsf(Program(instructions, data, theta[i]) - target[i]), curResult);
@@ -64,7 +70,7 @@ GPU_GLOBAL void Evolve(const FireStarterInstructions instructions, FireStarterRe
         unsigned int bestIndex = member;
         float bestResult = oldResult;
         for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
-            unsigned int index = RANDOMSEED(seed) % population;
+            unsigned int index = RANDOMSEED(memberSeed) % population;
             float curResult = oldResults->results[index].result;
             if (curResult < bestResult) {
                 bestResult = curResult;
