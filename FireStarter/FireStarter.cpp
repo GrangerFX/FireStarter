@@ -69,6 +69,15 @@ void FireStarterProgram::InitProgram(unsigned int& seed)
 
 void FireStarterProgram::GenerateProgram(std::string& code)
 {
+#if 1
+    code += "inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)\r\n";
+    code += "{\r\n";
+    code += "    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)\r\n";
+    code += "       instructions.i[i].Execute(data, n);\r\n";
+    code += "    return isnan(n) ? 0.0f : n;\r\n";
+    code += "} // Program\r\n";
+#endif
+#if 0
     for (unsigned int op = 0; op < PROGRAM_OPCODES; op++) {
         for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++) {
             unsigned int operation = op * PROGRAM_INSTRUCTIONS + reg;
@@ -94,8 +103,10 @@ void FireStarterProgram::GenerateProgram(std::string& code)
             code += "\r\n";
         }
     }
+    code += "typedef void (*Operation)(FireStarterData&, float&);\r\n";
+    code += "\r\n";
 
-    code += "const FireStarterOperation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {\r\n";
+    code += "const Operation operationFunctions[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = {\r\n";
     for (unsigned int op = 0; op < PROGRAM_OPCODES; op++)
         for (unsigned int reg = 0; reg < PROGRAM_INSTRUCTIONS; reg++)
             code += Format("    Operation%d,\r\n", op * PROGRAM_INSTRUCTIONS + reg);
@@ -108,6 +119,7 @@ void FireStarterProgram::GenerateProgram(std::string& code)
     code += "       operationFunctions[instructions.i[i].operation](data, n);\r\n";
     code += "    return isnan(n) ? 0.0f : n;\r\n";
     code += "} // Program\r\n";
+#endif
 } // GenerateProgram
 
 void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
@@ -207,7 +219,7 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
 
     unsigned int numInstructions = PROGRAM_INSTRUCTIONS;
     for (unsigned int i = 0; i < numInstructions; i++)
-        code += Format("    program.m_instructions.i[%u].operation = %u;\r\n", i, m_instructions.i[i].operation);
+        code += Format("    program.m_instructions.i[%u].SetOperation(%u);\r\n", i, m_instructions.i[i].Operation());
 
     unsigned int numOpcodes = (unsigned int)m_opcodes.size();
     code += Format("    program.m_opcodes.resize(%u);\r\n", numOpcodes);

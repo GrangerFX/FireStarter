@@ -22,51 +22,84 @@ typedef struct {
     FireStarterOpcode i[1];
 } FireStarterOpcodes;
 
-struct FireStarterInstruction {
-    unsigned int operation;
-
-    inline FireStarterOpcode Opcode(void)
-    {
-        return (FireStarterOpcode)(operation / PROGRAM_INSTRUCTIONS);
-    } // Opcode
-
-    inline unsigned int Register(void)
-    {
-        return operation % PROGRAM_INSTRUCTIONS;
-    } // Register
-
-    inline void SetOpcode(FireStarterOpcode opcode)
-    {
-        operation = (opcode * PROGRAM_INSTRUCTIONS) + Register();
-    } // SetOpcode
-
-    inline void SetRegister(unsigned int reg)
-    {
-        operation = Opcode() * PROGRAM_INSTRUCTIONS + reg;
-    } // SetRegister
-
-    inline FireStarterInstruction(FireStarterOpcode opcode, unsigned int reg)
-    {
-        operation = (unsigned int)opcode * PROGRAM_INSTRUCTIONS + reg;
-     } // FireStarterInstruction
-
-    inline FireStarterInstruction(unsigned int opcode = 0) : operation(opcode * PROGRAM_INSTRUCTIONS)
-    {
-    } // FireStarterInstruction
-}; // union FireStarterInstruction
-
 typedef struct {
     float d[PROGRAM_INSTRUCTIONS];
 } FireStarterData;
 
+inline void FireStarterOperation0(float& data, float& n)
+{
+    n = data *= n;
+} // FireStarterOperation0
+
+inline void FireStarterOperation1(float& data, float& n)
+{
+    n = data += n;
+} // FireStarterOperation1
+
+inline void FireStarterOperation2(float& data, float& n)
+{
+    data = n += fabsf(data);
+//  n += fabsf(data);
+//  n = fabsf(data += n);
+} // FireStarterOperation2
+
+typedef void (*FireStarterOperation) (float&, float&);
+const FireStarterOperation fireStarterOperations[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = { FireStarterOperation0, FireStarterOperation1, FireStarterOperation2 };
+
+struct FireStarterInstruction {
+    unsigned int operation;
+
+    inline unsigned int Operation(void) const
+    {
+        return operation;
+    } // operation
+
+    inline FireStarterOpcode Opcode(void) const
+    {
+        return (FireStarterOpcode)(operation >> 16);
+    } // Opcode
+
+    inline unsigned int Register(void) const
+    {
+        return operation & 0xFFFF;
+    } // Register
+
+    inline void SetOperation(unsigned int op)
+    {
+        operation = op;
+    } // SetOperation
+
+    inline void SetOpcode(FireStarterOpcode opcode)
+    {
+        operation = (opcode << 16) | (operation & 0xFFFF);
+    } // SetOpcode
+
+    inline void SetRegister(unsigned int reg)
+    {
+        operation = (operation & 0xFFFF0000) | reg;
+    } // SetRegister
+
+    inline void Execute(FireStarterData& data, float &n) const
+    {
+        fireStarterOperations[Opcode()](data.d[Register()], n);
+    } // Execute
+
+    inline FireStarterInstruction(FireStarterOpcode opcode, unsigned int reg)
+    {
+        SetOpcode(opcode);
+        SetRegister(reg);
+     } // FireStarterInstruction
+
+    inline FireStarterInstruction(unsigned int opcode = 0)
+    {
+        operation = 0;
+        SetOpcode((FireStarterOpcode)opcode);
+    } // FireStarterInstruction
+}; // union FireStarterInstruction
+
 typedef struct {
     FireStarterInstruction i[PROGRAM_INSTRUCTIONS];
 } FireStarterInstructions;
-
-typedef void (*FireStarterOperation) (FireStarterData&, float&);
-typedef struct {
-    FireStarterOperation op[PROGRAM_INSTRUCTIONS];
-} FireStarterOperations;
 
 typedef struct {
     FireStarterData data;
