@@ -39,61 +39,61 @@ inline void FireStarterOperation1(float& data, float& n)
 inline void FireStarterOperation2(float& data, float& n)
 {
     data = n += fabsf(data);
-//  n += fabsf(data);
-//  n = fabsf(data += n);
 } // FireStarterOperation2
 
 typedef void (*FireStarterOperation) (float&, float&);
 const FireStarterOperation fireStarterOperations[PROGRAM_OPCODES * PROGRAM_INSTRUCTIONS] = { FireStarterOperation0, FireStarterOperation1, FireStarterOperation2 };
 
 struct FireStarterInstruction {
-    unsigned int operation;
+    unsigned short op;
+    unsigned short reg;
 
     inline unsigned int Operation(void) const
     {
-        return operation;
+        return op * PROGRAM_INSTRUCTIONS + reg;
     } // operation
 
     inline FireStarterOpcode Opcode(void) const
     {
-        return (FireStarterOpcode)(operation >> 16);
+        return (FireStarterOpcode)op;
     } // Opcode
 
     inline unsigned int Register(void) const
     {
-        return operation & 0xFFFF;
+        return reg;
     } // Register
 
-    inline void SetOperation(unsigned int op)
+    inline void SetOperation(unsigned int operation)
     {
-        operation = op;
+        op = operation / PROGRAM_INSTRUCTIONS;
+        reg = operation % PROGRAM_INSTRUCTIONS;
     } // SetOperation
 
-    inline void SetOpcode(FireStarterOpcode opcode)
+    inline void SetOpcode(FireStarterOpcode o)
     {
-        operation = (opcode << 16) | (operation & 0xFFFF);
+        op = o;
     } // SetOpcode
 
-    inline void SetRegister(unsigned int reg)
+    inline void SetRegister(unsigned int r)
     {
-        operation = (operation & 0xFFFF0000) | reg;
+        reg = r;
     } // SetRegister
 
     inline void Execute(FireStarterData& data, float &n) const
     {
-        fireStarterOperations[Opcode()](data.d[Register()], n);
+        fireStarterOperations[op](data.d[reg], n);
     } // Execute
 
-    inline FireStarterInstruction(FireStarterOpcode opcode, unsigned int reg)
+    inline FireStarterInstruction(FireStarterOpcode o, unsigned int r = 0)
     {
-        SetOpcode(opcode);
-        SetRegister(reg);
+        op = o;
+        reg = r;
      } // FireStarterInstruction
 
-    inline FireStarterInstruction(unsigned int opcode = 0)
+    inline FireStarterInstruction(unsigned int o = 0, unsigned int r = 0)
     {
-        operation = 0;
-        SetOpcode((FireStarterOpcode)opcode);
+        op = o;
+        reg = r;
     } // FireStarterInstruction
 }; // union FireStarterInstruction
 
