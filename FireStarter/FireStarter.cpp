@@ -506,7 +506,7 @@ void FireStarterUnit::GetResults(unsigned int variation)
 void FireStarterUnit::RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation, unsigned int variation)
 {
     // Launch the calculation kernel
-    unsigned int threadsPerBlock = 256;
+    unsigned int threadsPerBlock = 32;
     unsigned int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
