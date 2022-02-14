@@ -50,8 +50,6 @@ public:
 
     void RandomInstruction(unsigned int index, unsigned int& seed);
     void OptimizeData(void);
-    void InitProgram(unsigned int& seed);
-    static void GenerateProgram(std::string& code);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
@@ -87,7 +85,6 @@ public:
     CUmodule m_fireStarterModule;
     CUfunction m_fireStarterFunction;
     std::string m_fireStarterCode;
-    std::string m_programCode;
     std::string m_evaluateCode;
     size_t m_resultsSize;
     unsigned long long m_programGeneration;
@@ -97,14 +94,12 @@ public:
     volatile bool m_quit;
 
     void GenerateProgram(void);
-    void EvolveProgram(void);
-    void RandomProgram(void);
     void InitResults(void);
     void FreeResults(void);
-    void GetResults(void);
-    void RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
+    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
+    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
     void ExecuteProgram(void);
-    float UpdateProgram(std::string*& bestProgramCode, std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
+    float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
     void InitUnit(void);
     void FinishUnit(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
@@ -125,7 +120,6 @@ public:
     std::string m_evolveCode;
     std::string m_optimizeCode;
     std::string m_fireShowCode;
-    std::string m_bestProgramCode;
     std::string m_bestEvaluateCode;
     FireStarterState m_bestEvaluateState;
     std::vector<FireStarterUnit*> m_units;

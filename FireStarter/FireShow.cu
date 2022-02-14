@@ -144,15 +144,6 @@ GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)
 } // InitData
 // END //
 
-// PROGRAM //
-inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
-{
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-       instructions.i[i].Execute(data, n);
-    return isnan(n) ? 0.0f : n;
-} // Program
-// END //
-
 // EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
@@ -205,6 +196,13 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
+inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
+{
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        instructions.i[i].Execute(data, n);
+    return isnan(n) ? 0.0f : n;
+} // Program
+
 GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
@@ -228,7 +226,7 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
     }
     if (x < bufferWidth) {
         FireStarterInstructions instructions(bestResult.instructions);
-        FireStarterData data(bestResult.data);
+        FireStarterData data(bestResult.data[variation]);
         float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
         float center = bufferHeight * 0.66f;
         float target = Target(theta, variation);
@@ -238,7 +236,7 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
             pixel.x = 255;
             pixel.y = 128;
         };
-        y = (int)(center + Program(instructions, bestResult.data, theta) * yScale);
+        y = (int)(center + Program(instructions, bestResult.data[variation], theta) * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = pixel.y = pixel.z = 255;
