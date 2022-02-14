@@ -2,6 +2,8 @@
 #include "CUDADefines.h"
 
 #define PROGRAM_INSTRUCTIONS 32
+#define TARGET_VARIATIONS 1
+#define PROGRAM_BLOCK_THREADS 32    // Same as the number of threads in a warp.
 
 #define SAMPLE_MIN 0.0f
 #define SAMPLE_MAX (2.0f * 3.14159265f)
@@ -14,8 +16,44 @@ typedef enum {
     Operation_multiply = 0,
     Operation_add,
     Operation_add_abs,
-    PROGRAM_OPCODES
 } FireStarterOpcode;
+
+typedef enum {
+    Program_multiply_add,
+    Program_multiply_add_abs,
+} FireStarterProgramMode;
+
+#if 1
+#define PROGRAM_MODE Program_multiply_add_abs
+#define PROGRAM_RANDOM_INSTRUCTIONS 1
+#define PROGRAM_OPCODES 16
+const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add_abs
+};
+#else
+#define PROGRAM_MODE Program_multiply_add
+#define PROGRAM_RANDOM_INSTRUCTIONS 0
+#define PROGRAM_OPCODES 2
+const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
+    Operation_multiply,
+    Operation_add
+};
+#endif
 
 typedef struct {
     unsigned int count;
@@ -66,6 +104,12 @@ struct FireStarterInstruction {
         reg = operation % PROGRAM_INSTRUCTIONS;
     } // SetOperation
 
+    inline void SetOperation(unsigned int o, unsigned int r)
+    {
+        op = o;
+        reg = r;
+    } // SetOperation
+
     inline void SetOpcode(FireStarterOpcode o)
     {
         op = o;
@@ -93,14 +137,12 @@ struct FireStarterInstruction {
 
     inline FireStarterInstruction(FireStarterOpcode o, unsigned int r = 0)
     {
-        op = o;
-        reg = r;
+        SetOperation(o, r);
      } // FireStarterInstruction
 
     inline FireStarterInstruction(unsigned int o = 0, unsigned int r = 0)
     {
-        op = o;
-        reg = r;
+        SetOperation(o, r);
     } // FireStarterInstruction
 }; // union FireStarterInstruction
 
@@ -110,8 +152,9 @@ typedef struct {
 
 typedef struct {
     FireStarterInstructions instructions;
-    FireStarterData data;
-    float result;
+    FireStarterData data[TARGET_VARIATIONS];
+    float minResult[TARGET_VARIATIONS];
+    float maxResult;
 } FireStarterResult;
 
 typedef struct {

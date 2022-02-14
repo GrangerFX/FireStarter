@@ -10,9 +10,9 @@
 void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& seed)
 {
 #if PROGRAM_RANDOM_INSTRUCTIONS
-    FireStarterOpcode opcode = m_opcodes[RANDOMSEED(seed) % m_opcodes.size()];
+    FireStarterOpcode opcode = fireStarterOpcodes[RANDOMSEED(seed) % PROGRAM_OPCODES];
 #else
-    FireStarterOpcode opcode = m_opcodes[index % m_opcodes.size()];
+    FireStarterOpcode opcode = fireStarterOpcodes[index % PROGRAM_OPCODES];
 #endif
     unsigned int data = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
     m_instructions.i[index] = FireStarterInstruction(opcode, data);
@@ -176,10 +176,9 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
     for (unsigned int i = 0; i < numInstructions; i++)
         code += Format("    program.m_instructions.i[%u].SetOperation(%u);\r\n", i, m_instructions.i[i].Operation());
 
-    unsigned int numOpcodes = (unsigned int)m_opcodes.size();
-    code += Format("    program.m_opcodes.resize(%u);\r\n", numOpcodes);
-    for (unsigned int i = 0; i < numOpcodes; i++)
-        code += Format("    program.m_opcodes[%u] = (FireStarterOpcode)%u;\r\n", i, m_opcodes[i]);
+    code += Format("    program.m_opcodes.resize(%u);\r\n", PROGRAM_OPCODES);
+    for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
+        code += Format("    program.m_opcodes[%u] = (FireStarterOpcode)%u;\r\n", i, fireStarterOpcodes[i]);
 
     unsigned int numRegisters = (unsigned int)m_registers.size();
     code += Format("    program.m_registers.resize(%u);\r\n", numRegisters);
@@ -222,136 +221,66 @@ FireStarterProgram::FireStarterProgram(void)
 {
     m_programMode = PROGRAM_MODE;
     m_dataSize = PROGRAM_INSTRUCTIONS;
-    switch (m_programMode) {
-        case Program_multiply_add:
-            m_opcodes.push_back(Operation_multiply);
-            m_opcodes.push_back(Operation_add);
-            break;
-        case Program_multiply_add_abs:
-            m_opcodes.push_back(Operation_multiply);
-            m_opcodes.push_back(Operation_add);
-            m_opcodes.push_back(Operation_multiply);
-            m_opcodes.push_back(Operation_add);
-            m_opcodes.push_back(Operation_multiply);
-            m_opcodes.push_back(Operation_add);
-            m_opcodes.push_back(Operation_multiply);
-            m_opcodes.push_back(Operation_add);
-            m_opcodes.push_back(Operation_multiply);
-            m_opcodes.push_back(Operation_add);
-            m_opcodes.push_back(Operation_multiply);
-            m_opcodes.push_back(Operation_add);
-            m_opcodes.push_back(Operation_add_abs);
-            break;
-    }
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         m_instructions.i[i] = 0;
 } // FireStarterProgram
 
-void FireStarterSpecies::SaveSolution(std::string& code)
+void FireStarterState::SaveSolution(std::string& code)
 {
+    code += Format("// Precision = %f\r\n", m_result.maxResult);
     for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
-        code += Format("// Solution%d precision = %f\r\n", t, m_result[t].result);
+        code += Format("// Solution%d precision = %f\r\n", t, m_result.minResult[t]);
         code += Format("inline float Solution%d(float n)\r\n", t);
         code += "{\r\n";
-        m_program.GenerateSolution(code, m_result[t].data);
+        m_program.GenerateSolution(code, m_result.data[t]);
         code += "    return n;\r\n";
         code += Format("} // Solution%d\r\n", t);
         code += "\r\n";
     }
 } // SaveSolution
 
-FireStarterSpecies::FireStarterSpecies(void)
-{
-    // Initialize the evolving program data values.
-    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
-        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-            m_result[t].data.d[i] = 1.0f;
-        m_result[t].result = START_RESULT;
-    }
-} // FireStarterState
-
 void FireStarterState::SaveState(std::string& code)
 {
     code += "#include \"FireStarter.h\"\r\n";
     code += "\r\n";
-    m_species[m_bestSpecies].m_program.SaveProgram(code);
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++)
-        m_species[s].m_program.SaveProgram(code, s);
+    m_program.SaveProgram(code);
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        code += Format("    LoadProgram%d(state.m_species[%d].m_program);\r\n", s, s);
+    code += Format("    LoadProgram(state.m_program);\r\n");
+    code += "\r\n";
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
+        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            code += Format("    state.m_result.data[%d].d[%u] = %ff;\r\n", t, i, m_result.data[t].d[i]);
+        code += Format("    state.m_result.minResult[%d] = %ff;\r\n", t, m_result.minResult[t]);
         code += "\r\n";
-        for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
-            for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-                code += Format("    state.m_species[%d].m_result[%d].data.d[%u] = %ff;\r\n", s, t, i, m_species[s].m_result[t].data.d[i]);
-            code += Format("    state.m_species[%d].m_result[%d].result = %ff;\r\n", s, t, m_species[s].m_result[t].result);
-            code += "\r\n";
-        }
     }
+    code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
     code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
-    code += Format("    state.m_bestSpecies = %d;\r\n", m_bestSpecies);
     code += "    state.SortResults();\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
-
-void FireStarterState::SaveSolution(std::string& code)
-{
-    m_species[m_bestSpecies].SaveSolution(code);
-} // SaveSolution
-
-void FireStarterState::SortResults(void)
-{
-    // Find the species with the lowest result for its maximum of all variations.
-    m_maxResult = START_RESULT;
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        float maxSpeciesResult = m_species[s].m_result[0].result;
-        for (int t = 1; t < TARGET_VARIATIONS; t++)
-            maxSpeciesResult = max(maxSpeciesResult, m_species[s].m_result[t].result);
-        if ((s == 0) || (maxSpeciesResult < m_maxResult)) {
-            m_maxResult = maxSpeciesResult;
-            m_bestSpecies = s;
-        }
-    }
-
-    // Sort the variations largest first. This increases the chance that the generation can fail early.
-    m_bestSpecies = 0;
-    for (int t = 0; t < TARGET_VARIATIONS; t++)
-        m_order[t] = t;
-    for (int t = 0; t < TARGET_VARIATIONS; t++) {
-        int maxIndex = t;
-        float max = m_species[m_bestSpecies].m_result[m_order[t]].result;
-        for (int i = t + 1; i < TARGET_VARIATIONS; i++) {
-            float result = m_species[m_bestSpecies].m_result[m_order[i]].result;
-            if (result > max) {
-                max = result;
-                maxIndex = i;
-            }
-        }
-        int swap = m_order[maxIndex];
-        m_order[maxIndex] = m_order[t];
-        m_order[t] = swap;
-    }
-} // SortResults
 
 FireStarterState::FireStarterState(void)
 {
     m_processingTime = 0.0;
     m_maxResult = START_RESULT;
-    m_bestSpecies = 0;
-    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++)
-        m_order[t] = t;
+    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
+        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            m_result.data[t].d[i] = 1.0f;
+        m_result.minResult[t] = START_RESULT;
+    }
+    m_result.maxResult = START_RESULT;
 } // FireStarterState
 
-void FireStarterUnit::GenerateProgram(unsigned int species)
+void FireStarterUnit::GenerateProgram(void)
 {
     // Optimize the program data and registers.
-    m_curState.m_species[species].m_program.OptimizeData();
+    m_curState.m_program.OptimizeData();
 
     // Update the Evaluate funtion.
     m_evaluateCode.clear();
-    m_curState.m_species[m_curState.m_bestSpecies].m_program.GenerateEvaluate(m_evaluateCode);
+    m_curState.m_program.GenerateEvaluate(m_evaluateCode);
 
     // Compile the program
     if (!m_fireStarterFunction) {
@@ -370,32 +299,28 @@ void FireStarterUnit::GenerateProgram(unsigned int species)
 
 void FireStarterUnit::EvolveProgram(void)
 {
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        // Determine how many changes to make to the instructions.
-        unsigned int numChanges = 1;// RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
+    // Determine how many changes to make to the instructions.
+    unsigned int numChanges = 1;// RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
 
-        // Make random changes to the program instructions.
-        m_curState = m_bestState;
-        while (numChanges--) {
-            unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-            m_curState.m_species[s].m_program.RandomInstruction(index, m_seed);
-        }
-        GenerateProgram(s);
+    // Make random changes to the program instructions.
+    m_curState = m_bestState;
+    while (numChanges--) {
+        unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
+        m_curState.m_program.RandomInstruction(index, m_seed);
     }
+    GenerateProgram();
 } // EvolveProgram
 
 void FireStarterUnit::RandomProgram(void)
 {
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        m_curState.m_species[s].m_program.InitProgram(m_seed);
-        GenerateProgram(s);
-    }
+    m_curState.m_program.InitProgram(m_seed);
+    GenerateProgram();
 } // RandomProgram
 
 void FireStarterUnit::InitResults(void)
 {
     m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
-    size_t totalSize = m_resultsSize * 2 * PROGRAM_SPECIES;
+    size_t totalSize = m_resultsSize * 2;
     if (!m_deviceResults) {
         checkCUDAErrors(cudaMalloc(&m_deviceResults, totalSize));
         checkCUDAErrors(cudaMemset(m_deviceResults, 0, totalSize));
@@ -404,21 +329,18 @@ void FireStarterUnit::InitResults(void)
         checkCUDAErrors(cudaMallocHost(&m_hostResults, totalSize));
         memset(m_hostResults, 0, totalSize);
     }
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        m_deviceResults0[s] = (FireStarterResults*)(m_deviceResults + m_resultsSize * (s * 2));
-        m_deviceResults1[s] = (FireStarterResults*)(m_deviceResults + m_resultsSize * (s * 2 + 1));
-        m_hostResults0[s] = (FireStarterResults*)(m_hostResults + m_resultsSize * (s * 2));
-        m_hostResults1[s] = (FireStarterResults*)(m_hostResults + m_resultsSize * (s * 2 + 1));
-    }
+    m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
+    m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
+    m_hostResults0 = (FireStarterResults*)(m_hostResults);
+    m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
 
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
-        LoadProgram(m_curState.m_program);
-        GenerateProgram();
+    LoadProgram(m_curState.m_program);
+    GenerateProgram();
 #else
-        m_curState.m_species[s].m_program.InitProgram(m_seed);
+    m_curState.m_program.InitProgram(m_seed);
 #endif
-    }
+
     m_bestState = m_curState;
 } // InitResults
 
@@ -432,34 +354,29 @@ void FireStarterUnit::FreeResults(void)
         checkCUDAErrors(cudaFreeHost(m_hostResults));
         m_hostResults = nullptr;
     }
-    for (int i = 0; i < PROGRAM_SPECIES; i++) {
-        m_deviceResults0[i] = nullptr;
-        m_deviceResults1[i] = nullptr;
-        m_hostResults0[i] = nullptr;
-        m_hostResults1[i] = nullptr;
-    }
+    m_deviceResults0 = nullptr;
+    m_deviceResults1 = nullptr;
+    m_hostResults0 = nullptr;
+    m_hostResults1 = nullptr;
 } // FreeResults
 
-void FireStarterUnit::GetResults(unsigned int variation)
+void FireStarterUnit::GetResults(void)
 {
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++)
-        checkCUDAErrors(cudaMemcpyAsync(m_hostResults0[s], m_deviceResults0[s], m_resultsSize, cudaMemcpyDeviceToHost, m_fireStarterStream));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_fireStarterStream));
     checkCUDAErrors(cudaStreamSynchronize(m_fireStarterStream));
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        unsigned int index = 0;
-        float minResult = m_hostResults0[s]->results[0].result;
-        for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
-            float curResult = m_hostResults0[s]->results[i].result;
-            if (curResult < minResult) {
-                minResult = curResult;
-                index = i;
-            }
+    float minResult = m_hostResults0->results[0].maxResult;
+    unsigned int index = 0;
+    for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
+        float curResult = m_hostResults0->results[i].maxResult;
+        if (curResult < minResult) {
+            minResult = curResult;
+            index = i;
         }
-        m_curState.m_species[s].m_result[variation] = m_hostResults0[s]->results[index];
     }
+    m_curState.m_result = m_hostResults0->results[index];
 } // GetResults
 
-void FireStarterUnit::RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation, unsigned int variation)
+void FireStarterUnit::RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = 32;  // Same as the threads per CUDA core.
@@ -467,54 +384,40 @@ void FireStarterUnit::RunGenerations(unsigned int population, unsigned int itera
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
  
-    for (unsigned int s = 0; s < PROGRAM_SPECIES; s++) {
-        FireStarterResult& result = m_curState.m_species[s].m_result[variation];
-        float lastResult = result.result;
-        for (unsigned int g = 0; g < generations; g++) {
-            FireStarterResults* newResults = g & 1 ? m_deviceResults1[s] : m_deviceResults0[s];
-            FireStarterResults* oldResults = g & 1 ? m_deviceResults0[s] : m_deviceResults1[s];
-            void* arr[] = { reinterpret_cast<void*>(&m_curState.m_species[s].m_program.m_instructions),
-                            reinterpret_cast<void*>(&newResults),
-                            reinterpret_cast<void*>(&oldResults),
-                            reinterpret_cast<void*>(&m_curState.m_species[s].m_program.m_dataSize),
-                            reinterpret_cast<void*>(&population),
-                            reinterpret_cast<void*>(&iterations),
-                            reinterpret_cast<void*>(&precision),
-                            reinterpret_cast<void*>(&generation),
-                            reinterpret_cast<void*>(&variation) };
+    FireStarterResult& result = m_curState.m_result;
+    float lastResult = result.maxResult;
+    for (unsigned int g = 0; g < generations; g++) {
+        FireStarterResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
+        FireStarterResults* oldResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
+        void* arr[] = { reinterpret_cast<void*>(&newResults),
+                        reinterpret_cast<void*>(&oldResults),
+                        reinterpret_cast<void*>(&population),
+                        reinterpret_cast<void*>(&iterations),
+                        reinterpret_cast<void*>(&precision),
+                        reinterpret_cast<void*>(&generation) };
 
-            checkCUDAErrors(cuLaunchKernel(m_fireStarterFunction,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-                0, m_fireStarterStream,                             // shared mem, stream */
-                &arr[0],                                            // arguments */
-                0));
-            generation++;
-        }
+        checkCUDAErrors(cuLaunchKernel(m_fireStarterFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+            0, m_fireStarterStream,                             // shared mem, stream */
+            &arr[0],                                            // arguments */
+            0));
+        generation++;
     }
-    GetResults(variation);
+    GetResults();
 } // RunGenerations
 
-void FireStarterUnit::RunVariations(void)
+void FireStarterUnit::RunProgram(void)
 {
     // Run each varaition for the current generaiton from worst to best.
     float bestResult = m_bestState.m_maxResult;
     m_curState.m_maxResult = 0.0f;
-    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
-        unsigned int variation = m_curState.m_order[t];
-        RunGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration, variation);
-        float minSpeciesResult = m_curState.m_species[0].m_result[variation].result;
-        for (unsigned int s = 1; s < PROGRAM_SPECIES; s++)
-            minSpeciesResult = min(minSpeciesResult, m_curState.m_species[s].m_result[variation].result);
-        if (minSpeciesResult >= bestResult) // If the results were worse than the previous generation, fail immediately.
-            return;
-        m_curState.m_maxResult = max(m_curState.m_maxResult, minSpeciesResult);
-    }
-    m_curState.SortResults();    // Sort the results worst first. This allows the generation to fail early.
+    RunGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
+    m_curState.m_maxResult = max(m_curState.m_maxResult, m_curState.m_result.maxResult);
     m_bestState = m_curState;
     m_bestProgramCode = m_programCode;
     m_bestEvaluateCode = m_evaluateCode;
-} // RunVariations
+} // RunProgram
 
 void FireStarterUnit::ExecuteProgram(void)
 {
@@ -524,7 +427,7 @@ void FireStarterUnit::ExecuteProgram(void)
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     // Evolve the program instructions.
     EvolveProgram();
-    RunVariations();
+    RunProgram();
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     RunVariations();
@@ -573,12 +476,10 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const 
     m_fireStarterContext = nullptr;
     m_deviceResults = nullptr;
     m_hostResults = nullptr;
-    for (int i = 0; i < PROGRAM_SPECIES; i++) {
-        m_deviceResults0[i] = nullptr;
-        m_deviceResults1[i] = nullptr;
-        m_hostResults0[i] = nullptr;
-        m_hostResults1[i] = nullptr;
-    }
+    m_deviceResults0 = nullptr;
+    m_deviceResults0 = nullptr;
+    m_hostResults0 = nullptr;
+    m_hostResults1 = nullptr;
     m_fireStarterModule = nullptr;
     m_fireStarterFunction = nullptr;
     m_programGeneration = 0;
@@ -697,15 +598,14 @@ void FireStarter::UpdateProgram(std::string& code, const std::string& replacemen
 
 void FireStarter::BuildData(std::string& code)
 {
-    FireStarterSpecies& species = m_bestEvaluateState.m_species[m_bestEvaluateState.m_bestSpecies];
     std::string replacementData;
     code += "GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)\r\n";
     code += "{\r\n";
     for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
         code += Format("    if (variation == %d) {\r\n", t);
-        for (unsigned int i = 0; i < species.m_program.m_dataSize; i++)
-            code += Format("        data.d[%d] = %ff;\r\n", i, species.m_result[t].data.d[i]);
-        for (unsigned int i = species.m_program.m_dataSize; i < PROGRAM_INSTRUCTIONS; i++)
+        for (unsigned int i = 0; i < m_bestEvaluateState.m_program.m_dataSize; i++)
+            code += Format("        data.d[%d] = %ff;\r\n", i, m_bestEvaluateState.m_result.data[t].d[i]);
+        for (unsigned int i = m_bestEvaluateState.m_program.m_dataSize; i < PROGRAM_INSTRUCTIONS; i++)
             code += Format("        data.d[%d] = 0.0f;\r\n", i);
         code += "    }\r\n";
     }
@@ -801,8 +701,8 @@ void FireStarter::DrawGraph(unsigned int variation)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_species[m_bestEvaluateState.m_bestSpecies].m_program.m_instructions),
-                    reinterpret_cast<void*>(&m_bestEvaluateState.m_species[m_bestEvaluateState.m_bestSpecies].m_result[variation]),
+    void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_program.m_instructions),
+                    reinterpret_cast<void*>(&m_bestEvaluateState.m_result),
                     reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                     reinterpret_cast<void*>(&m_buffer.m_width),
                     reinterpret_cast<void*>(&m_buffer.m_height),

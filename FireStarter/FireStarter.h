@@ -16,39 +16,22 @@
 #include "FireStarterTarget.h"
 #endif
 
-//#define PROGRAM_POPULATION 4352
 #define PROGRAM_POPULATION 4352 * 2
 #define PROGRAM_PRECISION 1024
 
 #define PROGRAM_UNITS 1
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-#define PROGRAM_SPECIES 1
 #define PROGRAM_GENERATIONS 50  // Must be even!
 #else
-#define PROGRAM_SPECIES 1
 #define PROGRAM_GENERATIONS 100 // Must be even!
 #endif
 
 #define PROGRAM_ITERATIONS 512
-#define TARGET_VARIATIONS 4
 
 #define PROGRAM_CODE    "// PROGRAM //"
 #define EVALUATE_CODE   "// EVALUATE //"
 #define DATA_CODE       "// DATA //"
 #define END_CODE        "// END //"
-
-typedef enum {
-    Program_multiply_add,
-    Program_multiply_add_abs,
-} FireStarterProgramMode;
-
-#if 1
-#define PROGRAM_MODE Program_multiply_add_abs
-#define PROGRAM_RANDOM_INSTRUCTIONS 1
-#else
-#define PROGRAM_MODE Program_multiply_add
-#define PROGRAM_RANDOM_INSTRUCTIONS 0
-#endif
 
 struct FireStarterRegister {
     unsigned int dataIndex;
@@ -60,7 +43,6 @@ struct FireStarterRegister {
 class FireStarterProgram {
 public:
     FireStarterInstructions m_instructions;
-    std::vector<FireStarterOpcode> m_opcodes;
     std::vector<FireStarterRegister> m_registers;
     FireStarterProgramMode m_programMode;
     unsigned int m_dataSize;
@@ -77,26 +59,15 @@ public:
     FireStarterProgram(void);
 }; // class FireStarterProgram
 
-class FireStarterSpecies {
-public:
-    FireStarterProgram m_program;
-    FireStarterResult m_result[TARGET_VARIATIONS];
-
-    void SaveSolution(std::string& code);
-    FireStarterSpecies(void);
-}; // class FireStarterSpecies
-
 class FireStarterState {
 public:
-    FireStarterSpecies m_species[PROGRAM_SPECIES];
-    unsigned int m_order[TARGET_VARIATIONS];
+    FireStarterProgram m_program;
+    FireStarterResult m_result;
     double m_processingTime;
     float m_maxResult;
-    unsigned int m_bestSpecies;
 
     void SaveState(std::string& code);
     void SaveSolution(std::string& code);
-    void SortResults(void);
     FireStarterState(void);
 }; // class FireStarterState;
 
@@ -105,10 +76,10 @@ public:
     SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
-    FireStarterResults* m_deviceResults0[PROGRAM_SPECIES];
-    FireStarterResults* m_deviceResults1[PROGRAM_SPECIES];
-    FireStarterResults* m_hostResults0[PROGRAM_SPECIES];
-    FireStarterResults* m_hostResults1[PROGRAM_SPECIES];
+    FireStarterResults* m_deviceResults0;
+    FireStarterResults* m_deviceResults1;
+    FireStarterResults* m_hostResults0;
+    FireStarterResults* m_hostResults1;
     FireStarterState m_curState;
     FireStarterState m_bestState;
     CUdevice m_device;
@@ -128,14 +99,14 @@ public:
     unsigned int m_seed;
     volatile bool m_quit;
 
-    void GenerateProgram(unsigned int species);
+    void GenerateProgram(void);
     void EvolveProgram(void);
     void RandomProgram(void);
     void InitResults(void);
     void FreeResults(void);
-    void GetResults(unsigned int variation);
-    void RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation, unsigned int variation);
-    void RunVariations(void);
+    void GetResults(void);
+    void RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
+    void RunProgram(void);
     void ExecuteProgram(void);
     float UpdateProgram(std::string*& bestProgramCode, std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
     void InitUnit(void);
