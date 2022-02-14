@@ -407,6 +407,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
                 minIndex = i;
             }
         }
+
+        // Find the largest error of the best results.
         if (minResult > maxResult) {
             maxResult = minResult;
             maxIndex = minIndex;
