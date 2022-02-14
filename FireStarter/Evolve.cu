@@ -2,14 +2,12 @@
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
 
-// PROGRAM //
 inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
 {
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
        instructions.i[i].Execute(data, n);
     return isnan(n) ? 0.0f : n;
 } // Program
-// END //
 
 GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation)
 {

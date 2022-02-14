@@ -256,7 +256,6 @@ void FireStarterState::SaveState(std::string& code)
     }
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
     code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
-    code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
     code += "    state.SortResults();\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
@@ -264,7 +263,6 @@ void FireStarterState::SaveState(std::string& code)
 FireStarterState::FireStarterState(void)
 {
     m_processingTime = 0.0;
-    m_maxResult = START_RESULT;
     for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             m_result.data[t].d[i] = 1.0f;
@@ -275,20 +273,17 @@ FireStarterState::FireStarterState(void)
 
 void FireStarterUnit::GenerateProgram(void)
 {
-    // Optimize the program data and registers.
-    m_curState.m_program.OptimizeData();
-
-    // Update the Evaluate funtion.
-    m_evaluateCode.clear();
-    m_curState.m_program.GenerateEvaluate(m_evaluateCode);
-
     // Compile the program
     if (!m_fireStarterFunction) {
-        std::string updatedCode = m_fireStarterCode;
-        FireStarter::UpdateProgram(updatedCode, m_evaluateCode, EVALUATE_CODE);
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-        m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "Evolve");
+        m_fireStarterFunction = FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule, "Evolve");
 #else
+        // Optimize the program data and registers.
+        m_curState.m_program.OptimizeData();
+        m_curState.m_program.GenerateEvaluate(m_evaluateCode);
+        // Update the Evaluate funtion.
+        FireStarter::UpdateProgram(m_fireStarterCode, m_evaluateCode, EVALUATE_CODE);
+        // Compile the new code.
         m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "Optimize");
 #endif
     }
@@ -299,15 +294,7 @@ void FireStarterUnit::GenerateProgram(void)
 
 void FireStarterUnit::EvolveProgram(void)
 {
-    // Determine how many changes to make to the instructions.
-    unsigned int numChanges = 1;// RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-
-    // Make random changes to the program instructions.
     m_curState = m_bestState;
-    while (numChanges--) {
-        unsigned int index = RANDOMSEED(m_seed) % PROGRAM_INSTRUCTIONS;
-        m_curState.m_program.RandomInstruction(index, m_seed);
-    }
     GenerateProgram();
 } // EvolveProgram
 
@@ -365,15 +352,15 @@ void FireStarterUnit::GetResults(void)
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_fireStarterStream));
     checkCUDAErrors(cudaStreamSynchronize(m_fireStarterStream));
     float minResult = m_hostResults0->results[0].maxResult;
-    unsigned int index = 0;
+    unsigned int minIndex = 0;
     for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
         float curResult = m_hostResults0->results[i].maxResult;
         if (curResult < minResult) {
             minResult = curResult;
-            index = i;
+            minIndex = i;
         }
     }
-    m_curState.m_result = m_hostResults0->results[index];
+    m_curState.m_result = m_hostResults0->results[minIndex];
 } // GetResults
 
 void FireStarterUnit::RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation)
@@ -407,18 +394,6 @@ void FireStarterUnit::RunGenerations(unsigned int population, unsigned int itera
     GetResults();
 } // RunGenerations
 
-void FireStarterUnit::RunProgram(void)
-{
-    // Run each varaition for the current generaiton from worst to best.
-    float bestResult = m_bestState.m_maxResult;
-    m_curState.m_maxResult = 0.0f;
-    RunGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
-    m_curState.m_maxResult = max(m_curState.m_maxResult, m_curState.m_result.maxResult);
-    m_bestState = m_curState;
-    m_bestProgramCode = m_programCode;
-    m_bestEvaluateCode = m_evaluateCode;
-} // RunProgram
-
 void FireStarterUnit::ExecuteProgram(void)
 {
     m_timer.Start();
@@ -427,7 +402,7 @@ void FireStarterUnit::ExecuteProgram(void)
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     // Evolve the program instructions.
     EvolveProgram();
-    RunProgram();
+    RunGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     RunVariations();
@@ -439,11 +414,11 @@ void FireStarterUnit::ExecuteProgram(void)
 
 float FireStarterUnit::UpdateProgram(std::string*& bestProgramCode, std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation)
 {
-    bestProgramCode = &m_bestProgramCode;
-    bestEvaluateCode = &m_bestEvaluateCode;
+    bestProgramCode = &m_programCode;
+    bestEvaluateCode = &m_evaluateCode;
     bestState = &m_bestState;
     generation = &m_unitGeneration;
-    return m_bestState.m_maxResult;
+    return m_bestState.m_result.maxResult;
 } // Update
 
 void FireStarterUnit::InitUnit(void)

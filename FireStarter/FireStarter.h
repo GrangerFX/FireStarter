@@ -64,7 +64,6 @@ public:
     FireStarterProgram m_program;
     FireStarterResult m_result;
     double m_processingTime;
-    float m_maxResult;
 
     void SaveState(std::string& code);
     void SaveSolution(std::string& code);
@@ -90,8 +89,6 @@ public:
     std::string m_fireStarterCode;
     std::string m_programCode;
     std::string m_evaluateCode;
-    std::string m_bestProgramCode;
-    std::string m_bestEvaluateCode;
     size_t m_resultsSize;
     unsigned long long m_programGeneration;
     unsigned long long m_unitGeneration;
@@ -106,7 +103,6 @@ public:
     void FreeResults(void);
     void GetResults(void);
     void RunGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
-    void RunProgram(void);
     void ExecuteProgram(void);
     float UpdateProgram(std::string*& bestProgramCode, std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
     void InitUnit(void);
