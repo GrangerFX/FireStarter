@@ -21,7 +21,7 @@
 
 #define PROGRAM_UNITS 1
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-#define PROGRAM_GENERATIONS 50  // Must be even!
+#define PROGRAM_GENERATIONS 1  // Must be even!
 #else
 #define PROGRAM_GENERATIONS 100 // Must be even!
 #endif

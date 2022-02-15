@@ -11,13 +11,12 @@ inline float Program(const FireStarterInstructions& instructions, FireStarterDat
 
 GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation)
 {
-    const unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
+    const unsigned int member = blockIdx.x;
     if (member >= population)
         return;
-    const unsigned int blockIndex = (blockDim.x * blockIdx.x) / PROGRAM_BLOCK_THREADS;
-    const unsigned int threadIndex = threadIdx.x & (PROGRAM_BLOCK_THREADS - 1);
-    unsigned int blockSeed = RANDOMHASH(RANDOMHASH(blockIndex) + generation);
+    const unsigned int thread = threadIdx.x;
     unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
+    unsigned int threadSeed = RANDOMHASH(RANDOMHASH(member * blockDim.x + thread) + generation);
 
     FireStarterInstructions instructions;
     float oldResult;
@@ -25,25 +24,24 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         // The first generation's instructions are random.
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
 #if PROGRAM_RANDOM_INSTRUCTIONS
-            instructions.i[i] = FireStarterInstruction(fireStarterOpcodes[RANDOMSEED(blockSeed) % PROGRAM_OPCODES], RANDOMSEED(blockSeed) % PROGRAM_INSTRUCTIONS);
+            instructions.i[i] = FireStarterInstruction(fireStarterOpcodes[RANDOMSEED(memberSeed) % PROGRAM_OPCODES], RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS);
 #else
-            instructions.i[i] = FireStarterInstruction(fireStarterOpcodes[i % PROGRAM_OPCODES], RANDOMSEED(blockSeed) % PROGRAM_INSTRUCTIONS);
+            instructions.i[i] = FireStarterInstruction(fireStarterOpcodes[i % PROGRAM_OPCODES], RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS);
 #endif
         }
         oldResult = START_RESULT;
-    }
-    else {
+    } else {
         // Later generations randomize one instruction.
         instructions = oldResults->results[member].instructions;
         oldResult = oldResults->results[member].maxResult;
 
         // Evolve the program instructions.
-        unsigned int i = RANDOMSEED(blockSeed) % PROGRAM_INSTRUCTIONS;
+        unsigned int i = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
         FireStarterInstruction oldInstruction = instructions.i[i];
 #if PROGRAM_RANDOM_INSTRUCTIONS
-        instructions.i[i].SetOperation(fireStarterOpcodes[RANDOMSEED(blockSeed) % PROGRAM_OPCODES], RANDOMSEED(blockSeed) % PROGRAM_INSTRUCTIONS);
+        instructions.i[i].SetOperation(fireStarterOpcodes[RANDOMSEED(memberSeed) % PROGRAM_OPCODES], RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS);
 #else
-        instructions.i[i].SetRegister(RANDOMSEED(blockSeed) % PROGRAM_INSTRUCTIONS);
+        instructions.i[i].SetRegister(RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS);
 #endif
     }
 
@@ -62,13 +60,13 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         if (generation)
             data = oldResults->results[member].data[v];
         else for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-            data.d[i] = RANDOMFACTOR(memberSeed);
+            data.d[i] = RANDOMFACTOR(threadSeed);
         float lastResult = oldResults->results[member].minResult[v];
         float result = lastResult;
         for (unsigned int p = 0; p < iterations; p++) {
-            unsigned int d = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
+            unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
             float oldData = data.d[d];
-            data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(memberSeed) * result);
+            data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(threadSeed) * result);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
                 curResult = fmaxf(fabsf(Program(instructions, data, theta[i]) - target[i]), curResult);
@@ -93,27 +91,27 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
 #endif
 
         // Find the best result among all the warp threads.
-        GPU_SHARED float threadResults[PROGRAM_BLOCK_THREADS];
-        threadResults[threadIndex] = result;
+        GPU_SHARED float threadResults[EVOLVE_THREADS];
+        threadResults[thread] = result;
         GPU_SYNCTHREADS();
         unsigned int minIndex = 0;
         float minResult = threadResults[0];
-        for (int i = 1; i < PROGRAM_BLOCK_THREADS; i++) {
+        for (int i = 1; i < EVOLVE_THREADS; i++) {
             if (threadResults[i] < minResult) {
                 minIndex = i;
                 minResult = threadResults[i];
             }
         }
-        if ((threadIndex == minIndex) && (minResult < oldResult)) {
-            newResults->results->data[v] = data;
-            newResults->results->minResult[v] = minResult;
+        if ((thread == minIndex) && (minResult < oldResult)) {
+            newResults->results[member].data[v] = data;
+            newResults->results[member].minResult[v] = minResult;
         }
         maxResult = fmaxf(maxResult, minResult);
     }
 
     GPU_SYNCTHREADS();
     // Only read and write memory in a single thread.
-    if (threadIndex == 0) {
+    if (thread == 0) {
         if (!generation || (maxResult < oldResult)) {
             // Save the improved results.
             newResults->results[member].instructions = instructions;
@@ -124,7 +122,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             unsigned int bestIndex = member;
             float bestResult = oldResult;
             for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
-                unsigned int index = RANDOMSEED(blockSeed) % population;
+                unsigned int index = RANDOMSEED(memberSeed) % population;
                 float curResult = oldResults->results[index].maxResult;
                 if (curResult < bestResult) {
                     bestResult = curResult;

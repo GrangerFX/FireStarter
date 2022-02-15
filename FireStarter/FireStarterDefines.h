@@ -3,7 +3,7 @@
 
 #define PROGRAM_INSTRUCTIONS 32
 #define TARGET_VARIATIONS 1
-#define PROGRAM_BLOCK_THREADS 32    // Same as the number of threads in a warp.
+#define EVOLVE_THREADS 32    // Number of threads per evolution member. Same as the number of threads in a warp.
 
 #define SAMPLE_MIN 0.0f
 #define SAMPLE_MAX (2.0f * 3.14159265f)
