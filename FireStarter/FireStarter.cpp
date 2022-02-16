@@ -18,9 +18,10 @@ void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& see
     m_instructions.i[index] = FireStarterInstruction(opcode, data);
 } // RandomInstruction
 
-void FireStarterProgram::OptimizeData(void)
+void FireStarterProgram::OptimizeRegisters(FireStarterInstructions instructions)
 {
     // Delete the unused registers and sort the remaining ones.
+    m_instructions = instructions;
     m_registers.clear();
     m_registers.reserve(PROGRAM_INSTRUCTIONS);
     int dataRegisters[PROGRAM_INSTRUCTIONS];
@@ -59,7 +60,7 @@ void FireStarterProgram::OptimizeData(void)
                 numActiveRegisters--;
             }
     }
-} // OptimizeData
+} // OptimizeRegisters
 
 void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
 {
@@ -205,8 +206,9 @@ FireStarterProgram::FireStarterProgram(void)
 {
     m_programMode = PROGRAM_MODE;
     m_dataSize = PROGRAM_INSTRUCTIONS;
+    m_maxRegisters = PROGRAM_INSTRUCTIONS;
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        m_instructions.i[i] = 0;
+        m_instructions.i[i].SetOperation(0);
 } // FireStarterProgram
 
 void FireStarterState::SaveSolution(std::string& code)
@@ -262,11 +264,6 @@ void FireStarterUnit::GenerateProgram(void)
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
         m_fireStarterFunction = FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule, "Evolve");
 #else
-        // Optimize the program data and registers.
-        m_curState.m_program.OptimizeData();
-        m_curState.m_program.GenerateEvaluate(m_evaluateCode);
-        // Update the Evaluate funtion.
-        FireStarter::UpdateProgram(m_fireStarterCode, m_evaluateCode, EVALUATE_CODE);
         // Compile the new code.
         m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "Optimize");
 #endif
@@ -432,13 +429,15 @@ void FireStarterUnit::ExecuteProgram(void)
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
     m_programGeneration += PROGRAM_ITERATIONS;
 #endif
-
+    if (m_curState.m_result.maxResult < m_bestState.m_result.maxResult) {
+        m_bestState = m_curState;
+        m_bestState.m_program.OptimizeRegisters(m_bestState.m_result.instructions);
+    }
     m_curState.m_processingTime = m_timer.Duration();
 } // ExecuteProgram
 
-float FireStarterUnit::UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation)
+float FireStarterUnit::UpdateProgram(FireStarterState* &bestState, unsigned long long* &generation)
 {
-    bestEvaluateCode = &m_evaluateCode;
     bestState = &m_bestState;
     generation = &m_unitGeneration;
     return m_bestState.m_result.maxResult;
@@ -624,9 +623,13 @@ bool FireStarter::LoadFireStarterCode(void)
 
 void FireStarter::SaveFireStarterCode(void)
 {
-    FireStarter::UpdateProgram(m_optimizeCode, m_bestEvaluateCode, EVALUATE_CODE);
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-    FireStarter::SaveCode("Evolve.cu", m_evolveCode);
+    // Optimize the program data and registers.
+    m_bestEvaluateState.m_program.OptimizeRegisters(m_bestEvaluateState.m_result.instructions);
+    m_bestEvaluateState.m_program.GenerateEvaluate(m_bestEvaluateCode);
+
+    // Update the Evaluate funtion.
+    FireStarter::UpdateProgram(m_optimizeCode, m_bestEvaluateCode, EVALUATE_CODE);
     FireStarter::SaveCode("Optimize.cu", m_optimizeCode);
 #endif
 } // SaveFireStarterCode
@@ -637,15 +640,6 @@ bool FireStarter::LoadFireShowCode(void)
         return false;
     return true;
 } // LoadFireShowCode
-
-void FireStarter::SaveFireShowCode(void)
-{
-    std::string dataCode;
-    BuildData(dataCode);
-    UpdateProgram(m_fireShowCode, dataCode, DATA_CODE);
-    UpdateProgram(m_fireShowCode, m_bestEvaluateCode, EVALUATE_CODE);
-    FireStarter::SaveCode("FireShow.cu", m_fireShowCode);
-} // SaveFireShowCode
 
 void FireStarter::SaveBestState(void)
 {
@@ -693,8 +687,7 @@ void FireStarter::DrawGraph(unsigned int variation)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_program.m_instructions),
-                    reinterpret_cast<void*>(&m_bestEvaluateState.m_result),
+    void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_result),
                     reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                     reinterpret_cast<void*>(&m_buffer.m_width),
                     reinterpret_cast<void*>(&m_buffer.m_height),
@@ -708,12 +701,12 @@ void FireStarter::DrawGraph(unsigned int variation)
         0));
 } // DrawGraph
 
-void FireStarter::RenderImage(void)
+void FireStarter::RenderImage(unsigned long width, unsigned long height, const unsigned char *pixels)
 {
     unsigned char buffer[4096];
     BITMAPINFO* bm = (BITMAPINFO*)buffer;
     bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bm->bmiHeader.biHeight = -(int)m_buffer.m_height;
+    bm->bmiHeader.biHeight = -(int)height;
     bm->bmiHeader.biPlanes = 1;
     bm->bmiHeader.biCompression = BI_RGB;
     bm->bmiHeader.biSizeImage = 0;
@@ -721,15 +714,15 @@ void FireStarter::RenderImage(void)
     bm->bmiHeader.biYPelsPerMeter = 0;
     bm->bmiHeader.biClrUsed = 0;
     bm->bmiHeader.biClrImportant = 0;
-    bm->bmiHeader.biWidth = m_buffer.m_width;
+    bm->bmiHeader.biWidth = width;
     bm->bmiHeader.biBitCount = 32;
 
     HDC hdc = GetDC((HWND)m_window);
     if (hdc) {
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
-        SetDIBitsToDevice(hdc, 0, 0, m_buffer.m_width, m_buffer.m_height, 0, 0, 0, m_buffer.m_height, m_buffer.GetHost(), bm, DIB_RGB_COLORS);
+        SetDIBitsToDevice(hdc, 0, 0, width, height, 0, 0, 0, height, pixels, bm, DIB_RGB_COLORS);
 #else
-        SetDIBitsToDevice(hdc, 0, 0, m_buffer.m_width, m_buffer.m_height, 0, 0, 0, m_buffer.m_height, m_buffer.GetDevice(), bm, DIB_RGB_COLORS);
+        SetDIBitsToDevice(hdc, 0, 0, width, height, 0, 0, 0, height, pixels, bm, DIB_RGB_COLORS);
 #endif
         GdiFlush();
     }
@@ -749,6 +742,9 @@ void FireStarter::ControlThread(void)
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
+
+    // Compile fireShow.
+    m_fireShowFunction = CompileProgram(m_fireShowCode, m_fireShowModule, "FireShow");
 
     // Create and initialize a unit for each processor thread.
 
@@ -788,13 +784,11 @@ void FireStarter::ControlThread(void)
         m_worstResult = 0.0f;
         for (FireStarterUnit* unit : m_units) {
             unit->DispatchSync([this, unit] {
-                std::string* unitBestEvaluateCode = nullptr;
                 FireStarterState* unitBestEvaluateState = nullptr;
                 unsigned long long* unitGeneration = nullptr;
-                float result = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
+                float result = unit->UpdateProgram(unitBestEvaluateState, unitGeneration);
                 if (result < m_bestResult) {
                     m_bestResult = result;
-                    m_bestEvaluateCode = *unitBestEvaluateCode;
                     m_bestEvaluateState = *unitBestEvaluateState;
                     m_bestGeneration = m_generation;
                     m_controlUpdate = true;
@@ -805,36 +799,9 @@ void FireStarter::ControlThread(void)
         m_controlTime = m_controlTimer.Duration();
         m_generation++;
 
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-        // Note: This code can run in the control thread because the unit threads are all idle at this point.
-        for (FireStarterUnit* unit : m_units) {
-            std::string* unitBestEvaluateCode = nullptr;
-            FireStarterState* unitBestEvaluateState = nullptr;
-            unsigned long long* unitGeneration = nullptr;
-            float unitResult = unit->UpdateProgram(unitBestEvaluateCode, unitBestEvaluateState, unitGeneration);
-            if (unitResult > m_bestResult) {
-                FireStarterUnit* randomUnit;
-                do {
-                    randomUnit = m_units[RANDOMSEED(m_seed) % m_units.size()];
-                } while (randomUnit == unit);
-                std::string* randomEvaluateCode = nullptr;
-                FireStarterState* randomEvaluateState = nullptr;
-                unsigned long long* randomGeneration = nullptr;
-                float randomResult = randomUnit->UpdateProgram(randomEvaluateCode, randomEvaluateState, randomGeneration);
-                if (randomResult < unitResult) {
-                    *unitBestEvaluateCode = *randomEvaluateCode;
-                    *unitBestEvaluateState = *randomEvaluateState;
-                    *unitGeneration = *randomGeneration;
-                }
-            }
-        }
-#endif
-
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
             SaveFireStarterCode();
-            SaveFireShowCode();
-            m_fireShowFunction = CompileProgram(m_fireShowCode, m_fireShowModule, "FireShow");
             SaveBestState();
             SaveSolution();
         }
@@ -854,8 +821,14 @@ void FireStarter::ControlThread(void)
             for (unsigned int t = 0; t < TARGET_VARIATIONS; t++)
                 DrawGraph(t);
             m_controlUpdate = false;
-            GetMainThread()->DispatchAsync([this] {
-                RenderImage();
+#if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
+            const unsigned char* bufferPixels = m_buffer.GetHost();
+#else
+            const unsigned char* bufferPixels = m_buffer.GetDevice();
+#endif
+
+            GetMainThread()->DispatchAsync([this, bufferPixels] {
+                RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
                 m_bufferUpdate = false;
             });
         }

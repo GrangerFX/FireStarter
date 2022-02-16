@@ -5,7 +5,7 @@
 #define GPU_GLOBAL extern "C" __global__
 #define GPU_ENTRY(grid, block) <<<grid, block>>>
 #define GPU_THREADFENCE() __threadfence()
-#define GPU_SYNCTHREADS() __syncthreads
+#define GPU_SYNCTHREADS() __syncthreads()
 #define GPU_SHARED __shared__
 #else
 #define CUDA_API_PER_THREAD_DEFAULT_STREAM

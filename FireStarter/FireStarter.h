@@ -49,7 +49,7 @@ public:
     unsigned int m_maxRegisters;
 
     void RandomInstruction(unsigned int index, unsigned int& seed);
-    void OptimizeData(void);
+    void OptimizeRegisters(FireStarterInstructions instructions);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
@@ -85,7 +85,6 @@ public:
     CUmodule m_fireStarterModule;
     CUfunction m_fireStarterFunction;
     std::string m_fireStarterCode;
-    std::string m_evaluateCode;
     size_t m_resultsSize;
     unsigned long long m_programGeneration;
     unsigned long long m_unitGeneration;
@@ -99,7 +98,7 @@ public:
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
     void ExecuteProgram(void);
-    float UpdateProgram(std::string* &bestEvaluateCode, FireStarterState* &bestState, unsigned long long* &generation);
+    float UpdateProgram(FireStarterState* &bestState, unsigned long long* &generation);
     void InitUnit(void);
     void FinishUnit(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
@@ -147,11 +146,10 @@ public:
     bool LoadFireStarterCode(void);
     void SaveFireStarterCode(void);
     bool LoadFireShowCode(void);
-    void SaveFireShowCode(void);
     void SaveBestState(void);
     void SaveSolution(void);
     void DrawGraph(unsigned int variation);
-    void RenderImage(void);
+    void RenderImage(unsigned long width, unsigned long height, const unsigned char* pixels);
     void RenderStatus(void);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);

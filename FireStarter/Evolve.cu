@@ -37,7 +37,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
 
         // Evolve the program instructions.
         unsigned int i = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
-        FireStarterInstruction oldInstruction = instructions.i[i];
 #if PROGRAM_RANDOM_INSTRUCTIONS
         instructions.i[i].SetOperation(fireStarterOpcodes[RANDOMSEED(memberSeed) % PROGRAM_OPCODES], RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS);
 #else
@@ -92,7 +91,10 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
 
         // Find the best result among all the warp threads.
         GPU_SHARED float threadResults[EVOLVE_THREADS];
+        for (int i = 1; i < EVOLVE_THREADS; i++)
+            threadResults[i] = START_RESULT;
         threadResults[thread] = result;
+
         GPU_SYNCTHREADS();
         unsigned int minIndex = 0;
         float minResult = threadResults[0];
