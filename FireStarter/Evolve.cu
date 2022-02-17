@@ -18,6 +18,10 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
     unsigned int threadSeed = RANDOMHASH(RANDOMHASH(member * blockDim.x + thread) + generation);
 
+    GPU_SHARED float threadResults[EVOLVE_THREADS];
+    for (int i = 0; i < EVOLVE_THREADS; i++)
+        threadResults[i] = START_RESULT;
+
     FireStarterInstructions instructions;
     float oldResult;
     if (!generation) {
@@ -56,11 +60,14 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
             target[i] = Target(theta[i], v);
         FireStarterData data;
-        if (generation)
+        float lastResult;
+        if (generation) {
             data = oldResults->results[member].data[v];
-        else for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            lastResult = oldResults->results[member].minResult[v];
+        } else for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
             data.d[i] = RANDOMFACTOR(threadSeed);
-        float lastResult = oldResults->results[member].minResult[v];
+            lastResult = START_RESULT;
+        }
         float result = lastResult;
         for (unsigned int p = 0; p < iterations; p++) {
             unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
@@ -90,9 +97,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
 #endif
 
         // Find the best result among all the warp threads.
-        GPU_SHARED float threadResults[EVOLVE_THREADS];
-        for (int i = 1; i < EVOLVE_THREADS; i++)
-            threadResults[i] = START_RESULT;
         threadResults[thread] = result;
 
         GPU_SYNCTHREADS();
@@ -104,7 +108,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 minResult = threadResults[i];
             }
         }
-        if ((thread == minIndex) && (minResult < oldResult)) {
+        if ((thread == minIndex) && (minResult < lastResult)) {
             newResults->results[member].data[v] = data;
             newResults->results[member].minResult[v] = minResult;
         }
