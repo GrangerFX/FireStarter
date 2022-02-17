@@ -1,7 +1,7 @@
 #include <math.h>
 
-// Run date: 02/16/22 20:10:21 Pacific Standard Time
-// Run duration = 1.531970 seconds
+// Run date: 02/16/22 20:19:10 Pacific Standard Time
+// Run duration = 1.522131 seconds
 // Run count = 1
 // Run units = 1
 // Run population = 8704

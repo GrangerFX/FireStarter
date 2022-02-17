@@ -37,15 +37,13 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     } else {
         // Later generations randomize one instruction.
         instructions = oldResults->results[member].instructions;
-        oldResult = oldResults->results[member].maxResult;
-
-        // Evolve the program instructions.
         unsigned int i = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
 #if PROGRAM_RANDOM_INSTRUCTIONS
         instructions.i[i].SetOperation(fireStarterOpcodes[RANDOMSEED(memberSeed) % PROGRAM_OPCODES], RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS);
 #else
         instructions.i[i].SetRegister(RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS);
 #endif
+        oldResult = oldResults->results[member].maxResult;
     }
 
     float theta[SAMPLE_ITERATIONS];
@@ -108,15 +106,15 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 minResult = threadResults[i];
             }
         }
-        if ((thread == minIndex) && (minResult < lastResult)) {
+        if ((thread == minIndex) && (!generation && (minResult < lastResult))) {
             newResults->results[member].data[v] = data;
             newResults->results[member].minResult[v] = minResult;
         }
         maxResult = fmaxf(maxResult, minResult);
     }
 
-    GPU_SYNCTHREADS();
     // Only read and write memory in a single thread.
+    GPU_SYNCTHREADS();
     if (thread == 0) {
         if (!generation || (maxResult < oldResult)) {
             // Save the improved results.

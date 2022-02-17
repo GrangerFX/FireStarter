@@ -427,8 +427,8 @@ void FireStarterUnit::ExecuteProgram(void)
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     RunVariations();
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
-    m_programGeneration += PROGRAM_ITERATIONS;
 #endif
+    m_programGeneration += PROGRAM_ITERATIONS;
     if (m_curState.m_result.maxResult < m_bestState.m_result.maxResult) {
         m_bestState = m_curState;
         m_bestState.m_program.OptimizeRegisters(m_bestState.m_result.instructions);
