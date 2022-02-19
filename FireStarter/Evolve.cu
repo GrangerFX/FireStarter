@@ -126,9 +126,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         threadResults[i] = START_RESULT;
 
     GPU_SHARED FireStarterInstructions instructions;
-    GPU_SHARED unsigned int variationOrder[TARGET_VARIATIONS];
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++)
-        variationOrder[v] = v;
     float oldResult;
     if (thread == 0)
         if (!generation) {
@@ -142,28 +139,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             unsigned int i = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
             instructions.i[i].Random(i, memberSeed);
             oldResult = oldResults->results[member].maxResult;
-
-#if 0
-            float variationResults[TARGET_VARIATIONS];
-            for (int v = 0; v < TARGET_VARIATIONS - 1; v++)
-                variationResults[v] = oldResults->results[member].minResult[v];
-            for (int v = 0; v < TARGET_VARIATIONS - 1; v++) {
-                float maxResult = variationResults[v];
-                int maxOrder = variationOrder[v];
-                int maxIndex = v;
-                for (int i = v + 1; i < TARGET_VARIATIONS; i++) {
-                    if (variationResults[i] > maxResult) {
-                        maxResult = variationResults[i];
-                        maxOrder = variationOrder[i];
-                        maxIndex = i;
-                    }
-                }
-                variationResults[maxIndex] = variationResults[v];
-                variationOrder[maxIndex] = variationOrder[v];
-                variationResults[v] = maxResult;
-                variationOrder[v] = maxOrder;
-            }
-#endif
         }
     GPU_SYNCTHREADS();
 
@@ -176,8 +151,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     GPU_SHARED FireStarterData threadData[EVOLVE_THREADS];
     FireStarterData& data = threadData[thread];
     float maxResult = 0.0f;
-    for (unsigned int t = 0; t < TARGET_VARIATIONS; t++) {
-        unsigned int v = t; // variationOrder[t];
+    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
         float target[SAMPLE_ITERATIONS];
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
             target[i] = Target(theta[i], v);
