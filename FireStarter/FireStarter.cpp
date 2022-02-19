@@ -7,21 +7,9 @@
 #include <fstream>
 #include <sstream>
 
-void FireStarterProgram::RandomInstruction(unsigned int index, unsigned int& seed)
-{
-#if PROGRAM_RANDOM_INSTRUCTIONS
-    FireStarterOpcode opcode = fireStarterOpcodes[RANDOMSEED(seed) % PROGRAM_OPCODES];
-#else
-    FireStarterOpcode opcode = fireStarterOpcodes[index % PROGRAM_OPCODES];
-#endif
-    unsigned int data = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
-    m_instructions.i[index] = FireStarterInstruction(opcode, data);
-} // RandomInstruction
-
-void FireStarterProgram::OptimizeRegisters(FireStarterInstructions instructions)
+void FireStarterProgram::OptimizeRegisters(void)
 {
     // Delete the unused registers and sort the remaining ones.
-    m_instructions = instructions;
     m_registers.clear();
     m_registers.reserve(PROGRAM_INSTRUCTIONS);
     int dataRegisters[PROGRAM_INSTRUCTIONS];
@@ -62,9 +50,16 @@ void FireStarterProgram::OptimizeRegisters(FireStarterInstructions instructions)
     }
 } // OptimizeRegisters
 
+void FireStarterProgram::LoadInstructions(FireStarterInstructions instructions)
+{
+    m_instructions = instructions;
+    OptimizeRegisters();
+} // LoadInstructions
+
 void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
 {
     // Generate the evaluate function.
+    code.clear();
     code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n)\r\n";
     code += "{\r\n";
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
@@ -209,6 +204,9 @@ FireStarterProgram::FireStarterProgram(void)
     m_maxRegisters = PROGRAM_INSTRUCTIONS;
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         m_instructions.i[i].SetOperation(0, 0);
+    m_opcodes.resize(PROGRAM_OPCODES);
+    for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
+        m_opcodes[i] = fireStarterOpcodes[i];
 } // FireStarterProgram
 
 void FireStarterState::SaveSolution(std::string& code)
@@ -242,8 +240,7 @@ void FireStarterState::SaveState(std::string& code)
     }
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
     code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
-    code += "    state.SortResults();\r\n";
-    code += "} // LoadState\r\n";
+     code += "} // LoadState\r\n";
 } // SaveState
 
 FireStarterState::FireStarterState(void)
@@ -265,7 +262,7 @@ void FireStarterUnit::GenerateProgram(void)
         m_fireStarterFunction = FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule, "Evolve");
 #else
         // Compile the new code.
-        m_fireStarterFunction = FireStarter::CompileProgram(updatedCode, m_fireStarterModule, "Optimize");
+        m_fireStarterFunction = FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule, "Optimize");
 #endif
     }
 
@@ -425,13 +422,13 @@ void FireStarterUnit::ExecuteProgram(void)
     EvolveGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
-    RunVariations();
+    // Evolve the program data.
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
     m_programGeneration += PROGRAM_ITERATIONS;
     if (m_curState.m_result.maxResult < m_bestState.m_result.maxResult) {
         m_bestState = m_curState;
-        m_bestState.m_program.OptimizeRegisters(m_bestState.m_result.instructions);
+        m_bestState.m_program.LoadInstructions(m_bestState.m_result.instructions);
     }
     m_curState.m_processingTime = m_timer.Duration();
 } // ExecuteProgram
@@ -625,7 +622,7 @@ void FireStarter::SaveFireStarterCode(void)
 {
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     // Optimize the program data and registers.
-    m_bestEvaluateState.m_program.OptimizeRegisters(m_bestEvaluateState.m_result.instructions);
+    m_bestEvaluateState.m_program.LoadInstructions(m_bestEvaluateState.m_result.instructions);
     m_bestEvaluateState.m_program.GenerateEvaluate(m_bestEvaluateCode);
 
     // Update the Evaluate funtion.

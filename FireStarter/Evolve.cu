@@ -174,20 +174,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 data.d[d] = oldData;
         }
 
-#if 0
-        // This is probably not needed when evolving the code.
-        // Calculate a more accure estimate of the result.
-        if (result < lastResult) {
-            float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
-            result = 0.0f;
-            for (int i = 0; i < precision; i++) {
-                float theta = SAMPLE_MIN + i * precisionStep;
-                float target = Target(theta, variation);
-                result = fmaxf(fabsf(Program(instructions, data, theta) - target), result);
-            }
-        }
-#endif
-
         // Find the best result among all the warp threads.
         threadResults[thread] = result;
 

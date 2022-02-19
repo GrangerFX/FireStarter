@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -16,18 +16,20 @@
 #include "FireStarterTarget.h"
 #endif
 
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
+#define PROGRAM_POPULATION 4352
+#define PROGRAM_ITERATIONS 256
+#define PROGRAM_GENERATIONS 10  // Must be even!
+#else
 #define PROGRAM_POPULATION 4352 * 2
+#define PROGRAM_ITERATIONS 512
+#define PROGRAM_GENERATIONS 100 // Must be even!
+#endif
+
 #define PROGRAM_PRECISION 1024
 
 #define PROGRAM_UNITS 1
 #define PROGRAM_UNITS 1
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-#define PROGRAM_GENERATIONS 10  // Must be even!
-#else
-#define PROGRAM_GENERATIONS 100 // Must be even!
-#endif
-
-#define PROGRAM_ITERATIONS 512
 
 #define PROGRAM_CODE    "// PROGRAM //"
 #define EVALUATE_CODE   "// EVALUATE //"
@@ -45,12 +47,13 @@ class FireStarterProgram {
 public:
     FireStarterInstructions m_instructions;
     std::vector<FireStarterRegister> m_registers;
+    std::vector<FireStarterOpcode> m_opcodes;
     FireStarterProgramMode m_programMode;
     unsigned int m_dataSize;
     unsigned int m_maxRegisters;
 
-    void RandomInstruction(unsigned int index, unsigned int& seed);
-    void OptimizeRegisters(FireStarterInstructions instructions);
+    void OptimizeRegisters(void);
+    void LoadInstructions(FireStarterInstructions instructions);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
