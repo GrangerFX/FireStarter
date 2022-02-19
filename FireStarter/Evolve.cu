@@ -106,7 +106,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 minResult = threadResults[i];
             }
         }
-        if ((thread == minIndex) && (!generation && (minResult < lastResult))) {
+        if ((thread == minIndex) && (!generation || (minResult < lastResult))) {
             newResults->results[member].data[v] = data;
             newResults->results[member].minResult[v] = minResult;
         }
