@@ -1,10 +1,10 @@
 #include <math.h>
 
-// Run date: 02/19/22 11:06:06 Pacific Standard Time
-// Run duration = 1.697313 seconds
-// Run count = 3
+// Run date: 02/19/22 11:50:32 Pacific Standard Time
+// Run duration = 3.350676 seconds
+// Run count = 2
 // Run units = 1
-// Run population = 4352
+// Run population = 8704
 // Run iterations = 512
 // Run generations = 10
 // Run samples = 15
@@ -35,57 +35,56 @@ inline float Target(float n, unsigned int variation)
     }
 } // Target
 
-// Precision = 0.009996
-// Solution0 precision = 0.009996
+// Precision = 0.008138
+// Solution0 precision = 0.008138
 inline float Solution0(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6, r7;
+    float r0, r1, r2, r3, r4, r5;
 
-    n += -0.74731946f;
-    n += -0.75101900f;
+    n *= 0.20228852f;
     r0 = n;
-    n *= 0.70294678f;
+    n += -0.95160401f;
     r1 = n;
-    n *= 0.55014187f;
-    n += 0.67202985f;
+    n += r0;
+    n *= r1;
+    r1 = n;
+    n *= -0.47197953f;
+    n += -0.99701196f;
+    r0 = n;
+    n += -0.68254161f;
     r2 = n;
-    n *= -0.53334075f;
-    n += -0.59638011f;
+    n += -0.85675025f;
     r3 = n;
-    n += 0.31009808f;
-    n += fabsf(0.12688379f);
+    n += fabsf(0.64971226f);
+    n *= -0.20651513f;
+    n += 0.37915972f;
     r4 = n;
-    n *= 0.34067088f;
+    n += -0.81203586f;
     r5 = n;
-    n += -0.47004917f;
-    r6 = n;
-    n += r0;
-    n += -0.34901050f;
-    r0 = n;
-    n *= r6;
-    r6 = n;
-    n += fabsf(-0.55162668f);
-    r7 = n;
-    n *= 0.06678218f;
-    n += fabsf(r4);
-    n += 0.08138736f;
-    n *= r7;
-    n *= 0.30898085f;
-    n += r6;
-    n *= 0.82828623f;
-    n += r2;
-    r2 = n;
-    n += r3;
-    n += r2;
-    n += 0.77715766f;
-    n += r0;
-    r0 = n;
-    n += 0.42526713f;
-    n *= r5;
-    n *= r1;
+    n += -0.08080198f;
+    n += r4;
+    n += -0.81538367f;
+    n += r1;
     r1 = n;
+    n *= 0.96753067f;
     n += r0;
+    r0 = n;
+    n += -0.52445108f;
+    n += 0.34754780f;
+    r4 = n;
+    n *= r5;
+    r5 = n;
+    n += -0.59811175f;
+    n += -0.45209640f;
+    n *= r3;
+    n *= r0;
+    n += 0.05445882f;
+    n *= r4;
+    n += r5;
+    n += 0.16688764f;
     n *= r1;
+    n += fabsf(0.75270820f);
+    n += r2;
     return n;
 } // Solution0
 
