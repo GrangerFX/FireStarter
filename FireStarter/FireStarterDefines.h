@@ -1,5 +1,6 @@
 #pragma once
 #include "CUDADefines.h"
+#include "HashRandom.h"
 
 #define PROGRAM_INSTRUCTIONS 32
 #define TARGET_VARIATIONS 1
@@ -56,11 +57,6 @@ const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
 #endif
 
 typedef struct {
-    unsigned int count;
-    FireStarterOpcode i[1];
-} FireStarterOpcodes;
-
-typedef struct {
     float d[PROGRAM_INSTRUCTIONS];
 } FireStarterData;
 
@@ -83,11 +79,6 @@ struct FireStarterInstruction {
     unsigned short op;
     unsigned short reg;
 
-    inline unsigned int Operation(void) const
-    {
-        return op * PROGRAM_INSTRUCTIONS + reg;
-    } // operation
-
     inline FireStarterOpcode Opcode(void) const
     {
         return (FireStarterOpcode)op;
@@ -97,12 +88,6 @@ struct FireStarterInstruction {
     {
         return reg;
     } // Register
-
-    inline void SetOperation(unsigned int operation)
-    {
-        op = operation / PROGRAM_INSTRUCTIONS;
-        reg = operation % PROGRAM_INSTRUCTIONS;
-    } // SetOperation
 
     inline void SetOperation(unsigned int o, unsigned int r)
     {
@@ -120,20 +105,34 @@ struct FireStarterInstruction {
         reg = r;
     } // SetRegister
 
-    inline void Execute(FireStarterData& data, float &n) const
+    inline void Execute(float &d, float& n) const
     {
         switch (op) {
             case 0:
-                FireStarterOperation0(data.d[reg], n);
+                FireStarterOperation0(d, n);
                 break;
             case 1:
-                FireStarterOperation1(data.d[reg], n);
+                FireStarterOperation1(d, n);
                 break;
             case 2:
-                FireStarterOperation2(data.d[reg], n);
+                FireStarterOperation2(d, n);
                 break;
         }
     } // Execute
+
+    inline void Execute(FireStarterData& data, float &n) const
+    {
+        Execute(data.d[reg], n);
+    } // Execute
+
+    inline void Random(unsigned int index, unsigned int &seed)
+    {
+#if PROGRAM_RANDOM_INSTRUCTIONS
+        SetOperation(fireStarterOpcodes[RANDOMSEED(seed) % PROGRAM_OPCODES], RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
+#else
+        SetOperation(fireStarterOpcodes[index % PROGRAM_OPCODES], RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
+#endif
+    } // Random
 
     inline FireStarterInstruction(FireStarterOpcode o, unsigned int r = 0)
     {
@@ -144,7 +143,7 @@ struct FireStarterInstruction {
     {
         SetOperation(o, r);
     } // FireStarterInstruction
-}; // union FireStarterInstruction
+}; // struct FireStarterInstruction
 
 typedef struct {
     FireStarterInstruction i[PROGRAM_INSTRUCTIONS];

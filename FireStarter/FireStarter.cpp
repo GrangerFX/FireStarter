@@ -159,7 +159,7 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
 
     unsigned int numInstructions = PROGRAM_INSTRUCTIONS;
     for (unsigned int i = 0; i < numInstructions; i++)
-        code += Format("    program.m_instructions.i[%u].SetOperation(%u);\r\n", i, m_instructions.i[i].Operation());
+        code += Format("    program.m_instructions.i[%u].SetOperation(%u, %u);\r\n", i, m_instructions.i[i].Opcode(), m_instructions.i[i].Register());
 
     code += Format("    program.m_opcodes.resize(%u);\r\n", PROGRAM_OPCODES);
     for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
@@ -208,7 +208,7 @@ FireStarterProgram::FireStarterProgram(void)
     m_dataSize = PROGRAM_INSTRUCTIONS;
     m_maxRegisters = PROGRAM_INSTRUCTIONS;
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        m_instructions.i[i].SetOperation(0);
+        m_instructions.i[i].SetOperation(0, 0);
 } // FireStarterProgram
 
 void FireStarterState::SaveSolution(std::string& code)
