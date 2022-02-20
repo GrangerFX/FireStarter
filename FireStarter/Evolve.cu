@@ -1,121 +1,6 @@
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-inline float Execute(const FireStarterInstructions &instructions, FireStarterData data, float n)
-{
-#if 1
-    for (unsigned int index = 0; index < PROGRAM_INSTRUCTIONS; index++) {
-        FireStarterInstruction instruction = instructions.i[index];
-#if 0
-        instruction.Execute(data.Data(instruction.reg), n);
-#else
-        switch (instruction.reg) {
-        case 0:
-            instruction.Execute(data.d[0], n);
-            break;
-        case 1:
-            instruction.Execute(data.d[1], n);
-            break;
-        case 2:
-            instruction.Execute(data.d[2], n);
-            break;
-        case 3:
-            instruction.Execute(data.d[3], n);
-            break;
-        case 4:
-            instruction.Execute(data.d[4], n);
-            break;
-        case 5:
-            instruction.Execute(data.d[5], n);
-            break;
-        case 6:
-            instruction.Execute(data.d[6], n);
-            break;
-        case 7:
-            instruction.Execute(data.d[7], n);
-            break;
-        case 8:
-            instruction.Execute(data.d[8], n);
-            break;
-        case 9:
-            instruction.Execute(data.d[9], n);
-            break;
-        case 10:
-            instruction.Execute(data.d[10], n);
-            break;
-        case 11:
-            instruction.Execute(data.d[11], n);
-            break;
-        case 12:
-            instruction.Execute(data.d[12], n);
-            break;
-        case 13:
-            instruction.Execute(data.d[13], n);
-            break;
-        case 14:
-            instruction.Execute(data.d[14], n);
-            break;
-        case 15:
-            instruction.Execute(data.d[15], n);
-            break;
-        case 16:
-            instruction.Execute(data.d[16], n);
-            break;
-        case 17:
-            instruction.Execute(data.d[17], n);
-            break;
-        case 18:
-            instruction.Execute(data.d[18], n);
-            break;
-        case 19:
-            instruction.Execute(data.d[19], n);
-            break;
-        case 20:
-            instruction.Execute(data.d[20], n);
-            break;
-        case 21:
-            instruction.Execute(data.d[21], n);
-            break;
-        case 22:
-            instruction.Execute(data.d[22], n);
-            break;
-        case 23:
-            instruction.Execute(data.d[23], n);
-            break;
-        case 24:
-            instruction.Execute(data.d[24], n);
-            break;
-        case 25:
-            instruction.Execute(data.d[25], n);
-            break;
-        case 26:
-            instruction.Execute(data.d[26], n);
-            break;
-        case 27:
-            instruction.Execute(data.d[27], n);
-            break;
-        case 28:
-            instruction.Execute(data.d[28], n);
-            break;
-        case 29:
-            instruction.Execute(data.d[29], n);
-            break;
-        case 30:
-            instruction.Execute(data.d[30], n);
-            break;
-        case 31:
-            instruction.Execute(data.d[31], n);
-            break;
-        }
-#endif
-    }
-#else
-    for (unsigned int index = 0; index < PROGRAM_INSTRUCTIONS; index++)
-        i[index].Execute(data, n);
-#endif
-    return isnan(n) ? 0.0f : n;
-} // Execute
-
 GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation)
 {
     const unsigned int member = blockIdx.x;
@@ -171,11 +56,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(threadSeed) * result);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-#if 1
                 curResult = fmaxf(fabsf(instructions.Execute(data, theta[i]) - target[i]), curResult);
-#else
-                curResult = fmaxf(fabsf(Execute(instructions, data, theta[i]) - target[i]), curResult);
-#endif
             if (curResult < result)
                 result = curResult;
             else
