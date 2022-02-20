@@ -10,10 +10,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
     unsigned int threadSeed = RANDOMHASH(RANDOMHASH(member * blockDim.x + thread) + generation);
 
-    GPU_SHARED float threadResults[EVOLVE_THREADS];
-    for (int i = 0; i < EVOLVE_THREADS; i++)
-        threadResults[i] = START_RESULT;
-
     GPU_SHARED FireStarterInstructions instructions;
     float oldResult;
     if (!generation) {
@@ -55,6 +51,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         }
 
         // Find the best result among all the warp threads.
+        GPU_SHARED float threadResults[EVOLVE_THREADS];
         threadResults[thread] = result;
 
         GPU_SYNCTHREADS();
