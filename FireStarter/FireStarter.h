@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "FireStarterDefines.h"
+#include "FireStarterResults.h"
 #include "FireStarterUtil.h"
 #include "SerialThread.h"
 #include "HashRandom.h"
@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -31,10 +31,11 @@
 #define PROGRAM_UNITS 1
 #define PROGRAM_UNITS 1
 
-#define PROGRAM_CODE    "// PROGRAM //"
-#define EVALUATE_CODE   "// EVALUATE //"
-#define DATA_CODE       "// DATA //"
-#define END_CODE        "// END //"
+#define DATA_CODE           "// DATA //"
+#define INSTRUCTIONS_CODE   "// INSTRUCTIONS //"
+#define PROGRAM_CODE        "// PROGRAM //"
+#define EVALUATE_CODE       "// EVALUATE //"
+#define END_CODE            "// END //"
 
 struct FireStarterRegister {
     unsigned int dataIndex;

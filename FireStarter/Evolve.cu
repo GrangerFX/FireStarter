@@ -1,11 +1,14 @@
-#include "FireStarterDefines.h"
+#include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
+inline float Execute(const FireStarterInstructions &instructions, FireStarterData data, float n)
 {
 #if 1
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        FireStarterInstruction instruction = instructions.i[i];
+    for (unsigned int index = 0; index < PROGRAM_INSTRUCTIONS; index++) {
+        FireStarterInstruction instruction = instructions.i[index];
+#if 0
+        instruction.Execute(data.Data(instruction.reg), n);
+#else
         switch (instruction.reg) {
         case 0:
             instruction.Execute(data.d[0], n);
@@ -104,13 +107,14 @@ inline float Program(const FireStarterInstructions& instructions, FireStarterDat
             instruction.Execute(data.d[31], n);
             break;
         }
+#endif
     }
 #else
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        instructions.i[i].Execute(data, n);
+    for (unsigned int index = 0; index < PROGRAM_INSTRUCTIONS; index++)
+        i[index].Execute(data, n);
 #endif
     return isnan(n) ? 0.0f : n;
-} // Program
+} // Execute
 
 GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation)
 {
@@ -167,7 +171,11 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(threadSeed) * result);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-                curResult = fmaxf(fabsf(Program(instructions, data, theta[i]) - target[i]), curResult);
+#if 1
+                curResult = fmaxf(fabsf(instructions.Execute(data, theta[i]) - target[i]), curResult);
+#else
+                curResult = fmaxf(fabsf(Execute(instructions, data, theta[i]) - target[i]), curResult);
+#endif
             if (curResult < result)
                 result = curResult;
             else

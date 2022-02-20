@@ -1,13 +1,6 @@
-#include "FireStarterDefines.h"
+#include "FireStarterResults.h"
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
-
-inline float Program(const FireStarterInstructions& instructions, FireStarterData data, float n)
-{
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        instructions.i[i].Execute(data, n);
-    return isnan(n) ? 0.0f : n;
-} // Program
 
 GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {
@@ -42,7 +35,7 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
             pixel.x = 255;
             pixel.y = 128;
         };
-        y = (int)(center + Program(instructions, bestResult.data[variation], theta) * yScale);
+        y = (int)(center + instructions.Execute(bestResult.data[variation], theta) * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = pixel.y = pixel.z = 255;

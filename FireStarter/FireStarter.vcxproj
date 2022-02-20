@@ -92,7 +92,10 @@
     <ClCompile Include="WindowsMain.cpp" />
     <ClInclude Include="CUDADefines.h" />
     <ClInclude Include="FireStarter.h" />
+    <ClInclude Include="FireStarterData.h" />
     <ClInclude Include="FireStarterDefines.h" />
+    <ClInclude Include="FireStarterInstructions.h" />
+    <ClInclude Include="FireStarterResults.h" />
     <ClInclude Include="FireStarterUtil.h" />
     <ClInclude Include="FireStarter_LoadState.h" />
     <ClInclude Include="FireStarter_Solution.h" />
