@@ -67,6 +67,8 @@ public:
     FireStarterProgram m_program;
     FireStarterResult m_result;
     double m_processingTime;
+    float m_bestResult;     // Best result for all threads and variations.
+    float m_worstResult;    // Worst result for all threads and variations.
 
     void SaveState(std::string& code);
     void SaveSolution(std::string& code);
@@ -91,7 +93,7 @@ public:
     CUfunction m_fireStarterFunction;
     std::string m_fireStarterCode;
     size_t m_resultsSize;
-    unsigned long long m_programGeneration;
+    unsigned int m_programGeneration;
     unsigned int m_unitIndex;
     unsigned int m_seed;
     volatile bool m_quit;
@@ -99,10 +101,10 @@ public:
     void GenerateProgram(void);
     void InitResults(void);
     void FreeResults(void);
-    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
-    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation);
+    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned int generation);
+    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned int generation);
     void ExecuteProgram(void);
-    float UpdateProgram(FireStarterState* &bestState, unsigned long long* &generation);
+    void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
     void InitUnit(void);
     void FinishUnit(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
@@ -128,14 +130,14 @@ public:
     std::vector<FireStarterUnit*> m_units;
     FrameBuffer m_buffer;
     char m_statusString[1024];
-    unsigned long long m_generation;
-    unsigned long long m_bestGeneration;
+    unsigned int m_generation;
+    unsigned int m_bestGeneration;
     float m_bestResult;
     float m_worstResult;
     void* m_window;
     unsigned int m_seed;
-    unsigned long m_width;
-    unsigned long m_height;
+    unsigned int m_width;
+    unsigned int m_height;
     bool m_controlUpdate;
     volatile bool m_bufferUpdate;
     volatile bool m_quitControlThread;
@@ -153,11 +155,11 @@ public:
     void SaveBestState(void);
     void SaveSolution(void);
     void DrawGraph(unsigned int variation);
-    void RenderImage(unsigned long width, unsigned long height, const unsigned char* pixels);
+    void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void RenderStatus(void);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
-    bool Init(void* window, unsigned long width, unsigned long height);
+    bool Init(void* window, unsigned int width, unsigned int height);
     void Quit(void);
     FireStarter(void);
     ~FireStarter(void);

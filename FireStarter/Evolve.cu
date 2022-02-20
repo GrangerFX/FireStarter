@@ -17,22 +17,27 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             instructions.i[i].Random(i, memberSeed);
         oldResult = START_RESULT;
-    } else {
+    } else
         // Later generations randomize one instruction.
         instructions = oldResults->results[member].instructions;
-        unsigned int i = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
-        instructions.i[i].Random(i, memberSeed);
-        oldResult = oldResults->results[member].maxResult;
-    }
+
+    unsigned int oldIndex = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
+    FireStarterInstruction oldInstruction = instructions.i[oldIndex];
+    instructions.i[oldIndex].Random(oldIndex, memberSeed);
+    oldResult = oldResults->results[member].maxResult;
 
     // Evolve the program data for each variation.
     GPU_SHARED FireStarterData threadData[BLOCK_THREADS];
     FireStarterData& data = threadData[thread];
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
-        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-            data.d[i] = RANDOMFACTOR(threadSeed);
         float result = START_RESULT;
+        if (generation) {
+            data = oldResults->results[member].data[v];
+        } else {
+            for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+                data.d[i] = RANDOMFACTOR(threadSeed);
+        }
         if (maxResult <= oldResult) {
             for (unsigned int p = 0; p < iterations; p++) {
                 unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
@@ -77,7 +82,11 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             // Save the improved results.
             newResults->results[member].instructions = instructions;
             newResults->results[member].maxResult = maxResult;
+            newResults->results[member].test = member;
         } else {
+            // Restore the old instruction.
+            instructions.i[oldIndex] = oldInstruction;
+
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of members.
             unsigned int bestIndex = member;
@@ -91,6 +100,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 }
             }
             newResults->results[member] = oldResults->results[bestIndex];
+            newResults->results[member].test = bestIndex;
         }
     }
 } // Evolve
