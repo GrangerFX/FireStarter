@@ -240,7 +240,7 @@ void FireStarterState::SaveState(std::string& code)
     }
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
     code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
-     code += "} // LoadState\r\n";
+    code += "} // LoadState\r\n";
 } // SaveState
 
 FireStarterState::FireStarterState(void)
@@ -265,9 +265,6 @@ void FireStarterUnit::GenerateProgram(void)
         m_fireStarterFunction = FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule, "Optimize");
 #endif
     }
-
-    // Increment the unit generation counter.
-    m_unitGeneration++;
 } // GenerateProgram
 
 void FireStarterUnit::InitResults(void)
@@ -289,6 +286,7 @@ void FireStarterUnit::InitResults(void)
 
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     LoadProgram(m_curState.m_program);
+    m_curState.m_result.instructions = m_curState.m_program.m_instructions;
 #endif
     GenerateProgram();
 
@@ -409,6 +407,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
         }
     }
     m_curState.m_result = m_hostResults0->results[maxIndex];
+    m_curState.m_result.instructions = m_curState.m_program.m_instructions;
+    m_curState.m_result.maxResult = maxResult;
 } // OptimizeGenerations
 
 void FireStarterUnit::ExecuteProgram(void)
@@ -417,7 +417,7 @@ void FireStarterUnit::ExecuteProgram(void)
 
     // Run the next generation on the GPU.
     m_curState = m_bestState;
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVES
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     // Evolve the program instructions.
     EvolveGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
@@ -426,17 +426,19 @@ void FireStarterUnit::ExecuteProgram(void)
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
     m_programGeneration += PROGRAM_ITERATIONS;
+    m_curState.m_processingTime = m_timer.Duration();
     if (m_curState.m_result.maxResult < m_bestState.m_result.maxResult) {
         m_bestState = m_curState;
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
         m_bestState.m_program.LoadInstructions(m_bestState.m_result.instructions);
+#endif
     }
-    m_curState.m_processingTime = m_timer.Duration();
 } // ExecuteProgram
 
 float FireStarterUnit::UpdateProgram(FireStarterState* &bestState, unsigned long long* &generation)
 {
     bestState = &m_bestState;
-    generation = &m_unitGeneration;
+    generation = &m_programGeneration;
     return m_bestState.m_result.maxResult;
 } // Update
 
@@ -477,7 +479,6 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const 
     m_fireStarterModule = nullptr;
     m_fireStarterFunction = nullptr;
     m_programGeneration = 0;
-    m_unitGeneration = 0;
     m_quit = false;
 } // FireStarterUnit
 

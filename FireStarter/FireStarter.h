@@ -91,7 +91,6 @@ public:
     std::string m_fireStarterCode;
     size_t m_resultsSize;
     unsigned long long m_programGeneration;
-    unsigned long long m_unitGeneration;
     unsigned int m_unitIndex;
     unsigned int m_seed;
     volatile bool m_quit;
