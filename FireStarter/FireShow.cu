@@ -27,8 +27,8 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
         FireStarterInstructions instructions(bestResult.instructions);
         FireStarterData data(bestResult.data[variation]);
         float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
-        float center = bufferHeight * 0.66f;
         float target = Target(theta, variation);
+        float center = bufferHeight * 0.66f;
         int y = (int)(center + target * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);

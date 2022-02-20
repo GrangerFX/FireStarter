@@ -312,7 +312,7 @@ void FireStarterUnit::FreeResults(void)
 void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation)
 {
     // Launch the calculation kernel
-    unsigned int threadsPerBlock = EVOLVE_THREADS;  // Same as the threads per CUDA core.
+    unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     unsigned int blocksPerGrid = population;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -356,7 +356,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
 void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned long long generation)
 {
     // Launch the calculation kernel
-    unsigned int threadsPerBlock = 32;  // Same as the threads per CUDA core.
+    unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     unsigned int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);

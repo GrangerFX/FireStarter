@@ -26,7 +26,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     }
 
     // Evolve the program data for each variation.
-    GPU_SHARED FireStarterData threadData[EVOLVE_THREADS];
+    GPU_SHARED FireStarterData threadData[BLOCK_THREADS];
     FireStarterData& data = threadData[thread];
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
@@ -51,13 +51,13 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         }
 
         // Find the best result among all the warp threads.
-        GPU_SHARED float threadResults[EVOLVE_THREADS];
+        GPU_SHARED float threadResults[BLOCK_THREADS];
         threadResults[thread] = result;
 
         GPU_SYNCTHREADS();
         unsigned int minIndex = 0;
         float minResult = threadResults[0];
-        for (int i = 1; i < EVOLVE_THREADS; i++) {
+        for (int i = 1; i < BLOCK_THREADS; i++) {
             if (threadResults[i] < minResult) {
                 minIndex = i;
                 minResult = threadResults[i];
