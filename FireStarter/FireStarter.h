@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -66,12 +66,13 @@ class FireStarterState {
 public:
     FireStarterProgram m_program;
     FireStarterResult m_result;
-    double m_processingTime;
+    float m_processingTime;
     float m_bestResult;     // Best result for all threads and variations.
     float m_worstResult;    // Worst result for all threads and variations.
 
     void SaveState(std::string& code);
     void SaveSolution(std::string& code);
+    void OptimizeData(void);
     FireStarterState(void);
 }; // class FireStarterState;
 
@@ -142,15 +143,14 @@ public:
     volatile bool m_bufferUpdate;
     volatile bool m_quitControlThread;
 
-    static bool LoadCode(const std::string& filePath, std::string& code);
     static void SaveCode(const std::string& filePath, const std::string& code);
+    static bool LoadCode(const std::string& filePath, std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
     static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
     void BuildData(std::string& code);
     static CUfunction CompileProgram(const std::string& program, CUmodule& cuda_module, const char* functionName);
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
-    void SaveFireStarterCode(void);
     bool LoadFireShowCode(void);
     void SaveBestState(void);
     void SaveSolution(void);

@@ -131,6 +131,7 @@ typedef struct FireStarterInstructions {
     inline float Execute(FireStarterData data, float n) const
     {
 #if 1
+        // About 25% faster but more restrictive.
         for (unsigned int index = 0; index < PROGRAM_INSTRUCTIONS; index++) {
             const FireStarterInstruction instruction = i[index];
             switch (instruction.reg) {
@@ -233,8 +234,11 @@ typedef struct FireStarterInstructions {
             }
         }
 #else
-        for (unsigned int index = 0; index < PROGRAM_INSTRUCTIONS; index++)
-            i[index].Execute(data, n);
+        // More general but 25% slower.
+        for (unsigned int index = 0; index < PROGRAM_INSTRUCTIONS; index++) {
+            const FireStarterInstruction instruction = i[index];
+            instruction.Execute(data.d[instruction.reg], n);
+        }
 #endif
         return isnan(n) ? 0.0f : n;
     } // Execute

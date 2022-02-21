@@ -27,7 +27,7 @@ void FireStarterProgram::OptimizeRegisters(void)
     }
     m_dataSize = (unsigned int)m_registers.size();
 
-    // Optimize the registers based on the ones in use at an point in the code.
+    // Optimize the registers based on the ones in use at any point in the code.
     std::vector<unsigned int> freeRegisters;
     unsigned int numActiveRegisters = 0;
     m_maxRegisters = 0;
@@ -53,7 +53,6 @@ void FireStarterProgram::OptimizeRegisters(void)
 void FireStarterProgram::LoadInstructions(FireStarterInstructions instructions)
 {
     m_instructions = instructions;
-    OptimizeRegisters();
 } // LoadInstructions
 
 void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
@@ -230,7 +229,6 @@ void FireStarterState::SaveState(std::string& code)
     m_program.SaveProgram(code);
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
-    code += Format("    LoadProgram(state.m_program);\r\n");
     code += "\r\n";
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
@@ -238,14 +236,35 @@ void FireStarterState::SaveState(std::string& code)
         code += Format("    state.m_result.minResult[%d] = %ff;\r\n", v, m_result.minResult[v]);
         code += "\r\n";
     }
+    code += "    LoadProgram(state.m_program);\r\n";
+    code += "    state.m_program.OptimizeRegisters();\r\n";
+    code += "    state.OptimizeData();\r\n";
+    code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
+    code += "\r\n";
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
-    code += Format("    state.m_processingTime = %f;\r\n", m_processingTime);
+    code += Format("    state.m_result.test = %u;\r\n", m_result.test);
+    code += Format("    state.m_processingTime = %ff;\r\n", m_processingTime);
+    code += Format("    state.m_bestResult = %ff;\r\n", m_bestResult);
+    code += Format("    state.m_worstResult = %ff;\r\n", m_worstResult);
     code += "} // LoadState\r\n";
 } // SaveState
 
+void FireStarterState::OptimizeData(void)
+{
+    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+        FireStarterData& data = m_result.data[v];
+        FireStarterData optimizedData(data);
+        for (unsigned int i = 0; i < m_program.m_dataSize; i++)
+            optimizedData.d[i] = data.d[m_program.m_registers[i].dataIndex];
+        for (unsigned int i = m_program.m_dataSize; i < PROGRAM_INSTRUCTIONS; i++)
+            optimizedData.d[i] = 0.0f;
+        m_result.data[v] = optimizedData;
+    }
+} // OptimizeData
+
 FireStarterState::FireStarterState(void)
 {
-    m_processingTime = 0.0;
+    m_processingTime = 0.0f;
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             m_result.data[v].d[i] = 1.0f;
@@ -262,7 +281,13 @@ void FireStarterUnit::GenerateProgram(void)
     if (!m_fireStarterFunction) {
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
         m_fireStarterFunction = FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule, "Evolve");
-#else
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+        // Update the Evaluate funtion.
+        std::string evaluateCode;
+        m_curState.m_program.GenerateEvaluate(evaluateCode);
+        FireStarter::UpdateProgram(m_fireStarterCode, evaluateCode, EVALUATE_CODE);
+        
         // Compile the new code.
         m_fireStarterFunction = FireStarter::CompileProgram(m_fireStarterCode, m_fireStarterModule, "Optimize");
 #endif
@@ -287,12 +312,12 @@ void FireStarterUnit::InitResults(void)
     m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
 
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
-    LoadProgram(m_curState.m_program);
-    m_curState.m_result.instructions = m_curState.m_program.m_instructions;
+    LoadState(m_curState);
 #endif
     GenerateProgram();
 
     m_bestState = m_curState;
+    m_bestState.m_result.maxResult = START_RESULT;
 } // InitResults
 
 void FireStarterUnit::FreeResults(void)
@@ -409,6 +434,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
             } else if (curResult > worstResult)
                 worstResult = curResult;
         }
+        m_curState.m_result.data[v] = m_hostResults0->results[minIndex].data[v];
+        m_curState.m_result.minResult[v] = minResult;
 
         // Find the largest error of the best results.
         if (minResult > maxResult) {
@@ -416,10 +443,10 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
             maxIndex = minIndex;
         }
         bestResult = fminf(bestResult, minResult);
+        worstResult = fmaxf(worstResult, minResult);
     }
-    m_curState.m_result = m_hostResults0->results[maxIndex];
-    m_curState.m_result.instructions = m_curState.m_program.m_instructions;
     m_curState.m_result.maxResult = maxResult;
+    m_curState.m_result.test = 0;
     m_curState.m_bestResult = bestResult;
     m_curState.m_worstResult = worstResult;
 } // OptimizeGenerations
@@ -439,7 +466,7 @@ void FireStarterUnit::ExecuteProgram(void)
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
     m_programGeneration += PROGRAM_ITERATIONS;
-    m_curState.m_processingTime = m_timer.Duration();
+    m_curState.m_processingTime = (float)m_timer.Duration();
     if (m_curState.m_result.maxResult < m_bestState.m_result.maxResult) {
         m_bestState = m_curState;
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
@@ -624,25 +651,16 @@ bool FireStarter::LoadTargetCode(void)
 
 bool FireStarter::LoadFireStarterCode(void)
 {
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     if (!FireStarter::LoadCode("Evolve.cu", m_evolveCode))
         return false;
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     if (!FireStarter::LoadCode("Optimize.cu", m_optimizeCode))
         return false;
+#endif
     return true;
 } // LoadFireStarterCode
-
-void FireStarter::SaveFireStarterCode(void)
-{
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-    // Optimize the program data and registers.
-    m_bestEvaluateState.m_program.LoadInstructions(m_bestEvaluateState.m_result.instructions);
-    m_bestEvaluateState.m_program.GenerateEvaluate(m_bestEvaluateCode);
-
-    // Update the Evaluate funtion.
-    FireStarter::UpdateProgram(m_optimizeCode, m_bestEvaluateCode, EVALUATE_CODE);
-    FireStarter::SaveCode("Optimize.cu", m_optimizeCode);
-#endif
-} // SaveFireStarterCode
 
 bool FireStarter::LoadFireShowCode(void)
 {
@@ -692,7 +710,7 @@ void FireStarter::SaveSolution(void)
 void FireStarter::DrawGraph(unsigned int variation)
 {
     // Launch the display kernel
-    int threadsPerBlock = 32;
+    int threadsPerBlock = BLOCK_THREADS;
     int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -811,9 +829,12 @@ void FireStarter::ControlThread(void)
 
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
-            SaveFireStarterCode();
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
             SaveBestState();
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
             SaveSolution();
+#endif
         }
 
         // Update the render status after every pass.

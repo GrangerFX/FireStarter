@@ -17,36 +17,43 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             instructions.i[i].Random(i, memberSeed);
         oldResult = START_RESULT;
-    } else
+    } else {
         // Later generations randomize one instruction.
         instructions = oldResults->results[member].instructions;
-
-    unsigned int oldIndex = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
-    FireStarterInstruction oldInstruction = instructions.i[oldIndex];
-    instructions.i[oldIndex].Random(oldIndex, memberSeed);
-    oldResult = oldResults->results[member].maxResult;
+        oldResult = oldResults->results[member].maxResult;
+    }
+    float maxResult = 0.0f;
+    
+    // Evolve a single program instruction for each generation.
+    FireStarterInstruction oldInstruction;
+    unsigned int oldIndex = RANDOMSEED(memberSeed) % (PROGRAM_INSTRUCTIONS * 4);
+    if (oldIndex < PROGRAM_INSTRUCTIONS) {
+        oldInstruction = instructions.i[oldIndex];
+        instructions.i[oldIndex].Random(oldIndex, memberSeed);
+    }
 
     // Evolve the program data for each variation.
     GPU_SHARED FireStarterData threadData[BLOCK_THREADS];
     FireStarterData& data = threadData[thread];
-    float maxResult = 0.0f;
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
         float result = START_RESULT;
-        if (generation) {
-            data = oldResults->results[member].data[v];
-        } else {
+        if (!generation)
             for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
-        }
+        else
+            data = oldResults->results[member].data[v];
         if (maxResult <= oldResult) {
+            const float sampleStep = (SAMPLE_MAX - SAMPLE_MIN) / SAMPLE_ITERATIONS;
             for (unsigned int p = 0; p < iterations; p++) {
                 unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
                 const float oldData = data.d[d];
                 data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(threadSeed) * result);
                 float curResult = 0.0f;
+                float sampleStart = SAMPLE_MIN + RANDOMNUM(threadSeed) * sampleStep;
+                float theta = sampleStart;
                 for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-                    const float theta = SAMPLE_MIN + i * ((SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1));
                     curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
+                    theta += sampleStep;
                 }
                 if (curResult < result)
                     result = curResult;
@@ -72,6 +79,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             newResults->results[member].data[v] = data;
             newResults->results[member].minResult[v] = minResult;
         }
+        minResult -= EVOLUTION_LUCK * RANDOMNUM(memberSeed) * minResult;
         maxResult = fmaxf(maxResult, minResult);
     }
 
@@ -85,7 +93,8 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             newResults->results[member].test = member;
         } else {
             // Restore the old instruction.
-            instructions.i[oldIndex] = oldInstruction;
+            if (oldIndex < PROGRAM_INSTRUCTIONS)
+                instructions.i[oldIndex] = oldInstruction;
 
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of members.

@@ -1,57 +1,10 @@
-#include "FireStarterDefines.h"
-#include "HashRandom.h"
+#include "FireStarterResults.h"
 #include "FireStarterTarget.h"
+#include "HashRandom.h"
 
 // EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-    n += data.d[0];
-    data.d[0] = n;
-    n += data.d[1];
-    data.d[1] = n;
-    n *= data.d[2];
-    data.d[2] = n;
-    n += data.d[2];
-    n += data.d[3];
-    data.d[3] = n;
-    n *= data.d[4];
-    data.d[4] = n;
-    n += data.d[5];
-    n += data.d[3];
-    data.d[3] = n;
-    n += fabsf(data.d[0]);
-    n *= data.d[1];
-    n += data.d[6];
-    n *= data.d[7];
-    data.d[7] = n;
-    n *= data.d[8];
-    n += data.d[9];
-    data.d[9] = n;
-    n *= data.d[10];
-    data.d[10] = n;
-    n += fabsf(data.d[4]);
-    data.d[4] = n;
-    n += data.d[11];
-    n += data.d[10];
-    n += data.d[9];
-    n *= data.d[4];
-    n *= data.d[12];
-    n *= data.d[3];
-    data.d[3] = n;
-    n += data.d[13];
-    data.d[13] = n;
-    n *= data.d[14];
-    data.d[14] = n;
-    n *= data.d[15];
-    n += data.d[16];
-    n *= data.d[13];
-    n += data.d[14];
-    data.d[14] = n;
-    n += data.d[14];
-    data.d[14] = n;
-    n *= data.d[14];
-    n += data.d[7];
-    n *= data.d[3];
     return isnan(n) ? 0.0f : n;
 } // Evaluate
 // END //
@@ -65,13 +18,16 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults *old
 
     FireStarterData data;
     float result, oldResult;
-    if (generation) {
-        data = oldResults->results[member].data[variation];
-        result = oldResult = oldResults->results[member].minResult[variation];
-    } else {
+#if 0
+    if (!generation) {
         for (int i = 0; i < dataSize; i++)
             data.d[i] = RANDOMFACTOR(seed);
         result = oldResult = START_RESULT;
+    } else
+#endif
+    {
+        data = oldResults->results[member].data[variation];
+        result = oldResult = oldResults->results[member].minResult[variation];
     }
 
     float theta[SAMPLE_ITERATIONS];
