@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -25,8 +25,6 @@
 #define PROGRAM_ITERATIONS 512
 #define PROGRAM_GENERATIONS 100 // Must be even!
 #endif
-
-#define PROGRAM_PRECISION 1024
 
 #define PROGRAM_UNITS 1
 #define PROGRAM_UNITS 1
@@ -102,8 +100,8 @@ public:
     void GenerateProgram(void);
     void InitResults(void);
     void FreeResults(void);
-    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned int generation);
-    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned int generation);
+    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void ExecuteProgram(void);
     void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
     void InitUnit(void);

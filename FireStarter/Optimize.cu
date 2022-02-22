@@ -9,7 +9,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults *oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation, const unsigned int variation)
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults *oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -52,11 +52,9 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults *old
     }
 
     // Calculate a more accure estimate of the result.
-    float precisionStep = (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
-    for (int i = 0; i < precision; i++) {
-        float theta = SAMPLE_MIN + i * precisionStep;
-        float target = Target(theta, variation);
-        result = fmaxf(fabsf(Evaluate(data, theta) - target), result);
+    for (int i = 0; i < PROGRAM_PRECISION; i++) {
+        float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
+        result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
     }
     if (generation && (result >= oldResult)) {
         // The genetic part of genetic programming and a major optimization:

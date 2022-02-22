@@ -1,7 +1,7 @@
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int generation)
+GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
     const unsigned int member = blockIdx.x;
     if (member >= population)
@@ -49,17 +49,24 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 const float oldData = data.d[d];
                 data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(threadSeed) * result);
                 float curResult = 0.0f;
-                float sampleStart = SAMPLE_MIN + RANDOMNUM(threadSeed) * sampleStep;
-                float theta = sampleStart;
                 for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+                    float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
                     curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
-                    theta += sampleStep;
                 }
                 if (curResult < result)
                     result = curResult;
                 else
                     data.d[d] = oldData;
             }
+
+#if 1
+            // Calculate a more accure estimate of the result.
+            result = 0.0f;
+            for (int i = 0; i < PROGRAM_PRECISION; i++) {
+                float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
+                result = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), result);
+            }
+#endif
         }
 
         // Find the best result among all the warp threads.
@@ -79,7 +86,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             newResults->results[member].data[v] = data;
             newResults->results[member].minResult[v] = minResult;
         }
-        minResult -= EVOLUTION_LUCK * RANDOMNUM(memberSeed) * minResult;
         maxResult = fmaxf(maxResult, minResult);
     }
 
@@ -103,13 +109,15 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
                 unsigned int index = RANDOMSEED(memberSeed) % population;
                 float curResult = oldResults->results[index].maxResult;
-                if (curResult < bestResult) {
-                    bestResult = curResult;
-                    bestIndex = index;
+                curResult -= EVOLUTION_LUCK * RANDOMNUM(memberSeed) * curResult;
+                if (curResult < oldResult) {
+                    newResults->results[member] = oldResults->results[index];
+                    newResults->results[member].test = index;
+                    break;
                 }
             }
-            newResults->results[member] = oldResults->results[bestIndex];
-            newResults->results[member].test = bestIndex;
+            newResults->results[member] = oldResults->results[member];
+            newResults->results[member].test = member;
         }
     }
 } // Evolve

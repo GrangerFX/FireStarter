@@ -336,7 +336,7 @@ void FireStarterUnit::FreeResults(void)
     m_hostResults1 = nullptr;
 } // FreeResults
 
-void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned int generation)
+void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -353,7 +353,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&population),
                         reinterpret_cast<void*>(&iterations),
-                        reinterpret_cast<void*>(&precision),
                         reinterpret_cast<void*>(&generation) };
 
         checkCUDAErrors(cuLaunchKernel(m_fireStarterFunction,
@@ -385,7 +384,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     m_curState.m_worstResult = maxResult;
 } // EvolveGenerations
 
-void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int precision, unsigned int generations, unsigned int generation)
+void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -408,7 +407,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
                             reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
                             reinterpret_cast<void*>(&population),
                             reinterpret_cast<void*>(&iterations),
-                            reinterpret_cast<void*>(&precision),
                             reinterpret_cast<void*>(&generation),
                             reinterpret_cast<void*>(&v) };
 
@@ -459,11 +457,11 @@ void FireStarterUnit::ExecuteProgram(void)
     m_curState = m_bestState;
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     // Evolve the program instructions.
-    EvolveGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
+    EvolveGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     // Evolve the program data.
-    OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_PRECISION, PROGRAM_GENERATIONS, m_programGeneration);
+    OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
     m_programGeneration += PROGRAM_ITERATIONS;
     m_curState.m_processingTime = (float)m_timer.Duration();
