@@ -5,7 +5,7 @@
 // EVALUATE //
 GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 {
-    return isnan(n) ? 0.0f : n;
+    return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
 

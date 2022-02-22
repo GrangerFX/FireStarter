@@ -108,7 +108,6 @@
     <None Include="FireShow.cu" />
     <None Include="Evolve.cu" />
     <None Include="Optimize.cu" />
-    <None Include="Optimize_Best.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

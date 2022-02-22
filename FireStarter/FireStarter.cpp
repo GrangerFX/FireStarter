@@ -78,7 +78,7 @@ void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
         if (!optimize || (i != m_registers[reg].instructionLast))
             code += Format("    data.d[%u] = n;\r\n", reg);
     }
-    code += "    return isnan(n) ? 0.0f : n;\r\n";
+    code += "    return isfinite(n) ? n : 0.0f;\r\n";
     code += "} // Evaluate\r\n";
 } // GenerateEvaluate
 

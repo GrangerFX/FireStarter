@@ -240,7 +240,7 @@ typedef struct FireStarterInstructions {
             instruction.Execute(data.d[instruction.reg], n);
         }
 #endif
-        return isnan(n) ? 0.0f : n;
+        return isfinite(n) ? n : 0.0f;
     } // Execute
 } FireStarterInstructions;
 // END //
