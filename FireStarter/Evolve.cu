@@ -14,18 +14,20 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     float oldResult;
     if (!generation) {
         // The first generation's instructions are random.
+        oldResult = START_RESULT;
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             instructions.i[i].Random(i, memberSeed);
-        oldResult = START_RESULT;
     } else {
         // Later generations randomize one instruction.
-        instructions = oldResults->results[member].instructions;
         oldResult = oldResults->results[member].maxResult;
-    }
+        instructions = oldResults->results[member].instructions;
 
-    // Evolve a single program instruction for each generation.
-    unsigned int index = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
-    instructions.i[index].Random(index, memberSeed);
+        // Evolve a single program instruction for each generation.
+        if (!thread) {
+            unsigned int index = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
+            instructions.i[index].Random(index, memberSeed);
+        }
+    }
 
     // Evolve the program data for each variation.
     GPU_SHARED FireStarterData threadData[BLOCK_THREADS];
