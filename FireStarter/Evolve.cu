@@ -22,19 +22,15 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         instructions = oldResults->results[member].instructions;
         oldResult = oldResults->results[member].maxResult;
     }
-    float maxResult = 0.0f;
 
     // Evolve a single program instruction for each generation.
-    FireStarterInstruction oldInstruction;
-    unsigned int oldIndex = RANDOMSEED(memberSeed) % (PROGRAM_INSTRUCTIONS * 4);
-    if (oldIndex < PROGRAM_INSTRUCTIONS) {
-        oldInstruction = instructions.i[oldIndex];
-        instructions.i[oldIndex].Random(oldIndex, memberSeed);
-    }
+    unsigned int index = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
+    instructions.i[index].Random(index, memberSeed);
 
     // Evolve the program data for each variation.
     GPU_SHARED FireStarterData threadData[BLOCK_THREADS];
     FireStarterData& data = threadData[thread];
+    float maxResult = 0.0f;
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
         float result = START_RESULT;
         if (!generation)
@@ -98,10 +94,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             newResults->results[member].maxResult = maxResult;
             newResults->results[member].test = member;
         } else {
-            // Restore the old instruction.
-            if (oldIndex < PROGRAM_INSTRUCTIONS)
-                instructions.i[oldIndex] = oldInstruction;
-
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of members.
             unsigned int bestIndex = member;
