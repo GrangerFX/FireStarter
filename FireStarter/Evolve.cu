@@ -23,7 +23,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         oldResult = oldResults->results[member].maxResult;
     }
     float maxResult = 0.0f;
-    
+
     // Evolve a single program instruction for each generation.
     FireStarterInstruction oldInstruction;
     unsigned int oldIndex = RANDOMSEED(memberSeed) % (PROGRAM_INSTRUCTIONS * 4);
@@ -43,15 +43,15 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         else
             data = oldResults->results[member].data[v];
         if (maxResult <= oldResult) {
-            const float sampleStep = (SAMPLE_MAX - SAMPLE_MIN) / SAMPLE_ITERATIONS;
             for (unsigned int p = 0; p < iterations; p++) {
                 unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
                 const float oldData = data.d[d];
                 data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(threadSeed) * result);
                 float curResult = 0.0f;
+                float theta = SAMPLE_MIN;
                 for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-                    float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
                     curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
+                    theta += (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
                 }
                 if (curResult < result)
                     result = curResult;
@@ -59,7 +59,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                     data.d[d] = oldData;
             }
 
-#if 1
+#if 0
             // Calculate a more accure estimate of the result.
             result = 0.0f;
             for (int i = 0; i < PROGRAM_PRECISION; i++) {
