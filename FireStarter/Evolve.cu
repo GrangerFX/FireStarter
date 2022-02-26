@@ -113,7 +113,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 if (curResult < oldResult) {
                     newResults->results[member] = oldResults->results[index];
                     newResults->results[member].test = index;
-                    break;
+                    return;
                 }
             }
             newResults->results[member] = oldResults->results[member];
