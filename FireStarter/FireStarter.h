@@ -21,8 +21,8 @@
 #define PROGRAM_ITERATIONS 512
 #define PROGRAM_GENERATIONS 10  // Must be even!
 #else
-#define PROGRAM_POPULATION 4352 * 2
-#define PROGRAM_ITERATIONS 512
+#define PROGRAM_POPULATION 4352
+#define PROGRAM_ITERATIONS 1024
 #define PROGRAM_GENERATIONS 100 // Must be even!
 #endif
 
@@ -63,14 +63,17 @@ public:
 class FireStarterState {
 public:
     FireStarterProgram m_program;
-    FireStarterResult m_result;
+    FireStarterEvolveResult m_result;
     float m_processingTime;
     float m_bestResult;     // Best result for all threads and variations.
     float m_worstResult;    // Worst result for all threads and variations.
 
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     void SaveState(std::string& code);
+#else
     void SaveSolution(std::string& code);
     void OptimizeData(void);
+#endif
     FireStarterState(void);
 }; // class FireStarterState;
 
@@ -79,10 +82,17 @@ public:
     SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
-    FireStarterResults* m_deviceResults0;
-    FireStarterResults* m_deviceResults1;
-    FireStarterResults* m_hostResults0;
-    FireStarterResults* m_hostResults1;
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
+    FireStarterEvolveResults* m_deviceResults0;
+    FireStarterEvolveResults* m_deviceResults1;
+    FireStarterEvolveResults* m_hostResults0;
+    FireStarterEvolveResults* m_hostResults1;
+#else
+    FireStarterOptimizeResults* m_deviceResults0;
+    FireStarterOptimizeResults* m_deviceResults1;
+    FireStarterOptimizeResults* m_hostResults0;
+    FireStarterOptimizeResults* m_hostResults1;
+#endif
     FireStarterState m_curState;
     FireStarterState m_bestState;
     CUdevice m_device;
@@ -100,8 +110,11 @@ public:
     void GenerateProgram(void);
     void InitResults(void);
     void FreeResults(void);
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+#else
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+#endif
     void ExecuteProgram(void);
     void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
     void UpdateCode(std::string& code);
@@ -151,9 +164,13 @@ public:
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
     bool LoadFireShowCode(void);
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     void SaveBestState(void);
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     void SaveBestCode(void);
     void SaveSolution(void);
+#endif
     void DrawGraph(unsigned int variation);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void RenderStatus(void);

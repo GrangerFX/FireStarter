@@ -5,6 +5,7 @@ typedef enum {
     Operation_multiply = 0,
     Operation_add,
     Operation_add_abs,
+    Operation_abs,
 } FireStarterOpcode;
 
 typedef enum {
@@ -32,7 +33,8 @@ const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
     Operation_multiply,
     Operation_add,
     Operation_multiply,
-    Operation_add_abs
+    Operation_abs
+//  Operation_add_abs
 };
 #else
 #define PROGRAM_MODE Program_multiply_add
@@ -44,20 +46,28 @@ const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
 };
 #endif
 
-inline void FireStarterOperation0(float& data, float& n)
+inline void FireStarterOperationMultiply(float& data, float& n)
 {
-    n = data *= n;
-} // FireStarterOperation0
+    n *= data;
+    data = n;
+} // FireStarterOperationMultiply
 
-inline void FireStarterOperation1(float& data, float& n)
+inline void FireStarterOperationAdd(float& data, float& n)
 {
-    n = data += n;
-} // FireStarterOperation1
+    n += data;
+    data = n;
+} // FireStarterOperationAdd
 
-inline void FireStarterOperation2(float& data, float& n)
+inline void FireStarterOperationAddAbs(float& data, float& n)
 {
-    data = n += fabsf(data);
-} // FireStarterOperation2
+    n += fabsf(data);
+    data = n;
+} // FireStarterOperationAddAbs
+
+inline void FireStarterOperationAbs(float& data, float& n)
+{
+    n = fabsf(n);
+} // FireStarterOperationAbs
 
 struct FireStarterInstruction {
     unsigned short op;
@@ -92,15 +102,18 @@ struct FireStarterInstruction {
     inline void Execute(float& d, float& n) const
     {
         switch (op) {
-        case 0:
-            FireStarterOperation0(d, n);
-            break;
-        case 1:
-            FireStarterOperation1(d, n);
-            break;
-        case 2:
-            FireStarterOperation2(d, n);
-            break;
+            case Operation_multiply:
+                FireStarterOperationMultiply(d, n);
+                break;
+            case Operation_add:
+                FireStarterOperationAdd(d, n);
+                break;
+            case Operation_add_abs:
+                FireStarterOperationAddAbs(d, n);
+                break;
+            case Operation_abs:
+                FireStarterOperationAbs(d, n);
+                break;
         }
     } // Execute
 

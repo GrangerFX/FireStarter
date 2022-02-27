@@ -7,8 +7,19 @@ typedef struct {
     float minResult[TARGET_VARIATIONS];
     float maxResult;
     unsigned int test;
-} FireStarterResult;
+} FireStarterEvolveResult;
 
 typedef struct {
-    FireStarterResult results[1];
-} FireStarterResults;
+    FireStarterEvolveResult results[1];
+} FireStarterEvolveResults;
+
+typedef struct {
+    FireStarterInstructions instructions;
+    FireStarterData data;
+    float minResult;
+    unsigned int test;
+} FireStarterOptimizeResult;
+
+typedef struct {
+    FireStarterOptimizeResult results[1];
+} FireStarterOptimizeResults;

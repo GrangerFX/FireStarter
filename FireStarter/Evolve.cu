@@ -1,7 +1,7 @@
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation)
+GPU_GLOBAL void Evolve(FireStarterEvolveResults* newResults, FireStarterEvolveResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
     const unsigned int member = blockIdx.x;
     if (member >= population)
