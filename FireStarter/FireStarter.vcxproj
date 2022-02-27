@@ -97,6 +97,7 @@
     <ClInclude Include="FireStarterInstructions.h" />
     <ClInclude Include="FireStarterResults.h" />
     <ClInclude Include="FireStarterUtil.h" />
+    <ClInclude Include="FireStarter_BestCode.h" />
     <ClInclude Include="FireStarter_LoadState.h" />
     <ClInclude Include="FireStarter_Solution.h" />
     <ClInclude Include="FireStarterTarget.h" />
