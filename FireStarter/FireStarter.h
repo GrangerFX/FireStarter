@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
-#include "FireStarterResults.h"
+#include "FireStarterEvolveResults.h"
+#include "FireStarterOptimizeResults.h"
 #include "FireStarterUtil.h"
 #include "SerialThread.h"
 #include "HashRandom.h"
@@ -26,7 +27,6 @@
 #define PROGRAM_GENERATIONS 100 // Must be even!
 #endif
 
-#define PROGRAM_UNITS 1
 #define PROGRAM_UNITS 1
 
 #define DATA_CODE           "// DATA //"

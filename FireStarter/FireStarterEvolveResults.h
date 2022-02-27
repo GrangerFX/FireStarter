@@ -12,14 +12,3 @@ typedef struct {
 typedef struct {
     FireStarterEvolveResult results[1];
 } FireStarterEvolveResults;
-
-typedef struct {
-    FireStarterInstructions instructions;
-    FireStarterData data;
-    float minResult;
-    unsigned int test;
-} FireStarterOptimizeResult;
-
-typedef struct {
-    FireStarterOptimizeResult results[1];
-} FireStarterOptimizeResults;
