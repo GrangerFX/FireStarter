@@ -479,6 +479,11 @@ void FireStarterUnit::UpdateProgram(FireStarterState* &bestState, unsigned int* 
     generation = &m_programGeneration;
 } // Update
 
+void FireStarterUnit::UpdateCode(std::string& code)
+{
+    code = m_fireStarterCode;
+} // UpdateCode
+
 void FireStarterUnit::InitUnit(void)
 {
     checkCUDAErrors(cuCtxCreate(&m_fireStarterContext, CU_CTX_SCHED_AUTO, m_device));
@@ -674,6 +679,11 @@ void FireStarter::SaveBestState(void)
     FireStarter::SaveCode("FireStarter_LoadState.h", bestStateCode);
 } // SaveBestState
 
+void FireStarter::SaveBestCode(void)
+{
+    FireStarter::SaveCode("FireStarter_BestCode.h", m_bestCode);
+} // SaveBestCode
+
 void FireStarter::SaveSolution(void)
 {
     time_t currentTime = time(nullptr);
@@ -814,6 +824,7 @@ void FireStarter::ControlThread(void)
                 unit->UpdateProgram(unitBestEvaluateState, unitGeneration);
                 float result = unitBestEvaluateState->m_result.maxResult;
                 if (result < m_bestResult) {
+                    unit->UpdateCode(m_bestCode);
                     m_bestResult = result;
                     m_worstResult = unitBestEvaluateState->m_worstResult;
                     m_bestEvaluateState = *unitBestEvaluateState;
@@ -831,6 +842,7 @@ void FireStarter::ControlThread(void)
             SaveBestState();
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+            SaveBestCode();
             SaveSolution();
 #endif
         }

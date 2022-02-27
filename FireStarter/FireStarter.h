@@ -8,7 +8,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -104,6 +104,7 @@ public:
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void ExecuteProgram(void);
     void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
+    void UpdateCode(std::string& code);
     void InitUnit(void);
     void FinishUnit(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
@@ -124,7 +125,7 @@ public:
     std::string m_evolveCode;
     std::string m_optimizeCode;
     std::string m_fireShowCode;
-    std::string m_bestEvaluateCode;
+    std::string m_bestCode;
     FireStarterState m_bestEvaluateState;
     std::vector<FireStarterUnit*> m_units;
     FrameBuffer m_buffer;
@@ -151,6 +152,7 @@ public:
     bool LoadFireStarterCode(void);
     bool LoadFireShowCode(void);
     void SaveBestState(void);
+    void SaveBestCode(void);
     void SaveSolution(void);
     void DrawGraph(unsigned int variation);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
