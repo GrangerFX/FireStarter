@@ -1,4 +1,4 @@
-#include "FireStarterResults.h"
+#include "FireStarterEvolveResults.h"
 #include "FireStarterTarget.h"
 
 GPU_GLOBAL void Evolve(FireStarterEvolveResults* newResults, FireStarterEvolveResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation)
