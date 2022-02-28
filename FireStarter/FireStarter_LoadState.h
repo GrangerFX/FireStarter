@@ -55,11 +55,12 @@ inline void LoadProgram(FireStarterProgram& program)
     program.m_programMode = (FireStarterProgramMode)1;
     program.m_dataSize = 32;
     program.m_maxRegisters = 32;
+
+    program.OptimizeRegisters();
 } // LoadProgram
 
 inline void LoadState(FireStarterState& state)
 {
-
     state.m_result.data[0].d[0] = -0.844783f;
     state.m_result.data[0].d[1] = 0.040919f;
     state.m_result.data[0].d[2] = -0.143389f;
@@ -196,14 +197,14 @@ inline void LoadState(FireStarterState& state)
     state.m_result.data[3].d[31] = 0.929017f;
     state.m_result.minResult[3] = 0.048954f;
 
-    LoadProgram(state.m_program);
-    state.m_program.OptimizeRegisters();
-    state.OptimizeData();
-    state.m_result.instructions = state.m_program.m_instructions;
-
     state.m_result.maxResult = 0.048954f;
     state.m_result.test = 1348;
+
     state.m_processingTime = 3.142311f;
     state.m_bestResult = 0.048954f;
     state.m_worstResult = 0.051098f;
+
+    LoadProgram(state.m_program);
+    state.m_result.instructions = state.m_program.m_instructions;
+    state.OptimizeData();
 } // LoadState

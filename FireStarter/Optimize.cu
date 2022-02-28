@@ -86,9 +86,8 @@ GPU_GLOBAL void Optimize(FireStarterOptimizeResults* newResults, FireStarterOpti
 
     float theta[SAMPLE_ITERATIONS];
     float target[SAMPLE_ITERATIONS];
-    float sampleStep = (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
     for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-        theta[i] = SAMPLE_MIN + i * sampleStep;
+        theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
         target[i] = Target(theta[i], variation);
     }
 

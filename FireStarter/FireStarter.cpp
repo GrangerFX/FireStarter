@@ -180,6 +180,8 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
     code += Format("    program.m_programMode = (FireStarterProgramMode)%u;\r\n", m_programMode);
     code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
     code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
+    code += "\r\n";
+    code += "    program.OptimizeRegisters();\r\n";
     if (species == 0xFFFFFFFF)
         code += "} // LoadProgram\r\n";
     else
@@ -234,23 +236,23 @@ void FireStarterState::SaveState(std::string& code)
     m_program.SaveProgram(code);
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
-    code += "\r\n";
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             code += Format("    state.m_result.data[%d].d[%u] = %ff;\r\n", v, i, m_result.data[v].d[i]);
         code += Format("    state.m_result.minResult[%d] = %ff;\r\n", v, m_result.minResult[v]);
         code += "\r\n";
     }
-    code += "    LoadProgram(state.m_program);\r\n";
-    code += "    state.m_program.OptimizeRegisters();\r\n";
-    code += "    state.OptimizeData();\r\n";
-    code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
-    code += "\r\n";
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
     code += Format("    state.m_result.test = %u;\r\n", m_result.test);
+    code += "\r\n";
     code += Format("    state.m_processingTime = %ff;\r\n", m_processingTime);
     code += Format("    state.m_bestResult = %ff;\r\n", m_bestResult);
     code += Format("    state.m_worstResult = %ff;\r\n", m_worstResult);
+    code += "\r\n";
+    code += "    LoadProgram(state.m_program);\r\n";
+    code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
+    code += "    state.OptimizeData();\r\n";
+    code += "\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 #else
@@ -270,6 +272,7 @@ void FireStarterState::SaveSolution(std::string& code)
 
 void FireStarterState::OptimizeData(void)
 {
+    // Optimize the use of data registers.
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
         FireStarterData& data = m_result.data[v];
         FireStarterData optimizedData(data);
@@ -278,6 +281,24 @@ void FireStarterState::OptimizeData(void)
         for (unsigned int i = m_program.m_dataSize; i < PROGRAM_INSTRUCTIONS; i++)
             optimizedData.d[i] = 0.0f;
         m_result.data[v] = optimizedData;
+    }
+
+    // Sort the variations largest first. This increases the chance that the generation can fail early.
+    for (int v = 0; v < TARGET_VARIATIONS; v++)
+        m_order[v] = v;
+    for (int v = 0; v < TARGET_VARIATIONS; v++) {
+        int maxIndex = v;
+        float max = m_result.minResult[m_order[v]];
+        for (int i = v + 1; i < TARGET_VARIATIONS; i++) {
+            float result = m_result.minResult[m_order[i]];
+            if (result > max) {
+                max = result;
+                maxIndex = i;
+            }
+        }
+        int swap = m_order[maxIndex];
+        m_order[maxIndex] = m_order[v];
+        m_order[v] = swap;
     }
 } // OptimizeData
 #endif
@@ -289,6 +310,7 @@ FireStarterState::FireStarterState(void)
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             m_result.data[v].d[i] = 1.0f;
         m_result.minResult[v] = START_RESULT;
+        m_order[v] = v;
     }
     m_result.maxResult = START_RESULT;
     m_bestResult = START_RESULT;
@@ -374,7 +396,7 @@ void FireStarterUnit::FreeResults(void)
 } // FreeResults
 
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
+void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int& generation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -420,7 +442,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     m_curState.m_worstResult = maxResult;
 } // EvolveGenerations
 #else
-void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
+void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int& generation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -431,8 +453,9 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
     float bestResult = START_RESULT;
     float worstResult = 0.0f;
     float maxResult = 0.0f;
-    unsigned int maxIndex = 0;
+    float lastResult = m_curState.m_result.maxResult;
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+        unsigned int variation = m_curState.m_order[v];
         for (unsigned int g = 0; g < generations; g++) {
             FireStarterOptimizeResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
             FireStarterOptimizeResults* oldResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
@@ -442,7 +465,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
                             reinterpret_cast<void*>(&population),
                             reinterpret_cast<void*>(&iterations),
                             reinterpret_cast<void*>(&generation),
-                            reinterpret_cast<void*>(&v) };
+                            reinterpret_cast<void*>(&variation) };
 
             checkCUDAErrors(cuLaunchKernel(m_fireStarterFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -466,16 +489,14 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
             } else if (curResult > worstResult)
                 worstResult = curResult;
         }
-        m_curState.m_result.data[v] = m_hostResults0->results[minIndex].data;
-        m_curState.m_result.minResult[v] = minResult;
+        m_curState.m_result.data[variation] = m_hostResults0->results[minIndex].data;
+        m_curState.m_result.minResult[variation] = minResult;
 
         // Find the largest error of the best results.
-        if (minResult > maxResult) {
-            maxResult = minResult;
-            maxIndex = minIndex;
-        }
         bestResult = fminf(bestResult, minResult);
-        worstResult = fmaxf(worstResult, minResult);
+        maxResult = fmaxf(maxResult, minResult);
+        if (minResult >= lastResult) // If the results were worse than the previous generation, fail immediately.
+            return;
     }
     m_curState.m_result.maxResult = maxResult;
     m_curState.m_result.test = 0;
@@ -498,7 +519,6 @@ void FireStarterUnit::ExecuteProgram(void)
     // Evolve the program data.
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
-    m_programGeneration += PROGRAM_ITERATIONS;
     m_curState.m_processingTime = (float)m_timer.Duration();
     if (m_curState.m_result.maxResult < m_bestState.m_result.maxResult) {
         m_bestState = m_curState;

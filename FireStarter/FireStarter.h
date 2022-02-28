@@ -64,6 +64,7 @@ class FireStarterState {
 public:
     FireStarterProgram m_program;
     FireStarterEvolveResult m_result;
+    unsigned int m_order[TARGET_VARIATIONS];
     float m_processingTime;
     float m_bestResult;     // Best result for all threads and variations.
     float m_worstResult;    // Worst result for all threads and variations.
@@ -71,6 +72,7 @@ public:
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     void SaveState(std::string& code);
 #else
+
     void SaveSolution(std::string& code);
     void OptimizeData(void);
 #endif
@@ -111,9 +113,9 @@ public:
     void InitResults(void);
     void FreeResults(void);
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int& generation);
 #else
-    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int& generation);
 #endif
     void ExecuteProgram(void);
     void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
