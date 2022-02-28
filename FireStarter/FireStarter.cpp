@@ -1028,7 +1028,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
         float error = DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, v);
         statusString += Format(" Solution %d = %f", v, error);
     }
-    RenderImage();
+    RenderImage(width, height, m_buffer.m_hostBase);
     SetWindowText((HWND)m_window, statusString.c_str());
     return true;
 #else

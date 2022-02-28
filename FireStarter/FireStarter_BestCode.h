@@ -78,7 +78,6 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n *= data.d[12];
     data.d[12] = n;
     n += data.d[13];
-    data.d[13] = n;
     n += data.d[14];
     data.d[14] = n;
     n *= data.d[15];
@@ -87,13 +86,13 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     data.d[12] = n;
     n *= data.d[14];
     data.d[14] = n;
-    n *= data.d[17];
-    n += data.d[18];
+    n += data.d[17];
+    n *= data.d[18];
     n = fabsf(n);
     n += data.d[7];
     n *= data.d[4];
-    n *= data.d[19];
     n *= data.d[20];
+    n *= data.d[21];
     n += data.d[6];
     n *= data.d[11];
     n *= data.d[14];
