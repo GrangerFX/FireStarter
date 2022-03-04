@@ -6,10 +6,13 @@
 #include "SerialThread.h"
 #include "HashRandom.h"
 
+// This tests FireStarter_TestState.h during optimization.
+#define FIRESTARTER_TEST 0
+
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"

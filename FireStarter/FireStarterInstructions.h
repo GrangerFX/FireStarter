@@ -16,7 +16,7 @@ typedef enum {
 #if 1
 #define PROGRAM_MODE Program_multiply_add_abs
 #define PROGRAM_RANDOM_INSTRUCTIONS 1
-#define PROGRAM_OPCODES 16
+#define PROGRAM_OPCODES 13
 const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
     Operation_multiply,
     Operation_add,
@@ -30,9 +30,6 @@ const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
     Operation_add,
     Operation_multiply,
     Operation_add,
-    Operation_multiply,
-    Operation_add,
-    Operation_multiply,
     Operation_abs
 //  Operation_add_abs
 };
@@ -89,6 +86,11 @@ struct FireStarterInstruction {
         reg = r;
     } // SetOperation
 
+    inline void SetOperation(unsigned int o)
+    {
+        op = (unsigned short)o;
+        reg = o >> 16;
+    } // SetOperation
     inline void SetOpcode(FireStarterOpcode o)
     {
         op = o;

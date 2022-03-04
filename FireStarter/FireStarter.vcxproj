@@ -101,6 +101,7 @@
     <ClInclude Include="FireStarter_LoadState.h" />
     <ClInclude Include="FireStarter_Solution.h" />
     <ClInclude Include="FireStarterTarget.h" />
+    <ClInclude Include="FireStarter_TestState.h" />
     <ClInclude Include="HashRandom.h" />
     <ClInclude Include="PrintF.h" />
     <ClInclude Include="SerialThread.h" />

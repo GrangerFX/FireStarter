@@ -1,7 +1,11 @@
 #include "FireStarter.h"
 #include "FireStarterUtil.h"
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+#if FIRESTARTER_TEST
+#include "FireStarter_TestState.h"
+#else
 #include "FireStarter_LoadState.h"
+#endif
 #endif
 #include <iomanip>
 #include <fstream>
