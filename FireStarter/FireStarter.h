@@ -6,28 +6,11 @@
 #include "SerialThread.h"
 #include "HashRandom.h"
 
-#define FIRESTARTER_EVOLVE   0
-#define FIRESTARTER_OPTIMIZE 1
-#define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
-
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
 #else
 #include "FireStarterTarget.h"
 #endif
-
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-#define PROGRAM_POPULATION 4352
-#define PROGRAM_ITERATIONS 512
-#define PROGRAM_GENERATIONS 10  // Must be even!
-#else
-#define PROGRAM_POPULATION 4352
-#define PROGRAM_ITERATIONS 1024
-#define PROGRAM_GENERATIONS 100 // Must be even!
-#endif
-
-#define PROGRAM_UNITS 1
 
 #define DATA_CODE           "// DATA //"
 #define INSTRUCTIONS_CODE   "// INSTRUCTIONS //"
