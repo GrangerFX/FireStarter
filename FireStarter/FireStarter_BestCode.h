@@ -63,43 +63,44 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
     n += data.d[0];
     data.d[0] = n;
     n = fabsf(n);
+    data.d[3] = n;
+    n += data.d[3];
     n += data.d[4];
-    n += data.d[5];
+    data.d[4] = n;
+    n *= data.d[5];
     data.d[5] = n;
-    n *= data.d[6];
+    n += data.d[6];
     data.d[6] = n;
     n += data.d[7];
-    n += data.d[8];
+    data.d[7] = n;
+    n *= data.d[8];
     data.d[8] = n;
-    n *= data.d[9];
+    n += data.d[4];
+    n += data.d[9];
     data.d[9] = n;
-    n += data.d[5];
-    data.d[5] = n;
-    n += data.d[10];
     n = fabsf(n);
+    n += data.d[11];
+    data.d[11] = n;
     n += data.d[12];
     data.d[12] = n;
-    n += data.d[13];
-    data.d[13] = n;
-    n *= data.d[6];
-    n *= data.d[14];
-    data.d[14] = n;
-    n *= data.d[12];
-    n += data.d[15];
-    data.d[15] = n;
-    n *= data.d[15];
     n *= data.d[5];
-    n += data.d[16];
-    n = fabsf(n);
-    data.d[8] = n;
+    n *= data.d[13];
+    n *= data.d[11];
     n += data.d[14];
-    n += data.d[8];
+    data.d[14] = n;
+    n *= data.d[14];
+    n *= data.d[15];
+    data.d[15] = n;
+    n = fabsf(n);
+    n *= data.d[16];
+    n += data.d[9];
+    n += data.d[7];
     n *= data.d[17];
     n += data.d[0];
-    n *= data.d[9];
+    n *= data.d[8];
     n *= data.d[2];
-    n *= data.d[18];
-    n += data.d[13];
+    n *= data.d[15];
+    n += data.d[12];
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
@@ -116,17 +117,19 @@ GPU_GLOBAL void Optimize(FireStarterOptimizeResults* newResults, FireStarterOpti
     float result, oldResult;
 #if PROGRAM_TEST_EVALUATE
     const unsigned int dataSize = 21; // To match the Evaluate code above.
+#else
+    const unsigned int dataSize = theDataSize;
+#endif
+#if PROGRAM_RANDOMIZE
     if (!generation) {
         for (int i = 0; i < dataSize; i++)
             data.d[i] = RANDOMFACTOR(seed);
         result = oldResult = START_RESULT;
     } else
-#else
-    const unsigned int dataSize = theDataSize;
 #endif
     {
-        data = oldResults->results[member].data;
-        result = oldResult = oldResults->results[member].minResult;
+        data = oldResults->results[member].data[variation];
+        result = oldResult = oldResults->results[member].minResult[variation];
     }
 
     float theta[SAMPLE_ITERATIONS];
@@ -161,15 +164,15 @@ GPU_GLOBAL void Optimize(FireStarterOptimizeResults* newResults, FireStarterOpti
         float bestResult = oldResult;
         for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
             unsigned int index = RANDOMSEED(seed) % population;
-            float curResult = oldResults->results[index].minResult;
+            float curResult = oldResults->results[index].minResult[variation];
             if (curResult < bestResult) {
                 bestResult = curResult;
                 bestIndex = index;
             }
         }
-        data = oldResults->results[bestIndex].data;
+        data = oldResults->results[bestIndex].data[variation];
         result = START_RESULT;
     }
-    newResults->results[member].data = data;
-    newResults->results[member].minResult = result;
+    newResults->results[member].data[variation] = data;
+    newResults->results[member].minResult[variation] = result;
 } // Optimize

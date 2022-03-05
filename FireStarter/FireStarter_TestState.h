@@ -200,7 +200,7 @@ inline void LoadState(FireStarterState& state)
     state.m_result.maxResult = 0.037974f;
     state.m_result.test = 0;
 
-    state.m_processingTime = 0.323546;
+    state.m_processingTime = 0.323546f;
     state.m_bestResult = 0.037974f;
     state.m_worstResult = 0.037974f;
 

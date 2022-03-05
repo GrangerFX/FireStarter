@@ -2,8 +2,9 @@
 #include "FireStarterData.h"
 
 typedef struct {
-    FireStarterData data;
-    float minResult;
+    FireStarterData data[TARGET_VARIATIONS];
+    float minResult[TARGET_VARIATIONS];
+    float maxResult;
     unsigned int test;
 } FireStarterOptimizeResult;
 

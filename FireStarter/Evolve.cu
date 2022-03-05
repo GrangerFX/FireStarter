@@ -57,7 +57,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolveResults* newResults, FireStarterEvolveRe
                     data.d[d] = oldData;
             }
 
-#if 0
+#if 1
             // Calculate a more accure estimate of the result.
             result = 0.0f;
             for (int i = 0; i < PROGRAM_PRECISION; i++) {

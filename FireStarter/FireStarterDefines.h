@@ -5,6 +5,8 @@
 #define PROGRAM_INSTRUCTIONS 32
 #define PROGRAM_PRECISION 1024
 #define PROGRAM_TEST_EVALUATE 0
+#define PROGRAM_TEST_OPTIMIZE 0
+#define PROGRAM_RANDOMIZE 1
 #define TARGET_VARIATIONS 4
 #define BLOCK_THREADS 32    // Number of threads per evolution member. Same as the number of threads in a warp.
 

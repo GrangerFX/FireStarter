@@ -6,9 +6,6 @@
 #include "SerialThread.h"
 #include "HashRandom.h"
 
-// This tests FireStarter_TestState.h during optimization.
-#define FIRESTARTER_TEST 0
-
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
@@ -78,6 +75,7 @@ public:
 
     void SaveSolution(std::string& code);
     void OptimizeData(void);
+    void SortVariations(void);
 #endif
     FireStarterState(void);
 }; // class FireStarterState;
@@ -116,9 +114,9 @@ public:
     void InitResults(void);
     void FreeResults(void);
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int& generation);
+    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
 #else
-    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int& generation);
+    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
 #endif
     void ExecuteProgram(void);
     void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
@@ -176,7 +174,7 @@ public:
     void SaveBestCode(void);
     void SaveSolution(void);
 #endif
-    void DrawGraph(unsigned int variation);
+    void FireShow(void);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void RenderStatus(void);
     void ControlThread(void);

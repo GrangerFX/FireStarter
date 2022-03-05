@@ -1,7 +1,7 @@
 #include "FireStarter.h"
 #include "FireStarterUtil.h"
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
-#if FIRESTARTER_TEST
+#if PROGRAM_TEST_OPTIMIZE
 #include "FireStarter_TestState.h"
 #else
 #include "FireStarter_LoadState.h"
@@ -256,7 +256,6 @@ void FireStarterState::SaveState(std::string& code)
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
     code += "    state.OptimizeData();\r\n";
-    code += "\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 #else
@@ -270,7 +269,6 @@ void FireStarterState::SaveSolution(std::string& code)
         m_program.GenerateSolution(code, m_result.data[v]);
         code += "    return n;\r\n";
         code += Format("} // Solution%d\r\n", v);
-        code += "\r\n";
     }
 } // SaveSolution
 
@@ -286,7 +284,10 @@ void FireStarterState::OptimizeData(void)
             optimizedData.d[i] = 0.0f;
         m_result.data[v] = optimizedData;
     }
+} // OptimizeData
 
+void FireStarterState::SortVariations(void)
+{
     // Sort the variations largest first. This increases the chance that the generation can fail early.
     for (int v = 0; v < TARGET_VARIATIONS; v++)
         m_order[v] = v;
@@ -304,7 +305,7 @@ void FireStarterState::OptimizeData(void)
         m_order[maxIndex] = m_order[v];
         m_order[v] = swap;
     }
-} // OptimizeData
+} // SortVariations
 #endif
 
 FireStarterState::FireStarterState(void)
@@ -380,7 +381,6 @@ void FireStarterUnit::InitResults(void)
     GenerateProgram();
 
     m_bestState = m_curState;
-    m_bestState.m_result.maxResult = START_RESULT;
 } // InitResults
 
 void FireStarterUnit::FreeResults(void)
@@ -400,7 +400,7 @@ void FireStarterUnit::FreeResults(void)
 } // FreeResults
 
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int& generation)
+void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -411,11 +411,12 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     for (unsigned int g = 0; g < generations; g++) {
         FireStarterEvolveResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
         FireStarterEvolveResults* oldResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
+        unsigned int curGeneration = generation + g;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&population),
                         reinterpret_cast<void*>(&iterations),
-                        reinterpret_cast<void*>(&generation) };
+                        reinterpret_cast<void*>(&curGeneration) };
 
         checkCUDAErrors(cuLaunchKernel(m_fireStarterFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -423,7 +424,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
             0, m_fireStarterStream,                             // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
-        generation++;
     }
 
     // Get the best result.
@@ -446,29 +446,31 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     m_curState.m_worstResult = maxResult;
 } // EvolveGenerations
 #else
-void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int& generation)
+void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     unsigned int blocksPerGrid = (population + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
     float bestResult = START_RESULT;
     float worstResult = 0.0f;
     float maxResult = 0.0f;
     float lastResult = m_curState.m_result.maxResult;
+
+    m_curState.SortVariations();
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
         unsigned int variation = m_curState.m_order[v];
         for (unsigned int g = 0; g < generations; g++) {
             FireStarterOptimizeResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
             FireStarterOptimizeResults* oldResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
+            unsigned int curGeneration = generation + g;
             void* arr[] = { reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
                             reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
                             reinterpret_cast<void*>(&population),
                             reinterpret_cast<void*>(&iterations),
-                            reinterpret_cast<void*>(&generation),
+                            reinterpret_cast<void*>(&curGeneration),
                             reinterpret_cast<void*>(&variation) };
 
             checkCUDAErrors(cuLaunchKernel(m_fireStarterFunction,
@@ -477,30 +479,30 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
                 0, m_fireStarterStream,                             // shared mem, stream */
                 &arr[0],                                            // arguments */
                 0));
-            generation++;
+            checkCUDAErrors(cudaStreamSynchronize(m_fireStarterStream));
         }
 
         // Get the best result.
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_fireStarterStream));
         checkCUDAErrors(cudaStreamSynchronize(m_fireStarterStream));
-        float minResult = m_hostResults0->results[0].minResult;
+        float minResult = m_hostResults0->results[0].minResult[variation];
         unsigned int minIndex = 0;
         for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
-            float curResult = m_hostResults0->results[i].minResult;
+            float curResult = m_hostResults0->results[i].minResult[variation];
             if (curResult < minResult) {
                 minResult = curResult;
                 minIndex = i;
             } else if (curResult > worstResult)
                 worstResult = curResult;
         }
-        m_curState.m_result.data[variation] = m_hostResults0->results[minIndex].data;
+        if (generation && (minResult >= lastResult)) // If the results were worse than the previous generation, fail immediately.
+            return;
+        m_curState.m_result.data[variation] = m_hostResults0->results[minIndex].data[variation];
         m_curState.m_result.minResult[variation] = minResult;
 
         // Find the largest error of the best results.
         bestResult = fminf(bestResult, minResult);
         maxResult = fmaxf(maxResult, minResult);
-        if (minResult >= lastResult) // If the results were worse than the previous generation, fail immediately.
-            return;
     }
     m_curState.m_result.maxResult = maxResult;
     m_curState.m_result.test = 0;
@@ -523,6 +525,7 @@ void FireStarterUnit::ExecuteProgram(void)
     // Evolve the program data.
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
+    m_programGeneration += PROGRAM_GENERATIONS;
     m_curState.m_processingTime = (float)m_timer.Duration();
     if (m_curState.m_result.maxResult < m_bestState.m_result.maxResult) {
         m_bestState = m_curState;
@@ -778,27 +781,30 @@ void FireStarter::SaveSolution(void)
 } // SaveSolution
 #endif
 
-void FireStarter::DrawGraph(unsigned int variation)
+void FireStarter::FireShow(void)
 {
-    // Launch the display kernel
-    int threadsPerBlock = BLOCK_THREADS;
-    int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    for (unsigned int variation = 0; variation < TARGET_VARIATIONS; variation++) {
+        // Launch the display kernel
+        int threadsPerBlock = BLOCK_THREADS;
+        int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
+        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+        dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_result),
-                    reinterpret_cast<void*>(&m_buffer.m_deviceBase),
-                    reinterpret_cast<void*>(&m_buffer.m_width),
-                    reinterpret_cast<void*>(&m_buffer.m_height),
-                    reinterpret_cast<void*>(&variation) };
+        void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_result),
+                        reinterpret_cast<void*>(&m_buffer.m_deviceBase),
+                        reinterpret_cast<void*>(&m_buffer.m_width),
+                        reinterpret_cast<void*>(&m_buffer.m_height),
+                        reinterpret_cast<void*>(&variation) };
 
-    checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, m_fireShowStream,                                // shared mem, stream */
-        &arr[0],                                            // arguments */
-        0));
-} // DrawGraph
+        checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+            0, m_fireShowStream,                                // shared mem, stream */
+            &arr[0],                                            // arguments */
+            0));
+    }
+    checkCUDAErrors(cudaStreamSynchronize(m_fireShowStream));
+} // FireShow
 
 void FireStarter::RenderImage(unsigned int width, unsigned int height, const unsigned char *pixels)
 {
@@ -922,8 +928,7 @@ void FireStarter::ControlThread(void)
             m_buffer.Erase();
 
             // Draw the graphs for both variations.
-            for (unsigned int v = 0; v < TARGET_VARIATIONS; v++)
-                DrawGraph(v);
+            FireShow();
             m_controlUpdate = false;
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
             const unsigned char* bufferPixels = m_buffer.GetHost();

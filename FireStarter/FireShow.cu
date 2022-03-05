@@ -75,8 +75,6 @@ GPU_GLOBAL void FireShow(const FireStarterEvolveResult bestResult, uchar4 *buffe
         };
     }
     if (x < bufferWidth) {
-        const FireStarterInstructions instructions(bestResult.instructions);
-        FireStarterData data(bestResult.data[variation]);
         float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
         float target = Target(theta, variation);
         float center = bufferHeight * 0.66f;
@@ -89,7 +87,7 @@ GPU_GLOBAL void FireShow(const FireStarterEvolveResult bestResult, uchar4 *buffe
 #if PROGRAM_TEST_EVALUATE
         y = (int)(center + Evaluate(bestResult.data[variation], theta) * yScale);
 #else
-        y = (int)(center + instructions.Execute(bestResult.data[variation], theta) * yScale);
+        y = (int)(center + bestResult.instructions.Execute(bestResult.data[variation], theta) * yScale);
 #endif
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
