@@ -250,6 +250,7 @@ void FireStarterState::SaveSolution(std::string& code)
 {
     code += Format("// Precision = %f\r\n", m_result.maxResult);
     for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+        code += "\r\n";
         code += Format("// Solution%d precision = %f\r\n", v, m_result.minResult[v]);
         code += Format("inline float Solution%d(float n)\r\n", v);
         code += "{\r\n";
