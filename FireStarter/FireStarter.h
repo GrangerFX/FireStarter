@@ -9,7 +9,7 @@
 #define FIRESTARTER_EVOLVE   0
 #define FIRESTARTER_OPTIMIZE 1
 #define FIRESTARTER_SOLUTION 2
-#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
+#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
 
 #if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
@@ -69,41 +69,38 @@ public:
     float m_bestResult;     // Best result for all threads and variations.
     float m_worstResult;    // Worst result for all threads and variations.
 
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     void SaveState(std::string& code);
-#else
-
     void SaveSolution(std::string& code);
     void OptimizeData(void);
     void SortVariations(void);
-#endif
     FireStarterState(void);
 }; // class FireStarterState;
 
 class FireStarterUnit : public SerialThread {
 public:
+    class FireStarter* m_fireStarter;
     SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-    FireStarterEvolveResults* m_deviceResults0;
-    FireStarterEvolveResults* m_deviceResults1;
-    FireStarterEvolveResults* m_hostResults0;
-    FireStarterEvolveResults* m_hostResults1;
-#else
-    FireStarterOptimizeResults* m_deviceResults0;
-    FireStarterOptimizeResults* m_deviceResults1;
-    FireStarterOptimizeResults* m_hostResults0;
-    FireStarterOptimizeResults* m_hostResults1;
-#endif
+    FireStarterEvolveResults* m_deviceEvolveResults0;
+    FireStarterEvolveResults* m_deviceEvolveResults1;
+    FireStarterEvolveResults* m_hostEvolveResults0;
+    FireStarterEvolveResults* m_hostEvolveResults1;
+    FireStarterOptimizeResults* m_deviceOptimizeResults0;
+    FireStarterOptimizeResults* m_deviceOptimizeResults1;
+    FireStarterOptimizeResults* m_hostOptimizeResults0;
+    FireStarterOptimizeResults* m_hostOptimizeResults1;
     FireStarterState m_curState;
     FireStarterState m_bestState;
-    CUdevice m_device;
-    CUcontext m_fireStarterContext;
-    CUstream m_fireStarterStream;
-    CUmodule m_fireStarterModule;
-    CUfunction m_fireStarterFunction;
-    std::string m_fireStarterCode;
+    CUdevice m_unitDevice;
+    CUcontext m_unitContext;
+    CUstream m_unitStream;
+    CUmodule m_evolveModule;
+    CUmodule m_optimizeModule;
+    CUfunction m_evolveFunction;
+    CUfunction m_optimizeFunction;
+    std::string m_evolveCode;
+    std::string m_optimizeCode;
     size_t m_resultsSize;
     unsigned int m_programGeneration;
     unsigned int m_unitIndex;
@@ -113,17 +110,14 @@ public:
     void GenerateProgram(void);
     void InitResults(void);
     void FreeResults(void);
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-#else
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-#endif
     void ExecuteProgram(void);
     void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
     void UpdateCode(std::string& code);
     void InitUnit(void);
     void FinishUnit(void);
-    FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& fireStarterCode);
+    FireStarterUnit(unsigned int unitIndex, CUdevice device, class FireStarter *fireStarter);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
 

@@ -93,5 +93,14 @@ GPU_GLOBAL void FireShow(const FireStarterEvolveResult bestResult, uchar4 *buffe
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = pixel.y = pixel.z = 255;
         };
+        int i = x / 32;
+        if (i < PROGRAM_INSTRUCTIONS) {
+            y = (int)(center + bestResult.data[variation].d[i] * 10.0f);
+            if ((y >= 0) && (y < bufferHeight)) {
+                uchar4& pixel(bufferPixels[y * bufferWidth + x]);
+                pixel.x = pixel.y = 255;
+                pixel.z = 0;
+            }
+        }
     }
 } // FireShow

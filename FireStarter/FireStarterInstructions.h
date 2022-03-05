@@ -4,7 +4,6 @@
 typedef enum {
     Operation_multiply = 0,
     Operation_add,
-    Operation_add_abs,
     Operation_abs,
 } FireStarterOpcode;
 
@@ -31,7 +30,6 @@ const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
     Operation_multiply,
     Operation_add,
     Operation_abs
-//  Operation_add_abs
 };
 #else
 #define PROGRAM_MODE Program_multiply_add
@@ -54,12 +52,6 @@ inline void FireStarterOperationAdd(float& data, float& n)
     n += data;
     data = n;
 } // FireStarterOperationAdd
-
-inline void FireStarterOperationAddAbs(float& data, float& n)
-{
-    n += fabsf(data);
-    data = n;
-} // FireStarterOperationAddAbs
 
 inline void FireStarterOperationAbs(float& data, float& n)
 {
@@ -91,6 +83,7 @@ struct FireStarterInstruction {
         op = (unsigned short)o;
         reg = o >> 16;
     } // SetOperation
+
     inline void SetOpcode(FireStarterOpcode o)
     {
         op = o;
@@ -109,9 +102,6 @@ struct FireStarterInstruction {
                 break;
             case Operation_add:
                 FireStarterOperationAdd(d, n);
-                break;
-            case Operation_add_abs:
-                FireStarterOperationAddAbs(d, n);
                 break;
             case Operation_abs:
                 FireStarterOperationAbs(d, n);
