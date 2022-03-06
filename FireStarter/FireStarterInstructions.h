@@ -8,13 +8,264 @@ typedef enum {
 } FireStarterOpcode;
 
 typedef enum {
-    Program_multiply_add,
+    Program_multiply_add = 0,
     Program_multiply_add_abs,
 } FireStarterProgramMode;
 
-#if 0
+#define PROGRAM_MADD 1
+
+#if PROGRAM_MADD
+#define PROGRAM_MODE Program_multiply_add
+#define PROGRAM_OPCODES 2
+
+const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
+    Operation_multiply,
+    Operation_add,
+};
+
+// INSTRUCTIONS //
+typedef struct FireStarterInstructions {
+    unsigned int r[PROGRAM_INSTRUCTIONS];
+
+    inline FireStarterOpcode Opcode(unsigned int index) const
+    {
+        return (FireStarterOpcode)(index & 1);
+    } // Opcode
+
+    inline unsigned int Register(unsigned int index) const
+    {
+        return r[index];
+    } // Register
+
+    inline void SetRegister(unsigned int index, unsigned int reg = 0)
+    {
+        r[index] = reg;
+    } // SetOperation
+
+    inline void SetOperation(unsigned int index, unsigned int op = 0, unsigned int reg = 0)
+    {
+        r[index] = reg;
+    } // SetOperation
+
+    inline void SetRandom(unsigned int index, unsigned int& seed)
+    {
+        r[index] = (RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
+    } // SetRandom
+
+    inline float Execute(FireStarterData data, float n) const
+    {
+        unsigned int index = 0;
+        do {
+#if 1
+            switch (r[index++]) {
+                case 0:
+                    n = data.d[0] *= n;
+                    break;
+                case 1:
+                    n = data.d[1] *= n;
+                    break;
+                case 2:
+                    n = data.d[2] *= n;
+                    break;
+                case 3:
+                    n = data.d[3] *= n;
+                    break;
+                case 4:
+                    n = data.d[4] *= n;
+                    break;
+                case 5:
+                    n = data.d[5] *= n;
+                    break;
+                case 6:
+                    n = data.d[6] *= n;
+                    break;
+                case 7:
+                    n = data.d[7] *= n;
+                    break;
+                case 8:
+                    n = data.d[8] *= n;
+                    break;
+                case 9:
+                    n = data.d[9] *= n;
+                    break;
+                case 10:
+                    n = data.d[10] *= n;
+                    break;
+                case 11:
+                    n = data.d[11] *= n;
+                    break;
+                case 12:
+                    n = data.d[12] *= n;
+                    break;
+                case 13:
+                    n = data.d[13] *= n;
+                    break;
+                case 14:
+                    n = data.d[14] *= n;
+                    break;
+                case 15:
+                    n = data.d[15] *= n;
+                    break;
+                case 16:
+                    n = data.d[16] *= n;
+                    break;
+                case 17:
+                    n = data.d[17] *= n;
+                    break;
+                case 18:
+                    n = data.d[18] *= n;
+                    break;
+                case 19:
+                    n = data.d[19] *= n;
+                    break;
+                case 20:
+                    n = data.d[20] *= n;
+                    break;
+                case 21:
+                    n = data.d[21] *= n;
+                    break;
+                case 22:
+                    n = data.d[22] *= n;
+                    break;
+                case 23:
+                    n = data.d[23] *= n;
+                    break;
+                case 24:
+                    n = data.d[24] *= n;
+                    break;
+                case 25:
+                    n = data.d[25] *= n;
+                    break;
+                case 26:
+                    n = data.d[26] *= n;
+                    break;
+                case 27:
+                    n = data.d[27] *= n;
+                    break;
+                case 28:
+                    n = data.d[28] *= n;
+                    break;
+                case 29:
+                    n = data.d[29] *= n;
+                    break;
+                case 30:
+                    n = data.d[30] *= n;
+                    break;
+                case 31:
+                    n = data.d[31] *= n;
+                    break;
+            }
+            switch (r[index++]) {
+                case 0:
+                    n = data.d[0] += n;
+                    break;
+                case 1:
+                    n = data.d[1] += n;
+                    break;
+                case 2:
+                    n = data.d[2] += n;
+                    break;
+                case 3:
+                    n = data.d[3] += n;
+                    break;
+                case 4:
+                    n = data.d[4] += n;
+                    break;
+                case 5:
+                    n = data.d[5] += n;
+                    break;
+                case 6:
+                    n = data.d[6] += n;
+                    break;
+                case 7:
+                    n = data.d[7] += n;
+                    break;
+                case 8:
+                    n = data.d[8] += n;
+                    break;
+                case 9:
+                    n = data.d[9] += n;
+                    break;
+                case 10:
+                    n = data.d[10] += n;
+                    break;
+                case 11:
+                    n = data.d[11] += n;
+                    break;
+                case 12:
+                    n = data.d[12] += n;
+                    break;
+                case 13:
+                    n = data.d[13] += n;
+                    break;
+                case 14:
+                    n = data.d[14] += n;
+                    break;
+                case 15:
+                    n = data.d[15] += n;
+                    break;
+                case 16:
+                    n = data.d[16] += n;
+                    break;
+                case 17:
+                    n = data.d[17] += n;
+                    break;
+                case 18:
+                    n = data.d[18] += n;
+                    break;
+                case 19:
+                    n = data.d[19] += n;
+                    break;
+                case 20:
+                    n = data.d[20] += n;
+                    break;
+                case 21:
+                    n = data.d[21] += n;
+                    break;
+                case 22:
+                    n = data.d[22] += n;
+                    break;
+                case 23:
+                    n = data.d[23] += n;
+                    break;
+                case 24:
+                    n = data.d[24] += n;
+                    break;
+                case 25:
+                    n = data.d[25] += n;
+                    break;
+                case 26:
+                    n = data.d[26] += n;
+                    break;
+                case 27:
+                    n = data.d[27] += n;
+                    break;
+                case 28:
+                    n = data.d[28] += n;
+                    break;
+                case 29:
+                    n = data.d[29] += n;
+                    break;
+                case 30:
+                    n = data.d[30] += n;
+                    break;
+                case 31:
+                    n = data.d[31] += n;
+                    break;
+            }
+#else
+            n = data.d[r[index++]] *= n;
+            n = data.d[r[index++]] += n;
+#endif
+        } while (index < PROGRAM_INSTRUCTIONS);
+        return isfinite(n) ? n : 0.0f;
+    } // Execute
+} FireStarterInstructions;
+
+#else
+
+#if PROGRAM_VARIATIONS > 3
 #define PROGRAM_MODE Program_multiply_add_abs
-#define PROGRAM_RANDOM_INSTRUCTIONS 1
 #define PROGRAM_OPCODES 13
 const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
     Operation_multiply,
@@ -33,105 +284,68 @@ const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
 };
 #else
 #define PROGRAM_MODE Program_multiply_add
-#define PROGRAM_RANDOM_INSTRUCTIONS 0
 #define PROGRAM_OPCODES 2
 const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
     Operation_multiply,
-    Operation_add
+    Operation_add,
 };
 #endif
-
-inline void FireStarterOperationMultiply(float& data, float& n)
-{
-    n *= data;
-    data = n;
-} // FireStarterOperationMultiply
-
-inline void FireStarterOperationAdd(float& data, float& n)
-{
-    n += data;
-    data = n;
-} // FireStarterOperationAdd
-
-inline void FireStarterOperationAbs(float& data, float& n)
-{
-    n = fabsf(n);
-} // FireStarterOperationAbs
 
 struct FireStarterInstruction {
     unsigned short op;
     unsigned short reg;
 
-    inline FireStarterOpcode Opcode(void) const
-    {
-        return (FireStarterOpcode)op;
-    } // Opcode
-
-    inline unsigned int Register(void) const
-    {
-        return reg;
-    } // Register
-
-    inline void SetOperation(unsigned int o, unsigned int r)
-    {
-        op = o;
-        reg = r;
-    } // SetOperation
-
-    inline void SetOperation(unsigned int o)
-    {
-        op = (unsigned short)o;
-        reg = o >> 16;
-    } // SetOperation
-
-    inline void SetOpcode(FireStarterOpcode o)
-    {
-        op = o;
-    } // SetOpcode
-
-    inline void SetRegister(unsigned int r)
-    {
-        reg = r;
-    } // SetRegister
-
     inline void Execute(float& d, float& n) const
     {
         switch (op) {
             case Operation_multiply:
-                FireStarterOperationMultiply(d, n);
+                n = d *= n;
                 break;
             case Operation_add:
-                FireStarterOperationAdd(d, n);
+                n = d += n;
                 break;
             case Operation_abs:
-                FireStarterOperationAbs(d, n);
+                n = fabsf(n);
                 break;
         }
     } // Execute
 
-    inline void Random(unsigned int index, unsigned int& seed)
+    inline FireStarterInstruction(void)
     {
-#if PROGRAM_RANDOM_INSTRUCTIONS
-        SetOperation(fireStarterOpcodes[RANDOMSEED(seed) % PROGRAM_OPCODES], RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
-#else
-        SetOperation(fireStarterOpcodes[index % PROGRAM_OPCODES], RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
-#endif
-    } // Random
-
-    inline FireStarterInstruction(FireStarterOpcode o, unsigned int r = 0)
-    {
-        SetOperation(o, r);
-    } // FireStarterInstruction
-
-    inline FireStarterInstruction(unsigned int o = 0, unsigned int r = 0)
-    {
-        SetOperation(o, r);
+        op = 0;
+        reg = 0;
     } // FireStarterInstruction
 }; // struct FireStarterInstruction
 
 // INSTRUCTIONS //
 typedef struct FireStarterInstructions {
     FireStarterInstruction i[PROGRAM_INSTRUCTIONS];
+
+    inline FireStarterOpcode Opcode(unsigned int index) const
+    {
+        return (FireStarterOpcode)i[index].op;
+    } // Opcode
+
+    inline unsigned int Register(unsigned int index) const
+    {
+        return i[index].reg;
+    } // Register
+
+    inline void SetRegister(unsigned int index, unsigned int reg = 0)
+    {
+        i[index].reg = reg;
+    } // SetOperation
+
+    inline void SetOperation(unsigned int index, unsigned int op = 0, unsigned int reg = 0)
+    {
+        i[index].op = (FireStarterOpcode)op;
+        i[index].reg = reg;
+    } // SetOperation
+
+    inline void SetRandom(unsigned int index, unsigned int& seed)
+    {
+        SetOperation(index, fireStarterOpcodes[RANDOMSEED(seed) % PROGRAM_OPCODES], RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
+    } // SetRandom
 
     inline float Execute(FireStarterData data, float n) const
     {
@@ -248,4 +462,5 @@ typedef struct FireStarterInstructions {
         return isfinite(n) ? n : 0.0f;
     } // Execute
 } FireStarterInstructions;
+#endif
 // END //

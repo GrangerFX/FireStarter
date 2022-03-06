@@ -19,7 +19,7 @@ void FireStarterProgram::OptimizeRegisters(void)
     int dataRegisters[PROGRAM_INSTRUCTIONS];
     memset(dataRegisters, -1, sizeof(dataRegisters));
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        unsigned int reg = m_instructions.i[i].Register();
+        unsigned int reg = m_instructions.Register(i);
         int index = dataRegisters[reg];
         if (index == -1)  {
             index = (int)m_registers.size();
@@ -27,7 +27,7 @@ void FireStarterProgram::OptimizeRegisters(void)
             m_registers.push_back(FireStarterRegister(index, index, i, i));
         } else
             m_registers[index].instructionLast = i;
-        m_instructions.i[i].SetRegister(index);
+        m_instructions.SetRegister(i, index);
     }
     m_dataSize = (unsigned int)m_registers.size();
 
@@ -36,7 +36,7 @@ void FireStarterProgram::OptimizeRegisters(void)
     unsigned int numActiveRegisters = 0;
     m_maxRegisters = 0;
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        unsigned int reg = m_instructions.i[i].Register();
+        unsigned int reg = m_instructions.Register(i);
         FireStarterRegister& r = m_registers[reg];
         if (r.instructionLast > r.instructionFirst)
             if (r.instructionFirst == i) {
@@ -66,18 +66,20 @@ void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
     code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n)\r\n";
     code += "{\r\n";
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        FireStarterInstruction& instruction = m_instructions.i[i];
-        unsigned int reg = instruction.Register();
-        switch (instruction.Opcode()) {
+        FireStarterOpcode op = m_instructions.Opcode(i);
+        unsigned int reg = m_instructions.Register(i);
+        switch (op) {
             case Operation_multiply:
-                code += Format("    n *= data.d[%u];\r\n", reg);
-                if (!optimize || (i != m_registers[reg].instructionLast))
-                    code += Format("    data.d[%u] = n;\r\n", reg);
+                if (optimize && (i == m_registers[reg].instructionLast))
+                    code += Format("    n *= data.d[%u];\r\n", reg);
+                else
+                    code += Format("    n = data.d[%u] *= n;\r\n", reg);
                 break;
             case Operation_add:
-                code += Format("    n += data.d[%u];\r\n", reg);
-                if (!optimize || (i != m_registers[reg].instructionLast))
-                    code += Format("    data.d[%u] = n;\r\n", reg);
+                if (optimize && (i == m_registers[reg].instructionLast))
+                    code += Format("    n += data.d[%u];\r\n", reg);
+                else
+                    code += Format("    n = data.d[%u] += n;\r\n", reg);
                 break;
             case Operation_abs:
                 code += Format("    n = fabsf(n);\r\n");
@@ -102,47 +104,46 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
     code += "\r\n";
 
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        FireStarterInstruction& instruction = m_instructions.i[i];
-        unsigned int reg = instruction.Register();
+        FireStarterOpcode op = m_instructions.Opcode(i);
+        unsigned int reg = m_instructions.Register(i);
+        float f = data.d[reg];
+        FireStarterRegister& dataRegister = m_registers[reg];
+        unsigned int r = dataRegister.registerIndex;
         if (optimize) {
-            float f = data.d[reg];
-            FireStarterRegister& dataRegister = m_registers[reg];
-            unsigned int r = dataRegister.registerIndex;
-
-            switch (instruction.Opcode()) {
+            switch (op) {
                 case Operation_multiply:
                     if (i == dataRegister.instructionFirst)
                         code += Format("    n *= %.8ff;\r\n", f);
-                    else
+                    else if (i == dataRegister.instructionLast)
                         code += Format("    n *= r%u;\r\n", r);
-                    if (i < dataRegister.instructionLast)
-                        code += Format("    r%u = n;\r\n", r);
+                    else
+                        code += Format("    n = r%u *= n;\r\n", r);
                     break;
                 case Operation_add:
                     if (i == dataRegister.instructionFirst)
                         code += Format("    n += %.8ff;\r\n", f);
-                    else
+                    else if (i == dataRegister.instructionLast)
                         code += Format("    n += r%u;\r\n", r);
-                    if (i < dataRegister.instructionLast)
-                        code += Format("    r%u = n;\r\n", r);
+                    else
+                        code += Format("    n = r%u += n;\r\n", r);
                     break;
                 case Operation_abs:
                     code += Format("    n = fabsf(n);\r\n");
-                    if ((i == dataRegister.instructionFirst) && (i < dataRegister.instructionLast))
-                        code += Format("    r%u = %.8ff;\r\n", f);
                     break;
             }
         } else {
-            switch (instruction.Opcode()) {
+            switch (op) {
                 case Operation_multiply:
-                    code += Format("    n *= d%u;\r\n", reg);
-                    if (i != m_registers[reg].instructionLast)
-                        code += Format("    d%u = n;\r\n", reg);
+                    if (i == dataRegister.instructionLast)
+                        code += Format("    n *= d%u;\r\n", r);
+                    else
+                        code += Format("    n = d%u *= n;\r\n", r);
                     break;
                 case Operation_add:
-                    code += Format("    n += d%u;\r\n", reg);
-                    if (i != m_registers[reg].instructionLast)
-                        code += Format("    d%u = n;\r\n", reg);
+                    if (i == dataRegister.instructionLast)
+                        code += Format("    n += d%u;\r\n", r);
+                    else
+                        code += Format("    n = d%u += n;\r\n", r);
                     break;
                 case Operation_abs:
                     code += Format("    n = fabsf(n);\r\n");
@@ -162,7 +163,7 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
 
     unsigned int numInstructions = PROGRAM_INSTRUCTIONS;
     for (unsigned int i = 0; i < numInstructions; i++)
-        code += Format("    program.m_instructions.i[%u].SetOperation(%u, %u);\r\n", i, m_instructions.i[i].Opcode(), m_instructions.i[i].Register());
+        code += Format("    program.m_instructions.SetOperation(%u, %u, %u);\r\n", i, m_instructions.Opcode(i), m_instructions.Register(i));
 
     code += Format("    program.m_opcodes.resize(%u);\r\n", PROGRAM_OPCODES);
     for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
@@ -188,17 +189,14 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
 float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
 {
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
-        FireStarterInstruction& instruction = m_instructions.i[i];
-        float& f = data.d[instruction.Register()];
+        float& f = data.d[m_instructions.Register(i)];
 
-        switch (instruction.Opcode()) {
+        switch (m_instructions.Opcode(i)) {
             case Operation_multiply:
-                n *= f;
-                f = n;
+                n = f *= n;
                 break;
             case Operation_add:
-                n += f;
-                f = n;
+                n = f += n;
                 break;
             case Operation_abs:
                 n = fabsf(n);
@@ -214,7 +212,7 @@ FireStarterProgram::FireStarterProgram(void)
     m_dataSize = PROGRAM_INSTRUCTIONS;
     m_maxRegisters = PROGRAM_INSTRUCTIONS;
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        m_instructions.i[i].SetOperation(0, 0);
+        m_instructions.SetOperation(i);
     m_opcodes.resize(PROGRAM_OPCODES);
     for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
         m_opcodes[i] = fireStarterOpcodes[i];

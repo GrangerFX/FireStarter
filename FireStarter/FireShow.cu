@@ -87,7 +87,8 @@ GPU_GLOBAL void FireShow(const FireStarterEvolveResult bestResult, uchar4 *buffe
 #if PROGRAM_TEST_EVALUATE
         y = (int)(center + Evaluate(bestResult.data[variation], theta) * yScale);
 #else
-        y = (int)(center + bestResult.instructions.Execute(bestResult.data[variation], theta) * yScale);
+        FireStarterData workData(bestResult.data[variation]);
+        y = (int)(center + bestResult.instructions.Execute(workData, theta) * yScale);
 #endif
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
