@@ -33,7 +33,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolveResults* newResults, FireStarterEvolveRe
     GPU_SHARED FireStarterData threadData[BLOCK_THREADS];
     FireStarterData& data = threadData[thread];
     float maxResult = 0.0f;
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         float result = START_RESULT;
         if (!generation)
             for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)

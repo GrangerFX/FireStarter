@@ -227,7 +227,7 @@ void FireStarterState::SaveState(std::string& code)
     m_program.SaveProgram(code);
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             code += Format("    state.m_result.data[%d].d[%u] = %ff;\r\n", v, i, m_result.data[v].d[i]);
         code += Format("    state.m_result.minResult[%d] = %ff;\r\n", v, m_result.minResult[v]);
@@ -249,7 +249,7 @@ void FireStarterState::SaveState(std::string& code)
 void FireStarterState::SaveSolution(std::string& code)
 {
     code += Format("// Precision = %f\r\n", m_result.maxResult);
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         code += "\r\n";
         code += Format("// Solution%d precision = %f\r\n", v, m_result.minResult[v]);
         code += Format("inline float Solution%d(float n)\r\n", v);
@@ -263,7 +263,7 @@ void FireStarterState::SaveSolution(std::string& code)
 void FireStarterState::OptimizeData(void)
 {
     // Optimize the use of data registers.
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         FireStarterData& data = m_result.data[v];
         FireStarterData optimizedData(data);
         for (unsigned int i = 0; i < m_program.m_dataSize; i++)
@@ -277,12 +277,12 @@ void FireStarterState::OptimizeData(void)
 void FireStarterState::SortVariations(void)
 {
     // Sort the variations largest first. This increases the chance that the generation can fail early.
-    for (int v = 0; v < TARGET_VARIATIONS; v++)
+    for (int v = 0; v < PROGRAM_VARIATIONS; v++)
         m_order[v] = v;
-    for (int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (int v = 0; v < PROGRAM_VARIATIONS; v++) {
         int maxIndex = v;
         float max = m_result.minResult[m_order[v]];
-        for (int i = v + 1; i < TARGET_VARIATIONS; i++) {
+        for (int i = v + 1; i < PROGRAM_VARIATIONS; i++) {
             float result = m_result.minResult[m_order[i]];
             if (result > max) {
                 max = result;
@@ -298,7 +298,7 @@ void FireStarterState::SortVariations(void)
 FireStarterState::FireStarterState(void)
 {
     m_processingTime = 0.0f;
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             m_result.data[v].d[i] = 1.0f;
         m_result.minResult[v] = START_RESULT;
@@ -460,7 +460,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
     float lastResult = m_curState.m_result.maxResult;
 
     m_curState.SortVariations();
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         unsigned int variation = m_curState.m_order[v];
         for (unsigned int g = 0; g < generations; g++) {
             FireStarterOptimizeResults* newResults = g & 1 ? m_deviceOptimizeResults1 : m_deviceOptimizeResults0;
@@ -709,7 +709,7 @@ void FireStarter::BuildData(std::string& code)
     std::string replacementData;
     code += "GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)\r\n";
     code += "{\r\n";
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         code += Format("    if (variation == %d) {\r\n", v);
         for (unsigned int i = 0; i < m_bestEvaluateState.m_program.m_dataSize; i++)
             code += Format("        data.d[%d] = %ff;\r\n", i, m_bestEvaluateState.m_result.data[v].d[i]);
@@ -785,7 +785,7 @@ void FireStarter::SaveSolution(void)
     solutionCode += Format("#define SOLUTION_MIN %f\r\n", SAMPLE_MIN);
     solutionCode += Format("#define SOLUTION_MAX %f\r\n", SAMPLE_MAX);
     solutionCode += "\r\n";
-    solutionCode += Format("#define TARGET_VARIATIONS %d\r\n", TARGET_VARIATIONS);
+    solutionCode += Format("#define PROGRAM_VARIATIONS %d\r\n", PROGRAM_VARIATIONS);
     solutionCode += "\r\n";
     solutionCode += m_targetCode;
     solutionCode += "\r\n";
@@ -796,7 +796,7 @@ void FireStarter::SaveSolution(void)
 
 void FireStarter::FireShow(void)
 {
-    for (unsigned int variation = 0; variation < TARGET_VARIATIONS; variation++) {
+    for (unsigned int variation = 0; variation < PROGRAM_VARIATIONS; variation++) {
         // Launch the display kernel
         int threadsPerBlock = BLOCK_THREADS;
         int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
@@ -1002,15 +1002,21 @@ float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, 
             case 0:
                 solution = Solution0(theta);
                 break;
+#if PROGRAM_VARIATIONS > 1
             case 1:
                 solution = Solution1(theta);
                 break;
+#endif
+#if PROGRAM_VARIATIONS > 2
             case 2:
                 solution = Solution2(theta);
                 break;
+#endif
+#if PROGRAM_VARIATIONS > 3
             case 3:
                 solution = Solution3(theta);
                 break;
+#endif
         }
         if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
             float error = fabsf(solution - target);
@@ -1041,7 +1047,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
     std::string statusString = "FireStarter:";
-    for (unsigned int v = 0; v < TARGET_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         float error = DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, v);
         statusString += Format(" Solution %d = %f", v, error);
     }

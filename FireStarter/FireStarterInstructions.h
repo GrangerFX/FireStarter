@@ -12,7 +12,7 @@ typedef enum {
     Program_multiply_add_abs,
 } FireStarterProgramMode;
 
-#if 1
+#if 0
 #define PROGRAM_MODE Program_multiply_add_abs
 #define PROGRAM_RANDOM_INSTRUCTIONS 1
 #define PROGRAM_OPCODES 13

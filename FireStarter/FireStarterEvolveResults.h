@@ -3,8 +3,8 @@
 
 typedef struct {
     FireStarterInstructions instructions;
-    FireStarterData data[TARGET_VARIATIONS];
-    float minResult[TARGET_VARIATIONS];
+    FireStarterData data[PROGRAM_VARIATIONS];
+    float minResult[PROGRAM_VARIATIONS];
     float maxResult;
     unsigned int test;
 } FireStarterEvolveResult;
