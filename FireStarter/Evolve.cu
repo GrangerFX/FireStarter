@@ -87,7 +87,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
 } // Evolve
 #endif
 
-#if 1
+#if 0
 // Test one per warp.
 GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
@@ -173,7 +173,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
 } // Evolve
 #endif
 
-#if 0
+#if 1
 GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
     const unsigned int member = blockIdx.x;
