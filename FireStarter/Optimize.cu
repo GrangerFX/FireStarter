@@ -1,4 +1,4 @@
-#include "FireStarterOptimizeResults.h"
+#include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 #include "HashRandom.h"
 

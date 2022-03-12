@@ -1,13 +1,14 @@
 #pragma once
-#include "FireStarterData.h"
+#include "FireStarterInstructions.h"
 
 typedef struct {
+    FireStarterInstructions instructions;
     FireStarterData data[PROGRAM_VARIATIONS];
     float minResult[PROGRAM_VARIATIONS];
     float maxResult;
     unsigned int test;
-} FireStarterOptimizeResult;
+} FireStarterResult;
 
 typedef struct {
-    FireStarterOptimizeResult results[1];
-} FireStarterOptimizeResults;
+    FireStarterResult results[1];
+} FireStarterResults;

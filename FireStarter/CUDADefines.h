@@ -1,5 +1,7 @@
 #pragma once
 
+#define BLOCK_THREADS 32    // Number of threads per evolution member. Same as the number of threads in a warp.
+
 #ifdef __CUDACC__
 #define GPU_FUNCTION __device__
 #define GPU_GLOBAL extern "C" __global__

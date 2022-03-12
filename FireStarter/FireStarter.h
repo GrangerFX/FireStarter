@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
-#include "FireStarterEvolveResults.h"
-#include "FireStarterOptimizeResults.h"
+#include "FireStarterResults.h"
 #include "FireStarterUtil.h"
 #include "SerialThread.h"
 #include "HashRandom.h"
@@ -46,7 +45,7 @@ public:
 class FireStarterState {
 public:
     FireStarterProgram m_program;
-    FireStarterEvolveResult m_result;
+    FireStarterResult m_result;
     unsigned int m_order[PROGRAM_VARIATIONS];
     float m_processingTime;
     float m_bestResult;     // Best result for all threads and variations.
@@ -65,14 +64,10 @@ public:
     SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
-    FireStarterEvolveResults* m_deviceEvolveResults0;
-    FireStarterEvolveResults* m_deviceEvolveResults1;
-    FireStarterEvolveResults* m_hostEvolveResults0;
-    FireStarterEvolveResults* m_hostEvolveResults1;
-    FireStarterOptimizeResults* m_deviceOptimizeResults0;
-    FireStarterOptimizeResults* m_deviceOptimizeResults1;
-    FireStarterOptimizeResults* m_hostOptimizeResults0;
-    FireStarterOptimizeResults* m_hostOptimizeResults1;
+    FireStarterResults* m_deviceResults0;
+    FireStarterResults* m_deviceResults1;
+    FireStarterResults* m_hostResults0;
+    FireStarterResults* m_hostResults1;
     FireStarterState m_curState;
     FireStarterState m_bestState;
     CUdevice m_unitDevice;

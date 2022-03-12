@@ -1,4 +1,4 @@
-#include "FireStarterEvolveResults.h"
+#include "FireStarterResults.h"
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
 
@@ -53,7 +53,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 } // Evaluate
 #endif
 
-GPU_GLOBAL void FireShow(const FireStarterEvolveResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
+GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int xScale = bufferHeight / 8;
