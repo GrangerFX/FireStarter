@@ -436,7 +436,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
-    unsigned int blocksPerGrid = population;
+    unsigned int blocksPerGrid = (population + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
