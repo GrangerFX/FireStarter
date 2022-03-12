@@ -60,7 +60,7 @@ GPU_FUNCTION float Evaluate(FireStarterData data, float n)
 // END //
 #endif
 
-GPU_GLOBAL void Optimize(FireStarterOptimizeResults* newResults, FireStarterOptimizeResults* oldResults, const unsigned int theDataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int theDataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int variation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)

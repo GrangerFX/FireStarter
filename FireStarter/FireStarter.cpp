@@ -113,7 +113,10 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
             switch (op) {
                 case Operation_multiply:
                     if (i == dataRegister.instructionFirst)
-                        code += Format("    n *= %.8ff;\r\n", f);
+                        if (i == dataRegister.instructionLast)
+                            code += Format("    n *= %.8ff;\r\n", f);
+                        else
+                            code += Format("    r%u = n *= %.8ff;\r\n", r, f);
                     else if (i == dataRegister.instructionLast)
                         code += Format("    n *= r%u;\r\n", r);
                     else
@@ -121,7 +124,10 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
                     break;
                 case Operation_add:
                     if (i == dataRegister.instructionFirst)
-                        code += Format("    n += %.8ff;\r\n", f);
+                        if (i == dataRegister.instructionLast)
+                            code += Format("    n += %.8ff;\r\n", f);
+                        else
+                            code += Format("    r%u = n += %.8ff;\r\n", r, f);
                     else if (i == dataRegister.instructionLast)
                         code += Format("    n += r%u;\r\n", r);
                     else
