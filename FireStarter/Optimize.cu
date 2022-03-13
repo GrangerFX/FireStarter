@@ -25,11 +25,10 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     FireStarterOrder varaitions(generation ? oldResults->results[member].minResult : nullptr);
 
     // Evolve the program data for each variation.
-    float lastResult = generation ? oldResults->results[member].maxResult : START_RESULT;
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        float result, oldResult;
         unsigned int variation = varaitions.order[v];
+        float result, oldResult;
         float target[SAMPLE_ITERATIONS];
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
             target[i] = Target(theta[i], variation);
@@ -83,10 +82,6 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 newResults->results[member].data[variation] = oldResults->results[bestIndex].data[variation];
                 newResults->results[member].minResult[variation] = START_RESULT;
             }
-#if !OPTIMIZE_VARIATIONS
-            if (result >= lastResult)
-                break;
-#endif
             maxResult = fmaxf(maxResult, bestResult);
         } else {
             newResults->results[member].data[variation] = data;

@@ -40,27 +40,29 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         else
             data = oldResults->results[member].data[v];
         if (maxResult <= oldResult) {
-            for (unsigned int p = 0; p < iterations; p++) {
-                unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
-                const float oldData = data.d[d];
-                data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(threadSeed) * result);
-                float curResult = 0.0f;
-                float theta = SAMPLE_MIN;
-                for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
-                    curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
-                    theta += (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
-                }
-                if (curResult < result)
-                    result = curResult;
-                else
-                    data.d[d] = oldData;
-            }
-
-            // Calculate a more accure estimate of the result.
-            result = 0.0f;
-            for (int i = 0; i < PROGRAM_PRECISION; i++) {
-                float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
+            float theta = SAMPLE_MIN;
+            for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
                 result = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), result);
+                theta += (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
+            }
+            if (result <= START_RESULT) {
+                float evolutionFactor = EVOLUTION_FACTOR * result;
+                for (unsigned int p = 0; p < iterations; p++) {
+                    unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
+                    const float oldData = data.d[d];
+                    data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
+                    float theta = SAMPLE_MIN;
+                    float curResult = 0.0f;
+                    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+                        curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
+                        theta += (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
+                    }
+                    if (curResult < result) {
+                        result = curResult;
+                        evolutionFactor = EVOLUTION_FACTOR * result;
+                    } else
+                        data.d[d] = oldData;
+                }
             }
         }
 

@@ -115,10 +115,6 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 newResults->results[member].data[variation] = oldResults->results[bestIndex].data[variation];
                 newResults->results[member].minResult[variation] = START_RESULT;
             }
-#if !OPTIMIZE_VARIATIONS
-            if (result >= lastResult)
-                break;
-#endif
             maxResult = fmaxf(maxResult, bestResult);
         } else {
             newResults->results[member].data[variation] = data;
