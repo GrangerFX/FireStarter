@@ -46,7 +46,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 theta += (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
             }
             if (result <= START_RESULT) {
-                float evolutionFactor = EVOLUTION_FACTOR * result;
+                float evolutionFactor = EVOLUTION_START_FACTOR;
                 for (unsigned int p = 0; p < iterations; p++) {
                     unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
                     const float oldData = data.d[d];
