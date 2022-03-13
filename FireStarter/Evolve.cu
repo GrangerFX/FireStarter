@@ -102,7 +102,6 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
                 unsigned int index = RANDOMSEED(memberSeed) % population;
                 float curResult = oldResults->results[index].maxResult;
-                curResult -= EVOLUTION_LUCK * RANDOMNUM(memberSeed) * curResult;
                 if (curResult < oldResult) {
                     newResults->results[member] = oldResults->results[index];
                     newResults->results[member].test = index;
