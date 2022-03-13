@@ -46,10 +46,9 @@ class FireStarterState {
 public:
     FireStarterProgram m_program;
     FireStarterResult m_result;
-    unsigned int m_order[PROGRAM_VARIATIONS];
+    FireStarterOrder m_order;
     float m_processingTime;
-    float m_bestResult;     // Best result for all threads and variations.
-    float m_worstResult;    // Worst result for all threads and variations.
+    float m_bestResult;      // Best result for all threads and variations.
 
     void SaveState(std::string& code);
     void SaveSolution(std::string& code);

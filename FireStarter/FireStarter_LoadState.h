@@ -154,7 +154,6 @@ inline void LoadState(FireStarterState& state)
 
     state.m_processingTime = 2.219191f;
     state.m_bestResult = 0.016803f;
-    state.m_worstResult = 0.017999f;
 
     LoadProgram(state.m_program);
     state.m_result.instructions = state.m_program.m_instructions;

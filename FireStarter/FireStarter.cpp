@@ -238,7 +238,6 @@ void FireStarterState::SaveState(std::string& code)
     code += "\r\n";
     code += Format("    state.m_processingTime = %ff;\r\n", m_processingTime);
     code += Format("    state.m_bestResult = %ff;\r\n", m_bestResult);
-    code += Format("    state.m_worstResult = %ff;\r\n", m_worstResult);
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
@@ -277,22 +276,7 @@ void FireStarterState::OptimizeData(void)
 void FireStarterState::SortVariations(void)
 {
     // Sort the variations largest first. This increases the chance that the generation can fail early.
-    for (int v = 0; v < PROGRAM_VARIATIONS; v++)
-        m_order[v] = v;
-    for (int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        int maxIndex = v;
-        float max = m_result.minResult[m_order[v]];
-        for (int i = v + 1; i < PROGRAM_VARIATIONS; i++) {
-            float result = m_result.minResult[m_order[i]];
-            if (result > max) {
-                max = result;
-                maxIndex = i;
-            }
-        }
-        int swap = m_order[maxIndex];
-        m_order[maxIndex] = m_order[v];
-        m_order[v] = swap;
-    }
+    m_order = FireStarterOrder(m_result.minResult);
 } // SortVariations
 
 FireStarterState::FireStarterState(void)
@@ -302,11 +286,9 @@ FireStarterState::FireStarterState(void)
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             m_result.data[v].d[i] = 1.0f;
         m_result.minResult[v] = START_RESULT;
-        m_order[v] = v;
     }
     m_result.maxResult = START_RESULT;
     m_bestResult = START_RESULT;
-    m_worstResult = START_RESULT;
 } // FireStarterState
 
 void FireStarterUnit::GenerateProgram(void)
@@ -412,7 +394,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitStream));
     checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
     float minResult = m_hostResults0->results[0].maxResult;
-    float maxResult = minResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
         float curResult = m_hostResults0->results[i].maxResult;
@@ -420,12 +401,10 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
-        } else if (curResult > maxResult)
-            maxResult = curResult;
+        }
     }
     m_curState.m_result = m_hostResults0->results[minIndex];
     m_curState.m_bestResult = minResult;
-    m_curState.m_worstResult = maxResult;
 } // EvolveGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
@@ -436,61 +415,54 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    float bestResult = START_RESULT;
-    float worstResult = 0.0f;
-    float maxResult = 0.0f;
-    float lastResult = m_curState.m_result.maxResult;
+     m_curState.SortVariations();
+    for (unsigned int g = 0; g < generations; g++) {
+        FireStarterResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
+        FireStarterResults* oldResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
+        unsigned int curGeneration = generation + g;
+        void* arr[] = { reinterpret_cast<void*>(&newResults),
+                        reinterpret_cast<void*>(&oldResults),
+                        reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
+                        reinterpret_cast<void*>(&population),
+                        reinterpret_cast<void*>(&iterations),
+                        reinterpret_cast<void*>(&curGeneration) };
 
-    m_curState.SortVariations();
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        unsigned int variation = m_curState.m_order[v];
-        for (unsigned int g = 0; g < generations; g++) {
-            FireStarterResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
-            FireStarterResults* oldResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
-            unsigned int curGeneration = generation + g;
-            void* arr[] = { reinterpret_cast<void*>(&newResults),
-                            reinterpret_cast<void*>(&oldResults),
-                            reinterpret_cast<void*>(&m_curState.m_program.m_dataSize),
-                            reinterpret_cast<void*>(&population),
-                            reinterpret_cast<void*>(&iterations),
-                            reinterpret_cast<void*>(&curGeneration),
-                            reinterpret_cast<void*>(&variation) };
-
-            checkCUDAErrors(cuLaunchKernel(m_optimizeFunction,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-                0, m_unitStream,                                    // shared mem, stream */
-                &arr[0],                                            // arguments */
-                0));
-            checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
-        }
-
-        // Get the best result.
-        checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitStream));
+        checkCUDAErrors(cuLaunchKernel(m_optimizeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+            0, m_unitStream,                                    // shared mem, stream */
+            &arr[0],                                            // arguments */
+            0));
         checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
-        float minResult = m_hostResults0->results[0].minResult[variation];
-        unsigned int minIndex = 0;
-        for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
-            float curResult = m_hostResults0->results[i].minResult[variation];
-            if (curResult < minResult) {
-                minResult = curResult;
-                minIndex = i;
-            } else if (curResult > worstResult)
-                worstResult = curResult;
-        }
-        if (generation && (minResult >= lastResult)) // If the results were worse than the previous generation, fail immediately.
-            return;
-        m_curState.m_result.data[variation] = m_hostResults0->results[minIndex].data[variation];
-        m_curState.m_result.minResult[variation] = minResult;
-
-        // Find the largest error of the best results.
-        bestResult = fminf(bestResult, minResult);
-        maxResult = fmaxf(maxResult, minResult);
     }
-    m_curState.m_result.maxResult = maxResult;
-    m_curState.m_result.test = 0;
-    m_curState.m_bestResult = bestResult;
-    m_curState.m_worstResult = worstResult;
+
+    // Get the best result.
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitStream));
+    checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
+    FireStarterResult& result = m_curState.m_result;
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
+        result.minResult[v] = m_hostResults0->results[0].minResult[v];
+    unsigned int minIndex[PROGRAM_VARIATIONS] = { };
+    for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
+        for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+            float curResult = m_hostResults0->results[i].minResult[v];
+            if (curResult < result.minResult[v]) {
+                result.minResult[v] = curResult;
+                minIndex[v] = i;
+            }
+        }
+    }
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
+        result.data[v] = m_hostResults0->results[minIndex[v]].data[v];
+    float minResult = result.maxResult = result.minResult[0];
+    for (unsigned int v = 1; v < PROGRAM_VARIATIONS; v++) {
+        minResult = fminf(minResult, result.minResult[v]);
+        result.maxResult = fmaxf(result.maxResult, result.minResult[v]);
+    }
+    result.test = 0;
+
+    // Find the largest error of the best results.
+    m_curState.m_bestResult = minResult;
 } // OptimizeGenerations
 
 void FireStarterUnit::ExecuteProgram(void)
@@ -881,7 +853,6 @@ void FireStarter::ControlThread(void)
                 if (result < m_bestResult) {
                     unit->UpdateCode(m_bestCode);
                     m_bestResult = result;
-                    m_worstResult = unitBestEvaluateState->m_worstResult;
                     m_bestEvaluateState = *unitBestEvaluateState;
                     m_bestGeneration = m_generation;
                     m_controlUpdate = true;
