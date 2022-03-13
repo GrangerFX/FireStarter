@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "FireStarterResults.h"
+#include "FireStarterOrder.h"
 #include "FireStarterUtil.h"
 #include "SerialThread.h"
 #include "HashRandom.h"

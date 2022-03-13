@@ -1,5 +1,6 @@
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
+#include "FireStarterOrder.h"
 #include "HashRandom.h"
 
 // EVALUATE //
@@ -53,20 +54,19 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
 
     // Sort the variations by the previous results.
-//    FireStarterOrder order(generation ? oldResults->results[member].minResult : nullptr);
+    FireStarterOrder varaitions(generation ? oldResults->results[member].minResult : nullptr);
 
     // Evolve the program data for each variation.
-//    float lastResult = generation ? oldResults->results[member].maxResult : START_RESULT;
+    float lastResult = generation ? oldResults->results[member].maxResult : START_RESULT;
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        unsigned int variation = v;
-//        unsigned int variation = order.order[v];
+        float result, oldResult;
+        unsigned int variation = varaitions.order[v];
         float target[SAMPLE_ITERATIONS];
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
             target[i] = Target(theta[i], variation);
 
         FireStarterData data;
-        float result, oldResult;
         const unsigned int dataSize = theDataSize;
         if (!generation) {
             for (int i = 0; i < dataSize; i++)
@@ -76,17 +76,19 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             data = oldResults->results[member].data[variation];
             result = oldResult = oldResults->results[member].minResult[variation];
         }
+        float evolutionFactor = EVOLUTION_FACTOR * result;
 
         for (unsigned int p = 0; p < iterations; p++) {
             unsigned int d = RANDOMSEED(seed) % dataSize;
             float oldData = data.d[d];
-            data.d[d] = oldData + (EVOLUTION_FACTOR * RANDOMFACTOR(seed) * result);
+            data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(seed);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
                 curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
-            if (curResult < result)
+            if (curResult < result) {
                 result = curResult;
-            else
+                evolutionFactor = EVOLUTION_FACTOR * result;
+            } else
                 data.d[d] = oldData;
         }
 
@@ -95,6 +97,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
             result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
         }
+
         if (generation && (result >= oldResult)) {
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of members.
@@ -109,13 +112,19 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 }
             }
             if (bestIndex != member) {
-                data = oldResults->results[bestIndex].data[variation];
-                result = START_RESULT;
+                newResults->results[member].data[variation] = oldResults->results[bestIndex].data[variation];
+                newResults->results[member].minResult[variation] = START_RESULT;
             }
-         }
-        newResults->results[member].data[variation] = data;
-        newResults->results[member].minResult[variation] = result;
-        maxResult = fmaxf(maxResult, result);
+#if !OPTIMIZE_VARIATIONS
+            if (result >= lastResult)
+                break;
+#endif
+            maxResult = fmaxf(maxResult, bestResult);
+        } else {
+            newResults->results[member].data[variation] = data;
+            newResults->results[member].minResult[variation] = result;
+            maxResult = fmaxf(maxResult, result);
+        }
     }
     newResults->results[member].maxResult = maxResult;
 } // Optimize
