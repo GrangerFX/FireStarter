@@ -15,7 +15,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-    unsigned int seed = RANDOMHASH(RANDOMHASH(member) + generation);
+    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
 
     float theta[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++)
@@ -35,20 +35,22 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
 
         FireStarterData data;
         const unsigned int dataSize = theDataSize;
+        float evolutionFactor;
         if (!generation) {
             for (int i = 0; i < dataSize; i++)
-                data.d[i] = RANDOMFACTOR(seed);
+                data.d[i] = RANDOMFACTOR(memberSeed);
             result = oldResult = START_RESULT;
+            evolutionFactor = EVOLUTION_START_FACTOR;
         } else {
             data = oldResults->results[member].data[variation];
             result = oldResult = oldResults->results[member].minResult[variation];
+            evolutionFactor = EVOLUTION_FACTOR * result;
         }
-        float evolutionFactor = EVOLUTION_FACTOR * result;
 
         for (unsigned int p = 0; p < iterations; p++) {
-            unsigned int d = RANDOMSEED(seed) % dataSize;
+            unsigned int d = RANDOMSEED(memberSeed) % dataSize;
             float oldData = data.d[d];
-            data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(seed);
+            data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
                 curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
@@ -71,7 +73,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             unsigned int bestIndex = member;
             float bestResult = oldResult;
             for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
-                unsigned int index = RANDOMSEED(seed) % population;
+                unsigned int index = RANDOMSEED(memberSeed) % population;
                 float curResult = oldResults->results[index].minResult[variation];
                 if (curResult < bestResult) {
                     bestResult = curResult;
