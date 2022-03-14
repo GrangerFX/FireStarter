@@ -27,6 +27,11 @@ const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
 typedef struct FireStarterInstructions {
     unsigned int r[PROGRAM_INSTRUCTIONS];
 
+    inline unsigned int Instruction(unsigned int index) const
+    {
+        return r[index];
+    } // Instruction
+
     inline FireStarterOpcode Opcode(unsigned int index) const
     {
         return (FireStarterOpcode)(index & 1);
@@ -36,6 +41,11 @@ typedef struct FireStarterInstructions {
     {
         return r[index];
     } // Register
+
+    inline void SetInstruction(unsigned int index, unsigned int instruction = 0)
+    {
+        r[index] = instruction;
+    } // SetInstruction
 
     inline void SetRegister(unsigned int index, unsigned int reg = 0)
     {
@@ -51,6 +61,12 @@ typedef struct FireStarterInstructions {
     {
         r[index] = (RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
     } // SetRandom
+
+    inline void Randomize(unsigned int& seed)
+    {
+        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            SetRandom(i, seed);
+    } // Randomize
 
     inline float Execute(FireStarterData data, float n) const
     {
@@ -320,6 +336,11 @@ struct FireStarterInstruction {
 // INSTRUCTIONS //
 typedef struct FireStarterInstructions {
     FireStarterInstruction i[PROGRAM_INSTRUCTIONS];
+    
+    inline int Instruction(unsigned int index) const
+    {
+        return (i[index].op << 16) | i[index].reg;
+    } // Instruction
 
     inline FireStarterOpcode Opcode(unsigned int index) const
     {
@@ -330,6 +351,12 @@ typedef struct FireStarterInstructions {
     {
         return i[index].reg;
     } // Register
+
+    inline void SetInstruction(unsigned int index, unsigned int instruction = 0) const
+    {
+        i[index].op = (instruction >> 16) % PROGRAM_OPCODES;
+        i[index].reg = (unsigned short)instruction % PROGRAM_INSTRUCTIONS;
+    } // Instruction
 
     inline void SetRegister(unsigned int index, unsigned int reg = 0)
     {

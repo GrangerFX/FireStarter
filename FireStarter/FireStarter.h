@@ -35,7 +35,10 @@ public:
     unsigned int m_maxRegisters;
 
     void OptimizeRegisters(void);
+    void RandomProgram(unsigned int& seed);
+    void RandomInstruction(unsigned int& seed, unsigned int& oldIndex, unsigned int& oldInstruction);
     void LoadInstructions(FireStarterInstructions instructions);
+    void SaveInstructions(FireStarterInstructions &instructions);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
@@ -139,13 +142,9 @@ public:
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
     bool LoadFireShowCode(void);
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     void SaveBestState(void);
-#endif
-#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     void SaveBestCode(void);
     void SaveSolution(void);
-#endif
     void FireShow(void);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void RenderStatus(void);

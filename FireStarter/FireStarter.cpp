@@ -50,10 +50,28 @@ void FireStarterProgram::OptimizeRegisters(void)
     }
 } // OptimizeRegisters
 
+void FireStarterProgram::RandomProgram(unsigned int& seed)
+{
+    m_instructions.Randomize(seed);
+    OptimizeRegisters();
+} // RandomProgram
+
+void FireStarterProgram::RandomInstruction(unsigned int& seed, unsigned int& oldIndex, unsigned int& oldInstruction)
+{
+    oldIndex = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
+    oldInstruction = m_instructions.Instruction(oldIndex);
+    m_instructions.SetRandom(oldIndex, seed);
+} // RandomInstruction
+
 void FireStarterProgram::LoadInstructions(FireStarterInstructions instructions)
 {
     m_instructions = instructions;
 } // LoadInstructions
+
+void FireStarterProgram::SaveInstructions(FireStarterInstructions& instructions)
+{
+    instructions = m_instructions;
+} // SaveInstructions
 
 void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
 {
@@ -300,7 +318,7 @@ void FireStarterUnit::GenerateProgram(void)
         m_evolveFunction = FireStarter::CompileProgram(m_evolveCode, m_evolveModule, "Evolve");
     }
 #endif
-#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+#if (FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE) || (FIRESTARTER_MODE == FIRESTARTER_UNITS)
     if (!m_optimizeFunction) {
         m_optimizeCode = m_fireStarter->m_optimizeCode;
 
@@ -332,10 +350,17 @@ void FireStarterUnit::InitResults(void)
     m_hostResults0 = (FireStarterResults*)(m_hostResults);
     m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
 
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
+    GenerateProgram();
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_UNITS
+    m_curState.m_program.RandomProgram(m_seed);
+    GenerateProgram();
+#endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     LoadState(m_curState);
-#endif
     GenerateProgram();
+#endif
 
     m_bestState = m_curState;
 } // InitResults
@@ -474,17 +499,39 @@ void FireStarterUnit::ExecuteProgram(void)
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     // Evolve the program instructions.
     EvolveGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration);
+    m_programGeneration += PROGRAM_GENERATIONS;
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_UNITS
+    // Evolve the program instructions.
+    unsigned int oldIndex = 0;
+    unsigned int oldInstruction = 0;
+    m_curState.m_program.RandomInstruction(m_seed, oldIndex, oldInstruction);
+    m_curState.m_program.OptimizeRegisters();
+
+    // Compile the program.
+    m_optimizeFunction = nullptr;
+    GenerateProgram();
+
+    // Evolve the program data.
+    OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration);
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     // Evolve the program data.
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration);
-#endif
     m_programGeneration += PROGRAM_GENERATIONS;
+#endif
     m_curState.m_processingTime = (float)m_timer.Duration();
     if (m_curState.m_result.maxResult < m_bestState.m_result.maxResult) {
         m_bestState = m_curState;
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
         m_bestState.m_program.LoadInstructions(m_bestState.m_result.instructions);
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_UNITS
+        m_bestState.m_program.SaveInstructions(m_bestState.m_result.instructions);
+#endif
+    } else {
+#if FIRESTARTER_MODE == FIRESTARTER_UNITS
+        m_curState.m_program.m_instructions.SetInstruction(oldIndex, oldInstruction);
 #endif
     }
 } // ExecuteProgram
@@ -683,7 +730,7 @@ bool FireStarter::LoadFireStarterCode(void)
     if (!FireStarter::LoadCode("Evolve.cu", m_evolveCode))
         return false;
 #endif
-#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+#if (FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE) || (FIRESTARTER_MODE == FIRESTARTER_UNITS)
     if (!FireStarter::LoadCode("Optimize.cu", m_optimizeCode))
         return false;
 #endif
@@ -697,16 +744,13 @@ bool FireStarter::LoadFireShowCode(void)
     return true;
 } // LoadFireShowCode
 
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
 void FireStarter::SaveBestState(void)
 {
     std::string bestStateCode;
     m_bestEvaluateState.SaveState(bestStateCode);
     FireStarter::SaveCode("FireStarter_LoadState.h", bestStateCode);
 } // SaveBestState
-#endif
 
-#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
 void FireStarter::SaveBestCode(void)
 {
     FireStarter::SaveCode("FireStarter_BestCode.h", m_bestCode);
@@ -742,7 +786,6 @@ void FireStarter::SaveSolution(void)
     m_bestEvaluateState.SaveSolution(solutionCode);
     FireStarter::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
-#endif
 
 void FireStarter::FireShow(void)
 {
@@ -815,15 +858,11 @@ void FireStarter::ControlThread(void)
     m_fireShowFunction = CompileProgram(m_fireShowCode, m_fireShowModule, "FireShow");
 
     // Create and initialize a unit for each processor thread.
-#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
     unsigned int unit_count = PROGRAM_UNITS;
     if (!unit_count)
         unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
-#else
-    unsigned int unit_count = 1;
-#endif
     for (unsigned int i = 0; i < unit_count; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i, m_device, this);
         m_units.push_back(unit);
@@ -866,6 +905,11 @@ void FireStarter::ControlThread(void)
         if (m_controlUpdate && !m_quitControlThread) {
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
             SaveBestState();
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_UNITS
+            SaveBestState();
+            SaveBestCode();
+            SaveSolution();
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
             SaveBestCode();
