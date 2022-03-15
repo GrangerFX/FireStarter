@@ -602,19 +602,41 @@ FireStarterUnit::~FireStarterUnit(void)
 
 CUfunction FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_module, const char *functionName)
 {
+    SimpleTimer timer;
+
     if (cuda_module) {
         checkCUDAErrors(cuModuleUnload(cuda_module));
         cuda_module = nullptr;
     }
 
+    printf("\n>>>CompileProgram: %s\n", functionName);
+    printf(">>>cuModuleUnload: %f\n", timer.Duration());
+
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
     const char* code = program.c_str();
     checkNVRTCErrors(nvrtcCreateProgram(&prog, code, functionName, 0, nullptr, nullptr));
+    printf(">>>nvrtcCreateProgram: %f\n", timer.Duration());
 
     std::vector<const char*> options;
-    options.push_back("-default-device");
+    options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
+ //   options.push_back("-G");              // Generate debug info
+ //   options.push_back("-lineinfo");       // Generate line information
+
+    static std::string computeDevice;
+    if (!computeDevice.length()) {
+        int computeCapabilityMajor = 0;
+        int computeCapabilityMinor = 0;
+        CUdevice device = 0;
+        checkCUDAErrors(cuDeviceGet(&device, 0)); // Use the first CUDA device for now.
+        checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMajor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, device));
+        checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMinor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
+        computeDevice = Format("-arch=compute_%d%d", computeCapabilityMajor, computeCapabilityMinor);
+    }
+    options.push_back(computeDevice.c_str());
+
     nvrtcResult res = nvrtcCompileProgram(prog, (int)options.size(), options.data());
+    printf(">>>nvrtcCompileProgram: %f\n", timer.Duration());
     if (res != 0) {
         // Output the compile log.
         size_t logSize;
@@ -633,15 +655,21 @@ CUfunction FireStarter::CompileProgram(const std::string& program, CUmodule& cud
     char* ptx;
     size_t ptxSize;
     checkNVRTCErrors(nvrtcGetPTXSize(prog, &ptxSize));
+    printf(">>>nvrtcGetPTXSize: %f\n", timer.Duration());
     ptx = reinterpret_cast<char*>(malloc(sizeof(char) * ptxSize));
     checkNVRTCErrors(nvrtcGetPTX(prog, ptx));
+    printf(">>>nvrtcGetPTX: %f\n", timer.Duration());
     checkNVRTCErrors(nvrtcDestroyProgram(&prog));
+    printf(">>>nvrtcDestroyProgram: %f\n", timer.Duration());
 
     checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx, 0, 0, 0));
+    printf(">>>cuModuleLoadDataEx: %f\n", timer.Duration());
     free(ptx);
     ptx = nullptr;
     CUfunction function = nullptr;
     checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName));
+    printf(">>>cuModuleGetFunction: %f\n", timer.Duration());
+    printf("\n");
     return function;
 } // CompileProgram
 
@@ -848,7 +876,7 @@ void FireStarter::RenderStatus(void)
 void FireStarter::ControlThread(void)
 {
     checkCUDAErrors(cuInit(0));
-    checkCUDAErrors(cuDeviceGet(&m_device, 0));
+    checkCUDAErrors(cuDeviceGet(&m_device, 0)); // Use the first CUDA device for now.
     checkCUDAErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
     checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
     m_buffer.Resize(m_width, m_height);

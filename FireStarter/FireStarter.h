@@ -121,6 +121,8 @@ public:
     std::vector<FireStarterUnit*> m_units;
     FrameBuffer m_buffer;
     char m_statusString[1024];
+    unsigned int m_computeCapabilityMajor = 0;
+    unsigned int m_computeCapabilityMinor = 0;
     unsigned int m_generation;
     unsigned int m_bestGeneration;
     float m_bestResult;
