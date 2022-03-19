@@ -320,8 +320,9 @@ void FireStarterUnit::GenerateUnits(void)
 {
     // Update the Evaluate funtion.
     std::string code;
-    code += "GPU_FUNCTION float Evaluate(FireStarterData data, unsigned int version, float n)\r\n";
+    code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n, unsigned int version)\r\n";
     code += "{\r\n";
+#if PROGRAM_STATES > 1
     code += "    switch (version) {\r\n";
     for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
         code += Format("    case %d:\r\n", i);
@@ -329,6 +330,9 @@ void FireStarterUnit::GenerateUnits(void)
         code += "        break;\r\n";
     }
     code += "    }\r\n";
+#else
+    m_states[0].m_program.GenerateCode(code, 1);
+#endif
     code += "    return isfinite(n) ? n : 0.0f;\r\n";
     code += "} // Evaluate\r\n";
     FireStarter::UpdateProgram(m_unitsCode, code, EVALUATE_CODE);
@@ -400,19 +404,22 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
 void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
 {
     // Launch the calculation kernel
+    double startTime = m_timer.Duration();
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     unsigned int blocksPerGrid = (population + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     FireStarterState& state = m_states[version];
+    unsigned int dataSize = state.m_program.m_dataSize;
+
     for (unsigned int g = 0; g < generations; g++) {
         FireStarterResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
         FireStarterResults* oldResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
         unsigned int curGeneration = generation + g;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
-                        reinterpret_cast<void*>(&state.m_program.m_dataSize),
                         reinterpret_cast<void*>(&version),
+                        reinterpret_cast<void*>(&dataSize),
                         reinterpret_cast<void*>(&population),
                         reinterpret_cast<void*>(&iterations),
                         reinterpret_cast<void*>(&curGeneration) };
@@ -429,6 +436,8 @@ void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int popula
     // Get the best result.
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitStream));
     checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
+    printf("<<<UnitsGenerations cudaStreamSynchronize: %f\n", m_timer.Duration() - startTime);
+
     FireStarterResult& result = state.m_result;
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
         result.minResult[v] = m_hostResults0->results[0].minResult[v];
@@ -454,6 +463,7 @@ void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int popula
     // Find the best results.
     if (result.maxResult < m_bestState.m_result.maxResult)
         m_bestState = state;
+    printf("<<<UnitsGenerations: %f\n", m_timer.Duration() - startTime);
 } // UnitsGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
@@ -464,6 +474,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     FireStarterState& state = m_states[0];
+    unsigned int dataSize = state.m_program.m_dataSize;
 
     for (unsigned int g = 0; g < generations; g++) {
         FireStarterResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
@@ -471,7 +482,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
         unsigned int curGeneration = generation + g;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
-                        reinterpret_cast<void*>(&state.m_program.m_dataSize),
+                        reinterpret_cast<void*>(&dataSize),
                         reinterpret_cast<void*>(&population),
                         reinterpret_cast<void*>(&iterations),
                         reinterpret_cast<void*>(&curGeneration) };
@@ -528,6 +539,7 @@ void FireStarterUnit::ExecuteUnits(void)
 {
     // Run the next generation on the GPU.
     // Evolve the program instructions.
+    double startTime = m_timer.Duration();
     for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
         FireStarterState& state = m_states[i];
         state = m_bestState;
@@ -538,10 +550,12 @@ void FireStarterUnit::ExecuteUnits(void)
 
     // Compile the program.
     GenerateUnits();
+    printf("<<<ExecuteUnits: GenerateUnits %f\n", m_timer.Duration() - startTime);
 
     // Evolve the program data.
     for (unsigned int i = 0; i < PROGRAM_STATES; i++)
         UnitsGenerations(i, PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_programGeneration);
+    printf("<<<ExecuteUnits: UnitsGenerations %f\n", m_timer.Duration() - startTime);
 } // ExecuteUnits
 
 void FireStarterUnit::ExecuteOptimize(void)
@@ -604,7 +618,7 @@ void FireStarterUnit::InitUnit(void)
         m_states[i].m_program.RandomProgram(m_seed);
 #endif
 #if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
-    LoadState(m_curState);
+    LoadState(m_states[0]);
     GenerateOptimize();
 #endif
     m_bestState = m_states[0];

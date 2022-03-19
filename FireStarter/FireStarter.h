@@ -61,6 +61,7 @@ public:
 
 class FireStarterUnit : public SerialThread {
 public:
+    SimpleTimer m_timer;
     class FireStarter* m_fireStarter;
     char* m_deviceResults;
     char* m_hostResults;
