@@ -4,19 +4,18 @@
 #include "HashRandom.h"
 
 // EVALUATE //
-GPU_FUNCTION float Evaluate(FireStarterData data, float n)
+GPU_FUNCTION float Evaluate(FireStarterData data, float n, const unsigned int int version)
 {
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
 
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
+GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int version, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
-
+    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(RANDOMHASH(member) + generation) + version);
     float theta[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++)
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
@@ -52,7 +51,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-                curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
+                curResult = fmaxf(fabsf(Evaluate(data, theta[i], version) - target[i]), curResult);
             if (curResult < result) {
                 result = curResult;
                 evolutionFactor = EVOLUTION_FACTOR * result;
@@ -63,7 +62,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         // Calculate a more accure estimate of the result.
         for (int i = 0; i < PROGRAM_PRECISION; i++) {
             float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
-            result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
+            result = fmaxf(fabsf(Evaluate(data, theta, version) - Target(theta, variation)), result);
         }
 
         if (generation && (result >= oldResult)) {
@@ -91,4 +90,4 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
     }
     newResults->results[member].maxResult = maxResult;
-} // Optimize
+} // Units

@@ -36,9 +36,10 @@ public:
 
     void OptimizeRegisters(void);
     void RandomProgram(unsigned int& seed);
-    void RandomInstruction(unsigned int& seed, unsigned int& oldIndex, unsigned int& oldInstruction);
+    void RandomInstruction(unsigned int& seed);
     void LoadInstructions(FireStarterInstructions instructions);
     void SaveInstructions(FireStarterInstructions &instructions);
+    void GenerateCode(std::string& code, unsigned int tabs, bool optimize = true);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
@@ -50,37 +51,36 @@ class FireStarterState {
 public:
     FireStarterProgram m_program;
     FireStarterResult m_result;
-    FireStarterOrder m_order;
-    float m_processingTime;
     float m_bestResult;      // Best result for all threads and variations.
 
     void SaveState(std::string& code);
     void SaveSolution(std::string& code);
     void OptimizeData(void);
-    void SortVariations(void);
     FireStarterState(void);
 }; // class FireStarterState;
 
 class FireStarterUnit : public SerialThread {
 public:
     class FireStarter* m_fireStarter;
-    SimpleTimer m_timer;
     char* m_deviceResults;
     char* m_hostResults;
     FireStarterResults* m_deviceResults0;
     FireStarterResults* m_deviceResults1;
     FireStarterResults* m_hostResults0;
     FireStarterResults* m_hostResults1;
-    FireStarterState m_curState;
+    FireStarterState m_states[PROGRAM_STATES];
     FireStarterState m_bestState;
     CUdevice m_unitDevice;
     CUcontext m_unitContext;
     CUstream m_unitStream;
     CUmodule m_evolveModule;
+    CUmodule m_unitsModule;
     CUmodule m_optimizeModule;
     CUfunction m_evolveFunction;
+    CUfunction m_unitsFunction;
     CUfunction m_optimizeFunction;
     std::string m_evolveCode;
+    std::string m_unitsCode;
     std::string m_optimizeCode;
     size_t m_resultsSize;
     unsigned int m_programGeneration;
@@ -88,12 +88,16 @@ public:
     unsigned int m_seed;
     volatile bool m_quit;
 
-    void GenerateProgram(void);
-    void InitResults(void);
-    void FreeResults(void);
+    void GenerateEvolve(void);
+    void GenerateUnits(void);
+    void GenerateOptimize(void);
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+    void UnitsGenerations(unsigned int version, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void ExecuteProgram(void);
+    void ExecuteEvolve(void);
+    void ExecuteUnits(void);
+    void ExecuteOptimize(void);
+    void Execute(void);
     void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
     void UpdateCode(std::string& code);
     void InitUnit(void);
@@ -114,6 +118,7 @@ public:
     CUfunction m_fireShowFunction;
     std::string m_targetCode;
     std::string m_evolveCode;
+    std::string m_unitsCode;
     std::string m_optimizeCode;
     std::string m_fireShowCode;
     std::string m_bestCode;
