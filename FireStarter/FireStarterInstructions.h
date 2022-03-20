@@ -12,7 +12,7 @@ typedef enum {
     Program_multiply_add_abs,
 } FireStarterProgramMode;
 
-#define PROGRAM_MADD 1
+#define PROGRAM_MADD 0
 
 #if PROGRAM_MADD
 #define PROGRAM_MODE Program_multiply_add
@@ -352,7 +352,7 @@ typedef struct FireStarterInstructions {
         return i[index].reg;
     } // Register
 
-    inline void SetInstruction(unsigned int index, unsigned int instruction = 0) const
+    inline void SetInstruction(unsigned int index, unsigned int instruction = 0)
     {
         i[index].op = (instruction >> 16) % PROGRAM_OPCODES;
         i[index].reg = (unsigned short)instruction % PROGRAM_INSTRUCTIONS;
@@ -373,6 +373,12 @@ typedef struct FireStarterInstructions {
     {
         SetOperation(index, fireStarterOpcodes[RANDOMSEED(seed) % PROGRAM_OPCODES], RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
     } // SetRandom
+
+    inline void Randomize(unsigned int& seed)
+    {
+        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            SetRandom(i, seed);
+    } // Randomize
 
     inline float Execute(FireStarterData data, float n) const
     {

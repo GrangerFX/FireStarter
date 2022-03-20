@@ -6,11 +6,8 @@
 #include "SerialThread.h"
 #include "HashRandom.h"
 
-#if FIRESTARTER_MODE == FIRESTARTER_SOLUTION
 #include "FireStarter_Solution.h"
-#else
 #include "FireStarterTarget.h"
-#endif
 
 #define DATA_CODE           "// DATA //"
 #define INSTRUCTIONS_CODE   "// INSTRUCTIONS //"
@@ -86,7 +83,8 @@ public:
     std::string m_unitCode;
     std::string m_optimizeCode;
     size_t m_resultsSize;
-    unsigned int m_programGeneration;
+    unsigned int m_evolveMode;
+    unsigned int m_evolveGeneration;
     unsigned int m_unitIndex;
     unsigned int m_seed;
     volatile bool m_quit;
@@ -103,9 +101,9 @@ public:
     void Execute(void);
     void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
     void UpdateCode(std::string& code);
-    void InitUnit(void);
+    void InitUnit(unsigned int programMode);
     void FinishUnit(void);
-    FireStarterUnit(unsigned int unitIndex, CUdevice device, class FireStarter *fireStarter);
+    FireStarterUnit(FireStarter* fireStarter, unsigned int unitIndex, CUdevice device);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
 
@@ -119,7 +117,7 @@ public:
     CUstream m_fireShowStream;
     CUmodule m_fireShowModule;
     CUfunction m_fireShowFunction;
-    std::string m_targetCode;
+    std::string m_solutionTargetCode;
     std::string m_evolveCode;
     std::string m_optimizeCode;
     std::string m_fireShowCode;
@@ -128,8 +126,7 @@ public:
     std::vector<FireStarterUnit*> m_units;
     FrameBuffer m_buffer;
     char m_statusString[1024];
-    unsigned int m_computeCapabilityMajor = 0;
-    unsigned int m_computeCapabilityMinor = 0;
+    unsigned int m_evolveMode;
     unsigned int m_generation;
     unsigned int m_bestGeneration;
     float m_bestResult;
