@@ -105,7 +105,7 @@ void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
 {
     // Generate the evaluate function.
     code.clear();
-    code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n)\r\n";
+    code += "inline float Evaluate(FireStarterData data, float n)\r\n";
     code += "{\r\n";
     GenerateCode(code, 1, optimize);
     code += "    return isfinite(n) ? n : 0.0f;\r\n";
@@ -320,22 +320,31 @@ void FireStarterUnit::GenerateUnits(void)
 {
     // Update the Evaluate funtion.
     std::string code;
-    code += "GPU_FUNCTION float Evaluate(FireStarterData data, float n, unsigned int version)\r\n";
-    code += "{\r\n";
 #if PROGRAM_STATES > 1
+    for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
+        if (i)
+            code += "\r\n";
+        code += Format("inline float Evaluate%d(FireStarterData data, float n)\r\n", i);
+        code += "{\r\n";
+        m_states[i].m_program.GenerateCode(code, 2);
+        code += "    return isfinite(n) ? n : 0.0f;\r\n";
+        code += "} // Evaluate\r\n";
+    }
+    FireStarter::UpdateProgram(m_unitsCode, code, EVALUATE_CODE);
+
+    code.clear();
     code += "    switch (version) {\r\n";
     for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
         code += Format("    case %d:\r\n", i);
-        m_states[i].m_program.GenerateCode(code, 2);
+        code += Format("        evaluate = Evaluate%d;\r\n", i);
         code += "        break;\r\n";
     }
     code += "    }\r\n";
+    FireStarter::UpdateProgram(m_unitsCode, code, SELECT_CODE);
 #else
-    m_states[0].m_program.GenerateCode(code, 1);
-#endif
-    code += "    return isfinite(n) ? n : 0.0f;\r\n";
-    code += "} // Evaluate\r\n";
+    m_states[0].m_program.GenerateEvaluate(code);
     FireStarter::UpdateProgram(m_unitsCode, code, EVALUATE_CODE);
+#endif
 
     // Compile the new code.
     m_unitsFunction = FireStarter::CompileProgram(m_unitsCode, m_unitsModule, "Units");
@@ -344,9 +353,9 @@ void FireStarterUnit::GenerateUnits(void)
 void FireStarterUnit::GenerateOptimize(void)
 {
     // Update the Evaluate funtion.
-    std::string evaluateCode;
-    m_states[0].m_program.GenerateEvaluate(evaluateCode);
-    FireStarter::UpdateProgram(m_optimizeCode, evaluateCode, EVALUATE_CODE);
+    std::string code;
+    m_states[0].m_program.GenerateEvaluate(code);
+    FireStarter::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
 
     // Compile the new code.
     m_optimizeFunction = FireStarter::CompileProgram(m_optimizeCode, m_optimizeModule, "Optimize");
@@ -588,7 +597,15 @@ void FireStarterUnit::UpdateProgram(FireStarterState* &bestState, unsigned int* 
 
 void FireStarterUnit::UpdateCode(std::string& code)
 {
+#if FIRESTARTER_MODE == FIRESTARTER_UNITS
+    code = m_evolveCode;
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_UNITS
+    code = m_unitsCode;
+#endif
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
     code = m_optimizeCode;
+#endif
 } // UpdateCode
 
 void FireStarterUnit::InitUnit(void)
@@ -824,7 +841,7 @@ void FireStarter::UpdateProgram(std::string& code, const std::string& replacemen
 void FireStarter::BuildData(std::string& code)
 {
     std::string replacementData;
-    code += "GPU_FUNCTION void InitData(const unsigned int variation, FireStarterData &data)\r\n";
+    code += "inline void InitData(const unsigned int variation, FireStarterData &data)\r\n";
     code += "{\r\n";
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         code += Format("    if (variation == %d) {\r\n", v);

@@ -3,23 +3,105 @@
 #include "FireStarterOrder.h"
 #include "HashRandom.h"
 
+typedef float (*EvaluateVersion)(FireStarterData data, float n);
+
 // EVALUATE //
-GPU_FUNCTION float Evaluate(FireStarterData data, float n)
+inline float Evaluate0(FireStarterData data, float n)
 {
+        n = data.d[0] *= n;
+        n = data.d[1] += n;
+        n = data.d[2] *= n;
+        n += data.d[3];
+        n = data.d[4] *= n;
+        n = data.d[5] += n;
+        n = data.d[6] *= n;
+        n += data.d[6];
+        n *= data.d[7];
+        n = data.d[8] += n;
+        n = data.d[9] *= n;
+        n = data.d[0] += n;
+        n = data.d[2] *= n;
+        n += data.d[5];
+        n *= data.d[2];
+        n += data.d[8];
+        n = data.d[10] *= n;
+        n = data.d[11] += n;
+        n *= data.d[12];
+        n += data.d[4];
+        n *= data.d[13];
+        n += data.d[1];
+        n *= data.d[14];
+        n += data.d[15];
+        n *= data.d[16];
+        n += data.d[0];
+        n *= data.d[10];
+        n += data.d[9];
+        n *= data.d[17];
+        n += data.d[11];
+        n *= data.d[18];
+        n += data.d[19];
+    return isfinite(n) ? n : 0.0f;
+} // Evaluate
+
+inline float Evaluate1(FireStarterData data, float n)
+{
+        n = data.d[0] *= n;
+        n = data.d[1] += n;
+        n = data.d[2] *= n;
+        n = data.d[3] += n;
+        n = data.d[3] *= n;
+        n = data.d[4] += n;
+        n = data.d[5] *= n;
+        n += data.d[5];
+        n *= data.d[6];
+        n = data.d[7] += n;
+        n = data.d[8] *= n;
+        n += data.d[0];
+        n = data.d[2] *= n;
+        n += data.d[4];
+        n *= data.d[2];
+        n += data.d[7];
+        n = data.d[9] *= n;
+        n = data.d[10] += n;
+        n *= data.d[11];
+        n += data.d[3];
+        n *= data.d[12];
+        n += data.d[1];
+        n *= data.d[13];
+        n += data.d[14];
+        n *= data.d[15];
+        n += data.d[16];
+        n *= data.d[9];
+        n += data.d[8];
+        n *= data.d[17];
+        n += data.d[10];
+        n *= data.d[18];
+        n += data.d[19];
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
 
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
+GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int version, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
-
+    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(RANDOMHASH(member) + generation) + version);
     float theta[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++)
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
+
+    EvaluateVersion evaluate;
+// SELECT //
+    switch (version) {
+    case 0:
+        evaluate = Evaluate0;
+        break;
+    case 1:
+        evaluate = Evaluate1;
+        break;
+    }
+// END //
 
     // Sort the variations by the previous results.
     FireStarterOrder varaitions(generation ? oldResults->results[member].minResult : nullptr);
@@ -52,7 +134,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-                curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
+                curResult = fmaxf(fabsf(evaluate(data, theta[i]) - target[i]), curResult);
             if (curResult < result) {
                 result = curResult;
                 evolutionFactor = EVOLUTION_FACTOR * result;
@@ -63,7 +145,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         // Calculate a more accure estimate of the result.
         for (int i = 0; i < PROGRAM_PRECISION; i++) {
             float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
-            result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
+            result = fmaxf(fabsf(evaluate(data, theta) - Target(theta, variation)), result);
         }
 
         if (generation && (result >= oldResult)) {
@@ -91,4 +173,4 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
     }
     newResults->results[member].maxResult = maxResult;
-} // Optimize
+} // Units

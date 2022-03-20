@@ -3,8 +3,10 @@
 #include "FireStarterOrder.h"
 #include "HashRandom.h"
 
+typedef float (*EvaluateVersion)(FireStarterData data, float n);
+
 // EVALUATE //
-GPU_FUNCTION float Evaluate(FireStarterData data, float n, const unsigned int int version)
+inline float Evaluate(FireStarterData data, float n, const unsigned int int version)
 {
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
@@ -19,6 +21,11 @@ GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldRes
     float theta[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++)
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
+
+    EvaluateVersion evaluate;
+// SELECT //
+    evaluate = Evaluate;
+// END //
 
     // Sort the variations by the previous results.
     FireStarterOrder varaitions(generation ? oldResults->results[member].minResult : nullptr);
@@ -51,7 +58,7 @@ GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldRes
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-                curResult = fmaxf(fabsf(Evaluate(data, theta[i], version) - target[i]), curResult);
+                curResult = fmaxf(fabsf(evaluate(data, theta[i]) - target[i]), curResult);
             if (curResult < result) {
                 result = curResult;
                 evolutionFactor = EVOLUTION_FACTOR * result;
@@ -62,7 +69,7 @@ GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldRes
         // Calculate a more accure estimate of the result.
         for (int i = 0; i < PROGRAM_PRECISION; i++) {
             float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
-            result = fmaxf(fabsf(Evaluate(data, theta, version) - Target(theta, variation)), result);
+            result = fmaxf(fabsf(evaluate(data, theta) - Target(theta, variation)), result);
         }
 
         if (generation && (result >= oldResult)) {

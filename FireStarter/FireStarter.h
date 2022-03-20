@@ -16,6 +16,7 @@
 #define INSTRUCTIONS_CODE   "// INSTRUCTIONS //"
 #define PROGRAM_CODE        "// PROGRAM //"
 #define EVALUATE_CODE       "// EVALUATE //"
+#define SELECT_CODE         "// SELECT //"
 #define END_CODE            "// END //"
 
 struct FireStarterRegister {

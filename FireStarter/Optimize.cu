@@ -4,7 +4,7 @@
 #include "HashRandom.h"
 
 // EVALUATE //
-GPU_FUNCTION float Evaluate(FireStarterData data, float n)
+inline float Evaluate(FireStarterData data, float n)
 {
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
