@@ -3,29 +3,25 @@
 #include "FireStarterOrder.h"
 #include "HashRandom.h"
 
-typedef float (*EvaluateVersion)(FireStarterData data, float n);
-
 // EVALUATE //
-inline float Evaluate(FireStarterData data, float n, const unsigned int int version)
+inline float Evaluate(FireStarterData data, float n)
 {
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
 
-GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int version, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
+// OPTMIZE //
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(RANDOMHASH(member) + generation) + version);
+    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
+
+    // Precalculate the target theta values.
     float theta[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++)
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
-
-    EvaluateVersion evaluate;
-// SELECT //
-    evaluate = Evaluate;
-// END //
 
     // Sort the variations by the previous results.
     FireStarterOrder varaitions(generation ? oldResults->results[member].minResult : nullptr);
@@ -35,10 +31,14 @@ GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldRes
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         unsigned int variation = varaitions.order[v];
         float result, oldResult;
+
+        // Precalculate the target sample values.
         float target[SAMPLE_ITERATIONS];
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
             target[i] = Target(theta[i], variation);
 
+        // The first generation is initalized with random numbers.
+        // Later generations continue to evolve the data.
         FireStarterData data;
         float evolutionFactor;
         if (!generation) {
@@ -52,13 +52,14 @@ GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldRes
             evolutionFactor = EVOLUTION_FACTOR * result;
         }
 
+        // Iterate to evolve the data.
         for (unsigned int p = 0; p < iterations; p++) {
             unsigned int d = RANDOMSEED(memberSeed) % dataSize;
             float oldData = data.d[d];
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
             float curResult = 0.0f;
             for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-                curResult = fmaxf(fabsf(evaluate(data, theta[i]) - target[i]), curResult);
+                curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
             if (curResult < result) {
                 result = curResult;
                 evolutionFactor = EVOLUTION_FACTOR * result;
@@ -69,9 +70,10 @@ GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldRes
         // Calculate a more accure estimate of the result.
         for (int i = 0; i < PROGRAM_PRECISION; i++) {
             float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
-            result = fmaxf(fabsf(evaluate(data, theta) - Target(theta, variation)), result);
+            result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
         }
 
+        // If the result was worse, copy from a member with better results.
         if (generation && (result >= oldResult)) {
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of members.
@@ -91,10 +93,12 @@ GPU_GLOBAL void Units(FireStarterResults* newResults, FireStarterResults* oldRes
             }
             maxResult = fmaxf(maxResult, bestResult);
         } else {
+            // Save better results.
             newResults->results[member].data[variation] = data;
             newResults->results[member].minResult[variation] = result;
             maxResult = fmaxf(maxResult, result);
         }
     }
     newResults->results[member].maxResult = maxResult;
-} // Units
+} // Optimize
+// END //

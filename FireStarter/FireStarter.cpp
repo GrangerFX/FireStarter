@@ -319,35 +319,37 @@ void FireStarterUnit::GenerateEvolve(void)
 void FireStarterUnit::GenerateUnits(void)
 {
     // Update the Evaluate funtion.
-    std::string code;
-#if PROGRAM_STATES > 1
+    std::string optimize;
+    FireStarter::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
+    std::string evaluateCode;
+    std::string optimizeCode;
     for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
+        std::string evaluate;
+        m_states[i].m_program.GenerateEvaluate(evaluate);
+        std::string evaluateName = Format("Evaluate%d", i);
+        FireStarter::ReplaceCode(evaluate, "Evaluate", evaluateName);
         if (i)
-            code += "\r\n";
-        code += Format("inline float Evaluate%d(FireStarterData data, float n)\r\n", i);
-        code += "{\r\n";
-        m_states[i].m_program.GenerateCode(code, 2);
-        code += "    return isfinite(n) ? n : 0.0f;\r\n";
-        code += "} // Evaluate\r\n";
-    }
-    FireStarter::UpdateProgram(m_unitsCode, code, EVALUATE_CODE);
+            evaluateCode += "\r\n";
+        evaluateCode += evaluate;
 
-    code.clear();
-    code += "    switch (version) {\r\n";
-    for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
-        code += Format("    case %d:\r\n", i);
-        code += Format("        evaluate = Evaluate%d;\r\n", i);
-        code += "        break;\r\n";
+        std::string optimizeUnit = optimize;
+        std::string optimizeName = Format("Optimize%d", i);
+        FireStarter::ReplaceCode(optimizeUnit, "Optimize", optimizeName);
+        FireStarter::ReplaceCode(optimizeUnit, "Evaluate", evaluateName);
+        if (i)
+            optimizeCode += "\r\n";
+        optimizeCode += optimizeUnit;
     }
-    code += "    }\r\n";
-    FireStarter::UpdateProgram(m_unitsCode, code, SELECT_CODE);
-#else
-    m_states[0].m_program.GenerateEvaluate(code);
-    FireStarter::UpdateProgram(m_unitsCode, code, EVALUATE_CODE);
-#endif
+
+    // Create the units code by replacing the evaluate and optimize sections of the optimize code.
+    m_unitsCode = m_optimizeCode;
+    FireStarter::UpdateProgram(m_unitsCode, evaluateCode, EVALUATE_CODE);
+    FireStarter::UpdateProgram(m_unitsCode, optimizeCode, OPTIMIZE_CODE);
 
     // Compile the new code.
-    m_unitsFunction = FireStarter::CompileProgram(m_unitsCode, m_unitsModule, "Units");
+    FireStarter::CompileProgram(m_unitsCode, m_unitsModule);
+    for (unsigned int i = 0; i < PROGRAM_STATES; i++)
+        m_unitFunction[i] = FireStarter::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
 } // GenerateUnits
 
 void FireStarterUnit::GenerateOptimize(void)
@@ -427,13 +429,12 @@ void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int popula
         unsigned int curGeneration = generation + g;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
-                        reinterpret_cast<void*>(&version),
                         reinterpret_cast<void*>(&dataSize),
                         reinterpret_cast<void*>(&population),
                         reinterpret_cast<void*>(&iterations),
                         reinterpret_cast<void*>(&curGeneration) };
 
-        checkCUDAErrors(cuLaunchKernel(m_unitsFunction,
+        checkCUDAErrors(cuLaunchKernel(m_unitFunction[version],
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
             0, m_unitStream,                                    // shared mem, stream */
@@ -687,7 +688,7 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, FireSt
     m_unitDevice = device;
     m_unitContext = nullptr;
     m_evolveCode = m_fireStarter->m_evolveCode;
-    m_unitsCode = m_fireStarter->m_unitsCode;
+    m_unitsCode = m_fireStarter->m_optimizeCode;
     m_optimizeCode = m_fireStarter->m_optimizeCode;
     m_deviceResults = nullptr;
     m_hostResults = nullptr;
@@ -698,7 +699,7 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, FireSt
     m_evolveModule = nullptr;
     m_unitsModule = nullptr;
     m_evolveFunction = nullptr;
-    m_unitsFunction = nullptr;
+    memset(m_unitFunction, 0, sizeof(m_unitFunction));
     m_optimizeModule = nullptr;
     m_optimizeFunction = nullptr;
     m_programGeneration = 0;
@@ -776,11 +777,20 @@ CUfunction FireStarter::CompileProgram(const std::string& program, CUmodule& cud
     free(ptx);
     ptx = nullptr;
     CUfunction function = nullptr;
-    checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName));
-    printf(">>>cuModuleGetFunction: %f\n", timer.Duration());
+    if (functionName) {
+        checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName));
+        printf(">>>cuModuleGetFunction: %f\n", timer.Duration());
+    }
     printf("\n");
     return function;
 } // CompileProgram
+
+CUfunction FireStarter::GetFunction(CUmodule& cuda_module, const char* functionName)
+{
+    CUfunction function = nullptr;
+    checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName));
+    return function;
+} // GetFunction
 
 bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
 {
@@ -814,13 +824,51 @@ void FireStarter::ReplaceCode(std::string& code, const std::string& search, cons
     // Repeat till end is reached
     while (pos != std::string::npos) {
         // Replace this occurrence of Sub String
-        code.replace(pos, search.size(), replace);
+        code.replace(pos, search.length(), replace);
         // Get the next occurrence from the current position
-        pos = code.find(search, pos + replace.size());
+        pos = code.find(search, pos + replace.length());
     }
 } // ReplaceCode
 
-void FireStarter::UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString)
+bool FireStarter::FindCode(const std::string& code, const std::string startString, size_t &start, size_t &length)
+{
+    size_t startPos = code.find(startString);
+    if (startPos == std::string::npos)
+        return false;
+    size_t startStringLength = startString.length();
+    if (code[startPos + startStringLength] == '\r')
+        startStringLength++;
+    if (code[startPos + startStringLength] == '\n')
+        startStringLength++;
+    size_t endPos = code.find(END_CODE, startPos);
+    if (endPos != std::string::npos)
+        startPos += startStringLength;
+    else
+        endPos = startPos + startStringLength;
+    start = startPos;
+    length = endPos - startPos;
+    return true;
+} // FindCode
+
+void FireStarter::ExtractProgram(const std::string& code, std::string& extractCode, const std::string &startString)
+{
+    size_t startPos = code.find(startString);
+    if (startPos != std::string::npos) {
+        size_t startStringLength = startString.length();
+        if (code[startPos + startStringLength] == '\r')
+            startStringLength++;
+        if (code[startPos + startStringLength] == '\n')
+            startStringLength++;
+        size_t endPos = code.find(END_CODE, startPos);
+        if (endPos != std::string::npos)
+            startPos += startStringLength;
+        else
+            endPos = startPos + startStringLength;
+        extractCode = code.substr(startPos, endPos - startPos);
+    }
+} // ExtractProgram
+
+void FireStarter::UpdateProgram(std::string& code, const std::string& replacementCode, const std::string &startString)
 {
     size_t startPos = code.find(startString);
     if (startPos != std::string::npos) {
@@ -864,8 +912,6 @@ bool FireStarter::LoadTargetCode(void)
 bool FireStarter::LoadFireStarterCode(void)
 {
     if (!FireStarter::LoadCode("Evolve.cu", m_evolveCode))
-        return false;
-    if (!FireStarter::LoadCode("Units.cu", m_unitsCode))
         return false;
     if (!FireStarter::LoadCode("Optimize.cu", m_optimizeCode))
         return false;

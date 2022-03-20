@@ -16,7 +16,7 @@
 #define INSTRUCTIONS_CODE   "// INSTRUCTIONS //"
 #define PROGRAM_CODE        "// PROGRAM //"
 #define EVALUATE_CODE       "// EVALUATE //"
-#define SELECT_CODE         "// SELECT //"
+#define OPTIMIZE_CODE       "// OPTMIZE //"
 #define END_CODE            "// END //"
 
 struct FireStarterRegister {
@@ -79,10 +79,11 @@ public:
     CUmodule m_unitsModule;
     CUmodule m_optimizeModule;
     CUfunction m_evolveFunction;
-    CUfunction m_unitsFunction;
+    CUfunction m_unitFunction[PROGRAM_STATES];
     CUfunction m_optimizeFunction;
     std::string m_evolveCode;
     std::string m_unitsCode;
+    std::string m_unitCode;
     std::string m_optimizeCode;
     size_t m_resultsSize;
     unsigned int m_programGeneration;
@@ -120,7 +121,6 @@ public:
     CUfunction m_fireShowFunction;
     std::string m_targetCode;
     std::string m_evolveCode;
-    std::string m_unitsCode;
     std::string m_optimizeCode;
     std::string m_fireShowCode;
     std::string m_bestCode;
@@ -145,9 +145,12 @@ public:
     static void SaveCode(const std::string& filePath, const std::string& code);
     static bool LoadCode(const std::string& filePath, std::string& code);
     static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
-    static void UpdateProgram(std::string& code, const std::string& replacementCode, std::string startString);
+    static bool FindCode(const std::string& code, const std::string startString, size_t& start, size_t& length);
+    static void ExtractProgram(const std::string& code, std::string& extractCode, const std::string& startString);
+    static void UpdateProgram(std::string& code, const std::string& replacementCode, const std::string& startString);
     void BuildData(std::string& code);
-    static CUfunction CompileProgram(const std::string& program, CUmodule& cuda_module, const char* functionName);
+    static CUfunction CompileProgram(const std::string& program, CUmodule& cuda_module, const char* functionName = nullptr);
+    static CUfunction GetFunction(CUmodule& cuda_module, const char* functionName);
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
     bool LoadFireShowCode(void);

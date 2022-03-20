@@ -10,6 +10,7 @@ inline float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
+// OPTMIZE //
 GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -17,6 +18,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         return;
     unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
 
+    // Precalculate the target theta values.
     float theta[SAMPLE_ITERATIONS];
     for (int i = 0; i < SAMPLE_ITERATIONS; i++)
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
@@ -29,10 +31,14 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         unsigned int variation = varaitions.order[v];
         float result, oldResult;
+
+        // Precalculate the target sample values.
         float target[SAMPLE_ITERATIONS];
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
             target[i] = Target(theta[i], variation);
 
+        // The first generation is initalized with random numbers.
+        // Later generations continue to evolve the data.
         FireStarterData data;
         float evolutionFactor;
         if (!generation) {
@@ -46,6 +52,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             evolutionFactor = EVOLUTION_FACTOR * result;
         }
 
+        // Iterate to evolve the data.
         for (unsigned int p = 0; p < iterations; p++) {
             unsigned int d = RANDOMSEED(memberSeed) % dataSize;
             float oldData = data.d[d];
@@ -66,6 +73,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
         }
 
+        // If the result was worse, copy from a member with better results.
         if (generation && (result >= oldResult)) {
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of members.
@@ -85,6 +93,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             }
             maxResult = fmaxf(maxResult, bestResult);
         } else {
+            // Save better results.
             newResults->results[member].data[variation] = data;
             newResults->results[member].minResult[variation] = result;
             maxResult = fmaxf(maxResult, result);
@@ -92,3 +101,4 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     }
     newResults->results[member].maxResult = maxResult;
 } // Optimize
+// END //
