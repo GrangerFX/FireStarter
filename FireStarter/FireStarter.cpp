@@ -1,6 +1,7 @@
 #include "FireStarter.h"
 #include "FireStarterUtil.h"
 #include "FireStarter_LoadState.h"
+#include "CUDACompile.h"
 #include <iomanip>
 #include <fstream>
 #include <sstream>
@@ -323,7 +324,7 @@ FireStarterState::FireStarterState(void)
 void FireStarterUnit::GenerateEvolve(void)
 {
     // Compile the program
-    m_evolveFunction = FireStarter::CompileProgram(m_evolveCode, m_evolveModule, "Evolve");
+    m_evolveFunction = CUDACompile::CompileProgram(m_evolveCode, m_evolveModule, "Evolve");
 } // GenerateEvolve
 
 void FireStarterUnit::GenerateUnits(void)
@@ -357,9 +358,9 @@ void FireStarterUnit::GenerateUnits(void)
     FireStarter::UpdateProgram(m_unitsCode, optimizeCode, OPTIMIZE_CODE);
 
     // Compile the new code.
-    FireStarter::CompileProgram(m_unitsCode, m_unitsModule);
+    CUDACompile::CompileProgram(m_unitsCode, m_unitsModule);
     for (unsigned int i = 0; i < PROGRAM_STATES; i++)
-        m_unitFunction[i] = FireStarter::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
+        m_unitFunction[i] = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
 } // GenerateUnits
 
 void FireStarterUnit::GenerateOptimize(void)
@@ -370,7 +371,7 @@ void FireStarterUnit::GenerateOptimize(void)
     FireStarter::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
 
     // Compile the new code.
-    m_optimizeFunction = FireStarter::CompileProgram(m_optimizeCode, m_optimizeModule, "Optimize");
+    m_optimizeFunction = CUDACompile::CompileProgram(m_optimizeCode, m_optimizeModule, "Optimize");
 } // GenerateOptimize
 
 void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
@@ -728,88 +729,6 @@ FireStarterUnit::~FireStarterUnit(void)
 {
 } // ~FireStarterUnit
 
-CUfunction FireStarter::CompileProgram(const std::string& program, CUmodule& cuda_module, const char *functionName)
-{
-    SimpleTimer timer;
-
-    if (cuda_module) {
-        checkCUDAErrors(cuModuleUnload(cuda_module));
-        cuda_module = nullptr;
-    }
-
-    printf("\n>>>CompileProgram: %s\n", functionName);
-    printf(">>>cuModuleUnload: %f\n", timer.Duration());
-
-    // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
-    nvrtcProgram prog;
-    const char* code = program.c_str();
-    checkNVRTCErrors(nvrtcCreateProgram(&prog, code, functionName, 0, nullptr, nullptr));
-    printf(">>>nvrtcCreateProgram: %f\n", timer.Duration());
-
-    std::vector<const char*> options;
-    options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
- //   options.push_back("-G");              // Generate debug info
- //   options.push_back("-lineinfo");       // Generate line information
-
-    static std::string computeDevice;
-    if (!computeDevice.length()) {
-        int computeCapabilityMajor = 0;
-        int computeCapabilityMinor = 0;
-        CUdevice device = 0;
-        checkCUDAErrors(cuDeviceGet(&device, 0)); // Use the first CUDA device for now.
-        checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMajor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, device));
-        checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMinor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
-        computeDevice = Format("-arch=compute_%d%d", computeCapabilityMajor, computeCapabilityMinor);
-    }
-    options.push_back(computeDevice.c_str());
-
-    nvrtcResult res = nvrtcCompileProgram(prog, (int)options.size(), options.data());
-    printf(">>>nvrtcCompileProgram: %f\n", timer.Duration());
-    if (res != 0) {
-        // Output the compile log.
-        size_t logSize;
-        checkNVRTCErrors(nvrtcGetProgramLogSize(prog, &logSize));
-        if (logSize) {
-            char* log = reinterpret_cast<char*>(malloc(logSize + 1));
-            checkNVRTCErrors(nvrtcGetProgramLog(prog, log));
-            log[logSize] = '\x0';
-            printf("compilation log ---\n%s\nend log---\n", log);
-            free(log);
-        }
-        checkNVRTCErrors(res);
-    }
-
-    // Fetch PTX
-    char* ptx;
-    size_t ptxSize;
-    checkNVRTCErrors(nvrtcGetPTXSize(prog, &ptxSize));
-    printf(">>>nvrtcGetPTXSize: %f\n", timer.Duration());
-    ptx = reinterpret_cast<char*>(malloc(sizeof(char) * ptxSize));
-    checkNVRTCErrors(nvrtcGetPTX(prog, ptx));
-    printf(">>>nvrtcGetPTX: %f\n", timer.Duration());
-    checkNVRTCErrors(nvrtcDestroyProgram(&prog));
-    printf(">>>nvrtcDestroyProgram: %f\n", timer.Duration());
-
-    checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx, 0, 0, 0));
-    printf(">>>cuModuleLoadDataEx: %f\n", timer.Duration());
-    free(ptx);
-    ptx = nullptr;
-    CUfunction function = nullptr;
-    if (functionName) {
-        checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName));
-        printf(">>>cuModuleGetFunction: %f\n", timer.Duration());
-    }
-    printf("\n");
-    return function;
-} // CompileProgram
-
-CUfunction FireStarter::GetFunction(CUmodule& cuda_module, const char* functionName)
-{
-    CUfunction function = nullptr;
-    checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName));
-    return function;
-} // GetFunction
-
 bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
 {
     std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
@@ -1051,7 +970,7 @@ void FireStarter::ControlThread(void)
     m_buffer.Erase();
 
     // Compile fireShow.
-    m_fireShowFunction = CompileProgram(m_fireShowCode, m_fireShowModule, "FireShow");
+    m_fireShowFunction = CUDACompile::CompileProgram(m_fireShowCode, m_fireShowModule, "FireShow");
 
     // Create and initialize a unit for each processor thread.
     unsigned int unit_count = PROGRAM_UNITS;
@@ -1150,11 +1069,19 @@ void FireStarter::ControlThread(void)
     m_buffer.Resize(0, 0);
 
     // Unload the fire show code and destroy the CUDA context.
-    if (m_fireShowModule)
+    if (m_fireShowModule) {
         checkCUDAErrors(cuModuleUnload(m_fireShowModule));
+        m_fireShowModule = nullptr;
+    }
     m_fireShowFunction = nullptr;
-    if (m_fireShowContext)
+    if (m_fireShowStream) {
+        checkCUDAErrors(cudaStreamDestroy(m_fireShowStream));
+        m_fireShowStream = nullptr;
+    }
+    if (m_fireShowContext) {
         checkCUDAErrors(cuCtxDestroy(m_fireShowContext));
+        m_fireShowContext = nullptr;
+    }
 } // ControlThread
 
 float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation)
@@ -1228,7 +1155,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
 void FireStarter::Quit(void)
 {
     m_quitControlThread = true;
-    DispatchSync([]{}); // This will wait for ControlThread() to exit.
+    DispatchSync([this] {}); // This will wait for ControlThread() to exit.
 } // Quit
 
 FireStarter::FireStarter(void)

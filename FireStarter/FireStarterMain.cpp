@@ -1,7 +1,6 @@
 #include <Windows.h>
 
 #include "FireStarter.h"
-static FireStarter fireStarter;
 
 // ----------------------------------------------------------------------------
 LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -44,6 +43,7 @@ LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 // ----------------------------------------------------------------------------
 HRESULT Initialize(HINSTANCE hInstance)
 {
+	FireStarter fireStarter;
 	HRESULT result = E_FAIL;
 
 	// Alloc Window

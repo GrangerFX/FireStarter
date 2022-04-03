@@ -146,8 +146,6 @@ public:
     static void ExtractProgram(const std::string& code, std::string& extractCode, const std::string& startString);
     static void UpdateProgram(std::string& code, const std::string& replacementCode, const std::string& startString);
     void BuildData(std::string& code);
-    static CUfunction CompileProgram(const std::string& program, CUmodule& cuda_module, const char* functionName = nullptr);
-    static CUfunction GetFunction(CUmodule& cuda_module, const char* functionName);
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);
     bool LoadFireShowCode(void);

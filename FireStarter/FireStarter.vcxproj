@@ -88,9 +88,12 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CUDACompile.cpp" />
     <ClCompile Include="FireStarter.cpp" />
-    <ClCompile Include="WindowsMain.cpp" />
+    <ClCompile Include="FireStarterMain.cpp" />
+    <ClInclude Include="CUDACompile.h" />
     <ClInclude Include="CUDADefines.h" />
+    <ClInclude Include="CUDAErrors.h" />
     <ClInclude Include="FireStarter.h" />
     <ClInclude Include="FireStarterData.h" />
     <ClInclude Include="FireStarterDefines.h" />
