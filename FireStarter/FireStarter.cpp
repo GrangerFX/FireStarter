@@ -1155,7 +1155,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
 void FireStarter::Quit(void)
 {
     m_quitControlThread = true;
-    DispatchSync([this] {}); // This will wait for ControlThread() to exit.
+    DispatchSync([] {}); // This will wait for ControlThread() to exit.
 } // Quit
 
 FireStarter::FireStarter(void)
@@ -1173,6 +1173,7 @@ FireStarter::FireStarter(void)
     m_controlUpdate = false;
     m_bufferUpdate = false;
     m_evolveMode = FIRESTARTER_MODE;
+    m_quitControlThread = false;
 } // FireStarter
 
 FireStarter::~FireStarter(void)
