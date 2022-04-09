@@ -170,7 +170,7 @@ inline void LoadState(FireStarterState& state)
     state.m_result.minResult[2] = 0.000058f;
 
     state.m_result.maxResult = 0.000074f;
-    state.m_result.test = 141607702;
+    state.m_result.test = 3452816845;
 
     state.m_bestResult = 0.000058f;
 

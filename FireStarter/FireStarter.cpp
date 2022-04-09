@@ -775,11 +775,16 @@ FireStarterProcess::FireStarterProcess(const std::string& name)
 {
     m_processName = name;
     m_processPath = ModulePath() + m_processName + ".exe";
+//    m_processStartupInfo.dwFlags = STARTF_USESHOWWINDOW;
+//    m_processStartupInfo.wShowWindow = SW_HIDE;
 } // FireStarterProcess
 
 FireStarterProcess::~FireStarterProcess(void)
 {
-}
+    unsigned int result = WaitForSingleObject(m_processInformation.hProcess, INFINITE);
+    bool closeHandleResult1 = CloseHandle(m_processInformation.hProcess);
+    bool closeHandleResult2 = CloseHandle(m_processInformation.hThread);
+} // ~FireStarterProcess
 
 bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
 {
@@ -1212,9 +1217,9 @@ void FireStarter::Quit(void)
 
 FireStarter::FireStarter(void)
 {
-    FireStarterProcess* testProcess = new FireStarterProcess;
-    testProcess->DispatchAsync([testProcess] {
-        testProcess->StartProcess();
+    m_testProcess = new FireStarterProcess;
+    m_testProcess->DispatchAsync([this] {
+        m_testProcess->StartProcess();
     });
 
     m_fireShowContext = nullptr;
@@ -1235,4 +1240,6 @@ FireStarter::FireStarter(void)
 
 FireStarter::~FireStarter(void)
 {
+    if (m_testProcess)
+        delete m_testProcess;
 } // ~FireStarter
