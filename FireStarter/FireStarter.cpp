@@ -757,20 +757,17 @@ FireStarterUnit::~FireStarterUnit(void)
 
 bool FireStarterProcess::StartProcess(void)
 {
-    STARTUPINFO si = {};
-    PROCESS_INFORMATION pi = {};
-    const char* path = m_processPath.c_str();
     bool result = CreateProcess(
-        path,   // module name
-        NULL,   // Command line
-        NULL,   // Process handle not inheritable
-        NULL,   // Thread handle not inheritable
-        FALSE,  // Set handle inheritance to FALSE
-        0,      // No creation flags
-        NULL,   // Use parent's environment block
-        NULL,   // Use parent's starting directory
-        &si,    // Pointer to STARTUPINFO structure
-        &pi);   // Pointer to PROCESS_INFORMATION structure
+        m_processPath.c_str(),  // module name
+        NULL,                   // Command line
+        NULL,                   // Process handle not inheritable
+        NULL,                   // Thread handle not inheritable
+        FALSE,                  // Set handle inheritance to FALSE
+        0,                      // No creation flags
+        NULL,                   // Use parent's environment block
+        NULL,                   // Use parent's starting directory
+        &m_processStartupInfo,  // Pointer to STARTUPINFO structure
+        &m_processInformation); // Pointer to PROCESS_INFORMATION structure
     return result;
 } // StartProcess
 

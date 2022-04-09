@@ -112,6 +112,8 @@ public:
 
 class FireStarterProcess : public SerialThread {
 private:
+    STARTUPINFO m_processStartupInfo = {};
+    PROCESS_INFORMATION m_processInformation = {};
     std::string m_processName;
     std::string m_processPath;
 public:
