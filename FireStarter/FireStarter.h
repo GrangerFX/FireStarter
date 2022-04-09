@@ -16,6 +16,9 @@
 #define OPTIMIZE_CODE       "// OPTMIZE //"
 #define END_CODE            "// END //"
 
+#define FIREMAKER           "FireMaker"
+#define FIRESTARTER         "FireStarter"
+
 struct FireStarterRegister {
     unsigned int dataIndex;
     unsigned int registerIndex;
@@ -106,6 +109,16 @@ public:
     FireStarterUnit(FireStarter* fireStarter, unsigned int unitIndex, CUdevice device);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
+
+class FireStarterProcess : public SerialThread {
+private:
+    std::string m_processName;
+    std::string m_processPath;
+public:
+    bool StartProcess(void);
+    FireStarterProcess(const std::string& name = FIREMAKER);
+    ~FireStarterProcess(void);
+}; // class FireStarterProcess
 
 class FireStarter : public SerialThread {
 public:

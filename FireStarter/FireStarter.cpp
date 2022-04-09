@@ -6,6 +6,32 @@
 #include <fstream>
 #include <sstream>
 
+inline const std::string& ModulePath(void)
+{
+    static std::string modulePath;
+    if (modulePath.empty()) {
+        HMODULE hModule = NULL;
+        if (GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCTSTR)ModulePath, &hModule)) {
+            char path[MAX_PATH] = { 0 };
+            GetModuleFileName(hModule, path, sizeof(path));
+            modulePath = path;
+
+            // Remove the module name leaving just the path.
+            size_t i = modulePath.length();
+            while (i) {
+                char c = path[i - 1];
+                if ((c == '/') || (c == '\\'))
+                    break;
+                i--;
+            }
+            modulePath.resize(i);
+        }
+        if (modulePath.empty())
+            modulePath = "./";
+    }
+    return modulePath;
+} // ModulePath
+
 void FireStarterProgram::OptimizeRegisters(void)
 {
     // Delete the unused registers and sort the remaining ones.
@@ -729,6 +755,35 @@ FireStarterUnit::~FireStarterUnit(void)
 {
 } // ~FireStarterUnit
 
+bool FireStarterProcess::StartProcess(void)
+{
+    STARTUPINFO si = {};
+    PROCESS_INFORMATION pi = {};
+    const char* path = m_processPath.c_str();
+    bool result = CreateProcess(
+        path,   // module name
+        NULL,   // Command line
+        NULL,   // Process handle not inheritable
+        NULL,   // Thread handle not inheritable
+        FALSE,  // Set handle inheritance to FALSE
+        0,      // No creation flags
+        NULL,   // Use parent's environment block
+        NULL,   // Use parent's starting directory
+        &si,    // Pointer to STARTUPINFO structure
+        &pi);   // Pointer to PROCESS_INFORMATION structure
+    return result;
+} // StartProcess
+
+FireStarterProcess::FireStarterProcess(const std::string& name)
+{
+    m_processName = name;
+    m_processPath = ModulePath() + m_processName + ".exe";
+} // FireStarterProcess
+
+FireStarterProcess::~FireStarterProcess(void)
+{
+}
+
 bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
 {
     std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
@@ -1160,6 +1215,11 @@ void FireStarter::Quit(void)
 
 FireStarter::FireStarter(void)
 {
+    FireStarterProcess* testProcess = new FireStarterProcess;
+    testProcess->DispatchAsync([testProcess] {
+        testProcess->StartProcess();
+    });
+
     m_fireShowContext = nullptr;
     m_fireShowModule = nullptr;
     m_fireShowFunction = nullptr;
