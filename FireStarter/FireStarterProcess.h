@@ -15,11 +15,13 @@ private:
     std::string m_processPath;
     std::string m_processPipeName;
     size_t m_processIndex = 0;
+    bool m_started = false;
     bool m_connected = false;
 public:
     const std::string& ModulePath(void) const;
-    bool WriteData(void* data, size_t size);
-    bool StartProcess(void);
+    void WriteData(void* data, size_t size);
+    void StartProcess(void);
+    void StopProcess(void);
     FireStarterProcess(class FireStarterServer *server, size_t index, const std::string& name = FIREMAKER);
     ~FireStarterProcess(void);
 }; // class FireStarterProcess
