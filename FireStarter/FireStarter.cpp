@@ -1160,10 +1160,7 @@ void FireStarter::Quit(void)
 
 FireStarter::FireStarter(void)
 {
-    m_testProcess = new FireStarterProcess;
-    m_testProcess->DispatchAsync([this] {
-        m_testProcess->StartProcess();
-    });
+    m_server.AddProcess();
 
     m_fireShowContext = nullptr;
     m_fireShowModule = nullptr;
@@ -1183,6 +1180,4 @@ FireStarter::FireStarter(void)
 
 FireStarter::~FireStarter(void)
 {
-    if (m_testProcess)
-        delete m_testProcess;
 } // ~FireStarter

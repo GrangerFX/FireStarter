@@ -125,7 +125,7 @@ public:
     std::string m_bestCode;
     FireStarterState m_bestEvaluateState;
     std::vector<FireStarterUnit*> m_units;
-    FireStarterProcess* m_testProcess;
+    FireStarterServer m_server;
     FrameBuffer m_buffer;
     char m_statusString[1024];
     unsigned int m_evolveMode;

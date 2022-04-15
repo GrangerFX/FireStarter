@@ -1,6 +1,8 @@
 #include "FireStarterProcess.h"
 #include "PrintF.h"
 
+#define SERVER_PIPE_BUFFER_SIZE   512
+
 static const std::string& GetModulePath(void)
 {
     static std::string modulePath;
@@ -32,50 +34,31 @@ const std::string& FireStarterProcess::ModulePath(void) const
     return GetModulePath();
 } // ModulePath
 
-bool FireStarterProcess::CreatePipes(void)
+bool FireStarterProcess::WriteData(void* data, size_t size)
 {
-    if (!m_pipesCreated) {
-        // Set the bInheritHandle flag so pipe handles are inherited. 
-        SECURITY_ATTRIBUTES securityAttributes;
-        securityAttributes.nLength = sizeof(SECURITY_ATTRIBUTES);
-        securityAttributes.bInheritHandle = TRUE;
-        securityAttributes.lpSecurityDescriptor = NULL;
-
-        // Create a pipe for the child process's STDOUT. 
-        if (!CreatePipe(&m_outputRead, &m_outputWrite, &securityAttributes, 0))
-            return false;
-
-        // Ensure the read handle to the pipe for STDOUT is not inherited.
-        if (!SetHandleInformation(m_outputRead, HANDLE_FLAG_INHERIT, 0))
-            return false;
-
-        // Create a pipe for the child process's STDIN. 
-        if (!CreatePipe(&m_inputRead, &m_inputWrite, &securityAttributes, 0))
-            return false;
-
-        // Ensure the write handle to the pipe for STDIN is not inherited. 
-        if (!SetHandleInformation(m_inputWrite, HANDLE_FLAG_INHERIT, 0))
-            return false;
-    }
-    m_pipesCreated = true;
-    return true;
-} // CreatePipes
+    // Note: Maximum size is 32 bits (4GB).
+    // TODO: Break up larger data blocks into smaller chunks if needed.
+    DWORD dataWritten = 0;
+    bool result = WriteFile(m_pipe, &size, (DWORD)sizeof(size_t), &dataWritten, NULL) && (dataWritten == (DWORD)sizeof(size_t));
+    result = result && WriteFile(m_pipe, data, (DWORD)size, &dataWritten, NULL) && (dataWritten == (DWORD)size);
+    return result;
+} // WriteData
 
 bool FireStarterProcess::StartProcess(void)
 {
-    if (!m_pipesCreated)
+    if (m_pipe != INVALID_HANDLE_VALUE)
         return false;
 
     m_processStartupInfo.cb = sizeof(STARTUPINFO);
     //  m_processStartupInfo.hStdError = m_outputWrite;
-    m_processStartupInfo.hStdOutput = m_outputWrite;
-    m_processStartupInfo.hStdInput = m_inputRead;
+    m_processStartupInfo.hStdOutput = m_pipe;
+    m_processStartupInfo.hStdInput = m_pipe;
     m_processStartupInfo.dwFlags |= STARTF_USESTDHANDLES;
     m_processStartupInfo.dwFlags |= STARTF_USESHOWWINDOW;
     m_processStartupInfo.wShowWindow = SW_SHOWMINIMIZED;
     //  m_processStartupInfo.wShowWindow = SW_HIDE;
 
-    return CreateProcess(
+    if (CreateProcess(
         m_processPath.c_str(),  // module name
         NULL,                   // Command line
         NULL,                   // Process handle not inheritable
@@ -85,24 +68,35 @@ bool FireStarterProcess::StartProcess(void)
         NULL,                   // Use parent's environment block
         NULL,                   // Use parent's starting directory
         &m_processStartupInfo,  // Pointer to STARTUPINFO structure
-        &m_processInformation); // Pointer to PROCESS_INFORMATION structure
+        &m_processInformation)) { // Pointer to PROCESS_INFORMATION structure
+
+        m_pipe = CreateNamedPipeA(
+            m_processPipeName.c_str(), // pipe name 
+            PIPE_ACCESS_DUPLEX,       // read/write access 
+            PIPE_TYPE_MESSAGE |       // message type pipe 
+            PIPE_READMODE_MESSAGE |   // message-read mode 
+            PIPE_WAIT,                // blocking mode (required)
+            PIPE_UNLIMITED_INSTANCES, // max. instances  
+            SERVER_PIPE_BUFFER_SIZE,  // output buffer size (defined above)
+            SERVER_PIPE_BUFFER_SIZE,  // input buffer size (defined above)
+            0,                        // client time-out (0 = default: 50ms)
+            NULL);                    // default security attribute 
+
+        if (m_pipe != INVALID_HANDLE_VALUE)
+            m_connected = ConnectNamedPipe(m_pipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+    }
+    return m_connected;
 } // StartProcess
 
-bool FireStarterProcess::WriteData(void* data, size_t size)
+FireStarterProcess::FireStarterProcess(FireStarterServer* server, size_t index, const std::string& name)
 {
-    // Note: Maximum size is 32 bits (4GB).
-    // TODO: Break up larger data blocks into smaller chunks if needed.
-    DWORD dataWritten = 0;
-    bool result = WriteFile(m_inputWrite, &size, (DWORD)sizeof(size_t), &dataWritten, NULL) && (dataWritten == (DWORD)sizeof(size_t));
-    result = result && WriteFile(m_inputWrite, data, (DWORD)size, &dataWritten, NULL) && (dataWritten == (DWORD)size);
-    return result;
-} // WriteData
-
-FireStarterProcess::FireStarterProcess(const std::string& name)
-{
+    m_server = server;
+    m_processIndex = index;
     m_processName = name;
     m_processPath = ModulePath() + m_processName + ".exe";
-    CreatePipes();
+    m_processPipeName = "\\\\.\\pipe\\" + name + std::to_string(index);
+    m_connected = false;
+    StartProcess();
 } // FireStarterProcess
 
 FireStarterProcess::~FireStarterProcess(void)
@@ -115,8 +109,26 @@ FireStarterProcess::~FireStarterProcess(void)
 
     // Close handles to the stdin and stdout pipes no longer needed by the child process.
     // If they are not explicitly closed, there is no way to recognize that the child process has ended.(?)
-    CloseHandle(m_outputRead);
-    CloseHandle(m_outputWrite);
-    CloseHandle(m_inputRead);
-    CloseHandle(m_inputWrite);
+    if (m_pipe != INVALID_HANDLE_VALUE) {
+        CloseHandle(m_pipe);
+        m_pipe = INVALID_HANDLE_VALUE;
+    }
 } // ~FireStarterProcess
+
+FireStarterProcess* FireStarterServer::AddProcess(const std::string& name)
+{
+    FireStarterProcess* process = new FireStarterProcess(this, m_processes.size() + 1, name);
+    m_processes.push_back(process);
+    return process;
+} // AddProcess
+
+FireStarterServer::FireStarterServer(const std::string& name)
+{
+    m_processServerName = name;
+} // FireStarterServer
+
+FireStarterServer::~FireStarterServer(void)
+{
+    for (FireStarterProcess* process : m_processes)
+        delete process;
+} // ~FireStarterServer
