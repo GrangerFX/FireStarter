@@ -3,6 +3,7 @@
 #include "FireStarterResults.h"
 #include "FireStarterOrder.h"
 #include "FireStarterUtil.h"
+#include "FireStarterProcess.h"
 #include "SerialThread.h"
 #include "HashRandom.h"
 
@@ -15,9 +16,6 @@
 #define EVALUATE_CODE       "// EVALUATE //"
 #define OPTIMIZE_CODE       "// OPTMIZE //"
 #define END_CODE            "// END //"
-
-#define FIREMAKER           "FireMaker"
-#define FIRESTARTER         "FireStarter"
 
 struct FireStarterRegister {
     unsigned int dataIndex;
@@ -109,26 +107,6 @@ public:
     FireStarterUnit(FireStarter* fireStarter, unsigned int unitIndex, CUdevice device);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
-
-class FireStarterProcess : public SerialThread {
-private:
-    HANDLE m_inputRead = NULL;
-    HANDLE m_inputWrite = NULL;
-    HANDLE m_outputRead = NULL;
-    HANDLE m_outputWrite = NULL;
-    STARTUPINFO m_processStartupInfo = {};
-    PROCESS_INFORMATION m_processInformation = {};
-    std::string m_processName;
-    std::string m_processPath;
-    bool m_pipesCreated = false;
-    bool m_processStarted = false;
-public:
-    bool CreatePipes(void);
-    bool StartProcess(void);
-    bool WriteData(void* data, size_t size);
-    FireStarterProcess(const std::string& name = FIREMAKER);
-    ~FireStarterProcess(void);
-}; // class FireStarterProcess
 
 class FireStarter : public SerialThread {
 public:
