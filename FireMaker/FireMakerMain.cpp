@@ -1,6 +1,6 @@
 #include <Windows.h>
-
 #include "FireMaker.h"
+#include "PrintF.h"
 
 // ----------------------------------------------------------------------------
 LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -41,71 +41,35 @@ LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 } // Winproc
 
 // ----------------------------------------------------------------------------
-HRESULT Initialize(HINSTANCE hInstance)
+HRESULT Initialize(const char* commandLine)
 {
-	FireMaker fireMaker;
+	FireMaker fireMaker(commandLine);
 	HRESULT result = E_FAIL;
+	SerialThread mainSerialThread(true);
+	SerialThread::SetMainThread(&mainSerialThread);
+	if (fireMaker.Init()) {
+		do {
+			MSG	msg;
+			if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+				if (msg.message == WM_QUIT)
+					break;
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			} else if (!mainSerialThread.PollThread())
+				Sleep(100);
+		} while (1);
 
-	// Alloc Window
-	WNDCLASS wc;
-	wc.style = 0;
-	wc.lpfnWndProc = Winproc;
-	wc.cbClsExtra = 4;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wc.lpszMenuName = NULL;
-	wc.lpszClassName = "comp_class";
+		fireMaker.Quit();
 
-	if (RegisterClass(&wc)) {
-		LONG imageWidth = GetSystemMetrics(SM_CXSCREEN);
-		LONG imageHeight = GetSystemMetrics(SM_CYSCREEN) - 70;
-		RECT rect = { 0, 0, imageWidth, imageHeight };
-		AdjustWindowRect(&rect, WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX, 0);
-		rect.right -= rect.left;
-		rect.bottom -= rect.top;
-
-		HWND hwnd = CreateWindow("comp_class",
-			"FireMaker",
-			WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_SIZEBOX,
-			rect.left, 0,
-			rect.right, rect.bottom,
-			NULL, NULL,
-			hInstance,
-			NULL);
-
-		if (hwnd) {
-			DragAcceptFiles(hwnd, 1);
-			ShowWindow(hwnd, SW_SHOW);
-
-			SerialThread mainSerialThread(true);
-			SerialThread::SetMainThread(&mainSerialThread);
-			if (fireMaker.Init(hwnd, imageWidth, imageHeight)) {
-				do {
-					MSG	msg;
-					if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-						if (msg.message == WM_QUIT)
-							break;
-						TranslateMessage(&msg);
-						DispatchMessage(&msg);
-					} else if (!mainSerialThread.PollThread())
-						Sleep(100);
-				} while (1);
-
-				fireMaker.Quit();
-
-				result = S_OK;
-			}
-		}
+		result = S_OK;
 	}
 	return result;
 } // Initialize
 
 // ----------------------------------------------------------------------------
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int nCmdShow)
+int main(int argc, const char** argv)
 {
-	Initialize(hInstance);
+	printf("FireMaker command line = %s\n", argv[0]);
+	Initialize(argv[0]);
 	return 0;
 } // WinMain

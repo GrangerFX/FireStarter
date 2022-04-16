@@ -57,9 +57,10 @@ void FireStarterProcess::StartProcess(void)
         m_processStartupInfo.wShowWindow = SW_SHOWMINIMIZED;
         //  m_processStartupInfo.wShowWindow = SW_HIDE;
 
-        m_started = CreateProcess(
+        LPSTR commandLine = (LPSTR)m_processPipeName.c_str();
+        m_started = CreateProcessA(
             m_processPath.c_str(),  // module name
-            NULL,                   // Command line
+            commandLine,            // Command line
             NULL,                   // Process handle not inheritable
             NULL,                   // Thread handle not inheritable
             FALSE,                  // Set handle inheritance to FALSE
@@ -75,15 +76,15 @@ void FireStarterProcess::StartProcess(void)
     if (m_pipe == INVALID_HANDLE_VALUE) {
         m_pipe = CreateNamedPipeA(
             m_processPipeName.c_str(), // pipe name 
-            PIPE_ACCESS_DUPLEX,       // read/write access 
-            PIPE_TYPE_MESSAGE |       // message type pipe 
-            PIPE_READMODE_MESSAGE |   // message-read mode 
-            PIPE_WAIT,                // blocking mode (required)
-            PIPE_UNLIMITED_INSTANCES, // max. instances  
-            SERVER_PIPE_BUFFER_SIZE,  // output buffer size (defined above)
-            SERVER_PIPE_BUFFER_SIZE,  // input buffer size (defined above)
-            0,                        // client time-out (0 = default: 50ms)
-            NULL);                    // default security attribute 
+            PIPE_ACCESS_DUPLEX,        // read/write access 
+            PIPE_TYPE_MESSAGE |        // message type pipe 
+            PIPE_READMODE_MESSAGE |    // message-read mode 
+            PIPE_WAIT,                 // blocking mode (required)
+            PIPE_UNLIMITED_INSTANCES,  // max. instances  
+            SERVER_PIPE_BUFFER_SIZE,   // output buffer size (defined above)
+            SERVER_PIPE_BUFFER_SIZE,   // input buffer size (defined above)
+            0,                         // client time-out (0 = default: 50ms)
+            NULL);                     // default security attribute 
         if (m_pipe == INVALID_HANDLE_VALUE)
             return;
     }
@@ -95,6 +96,7 @@ void FireStarterProcess::StartProcess(void)
 void FireStarterProcess::StopProcess(void)
 {
     if (m_started) {
+        // Note: TODO: Tell the process to quit.
         unsigned int result = WaitForSingleObject(m_processInformation.hProcess, INFINITE);
 
         // Close handles to the child process and its primary thread.

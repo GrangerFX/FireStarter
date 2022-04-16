@@ -22,7 +22,7 @@ void FireMaker::CompileCode(const std::string &code, std::string &ptx)
     CUDACompile::CompilePTX(code, ptx);
 } // CompileThread
 
-bool FireMaker::Init(void* window, unsigned int width, unsigned int height)
+bool FireMaker::Init()
 {
 	DispatchAsync([this] { CompileInit(); });   // Initialize CUDA for the compile thread.
 	return true;
@@ -33,9 +33,9 @@ void FireMaker::Quit(void)
     DispatchSync([this] { CompileQuit(); });    // This will wait for CompileQuit() to finish.
 } // Quit
 
-FireMaker::FireMaker(void)
+FireMaker::FireMaker(const std::string& pipeName)
 {
-
+    m_pipeName = pipeName;
 } // FireMaker
 
 FireMaker::~FireMaker(void)
