@@ -1,7 +1,7 @@
 #include "FireStarterProcess.h"
 #include "PrintF.h"
 
-#define SERVER_PIPE_BUFFER_SIZE   512
+#define PIPE_BUFFER_SIZE   512
 
 static const std::string& GetModulePath(void)
 {
@@ -29,11 +29,6 @@ static const std::string& GetModulePath(void)
     return modulePath;
 } // GetModulePath
 
-const std::string& FireStarterProcess::ModulePath(void) const
-{
-    return GetModulePath();
-} // ModulePath
-
 void FireStarterProcess::WriteData(void* data, size_t size)
 {
     // Note: Maximum size is 32 bits (4GB).
@@ -58,7 +53,7 @@ void FireStarterProcess::StartProcess(void)
         //  m_processStartupInfo.wShowWindow = SW_HIDE;
 
         LPSTR commandLine = (LPSTR)m_processPipeName.c_str();
-        m_started = CreateProcessA(
+        m_started = CreateProcess(
             m_processPath.c_str(),  // module name
             commandLine,            // Command line
             NULL,                   // Process handle not inheritable
@@ -74,15 +69,15 @@ void FireStarterProcess::StartProcess(void)
     }
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
-        m_pipe = CreateNamedPipeA(
+        m_pipe = CreateNamedPipe(
             m_processPipeName.c_str(), // pipe name 
             PIPE_ACCESS_DUPLEX,        // read/write access 
             PIPE_TYPE_MESSAGE |        // message type pipe 
             PIPE_READMODE_MESSAGE |    // message-read mode 
             PIPE_WAIT,                 // blocking mode (required)
             PIPE_UNLIMITED_INSTANCES,  // max. instances  
-            SERVER_PIPE_BUFFER_SIZE,   // output buffer size (defined above)
-            SERVER_PIPE_BUFFER_SIZE,   // input buffer size (defined above)
+            PIPE_BUFFER_SIZE,          // output buffer size (defined above)
+            PIPE_BUFFER_SIZE,          // input buffer size (defined above)
             0,                         // client time-out (0 = default: 50ms)
             NULL);                     // default security attribute 
         if (m_pipe == INVALID_HANDLE_VALUE)
@@ -112,24 +107,135 @@ void FireStarterProcess::StopProcess(void)
     }
 } // StopProcess
 
-FireStarterProcess::FireStarterProcess(FireStarterServer* server, size_t index, const std::string& name)
+void FireStarterProcess::StartClient(void)
 {
-    m_server = server;
-    m_processIndex = index;
-    m_processName = name;
-    m_processPath = ModulePath() + m_processName + ".exe";
-    m_processPipeName = "\\\\.\\pipe\\" + name + std::to_string(index);
-    m_connected = false;
-    DispatchAsync([this] { StartProcess(); });
+    while (1)
+    {
+        m_pipe = CreateFile(
+            m_processPipeName.c_str(), // pipe name 
+            GENERIC_READ |             // read and write access 
+            GENERIC_WRITE,
+            0,                         // no sharing 
+            NULL,                      // default security attributes
+            OPEN_EXISTING,             // opens existing pipe 
+            0,                         // default attributes 
+            NULL);                     // no template file 
+
+        // Break if the pipe handle is valid. 
+
+        if (m_pipe != INVALID_HANDLE_VALUE)
+            break;
+
+        // Exit if an error other than ERROR_PIPE_BUSY occurs. 
+
+        if (GetLastError() != ERROR_PIPE_BUSY)
+        {
+            printf("Could not open pipe. GLE=%d\n", GetLastError());
+            return;
+        }
+
+        // All pipe instances are busy, so wait for 20 seconds. 
+
+        if (!WaitNamedPipe(m_processPipeName.c_str(), 20000))
+        {
+            printf("Could not open pipe: 20 second wait timed out.");
+            return;
+        }
+    }
+    // The pipe connected; change to message-read mode. 
+
+    DWORD dwMode = PIPE_READMODE_MESSAGE;
+    BOOL fSuccess = SetNamedPipeHandleState(
+        m_pipe,   // pipe handle 
+        &dwMode,  // new pipe mode 
+        NULL,     // don't set maximum bytes 
+        NULL);    // don't set maximum time 
+    if (!fSuccess)
+    {
+        printf("SetNamedPipeHandleState failed. GLE=%d\n", GetLastError());
+        return;
+    }
+
+    // Send a message to the pipe server. 
+    std::string sendMessage = "Hello from client " + m_processPipeName;
+    DWORD sendMessageLength = (DWORD)(sendMessage.length() + 1);
+    DWORD bytesWritten = 0;
+    fSuccess = WriteFile(
+        m_pipe,              // pipe handle 
+        sendMessage.c_str(), // message 
+        sendMessageLength,   // message length 
+        &bytesWritten,       // bytes written 
+        NULL);               // not overlapped 
+
+    if (!fSuccess)
+    {
+        printf("WriteFile to pipe failed. GLE=%d\n", GetLastError());
+        return;
+    }
+
+    printf("\nMessage sent to server, receiving reply as follows:\n");
+
+    do {
+        // Read from the pipe. 
+        char buffer[PIPE_BUFFER_SIZE + 1] = {};
+        DWORD bytesRead = 0;
+        fSuccess = ReadFile(
+            m_pipe,           // pipe handle 
+            buffer,           // buffer to receive reply 
+            PIPE_BUFFER_SIZE, // size of buffer 
+            &bytesRead,       // number of bytes read 
+            NULL);            // not overlapped 
+
+        if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
+            break;
+
+        buffer[bytesRead] = 0;
+        printf(buffer);
+    } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
+
+    if (!fSuccess)
+    {
+        printf("ReadFile from pipe failed. GLE=%d\n", GetLastError());
+        return;
+    }
+} // StartClient
+
+void FireStarterProcess::StopClient(void)
+{
+    if (m_pipe != INVALID_HANDLE_VALUE) {
+        CloseHandle(m_pipe);
+        m_pipe = INVALID_HANDLE_VALUE;
+    }
+} // StopClient
+
+FireStarterProcess::FireStarterProcess(const std::string& pipeName, const std::string& processPath)
+{
+    m_processPipeName = pipeName;
+    m_processPath = processPath;
+    m_client = m_processPath.length() == 0;
+    DispatchAsync([this] {
+        if (m_client)
+            StartClient();
+        else
+            StartProcess();
+    });
 } // FireStarterProcess
 
 FireStarterProcess::~FireStarterProcess(void)
 {
 } // ~FireStarterProcess
 
+const std::string& FireStarterServer::ModulePath(void) const
+{
+    return GetModulePath();
+} // ModulePath
+
 FireStarterProcess* FireStarterServer::AddProcess(const std::string& name)
 {
-    FireStarterProcess* process = new FireStarterProcess(this, m_processes.size() + 1, name);
+    size_t processIndex = m_processes.size() + 1;
+    std::string processPipeName = "\\\\.\\pipe\\" + name + std::to_string(processIndex);
+    std::string processPath = ModulePath() + name + ".exe";
+    FireStarterProcess* process = new FireStarterProcess(processPipeName, processPath);
     m_processes.push_back(process);
     return process;
 } // AddProcess

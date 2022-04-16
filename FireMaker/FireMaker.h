@@ -1,9 +1,10 @@
 #pragma once
-#include "SerialThread.h"
+#include "FireStarterProcess.h"
 #include "CUDADefines.h"
 
 class FireMaker : public SerialThread {
 public:
+	FireStarterProcess m_process;
 	CUdevice m_device;
 	CUcontext m_compileContext;
 	CUstream m_compileStream;
