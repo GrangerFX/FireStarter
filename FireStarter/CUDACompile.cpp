@@ -63,7 +63,7 @@ CUfunction CUDACompile::CompileProgram(const std::string& program, CUmodule& cud
         cuda_module = nullptr;
     }
 
-    printf("\n>>>CompileProgram: %s\n", functionName);
+    printf("\n>>>CompileProgram: %s\n", functionName.c_str());
     printf(">>>cuModuleUnload: %f\n", timer.Duration());
 
     std::string ptx;

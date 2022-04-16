@@ -5,18 +5,24 @@
 #define FIREMAKER           "FireMaker"
 #define FIRESTARTER         "FireStarter"
 
+
 class FireStarterProcess : public SerialThread {
 private:
     HANDLE m_pipe = INVALID_HANDLE_VALUE;
+    std::string m_pipeName;
     STARTUPINFO m_processStartupInfo = {};
     PROCESS_INFORMATION m_processInformation = {};
     std::string m_processPath;
-    std::string m_processPipeName;
     bool m_started = false;
     bool m_connected = false;
     bool m_client = false;
 public:
-    void WriteData(void* data, size_t size);
+    bool SendData(const void* data, size_t size);
+    bool ReceiveData(void* data, size_t size);
+    bool SendPacket(const void* data, size_t size);
+    bool ReceivePacket(void* data, size_t size);
+    bool SendString(const std::string& string);
+    bool ReceiveString(std::string& string);
     void StartProcess(void);
     void StopProcess(void);
     void StartClient(void);

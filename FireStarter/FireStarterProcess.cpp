@@ -29,16 +29,85 @@ static const std::string& GetModulePath(void)
     return modulePath;
 } // GetModulePath
 
-void FireStarterProcess::WriteData(void* data, size_t size)
+bool FireStarterProcess::SendData(const void* data, size_t size)
 {
     // Note: Maximum size is 32 bits (4GB).
     // TODO: Break up larger data blocks into smaller chunks if needed.
-    DispatchSync([this, data, size] {
-        DWORD dataWritten = 0;
-        bool result = WriteFile(m_pipe, &size, (DWORD)sizeof(size_t), &dataWritten, NULL) && (dataWritten == (DWORD)sizeof(size_t));
-        result = result && WriteFile(m_pipe, data, (DWORD)size, &dataWritten, NULL) && (dataWritten == (DWORD)size);
-    }); // This will wait for ControlThread() to exit.
-} // WriteData
+    DWORD bytesToWrite = (DWORD)size;
+    DWORD bytesWritten = 0;
+    bool result = WriteFile(m_pipe,        // pipe handle 
+                            data,          // message 
+                            bytesToWrite,  // message length 
+                            &bytesWritten, // bytes written 
+                            NULL);         // not overlapped 
+    return result && (bytesWritten == bytesToWrite);
+} // SendData
+
+bool FireStarterProcess::ReceiveData(void* data, size_t size)
+{
+    unsigned char* readBuffer = (unsigned char*)data;
+    size_t readSize = 0;
+    bool result = false;
+    do {
+        // Read from the pipe. 
+        DWORD bytesRead = 0;
+        DWORD bytesRemaining = (DWORD)(size - readSize);
+        bool result = ReadFile(
+            m_pipe,           // pipe handle 
+            readBuffer,       // buffer to receive reply 
+            bytesRemaining,  // size of buffer 
+            &bytesRead,       // number of bytes read 
+            NULL);            // not overlapped 
+        readSize += bytesRead;
+        if (!result && GetLastError() != ERROR_MORE_DATA)
+            break;
+    } while (!result && (readSize < size));  // repeat loop if ERROR_MORE_DATA
+    return result && (size == readSize);
+} // ReceiveData
+
+bool FireStarterProcess::SendPacket(const void* data, size_t size)
+{
+    // Note: Maximum size is 32 bits (4GB).
+    // TODO: Break up larger data blocks into smaller chunks if needed.
+    return SendData(&size, sizeof(size_t)) && SendData(data, size);
+} // SendPacket
+
+bool FireStarterProcess::ReceivePacket(void* data, size_t size)
+{
+    return ReceiveData(&size, sizeof(size_t)) && ReceiveData(data, size);
+} // ReceivePacket
+
+bool FireStarterProcess::SendString(const std::string& string)
+{
+    return SendData(string.data(), string.length() + 1);
+} // SendString
+
+bool FireStarterProcess::ReceiveString(std::string& string)
+{
+    string.clear();
+    size_t maxSize = 0;
+    size_t curSize = 0;
+    bool result = false;
+    do {
+        maxSize += PIPE_BUFFER_SIZE;
+        string.resize(maxSize);
+
+        // Read from the pipe. 
+        DWORD bytesRead = 0;
+        result = ReadFile(
+            m_pipe,           // pipe handle 
+            string.data() + curSize,  // buffer to receive reply 
+            PIPE_BUFFER_SIZE, // size of buffer 
+            &bytesRead,       // number of bytes read 
+            NULL);            // not overlapped 
+        curSize += bytesRead;
+
+        if (!result && GetLastError() != ERROR_MORE_DATA)
+            break;
+    } while (!result);  // repeat loop if ERROR_MORE_DATA 
+    string.resize(curSize);
+    return result;
+} // ReceiveString
 
 void FireStarterProcess::StartProcess(void)
 {
@@ -52,7 +121,7 @@ void FireStarterProcess::StartProcess(void)
         m_processStartupInfo.wShowWindow = SW_SHOWMINIMIZED;
         //  m_processStartupInfo.wShowWindow = SW_HIDE;
 
-        LPSTR commandLine = (LPSTR)m_processPipeName.c_str();
+        LPSTR commandLine = (LPSTR)m_pipeName.c_str();
         m_started = CreateProcess(
             m_processPath.c_str(),  // module name
             commandLine,            // Command line
@@ -70,7 +139,7 @@ void FireStarterProcess::StartProcess(void)
 
     if (m_pipe == INVALID_HANDLE_VALUE) {
         m_pipe = CreateNamedPipe(
-            m_processPipeName.c_str(), // pipe name 
+            m_pipeName.c_str(), // pipe name 
             PIPE_ACCESS_DUPLEX,        // read/write access 
             PIPE_TYPE_MESSAGE |        // message type pipe 
             PIPE_READMODE_MESSAGE |    // message-read mode 
@@ -86,6 +155,38 @@ void FireStarterProcess::StartProcess(void)
 
     if (!m_connected)
         m_connected = ConnectNamedPipe(m_pipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+
+    if (m_connected) {
+        // The pipe connected; change to message-read mode. 
+        DWORD dwMode = PIPE_READMODE_MESSAGE;
+        if (!SetNamedPipeHandleState(
+            m_pipe,   // pipe handle 
+            &dwMode,  // new pipe mode 
+            NULL,     // don't set maximum bytes 
+            NULL))    // don't set maximum time 
+        {
+            printf("SetNamedPipeHandleState failed. GLE=%d\n", GetLastError());
+            return;
+        }
+
+        // Send a message to the pipe client.
+        std::string sendMessage = "Hello from server " + m_pipeName;
+        bool sendResult = SendString(sendMessage);
+        if (!sendResult) {
+            printf("WriteFile to pipe failed. GLE=%d\n", GetLastError());
+            return;
+        }
+        printf("\nMessage sent to server: %s\n", sendMessage.c_str());
+
+        // Receive a message from the pipe client
+        std::string receiveMessage;
+        bool receiveResult = ReceiveString(receiveMessage);
+        printf("\nMessage received from client: %s\n", receiveMessage.c_str());
+        if (!receiveResult) {
+            printf("ReadFile from pipe failed. GLE=%d\n", GetLastError());
+            return;
+        }
+    }
 } // StartProcess
 
 void FireStarterProcess::StopProcess(void)
@@ -112,14 +213,14 @@ void FireStarterProcess::StartClient(void)
     while (1)
     {
         m_pipe = CreateFile(
-            m_processPipeName.c_str(), // pipe name 
-            GENERIC_READ |             // read and write access 
+            m_pipeName.c_str(), // pipe name 
+            GENERIC_READ |      // read and write access 
             GENERIC_WRITE,
-            0,                         // no sharing 
-            NULL,                      // default security attributes
-            OPEN_EXISTING,             // opens existing pipe 
-            0,                         // default attributes 
-            NULL);                     // no template file 
+            0,                  // no sharing 
+            NULL,               // default security attributes
+            OPEN_EXISTING,      // opens existing pipe 
+            0,                  // default attributes 
+            NULL);              // no template file 
 
         // Break if the pipe handle is valid. 
 
@@ -136,68 +237,42 @@ void FireStarterProcess::StartClient(void)
 
         // All pipe instances are busy, so wait for 20 seconds. 
 
-        if (!WaitNamedPipe(m_processPipeName.c_str(), 20000))
+        if (!WaitNamedPipe(m_pipeName.c_str(), 20000))
         {
             printf("Could not open pipe: 20 second wait timed out.");
             return;
         }
     }
-    // The pipe connected; change to message-read mode. 
 
+    // The pipe connected; change to message-read mode. 
     DWORD dwMode = PIPE_READMODE_MESSAGE;
-    BOOL fSuccess = SetNamedPipeHandleState(
+    if (!SetNamedPipeHandleState(
         m_pipe,   // pipe handle 
         &dwMode,  // new pipe mode 
         NULL,     // don't set maximum bytes 
-        NULL);    // don't set maximum time 
-    if (!fSuccess)
+        NULL))    // don't set maximum time 
     {
         printf("SetNamedPipeHandleState failed. GLE=%d\n", GetLastError());
         return;
     }
 
-    // Send a message to the pipe server. 
-    std::string sendMessage = "Hello from client " + m_processPipeName;
-    DWORD sendMessageLength = (DWORD)(sendMessage.length() + 1);
-    DWORD bytesWritten = 0;
-    fSuccess = WriteFile(
-        m_pipe,              // pipe handle 
-        sendMessage.c_str(), // message 
-        sendMessageLength,   // message length 
-        &bytesWritten,       // bytes written 
-        NULL);               // not overlapped 
-
-    if (!fSuccess)
-    {
-        printf("WriteFile to pipe failed. GLE=%d\n", GetLastError());
-        return;
-    }
-
-    printf("\nMessage sent to server, receiving reply as follows:\n");
-
-    do {
-        // Read from the pipe. 
-        char buffer[PIPE_BUFFER_SIZE + 1] = {};
-        DWORD bytesRead = 0;
-        fSuccess = ReadFile(
-            m_pipe,           // pipe handle 
-            buffer,           // buffer to receive reply 
-            PIPE_BUFFER_SIZE, // size of buffer 
-            &bytesRead,       // number of bytes read 
-            NULL);            // not overlapped 
-
-        if (!fSuccess && GetLastError() != ERROR_MORE_DATA)
-            break;
-
-        buffer[bytesRead] = 0;
-        printf(buffer);
-    } while (!fSuccess);  // repeat loop if ERROR_MORE_DATA 
-
-    if (!fSuccess)
-    {
+    // Receive a message from the pipe server
+    std::string receiveMessage;
+    bool receiveResult = ReceiveString(receiveMessage);
+    printf("\nMessage received from server: %s\n", receiveMessage.c_str());
+    if (!receiveResult) {
         printf("ReadFile from pipe failed. GLE=%d\n", GetLastError());
         return;
     }
+
+    // Send a message to the pipe server.
+    std::string sendMessage = "Hello from client " + m_pipeName;
+    bool sendResult = SendString(sendMessage);
+    if (!sendResult) {
+        printf("WriteFile to pipe failed. GLE=%d\n", GetLastError());
+        return;
+    }
+    printf("\nMessage sent to server: %s\n", sendMessage.c_str());
 } // StartClient
 
 void FireStarterProcess::StopClient(void)
@@ -210,7 +285,7 @@ void FireStarterProcess::StopClient(void)
 
 FireStarterProcess::FireStarterProcess(const std::string& pipeName, const std::string& processPath)
 {
-    m_processPipeName = pipeName;
+    m_pipeName = pipeName;
     m_processPath = processPath;
     m_client = m_processPath.length() == 0;
     DispatchAsync([this] {
