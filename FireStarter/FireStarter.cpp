@@ -3,7 +3,6 @@
 #include "FireStarterUtil.h"
 #include "FireStarter_LoadState.h"
 #include "CUDACompile.h"
-#include <iomanip>
 
 void FireStarter::BuildData(std::string& code)
 {
@@ -59,33 +58,8 @@ void FireStarter::SaveBestCode(void)
 
 void FireStarter::SaveSolution(void)
 {
-    time_t currentTime = time(nullptr);
-    tm localTime;
-    std::stringstream sstream;
-    localtime_s(&localTime, &currentTime);
-    sstream << std::put_time(&localTime, "%c %Z");
-
     std::string solutionCode;
-    solutionCode += "#pragma once\r\n";
-    solutionCode += "#include <math.h>\r\n";
-    solutionCode += "\r\n";
-    solutionCode += Format("// Run date: %s\r\n", sstream.str().c_str());
-    solutionCode += Format("// Run duration = %f seconds\r\n", m_controlTime);
-    solutionCode += Format("// Run count = %d\r\n", m_generation);
-    solutionCode += Format("// Run units = %d\r\n", (unsigned int)m_units.size());
-    solutionCode += Format("// Run population = %d\r\n", PROGRAM_POPULATION);
-    solutionCode += Format("// Run iterations = %d\r\n", PROGRAM_ITERATIONS);
-    solutionCode += Format("// Run generations = %d\r\n", PROGRAM_GENERATIONS);
-    solutionCode += Format("// Run samples = %d\r\n", SAMPLE_ITERATIONS);
-    solutionCode += "\r\n";
-    solutionCode += Format("#define SOLUTION_MIN %f\r\n", SAMPLE_MIN);
-    solutionCode += Format("#define SOLUTION_MAX %f\r\n", SAMPLE_MAX);
-    solutionCode += "\r\n";
-    solutionCode += Format("#define SOLUTION_VARIATIONS %d\r\n", PROGRAM_VARIATIONS);
-    solutionCode += "\r\n";
-    solutionCode += m_solutionTargetCode;
-    solutionCode += "\r\n";
-    m_bestEvaluateState.SaveSolution(solutionCode);
+    m_bestEvaluateState.SaveSolution(solutionCode, m_solutionTargetCode, m_controlTime, m_generation, (unsigned int)m_units.size());
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
