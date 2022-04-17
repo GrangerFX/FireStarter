@@ -2,6 +2,7 @@
 #include "PrintF.h"
 
 #define PIPE_BUFFER_SIZE   512
+#define PACKET_STRINGS 0
 
 static const std::string& GetModulePath(void)
 {
@@ -79,11 +80,22 @@ bool FireStarterProcess::ReceivePacket(void* data, size_t size)
 
 bool FireStarterProcess::SendString(const std::string& string)
 {
+#if PACKET_STRINGS
+    return SendPacket(string.data(), string.length());
+#else
     return SendData(string.data(), string.length() + 1);
+#endif
 } // SendString
 
 bool FireStarterProcess::ReceiveString(std::string& string)
 {
+#if PACKET_STRINGS
+    size_t length = 0;
+    if (!ReceiveData(&length, sizeof(size_t)))
+        return false;
+    string.resize(length);
+    return ReceiveData(string.data(), length);
+#else
     string.clear();
     size_t maxSize = 0;
     size_t curSize = 0;
@@ -107,6 +119,7 @@ bool FireStarterProcess::ReceiveString(std::string& string)
     } while (!result);  // repeat loop if ERROR_MORE_DATA 
     string.resize(curSize);
     return result;
+#endif
 } // ReceiveString
 
 void FireStarterProcess::StartProcess(void)
