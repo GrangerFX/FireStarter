@@ -1,5 +1,5 @@
 #pragma once
-#include "FireStarter.h"
+#include "FireStarterState.h"
 
 inline void LoadProgram(FireStarterProgram& program)
 {
@@ -68,27 +68,27 @@ inline void LoadProgram(FireStarterProgram& program)
 
 inline void LoadState(FireStarterState& state)
 {
-    state.m_result.data[0].d[0] = -0.098584f;
-    state.m_result.data[0].d[1] = -1.074125f;
-    state.m_result.data[0].d[2] = 0.319806f;
-    state.m_result.data[0].d[3] = 0.584050f;
-    state.m_result.data[0].d[4] = -1.285812f;
-    state.m_result.data[0].d[5] = -0.711891f;
-    state.m_result.data[0].d[6] = -0.426927f;
-    state.m_result.data[0].d[7] = 0.660212f;
-    state.m_result.data[0].d[8] = 0.790448f;
-    state.m_result.data[0].d[9] = 0.013157f;
-    state.m_result.data[0].d[10] = 0.976308f;
-    state.m_result.data[0].d[11] = -3.039356f;
-    state.m_result.data[0].d[12] = 0.973615f;
-    state.m_result.data[0].d[13] = 0.753125f;
-    state.m_result.data[0].d[14] = -0.742187f;
-    state.m_result.data[0].d[15] = 0.125847f;
-    state.m_result.data[0].d[16] = 0.117015f;
-    state.m_result.data[0].d[17] = 0.839783f;
-    state.m_result.data[0].d[18] = 1.428873f;
-    state.m_result.data[0].d[19] = 0.226918f;
-    state.m_result.data[0].d[20] = -0.195723f;
+    state.m_result.data[0].d[0] = 0.094464f;
+    state.m_result.data[0].d[1] = -0.951912f;
+    state.m_result.data[0].d[2] = 0.206968f;
+    state.m_result.data[0].d[3] = 0.490886f;
+    state.m_result.data[0].d[4] = -1.576596f;
+    state.m_result.data[0].d[5] = -0.413835f;
+    state.m_result.data[0].d[6] = -0.240057f;
+    state.m_result.data[0].d[7] = 0.750700f;
+    state.m_result.data[0].d[8] = 0.881884f;
+    state.m_result.data[0].d[9] = -0.621958f;
+    state.m_result.data[0].d[10] = 0.248008f;
+    state.m_result.data[0].d[11] = 0.150910f;
+    state.m_result.data[0].d[12] = 0.748637f;
+    state.m_result.data[0].d[13] = 0.559481f;
+    state.m_result.data[0].d[14] = -0.933620f;
+    state.m_result.data[0].d[15] = 0.052273f;
+    state.m_result.data[0].d[16] = 0.230504f;
+    state.m_result.data[0].d[17] = 0.611627f;
+    state.m_result.data[0].d[18] = 1.185169f;
+    state.m_result.data[0].d[19] = 0.234841f;
+    state.m_result.data[0].d[20] = -0.096175f;
     state.m_result.data[0].d[21] = 0.000000f;
     state.m_result.data[0].d[22] = 0.000000f;
     state.m_result.data[0].d[23] = 0.000000f;
@@ -100,29 +100,29 @@ inline void LoadState(FireStarterState& state)
     state.m_result.data[0].d[29] = 0.000000f;
     state.m_result.data[0].d[30] = 0.000000f;
     state.m_result.data[0].d[31] = 0.000000f;
-    state.m_result.minResult[0] = 0.000038f;
+    state.m_result.minResult[0] = 0.000032f;
 
-    state.m_result.data[1].d[0] = -1.204164f;
-    state.m_result.data[1].d[1] = 0.067213f;
-    state.m_result.data[1].d[2] = 0.589731f;
-    state.m_result.data[1].d[3] = -0.301938f;
-    state.m_result.data[1].d[4] = -1.717263f;
-    state.m_result.data[1].d[5] = -0.411716f;
-    state.m_result.data[1].d[6] = -0.116097f;
-    state.m_result.data[1].d[7] = 0.253435f;
-    state.m_result.data[1].d[8] = 0.610901f;
-    state.m_result.data[1].d[9] = 0.068528f;
-    state.m_result.data[1].d[10] = -2.549227f;
-    state.m_result.data[1].d[11] = -0.583006f;
-    state.m_result.data[1].d[12] = -1.269007f;
-    state.m_result.data[1].d[13] = 0.550929f;
-    state.m_result.data[1].d[14] = -1.153352f;
-    state.m_result.data[1].d[15] = 0.568503f;
-    state.m_result.data[1].d[16] = 0.168115f;
-    state.m_result.data[1].d[17] = 0.877004f;
-    state.m_result.data[1].d[18] = 1.333785f;
-    state.m_result.data[1].d[19] = 0.937016f;
-    state.m_result.data[1].d[20] = 0.023838f;
+    state.m_result.data[1].d[0] = -1.231597f;
+    state.m_result.data[1].d[1] = -0.203302f;
+    state.m_result.data[1].d[2] = 0.010893f;
+    state.m_result.data[1].d[3] = -0.775130f;
+    state.m_result.data[1].d[4] = -0.754586f;
+    state.m_result.data[1].d[5] = -0.422253f;
+    state.m_result.data[1].d[6] = -0.116221f;
+    state.m_result.data[1].d[7] = 0.201748f;
+    state.m_result.data[1].d[8] = 0.580113f;
+    state.m_result.data[1].d[9] = -0.064186f;
+    state.m_result.data[1].d[10] = -0.554605f;
+    state.m_result.data[1].d[11] = 2.756073f;
+    state.m_result.data[1].d[12] = -1.072163f;
+    state.m_result.data[1].d[13] = 0.568268f;
+    state.m_result.data[1].d[14] = -1.614975f;
+    state.m_result.data[1].d[15] = 0.620295f;
+    state.m_result.data[1].d[16] = 0.164962f;
+    state.m_result.data[1].d[17] = 0.924647f;
+    state.m_result.data[1].d[18] = 1.395360f;
+    state.m_result.data[1].d[19] = 1.042060f;
+    state.m_result.data[1].d[20] = -0.154531f;
     state.m_result.data[1].d[21] = 0.000000f;
     state.m_result.data[1].d[22] = 0.000000f;
     state.m_result.data[1].d[23] = 0.000000f;
@@ -134,29 +134,29 @@ inline void LoadState(FireStarterState& state)
     state.m_result.data[1].d[29] = 0.000000f;
     state.m_result.data[1].d[30] = 0.000000f;
     state.m_result.data[1].d[31] = 0.000000f;
-    state.m_result.minResult[1] = 0.000043f;
+    state.m_result.minResult[1] = 0.000068f;
 
-    state.m_result.data[2].d[0] = 0.142920f;
-    state.m_result.data[2].d[1] = -0.568854f;
-    state.m_result.data[2].d[2] = -0.466683f;
-    state.m_result.data[2].d[3] = 0.228489f;
-    state.m_result.data[2].d[4] = -0.286637f;
-    state.m_result.data[2].d[5] = 0.517457f;
-    state.m_result.data[2].d[6] = -0.056047f;
-    state.m_result.data[2].d[7] = 0.755620f;
-    state.m_result.data[2].d[8] = -0.187327f;
-    state.m_result.data[2].d[9] = 1.271685f;
-    state.m_result.data[2].d[10] = -0.297945f;
-    state.m_result.data[2].d[11] = -0.559871f;
-    state.m_result.data[2].d[12] = -1.434753f;
-    state.m_result.data[2].d[13] = 1.032086f;
-    state.m_result.data[2].d[14] = -0.305974f;
-    state.m_result.data[2].d[15] = -0.185692f;
-    state.m_result.data[2].d[16] = -0.237746f;
-    state.m_result.data[2].d[17] = 0.749844f;
-    state.m_result.data[2].d[18] = -0.746935f;
-    state.m_result.data[2].d[19] = 0.784783f;
-    state.m_result.data[2].d[20] = -0.195723f;
+    state.m_result.data[2].d[0] = -0.855074f;
+    state.m_result.data[2].d[1] = 0.066736f;
+    state.m_result.data[2].d[2] = -0.833299f;
+    state.m_result.data[2].d[3] = 1.305467f;
+    state.m_result.data[2].d[4] = -0.807079f;
+    state.m_result.data[2].d[5] = -0.598644f;
+    state.m_result.data[2].d[6] = 0.264034f;
+    state.m_result.data[2].d[7] = -0.520519f;
+    state.m_result.data[2].d[8] = -0.459550f;
+    state.m_result.data[2].d[9] = 0.394715f;
+    state.m_result.data[2].d[10] = -0.536532f;
+    state.m_result.data[2].d[11] = 0.517987f;
+    state.m_result.data[2].d[12] = 1.192410f;
+    state.m_result.data[2].d[13] = -2.369152f;
+    state.m_result.data[2].d[14] = -0.110940f;
+    state.m_result.data[2].d[15] = -0.026655f;
+    state.m_result.data[2].d[16] = 0.382171f;
+    state.m_result.data[2].d[17] = 1.028420f;
+    state.m_result.data[2].d[18] = -0.887773f;
+    state.m_result.data[2].d[19] = 0.397427f;
+    state.m_result.data[2].d[20] = 0.769692f;
     state.m_result.data[2].d[21] = 0.000000f;
     state.m_result.data[2].d[22] = 0.000000f;
     state.m_result.data[2].d[23] = 0.000000f;
@@ -168,12 +168,12 @@ inline void LoadState(FireStarterState& state)
     state.m_result.data[2].d[29] = 0.000000f;
     state.m_result.data[2].d[30] = 0.000000f;
     state.m_result.data[2].d[31] = 0.000000f;
-    state.m_result.minResult[2] = 0.000053f;
+    state.m_result.minResult[2] = 0.000057f;
 
-    state.m_result.maxResult = 0.000053f;
+    state.m_result.maxResult = 0.000068f;
     state.m_result.test = 3452816845;
 
-    state.m_bestResult = 0.000038f;
+    state.m_bestResult = 0.000032f;
 
     LoadProgram(state.m_program);
     state.m_result.instructions = state.m_program.m_instructions;

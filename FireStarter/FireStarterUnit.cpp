@@ -1,5 +1,5 @@
 #include "FireStarterUnit.h"
-#include "FireStarter.h"
+#include "FireStarterCode.h"
 #include "CUDACompile.h"
 
 void FireStarterUnit::GenerateEvolve(void)
@@ -12,22 +12,22 @@ void FireStarterUnit::GenerateUnits(void)
 {
     // Update the Evaluate funtion.
     std::string optimize;
-    FireStarter::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
+    FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
     std::string evaluateCode;
     std::string optimizeCode;
     for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
         std::string evaluate;
         m_states[i].m_program.GenerateEvaluate(evaluate);
         std::string evaluateName = Format("Evaluate%d", i);
-        FireStarter::ReplaceCode(evaluate, "Evaluate", evaluateName);
+        FireStarterCode::ReplaceCode(evaluate, "Evaluate", evaluateName);
         if (i)
             evaluateCode += "\r\n";
         evaluateCode += evaluate;
 
         std::string optimizeUnit = optimize;
         std::string optimizeName = Format("Optimize%d", i);
-        FireStarter::ReplaceCode(optimizeUnit, "Optimize", optimizeName);
-        FireStarter::ReplaceCode(optimizeUnit, "Evaluate", evaluateName);
+        FireStarterCode::ReplaceCode(optimizeUnit, "Optimize", optimizeName);
+        FireStarterCode::ReplaceCode(optimizeUnit, "Evaluate", evaluateName);
         if (i)
             optimizeCode += "\r\n";
         optimizeCode += optimizeUnit;
@@ -35,8 +35,8 @@ void FireStarterUnit::GenerateUnits(void)
 
     // Create the units code by replacing the evaluate and optimize sections of the optimize code.
     m_unitsCode = m_optimizeCode;
-    FireStarter::UpdateProgram(m_unitsCode, evaluateCode, EVALUATE_CODE);
-    FireStarter::UpdateProgram(m_unitsCode, optimizeCode, OPTIMIZE_CODE);
+    FireStarterCode::UpdateProgram(m_unitsCode, evaluateCode, EVALUATE_CODE);
+    FireStarterCode::UpdateProgram(m_unitsCode, optimizeCode, OPTIMIZE_CODE);
 
     // Compile the new code.
     CUDACompile::CompileProgram(m_unitsCode, m_unitsModule);
@@ -49,7 +49,7 @@ void FireStarterUnit::GenerateOptimize(void)
     // Update the Evaluate funtion.
     std::string code;
     m_states[0].m_program.GenerateEvaluate(code);
-    FireStarter::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
+    FireStarterCode::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
 
     // Compile the new code.
     m_optimizeFunction = CUDACompile::CompileProgram(m_optimizeCode, m_optimizeModule, "Optimize");
@@ -379,16 +379,15 @@ void FireStarterUnit::FinishUnit(void)
     }
 } // FinishUnit
 
-FireStarterUnit::FireStarterUnit(FireStarter* fireStarter, unsigned int unitIndex, CUdevice device)
+FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string &evolveCode, const std::string &optimizeCode)
 {
-    m_fireStarter = fireStarter;
     m_unitIndex = unitIndex;
     m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
     m_unitDevice = device;
     m_unitContext = nullptr;
-    m_evolveCode = m_fireStarter->m_evolveCode;
-    m_unitsCode = m_fireStarter->m_optimizeCode;
-    m_optimizeCode = m_fireStarter->m_optimizeCode;
+    m_evolveCode = evolveCode;
+    m_unitsCode = optimizeCode;
+    m_optimizeCode = optimizeCode;
     m_deviceResults = nullptr;
     m_hostResults = nullptr;
     m_deviceResults0 = nullptr;

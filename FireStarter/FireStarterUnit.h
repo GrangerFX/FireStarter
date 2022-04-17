@@ -6,7 +6,6 @@
 class FireStarterUnit : public SerialThread {
 public:
     SimpleTimer m_timer;
-    class FireStarter* m_fireStarter;
     char* m_deviceResults;
     char* m_hostResults;
     FireStarterResults* m_deviceResults0;
@@ -49,6 +48,6 @@ public:
     void UpdateCode(std::string& code);
     void InitUnit(unsigned int programMode);
     void FinishUnit(void);
-    FireStarterUnit(FireStarter* fireStarter, unsigned int unitIndex, CUdevice device);
+    FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& evolveCode, const std::string& optimizeCode);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

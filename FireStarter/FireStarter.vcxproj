@@ -104,6 +104,7 @@
   <ItemGroup>
     <ClCompile Include="CUDACompile.cpp" />
     <ClCompile Include="FireStarter.cpp" />
+    <ClCompile Include="FireStarterCode.cpp" />
     <ClCompile Include="FireStarterMain.cpp" />
     <ClCompile Include="FireStarterProcess.cpp" />
     <ClCompile Include="FireStarterProgram.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="CUDADefines.h" />
     <ClInclude Include="CUDAErrors.h" />
     <ClInclude Include="FireStarter.h" />
+    <ClInclude Include="FireStarterCode.h" />
     <ClInclude Include="FireStarterData.h" />
     <ClInclude Include="FireStarterDefines.h" />
     <ClInclude Include="FireStarterInstructions.h" />

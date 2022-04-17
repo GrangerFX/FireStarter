@@ -3,7 +3,7 @@
 void FireStarterState::SaveState(std::string& code)
 {
     code += "#pragma once\r\n";
-    code += "#include \"FireStarter.h\"\r\n";
+    code += "#include \"FireStarterState.h\"\r\n";
     code += "\r\n";
     m_program.SaveProgram(code);
     code += "inline void LoadState(FireStarterState& state)\r\n";

@@ -10,13 +10,6 @@
 #include "FireStarter_Solution.h"
 #include "FireStarterTarget.h"
 
-#define DATA_CODE           "// DATA //"
-#define INSTRUCTIONS_CODE   "// INSTRUCTIONS //"
-#define PROGRAM_CODE        "// PROGRAM //"
-#define EVALUATE_CODE       "// EVALUATE //"
-#define OPTIMIZE_CODE       "// OPTMIZE //"
-#define END_CODE            "// END //"
-
 class FireStarter : public SerialThread {
 public:
     SimpleTimer m_runTimer;
@@ -33,7 +26,7 @@ public:
     std::string m_fireShowCode;
     std::string m_bestCode;
     FireStarterState m_bestEvaluateState;
-    std::vector<class FireStarterUnit*> m_units;
+    std::vector<FireStarterUnit*> m_units;
     FireStarterServer m_server;
     FrameBuffer m_buffer;
     char m_statusString[1024];
@@ -50,12 +43,6 @@ public:
     volatile bool m_bufferUpdate;
     volatile bool m_quitControlThread;
 
-    static void SaveCode(const std::string& filePath, const std::string& code);
-    static bool LoadCode(const std::string& filePath, std::string& code);
-    static void ReplaceCode(std::string& code, const std::string& search, const std::string& replace);
-    static bool FindCode(const std::string& code, const std::string startString, size_t& start, size_t& length);
-    static void ExtractProgram(const std::string& code, std::string& extractCode, const std::string& startString);
-    static void UpdateProgram(std::string& code, const std::string& replacementCode, const std::string& startString);
     void BuildData(std::string& code);
     bool LoadTargetCode(void);
     bool LoadFireStarterCode(void);

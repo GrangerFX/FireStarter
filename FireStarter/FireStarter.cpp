@@ -1,104 +1,9 @@
 #include "FireStarter.h"
+#include "FireStarterCode.h"
 #include "FireStarterUtil.h"
 #include "FireStarter_LoadState.h"
 #include "CUDACompile.h"
 #include <iomanip>
-#include <fstream>
-#include <sstream>
-
-bool FireStarter::LoadCode(const std::string& filePath, std::string& code)
-{
-    std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
-    if (file.is_open()) {
-        // Found usable source file
-        file.seekg(0, std::ios::end);
-        code.reserve(code.length() + file.tellg());
-        file.seekg(0, std::ios::beg);
-        code.append((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
-        file.close();
-        return true;
-    }
-    return false;
-} // LoadCode
-
-void FireStarter::SaveCode(const std::string& filePath, const std::string& code)
-{
-    std::ofstream file(filePath.c_str(), std::ios::out | std::ios::binary);
-    if (file.is_open()) {
-        file << code;
-        file.close();
-    }
-} // SaveCode
-
-void FireStarter::ReplaceCode(std::string& code, const std::string& search, const std::string& replace)
-{
-    // Get the first occurrence
-    size_t pos = code.find(search);
-
-    // Repeat till end is reached
-    while (pos != std::string::npos) {
-        // Replace this occurrence of Sub String
-        code.replace(pos, search.length(), replace);
-        // Get the next occurrence from the current position
-        pos = code.find(search, pos + replace.length());
-    }
-} // ReplaceCode
-
-bool FireStarter::FindCode(const std::string& code, const std::string startString, size_t &start, size_t &length)
-{
-    size_t startPos = code.find(startString);
-    if (startPos == std::string::npos)
-        return false;
-    size_t startStringLength = startString.length();
-    if (code[startPos + startStringLength] == '\r')
-        startStringLength++;
-    if (code[startPos + startStringLength] == '\n')
-        startStringLength++;
-    size_t endPos = code.find(END_CODE, startPos);
-    if (endPos != std::string::npos)
-        startPos += startStringLength;
-    else
-        endPos = startPos + startStringLength;
-    start = startPos;
-    length = endPos - startPos;
-    return true;
-} // FindCode
-
-void FireStarter::ExtractProgram(const std::string& code, std::string& extractCode, const std::string &startString)
-{
-    size_t startPos = code.find(startString);
-    if (startPos != std::string::npos) {
-        size_t startStringLength = startString.length();
-        if (code[startPos + startStringLength] == '\r')
-            startStringLength++;
-        if (code[startPos + startStringLength] == '\n')
-            startStringLength++;
-        size_t endPos = code.find(END_CODE, startPos);
-        if (endPos != std::string::npos)
-            startPos += startStringLength;
-        else
-            endPos = startPos + startStringLength;
-        extractCode = code.substr(startPos, endPos - startPos);
-    }
-} // ExtractProgram
-
-void FireStarter::UpdateProgram(std::string& code, const std::string& replacementCode, const std::string &startString)
-{
-    size_t startPos = code.find(startString);
-    if (startPos != std::string::npos) {
-        size_t startStringLength = startString.length();
-        if (code[startPos + startStringLength] == '\r')
-            startStringLength++;
-        if (code[startPos + startStringLength] == '\n')
-            startStringLength++;
-        size_t endPos = code.find(END_CODE, startPos);
-        if (endPos != std::string::npos)
-            startPos += startStringLength;
-        else
-            endPos = startPos + startStringLength;
-        code.replace(startPos, endPos - startPos, replacementCode);
-    }
-} // UpdateProgram
 
 void FireStarter::BuildData(std::string& code)
 {
@@ -118,24 +23,24 @@ void FireStarter::BuildData(std::string& code)
 
 bool FireStarter::LoadTargetCode(void)
 {
-    if (!FireStarter::LoadCode("FireStarterTarget.h", m_solutionTargetCode))
+    if (!FireStarterCode::LoadCode("FireStarterTarget.h", m_solutionTargetCode))
         return false;
-    ReplaceCode(m_solutionTargetCode, "Target", "SolutionTarget");
+    FireStarterCode::ReplaceCode(m_solutionTargetCode, "Target", "SolutionTarget");
     return true;
 } // LoadTargetCode
 
 bool FireStarter::LoadFireStarterCode(void)
 {
-    if (!FireStarter::LoadCode("Evolve.cu", m_evolveCode))
+    if (!FireStarterCode::LoadCode("Evolve.cu", m_evolveCode))
         return false;
-    if (!FireStarter::LoadCode("Optimize.cu", m_optimizeCode))
+    if (!FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode))
         return false;
     return true;
 } // LoadFireStarterCode
 
 bool FireStarter::LoadFireShowCode(void)
 {
-    if (!LoadCode("FireShow.cu", m_fireShowCode))
+    if (!FireStarterCode::LoadCode("FireShow.cu", m_fireShowCode))
         return false;
     return true;
 } // LoadFireShowCode
@@ -144,12 +49,12 @@ void FireStarter::SaveBestState(void)
 {
     std::string bestStateCode;
     m_bestEvaluateState.SaveState(bestStateCode);
-    FireStarter::SaveCode("FireStarter_LoadState.h", bestStateCode);
+    FireStarterCode::SaveCode("FireStarter_LoadState.h", bestStateCode);
 } // SaveBestState
 
 void FireStarter::SaveBestCode(void)
 {
-    FireStarter::SaveCode("FireStarter_BestCode.h", m_bestCode);
+    FireStarterCode::SaveCode("FireStarter_BestCode.h", m_bestCode);
 } // SaveBestCode
 
 void FireStarter::SaveSolution(void)
@@ -181,7 +86,7 @@ void FireStarter::SaveSolution(void)
     solutionCode += m_solutionTargetCode;
     solutionCode += "\r\n";
     m_bestEvaluateState.SaveSolution(solutionCode);
-    FireStarter::SaveCode("FireStarter_Solution.h", solutionCode);
+    FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
 void FireStarter::FireShow(void)
@@ -257,7 +162,7 @@ void FireStarter::ControlThread(void)
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
     for (unsigned int i = 0; i < unit_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(this, i, m_device);
+        FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_evolveCode, m_optimizeCode);
         m_units.push_back(unit);
     }
     for (FireStarterUnit* unit : m_units)
