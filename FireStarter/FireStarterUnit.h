@@ -31,6 +31,7 @@ public:
     unsigned int m_evolveGeneration;
     unsigned int m_unitIndex;
     unsigned int m_seed;
+    bool m_codeLoaded;
     volatile bool m_quit;
 
     void GenerateEvolve(void);

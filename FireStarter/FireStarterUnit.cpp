@@ -272,17 +272,18 @@ void FireStarterUnit::ExecuteOptimize(void)
 
 void FireStarterUnit::Execute(void)
 {
-    switch (m_evolveMode) {
-    case FIRESTARTER_EVOLVE:
-        ExecuteEvolve();
-        break;
-    case FIRESTARTER_UNITS:
-        ExecuteUnits();
-        break;
-    case FIRESTARTER_OPTIMIZE:
-        ExecuteOptimize();
-        break;
-    }
+    if (m_codeLoaded)
+        switch (m_evolveMode) {
+            case FIRESTARTER_EVOLVE:
+                ExecuteEvolve();
+                break;
+            case FIRESTARTER_UNITS:
+                ExecuteUnits();
+                break;
+            case FIRESTARTER_OPTIMIZE:
+                ExecuteOptimize();
+                break;
+        }
 } // Execute
 
 void FireStarterUnit::UpdateProgram(FireStarterState*& bestState, unsigned int*& generation)
@@ -294,62 +295,66 @@ void FireStarterUnit::UpdateProgram(FireStarterState*& bestState, unsigned int*&
 void FireStarterUnit::UpdateCode(std::string& code)
 {
     switch (m_evolveMode) {
-    case FIRESTARTER_EVOLVE:
-        code = m_evolveCode;
-        break;
-    case FIRESTARTER_UNITS:
-        code = m_unitsCode;
-        break;
-    case FIRESTARTER_OPTIMIZE:
-        code = m_optimizeCode;
-        break;
+        case FIRESTARTER_EVOLVE:
+            code = m_evolveCode;
+            break;
+        case FIRESTARTER_UNITS:
+            code = m_unitsCode;
+            break;
+        case FIRESTARTER_OPTIMIZE:
+            code = m_optimizeCode;
+            break;
     }
 } // UpdateCode
 
 bool FireStarterUnit::LoadCode(void)
 {
-    if (!FireStarterCode::LoadCode("Evolve.cu", m_evolveCode))
-        return false;
-    if (!FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode))
-        return false;
-    m_unitsCode = m_optimizeCode;
-    return true;
+    if (FireStarterCode::LoadCode("Evolve.cu", m_evolveCode) && FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
+        m_unitsCode = m_optimizeCode;
+        return true;
+    }
+    m_evolveCode.clear();
+    m_optimizeCode.clear();
+    m_unitsCode.clear();
+    return false;
 } // LoadCode
 
 void FireStarterUnit::InitUnit(unsigned int evolveMode)
 {
-    m_evolveMode = evolveMode;
-    checkCUDAErrors(cuCtxCreate(&m_unitContext, CU_CTX_SCHED_AUTO, m_unitDevice));
-    checkCUDAErrors(cudaStreamCreate(&m_unitStream));
-    m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
-    size_t totalSize = m_resultsSize * 2;
-    if (!m_deviceResults) {
-        checkCUDAErrors(cudaMalloc(&m_deviceResults, totalSize));
-        checkCUDAErrors(cudaMemset(m_deviceResults, 0, totalSize));
-    }
-    if (!m_hostResults) {
-        checkCUDAErrors(cudaMallocHost(&m_hostResults, totalSize));
-        memset(m_hostResults, 0, totalSize);
-    }
-    m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
-    m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
-    m_hostResults0 = (FireStarterResults*)(m_hostResults);
-    m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
+    if (m_codeLoaded) {
+        m_evolveMode = evolveMode;
+        checkCUDAErrors(cuCtxCreate(&m_unitContext, CU_CTX_SCHED_AUTO, m_unitDevice));
+        checkCUDAErrors(cudaStreamCreate(&m_unitStream));
+        m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
+        size_t totalSize = m_resultsSize * 2;
+        if (!m_deviceResults) {
+            checkCUDAErrors(cudaMalloc(&m_deviceResults, totalSize));
+            checkCUDAErrors(cudaMemset(m_deviceResults, 0, totalSize));
+        }
+        if (!m_hostResults) {
+            checkCUDAErrors(cudaMallocHost(&m_hostResults, totalSize));
+            memset(m_hostResults, 0, totalSize);
+        }
+        m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
+        m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
+        m_hostResults0 = (FireStarterResults*)(m_hostResults);
+        m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
 
-    switch (m_evolveMode) {
-    case FIRESTARTER_EVOLVE:
-        GenerateEvolve();
-        break;
-    case FIRESTARTER_UNITS:
-        for (unsigned int i = 0; i < PROGRAM_STATES; i++)
-            m_states[i].m_program.RandomProgram(m_seed);
-        break;
-    case FIRESTARTER_OPTIMIZE:
-        LoadState(m_states[0]);
-        GenerateOptimize();
-        break;
+        switch (m_evolveMode) {
+        case FIRESTARTER_EVOLVE:
+            GenerateEvolve();
+            break;
+        case FIRESTARTER_UNITS:
+            for (unsigned int i = 0; i < PROGRAM_STATES; i++)
+                m_states[i].m_program.RandomProgram(m_seed);
+            break;
+        case FIRESTARTER_OPTIMIZE:
+            LoadState(m_states[0]);
+            GenerateOptimize();
+            break;
+        }
+        m_bestState = m_states[0];
     }
-    m_bestState = m_states[0];
 } // InitUnit
 
 void FireStarterUnit::FinishUnit(void)
@@ -411,7 +416,7 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device)
     m_evolveMode = 0;
     m_evolveGeneration = 0;
     m_quit = false;
-    LoadCode();
+    m_codeLoaded = LoadCode();
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)
