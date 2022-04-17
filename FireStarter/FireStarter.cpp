@@ -1,7 +1,6 @@
 #include "FireStarter.h"
 #include "FireStarterCode.h"
 #include "FireStarterUtil.h"
-#include "FireStarter_LoadState.h"
 #include "CUDACompile.h"
 
 void FireStarter::BuildData(std::string& code)

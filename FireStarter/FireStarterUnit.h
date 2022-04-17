@@ -1,7 +1,6 @@
 #pragma once
 #include "FireStarterState.h"
 #include "SerialThread.h"
-#include "FireStarter_LoadState.h"
 
 class FireStarterUnit : public SerialThread {
 public:

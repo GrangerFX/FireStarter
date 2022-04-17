@@ -1,5 +1,6 @@
 #include "FireStarterUnit.h"
 #include "FireStarterCode.h"
+#include "FireStarter_LoadState.h"
 #include "CUDACompile.h"
 
 void FireStarterUnit::GenerateEvolve(void)
