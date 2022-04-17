@@ -1,3 +1,4 @@
+#pragma once
 #include "FireStarterResults.h"
 #include "HashRandom.h"
 #include "FireStarterTarget.h"

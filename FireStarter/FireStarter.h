@@ -2,7 +2,7 @@
 #include <vector>
 #include "FireStarterResults.h"
 #include "FireStarterOrder.h"
-#include "FireStarterUtil.h"
+#include "FireStarterUnit.h"
 #include "FireStarterProcess.h"
 #include "SerialThread.h"
 #include "HashRandom.h"
@@ -16,97 +16,6 @@
 #define EVALUATE_CODE       "// EVALUATE //"
 #define OPTIMIZE_CODE       "// OPTMIZE //"
 #define END_CODE            "// END //"
-
-struct FireStarterRegister {
-    unsigned int dataIndex;
-    unsigned int registerIndex;
-    unsigned int instructionFirst;
-    unsigned int instructionLast;
-}; // struct FireStarterRegister
-
-class FireStarterProgram {
-public:
-    FireStarterInstructions m_instructions;
-    std::vector<FireStarterRegister> m_registers;
-    std::vector<FireStarterOpcode> m_opcodes;
-    FireStarterProgramMode m_programMode;
-    unsigned int m_dataSize;
-    unsigned int m_maxRegisters;
-
-    void OptimizeRegisters(void);
-    void RandomProgram(unsigned int& seed);
-    void RandomInstruction(unsigned int& seed);
-    void LoadInstructions(FireStarterInstructions instructions);
-    void SaveInstructions(FireStarterInstructions &instructions);
-    void GenerateCode(std::string& code, unsigned int tabs, bool optimize = true);
-    void GenerateEvaluate(std::string& code, bool optimize = true);
-    void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
-    void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
-    float EmulateProgram(FireStarterData& data, float n);
-    FireStarterProgram(void);
-}; // class FireStarterProgram
-
-class FireStarterState {
-public:
-    FireStarterProgram m_program;
-    FireStarterResult m_result;
-    float m_bestResult;      // Best result for all threads and variations.
-
-    void SaveState(std::string& code);
-    void SaveSolution(std::string& code);
-    void OptimizeData(void);
-    FireStarterState(void);
-}; // class FireStarterState;
-
-class FireStarterUnit : public SerialThread {
-public:
-    SimpleTimer m_timer;
-    class FireStarter* m_fireStarter;
-    char* m_deviceResults;
-    char* m_hostResults;
-    FireStarterResults* m_deviceResults0;
-    FireStarterResults* m_deviceResults1;
-    FireStarterResults* m_hostResults0;
-    FireStarterResults* m_hostResults1;
-    FireStarterState m_states[PROGRAM_STATES];
-    FireStarterState m_bestState;
-    CUdevice m_unitDevice;
-    CUcontext m_unitContext;
-    CUstream m_unitStream;
-    CUmodule m_evolveModule;
-    CUmodule m_unitsModule;
-    CUmodule m_optimizeModule;
-    CUfunction m_evolveFunction;
-    CUfunction m_unitFunction[PROGRAM_STATES];
-    CUfunction m_optimizeFunction;
-    std::string m_evolveCode;
-    std::string m_unitsCode;
-    std::string m_unitCode;
-    std::string m_optimizeCode;
-    size_t m_resultsSize;
-    unsigned int m_evolveMode;
-    unsigned int m_evolveGeneration;
-    unsigned int m_unitIndex;
-    unsigned int m_seed;
-    volatile bool m_quit;
-
-    void GenerateEvolve(void);
-    void GenerateUnits(void);
-    void GenerateOptimize(void);
-    void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void UnitsGenerations(unsigned int version, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void ExecuteEvolve(void);
-    void ExecuteUnits(void);
-    void ExecuteOptimize(void);
-    void Execute(void);
-    void UpdateProgram(FireStarterState* &bestState, unsigned int* &generation);
-    void UpdateCode(std::string& code);
-    void InitUnit(unsigned int programMode);
-    void FinishUnit(void);
-    FireStarterUnit(FireStarter* fireStarter, unsigned int unitIndex, CUdevice device);
-    ~FireStarterUnit(void);
-}; // class FireStarterUnit
 
 class FireStarter : public SerialThread {
 public:
@@ -124,7 +33,7 @@ public:
     std::string m_fireShowCode;
     std::string m_bestCode;
     FireStarterState m_bestEvaluateState;
-    std::vector<FireStarterUnit*> m_units;
+    std::vector<class FireStarterUnit*> m_units;
     FireStarterServer m_server;
     FrameBuffer m_buffer;
     char m_statusString[1024];
