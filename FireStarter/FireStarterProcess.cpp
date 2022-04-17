@@ -2,7 +2,7 @@
 #include "PrintF.h"
 
 #define PIPE_BUFFER_SIZE   512
-#define PACKET_STRINGS 0
+#define PACKET_STRINGS 1
 
 static const std::string& GetModulePath(void)
 {
@@ -53,12 +53,12 @@ bool FireStarterProcess::ReceiveData(void* data, size_t size)
         // Read from the pipe. 
         DWORD bytesRead = 0;
         DWORD bytesRemaining = (DWORD)(size - readSize);
-        bool result = ReadFile(
-            m_pipe,           // pipe handle 
-            readBuffer,       // buffer to receive reply 
-            bytesRemaining,  // size of buffer 
-            &bytesRead,       // number of bytes read 
-            NULL);            // not overlapped 
+        result = ReadFile(
+            m_pipe,         // pipe handle 
+            readBuffer,     // buffer to receive reply 
+            bytesRemaining, // size of buffer 
+            &bytesRead,     // number of bytes read 
+            NULL);          // not overlapped 
         readSize += bytesRead;
         if (!result && GetLastError() != ERROR_MORE_DATA)
             break;
@@ -125,6 +125,22 @@ bool FireStarterProcess::ReceiveString(std::string& string)
 void FireStarterProcess::StartProcess(void)
 {
     if (!m_started) {
+        if (m_pipe == INVALID_HANDLE_VALUE) {
+            m_pipe = CreateNamedPipe(
+                m_pipeName.c_str(), // pipe name 
+                PIPE_ACCESS_DUPLEX,        // read/write access 
+                PIPE_TYPE_MESSAGE |        // message type pipe 
+                PIPE_READMODE_MESSAGE |    // message-read mode 
+                PIPE_WAIT,                 // blocking mode (required)
+                PIPE_UNLIMITED_INSTANCES,  // max. instances  
+                PIPE_BUFFER_SIZE,          // output buffer size (defined above)
+                PIPE_BUFFER_SIZE,          // input buffer size (defined above)
+                0,                         // client time-out (0 = default: 50ms)
+                NULL);                     // default security attribute 
+            if (m_pipe == INVALID_HANDLE_VALUE)
+                return;
+        }
+
         m_processStartupInfo.cb = sizeof(STARTUPINFO);
         //  m_processStartupInfo.hStdError = m_outputWrite;
         m_processStartupInfo.hStdOutput = m_pipe;
@@ -150,22 +166,6 @@ void FireStarterProcess::StartProcess(void)
             return;
     }
 
-    if (m_pipe == INVALID_HANDLE_VALUE) {
-        m_pipe = CreateNamedPipe(
-            m_pipeName.c_str(), // pipe name 
-            PIPE_ACCESS_DUPLEX,        // read/write access 
-            PIPE_TYPE_MESSAGE |        // message type pipe 
-            PIPE_READMODE_MESSAGE |    // message-read mode 
-            PIPE_WAIT,                 // blocking mode (required)
-            PIPE_UNLIMITED_INSTANCES,  // max. instances  
-            PIPE_BUFFER_SIZE,          // output buffer size (defined above)
-            PIPE_BUFFER_SIZE,          // input buffer size (defined above)
-            0,                         // client time-out (0 = default: 50ms)
-            NULL);                     // default security attribute 
-        if (m_pipe == INVALID_HANDLE_VALUE)
-            return;
-    }
-
     if (!m_connected)
         m_connected = ConnectNamedPipe(m_pipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
 
@@ -182,15 +182,6 @@ void FireStarterProcess::StartProcess(void)
             return;
         }
 
-        // Send a message to the pipe client.
-        std::string sendMessage = "Hello from server " + m_pipeName;
-        bool sendResult = SendString(sendMessage);
-        if (!sendResult) {
-            printf("WriteFile to pipe failed. GLE=%d\n", GetLastError());
-            return;
-        }
-        printf("\nMessage sent to server: %s\n", sendMessage.c_str());
-
         // Receive a message from the pipe client
         std::string receiveMessage;
         bool receiveResult = ReceiveString(receiveMessage);
@@ -199,6 +190,15 @@ void FireStarterProcess::StartProcess(void)
             printf("ReadFile from pipe failed. GLE=%d\n", GetLastError());
             return;
         }
+
+        // Send a message to the pipe client.
+        std::string sendMessage = "Hello from server " + m_pipeName;
+        bool sendResult = SendString(sendMessage);
+        if (!sendResult) {
+            printf("WriteFile to pipe failed. GLE=%d\n", GetLastError());
+            return;
+        }
+        printf("\nMessage sent to server: %s\n", sendMessage.c_str());
     }
 } // StartProcess
 
@@ -269,15 +269,6 @@ void FireStarterProcess::StartClient(void)
         return;
     }
 
-    // Receive a message from the pipe server
-    std::string receiveMessage;
-    bool receiveResult = ReceiveString(receiveMessage);
-    printf("\nMessage received from server: %s\n", receiveMessage.c_str());
-    if (!receiveResult) {
-        printf("ReadFile from pipe failed. GLE=%d\n", GetLastError());
-        return;
-    }
-
     // Send a message to the pipe server.
     std::string sendMessage = "Hello from client " + m_pipeName;
     bool sendResult = SendString(sendMessage);
@@ -286,6 +277,15 @@ void FireStarterProcess::StartClient(void)
         return;
     }
     printf("\nMessage sent to server: %s\n", sendMessage.c_str());
+
+    // Receive a message from the pipe server
+    std::string receiveMessage;
+    bool receiveResult = ReceiveString(receiveMessage);
+    printf("\nMessage received from server: %s\n", receiveMessage.c_str());
+    if (!receiveResult) {
+        printf("ReadFile from pipe failed. GLE=%d\n", GetLastError());
+        return;
+    }
 } // StartClient
 
 void FireStarterProcess::StopClient(void)
