@@ -95,6 +95,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <CudaCompile Include="..\FireStarter\Evolve.cu" />
+    <CudaCompile Include="..\FireStarter\Optimize.cu" />
     <CudaCompile Include="kernel.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -102,7 +104,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\FireStarter\CUDACompile.cpp" />
+    <ClCompile Include="..\FireStarter\FireStarterCode.cpp" />
     <ClCompile Include="..\FireStarter\FireStarterProcess.cpp" />
+    <ClCompile Include="..\FireStarter\FireStarterProgram.cpp" />
+    <ClCompile Include="..\FireStarter\FireStarterState.cpp" />
+    <ClCompile Include="..\FireStarter\FireStarterUnit.cpp" />
     <ClCompile Include="FireMaker.cpp" />
     <ClCompile Include="FireMakerMain.cpp" />
   </ItemGroup>
@@ -110,8 +116,22 @@
     <ClInclude Include="..\FireStarter\CUDACompile.h" />
     <ClInclude Include="..\FireStarter\CUDADefines.h" />
     <ClInclude Include="..\FireStarter\CUDAErrors.h" />
+    <ClInclude Include="..\FireStarter\FireStarterCode.h" />
+    <ClInclude Include="..\FireStarter\FireStarterData.h" />
+    <ClInclude Include="..\FireStarter\FireStarterDefines.h" />
+    <ClInclude Include="..\FireStarter\FireStarterInstructions.h" />
+    <ClInclude Include="..\FireStarter\FireStarterOrder.h" />
     <ClInclude Include="..\FireStarter\FireStarterProcess.h" />
+    <ClInclude Include="..\FireStarter\FireStarterProgram.h" />
+    <ClInclude Include="..\FireStarter\FireStarterResults.h" />
+    <ClInclude Include="..\FireStarter\FireStarterState.h" />
+    <ClInclude Include="..\FireStarter\FireStarterTarget.h" />
+    <ClInclude Include="..\FireStarter\FireStarterUnit.h" />
+    <ClInclude Include="..\FireStarter\FireStarterUtil.h" />
+    <ClInclude Include="..\FireStarter\FireStarter_LoadState.h" />
+    <ClInclude Include="..\FireStarter\HashRandom.h" />
     <ClInclude Include="..\FireStarter\PrintF.h" />
+    <ClInclude Include="..\FireStarter\SerialThread.h" />
     <ClInclude Include="FireMaker.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
