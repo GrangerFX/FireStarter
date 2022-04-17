@@ -33,7 +33,7 @@ void FireMaker::Quit(void)
     DispatchSync([this] { CompileQuit(); });    // This will wait for CompileQuit() to finish.
 } // Quit
 
-FireMaker::FireMaker(const std::string& pipeName) : m_process(pipeName)
+FireMaker::FireMaker(const std::string& pipeName, bool* terminate) : m_process(pipeName, terminate)
 {
 } // FireMaker
 

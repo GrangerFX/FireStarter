@@ -43,12 +43,13 @@ LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 // ----------------------------------------------------------------------------
 HRESULT Initialize(const char* commandLine)
 {
-	FireMaker fireMaker(commandLine);
-	HRESULT result = E_FAIL;
 	SerialThread mainSerialThread(true);
 	SerialThread::SetMainThread(&mainSerialThread);
-	if (fireMaker.Init()) {
-		do {
+	bool terminate = false;
+	FireMaker fireMaker(commandLine, &terminate);
+	HRESULT result = S_OK;
+	if (!terminate && fireMaker.Init()) {
+		while (!terminate) {
 			MSG	msg;
 			if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
 				if (msg.message == WM_QUIT)
@@ -57,11 +58,8 @@ HRESULT Initialize(const char* commandLine)
 				DispatchMessage(&msg);
 			} else if (!mainSerialThread.PollThread())
 				Sleep(100);
-		} while (1);
-
+		}
 		fireMaker.Quit();
-
-		result = S_OK;
 	}
 	return result;
 } // Initialize

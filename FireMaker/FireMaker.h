@@ -15,6 +15,6 @@ public:
 	void CompileCode(const std::string& code, std::string& ptx);
 	bool Init();
 	void Quit(void);
-	FireMaker(const std::string& pipeName);
+	FireMaker(const std::string& pipeName, bool *terminate);
 	~FireMaker(void);
 }; // class FireMaker
