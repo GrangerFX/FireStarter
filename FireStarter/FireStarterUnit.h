@@ -45,8 +45,9 @@ public:
     void Execute(void);
     void UpdateProgram(FireStarterState*& bestState, unsigned int*& generation);
     void UpdateCode(std::string& code);
+    bool LoadCode(void);
     void InitUnit(unsigned int programMode);
     void FinishUnit(void);
-    FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string& evolveCode, const std::string& optimizeCode);
+    FireStarterUnit(unsigned int unitIndex, CUdevice device);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

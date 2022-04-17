@@ -306,6 +306,16 @@ void FireStarterUnit::UpdateCode(std::string& code)
     }
 } // UpdateCode
 
+bool FireStarterUnit::LoadCode(void)
+{
+    if (!FireStarterCode::LoadCode("Evolve.cu", m_evolveCode))
+        return false;
+    if (!FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode))
+        return false;
+    m_unitsCode = m_optimizeCode;
+    return true;
+} // LoadCode
+
 void FireStarterUnit::InitUnit(unsigned int evolveMode)
 {
     m_evolveMode = evolveMode;
@@ -380,15 +390,12 @@ void FireStarterUnit::FinishUnit(void)
     }
 } // FinishUnit
 
-FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const std::string &evolveCode, const std::string &optimizeCode)
+FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device)
 {
     m_unitIndex = unitIndex;
     m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
     m_unitDevice = device;
     m_unitContext = nullptr;
-    m_evolveCode = evolveCode;
-    m_unitsCode = optimizeCode;
-    m_optimizeCode = optimizeCode;
     m_deviceResults = nullptr;
     m_hostResults = nullptr;
     m_deviceResults0 = nullptr;
@@ -404,6 +411,7 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device, const 
     m_evolveMode = 0;
     m_evolveGeneration = 0;
     m_quit = false;
+    LoadCode();
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)

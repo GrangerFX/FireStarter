@@ -21,8 +21,6 @@ public:
     CUmodule m_fireShowModule;
     CUfunction m_fireShowFunction;
     std::string m_solutionTargetCode;
-    std::string m_evolveCode;
-    std::string m_optimizeCode;
     std::string m_fireShowCode;
     std::string m_bestCode;
     FireStarterState m_bestEvaluateState;
@@ -45,7 +43,6 @@ public:
 
     void BuildData(std::string& code);
     bool LoadTargetCode(void);
-    bool LoadFireStarterCode(void);
     bool LoadFireShowCode(void);
     void SaveBestState(void);
     void SaveBestCode(void);

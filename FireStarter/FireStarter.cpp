@@ -27,15 +27,6 @@ bool FireStarter::LoadTargetCode(void)
     return true;
 } // LoadTargetCode
 
-bool FireStarter::LoadFireStarterCode(void)
-{
-    if (!FireStarterCode::LoadCode("Evolve.cu", m_evolveCode))
-        return false;
-    if (!FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode))
-        return false;
-    return true;
-} // LoadFireStarterCode
-
 bool FireStarter::LoadFireShowCode(void)
 {
     if (!FireStarterCode::LoadCode("FireShow.cu", m_fireShowCode))
@@ -135,7 +126,7 @@ void FireStarter::ControlThread(void)
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
     for (unsigned int i = 0; i < unit_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i, m_device, m_evolveCode, m_optimizeCode);
+        FireStarterUnit* unit = new FireStarterUnit(i, m_device);
         m_units.push_back(unit);
     }
     for (FireStarterUnit* unit : m_units)
@@ -301,7 +292,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
         RenderImage(width, height, m_buffer.m_hostBase);
         SetWindowText((HWND)m_window, statusString.c_str());
         return true;
-    } else if (LoadTargetCode() && LoadFireStarterCode() && LoadFireShowCode()) {
+    } else if (LoadTargetCode() && LoadFireShowCode()) {
         DispatchAsync([this] { ControlThread(); });
         return true;
     }
