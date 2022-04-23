@@ -48,6 +48,6 @@ public:
     bool LoadCode(void);
     void InitUnit(unsigned int programMode, int device = 0);
     void FinishUnit(void);
-    FireStarterUnit(unsigned int unitIndex, CUdevice device);
+    FireStarterUnit(unsigned int unitIndex = 0);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

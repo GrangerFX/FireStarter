@@ -12,7 +12,7 @@ bool FireStarterCode::LoadCode(const std::string& filePath, std::string& code)
         file.seekg(0, std::ios::beg);
         code.append((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
         file.close();
-        return true;
+        return code.length() > 0;
     }
     return false;
 } // LoadCode

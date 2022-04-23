@@ -4,9 +4,9 @@
 
 class CUDAContext {
 private:
-    CUdevice m_device;
-    CUcontext m_context;
-    CUstream m_stream;
+    CUdevice m_device = 0;
+    CUcontext m_context = nullptr;
+    CUstream m_stream = nullptr;
 
 public:
     inline const CUdevice Device(void) const

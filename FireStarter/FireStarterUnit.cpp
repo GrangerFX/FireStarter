@@ -395,7 +395,7 @@ void FireStarterUnit::FinishUnit(void)
         delete m_unitContext;
 } // FinishUnit
 
-FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device)
+FireStarterUnit::FireStarterUnit(unsigned int unitIndex)
 {
     m_unitIndex = unitIndex;
     m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);

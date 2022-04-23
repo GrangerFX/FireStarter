@@ -128,7 +128,7 @@ void FireStarter::ControlThread(void)
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
     for (unsigned int i = 0; i < unit_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i, fireShowContext.Device());
+        FireStarterUnit* unit = new FireStarterUnit(i);
         m_units.push_back(unit);
     }
     for (FireStarterUnit* unit : m_units)

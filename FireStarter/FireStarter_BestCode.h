@@ -17,7 +17,7 @@ inline float Evaluate0(FireStarterData data, float n)
     n = data.d[1] += n;
     n = data.d[6] *= n;
     n = data.d[7] += n;
-    n = data.d[8] += n;
+    n += data.d[8];
     n *= data.d[9];
     n *= data.d[10];
     n *= data.d[6];
@@ -28,7 +28,7 @@ inline float Evaluate0(FireStarterData data, float n)
     n *= data.d[12];
     n *= data.d[14];
     n += data.d[15];
-    n *= data.d[8];
+    n = data.d[7] += n;
     n = data.d[16] *= n;
     n = data.d[17] += n;
     n = data.d[16] += n;
@@ -47,7 +47,7 @@ inline float Evaluate1(FireStarterData data, float n)
     n += data.d[0];
     n = data.d[1] += n;
     n += data.d[2];
-    n *= data.d[3];
+    n += data.d[3];
     n += data.d[4];
     n = data.d[5] *= n;
     n = data.d[1] += n;
@@ -95,7 +95,7 @@ inline float Evaluate2(FireStarterData data, float n)
     n *= data.d[9];
     n *= data.d[10];
     n *= data.d[6];
-    n = data.d[11] *= n;
+    n *= data.d[11];
     n = data.d[12] += n;
     n *= data.d[13];
     n *= data.d[5];
@@ -107,8 +107,8 @@ inline float Evaluate2(FireStarterData data, float n)
     n = data.d[17] += n;
     n = data.d[16] += n;
     n += data.d[17];
-    n = data.d[7] *= n;
-    n += data.d[11];
+    n = data.d[18] *= n;
+    n += data.d[19];
     n *= data.d[16];
     n *= data.d[1];
     n *= data.d[7];
@@ -131,7 +131,7 @@ inline float Evaluate3(FireStarterData data, float n)
     n = data.d[8] += n;
     n *= data.d[9];
     n *= data.d[10];
-    n = data.d[6] *= n;
+    n *= data.d[6];
     n *= data.d[11];
     n = data.d[12] += n;
     n *= data.d[13];
@@ -142,11 +142,11 @@ inline float Evaluate3(FireStarterData data, float n)
     n *= data.d[8];
     n = data.d[16] *= n;
     n = data.d[17] += n;
-    n += data.d[16];
+    n = data.d[16] += n;
     n += data.d[17];
     n = data.d[7] *= n;
     n += data.d[18];
-    n += data.d[6];
+    n *= data.d[16];
     n *= data.d[1];
     n *= data.d[7];
     n += data.d[19];
