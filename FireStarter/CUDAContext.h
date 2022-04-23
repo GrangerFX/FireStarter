@@ -7,8 +7,8 @@ private:
     CUdevice m_device;
     CUcontext m_context;
     CUstream m_stream;
+
 public:
-    
     inline const CUdevice Device(void) const
     {
         return m_device;
