@@ -1,25 +1,20 @@
 #include "FireMaker.h"
 #include "CUDACompile.h"
-#include "CudaErrors.h"
 
 void FireMaker::CompileInit(void)
 {
-    checkCUDAErrors(cuInit(0));
-    checkCUDAErrors(cuDeviceGet(&m_device, 0)); // Use the first CUDA device for now.
-    checkCUDAErrors(cuCtxCreate(&m_compileContext, CU_CTX_SCHED_AUTO, m_device));
-    checkCUDAErrors(cudaStreamCreate(&m_compileStream));
+    m_context = new CUDAContext();
 } // CompileInit
 
 void FireMaker::CompileQuit(void)
 {
-    checkCUDAErrors(cudaStreamDestroy(m_compileStream));
-    checkCUDAErrors(cuCtxDestroy(m_compileContext));
+    delete m_context;
 } // CompileQuit
 
 void FireMaker::CompileCode(const std::string &code, std::string &ptx)
 {
     // Compile fireShow.
-    CUDACompile::CompilePTX(code, ptx);
+    CUDACompile::CompilePTX(ptx, code);
 } // CompileThread
 
 bool FireMaker::Init()
@@ -39,5 +34,4 @@ FireMaker::FireMaker(const std::string& pipeName, bool* terminate) : m_process(p
 
 FireMaker::~FireMaker(void)
 {
-
 } // ~FireMaker

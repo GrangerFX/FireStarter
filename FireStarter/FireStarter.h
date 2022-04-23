@@ -15,11 +15,6 @@ public:
     SimpleTimer m_runTimer;
     SimpleTimer m_controlTimer;
     double m_controlTime;
-    CUdevice m_device;
-    CUcontext m_fireShowContext;
-    CUstream m_fireShowStream;
-    CUmodule m_fireShowModule;
-    CUfunction m_fireShowFunction;
     std::string m_solutionTargetCode;
     std::string m_fireShowCode;
     std::string m_bestCode;
@@ -47,7 +42,7 @@ public:
     void SaveBestState(void);
     void SaveBestCode(void);
     void SaveSolution(void);
-    void FireShow(void);
+    void FireShow(class CUDAContext* context, CUfunction fireShowFunction);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void RenderStatus(void);
     void ControlThread(void);

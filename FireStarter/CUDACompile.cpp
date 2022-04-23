@@ -3,7 +3,7 @@
 #include "FireStarterUtil.h"
 #include <vector>
 
-bool CUDACompile::CompilePTX(const std::string& program, std::string& ptx, const std::string& programName)
+bool CUDACompile::CompilePTX(std::string& ptx, const std::string& program, const std::string& programName)
 {
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
@@ -43,47 +43,29 @@ bool CUDACompile::CompilePTX(const std::string& program, std::string& ptx, const
     }
 
     // Fetch PTX
-    char* ptxString;
     size_t ptxSize;
     checkNVRTCErrors(nvrtcGetPTXSize(prog, &ptxSize));
-    ptxString = reinterpret_cast<char*>(malloc(sizeof(char) * ptxSize));
-    checkNVRTCErrors(nvrtcGetPTX(prog, ptxString));
+    ptx.resize(ptxSize);
+    checkNVRTCErrors(nvrtcGetPTX(prog, ptx.data()));
     checkNVRTCErrors(nvrtcDestroyProgram(&prog));
-    ptx = ptxString;
-    free(ptxString);
     return true;
 } // CompilePTX
 
-CUfunction CUDACompile::CompileProgram(const std::string& program, CUmodule& cuda_module, const std::string& functionName)
+bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& program, const std::string& programName)
 {
-    SimpleTimer timer;
-
     if (cuda_module) {
         checkCUDAErrors(cuModuleUnload(cuda_module));
         cuda_module = nullptr;
     }
-
-    printf("\n>>>CompileProgram: %s\n", functionName.c_str());
-    printf(">>>cuModuleUnload: %f\n", timer.Duration());
-
     std::string ptx;
-    CompilePTX(program, ptx, functionName.c_str());
-    printf(">>>CompilePTX: %f\n", timer.Duration());
-
+    CompilePTX(ptx, program, programName);
     checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx.c_str(), 0, 0, 0));
-    printf(">>>cuModuleLoadDataEx: %f\n", timer.Duration());
-    CUfunction function = nullptr;
-    if (functionName.length()) {
-        checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName.c_str()));
-        printf(">>>cuModuleGetFunction: %f\n", timer.Duration());
-    }
-    printf("\n");
-    return function;
+    return true;
 } // CompileProgram
 
-CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const char* functionName)
+CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& functionName)
 {
     CUfunction function = nullptr;
-    checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName));
+    checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName.c_str()));
     return function;
 } // GetFunction

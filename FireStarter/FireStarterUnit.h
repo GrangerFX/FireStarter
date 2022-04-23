@@ -1,38 +1,37 @@
 #pragma once
 #include "FireStarterState.h"
+#include "CUDAContext.h"
 #include "SerialThread.h"
 
 class FireStarterUnit : public SerialThread {
 public:
     SimpleTimer m_timer;
-    char* m_deviceResults;
-    char* m_hostResults;
-    FireStarterResults* m_deviceResults0;
-    FireStarterResults* m_deviceResults1;
-    FireStarterResults* m_hostResults0;
-    FireStarterResults* m_hostResults1;
+    char* m_deviceResults = nullptr;
+    char* m_hostResults = nullptr;
+    FireStarterResults* m_deviceResults0 = nullptr;
+    FireStarterResults* m_deviceResults1 = nullptr;
+    FireStarterResults* m_hostResults0 = nullptr;
+    FireStarterResults* m_hostResults1 = nullptr;
     FireStarterState m_states[PROGRAM_STATES];
     FireStarterState m_bestState;
-    CUdevice m_unitDevice;
-    CUcontext m_unitContext;
-    CUstream m_unitStream;
-    CUmodule m_evolveModule;
-    CUmodule m_unitsModule;
-    CUmodule m_optimizeModule;
-    CUfunction m_evolveFunction;
-    CUfunction m_unitFunction[PROGRAM_STATES];
-    CUfunction m_optimizeFunction;
+    CUDAContext* m_unitContext = nullptr;
+    CUmodule m_evolveModule = nullptr;
+    CUmodule m_unitsModule = nullptr;
+    CUmodule m_optimizeModule = nullptr;
+    CUfunction m_evolveFunction = nullptr;
+    CUfunction m_unitFunction[PROGRAM_STATES] = {};
+    CUfunction m_optimizeFunction = nullptr;
     std::string m_evolveCode;
     std::string m_unitsCode;
     std::string m_unitCode;
     std::string m_optimizeCode;
-    size_t m_resultsSize;
-    unsigned int m_evolveMode;
-    unsigned int m_evolveGeneration;
-    unsigned int m_unitIndex;
-    unsigned int m_seed;
-    bool m_codeLoaded;
-    volatile bool m_quit;
+    size_t m_resultsSize = 0;
+    unsigned int m_evolveMode = 0;
+    unsigned int m_evolveGeneration = 0;
+    unsigned int m_unitIndex = 0;
+    unsigned int m_seed = 0;
+    bool m_codeLoaded = false;
+    volatile bool m_quit = false;
 
     void GenerateEvolve(void);
     void GenerateUnits(void);
@@ -47,7 +46,7 @@ public:
     void UpdateProgram(FireStarterState*& bestState, unsigned int*& generation);
     void UpdateCode(std::string& code);
     bool LoadCode(void);
-    void InitUnit(unsigned int programMode);
+    void InitUnit(unsigned int programMode, int device = 0);
     void FinishUnit(void);
     FireStarterUnit(unsigned int unitIndex, CUdevice device);
     ~FireStarterUnit(void);

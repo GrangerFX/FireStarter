@@ -1,6 +1,7 @@
 #include "FireStarter.h"
 #include "FireStarterCode.h"
 #include "FireStarterUtil.h"
+#include "CUDAContext.h"
 #include "CUDACompile.h"
 
 void FireStarter::BuildData(std::string& code)
@@ -53,7 +54,7 @@ void FireStarter::SaveSolution(void)
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
-void FireStarter::FireShow(void)
+void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction)
 {
     for (unsigned int variation = 0; variation < PROGRAM_VARIATIONS; variation++) {
         // Launch the display kernel
@@ -68,14 +69,14 @@ void FireStarter::FireShow(void)
                         reinterpret_cast<void*>(&m_buffer.m_height),
                         reinterpret_cast<void*>(&variation) };
 
-        checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
+        checkCUDAErrors(cuLaunchKernel(fireShowFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, m_fireShowStream,                                // shared mem, stream */
+            0, context->Stream(),                               // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
     }
-    checkCUDAErrors(cudaStreamSynchronize(m_fireShowStream));
+    checkCUDAErrors(cudaStreamSynchronize(context->Stream()));
 } // FireShow
 
 void FireStarter::RenderImage(unsigned int width, unsigned int height, const unsigned char *pixels)
@@ -109,15 +110,16 @@ void FireStarter::RenderStatus(void)
 
 void FireStarter::ControlThread(void)
 {
-    checkCUDAErrors(cuInit(0));
-    checkCUDAErrors(cuDeviceGet(&m_device, 0)); // Use the first CUDA device for now.
-    checkCUDAErrors(cuCtxCreate(&m_fireShowContext, CU_CTX_SCHED_AUTO, m_device));
-    checkCUDAErrors(cudaStreamCreate(&m_fireShowStream));
+    CUDAContext fireShowContext;
+    CUmodule fireShowModule = nullptr;
+    CUfunction fireShowFunction = nullptr;
+
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
 
     // Compile fireShow.
-    m_fireShowFunction = CUDACompile::CompileProgram(m_fireShowCode, m_fireShowModule, "FireShow");
+    if (CUDACompile::CompileProgram(fireShowModule, m_fireShowCode, "FireShow"))
+        fireShowFunction = CUDACompile::GetFunction(fireShowModule, "FireShow");
 
     // Create and initialize a unit for each processor thread.
     unsigned int unit_count = PROGRAM_UNITS;
@@ -126,7 +128,7 @@ void FireStarter::ControlThread(void)
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
     for (unsigned int i = 0; i < unit_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i, m_device);
+        FireStarterUnit* unit = new FireStarterUnit(i, fireShowContext.Device());
         m_units.push_back(unit);
     }
     for (FireStarterUnit* unit : m_units)
@@ -188,12 +190,12 @@ void FireStarter::ControlThread(void)
         }
 
         // Render the buffer if the best data was updated and the previous buffer was displayed.
-        if (m_fireShowModule && !m_bufferUpdate && !m_quitControlThread) {
+        if (!m_bufferUpdate && !m_quitControlThread) {
             // Erase the frame buffer
             m_buffer.Erase();
 
             // Draw the graphs for both variations.
-            FireShow();
+            FireShow(&fireShowContext, fireShowFunction);
             m_controlUpdate = false;
             const unsigned char* bufferPixels = (m_evolveMode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
             GetMainThread()->DispatchAsync([this, bufferPixels] {
@@ -216,19 +218,8 @@ void FireStarter::ControlThread(void)
     m_buffer.Resize(0, 0);
 
     // Unload the fire show code and destroy the CUDA context.
-    if (m_fireShowModule) {
-        checkCUDAErrors(cuModuleUnload(m_fireShowModule));
-        m_fireShowModule = nullptr;
-    }
-    m_fireShowFunction = nullptr;
-    if (m_fireShowStream) {
-        checkCUDAErrors(cudaStreamDestroy(m_fireShowStream));
-        m_fireShowStream = nullptr;
-    }
-    if (m_fireShowContext) {
-        checkCUDAErrors(cuCtxDestroy(m_fireShowContext));
-        m_fireShowContext = nullptr;
-    }
+    if (fireShowModule)
+        checkCUDAErrors(cuModuleUnload(fireShowModule));
 } // ControlThread
 
 float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation)
@@ -309,9 +300,6 @@ FireStarter::FireStarter(void)
 {
     m_server.AddProcess();
 
-    m_fireShowContext = nullptr;
-    m_fireShowModule = nullptr;
-    m_fireShowFunction = nullptr;
     m_statusString[0] = 0;
     m_generation = 0;
     m_bestGeneration = 0;

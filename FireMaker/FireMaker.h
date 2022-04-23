@@ -1,13 +1,11 @@
 #pragma once
 #include "FireStarterProcess.h"
-#include "CUDADefines.h"
+#include "CUDAContext.h"
 
 class FireMaker : public SerialThread {
 public:
+	CUDAContext* m_context = nullptr;
 	FireStarterProcess m_process;
-	CUdevice m_device;
-	CUcontext m_compileContext;
-	CUstream m_compileStream;
 	std::string m_pipeName;
 
 	void CompileInit(void);

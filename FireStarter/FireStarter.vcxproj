@@ -111,6 +111,7 @@
     <ClCompile Include="FireStarterState.cpp" />
     <ClCompile Include="FireStarterUnit.cpp" />
     <ClInclude Include="CUDACompile.h" />
+    <ClInclude Include="CUDAContext.h" />
     <ClInclude Include="CUDADefines.h" />
     <ClInclude Include="CUDAErrors.h" />
     <ClInclude Include="FireStarter.h" />

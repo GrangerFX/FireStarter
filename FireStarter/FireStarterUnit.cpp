@@ -6,7 +6,8 @@
 void FireStarterUnit::GenerateEvolve(void)
 {
     // Compile the program
-    m_evolveFunction = CUDACompile::CompileProgram(m_evolveCode, m_evolveModule, "Evolve");
+    if (CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, "Evolve"))
+        m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
 } // GenerateEvolve
 
 void FireStarterUnit::GenerateUnits(void)
@@ -40,7 +41,7 @@ void FireStarterUnit::GenerateUnits(void)
     FireStarterCode::UpdateProgram(m_unitsCode, optimizeCode, OPTIMIZE_CODE);
 
     // Compile the new code.
-    CUDACompile::CompileProgram(m_unitsCode, m_unitsModule);
+    CUDACompile::CompileProgram(m_unitsModule, m_unitsCode);
     for (unsigned int i = 0; i < PROGRAM_STATES; i++)
         m_unitFunction[i] = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
 } // GenerateUnits
@@ -53,7 +54,8 @@ void FireStarterUnit::GenerateOptimize(void)
     FireStarterCode::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
 
     // Compile the new code.
-    m_optimizeFunction = CUDACompile::CompileProgram(m_optimizeCode, m_optimizeModule, "Optimize");
+    if (CUDACompile::CompileProgram(m_optimizeModule, m_optimizeCode, "Optimize"))
+        m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
 } // GenerateOptimize
 
 void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
@@ -77,14 +79,14 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
         checkCUDAErrors(cuLaunchKernel(m_evolveFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, m_unitStream,                                    // shared mem, stream */
+            0, m_unitContext->Stream(),                         // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
     }
 
     // Get the best result.
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitStream));
-    checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitContext->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
     float minResult = m_hostResults0->results[0].maxResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
@@ -130,15 +132,15 @@ void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int popula
         checkCUDAErrors(cuLaunchKernel(m_unitFunction[version],
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, m_unitStream,                                    // shared mem, stream */
+            0, m_unitContext->Stream(),                         // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
-        checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
+        checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
     }
 
     // Get the best result.
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitStream));
-    checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitContext->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
     printf("<<<UnitsGenerations cudaStreamSynchronize: %f\n", m_timer.Duration() - startTime);
 
     FireStarterResult& result = state.m_result;
@@ -193,15 +195,15 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
         checkCUDAErrors(cuLaunchKernel(m_optimizeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, m_unitStream,                                    // shared mem, stream */
+            0, m_unitContext->Stream(),                         // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
-        checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
+        checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
     }
 
     // Get the best result.
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitStream));
-    checkCUDAErrors(cudaStreamSynchronize(m_unitStream));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitContext->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
     FireStarterResult& result = state.m_result;
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
         result.minResult[v] = m_hostResults0->results[0].minResult[v];
@@ -319,12 +321,12 @@ bool FireStarterUnit::LoadCode(void)
     return false;
 } // LoadCode
 
-void FireStarterUnit::InitUnit(unsigned int evolveMode)
+void FireStarterUnit::InitUnit(unsigned int evolveMode, int device)
 {
+    if (!m_unitContext)
+        m_unitContext = new CUDAContext(device);
     if (m_codeLoaded) {
         m_evolveMode = evolveMode;
-        checkCUDAErrors(cuCtxCreate(&m_unitContext, CU_CTX_SCHED_AUTO, m_unitDevice));
-        checkCUDAErrors(cudaStreamCreate(&m_unitStream));
         m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
         size_t totalSize = m_resultsSize * 2;
         if (!m_deviceResults) {
@@ -389,30 +391,14 @@ void FireStarterUnit::FinishUnit(void)
     m_deviceResults1 = nullptr;
     m_hostResults0 = nullptr;
     m_hostResults1 = nullptr;
-    if (m_unitContext) {
-        checkCUDAErrors(cuCtxDestroy(m_unitContext));
-        m_unitContext = nullptr;
-    }
+    if (m_unitContext)
+        delete m_unitContext;
 } // FinishUnit
 
 FireStarterUnit::FireStarterUnit(unsigned int unitIndex, CUdevice device)
 {
     m_unitIndex = unitIndex;
     m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
-    m_unitDevice = device;
-    m_unitContext = nullptr;
-    m_deviceResults = nullptr;
-    m_hostResults = nullptr;
-    m_deviceResults0 = nullptr;
-    m_deviceResults0 = nullptr;
-    m_hostResults0 = nullptr;
-    m_hostResults1 = nullptr;
-    m_evolveModule = nullptr;
-    m_unitsModule = nullptr;
-    m_evolveFunction = nullptr;
-    memset(m_unitFunction, 0, sizeof(m_unitFunction));
-    m_optimizeModule = nullptr;
-    m_optimizeFunction = nullptr;
     m_evolveMode = 0;
     m_evolveGeneration = 0;
     m_quit = false;

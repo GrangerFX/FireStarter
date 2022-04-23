@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FireStarter\CUDACompile.h" />
+    <ClInclude Include="..\FireStarter\CUDAContext.h" />
     <ClInclude Include="..\FireStarter\CUDADefines.h" />
     <ClInclude Include="..\FireStarter\CUDAErrors.h" />
     <ClInclude Include="..\FireStarter\FireStarterCode.h" />
