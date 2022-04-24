@@ -31,6 +31,7 @@ public:
     bool m_codeLoaded = false;
     volatile bool m_quit = false;
 
+    void Packetize(FireStarterPacket& packet);
     void GenerateEvolve(void);
     void GenerateUnits(void);
     void GenerateOptimize(void);

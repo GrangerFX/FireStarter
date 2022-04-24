@@ -3,6 +3,17 @@
 #include "FireStarter_LoadState.h"
 #include "CUDACompile.h"
 
+void FireStarterUnit::Packetize(FireStarterPacket& packet)
+{
+    m_bestState.Packetize(packet);
+    for (unsigned int i = 0; i < PROGRAM_STATES; i++)
+        m_states[i].Packetize(packet);
+    packet.Packetize(&m_evolveMode, sizeof(m_evolveMode));
+    packet.Packetize(&m_evolveGeneration, sizeof(m_evolveGeneration));
+    packet.Packetize(&m_unitIndex, sizeof(m_unitIndex));
+    packet.Packetize(&m_seed, sizeof(m_seed));
+} // Packetize
+
 void FireStarterUnit::GenerateEvolve(void)
 {
     // Compile the program
