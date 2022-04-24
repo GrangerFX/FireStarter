@@ -1,5 +1,17 @@
 #include "FireStarterProgram.h"
 
+void FireStarterProgram::Packetize(FireStarterPacket& packet)
+{
+    packet.Packetize(&m_instructions, sizeof(m_instructions));
+    m_registers.resize(packet.PacketizeSize(m_registers.size()));
+    packet.Packetize(m_registers.data(), m_registers.size() * sizeof(m_registers[0]));
+    m_opcodes.resize(packet.PacketizeSize(m_opcodes.size()));
+    packet.Packetize(m_opcodes.data(), m_opcodes.size() * sizeof(m_opcodes[0]));
+    packet.Packetize(&m_programMode, sizeof(m_programMode));
+    packet.Packetize(&m_dataSize, sizeof(m_dataSize));
+    packet.Packetize(&m_maxRegisters, sizeof(m_maxRegisters));
+} // Packetize
+
 void FireStarterProgram::OptimizeRegisters(void)
 {
     // Delete the unused registers and sort the remaining ones.
@@ -49,7 +61,6 @@ void FireStarterProgram::OptimizeRegisters(void)
 void FireStarterProgram::RandomProgram(unsigned int& seed)
 {
     m_instructions.Randomize(seed);
-    OptimizeRegisters();
 } // RandomProgram
 
 void FireStarterProgram::RandomInstruction(unsigned int& seed)

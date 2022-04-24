@@ -1,11 +1,10 @@
 #pragma once
 #include "SerialThread.h"
+#include "FireStarterPacket.h"
 #include <windows.h>
 
 #define FIREMAKER           "FireMaker"
 #define FIRESTARTER         "FireStarter"
-
-typedef std::vector<unsigned char> FireStarterPacket;
 
 class FireStarterProcess : public SerialThread {
 private:

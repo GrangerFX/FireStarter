@@ -22,8 +22,6 @@ public:
     CUfunction m_unitFunction[PROGRAM_STATES] = {};
     CUfunction m_optimizeFunction = nullptr;
     std::string m_evolveCode;
-    std::string m_unitsCode;
-    std::string m_unitCode;
     std::string m_optimizeCode;
     size_t m_resultsSize = 0;
     unsigned int m_evolveMode = 0;
@@ -37,13 +35,12 @@ public:
     void GenerateUnits(void);
     void GenerateOptimize(void);
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void UnitsGenerations(unsigned int version, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+    void UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void ExecuteEvolve(void);
     void ExecuteUnits(void);
     void ExecuteOptimize(void);
     void Execute(void);
-    void UpdateProgram(FireStarterState*& bestState, unsigned int*& generation);
     void UpdateCode(std::string& code);
     bool LoadCode(void);
     void InitUnit(unsigned int programMode, int device = 0);

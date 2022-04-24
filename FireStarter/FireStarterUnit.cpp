@@ -12,6 +12,19 @@ void FireStarterUnit::GenerateEvolve(void)
 
 void FireStarterUnit::GenerateUnits(void)
 {
+    // Evolve each state.
+    for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
+        FireStarterState& state = m_states[i];
+        state = m_bestState;
+        if (!m_evolveGeneration)
+            state.m_program.RandomProgram(m_seed);
+        else
+            state.m_program.RandomInstruction(m_seed);
+        state.m_program.OptimizeRegisters();
+        state.m_program.SaveInstructions(state.m_result.instructions);
+        state.m_generation = m_evolveGeneration;
+    }
+
     // Update the Evaluate funtion.
     std::string optimize;
     FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
@@ -34,14 +47,15 @@ void FireStarterUnit::GenerateUnits(void)
             optimizeCode += "\r\n";
         optimizeCode += optimizeUnit;
     }
+    m_bestState = m_states[0];
 
     // Create the units code by replacing the evaluate and optimize sections of the optimize code.
-    m_unitsCode = m_optimizeCode;
-    FireStarterCode::UpdateProgram(m_unitsCode, evaluateCode, EVALUATE_CODE);
-    FireStarterCode::UpdateProgram(m_unitsCode, optimizeCode, OPTIMIZE_CODE);
+    std::string unitsCode = m_optimizeCode;
+    FireStarterCode::UpdateProgram(unitsCode, evaluateCode, EVALUATE_CODE);
+    FireStarterCode::UpdateProgram(unitsCode, optimizeCode, OPTIMIZE_CODE);
 
     // Compile the new code.
-    CUDACompile::CompileProgram(m_unitsModule, m_unitsCode);
+    CUDACompile::CompileProgram(m_unitsModule, unitsCode);
     for (unsigned int i = 0; i < PROGRAM_STATES; i++)
         m_unitFunction[i] = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
 } // GenerateUnits
@@ -50,7 +64,7 @@ void FireStarterUnit::GenerateOptimize(void)
 {
     // Update the Evaluate funtion.
     std::string code;
-    m_states[0].m_program.GenerateEvaluate(code);
+    m_bestState.m_program.GenerateEvaluate(code);
     FireStarterCode::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
 
     // Compile the new code.
@@ -107,15 +121,14 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     }
 } // EvolveGenerations
 
-void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
+void FireStarterUnit::UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
 {
     // Launch the calculation kernel
-    double startTime = m_timer.Duration();
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     unsigned int blocksPerGrid = (population + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    FireStarterState& state = m_states[version];
+    FireStarterState& state = m_states[index];
     unsigned int dataSize = state.m_program.m_dataSize;
 
     for (unsigned int g = 0; g < generations; g++) {
@@ -129,7 +142,7 @@ void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int popula
                         reinterpret_cast<void*>(&iterations),
                         reinterpret_cast<void*>(&curGeneration) };
 
-        checkCUDAErrors(cuLaunchKernel(m_unitFunction[version],
+        checkCUDAErrors(cuLaunchKernel(m_unitFunction[index],
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
             0, m_unitContext->Stream(),                         // shared mem, stream */
@@ -141,7 +154,6 @@ void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int popula
     // Get the best result.
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults0, m_deviceResults0, m_resultsSize, cudaMemcpyDeviceToHost, m_unitContext->Stream()));
     checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
-    printf("<<<UnitsGenerations cudaStreamSynchronize: %f\n", m_timer.Duration() - startTime);
 
     FireStarterResult& result = state.m_result;
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
@@ -168,7 +180,6 @@ void FireStarterUnit::UnitsGenerations(unsigned int version, unsigned int popula
     // Find the best results.
     if (result.maxResult < m_bestState.m_result.maxResult)
         m_bestState = state;
-    printf("<<<UnitsGenerations: %f\n", m_timer.Duration() - startTime);
 } // UnitsGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
@@ -236,31 +247,20 @@ void FireStarterUnit::ExecuteEvolve(void)
     // Run the next generation on the GPU.
    // Evolve the program instructions.
     m_states[0] = m_bestState;
+    m_states[0].m_generation = m_evolveGeneration;
     EvolveGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_evolveGeneration);
     m_evolveGeneration += PROGRAM_GENERATIONS;
 } // ExecuteEvolve
 
 void FireStarterUnit::ExecuteUnits(void)
-{
-    // Run the next generation on the GPU.
-    // Evolve the program instructions.
-    double startTime = m_timer.Duration();
-    for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
-        FireStarterState& state = m_states[i];
-        state = m_bestState;
-        state.m_program.RandomInstruction(m_seed);
-        state.m_program.OptimizeRegisters();
-        state.m_program.SaveInstructions(state.m_result.instructions);
-    }
-
-    // Compile the program.
+{ 
+    // Generate and compile the program.
     GenerateUnits();
-    printf("<<<ExecuteUnits: GenerateUnits %f\n", m_timer.Duration() - startTime);
 
     // Evolve the program data.
     for (unsigned int i = 0; i < PROGRAM_STATES; i++)
         UnitsGenerations(i, PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_evolveGeneration);
-    printf("<<<ExecuteUnits: UnitsGenerations %f\n", m_timer.Duration() - startTime);
+    m_evolveGeneration++;
 } // ExecuteUnits
 
 void FireStarterUnit::ExecuteOptimize(void)
@@ -268,6 +268,7 @@ void FireStarterUnit::ExecuteOptimize(void)
     // Run the next generation on the GPU.
     // Evolve the program data.
     m_states[0] = m_bestState;
+    m_states[0].m_generation = m_evolveGeneration;
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_evolveGeneration);
     m_evolveGeneration += PROGRAM_GENERATIONS;
 } // ExecuteOptimize
@@ -288,12 +289,6 @@ void FireStarterUnit::Execute(void)
         }
 } // Execute
 
-void FireStarterUnit::UpdateProgram(FireStarterState*& bestState, unsigned int*& generation)
-{
-    bestState = &m_bestState;
-    generation = &m_evolveGeneration;
-} // Update
-
 void FireStarterUnit::UpdateCode(std::string& code)
 {
     switch (m_evolveMode) {
@@ -301,7 +296,8 @@ void FireStarterUnit::UpdateCode(std::string& code)
             code = m_evolveCode;
             break;
         case FIRESTARTER_UNITS:
-            code = m_unitsCode;
+            GenerateOptimize();
+            code = m_optimizeCode;
             break;
         case FIRESTARTER_OPTIMIZE:
             code = m_optimizeCode;
@@ -311,13 +307,10 @@ void FireStarterUnit::UpdateCode(std::string& code)
 
 bool FireStarterUnit::LoadCode(void)
 {
-    if (FireStarterCode::LoadCode("Evolve.cu", m_evolveCode) && FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
-        m_unitsCode = m_optimizeCode;
+    if (FireStarterCode::LoadCode("Evolve.cu", m_evolveCode) && FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode))
         return true;
-    }
     m_evolveCode.clear();
     m_optimizeCode.clear();
-    m_unitsCode.clear();
     return false;
 } // LoadCode
 
@@ -347,15 +340,12 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, int device)
             GenerateEvolve();
             break;
         case FIRESTARTER_UNITS:
-            for (unsigned int i = 0; i < PROGRAM_STATES; i++)
-                m_states[i].m_program.RandomProgram(m_seed);
             break;
         case FIRESTARTER_OPTIMIZE:
-            LoadState(m_states[0]);
+            LoadState(m_bestState);
             GenerateOptimize();
             break;
         }
-        m_bestState = m_states[0];
     }
 } // InitUnit
 

@@ -149,14 +149,11 @@ void FireStarter::ControlThread(void)
         // Syncronously update the best data for all the units.
         for (FireStarterUnit* unit : m_units) {
             unit->DispatchSync([this, unit] {
-                FireStarterState* unitBestEvaluateState = nullptr;
-                unsigned int* unitGeneration = nullptr;
-                unit->UpdateProgram(unitBestEvaluateState, unitGeneration);
-                float result = unitBestEvaluateState->m_result.maxResult;
+                float result = unit->m_bestState.m_result.maxResult;
                 if (result < m_bestResult) {
                     unit->UpdateCode(m_bestCode);
                     m_bestResult = result;
-                    m_bestEvaluateState = *unitBestEvaluateState;
+                    m_bestEvaluateState = unit->m_bestState;
                     m_bestGeneration = m_generation;
                     m_controlUpdate = true;
                 }

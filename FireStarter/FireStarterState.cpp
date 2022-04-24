@@ -2,6 +2,14 @@
 #include <sstream>
 #include <iomanip>
 
+void FireStarterState::Packetize(FireStarterPacket& packet)
+{
+    m_program.Packetize(packet);
+    packet.Packetize(&m_result, sizeof(m_result));
+    packet.Packetize(&m_bestResult, sizeof(m_bestResult));
+    packet.Packetize(&m_generation, sizeof(m_generation));
+} // Packetize
+
 void FireStarterState::SaveState(std::string& code)
 {
     code += "#pragma once\r\n";
@@ -20,6 +28,7 @@ void FireStarterState::SaveState(std::string& code)
     code += Format("    state.m_result.test = %u;\r\n", m_result.test);
     code += "\r\n";
     code += Format("    state.m_bestResult = %ff;\r\n", m_bestResult);
+    code += Format("    state.m_generation = %d;\r\n", m_generation);
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
@@ -47,6 +56,7 @@ void FireStarterState::SaveSolution(std::string& code, const std::string& target
     code += Format("// Run iterations = %d\r\n", PROGRAM_ITERATIONS);
     code += Format("// Run generations = %d\r\n", PROGRAM_GENERATIONS);
     code += Format("// Run samples = %d\r\n", SAMPLE_ITERATIONS);
+    code += Format("// State Generation = %d\r\n", m_generation);
     code += "\r\n";
     code += Format("#define SOLUTION_MIN %f\r\n", SAMPLE_MIN);
     code += Format("#define SOLUTION_MAX %f\r\n", SAMPLE_MAX);
@@ -102,5 +112,6 @@ FireStarterState::FireStarterState(void)
     }
     m_result.maxResult = START_RESULT;
     m_bestResult = START_RESULT;
+    m_generation = 0;
 } // FireStarterState
 
