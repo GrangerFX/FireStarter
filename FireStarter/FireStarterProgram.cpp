@@ -50,8 +50,7 @@ void FireStarterProgram::OptimizeRegisters(void)
                     r.registerIndex = numActiveRegisters;
                 numActiveRegisters++;
                 m_maxRegisters = max(m_maxRegisters, numActiveRegisters);
-            }
-            else if (r.instructionLast == i) {
+            } else if (r.instructionLast == i) {
                 freeRegisters.push_back(r.registerIndex);
                 numActiveRegisters--;
             }

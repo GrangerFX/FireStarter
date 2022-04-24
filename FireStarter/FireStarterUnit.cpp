@@ -132,7 +132,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     }
 } // EvolveGenerations
 
-void FireStarterUnit::UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
+void FireStarterUnit::UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -145,13 +145,12 @@ void FireStarterUnit::UnitsGenerations(unsigned int index, unsigned int populati
     for (unsigned int g = 0; g < generations; g++) {
         FireStarterResults* newResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
         FireStarterResults* oldResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
-        unsigned int curGeneration = generation + g;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&dataSize),
                         reinterpret_cast<void*>(&population),
                         reinterpret_cast<void*>(&iterations),
-                        reinterpret_cast<void*>(&curGeneration) };
+                        reinterpret_cast<void*>(&g) }; // Each generation optimize pass starts at zero to randomize the data.
 
         checkCUDAErrors(cuLaunchKernel(m_unitFunction[index],
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -270,7 +269,7 @@ void FireStarterUnit::ExecuteUnits(void)
 
     // Evolve the program data.
     for (unsigned int i = 0; i < PROGRAM_STATES; i++)
-        UnitsGenerations(i, PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_evolveGeneration);
+        UnitsGenerations(i, PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS);
     m_evolveGeneration++;
 } // ExecuteUnits
 

@@ -17,7 +17,7 @@ inline float Evaluate(FireStarterData data, float n)
     n = data.d[1] += n;
     n = data.d[6] *= n;
     n = data.d[7] += n;
-    n += data.d[8];
+    n = data.d[8] += n;
     n *= data.d[9];
     n *= data.d[10];
     n *= data.d[6];
@@ -28,17 +28,17 @@ inline float Evaluate(FireStarterData data, float n)
     n *= data.d[12];
     n *= data.d[14];
     n += data.d[15];
-    n = data.d[7] += n;
+    n *= data.d[8];
     n = data.d[16] *= n;
     n = data.d[17] += n;
     n = data.d[16] += n;
-    n += data.d[18];
+    n += data.d[17];
     n = data.d[7] *= n;
-    n += data.d[19];
+    n += data.d[18];
     n *= data.d[16];
     n *= data.d[1];
     n *= data.d[7];
-    n += data.d[17];
+    n += data.d[19];
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //

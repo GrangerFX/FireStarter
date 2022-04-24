@@ -36,7 +36,7 @@ public:
     void GenerateUnits(void);
     void GenerateOptimize(void);
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+    void UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations);
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void ExecuteEvolve(void);
     void ExecuteUnits(void);
