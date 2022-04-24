@@ -35,7 +35,7 @@
 //     Do work here.
 // });
 //
-// Do some work after a period of time in seconds.
+// Do some work after a period of time in seconds (C++20 required).
 // m_thread.DispatchAfter(1.0, [this]{
 //     Do work here.
 // });
@@ -48,6 +48,8 @@
 //         Do more work here.
 //     });
 // });
+
+#define HAS_DISPATCH_AFTER _HAS_CXX20
 
 // A semaphore is needed when syncronizing work on a serialized thread.
 // Reference: https://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
@@ -90,6 +92,14 @@ private:
     // Currently the work function has no parameters and no return value.
     typedef std::function<void(void)> SerialThreadWork;
 
+    std::thread m_thread;
+    std::mutex m_mutex;
+    std::condition_variable m_cv;
+    std::queue<SerialThreadWork> m_workQueue;
+    bool m_pollThread;
+    volatile bool m_terminate;
+
+#if HAS_DISPATCH_AFTER
     // This gets around a missing feature of std::list: The trivial deletion of a single element by reference.
     // Reference: https://www.modernescpp.com/index.php/cooperative-interruption-of-a-thread-in-c-20
     class SerialThreadTimers {
@@ -110,7 +120,7 @@ private:
             } // SerialThreadTimer
 
             inline SerialThreadTimer(void) : m_prev(nullptr), m_next(nullptr), m_duration(0.0), m_work() {}
- 
+
             inline ~SerialThreadTimer(void)
             {
                 if (m_prev)
@@ -133,12 +143,12 @@ private:
                     std::swap(stopToken, interruptDisabled);
                     if (!thread->m_terminate)
                         thread->DispatchAsync([timer] {
-                            timer->m_work();
-                            delete timer;
-                        });
-                });
+                        timer->m_work();
+                        delete timer;
+                            });
+                    });
                 timer->m_thread.detach();
-            });
+                });
         } // AddTimer
 
         void StopTimers(void)
@@ -150,14 +160,14 @@ private:
         } // StopTimers
     }; // class SerialThreadTimers
 
-    std::thread m_thread;
-    std::mutex m_mutex;
-    std::condition_variable m_cv;
-    std::queue<SerialThreadWork> m_workQueue;
     SerialThreadTimers m_timers;
-    inline static SerialThread* g_mainThread = nullptr;
-    bool m_pollThread;
-    volatile bool m_terminate;
+#endif
+
+    static SerialThread*& MainThread()
+    {
+        static SerialThread* g_mainThread = nullptr;
+        return g_mainThread;
+    } // MainThread
 
     inline void Wait(SerialThreadWork& work)
     {
@@ -191,7 +201,9 @@ private:
 
     inline void TerminateThread(void)
     {
+#if HAS_DISPATCH_AFTER
         m_timers.StopTimers();
+#endif
         m_terminate = true;
     } // TerminateThread
 
@@ -214,12 +226,14 @@ public:
         m_cv.notify_one();
     } // DispatchAsync
 
+#if HAS_DISPATCH_AFTER
     inline void DispatchAfter(double duration, const SerialThreadWork& work)
     {
         DispatchAsync([this, duration, work] {
             m_timers.AddTimer(this, duration, work);
-        });
+            });
     } // DispatchAfter
+#endif
 
     inline void DispatchSync(const SerialThreadWork& work)
     {
@@ -227,7 +241,7 @@ public:
         DispatchAsync([this, &syncSemaphore, work] {
             work();
             syncSemaphore.notify();
-        });
+            });
         if (m_pollThread)
             PollThread();
 
@@ -237,12 +251,12 @@ public:
 
     static inline SerialThread* GetMainThread(void)
     {
-        return g_mainThread;
+        return MainThread();
     } // GetMainThread
 
-    static inline void SetMainThread(SerialThread *mainThread)
+    static inline void SetMainThread(SerialThread* mainThread)
     {
-        g_mainThread = mainThread;
+        MainThread() = mainThread;
     } // SetMainThread
 
     inline SerialThread(bool pollThread = false)
@@ -250,7 +264,7 @@ public:
         m_terminate = false;
         m_pollThread = pollThread;
         if (!m_pollThread)
-            m_thread = std::thread([this]{ Thread(); });
+            m_thread = std::thread([this] { Thread(); });
     } // SerialThread
 
     inline ~SerialThread(void)

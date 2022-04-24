@@ -36,11 +36,12 @@ bool FireStarterProcess::SendData(const void* data, size_t size)
     // TODO: Break up larger data blocks into smaller chunks if needed.
     DWORD bytesToWrite = (DWORD)size;
     DWORD bytesWritten = 0;
-    bool result = WriteFile(m_pipe,        // pipe handle 
-                            data,          // message 
-                            bytesToWrite,  // message length 
-                            &bytesWritten, // bytes written 
-                            NULL);         // not overlapped 
+    bool result = WriteFile(
+        m_pipe,        // pipe handle 
+        data,          // message 
+        bytesToWrite,  // message length 
+        &bytesWritten, // bytes written 
+        NULL);         // not overlapped 
     return result && (bytesWritten == bytesToWrite);
 } // SendData
 
@@ -54,13 +55,13 @@ bool FireStarterProcess::ReceiveData(void* data, size_t size)
         DWORD bytesRead = 0;
         DWORD bytesRemaining = (DWORD)(size - readSize);
         result = ReadFile(
-            m_pipe,         // pipe handle 
-            readBuffer,     // buffer to receive reply 
-            bytesRemaining, // size of buffer 
-            &bytesRead,     // number of bytes read 
-            NULL);          // not overlapped 
+            m_pipe,                 // pipe handle 
+            readBuffer + readSize,  // buffer + offset to receive reply 
+            bytesRemaining,         // size of buffer 
+            &bytesRead,             // number of bytes read 
+            NULL);                  // not overlapped 
         readSize += bytesRead;
-        if (!result && GetLastError() != ERROR_MORE_DATA)
+        if (!result && (GetLastError() != ERROR_MORE_DATA))
             break;
     } while (!result && (readSize < size));  // repeat loop if ERROR_MORE_DATA
     if (!result || (size != readSize)) {
@@ -185,9 +186,6 @@ bool FireStarterProcess::StartProcess(void)
     // Start the process.
     if (!m_started) {
         m_processStartupInfo.cb = sizeof(STARTUPINFO);
-        //  m_processStartupInfo.hStdError = m_pipe;
-        //  m_processStartupInfo.hStdOutput = m_pipe;
-        //  m_processStartupInfo.hStdInput = m_pipe;
         m_processStartupInfo.dwFlags |= STARTF_USESTDHANDLES;
         m_processStartupInfo.dwFlags |= STARTF_USESHOWWINDOW;
         m_processStartupInfo.wShowWindow = SW_SHOWMINIMIZED;
