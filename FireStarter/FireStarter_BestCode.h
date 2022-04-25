@@ -77,6 +77,8 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         if (!generation) {
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR(memberSeed);
+            for (int i = dataSize; i < PROGRAM_INSTRUCTIONS; i++)
+                data.d[i] = 0.0f;   // Clear the unused data.
             result = oldResult = START_RESULT;
             evolutionFactor = EVOLUTION_START_FACTOR;
         } else {

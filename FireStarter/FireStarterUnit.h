@@ -32,6 +32,7 @@ public:
     volatile bool m_quit = false;
 
     void Packetize(FireStarterPacket& packet);
+    void ClearResults(void);
     void GenerateEvolve(void);
     void GenerateUnits(void);
     void GenerateOptimize(void);

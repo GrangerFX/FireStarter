@@ -14,6 +14,14 @@ void FireStarterUnit::Packetize(FireStarterPacket& packet)
     packet.Packetize(&m_seed, sizeof(m_seed));
 } // Packetize
 
+void FireStarterUnit::ClearResults(void)
+{
+    if (m_deviceResults)
+        checkCUDAErrors(cudaMemset(m_deviceResults, 0, m_resultsSize * 2));
+    if (m_hostResults)
+        memset(m_hostResults, 0, m_resultsSize * 2);
+} // ClearResults
+
 void FireStarterUnit::GenerateEvolve(void)
 {
     // Compile the program
@@ -31,7 +39,7 @@ void FireStarterUnit::GenerateUnits(void)
             state.m_program.RandomProgram(m_seed);
         else
             state.m_program.RandomInstruction(m_seed);
-        state.m_program.OptimizeRegisters();
+        state.m_program.OptimizeRegisters(true);
         state.m_program.SaveInstructions(state.m_result.instructions);
         state.m_generation = m_evolveGeneration;
     }
@@ -129,6 +137,9 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     if (state.m_result.maxResult < m_bestState.m_result.maxResult) {
         m_bestState = state;
         m_bestState.m_program.LoadInstructions(m_bestState.m_result.instructions);
+        m_bestState.m_program.OptimizeRegisters(false);
+        m_bestState.m_program.SaveInstructions(m_bestState.m_result.instructions);
+        m_bestState.OptimizeData();
     }
 } // EvolveGenerations
 
@@ -331,15 +342,11 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, int device)
     if (m_codeLoaded) {
         m_evolveMode = evolveMode;
         m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
-        size_t totalSize = m_resultsSize * 2;
-        if (!m_deviceResults) {
-            checkCUDAErrors(cudaMalloc(&m_deviceResults, totalSize));
-            checkCUDAErrors(cudaMemset(m_deviceResults, 0, totalSize));
-        }
-        if (!m_hostResults) {
-            checkCUDAErrors(cudaMallocHost(&m_hostResults, totalSize));
-            memset(m_hostResults, 0, totalSize);
-        }
+        if (!m_deviceResults)
+            checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
+        if (!m_hostResults)
+            checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize * 2));
+        ClearResults();
         m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
         m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
         m_hostResults0 = (FireStarterResults*)(m_hostResults);

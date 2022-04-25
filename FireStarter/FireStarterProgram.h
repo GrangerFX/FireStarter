@@ -22,7 +22,7 @@ public:
     unsigned int m_maxRegisters;
 
     void Packetize(FireStarterPacket& packet);
-    void OptimizeRegisters(void);
+    void OptimizeRegisters(bool clean);
     void RandomProgram(unsigned int& seed);
     void RandomInstruction(unsigned int& seed);
     void LoadInstructions(FireStarterInstructions instructions);

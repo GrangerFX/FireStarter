@@ -32,7 +32,6 @@ void FireStarterState::SaveState(std::string& code)
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
-    code += "    state.OptimizeData();\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 
@@ -101,6 +100,8 @@ void FireStarterState::OptimizeData(void)
             optimizedData.d[i] = 0.0f;
         m_result.data[v] = optimizedData;
     }
+    for (unsigned int i = 0; i < m_program.m_dataSize; i++)
+        m_program.m_registers[i].dataIndex = i;
 } // OptimizeData
 
 FireStarterState::FireStarterState(void)

@@ -12,7 +12,7 @@ void FireStarterProgram::Packetize(FireStarterPacket& packet)
     packet.Packetize(&m_maxRegisters, sizeof(m_maxRegisters));
 } // Packetize
 
-void FireStarterProgram::OptimizeRegisters(void)
+void FireStarterProgram::OptimizeRegisters(bool clean)
 {
     // Delete the unused registers and sort the remaining ones.
     m_registers.clear();
@@ -25,9 +25,8 @@ void FireStarterProgram::OptimizeRegisters(void)
         if (index == -1) {
             index = (int)m_registers.size();
             dataRegisters[reg] = index;
-            m_registers.push_back(FireStarterRegister(index, index, i, i));
-        }
-        else
+            m_registers.push_back(FireStarterRegister(clean ? index : reg, index, i, i));
+        } else
             m_registers[index].instructionLast = i;
         m_instructions.SetRegister(i, index);
     }
@@ -45,8 +44,7 @@ void FireStarterProgram::OptimizeRegisters(void)
                 if (!freeRegisters.empty()) {
                     r.registerIndex = freeRegisters.back();
                     freeRegisters.pop_back();
-                }
-                else
+                } else
                     r.registerIndex = numActiveRegisters;
                 numActiveRegisters++;
                 m_maxRegisters = max(m_maxRegisters, numActiveRegisters);
@@ -213,8 +211,6 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
     code += Format("    program.m_programMode = (FireStarterProgramMode)%u;\r\n", m_programMode);
     code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
     code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
-    code += "\r\n";
-    code += "    program.OptimizeRegisters();\r\n";
     if (species == 0xFFFFFFFF)
         code += "} // LoadProgram\r\n";
     else
