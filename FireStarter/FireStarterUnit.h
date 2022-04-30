@@ -34,15 +34,15 @@ private:
 public:
     void Packetize(FireStarterPacket& packet);
     void ClearResults(void);
-    void GenerateEvolve(void);
-    void GenerateUnits(void);
-    void GenerateOptimize(bool compile = true);
+    void EvolveGenerate(void);
+    void UnitGenerate(void);
+    void OptimizeGenerate(bool compile = true);
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations);
+    void UnitGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations);
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void ExecuteEvolve(void);
-    void ExecuteUnits(void);
-    void ExecuteOptimize(void);
+    void EvolveExecute(void);
+    void UnitExecute(void);
+    void OptimizeExecute(void);
     void Execute(void);
     bool Update(FireStarterState& bestState, std::string& bestCode, float& bestResult);
     bool LoadCode(void);

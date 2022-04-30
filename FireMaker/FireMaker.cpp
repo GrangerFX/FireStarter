@@ -5,7 +5,7 @@ bool FireMaker::Init()
 {
 	DispatchAsync([this] {
 		m_unit = new FireStarterUnit();
-		m_unit->InitUnit(FIRESTARTER_UNITS);
+		m_unit->InitUnit(FIRESTARTER_PROCESS);
 	});   // Initialize CUDA for the compile thread.
 	return true;
 } // Init

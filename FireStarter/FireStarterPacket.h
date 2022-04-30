@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
 
-class FireStarterPacket : public std::vector<unsigned char>
+class FireStarterPacket : public std::vector<char>
 {
 private:
     size_t m_getPos = 0;
     bool m_getMode = false;
     bool m_getResult = false;
+    std::string m_name;
 public:
     inline void GetStart(void)
     {
@@ -24,6 +25,8 @@ public:
     {
         if (!m_getMode || !m_getResult)
             return 0;
+        if (m_getPos >= size())
+            return 0;
         return size() - m_getPos;
     } // GetSize
 
@@ -37,6 +40,17 @@ public:
         m_getPos += dataSize;
         return true;
     } // GetData
+
+    inline const std::string& Name(void)
+    {
+        if (m_name.empty() && !m_getPos) {
+            size_t nameLength = strnlen_s(data(), size() - 1);
+            m_name.resize(nameLength);
+            memcpy(m_name.data(), data(), nameLength);
+            m_getPos = nameLength + 1;
+        }
+        return m_name;
+    } // Name
 
     inline void AddData(const void* dataPtr, size_t dataSize)
     {
@@ -64,4 +78,11 @@ public:
         }
         return GetData(dataPtr, dataSize);
     } // Packetize
+
+    inline FireStarterPacket(const std::string &name = std::string())
+    {
+        m_name = name;
+        if (!m_name.empty())
+            AddData(m_name.c_str(), m_name.length() + 1);
+    } // FireStarterPacket
 }; // FireStarterPacket

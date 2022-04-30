@@ -21,14 +21,14 @@ void FireStarterUnit::ClearResults(void)
         memset(m_hostResults, 0, m_resultsSize * 2);
 } // ClearResults
 
-void FireStarterUnit::GenerateEvolve(void)
+void FireStarterUnit::EvolveGenerate(void)
 {
     // Compile the program
     if (!m_evolveFunction && CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, "Evolve"))
         m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
-} // GenerateEvolve
+} // EvolveGenerate
 
-void FireStarterUnit::GenerateUnits(void)
+void FireStarterUnit::UnitGenerate(void)
 {
     // Evolve each state.
     for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
@@ -76,9 +76,9 @@ void FireStarterUnit::GenerateUnits(void)
     CUDACompile::CompileProgram(m_unitsModule, unitsCode);
     for (unsigned int i = 0; i < PROGRAM_STATES; i++)
         m_unitFunction[i] = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
-} // GenerateUnits
+} // UnitGenerate
 
-void FireStarterUnit::GenerateOptimize(bool compile)
+void FireStarterUnit::OptimizeGenerate(bool compile)
 {
     // Update the Evaluate funtion.
     std::string code;
@@ -88,7 +88,7 @@ void FireStarterUnit::GenerateOptimize(bool compile)
     // Compile the new code.
     if (compile && CUDACompile::CompileProgram(m_optimizeModule, m_optimizeCode, "Optimize"))
         m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
-} // GenerateOptimize
+} // OptimizeGenerate
 
 void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
 {
@@ -142,7 +142,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     }
 } // EvolveGenerations
 
-void FireStarterUnit::UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations)
+void FireStarterUnit::UnitGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -200,7 +200,7 @@ void FireStarterUnit::UnitsGenerations(unsigned int index, unsigned int populati
     // Find the best results.
     if (result.maxResult < m_bestState.m_result.maxResult)
         m_bestState = state;
-} // UnitsGenerations
+} // UnitGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation)
 {
@@ -262,7 +262,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int population, unsigned int 
         m_bestState = state;
 } // OptimizeGenerations
 
-void FireStarterUnit::ExecuteEvolve(void)
+void FireStarterUnit::EvolveExecute(void)
 {
     // Run the next generation on the GPU.
    // Evolve the program instructions.
@@ -270,20 +270,20 @@ void FireStarterUnit::ExecuteEvolve(void)
     m_states[0].m_generation = m_evolveGeneration;
     EvolveGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_evolveGeneration);
     m_evolveGeneration += PROGRAM_GENERATIONS;
-} // ExecuteEvolve
+} // EvolveExecute
 
-void FireStarterUnit::ExecuteUnits(void)
+void FireStarterUnit::UnitExecute(void)
 { 
     // Generate and compile the program.
-    GenerateUnits();
+    UnitGenerate();
 
     // Evolve the program data.
     for (unsigned int i = 0; i < PROGRAM_STATES; i++)
-        UnitsGenerations(i, PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS);
+        UnitGenerations(i, PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS);
     m_evolveGeneration++;
-} // ExecuteUnits
+} // UnitExecute
 
-void FireStarterUnit::ExecuteOptimize(void)
+void FireStarterUnit::OptimizeExecute(void)
 {
     // Run the next generation on the GPU.
     // Evolve the program data.
@@ -291,7 +291,7 @@ void FireStarterUnit::ExecuteOptimize(void)
     m_states[0].m_generation = m_evolveGeneration;
     OptimizeGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_evolveGeneration);
     m_evolveGeneration += PROGRAM_GENERATIONS;
-} // ExecuteOptimize
+} // OptimizeExecute
 
 void FireStarterUnit::Execute(void)
 {
@@ -299,13 +299,14 @@ void FireStarterUnit::Execute(void)
         DispatchAsync([this] {
             switch (m_evolveMode) {
                 case FIRESTARTER_EVOLVE:
-                    ExecuteEvolve();
+                    EvolveExecute();
                     break;
-                case FIRESTARTER_UNITS:
-                    ExecuteUnits();
+                case FIRESTARTER_UNIT:
+                case FIRESTARTER_PROCESS:
+                    UnitExecute();
                     break;
                 case FIRESTARTER_OPTIMIZE:
-                    ExecuteOptimize();
+                    OptimizeExecute();
                     break;
             }
         });
@@ -323,8 +324,9 @@ bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode,
             case FIRESTARTER_EVOLVE:
                 bestCode = m_evolveCode;
                 break;
-            case FIRESTARTER_UNITS:
-                GenerateOptimize(false);    // Generate but don't compile the code.
+            case FIRESTARTER_UNIT:
+            case FIRESTARTER_PROCESS:
+                OptimizeGenerate(false);    // Generate but don't compile the code.
                 bestCode = m_optimizeCode;
                 break;
             case FIRESTARTER_OPTIMIZE:
@@ -356,12 +358,13 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, const FireStarterState* 
             m_evolveMode = evolveMode;
             switch (m_evolveMode) {
             case FIRESTARTER_EVOLVE:
-                GenerateEvolve();
+                EvolveGenerate();
                 break;
-            case FIRESTARTER_UNITS:
+            case FIRESTARTER_UNIT:
+            case FIRESTARTER_PROCESS:
                 break;
             case FIRESTARTER_OPTIMIZE:
-                GenerateOptimize();
+                OptimizeGenerate();
                 break;
             }
             ClearResults();
