@@ -4,7 +4,7 @@
 #include "SerialThread.h"
 
 class FireStarterUnit : public SerialThread {
-public:
+private:
     SimpleTimer m_timer;
     char* m_deviceResults = nullptr;
     char* m_hostResults = nullptr;
@@ -29,8 +29,8 @@ public:
     unsigned int m_unitIndex = 0;
     unsigned int m_seed = 0;
     bool m_codeLoaded = false;
-    volatile bool m_quit = false;
 
+public:
     void Packetize(FireStarterPacket& packet);
     void ClearResults(void);
     void GenerateEvolve(void);
@@ -43,9 +43,11 @@ public:
     void ExecuteUnits(void);
     void ExecuteOptimize(void);
     void Execute(void);
-    void UpdateCode(std::string& code);
+    void SetBestState(const FireStarterState& state);
+    const FireStarterState& BestState(void);
+    const std::string& BestCode(void);
     bool LoadCode(void);
-    void InitUnit(unsigned int programMode, int device = 0);
+    void InitUnit(unsigned int evolveMode, int device = 0);
     void FinishUnit(void);
     FireStarterUnit(unsigned int unitIndex = 0);
     ~FireStarterUnit(void);

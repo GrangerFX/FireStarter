@@ -36,7 +36,6 @@ public:
     volatile bool m_bufferUpdate;
     volatile bool m_quitControlThread;
 
-    void BuildData(std::string& code);
     bool LoadTargetCode(void);
     bool LoadFireShowCode(void);
     void SaveBestState(void);

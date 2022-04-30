@@ -25,7 +25,7 @@ void FireStarterUnit::ClearResults(void)
 void FireStarterUnit::GenerateEvolve(void)
 {
     // Compile the program
-    if (CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, "Evolve"))
+    if (!m_evolveFunction && CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, "Evolve"))
         m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
 } // GenerateEvolve
 
@@ -310,21 +310,29 @@ void FireStarterUnit::Execute(void)
         }
 } // Execute
 
-void FireStarterUnit::UpdateCode(std::string& code)
+const FireStarterState& FireStarterUnit::BestState(void)
+{
+    return m_bestState;
+} // BestState
+
+const std::string& FireStarterUnit::BestCode(void)
 {
     switch (m_evolveMode) {
         case FIRESTARTER_EVOLVE:
-            code = m_evolveCode;
-            break;
+            return m_evolveCode;
         case FIRESTARTER_UNITS:
             GenerateOptimize();
-            code = m_optimizeCode;
-            break;
+            return m_optimizeCode;
         case FIRESTARTER_OPTIMIZE:
-            code = m_optimizeCode;
-            break;
+        default:
+            return m_optimizeCode;
     }
 } // UpdateCode
+
+void FireStarterUnit::SetBestState(const FireStarterState& state)
+{
+    m_bestState = state;
+} // SetBestState
 
 bool FireStarterUnit::LoadCode(void)
 {
@@ -408,7 +416,6 @@ FireStarterUnit::FireStarterUnit(unsigned int unitIndex)
     m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
     m_evolveMode = 0;
     m_evolveGeneration = 0;
-    m_quit = false;
     m_codeLoaded = LoadCode();
 } // FireStarterUnit
 

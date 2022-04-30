@@ -4,22 +4,6 @@
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 
-void FireStarter::BuildData(std::string& code)
-{
-    std::string replacementData;
-    code += "inline void InitData(const unsigned int variation, FireStarterData &data)\r\n";
-    code += "{\r\n";
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        code += Format("    if (variation == %d) {\r\n", v);
-        for (unsigned int i = 0; i < m_bestEvaluateState.m_program.m_dataSize; i++)
-            code += Format("        data.d[%d] = %ff;\r\n", i, m_bestEvaluateState.m_result.data[v].d[i]);
-        for (unsigned int i = m_bestEvaluateState.m_program.m_dataSize; i < PROGRAM_INSTRUCTIONS; i++)
-            code += Format("        data.d[%d] = 0.0f;\r\n", i);
-        code += "    }\r\n";
-    }
-    code += "} // InitData\r\n";
-} // BuildData
-
 bool FireStarter::LoadTargetCode(void)
 {
     if (!FireStarterCode::LoadCode("FireStarterTarget.h", m_solutionTargetCode))
@@ -149,11 +133,12 @@ void FireStarter::ControlThread(void)
         // Syncronously update the best data for all the units.
         for (FireStarterUnit* unit : m_units) {
             unit->DispatchSync([this, unit] {
-                float result = unit->m_bestState.m_result.maxResult;
+                const FireStarterState& unitBestState = unit->BestState();
+                float result = unitBestState.m_result.maxResult;
                 if (result < m_bestResult) {
-                    unit->UpdateCode(m_bestCode);
+                    m_bestEvaluateState = unitBestState;
+                    m_bestCode = unit->BestCode();
                     m_bestResult = result;
-                    m_bestEvaluateState = unit->m_bestState;
                     m_bestGeneration = m_generation;
                     m_controlUpdate = true;
                 }
@@ -204,7 +189,6 @@ void FireStarter::ControlThread(void)
 
     // Finish processing and terminate each unit.
     for (FireStarterUnit* unit : m_units) {
-        unit->m_quit = true;    // This allows the program loop to exit faster.
         unit->DispatchAsync([unit] { unit->FinishUnit(); });
     }
     for (FireStarterUnit* unit : m_units)
