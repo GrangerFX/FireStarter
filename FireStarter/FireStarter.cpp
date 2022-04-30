@@ -119,7 +119,7 @@ void FireStarter::ControlThread(void)
     if (m_evolveMode == FIRESTARTER_OPTIMIZE)
         LoadState(m_bestEvaluateState);
     for (FireStarterUnit* unit : m_units)
-        unit->InitUnit(m_bestEvaluateState, m_evolveMode);
+        unit->InitUnit(m_evolveMode, &m_bestEvaluateState);
 
     // Loop until the the host program is quit.
     m_runTimer.Start();

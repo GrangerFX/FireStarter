@@ -347,10 +347,11 @@ bool FireStarterUnit::LoadCode(void)
     return false;
 } // LoadCode
 
-void FireStarterUnit::InitUnit(const FireStarterState& state, unsigned int evolveMode)
+void FireStarterUnit::InitUnit(unsigned int evolveMode, const FireStarterState* state)
 {
     DispatchAsync([this, state, evolveMode] {
-        m_bestState = state;
+        if (state)
+            m_bestState = *state;
         if (m_unitContext && m_codeLoaded) {
             m_evolveMode = evolveMode;
             switch (m_evolveMode) {

@@ -46,7 +46,7 @@ public:
     void Execute(void);
     bool Update(FireStarterState& bestState, std::string& bestCode, float& bestResult);
     bool LoadCode(void);
-    void InitUnit(const FireStarterState& state, unsigned int evolveMode);
+    void InitUnit(unsigned int evolveMode, const FireStarterState* state = nullptr);
     FireStarterUnit(unsigned int unitIndex = 0, unsigned int unitDevice = 0);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
