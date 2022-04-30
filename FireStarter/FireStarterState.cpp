@@ -65,27 +65,37 @@ void FireStarterState::SaveSolution(std::string& code, const std::string& target
     code += targetCode;
     code += "\r\n";
     code += Format("// Precision = %f\r\n", m_result.maxResult);
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+    if (PROGRAM_VARIATIONS == 1) {
         code += "\r\n";
-        code += Format("// Solution%d precision = %f\r\n", v, m_result.minResult[v]);
-        code += Format("inline float Solution%d(float n)\r\n", v);
+        code += Format("// Solution precision = %f\r\n", m_result.minResult[0]);
+        code += "inline float Solution(float n)\r\n";
         code += "{\r\n";
-        m_program.GenerateSolution(code, m_result.data[v]);
+        m_program.GenerateSolution(code, m_result.data[0]);
         code += "    return n;\r\n";
-        code += Format("} // Solution%d\r\n", v);
-    }
+        code += "} // Solution\r\n";
+    } else {
+        for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+            code += "\r\n";
+            code += Format("// Solution%d precision = %f\r\n", v, m_result.minResult[v]);
+            code += Format("inline float Solution%d(float n)\r\n", v);
+            code += "{\r\n";
+            m_program.GenerateSolution(code, m_result.data[v]);
+            code += "    return n;\r\n";
+            code += Format("} // Solution%d\r\n", v);
+        }
 
-    code += "\r\n";
-    code += "inline float Solution(float n, unsigned int variation)\r\n";
-    code += "{\r\n";
-    code += "    switch (variation) {\r\n";
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        code += Format("    case %d:\r\n", v);
-        code += Format("        return Solution%d(n);\r\n", v);
+        code += "\r\n";
+        code += "inline float Solution(float n, unsigned int variation)\r\n";
+        code += "{\r\n";
+        code += "    switch (variation) {\r\n";
+        for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+            code += Format("    case %d:\r\n", v);
+            code += Format("        return Solution%d(n);\r\n", v);
+        }
+        code += "    }\r\n";
+        code += "    return 0.0f;\r\n";
+        code += "} // Solution\r\n";
     }
-    code += "    }\r\n";
-    code += "    return 0.0f;\r\n";
-    code += "} // Solution\r\n";
 } // SaveSolution
 
 void FireStarterState::OptimizeData(void)

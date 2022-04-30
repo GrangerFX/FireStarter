@@ -244,7 +244,11 @@ float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, 
         float theta = TARGET_PI * ((x - bufferWidth * 0.5f)  / xScale + 1.0f);
         float center = bufferHeight * 0.66f;
         float target = SolutionTarget(theta, variation);
+#if SOLUTION_VARIATIONS == 1
+        float solution = Solution(theta);
+#else
         float solution = Solution(theta, variation);
+#endif
         if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
             float error = fabsf(solution - target);
             maxError = max(maxError, error);
