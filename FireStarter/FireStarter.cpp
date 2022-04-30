@@ -139,22 +139,11 @@ void FireStarter::ControlThread(void)
         m_generation++;
 
         // Update the best code on disk and compile a new FireShow.
-        if (m_controlUpdate && !m_quitControlThread)
-            switch (m_evolveMode) {
-                case FIRESTARTER_EVOLVE:
-                    SaveBestState();
-                    break;
-                case FIRESTARTER_UNITS:
-                    SaveBestState();
-                    SaveBestCode();
-                    SaveSolution();
-                    break;
-                case FIRESTARTER_OPTIMIZE:
-                    SaveBestState();
-                    SaveBestCode();
-                    SaveSolution();
-                    break;
-            }
+        if (m_controlUpdate && !m_quitControlThread) {
+            SaveBestState();
+            SaveBestCode();
+            SaveSolution();
+        }
 
         // Update the render status after every pass.
         if (!m_quitControlThread) {
