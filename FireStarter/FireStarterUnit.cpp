@@ -1,6 +1,5 @@
 #include "FireStarterUnit.h"
 #include "FireStarterCode.h"
-#include "FireStarter_LoadState.h"
 #include "CUDACompile.h"
 
 void FireStarterUnit::Packetize(FireStarterPacket& packet)
@@ -79,7 +78,7 @@ void FireStarterUnit::GenerateUnits(void)
         m_unitFunction[i] = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
 } // GenerateUnits
 
-void FireStarterUnit::GenerateOptimize(void)
+void FireStarterUnit::GenerateOptimize(bool compile)
 {
     // Update the Evaluate funtion.
     std::string code;
@@ -87,7 +86,7 @@ void FireStarterUnit::GenerateOptimize(void)
     FireStarterCode::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
 
     // Compile the new code.
-    if (CUDACompile::CompileProgram(m_optimizeModule, m_optimizeCode, "Optimize"))
+    if (compile && CUDACompile::CompileProgram(m_optimizeModule, m_optimizeCode, "Optimize"))
         m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
 } // GenerateOptimize
 
@@ -297,42 +296,47 @@ void FireStarterUnit::ExecuteOptimize(void)
 void FireStarterUnit::Execute(void)
 {
     if (m_codeLoaded)
-        switch (m_evolveMode) {
-            case FIRESTARTER_EVOLVE:
-                ExecuteEvolve();
-                break;
-            case FIRESTARTER_UNITS:
-                ExecuteUnits();
-                break;
-            case FIRESTARTER_OPTIMIZE:
-                ExecuteOptimize();
-                break;
-        }
+        DispatchAsync([this] {
+            switch (m_evolveMode) {
+                case FIRESTARTER_EVOLVE:
+                    ExecuteEvolve();
+                    break;
+                case FIRESTARTER_UNITS:
+                    ExecuteUnits();
+                    break;
+                case FIRESTARTER_OPTIMIZE:
+                    ExecuteOptimize();
+                    break;
+            }
+        });
 } // Execute
 
-const FireStarterState& FireStarterUnit::BestState(void)
+bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode, float& bestResult)
 {
-    return m_bestState;
-} // BestState
-
-const std::string& FireStarterUnit::BestCode(void)
-{
-    switch (m_evolveMode) {
-        case FIRESTARTER_EVOLVE:
-            return m_evolveCode;
-        case FIRESTARTER_UNITS:
-            GenerateOptimize();
-            return m_optimizeCode;
-        case FIRESTARTER_OPTIMIZE:
-        default:
-            return m_optimizeCode;
-    }
-} // UpdateCode
-
-void FireStarterUnit::SetBestState(const FireStarterState& state)
-{
-    m_bestState = state;
-} // SetBestState
+    bool result = false;
+    DispatchSync([this, &bestState, &bestCode, &bestResult, &result] {
+        const FireStarterState& unitBestState = m_bestState;
+        float unitBestResult = unitBestState.m_result.maxResult;
+        if (unitBestResult < bestResult) {
+            bestState = unitBestState;
+            switch (m_evolveMode) {
+            case FIRESTARTER_EVOLVE:
+                bestCode = m_evolveCode;
+                break;
+            case FIRESTARTER_UNITS:
+                GenerateOptimize(false);    // Generate but don't compile the code.
+                bestCode = m_optimizeCode;
+                break;
+            case FIRESTARTER_OPTIMIZE:
+                bestCode = m_optimizeCode;
+                break;
+            }
+            bestResult = unitBestResult;
+            result = true;
+        }
+    });
+    return bestResult;
+} // Update
 
 bool FireStarterUnit::LoadCode(void)
 {
@@ -343,82 +347,62 @@ bool FireStarterUnit::LoadCode(void)
     return false;
 } // LoadCode
 
-void FireStarterUnit::InitUnit(unsigned int evolveMode, int device)
+void FireStarterUnit::InitUnit(const FireStarterState& state, unsigned int evolveMode)
 {
-    if (!m_unitContext)
-        m_unitContext = new CUDAContext(device);
-    if (m_codeLoaded) {
-        m_evolveMode = evolveMode;
+    DispatchAsync([this, state, evolveMode] {
+        m_bestState = state;
+        if (m_unitContext && m_codeLoaded) {
+            m_evolveMode = evolveMode;
+            switch (m_evolveMode) {
+            case FIRESTARTER_EVOLVE:
+                GenerateEvolve();
+                break;
+            case FIRESTARTER_UNITS:
+                break;
+            case FIRESTARTER_OPTIMIZE:
+                GenerateOptimize();
+                break;
+            }
+            ClearResults();
+        }
+    });
+} // InitUnit
+
+FireStarterUnit::FireStarterUnit(unsigned int unitIndex, unsigned int unitDevice)
+{
+    m_unitIndex = unitIndex;
+    m_unitDevice = unitDevice;
+    m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
+    m_evolveMode = 0;
+    m_evolveGeneration = 0;
+    m_codeLoaded = LoadCode();
+    DispatchSync([this] {
+        m_unitContext = new CUDAContext(m_unitDevice);
         m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
         if (!m_deviceResults)
             checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
         if (!m_hostResults)
             checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize * 2));
-        ClearResults();
         m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
         m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
         m_hostResults0 = (FireStarterResults*)(m_hostResults);
         m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
-
-        switch (m_evolveMode) {
-        case FIRESTARTER_EVOLVE:
-            GenerateEvolve();
-            break;
-        case FIRESTARTER_UNITS:
-            break;
-        case FIRESTARTER_OPTIMIZE:
-            LoadState(m_bestState);
-            GenerateOptimize();
-            break;
-        }
-    }
-} // InitUnit
-
-void FireStarterUnit::FinishUnit(void)
-{
-    if (m_evolveModule) {
-        checkCUDAErrors(cuModuleUnload(m_evolveModule));
-        m_evolveModule = nullptr;
-    }
-    if (m_optimizeModule) {
-        checkCUDAErrors(cuModuleUnload(m_optimizeModule));
-        m_evolveModule = nullptr;
-    }
-    m_evolveFunction = nullptr;
-    m_optimizeFunction = nullptr;
-    if (m_deviceResults) {
-        checkCUDAErrors(cudaFree(m_deviceResults));
-        m_deviceResults = nullptr;
-    }
-    if (m_hostResults) {
-        checkCUDAErrors(cudaFreeHost(m_hostResults));
-        m_hostResults = nullptr;
-    }
-    if (m_deviceResults) {
-        checkCUDAErrors(cudaFree(m_deviceResults));
-        m_deviceResults = nullptr;
-    }
-    if (m_hostResults) {
-        checkCUDAErrors(cudaFreeHost(m_hostResults));
-        m_hostResults = nullptr;
-    }
-    m_deviceResults0 = nullptr;
-    m_deviceResults1 = nullptr;
-    m_hostResults0 = nullptr;
-    m_hostResults1 = nullptr;
-    if (m_unitContext)
-        delete m_unitContext;
-} // FinishUnit
-
-FireStarterUnit::FireStarterUnit(unsigned int unitIndex)
-{
-    m_unitIndex = unitIndex;
-    m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
-    m_evolveMode = 0;
-    m_evolveGeneration = 0;
-    m_codeLoaded = LoadCode();
+        // Note: Results contain garbage at this point. They are cleared in InitUnit.
+     });
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)
 {
+    DispatchSync([this] {
+        if (m_evolveModule)
+            checkCUDAErrors(cuModuleUnload(m_evolveModule));
+        if (m_optimizeModule)
+            checkCUDAErrors(cuModuleUnload(m_optimizeModule));
+        if (m_deviceResults)
+            checkCUDAErrors(cudaFree(m_deviceResults));
+        if (m_hostResults)
+            checkCUDAErrors(cudaFreeHost(m_hostResults));
+        if (m_unitContext)
+            delete m_unitContext;
+    });
 } // ~FireStarterUnit

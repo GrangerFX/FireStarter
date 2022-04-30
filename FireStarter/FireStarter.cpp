@@ -1,6 +1,7 @@
 #include "FireStarter.h"
 #include "FireStarterCode.h"
 #include "FireStarterUtil.h"
+#include "FireStarter_LoadState.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 
@@ -115,35 +116,25 @@ void FireStarter::ControlThread(void)
         FireStarterUnit* unit = new FireStarterUnit(i);
         m_units.push_back(unit);
     }
+    if (m_evolveMode == FIRESTARTER_OPTIMIZE)
+        LoadState(m_bestEvaluateState);
     for (FireStarterUnit* unit : m_units)
-        unit->DispatchAsync([this, unit] {
-            unit->InitUnit(m_evolveMode);
-        });
+        unit->InitUnit(m_bestEvaluateState, m_evolveMode);
 
     // Loop until the the host program is quit.
     m_runTimer.Start();
     while (!m_quitControlThread) {
-        // Asyncronously execute a generation for all the units.
+        // Execute a generation for all the units.
         m_controlTimer.Start();
         for (FireStarterUnit* unit : m_units)
-            unit->DispatchAsync([unit] {
-                unit->Execute();
-            });
+            unit->Execute();
 
-        // Syncronously update the best data for all the units.
-        for (FireStarterUnit* unit : m_units) {
-            unit->DispatchSync([this, unit] {
-                const FireStarterState& unitBestState = unit->BestState();
-                float result = unitBestState.m_result.maxResult;
-                if (result < m_bestResult) {
-                    m_bestEvaluateState = unitBestState;
-                    m_bestCode = unit->BestCode();
-                    m_bestResult = result;
-                    m_bestGeneration = m_generation;
-                    m_controlUpdate = true;
-                }
-            });
-        }
+        // Update the best data for all the units.
+        for (FireStarterUnit* unit : m_units)
+            if (unit->Update(m_bestEvaluateState, m_bestCode, m_bestResult)) {
+                m_bestGeneration = m_generation;
+                m_controlUpdate = true;
+            }
         m_controlTime = m_controlTimer.Duration();
         m_generation++;
 
@@ -180,7 +171,7 @@ void FireStarter::ControlThread(void)
             FireShow(&fireShowContext, fireShowFunction);
             m_controlUpdate = false;
             const unsigned char* bufferPixels = (m_evolveMode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-            GetMainThread()->DispatchAsync([this, bufferPixels] {
+            GetMainThread()->DispatchSync([this, bufferPixels] {
                 RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
                 m_bufferUpdate = false;
             });
@@ -188,9 +179,6 @@ void FireStarter::ControlThread(void)
     }
 
     // Finish processing and terminate each unit.
-    for (FireStarterUnit* unit : m_units) {
-        unit->DispatchAsync([unit] { unit->FinishUnit(); });
-    }
     for (FireStarterUnit* unit : m_units)
         delete unit;
     m_units.clear();

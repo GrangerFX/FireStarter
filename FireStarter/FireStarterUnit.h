@@ -27,6 +27,7 @@ private:
     unsigned int m_evolveMode = 0;
     unsigned int m_evolveGeneration = 0;
     unsigned int m_unitIndex = 0;
+    unsigned int m_unitDevice = 0;
     unsigned int m_seed = 0;
     bool m_codeLoaded = false;
 
@@ -35,7 +36,7 @@ public:
     void ClearResults(void);
     void GenerateEvolve(void);
     void GenerateUnits(void);
-    void GenerateOptimize(void);
+    void GenerateOptimize(bool compile = true);
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void UnitsGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations);
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
@@ -43,12 +44,9 @@ public:
     void ExecuteUnits(void);
     void ExecuteOptimize(void);
     void Execute(void);
-    void SetBestState(const FireStarterState& state);
-    const FireStarterState& BestState(void);
-    const std::string& BestCode(void);
+    bool Update(FireStarterState& bestState, std::string& bestCode, float& bestResult);
     bool LoadCode(void);
-    void InitUnit(unsigned int evolveMode, int device = 0);
-    void FinishUnit(void);
-    FireStarterUnit(unsigned int unitIndex = 0);
+    void InitUnit(const FireStarterState& state, unsigned int evolveMode);
+    FireStarterUnit(unsigned int unitIndex = 0, unsigned int unitDevice = 0);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

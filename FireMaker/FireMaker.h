@@ -4,7 +4,7 @@
 
 class FireMaker : public SerialThread {
 public:
-	FireStarterUnit m_unit;
+	FireStarterUnit* m_unit;
 	FireStarterProcess m_process;
 	std::string m_pipeName;
 

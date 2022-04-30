@@ -24,7 +24,7 @@ public:
         return m_stream;
     } // Stream
 
-    inline CUDAContext(int device = 0)
+    inline CUDAContext(unsigned int device = 0)
     {
         // Initialize CUDA only once per process.
         static bool initialized = false;
