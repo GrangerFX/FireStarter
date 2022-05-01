@@ -19,12 +19,13 @@ private:
     bool m_client = false;
 public:
     void Terminate(void);
+    bool ShouldTerminate(void);
     bool WaitForData(void);
     bool SendData(const void* data, size_t size);
     bool ReceiveData(void* data, size_t size);
     bool SendTerminate(void);
     bool SendPacket(const FireStarterPacket& packet);
-    bool ReceivePacket(FireStarterPacket& packet);
+    bool ReceivePacket(FireStarterPacket& packet, const std::string& command = std::string());
     bool SendString(const std::string& string);
     bool ReceiveString(std::string& string);
     bool StartProcess(void);
@@ -42,6 +43,7 @@ private:
     std::string m_processServerName;
 public:
     const std::string& ModulePath(void) const;
+    FireStarterProcess* Process(size_t index);
     FireStarterProcess* AddProcess(const std::string& name = FIREMAKER);
     FireStarterServer(const std::string& name = FIRESTARTER);
     ~FireStarterServer(void);

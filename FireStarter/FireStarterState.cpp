@@ -2,12 +2,14 @@
 #include <sstream>
 #include <iomanip>
 
-void FireStarterState::Packetize(FireStarterPacket& packet)
+bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
-    m_program.Packetize(packet);
-    packet.Packetize(&m_result, sizeof(m_result));
-    packet.Packetize(&m_bestResult, sizeof(m_bestResult));
-    packet.Packetize(&m_generation, sizeof(m_generation));
+    bool result = true;
+    result = result && m_program.Packetize(packet);
+    result = result && packet.Packetize(&m_result, sizeof(m_result));
+    result = result && packet.Packetize(&m_bestResult, sizeof(m_bestResult));
+    result = result && packet.Packetize(&m_generation, sizeof(m_generation));
+    return result;
 } // Packetize
 
 void FireStarterState::SaveState(std::string& code)

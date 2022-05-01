@@ -1,15 +1,24 @@
 #include "FireStarterProgram.h"
 
-void FireStarterProgram::Packetize(FireStarterPacket& packet)
+bool FireStarterProgram::Packetize(FireStarterPacket& packet)
 {
-    packet.Packetize(&m_instructions, sizeof(m_instructions));
-    m_registers.resize(packet.PacketizeSize(m_registers.size()));
-    packet.Packetize(m_registers.data(), m_registers.size() * sizeof(m_registers[0]));
-    m_opcodes.resize(packet.PacketizeSize(m_opcodes.size()));
-    packet.Packetize(m_opcodes.data(), m_opcodes.size() * sizeof(m_opcodes[0]));
-    packet.Packetize(&m_programMode, sizeof(m_programMode));
-    packet.Packetize(&m_dataSize, sizeof(m_dataSize));
-    packet.Packetize(&m_maxRegisters, sizeof(m_maxRegisters));
+    bool result = true;
+    result = result && packet.Packetize(&m_instructions, sizeof(m_instructions));
+
+    size_t registersSize = m_registers.size();
+    result = result && packet.Packetize(&registersSize, sizeof(registersSize));
+    m_registers.resize(registersSize);
+    result = result && packet.Packetize(m_registers.data(), m_registers.size() * sizeof(m_registers[0]));
+
+    size_t opcodesSize = m_opcodes.size();
+    result = result && packet.Packetize(&opcodesSize, sizeof(opcodesSize));
+    m_opcodes.resize(opcodesSize);
+    result = result && packet.Packetize(m_opcodes.data(), m_opcodes.size() * sizeof(m_opcodes[0]));
+
+    result = result && packet.Packetize(&m_programMode, sizeof(m_programMode));
+    result = result && packet.Packetize(&m_dataSize, sizeof(m_dataSize));
+    result = result && packet.Packetize(&m_maxRegisters, sizeof(m_maxRegisters));
+    return result;
 } // Packetize
 
 void FireStarterProgram::OptimizeRegisters(bool clean)

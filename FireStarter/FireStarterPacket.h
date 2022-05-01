@@ -7,7 +7,7 @@ private:
     size_t m_getPos = 0;
     bool m_getMode = false;
     bool m_getResult = false;
-    std::string m_name;
+    std::string m_command;
 public:
     inline void GetStart(void)
     {
@@ -41,17 +41,17 @@ public:
         return true;
     } // GetData
 
-    inline const std::string& Name(void)
+    inline const std::string& Command(void)
     {
-        if (m_name.empty() && !m_getPos && !m_getMode) {
+        if (m_command.empty() && !m_getPos && !m_getMode) {
             GetStart();
             size_t nameLength = strnlen_s(data(), size() - 1);
-            m_name.resize(nameLength);
-            memcpy(m_name.data(), data(), nameLength);
+            m_command.resize(nameLength);
+            memcpy(m_command.data(), data(), nameLength);
             m_getPos = nameLength + 1;
         }
-        return m_name;
-    } // Name
+        return m_command;
+    } // Command
 
     inline void AddData(const void* dataPtr, size_t dataSize)
     {
@@ -59,17 +59,6 @@ public:
         resize(curSize + dataSize);
         memcpy(data() + curSize, dataPtr, dataSize);
     } // AddData
-
-    size_t PacketizeSize(size_t size)
-    {
-        if (!m_getMode) {
-            AddData(&size, sizeof(size));
-            return size;
-        }
-        if (!GetData(&size, sizeof(size)))
-            return 0;
-        return size;
-    } // PacketizeSize
 
     inline bool Packetize(void* dataPtr, size_t dataSize)
     {
@@ -99,10 +88,10 @@ public:
         return true;
     } // Packetize
 
-    inline FireStarterPacket(const std::string &name = std::string())
+    inline FireStarterPacket(const std::string &command = std::string())
     {
-        m_name = name;
-        if (!m_name.empty())
-            AddData(m_name.c_str(), m_name.length() + 1);
+        m_command = command;
+        if (!m_command.empty())
+            AddData(m_command.c_str(), m_command.length() + 1);
     } // FireStarterPacket
 }; // FireStarterPacket

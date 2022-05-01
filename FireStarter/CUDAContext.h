@@ -47,12 +47,10 @@ public:
         }
 
         // Use all the CUDA devices.
-#if 1
         int count = 0;
         checkCUDAErrors(cuDeviceGetCount(&count));
         if (count > 0)
             device %= count;
-#endif
 
         checkCUDAErrors(cuDeviceGet(&m_device, device));
         checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_AUTO, m_device));

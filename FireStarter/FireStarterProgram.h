@@ -21,7 +21,7 @@ public:
     unsigned int m_dataSize;
     unsigned int m_maxRegisters;
 
-    void Packetize(FireStarterPacket& packet);
+    bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(bool clean);
     void RandomProgram(unsigned int& seed);
     void RandomInstruction(unsigned int& seed);

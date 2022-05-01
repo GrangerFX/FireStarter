@@ -43,6 +43,11 @@ void FireStarterProcess::Terminate(void)
     }
 } // Terminate
 
+bool FireStarterProcess::ShouldTerminate(void)
+{
+    return m_terminate;
+} // ShouldTerminate
+
 bool FireStarterProcess::WaitForData(void)
 {
     return WaitNamedPipe(m_pipeName.c_str(), 0);
@@ -105,7 +110,7 @@ bool FireStarterProcess::SendPacket(const FireStarterPacket& packet)
     return SendData(&size, sizeof(size_t)) && SendData(packet.data(), size);
 } // SendPacket
 
-bool FireStarterProcess::ReceivePacket(FireStarterPacket& packet)
+bool FireStarterProcess::ReceivePacket(FireStarterPacket& packet, const std::string& command)
 {
     size_t size = 0;
     packet.clear();
@@ -118,6 +123,10 @@ bool FireStarterProcess::ReceivePacket(FireStarterPacket& packet)
     packet.resize(size);
     if (!ReceiveData(packet.data(), size)) {
         packet.clear();
+        return false;
+    }
+    if (!command.empty() && (command != packet.Command())) {
+        printf("Error! Received command: %s  Expected command: %s\n", packet.Command().c_str(), command.c_str());
         return false;
     }
     return true;
@@ -406,6 +415,13 @@ const std::string& FireStarterServer::ModulePath(void) const
 {
     return GetModulePath();
 } // ModulePath
+
+FireStarterProcess* FireStarterServer::Process(size_t index)
+{
+    if (index >= m_processes.size())
+        return nullptr;
+    return m_processes[index];
+} // Process
 
 FireStarterProcess* FireStarterServer::AddProcess(const std::string& name)
 {

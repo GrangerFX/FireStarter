@@ -112,14 +112,12 @@ void FireStarter::ControlThread(void)
         unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
-    for (unsigned int i = 0; i < unit_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i, m_evolveMode);
-        m_units.push_back(unit);
-    }
+    for (unsigned int i = 0; i < unit_count; i++)
+        m_units.push_back(new FireStarterUnit((m_evolveMode == FIRESTARTER_PROCESS) ? m_server.AddProcess() : nullptr));
     if (m_evolveMode == FIRESTARTER_OPTIMIZE)
         LoadState(m_bestEvaluateState);
-    for (FireStarterUnit* unit : m_units)
-        unit->InitUnit(m_evolveMode, &m_bestEvaluateState);
+    for (unsigned int i = 0; i < unit_count; i++)
+        m_units[i]->InitUnit(m_evolveMode, i, &m_bestEvaluateState);
 
     // Loop until the the host program is quit.
     m_runTimer.Start();

@@ -1,10 +1,9 @@
 #pragma once
 #include "FireStarterState.h"
+#include "FireStarterProcess.h"
 #include "CUDAContext.h"
 #include "SerialThread.h"
 
-#define UNIT_LOAD "UnitLoad"
-#define UNIT_SAVE "UnitSave"
 #define UNIT_INIT "UnitInit"
 #define UNIT_EXECUTE "UnitExecute"
 #define UNIT_UPDATE "UnitUpdate"
@@ -18,6 +17,7 @@ private:
     FireStarterResults* m_deviceResults1 = nullptr;
     FireStarterResults* m_hostResults0 = nullptr;
     FireStarterResults* m_hostResults1 = nullptr;
+    FireStarterProcess* m_process = nullptr;
     FireStarterState m_states[PROGRAM_STATES];
     FireStarterState m_bestState;
     CUDAContext* m_unitContext = nullptr;
@@ -37,8 +37,6 @@ private:
     unsigned int m_seed = 0;
     bool m_codeLoaded = false;
 
-public:
-    void Packetize(FireStarterPacket& packet);
     void ClearResults(void);
     void EvolveGenerate(void);
     void UnitGenerate(void);
@@ -49,10 +47,16 @@ public:
     void EvolveExecute(void);
     void UnitExecute(void);
     void OptimizeExecute(void);
+    bool LoadCode(void);
+    void Deallocate(void);
+    bool Allocate(void);
+
+public:
+    void Packetize(FireStarterPacket& packet);
+    void InitUnit(unsigned int evolveMode, unsigned int unitIndex = 0, FireStarterState* state = nullptr); // May be reinitialized with a different evolveMode in the future.
     void Execute(void);
     bool Update(FireStarterState& bestState, std::string& bestCode, float& bestResult);
-    bool LoadCode(void);
-    void InitUnit(unsigned int evolveMode, const FireStarterState* state = nullptr); // May be reinitialized with a different evolveMode in the future.
-    FireStarterUnit(unsigned int evolveMode, unsigned int unitIndex = 0);
+    void ProcessCommand(void);
+    FireStarterUnit(FireStarterProcess* process = nullptr);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

@@ -5,6 +5,7 @@
 class FireMaker : public SerialThread {
 private:
 	FireStarterProcess m_process;
+	FireStarterUnit m_unit;
 	std::string m_pipeName;
 	volatile bool m_terminate = false;
 
