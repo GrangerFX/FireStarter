@@ -3,13 +3,15 @@
 #include "FireStarterUnit.h"
 
 class FireMaker : public SerialThread {
-public:
-	FireStarterUnit* m_unit = nullptr;
+private:
 	FireStarterProcess m_process;
 	std::string m_pipeName;
+	volatile bool m_terminate = false;
 
-	bool Init();
-	void Quit(void);
-	FireMaker(const std::string& pipeName, bool *terminate);
+public:
+	void Terminate(void);
+	bool ShouldTerminate(void);
+	void WaitForCommand(void);
+	FireMaker(const std::string& pipeName);
 	~FireMaker(void);
 }; // class FireMaker

@@ -2,7 +2,12 @@
 #include "PrintF.h"
 
 #define PIPE_BUFFER_SIZE   512
-#define TEST_CONNECTION 1
+#define TEST_CONNECTION 0
+#if TEST_CONNECTION
+#define TESTOUTPUT printf
+#else
+#define TESTOUTPUT
+#endif
 
 static const std::string& GetModulePath(void)
 {
@@ -29,6 +34,19 @@ static const std::string& GetModulePath(void)
     }
     return modulePath;
 } // GetModulePath
+
+void FireStarterProcess::Terminate(void)
+{
+    if (m_terminate) {
+        TESTOUTPUT("Client will terminate.\n");
+        *m_terminate = true;
+    }
+} // Terminate
+
+bool FireStarterProcess::WaitForData(void)
+{
+    return WaitNamedPipe(m_pipeName.c_str(), 0);
+} // WaitForData
 
 bool FireStarterProcess::SendData(const void* data, size_t size)
 {
@@ -59,7 +77,9 @@ bool FireStarterProcess::ReceiveData(void* data, size_t size)
             readBuffer + readSize,  // buffer + offset to receive reply 
             bytesRemaining,         // size of buffer 
             &bytesRead,             // number of bytes read 
-            NULL);                  // not overlapped 
+            NULL);                  // not overlapped
+        if (*m_terminate)
+            return false;
         readSize += bytesRead;
         if (!result && (GetLastError() != ERROR_MORE_DATA))
             break;
@@ -70,14 +90,6 @@ bool FireStarterProcess::ReceiveData(void* data, size_t size)
     }
     return true;
 } // ReceiveData
-
-void FireStarterProcess::Terminate(void)
-{
-    if (m_terminate) {
-        printf("Client will terminate.\n");
-        *m_terminate = true;
-    }
-} // Terminate
 
 bool FireStarterProcess::SendTerminate(void)
 {
@@ -232,9 +244,9 @@ bool FireStarterProcess::StartProcess(void)
         std::string sendMessage = "Hello from server " + m_pipeName;
         bool sendResult = SendString(sendMessage);
         if (sendResult)
-            printf("Message sent to client: %s\n", sendMessage.c_str());
+            TESTOUTPUT("Message sent to client: %s\n", sendMessage.c_str());
         else {
-            printf("Message send failed. Error=%d\n", GetLastError());
+            TESTOUTPUT("Message send failed. Error=%d\n", GetLastError());
             StopProcess();
             return false;
         }
@@ -243,9 +255,9 @@ bool FireStarterProcess::StartProcess(void)
         std::string receiveMessage;
         bool receiveResult = ReceiveString(receiveMessage);
         if (receiveResult)
-            printf("Message received from client: %s\n", receiveMessage.c_str());
+            TESTOUTPUT("Message received from client: %s\n", receiveMessage.c_str());
         else {
-            printf("Message receive failed. Error=%d\n", GetLastError());
+            TESTOUTPUT("Message receive failed. Error=%d\n", GetLastError());
             StopProcess();
             return false;
         }
@@ -257,12 +269,12 @@ bool FireStarterProcess::StartProcess(void)
                 // Wait for process to terminate.
                 DWORD result = WaitForSingleObject(m_processInformation.hProcess, 2000); // Wait two seconds.
                 if (!result)
-                    printf("Client terminated.\n");
+                    TESTOUTPUT("Client terminated.\n");
                 else
-                    printf("Client termination timed out. Error=%d\n", result);
+                    TESTOUTPUT("Client termination timed out. Error=%d\n", result);
                 m_connected = result != 0;
             } else
-                printf("Termination command failed. Error=%d.\n", GetLastError());
+                TESTOUTPUT("Termination command failed. Error=%d.\n", GetLastError());
         }
 
         // Stop the process. Note: The terminate command will be sent if the above code failed.
@@ -276,7 +288,7 @@ void FireStarterProcess::StopClient(void)
 {
     if (m_pipe != INVALID_HANDLE_VALUE) {
         CloseHandle(m_pipe);
-        printf("Client disconnected.\n");
+        TESTOUTPUT("Client disconnected.\n");
         m_pipe = INVALID_HANDLE_VALUE;
         m_connected = false;
     }
@@ -303,13 +315,13 @@ bool FireStarterProcess::StartClient(void)
 
         // Exit if an error other than ERROR_PIPE_BUSY occurs. 
         if (GetLastError() != ERROR_PIPE_BUSY) {
-            printf("Could not open pipe. Error=%d\n", GetLastError());
+            TESTOUTPUT("Could not open pipe. Error=%d\n", GetLastError());
             return false;
         }
 
         // All pipe instances are busy, so wait for 20 seconds. 
         if (!WaitNamedPipe(m_pipeName.c_str(), 20000)) {
-            printf("Could not open pipe: 20 second wait timed out.");
+            TESTOUTPUT("Could not open pipe: 20 second wait timed out.");
             return false;
         }
     }
@@ -323,7 +335,7 @@ bool FireStarterProcess::StartClient(void)
             NULL,     // don't set maximum bytes 
             NULL))    // don't set maximum time 
         {
-            printf("SetNamedPipeHandleState failed. Error=%d\n", GetLastError());
+            TESTOUTPUT("SetNamedPipeHandleState failed. Error=%d\n", GetLastError());
             StopClient();
             return false;
         }
@@ -344,9 +356,9 @@ bool FireStarterProcess::StartClient(void)
         std::string sendMessage = "Hello from client " + m_pipeName;
         bool sendResult = SendString(sendMessage);
         if (sendResult)
-            printf("\nMessage sent to server: %s\n", sendMessage.c_str());
+            TESTOUTPUT("\nMessage sent to server: %s\n", sendMessage.c_str());
         else {
-            printf("WriteFile to pipe failed. Error=%d\n", GetLastError());
+            TESTOUTPUT("WriteFile to pipe failed. Error=%d\n", GetLastError());
             StopClient();
             return false;
         }
@@ -355,9 +367,9 @@ bool FireStarterProcess::StartClient(void)
         std::string terminateMessage;
         bool terminateResult = ReceiveString(receiveMessage);
         if (terminateResult)
-            printf("\nError: Message received instead of terminate: %s\n", receiveMessage.c_str());
+            TESTOUTPUT("\nError: Message received instead of terminate: %s\n", receiveMessage.c_str());
         else {
-            printf("Termination command received.\n");
+            TESTOUTPUT("Termination command received.\n");
             StopClient();
             return false;
         }
@@ -374,7 +386,7 @@ FireStarterProcess::FireStarterProcess(const std::string& pipeName, const std::s
     DispatchAsync([this] { StartProcess(); });
 } // FireStarterProcess
 
-FireStarterProcess::FireStarterProcess(const std::string& pipeName, bool* terminate)
+FireStarterProcess::FireStarterProcess(const std::string& pipeName, volatile bool* terminate)
 {
     m_pipeName = pipeName;
     m_terminate = terminate;

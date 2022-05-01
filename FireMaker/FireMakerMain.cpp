@@ -45,23 +45,20 @@ HRESULT Initialize(const char* commandLine)
 {
 	SerialThread mainSerialThread(true);
 	SerialThread::SetMainThread(&mainSerialThread);
-	bool terminate = false;
-	FireMaker fireMaker(commandLine, &terminate);
-	HRESULT result = S_OK;
-	if (!terminate && fireMaker.Init()) {
-		while (!terminate) {
-			MSG	msg;
-			if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-				if (msg.message == WM_QUIT)
-					break;
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			} else if (!mainSerialThread.PollThread())
-				Sleep(100);
-		}
-		fireMaker.Quit();
+	FireMaker fireMaker(commandLine);
+	while (!fireMaker.ShouldTerminate()) {
+		MSG	msg;
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+			if (msg.message == WM_QUIT) {
+				fireMaker.Terminate();
+				break;
+			}
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		} else if (!mainSerialThread.PollThread())
+			fireMaker.WaitForCommand();
 	}
-	return result;
+	return S_OK;
 } // Initialize
 
 // ----------------------------------------------------------------------------
