@@ -363,6 +363,7 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, unsigned int unitIndex, 
                     break;
                 case FIRESTARTER_PROCESS:
                     {
+                        printf("Server sending command: %s\n", UNIT_INIT);
                         FireStarterPacket sendPacket(UNIT_INIT);
                         sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
                         state->Packetize(sendPacket);
@@ -394,6 +395,7 @@ void FireStarterUnit::Execute(void)
                 break;
             case FIRESTARTER_PROCESS:
                 {
+                    printf("Server sending command: %s\n", UNIT_EXECUTE);
                     FireStarterPacket sendPacket(UNIT_EXECUTE);
                     m_process->SendPacket(sendPacket);
                 }
@@ -416,6 +418,7 @@ bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode,
                 result = result && bestState.Packetize(receivePacket);
                 result = result && receivePacket.Packetize(bestCode);
             }
+            printf("Server received command: %s\n", receivePacket.Command().c_str());
         } else {
             const FireStarterState& unitBestState = m_bestState;
             float unitBestResult = unitBestState.m_result.maxResult;
@@ -441,11 +444,12 @@ bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode,
     return result;
 } // Update
 
-void FireStarterUnit::ProcessCommand(void)
+void FireStarterUnit::ClientCommand(void)
 {
     FireStarterPacket receivePacket;
     m_process->ReceivePacket(receivePacket);
     const std::string& command = receivePacket.Command();
+    printf("Client received command: %s\n", command.c_str());
     if (command == UNIT_INIT) {
         unsigned int index = 0;
         receivePacket.Packetize(&index, sizeof(index));
@@ -468,7 +472,7 @@ void FireStarterUnit::ProcessCommand(void)
         }
         m_process->SendPacket(sendPacket);
     }
-} // ProcessCommand
+} // ClientCommand
 
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 {

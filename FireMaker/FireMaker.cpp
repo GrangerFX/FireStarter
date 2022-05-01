@@ -13,11 +13,13 @@ bool FireMaker::ShouldTerminate(void)
 
 void FireMaker::WaitForCommand(void)
 {
-	if (m_process.WaitForData())
+	if (m_process.WaitForData()) {
+		printf("WaitForData returned true.\n");
 		DispatchAsync([this] {
 			if (!m_process.ShouldTerminate())
-				m_unit.ProcessCommand(); 
-		});
+				m_unit.ClientCommand();
+			});
+	}
 } // WaitForCommand
 
 FireMaker::FireMaker(const std::string& pipeName) : m_process(pipeName, &m_terminate), m_unit(&m_process)

@@ -56,7 +56,7 @@ public:
     void InitUnit(unsigned int evolveMode, unsigned int unitIndex = 0, FireStarterState* state = nullptr); // May be reinitialized with a different evolveMode in the future.
     void Execute(void);
     bool Update(FireStarterState& bestState, std::string& bestCode, float& bestResult);
-    void ProcessCommand(void);
+    void ClientCommand(void);
     FireStarterUnit(FireStarterProcess* process = nullptr);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit
