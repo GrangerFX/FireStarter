@@ -372,27 +372,27 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, const FireStarterState* 
     });
 } // InitUnit
 
-FireStarterUnit::FireStarterUnit(unsigned int unitIndex, unsigned int unitDevice)
+FireStarterUnit::FireStarterUnit(unsigned int evolveMode, unsigned int unitIndex)
 {
     m_unitIndex = unitIndex;
-    m_unitDevice = unitDevice;
     m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
     m_evolveMode = 0;
     m_evolveGeneration = 0;
     m_codeLoaded = LoadCode();
-    DispatchSync([this] {
-        m_unitContext = new CUDAContext(m_unitDevice);
-        m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
-        if (!m_deviceResults)
-            checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
-        if (!m_hostResults)
-            checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize * 2));
-        m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
-        m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
-        m_hostResults0 = (FireStarterResults*)(m_hostResults);
-        m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
-        // Note: Results contain garbage at this point. They are cleared in InitUnit.
-     });
+    if (evolveMode != FIRESTARTER_PROCESS)
+        DispatchSync([this] {
+            m_unitContext = new CUDAContext(m_unitIndex);
+            m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
+            if (!m_deviceResults)
+                checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
+            if (!m_hostResults)
+                checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize * 2));
+            m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
+            m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
+            m_hostResults0 = (FireStarterResults*)(m_hostResults);
+            m_hostResults1 = (FireStarterResults*)(m_hostResults + m_resultsSize);
+            // Note: Results contain garbage at this point. They are cleared in InitUnit.
+         });
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)

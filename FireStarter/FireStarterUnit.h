@@ -3,6 +3,12 @@
 #include "CUDAContext.h"
 #include "SerialThread.h"
 
+#define UNIT_LOAD "UnitLoad"
+#define UNIT_SAVE "UnitSave"
+#define UNIT_INIT "UnitInit"
+#define UNIT_EXECUTE "UnitExecute"
+#define UNIT_UPDATE "UnitUpdate"
+
 class FireStarterUnit : public SerialThread {
 private:
     SimpleTimer m_timer;
@@ -46,7 +52,7 @@ public:
     void Execute(void);
     bool Update(FireStarterState& bestState, std::string& bestCode, float& bestResult);
     bool LoadCode(void);
-    void InitUnit(unsigned int evolveMode, const FireStarterState* state = nullptr);
-    FireStarterUnit(unsigned int unitIndex = 0, unsigned int unitDevice = 0);
+    void InitUnit(unsigned int evolveMode, const FireStarterState* state = nullptr); // May be reinitialized with a different evolveMode in the future.
+    FireStarterUnit(unsigned int evolveMode, unsigned int unitIndex = 0);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

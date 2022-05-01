@@ -113,7 +113,7 @@ void FireStarter::ControlThread(void)
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
     for (unsigned int i = 0; i < unit_count; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i);
+        FireStarterUnit* unit = new FireStarterUnit(i, m_evolveMode);
         m_units.push_back(unit);
     }
     if (m_evolveMode == FIRESTARTER_OPTIMIZE)
@@ -260,8 +260,6 @@ void FireStarter::Quit(void)
 
 FireStarter::FireStarter(void)
 {
-    m_server.AddProcess();
-
     m_statusString[0] = 0;
     m_generation = 0;
     m_bestGeneration = 0;

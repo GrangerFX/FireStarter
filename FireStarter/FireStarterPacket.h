@@ -43,7 +43,8 @@ public:
 
     inline const std::string& Name(void)
     {
-        if (m_name.empty() && !m_getPos) {
+        if (m_name.empty() && !m_getPos && !m_getMode) {
+            GetStart();
             size_t nameLength = strnlen_s(data(), size() - 1);
             m_name.resize(nameLength);
             memcpy(m_name.data(), data(), nameLength);
@@ -77,6 +78,25 @@ public:
             return true;
         }
         return GetData(dataPtr, dataSize);
+    } // Packetize
+
+    inline bool Packetize(std::string& string)
+    {
+        if (!m_getMode) {
+            size_t size = string.length() + 1;
+            AddData(&size, sizeof(size));
+            AddData(string.c_str(), size);
+            return true;
+        }
+        string.clear();
+        size_t length = 0;
+        if (!GetData(&length, sizeof(length)))
+            return false;
+        if (length) {
+            string.resize(length);
+            return GetData(string.data(), length);
+        }
+        return true;
     } // Packetize
 
     inline FireStarterPacket(const std::string &name = std::string())
