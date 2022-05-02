@@ -352,6 +352,7 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, unsigned int unitIndex, 
     DispatchAsync([this, evolveMode, unitIndex, state] {
         m_evolveMode = evolveMode;
         m_unitIndex = unitIndex;
+        m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
         if (state)
             m_bestState = *state;
         if (LoadCode() && Allocate()) {
@@ -451,9 +452,6 @@ bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode,
 
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 {
-    m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
-    m_evolveMode = 0;
-    m_evolveGeneration = 0;
     m_process = process;
 } // FireStarterUnit
 
