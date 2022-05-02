@@ -1,7 +1,7 @@
-// Run date: 05/01/22 20:24:26 Pacific Daylight Time
-// Run duration = 1.784504 seconds
+// Run date: 05/01/22 20:25:24 Pacific Daylight Time
+// Run duration = 3.574490 seconds
 // Run count = 2
-// Run units = 1
+// Run units = 4
 // Run population = 34816
 // Run iterations = 256
 // Run generations = 100
