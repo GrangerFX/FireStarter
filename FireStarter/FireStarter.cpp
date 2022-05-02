@@ -64,7 +64,7 @@ void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction)
     checkCUDAErrors(cudaStreamSynchronize(context->Stream()));
 } // FireShow
 
-void FireStarter::RenderImage(unsigned int width, unsigned int height, const unsigned char *pixels)
+void FireStarter::RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels)
 {
     unsigned char buffer[4096];
     BITMAPINFO* bm = (BITMAPINFO*)buffer;
@@ -112,8 +112,16 @@ void FireStarter::ControlThread(void)
         unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
-    for (unsigned int i = 0; i < unit_count; i++)
-        m_units.push_back(new FireStarterUnit((m_evolveMode == FIRESTARTER_PROCESS) ? m_server.AddProcess() : nullptr));
+    if (m_evolveMode == FIRESTARTER_PROCESS) {
+        for (unsigned int i = 0; i < unit_count; i++) {
+            FireStarterProcess* process = m_server.AddProcess();
+            FireStarterUnit* unit = new FireStarterUnit(process);
+            m_units.push_back(unit);
+            unit->DispatchAsync([process] {process->Start(); });
+        }
+    } else
+        for (unsigned int i = 0; i < unit_count; i++)
+            m_units.push_back(new FireStarterUnit());
     if (m_evolveMode == FIRESTARTER_OPTIMIZE)
         LoadState(m_bestEvaluateState);
     for (unsigned int i = 0; i < unit_count; i++)

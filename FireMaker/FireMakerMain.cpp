@@ -56,7 +56,7 @@ HRESULT Initialize(const char* commandLine)
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		} else if (!mainSerialThread.PollThread())
-			fireMaker.WaitForCommand();
+			Sleep(100);
 	}
 	return S_OK;
 } // Initialize

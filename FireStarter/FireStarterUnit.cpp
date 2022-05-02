@@ -362,14 +362,15 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, unsigned int unitIndex, 
                 case FIRESTARTER_UNIT:
                     break;
                 case FIRESTARTER_PROCESS:
-                    {
-                        printf("Server sending command: %s\n", UNIT_INIT);
-                        FireStarterPacket sendPacket(UNIT_INIT);
-                        sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
-                        state->Packetize(sendPacket);
-                        m_process->SendPacket(sendPacket);
-                    }
+                {
+                    FireStarterPacket sendPacket(UNIT_INIT);
+                    sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
+                    state->Packetize(sendPacket);
+                    m_process->SendPacket(sendPacket);
+                    FireStarterPacket receivePacket;
+                    m_process->ReceivePacket(receivePacket, UNIT_INIT);
                     break;
+                }
                 case FIRESTARTER_OPTIMIZE:
                     OptimizeGenerate();
                     break;
@@ -381,30 +382,27 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, unsigned int unitIndex, 
 
 void FireStarterUnit::Execute(void)
 {
-    if (m_evolveMode == FIRESTARTER_PROCESS) {
-        FireStarterPacket sendPacket(UNIT_EXECUTE);
-        m_process->SendPacket(sendPacket);
-    } else
-        DispatchAsync([this] {
-            switch (m_evolveMode) {
-            case FIRESTARTER_EVOLVE:
-                EvolveExecute();
-                break;
-            case FIRESTARTER_UNIT:
-                UnitExecute();
-                break;
-            case FIRESTARTER_PROCESS:
-                {
-                    printf("Server sending command: %s\n", UNIT_EXECUTE);
-                    FireStarterPacket sendPacket(UNIT_EXECUTE);
-                    m_process->SendPacket(sendPacket);
-                }
-                break;
-            case FIRESTARTER_OPTIMIZE:
-                OptimizeExecute();
-                break;
-            }
-        });
+    DispatchAsync([this] {
+        switch (m_evolveMode) {
+        case FIRESTARTER_EVOLVE:
+            EvolveExecute();
+            break;
+        case FIRESTARTER_UNIT:
+            UnitExecute();
+            break;
+        case FIRESTARTER_PROCESS:
+        {
+            FireStarterPacket sendPacket(UNIT_EXECUTE);
+            m_process->SendPacket(sendPacket);
+            FireStarterPacket receivePacket;
+            m_process->ReceivePacket(receivePacket, UNIT_EXECUTE);
+            break;
+        }
+        case FIRESTARTER_OPTIMIZE:
+            OptimizeExecute();
+            break;
+        }
+    });
 } // Execute
 
 bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode, float& bestResult)
@@ -412,13 +410,14 @@ bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode,
     bool result = false;
     DispatchSync([this, &bestState, &bestCode, &bestResult, &result] {
         if (m_evolveMode == FIRESTARTER_PROCESS) {
+            FireStarterPacket sendPacket(UNIT_UPDATE);
+            m_process->SendPacket(sendPacket);
             FireStarterPacket receivePacket;
             if (m_process->ReceivePacket(receivePacket, UNIT_UPDATE)) {
                 result = receivePacket.Packetize(&bestResult, sizeof(bestResult));
                 result = result && bestState.Packetize(receivePacket);
                 result = result && receivePacket.Packetize(bestCode);
             }
-            printf("Server received command: %s\n", receivePacket.Command().c_str());
         } else {
             const FireStarterState& unitBestState = m_bestState;
             float unitBestResult = unitBestState.m_result.maxResult;
@@ -449,14 +448,18 @@ void FireStarterUnit::ClientCommand(void)
     FireStarterPacket receivePacket;
     m_process->ReceivePacket(receivePacket);
     const std::string& command = receivePacket.Command();
-    printf("Client received command: %s\n", command.c_str());
     if (command == UNIT_INIT) {
-        unsigned int index = 0;
-        receivePacket.Packetize(&index, sizeof(index));
+        FireStarterPacket sendPacket(UNIT_INIT);
+        m_process->SendPacket(sendPacket);
         FireStarterState receiveState;
-        receiveState.Packetize(receivePacket);
-        InitUnit(FIRESTARTER_UNIT, index, &receiveState);
-    } else if (command == UNIT_EXECUTE) {
+
+        unsigned int index = 0;
+        if (receivePacket.Packetize(&index, sizeof(index)) && receiveState.Packetize(receivePacket))
+            InitUnit(FIRESTARTER_UNIT, index, &receiveState);
+    }  else if (command == UNIT_EXECUTE) {
+        FireStarterPacket sendPacket(UNIT_EXECUTE);
+        m_process->SendPacket(sendPacket);
+
         Execute();
     } else if (command == UNIT_UPDATE) {
         FireStarterState bestState;
@@ -476,15 +479,17 @@ void FireStarterUnit::ClientCommand(void)
 
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 {
-    m_process = process;
     m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
     m_evolveMode = 0;
     m_evolveGeneration = 0;
+    m_process = process;
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)
 {
     DispatchSync([this] {
+        if (m_process)
+            m_process->Stop();
         Deallocate();
         if (m_unitContext)
             delete m_unitContext;

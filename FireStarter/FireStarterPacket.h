@@ -41,6 +41,11 @@ public:
         return true;
     } // GetData
 
+    inline const std::string& Command(void) const
+    {
+        return m_command;
+    } // Command
+
     inline const std::string& Command(void)
     {
         if (m_command.empty() && !m_getPos && !m_getMode) {

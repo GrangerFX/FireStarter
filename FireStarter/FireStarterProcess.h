@@ -32,6 +32,8 @@ public:
     void StopProcess(void);
     bool StartClient(void);
     void StopClient(void);
+    bool Start(void);
+    void Stop(void);
     FireStarterProcess(const std::string& pipeName, const std::string& processPath);
     FireStarterProcess(const std::string& pipeName, volatile bool *terminate);
     ~FireStarterProcess(void);

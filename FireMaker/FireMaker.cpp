@@ -3,31 +3,34 @@
 
 void FireMaker::Terminate(void)
 {
-	m_process.Terminate();
+	DispatchAsync([this] {
+		if (m_process)
+			m_process->Terminate();
+		else
+			m_terminate = true;
+	});
 } // Terminate
 
 bool FireMaker::ShouldTerminate(void)
 {
-	return m_process.ShouldTerminate();
+	return m_terminate;
 } // ShouldTerminate
 
-void FireMaker::WaitForCommand(void)
+FireMaker::FireMaker(const std::string& pipeName)
 {
-	if (m_process.WaitForData()) {
-		printf("WaitForData returned true.\n");
-		DispatchAsync([this] {
-			if (!m_process.ShouldTerminate())
-				m_unit.ClientCommand();
-			});
-	}
-} // WaitForCommand
-
-FireMaker::FireMaker(const std::string& pipeName) : m_process(pipeName, &m_terminate), m_unit(&m_process)
-{
-	m_terminate = false;
+	DispatchAsync([this, pipeName] {
+		m_process = new FireStarterProcess(pipeName, &m_terminate);
+		m_process->Start();
+		m_unit = new FireStarterUnit(m_process);
+		while (!m_terminate)
+			m_unit->ClientCommand();
+		delete m_unit;
+		delete m_process;
+		m_unit = nullptr;
+		m_process = nullptr;
+	});
 } // FireMaker
 
 FireMaker::~FireMaker(void)
 {
-	m_terminate = true;
 } // ~FireMaker
