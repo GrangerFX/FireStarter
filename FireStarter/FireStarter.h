@@ -18,7 +18,7 @@ public:
     std::string m_solutionTargetCode;
     std::string m_fireShowCode;
     std::string m_bestCode;
-    FireStarterState m_bestEvaluateState;
+    FireStarterState m_bestState;
     std::vector<FireStarterUnit*> m_units;
     FireStarterServer m_server;
     FrameBuffer m_buffer;
@@ -27,7 +27,6 @@ public:
     unsigned int m_generation;
     unsigned int m_bestGeneration;
     float m_bestResult;
-    float m_worstResult;
     void* m_window;
     unsigned int m_seed;
     unsigned int m_width;

@@ -23,7 +23,7 @@ bool FireStarter::LoadFireShowCode(void)
 void FireStarter::SaveBestState(void)
 {
     std::string bestStateCode;
-    m_bestEvaluateState.SaveState(bestStateCode);
+    m_bestState.SaveState(bestStateCode);
     FireStarterCode::SaveCode("FireStarter_LoadState.h", bestStateCode);
 } // SaveBestState
 
@@ -35,7 +35,7 @@ void FireStarter::SaveBestCode(void)
 void FireStarter::SaveSolution(void)
 {
     std::string solutionCode;
-    m_bestEvaluateState.SaveSolution(solutionCode, m_solutionTargetCode, m_controlTime, m_generation, (unsigned int)m_units.size());
+    m_bestState.SaveSolution(solutionCode, m_solutionTargetCode, m_controlTime, m_generation, (unsigned int)m_units.size());
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
@@ -48,7 +48,7 @@ void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction)
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-        void* arr[] = { reinterpret_cast<void*>(&m_bestEvaluateState.m_result),
+        void* arr[] = { reinterpret_cast<void*>(&m_bestState.m_result),
                         reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                         reinterpret_cast<void*>(&m_buffer.m_width),
                         reinterpret_cast<void*>(&m_buffer.m_height),
@@ -90,7 +90,7 @@ void FireStarter::RenderImage(unsigned int width, unsigned int height, const uns
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
-    sprintf_s(m_statusString, "FireStarter: Generation=%u  Age=%u  Best=%f  Worst=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_generation, m_generation - m_bestGeneration, m_bestResult, m_worstResult, m_controlTime, m_runTimer.Duration());
+    sprintf_s(m_statusString, "FireStarter: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
 } // RenderStatus
 
 void FireStarter::ControlThread(void)
@@ -123,9 +123,9 @@ void FireStarter::ControlThread(void)
         for (unsigned int i = 0; i < unit_count; i++)
             m_units.push_back(new FireStarterUnit());
     if (m_evolveMode == FIRESTARTER_OPTIMIZE)
-        LoadState(m_bestEvaluateState);
+        LoadState(m_bestState);
     for (unsigned int i = 0; i < unit_count; i++)
-        m_units[i]->InitUnit(m_evolveMode, i, &m_bestEvaluateState);
+        m_units[i]->InitUnit(m_evolveMode, i, &m_bestState);
 
     // Loop until the the host program is quit.
     m_runTimer.Start();
@@ -137,7 +137,7 @@ void FireStarter::ControlThread(void)
 
         // Update the best data for all the units.
         for (FireStarterUnit* unit : m_units)
-            if (unit->Update(m_bestEvaluateState, m_bestCode, m_bestResult)) {
+            if (unit->Update(m_bestState, m_bestCode, m_bestResult)) {
                 m_bestGeneration = m_generation;
                 m_controlUpdate = true;
             }
@@ -270,7 +270,6 @@ FireStarter::FireStarter(void)
     m_generation = 0;
     m_bestGeneration = 0;
     m_bestResult = START_RESULT;
-    m_worstResult = START_RESULT;
     m_controlTime = 0.0;
     m_seed = RANDOMHASH(123);
     m_controlUpdate = false;

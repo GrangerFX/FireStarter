@@ -414,15 +414,19 @@ bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode,
             m_process->SendPacket(sendPacket);
             FireStarterPacket receivePacket;
             if (m_process->ReceivePacket(receivePacket, UNIT_UPDATE)) {
-                result = receivePacket.Packetize(&bestResult, sizeof(bestResult));
-                result = result && bestState.Packetize(receivePacket);
-                result = result && receivePacket.Packetize(bestCode);
+                if (bestState.Packetize(receivePacket)) {
+                    bestResult = bestState.m_result.maxResult;
+                    m_bestState = bestState;
+                    if (receivePacket.Packetize(bestCode))
+                        m_optimizeCode = bestCode;
+                    result = true;
+                }
             }
         } else {
-            const FireStarterState& unitBestState = m_bestState;
-            float unitBestResult = unitBestState.m_result.maxResult;
+            float unitBestResult = m_bestState.m_result.maxResult;
             if (unitBestResult < bestResult) {
-                bestState = unitBestState;
+                bestResult = unitBestResult;
+                bestState = m_bestState;
                 switch (m_evolveMode) {
                     case FIRESTARTER_EVOLVE:
                         bestCode = m_evolveCode;
@@ -435,47 +439,12 @@ bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode,
                         bestCode = m_optimizeCode;
                         break;
                 }
-                bestResult = unitBestResult;
                 result = true;
             }
         }
     });
     return result;
 } // Update
-
-void FireStarterUnit::ClientCommand(void)
-{
-    FireStarterPacket receivePacket;
-    m_process->ReceivePacket(receivePacket);
-    const std::string& command = receivePacket.Command();
-    if (command == UNIT_INIT) {
-        FireStarterPacket sendPacket(UNIT_INIT);
-        m_process->SendPacket(sendPacket);
-        FireStarterState receiveState;
-
-        unsigned int index = 0;
-        if (receivePacket.Packetize(&index, sizeof(index)) && receiveState.Packetize(receivePacket))
-            InitUnit(FIRESTARTER_UNIT, index, &receiveState);
-    }  else if (command == UNIT_EXECUTE) {
-        FireStarterPacket sendPacket(UNIT_EXECUTE);
-        m_process->SendPacket(sendPacket);
-
-        Execute();
-    } else if (command == UNIT_UPDATE) {
-        FireStarterState bestState;
-        std::string bestCode;
-        float bestResult = START_RESULT;
-        bool result = Update(bestState, bestCode, bestResult);
-
-        FireStarterPacket sendPacket(UNIT_UPDATE);
-        sendPacket.Packetize(&bestResult, sizeof(bestResult));
-        if (result) {
-            bestState.Packetize(sendPacket);
-            sendPacket.Packetize(bestCode);
-        }
-        m_process->SendPacket(sendPacket);
-    }
-} // ClientCommand
 
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 {
