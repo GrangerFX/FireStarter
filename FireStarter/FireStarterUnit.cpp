@@ -414,12 +414,15 @@ bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode,
             m_process->SendPacket(sendPacket);
             FireStarterPacket receivePacket;
             if (m_process->ReceivePacket(receivePacket, UNIT_UPDATE)) {
-                if (bestState.Packetize(receivePacket)) {
-                    bestResult = bestState.m_result.maxResult;
-                    m_bestState = bestState;
-                    if (receivePacket.Packetize(bestCode))
-                        m_optimizeCode = bestCode;
-                    result = true;
+                if (m_bestState.Packetize(receivePacket)) {
+                    receivePacket.Packetize(m_optimizeCode);
+                    float unitBestResult = m_bestState.m_result.maxResult;
+                    if (unitBestResult < bestResult) {
+                        bestResult = unitBestResult;
+                        bestState = m_bestState;
+                        bestCode = m_optimizeCode;
+                        result = true;
+                    }
                 }
             }
         } else {
