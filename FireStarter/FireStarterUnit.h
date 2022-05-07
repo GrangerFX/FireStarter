@@ -25,8 +25,7 @@ private:
     CUmodule m_unitsModule = nullptr;
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_evolveFunction = nullptr;
-    CUfunction m_unitFunction[PROGRAM_STATES] = {};
-    CUfunction m_optimizeFunction = nullptr;
+    CUfunction m_optimizeFunction[PROGRAM_STATES] = {};
     std::string m_evolveCode;
     std::string m_optimizeCode;
     size_t m_resultsSize = 0;
@@ -42,8 +41,7 @@ private:
     void UnitGenerate(void);
     void OptimizeGenerate(bool compile = true);
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void UnitGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+    void OptimizeGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void EvolveExecute(void);
     void UnitExecute(void);
     void OptimizeExecute(void);

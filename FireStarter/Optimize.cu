@@ -12,7 +12,7 @@ inline float Evaluate(FireStarterData data, float n)
 // END //
 
 // OPTMIZE //
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int optimization)
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -42,18 +42,17 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         // Later generations continue to evolve the data.
         FireStarterData data;
         float evolutionFactor;
-        if (!generation) {
+        if (generation) {
+            data = oldResults->results[member].data[variation];
+            result = oldResult = oldResults->results[member].minResult[variation];
+        } else {
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR(memberSeed);
             for (int i = dataSize; i < PROGRAM_INSTRUCTIONS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
             result = oldResult = START_RESULT;
-            evolutionFactor = EVOLUTION_START_FACTOR;
-        } else {
-            data = oldResults->results[member].data[variation];
-            result = oldResult = oldResults->results[member].minResult[variation];
-            evolutionFactor = EVOLUTION_FACTOR * result;
         }
+        evolutionFactor = generation ? EVOLUTION_FACTOR * result : EVOLUTION_START_FACTOR;
 
         // Iterate to evolve the data.
         for (unsigned int p = 0; p < iterations; p++) {
@@ -70,14 +69,14 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 data.d[d] = oldData;
         }
 
-        // Calculate a more accure estimate of the result.
+        // Calculate a more accurate estimate of the result.
         for (int i = 0; i < PROGRAM_PRECISION; i++) {
             float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
             result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
         }
 
         // If the result was worse, copy from a member with better results.
-        if (!optimization || (result < oldResult)) {
+        if (!generation || (result < oldResult)) {
             // Save better results.
             newResults->results[member].data[variation] = data;
             newResults->results[member].minResult[variation] = result;
