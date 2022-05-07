@@ -12,7 +12,7 @@ inline float Evaluate(FireStarterData data, float n)
 // END //
 
 // OPTMIZE //
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation, const unsigned int optimization)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -77,7 +77,12 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
 
         // If the result was worse, copy from a member with better results.
-        if (generation && (result >= oldResult)) {
+        if (!optimization || (result < oldResult)) {
+            // Save better results.
+            newResults->results[member].data[variation] = data;
+            newResults->results[member].minResult[variation] = result;
+            maxResult = fmaxf(maxResult, result);
+        } else {
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of members.
             unsigned int bestIndex = member;
@@ -95,11 +100,6 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 newResults->results[member].minResult[variation] = START_RESULT;
             }
             maxResult = fmaxf(maxResult, bestResult);
-        } else {
-            // Save better results.
-            newResults->results[member].data[variation] = data;
-            newResults->results[member].minResult[variation] = result;
-            maxResult = fmaxf(maxResult, result);
         }
     }
     newResults->results[member].maxResult = maxResult;

@@ -42,7 +42,7 @@ private:
     void UnitGenerate(void);
     void OptimizeGenerate(bool compile = true);
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void UnitGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations);
+    void UnitGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void OptimizeGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
     void EvolveExecute(void);
     void UnitExecute(void);
