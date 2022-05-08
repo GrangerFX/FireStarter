@@ -12,11 +12,9 @@ class FireStarterUnit : public SerialThread {
 private:
     SimpleTimer m_timer;
     char* m_deviceResults = nullptr;
-    char* m_hostResults = nullptr;
+    FireStarterResults* m_hostResults = nullptr;
     FireStarterResults* m_deviceResults0 = nullptr;
     FireStarterResults* m_deviceResults1 = nullptr;
-    FireStarterResults* m_hostResults0 = nullptr;
-    FireStarterResults* m_hostResults1 = nullptr;
     FireStarterProcess* m_process = nullptr;
     FireStarterState m_states[PROGRAM_STATES];
     FireStarterState m_bestState;
@@ -41,7 +39,7 @@ private:
     void UnitGenerate(void);
     void OptimizeGenerate(bool compile = true);
     void EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
-    void OptimizeGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int generation);
+    void OptimizeGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int seed, unsigned int init);
     void EvolveExecute(void);
     void UnitExecute(void);
     void OptimizeExecute(void);

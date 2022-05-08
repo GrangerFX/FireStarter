@@ -12,12 +12,12 @@ inline float Evaluate(FireStarterData data, float n)
 // END //
 
 // OPTMIZE //
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int generation)
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int seed, const unsigned int init)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
-    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
+    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + seed);
 
     // Precalculate the target theta values.
     float theta[SAMPLE_ITERATIONS];
@@ -25,14 +25,13 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
 
     // Sort the variations by the previous results.
-    FireStarterOrder varaitions(generation ? oldResults->results[member].minResult : nullptr);
+    FireStarterOrder varaitions(init ? nullptr : oldResults->results[member].minResult);
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         unsigned int variation = varaitions.order[v];
-        float result, oldResult;
-
+ 
         // Precalculate the target sample values.
         float target[SAMPLE_ITERATIONS];
         for (int i = 0; i < SAMPLE_ITERATIONS; i++)
@@ -41,18 +40,20 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         // The first generation is initalized with random numbers.
         // Later generations continue to evolve the data.
         FireStarterData data;
+        float result, oldResult;
         float evolutionFactor;
-        if (generation) {
-            data = oldResults->results[member].data[variation];
-            result = oldResult = oldResults->results[member].minResult[variation];
-        } else {
+        if (init) {
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR(memberSeed);
             for (int i = dataSize; i < PROGRAM_INSTRUCTIONS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
             result = oldResult = START_RESULT;
+            evolutionFactor = EVOLUTION_START_FACTOR;
+        } else {
+            data = oldResults->results[member].data[variation];
+            result = oldResult = oldResults->results[member].minResult[variation];
+            evolutionFactor = EVOLUTION_FACTOR * result;
         }
-        evolutionFactor = generation ? EVOLUTION_FACTOR * result : EVOLUTION_START_FACTOR;
 
         // Iterate to evolve the data.
         for (unsigned int p = 0; p < iterations; p++) {
@@ -76,7 +77,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
 
         // If the result was worse, copy from a member with better results.
-        if (!generation || (result < oldResult)) {
+        if (init || (result < oldResult)) {
             // Save better results.
             newResults->results[member].data[variation] = data;
             newResults->results[member].minResult[variation] = result;
@@ -97,8 +98,12 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             if (bestIndex != member) {
                 newResults->results[member].data[variation] = oldResults->results[bestIndex].data[variation];
                 newResults->results[member].minResult[variation] = START_RESULT;
+                maxResult = fmaxf(maxResult, bestResult);
+            } else {
+                newResults->results[member].data[variation] = data;
+                newResults->results[member].minResult[variation] = result;
+                maxResult = fmaxf(maxResult, result);
             }
-            maxResult = fmaxf(maxResult, bestResult);
         }
     }
     newResults->results[member].maxResult = maxResult;

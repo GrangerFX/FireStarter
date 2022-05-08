@@ -88,6 +88,8 @@ void FireStarterProgram::SaveInstructions(FireStarterInstructions& instructions)
 void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool optimize)
 {
     // Generate the evaluate function.
+    if (m_registers.empty())
+        optimize = false;
     std::string indent;
     for (unsigned int i = 0; i < tabs; i++)
         indent += "    ";
@@ -127,6 +129,9 @@ void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
 
 void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data, bool optimize)
 {
+    if (m_registers.empty())
+        return;
+
     // Generate the replacement code and update the program.
     if (optimize) {
         code += "    float r0";
