@@ -27,11 +27,6 @@ void FireStarter::SaveBestState(void)
     FireStarterCode::SaveCode("FireStarter_LoadState.h", bestStateCode);
 } // SaveBestState
 
-void FireStarter::SaveBestCode(void)
-{
-    FireStarterCode::SaveCode("FireStarter_BestCode.h", m_bestCode);
-} // SaveBestCode
-
 void FireStarter::SaveSolution(void)
 {
     std::string solutionCode;
@@ -137,17 +132,21 @@ void FireStarter::ControlThread(void)
 
         // Update the best data for all the units.
         for (FireStarterUnit* unit : m_units)
-            if (unit->Update(m_bestState, m_bestCode, m_bestResult)) {
+            if (unit->Update(m_allStates, m_bestState, m_bestResult)) {
                 m_bestGeneration = m_generation;
                 m_controlUpdate = true;
             }
+
+        // Send all the states back to all the units.
+        for (FireStarterUnit* unit : m_units)
+            unit->States(m_allStates);
+
         m_controlTime = m_controlTimer.Duration();
         m_generation++;
 
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
             SaveBestState();
-            SaveBestCode();
             SaveSolution();
         }
 

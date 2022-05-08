@@ -7,6 +7,7 @@
 #define UNIT_INIT "UnitInit"
 #define UNIT_EXECUTE "UnitExecute"
 #define UNIT_UPDATE "UnitUpdate"
+#define UNIT_STATES "UnitStates"
 
 class FireStarterUnit : public SerialThread {
 private:
@@ -16,6 +17,7 @@ private:
     FireStarterResults* m_deviceResults0 = nullptr;
     FireStarterResults* m_deviceResults1 = nullptr;
     FireStarterProcess* m_process = nullptr;
+    FireStarterState m_allStates[PROGRAM_STATES * PROGRAM_UNITS];
     FireStarterState m_states[PROGRAM_STATES];
     FireStarterState m_bestState;
     CUDAContext* m_unitContext = nullptr;
@@ -48,10 +50,13 @@ private:
     bool Allocate(void);
 
 public:
+    unsigned int Index(void);
     void Packetize(FireStarterPacket& packet);
+    void PacketizeAllStates(FireStarterPacket& packet);
     void InitUnit(unsigned int evolveMode, unsigned int unitIndex = 0, FireStarterState* state = nullptr); // May be reinitialized with a different evolveMode in the future.
     void Execute(void);
-    bool Update(FireStarterState& bestState, std::string& bestCode, float& bestResult);
+    bool Update(FireStarterState* states, FireStarterState& bestState, float& bestResult);
+    void States(FireStarterState* states);
     void ClientCommand(void);
     FireStarterUnit(FireStarterProcess* process = nullptr);
     ~FireStarterUnit(void);

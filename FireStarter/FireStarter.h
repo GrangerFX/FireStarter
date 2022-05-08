@@ -17,8 +17,8 @@ public:
     double m_controlTime;
     std::string m_solutionTargetCode;
     std::string m_fireShowCode;
-    std::string m_bestCode;
     FireStarterState m_bestState;
+    FireStarterState m_allStates[PROGRAM_STATES * PROGRAM_UNITS];
     std::vector<FireStarterUnit*> m_units;
     FireStarterServer m_server;
     FrameBuffer m_buffer;
@@ -38,7 +38,6 @@ public:
     bool LoadTargetCode(void);
     bool LoadFireShowCode(void);
     void SaveBestState(void);
-    void SaveBestCode(void);
     void SaveSolution(void);
     void FireShow(class CUDAContext* context, CUfunction fireShowFunction);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);

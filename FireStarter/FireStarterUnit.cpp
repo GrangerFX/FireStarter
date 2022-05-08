@@ -279,18 +279,29 @@ bool FireStarterUnit::Allocate(void)
     return (m_deviceResults && m_hostResults);
 } // Allocate
 
+unsigned int FireStarterUnit::Index(void)
+{
+    return m_unitIndex;
+} // Index
+
 void FireStarterUnit::Packetize(FireStarterPacket& packet)
 {
-    DispatchSync([this, &packet] {
-        m_bestState.Packetize(packet);
-        for (unsigned int i = 0; i < PROGRAM_STATES; i++)
-            m_states[i].Packetize(packet);
-        packet.Packetize(&m_evolveMode, sizeof(m_evolveMode));
-        packet.Packetize(&m_evolveGeneration, sizeof(m_evolveGeneration));
-        packet.Packetize(&m_unitIndex, sizeof(m_unitIndex));
-        packet.Packetize(&m_seed, sizeof(m_seed));
-        });
+    for (unsigned int i = 0; i < PROGRAM_STATES; i++)
+        m_states[i].Packetize(packet);
+    m_bestState.Packetize(packet);
+    packet.Packetize(&m_evolveMode, sizeof(m_evolveMode));
+    packet.Packetize(&m_evolveGeneration, sizeof(m_evolveGeneration));
+    packet.Packetize(&m_unitIndex, sizeof(m_unitIndex));
+    packet.Packetize(&m_seed, sizeof(m_seed));
 } // Packetize
+
+void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)
+{
+    DispatchSync([this, &packet] {
+        for (unsigned int i = 0; i < PROGRAM_UNITS * PROGRAM_STATES; i++)
+            m_allStates[i].Packetize(packet);
+    });
+} // PacketizeAllStates
 
 void FireStarterUnit::InitUnit(unsigned int evolveMode, unsigned int unitIndex, FireStarterState* state)
 {
@@ -351,49 +362,75 @@ void FireStarterUnit::Execute(void)
     });
 } // Execute
 
-bool FireStarterUnit::Update(FireStarterState& bestState, std::string& bestCode, float& bestResult)
+bool FireStarterUnit::Update(FireStarterState* states, FireStarterState& bestState, float& bestResult)
 {
     bool result = false;
-    DispatchSync([this, &bestState, &bestCode, &bestResult, &result] {
+    DispatchSync([this, states, &bestState, &bestResult, &result] {
         if (m_evolveMode == FIRESTARTER_PROCESS) {
+            // Send the entire unit back to the host.
             FireStarterPacket sendPacket(UNIT_UPDATE);
             m_process->SendPacket(sendPacket);
             FireStarterPacket receivePacket;
-            if (m_process->ReceivePacket(receivePacket, UNIT_UPDATE)) {
-                if (m_bestState.Packetize(receivePacket)) {
-                    receivePacket.Packetize(m_optimizeCode);
-                    float unitBestResult = m_bestState.m_result.maxResult;
-                    if (unitBestResult < bestResult) {
-                        bestResult = unitBestResult;
-                        bestState = m_bestState;
-                        bestCode = m_optimizeCode;
-                        result = true;
-                    }
-                }
-            }
-        } else {
-            float unitBestResult = m_bestState.m_result.maxResult;
-            if (unitBestResult < bestResult) {
-                bestResult = unitBestResult;
-                bestState = m_bestState;
-                switch (m_evolveMode) {
-                    case FIRESTARTER_EVOLVE:
-                        bestCode = m_evolveCode;
-                        break;
-                    case FIRESTARTER_UNIT:
-                        OptimizeGenerate(false);    // Generate but don't compile the code.
-                        bestCode = m_optimizeCode;
-                        break;
-                    case FIRESTARTER_OPTIMIZE:
-                        bestCode = m_optimizeCode;
-                        break;
-                }
-                result = true;
-            }
+            if (m_process->ReceivePacket(receivePacket, UNIT_UPDATE))
+                Packetize(receivePacket);
+        }
+
+        unsigned int index = m_unitIndex * PROGRAM_STATES;
+        for (unsigned int i = 0; i < PROGRAM_STATES; i++)
+            states[index++] = m_states[i];
+        float unitBestResult = m_bestState.m_result.maxResult;
+        if (unitBestResult < bestResult) {
+            bestResult = unitBestResult;
+            bestState = m_bestState;
+            result = true;
         }
     });
     return result;
 } // Update
+
+void FireStarterUnit::States(FireStarterState* states)
+{
+    DispatchSync([this, states] {
+        for (unsigned int i = 0; i < PROGRAM_UNITS * PROGRAM_STATES; i++)
+            m_allStates[i] = states[i];
+        if ((m_evolveMode == FIRESTARTER_PROCESS) && (m_unitIndex == 0)) {
+            FireStarterPacket sendPacket(UNIT_STATES);
+            PacketizeAllStates(sendPacket);
+            m_process->SendPacket(sendPacket);
+            FireStarterPacket receivePacket;
+            m_process->ReceivePacket(receivePacket, UNIT_STATES);
+        };
+    });
+} // States
+
+void FireStarterUnit::ClientCommand(void)
+{
+    FireStarterPacket receivePacket;
+    m_process->ReceivePacket(receivePacket);
+    const std::string& command = receivePacket.Command();
+    if (command == UNIT_INIT) {
+        FireStarterPacket sendPacket(UNIT_INIT);
+        m_process->SendPacket(sendPacket);
+
+        unsigned int index = 0;
+        if (receivePacket.Packetize(&index, sizeof(index)) && m_bestState.Packetize(receivePacket))
+            InitUnit(FIRESTARTER_UNIT, index, &m_bestState);
+    } else if (command == UNIT_EXECUTE) {
+        FireStarterPacket sendPacket(UNIT_EXECUTE);
+        m_process->SendPacket(sendPacket);
+
+        Execute();
+    } else if (command == UNIT_UPDATE) {
+        FireStarterPacket sendPacket(UNIT_UPDATE);
+        DispatchSync([this, &sendPacket] { Packetize(sendPacket); });
+        m_process->SendPacket(sendPacket);
+    } else if (command == UNIT_STATES) {
+        FireStarterPacket sendPacket(UNIT_STATES);
+        m_process->SendPacket(sendPacket);
+
+        DispatchSync([this, &receivePacket] { PacketizeAllStates(receivePacket); });
+    }
+} // ClientCommand
 
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 {
