@@ -19,8 +19,13 @@ void FireStarterUnit::EvolveGenerate(void)
 
 void FireStarterUnit::UnitGenerate(void)
 {
-    // Evolve each state.
+    std::string optimize;
+    FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
+    std::string evaluateCode;
+    std::string optimizeCode;
+
     for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
+        // Evolve each state.
         FireStarterState& state = m_states[i];
         state = m_bestState;
         if (!m_evolveGeneration)
@@ -30,14 +35,8 @@ void FireStarterUnit::UnitGenerate(void)
         state.m_program.OptimizeRegisters(true);
         state.m_program.SaveInstructions(state.m_result.instructions);
         state.m_generation = m_evolveGeneration;
-    }
-
-    // Update the Evaluate funtion.
-    std::string optimize;
-    FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
-    std::string evaluateCode;
-    std::string optimizeCode;
-    for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
+ 
+        // Update the Evaluate funtion.
         std::string evaluate;
         m_states[i].m_program.GenerateEvaluate(evaluate);
         std::string evaluateName = Format("Evaluate%d", i);
@@ -46,6 +45,7 @@ void FireStarterUnit::UnitGenerate(void)
             evaluateCode += "\r\n";
         evaluateCode += evaluate;
 
+        // Update the optimize function.
         std::string optimizeUnit = optimize;
         std::string optimizeName = Format("Optimize%d", i);
         FireStarterCode::ReplaceCode(optimizeUnit, "Optimize", optimizeName);
@@ -54,7 +54,6 @@ void FireStarterUnit::UnitGenerate(void)
             optimizeCode += "\r\n";
         optimizeCode += optimizeUnit;
     }
-    m_bestState = m_states[0];
 
     // Create the units code by replacing the evaluate and optimize sections of the optimize code.
     std::string unitsCode = m_optimizeCode;
