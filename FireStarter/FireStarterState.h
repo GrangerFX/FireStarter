@@ -6,7 +6,6 @@ class FireStarterState {
 public:
     FireStarterProgram m_program;
     FireStarterResult m_result;
-    float m_bestResult;         // Best result for all threads and variations.
     unsigned int m_generation;  // Generation of the state.
 
     bool Packetize(FireStarterPacket& packet);

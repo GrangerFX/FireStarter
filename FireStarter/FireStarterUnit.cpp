@@ -118,7 +118,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
         }
     }
     FireStarterState& state = m_states[0];
-    state.m_bestResult = minResult;
     state.m_result = m_hostResults->results[minIndex];
 
     // Find the best results.
@@ -183,12 +182,9 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int popul
     }
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
         result.data[v] = m_hostResults->results[minIndex[v]].data[v];
-    float minResult = result.maxResult = result.minResult[0];
-    for (unsigned int v = 1; v < PROGRAM_VARIATIONS; v++) {
-        minResult = fminf(minResult, result.minResult[v]);
+    result.maxResult = result.minResult[0];
+    for (unsigned int v = 1; v < PROGRAM_VARIATIONS; v++)
         result.maxResult = fmaxf(result.maxResult, result.minResult[v]);
-    }
-    state.m_bestResult = minResult;
 
     // Find the best results.
     if (result.maxResult < m_bestState.m_result.maxResult)
@@ -391,8 +387,14 @@ bool FireStarterUnit::Update(FireStarterState* states, FireStarterState& bestSta
 void FireStarterUnit::States(FireStarterState* states)
 {
     DispatchSync([this, states] {
-        for (unsigned int i = 0; i < PROGRAM_UNITS * PROGRAM_STATES; i++)
+        float unitBestResult = m_bestState.m_result.maxResult;
+        for (unsigned int i = 0; i < PROGRAM_UNITS * PROGRAM_STATES; i++) {
             m_allStates[i] = states[i];
+            if (m_allStates[i].m_result.maxResult < unitBestResult) {
+                m_bestState = m_allStates[i];
+                unitBestResult = m_bestState.m_result.maxResult;
+            }
+        }
         if ((m_evolveMode == FIRESTARTER_PROCESS) && (m_unitIndex == 0)) {
             FireStarterPacket sendPacket(UNIT_STATES);
             PacketizeAllStates(sendPacket);

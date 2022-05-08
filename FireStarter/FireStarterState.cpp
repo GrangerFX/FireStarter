@@ -7,7 +7,6 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
     bool result = true;
     result = result && m_program.Packetize(packet);
     result = result && packet.Packetize(&m_result, sizeof(m_result));
-    result = result && packet.Packetize(&m_bestResult, sizeof(m_bestResult));
     result = result && packet.Packetize(&m_generation, sizeof(m_generation));
     return result;
 } // Packetize
@@ -29,7 +28,6 @@ void FireStarterState::SaveState(std::string& code)
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
     code += Format("    state.m_result.test = %u;\r\n", m_result.test);
     code += "\r\n";
-    code += Format("    state.m_bestResult = %ff;\r\n", m_bestResult);
     code += Format("    state.m_generation = %d;\r\n", m_generation);
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
@@ -124,7 +122,6 @@ FireStarterState::FireStarterState(void)
         m_result.minResult[v] = START_RESULT;
     }
     m_result.maxResult = START_RESULT;
-    m_bestResult = START_RESULT;
     m_generation = 0;
 } // FireStarterState
 
