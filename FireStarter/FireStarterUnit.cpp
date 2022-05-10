@@ -24,7 +24,7 @@ void FireStarterUnit::UnitGenerate(void)
     std::string evaluateCode;
     std::string optimizeCode;
 
-    for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         // Evolve each state.
         FireStarterState& state = m_states[i];
         state = m_bestState;
@@ -62,7 +62,7 @@ void FireStarterUnit::UnitGenerate(void)
 
     // Compile the new code.
     CUDACompile::CompileProgram(m_unitsModule, unitsCode);
-    for (unsigned int i = 0; i < PROGRAM_STATES; i++)
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
         m_optimizeFunction[i] = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
 } // UnitGenerate
 
@@ -78,23 +78,23 @@ void FireStarterUnit::OptimizeGenerate(bool compile)
         m_optimizeFunction[0] = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
 } // OptimizeGenerate
 
-void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int iterations, unsigned int generations, unsigned int evolution)
+void FireStarterUnit::EvolveGenerations(unsigned int evolution)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
-    unsigned int blocksPerGrid = population;
+    unsigned int blocksPerGrid = m_settings.m_evolvePopulation;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     FireStarterResults* newResults, * oldResults;
-    for (unsigned int g = 0; g < generations; g++) {
+    for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         newResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
         oldResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
         unsigned int generation = evolution + g;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
-                        reinterpret_cast<void*>(&population),
-                        reinterpret_cast<void*>(&iterations),
+                        reinterpret_cast<void*>(&m_settings.m_evolvePopulation),
+                        reinterpret_cast<void*>(&m_settings.m_evolveIterations),
                         reinterpret_cast<void*>(&generation) };
 
         checkCUDAErrors(cuLaunchKernel(m_evolveFunction,
@@ -110,7 +110,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
     float minResult = m_hostResults->results[0].maxResult;
     unsigned int minIndex = 0;
-    for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
+    for (unsigned int i = 1; i < m_settings.m_evolvePopulation; i++) {
         float curResult = m_hostResults->results[i].maxResult;
         if (curResult < minResult) {
             minResult = curResult;
@@ -130,25 +130,25 @@ void FireStarterUnit::EvolveGenerations(unsigned int population, unsigned int it
     }
 } // EvolveGenerations
 
-void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int population, unsigned int iterations, unsigned int generations, unsigned int seed, unsigned int init)
+void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed, unsigned int init)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
-    unsigned int blocksPerGrid = (population + (threadsPerBlock - 1)) / threadsPerBlock;
+    unsigned int blocksPerGrid = (m_settings.m_evolvePopulation + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     FireStarterState& state = m_states[index];
     unsigned int dataSize = state.m_program.m_dataSize;
     FireStarterResults* newResults, *oldResults;
 
-    for (unsigned int g = 0; g < generations; g++) {
+    for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         newResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
         oldResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&dataSize),
-                        reinterpret_cast<void*>(&population),
-                        reinterpret_cast<void*>(&iterations),
+                        reinterpret_cast<void*>(&m_settings.m_evolvePopulation),
+                        reinterpret_cast<void*>(&m_settings.m_evolveIterations),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&init) };
 
@@ -171,7 +171,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int popul
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
         result.minResult[v] = m_hostResults->results[0].minResult[v];
     unsigned int minIndex[PROGRAM_VARIATIONS] = { };
-    for (unsigned int i = 1; i < PROGRAM_POPULATION; i++) {
+    for (unsigned int i = 1; i < m_settings.m_evolvePopulation; i++) {
         for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
             float curResult = m_hostResults->results[i].minResult[v];
             if (curResult < result.minResult[v]) {
@@ -197,8 +197,8 @@ void FireStarterUnit::EvolveExecute(void)
    // Evolve the program instructions.
     m_states[0] = m_bestState;
     m_states[0].m_generation = m_evolveGeneration;
-    EvolveGenerations(PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, m_evolveGeneration);
-    m_evolveGeneration += PROGRAM_GENERATIONS;
+    EvolveGenerations(m_evolveGeneration);
+    m_evolveGeneration += m_settings.m_evolveGenerations;
 } // EvolveExecute
 
 void FireStarterUnit::UnitExecute(void)
@@ -207,11 +207,11 @@ void FireStarterUnit::UnitExecute(void)
     UnitGenerate();
 
     // Evolve the program data.
-    for (unsigned int i = 0; i < PROGRAM_STATES; i++) {
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(m_evolveGeneration) + i) + m_seed);
-        OptimizeGenerations(i, PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, seed, 1);
+        OptimizeGenerations(i, seed, 1);
     }
-    m_evolveGeneration += PROGRAM_GENERATIONS;
+    m_evolveGeneration += m_settings.m_evolveGenerations;
 } // UnitExecute
 
 void FireStarterUnit::OptimizeExecute(void)
@@ -219,10 +219,10 @@ void FireStarterUnit::OptimizeExecute(void)
     // Run the next generation on the GPU.
     // Evolve the program data.
     m_states[0] = m_bestState;
-    m_states[0].m_generation = m_evolveGeneration * PROGRAM_GENERATIONS;
+    m_states[0].m_generation = m_evolveGeneration * m_settings.m_evolveIterations;
     unsigned int seed = RANDOMHASH(RANDOMHASH(m_evolveGeneration) + m_seed);
-    OptimizeGenerations(0, PROGRAM_POPULATION, PROGRAM_ITERATIONS, PROGRAM_GENERATIONS, seed, m_evolveGeneration == 0);
-    m_evolveGeneration += PROGRAM_GENERATIONS;
+    OptimizeGenerations(0, seed, m_evolveGeneration == 0);
+    m_evolveGeneration += m_settings.m_evolveGenerations;
 } // OptimizeExecute
 
 bool FireStarterUnit::LoadCode(void)
@@ -265,7 +265,7 @@ bool FireStarterUnit::Allocate(void)
         Deallocate();
     else
         m_unitContext = new CUDAContext(m_unitIndex);
-    m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (PROGRAM_POPULATION - 1);
+    m_resultsSize = sizeof(FireStarterResults) + sizeof(FireStarterResult) * (m_settings.m_evolvePopulation - 1);
     if (!m_deviceResults)
         checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
     if (!m_hostResults)
@@ -282,10 +282,10 @@ unsigned int FireStarterUnit::Index(void)
 
 void FireStarterUnit::Packetize(FireStarterPacket& packet)
 {
-    for (unsigned int i = 0; i < PROGRAM_STATES; i++)
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
         m_states[i].Packetize(packet);
     m_bestState.Packetize(packet);
-    packet.Packetize(&m_evolveMode, sizeof(m_evolveMode));
+    packet.Packetize(&m_settings, sizeof(m_settings));
     packet.Packetize(&m_evolveGeneration, sizeof(m_evolveGeneration));
     packet.Packetize(&m_unitIndex, sizeof(m_unitIndex));
     packet.Packetize(&m_seed, sizeof(m_seed));
@@ -294,21 +294,24 @@ void FireStarterUnit::Packetize(FireStarterPacket& packet)
 void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)
 {
     DispatchSync([this, &packet] {
-        for (unsigned int i = 0; i < PROGRAM_UNITS * PROGRAM_STATES; i++)
+        for (unsigned int i = 0; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++)
             m_allStates[i].Packetize(packet);
     });
 } // PacketizeAllStates
 
-void FireStarterUnit::InitUnit(unsigned int evolveMode, unsigned int unitIndex, FireStarterState* state)
+void FireStarterUnit::InitUnit(unsigned int index, const EvolveSettings &settings, FireStarterState* state)
 {
-    DispatchAsync([this, evolveMode, unitIndex, state] {
-        m_evolveMode = evolveMode;
-        m_unitIndex = unitIndex;
+    DispatchAsync([this, index, settings, state] {
+        m_unitIndex = index;
+        m_settings = settings;
+        m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
+        m_states.resize(m_settings.m_evolveStates);
+        m_optimizeFunction.resize(m_settings.m_evolveStates);
         m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
         if (state)
             m_bestState = *state;
         if (LoadCode() && Allocate()) {
-            switch (m_evolveMode) {
+            switch (m_settings.m_evolveMode) {
                 case FIRESTARTER_EVOLVE:
                     EvolveGenerate();
                     break;
@@ -318,6 +321,7 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, unsigned int unitIndex, 
                 {
                     FireStarterPacket sendPacket(UNIT_INIT);
                     sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
+                    sendPacket.Packetize(&m_settings, sizeof(m_settings));
                     state->Packetize(sendPacket);
                     m_process->SendPacket(sendPacket);
                     FireStarterPacket receivePacket;
@@ -336,7 +340,7 @@ void FireStarterUnit::InitUnit(unsigned int evolveMode, unsigned int unitIndex, 
 void FireStarterUnit::Execute(void)
 {
     DispatchAsync([this] {
-        switch (m_evolveMode) {
+        switch (m_settings.m_evolveMode) {
         case FIRESTARTER_EVOLVE:
             EvolveExecute();
             break;
@@ -362,7 +366,7 @@ bool FireStarterUnit::Update(FireStarterState* states, FireStarterState& bestSta
 {
     bool result = false;
     DispatchSync([this, states, &bestState, &bestResult, &result] {
-        if (m_evolveMode == FIRESTARTER_PROCESS) {
+        if (m_settings.m_evolveMode == FIRESTARTER_PROCESS) {
             // Send the entire unit back to the host.
             FireStarterPacket sendPacket(UNIT_UPDATE);
             m_process->SendPacket(sendPacket);
@@ -371,8 +375,8 @@ bool FireStarterUnit::Update(FireStarterState* states, FireStarterState& bestSta
                 Packetize(receivePacket);
         }
 
-        unsigned int index = m_unitIndex * PROGRAM_STATES;
-        for (unsigned int i = 0; i < PROGRAM_STATES; i++)
+        unsigned int index = m_unitIndex * m_settings.m_evolveStates;
+        for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
             states[index++] = m_states[i];
         float unitBestResult = m_bestState.m_result.maxResult;
         if (unitBestResult < bestResult) {
@@ -384,26 +388,26 @@ bool FireStarterUnit::Update(FireStarterState* states, FireStarterState& bestSta
     return result;
 } // Update
 
-void FireStarterUnit::States(FireStarterState* states)
+void FireStarterUnit::Sync(FireStarterState* states)
 {
     DispatchSync([this, states] {
         float unitBestResult = m_bestState.m_result.maxResult;
-        for (unsigned int i = 0; i < PROGRAM_UNITS * PROGRAM_STATES; i++) {
+        for (unsigned int i = 0; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++) {
             m_allStates[i] = states[i];
             if (m_allStates[i].m_result.maxResult < unitBestResult) {
                 m_bestState = m_allStates[i];
                 unitBestResult = m_bestState.m_result.maxResult;
             }
         }
-        if ((m_evolveMode == FIRESTARTER_PROCESS) && (m_unitIndex == 0)) {
-            FireStarterPacket sendPacket(UNIT_STATES);
+        if ((m_settings.m_evolveMode == FIRESTARTER_PROCESS) && (m_unitIndex == 0)) {
+            FireStarterPacket sendPacket(UNIT_SYNC);
             PacketizeAllStates(sendPacket);
             m_process->SendPacket(sendPacket);
             FireStarterPacket receivePacket;
-            m_process->ReceivePacket(receivePacket, UNIT_STATES);
+            m_process->ReceivePacket(receivePacket, UNIT_SYNC);
         };
     });
-} // States
+} // Sync
 
 void FireStarterUnit::ClientCommand(void)
 {
@@ -414,9 +418,15 @@ void FireStarterUnit::ClientCommand(void)
         FireStarterPacket sendPacket(UNIT_INIT);
         m_process->SendPacket(sendPacket);
 
-        unsigned int index = 0;
-        if (receivePacket.Packetize(&index, sizeof(index)) && m_bestState.Packetize(receivePacket))
-            InitUnit(FIRESTARTER_UNIT, index, &m_bestState);
+        bool result = true;
+        unsigned int unitIndex = 0;
+        result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
+        EvolveSettings settings;
+        result = result && receivePacket.Packetize(&settings, sizeof(m_settings));
+        FireStarterState state;
+        result = result && state.Packetize(receivePacket);
+        if (result)
+            InitUnit(unitIndex, settings, &state);
     } else if (command == UNIT_EXECUTE) {
         FireStarterPacket sendPacket(UNIT_EXECUTE);
         m_process->SendPacket(sendPacket);
@@ -426,8 +436,8 @@ void FireStarterUnit::ClientCommand(void)
         FireStarterPacket sendPacket(UNIT_UPDATE);
         DispatchSync([this, &sendPacket] { Packetize(sendPacket); });
         m_process->SendPacket(sendPacket);
-    } else if (command == UNIT_STATES) {
-        FireStarterPacket sendPacket(UNIT_STATES);
+    } else if (command == UNIT_SYNC) {
+        FireStarterPacket sendPacket(UNIT_SYNC);
         m_process->SendPacket(sendPacket);
 
         DispatchSync([this, &receivePacket] { PacketizeAllStates(receivePacket); });

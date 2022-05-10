@@ -18,12 +18,12 @@ public:
     std::string m_solutionTargetCode;
     std::string m_fireShowCode;
     FireStarterState m_bestState;
-    FireStarterState m_allStates[PROGRAM_STATES * PROGRAM_UNITS];
+    std::vector<FireStarterState> m_allStates;
     std::vector<FireStarterUnit*> m_units;
     FireStarterServer m_server;
     FrameBuffer m_buffer;
     char m_statusString[1024];
-    unsigned int m_evolveMode;
+    FireStarterUnit::EvolveSettings m_settings;
     unsigned int m_generation;
     unsigned int m_bestGeneration;
     float m_bestResult;

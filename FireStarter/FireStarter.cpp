@@ -30,7 +30,7 @@ void FireStarter::SaveBestState(void)
 void FireStarter::SaveSolution(void)
 {
     std::string solutionCode;
-    m_bestState.SaveSolution(solutionCode, m_solutionTargetCode, m_controlTime, m_generation, (unsigned int)m_units.size());
+    m_bestState.SaveSolution(solutionCode, m_solutionTargetCode, m_controlTime, m_generation, m_settings.m_evolveUnits, m_settings.m_evolvePopulation, m_settings.m_evolveIterations, m_settings.m_evolveGenerations);
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
@@ -102,12 +102,14 @@ void FireStarter::ControlThread(void)
         fireShowFunction = CUDACompile::GetFunction(fireShowModule, "FireShow");
 
     // Create and initialize a unit for each processor thread.
-    unsigned int unit_count = PROGRAM_UNITS;
+    unsigned int unit_count = m_settings.m_evolveUnits;
+#if 0
     if (!unit_count)
         unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
-    if (m_evolveMode == FIRESTARTER_PROCESS) {
+#endif
+    if (m_settings.m_evolveMode == FIRESTARTER_PROCESS) {
         for (unsigned int i = 0; i < unit_count; i++) {
             FireStarterProcess* process = m_server.AddProcess();
             FireStarterUnit* unit = new FireStarterUnit(process);
@@ -117,10 +119,10 @@ void FireStarter::ControlThread(void)
     } else
         for (unsigned int i = 0; i < unit_count; i++)
             m_units.push_back(new FireStarterUnit());
-    if (m_evolveMode == FIRESTARTER_OPTIMIZE)
+    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE)
         LoadState(m_bestState);
     for (unsigned int i = 0; i < unit_count; i++)
-        m_units[i]->InitUnit(m_evolveMode, i, &m_bestState);
+        m_units[i]->InitUnit(i, m_settings.m_evolveMode, &m_bestState);
 
     // Loop until the the host program is quit.
     m_runTimer.Start();
@@ -132,14 +134,14 @@ void FireStarter::ControlThread(void)
 
         // Update the best data for all the units.
         for (FireStarterUnit* unit : m_units)
-            if (unit->Update(m_allStates, m_bestState, m_bestResult)) {
+            if (unit->Update(m_allStates.data(), m_bestState, m_bestResult)) {
                 m_bestGeneration = m_generation;
                 m_controlUpdate = true;
             }
 
         // Send all the states back to all the units.
         for (FireStarterUnit* unit : m_units)
-            unit->States(m_allStates);
+            unit->Sync(m_allStates.data());
 
         m_controlTime = m_controlTimer.Duration();
         m_generation++;
@@ -164,7 +166,7 @@ void FireStarter::ControlThread(void)
             // Draw the graphs for both variations.
             FireShow(&fireShowContext, fireShowFunction);
             m_controlUpdate = false;
-            const unsigned char* bufferPixels = (m_evolveMode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+            const unsigned char* bufferPixels = (m_settings.m_evolveMode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
             GetMainThread()->DispatchSync([this, bufferPixels] {
                 RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
                 m_bufferUpdate = false;
@@ -239,7 +241,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
     m_window = window;
     m_width = width;
     m_height = height;
-    if (m_evolveMode == FIRESTARTER_SOLUTION) {
+    if (m_settings.m_evolveMode == FIRESTARTER_SOLUTION) {
         m_buffer.Resize(m_width, m_height);
         m_buffer.Erase();
         std::string statusString = "FireStarter:";
@@ -263,8 +265,9 @@ void FireStarter::Quit(void)
     DispatchSync([] {}); // This will wait for ControlThread() to exit.
 } // Quit
 
-FireStarter::FireStarter(void)
+FireStarter::FireStarter(void) : m_settings(FIRESTARTER_MODE)
 {
+    m_quitControlThread = false;
     m_statusString[0] = 0;
     m_generation = 0;
     m_bestGeneration = 0;
@@ -273,8 +276,7 @@ FireStarter::FireStarter(void)
     m_seed = RANDOMHASH(123);
     m_controlUpdate = false;
     m_bufferUpdate = false;
-    m_evolveMode = FIRESTARTER_MODE;
-    m_quitControlThread = false;
+    m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
 } // FireStarter
 
 FireStarter::~FireStarter(void)

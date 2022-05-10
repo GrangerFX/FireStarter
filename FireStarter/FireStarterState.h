@@ -10,7 +10,7 @@ public:
 
     bool Packetize(FireStarterPacket& packet);
     void SaveState(std::string& code);
-    void SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count, unsigned int units);
+    void SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count, unsigned int units, unsigned int population, unsigned int iterations, unsigned int generations);
     void OptimizeData(void);
     FireStarterState(void);
 }; // class FireStarterState;

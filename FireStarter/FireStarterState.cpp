@@ -35,7 +35,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "} // LoadState\r\n";
 } // SaveState
 
-void FireStarterState::SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count, unsigned int units)
+void FireStarterState::SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count, unsigned int units, unsigned int population, unsigned int iterations, unsigned int generations)
 {
     time_t currentTime = time(nullptr);
     tm localTime;
@@ -51,9 +51,9 @@ void FireStarterState::SaveSolution(std::string& code, const std::string& target
     code += Format("// Run duration = %f seconds\r\n", duration);
     code += Format("// Run count = %d\r\n", count);
     code += Format("// Run units = %d\r\n", (unsigned int)units);
-    code += Format("// Run population = %d\r\n", PROGRAM_POPULATION);
-    code += Format("// Run iterations = %d\r\n", PROGRAM_ITERATIONS);
-    code += Format("// Run generations = %d\r\n", PROGRAM_GENERATIONS);
+    code += Format("// Run population = %d\r\n", population);
+    code += Format("// Run iterations = %d\r\n", iterations);
+    code += Format("// Run generations = %d\r\n", generations);
     code += Format("// Run samples = %d\r\n", SAMPLE_ITERATIONS);
     code += Format("// State Generation = %d\r\n", m_generation);
     code += "\r\n";
