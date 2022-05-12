@@ -12,7 +12,7 @@ inline float Evaluate(FireStarterData data, float n)
 // END //
 
 // OPTMIZE //
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int seed, const unsigned int init)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -71,8 +71,8 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
 
         // Calculate a more accurate estimate of the result.
-        for (int i = 0; i < PROGRAM_PRECISION; i++) {
-            float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (PROGRAM_PRECISION - 1);
+        for (int i = 0; i < precision; i++) {
+            float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
             result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
         }
 

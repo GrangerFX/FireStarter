@@ -149,6 +149,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
                         reinterpret_cast<void*>(&dataSize),
                         reinterpret_cast<void*>(&m_settings.m_evolvePopulation),
                         reinterpret_cast<void*>(&m_settings.m_evolveIterations),
+                        reinterpret_cast<void*>(&m_settings.m_evolvePrecision),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&init) };
 
