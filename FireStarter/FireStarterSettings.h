@@ -23,8 +23,8 @@ public:
         code += Format("    settings.m_evolveIterations = %u;\r\n", m_evolveIterations);
         code += Format("    settings.m_evolveGenerations = %u;\r\n", m_evolveGenerations);
         code += Format("    settings.m_evolvePrecision = %u;\r\n", m_evolvePrecision);
-        code += "\r\n";
         code += "} // LoadSettings\r\n";
+        code += "\r\n";
     } // SaveSettings
 
     inline FireStarterSettings(unsigned int evolveMode = 0)

@@ -10,8 +10,8 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_evolveIterations = 128;
     settings.m_evolveGenerations = 100;
     settings.m_evolvePrecision = 256;
-
 } // LoadSettings
+
 inline void LoadProgram(FireStarterProgram& program)
 {
     program.m_instructions.SetOperation(0, 0, 0);
