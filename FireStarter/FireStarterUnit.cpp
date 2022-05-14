@@ -294,10 +294,8 @@ void FireStarterUnit::Packetize(FireStarterPacket& packet)
 
 void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)
 {
-    DispatchSync([this, &packet] {
-        for (unsigned int i = 0; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++)
-            m_allStates[i].Packetize(packet);
-    });
+    for (unsigned int i = 0; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++)
+        m_allStates[i].Packetize(packet);
 } // PacketizeAllStates
 
 void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state)
