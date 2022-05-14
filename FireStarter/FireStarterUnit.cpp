@@ -212,7 +212,7 @@ void FireStarterUnit::UnitExecute(void)
         unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(m_evolveGeneration) + i) + m_seed);
         OptimizeGenerations(i, seed, 1);
     }
-    m_evolveGeneration += m_settings.m_evolveGenerations;
+    m_evolveGeneration++;
 } // UnitExecute
 
 void FireStarterUnit::OptimizeExecute(void)

@@ -8,9 +8,10 @@ public:
     FireStarterSettings m_settings;
     FireStarterProgram m_program;
     FireStarterResult m_result;
-    unsigned int m_generation;  // Generation of the state.
+    unsigned int m_generation;
 
     bool Packetize(FireStarterPacket& packet);
+    void SaveResult(unsigned int variation, std::string& code);
     void SaveState(std::string& code);
     void SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count);
     void OptimizeData(void);

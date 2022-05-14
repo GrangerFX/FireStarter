@@ -10,6 +10,17 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
     return result;
 } // Packetize
 
+void FireStarterState::SaveResult(unsigned int variation, std::string& code)
+{
+    code += Format("inline void LoadResult%u(FireStarterResult& result)\r\n", variation);
+    code += "{\r\n";
+    code += Format("    result.minResult[%u] = %ff;\r\n", variation, m_result.minResult[variation]);
+    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        code += Format("    result.data[%u].d[%u] = %ff;\r\n", variation, i, m_result.data[variation].d[i]);
+    code += Format("} // LoadResult%u\r\n", variation);
+    code += "\r\n";
+} // SaveResult
+
 void FireStarterState::SaveState(std::string& code)
 {
     code += "#pragma once\r\n";
@@ -17,22 +28,22 @@ void FireStarterState::SaveState(std::string& code)
     code += "\r\n";
     m_settings.SaveSettings(code);
     m_program.SaveProgram(code);
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
+        SaveResult(v, code);
+
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
+    code += Format("    state.m_generation = %d;\r\n", m_generation);
+    code += "\r\n";
     code += "    LoadSettings(state.m_settings);\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "\r\n";
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-            code += Format("    state.m_result.data[%d].d[%u] = %ff;\r\n", v, i, m_result.data[v].d[i]);
-        code += Format("    state.m_result.minResult[%d] = %ff;\r\n", v, m_result.minResult[v]);
-        code += "\r\n";
-    }
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
+        code += Format("    LoadResult%u(state.m_result);\r\n", v);
+    code += "\r\n";
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
     code += Format("    state.m_result.test = %u;\r\n", m_result.test);
     code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
-    code += "\r\n";
-    code += Format("    state.m_generation = %d;\r\n", m_generation);
     code += "} // LoadState\r\n";
 } // SaveState
 
