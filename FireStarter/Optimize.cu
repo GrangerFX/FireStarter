@@ -25,7 +25,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
 
     // Sort the variations by the previous results.
-    FireStarterOrder varaitions(init ? nullptr : oldResults->results[member].minResult);
+    FireStarterOrder varaitions(init ? nullptr : oldResults->MinResult(member));
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
@@ -50,8 +50,8 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             result = oldResult = START_RESULT;
             evolutionFactor = EVOLUTION_START_FACTOR;
         } else {
-            data = oldResults->results[member].data[variation];
-            result = oldResult = oldResults->results[member].minResult[variation];
+            data = *oldResults->Data(member, variation);
+            result = oldResult = oldResults->MinResult(member)[variation];
             evolutionFactor = EVOLUTION_FACTOR * result;
         }
 
@@ -79,8 +79,8 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         // If the result was worse, copy from a member with better results.
         if (init || (result < oldResult)) {
             // Save better results.
-            newResults->results[member].data[variation] = data;
-            newResults->results[member].minResult[variation] = result;
+            *newResults->Data(member, variation) = data;
+            newResults->MinResult(member)[variation] = result;
             maxResult = fmaxf(maxResult, result);
         } else {
             // The genetic part of genetic programming and a major optimization:
@@ -89,23 +89,23 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             float bestResult = oldResult;
             for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
                 unsigned int index = RANDOMSEED(memberSeed) % population;
-                float curResult = oldResults->results[index].minResult[variation];
+                float curResult = oldResults->MinResult(index)[variation];
                 if (curResult < bestResult) {
                     bestResult = curResult;
                     bestIndex = index;
                 }
             }
             if (bestIndex != member) {
-                newResults->results[member].data[variation] = oldResults->results[bestIndex].data[variation];
-                newResults->results[member].minResult[variation] = START_RESULT;
+                *newResults->Data(member, variation) = *oldResults->Data(bestIndex, variation);
+                newResults->MinResult(member)[variation] = START_RESULT;
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
-                newResults->results[member].data[variation] = data;
-                newResults->results[member].minResult[variation] = result;
+                *newResults->Data(member, variation) = data;
+                newResults->MinResult(member)[variation] = result;
                 maxResult = fmaxf(maxResult, result);
             }
         }
     }
-    newResults->results[member].maxResult = maxResult;
+    *newResults->MaxResult(member) = maxResult;
 } // Optimize
 // END //

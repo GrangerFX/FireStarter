@@ -117,17 +117,17 @@ void FireStarterUnit::EvolveGenerations(unsigned int evolution)
     // Get the best result.
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults, newResults, m_resultsSize, cudaMemcpyDeviceToHost, m_unitContext->Stream()));
     checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
-    float minResult = m_hostResults->results[0].maxResult;
+    float minResult = *m_hostResults->MaxResult(0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < m_settings.m_evolvePopulation; i++) {
-        float curResult = m_hostResults->results[i].maxResult;
+        float curResult = *m_hostResults->MaxResult(i);
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
         }
     }
     FireStarterState& state = m_states[0];
-    state.m_result = m_hostResults->results[minIndex];
+    state.m_result = *m_hostResults->Result(minIndex);
 
     // Find the best results.
     if (state.m_result.maxResult < m_bestState.m_result.maxResult) {
@@ -179,11 +179,11 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
 
     FireStarterResult& result = state.m_result;
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
-        result.minResult[v] = m_hostResults->results[0].minResult[v];
+        result.minResult[v] = m_hostResults->MinResult(0)[v];
     unsigned int minIndex[PROGRAM_VARIATIONS] = { };
     for (unsigned int i = 1; i < m_settings.m_evolvePopulation; i++) {
         for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-            float curResult = m_hostResults->results[i].minResult[v];
+            float curResult = m_hostResults->MinResult(i)[v];
             if (curResult < result.minResult[v]) {
                 result.minResult[v] = curResult;
                 minIndex[v] = i;
@@ -191,7 +191,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
         }
     }
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
-        result.data[v] = m_hostResults->results[minIndex[v]].data[v];
+        result.data[v] = *m_hostResults->Data(minIndex[v], v);
     result.maxResult = result.minResult[0];
     for (unsigned int v = 1; v < PROGRAM_VARIATIONS; v++)
         result.maxResult = fmaxf(result.maxResult, result.minResult[v]);
@@ -333,8 +333,8 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
                         m_process->SendPacket(sendPacket);
                         FireStarterPacket receivePacket;
                         m_process->ReceivePacket(receivePacket, UNIT_INIT);
-                        break;
                     }
+                    break;
                 case FIRESTARTER_OPTIMIZE:
                     OptimizeGenerate();
                     break;

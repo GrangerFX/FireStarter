@@ -136,8 +136,10 @@ void FireStarter::ControlThread(void)
     } else
         for (unsigned int i = 0; i < unit_count; i++)
             m_units.push_back(new FireStarterUnit());
-    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE)
+    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
         LoadState(m_bestState);
+        m_bestState.m_settings = m_settings;
+    }
     for (unsigned int i = 0; i < unit_count; i++)
         m_units[i]->InitUnit(i, m_bestState);
 

@@ -20,8 +20,8 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             instructions.SetRandom(i, memberSeed);
     } else {
         // Later generations randomize one instruction.
-        oldResult = oldResults->results[member].maxResult;
-        instructions = oldResults->results[member].instructions;
+        oldResult = *oldResults->MaxResult(member);
+        instructions = *oldResults->Instructions(member);
 
         // Evolve a single program instruction for each generation.
         if (!thread) {
@@ -39,7 +39,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
         else
-            data = oldResults->results[member].data[v];
+            data = *oldResults->Data(member, v);
         if (maxResult <= oldResult) {
             // Initial check for bad results.
             float theta = SAMPLE_MIN;
@@ -83,8 +83,8 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             }
         }
         if (thread == minIndex) {
-            newResults->results[member].data[v] = data;
-            newResults->results[member].minResult[v] = minResult;
+            *newResults->Data(member, v) = data;
+            newResults->MinResult(member)[v] = minResult;
         }
         maxResult = fmaxf(maxResult, minResult);
     }
@@ -94,9 +94,8 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     if (thread == 0) {
         if (!generation || (maxResult < oldResult)) {
             // Save the improved results.
-            newResults->results[member].instructions = instructions;
-            newResults->results[member].maxResult = maxResult;
-            newResults->results[member].test = member;
+            *newResults->Instructions(member) = instructions;
+            *newResults->MaxResult(member) = maxResult;
         } else {
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of members.
@@ -104,15 +103,18 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             float bestResult = oldResult;
             for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
                 unsigned int index = RANDOMSEED(memberSeed) % population;
-                float curResult = oldResults->results[index].maxResult;
-                if (curResult < oldResult) {
-                    newResults->results[member] = oldResults->results[index];
-                    newResults->results[member].test = index;
-                    return;
+                float curResult = *oldResults->MaxResult(index);
+                if (curResult < bestResult) {
+                    bestIndex = index;
+                    bestResult = curResult;
                 }
             }
-            newResults->results[member] = oldResults->results[member];
-            newResults->results[member].test = member;
+            *newResults->Instructions(member) = *oldResults->Instructions(bestIndex);
+            for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+                *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
+                newResults->MinResult(member)[v] = oldResults->MinResult(bestIndex)[v];
+            }
+            *newResults->MaxResult(member) = *oldResults->MaxResult(bestIndex);
         }
     }
 } // Evolve

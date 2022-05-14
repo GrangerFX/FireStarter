@@ -43,7 +43,6 @@ void FireStarterState::SaveState(std::string& code)
         code += Format("    LoadResult%u(state.m_result);\r\n", v);
     code += "\r\n";
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
-    code += Format("    state.m_result.test = %u;\r\n", m_result.test);
     code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
@@ -139,7 +138,7 @@ FireStarterState::FireStarterState(void)
         m_result.minResult[v] = START_RESULT;
     }
     m_result.maxResult = START_RESULT;
-    m_result.test = 0;
+    m_result.padding = 0;
     m_generation = 0;
 } // FireStarterState
 
