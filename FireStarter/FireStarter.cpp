@@ -30,7 +30,7 @@ void FireStarter::SaveBestState(void)
 void FireStarter::SaveSolution(void)
 {
     std::string solutionCode;
-    m_bestState.SaveSolution(solutionCode, m_solutionTargetCode, m_controlTime, m_generation, m_settings.m_evolveUnits, m_settings.m_evolvePopulation, m_settings.m_evolveIterations, m_settings.m_evolveGenerations);
+    m_bestState.SaveSolution(solutionCode, m_solutionTargetCode, m_controlTime, m_generation);
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
@@ -122,7 +122,7 @@ void FireStarter::ControlThread(void)
     if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE)
         LoadState(m_bestState);
     for (unsigned int i = 0; i < unit_count; i++)
-        m_units[i]->InitUnit(i, m_settings.m_evolveMode, &m_bestState);
+        m_units[i]->InitUnit(i, m_bestState);
 
     // Loop until the the host program is quit.
     m_runTimer.Start();
@@ -267,6 +267,7 @@ void FireStarter::Quit(void)
 
 FireStarter::FireStarter(void) : m_settings(FIRESTARTER_MODE)
 {
+    m_bestState.InitState(m_settings);
     m_quitControlThread = false;
     m_statusString[0] = 0;
     m_generation = 0;

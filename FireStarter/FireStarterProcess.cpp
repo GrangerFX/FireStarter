@@ -401,6 +401,11 @@ bool FireStarterProcess::StartClient(void)
     return m_connected;
 } // StartClient
 
+bool FireStarterProcess::IsClient(void)
+{
+    return m_client;
+} // IsClient
+
 bool FireStarterProcess::Start(void)
 {
     if (m_client)

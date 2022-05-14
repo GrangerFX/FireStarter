@@ -3,7 +3,34 @@
 #include <time.h>
 #include <string>
 #include <cstdarg>
+#include <sstream>
+#include <iomanip>
 #include "CUDAErrors.h"
+
+inline std::string Format(const char* format, ...)
+{
+    char str[1024];
+    va_list argptr;
+    va_start(argptr, format);
+    int ret = vsnprintf(str, sizeof(str), format, argptr);
+    va_end(argptr);
+    return std::string(str);
+} // Format
+
+inline std::string Format(const std::string formatString, ...)
+{
+    return Format(formatString.c_str());
+} // Format
+
+inline std::string CurrentDate(void)
+{
+    time_t currentTime = time(nullptr);
+    tm localTime;
+    std::stringstream sstream;
+    localtime_s(&localTime, &currentTime);
+    sstream << std::put_time(&localTime, "%c %Z");
+    return sstream.str();
+} // CurrentDate
 
 class SimpleTimer {
 public:
@@ -30,21 +57,6 @@ public:
         Start();
     } // Start
 }; // SimpleTimer
-
-inline std::string Format(const char* format, ...)
-{
-    char str[1024];
-    va_list argptr;
-    va_start(argptr, format);
-    int ret = vsnprintf(str, sizeof(str), format, argptr);
-    va_end(argptr);
-    return std::string(str);
-} // Format
-
-inline std::string Format(const std::string formatString, ...)
-{
-    return Format(formatString.c_str());
-} // Format
 
 class FrameBuffer {
 public:

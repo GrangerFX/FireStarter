@@ -23,7 +23,7 @@ public:
     FireStarterServer m_server;
     FrameBuffer m_buffer;
     char m_statusString[1024];
-    FireStarterUnit::EvolveSettings m_settings;
+    FireStarterSettings m_settings;
     unsigned int m_generation;
     unsigned int m_bestGeneration;
     float m_bestResult;

@@ -283,9 +283,9 @@ unsigned int FireStarterUnit::Index(void)
 
 void FireStarterUnit::Packetize(FireStarterPacket& packet)
 {
+    m_bestState.Packetize(packet);
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
         m_states[i].Packetize(packet);
-    m_bestState.Packetize(packet);
     packet.Packetize(&m_settings, sizeof(m_settings));
     packet.Packetize(&m_evolveGeneration, sizeof(m_evolveGeneration));
     packet.Packetize(&m_unitIndex, sizeof(m_unitIndex));
@@ -300,17 +300,16 @@ void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)
     });
 } // PacketizeAllStates
 
-void FireStarterUnit::InitUnit(unsigned int index, const EvolveSettings &settings, FireStarterState* state)
+void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state)
 {
-    DispatchAsync([this, index, settings, state] {
+    DispatchAsync([this, index, state] {
         m_unitIndex = index;
-        m_settings = settings;
+        m_bestState = state;
+        m_settings = m_bestState.m_settings;
         m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
         m_states.resize(m_settings.m_evolveStates);
         m_optimizeFunction.resize(m_settings.m_evolveStates);
         m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
-        if (state)
-            m_bestState = *state;
         if (LoadCode() && Allocate()) {
             switch (m_settings.m_evolveMode) {
                 case FIRESTARTER_EVOLVE:
@@ -319,16 +318,16 @@ void FireStarterUnit::InitUnit(unsigned int index, const EvolveSettings &setting
                 case FIRESTARTER_UNIT:
                     break;
                 case FIRESTARTER_PROCESS:
-                {
-                    FireStarterPacket sendPacket(UNIT_INIT);
-                    sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
-                    sendPacket.Packetize(&m_settings, sizeof(m_settings));
-                    state->Packetize(sendPacket);
-                    m_process->SendPacket(sendPacket);
-                    FireStarterPacket receivePacket;
-                    m_process->ReceivePacket(receivePacket, UNIT_INIT);
-                    break;
-                }
+                    if (!m_client) {
+                        FireStarterPacket sendPacket(UNIT_INIT);
+                        sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
+                        FireStarterState sendState(state);
+                        sendState.Packetize(sendPacket);
+                        m_process->SendPacket(sendPacket);
+                        FireStarterPacket receivePacket;
+                        m_process->ReceivePacket(receivePacket, UNIT_INIT);
+                        break;
+                    }
                 case FIRESTARTER_OPTIMIZE:
                     OptimizeGenerate();
                     break;
@@ -350,10 +349,14 @@ void FireStarterUnit::Execute(void)
             break;
         case FIRESTARTER_PROCESS:
         {
-            FireStarterPacket sendPacket(UNIT_EXECUTE);
-            m_process->SendPacket(sendPacket);
-            FireStarterPacket receivePacket;
-            m_process->ReceivePacket(receivePacket, UNIT_EXECUTE);
+            if (m_client)
+                UnitExecute();
+            else {
+                FireStarterPacket sendPacket(UNIT_EXECUTE);
+                m_process->SendPacket(sendPacket);
+                FireStarterPacket receivePacket;
+                m_process->ReceivePacket(receivePacket, UNIT_EXECUTE);
+            }
             break;
         }
         case FIRESTARTER_OPTIMIZE:
@@ -367,7 +370,7 @@ bool FireStarterUnit::Update(FireStarterState* states, FireStarterState& bestSta
 {
     bool result = false;
     DispatchSync([this, states, &bestState, &bestResult, &result] {
-        if (m_settings.m_evolveMode == FIRESTARTER_PROCESS) {
+        if ((m_settings.m_evolveMode == FIRESTARTER_PROCESS) && !m_client) {
             // Send the entire unit back to the host.
             FireStarterPacket sendPacket(UNIT_UPDATE);
             m_process->SendPacket(sendPacket);
@@ -400,7 +403,7 @@ void FireStarterUnit::Sync(FireStarterState* states)
                 unitBestResult = m_bestState.m_result.maxResult;
             }
         }
-        if ((m_settings.m_evolveMode == FIRESTARTER_PROCESS) && (m_unitIndex == 0)) {
+        if ((m_settings.m_evolveMode == FIRESTARTER_PROCESS) && (m_unitIndex == 0) && !m_client) {
             FireStarterPacket sendPacket(UNIT_SYNC);
             PacketizeAllStates(sendPacket);
             m_process->SendPacket(sendPacket);
@@ -422,12 +425,10 @@ void FireStarterUnit::ClientCommand(void)
         bool result = true;
         unsigned int unitIndex = 0;
         result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
-        EvolveSettings settings;
-        result = result && receivePacket.Packetize(&settings, sizeof(m_settings));
-        FireStarterState state;
-        result = result && state.Packetize(receivePacket);
+        FireStarterState receiveState;
+        result = result && receiveState.Packetize(receivePacket);
         if (result)
-            InitUnit(unitIndex, settings, &state);
+            InitUnit(unitIndex, receiveState);
     } else if (command == UNIT_EXECUTE) {
         FireStarterPacket sendPacket(UNIT_EXECUTE);
         m_process->SendPacket(sendPacket);
@@ -448,6 +449,7 @@ void FireStarterUnit::ClientCommand(void)
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 {
     m_process = process;
+    m_client = m_process && m_process->IsClient();
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)

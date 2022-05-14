@@ -1,10 +1,9 @@
 #include "FireStarterState.h"
-#include <sstream>
-#include <iomanip>
 
 bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
+    result = result && packet.Packetize(&m_settings, sizeof(m_settings));
     result = result && m_program.Packetize(packet);
     result = result && packet.Packetize(&m_result, sizeof(m_result));
     result = result && packet.Packetize(&m_generation, sizeof(m_generation));
@@ -16,9 +15,13 @@ void FireStarterState::SaveState(std::string& code)
     code += "#pragma once\r\n";
     code += "#include \"FireStarterState.h\"\r\n";
     code += "\r\n";
+    m_settings.SaveSettings(code);
     m_program.SaveProgram(code);
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
+    code += "    LoadSettings(state.m_settings);\r\n";
+    code += "    LoadProgram(state.m_program);\r\n";
+    code += "\r\n";
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
         for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
             code += Format("    state.m_result.data[%d].d[%u] = %ff;\r\n", v, i, m_result.data[v].d[i]);
@@ -27,33 +30,25 @@ void FireStarterState::SaveState(std::string& code)
     }
     code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
     code += Format("    state.m_result.test = %u;\r\n", m_result.test);
+    code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
     code += "\r\n";
     code += Format("    state.m_generation = %d;\r\n", m_generation);
-    code += "\r\n";
-    code += "    LoadProgram(state.m_program);\r\n";
-    code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 
-void FireStarterState::SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count, unsigned int units, unsigned int population, unsigned int iterations, unsigned int generations)
+void FireStarterState::SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count)
 {
-    time_t currentTime = time(nullptr);
-    tm localTime;
-    std::stringstream sstream;
-    localtime_s(&localTime, &currentTime);
-    sstream << std::put_time(&localTime, "%c %Z");
-
     std::string solutionCode;
     solutionCode += "#pragma once\r\n";
     solutionCode += "#include <math.h>\r\n";
     solutionCode += "\r\n";
-    code += Format("// Run date: %s\r\n", sstream.str().c_str());
+    code += Format("// Run date: %s\r\n", CurrentDate().c_str());
     code += Format("// Run duration = %f seconds\r\n", duration);
     code += Format("// Run count = %d\r\n", count);
-    code += Format("// Run units = %d\r\n", (unsigned int)units);
-    code += Format("// Run population = %d\r\n", population);
-    code += Format("// Run iterations = %d\r\n", iterations);
-    code += Format("// Run generations = %d\r\n", generations);
+    code += Format("// Run units = %d\r\n", m_settings.m_evolveUnits);
+    code += Format("// Run population = %d\r\n", m_settings.m_evolvePopulation);
+    code += Format("// Run iterations = %d\r\n", m_settings.m_evolveIterations);
+    code += Format("// Run generations = %d\r\n", m_settings.m_evolveGenerations);
     code += Format("// Run samples = %d\r\n", SAMPLE_ITERATIONS);
     code += Format("// State Generation = %d\r\n", m_generation);
     code += "\r\n";
@@ -114,6 +109,11 @@ void FireStarterState::OptimizeData(void)
         m_program.m_registers[i].dataIndex = i;
 } // OptimizeData
 
+void FireStarterState::InitState(const FireStarterSettings& settings)
+{
+    m_settings = settings;
+} // InitState
+
 FireStarterState::FireStarterState(void)
 {
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
@@ -122,6 +122,7 @@ FireStarterState::FireStarterState(void)
         m_result.minResult[v] = START_RESULT;
     }
     m_result.maxResult = START_RESULT;
+    m_result.test = 0;
     m_generation = 0;
 } // FireStarterState
 

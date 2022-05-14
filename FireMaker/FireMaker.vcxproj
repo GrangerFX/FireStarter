@@ -127,6 +127,7 @@
     <ClInclude Include="..\FireStarter\FireStarterProcess.h" />
     <ClInclude Include="..\FireStarter\FireStarterProgram.h" />
     <ClInclude Include="..\FireStarter\FireStarterResults.h" />
+    <ClInclude Include="..\FireStarter\FireStarterSettings.h" />
     <ClInclude Include="..\FireStarter\FireStarterState.h" />
     <ClInclude Include="..\FireStarter\FireStarterTarget.h" />
     <ClInclude Include="..\FireStarter\FireStarterUnit.h" />
