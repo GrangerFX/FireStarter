@@ -17,25 +17,14 @@ void FireStarterUnit::EvolveGenerate(void)
         m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
 } // EvolveGenerate
 
-void FireStarterUnit::UnitGenerate(void)
+void FireStarterUnit::UnitCode(std::string& code)
 {
     std::string optimize;
     FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
     std::string evaluateCode;
     std::string optimizeCode;
 
-    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
-        // Evolve each state.
-        FireStarterState& state = m_states[i];
-        state = m_bestState;
-        if (!m_evolveGeneration)
-            state.m_program.RandomProgram(m_seed);
-        else
-            state.m_program.RandomInstruction(m_seed);
-        state.m_program.OptimizeRegisters(true);
-        state.m_program.SaveInstructions(state.m_result.instructions);
-        state.m_generation = m_evolveGeneration;
- 
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) { 
         // Update the Evaluate funtion.
         std::string evaluate;
         m_states[i].m_program.GenerateEvaluate(evaluate);
@@ -56,12 +45,32 @@ void FireStarterUnit::UnitGenerate(void)
     }
 
     // Create the units code by replacing the evaluate and optimize sections of the optimize code.
-    std::string unitsCode = m_optimizeCode;
-    FireStarterCode::UpdateProgram(unitsCode, evaluateCode, EVALUATE_CODE);
-    FireStarterCode::UpdateProgram(unitsCode, optimizeCode, OPTIMIZE_CODE);
+    code = m_optimizeCode;
+    FireStarterCode::UpdateProgram(code, evaluateCode, EVALUATE_CODE);
+    FireStarterCode::UpdateProgram(code, optimizeCode, OPTIMIZE_CODE);
+} // UnitCode
 
-    // Compile the new code.
-    CUDACompile::CompileProgram(m_unitsModule, unitsCode);
+void FireStarterUnit::UnitGenerate(void)
+{
+    // Evolve each state.
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
+        FireStarterState& state = m_states[i];
+        state = m_bestState;
+        if (!m_evolveGeneration)
+            state.m_program.RandomProgram(m_seed);
+        else
+            state.m_program.RandomInstruction(m_seed);
+        state.m_program.OptimizeRegisters(true);
+        state.m_program.SaveInstructions(state.m_result.instructions);
+        state.m_generation = m_evolveGeneration;
+    }
+
+    // Generate the unit code for the current generation
+    std::string code;
+    UnitCode(code);
+
+    // Compile the unit code.
+    CUDACompile::CompileProgram(m_unitsModule, code);
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
         m_optimizeFunction[i] = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
 } // UnitGenerate
@@ -204,7 +213,7 @@ void FireStarterUnit::EvolveExecute(void)
 
 void FireStarterUnit::UnitExecute(void)
 { 
-    // Generate and compile the program.
+    // Evolve, generate and compile the program.
     UnitGenerate();
 
     // Evolve the program data.

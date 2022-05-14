@@ -38,6 +38,7 @@ private:
 
     void ClearResults(void);
     void EvolveGenerate(void);
+    void UnitCode(std::string &code);
     void UnitGenerate(void);
     void OptimizeGenerate(bool compile = true);
     void EvolveGenerations(unsigned int generation);

@@ -12,6 +12,7 @@ public:
 
     bool Packetize(FireStarterPacket& packet);
     void SaveResult(unsigned int variation, std::string& code);
+    void EvaluateCode(std::string& code);
     void SaveState(std::string& code);
     void SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count);
     void OptimizeData(void);

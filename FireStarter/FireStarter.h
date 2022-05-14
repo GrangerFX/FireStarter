@@ -38,6 +38,7 @@ public:
     bool LoadTargetCode(void);
     bool LoadFireShowCode(void);
     void SaveBestState(void);
+    void SaveBestCode(void);
     void SaveSolution(void);
     void FireShow(class CUDAContext* context, CUfunction fireShowFunction);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);

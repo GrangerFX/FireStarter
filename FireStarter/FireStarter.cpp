@@ -27,6 +27,23 @@ void FireStarter::SaveBestState(void)
     FireStarterCode::SaveCode("FireStarter_LoadState.h", bestStateCode);
 } // SaveBestState
 
+void FireStarter::SaveBestCode(void)
+{
+    static std::string optimizeCode;
+    if (optimizeCode.empty())
+        FireStarterCode::LoadCode("Optimize.cu", optimizeCode);
+    if (!optimizeCode.empty()) {
+        // Generate the evaluate function
+        std::string evaluateCode;
+        m_bestState.EvaluateCode(evaluateCode);
+
+        // Create the units code by replacing the evaluate and optimize sections of the optimize code.
+        std::string bestCode = optimizeCode;
+        FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
+        FireStarterCode::SaveCode("FireStarter_BestCode.cu", bestCode);
+    }
+} // SaveBestCode
+
 void FireStarter::SaveSolution(void)
 {
     std::string solutionCode;
@@ -149,6 +166,7 @@ void FireStarter::ControlThread(void)
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
             SaveBestState();
+            SaveBestCode();
             SaveSolution();
         }
 

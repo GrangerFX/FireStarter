@@ -1,4 +1,5 @@
 #include "FireStarterState.h"
+#include "FireStarterCode.h"
 
 bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
@@ -103,6 +104,11 @@ void FireStarterState::SaveSolution(std::string& code, const std::string& target
         code += "} // Solution\r\n";
     }
 } // SaveSolution
+
+void FireStarterState::EvaluateCode(std::string& code)
+{
+    m_program.GenerateEvaluate(code);
+} // EvaluateCode
 
 void FireStarterState::OptimizeData(void)
 {
