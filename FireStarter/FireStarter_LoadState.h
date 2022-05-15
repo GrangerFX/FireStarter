@@ -197,7 +197,6 @@ inline void LoadResult(FireStarterState& state)
     LoadVariation2(state.m_result);
 
     state.m_result->maxResult = 0.015062f;
-    state.m_result->instructions = state.m_program.m_instructions;
 } // LoadResult
 
 inline void LoadState(FireStarterState& state)

@@ -46,7 +46,6 @@ void FireStarterState::SaveResult(std::string& code)
         code += Format("    LoadVariation%u(state.m_result);\r\n", v);
     code += "\r\n";
     code += Format("    state.m_result->maxResult = %ff;\r\n", m_result->maxResult);
-    code += "    state.m_result->instructions = state.m_program.m_instructions;\r\n";
     code += "} // LoadResult\r\n";
     code += "\r\n";
 } // SaveResult
