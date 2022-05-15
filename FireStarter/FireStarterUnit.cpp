@@ -262,6 +262,8 @@ void FireStarterUnit::Deallocate(void)
     if (m_deviceResults) {
         checkCUDAErrors(cudaFree(m_deviceResults));
         m_deviceResults = nullptr;
+        m_deviceResults0 = nullptr;
+        m_deviceResults1 = nullptr;
     }
     if (m_hostResults) {
         checkCUDAErrors(cudaFreeHost(m_hostResults));
@@ -276,17 +278,14 @@ bool FireStarterUnit::Allocate(void)
     Deallocate();
     m_resultsSize = FireStarterResults::ResultsSize(m_settings.m_evolvePopulation, PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS);
     checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
-    if (m_hostResults) {
-        memset(m_hostResults, 0, m_resultsSize);
+    checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
+    if (m_hostResults && m_deviceResults) {
+        ClearResults();
         m_hostResults->InitResults(m_settings.m_evolvePopulation, PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS);
-
-        checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
-        if (m_deviceResults) {
-            m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
-            m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
-            checkCUDAErrors(cudaMemcpy(m_deviceResults0, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
-            checkCUDAErrors(cudaMemcpy(m_deviceResults1, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
-        }
+        m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
+        m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
+        checkCUDAErrors(cudaMemcpy(m_deviceResults0, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
+        checkCUDAErrors(cudaMemcpy(m_deviceResults1, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
     }
     return (m_deviceResults && m_hostResults);
 } // Allocate
@@ -345,7 +344,6 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
                     OptimizeGenerate();
                     break;
             }
-            ClearResults();
         }
     });
 } // InitUnit
