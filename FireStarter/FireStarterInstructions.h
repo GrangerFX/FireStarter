@@ -25,7 +25,7 @@ const FireStarterOpcode fireStarterOpcodes[PROGRAM_OPCODES] = {
 
 // INSTRUCTIONS //
 typedef struct FireStarterInstructions {
-    unsigned int r[PROGRAM_INSTRUCTIONS];
+    unsigned int r[FIRESTARTER_INSTRUCTIONS];
 
     inline unsigned int Instruction(unsigned int index) const
     {
@@ -335,7 +335,7 @@ struct FireStarterInstruction {
 
 // INSTRUCTIONS //
 typedef struct FireStarterInstructions {
-    FireStarterInstruction i[PROGRAM_INSTRUCTIONS];
+    FireStarterInstruction i[FIRESTARTER_INSTRUCTIONS];
     
     inline int Instruction(unsigned int index) const
     {
@@ -355,7 +355,7 @@ typedef struct FireStarterInstructions {
     inline void SetInstruction(unsigned int index, unsigned int instruction = 0)
     {
         i[index].op = (instruction >> 16) % PROGRAM_OPCODES;
-        i[index].reg = (unsigned short)instruction % PROGRAM_INSTRUCTIONS;
+        i[index].reg = (unsigned short)instruction % FIRESTARTER_INSTRUCTIONS;
     } // Instruction
 
     inline void SetRegister(unsigned int index, unsigned int reg = 0)
@@ -371,12 +371,12 @@ typedef struct FireStarterInstructions {
 
     inline void SetRandom(unsigned int index, unsigned int& seed)
     {
-        SetOperation(index, fireStarterOpcodes[RANDOMSEED(seed) % PROGRAM_OPCODES], RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS);
+        SetOperation(index, fireStarterOpcodes[RANDOMSEED(seed) % PROGRAM_OPCODES], RANDOMSEED(seed) % FIRESTARTER_INSTRUCTIONS);
     } // SetRandom
 
     inline void Randomize(unsigned int& seed)
     {
-        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             SetRandom(i, seed);
     } // Randomize
 
@@ -384,7 +384,7 @@ typedef struct FireStarterInstructions {
     {
 #if 1
         // About 25% faster but more restrictive.
-        for (unsigned int index = 0; index < PROGRAM_INSTRUCTIONS; index++) {
+        for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) {
             const FireStarterInstruction instruction = i[index];
             switch (instruction.reg) {
             case 0:

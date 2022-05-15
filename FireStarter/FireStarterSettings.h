@@ -4,6 +4,8 @@
 
 class FireStarterSettings {
 public:
+    unsigned int m_instructions;
+    unsigned int m_variations;
     unsigned int m_evolveMode;
     unsigned int m_evolveUnits;
     unsigned int m_evolveStates;
@@ -29,6 +31,8 @@ public:
 
     inline FireStarterSettings(unsigned int evolveMode = 0)
     {
+        m_instructions = FIRESTARTER_INSTRUCTIONS;
+        m_variations = FIRESTARTER_VARIATIONS;
         m_evolveMode = evolveMode;
         switch (m_evolveMode) {
             case FIRESTARTER_EVOLVE:

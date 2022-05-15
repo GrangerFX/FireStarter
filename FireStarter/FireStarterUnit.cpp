@@ -178,11 +178,12 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
     checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
 
     FireStarterResult* result = state.m_result;
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
+    for (unsigned int v = 0; v < m_settings.m_variations; v++)
         *result->MinResult(v) = *m_hostResults->MinResult(0, v);
-    unsigned int minIndex[PROGRAM_VARIATIONS] = { };
+    std::vector<unsigned int> minIndex;
+    minIndex.resize(m_settings.m_variations, 0);
     for (unsigned int i = 1; i < m_settings.m_evolvePopulation; i++) {
-        for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+        for (unsigned int v = 0; v < m_settings.m_variations; v++) {
             float curResult = *m_hostResults->MinResult(i, v);
             if (curResult < *result->MinResult(v)) {
                 *result->MinResult(v) = curResult;
@@ -190,10 +191,10 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
             }
         }
     }
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
+    for (unsigned int v = 0; v < m_settings.m_variations; v++)
         *result->Data(v) = *m_hostResults->Data(minIndex[v], v);
     result->maxResult = *result->MinResult(0);
-    for (unsigned int v = 1; v < PROGRAM_VARIATIONS; v++)
+    for (unsigned int v = 1; v < m_settings.m_variations; v++)
         result->maxResult = fmaxf(result->maxResult, *result->MinResult(v));
 
     // Find the best results.
@@ -276,12 +277,12 @@ bool FireStarterUnit::Allocate(void)
     if (!m_unitContext)
         m_unitContext = new CUDAContext(m_unitIndex);
     Deallocate();
-    m_resultsSize = FireStarterResults::ResultsSize(m_settings.m_evolvePopulation, PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS);
+    m_resultsSize = FireStarterResults::ResultsSize(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations);
     checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
     checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
     if (m_hostResults && m_deviceResults) {
         ClearResults();
-        m_hostResults->InitResults(m_settings.m_evolvePopulation, PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS);
+        m_hostResults->InitResults(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations);
         m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
         m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
         checkCUDAErrors(cudaMemcpy(m_deviceResults0, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));

@@ -53,9 +53,9 @@ void FireStarter::SaveSolution(void)
 
 void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult)
 {
-    size_t resultSize = FireStarterResult::ResultSize(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS);
+    size_t resultSize = FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations);
     checkCUDAErrors(cudaMemcpy(fireShowResult, m_bestState.m_result, resultSize, cudaMemcpyHostToDevice));
-    for (unsigned int variation = 0; variation < PROGRAM_VARIATIONS; variation++) {
+    for (unsigned int variation = 0; variation < m_settings.m_variations; variation++) {
         // Launch the display kernel
         int threadsPerBlock = BLOCK_THREADS;
         int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
@@ -113,7 +113,7 @@ void FireStarter::ControlThread(void)
     CUmodule fireShowModule = nullptr;
     CUfunction fireShowFunction = nullptr;
     FireStarterResult* fireShowResult = nullptr;
-    checkCUDAErrors(cudaMalloc(&fireShowResult, FireStarterResult::ResultSize(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS)));
+    checkCUDAErrors(cudaMalloc(&fireShowResult, FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations)));
 
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
@@ -271,7 +271,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
         m_buffer.Resize(m_width, m_height);
         m_buffer.Erase();
         std::string statusString = "FireStarter:";
-        for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+        for (unsigned int v = 0; v < m_settings.m_variations; v++) {
             float error = DrawSolution((uchar4*)m_buffer.m_hostBase, m_buffer.m_width, m_buffer.m_height, v);
             statusString += Format(" Solution %d = %f", v, error);
         }

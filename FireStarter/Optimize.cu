@@ -1,7 +1,10 @@
 #pragma once
+
+#define PROGRAM_INSTRUCTIONS 32
+#define PROGRAM_VARIATIONS   3
+
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
-#include "FireStarterOrder.h"
 #include "HashRandom.h"
 
 // EVALUATE //
@@ -24,13 +27,33 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     for (int i = 0; i < SAMPLE_ITERATIONS; i++)
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
 
-    // Sort the variations by the previous results.
-    FireStarterOrder varaitions(init ? nullptr : oldResults->Result(member));
+    // Sort the variations largest first. This increases the chance that the generation can fail early.
+    int order[PROGRAM_VARIATIONS];
+    for (int v = 0; v < PROGRAM_VARIATIONS; v++)
+        order[v] = v;
+    if (!init) {
+        for (int v = 0; v < PROGRAM_VARIATIONS - 1; v++) {
+            int maxIndex = v;
+            float max = *oldResults->MinResult(member, order[v]);
+            for (int i = v + 1; i < PROGRAM_VARIATIONS; i++) {
+                float curResult = *oldResults->MinResult(member, order[i]);
+                if (curResult > max) {
+                    max = curResult;
+                    maxIndex = i;
+                }
+            }
+            if (maxIndex != v) {
+                int swapOrder = order[maxIndex];
+                order[maxIndex] = order[v];
+                order[v] = swapOrder;
+            }
+        }
+    }
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        unsigned int variation = varaitions.order[v];
+        unsigned int variation = order[v];
  
         // Precalculate the target sample values.
         float target[SAMPLE_ITERATIONS];

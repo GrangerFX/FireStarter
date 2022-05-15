@@ -1,4 +1,8 @@
 #pragma once
+
+#define PROGRAM_INSTRUCTIONS 32
+#define PROGRAM_VARIATIONS   3
+
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 

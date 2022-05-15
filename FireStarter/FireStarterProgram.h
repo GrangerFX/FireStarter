@@ -18,6 +18,7 @@ public:
     std::vector<FireStarterRegister> m_registers;
     std::vector<FireStarterOpcode> m_opcodes;
     FireStarterProgramMode m_programMode;
+    unsigned int m_programInstructions;
     unsigned int m_dataSize;
     unsigned int m_maxRegisters;
 
@@ -32,5 +33,5 @@ public:
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
     float EmulateProgram(FireStarterData& data, float n);
-    FireStarterProgram(void);
+    FireStarterProgram(FireStarterProgramMode programMode, unsigned int programInstructions);
 }; // class FireStarterProgram

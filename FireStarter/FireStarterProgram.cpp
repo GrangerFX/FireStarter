@@ -25,10 +25,10 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
 {
     // Delete the unused registers and sort the remaining ones.
     m_registers.clear();
-    m_registers.reserve(PROGRAM_INSTRUCTIONS);
-    int dataRegisters[PROGRAM_INSTRUCTIONS];
-    memset(dataRegisters, -1, sizeof(dataRegisters));
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+    m_registers.reserve(m_programInstructions);
+    std::vector<int> dataRegisters;
+    dataRegisters.resize(m_programInstructions, -1);
+    for (unsigned int i = 0; i < m_programInstructions; i++) {
         unsigned int reg = m_instructions.Register(i);
         int index = dataRegisters[reg];
         if (index == -1) {
@@ -45,7 +45,7 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
     std::vector<unsigned int> freeRegisters;
     unsigned int numActiveRegisters = 0;
     m_maxRegisters = 0;
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+    for (unsigned int i = 0; i < m_programInstructions; i++) {
         unsigned int reg = m_instructions.Register(i);
         FireStarterRegister& r = m_registers[reg];
         if (r.instructionLast > r.instructionFirst)
@@ -71,7 +71,7 @@ void FireStarterProgram::RandomProgram(unsigned int& seed)
 
 void FireStarterProgram::RandomInstruction(unsigned int& seed)
 {
-    unsigned int index = RANDOMSEED(seed) % PROGRAM_INSTRUCTIONS;
+    unsigned int index = RANDOMSEED(seed) % m_programInstructions;
     m_instructions.SetRandom(index, seed);
 } // RandomInstruction
 
@@ -93,7 +93,7 @@ void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool
     std::string indent;
     for (unsigned int i = 0; i < tabs; i++)
         indent += "    ";
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+    for (unsigned int i = 0; i < m_programInstructions; i++) {
         FireStarterOpcode op = m_instructions.Opcode(i);
         unsigned int reg = m_instructions.Register(i);
         switch (op) {
@@ -144,7 +144,7 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
             code += Format("    float d%u = %.12ff;\r\n", i, data.d[m_registers[i].dataIndex]);
     code += "\r\n";
 
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+    for (unsigned int i = 0; i < m_programInstructions; i++) {
         FireStarterOpcode op = m_instructions.Opcode(i);
         unsigned int reg = m_instructions.Register(i);
         float f = data.d[reg];
@@ -209,7 +209,7 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
         code += Format("inline void LoadProgram%d(FireStarterProgram& program)\r\n", species);
     code += "{\r\n";
 
-    unsigned int numInstructions = PROGRAM_INSTRUCTIONS;
+    unsigned int numInstructions = m_programInstructions;
     for (unsigned int i = 0; i < numInstructions; i++)
         code += Format("    program.m_instructions.SetOperation(%u, %u, %u);\r\n", i, m_instructions.Opcode(i), m_instructions.Register(i));
 
@@ -234,7 +234,7 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
 
 float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
 {
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++) {
+    for (unsigned int i = 0; i < m_programInstructions; i++) {
         float& f = data.d[m_instructions.Register(i)];
 
         switch (m_instructions.Opcode(i)) {
@@ -252,12 +252,13 @@ float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
     return n;
 } // EmulateProgram
 
-FireStarterProgram::FireStarterProgram(void)
+FireStarterProgram::FireStarterProgram(FireStarterProgramMode programMode, unsigned int programInstructions)
 {
-    m_programMode = PROGRAM_MODE;
-    m_dataSize = PROGRAM_INSTRUCTIONS;
-    m_maxRegisters = PROGRAM_INSTRUCTIONS;
-    for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+    m_programMode = programMode;
+    m_programInstructions = programInstructions;
+    m_dataSize = m_programInstructions;
+    m_maxRegisters = m_programInstructions;
+    for (unsigned int i = 0; i < m_programInstructions; i++)
         m_instructions.SetOperation(i);
     m_opcodes.resize(PROGRAM_OPCODES);
     for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
