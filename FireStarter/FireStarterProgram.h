@@ -14,13 +14,18 @@ struct FireStarterRegister {
 
 class FireStarterProgram {
 public:
-    FireStarterInstructions m_instructions;
+    std::vector<FireStarterInstruction> m_instructions;
     std::vector<FireStarterRegister> m_registers;
     std::vector<FireStarterOpcode> m_opcodes;
     FireStarterProgramMode m_programMode;
     unsigned int m_programInstructions;
     unsigned int m_dataSize;
     unsigned int m_maxRegisters;
+
+    FireStarterInstructions* Instructions(void)
+    {
+        return (FireStarterInstructions*)m_instructions.data();
+    } // Instructions
 
     bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(bool clean);

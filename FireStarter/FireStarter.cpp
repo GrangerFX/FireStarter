@@ -56,7 +56,7 @@ void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, Fi
     size_t resultSize = FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations);
     checkCUDAErrors(cudaMemcpy(fireShowResult, m_bestState.m_result, resultSize, cudaMemcpyHostToDevice));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
-    checkCUDAErrors(cudaMemcpy(fireShowInstructions, &m_bestState.m_program.m_instructions, instructionsSize, cudaMemcpyHostToDevice));
+    checkCUDAErrors(cudaMemcpy(fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice));
     for (unsigned int variation = 0; variation < m_settings.m_variations; variation++) {
         // Launch the display kernel
         int threadsPerBlock = BLOCK_THREADS;
