@@ -1,6 +1,19 @@
 #include "FireStarterState.h"
 #include "FireStarterCode.h"
 
+FireStarterState& FireStarterState::operator = (const FireStarterState& other)
+{
+    m_settings = other.m_settings;
+    m_program = other.m_program;
+    if (m_result)
+        free(m_result);
+    m_result = (FireStarterResult*)calloc(1, FireStarterResult::ResultSize(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS));
+    m_result->Init(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS);
+    memcpy(m_result, other.m_result, FireStarterResult::ResultSize(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS));
+    m_generation = other.m_generation;
+    return *this;
+} // operator =
+
 bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
@@ -11,14 +24,30 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
     return result;
 } // Packetize
 
-void FireStarterState::SaveResult(unsigned int variation, std::string& code)
+void FireStarterState::SaveVariation(unsigned int variation, std::string& code)
 {
-    code += Format("inline void LoadResult%u(FireStarterResult& result)\r\n", variation);
+    code += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     code += "{\r\n";
-    code += Format("    result.minResult[%u] = %ff;\r\n", variation, m_result.minResult[variation]);
+    code += Format("    FireStarterData *data = result->Data(%u);\r\n", variation);
     for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        code += Format("    result.data[%u].d[%u] = %ff;\r\n", variation, i, m_result.data[variation].d[i]);
-    code += Format("} // LoadResult%u\r\n", variation);
+        code += Format("    data->d[%u] = %ff;\r\n", i, m_result->Data(variation)->d[i]);
+    code += Format("    *result->MinResult(%u) = %ff;\r\n", variation, *m_result->MinResult(variation));
+    code += Format("} // LoadVariation%u\r\n", variation);
+    code += "\r\n";
+} // SaveVariation
+
+void FireStarterState::SaveResult(std::string& code)
+{
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
+        SaveVariation(v, code);
+    code += "inline void LoadResult(FireStarterState& state)\r\n";
+    code += "{\r\n";
+    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
+        code += Format("    LoadVariation%u(state.m_result);\r\n", v);
+    code += "\r\n";
+    code += Format("    state.m_result->maxResult = %ff;\r\n", m_result->maxResult);
+    code += "    state.m_result->instructions = state.m_program.m_instructions;\r\n";
+    code += "} // LoadResult\r\n";
     code += "\r\n";
 } // SaveResult
 
@@ -29,8 +58,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "\r\n";
     m_settings.SaveSettings(code);
     m_program.SaveProgram(code);
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
-        SaveResult(v, code);
+    SaveResult(code);
 
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
@@ -38,12 +66,8 @@ void FireStarterState::SaveState(std::string& code)
     code += "\r\n";
     code += "    LoadSettings(state.m_settings);\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
+    code += "    LoadResult(state);\r\n";
     code += "\r\n";
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++)
-        code += Format("    LoadResult%u(state.m_result);\r\n", v);
-    code += "\r\n";
-    code += Format("    state.m_result.maxResult = %ff;\r\n", m_result.maxResult);
-    code += "    state.m_result.instructions = state.m_program.m_instructions;\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 
@@ -70,22 +94,22 @@ void FireStarterState::SaveSolution(std::string& code, const std::string& target
     code += "\r\n";
     code += targetCode;
     code += "\r\n";
-    code += Format("// Precision = %f\r\n", m_result.maxResult);
+    code += Format("// Precision = %f\r\n", m_result->maxResult);
     if (PROGRAM_VARIATIONS == 1) {
         code += "\r\n";
-        code += Format("// Solution precision = %f\r\n", m_result.minResult[0]);
+        code += Format("// Solution precision = %f\r\n", *m_result->MinResult(0));
         code += "inline float Solution(float n)\r\n";
         code += "{\r\n";
-        m_program.GenerateSolution(code, m_result.data[0]);
+        m_program.GenerateSolution(code, *m_result->Data(0));
         code += "    return n;\r\n";
         code += "} // Solution\r\n";
     } else {
         for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
             code += "\r\n";
-            code += Format("// Solution%d precision = %f\r\n", v, m_result.minResult[v]);
+            code += Format("// Solution%d precision = %f\r\n", v, *m_result->MinResult(v));
             code += Format("inline float Solution%d(float n)\r\n", v);
             code += "{\r\n";
-            m_program.GenerateSolution(code, m_result.data[v]);
+            m_program.GenerateSolution(code, *m_result->Data(v));
             code += "    return n;\r\n";
             code += Format("} // Solution%d\r\n", v);
         }
@@ -113,32 +137,45 @@ void FireStarterState::OptimizeData(void)
 {
     // Optimize the use of data registers.
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        FireStarterData& data = m_result.data[v];
+        FireStarterData& data = *m_result->Data(v);
         FireStarterData optimizedData(data);
         for (unsigned int i = 0; i < m_program.m_dataSize; i++)
             optimizedData.d[i] = data.d[m_program.m_registers[i].dataIndex];
         for (unsigned int i = m_program.m_dataSize; i < PROGRAM_INSTRUCTIONS; i++)
             optimizedData.d[i] = 0.0f;
-        m_result.data[v] = optimizedData;
+        *m_result->Data(v) = optimizedData;
     }
     for (unsigned int i = 0; i < m_program.m_dataSize; i++)
         m_program.m_registers[i].dataIndex = i;
 } // OptimizeData
 
+void FireStarterState::CopyResult(const FireStarterResult* result)
+{
+    memcpy(m_result, result, FireStarterResult::ResultSize(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS));
+} // CopyResult
+
 void FireStarterState::InitState(const FireStarterSettings& settings)
 {
     m_settings = settings;
+    if (m_result)
+        free(m_result);
+    m_result = (FireStarterResult*)calloc(1, FireStarterResult::ResultSize(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS));
+    m_result->Init(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS);
 } // InitState
+
+FireStarterState::FireStarterState(const FireStarterState& copy)
+{
+    *this = copy;
+} // FireStarterState
 
 FireStarterState::FireStarterState(void)
 {
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        for (unsigned int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-            m_result.data[v].d[i] = 1.0f;
-        m_result.minResult[v] = START_RESULT;
-    }
-    m_result.maxResult = START_RESULT;
-    m_result.padding = 0;
     m_generation = 0;
 } // FireStarterState
 
+FireStarterState::~FireStarterState(void)
+{
+    if (m_result)
+        free(m_result);
+    m_result = nullptr;
+} // ~FireStarterState

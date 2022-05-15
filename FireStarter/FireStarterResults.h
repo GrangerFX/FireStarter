@@ -3,10 +3,9 @@
 
 typedef struct FireStarterResult {
     FireStarterInstructions instructions;
-    FireStarterData data[PROGRAM_VARIATIONS];
-    float minResult[PROGRAM_VARIATIONS];
     float maxResult;
-    float padding;
+    unsigned int dataSize;
+    float data[1];
 
     static inline size_t InstructionsSize(unsigned int instructions)
     {
@@ -25,8 +24,30 @@ typedef struct FireStarterResult {
 
     static inline size_t ResultSize(unsigned int instructions, unsigned int variations)
     {
-        return InstructionsSize(instructions) + VariationsSize(instructions, variations) + sizeof(float) * variations + sizeof(float) * 2;
+        return InstructionsSize(instructions) + VariationsSize(instructions, variations) + sizeof(float) * variations + sizeof(float) + sizeof(unsigned int);
     } // ResultSize
+
+    inline float* MinResult(unsigned int variation)
+    {
+        return &data[variation * dataSize + (dataSize - 1)];
+    } // MinResult
+
+    inline FireStarterData* Data(unsigned int variation)
+    {
+        return (FireStarterData*)&data[variation * dataSize];
+    } // Data
+
+    inline void Init(unsigned int numInstructions, unsigned int numVariations)
+    {
+        maxResult = START_RESULT;
+        dataSize = numInstructions + 1;
+        for (unsigned int v = 0; v < numVariations; v++) {
+            FireStarterData* data = Data(v);
+            for (unsigned int i = 0; i < numInstructions; i++)
+                data->d[i] = 1.0f;
+            *MinResult(v) = START_RESULT;
+        }
+    } // Init
 } FireStarterResult;
 
 typedef struct FireStarterResults {
@@ -57,12 +78,12 @@ typedef struct FireStarterResults {
 
     inline FireStarterData* Data(unsigned int member, unsigned int variation)
     {
-        return &Result(member)->data[variation];
+        return Result(member)->Data(variation);
     } // Data
 
-    inline float* MinResult(unsigned int member)
+    inline float* MinResult(unsigned int member, unsigned int variation)
     {
-        return Result(member)->minResult;
+        return Result(member)->MinResult(variation);
     } // MinResult
 
     inline float* MaxResult(unsigned int member)
@@ -80,5 +101,7 @@ typedef struct FireStarterResults {
         m_variationsSize = FireStarterResult::VariationsSize(instructions, variations);
         m_resultSize = FireStarterResult::ResultSize(instructions, variations);
         m_resultsSize = ResultsSize(members, instructions, variations);
+        for (unsigned int i = 0; i < members; i++)
+            Result(i)->Init(instructions, variations);
     } // FireStarterResults
 } FireStarterResults;

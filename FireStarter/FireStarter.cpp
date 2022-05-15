@@ -51,8 +51,10 @@ void FireStarter::SaveSolution(void)
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
-void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction)
+void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult)
 {
+    size_t resultSize = FireStarterResult::ResultSize(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS);
+    checkCUDAErrors(cudaMemcpy(fireShowResult, m_bestState.m_result, resultSize, cudaMemcpyHostToDevice));
     for (unsigned int variation = 0; variation < PROGRAM_VARIATIONS; variation++) {
         // Launch the display kernel
         int threadsPerBlock = BLOCK_THREADS;
@@ -60,7 +62,7 @@ void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction)
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-        void* arr[] = { reinterpret_cast<void*>(&m_bestState.m_result),
+        void* arr[] = { reinterpret_cast<void*>(&fireShowResult),
                         reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                         reinterpret_cast<void*>(&m_buffer.m_width),
                         reinterpret_cast<void*>(&m_buffer.m_height),
@@ -110,6 +112,8 @@ void FireStarter::ControlThread(void)
     CUDAContext fireShowContext;
     CUmodule fireShowModule = nullptr;
     CUfunction fireShowFunction = nullptr;
+    FireStarterResult* fireShowResult = nullptr;
+    checkCUDAErrors(cudaMalloc(&fireShowResult, FireStarterResult::ResultSize(PROGRAM_INSTRUCTIONS, PROGRAM_VARIATIONS)));
 
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
@@ -141,7 +145,7 @@ void FireStarter::ControlThread(void)
         m_bestState.m_settings = m_settings;
     }
     for (unsigned int i = 0; i < unit_count; i++)
-        m_units[i]->InitUnit(i, m_bestState);
+        m_units[i]->InitUnit(i, &m_bestState);
 
     // Loop until the the host program is quit.
     m_runTimer.Start();
@@ -184,7 +188,7 @@ void FireStarter::ControlThread(void)
             m_buffer.Erase();
 
             // Draw the graphs for both variations.
-            FireShow(&fireShowContext, fireShowFunction);
+            FireShow(&fireShowContext, fireShowFunction, fireShowResult);
             m_controlUpdate = false;
             const unsigned char* bufferPixels = (m_settings.m_evolveMode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
             GetMainThread()->DispatchSync([this, bufferPixels] {
@@ -203,6 +207,8 @@ void FireStarter::ControlThread(void)
     m_buffer.Resize(0, 0);
 
     // Unload the fire show code and destroy the CUDA context.
+    if (fireShowResult)
+        checkCUDAErrors(cudaFree(fireShowResult));
     if (fireShowModule)
         checkCUDAErrors(cuModuleUnload(fireShowModule));
 } // ControlThread

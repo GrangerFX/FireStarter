@@ -3,7 +3,7 @@
 #include "HashRandom.h"
 #include "FireStarterTarget.h"
 
-GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
+GPU_GLOBAL void FireShow(FireStarterResult* bestResult, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int xScale = bufferHeight / 8;
@@ -34,15 +34,15 @@ GPU_GLOBAL void FireShow(const FireStarterResult bestResult, uchar4 *bufferPixel
             pixel.x = 255;
             pixel.y = 128;
         };
-        FireStarterData workData(bestResult.data[variation]);
-        y = (int)(center + bestResult.instructions.Execute(workData, theta) * yScale);
+        FireStarterData workData(*bestResult->Data(variation));
+        y = (int)(center + bestResult->instructions.Execute(workData, theta) * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = pixel.y = pixel.z = 255;
         };
         int i = x / 32;
         if (i < PROGRAM_INSTRUCTIONS) {
-            y = (int)(center + bestResult.data[variation].d[i] * 10.0f);
+            y = (int)(center + bestResult->Data(variation)->d[i] * 10.0f);
             if ((y >= 0) && (y < bufferHeight)) {
                 uchar4& pixel(bufferPixels[y * bufferWidth + x]);
                 pixel.x = pixel.y = 255;

@@ -13,32 +13,32 @@ inline float Evaluate(FireStarterData data, float n)
     n += data.d[3];
     n += data.d[4];
     n = data.d[5] *= n;
-    n += data.d[6];
     n = data.d[1] += n;
-    n = data.d[7] *= n;
+    n = data.d[1] += n;
+    n = data.d[6] *= n;
+    n = data.d[7] += n;
     n = data.d[8] += n;
-    n = data.d[9] += n;
-    n *= data.d[10];
-    n += data.d[11];
-    n *= data.d[7];
-    n *= data.d[12];
-    n = data.d[13] += n;
-    n *= data.d[14];
-    n *= data.d[5];
-    n *= data.d[13];
-    n *= data.d[15];
-    n += data.d[16];
     n *= data.d[9];
-    n = data.d[17] *= n;
-    n = data.d[18] += n;
-    n = data.d[17] += n;
-    n += data.d[18];
-    n = data.d[8] *= n;
-    n += data.d[19];
-    n *= data.d[17];
-    n *= data.d[1];
+    n *= data.d[10];
+    n *= data.d[6];
+    n *= data.d[11];
+    n = data.d[12] += n;
+    n *= data.d[13];
+    n *= data.d[5];
+    n *= data.d[12];
+    n *= data.d[14];
+    n += data.d[15];
     n *= data.d[8];
-    n += data.d[20];
+    n = data.d[16] *= n;
+    n = data.d[17] += n;
+    n = data.d[16] += n;
+    n += data.d[17];
+    n = data.d[7] *= n;
+    n += data.d[18];
+    n *= data.d[16];
+    n *= data.d[1];
+    n *= data.d[7];
+    n += data.d[19];
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
@@ -57,7 +57,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
 
     // Sort the variations by the previous results.
-    FireStarterOrder varaitions(init ? nullptr : oldResults->MinResult(member));
+    FireStarterOrder varaitions(init ? nullptr : oldResults->Result(member));
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
@@ -83,7 +83,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             evolutionFactor = EVOLUTION_START_FACTOR;
         } else {
             data = *oldResults->Data(member, variation);
-            result = oldResult = oldResults->MinResult(member)[variation];
+            result = oldResult = *oldResults->MinResult(member, variation);
             evolutionFactor = EVOLUTION_FACTOR * result;
         }
 
@@ -112,7 +112,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         if (init || (result < oldResult)) {
             // Save better results.
             *newResults->Data(member, variation) = data;
-            newResults->MinResult(member)[variation] = result;
+            *newResults->MinResult(member, variation) = result;
             maxResult = fmaxf(maxResult, result);
         } else {
             // The genetic part of genetic programming and a major optimization:
@@ -121,7 +121,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             float bestResult = oldResult;
             for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
                 unsigned int index = RANDOMSEED(memberSeed) % population;
-                float curResult = oldResults->MinResult(index)[variation];
+                float curResult = *oldResults->MinResult(index, variation);
                 if (curResult < bestResult) {
                     bestResult = curResult;
                     bestIndex = index;
@@ -129,11 +129,11 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             }
             if (bestIndex != member) {
                 *newResults->Data(member, variation) = *oldResults->Data(bestIndex, variation);
-                newResults->MinResult(member)[variation] = START_RESULT;
+                *newResults->MinResult(member, variation) = START_RESULT;
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
                 *newResults->Data(member, variation) = data;
-                newResults->MinResult(member)[variation] = result;
+                *newResults->MinResult(member, variation) = result;
                 maxResult = fmaxf(maxResult, result);
             }
         }

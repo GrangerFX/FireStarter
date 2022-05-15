@@ -84,7 +84,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
         }
         if (thread == minIndex) {
             *newResults->Data(member, v) = data;
-            newResults->MinResult(member)[v] = minResult;
+            *newResults->MinResult(member, v) = minResult;
         }
         maxResult = fmaxf(maxResult, minResult);
     }
@@ -112,7 +112,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             *newResults->Instructions(member) = *oldResults->Instructions(bestIndex);
             for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
                 *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
-                newResults->MinResult(member)[v] = oldResults->MinResult(bestIndex)[v];
+                *newResults->MinResult(member, v) = *oldResults->MinResult(bestIndex, v);
             }
             *newResults->MaxResult(member) = *oldResults->MaxResult(bestIndex);
         }
