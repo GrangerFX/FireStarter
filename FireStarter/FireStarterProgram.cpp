@@ -75,14 +75,14 @@ void FireStarterProgram::RandomInstruction(unsigned int& seed)
     m_instructions.SetRandom(index, seed);
 } // RandomInstruction
 
-void FireStarterProgram::LoadInstructions(FireStarterInstructions instructions)
+void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
 {
-    m_instructions = instructions;
+    m_instructions = *instructions;
 } // LoadInstructions
 
-void FireStarterProgram::SaveInstructions(FireStarterInstructions& instructions)
+void FireStarterProgram::SaveInstructions(FireStarterInstructions* instructions)
 {
-    instructions = m_instructions;
+    *instructions = m_instructions;
 } // SaveInstructions
 
 void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool optimize)

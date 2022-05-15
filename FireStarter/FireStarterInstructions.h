@@ -337,6 +337,11 @@ struct FireStarterInstruction {
 typedef struct FireStarterInstructions {
     FireStarterInstruction i[FIRESTARTER_INSTRUCTIONS];
     
+    static inline size_t InstructionsSize(unsigned int instructions)
+    {
+        return instructions * sizeof(FireStarterInstruction);
+    } // InstructionsSize
+
     inline int Instruction(unsigned int index) const
     {
         return (i[index].op << 16) | i[index].reg;

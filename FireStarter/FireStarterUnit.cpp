@@ -61,7 +61,6 @@ void FireStarterUnit::UnitGenerate(void)
         else
             state.m_program.RandomInstruction(m_seed);
         state.m_program.OptimizeRegisters(true);
-        state.m_program.SaveInstructions(state.m_result->instructions);
         state.m_generation = m_evolveGeneration;
     }
 
@@ -132,9 +131,8 @@ void FireStarterUnit::EvolveGenerations(unsigned int evolution)
     // Find the best results.
     if (state.m_result->maxResult < m_bestState.m_result->maxResult) {
         m_bestState = state;
-        m_bestState.m_program.LoadInstructions(m_bestState.m_result->instructions);
+        m_bestState.m_program.LoadInstructions(m_hostResults->Instructions(minIndex));
         m_bestState.m_program.OptimizeRegisters(false);
-        m_bestState.m_program.SaveInstructions(m_bestState.m_result->instructions);
         m_bestState.OptimizeData();
     }
 } // EvolveGenerations

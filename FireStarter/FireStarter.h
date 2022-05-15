@@ -39,7 +39,7 @@ public:
     void SaveBestState(void);
     void SaveBestCode(void);
     void SaveSolution(void);
-    void FireShow(class CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult);
+    void FireShow(class CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult, FireStarterInstructions* fireShowInstructions);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void RenderStatus(void);
     void ControlThread(void);

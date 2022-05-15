@@ -51,10 +51,12 @@ void FireStarter::SaveSolution(void)
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
-void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult)
+void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult, FireStarterInstructions* fireShowInstructions)
 {
     size_t resultSize = FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations);
     checkCUDAErrors(cudaMemcpy(fireShowResult, m_bestState.m_result, resultSize, cudaMemcpyHostToDevice));
+    size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
+    checkCUDAErrors(cudaMemcpy(fireShowInstructions, &m_bestState.m_program.m_instructions, instructionsSize, cudaMemcpyHostToDevice));
     for (unsigned int variation = 0; variation < m_settings.m_variations; variation++) {
         // Launch the display kernel
         int threadsPerBlock = BLOCK_THREADS;
@@ -63,6 +65,7 @@ void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, Fi
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
         void* arr[] = { reinterpret_cast<void*>(&fireShowResult),
+                        reinterpret_cast<void*>(&fireShowInstructions),
                         reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                         reinterpret_cast<void*>(&m_buffer.m_width),
                         reinterpret_cast<void*>(&m_buffer.m_height),
@@ -113,7 +116,9 @@ void FireStarter::ControlThread(void)
     CUmodule fireShowModule = nullptr;
     CUfunction fireShowFunction = nullptr;
     FireStarterResult* fireShowResult = nullptr;
+    FireStarterInstructions* fireShowInstructions = nullptr;
     checkCUDAErrors(cudaMalloc(&fireShowResult, FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations)));
+    checkCUDAErrors(cudaMalloc(&fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions)));
 
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
@@ -188,7 +193,7 @@ void FireStarter::ControlThread(void)
             m_buffer.Erase();
 
             // Draw the graphs for both variations.
-            FireShow(&fireShowContext, fireShowFunction, fireShowResult);
+            FireShow(&fireShowContext, fireShowFunction, fireShowResult, fireShowInstructions);
             m_controlUpdate = false;
             const unsigned char* bufferPixels = (m_settings.m_evolveMode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
             GetMainThread()->DispatchSync([this, bufferPixels] {

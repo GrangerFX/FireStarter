@@ -2,15 +2,9 @@
 #include "FireStarterInstructions.h"
 
 typedef struct FireStarterResult {
-    FireStarterInstructions instructions;
     float maxResult;
     unsigned int dataSize;
     float data[1];
-
-    static inline size_t InstructionsSize(unsigned int instructions)
-    {
-        return sizeof(FireStarterInstruction) * instructions;
-    } // InstructionsSize
 
     static inline size_t DataSize(unsigned int instructions)
     {
@@ -24,7 +18,7 @@ typedef struct FireStarterResult {
 
     static inline size_t ResultSize(unsigned int instructions, unsigned int variations)
     {
-        return InstructionsSize(instructions) + VariationsSize(instructions, variations) + sizeof(float) * variations + sizeof(float) + sizeof(unsigned int);
+        return VariationsSize(instructions, variations) + sizeof(float) * variations + sizeof(float) + sizeof(unsigned int);
     } // ResultSize
 
     inline float* MinResult(unsigned int variation)
@@ -54,7 +48,7 @@ typedef struct FireStarterResults {
     size_t m_members;
     size_t m_instructions;
     size_t m_variations;
-    size_t m_instructionSize;
+    size_t m_instructionsSize;
     size_t m_dataSize;
     size_t m_variationsSize;
     size_t m_resultSize;
@@ -63,7 +57,7 @@ typedef struct FireStarterResults {
 
     static inline size_t ResultsSize(unsigned int members, unsigned int instructions, unsigned int variations)
     {
-        return sizeof(FireStarterResults) + FireStarterResult::ResultSize(instructions, variations) * members - 16;
+        return (sizeof(FireStarterResults) - 16) + members * (FireStarterResult::ResultSize(instructions, variations) + FireStarterInstructions::InstructionsSize(instructions));
     } // ResultsSize
 
     inline FireStarterResult* Result(unsigned int member)
@@ -73,7 +67,7 @@ typedef struct FireStarterResults {
 
     inline FireStarterInstructions* Instructions(unsigned int member)
     {
-        return &Result(member)->instructions;
+        return (FireStarterInstructions*)(m_memory + m_members * m_resultSize + member * m_instructionsSize);
     } // Instructions
 
     inline FireStarterData* Data(unsigned int member, unsigned int variation)
@@ -96,7 +90,7 @@ typedef struct FireStarterResults {
         m_members = members;
         m_instructions = instructions;
         m_variations = variations;
-        m_instructionSize = FireStarterResult::InstructionsSize(instructions);
+        m_instructionsSize = FireStarterInstructions::InstructionsSize(instructions);
         m_dataSize = FireStarterResult::DataSize(instructions);
         m_variationsSize = FireStarterResult::VariationsSize(instructions, variations);
         m_resultSize = FireStarterResult::ResultSize(instructions, variations);
