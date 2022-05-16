@@ -13,8 +13,9 @@ struct FireStarterRegister {
 }; // struct FireStarterRegister
 
 class FireStarterProgram {
-public:
+private:
     std::vector<unsigned char> m_instructions;
+public:
     std::vector<FireStarterRegister> m_registers;
     std::vector<FireStarterOpcode> m_opcodes;
     unsigned int m_programMode;

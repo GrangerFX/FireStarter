@@ -4,10 +4,11 @@
 #include "FireStarterResults.h"
 
 class FireStarterState {
+private:
+    std::vector<unsigned char> m_result;
 public:
     FireStarterSettings m_settings;
     FireStarterProgram m_program;
-    std::vector<unsigned char> m_result;
     unsigned int m_generation = 0;
 
     FireStarterResult* Result(void);
