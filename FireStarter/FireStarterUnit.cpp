@@ -109,12 +109,21 @@ void FireStarterUnit::EvolveGenerations(unsigned int seed, unsigned int init)
     for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         newResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
         oldResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
+
+        FireStarterParameters parameters;
+        parameters.population = m_settings.m_evolvePopulation;
+        parameters.iterations = m_settings.m_evolveIterations;
+        parameters.precision = m_settings.m_evolvePrecision;
+        parameters.sampleMin = m_settings.m_sampleMin;
+        parameters.sampleMax = m_settings.m_sampleMax;
+        parameters.evolveFactor = m_settings.m_evolveFactor;
+        parameters.evolveStartFactor = m_settings.m_evolveStartFactor;
+        parameters.evolveStartResult = m_settings.m_evolveStartResult;
+        parameters.evolveCandidates = m_settings.m_evolveCandidates;
+
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
-                        reinterpret_cast<void*>(&m_settings.m_evolvePopulation),
-                        reinterpret_cast<void*>(&m_settings.m_evolveIterations),
-                        reinterpret_cast<void*>(&m_settings.m_evolveSampleMin),
-                        reinterpret_cast<void*>(&m_settings.m_evolveSampleMax),
+                        reinterpret_cast<void*>(&parameters),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&init) };
 
@@ -163,17 +172,24 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
     unsigned int dataSize = state.m_program.m_dataSize;
     FireStarterResults* newResults, *oldResults;
 
+    FireStarterParameters parameters;
+    parameters.population = m_settings.m_evolvePopulation;
+    parameters.iterations = m_settings.m_evolveIterations;
+    parameters.precision = m_settings.m_evolvePrecision;
+    parameters.sampleMin = m_settings.m_sampleMin;
+    parameters.sampleMax = m_settings.m_sampleMax;
+    parameters.evolveFactor = m_settings.m_evolveFactor;
+    parameters.evolveStartFactor = m_settings.m_evolveStartFactor;
+    parameters.evolveStartResult = m_settings.m_evolveStartResult;
+    parameters.evolveCandidates = m_settings.m_evolveCandidates;
+
     for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         newResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
         oldResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&dataSize),
-                        reinterpret_cast<void*>(&m_settings.m_evolvePopulation),
-                        reinterpret_cast<void*>(&m_settings.m_evolveIterations),
-                        reinterpret_cast<void*>(&m_settings.m_evolvePrecision),
-                        reinterpret_cast<void*>(&m_settings.m_evolveSampleMin),
-                        reinterpret_cast<void*>(&m_settings.m_evolveSampleMax),
+                        reinterpret_cast<void*>(&parameters),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&init) };
 
@@ -298,7 +314,7 @@ bool FireStarterUnit::Allocate(void)
     checkCUDAErrors(cudaMalloc(&m_deviceResults, m_resultsSize * 2));
     if (m_hostResults && m_deviceResults) {
         ClearResults();
-        m_hostResults->InitResults(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations);
+        m_hostResults->InitResults(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
         m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
         m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
         checkCUDAErrors(cudaMemcpy(m_deviceResults0, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));

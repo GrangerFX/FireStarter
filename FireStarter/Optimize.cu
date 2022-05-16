@@ -14,18 +14,18 @@ inline float Evaluate(FireStarterData data, float n)
 // END //
 
 // OPTMIZE //
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const float sampleMin, const float sampleMax, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const FireStarterParameters parameters, const unsigned int seed, const unsigned int init)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
-    if (member >= population)
+    if (member >= parameters.population)
         return;
     unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + seed);
 
     // Precalculate the target theta values.
     float theta[FIRESTARTER_SAMPLES];
-    float sampleStep = (sampleMax - sampleMin) / (FIRESTARTER_SAMPLES - 1);
+    float sampleStep = (parameters.sampleMax - parameters.sampleMin) / (FIRESTARTER_SAMPLES - 1);
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-        theta[i] = sampleMin + i * sampleStep;
+        theta[i] = parameters.sampleMin + i * sampleStep;
 
     // Sort the variations largest first. This increases the chance that the generation can fail early.
     int order[FIRESTARTER_VARIATIONS];
@@ -70,16 +70,16 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 data.d[i] = RANDOMFACTOR(memberSeed);
             for (int i = dataSize; i < FIRESTARTER_INSTRUCTIONS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
-            result = oldResult = START_RESULT;
-            evolutionFactor = EVOLUTION_START_FACTOR;
+            result = oldResult = parameters.evolveStartResult;
+            evolutionFactor = parameters.evolveStartFactor;
         } else {
             data = *oldResults->Data(member, variation);
             result = oldResult = *oldResults->MinResult(member, variation);
-            evolutionFactor = EVOLUTION_FACTOR * result;
+            evolutionFactor = parameters.evolveFactor * result;
         }
 
         // Iterate to evolve the data.
-        for (unsigned int p = 0; p < iterations; p++) {
+        for (unsigned int p = 0; p < parameters.iterations; p++) {
             unsigned int d = RANDOMSEED(memberSeed) % dataSize;
             float oldData = data.d[d];
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
@@ -88,15 +88,15 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
             if (curResult < result) {
                 result = curResult;
-                evolutionFactor = EVOLUTION_FACTOR * result;
+                evolutionFactor = parameters.evolveFactor * result;
             } else
                 data.d[d] = oldData;
         }
 
         // Calculate a more accurate estimate of the result.
-        float precisionStep = (sampleMax - sampleMin) / (precision - 1);
-        for (int i = 0; i < precision; i++) {
-            float theta = sampleMin + i * precisionStep;
+        float precisionStep = (parameters.sampleMax - parameters.sampleMin) / (parameters.precision - 1);
+        for (int i = 0; i < parameters.precision; i++) {
+            float theta = parameters.sampleMin + i * precisionStep;
             result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
         }
 
@@ -108,11 +108,11 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             maxResult = fmaxf(maxResult, result);
         } else {
             // The genetic part of genetic programming and a major optimization:
-            // Copy the best data from among a random set of members.
+            // Copy the best data from among a random set of candidates.
             unsigned int bestIndex = member;
             float bestResult = oldResult;
-            for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
-                unsigned int index = RANDOMSEED(memberSeed) % population;
+            for (int i = 0; i < parameters.evolveCandidates; i++) {
+                unsigned int index = RANDOMSEED(memberSeed) % parameters.population;
                 float curResult = *oldResults->MinResult(index, variation);
                 if (curResult < bestResult) {
                     bestResult = curResult;
@@ -121,7 +121,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             }
             if (bestIndex != member) {
                 *newResults->Data(member, variation) = *oldResults->Data(bestIndex, variation);
-                *newResults->MinResult(member, variation) = START_RESULT;
+                *newResults->MinResult(member, variation) = parameters.evolveStartResult;
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
                 *newResults->Data(member, variation) = data;

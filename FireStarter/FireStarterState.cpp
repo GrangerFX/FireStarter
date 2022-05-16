@@ -75,11 +75,11 @@ void FireStarterState::SaveSolution(std::string& code, const std::string& target
     code += Format("// Run population = %d\r\n", m_settings.m_evolvePopulation);
     code += Format("// Run iterations = %d\r\n", m_settings.m_evolveIterations);
     code += Format("// Run generations = %d\r\n", m_settings.m_evolveGenerations);
-    code += Format("// Run samples = %d\r\n", m_settings.m_evolveSamples);
+    code += Format("// Run samples = %d\r\n", m_settings.m_samples);
     code += Format("// State Generation = %d\r\n", m_generation);
     code += "\r\n";
-    code += Format("#define SOLUTION_MIN %f\r\n", m_settings.m_evolveSampleMin);
-    code += Format("#define SOLUTION_MAX %f\r\n", m_settings.m_evolveSampleMax);
+    code += Format("#define SOLUTION_MIN %f\r\n", m_settings.m_sampleMin);
+    code += Format("#define SOLUTION_MAX %f\r\n", m_settings.m_sampleMax);
     code += "\r\n";
     code += Format("#define SOLUTION_VARIATIONS %d\r\n", m_settings.m_variations);
     code += "\r\n";
@@ -145,7 +145,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings)
     m_settings = settings;
     m_program = FireStarterProgram(PROGRAM_MODE, m_settings.m_instructions, m_settings.m_variations);
     m_result.resize(FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations));
-    Result()->Init(m_settings.m_instructions, m_settings.m_variations);
+    Result()->Init(m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
 } // InitState
 
 FireStarterState::FireStarterState(void) : m_program(PROGRAM_MODE, FIRESTARTER_INSTRUCTIONS, FIRESTARTER_VARIATIONS)

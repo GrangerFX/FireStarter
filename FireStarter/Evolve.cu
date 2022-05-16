@@ -6,10 +6,10 @@
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation, const float sampleMin, const float sampleMax, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterParameters parameters, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = blockIdx.x;
-    if (member >= population)
+    if (member >= parameters.population)
         return;
     const unsigned int thread = threadIdx.x;
     unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + seed);
@@ -19,7 +19,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     float oldResult;
     if (init) {
         // The first generation's instructions are random.
-        oldResult = START_RESULT;
+        oldResult = parameters.evolveStartResult;
         for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             instructions.SetRandom(i, memberSeed);
     } else {
@@ -38,28 +38,28 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
         FireStarterData data;
-        float result = START_RESULT;
-        if (!generation)
+        float result = parameters.evolveStartResult;
+        if (init)
             for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
         else
             data = *oldResults->Data(member, v);
         if (maxResult <= oldResult) {
             // Initial check for bad results.
-            float theta = sampleMin;
-            float sampleStep = (sampleMax - sampleMin) / (FIRESTARTER_SAMPLES - 1);
+            float theta = parameters.sampleMin;
+            float sampleStep = (parameters.sampleMax - parameters.sampleMin) / (FIRESTARTER_SAMPLES - 1);
             for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
                 result = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), result);
                 theta += sampleStep;
             }
-            if (result <= START_RESULT) {
+            if (result <= parameters.evolveStartResult) {
                 // Evolve the data.
-                float evolutionFactor = EVOLUTION_START_FACTOR;
-                for (unsigned int p = 0; p < iterations; p++) {
+                float evolutionFactor = parameters.evolveStartFactor;
+                for (unsigned int p = 0; p < parameters.iterations; p++) {
                     unsigned int d = RANDOMSEED(threadSeed) % FIRESTARTER_INSTRUCTIONS;
                     const float oldData = data.d[d];
                     data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
-                    theta = sampleMin;
+                    theta = parameters.sampleMin;
                     float curResult = 0.0f;
                     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
                         curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
@@ -67,7 +67,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                     }
                     if (curResult < result) {
                         result = curResult;
-                        evolutionFactor = EVOLUTION_FACTOR * result;
+                        evolutionFactor = parameters.evolveFactor * result;
                     } else
                         data.d[d] = oldData;
                 }
@@ -97,17 +97,17 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     // Only read and write memory in a single thread.
     GPU_SYNCTHREADS();
     if (thread == 0) {
-        if (!generation || (maxResult < oldResult)) {
+        if (init || (maxResult < oldResult)) {
             // Save the improved results.
             *newResults->Instructions(member) = instructions;
             *newResults->MaxResult(member) = maxResult;
         } else {
             // The genetic part of genetic programming and a major optimization:
-            // Copy the best data from among a random set of members.
+            // Copy the best data from among a random set of candidates.
             unsigned int bestIndex = member;
             float bestResult = oldResult;
-            for (int i = 0; i < EVOLUTION_SAMPLES; i++) {
-                unsigned int index = RANDOMSEED(memberSeed) % population;
+            for (int i = 0; i < parameters.evolveCandidates; i++) {
+                unsigned int index = RANDOMSEED(memberSeed) % parameters.population;
                 float curResult = *oldResults->MaxResult(index);
                 if (curResult < bestResult) {
                     bestIndex = index;

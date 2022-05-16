@@ -1,6 +1,19 @@
 #pragma once
 #include "FireStarterInstructions.h"
 
+// The parameters for Evolve() and Optimize()
+typedef struct FireStarterParameters {
+    unsigned int population;
+    unsigned int iterations;
+    unsigned int precision;
+    float sampleMin;
+    float sampleMax;
+    float evolveFactor;
+    float evolveStartFactor;
+    float evolveStartResult;
+    unsigned int evolveCandidates;
+} FireStarterParameters;
+
 typedef struct FireStarterResult {
     float maxResult;
     unsigned int dataSize;
@@ -31,15 +44,15 @@ typedef struct FireStarterResult {
         return (FireStarterData*)&data[variation * dataSize];
     } // Data
 
-    inline void Init(unsigned int numInstructions, unsigned int numVariations)
+    inline void Init(unsigned int numInstructions, unsigned int numVariations, float startResult)
     {
-        maxResult = START_RESULT;
+        maxResult = startResult;
         dataSize = numInstructions + 1;
         for (unsigned int v = 0; v < numVariations; v++) {
             FireStarterData* data = Data(v);
             for (unsigned int i = 0; i < numInstructions; i++)
                 data->d[i] = 1.0f;
-            *MinResult(v) = START_RESULT;
+            *MinResult(v) = startResult;
         }
     } // Init
 } FireStarterResult;
@@ -85,7 +98,7 @@ typedef struct FireStarterResults {
         return &Result(member)->maxResult;
     } // MaxResult
 
-    void InitResults(unsigned int members, unsigned int instructions, unsigned int variations)
+    void InitResults(unsigned int members, unsigned int instructions, unsigned int variations, float startResult)
     {
         m_members = members;
         m_instructions = instructions;
@@ -96,6 +109,6 @@ typedef struct FireStarterResults {
         m_resultSize = FireStarterResult::ResultSize(instructions, variations);
         m_resultsSize = ResultsSize(members, instructions, variations);
         for (unsigned int i = 0; i < members; i++)
-            Result(i)->Init(instructions, variations);
+            Result(i)->Init(instructions, variations, startResult);
     } // FireStarterResults
 } FireStarterResults;

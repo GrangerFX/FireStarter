@@ -307,7 +307,7 @@ FireStarter::FireStarter(void) : m_settings(FIRESTARTER_MODE)
     m_statusString[0] = 0;
     m_generation = 0;
     m_bestGeneration = 0;
-    m_bestResult = START_RESULT;
+    m_bestResult = m_settings.m_evolveStartResult;
     m_controlTime = 0.0;
     m_seed = RANDOMHASH(123);
     m_controlUpdate = false;

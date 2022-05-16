@@ -2,10 +2,62 @@
 #include "FireStarterData.h"
 #include "FireStarterUtil.h"
 
+#define FIRESTARTER_SAMPLE_MIN 0.0f
+#define FIRESTARTER_SAMPLE_MAX (2.0f * 3.14159265f)
+
+#define FIRESTARTER_EVOLVE_FACTOR 0.1f
+#define FIRESTARTER_EVOLVE_START_FACTOR 4.0f
+#define FIRESTARTER_EVOLVE_START_RESULT 10.0f
+#define FIRESTARTER_EVOLVE_CANDIDATES 16
+
+#define FIRESTARTER_EVOLVE   1
+#define FIRESTARTER_UNIT     2
+#define FIRESTARTER_PROCESS  3
+#define FIRESTARTER_OPTIMIZE 4
+#define FIRESTARTER_COMPLETE 6
+#define FIRESTARTER_SOLUTION 7
+#define FIRESTARTER_MODE     FIRESTARTER_UNIT
+
+#define EVOLVE_UNITS 1
+#define EVOLVE_STATES 1
+#define EVOLVE_POPULATION 4352
+#define EVOLVE_ITERATIONS 512
+#define EVOLVE_GENERATIONS 10
+#define EVOLVE_PRECISION 256
+
+#define OPTIMIZE_UNITS 1
+#define OPTIMIZE_STATES 1
+#define OPTIMIZE_POPULATION 4352 * 16
+#define OPTIMIZE_ITERATIONS 512
+#define OPTIMIZE_GENERATIONS 100
+#define OPTIMIZE_PRECISION 256
+
+#define UNIT_UNITS 1
+#define UNIT_STATES 4
+#define UNIT_POPULATION 4352 * 8
+#define UNIT_ITERATIONS 256
+#define UNIT_GENERATIONS 100
+#define UNIT_PRECISION 256
+
+#define PROCESS_UNITS 4
+#define PROCESS_STATES 8
+#define PROCESS_POPULATION 4352 * 8
+#define PROCESS_ITERATIONS 128
+#define PROCESS_GENERATIONS 100
+#define PROCESS_PRECISION 256
+
 class FireStarterSettings {
 public:
     unsigned int m_instructions;
     unsigned int m_variations;
+    unsigned int m_samples;
+
+    float m_sampleMin;
+    float m_sampleMax;
+    float m_evolveFactor;
+    float m_evolveStartFactor;
+    float m_evolveStartResult;
+    unsigned int m_evolveCandidates;
 
     unsigned int m_evolveMode;
     unsigned int m_evolveUnits;
@@ -14,15 +66,12 @@ public:
     unsigned int m_evolveIterations;
     unsigned int m_evolveGenerations;
     unsigned int m_evolvePrecision;
-    unsigned int m_evolveSamples;
-    float m_evolveSampleMin;
-    float m_evolveSampleMax;
 
     inline void GenerateDefines(std::string& code)
     {
         code += Format("#define FIRESTARTER_INSTRUCTIONS %d\r\n", m_instructions);
         code += Format("#define FIRESTARTER_VARIATIONS %d\r\n", m_variations);
-        code += Format("#define FIRESTARTER_SAMPLES %d\r\n", m_evolveSamples);
+        code += Format("#define FIRESTARTER_SAMPLES %d\r\n", m_samples);
     } // GenerateDefines
 
     inline void SaveSettings(std::string& code)
@@ -31,6 +80,15 @@ public:
         code += "{\r\n";
         code += Format("    settings.m_instructions = %u;\r\n", m_instructions);
         code += Format("    settings.m_variations = %u;\r\n", m_variations);
+        code += Format("    settings.m_samples = %u;\r\n", m_samples);
+
+        code += Format("    settings.m_sampleMin = %f;\r\n", m_sampleMin);
+        code += Format("    settings.m_sampleMax = %f;\r\n", m_sampleMax);
+        code += Format("    settings.m_evolveFactor = %f;\r\n", m_evolveFactor);
+        code += Format("    settings.m_evolveStartFactor = %f;\r\n", m_evolveStartFactor);
+        code += Format("    settings.m_evolveStartResult = %f;\r\n", m_evolveStartResult);
+        code += Format("    settings.m_evolveCandidates = %u;\r\n", m_evolveCandidates);
+
         code += Format("    settings.m_evolveMode = %u;\r\n", m_evolveMode);
         code += Format("    settings.m_evolveUnits = %u;\r\n", m_evolveUnits);
         code += Format("    settings.m_evolveStates = %u;\r\n", m_evolveStates);
@@ -38,9 +96,6 @@ public:
         code += Format("    settings.m_evolveIterations = %u;\r\n", m_evolveIterations);
         code += Format("    settings.m_evolveGenerations = %u;\r\n", m_evolveGenerations);
         code += Format("    settings.m_evolvePrecision = %u;\r\n", m_evolvePrecision);
-        code += Format("    settings.m_evolveSamples = %u;\r\n", m_evolveSamples);
-        code += Format("    settings.m_evolveSampleMin = %u;\r\n", m_evolveSampleMin);
-        code += Format("    settings.m_evolveSampleMax = %u;\r\n", m_evolveSampleMax);
         code += "} // LoadSettings\r\n";
         code += "\r\n";
     } // SaveSettings
@@ -49,9 +104,14 @@ public:
     {
         m_instructions = FIRESTARTER_INSTRUCTIONS;
         m_variations = FIRESTARTER_VARIATIONS;
-        m_evolveSamples = FIRESTARTER_SAMPLES;
-        m_evolveSampleMin = FIRESTARTER_SAMPLE_MIN;
-        m_evolveSampleMax = FIRESTARTER_SAMPLE_MAX;
+        m_samples = FIRESTARTER_SAMPLES;
+
+        m_sampleMin = FIRESTARTER_SAMPLE_MIN;
+        m_sampleMax = FIRESTARTER_SAMPLE_MAX;
+        m_evolveFactor = FIRESTARTER_EVOLVE_FACTOR;
+        m_evolveStartFactor = FIRESTARTER_EVOLVE_START_FACTOR;
+        m_evolveStartResult = FIRESTARTER_EVOLVE_START_RESULT;
+        m_evolveCandidates = FIRESTARTER_EVOLVE_CANDIDATES;
 
         m_evolveMode = evolveMode;
         switch (m_evolveMode) {
