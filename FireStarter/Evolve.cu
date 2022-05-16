@@ -1,5 +1,8 @@
 #pragma once
 
+// DEFINES //
+// END //
+
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 

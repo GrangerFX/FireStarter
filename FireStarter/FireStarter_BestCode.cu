@@ -1,8 +1,10 @@
 #pragma once
 
+// DEFINES //
+// END //
+
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
-#include "HashRandom.h"
 
 // EVALUATE //
 inline float Evaluate(FireStarterData data, float n)

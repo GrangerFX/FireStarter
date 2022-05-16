@@ -41,7 +41,7 @@ GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions*
             pixel.x = pixel.y = pixel.z = 255;
         };
         int i = x / 32;
-        if (i < FIRESTARTER_INSTRUCTIONS) {
+        if (i < bestResult->dataSize) {
             y = (int)(center + bestResult->Data(variation)->d[i] * 10.0f);
             if ((y >= 0) && (y < bufferHeight)) {
                 uchar4& pixel(bufferPixels[y * bufferWidth + x]);

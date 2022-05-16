@@ -1,13 +1,22 @@
 #pragma once
 #include "CUDADefines.h"
 
+// Note: These are defined in the CUDA code via replacable text.
+#ifndef FIRESTARTER_INSTRUCTIONS
+#define FIRESTARTER_INSTRUCTIONS 32
+#endif
+
+#ifndef FIRESTARTER_VARIATIONS
+#define FIRESTARTER_VARIATIONS   3
+#endif
+
 #define FIRESTARTER_EVOLVE   1
 #define FIRESTARTER_UNIT     2
 #define FIRESTARTER_PROCESS  3
 #define FIRESTARTER_OPTIMIZE 4
 #define FIRESTARTER_COMPLETE 6
 #define FIRESTARTER_SOLUTION 7
-#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #define EVOLVE_UNITS 1
 #define EVOLVE_STATES 1
