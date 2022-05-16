@@ -12,6 +12,11 @@ void FireStarterUnit::ClearResults(void)
 
 void FireStarterUnit::EvolveGenerate(void)
 {
+    // Update the defines section.
+    std::string definesCode;
+    FireStarterProgram::GenerateDefines(definesCode, m_settings);
+    FireStarterCode::UpdateProgram(m_evolveCode, definesCode, EVALUATE_CODE);
+
     // Compile the program
     if (!m_evolveFunction && CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, "Evolve"))
         m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
@@ -21,10 +26,15 @@ void FireStarterUnit::UnitCode(std::string& code)
 {
     std::string optimize;
     FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
+
+    // Generate the defines
+    std::string definesCode;
+    FireStarterProgram::GenerateDefines(definesCode, m_settings);
+
+    // Generate the evaluate and optimize code
     std::string evaluateCode;
     std::string optimizeCode;
-
-    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) { 
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         // Update the Evaluate funtion.
         std::string evaluate;
         m_states[i].m_program.GenerateEvaluate(evaluate);
@@ -44,8 +54,9 @@ void FireStarterUnit::UnitCode(std::string& code)
         optimizeCode += optimizeUnit;
     }
 
-    // Create the units code by replacing the evaluate and optimize sections of the optimize code.
+    // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     code = m_optimizeCode;
+    FireStarterCode::UpdateProgram(code, definesCode, DEFINES_CODE);
     FireStarterCode::UpdateProgram(code, evaluateCode, EVALUATE_CODE);
     FireStarterCode::UpdateProgram(code, optimizeCode, OPTIMIZE_CODE);
 } // UnitCode

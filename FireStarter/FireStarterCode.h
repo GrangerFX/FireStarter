@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+#define DEFINES_CODE        "// DEFINES //"
 #define PROGRAM_CODE        "// PROGRAM //"
 #define EVALUATE_CODE       "// EVALUATE //"
 #define OPTIMIZE_CODE       "// OPTMIZE //"
