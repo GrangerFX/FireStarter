@@ -14,11 +14,12 @@ struct FireStarterRegister {
 
 class FireStarterProgram {
 public:
-    std::vector<FireStarterInstruction> m_instructions;
+    std::vector<unsigned char> m_instructions;
     std::vector<FireStarterRegister> m_registers;
     std::vector<FireStarterOpcode> m_opcodes;
-    FireStarterProgramMode m_programMode;
+    unsigned int m_programMode;
     unsigned int m_programInstructions;
+    unsigned int m_programVariations;
     unsigned int m_dataSize;
     unsigned int m_maxRegisters;
 
@@ -33,10 +34,11 @@ public:
     void RandomInstruction(unsigned int& seed);
     void LoadInstructions(FireStarterInstructions* instructions);
     void SaveInstructions(FireStarterInstructions* instructions);
+    void GenerateDefines(std::string & code);
     void GenerateCode(std::string& code, unsigned int tabs, bool optimize = true);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
     float EmulateProgram(FireStarterData& data, float n);
-    FireStarterProgram(FireStarterProgramMode programMode, unsigned int programInstructions);
+    FireStarterProgram(unsigned int programMode, unsigned int programInstructions, unsigned int programVariations);
 }; // class FireStarterProgram

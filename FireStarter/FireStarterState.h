@@ -7,10 +7,10 @@ class FireStarterState {
 public:
     FireStarterSettings m_settings;
     FireStarterProgram m_program;
-    FireStarterResult* m_result = nullptr;
+    std::vector<unsigned char> m_result;
     unsigned int m_generation = 0;
 
-    FireStarterState& operator = (const FireStarterState&);
+    FireStarterResult* Result(void);
     bool Packetize(FireStarterPacket& packet);
     void SaveVariation(unsigned int variation, std::string& code);
     void SaveResult(std::string& code);
@@ -18,9 +18,6 @@ public:
     void SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count);
     void EvaluateCode(std::string& code);
     void OptimizeData(void);
-    void CopyResult(const FireStarterResult* result);
     void InitState(const FireStarterSettings& settings);
-    FireStarterState(const FireStarterState& copy);
     FireStarterState();
-    ~FireStarterState();
 }; // class FireStarterState;

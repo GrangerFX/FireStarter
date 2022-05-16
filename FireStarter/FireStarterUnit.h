@@ -54,11 +54,11 @@ public:
     unsigned int Index(void);
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
-    void InitUnit(unsigned int index, const FireStarterState* state);
+    void InitUnit(unsigned int index, const FireStarterState& state);
     void Execute(void);
     bool Update(FireStarterState* states, FireStarterState& bestState, float& bestResult);
     void Sync(FireStarterState* states);
-    void ClientCommand(void);
+    void Client(void);
     FireStarterUnit(FireStarterProcess* process = nullptr);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

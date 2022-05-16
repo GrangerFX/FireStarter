@@ -74,6 +74,25 @@ public:
         return GetData(dataPtr, dataSize);
     } // Packetize
 
+    inline bool Packetize(std::vector<unsigned char>& data)
+    {
+        if (!m_getMode) {
+            size_t size = data.size();
+            AddData(&size, sizeof(size));
+            AddData(data.data(), size);
+            return true;
+        }
+        data.clear();
+        size_t size = 0;
+        if (!GetData(&size, sizeof(size)))
+            return false;
+        if (size) {
+            data.resize(size);
+            return GetData(data.data(), size);
+        }
+        return true;
+    } // Packetize
+
     inline bool Packetize(std::string& string)
     {
         if (!m_getMode) {

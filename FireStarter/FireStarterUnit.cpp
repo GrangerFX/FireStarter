@@ -126,10 +126,10 @@ void FireStarterUnit::EvolveGenerations(unsigned int evolution)
         }
     }
     FireStarterState& state = m_states[0];
-    state.CopyResult(m_hostResults->Result(minIndex));
+    memcpy(state.Result(), m_hostResults->Result(minIndex), FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations));
  
     // Find the best results.
-    if (state.m_result->maxResult < m_bestState.m_result->maxResult) {
+    if (state.Result()->maxResult < m_bestState.Result()->maxResult) {
         m_bestState = state;
         m_bestState.m_program.LoadInstructions(m_hostResults->Instructions(minIndex));
         m_bestState.m_program.OptimizeRegisters(false);
@@ -175,7 +175,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults, newResults, m_resultsSize, cudaMemcpyDeviceToHost, m_unitContext->Stream()));
     checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
 
-    FireStarterResult* result = state.m_result;
+    FireStarterResult* result = state.Result();
     for (unsigned int v = 0; v < m_settings.m_variations; v++)
         *result->MinResult(v) = *m_hostResults->MinResult(0, v);
     std::vector<unsigned int> minIndex;
@@ -196,7 +196,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
         result->maxResult = fmaxf(result->maxResult, *result->MinResult(v));
 
     // Find the best results.
-    if (result->maxResult < m_bestState.m_result->maxResult)
+    if (result->maxResult < m_bestState.Result()->maxResult)
         m_bestState = state;
 } // OptimizeGenerations
 
@@ -311,11 +311,11 @@ void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)
         m_allStates[i].Packetize(packet);
 } // PacketizeAllStates
 
-void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState* state)
+void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state)
 {
     DispatchAsync([this, index, state] {
         m_unitIndex = index;
-        m_bestState = *state;
+        m_bestState = state;
         m_settings = m_bestState.m_settings;
         m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
         m_states.resize(m_settings.m_evolveStates);
@@ -392,7 +392,7 @@ bool FireStarterUnit::Update(FireStarterState* states, FireStarterState& bestSta
         unsigned int index = m_unitIndex * m_settings.m_evolveStates;
         for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
             states[index++] = m_states[i];
-        float unitBestResult = m_bestState.m_result->maxResult;
+        float unitBestResult = m_bestState.Result()->maxResult;
         if (unitBestResult < bestResult) {
             bestResult = unitBestResult;
             bestState = m_bestState;
@@ -405,12 +405,12 @@ bool FireStarterUnit::Update(FireStarterState* states, FireStarterState& bestSta
 void FireStarterUnit::Sync(FireStarterState* states)
 {
     DispatchSync([this, states] {
-        float unitBestResult = m_bestState.m_result->maxResult;
+        float unitBestResult = m_bestState.Result()->maxResult;
         for (unsigned int i = 0; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++) {
             m_allStates[i] = states[i];
-            if (m_allStates[i].m_result->maxResult < unitBestResult) {
+            if (m_allStates[i].Result()->maxResult < unitBestResult) {
                 m_bestState = m_allStates[i];
-                unitBestResult = m_bestState.m_result->maxResult;
+                unitBestResult = m_bestState.Result()->maxResult;
             }
         }
         if ((m_settings.m_evolveMode == FIRESTARTER_PROCESS) && (m_unitIndex == 0) && !m_client) {
@@ -423,36 +423,38 @@ void FireStarterUnit::Sync(FireStarterState* states)
     });
 } // Sync
 
-void FireStarterUnit::ClientCommand(void)
+void FireStarterUnit::Client(void)
 {
-    FireStarterPacket receivePacket;
-    m_process->ReceivePacket(receivePacket);
-    const std::string& command = receivePacket.Command();
-    if (command == UNIT_INIT) {
-        FireStarterPacket sendPacket(UNIT_INIT);
-        m_process->SendPacket(sendPacket);
+    while (!m_process->ShouldTerminate()) {
+        FireStarterPacket receivePacket;
+        m_process->ReceivePacket(receivePacket);
+        const std::string& command = receivePacket.Command();
+        if (command == UNIT_INIT) {
+            FireStarterPacket sendPacket(UNIT_INIT);
+            m_process->SendPacket(sendPacket);
 
-        bool result = true;
-        unsigned int unitIndex = 0;
-        result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
-        FireStarterState receiveState;
-        result = result && receiveState.Packetize(receivePacket);
-        if (result)
-            InitUnit(unitIndex, &receiveState);
-    } else if (command == UNIT_EXECUTE) {
-        FireStarterPacket sendPacket(UNIT_EXECUTE);
-        m_process->SendPacket(sendPacket);
+            bool result = true;
+            unsigned int unitIndex = 0;
+            result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
+            FireStarterState receiveState;
+            result = result && receiveState.Packetize(receivePacket);
+            if (result)
+                InitUnit(unitIndex, receiveState);
+        } else if (command == UNIT_EXECUTE) {
+            FireStarterPacket sendPacket(UNIT_EXECUTE);
+            m_process->SendPacket(sendPacket);
 
-        Execute();
-    } else if (command == UNIT_UPDATE) {
-        FireStarterPacket sendPacket(UNIT_UPDATE);
-        DispatchSync([this, &sendPacket] { Packetize(sendPacket); });
-        m_process->SendPacket(sendPacket);
-    } else if (command == UNIT_SYNC) {
-        FireStarterPacket sendPacket(UNIT_SYNC);
-        m_process->SendPacket(sendPacket);
+            Execute();
+        } else if (command == UNIT_UPDATE) {
+            FireStarterPacket sendPacket(UNIT_UPDATE);
+            DispatchSync([this, &sendPacket] { Packetize(sendPacket); });
+            m_process->SendPacket(sendPacket);
+        } else if (command == UNIT_SYNC) {
+            FireStarterPacket sendPacket(UNIT_SYNC);
+            m_process->SendPacket(sendPacket);
 
-        DispatchSync([this, &receivePacket] { PacketizeAllStates(receivePacket); });
+            DispatchSync([this, &receivePacket] { PacketizeAllStates(receivePacket); });
+        }
     }
 } // ClientCommand
 

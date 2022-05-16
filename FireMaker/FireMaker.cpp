@@ -19,8 +19,7 @@ FireMaker::FireMaker(const std::string& pipeName)
 		FireStarterProcess process(pipeName, &m_terminate);
 		process.Start();
 		FireStarterUnit unit(&process);
-		while (!process.ShouldTerminate())
-			unit.ClientCommand();
+		unit.Client();
 	});
 } // FireMaker
 

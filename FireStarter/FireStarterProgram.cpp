@@ -3,7 +3,7 @@
 bool FireStarterProgram::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
-    result = result && packet.Packetize(&m_instructions, sizeof(m_instructions));
+    result = result && packet.Packetize(m_instructions);
 
     size_t registersSize = m_registers.size();
     result = result && packet.Packetize(&registersSize, sizeof(registersSize));
@@ -16,6 +16,8 @@ bool FireStarterProgram::Packetize(FireStarterPacket& packet)
     result = result && packet.Packetize(m_opcodes.data(), m_opcodes.size() * sizeof(m_opcodes[0]));
 
     result = result && packet.Packetize(&m_programMode, sizeof(m_programMode));
+    result = result && packet.Packetize(&m_programInstructions, sizeof(m_programInstructions));
+    result = result && packet.Packetize(&m_programVariations, sizeof(m_programVariations));
     result = result && packet.Packetize(&m_dataSize, sizeof(m_dataSize));
     result = result && packet.Packetize(&m_maxRegisters, sizeof(m_maxRegisters));
     return result;
@@ -86,6 +88,12 @@ void FireStarterProgram::SaveInstructions(FireStarterInstructions* instructions)
 {
     memcpy(instructions, m_instructions.data(), FireStarterInstructions::InstructionsSize(m_programInstructions));
 } // SaveInstructions
+
+void FireStarterProgram::GenerateDefines(std::string& code)
+{
+    code += Format("#define FIRESTARTER_INSTRUCTIONS %d\r\n", m_programInstructions);
+    code += Format("#define FIRESTARTER_VARIATIONS %d\r\n", m_programVariations);
+} // GenerateDefines
 
 void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool optimize)
 {
@@ -230,7 +238,7 @@ void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
     for (unsigned int i = 0; i < numRegisters; i++)
         code += Format("    program.m_registers[%u] = {%u, %u, %u, %u};\r\n", i, m_registers[i].dataIndex, m_registers[i].registerIndex, m_registers[i].instructionFirst, m_registers[i].instructionLast);
 
-    code += Format("    program.m_programMode = (FireStarterProgramMode)%u;\r\n", m_programMode);
+    code += Format("    program.m_programMode = %u;\r\n", m_programMode);
     code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
     code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
     if (species == 0xFFFFFFFF)
@@ -262,13 +270,14 @@ float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
     return n;
 } // EmulateProgram
 
-FireStarterProgram::FireStarterProgram(FireStarterProgramMode programMode, unsigned int programInstructions)
+FireStarterProgram::FireStarterProgram(unsigned int programMode, unsigned int programInstructions, unsigned int programVariations)
 {
     m_programMode = programMode;
     m_programInstructions = programInstructions;
+    m_programVariations = programVariations;
     m_dataSize = m_programInstructions;
     m_maxRegisters = m_programInstructions;
-    m_instructions.resize(m_programInstructions);
+    m_instructions.resize(FireStarterInstructions::InstructionsSize(m_programInstructions));
     FireStarterInstructions* instructions = Instructions();
     for (unsigned int i = 0; i < m_programInstructions; i++)
         instructions->SetOperation(i);

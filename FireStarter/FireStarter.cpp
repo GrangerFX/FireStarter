@@ -54,7 +54,7 @@ void FireStarter::SaveSolution(void)
 void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult, FireStarterInstructions* fireShowInstructions)
 {
     size_t resultSize = FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations);
-    checkCUDAErrors(cudaMemcpy(fireShowResult, m_bestState.m_result, resultSize, cudaMemcpyHostToDevice));
+    checkCUDAErrors(cudaMemcpy(fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
     checkCUDAErrors(cudaMemcpy(fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice));
     for (unsigned int variation = 0; variation < m_settings.m_variations; variation++) {
@@ -150,7 +150,7 @@ void FireStarter::ControlThread(void)
         m_bestState.m_settings = m_settings;
     }
     for (unsigned int i = 0; i < unit_count; i++)
-        m_units[i]->InitUnit(i, &m_bestState);
+        m_units[i]->InitUnit(i, m_bestState);
 
     // Loop until the the host program is quit.
     m_runTimer.Start();
