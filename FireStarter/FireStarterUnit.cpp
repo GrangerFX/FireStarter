@@ -14,7 +14,7 @@ void FireStarterUnit::EvolveGenerate(void)
 {
     // Update the defines section.
     std::string definesCode;
-    FireStarterProgram::GenerateDefines(definesCode, m_settings);
+    m_settings.GenerateDefines(definesCode);
     FireStarterCode::UpdateProgram(m_evolveCode, definesCode, EVALUATE_CODE);
 
     // Compile the program
@@ -29,7 +29,7 @@ void FireStarterUnit::UnitCode(std::string& code)
 
     // Generate the defines
     std::string definesCode;
-    FireStarterProgram::GenerateDefines(definesCode, m_settings);
+    m_settings.GenerateDefines(definesCode);
 
     // Generate the evaluate and optimize code
     std::string evaluateCode;
@@ -97,7 +97,7 @@ void FireStarterUnit::OptimizeGenerate(bool compile)
         m_optimizeFunction[0] = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
 } // OptimizeGenerate
 
-void FireStarterUnit::EvolveGenerations(unsigned int evolution)
+void FireStarterUnit::EvolveGenerations(unsigned int seed, unsigned int init)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -109,12 +109,14 @@ void FireStarterUnit::EvolveGenerations(unsigned int evolution)
     for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         newResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
         oldResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
-        unsigned int generation = evolution + g;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&m_settings.m_evolvePopulation),
                         reinterpret_cast<void*>(&m_settings.m_evolveIterations),
-                        reinterpret_cast<void*>(&generation) };
+                        reinterpret_cast<void*>(&m_settings.m_evolveSampleMin),
+                        reinterpret_cast<void*>(&m_settings.m_evolveSampleMax),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&init) };
 
         checkCUDAErrors(cuLaunchKernel(m_evolveFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -122,6 +124,8 @@ void FireStarterUnit::EvolveGenerations(unsigned int evolution)
             0, m_unitContext->Stream(),                         // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
+        seed++;
+        init = 0;
     }
 
     // Get the best result.
@@ -168,6 +172,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
                         reinterpret_cast<void*>(&m_settings.m_evolvePopulation),
                         reinterpret_cast<void*>(&m_settings.m_evolveIterations),
                         reinterpret_cast<void*>(&m_settings.m_evolvePrecision),
+                        reinterpret_cast<void*>(&m_settings.m_evolveSampleMin),
+                        reinterpret_cast<void*>(&m_settings.m_evolveSampleMax),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&init) };
 
@@ -217,7 +223,8 @@ void FireStarterUnit::EvolveExecute(void)
    // Evolve the program instructions.
     m_states[0] = m_bestState;
     m_states[0].m_generation = m_evolveGeneration;
-    EvolveGenerations(m_evolveGeneration);
+    unsigned int seed = RANDOMHASH(RANDOMHASH(m_evolveGeneration) + m_seed);
+    EvolveGenerations(m_seed, m_evolveGeneration == 0);
     m_evolveGeneration += m_settings.m_evolveGenerations;
 } // EvolveExecute
 

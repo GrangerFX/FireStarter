@@ -34,7 +34,7 @@ void FireStarter::SaveBestCode(void)
         FireStarterCode::LoadCode("Optimize.cu", optimizeCode);
     if (!optimizeCode.empty()) {
         std::string definesCode;
-        FireStarterProgram::GenerateDefines(definesCode, m_settings);
+        m_settings.GenerateDefines(definesCode);
 
         // Generate the evaluate function
         std::string evaluateCode;

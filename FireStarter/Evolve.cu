@@ -6,18 +6,18 @@
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation)
+GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation, const float sampleMin, const float sampleMax, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = blockIdx.x;
     if (member >= population)
         return;
     const unsigned int thread = threadIdx.x;
-    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + generation);
-    unsigned int threadSeed = RANDOMHASH(RANDOMHASH(member * blockDim.x + thread) + generation);
+    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + seed);
+    unsigned int threadSeed = RANDOMHASH(RANDOMHASH(member * blockDim.x + thread) + seed);
 
     GPU_SHARED FireStarterInstructions instructions;
     float oldResult;
-    if (!generation) {
+    if (init) {
         // The first generation's instructions are random.
         oldResult = START_RESULT;
         for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
@@ -46,10 +46,11 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
             data = *oldResults->Data(member, v);
         if (maxResult <= oldResult) {
             // Initial check for bad results.
-            float theta = SAMPLE_MIN;
-            for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+            float theta = sampleMin;
+            float sampleStep = (sampleMax - sampleMin) / (FIRESTARTER_SAMPLES - 1);
+            for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
                 result = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), result);
-                theta += (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
+                theta += sampleStep;
             }
             if (result <= START_RESULT) {
                 // Evolve the data.
@@ -58,11 +59,11 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                     unsigned int d = RANDOMSEED(threadSeed) % FIRESTARTER_INSTRUCTIONS;
                     const float oldData = data.d[d];
                     data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
-                    theta = SAMPLE_MIN;
+                    theta = sampleMin;
                     float curResult = 0.0f;
-                    for (int i = 0; i < SAMPLE_ITERATIONS; i++) {
+                    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
                         curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
-                        theta += (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
+                        theta += sampleStep;
                     }
                     if (curResult < result) {
                         result = curResult;

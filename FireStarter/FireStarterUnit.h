@@ -41,7 +41,7 @@ private:
     void UnitCode(std::string &code);
     void UnitGenerate(void);
     void OptimizeGenerate(bool compile = true);
-    void EvolveGenerations(unsigned int generation);
+    void EvolveGenerations(unsigned int seed, unsigned int init);
     void OptimizeGenerations(unsigned int index, unsigned int seed, unsigned int init);
     void EvolveExecute(void);
     void UnitExecute(void);

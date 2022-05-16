@@ -6,6 +6,7 @@ class FireStarterSettings {
 public:
     unsigned int m_instructions;
     unsigned int m_variations;
+
     unsigned int m_evolveMode;
     unsigned int m_evolveUnits;
     unsigned int m_evolveStates;
@@ -13,11 +14,23 @@ public:
     unsigned int m_evolveIterations;
     unsigned int m_evolveGenerations;
     unsigned int m_evolvePrecision;
+    unsigned int m_evolveSamples;
+    float m_evolveSampleMin;
+    float m_evolveSampleMax;
+
+    inline void GenerateDefines(std::string& code)
+    {
+        code += Format("#define FIRESTARTER_INSTRUCTIONS %d\r\n", m_instructions);
+        code += Format("#define FIRESTARTER_VARIATIONS %d\r\n", m_variations);
+        code += Format("#define FIRESTARTER_SAMPLES %d\r\n", m_evolveSamples);
+    } // GenerateDefines
 
     inline void SaveSettings(std::string& code)
     {
         code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
         code += "{\r\n";
+        code += Format("    settings.m_instructions = %u;\r\n", m_instructions);
+        code += Format("    settings.m_variations = %u;\r\n", m_variations);
         code += Format("    settings.m_evolveMode = %u;\r\n", m_evolveMode);
         code += Format("    settings.m_evolveUnits = %u;\r\n", m_evolveUnits);
         code += Format("    settings.m_evolveStates = %u;\r\n", m_evolveStates);
@@ -25,6 +38,9 @@ public:
         code += Format("    settings.m_evolveIterations = %u;\r\n", m_evolveIterations);
         code += Format("    settings.m_evolveGenerations = %u;\r\n", m_evolveGenerations);
         code += Format("    settings.m_evolvePrecision = %u;\r\n", m_evolvePrecision);
+        code += Format("    settings.m_evolveSamples = %u;\r\n", m_evolveSamples);
+        code += Format("    settings.m_evolveSampleMin = %u;\r\n", m_evolveSampleMin);
+        code += Format("    settings.m_evolveSampleMax = %u;\r\n", m_evolveSampleMax);
         code += "} // LoadSettings\r\n";
         code += "\r\n";
     } // SaveSettings
@@ -33,6 +49,10 @@ public:
     {
         m_instructions = FIRESTARTER_INSTRUCTIONS;
         m_variations = FIRESTARTER_VARIATIONS;
+        m_evolveSamples = FIRESTARTER_SAMPLES;
+        m_evolveSampleMin = FIRESTARTER_SAMPLE_MIN;
+        m_evolveSampleMax = FIRESTARTER_SAMPLE_MAX;
+
         m_evolveMode = evolveMode;
         switch (m_evolveMode) {
             case FIRESTARTER_EVOLVE:

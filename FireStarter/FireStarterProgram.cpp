@@ -89,12 +89,6 @@ void FireStarterProgram::SaveInstructions(FireStarterInstructions* instructions)
     memcpy(instructions, m_instructions.data(), FireStarterInstructions::InstructionsSize(m_programInstructions));
 } // SaveInstructions
 
-void FireStarterProgram::GenerateDefines(std::string& code, const FireStarterSettings& settings)
-{
-    code += Format("#define FIRESTARTER_INSTRUCTIONS %d\r\n", settings.m_instructions);
-    code += Format("#define FIRESTARTER_VARIATIONS %d\r\n", settings.m_variations);
-} // GenerateDefines
-
 void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool optimize)
 {
     FireStarterInstructions* instructions = Instructions();

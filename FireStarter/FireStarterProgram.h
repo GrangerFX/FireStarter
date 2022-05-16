@@ -36,7 +36,6 @@ public:
     void RandomInstruction(unsigned int& seed);
     void LoadInstructions(FireStarterInstructions* instructions);
     void SaveInstructions(FireStarterInstructions* instructions);
-    static void GenerateDefines(std::string& code, const FireStarterSettings& settings);
     void GenerateCode(std::string& code, unsigned int tabs, bool optimize = true);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);

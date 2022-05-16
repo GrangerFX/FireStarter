@@ -3,6 +3,7 @@
 // DEFINES //
 #define FIRESTARTER_INSTRUCTIONS 32
 #define FIRESTARTER_VARIATIONS 3
+#define FIRESTARTER_SAMPLES 15
 // END //
 
 #include "FireStarterResults.h"
@@ -11,44 +12,44 @@
 // EVALUATE //
 inline float Evaluate(FireStarterData data, float n)
 {
-    n += data.d[0];
+    n *= data.d[0];
     n = data.d[1] += n;
-    n += data.d[2];
-    n += data.d[3];
+    n = data.d[2] *= n;
+    n = data.d[3] += n;
+    n *= data.d[2];
     n += data.d[4];
-    n = data.d[5] *= n;
-    n = data.d[1] += n;
-    n = data.d[1] += n;
-    n = data.d[6] *= n;
+    n = data.d[5] += n;
+    n = data.d[6] += n;
     n = data.d[7] += n;
-    n = data.d[8] += n;
-    n *= data.d[9];
-    n *= data.d[10];
-    n *= data.d[6];
-    n *= data.d[11];
-    n = data.d[12] += n;
-    n *= data.d[13];
-    n *= data.d[5];
-    n *= data.d[12];
-    n *= data.d[14];
-    n += data.d[15];
-    n *= data.d[8];
-    n = data.d[16] *= n;
-    n = data.d[17] += n;
-    n = data.d[16] += n;
-    n += data.d[17];
-    n = data.d[7] *= n;
-    n += data.d[18];
-    n *= data.d[16];
+    n += data.d[6];
+    n += data.d[8];
+    n = data.d[9] *= n;
+    n += data.d[10];
+    n = data.d[3] *= n;
+    n = data.d[11] *= n;
     n *= data.d[1];
+    n = data.d[12] *= n;
+    n *= data.d[13];
+    n *= data.d[14];
+    n += data.d[12];
+    n = data.d[15] += n;
+    n *= data.d[16];
+    n = data.d[17] *= n;
+    n += data.d[18];
+    n *= data.d[11];
+    n *= data.d[15];
+    n += data.d[3];
+    n *= data.d[9];
+    n *= data.d[17];
     n *= data.d[7];
+    n *= data.d[5];
     n += data.d[19];
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
 
 // OPTMIZE //
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const unsigned int population, const unsigned int iterations, const unsigned int precision, const float sampleMin, const float sampleMax, const unsigned int seed, const unsigned int init)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
@@ -56,9 +57,10 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + seed);
 
     // Precalculate the target theta values.
-    float theta[SAMPLE_ITERATIONS];
-    for (int i = 0; i < SAMPLE_ITERATIONS; i++)
-        theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
+    float theta[FIRESTARTER_SAMPLES];
+    float sampleStep = (sampleMax - sampleMin) / (FIRESTARTER_SAMPLES - 1);
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+        theta[i] = sampleMin + i * sampleStep;
 
     // Sort the variations largest first. This increases the chance that the generation can fail early.
     int order[FIRESTARTER_VARIATIONS];
@@ -89,8 +91,8 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         unsigned int variation = order[v];
  
         // Precalculate the target sample values.
-        float target[SAMPLE_ITERATIONS];
-        for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+        float target[FIRESTARTER_SAMPLES];
+        for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
             target[i] = Target(theta[i], variation);
 
         // The first generation is initalized with random numbers.
@@ -117,7 +119,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             float oldData = data.d[d];
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
             float curResult = 0.0f;
-            for (int i = 0; i < SAMPLE_ITERATIONS; i++)
+            for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
                 curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
             if (curResult < result) {
                 result = curResult;
@@ -127,8 +129,9 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
 
         // Calculate a more accurate estimate of the result.
+        float precisionStep = (sampleMax - sampleMin) / (precision - 1);
         for (int i = 0; i < precision; i++) {
-            float theta = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (precision - 1);
+            float theta = sampleMin + i * precisionStep;
             result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
         }
 
