@@ -1,10 +1,6 @@
 #pragma once
 
-#define PROGRAM_INSTRUCTIONS 32
-#define PROGRAM_VARIATIONS   3
-
 #include "FireStarterResults.h"
-#include "HashRandom.h"
 #include "FireStarterTarget.h"
 
 GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
@@ -45,7 +41,7 @@ GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions*
             pixel.x = pixel.y = pixel.z = 255;
         };
         int i = x / 32;
-        if (i < PROGRAM_INSTRUCTIONS) {
+        if (i < FIRESTARTER_INSTRUCTIONS) {
             y = (int)(center + bestResult->Data(variation)->d[i] * 10.0f);
             if ((y >= 0) && (y < bufferHeight)) {
                 uchar4& pixel(bufferPixels[y * bufferWidth + x]);

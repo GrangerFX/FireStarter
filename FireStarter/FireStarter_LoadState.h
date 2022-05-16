@@ -80,27 +80,27 @@ inline void LoadProgram(FireStarterProgram& program)
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data(0);
-    data->d[0] = 0.534292f;
-    data->d[1] = -0.126904f;
-    data->d[2] = -1.895374f;
-    data->d[3] = 0.044195f;
-    data->d[4] = -0.986652f;
-    data->d[5] = 0.067146f;
-    data->d[6] = -0.457720f;
-    data->d[7] = 1.074270f;
-    data->d[8] = -0.573040f;
-    data->d[9] = -1.113067f;
-    data->d[10] = -0.798349f;
-    data->d[11] = 0.423086f;
-    data->d[12] = -1.050300f;
-    data->d[13] = 0.297205f;
-    data->d[14] = 0.010406f;
-    data->d[15] = -0.692005f;
-    data->d[16] = 0.358550f;
-    data->d[17] = -0.496923f;
-    data->d[18] = -0.121437f;
-    data->d[19] = 0.876286f;
-    data->d[20] = 0.244565f;
+    data->d[0] = 0.534268f;
+    data->d[1] = -0.127873f;
+    data->d[2] = -1.895078f;
+    data->d[3] = 0.044176f;
+    data->d[4] = -0.986334f;
+    data->d[5] = 0.067092f;
+    data->d[6] = -0.457667f;
+    data->d[7] = 1.074237f;
+    data->d[8] = -0.573049f;
+    data->d[9] = -1.112963f;
+    data->d[10] = -0.798299f;
+    data->d[11] = 0.422934f;
+    data->d[12] = -1.050806f;
+    data->d[13] = 0.297131f;
+    data->d[14] = 0.010117f;
+    data->d[15] = -0.692042f;
+    data->d[16] = 0.358721f;
+    data->d[17] = -0.496007f;
+    data->d[18] = -0.123470f;
+    data->d[19] = 0.875937f;
+    data->d[20] = 0.244289f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
     data->d[23] = 0.000000f;
@@ -112,7 +112,7 @@ inline void LoadVariation0(FireStarterResult* result)
     data->d[29] = 0.000000f;
     data->d[30] = 0.000000f;
     data->d[31] = 0.000000f;
-    *result->MinResult(0) = 0.015091f;
+    *result->MinResult(0) = 0.015309f;
 } // LoadVariation0
 
 inline void LoadVariation1(FireStarterResult* result)
@@ -126,12 +126,12 @@ inline void LoadVariation1(FireStarterResult* result)
     data->d[5] = -0.421253f;
     data->d[6] = -1.145223f;
     data->d[7] = 0.714175f;
-    data->d[8] = -2.872612f;
+    data->d[8] = -2.872609f;
     data->d[9] = 0.255019f;
     data->d[10] = 0.340406f;
     data->d[11] = 1.191332f;
     data->d[12] = 0.835975f;
-    data->d[13] = 4.793280f;
+    data->d[13] = 4.793283f;
     data->d[14] = -0.792253f;
     data->d[15] = -0.584880f;
     data->d[16] = -0.042569f;
@@ -156,27 +156,27 @@ inline void LoadVariation1(FireStarterResult* result)
 inline void LoadVariation2(FireStarterResult* result)
 {
     FireStarterData *data = result->Data(2);
-    data->d[0] = -0.415119f;
-    data->d[1] = 0.786540f;
-    data->d[2] = 0.198604f;
-    data->d[3] = 0.790289f;
-    data->d[4] = -0.281169f;
-    data->d[5] = -0.549584f;
-    data->d[6] = -0.380212f;
-    data->d[7] = 0.025616f;
-    data->d[8] = 0.278061f;
-    data->d[9] = 1.271623f;
-    data->d[10] = 0.860346f;
-    data->d[11] = 1.311773f;
-    data->d[12] = 0.380235f;
-    data->d[13] = -0.860226f;
-    data->d[14] = -0.588257f;
-    data->d[15] = -0.341772f;
-    data->d[16] = -1.264776f;
-    data->d[17] = -0.611089f;
-    data->d[18] = 1.206255f;
-    data->d[19] = 0.152346f;
-    data->d[20] = 0.680813f;
+    data->d[0] = -0.449208f;
+    data->d[1] = 0.876000f;
+    data->d[2] = 0.261739f;
+    data->d[3] = 0.809275f;
+    data->d[4] = -0.321054f;
+    data->d[5] = -0.539466f;
+    data->d[6] = -0.383165f;
+    data->d[7] = 0.147214f;
+    data->d[8] = 0.252171f;
+    data->d[9] = 1.271262f;
+    data->d[10] = 0.865026f;
+    data->d[11] = 0.961598f;
+    data->d[12] = 0.378492f;
+    data->d[13] = -0.858648f;
+    data->d[14] = -0.617776f;
+    data->d[15] = -0.343961f;
+    data->d[16] = -1.095268f;
+    data->d[17] = -0.609702f;
+    data->d[18] = 1.200631f;
+    data->d[19] = 0.122657f;
+    data->d[20] = 0.627177f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
     data->d[23] = 0.000000f;
@@ -188,7 +188,7 @@ inline void LoadVariation2(FireStarterResult* result)
     data->d[29] = 0.000000f;
     data->d[30] = 0.000000f;
     data->d[31] = 0.000000f;
-    *result->MinResult(2) = 0.006821f;
+    *result->MinResult(2) = 0.013501f;
 } // LoadVariation2
 
 inline void LoadResult(FireStarterState& state)
@@ -197,12 +197,12 @@ inline void LoadResult(FireStarterState& state)
     LoadVariation1(state.m_result);
     LoadVariation2(state.m_result);
 
-    state.m_result->maxResult = 0.015091f;
+    state.m_result->maxResult = 0.015309f;
 } // LoadResult
 
 inline void LoadState(FireStarterState& state)
 {
-    state.m_generation = 30;
+    state.m_generation = 20;
 
     LoadSettings(state.m_settings);
     LoadProgram(state.m_program);

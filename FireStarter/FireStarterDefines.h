@@ -1,9 +1,5 @@
 #pragma once
 #include "CUDADefines.h"
-#include "HashRandom.h"
-
-#define FIRESTARTER_INSTRUCTIONS 32
-#define FIRESTARTER_VARIATIONS   3
 
 #define FIRESTARTER_EVOLVE   1
 #define FIRESTARTER_UNIT     2

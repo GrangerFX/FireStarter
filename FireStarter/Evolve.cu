@@ -1,8 +1,5 @@
 #pragma once
 
-#define PROGRAM_INSTRUCTIONS 32
-#define PROGRAM_VARIATIONS   3
-
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
@@ -20,7 +17,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     if (!generation) {
         // The first generation's instructions are random.
         oldResult = START_RESULT;
-        for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+        for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             instructions.SetRandom(i, memberSeed);
     } else {
         // Later generations randomize one instruction.
@@ -29,18 +26,18 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
 
         // Evolve a single program instruction for each generation.
         if (!thread) {
-            unsigned int index = RANDOMSEED(memberSeed) % PROGRAM_INSTRUCTIONS;
+            unsigned int index = RANDOMSEED(memberSeed) % FIRESTARTER_INSTRUCTIONS;
             instructions.SetRandom(index, memberSeed);
         }
     }
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
         FireStarterData data;
         float result = START_RESULT;
         if (!generation)
-            for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
+            for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
         else
             data = *oldResults->Data(member, v);
@@ -55,7 +52,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 // Evolve the data.
                 float evolutionFactor = EVOLUTION_START_FACTOR;
                 for (unsigned int p = 0; p < iterations; p++) {
-                    unsigned int d = RANDOMSEED(threadSeed) % PROGRAM_INSTRUCTIONS;
+                    unsigned int d = RANDOMSEED(threadSeed) % FIRESTARTER_INSTRUCTIONS;
                     const float oldData = data.d[d];
                     data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
                     theta = SAMPLE_MIN;
@@ -114,7 +111,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 }
             }
             *newResults->Instructions(member) = *oldResults->Instructions(bestIndex);
-            for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+            for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                 *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestIndex, v);
             }

@@ -1,5 +1,5 @@
 #pragma once
-#include "FireStarterDefines.h"
+#include "FireStarterData.h"
 #include "FireStarterUtil.h"
 
 class FireStarterSettings {

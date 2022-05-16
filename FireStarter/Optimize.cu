@@ -1,11 +1,7 @@
 #pragma once
 
-#define PROGRAM_INSTRUCTIONS 32
-#define PROGRAM_VARIATIONS   3
-
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
-#include "HashRandom.h"
 
 // EVALUATE //
 inline float Evaluate(FireStarterData data, float n)
@@ -28,14 +24,14 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         theta[i] = SAMPLE_MIN + i * (SAMPLE_MAX - SAMPLE_MIN) / (SAMPLE_ITERATIONS - 1);
 
     // Sort the variations largest first. This increases the chance that the generation can fail early.
-    int order[PROGRAM_VARIATIONS];
-    for (int v = 0; v < PROGRAM_VARIATIONS; v++)
+    int order[FIRESTARTER_VARIATIONS];
+    for (int v = 0; v < FIRESTARTER_VARIATIONS; v++)
         order[v] = v;
     if (!init) {
-        for (int v = 0; v < PROGRAM_VARIATIONS - 1; v++) {
+        for (int v = 0; v < FIRESTARTER_VARIATIONS - 1; v++) {
             int maxIndex = v;
             float max = *oldResults->MinResult(member, order[v]);
-            for (int i = v + 1; i < PROGRAM_VARIATIONS; i++) {
+            for (int i = v + 1; i < FIRESTARTER_VARIATIONS; i++) {
                 float curResult = *oldResults->MinResult(member, order[i]);
                 if (curResult > max) {
                     max = curResult;
@@ -52,7 +48,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
-    for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
         unsigned int variation = order[v];
  
         // Precalculate the target sample values.
@@ -68,7 +64,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         if (init) {
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR(memberSeed);
-            for (int i = dataSize; i < PROGRAM_INSTRUCTIONS; i++)
+            for (int i = dataSize; i < FIRESTARTER_INSTRUCTIONS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
             result = oldResult = START_RESULT;
             evolutionFactor = EVOLUTION_START_FACTOR;
