@@ -16,7 +16,7 @@
 #define FIRESTARTER_OPTIMIZE 4
 #define FIRESTARTER_COMPLETE 6
 #define FIRESTARTER_SOLUTION 7
-#define FIRESTARTER_MODE     FIRESTARTER_UNIT
+#define FIRESTARTER_MODE     FIRESTARTER_PROCESS
 
 #define EVOLVE_UNITS 1
 #define EVOLVE_STATES 1
@@ -82,11 +82,11 @@ public:
         code += Format("    settings.m_variations = %u;\r\n", m_variations);
         code += Format("    settings.m_samples = %u;\r\n", m_samples);
 
-        code += Format("    settings.m_sampleMin = %f;\r\n", m_sampleMin);
-        code += Format("    settings.m_sampleMax = %f;\r\n", m_sampleMax);
-        code += Format("    settings.m_evolveFactor = %f;\r\n", m_evolveFactor);
-        code += Format("    settings.m_evolveStartFactor = %f;\r\n", m_evolveStartFactor);
-        code += Format("    settings.m_evolveStartResult = %f;\r\n", m_evolveStartResult);
+        code += Format("    settings.m_sampleMin = %ff;\r\n", m_sampleMin);
+        code += Format("    settings.m_sampleMax = %ff;\r\n", m_sampleMax);
+        code += Format("    settings.m_evolveFactor = %ff;\r\n", m_evolveFactor);
+        code += Format("    settings.m_evolveStartFactor = %ff;\r\n", m_evolveStartFactor);
+        code += Format("    settings.m_evolveStartResult = %ff;\r\n", m_evolveStartResult);
         code += Format("    settings.m_evolveCandidates = %u;\r\n", m_evolveCandidates);
 
         code += Format("    settings.m_evolveMode = %u;\r\n", m_evolveMode);
