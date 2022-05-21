@@ -3,13 +3,18 @@
 #include "FireStarterUtil.h"
 #include <vector>
 
-bool CUDACompile::CompilePTX(std::string& ptx, const std::string& program, const std::string& programName)
+#define COMPILE_TIME 0
+
+bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& program, const std::string& programName)
 {
-    // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
+#if COMPILE_TIME
+    SimpleTimer compileTimer;
+#endif
+     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
     const char* code = program.c_str();
     checkNVRTCErrors(nvrtcCreateProgram(&prog, code, programName.c_str(), 0, nullptr, nullptr));
- 
+
     std::vector<const char*> options;
     options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
  //   options.push_back("-G");              // Generate debug info
@@ -43,24 +48,27 @@ bool CUDACompile::CompilePTX(std::string& ptx, const std::string& program, const
     }
 
     // Fetch PTX
+    std::string ptx;
     size_t ptxSize;
     checkNVRTCErrors(nvrtcGetPTXSize(prog, &ptxSize));
     ptx.resize(ptxSize);
     checkNVRTCErrors(nvrtcGetPTX(prog, ptx.data()));
     checkNVRTCErrors(nvrtcDestroyProgram(&prog));
-    return true;
-} // CompilePTX
 
-bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& program, const std::string& programName)
-{
+    // Create the code module.
     if (cuda_module) {
         checkCUDAErrors(cuModuleUnload(cuda_module));
         cuda_module = nullptr;
     }
-    std::string ptx;
-    CompilePTX(ptx, program, programName);
     checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx.c_str(), 0, 0, 0));
-    return true;
+
+    // Optionaly output the compile time.
+#if COMPILE_TIME
+    printf("%s compile time = %f\n", programName.c_str(), compileTimer.Duration());
+#endif
+
+    // Note: Currently the program is forced to terminate if there were any compile errors.
+    return true; 
 } // CompileProgram
 
 CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& functionName)

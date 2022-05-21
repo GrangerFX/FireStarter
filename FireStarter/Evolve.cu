@@ -3,10 +3,11 @@
 // DEFINES //
 // END //
 
+#include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterParameters parameters, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterParameters parameters, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = blockIdx.x;
     if (member >= parameters.population)
@@ -25,7 +26,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     } else {
         // Later generations randomize one instruction.
         oldResult = *oldResults->MaxResult(member);
-        instructions = *oldResults->Instructions(member);
+        instructions = *oldEvolutions->Instructions(member);
 
         // Evolve a single program instruction for each generation.
         if (!thread) {
@@ -99,7 +100,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     if (thread == 0) {
         if (init || (maxResult < oldResult)) {
             // Save the improved results.
-            *newResults->Instructions(member) = instructions;
+            *newEvolutions->Instructions(member) = instructions;
             *newResults->MaxResult(member) = maxResult;
         } else {
             // The genetic part of genetic programming and a major optimization:
@@ -114,7 +115,7 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                     bestResult = curResult;
                 }
             }
-            *newResults->Instructions(member) = *oldResults->Instructions(bestIndex);
+            *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                 *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestIndex, v);

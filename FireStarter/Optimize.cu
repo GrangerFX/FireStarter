@@ -3,6 +3,7 @@
 // DEFINES //
 // END //
 
+#include "HashRandom.h"
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 

@@ -13,9 +13,13 @@ class FireStarterUnit : public SerialThread {
 private:
     SimpleTimer m_timer;
     char* m_deviceResults = nullptr;
+    char* m_deviceEvolutions = nullptr;
     FireStarterResults* m_hostResults = nullptr;
     FireStarterResults* m_deviceResults0 = nullptr;
     FireStarterResults* m_deviceResults1 = nullptr;
+    FireStarterEvolutions* m_hostEvolutions = nullptr;
+    FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
+    FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
     FireStarterProcess* m_process = nullptr;
     FireStarterState m_bestState;
     std::vector<FireStarterState> m_allStates;
@@ -30,6 +34,7 @@ private:
     std::string m_optimizeCode;
     FireStarterSettings m_settings;
     size_t m_resultsSize = 0;
+    size_t m_evolutionsSize = 0;
     unsigned int m_unitIndex = 0;
     unsigned int m_evolveGeneration = 0;
     unsigned int m_seed = 0;
@@ -37,6 +42,7 @@ private:
     bool m_codeLoaded = false;
 
     void ClearResults(void);
+    void ClearEvolutions(void);
     void EvolveGenerate(void);
     void UnitCode(std::string &code);
     void UnitGenerate(void);

@@ -2,6 +2,7 @@
 #include <string>
 
 #define DEFINES_CODE        "// DEFINES //"
+#define TARGET_CODE         "// TARGET //"
 #define PROGRAM_CODE        "// PROGRAM //"
 #define EVALUATE_CODE       "// EVALUATE //"
 #define OPTIMIZE_CODE       "// OPTMIZE //"

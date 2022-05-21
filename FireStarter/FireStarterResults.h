@@ -1,5 +1,5 @@
 #pragma once
-#include "FireStarterInstructions.h"
+#include "FireStarterData.h"
 
 // The parameters for Evolve() and Optimize()
 typedef struct FireStarterParameters {
@@ -70,18 +70,13 @@ typedef struct FireStarterResults {
 
     static inline size_t ResultsSize(unsigned int members, unsigned int instructions, unsigned int variations)
     {
-        return (sizeof(FireStarterResults) - 16) + members * (FireStarterResult::ResultSize(instructions, variations) + FireStarterInstructions::InstructionsSize(instructions));
+        return (sizeof(FireStarterResults) - 16) + members * FireStarterResult::ResultSize(instructions, variations);
     } // ResultsSize
 
     inline FireStarterResult* Result(unsigned int member)
     {
         return (FireStarterResult*)(m_memory + member * m_resultSize);
     } // Result
-
-    inline FireStarterInstructions* Instructions(unsigned int member)
-    {
-        return (FireStarterInstructions*)(m_memory + m_members * m_resultSize + member * m_instructionsSize);
-    } // Instructions
 
     inline FireStarterData* Data(unsigned int member, unsigned int variation)
     {
@@ -98,12 +93,11 @@ typedef struct FireStarterResults {
         return &Result(member)->maxResult;
     } // MaxResult
 
-    void InitResults(unsigned int members, unsigned int instructions, unsigned int variations, float startResult)
+    inline void InitResults(unsigned int members, unsigned int instructions, unsigned int variations, float startResult)
     {
         m_members = members;
         m_instructions = instructions;
         m_variations = variations;
-        m_instructionsSize = FireStarterInstructions::InstructionsSize(instructions);
         m_dataSize = FireStarterResult::DataSize(instructions);
         m_variationsSize = FireStarterResult::VariationsSize(instructions, variations);
         m_resultSize = FireStarterResult::ResultSize(instructions, variations);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 

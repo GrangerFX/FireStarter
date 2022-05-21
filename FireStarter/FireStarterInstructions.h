@@ -231,3 +231,29 @@ typedef struct FireStarterInstructions {
         return isfinite(n) ? n : 0.0f;
     } // Execute
 } FireStarterInstructions;
+
+typedef struct FireStarterEvolutions {
+    size_t m_members;
+    size_t m_instructions;
+    size_t m_instructionsSize;
+    size_t m_evolutionsSize;
+    unsigned char m_memory[16];
+
+    static inline size_t EvolutionsSize(unsigned int members, unsigned int instructions)
+    {
+        return (sizeof(FireStarterEvolutions) - 16) + members * FireStarterInstructions::InstructionsSize(instructions);
+    } // EvolutionsSize
+
+    inline FireStarterInstructions* Instructions(unsigned int member)
+    {
+        return (FireStarterInstructions*)(m_memory + member * m_instructionsSize);
+    } // Instructions
+
+    inline void InitEvolutions(unsigned int members, unsigned int instructions)
+    {
+        m_members = members;
+        m_instructions = instructions;
+        m_instructionsSize = FireStarterInstructions::InstructionsSize(instructions);
+        m_evolutionsSize = EvolutionsSize(members, instructions);
+    } // FireStarterResults
+} FireStarterEvolutions;
