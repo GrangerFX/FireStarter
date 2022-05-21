@@ -55,12 +55,12 @@ void FireStarter::SaveSolution(void)
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
-void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult, FireStarterInstructions* fireShowInstructions)
+void FireStarter::FireShow(void)
 {
     size_t resultSize = FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations);
-    checkCUDAErrors(cudaMemcpy(fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice));
+    checkCUDAErrors(cudaMemcpy(m_fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
-    checkCUDAErrors(cudaMemcpy(fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice));
+    checkCUDAErrors(cudaMemcpy(m_fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice));
     for (unsigned int variation = 0; variation < m_settings.m_variations; variation++) {
         // Launch the display kernel
         int threadsPerBlock = BLOCK_THREADS;
@@ -68,21 +68,21 @@ void FireStarter::FireShow(CUDAContext* context, CUfunction fireShowFunction, Fi
         dim3 cudaBlockSize(threadsPerBlock, 1, 1);
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-        void* arr[] = { reinterpret_cast<void*>(&fireShowResult),
-                        reinterpret_cast<void*>(&fireShowInstructions),
+        void* arr[] = { reinterpret_cast<void*>(&m_fireShowResult),
+                        reinterpret_cast<void*>(&m_fireShowInstructions),
                         reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                         reinterpret_cast<void*>(&m_buffer.m_width),
                         reinterpret_cast<void*>(&m_buffer.m_height),
                         reinterpret_cast<void*>(&variation) };
 
-        checkCUDAErrors(cuLaunchKernel(fireShowFunction,
+        checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, context->Stream(),                               // shared mem, stream */
+            0, m_fireShowContext->Stream(),                      // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
     }
-    checkCUDAErrors(cudaStreamSynchronize(context->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_fireShowContext->Stream()));
 } // FireShow
 
 void FireStarter::RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels)
@@ -114,50 +114,38 @@ void FireStarter::RenderStatus(void)
     sprintf_s(m_statusString, "FireStarter: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
 } // RenderStatus
 
-void FireStarter::ControlThread(void)
+void FireStarter::ControlDeallocate(void)
 {
-    CUDAContext fireShowContext;
-    CUmodule fireShowModule = nullptr;
-    CUfunction fireShowFunction = nullptr;
-    FireStarterResult* fireShowResult = nullptr;
-    FireStarterInstructions* fireShowInstructions = nullptr;
-    checkCUDAErrors(cudaMalloc(&fireShowResult, FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations)));
-    checkCUDAErrors(cudaMalloc(&fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions)));
+    // Unload the fire show code and destroy the CUDA context.
+    if (m_fireShowResult) {
+        checkCUDAErrors(cudaFree(m_fireShowResult));
+        m_fireShowResult = nullptr;
+    }
+    if (m_fireShowInstructions) {
+        checkCUDAErrors(cudaFree(m_fireShowInstructions));
+        m_fireShowInstructions = nullptr;
+    }
+    if (m_fireShowModule) {
+        checkCUDAErrors(cuModuleUnload(m_fireShowModule));
+        m_fireShowModule = nullptr;
+    }
+} // ControlDeallocate
 
-    m_buffer.Resize(m_width, m_height);
-    m_buffer.Erase();
+void FireStarter::ControlAllocate(void)
+{
+    if (!m_fireShowContext)
+        m_fireShowContext = new CUDAContext(0);
+    ControlDeallocate();
+    checkCUDAErrors(cudaMalloc(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations)));
+    checkCUDAErrors(cudaMalloc(&m_fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions)));
 
     // Compile fireShow.
-    if (CUDACompile::CompileProgram(fireShowModule, m_fireShowCode, "FireShow"))
-        fireShowFunction = CUDACompile::GetFunction(fireShowModule, "FireShow");
+    if (CUDACompile::CompileProgram(m_fireShowModule, m_fireShowCode, "FireShow"))
+        m_fireShowFunction = CUDACompile::GetFunction(m_fireShowModule, "FireShow");
+} // ControlAllocate
 
-    // Create and initialize a unit for each processor thread.
-    unsigned int unit_count = m_settings.m_evolveUnits;
-#if 0
-    if (!unit_count)
-        unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
-    if (!unit_count)   // May return zero on some systems.
-        unit_count = 1;
-#endif
-    if (m_settings.m_evolveMode == FIRESTARTER_PROCESS) {
-        for (unsigned int i = 0; i < unit_count; i++) {
-            FireStarterProcess* process = m_server.AddProcess();
-            FireStarterUnit* unit = new FireStarterUnit(process);
-            m_units.push_back(unit);
-            unit->DispatchAsync([process] {process->Start(); });
-        }
-    } else
-        for (unsigned int i = 0; i < unit_count; i++)
-            m_units.push_back(new FireStarterUnit());
-    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
-        LoadState(m_bestState);
-        m_bestState.m_settings = m_settings;
-    }
-    for (unsigned int i = 0; i < unit_count; i++)
-        m_units[i]->InitUnit(i, m_bestState);
-
-    // Loop until the the host program is quit.
-    m_runTimer.Start();
+void FireStarter::ControlLoop(void)
+{
     while (!m_quitControlThread) {
         // Execute a generation for all the units.
         m_controlTimer.Start();
@@ -197,19 +185,54 @@ void FireStarter::ControlThread(void)
             m_buffer.Erase();
 
             // Draw the graphs for both variations.
-            FireShow(&fireShowContext, fireShowFunction, fireShowResult, fireShowInstructions);
+            FireShow();
             m_controlUpdate = false;
             const unsigned char* bufferPixels = (m_settings.m_evolveMode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
             GetMainThread()->DispatchSync([this, bufferPixels] {
                 RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
                 m_bufferUpdate = false;
-            });
+                });
         }
 
         // Has the completion condition been met?
         if (m_generation - m_bestGeneration >= m_settings.m_evolveFailures)
             break;
     }
+} // ControlLoop
+
+void FireStarter::ControlThread(void)
+{
+    m_buffer.Resize(m_width, m_height);
+    m_buffer.Erase();
+
+    // Create and initialize a unit for each processor thread.
+    unsigned int unit_count = m_settings.m_evolveUnits;
+#if 0
+    if (!unit_count)
+        unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
+    if (!unit_count)   // May return zero on some systems.
+        unit_count = 1;
+#endif
+    if (m_settings.m_evolveMode == FIRESTARTER_PROCESS) {
+        for (unsigned int i = 0; i < unit_count; i++) {
+            FireStarterProcess* process = m_server.AddProcess();
+            FireStarterUnit* unit = new FireStarterUnit(process);
+            m_units.push_back(unit);
+            unit->DispatchAsync([process] {process->Start(); });
+        }
+    } else
+        for (unsigned int i = 0; i < unit_count; i++)
+            m_units.push_back(new FireStarterUnit());
+    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
+        LoadState(m_bestState);
+        m_bestState.m_settings = m_settings;
+    }
+    for (unsigned int i = 0; i < unit_count; i++)
+        m_units[i]->InitUnit(i, m_bestState);
+
+    // Loop until the the host program is quit.
+    m_runTimer.Start();
+    ControlLoop();
 
     // Finish processing and terminate each unit.
     for (FireStarterUnit* unit : m_units)
@@ -218,12 +241,6 @@ void FireStarter::ControlThread(void)
 
     // Free the frame buffer memory.
     m_buffer.Resize(0, 0);
-
-    // Unload the fire show code and destroy the CUDA context.
-    if (fireShowResult)
-        checkCUDAErrors(cudaFree(fireShowResult));
-    if (fireShowModule)
-        checkCUDAErrors(cuModuleUnload(fireShowModule));
 } // ControlThread
 
 float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation)
@@ -292,7 +309,9 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
         SetWindowText((HWND)m_window, statusString.c_str());
         return true;
     } else if (LoadTargetCode() && LoadFireShowCode()) {
+        DispatchAsync([this] { ControlAllocate(); });
         DispatchAsync([this] { ControlThread(); });
+        DispatchAsync([this] { ControlDeallocate(); });
         return true;
     }
     return false;
@@ -306,6 +325,11 @@ void FireStarter::Quit(void)
 
 FireStarter::FireStarter(void) : m_settings(FIRESTARTER_MODE)
 {
+    m_fireShowContext = nullptr;
+    m_fireShowModule = nullptr;
+    m_fireShowFunction = nullptr;
+    m_fireShowResult = nullptr;
+    m_fireShowInstructions = nullptr;
     m_bestState.InitState(m_settings);
     m_quitControlThread = false;
     m_statusString[0] = 0;
@@ -321,4 +345,9 @@ FireStarter::FireStarter(void) : m_settings(FIRESTARTER_MODE)
 
 FireStarter::~FireStarter(void)
 {
+    DispatchSync([this] {
+        ControlDeallocate();
+        if (m_fireShowContext)
+            delete m_fireShowContext;
+    });
 } // ~FireStarter

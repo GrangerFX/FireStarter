@@ -13,9 +13,14 @@ class FireStarter : public SerialThread {
 public:
     SimpleTimer m_runTimer;
     SimpleTimer m_controlTimer;
+    std::string m_fireShowCode;
+    CUDAContext* m_fireShowContext;
+    CUmodule m_fireShowModule;
+    CUfunction m_fireShowFunction;
+    FireStarterResult* m_fireShowResult;
+    FireStarterInstructions* m_fireShowInstructions;
     double m_controlTime;
     std::string m_solutionTargetCode;
-    std::string m_fireShowCode;
     FireStarterState m_bestState;
     std::vector<FireStarterState> m_allStates;
     std::vector<FireStarterUnit*> m_units;
@@ -39,9 +44,12 @@ public:
     void SaveBestState(void);
     void SaveBestCode(void);
     void SaveSolution(void);
-    void FireShow(class CUDAContext* context, CUfunction fireShowFunction, FireStarterResult* fireShowResult, FireStarterInstructions* fireShowInstructions);
+    void FireShow(void);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void RenderStatus(void);
+    void ControlDeallocate(void);
+    void ControlAllocate(void);
+    void ControlLoop(void);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
     bool Init(void* window, unsigned int width, unsigned int height);
