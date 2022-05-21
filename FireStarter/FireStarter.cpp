@@ -205,6 +205,10 @@ void FireStarter::ControlThread(void)
                 m_bufferUpdate = false;
             });
         }
+
+        // Has the completion condition been met?
+        if (m_generation - m_bestGeneration >= m_settings.m_evolveFailures)
+            break;
     }
 
     // Finish processing and terminate each unit.

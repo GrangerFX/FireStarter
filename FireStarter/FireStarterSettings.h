@@ -24,6 +24,7 @@
 #define EVOLVE_ITERATIONS 512
 #define EVOLVE_GENERATIONS 10
 #define EVOLVE_PRECISION 256
+#define EVOLVE_FAILURES 64
 
 #define OPTIMIZE_UNITS 1
 #define OPTIMIZE_STATES 1
@@ -31,6 +32,7 @@
 #define OPTIMIZE_ITERATIONS 512
 #define OPTIMIZE_GENERATIONS 100
 #define OPTIMIZE_PRECISION 256
+#define OPTIMIZE_FAILURES 64
 
 #define UNIT_UNITS 1
 #define UNIT_STATES 4
@@ -38,6 +40,7 @@
 #define UNIT_ITERATIONS 256
 #define UNIT_GENERATIONS 100
 #define UNIT_PRECISION 256
+#define UNIT_FAILURES 64
 
 #define PROCESS_UNITS 4
 #define PROCESS_STATES 8
@@ -45,6 +48,7 @@
 #define PROCESS_ITERATIONS 128
 #define PROCESS_GENERATIONS 100
 #define PROCESS_PRECISION 256
+#define PROCESS_FAILURES 64
 
 class FireStarterSettings {
 public:
@@ -66,6 +70,7 @@ public:
     unsigned int m_evolveIterations;
     unsigned int m_evolveGenerations;
     unsigned int m_evolvePrecision;
+    unsigned int m_evolveFailures;
 
     inline void GenerateDefines(std::string& code)
     {
@@ -81,14 +86,14 @@ public:
         code += Format("    settings.m_instructions = %u;\r\n", m_instructions);
         code += Format("    settings.m_variations = %u;\r\n", m_variations);
         code += Format("    settings.m_samples = %u;\r\n", m_samples);
-
+        code += "\r\n";
         code += Format("    settings.m_sampleMin = %ff;\r\n", m_sampleMin);
         code += Format("    settings.m_sampleMax = %ff;\r\n", m_sampleMax);
         code += Format("    settings.m_evolveFactor = %ff;\r\n", m_evolveFactor);
         code += Format("    settings.m_evolveStartFactor = %ff;\r\n", m_evolveStartFactor);
         code += Format("    settings.m_evolveStartResult = %ff;\r\n", m_evolveStartResult);
         code += Format("    settings.m_evolveCandidates = %u;\r\n", m_evolveCandidates);
-
+        code += "\r\n";
         code += Format("    settings.m_evolveMode = %u;\r\n", m_evolveMode);
         code += Format("    settings.m_evolveUnits = %u;\r\n", m_evolveUnits);
         code += Format("    settings.m_evolveStates = %u;\r\n", m_evolveStates);
@@ -96,6 +101,7 @@ public:
         code += Format("    settings.m_evolveIterations = %u;\r\n", m_evolveIterations);
         code += Format("    settings.m_evolveGenerations = %u;\r\n", m_evolveGenerations);
         code += Format("    settings.m_evolvePrecision = %u;\r\n", m_evolvePrecision);
+        code += Format("    settings.m_evolveFailures = %u;\r\n", m_evolveFailures);
         code += "} // LoadSettings\r\n";
         code += "\r\n";
     } // SaveSettings
@@ -122,6 +128,7 @@ public:
                 m_evolveIterations = EVOLVE_ITERATIONS;
                 m_evolveGenerations = EVOLVE_GENERATIONS;
                 m_evolvePrecision = EVOLVE_PRECISION;
+                m_evolveFailures = EVOLVE_FAILURES;
                 break;
             case FIRESTARTER_OPTIMIZE:
                 m_evolveUnits = OPTIMIZE_UNITS;
@@ -130,6 +137,7 @@ public:
                 m_evolveIterations = OPTIMIZE_ITERATIONS;
                 m_evolveGenerations = OPTIMIZE_GENERATIONS;
                 m_evolvePrecision = OPTIMIZE_PRECISION;
+                m_evolveFailures = OPTIMIZE_FAILURES;
                 break;
             case FIRESTARTER_UNIT:
                 m_evolveUnits = UNIT_UNITS;
@@ -138,6 +146,7 @@ public:
                 m_evolveIterations = UNIT_ITERATIONS;
                 m_evolveGenerations = UNIT_GENERATIONS;
                 m_evolvePrecision = UNIT_PRECISION;
+                m_evolveFailures = UNIT_FAILURES;
                 break;
             case FIRESTARTER_PROCESS:
                 m_evolveUnits = PROCESS_UNITS;
@@ -146,6 +155,7 @@ public:
                 m_evolveIterations = PROCESS_ITERATIONS;
                 m_evolveGenerations = PROCESS_GENERATIONS;
                 m_evolvePrecision = PROCESS_PRECISION;
+                m_evolveFailures = PROCESS_FAILURES;
                 break;
             default:
                 m_evolveUnits = 0;
@@ -154,6 +164,7 @@ public:
                 m_evolveIterations = 0;
                 m_evolveGenerations = 0;
                 m_evolvePrecision = 0;
+                m_evolveFailures = 0;
                 break;
         }
     } // FireStarterSettings
