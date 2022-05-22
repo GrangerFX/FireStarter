@@ -28,6 +28,7 @@ public:
     FrameBuffer m_buffer;
     char m_statusString[1024];
     FireStarterSettings m_settings;
+    unsigned int m_fireStarterMode;
     unsigned int m_generation;
     unsigned int m_bestGeneration;
     float m_bestResult;
@@ -49,7 +50,7 @@ public:
     void RenderStatus(void);
     void ControlDeallocate(void);
     void ControlAllocate(void);
-    void ControlLoop(void);
+    void ControlLoop(unsigned int evolveMode);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
     bool Init(void* window, unsigned int width, unsigned int height);

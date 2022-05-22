@@ -111,7 +111,25 @@ void FireStarter::RenderImage(unsigned int width, unsigned int height, const uns
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
-    sprintf_s(m_statusString, "FireStarter: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+    std::string mode;
+    switch (m_settings.m_evolveMode) {
+        case FIRESTARTER_EVOLVE:
+            mode = "FireStarter_Evolve";
+            break;
+        case FIRESTARTER_UNIT:
+            mode = "FireStarter_Unit";
+            break;
+        case FIRESTARTER_PROCESS:
+            mode = "FireStarter_Process";
+            break;
+        case FIRESTARTER_OPTIMIZE:
+            mode = "FireStarter_Optimize";
+            break;
+        case FIRESTARTER_SOLUTION:
+            mode = "FireStarter_Solution";
+            break;
+    }
+    sprintf_s(m_statusString, "%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
 } // RenderStatus
 
 void FireStarter::ControlDeallocate(void)
@@ -144,8 +162,44 @@ void FireStarter::ControlAllocate(void)
         m_fireShowFunction = CUDACompile::GetFunction(m_fireShowModule, "FireShow");
 } // ControlAllocate
 
-void FireStarter::ControlLoop(void)
+void FireStarter::ControlLoop(unsigned int evolveMode)
 {
+    if (m_quitControlThread)
+        return;
+
+    // If the evolve units is set to zero, use the number of concurrent hardware threads.
+    m_settings = FireStarterSettings(evolveMode);
+    if (!m_settings.m_evolveUnits)
+        m_settings.m_evolveUnits = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
+
+    m_generation = 0;
+    m_bestGeneration = 0;
+    m_bestResult = m_settings.m_evolveStartResult;
+    m_controlTime = 0.0;
+    m_controlUpdate = false;
+    m_bufferUpdate = false;
+
+    // Create the states.
+    m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
+
+    // Create the units.
+    for (unsigned int i = 0; i < m_settings.m_evolveUnits; i++) {
+        FireStarterProcess* process = (m_settings.m_evolveMode == FIRESTARTER_PROCESS) ? m_server.AddProcess() : nullptr;
+        FireStarterUnit* unit = new FireStarterUnit(process);
+        m_units.push_back(unit);
+        unit->Start();  // Start the interprocess communication.
+    }
+
+    // Load or initialize the starting state.
+    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
+        LoadState(m_bestState);
+        m_bestState.m_settings = m_settings;
+    } else
+        m_bestState.InitState(m_settings);
+    for (unsigned int i = 0; i < m_units.size(); i++)
+        m_units[i]->InitUnit(i, m_bestState);
+
+    // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
         // Execute a generation for all the units.
         m_controlTimer.Start();
@@ -198,6 +252,12 @@ void FireStarter::ControlLoop(void)
         if (m_generation - m_bestGeneration >= m_settings.m_evolveFailures)
             break;
     }
+
+    // Finish processing and terminate each unit.
+    for (FireStarterUnit* unit : m_units)
+        delete unit;
+    m_units.clear();
+    m_server.ClearProcesses();
 } // ControlLoop
 
 void FireStarter::ControlThread(void)
@@ -205,36 +265,12 @@ void FireStarter::ControlThread(void)
     m_buffer.Resize(m_width, m_height);
     m_buffer.Erase();
 
-    // Create and initialize a unit for each processor thread.
-    unsigned int unit_count = m_settings.m_evolveUnits;
-#if 0
-    if (!unit_count)
-        unit_count = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
-    if (!unit_count)   // May return zero on some systems.
-        unit_count = 1;
-#endif
-    for (unsigned int i = 0; i < unit_count; i++) {
-        FireStarterProcess* process = (m_settings.m_evolveMode == FIRESTARTER_PROCESS) ? m_server.AddProcess() : nullptr;
-        FireStarterUnit* unit = new FireStarterUnit(process);
-        m_units.push_back(unit);
-        unit->Start();  // Start the interprocess communication.
-    }
+    // Initial evolution pass.
+    ControlLoop(m_fireStarterMode);
 
-    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
-        LoadState(m_bestState);
-        m_bestState.m_settings = m_settings;
-    }
-    for (unsigned int i = 0; i < unit_count; i++)
-        m_units[i]->InitUnit(i, m_bestState);
-
-    // Loop until the the host program is quit.
-    m_runTimer.Start();
-    ControlLoop();
-
-    // Finish processing and terminate each unit.
-    for (FireStarterUnit* unit : m_units)
-        delete unit;
-    m_units.clear();
+    // Optimization evolution pass.
+    if (m_fireStarterMode != FIRESTARTER_OPTIMIZE)
+        ControlLoop(FIRESTARTER_OPTIMIZE);
 
     // Free the frame buffer memory.
     m_buffer.Resize(0, 0);
@@ -320,8 +356,9 @@ void FireStarter::Quit(void)
     DispatchSync([] {}); // This will wait for ControlThread() to exit.
 } // Quit
 
-FireStarter::FireStarter(void) : m_settings(FIRESTARTER_MODE)
+FireStarter::FireStarter(void)
 {
+    m_fireStarterMode = FIRESTARTER_MODE;
     m_fireShowContext = nullptr;
     m_fireShowModule = nullptr;
     m_fireShowFunction = nullptr;
@@ -337,7 +374,6 @@ FireStarter::FireStarter(void) : m_settings(FIRESTARTER_MODE)
     m_seed = RANDOMHASH(123);
     m_controlUpdate = false;
     m_bufferUpdate = false;
-    m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
 } // FireStarter
 
 FireStarter::~FireStarter(void)

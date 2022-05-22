@@ -49,6 +49,7 @@ public:
     const std::string& ModulePath(void) const;
     FireStarterProcess* Process(size_t index);
     FireStarterProcess* AddProcess(const std::string& name = FIREMAKER);
+    void ClearProcesses(void);
     FireStarterServer(const std::string& name = FIRESTARTER);
     ~FireStarterServer(void);
 }; // class FireStarterServer

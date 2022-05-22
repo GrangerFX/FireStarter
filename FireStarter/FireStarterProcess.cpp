@@ -468,6 +468,13 @@ FireStarterProcess* FireStarterServer::AddProcess(const std::string& name)
     return process;
 } // AddProcess
 
+void FireStarterServer::ClearProcesses(void)
+{
+    for (FireStarterProcess* process : m_processes)
+        delete process;
+    m_processes.clear();
+} // ClearProcesses
+
 FireStarterServer::FireStarterServer(const std::string& name)
 {
     m_processServerName = name;
@@ -475,6 +482,5 @@ FireStarterServer::FireStarterServer(const std::string& name)
 
 FireStarterServer::~FireStarterServer(void)
 {
-    for (FireStarterProcess* process : m_processes)
-        delete process;
+    ClearProcesses();
 } // ~FireStarterServer
