@@ -496,39 +496,53 @@ void FireStarterUnit::Sync(FireStarterState* states)
     });
 } // Sync
 
+void FireStarterUnit::Start(void)
+{
+    if (m_process)
+        DispatchAsync([this] { m_process->Start(); });
+} // Start
+
+void FireStarterUnit::Stop(void)
+{
+    if (m_process)
+        DispatchAsync([this] {
+            m_process->Stop();
+            m_process->Terminate();
+        });
+} // Stop
+
 void FireStarterUnit::Client(void)
 {
-    while (!m_process->ShouldTerminate()) {
-        FireStarterPacket receivePacket;
-        m_process->ReceivePacket(receivePacket);
-        const std::string& command = receivePacket.Command();
-        if (command == UNIT_INIT) {
-            FireStarterPacket sendPacket(UNIT_INIT);
-            m_process->SendPacket(sendPacket);
-
-            bool result = true;
-            unsigned int unitIndex = 0;
-            result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
-            FireStarterState receiveState;
-            result = result && receiveState.Packetize(receivePacket);
-            if (result)
-                InitUnit(unitIndex, receiveState);
-        } else if (command == UNIT_EXECUTE) {
-            FireStarterPacket sendPacket(UNIT_EXECUTE);
-            m_process->SendPacket(sendPacket);
-
-            Execute();
-        } else if (command == UNIT_UPDATE) {
-            FireStarterPacket sendPacket(UNIT_UPDATE);
-            DispatchSync([this, &sendPacket] { Packetize(sendPacket); });
-            m_process->SendPacket(sendPacket);
-        } else if (command == UNIT_SYNC) {
-            FireStarterPacket sendPacket(UNIT_SYNC);
-            m_process->SendPacket(sendPacket);
-
-            DispatchSync([this, &receivePacket] { PacketizeAllStates(receivePacket); });
-        }
-    }
+    if (!m_process->ShouldTerminate())
+        DispatchAsync([this] {
+            FireStarterPacket receivePacket;
+            m_process->ReceivePacket(receivePacket);
+            const std::string& command = receivePacket.Command();
+            if (command == UNIT_INIT) {
+                bool result = true;
+                unsigned int unitIndex = 0;
+                result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
+                FireStarterState receiveState;
+                result = result && receiveState.Packetize(receivePacket);
+                if (result)
+                    InitUnit(unitIndex, receiveState);
+                m_process->SendCommand(UNIT_INIT);
+            } else if (command == UNIT_EXECUTE) {
+                Execute();
+                m_process->SendCommand(UNIT_EXECUTE);
+            } else if (command == UNIT_UPDATE) {
+                FireStarterPacket sendPacket(UNIT_UPDATE);
+                Packetize(sendPacket);
+                m_process->SendPacket(sendPacket);
+            } else if (command == UNIT_SYNC) {
+                PacketizeAllStates(receivePacket);
+                m_process->SendCommand(UNIT_SYNC);
+            } else {
+                // Error: Unknown command!
+                m_process->Terminate();
+            }
+            DispatchAsync([this] { Client(); });
+        });
 } // ClientCommand
 
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)

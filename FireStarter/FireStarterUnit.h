@@ -64,6 +64,8 @@ public:
     void Execute(void);
     bool Update(FireStarterState* states, FireStarterState& bestState, float& bestResult);
     void Sync(FireStarterState* states);
+    void Start(void);
+    void Stop(void);
     void Client(void);
     FireStarterUnit(FireStarterProcess* process = nullptr);
     ~FireStarterUnit(void);

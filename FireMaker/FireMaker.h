@@ -2,8 +2,10 @@
 #include "FireStarterProcess.h"
 #include "FireStarterUnit.h"
 
-class FireMaker : public SerialThread {
+class FireMaker {
 private:
+	FireStarterProcess m_process;
+	FireStarterUnit m_unit;
 	volatile bool m_terminate = false;
 
 public:

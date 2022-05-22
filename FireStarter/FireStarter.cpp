@@ -213,16 +213,13 @@ void FireStarter::ControlThread(void)
     if (!unit_count)   // May return zero on some systems.
         unit_count = 1;
 #endif
-    if (m_settings.m_evolveMode == FIRESTARTER_PROCESS) {
-        for (unsigned int i = 0; i < unit_count; i++) {
-            FireStarterProcess* process = m_server.AddProcess();
-            FireStarterUnit* unit = new FireStarterUnit(process);
-            m_units.push_back(unit);
-            unit->DispatchAsync([process] {process->Start(); });
-        }
-    } else
-        for (unsigned int i = 0; i < unit_count; i++)
-            m_units.push_back(new FireStarterUnit());
+    for (unsigned int i = 0; i < unit_count; i++) {
+        FireStarterProcess* process = (m_settings.m_evolveMode == FIRESTARTER_PROCESS) ? m_server.AddProcess() : nullptr;
+        FireStarterUnit* unit = new FireStarterUnit(process);
+        m_units.push_back(unit);
+        unit->Start();  // Start the interprocess communication.
+    }
+
     if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
         LoadState(m_bestState);
         m_bestState.m_settings = m_settings;

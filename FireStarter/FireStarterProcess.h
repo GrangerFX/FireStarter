@@ -25,6 +25,7 @@ public:
     bool ReceiveData(void* data, size_t size);
     bool SendTerminate(void);
     bool SendPacket(const FireStarterPacket& packet);
+    bool SendCommand(const std::string &command);
     bool ReceivePacket(FireStarterPacket& packet, const std::string& command = std::string());
     bool SendString(const std::string& string);
     bool ReceiveString(std::string& string);

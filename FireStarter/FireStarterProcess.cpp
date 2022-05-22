@@ -118,6 +118,12 @@ bool FireStarterProcess::SendPacket(const FireStarterPacket& packet)
     return SendData(&size, sizeof(size_t)) && SendData(packet.data(), size);
 } // SendPacket
 
+bool FireStarterProcess::SendCommand(const std::string& command)
+{
+    FireStarterPacket packet(command);
+    return SendPacket(packet);
+} // SendCommand
+
 bool FireStarterProcess::ReceivePacket(FireStarterPacket& packet, const std::string& command)
 {
     size_t size = 0;

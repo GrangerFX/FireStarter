@@ -3,9 +3,7 @@
 
 void FireMaker::Terminate(void)
 {
-	DispatchAsync([this] {
-		m_terminate = true;
-	});
+	m_terminate = true;
 } // Terminate
 
 bool FireMaker::ShouldTerminate(void)
@@ -13,16 +11,13 @@ bool FireMaker::ShouldTerminate(void)
 	return m_terminate;
 } // ShouldTerminate
 
-FireMaker::FireMaker(const std::string& pipeName)
+FireMaker::FireMaker(const std::string& pipeName) : m_process(pipeName, &m_terminate), m_unit(&m_process)
 {
-	DispatchAsync([this, pipeName] {
-		FireStarterProcess process(pipeName, &m_terminate);
-		process.Start();
-		FireStarterUnit unit(&process);
-		unit.Client();
-	});
+	m_unit.Start();
+	m_unit.Client();
 } // FireMaker
 
 FireMaker::~FireMaker(void)
 {
+	m_unit.Stop();
 } // ~FireMaker
