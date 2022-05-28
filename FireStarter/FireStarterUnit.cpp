@@ -22,7 +22,7 @@ void FireStarterUnit::EvolveGenerate(void)
 {
     // Update the defines section.
     std::string definesCode;
-    m_settings.GenerateDefines(definesCode);
+    m_bestState.SaveDefines(definesCode);
     FireStarterCode::UpdateProgram(m_evolveCode, definesCode, EVALUATE_CODE);
 
     // Compile the program
@@ -37,7 +37,7 @@ void FireStarterUnit::UnitCode(std::string& code)
 
     // Generate the defines
     std::string definesCode;
-    m_settings.GenerateDefines(definesCode);
+    m_bestState.SaveDefines(definesCode);
 
     // Generate the evaluate and optimize code
     std::string evaluateCode;

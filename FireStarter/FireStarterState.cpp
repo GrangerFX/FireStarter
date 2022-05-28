@@ -16,6 +16,40 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
     return result;
 } // Packetize
 
+void FireStarterState::SaveDefines(std::string& code)
+{
+    code += Format("#define FIRESTARTER_INSTRUCTIONS %d\r\n", m_settings.m_instructions);
+    code += Format("#define FIRESTARTER_VARIATIONS %d\r\n", m_settings.m_variations);
+    code += Format("#define FIRESTARTER_SAMPLES %d\r\n", m_settings.m_samples);
+} // GenerateDefines
+
+void FireStarterState::SaveSettings(std::string& code)
+{
+    code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
+    code += "{\r\n";
+    code += Format("    settings.m_instructions = %u;\r\n", m_settings.m_instructions);
+    code += Format("    settings.m_variations = %u;\r\n", m_settings.m_variations);
+    code += Format("    settings.m_samples = %u;\r\n", m_settings.m_samples);
+    code += "\r\n";
+    code += Format("    settings.m_sampleMin = %ff;\r\n", m_settings.m_sampleMin);
+    code += Format("    settings.m_sampleMax = %ff;\r\n", m_settings.m_sampleMax);
+    code += Format("    settings.m_evolveFactor = %ff;\r\n", m_settings.m_evolveFactor);
+    code += Format("    settings.m_evolveStartFactor = %ff;\r\n", m_settings.m_evolveStartFactor);
+    code += Format("    settings.m_evolveStartResult = %ff;\r\n", m_settings.m_evolveStartResult);
+    code += Format("    settings.m_evolveCandidates = %u;\r\n", m_settings.m_evolveCandidates);
+    code += "\r\n";
+    code += Format("    settings.m_evolveMode = %u;\r\n", m_settings.m_evolveMode);
+    code += Format("    settings.m_evolveUnits = %u;\r\n", m_settings.m_evolveUnits);
+    code += Format("    settings.m_evolveStates = %u;\r\n", m_settings.m_evolveStates);
+    code += Format("    settings.m_evolvePopulation = %u;\r\n", m_settings.m_evolvePopulation);
+    code += Format("    settings.m_evolveIterations = %u;\r\n", m_settings.m_evolveIterations);
+    code += Format("    settings.m_evolveGenerations = %u;\r\n", m_settings.m_evolveGenerations);
+    code += Format("    settings.m_evolvePrecision = %u;\r\n", m_settings.m_evolvePrecision);
+    code += Format("    settings.m_evolveFailures = %u;\r\n", m_settings.m_evolveFailures);
+    code += "} // LoadSettings\r\n";
+    code += "\r\n";
+} // SaveSettings
+
 void FireStarterState::SaveVariation(unsigned int variation, std::string& code)
 {
     code += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
@@ -47,7 +81,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "#pragma once\r\n";
     code += "#include \"FireStarterState.h\"\r\n";
     code += "\r\n";
-    m_settings.SaveSettings(code);
+    SaveSettings(code);
     m_program.SaveProgram(code);
     SaveResult(code);
 

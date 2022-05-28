@@ -1,6 +1,5 @@
 #pragma once
 #include "FireStarterData.h"
-#include "FireStarterUtil.h"
 
 #define FIRESTARTER_SAMPLE_MIN 0.0f
 #define FIRESTARTER_SAMPLE_MAX (2.0f * 3.14159265f)
@@ -70,40 +69,6 @@ public:
     unsigned int m_evolveGenerations;
     unsigned int m_evolvePrecision;
     unsigned int m_evolveFailures;
-
-    inline void GenerateDefines(std::string& code)
-    {
-        code += Format("#define FIRESTARTER_INSTRUCTIONS %d\r\n", m_instructions);
-        code += Format("#define FIRESTARTER_VARIATIONS %d\r\n", m_variations);
-        code += Format("#define FIRESTARTER_SAMPLES %d\r\n", m_samples);
-    } // GenerateDefines
-
-    inline void SaveSettings(std::string& code)
-    {
-        code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
-        code += "{\r\n";
-        code += Format("    settings.m_instructions = %u;\r\n", m_instructions);
-        code += Format("    settings.m_variations = %u;\r\n", m_variations);
-        code += Format("    settings.m_samples = %u;\r\n", m_samples);
-        code += "\r\n";
-        code += Format("    settings.m_sampleMin = %ff;\r\n", m_sampleMin);
-        code += Format("    settings.m_sampleMax = %ff;\r\n", m_sampleMax);
-        code += Format("    settings.m_evolveFactor = %ff;\r\n", m_evolveFactor);
-        code += Format("    settings.m_evolveStartFactor = %ff;\r\n", m_evolveStartFactor);
-        code += Format("    settings.m_evolveStartResult = %ff;\r\n", m_evolveStartResult);
-        code += Format("    settings.m_evolveCandidates = %u;\r\n", m_evolveCandidates);
-        code += "\r\n";
-        code += Format("    settings.m_evolveMode = %u;\r\n", m_evolveMode);
-        code += Format("    settings.m_evolveUnits = %u;\r\n", m_evolveUnits);
-        code += Format("    settings.m_evolveStates = %u;\r\n", m_evolveStates);
-        code += Format("    settings.m_evolvePopulation = %u;\r\n", m_evolvePopulation);
-        code += Format("    settings.m_evolveIterations = %u;\r\n", m_evolveIterations);
-        code += Format("    settings.m_evolveGenerations = %u;\r\n", m_evolveGenerations);
-        code += Format("    settings.m_evolvePrecision = %u;\r\n", m_evolvePrecision);
-        code += Format("    settings.m_evolveFailures = %u;\r\n", m_evolveFailures);
-        code += "} // LoadSettings\r\n";
-        code += "\r\n";
-    } // SaveSettings
 
     inline FireStarterSettings(unsigned int evolveMode = 0)
     {

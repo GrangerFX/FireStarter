@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 
 class FireStarterPacket : public std::vector<char>
 {

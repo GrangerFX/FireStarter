@@ -1,8 +1,15 @@
 #pragma once
 
+#include "FireStarterSettings.h"
 #include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
+
+// Initialize the settings based on an external definition header file.
+GPU_GLOBAL void FireSettings(FireStarterSettings* settings, unsigned int mode)
+{
+    *settings = FireStarterSettings(mode);
+} // FireSettings
 
 GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
 {
