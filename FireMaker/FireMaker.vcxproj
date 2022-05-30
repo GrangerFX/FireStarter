@@ -105,7 +105,6 @@
   <ItemGroup>
     <ClInclude Include="..\Distribution\CUDADefines.h" />
     <ClInclude Include="..\Distribution\FireStarterData.h" />
-    <ClInclude Include="..\Distribution\FireStarterDefines.h" />
     <ClInclude Include="..\Distribution\FireStarterInstructions.h" />
     <ClInclude Include="..\Distribution\FireStarterSettings.h" />
     <ClInclude Include="..\Distribution\FireStarterTarget.h" />
