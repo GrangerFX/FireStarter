@@ -53,7 +53,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>./;$(CUDA_PATH)/include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Distribution/;../Distribution/Results;$(CUDA_PATH)/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -93,12 +93,10 @@
       <LanguageStandard Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">stdcpp20</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -110,46 +108,43 @@
     <ClCompile Include="FireStarterProgram.cpp" />
     <ClCompile Include="FireStarterState.cpp" />
     <ClCompile Include="FireStarterUnit.cpp" />
+    <ClInclude Include="..\Distribution\CUDADefines.h" />
+    <ClInclude Include="..\Distribution\FireStarterData.h" />
+    <ClInclude Include="..\Distribution\FireStarterDefines.h" />
+    <ClInclude Include="..\Distribution\FireStarterInstructions.h" />
+    <ClInclude Include="..\Distribution\FireStarterResults.h" />
+    <ClInclude Include="..\Distribution\FireStarterSettings.h" />
+    <ClInclude Include="..\Distribution\FireStarterTarget.h" />
+    <ClInclude Include="..\Distribution\HashRandom.h" />
+    <ClInclude Include="..\Distribution\Results\FireStarter_LoadState.h" />
+    <ClInclude Include="..\Distribution\Results\FireStarter_Solution.h" />
     <ClInclude Include="CUDACompile.h" />
     <ClInclude Include="CUDAContext.h" />
-    <ClInclude Include="CUDADefines.h" />
     <ClInclude Include="CUDAErrors.h" />
     <ClInclude Include="FireStarter.h" />
     <ClInclude Include="FireStarterCode.h" />
-    <ClInclude Include="FireStarterData.h" />
-    <ClInclude Include="FireStarterDefines.h" />
-    <ClInclude Include="FireStarterInstructions.h" />
     <ClInclude Include="FireStarterProcess.h" />
     <ClInclude Include="FireStarterProgram.h" />
-    <ClInclude Include="FireStarterResults.h" />
-    <ClInclude Include="FireStarterSettings.h" />
     <ClInclude Include="FireStarterState.h" />
     <ClInclude Include="FireStarterUnit.h" />
     <ClInclude Include="FireStarterUtil.h" />
-    <ClInclude Include="FireStarter_LoadState.h" />
-    <ClInclude Include="FireStarter_Solution.h" />
-    <ClInclude Include="FireStarterTarget.h" />
-    <ClInclude Include="HashRandom.h" />
     <ClInclude Include="PrintF.h" />
     <ClInclude Include="SerialThread.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FireShow.cu">
+    <None Include="..\Distribution\Evolve.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="Evolve.cu">
+    <None Include="..\Distribution\FireShow.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="FireStarter_BestCode.cu">
+    <None Include="..\Distribution\Optimize.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="Optimize.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
+    <None Include="..\Distribution\Results\FireStarter_BestCode.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

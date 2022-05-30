@@ -24,7 +24,7 @@ void FireStarter::SaveBestState(void)
 {
     std::string bestStateCode;
     m_bestState.SaveState(bestStateCode);
-    FireStarterCode::SaveCode("FireStarter_LoadState.h", bestStateCode);
+    FireStarterCode::SaveCode("Results/FireStarter_LoadState.h", bestStateCode);
 } // SaveBestState
 
 void FireStarter::SaveBestCode(void)
@@ -44,7 +44,7 @@ void FireStarter::SaveBestCode(void)
         std::string bestCode = optimizeCode;
         FireStarterCode::UpdateProgram(bestCode, definesCode, DEFINES_CODE);
         FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
-        FireStarterCode::SaveCode("FireStarter_BestCode.cu", bestCode);
+        FireStarterCode::SaveCode("Results/FireStarter_BestCode.cu", bestCode);
     }
 } // SaveBestCode
 
@@ -52,7 +52,7 @@ void FireStarter::SaveSolution(void)
 {
     std::string solutionCode;
     m_bestState.SaveSolution(solutionCode, m_solutionTargetCode, m_controlTime, m_generation);
-    FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
+    FireStarterCode::SaveCode("Results/FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
 void FireStarter::FireShow(void)
