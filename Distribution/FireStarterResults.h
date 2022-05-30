@@ -1,19 +1,6 @@
 #pragma once
 #include "FireStarterData.h"
 
-// The parameters for Evolve() and Optimize()
-typedef struct FireStarterParameters {
-    unsigned int population;
-    unsigned int iterations;
-    unsigned int precision;
-    float sampleMin;
-    float sampleMax;
-    float evolveFactor;
-    float evolveStartFactor;
-    float evolveStartResult;
-    unsigned int evolveCandidates;
-} FireStarterParameters;
-
 typedef struct FireStarterResult {
     float maxResult;
     unsigned int dataSize;

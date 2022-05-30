@@ -64,7 +64,6 @@ void FireStarterUnit::UnitCode(std::string& code)
 
     // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     code = m_optimizeCode;
-    FireStarterCode::UpdateProgram(code, definesCode, DEFINES_CODE);
     FireStarterCode::UpdateProgram(code, evaluateCode, EVALUATE_CODE);
     FireStarterCode::UpdateProgram(code, optimizeCode, OPTIMIZE_CODE);
 } // UnitCode
@@ -121,22 +120,11 @@ void FireStarterUnit::EvolveGenerations(unsigned int seed, unsigned int init)
         newEvolutions = g & 1 ? m_deviceEvolutions0 : m_deviceEvolutions1;
         oldEvolutions = g & 1 ? m_deviceEvolutions1 : m_deviceEvolutions0;
 
-        FireStarterParameters parameters;
-        parameters.population = m_settings.m_evolvePopulation;
-        parameters.iterations = m_settings.m_evolveIterations;
-        parameters.precision = m_settings.m_evolvePrecision;
-        parameters.sampleMin = m_settings.m_sampleMin;
-        parameters.sampleMax = m_settings.m_sampleMax;
-        parameters.evolveFactor = m_settings.m_evolveFactor;
-        parameters.evolveStartFactor = m_settings.m_evolveStartFactor;
-        parameters.evolveStartResult = m_settings.m_evolveStartResult;
-        parameters.evolveCandidates = m_settings.m_evolveCandidates;
-
         void* arr[] = { reinterpret_cast<void*>(&newEvolutions),
                         reinterpret_cast<void*>(&oldEvolutions),
                         reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
-                        reinterpret_cast<void*>(&parameters),
+                        reinterpret_cast<void*>(&m_settings),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&init) };
 
@@ -186,24 +174,13 @@ void FireStarterUnit::OptimizeGenerations(unsigned int index, unsigned int seed,
     unsigned int dataSize = state.m_program.m_dataSize;
     FireStarterResults* newResults, *oldResults;
 
-    FireStarterParameters parameters;
-    parameters.population = m_settings.m_evolvePopulation;
-    parameters.iterations = m_settings.m_evolveIterations;
-    parameters.precision = m_settings.m_evolvePrecision;
-    parameters.sampleMin = m_settings.m_sampleMin;
-    parameters.sampleMax = m_settings.m_sampleMax;
-    parameters.evolveFactor = m_settings.m_evolveFactor;
-    parameters.evolveStartFactor = m_settings.m_evolveStartFactor;
-    parameters.evolveStartResult = m_settings.m_evolveStartResult;
-    parameters.evolveCandidates = m_settings.m_evolveCandidates;
-
     for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         newResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
         oldResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&dataSize),
-                        reinterpret_cast<void*>(&parameters),
+                        reinterpret_cast<void*>(&m_settings),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&init) };
 

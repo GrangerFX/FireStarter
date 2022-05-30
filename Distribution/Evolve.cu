@@ -1,16 +1,14 @@
 #pragma once
 
-// DEFINES //
-// END //
-
+#include "FireStarterSettings.h"
 #include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterParameters parameters, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterSettings settings, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = blockIdx.x;
-    if (member >= parameters.population)
+    if (member >= settings.m_evolvePopulation)
         return;
     const unsigned int thread = threadIdx.x;
     unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + seed);
@@ -20,7 +18,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     float oldResult;
     if (init) {
         // The first generation's instructions are random.
-        oldResult = parameters.evolveStartResult;
+        oldResult = settings.m_evolveStartResult;
         for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             instructions.SetRandom(i, memberSeed);
     } else {
@@ -39,7 +37,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
         FireStarterData data;
-        float result = parameters.evolveStartResult;
+        float result = settings.m_evolveStartResult;
         if (init)
             for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
@@ -47,20 +45,20 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             data = *oldResults->Data(member, v);
         if (maxResult <= oldResult) {
             // Initial check for bad results.
-            float theta = parameters.sampleMin;
-            float sampleStep = (parameters.sampleMax - parameters.sampleMin) / (FIRESTARTER_SAMPLES - 1);
+            float theta = settings.m_sampleMin;
+            float sampleStep = (settings.m_sampleMax - settings.m_sampleMin) / (FIRESTARTER_SAMPLES - 1);
             for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
                 result = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), result);
                 theta += sampleStep;
             }
-            if (result <= parameters.evolveStartResult) {
+            if (result <= settings.m_evolveStartResult) {
                 // Evolve the data.
-                float evolutionFactor = parameters.evolveStartFactor;
-                for (unsigned int p = 0; p < parameters.iterations; p++) {
+                float evolutionFactor = settings.m_evolveStartFactor;
+                for (unsigned int p = 0; p < settings.m_evolveIterations; p++) {
                     unsigned int d = RANDOMSEED(threadSeed) % FIRESTARTER_INSTRUCTIONS;
                     const float oldData = data.d[d];
                     data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
-                    theta = parameters.sampleMin;
+                    theta = settings.m_sampleMin;
                     float curResult = 0.0f;
                     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
                         curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
@@ -68,7 +66,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                     }
                     if (curResult < result) {
                         result = curResult;
-                        evolutionFactor = parameters.evolveFactor * result;
+                        evolutionFactor = settings.m_evolveFactor * result;
                     } else
                         data.d[d] = oldData;
                 }
@@ -107,8 +105,8 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             // Copy the best data from among a random set of candidates.
             unsigned int bestIndex = member;
             float bestResult = oldResult;
-            for (int i = 0; i < parameters.evolveCandidates; i++) {
-                unsigned int index = RANDOMSEED(memberSeed) % parameters.population;
+            for (int i = 0; i < settings.m_evolveCandidates; i++) {
+                unsigned int index = RANDOMSEED(memberSeed) % settings.m_evolvePopulation;
                 float curResult = *oldResults->MaxResult(index);
                 if (curResult < bestResult) {
                     bestIndex = index;

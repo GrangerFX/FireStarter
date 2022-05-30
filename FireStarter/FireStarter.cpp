@@ -42,7 +42,6 @@ void FireStarter::SaveBestCode(void)
 
         // Create the units code by replacing the evaluate and optimize sections of the optimize code.
         std::string bestCode = optimizeCode;
-        FireStarterCode::UpdateProgram(bestCode, definesCode, DEFINES_CODE);
         FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
         FireStarterCode::SaveCode("Results/FireStarter_BestCode.cu", bestCode);
     }
