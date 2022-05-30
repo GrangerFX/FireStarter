@@ -1,6 +1,2 @@
 #pragma once
 #include "CUDADefines.h"
-
-#define FIRESTARTER_INSTRUCTIONS 32
-#define FIRESTARTER_VARIATIONS   3
-#define FIRESTARTER_SAMPLES 15

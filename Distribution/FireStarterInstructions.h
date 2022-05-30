@@ -1,6 +1,7 @@
 #pragma once
 #include "FireStarterData.h"
 #include "HashRandom.h"
+#include "CUDADefines.h"
 
 typedef enum {
     Operation_multiply = 0,

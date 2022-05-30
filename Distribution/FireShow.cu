@@ -1,9 +1,9 @@
 #pragma once
 
-#include "FireStarterSettings.h"
 #include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
+#include "CUDADefines.h"
 
 // Initialize the settings based on an external definition header file.
 GPU_GLOBAL void FireSettings(FireStarterSettings* settings, unsigned int mode)

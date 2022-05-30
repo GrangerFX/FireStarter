@@ -1,5 +1,8 @@
 #pragma once
-#include "FireStarterData.h"
+
+#define FIRESTARTER_INSTRUCTIONS 32
+#define FIRESTARTER_VARIATIONS 3
+#define FIRESTARTER_SAMPLES 15
 
 #define FIRESTARTER_SAMPLE_MIN 0.0f
 #define FIRESTARTER_SAMPLE_MAX (2.0f * 3.14159265f)

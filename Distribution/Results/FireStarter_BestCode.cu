@@ -1,9 +1,9 @@
 #pragma once
 
 #include "HashRandom.h"
-#include "FireStarterSettings.h"
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
+#include "CUDADefines.h"
 
 // EVALUATE //
 inline float Evaluate(FireStarterData data, float n)

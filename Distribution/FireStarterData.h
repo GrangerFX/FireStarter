@@ -1,6 +1,5 @@
 #pragma once
-
-#include "FireStarterDefines.h"
+#include "FireStarterSettings.h"
 
 typedef struct FireStarterData {
     float d[FIRESTARTER_INSTRUCTIONS];
