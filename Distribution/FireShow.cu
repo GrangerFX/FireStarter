@@ -8,7 +8,9 @@
 // Initialize the settings based on an external definition header file.
 GPU_GLOBAL void FireSettings(FireStarterSettings* settings, unsigned int mode)
 {
-    *settings = FireStarterSettings(mode);
+    const unsigned int thread = threadIdx.x;
+    if (thread == 0)
+        *settings = FireStarterSettings(mode);
 } // FireSettings
 
 GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)

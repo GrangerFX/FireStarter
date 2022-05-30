@@ -16,7 +16,9 @@ public:
     std::string m_fireShowCode;
     CUDAContext* m_fireShowContext;
     CUmodule m_fireShowModule;
+    CUfunction m_fireSettingsFunction;
     CUfunction m_fireShowFunction;
+    FireStarterSettings* m_fireSettings;
     FireStarterResult* m_fireShowResult;
     FireStarterInstructions* m_fireShowInstructions;
     double m_controlTime;
@@ -45,12 +47,13 @@ public:
     void SaveBestState(void);
     void SaveBestCode(void);
     void SaveSolution(void);
+    void FireSettings(void);
     void FireShow(void);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void RenderStatus(void);
     void ControlDeallocate(void);
     void ControlAllocate(void);
-    void ControlLoop(unsigned int evolveMode);
+    void ControlLoop(void);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
     bool Init(void* window, unsigned int width, unsigned int height);
