@@ -2,7 +2,6 @@
 #include <cmath>
 #endif
 
-// TARGET //
 #define TARGET_PI 3.14159265f
 
 inline float Target(float n, unsigned int variation)
@@ -19,4 +18,3 @@ inline float Target(float n, unsigned int variation)
         return fabsf(fmodf(fabsf(n - TARGET_PI * 0.5f), TARGET_PI * 2.0f) - TARGET_PI) - TARGET_PI * 0.5f;
     }
 } // Target
-// END //
