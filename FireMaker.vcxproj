@@ -13,6 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{33B1DDB4-6963-4033-84F9-20B50F537C68}</ProjectGuid>
     <RootNamespace>FireMaker</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -37,16 +38,20 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+    <IntDir>$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectName)_$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <EnableMicrosoftCodeAnalysis>false</EnableMicrosoftCodeAnalysis>
+    <IntDir>$(ProjectName)_$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(ProjectName)_$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../FireStarter/;../Distribution/;../Distribution/Results;$(CudaToolkitIncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>FireStarter/;FireMaker/;Distribution/;Distribution/Results;$(CudaToolkitIncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -57,6 +62,7 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CompileOut>$(IntDir)%(Filename)%(Extension).obj</CompileOut>
     </CudaCompile>
     <PostBuildEvent>
       <Command>copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
@@ -69,7 +75,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../FireStarter/;../Distribution/;../Distribution/Results;$(CudaToolkitIncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>FireStarter/;FireMaker/;Distribution/;Distribution/Results;$(CudaToolkitIncludeDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -82,49 +88,50 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CompileOut>$(IntDir)%(Filename)%(Extension).obj</CompileOut>
     </CudaCompile>
     <PostBuildEvent>
       <Command>copy /Y "$(TargetPath)" "$(SolutionDir)Distribution"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\FireStarter\CUDACompile.cpp" />
-    <ClCompile Include="..\FireStarter\FireStarterCode.cpp" />
-    <ClCompile Include="..\FireStarter\FireStarterProcess.cpp" />
-    <ClCompile Include="..\FireStarter\FireStarterProgram.cpp" />
-    <ClCompile Include="..\FireStarter\FireStarterState.cpp" />
-    <ClCompile Include="..\FireStarter\FireStarterUnit.cpp" />
-    <ClCompile Include="FireMaker.cpp" />
-    <ClCompile Include="FireMakerMain.cpp" />
+    <ClCompile Include="FireStarter\CUDACompile.cpp" />
+    <ClCompile Include="FireStarter\FireStarterCode.cpp" />
+    <ClCompile Include="FireStarter\FireStarterProcess.cpp" />
+    <ClCompile Include="FireStarter\FireStarterProgram.cpp" />
+    <ClCompile Include="FireStarter\FireStarterState.cpp" />
+    <ClCompile Include="FireStarter\FireStarterUnit.cpp" />
+    <ClCompile Include="FireMaker\FireMaker.cpp" />
+    <ClCompile Include="FireMaker\FireMakerMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Distribution\CUDADefines.h" />
-    <ClInclude Include="..\Distribution\FireStarterData.h" />
-    <ClInclude Include="..\Distribution\FireStarterInstructions.h" />
-    <ClInclude Include="..\Distribution\FireStarterSettings.h" />
-    <ClInclude Include="..\Distribution\FireStarterTarget.h" />
-    <ClInclude Include="..\Distribution\HashRandom.h" />
-    <ClInclude Include="..\FireStarter\CUDACompile.h" />
-    <ClInclude Include="..\FireStarter\CUDAContext.h" />
-    <ClInclude Include="..\FireStarter\CUDAErrors.h" />
-    <ClInclude Include="..\FireStarter\FireStarterCode.h" />
-    <ClInclude Include="..\FireStarter\FireStarterOrder.h" />
-    <ClInclude Include="..\FireStarter\FireStarterProcess.h" />
-    <ClInclude Include="..\FireStarter\FireStarterProgram.h" />
-    <ClInclude Include="..\FireStarter\FireStarterState.h" />
-    <ClInclude Include="..\FireStarter\FireStarterUnit.h" />
-    <ClInclude Include="..\FireStarter\FireStarterUtil.h" />
-    <ClInclude Include="..\FireStarter\FireStarter_LoadState.h" />
-    <ClInclude Include="..\FireStarter\PrintF.h" />
-    <ClInclude Include="..\FireStarter\SerialThread.h" />
+    <ClInclude Include="Distribution\CUDADefines.h" />
+    <ClInclude Include="Distribution\FireStarterData.h" />
+    <ClInclude Include="Distribution\FireStarterInstructions.h" />
+    <ClInclude Include="Distribution\FireStarterSettings.h" />
+    <ClInclude Include="Distribution\FireStarterTarget.h" />
+    <ClInclude Include="Distribution\HashRandom.h" />
+    <ClInclude Include="FireStarter\CUDACompile.h" />
+    <ClInclude Include="FireStarter\CUDAContext.h" />
+    <ClInclude Include="FireStarter\CUDAErrors.h" />
+    <ClInclude Include="FireStarter\FireStarterCode.h" />
+    <ClInclude Include="FireStarter\FireStarterOrder.h" />
+    <ClInclude Include="FireStarter\FireStarterProcess.h" />
+    <ClInclude Include="FireStarter\FireStarterProgram.h" />
+    <ClInclude Include="FireStarter\FireStarterState.h" />
+    <ClInclude Include="FireStarter\FireStarterUnit.h" />
+    <ClInclude Include="FireStarter\FireStarterUtil.h" />
+    <ClInclude Include="FireStarter\FireStarter_LoadState.h" />
+    <ClInclude Include="FireStarter\PrintF.h" />
+    <ClInclude Include="FireStarter\SerialThread.h" />
     <ClInclude Include="FireMaker.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="..\Distribution\Evolve.cu">
+    <CudaCompile Include="Distribution\Evolve.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </CudaCompile>
-    <CudaCompile Include="..\Distribution\Optimize.cu">
+    <CudaCompile Include="Distribution\Optimize.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </CudaCompile>
