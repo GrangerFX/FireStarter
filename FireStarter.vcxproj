@@ -54,7 +54,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>FireStarter/;Distribution/;Distribution/Results;$(CUDA_PATH)/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>FireStarter;Distribution;Distribution/Results;$(CUDA_PATH)/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
