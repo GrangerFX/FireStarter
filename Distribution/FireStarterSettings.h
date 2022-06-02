@@ -1,7 +1,7 @@
 #pragma once
 
 #define FIRESTARTER_INSTRUCTIONS 32
-#define FIRESTARTER_VARIATIONS 3
+#define FIRESTARTER_VARIATIONS 1
 #define FIRESTARTER_SAMPLES 15
 
 #define FIRESTARTER_SAMPLE_MIN 0.0f
@@ -86,7 +86,7 @@ public:
         m_evolveStartResult = FIRESTARTER_EVOLVE_START_RESULT;
         m_evolveCandidates = FIRESTARTER_EVOLVE_CANDIDATES;
 
-        m_evolveMode = evolveMode;
+        m_evolveMode = evolveMode ? evolveMode : FIRESTARTER_MODE;
         switch (m_evolveMode) {
             case FIRESTARTER_EVOLVE:
                 m_evolveUnits = EVOLVE_UNITS;

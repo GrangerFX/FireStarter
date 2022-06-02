@@ -195,6 +195,9 @@ void FireStarter::ControlLoop(void)
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireSettings();
+    m_fireStarterMode = m_settings.m_evolveMode;
+    m_bestResult = m_settings.m_evolveStartResult;
+    m_bestState.InitState(m_settings);
 
     // If the evolve units is set to zero, use the number of concurrent hardware threads.
     if (m_settings.m_evolveUnits == 0)
@@ -388,19 +391,18 @@ void FireStarter::Quit(void)
 
 FireStarter::FireStarter(void)
 {
-    m_fireStarterMode = FIRESTARTER_MODE;
+    m_fireStarterMode = 0;
     m_fireShowContext = nullptr;
     m_fireShowModule = nullptr;
     m_fireShowFunction = nullptr;
     m_fireSettings = nullptr;
     m_fireShowResult = nullptr;
     m_fireShowInstructions = nullptr;
-    m_bestState.InitState(m_settings);
     m_quitControlThread = false;
     m_statusString[0] = 0;
     m_generation = 0;
     m_bestGeneration = 0;
-    m_bestResult = m_settings.m_evolveStartResult;
+    m_bestResult = 0;
     m_controlTime = 0.0;
     m_seed = RANDOMHASH(123);
     m_controlUpdate = false;
