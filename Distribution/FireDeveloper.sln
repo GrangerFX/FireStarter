@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FireDeveloper", "FireDeveloper.vcxproj", "{6708E3B9-F600-497C-BE05-C31DBDF286FB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FireSolution", "FireSolution.vcxproj", "{8F9F5975-FD87-4C29-AB5F-83FFA86EDB33}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Debug|x64.ActiveCfg = Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Debug|x64.Build.0 = Debug|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Release|x64.ActiveCfg = Release|x64
+		{6708E3B9-F600-497C-BE05-C31DBDF286FB}.Release|x64.Build.0 = Release|x64
+		{8F9F5975-FD87-4C29-AB5F-83FFA86EDB33}.Debug|x64.ActiveCfg = Debug|x64
+		{8F9F5975-FD87-4C29-AB5F-83FFA86EDB33}.Debug|x64.Build.0 = Debug|x64
+		{8F9F5975-FD87-4C29-AB5F-83FFA86EDB33}.Release|x64.ActiveCfg = Release|x64
+		{8F9F5975-FD87-4C29-AB5F-83FFA86EDB33}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {191249E0-D909-448B-BD53-A56647AAA659}
+	EndGlobalSection
+EndGlobal
