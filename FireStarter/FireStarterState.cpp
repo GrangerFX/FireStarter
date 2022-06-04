@@ -177,12 +177,12 @@ void FireStarterState::OptimizeData(void)
 void FireStarterState::InitState(const FireStarterSettings& settings)
 {
     m_settings = settings;
-    m_program = FireStarterProgram(PROGRAM_MODE, m_settings.m_instructions, m_settings.m_variations);
+    m_program = FireStarterProgram(m_settings.m_evolveMode, m_settings.m_instructions, m_settings.m_variations);
     m_result.resize(FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations));
     Result()->Init(m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
 } // InitState
 
-FireStarterState::FireStarterState(void) : m_program(PROGRAM_MODE, FIRESTARTER_INSTRUCTIONS, FIRESTARTER_VARIATIONS)
+FireStarterState::FireStarterState(void)
 {
     m_generation = 0;
 } // FireStarterState

@@ -148,11 +148,15 @@ void FireStarterUnit::UnitGenerate(void)
     // Evolve each state.
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         FireStarterState& state = m_evolveStates[i].m_state;
+#if 0
+        state.m_program.RandomProgram(m_seed);
+#else
         state = m_bestState;
         if (!m_evolveGeneration)
             state.m_program.RandomProgram(m_seed);
         else
             state.m_program.RandomInstruction(m_seed);
+#endif
         state.m_program.OptimizeRegisters(true);
         state.m_generation = m_evolveGeneration;
     }
@@ -437,9 +441,16 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
         m_unitIndex = index;
         m_bestState = state;
         m_settings = m_bestState.m_settings;
-        m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
-        m_evolveStates.resize(m_settings.m_evolveStates);
         m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + m_settings.m_seed);
+
+        m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
+        for (FireStarterState &state: m_allStates)
+            state.InitState(m_settings);
+
+        m_evolveStates.resize(m_settings.m_evolveStates);
+        for (FireStarterEvolveState &evolveState: m_evolveStates)
+            evolveState.m_state.InitState(m_settings);
+
         if (LoadCode() && Allocate()) {
             switch (m_settings.m_evolveMode) {
                 case FIRESTARTER_EVOLVE:

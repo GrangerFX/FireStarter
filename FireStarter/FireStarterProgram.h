@@ -40,5 +40,5 @@ public:
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
     void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
     float EmulateProgram(FireStarterData& data, float n);
-    FireStarterProgram(unsigned int programMode, unsigned int programInstructions, unsigned int programVariations);
+    FireStarterProgram(unsigned int programMode = 0, unsigned int programInstructions = 0, unsigned int programVariations = 0);
 }; // class FireStarterProgram

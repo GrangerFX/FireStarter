@@ -14,11 +14,11 @@ inline float Evaluate(FireStarterData data, float n)
     n = data.d[3] *= n;
     n *= data.d[4];
     n += data.d[5];
-    n = data.d[2] += n;
-    n *= data.d[6];
+    n = data.d[3] += n;
+    n = data.d[6] *= n;
     n += data.d[7];
     n += data.d[8];
-    n = data.d[9] += n;
+    n += data.d[9];
     n *= data.d[1];
     n += data.d[10];
     n *= data.d[0];
@@ -30,7 +30,7 @@ inline float Evaluate(FireStarterData data, float n)
     n += data.d[13];
     n += data.d[2];
     n *= data.d[14];
-    n += data.d[9];
+    n += data.d[6];
     n *= data.d[15];
     n *= data.d[16];
     n = data.d[17] += n;
