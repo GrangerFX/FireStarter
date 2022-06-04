@@ -1,12 +1,12 @@
-// Run date: 06/02/22 11:00:52 Pacific Daylight Time
-// Run duration = 1.091957 seconds
-// Run count = 6
+// Run date: 06/04/22 10:49:36 Pacific Daylight Time
+// Run duration = 1.102920 seconds
+// Run count = 15
 // Run units = 1
 // Run population = 34816
 // Run iterations = 256
 // Run generations = 100
 // Run samples = 15
-// Solution Generation = 5
+// Solution Generation = 14
 
 #ifndef __CUDACC__
 #include <cmath>
@@ -34,44 +34,44 @@ inline float SolutionTarget(float n, unsigned int variation)
 
 #define SOLUTION_VARIATIONS 1
 
-// Precision = 0.000036
+// Precision = 0.000021
 
-// Solution precision = 0.000036
+// Solution precision = 0.000021
 inline float Solution(float n)
 {
     float r0, r1, r2, r3, r4;
 
-    n += -0.48882842f;
-    r0 = n += 0.34355709f;
-    n += 0.53604537f;
-    n += -0.39718294f;
-    n += -1.04266012f;
-    r1 = n *= -0.43871528f;
-    n *= -0.98738909f;
-    n = r0 += n;
-    r2 = n *= 0.16149691f;
-    r3 = n += -0.53344208f;
-    r4 = n += -0.84573281f;
-    n *= 0.28869793f;
-    n *= 1.15845227f;
+    n += 0.24277659f;
+    r0 = n += -0.29643133f;
+    n += 0.46559235f;
+    n += -0.65317839f;
+    n += -0.74069619f;
+    r1 = n *= 0.41035315f;
+    n *= 0.57004762f;
+    n = r1 += n;
+    r2 = n *= 0.30093321f;
+    r3 = n += -0.40831625f;
+    r4 = n += -0.54891390f;
+    n *= 0.27241659f;
+    n *= 0.64513117f;
     n *= r2;
-    n *= -0.08221500f;
-    r2 = n += 0.58314019f;
-    n *= 0.50272799f;
+    n *= 0.45168802f;
+    r2 = n += -1.23831058f;
+    n *= -0.93632495f;
     n *= r1;
     n *= r2;
-    n *= 0.48274988f;
-    n += -0.00109524f;
+    n *= 1.05485415f;
+    n += 0.41404349f;
     n *= r4;
-    r4 = n *= 0.98210460f;
-    r2 = n += 0.63471323f;
+    r4 = n *= 0.05670016f;
+    r2 = n += 0.82790488f;
     n = r4 += n;
     n += r2;
     n = r3 *= n;
-    n += -1.12727368f;
+    n += -1.00174034f;
     n *= r4;
     n *= r0;
     n *= r3;
-    n += 0.40632427f;
+    n += 0.05364925f;
     return n;
 } // Solution

@@ -11,25 +11,30 @@
 
 class FireStarterUnit : public SerialThread {
 private:
+    class FireStarterEvolveState {
+    public:
+        char* m_deviceResults = nullptr;
+        char* m_deviceEvolutions = nullptr;
+        FireStarterResults* m_hostResults = nullptr;
+        FireStarterResults* m_deviceResults0 = nullptr;
+        FireStarterResults* m_deviceResults1 = nullptr;
+        FireStarterEvolutions* m_hostEvolutions = nullptr;
+        FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
+        FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
+        CUfunction m_optimizeFunction = nullptr;
+        FireStarterState m_state;
+    }; // class FireStarterEvolveState
+
     SimpleTimer m_timer;
-    char* m_deviceResults = nullptr;
-    char* m_deviceEvolutions = nullptr;
-    FireStarterResults* m_hostResults = nullptr;
-    FireStarterResults* m_deviceResults0 = nullptr;
-    FireStarterResults* m_deviceResults1 = nullptr;
-    FireStarterEvolutions* m_hostEvolutions = nullptr;
-    FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
-    FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
     FireStarterProcess* m_process = nullptr;
     FireStarterState m_bestState;
+    std::vector<FireStarterEvolveState> m_evolveStates;
     std::vector<FireStarterState> m_allStates;
-    std::vector<FireStarterState> m_states;
     CUDAContext* m_unitContext = nullptr;
     CUmodule m_evolveModule = nullptr;
     CUmodule m_unitsModule = nullptr;
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_evolveFunction = nullptr;
-    std::vector<CUfunction> m_optimizeFunction;
     std::string m_evolveCode;
     std::string m_optimizeCode;
     FireStarterSettings m_settings;
@@ -41,13 +46,14 @@ private:
     bool m_client = false;
     bool m_codeLoaded = false;
 
-    void ClearResults(void);
-    void ClearEvolutions(void);
+    void ClearEvolveStates(void);
+    void DeallocateEvolveStates(void);
+    bool AllocateEvolveStates(void);
     void EvolveGenerate(void);
     void UnitCode(std::string &code);
     void UnitGenerate(void);
     void OptimizeGenerate(bool compile = true);
-    void EvolveGenerations(unsigned int seed, unsigned int init);
+    void EvolveGenerations(unsigned int index, unsigned int seed, unsigned int init);
     void OptimizeGenerations(unsigned int index, unsigned int seed, unsigned int init);
     void EvolveExecute(void);
     void UnitExecute(void);
