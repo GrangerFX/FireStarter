@@ -164,7 +164,7 @@ void FireStarterUnit::UnitGenerate(void)
     // Compile the unit code.
     if (CUDACompile::CompileProgram(m_unitsModule, code, "Unit")) {
         if (m_settings.m_evolveStates == 1)
-            m_evolveStates[0].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
+            m_evolveStates[0].m_optimizeFunction = CUDACompile::GetFunction(m_unitsModule, "Optimize");
         else
             for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
                 m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
@@ -184,7 +184,7 @@ void FireStarterUnit::OptimizeGenerate(bool compile)
             m_evolveStates[0].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
         else
             for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
-                m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
+                m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, Format("Optimize%d", i).c_str());
     }
 } // OptimizeGenerate
 
@@ -195,6 +195,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
     unsigned int blocksPerGrid = m_settings.m_evolvePopulation;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned int seed = RANDOMHASH(RANDOMHASH(m_evolveGeneration) + m_seed);
 
     for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         // Run all the evolve states in parallel.
@@ -205,7 +206,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
             FireStarterEvolutions* newEvolutions = g & 1 ? evolveState.m_deviceEvolutions0 : evolveState.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? evolveState.m_deviceEvolutions1 : evolveState.m_deviceEvolutions0;
-            unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(m_evolveGeneration) + i) + m_seed) + g;
 
             void* arr[] = { reinterpret_cast<void*>(&newEvolutions),
                             reinterpret_cast<void*>(&oldEvolutions),
@@ -221,6 +221,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
                 0, m_unitContext->Stream(),                         // shared mem, stream */
                 &arr[0],                                            // arguments */
                 0));
+            seed++;
         }
         init = 0;
     }
@@ -267,6 +268,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
     unsigned int blocksPerGrid = (m_settings.m_evolvePopulation + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned int seed = RANDOMHASH(RANDOMHASH(m_evolveGeneration) + m_seed);
 
     for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         // Run all the evolve states in parallel.
@@ -274,7 +276,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
             FireStarterEvolveState& evolveState = m_evolveStates[i];
             FireStarterState& state = evolveState.m_state;
             unsigned int dataSize = state.m_program.m_dataSize;
-            unsigned int seed = RANDOMHASH(RANDOMHASH(RANDOMHASH(m_evolveGeneration) + i) + m_seed) + g;
             FireStarterResults* newResults = g & 1 ? evolveState.m_deviceResults0 : evolveState.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
             void* arr[] = { reinterpret_cast<void*>(&newResults),
@@ -290,9 +291,11 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
                 0, m_unitContext->Stream(),                         // shared mem, stream */
                 &arr[0],                                            // arguments */
                 0));
+            seed++;
         }
 
         // Synchronize all GPU threads.
+        // Note: TODO: Each evolve state could be individualy synced if this is possible.
         checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
         init = 0;
     }
@@ -436,7 +439,7 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
         m_settings = m_bestState.m_settings;
         m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
         m_evolveStates.resize(m_settings.m_evolveStates);
-        m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + 7263);
+        m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + m_settings.m_seed);
         if (LoadCode() && Allocate()) {
             switch (m_settings.m_evolveMode) {
                 case FIRESTARTER_EVOLVE:

@@ -3,6 +3,7 @@
 #define FIRESTARTER_INSTRUCTIONS 32
 #define FIRESTARTER_VARIATIONS 3
 #define FIRESTARTER_SAMPLES 15
+#define FIRESTARTER_SEED 0
 
 #define FIRESTARTER_SAMPLE_MIN 0.0f
 #define FIRESTARTER_SAMPLE_MAX (2.0f * 3.14159265f)
@@ -28,7 +29,7 @@
 #define EVOLVE_FAILURES 32
 
 #define UNIT_UNITS 1
-#define UNIT_STATES 4
+#define UNIT_STATES 1
 #define UNIT_POPULATION 4352 * 8
 #define UNIT_ITERATIONS 256
 #define UNIT_GENERATIONS 100
@@ -56,6 +57,7 @@ public:
     unsigned int m_instructions;
     unsigned int m_variations;
     unsigned int m_samples;
+    unsigned int m_seed;
 
     float m_sampleMin;
     float m_sampleMax;
@@ -78,6 +80,7 @@ public:
         m_instructions = FIRESTARTER_INSTRUCTIONS;
         m_variations = FIRESTARTER_VARIATIONS;
         m_samples = FIRESTARTER_SAMPLES;
+        m_seed = FIRESTARTER_SEED;
 
         m_sampleMin = FIRESTARTER_SAMPLE_MIN;
         m_sampleMax = FIRESTARTER_SAMPLE_MAX;

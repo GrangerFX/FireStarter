@@ -35,7 +35,6 @@ public:
     unsigned int m_bestGeneration;
     float m_bestResult;
     void* m_window;
-    unsigned int m_seed;
     unsigned int m_width;
     unsigned int m_height;
     bool m_controlUpdate;

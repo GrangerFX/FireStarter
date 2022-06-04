@@ -4,10 +4,10 @@
 #include "CUDAContext.h"
 #include "SerialThread.h"
 
-#define UNIT_INIT "UnitInit"
+#define UNIT_INIT    "UnitInit"
 #define UNIT_EXECUTE "UnitExecute"
-#define UNIT_UPDATE "UnitUpdate"
-#define UNIT_SYNC "UnitSync"
+#define UNIT_UPDATE  "UnitUpdate"
+#define UNIT_SYNC    "UnitSync"
 
 class FireStarterUnit : public SerialThread {
 private:

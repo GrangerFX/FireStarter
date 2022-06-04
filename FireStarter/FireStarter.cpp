@@ -404,7 +404,6 @@ FireStarter::FireStarter(void)
     m_bestGeneration = 0;
     m_bestResult = 0;
     m_controlTime = 0.0;
-    m_seed = RANDOMHASH(123);
     m_controlUpdate = false;
     m_bufferUpdate = false;
 } // FireStarter
