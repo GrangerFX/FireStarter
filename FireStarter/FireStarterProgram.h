@@ -19,8 +19,6 @@ public:
     std::vector<FireStarterRegister> m_registers;
     std::vector<FireStarterOpcode> m_opcodes;
     FireStarterSettings m_settings;
-    unsigned int m_programInstructions = 0;
-    unsigned int m_programOpcodes = 0;
     unsigned int m_dataSize = 0;
     unsigned int m_maxRegisters = 0;
 

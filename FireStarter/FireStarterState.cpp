@@ -21,8 +21,11 @@ void FireStarterState::SaveSettings(std::string& code)
     code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
     code += "{\r\n";
     code += Format("    settings.m_instructions = %u;\r\n", m_settings.m_instructions);
+    code += Format("    settings.m_registers = %u;\r\n", m_settings.m_registers);
+    code += Format("    settings.m_opcodes = %u;\r\n", m_settings.m_opcodes);
     code += Format("    settings.m_variations = %u;\r\n", m_settings.m_variations);
     code += Format("    settings.m_samples = %u;\r\n", m_settings.m_samples);
+    code += Format("    settings.m_seed = %u;\r\n", m_settings.m_seed);
     code += "\r\n";
     code += Format("    settings.m_sampleMin = %ff;\r\n", m_settings.m_sampleMin);
     code += Format("    settings.m_sampleMax = %ff;\r\n", m_settings.m_sampleMax);
