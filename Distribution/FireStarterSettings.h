@@ -1,6 +1,7 @@
 #pragma once
 
 #define FIRESTARTER_INSTRUCTIONS 32
+#define FIRESTARTER_REGISTERS FIRESTARTER_INSTRUCTIONS
 #define FIRESTARTER_VARIATIONS 3
 #define FIRESTARTER_SAMPLES 15
 #define FIRESTARTER_SEED 0
@@ -18,7 +19,7 @@
 #define FIRESTARTER_PROCESS  3
 #define FIRESTARTER_OPTIMIZE 4
 #define FIRESTARTER_SOLUTION 6
-#define FIRESTARTER_MODE     FIRESTARTER_UNIT
+#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #define EVOLVE_UNITS 1
 #define EVOLVE_STATES 1
@@ -52,9 +53,22 @@
 #define OPTIMIZE_PRECISION 256
 #define OPTIMIZE_FAILURES 32
 
+#define PROGRAM_MULTIPLY_ADD 0
+#define PROGRAM_MULTIPLY_ADD_ABS 1
+#define PROGRAM_MODE PROGRAM_MULTIPLY_ADD
+
+#if PROGRAM_MODE == PROGRAM_MULTIPLY_ADD
+#define FIRESTARTER_OPCODES 2
+#endif
+#if PROGRAM_MODE == PROGRAM_MULTIPLY_ADD_ABS
+#define FIRESTARTER_OPCODES 13
+#endif
+
 class FireStarterSettings {
 public:
     unsigned int m_instructions;
+    unsigned int m_registers;
+    unsigned int m_opcodes;
     unsigned int m_variations;
     unsigned int m_samples;
     unsigned int m_seed;
@@ -78,6 +92,8 @@ public:
     inline FireStarterSettings(unsigned int evolveMode = 0)
     {
         m_instructions = FIRESTARTER_INSTRUCTIONS;
+        m_registers = FIRESTARTER_REGISTERS;
+        m_opcodes = FIRESTARTER_OPCODES;
         m_variations = FIRESTARTER_VARIATIONS;
         m_samples = FIRESTARTER_SAMPLES;
         m_seed = FIRESTARTER_SEED;

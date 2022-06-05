@@ -30,7 +30,6 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     int order[FIRESTARTER_VARIATIONS];
     for (int v = 0; v < FIRESTARTER_VARIATIONS; v++)
         order[v] = v;
-#if 0
     if (!init) {
         for (int v = 0; v < FIRESTARTER_VARIATIONS - 1; v++) {
             int maxIndex = v;
@@ -49,7 +48,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             }
         }
     }
-#endif
+
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
@@ -68,7 +67,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         if (init) {
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR(memberSeed);
-            for (int i = dataSize; i < FIRESTARTER_INSTRUCTIONS; i++)
+            for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
             result = oldResult = settings.m_evolveStartResult;
             evolutionFactor = settings.m_evolveStartFactor;

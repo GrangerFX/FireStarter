@@ -16,13 +16,6 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
     return result;
 } // Packetize
 
-void FireStarterState::SaveDefines(std::string& code)
-{
-    code += Format("#define FIRESTARTER_INSTRUCTIONS %d\r\n", m_settings.m_instructions);
-    code += Format("#define FIRESTARTER_VARIATIONS %d\r\n", m_settings.m_variations);
-    code += Format("#define FIRESTARTER_SAMPLES %d\r\n", m_settings.m_samples);
-} // GenerateDefines
-
 void FireStarterState::SaveSettings(std::string& code)
 {
     code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";

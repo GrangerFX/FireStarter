@@ -18,8 +18,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     if (init) {
         // The first generation's instructions are random.
         oldResult = settings.m_evolveStartResult;
-        for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            instructions.SetRandom(i, memberSeed);
+        instructions.Randomize(memberSeed, settings.m_instructions, settings.m_opcodes);
     } else {
         // Later generations randomize one instruction.
         oldResult = *oldResults->MaxResult(member);
@@ -27,40 +26,40 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
 
         // Evolve a single program instruction for each generation.
         if (!thread) {
-            unsigned int index = RANDOMSEED(memberSeed) % FIRESTARTER_INSTRUCTIONS;
-            instructions.SetRandom(index, memberSeed);
+            unsigned int index = RANDOMMOD(memberSeed, settings.m_instructions);
+            instructions.SetRandom(index, memberSeed, settings.m_instructions, settings.m_opcodes);
         }
     }
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
-    for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+    for (unsigned int v = 0; v < settings.m_variations; v++) {
         FireStarterData data;
         float result = settings.m_evolveStartResult;
         if (init)
-            for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            for (int i = 0; i < settings.m_instructions; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
         else
             data = *oldResults->Data(member, v);
         if (maxResult <= oldResult) {
             // Initial check for bad results.
             float theta = settings.m_sampleMin;
-            float sampleStep = (settings.m_sampleMax - settings.m_sampleMin) / (FIRESTARTER_SAMPLES - 1);
-            for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-                result = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), result);
+            float sampleStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_samples - 1);
+            for (int i = 0; i < settings.m_samples; i++) {
+                result = fmaxf(fabsf(instructions.Execute(data, theta, settings.m_instructions) - Target(theta, v)), result);
                 theta += sampleStep;
             }
             if (result <= settings.m_evolveStartResult) {
                 // Evolve the data.
                 float evolutionFactor = settings.m_evolveStartFactor;
                 for (unsigned int p = 0; p < settings.m_evolveIterations; p++) {
-                    unsigned int d = RANDOMSEED(threadSeed) % FIRESTARTER_INSTRUCTIONS;
+                    unsigned int d = RANDOMSEED(threadSeed) % settings.m_instructions;
                     const float oldData = data.d[d];
                     data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
                     theta = settings.m_sampleMin;
                     float curResult = 0.0f;
-                    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-                        curResult = fmaxf(fabsf(instructions.Execute(data, theta) - Target(theta, v)), curResult);
+                    for (int i = 0; i < settings.m_samples; i++) {
+                        curResult = fmaxf(fabsf(instructions.Execute(data, theta, settings.m_instructions) - Target(theta, v)), curResult);
                         theta += sampleStep;
                     }
                     if (curResult < result) {
@@ -113,7 +112,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                 }
             }
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
-            for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+            for (unsigned int v = 0; v < settings.m_variations; v++) {
                 *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestIndex, v);
             }

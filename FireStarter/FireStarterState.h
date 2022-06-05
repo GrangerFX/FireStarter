@@ -12,7 +12,6 @@ public:
 
     FireStarterResult* Result(void);
     bool Packetize(FireStarterPacket& packet);
-    void SaveDefines(std::string& code);
     void SaveSettings(std::string& code);
     void SaveVariation(unsigned int variation, std::string& code);
     void SaveResult(std::string& code);

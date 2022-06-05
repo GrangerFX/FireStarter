@@ -76,11 +76,6 @@ bool FireStarterUnit::AllocateEvolveStates(void)
 
 void FireStarterUnit::EvolveGenerate(void)
 {
-    // Update the defines section.
-    std::string definesCode;
-    m_bestState.SaveDefines(definesCode);
-    FireStarterCode::UpdateProgram(m_evolveCode, definesCode, EVALUATE_CODE);
-
     // Compile the program
     if (!m_evolveFunction && CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, "Evolve"))
         m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
@@ -90,10 +85,6 @@ void FireStarterUnit::UnitCode(std::string& code)
 {
     std::string optimize;
     FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
-
-    // Generate the defines
-    std::string definesCode;
-    m_bestState.SaveDefines(definesCode);
 
     // Generate the evaluate and optimize code
     std::string evaluateCode;

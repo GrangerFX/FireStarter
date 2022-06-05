@@ -2,5 +2,5 @@
 #include "FireStarterSettings.h"
 
 typedef struct FireStarterData {
-    float d[FIRESTARTER_INSTRUCTIONS];
+    float d[FIRESTARTER_REGISTERS];
 } FireStarterData;

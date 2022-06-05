@@ -70,13 +70,13 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
 
 void FireStarterProgram::RandomProgram(unsigned int& seed)
 {
-    Instructions()->Randomize(seed, m_programInstructions);
+    Instructions()->Randomize(seed, m_programInstructions, m_programOpcodes);
 } // RandomProgram
 
 void FireStarterProgram::RandomInstruction(unsigned int& seed)
 {
     unsigned int index = RANDOMMOD(seed, m_programInstructions);
-    Instructions()->SetRandom(index, seed, m_programInstructions);
+    Instructions()->SetRandom(index, seed, m_programInstructions, m_programOpcodes);
 } // RandomInstruction
 
 void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
@@ -218,8 +218,8 @@ void FireStarterProgram::SaveProgram(std::string& code)
     code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
     code += "\r\n";
 
-    code += Format("    program.m_opcodes.resize(%u);\r\n", PROGRAM_OPCODES);
-    for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
+    code += Format("    program.m_opcodes.resize(%u);\r\n", m_programOpcodes);
+    for (unsigned int i = 0; i < m_programOpcodes; i++)
         code += Format("    program.m_opcodes[%u] = (FireStarterOpcode)%u;\r\n", i, fireStarterOpcodes[i]);
     code += "\r\n";
 
@@ -264,14 +264,15 @@ void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
     m_settings = settings;
     m_programInstructions = m_settings.m_instructions;
+    m_programOpcodes = m_settings.m_opcodes;
     m_dataSize = m_programInstructions;
     m_maxRegisters = m_programInstructions;
     m_instructions.resize(FireStarterInstructions::InstructionsSize(m_programInstructions));
     FireStarterInstructions* instructions = Instructions();
     for (unsigned int i = 0; i < m_programInstructions; i++)
         instructions->SetOperation(i);
-    m_opcodes.resize(PROGRAM_OPCODES);
-    for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
+    m_opcodes.resize(m_programOpcodes);
+    for (unsigned int i = 0; i < m_programOpcodes; i++)
         m_opcodes[i] = fireStarterOpcodes[i];
 } // InitProgram
 

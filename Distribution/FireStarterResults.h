@@ -4,7 +4,7 @@
 typedef struct FireStarterResult {
     float maxResult;
     unsigned int dataSize;
-    float data[FIRESTARTER_INSTRUCTIONS * FIRESTARTER_VARIATIONS];
+    float data[FIRESTARTER_REGISTERS * FIRESTARTER_VARIATIONS];
 
     static inline size_t DataSize(unsigned int instructions)
     {
