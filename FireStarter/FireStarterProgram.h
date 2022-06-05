@@ -18,11 +18,10 @@ private:
 public:
     std::vector<FireStarterRegister> m_registers;
     std::vector<FireStarterOpcode> m_opcodes;
-    unsigned int m_programMode;
-    unsigned int m_programInstructions;
-    unsigned int m_programVariations;
-    unsigned int m_dataSize;
-    unsigned int m_maxRegisters;
+    FireStarterSettings m_settings;
+    unsigned int m_programInstructions = 0;
+    unsigned int m_dataSize = 0;
+    unsigned int m_maxRegisters = 0;
 
     FireStarterInstructions* Instructions(void)
     {
@@ -38,7 +37,8 @@ public:
     void GenerateCode(std::string& code, unsigned int tabs, bool optimize = true);
     void GenerateEvaluate(std::string& code, bool optimize = true);
     void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
-    void SaveProgram(std::string& code, unsigned int species = 0xFFFFFFFF);
+    void SaveProgram(std::string& code);
     float EmulateProgram(FireStarterData& data, float n);
-    FireStarterProgram(unsigned int programMode = 0, unsigned int programInstructions = 0, unsigned int programVariations = 0);
+    void InitProgram(const FireStarterSettings& settings);
+    FireStarterProgram(void);
 }; // class FireStarterProgram

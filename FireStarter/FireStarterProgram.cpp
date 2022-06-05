@@ -15,9 +15,9 @@ bool FireStarterProgram::Packetize(FireStarterPacket& packet)
     m_opcodes.resize(opcodesSize);
     result = result && packet.Packetize(m_opcodes.data(), m_opcodes.size() * sizeof(m_opcodes[0]));
 
-    result = result && packet.Packetize(&m_programMode, sizeof(m_programMode));
-    result = result && packet.Packetize(&m_programInstructions, sizeof(m_programInstructions));
-    result = result && packet.Packetize(&m_programVariations, sizeof(m_programVariations));
+    result = result && packet.Packetize(&m_settings.m_evolveMode, sizeof(m_settings.m_evolveMode));
+    result = result && packet.Packetize(&m_settings.m_instructions, sizeof(m_settings.m_instructions));
+    result = result && packet.Packetize(&m_settings.m_variations, sizeof(m_settings.m_variations));
     result = result && packet.Packetize(&m_dataSize, sizeof(m_dataSize));
     result = result && packet.Packetize(&m_maxRegisters, sizeof(m_maxRegisters));
     return result;
@@ -70,13 +70,13 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
 
 void FireStarterProgram::RandomProgram(unsigned int& seed)
 {
-    Instructions()->Randomize(seed);
+    Instructions()->Randomize(seed, m_programInstructions);
 } // RandomProgram
 
 void FireStarterProgram::RandomInstruction(unsigned int& seed)
 {
-    unsigned int index = RANDOMSEED(seed) % m_programInstructions;
-    Instructions()->SetRandom(index, seed);
+    unsigned int index = RANDOMMOD(seed, m_programInstructions);
+    Instructions()->SetRandom(index, seed, m_programInstructions);
 } // RandomInstruction
 
 void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
@@ -103,21 +103,21 @@ void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool
         FireStarterOpcode op = instructions->Opcode(i);
         unsigned int reg = instructions->Register(i);
         switch (op) {
-        case Operation_multiply:
-            if (optimize && (i == m_registers[reg].instructionLast))
-                code += Format(indent + "n *= data.d[%u];\r\n", reg);
-            else
-                code += Format(indent + "n = data.d[%u] *= n;\r\n", reg);
-            break;
-        case Operation_add:
-            if (optimize && (i == m_registers[reg].instructionLast))
-                code += Format(indent + "n += data.d[%u];\r\n", reg);
-            else
-                code += Format(indent + "n = data.d[%u] += n;\r\n", reg);
-            break;
-        case Operation_abs:
-            code += Format(indent + "n = fabsf(n);\r\n");
-            break;
+            case Operation_multiply:
+                if (optimize && (i == m_registers[reg].instructionLast))
+                    code += Format(indent + "n *= data.d[%u];\r\n", reg);
+                else
+                    code += Format(indent + "n = data.d[%u] *= n;\r\n", reg);
+                break;
+            case Operation_add:
+                if (optimize && (i == m_registers[reg].instructionLast))
+                    code += Format(indent + "n += data.d[%u];\r\n", reg);
+                else
+                    code += Format(indent + "n = data.d[%u] += n;\r\n", reg);
+                break;
+            case Operation_abs:
+                code += Format(indent + "n = fabsf(n);\r\n");
+                break;
         }
     }
 } // GenerateCode
@@ -209,36 +209,32 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
     }
 } // GenerateSolution
 
-void FireStarterProgram::SaveProgram(std::string& code, unsigned int species)
+void FireStarterProgram::SaveProgram(std::string& code)
 {
-    if (species == 0xFFFFFFFF)
-        code += "inline void LoadProgram(FireStarterProgram& program)\r\n";
-    else
-        code += Format("inline void LoadProgram%d(FireStarterProgram& program)\r\n", species);
+    code += "inline void LoadProgram(FireStarterProgram& program, const FireStarterSettings& settings)\r\n";
     code += "{\r\n";
-    code += "    FireStarterInstructions* instructions = program.Instructions();\r\n";
-
-    FireStarterInstructions* instructions = Instructions();
-    unsigned int numInstructions = m_programInstructions;
-    for (unsigned int i = 0; i < numInstructions; i++)
-        code += Format("    instructions->SetOperation(%u, %u, %u);\r\n", i, instructions->Opcode(i), instructions->Register(i));
+    code += "    program.InitProgram(settings);\r\n";
+    code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
+    code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
+    code += "\r\n";
 
     code += Format("    program.m_opcodes.resize(%u);\r\n", PROGRAM_OPCODES);
     for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
         code += Format("    program.m_opcodes[%u] = (FireStarterOpcode)%u;\r\n", i, fireStarterOpcodes[i]);
+    code += "\r\n";
 
     unsigned int numRegisters = (unsigned int)m_registers.size();
     code += Format("    program.m_registers.resize(%u);\r\n", numRegisters);
     for (unsigned int i = 0; i < numRegisters; i++)
         code += Format("    program.m_registers[%u] = {%u, %u, %u, %u};\r\n", i, m_registers[i].dataIndex, m_registers[i].registerIndex, m_registers[i].instructionFirst, m_registers[i].instructionLast);
+    code += "\r\n";
 
-    code += Format("    program.m_programMode = %u;\r\n", m_programMode);
-    code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
-    code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
-    if (species == 0xFFFFFFFF)
-        code += "} // LoadProgram\r\n";
-    else
-        code += Format("} // LoadProgram%d\r\n", species);
+    FireStarterInstructions* instructions = Instructions();
+    code += "    FireStarterInstructions* instructions = program.Instructions();\r\n";
+    for (unsigned int i = 0; i < m_programInstructions; i++)
+        code += Format("    instructions->SetOperation(%u, %u, %u);\r\n", i, instructions->Opcode(i), instructions->Register(i));
+
+    code += "} // LoadProgram\r\n";
     code += "\r\n";
 } // SaveProgram
 
@@ -264,11 +260,10 @@ float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
     return n;
 } // EmulateProgram
 
-FireStarterProgram::FireStarterProgram(unsigned int programMode, unsigned int programInstructions, unsigned int programVariations)
+void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
-    m_programMode = programMode;
-    m_programInstructions = programInstructions;
-    m_programVariations = programVariations;
+    m_settings = settings;
+    m_programInstructions = m_settings.m_instructions;
     m_dataSize = m_programInstructions;
     m_maxRegisters = m_programInstructions;
     m_instructions.resize(FireStarterInstructions::InstructionsSize(m_programInstructions));
@@ -278,4 +273,8 @@ FireStarterProgram::FireStarterProgram(unsigned int programMode, unsigned int pr
     m_opcodes.resize(PROGRAM_OPCODES);
     for (unsigned int i = 0; i < PROGRAM_OPCODES; i++)
         m_opcodes[i] = fireStarterOpcodes[i];
+} // InitProgram
+
+FireStarterProgram::FireStarterProgram(void)
+{
 } // FireStarterProgram

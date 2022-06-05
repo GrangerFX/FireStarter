@@ -46,7 +46,7 @@ private:
     bool m_client = false;
     bool m_codeLoaded = false;
 
-    void ClearEvolveStates(void);
+    void InitEvolveStates(void);
     void DeallocateEvolveStates(void);
     bool AllocateEvolveStates(void);
     void EvolveGenerate(void);

@@ -90,9 +90,8 @@ void FireStarterState::SaveState(std::string& code)
     code += Format("    state.m_generation = %d;\r\n", m_generation);
     code += "\r\n";
     code += "    LoadSettings(state.m_settings);\r\n";
-    code += "    LoadProgram(state.m_program);\r\n";
+    code += "    LoadProgram(state.m_program, state.m_settings);\r\n";
     code += "    LoadResult(state);\r\n";
-    code += "\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 
@@ -177,7 +176,7 @@ void FireStarterState::OptimizeData(void)
 void FireStarterState::InitState(const FireStarterSettings& settings)
 {
     m_settings = settings;
-    m_program = FireStarterProgram(m_settings.m_evolveMode, m_settings.m_instructions, m_settings.m_variations);
+    m_program.InitProgram(m_settings);
     m_result.resize(FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations));
     Result()->Init(m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
 } // InitState

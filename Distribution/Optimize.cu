@@ -30,6 +30,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     int order[FIRESTARTER_VARIATIONS];
     for (int v = 0; v < FIRESTARTER_VARIATIONS; v++)
         order[v] = v;
+#if 0
     if (!init) {
         for (int v = 0; v < FIRESTARTER_VARIATIONS - 1; v++) {
             int maxIndex = v;
@@ -48,7 +49,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             }
         }
     }
-
+#endif
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {

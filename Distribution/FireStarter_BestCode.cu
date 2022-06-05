@@ -8,38 +8,38 @@
 // EVALUATE //
 inline float Evaluate(FireStarterData data, float n)
 {
-    n = data.d[0] += n;
+    n += data.d[0];
     n = data.d[1] += n;
-    n = data.d[2] *= n;
+    n *= data.d[2];
     n = data.d[3] *= n;
-    n *= data.d[4];
+    n = data.d[4] += n;
+    n = data.d[1] += n;
     n += data.d[5];
-    n = data.d[3] += n;
-    n = data.d[6] *= n;
-    n += data.d[7];
-    n += data.d[8];
-    n += data.d[9];
-    n *= data.d[1];
-    n += data.d[10];
-    n *= data.d[0];
-    n = data.d[11] += n;
-    n *= data.d[3];
-    n = data.d[12] += n;
-    n += data.d[11];
-    n = data.d[12] += n;
-    n += data.d[13];
-    n += data.d[2];
-    n *= data.d[14];
+    n += data.d[4];
     n += data.d[6];
+    n = data.d[7] *= n;
+    n = data.d[3] += n;
+    n = data.d[8] += n;
+    n = data.d[9] *= n;
+    n *= data.d[10];
+    n += data.d[9];
+    n = data.d[1] *= n;
+    n *= data.d[7];
+    n = data.d[1] += n;
+    n *= data.d[11];
+    n = data.d[12] *= n;
+    n *= data.d[1];
+    n = data.d[3] += n;
+    n += data.d[13];
+    n *= data.d[8];
+    n += data.d[14];
     n *= data.d[15];
+    n = data.d[12] += n;
+    n *= data.d[3];
     n *= data.d[16];
-    n = data.d[17] += n;
+    n += data.d[12];
+    n += data.d[17];
     n += data.d[18];
-    n *= data.d[19];
-    n *= data.d[20];
-    n += data.d[21];
-    n *= data.d[12];
-    n *= data.d[17];
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
@@ -62,6 +62,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     int order[FIRESTARTER_VARIATIONS];
     for (int v = 0; v < FIRESTARTER_VARIATIONS; v++)
         order[v] = v;
+#if 0
     if (!init) {
         for (int v = 0; v < FIRESTARTER_VARIATIONS - 1; v++) {
             int maxIndex = v;
@@ -80,7 +81,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             }
         }
     }
-
+#endif
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
     for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
