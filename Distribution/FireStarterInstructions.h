@@ -65,7 +65,7 @@ struct FireStarterInstruction {
         // Insert leading tabs (four spaces).
         unsigned int tabSize = 0;
         for (unsigned int i = 0; i < tabs; i++) {
-            unsigned int length = xsnprintf(buffer, size, "    ");
+            unsigned int length = xnprintf(buffer, size, "    ");
             tabSize += length;
             if (buffer) {
                 buffer += length;
@@ -78,29 +78,29 @@ struct FireStarterInstruction {
             case Operation_multiply:
                 if (instructionFirst)
                     if (instructionLast)
-                        return tabSize + xsnprintf(buffer, size, "n *= %.8ff;\r\n", data);
+                        return tabSize + xnprintf(buffer, size, "n *= %.8ff;\r\n", data);
                     else
-                        return tabSize + xsnprintf(buffer, size, "r%u = n *= %.8ff;\r\n", reg, data);
+                        return tabSize + xnprintf(buffer, size, "r%u = n *= %.8ff;\r\n", reg, data);
                 else
                     if (instructionLast)
-                        return tabSize + xsnprintf(buffer, size, "n *= r%u;\r\n", reg);
+                        return tabSize + xnprintf(buffer, size, "n *= r%u;\r\n", reg);
                     else
-                        return tabSize + xsnprintf(buffer, size, "n = r%u *= n;\r\n", reg);
+                        return tabSize + xnprintf(buffer, size, "n = r%u *= n;\r\n", reg);
 
             case Operation_add:
                 if (instructionFirst)
                     if (instructionLast)
-                        return tabSize + xsnprintf(buffer, size, "n += %.8ff;\r\n", data);
+                        return tabSize + xnprintf(buffer, size, "n += %.8ff;\r\n", data);
                     else
-                        return tabSize + xsnprintf(buffer, size, "r%u = n += %.8ff;\r\n", reg, data);
+                        return tabSize + xnprintf(buffer, size, "r%u = n += %.8ff;\r\n", reg, data);
                 else
                     if (instructionLast)
-                        return tabSize + xsnprintf(buffer, size, "n += r%u;\r\n", reg);
+                        return tabSize + xnprintf(buffer, size, "n += r%u;\r\n", reg);
                     else
-                        return tabSize + xsnprintf(buffer, size, "n = r%u += n;\r\n", reg);
+                        return tabSize + xnprintf(buffer, size, "n = r%u += n;\r\n", reg);
 
             case Operation_abs:
-                        return tabSize + xsnprintf(buffer, size, "n = fabsf(n);\r\n");
+                return tabSize + xnprintf(buffer, size, "n = fabsf(n);\r\n");
         }
     } // Generate
 #endif

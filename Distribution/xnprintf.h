@@ -1338,7 +1338,8 @@ inline int _vsnprintf(output_gadget_t* output, const char* format, va_list args)
  *         is non-negative and less than @p n, the null-terminated string has been fully and successfully printed.
  */
 ///@{
-inline int xsnprintf(char* s, size_t n, const char* format, ...)
+// renamed to xnprintf in order to avoid conflicts with snprintf.
+inline int xnprintf(char* s, size_t n, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
