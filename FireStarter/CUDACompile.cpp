@@ -19,6 +19,7 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
     options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
  //   options.push_back("-G");              // Generate debug info
  //   options.push_back("-lineinfo");       // Generate line information
+ //   options.push_back("-I\"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.6/include/cuda/std/detail/libcxx/include\"");
 
     static std::string computeDevice;
     if (!computeDevice.length()) {

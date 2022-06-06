@@ -124,6 +124,7 @@
     <ClInclude Include="Distribution\HashRandom.h" />
     <ClInclude Include="Distribution\FireStarter_LoadState.h" />
     <ClInclude Include="Distribution\FireStarter_Solution.h" />
+    <ClInclude Include="Distribution\xnprintf.h" />
     <ClInclude Include="FireStarter\CUDACompile.h" />
     <ClInclude Include="FireStarter\CUDAContext.h" />
     <ClInclude Include="FireStarter\CUDAErrors.h" />

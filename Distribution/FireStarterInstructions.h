@@ -3,6 +3,10 @@
 #include "HashRandom.h"
 #include "CUDADefines.h"
 
+#ifdef FIRESTARTER_GENERATE
+#include "xnprintf.h"
+#endif
+
 typedef enum {
     Operation_multiply = 0,
     Operation_add,
@@ -44,14 +48,62 @@ struct FireStarterInstruction {
             case Operation_multiply:
                 n = d *= n;
                 break;
+
             case Operation_add:
                 n = d += n;
                 break;
+
             case Operation_abs:
                 n = fabsf(n);
                 break;
         }
     } // Execute
+
+#ifdef FIRESTARTER_GENERATE
+    inline size_t Generate(char* buffer, size_t size, unsigned int tabs, float data, bool instructionFirst = false, bool instructionLast = false)
+    {
+        // Insert leading tabs (four spaces).
+        unsigned int tabSize = 0;
+        for (unsigned int i = 0; i < tabs; i++) {
+            unsigned int length = xsnprintf(buffer, size, "    ");
+            tabSize += length;
+            if (buffer) {
+                buffer += length;
+                size -= length;
+            }
+        }
+
+        // Convert the instructions.
+        switch (op) {
+            case Operation_multiply:
+                if (instructionFirst)
+                    if (instructionLast)
+                        return tabSize + xsnprintf(buffer, size, "n *= %.8ff;\r\n", data);
+                    else
+                        return tabSize + xsnprintf(buffer, size, "r%u = n *= %.8ff;\r\n", reg, data);
+                else
+                    if (instructionLast)
+                        return tabSize + xsnprintf(buffer, size, "n *= r%u;\r\n", reg);
+                    else
+                        return tabSize + xsnprintf(buffer, size, "n = r%u *= n;\r\n", reg);
+
+            case Operation_add:
+                if (instructionFirst)
+                    if (instructionLast)
+                        return tabSize + xsnprintf(buffer, size, "n += %.8ff;\r\n", data);
+                    else
+                        return tabSize + xsnprintf(buffer, size, "r%u = n += %.8ff;\r\n", reg, data);
+                else
+                    if (instructionLast)
+                        return tabSize + xsnprintf(buffer, size, "n += r%u;\r\n", reg);
+                    else
+                        return tabSize + xsnprintf(buffer, size, "n = r%u += n;\r\n", reg);
+
+            case Operation_abs:
+                        return tabSize + xsnprintf(buffer, size, "n = fabsf(n);\r\n");
+        }
+    } // Generate
+#endif
 
     inline FireStarterInstruction(void)
     {
