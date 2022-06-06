@@ -10,11 +10,6 @@ bool FireStarterProgram::Packetize(FireStarterPacket& packet)
     m_registers.resize(registersSize);
     result = result && packet.Packetize(m_registers.data(), m_registers.size() * sizeof(m_registers[0]));
 
-    size_t opcodesSize = m_opcodes.size();
-    result = result && packet.Packetize(&opcodesSize, sizeof(opcodesSize));
-    m_opcodes.resize(opcodesSize);
-    result = result && packet.Packetize(m_opcodes.data(), m_opcodes.size() * sizeof(m_opcodes[0]));
-
     result = result && packet.Packetize(&m_settings, sizeof(m_settings));
 
     result = result && packet.Packetize(&m_dataSize, sizeof(m_dataSize));
@@ -99,7 +94,7 @@ void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool
     for (unsigned int i = 0; i < tabs; i++)
         indent += "    ";
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        FireStarterOpcode op = instructions->Opcode(i);
+        unsigned int op = instructions->Opcode(i);
         unsigned int reg = instructions->Register(i);
         switch (op) {
             case Operation_multiply:
@@ -152,7 +147,7 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
     code += "\r\n";
 
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        FireStarterOpcode op = instructions->Opcode(i);
+        unsigned int op = instructions->Opcode(i);
         unsigned int reg = instructions->Register(i);
         float f = data.d[reg];
         FireStarterRegister& dataRegister = m_registers[reg];
@@ -237,28 +232,6 @@ void FireStarterProgram::SaveProgram(std::string& code)
     code += "\r\n";
 } // SaveProgram
 
-float FireStarterProgram::EmulateProgram(FireStarterData& data, float n)
-{
-    FireStarterInstructions* instructions = Instructions();
-
-    for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        float& f = data.d[instructions->Register(i)];
-
-        switch (instructions->Opcode(i)) {
-            case Operation_multiply:
-                n = f *= n;
-                break;
-            case Operation_add:
-                n = f += n;
-                break;
-            case Operation_abs:
-                n = fabsf(n);
-                break;
-        }
-    }
-    return n;
-} // EmulateProgram
-
 void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
     m_settings = settings;
@@ -268,9 +241,6 @@ void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
     FireStarterInstructions* instructions = Instructions();
     for (unsigned int i = 0; i < m_settings.m_instructions; i++)
         instructions->SetOperation(i);
-    m_opcodes.resize(m_settings.m_opcodes);
-    for (unsigned int i = 0; i < m_settings.m_opcodes; i++)
-        m_opcodes[i] = fireStarterOpcodes[i];
 } // InitProgram
 
 FireStarterProgram::FireStarterProgram(void)

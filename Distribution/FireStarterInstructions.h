@@ -120,7 +120,7 @@ typedef struct FireStarterInstructions {
         return instructions * sizeof(FireStarterInstruction);
     } // InstructionsSize
 
-    inline FireStarterOpcode Opcode(unsigned int index) const
+    inline unsigned int Opcode(unsigned int index) const
     {
         return (FireStarterOpcode)i[index].op;
     } // Opcode
@@ -137,8 +137,8 @@ typedef struct FireStarterInstructions {
 
     inline void SetOperation(unsigned int index, unsigned int op = 0, unsigned int reg = 0)
     {
-        i[index].op = (FireStarterOpcode)op;
-        i[index].reg = reg;
+        i[index].op = (unsigned short)op;
+        i[index].reg = (unsigned short)reg;
     } // SetOperation
 
     inline void SetRandom(unsigned int index, unsigned int& seed, unsigned int instructions, unsigned int opcodes)
