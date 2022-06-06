@@ -4,7 +4,7 @@
 #include "FireStarter_LoadState.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
-#include "xnprintf.h" // Test
+#include "cnprintf.h" // Test
 
 bool FireStarter::LoadTargetCode(void)
 {

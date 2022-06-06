@@ -37,8 +37,8 @@
  * THE SOFTWARE.
  */
 
-#ifndef XNPRINTF_H_
-#define XNPRINTF_H_
+#ifndef CNPRINTF_H_
+#define CNPRINTF_H_
 
 // From stdint.h
 typedef unsigned char      uint8_t;
@@ -1338,8 +1338,8 @@ inline int _vsnprintf(output_gadget_t* output, const char* format, va_list args)
  *         is non-negative and less than @p n, the null-terminated string has been fully and successfully printed.
  */
 ///@{
-// renamed to xnprintf in order to avoid conflicts with snprintf.
-inline int xnprintf(char* s, size_t n, const char* format, ...)
+// renamed to cnprintf in order to avoid conflicts with snprintf.
+inline int cnprintf(char* s, size_t n, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
@@ -1350,4 +1350,4 @@ inline int xnprintf(char* s, size_t n, const char* format, ...)
 }
 ///@}
 
-#endif  // XNPRINTF_H_
+#endif  // CNPRINTF_H_

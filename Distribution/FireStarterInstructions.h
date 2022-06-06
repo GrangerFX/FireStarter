@@ -4,7 +4,7 @@
 #include "CUDADefines.h"
 
 #ifdef FIRESTARTER_GENERATE
-#include "xnprintf.h"
+#include "cnprintf.h"
 #endif
 
 typedef enum {
@@ -65,7 +65,7 @@ struct FireStarterInstruction {
         // Insert leading tabs (four spaces).
         unsigned int tabSize = 0;
         for (unsigned int i = 0; i < tabs; i++) {
-            unsigned int length = xnprintf(buffer, size, "    ");
+            unsigned int length = cnprintf(buffer, size, "    ");
             tabSize += length;
             if (buffer) {
                 buffer += length;
@@ -78,29 +78,29 @@ struct FireStarterInstruction {
             case Operation_multiply:
                 if (instructionFirst)
                     if (instructionLast)
-                        return tabSize + xnprintf(buffer, size, "n *= %.8ff;\r\n", data);
+                        return tabSize + cnprintf(buffer, size, "n *= %.8ff;\r\n", data);
                     else
-                        return tabSize + xnprintf(buffer, size, "r%u = n *= %.8ff;\r\n", reg, data);
+                        return tabSize + cnprintf(buffer, size, "r%u = n *= %.8ff;\r\n", reg, data);
                 else
                     if (instructionLast)
-                        return tabSize + xnprintf(buffer, size, "n *= r%u;\r\n", reg);
+                        return tabSize + cnprintf(buffer, size, "n *= r%u;\r\n", reg);
                     else
-                        return tabSize + xnprintf(buffer, size, "n = r%u *= n;\r\n", reg);
+                        return tabSize + cnprintf(buffer, size, "n = r%u *= n;\r\n", reg);
 
             case Operation_add:
                 if (instructionFirst)
                     if (instructionLast)
-                        return tabSize + xnprintf(buffer, size, "n += %.8ff;\r\n", data);
+                        return tabSize + cnprintf(buffer, size, "n += %.8ff;\r\n", data);
                     else
-                        return tabSize + xnprintf(buffer, size, "r%u = n += %.8ff;\r\n", reg, data);
+                        return tabSize + cnprintf(buffer, size, "r%u = n += %.8ff;\r\n", reg, data);
                 else
                     if (instructionLast)
-                        return tabSize + xnprintf(buffer, size, "n += r%u;\r\n", reg);
+                        return tabSize + cnprintf(buffer, size, "n += r%u;\r\n", reg);
                     else
-                        return tabSize + xnprintf(buffer, size, "n = r%u += n;\r\n", reg);
+                        return tabSize + cnprintf(buffer, size, "n = r%u += n;\r\n", reg);
 
             case Operation_abs:
-                return tabSize + xnprintf(buffer, size, "n = fabsf(n);\r\n");
+                return tabSize + cnprintf(buffer, size, "n = fabsf(n);\r\n");
         }
     } // Generate
 #endif
