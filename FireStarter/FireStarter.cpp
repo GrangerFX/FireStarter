@@ -21,6 +21,13 @@ bool FireStarter::LoadFireShowCode(void)
     return true;
 } // LoadFireShowCode
 
+bool FireStarter::LoadFireSettingsCode(void)
+{
+    if (!FireStarterCode::LoadCode("FireSettings.cu", m_fireSettingsCode))
+        return false;
+    return true;
+} // LoadFireSettingsCode
+
 void FireStarter::SaveBestState(void)
 {
     std::string bestStateCode;
@@ -64,19 +71,19 @@ void FireStarter::FireSettings(void)
     checkCUDAErrors(cuLaunchKernel(m_fireSettingsFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, m_fireShowContext->Stream(),                     // shared mem, stream */
+        0, m_fireStarterContext->Stream(),                     // shared mem, stream */
         &arr[0],                                            // arguments */
         0));
-    checkCUDAErrors(cudaMemcpyAsync(&m_settings, m_fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, m_fireShowContext->Stream()));
-    checkCUDAErrors(cudaStreamSynchronize(m_fireShowContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(&m_settings, m_fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, m_fireStarterContext->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_fireStarterContext->Stream()));
 } // FireSettings
 
 void FireStarter::FireShow(void)
 {
     size_t resultSize = FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations);
-    checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice, m_fireShowContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice, m_fireStarterContext->Stream()));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
-    checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice, m_fireShowContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice, m_fireStarterContext->Stream()));
     for (unsigned int variation = 0; variation < m_settings.m_variations; variation++) {
         // Launch the display kernel
         int threadsPerBlock = BLOCK_THREADS;
@@ -94,11 +101,11 @@ void FireStarter::FireShow(void)
         checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, m_fireShowContext->Stream(),                     // shared mem, stream */
+            0, m_fireStarterContext->Stream(),                     // shared mem, stream */
             &arr[0],                                            // arguments */
             0));
     }
-    checkCUDAErrors(cudaStreamSynchronize(m_fireShowContext->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_fireStarterContext->Stream()));
 } // FireShow
 
 void FireStarter::RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels)
@@ -163,6 +170,10 @@ void FireStarter::ControlDeallocate(void)
         checkCUDAErrors(cudaFree(m_fireShowInstructions));
         m_fireShowInstructions = nullptr;
     }
+    if (m_fireSettingsModule) {
+        checkCUDAErrors(cuModuleUnload(m_fireSettingsModule));
+        m_fireSettingsModule = nullptr;
+    }
     if (m_fireShowModule) {
         checkCUDAErrors(cuModuleUnload(m_fireShowModule));
         m_fireShowModule = nullptr;
@@ -171,18 +182,20 @@ void FireStarter::ControlDeallocate(void)
 
 void FireStarter::ControlAllocate(void)
 {
-    if (!m_fireShowContext)
-        m_fireShowContext = new CUDAContext(0);
+    if (!m_fireStarterContext)
+        m_fireStarterContext = new CUDAContext(0);
     ControlDeallocate();
     checkCUDAErrors(cudaMalloc(&m_fireSettings, sizeof(FireStarterSettings)));
     checkCUDAErrors(cudaMalloc(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations)));
     checkCUDAErrors(cudaMalloc(&m_fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions)));
 
-    // Compile fireShow.
-    if (CUDACompile::CompileProgram(m_fireShowModule, m_fireShowCode, "FireShow")) {
-        m_fireSettingsFunction = CUDACompile::GetFunction(m_fireShowModule, "FireSettings");
+    // Compile FireSettings
+    if (CUDACompile::CompileProgram(m_fireSettingsModule, m_fireSettingsCode, "FireSettings"))
+        m_fireSettingsFunction = CUDACompile::GetFunction(m_fireSettingsModule, "FireSettings");
+
+    // Compile FireShow.
+    if (CUDACompile::CompileProgram(m_fireShowModule, m_fireShowCode, "FireShow"))
         m_fireShowFunction = CUDACompile::GetFunction(m_fireShowModule, "FireShow");
-    }
 } // ControlAllocate
 
 void FireStarter::ControlLoop(void)
@@ -372,7 +385,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
         RenderImage(width, height, m_buffer.m_hostBase);
         SetWindowText((HWND)m_window, statusString.c_str());
         return true;
-    } else if (LoadTargetCode() && LoadFireShowCode()) {
+    } else if (LoadTargetCode() && LoadFireSettingsCode() && LoadFireShowCode()) {
         DispatchAsync([this] { ControlAllocate(); });
         DispatchAsync([this] { ControlThread(); });
         DispatchAsync([this] { ControlDeallocate(); });
@@ -390,8 +403,10 @@ void FireStarter::Quit(void)
 FireStarter::FireStarter(void)
 {
     m_fireStarterMode = 0;
-    m_fireShowContext = nullptr;
+    m_fireStarterContext = nullptr;
+    m_fireSettingsModule = nullptr;
     m_fireShowModule = nullptr;
+    m_fireSettingsFunction = nullptr;
     m_fireShowFunction = nullptr;
     m_fireSettings = nullptr;
     m_fireShowResult = nullptr;
@@ -410,7 +425,7 @@ FireStarter::~FireStarter(void)
 {
     DispatchSync([this] {
         ControlDeallocate();
-        if (m_fireShowContext)
-            delete m_fireShowContext;
+        if (m_fireStarterContext)
+            delete m_fireStarterContext;
     });
 } // ~FireStarter

@@ -5,13 +5,6 @@
 #include <vector>
 #include <string>
 
-struct FireStarterRegister {
-    unsigned int dataIndex;
-    unsigned int registerIndex;
-    unsigned int instructionFirst;
-    unsigned int instructionLast;
-}; // struct FireStarterRegister
-
 class FireStarterProgram {
 private:
     std::vector<unsigned char> m_instructions;

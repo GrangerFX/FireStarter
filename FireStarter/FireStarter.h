@@ -13,8 +13,10 @@ class FireStarter : public SerialThread {
 public:
     SimpleTimer m_runTimer;
     SimpleTimer m_controlTimer;
+    std::string m_fireSettingsCode;
     std::string m_fireShowCode;
-    CUDAContext* m_fireShowContext;
+    CUDAContext* m_fireStarterContext;
+    CUmodule m_fireSettingsModule;
     CUmodule m_fireShowModule;
     CUfunction m_fireSettingsFunction;
     CUfunction m_fireShowFunction;
@@ -43,6 +45,7 @@ public:
 
     bool LoadTargetCode(void);
     bool LoadFireShowCode(void);
+    bool LoadFireSettingsCode(void);
     void SaveBestState(void);
     void SaveBestCode(void);
     void SaveSolution(void);
