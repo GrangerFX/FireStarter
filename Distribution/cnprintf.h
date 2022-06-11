@@ -40,6 +40,11 @@
 #ifndef CNPRINTF_H_
 #define CNPRINTF_H_
 
+#ifndef __CUDACC__
+#include <stdarg.h>
+#include <stddef.h>
+#endif
+
 // From stdint.h
 typedef unsigned char      uint8_t;
 typedef unsigned short     uint16_t;
@@ -276,13 +281,13 @@ inline double_with_bit_access get_bit_access(double x)
     double_with_bit_access dwba;
     dwba.F = x;
     return dwba;
-}
+} // get_bit_access
 
 inline int get_sign_bit(double x)
 {
     // The sign is stored in the highest bit
     return (int)(get_bit_access(x).U >> (DOUBLE_SIZE_IN_BITS - 1));
-}
+} //get_sign_bit
 
 inline int get_exp2(double_with_bit_access x)
 {
@@ -291,7 +296,7 @@ inline int get_exp2(double_with_bit_access x)
     // unsigned offset from some negative value (with the extremal offset values reserved for
     // special use).
     return (int)((x.U >> DOUBLE_STORED_MANTISSA_BITS) & DOUBLE_EXPONENT_MASK) - DOUBLE_BASE_EXPONENT;
-}
+} // get_exp2
 #define PRINTF_ABS(_x) ( (_x) > 0 ? (_x) : -(_x) )
 
 #endif // (PRINTF_SUPPORT_DECIMAL_SPECIFIERS || PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS)
@@ -330,7 +335,7 @@ inline void putchar_via_gadget(output_gadget_t* gadget, char c)
     // it must be the case that gadget->buffer != NULL , due to the constraint
     // on output_gadget_t ; and note we're relying on write_pos being non-negative.
     gadget->buffer[write_pos] = c;
-}
+} // putchar_via_gadget
 
 // Possibly-write the string-terminating '\0' character
 inline void append_termination_with_gadget(output_gadget_t* gadget)
@@ -343,7 +348,7 @@ inline void append_termination_with_gadget(output_gadget_t* gadget)
     }
     printf_size_t null_char_pos = gadget->pos < gadget->max_chars ? gadget->pos : gadget->max_chars - 1;
     gadget->buffer[null_char_pos] = '\0';
-}
+} // append_termination_with_gadget
 
 inline output_gadget_t discarding_gadget()
 {
@@ -352,7 +357,7 @@ inline output_gadget_t discarding_gadget()
     gadget.pos = 0;
     gadget.max_chars = 0;
     return gadget;
-}
+} // discarding_gadget
 
 inline output_gadget_t buffer_gadget(char* buffer, size_t buffer_size)
 {
@@ -364,7 +369,7 @@ inline output_gadget_t buffer_gadget(char* buffer, size_t buffer_size)
         result.max_chars = usable_buffer_size;
     }
     return result;
-}
+} // buffer_gadget
 
 // internal secure strlen
 // @return The length of the string (excluding the terminating 0) limited by 'maxsize'
@@ -375,7 +380,7 @@ inline printf_size_t strnlen_s_(const char* str, printf_size_t maxsize)
     const char* s;
     for (s = str; *s && maxsize--; ++s);
     return (printf_size_t)(s - str);
-}
+} // strnlen_s_
 
 
 // internal test if char is a digit (0-9)
@@ -383,7 +388,7 @@ inline printf_size_t strnlen_s_(const char* str, printf_size_t maxsize)
 inline bool is_digit_(char ch)
 {
     return (ch >= '0') && (ch <= '9');
-}
+} // is_digit_
 
 
 // internal ASCII string to printf_size_t conversion
@@ -394,7 +399,7 @@ inline printf_size_t atou_(const char** str)
         i = i * 10U + (printf_size_t)(*((*str)++) - '0');
     }
     return i;
-}
+} // atou_
 
 
 // output the specified string in reverse, taking care of any zero-padding
@@ -420,8 +425,7 @@ inline void out_rev_(output_gadget_t* output, const char* buf, printf_size_t len
             putchar_via_gadget(output, ' ');
         }
     }
-}
-
+} // out_rev_
 
 // Invoked by print_integer after the actual number has been printed, performing necessary
 // work on the number's prefix (as the number is initially printed in reverse order)
@@ -489,7 +493,7 @@ inline void print_integer_finalization(output_gadget_t* output, char* buf, print
     }
 
     out_rev_(output, buf, len, width, flags);
-}
+} // print_integer_finalization
 
 // An internal itoa-like function
 inline void print_integer(output_gadget_t* output, printf_unsigned_value_t value, bool negative, numeric_base_t base, printf_size_t precision, printf_size_t width, printf_flags_t flags)
@@ -520,7 +524,7 @@ inline void print_integer(output_gadget_t* output, printf_unsigned_value_t value
     }
 
     print_integer_finalization(output, buf, len, negative, base, precision, width, flags);
-}
+} // print_integer
 
 #if (PRINTF_SUPPORT_DECIMAL_SPECIFIERS || PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS)
 
@@ -532,7 +536,7 @@ struct double_components {
     // ... truncation of the actual fractional part of the double value, scaled
     // by the precision value
     bool is_negative;
-};
+}; // struct double_components
 
 #define NUM_DECIMAL_DIGITS_IN_INT64_T 18
 #define PRINTF_MAX_PRECOMPUTED_POWER_OF_10  NUM_DECIMAL_DIGITS_IN_INT64_T
@@ -546,7 +550,7 @@ inline double powers_of_10(printf_size_t power)
     };
     power = power > PRINTF_MAX_SUPPORTED_PRECISION ? PRINTF_MAX_SUPPORTED_PRECISION : power;
     return powersOf10[power];
-}
+} // powers_of_10
 
 // Break up a double number - which is known to be a finite non-negative number -
 // into its base-10 parts: integral - before the decimal point, and fractional - after it.
@@ -584,23 +588,23 @@ inline struct double_components get_components(double number, printf_size_t prec
         }
     }
     return number_;
-}
+} // get_components
 
 #if PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS
 struct scaling_factor {
     double raw_factor;
     bool multiply; // if true, need to multiply by raw_factor; otherwise need to divide by it
-};
+}; // struct scaling_factor
 
 inline double apply_scaling(double num, struct scaling_factor normalization)
 {
     return normalization.multiply ? num * normalization.raw_factor : num / normalization.raw_factor;
-}
+} // apply_scaling
 
 inline double unapply_scaling(double normalized, struct scaling_factor normalization)
 {
     return normalization.multiply ? normalized / normalization.raw_factor : normalized * normalization.raw_factor;
-}
+} // unapply_scaling
 
 inline struct scaling_factor update_normalization(struct scaling_factor sf, double extra_multiplicative_factor)
 {
@@ -624,7 +628,7 @@ inline struct scaling_factor update_normalization(struct scaling_factor sf, doub
         }
     }
     return result;
-}
+} // update_normalization
 
 inline struct double_components get_normalized_components(bool negative, printf_size_t precision, double non_normalized, struct scaling_factor normalization, int floored_exp10)
 {
@@ -664,7 +668,7 @@ inline struct double_components get_normalized_components(bool negative, printf_
         ++components.integral;
     }
     return components;
-}
+} // get_normalized_components
 #endif // PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS
 
 inline void print_broken_up_decimal(
@@ -747,14 +751,14 @@ inline void print_broken_up_decimal(
     }
 
     out_rev_(output, buf, len, width, flags);
-}
+} // print_broken_up_decimal
 
 // internal ftoa for fixed decimal floating point
 inline void print_decimal_number(output_gadget_t* output, double number, printf_size_t precision, printf_size_t width, printf_flags_t flags, char* buf, printf_size_t len)
 {
     struct double_components value_ = get_components(number, precision);
     print_broken_up_decimal(value_, output, precision, width, flags, buf, len);
-}
+} // print_decimal_number
 
 #if PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS
 
@@ -765,7 +769,7 @@ inline int bastardized_floor(double x)
     if (x >= 0) { return (int)x; }
     int n = (int)x;
     return (((double)n) == x) ? n : n - 1;
-}
+} // bastardized_floor
 
 // Computes the base-10 logarithm of the input number - which must be an actual
 // positive number (not infinity or NaN, nor a sub-normal)
@@ -799,8 +803,7 @@ inline double log10_of_positive(double positive_number)
     // exact log_2 of the exponent x, with logarithm base change
         + exp2 * 0.30102999566398119521 // = exp2 * log_10(2) = exp2 * ln(2)/ln(10)
         );
-}
-
+} // log10_of_positive
 
 inline double pow10_of_int(int floored_exp10)
 {
@@ -818,7 +821,7 @@ inline double pow10_of_int(int floored_exp10)
     // see https://en.wikipedia.org/wiki/Exponential_function#Continued_fractions_for_ex
     dwba.F *= 1 + 2 * z / (2 - z + (z2 / (6 + (z2 / (10 + z2 / 14)))));
     return dwba.F;
-}
+} // pow10_of_int
 
 inline void print_exponential_number(output_gadget_t* output, double number, printf_size_t precision, printf_size_t width, printf_flags_t flags, char* buf, printf_size_t len)
 {
@@ -931,7 +934,7 @@ inline void print_exponential_number(output_gadget_t* output, double number, pri
             }
         }
     }
-}
+} // print_exponential_number
 #endif  // PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS
 
 inline void print_floating_point(output_gadget_t* output, double value, printf_size_t precision, printf_size_t width, printf_flags_t flags, bool prefer_exponential)
@@ -981,7 +984,7 @@ inline void print_floating_point(output_gadget_t* output, double value, printf_s
     else
 #endif
         print_decimal_number(output, value, precision, width, flags, buf, len);
-}
+} // print_floating_point
 
 #endif  // (PRINTF_SUPPORT_DECIMAL_SPECIFIERS || PRINTF_SUPPORT_EXPONENTIAL_SPECIFIERS)
 
@@ -1000,12 +1003,12 @@ inline printf_flags_t parse_flags(const char** format)
         default: return flags;
         }
     } while (true);
-}
+} // parse_flags
 
 // internal vsnprintf - used for implementing _all library functions
 // Note: We don't like the C standard's parameter names, so using more informative parameter names
 // here instead.
-inline int _vsnprintf(output_gadget_t* output, const char* format, va_list args)
+inline int _vcnprintf(output_gadget_t* output, const char* format, va_list args)
 {
     // Note: The library only calls _vsnprintf() with output->pos being 0. However, it is
     // possible to call this function with a non-zero pos value for some "remedial printing".
@@ -1320,7 +1323,7 @@ inline int _vsnprintf(output_gadget_t* output, const char* format, va_list args)
 
     // return written chars without terminating \0
     return (int)output->pos;
-}
+} // _vcnprintf
 
 /**
  * An implementation of the C standard's snprintf
@@ -1337,17 +1340,15 @@ inline int _vsnprintf(output_gadget_t* output, const char* format, va_list args)
  *         null character. A value equal or larger than @p n indicates truncation. Only when the returned value
  *         is non-negative and less than @p n, the null-terminated string has been fully and successfully printed.
  */
-///@{
 // renamed to cnprintf in order to avoid conflicts with snprintf.
 inline int cnprintf(char* s, size_t n, const char* format, ...)
 {
     va_list args;
     va_start(args, format);
     output_gadget_t gadget = buffer_gadget(s, n);
-    const int ret = _vsnprintf(&gadget, format, args);
+    const int ret = _vcnprintf(&gadget, format, args);
     va_end(args);
     return ret;
-}
-///@}
+} // cnprintf
 
 #endif  // CNPRINTF_H_

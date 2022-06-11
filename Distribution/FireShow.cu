@@ -1,8 +1,5 @@
 #pragma once
 
-// Generate the instructions as a code string.
-#define FIRESTARTER_GENERATE
-
 #include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"

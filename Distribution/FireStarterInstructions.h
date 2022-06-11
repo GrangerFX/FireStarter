@@ -3,9 +3,7 @@
 #include "HashRandom.h"
 #include "CUDADefines.h"
 
-#ifdef FIRESTARTER_GENERATE
 #include "cnprintf.h"
-#endif
 
 typedef enum {
     Operation_multiply = 0,
@@ -59,7 +57,6 @@ struct FireStarterInstruction {
         }
     } // Execute
 
-#ifdef FIRESTARTER_GENERATE
     inline size_t Generate(char* buffer, size_t size, unsigned int tabs, float data, bool instructionFirst = false, bool instructionLast = false)
     {
         // Insert leading tabs (four spaces).
@@ -103,7 +100,6 @@ struct FireStarterInstruction {
                 return tabSize + cnprintf(buffer, size, "n = fabsf(n);\r\n");
         }
     } // Generate
-#endif
 
     inline FireStarterInstruction(void)
     {

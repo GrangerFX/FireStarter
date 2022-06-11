@@ -212,11 +212,6 @@ void FireStarterProgram::SaveProgram(std::string& code)
     code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
     code += "\r\n";
 
-    code += Format("    program.m_opcodes.resize(%u);\r\n", m_settings.m_opcodes);
-    for (unsigned int i = 0; i < m_settings.m_opcodes; i++)
-        code += Format("    program.m_opcodes[%u] = (FireStarterOpcode)%u;\r\n", i, fireStarterOpcodes[i]);
-    code += "\r\n";
-
     unsigned int numRegisters = (unsigned int)m_registers.size();
     code += Format("    program.m_registers.resize(%u);\r\n", numRegisters);
     for (unsigned int i = 0; i < numRegisters; i++)
