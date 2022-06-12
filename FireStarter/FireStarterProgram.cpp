@@ -83,11 +83,19 @@ void FireStarterProgram::SaveInstructions(FireStarterInstructions* instructions)
     memcpy(instructions, m_instructions.data(), FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
 } // SaveInstructions
 
-void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool optimize)
+void FireStarterProgram::GenerateEvaluateCode(std::string& code, unsigned int tabs)
 {
-    FireStarterInstructions* instructions = Instructions();
-
     // Generate the evaluate function.
+#if 1
+    FireStarterInstructions* instructions = Instructions();
+    FireStarterRegisters* registers = (FireStarterRegisters*)m_registers.data();
+    size_t codeLength = 0;
+    FireGenerateEvaluate(nullptr, &codeLength, tabs, instructions, m_settings.m_instructions, registers, m_settings.m_registers);
+    size_t startLength = code.length();
+    code.resize(startLength + codeLength, 0);
+    FireGenerateEvaluate(code.data() + startLength, &codeLength, tabs, instructions, m_settings.m_instructions, registers, m_settings.m_registers);
+#else
+    FireStarterInstructions* instructions = Instructions();
     if (m_registers.empty())
         optimize = false;
     std::string indent;
@@ -114,46 +122,27 @@ void FireStarterProgram::GenerateCode(std::string& code, unsigned int tabs, bool
                 break;
         }
     }
-} // GenerateCode
+#endif
+} // GenerateEvaluateCode
 
-void FireStarterProgram::GenerateEvaluate(std::string& code, bool optimize)
+void FireStarterProgram::GenerateSolutionCode(std::string& code, FireStarterData& data)
 {
-    // Generate the evaluate function.
-    code.clear();
-    code += "inline float Evaluate(FireStarterData data, float n)\r\n";
-    code += "{\r\n";
-    GenerateCode(code, 1, optimize);
-    code += "    return isfinite(n) ? n : 0.0f;\r\n";
-    code += "} // Evaluate\r\n";
-} // GenerateEvaluate
-
-void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data, bool optimize)
-{
-    if (m_registers.empty())
-        return;
-
+#if 1
     FireStarterInstructions* instructions = Instructions();
-
-    // Generate the replacement code and update the program.
-    if (optimize) {
-        code += "    float r0";
-        for (unsigned int i = 1; i < m_maxRegisters; i++)
-            code += Format(", r%u", i);
-        code += ";\r\n";
-    }
-    else
-        for (unsigned int i = 0; i < m_registers.size(); i++)
-            code += Format("    float d%u = %.12ff;\r\n", i, data.d[m_registers[i].dataIndex]);
-    code += "\r\n";
-
+    FireStarterRegisters* registers = (FireStarterRegisters*)m_registers.data();
+    size_t codeLength = 0;
+    FireGenerateSolution(nullptr, &codeLength, 1, instructions, m_settings.m_instructions, registers, m_settings.m_registers, &data, m_settings.m_registers);
+    size_t startLength = code.length();
+    code.resize(startLength + codeLength, 0);
+    FireGenerateSolution(code.data() + startLength, &codeLength, 1, instructions, m_settings.m_instructions, registers, m_settings.m_registers, &data, m_settings.m_registers);
+#else
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
         unsigned int op = instructions->Opcode(i);
         unsigned int reg = instructions->Register(i);
         float f = data.d[reg];
         FireStarterRegister& dataRegister = m_registers[reg];
         unsigned int r = dataRegister.registerIndex;
-        if (optimize) {
-            switch (op) {
+        switch (op) {
             case Operation_multiply:
                 if (i == dataRegister.instructionFirst)
                     if (i == dataRegister.instructionLast)
@@ -181,26 +170,34 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
                 break;
             }
         }
-        else {
-            switch (op) {
-            case Operation_multiply:
-                if (i == dataRegister.instructionLast)
-                    code += Format("    n *= d%u;\r\n", r);
-                else
-                    code += Format("    n = d%u *= n;\r\n", r);
-                break;
-            case Operation_add:
-                if (i == dataRegister.instructionLast)
-                    code += Format("    n += d%u;\r\n", r);
-                else
-                    code += Format("    n = d%u += n;\r\n", r);
-                break;
-            case Operation_abs:
-                code += Format("    n = fabsf(n);\r\n");
-                break;
-            }
-        }
     }
+#endif
+} // GenerateSolutionCode
+
+void FireStarterProgram::GenerateEvaluate(std::string& code)
+{
+    // Generate the evaluate function.
+    code.clear();
+    code += "inline float Evaluate(FireStarterData data, float n)\r\n";
+    code += "{\r\n";
+    GenerateEvaluateCode(code, 1);
+    code += "    return isfinite(n) ? n : 0.0f;\r\n";
+    code += "} // Evaluate\r\n";
+} // GenerateEvaluate
+
+void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data)
+{
+    if (m_registers.empty())
+        return;
+
+    // Generate the replacement code and update the program.
+    code += "    float r0";
+    for (unsigned int i = 1; i < m_maxRegisters; i++)
+        code += Format(", r%u", i);
+    code += ";\r\n";
+    code += "\r\n";
+
+    GenerateSolutionCode(code, data);
 } // GenerateSolution
 
 void FireStarterProgram::SaveProgram(std::string& code)

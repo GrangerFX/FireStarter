@@ -2,12 +2,7 @@
 #include "FireStarterData.h"
 #include "HashRandom.h"
 #include "CUDADefines.h"
-
-#define FIRESTARTER_GENERATE
-
-#ifdef FIRESTARTER_GENERATE
 #include "cnprintf.h"
-#endif
 
 typedef enum {
     Operation_multiply = 0,
@@ -77,7 +72,6 @@ struct FireStarterInstruction {
         }
     } // Execute
 
-#ifdef FIRESTARTER_GENERATE
     inline size_t GenerateEvaluate(char* buffer, size_t size, unsigned int tabs, bool instructionLast = false) const
     {
         // Insert leading tabs (four spaces).
@@ -109,9 +103,10 @@ struct FireStarterInstruction {
                 return tabSize + cnprintf(buffer, size, "n = fabsf(n);\r\n");
                 break;
         }
+        return 0;
     } // GenerateEvaluate
 
-    inline size_t GenerateSolution(char* buffer, size_t size, unsigned int tabs, float data, bool instructionFirst = false, bool instructionLast = false) const
+    inline size_t GenerateSolution(char* buffer, size_t size, unsigned int tabs, unsigned int r, float data, bool instructionFirst = false, bool instructionLast = false) const
     {
         // Insert leading tabs (four spaces).
         unsigned int tabSize = 0;
@@ -131,30 +126,30 @@ struct FireStarterInstruction {
                     if (instructionLast)
                         return tabSize + cnprintf(buffer, size, "n *= %.8ff;\r\n", data);
                     else
-                        return tabSize + cnprintf(buffer, size, "r%u = n *= %.8ff;\r\n", reg, data);
+                        return tabSize + cnprintf(buffer, size, "r%u = n *= %.8ff;\r\n", r, data);
                 else
                     if (instructionLast)
-                        return tabSize + cnprintf(buffer, size, "n *= r%u;\r\n", reg);
+                        return tabSize + cnprintf(buffer, size, "n *= r%u;\r\n", r);
                     else
-                        return tabSize + cnprintf(buffer, size, "n = r%u *= n;\r\n", reg);
+                        return tabSize + cnprintf(buffer, size, "n = r%u *= n;\r\n", r);
 
             case Operation_add:
                 if (instructionFirst)
                     if (instructionLast)
                         return tabSize + cnprintf(buffer, size, "n += %.8ff;\r\n", data);
                     else
-                        return tabSize + cnprintf(buffer, size, "r%u = n += %.8ff;\r\n", reg, data);
+                        return tabSize + cnprintf(buffer, size, "r%u = n += %.8ff;\r\n", r, data);
                 else
                     if (instructionLast)
-                        return tabSize + cnprintf(buffer, size, "n += r%u;\r\n", reg);
+                        return tabSize + cnprintf(buffer, size, "n += r%u;\r\n", r);
                     else
-                        return tabSize + cnprintf(buffer, size, "n = r%u += n;\r\n", reg);
+                        return tabSize + cnprintf(buffer, size, "n = r%u += n;\r\n", r);
 
             case Operation_abs:
                 return tabSize + cnprintf(buffer, size, "n = fabsf(n);\r\n");
         }
+        return 0;
     } // GenerateSolution
-#endif
 
     inline FireStarterInstruction(void)
     {
@@ -246,28 +241,42 @@ typedef struct FireStarterEvolutions {
     } // FireStarterResults
 } FireStarterEvolutions;
 
-#ifdef FIRESTARTER_GENERATE
 inline void FireGenerateEvaluate(char* code, size_t* codeLength, unsigned int tabs, FireStarterInstructions* instructions, size_t numInstructions, FireStarterRegisters* registers, size_t numRegisters)
 {
     // Generate the evaluate function.
     bool optimize = registers && numRegisters;
-    size_t size = *codeLength;
+    size_t maxSize = code ? *codeLength + 1 : 0;
+    size_t curSize = 0;
     for (unsigned int i = 0; i < numInstructions; i++) {
         unsigned int reg = instructions->Register(i);
-        instructions->Instruction(i).GenerateEvaluate(code, size, tabs, optimize && registers->Register(reg).instructionLast);
+        const FireStarterRegister& dataRegister = registers->Register(reg);
+        size_t instructionSize = instructions->Instruction(i).GenerateEvaluate(code, maxSize, tabs, optimize && (i == dataRegister.instructionLast));
+        curSize += instructionSize;
+        if (code) {
+            code += instructionSize;
+            maxSize -= instructionSize;
+        }
     }
-    *codeLength = size;
+    *codeLength = curSize;
 } // FireGenerateEvaluate
 
 inline void FireGenerateSolution(char* code, size_t* codeLength, unsigned int tabs, FireStarterInstructions* instructions, size_t numInstructions, FireStarterRegisters* registers, size_t numRegisters, FireStarterData* data, size_t numData)
 {
     // Generate the evaluate function.
     bool optimize = registers && numRegisters;
-    size_t size = *codeLength;
+    size_t maxSize = code ? *codeLength + 1 : 0;
+    size_t curSize = 0;
     for (unsigned int i = 0; i < numInstructions; i++) {
         unsigned int reg = instructions->Register(i);
-        instructions->Instruction(i).GenerateSolution(code, size, tabs, optimize && registers->Register(reg).instructionFirst, optimize && registers->Register(reg).instructionLast);
+        const FireStarterRegister& dataRegister = registers->Register(reg);
+        unsigned int r = dataRegister.registerIndex;
+        float f = data->d[reg];
+        size_t instructionSize = instructions->Instruction(i).GenerateSolution(code, maxSize, tabs, r, f, optimize && (i == dataRegister.instructionFirst), optimize && (i == dataRegister.instructionLast));
+        curSize += instructionSize;
+        if (code) {
+            code += instructionSize;
+            maxSize -= instructionSize;
+        }
     }
-    *codeLength = size;
+    *codeLength = curSize;
 } // FireGenerateSolution
-#endif

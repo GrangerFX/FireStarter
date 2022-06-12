@@ -25,9 +25,10 @@ public:
     void RandomInstruction(unsigned int& seed);
     void LoadInstructions(FireStarterInstructions* instructions);
     void SaveInstructions(FireStarterInstructions* instructions);
-    void GenerateCode(std::string& code, unsigned int tabs, bool optimize = true);
-    void GenerateEvaluate(std::string& code, bool optimize = true);
-    void GenerateSolution(std::string& code, FireStarterData& data, bool optimize = true);
+    void GenerateEvaluateCode(std::string& code, unsigned int tabs);
+    void GenerateSolutionCode(std::string& code, FireStarterData& data);
+    void GenerateEvaluate(std::string& code);
+    void GenerateSolution(std::string& code, FireStarterData& data);
     void SaveProgram(std::string& code);
     void InitProgram(const FireStarterSettings& settings);
     FireStarterProgram(void);
