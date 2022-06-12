@@ -1340,7 +1340,7 @@ inline int _vcnprintf(output_gadget_t* output, const char* format, va_list args)
  *         null character. A value equal or larger than @p n indicates truncation. Only when the returned value
  *         is non-negative and less than @p n, the null-terminated string has been fully and successfully printed.
  */
-// renamed to cnprintf in order to avoid conflicts with snprintf.
+/* renamed to cnprintf in order to avoid conflicts with snprintf. */
 inline int cnprintf(char* s, size_t n, const char* format, ...)
 {
     va_list args;
@@ -1350,5 +1350,21 @@ inline int cnprintf(char* s, size_t n, const char* format, ...)
     va_end(args);
     return ret;
 } // cnprintf
+
+/**
+* Accumulating string printf.
+*/
+inline int anprintf(char* s, size_t n, size_t &length, const char* format, ...)
+{
+    char* start = s ? s + length : s;
+    size_t num = length < n ? n - length : 0;
+    va_list args;
+    va_start(args, format);
+    output_gadget_t gadget = buffer_gadget(start, num);
+    const int ret = _vcnprintf(&gadget, format, args);
+    va_end(args);
+    length += ret;
+    return ret;
+} // anprintf
 
 #endif  // CNPRINTF_H_

@@ -94,7 +94,7 @@ void FireStarterUnit::UnitCode(std::string& code)
 
         // Update the Evaluate funtion.
         std::string evaluate;
-        state.m_program.GenerateEvaluate(evaluate);
+        state.EvaluateCode(evaluate);
         if (m_settings.m_evolveStates > 1) {
             std::string evaluateName = Format("Evaluate%d", i);
             FireStarterCode::ReplaceCode(evaluate, "Evaluate", evaluateName);
@@ -154,7 +154,7 @@ void FireStarterUnit::OptimizeGenerate(bool compile)
 {
     // Update the Evaluate funtion.
     std::string code;
-    m_bestState.m_program.GenerateEvaluate(code);
+    m_bestState.EvaluateCode(code);
     FireStarterCode::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
 
     // Compile the new code.

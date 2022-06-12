@@ -150,7 +150,13 @@ void FireStarterState::SaveSolution(std::string& code, const std::string& target
 
 void FireStarterState::EvaluateCode(std::string& code)
 {
+    // Generate the evaluate function.
+    code.clear();
+    code += "inline float Evaluate(FireStarterData data, float n)\r\n";
+    code += "{\r\n";
     m_program.GenerateEvaluate(code);
+    code += "    return isfinite(n) ? n : 0.0f;\r\n";
+    code += "} // Evaluate\r\n";
 } // EvaluateCode
 
 void FireStarterState::OptimizeData(void)
