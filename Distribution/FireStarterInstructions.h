@@ -240,7 +240,7 @@ inline void FireGenerateEvaluate(char* buffer, size_t size, size_t& length, unsi
     }
 } // FireGenerateEvaluate
 
-inline void FireGenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, FireStarterInstructions* instructions, size_t numInstructions, FireStarterRegisters* registers, size_t numRegisters, FireStarterData* data, size_t numData)
+inline void FireGenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, FireStarterInstructions* instructions, size_t numInstructions, FireStarterRegisters* registers, size_t numRegisters, FireStarterData* data)
 {
     // Generate the evaluate function.
     bool optimize = registers && numRegisters;
@@ -248,17 +248,20 @@ inline void FireGenerateSolution(char* buffer, size_t size, size_t& length, unsi
     // Find the maximum code register.
     if (optimize) {
         size_t maxRegister = 0;
-        for (unsigned int i = 0; i < numRegisters; i++) {
-            const FireStarterRegister& dataRegister = registers->Register(i);
-            unsigned int r = dataRegister.registerIndex;
-            if (r > maxRegister)
-                maxRegister = r;
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int reg = instructions->Register(i);
+            const FireStarterRegister& dataRegister = registers->Register(reg);
+            if ((i != dataRegister.instructionFirst) || (i != dataRegister.instructionLast)) {
+                unsigned int r = dataRegister.registerIndex;
+                if (r > maxRegister)
+                    maxRegister = r;
+            }
         }
 
         for (unsigned int i = 0; i < tabs; i++)
             anprintf(buffer, size, length, "    ");
         anprintf(buffer, size, length, "float r0");
-        for (unsigned int i = 1; i < maxRegister; i++)
+        for (unsigned int i = 1; i <= maxRegister; i++)
             anprintf(buffer, size, length, ", r%u", i);
         anprintf(buffer, size, length, ";\r\n\r\n");
 

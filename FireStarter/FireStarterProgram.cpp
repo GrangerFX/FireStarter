@@ -89,11 +89,11 @@ void FireStarterProgram::GenerateEvaluate(std::string& code, unsigned int tabs)
     FireStarterInstructions* instructions = Instructions();
     FireStarterRegisters* registers = (FireStarterRegisters*)m_registers.data();
     size_t codeLength = 0;
-    FireGenerateEvaluate(nullptr, 0, codeLength, tabs, instructions, m_settings.m_instructions, registers, m_settings.m_registers);
+    FireGenerateEvaluate(nullptr, 0, codeLength, tabs, instructions, m_settings.m_instructions, registers, m_registers.size());
     std::string generateCode;
     generateCode.resize(codeLength, 0);
     codeLength = 0;
-    FireGenerateEvaluate(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, m_settings.m_instructions, registers, m_settings.m_registers);
+    FireGenerateEvaluate(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, m_settings.m_instructions, registers, m_registers.size());
     code += generateCode;
 } // GenerateEvaluate
 
@@ -102,11 +102,11 @@ void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& da
     FireStarterInstructions* instructions = Instructions();
     FireStarterRegisters* registers = (FireStarterRegisters*)m_registers.data();
     size_t codeLength = 0;
-    FireGenerateSolution(nullptr, 0, codeLength, tabs, instructions, m_settings.m_instructions, registers, m_settings.m_registers, &data, m_settings.m_registers);
+    FireGenerateSolution(nullptr, 0, codeLength, tabs, instructions, m_settings.m_instructions, registers, m_registers.size(), &data);
     std::string generateCode;
     generateCode.resize(codeLength, 0);
     codeLength = 0;
-    FireGenerateSolution(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, m_settings.m_instructions, registers, m_settings.m_registers, &data, m_settings.m_registers);
+    FireGenerateSolution(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, m_settings.m_instructions, registers, m_registers.size(), &data);
     code += generateCode;
 } // GenerateSolution
 
