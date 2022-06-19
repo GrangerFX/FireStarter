@@ -24,10 +24,10 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
     // Delete the unused registers and sort the remaining ones.
     m_registers.clear();
     std::vector<int> dataRegisters;
-    dataRegisters.resize(m_registersSize, -1);
+    dataRegisters.resize(m_settings.m_registers, -1);
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
         unsigned int reg = Instructions()->Register(i);
-        if (reg < m_registersSize) {
+        if (reg < m_settings.m_registers) {
             int index = dataRegisters[reg];
             if (index == -1) {
                 index = (int)m_registers.size();
@@ -37,7 +37,7 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
                 m_registers[index].instructionLast = i;
             instructions->SetRegister(i, index);
         } else
-            printf("Bad register: %u  Max registers: %u\n", reg, m_registersSize);
+            printf("Bad register: %u  Max registers: %u\n", reg, m_settings.m_registers);
     }
     m_dataSize = (unsigned int)m_registers.size();
 
@@ -47,7 +47,7 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
     m_maxRegisters = 0;
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
         unsigned int reg = instructions->Register(i);
-        if (reg < m_registersSize) {
+        if (reg < m_settings.m_registers) {
             FireStarterRegister& r = m_registers[reg];
             if (r.instructionLast > r.instructionFirst)
                 if (r.instructionFirst == i) {
@@ -65,7 +65,7 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
                     numActiveRegisters--;
                 }
         } else
-            printf("Bad register: %u  Max registers: %u\n", reg, m_registersSize);
+            printf("Bad register: %u  Max registers: %u\n", reg, m_settings.m_registers);
     }
 } // OptimizeRegisters
 
@@ -150,21 +150,14 @@ void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
     m_settings = settings;
 
-    if (m_instructionsSize != m_settings.m_instructions) {
-        m_instructionsSize = m_settings.m_instructions;
-        m_instructions.resize(FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
-    }
-
-    if (m_registersSize != settings.m_registers) {
-        m_registersSize = settings.m_registers;
-        m_dataSize = (unsigned int)m_registersSize;
-        m_registers.reserve(m_registersSize);
-    }
+    m_instructions.resize(FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
+    m_registers.clear();
 
     FireStarterInstructions* instructions = Instructions();
     for (unsigned int i = 0; i < m_settings.m_instructions; i++)
         instructions->SetOperation(i);
-    m_maxRegisters = m_dataSize;
+    m_dataSize = settings.m_registers;
+    m_maxRegisters = settings.m_registers;
 } // InitProgram
 
 FireStarterProgram::FireStarterProgram(void)

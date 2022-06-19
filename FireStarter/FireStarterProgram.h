@@ -8,9 +8,6 @@
 class FireStarterProgram {
 private:
     std::vector<unsigned char> m_instructions;
-    size_t m_instructionsSize = 0;
-    size_t m_registersSize = 0;
-    size_t m_stringSize = 0;
 public:
     std::vector<FireStarterRegister> m_registers;
     FireStarterSettings m_settings;

@@ -2,6 +2,7 @@
 #include "FireStarterCode.h"
 #include "FireStarterUtil.h"
 #include "FireStarter_LoadState.h"
+#include "FireStarter_Solution.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 #include "cnprintf.h" // Test

@@ -6,9 +6,6 @@
 #include "SerialThread.h"
 #include "HashRandom.h"
 
-#include "FireStarter_Solution.h"
-#include "FireStarterTarget.h"
-
 class FireStarter : public SerialThread {
 public:
     SimpleTimer m_runTimer;
