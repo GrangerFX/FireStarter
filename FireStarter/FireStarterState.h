@@ -6,18 +6,28 @@ class FireStarterState {
 private:
     std::vector<unsigned char> m_result;
 public:
-    FireStarterSettings m_settings;
     FireStarterProgram m_program;
     unsigned int m_generation = 0;
 
-    FireStarterResult* Result(void);
+    inline const FireStarterSettings& Settings(void) const
+    {
+        return m_program.m_settings;
+    } // Settings
+
+    inline FireStarterResult* Result(void)
+    {
+        return (FireStarterResult*)m_result.data();
+    } // Result
+
+    inline const FireStarterResult* Result(void) const
+    {
+        return (const FireStarterResult*)m_result.data();
+    } // Result
+
     bool Packetize(FireStarterPacket& packet);
-    void SaveSettings(std::string& code);
     void SaveVariation(unsigned int variation, std::string& code);
     void SaveResult(std::string& code);
     void SaveState(std::string& code);
-    void SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count);
-    void EvaluateCode(std::string& code);
     void OptimizeData(void);
     void InitState(const FireStarterSettings& settings);
     FireStarterState();

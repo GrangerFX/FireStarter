@@ -27,8 +27,10 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_evolveFailures = 32;
 } // LoadSettings
 
-inline void LoadProgram(FireStarterProgram& program, const FireStarterSettings& settings)
+inline void LoadProgram(FireStarterProgram& program)
 {
+    FireStarterSettings settings;
+    LoadSettings(settings);
     program.InitProgram(settings);
     program.m_dataSize = 18;
     program.m_maxRegisters = 7;
@@ -215,7 +217,6 @@ inline void LoadState(FireStarterState& state)
 {
     state.m_generation = 1;
 
-    LoadSettings(state.m_settings);
-    LoadProgram(state.m_program, state.m_settings);
+    LoadProgram(state.m_program);
     LoadResult(state);
 } // LoadState

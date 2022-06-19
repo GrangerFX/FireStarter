@@ -8,6 +8,9 @@
 class FireStarterProgram {
 private:
     std::vector<unsigned char> m_instructions;
+    size_t m_instructionsSize = 0;
+    size_t m_registersSize = 0;
+    size_t m_stringSize = 0;
 public:
     std::vector<FireStarterRegister> m_registers;
     FireStarterSettings m_settings;
@@ -19,14 +22,25 @@ public:
         return (FireStarterInstructions*)m_instructions.data();
     } // Instructions
 
+    const FireStarterInstructions* Instructions(size_t* numInstructions) const
+    {
+        *numInstructions = m_settings.m_instructions;
+        return (FireStarterInstructions*)m_instructions.data();
+    } // Instructions
+
+    const FireStarterRegisters* Registers(size_t* numRegisters) const
+    {
+        *numRegisters = m_registers.size();
+        return (FireStarterRegisters*)m_registers.data();
+    } // Registers
+
     bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(bool clean);
     void RandomProgram(unsigned int& seed);
     void RandomInstruction(unsigned int& seed);
     void LoadInstructions(FireStarterInstructions* instructions);
     void SaveInstructions(FireStarterInstructions* instructions);
-    void GenerateEvaluate(std::string& code, unsigned int tabs = 1);
-    void GenerateSolution(std::string& code, FireStarterData& data, unsigned int tabs = 1);
+    void SaveSettings(std::string& code);
     void SaveProgram(std::string& code);
     void InitProgram(const FireStarterSettings& settings);
     FireStarterProgram(void);

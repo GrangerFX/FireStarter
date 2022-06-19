@@ -1,15 +1,19 @@
 #pragma once
-#include "FireStarterData.h"
+#include "FireStarterSettings.h"
+
+typedef struct FireStarterData {
+    float d[FIRESTARTER_REGISTERS];
+
+    static inline size_t DataSize(size_t registers)
+    {
+        return sizeof(float) * registers;
+    } // DataSize
+} FireStarterData;
 
 typedef struct FireStarterResult {
     float maxResult;
     unsigned int dataSize;
     float data[FIRESTARTER_REGISTERS * FIRESTARTER_VARIATIONS];
-
-    static inline size_t DataSize(unsigned int instructions)
-    {
-        return sizeof(float) * instructions;
-    } // DataSize
 
     static inline size_t VariationsSize(unsigned int instructions, unsigned int variations)
     {
@@ -26,10 +30,20 @@ typedef struct FireStarterResult {
         return &data[variation * dataSize + (dataSize - 1)];
     } // MinResult
 
+    inline const float* ConstMinResult(unsigned int variation) const
+    {
+        return &data[variation * dataSize + (dataSize - 1)];
+    } // ConstMinResult
+
     inline FireStarterData* Data(unsigned int variation)
     {
         return (FireStarterData*)&data[variation * dataSize];
     } // Data
+
+    inline const FireStarterData* ConstData(unsigned int variation) const
+    {
+        return (const FireStarterData*)&data[variation * dataSize];
+    } // ConstData
 
     inline void Init(unsigned int numInstructions, unsigned int numVariations, float startResult)
     {
@@ -65,9 +79,19 @@ typedef struct FireStarterResults {
         return (FireStarterResult*)(m_memory + member * m_resultSize);
     } // Result
 
+    inline const FireStarterResult* ConstResult(unsigned int member) const
+    {
+        return (const FireStarterResult*)(m_memory + member * m_resultSize);
+    } // ConstResult
+
     inline FireStarterData* Data(unsigned int member, unsigned int variation)
     {
         return Result(member)->Data(variation);
+    } // Data
+
+    inline const FireStarterData* ConstData(unsigned int member, unsigned int variation) const
+    {
+        return ConstResult(member)->ConstData(variation);
     } // Data
 
     inline float* MinResult(unsigned int member, unsigned int variation)
@@ -75,17 +99,27 @@ typedef struct FireStarterResults {
         return Result(member)->MinResult(variation);
     } // MinResult
 
+    inline const float* ConstMinResult(unsigned int member, unsigned int variation) const
+    {
+        return ConstResult(member)->ConstMinResult(variation);
+    } // ConstMinResult
+
     inline float* MaxResult(unsigned int member)
     {
         return &Result(member)->maxResult;
     } // MaxResult
+
+    inline const float* ConstMaxResult(unsigned int member) const
+    {
+        return &ConstResult(member)->maxResult;
+    } // ConstMaxResult
 
     inline void InitResults(unsigned int members, unsigned int instructions, unsigned int variations, float startResult)
     {
         m_members = members;
         m_instructions = instructions;
         m_variations = variations;
-        m_dataSize = FireStarterResult::DataSize(instructions);
+        m_dataSize = FireStarterData::DataSize(instructions);
         m_variationsSize = FireStarterResult::VariationsSize(instructions, variations);
         m_resultSize = FireStarterResult::ResultSize(instructions, variations);
         m_resultsSize = ResultsSize(members, instructions, variations);

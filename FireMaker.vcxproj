@@ -97,6 +97,7 @@
   <ItemGroup>
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
     <ClCompile Include="FireStarter\FireStarterCode.cpp" />
+    <ClCompile Include="FireStarter\FireStarterGenerate.cpp" />
     <ClCompile Include="FireStarter\FireStarterProcess.cpp" />
     <ClCompile Include="FireStarter\FireStarterProgram.cpp" />
     <ClCompile Include="FireStarter\FireStarterState.cpp" />
@@ -106,7 +107,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Distribution\CUDADefines.h" />
-    <ClInclude Include="Distribution\FireStarterData.h" />
     <ClInclude Include="Distribution\FireStarterInstructions.h" />
     <ClInclude Include="Distribution\FireStarterSettings.h" />
     <ClInclude Include="Distribution\FireStarterTarget.h" />
@@ -115,6 +115,7 @@
     <ClInclude Include="FireStarter\CUDAContext.h" />
     <ClInclude Include="FireStarter\CUDAErrors.h" />
     <ClInclude Include="FireStarter\FireStarterCode.h" />
+    <ClInclude Include="FireStarter\FireStarterGenerate.h" />
     <ClInclude Include="FireStarter\FireStarterOrder.h" />
     <ClInclude Include="FireStarter\FireStarterProcess.h" />
     <ClInclude Include="FireStarter\FireStarterProgram.h" />

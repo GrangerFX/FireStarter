@@ -74,6 +74,13 @@ bool FireStarterUnit::AllocateEvolveStates(void)
     return true;
 } // AllocateEvolveStates
 
+void FireStarterUnit::EvaluateGenerate(void)
+{
+    // Compile the program
+    if (!m_fireGenerateEvaluateFunction && CUDACompile::CompileProgram(m_generateModule, m_fireGenerateCode, "FireGenerateEvaluate"))
+        m_fireGenerateEvaluateFunction = CUDACompile::GetFunction(m_generateModule, "FireGenerateEvaluate");
+} // EvaluateGenerate
+
 void FireStarterUnit::EvolveGenerate(void)
 {
     // Compile the program
@@ -94,7 +101,7 @@ void FireStarterUnit::UnitCode(std::string& code)
 
         // Update the Evaluate funtion.
         std::string evaluate;
-        state.EvaluateCode(evaluate);
+        m_unitGenerate->GenerateEvaluate(state, m_fireGenerateEvaluateFunction, m_unitContext->Stream(), evaluate);
         if (m_settings.m_evolveStates > 1) {
             std::string evaluateName = Format("Evaluate%d", i);
             FireStarterCode::ReplaceCode(evaluate, "Evaluate", evaluateName);
@@ -154,7 +161,7 @@ void FireStarterUnit::OptimizeGenerate(bool compile)
 {
     // Update the Evaluate funtion.
     std::string code;
-    m_bestState.EvaluateCode(code);
+    m_unitGenerate->GenerateEvaluate(m_bestState, m_fireGenerateEvaluateFunction, m_unitContext->Stream(), code);
     FireStarterCode::UpdateProgram(m_optimizeCode, code, EVALUATE_CODE);
 
     // Compile the new code.
@@ -357,7 +364,7 @@ bool FireStarterUnit::LoadCode(void)
 {
     if (m_codeLoaded)
         return true;
-    if (FireStarterCode::LoadCode("Evolve.cu", m_evolveCode) && FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
+    if (FireStarterCode::LoadCode("FireGenerate.cu", m_fireGenerateCode) && FireStarterCode::LoadCode("Evolve.cu", m_evolveCode) && FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
         m_codeLoaded = true;
         return true;
     } else {
@@ -370,9 +377,15 @@ bool FireStarterUnit::LoadCode(void)
 void FireStarterUnit::Deallocate(void)
 {
     DeallocateEvolveStates();
+    if (m_generateModule) {
+        checkCUDAErrors(cuModuleUnload(m_generateModule));
+        m_generateModule = nullptr;
+        m_fireGenerateEvaluateFunction = nullptr;
+    }
     if (m_evolveModule) {
         checkCUDAErrors(cuModuleUnload(m_evolveModule));
         m_evolveModule = nullptr;
+        m_evolveFunction = nullptr;
     }
     if (m_optimizeModule) {
         checkCUDAErrors(cuModuleUnload(m_optimizeModule));
@@ -415,7 +428,7 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
     DispatchAsync([this, index, state] {
         m_unitIndex = index;
         m_bestState = state;
-        m_settings = m_bestState.m_settings;
+        m_settings = m_bestState.Settings();
         m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + m_settings.m_seed);
 
         m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
@@ -426,14 +439,19 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
         for (FireStarterEvolveState &evolveState: m_evolveStates)
             evolveState.m_state.InitState(m_settings);
 
+        if (!m_unitGenerate)
+            m_unitGenerate = new FireStarterGenerate();
+
         if (LoadCode() && Allocate()) {
             switch (m_settings.m_evolveMode) {
                 case FIRESTARTER_EVOLVE:
                     EvolveGenerate();
                     break;
                 case FIRESTARTER_UNIT:
+                    EvaluateGenerate();
                     break;
                 case FIRESTARTER_PROCESS:
+                    EvaluateGenerate();
                     if (!m_client) {
                         FireStarterPacket sendPacket(UNIT_INIT);
                         sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
@@ -587,6 +605,8 @@ FireStarterUnit::~FireStarterUnit(void)
         if (m_process)
             m_process->Stop();
         Deallocate();
+        if (m_unitGenerate)
+            delete m_unitGenerate;
         if (m_unitContext)
             delete m_unitContext;
     });

@@ -23,19 +23,21 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
 
     // Delete the unused registers and sort the remaining ones.
     m_registers.clear();
-    m_registers.reserve(m_settings.m_instructions);
     std::vector<int> dataRegisters;
-    dataRegisters.resize(m_settings.m_instructions, -1);
+    dataRegisters.resize(m_registersSize, -1);
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
         unsigned int reg = Instructions()->Register(i);
-        int index = dataRegisters[reg];
-        if (index == -1) {
-            index = (int)m_registers.size();
-            dataRegisters[reg] = index;
-            m_registers.push_back(FireStarterRegister(clean ? index : reg, index, i, i));
+        if (reg < m_registersSize) {
+            int index = dataRegisters[reg];
+            if (index == -1) {
+                index = (int)m_registers.size();
+                dataRegisters[reg] = index;
+                m_registers.push_back(FireStarterRegister(clean ? index : reg, index, i, i));
+            } else
+                m_registers[index].instructionLast = i;
+            instructions->SetRegister(i, index);
         } else
-            m_registers[index].instructionLast = i;
-        instructions->SetRegister(i, index);
+            printf("Bad register: %u  Max registers: %u\n", reg, m_registersSize);
     }
     m_dataSize = (unsigned int)m_registers.size();
 
@@ -45,20 +47,25 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
     m_maxRegisters = 0;
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
         unsigned int reg = instructions->Register(i);
-        FireStarterRegister& r = m_registers[reg];
-        if (r.instructionLast > r.instructionFirst)
-            if (r.instructionFirst == i) {
-                if (!freeRegisters.empty()) {
-                    r.registerIndex = freeRegisters.back();
-                    freeRegisters.pop_back();
-                } else
-                    r.registerIndex = numActiveRegisters;
-                numActiveRegisters++;
-                m_maxRegisters = max(m_maxRegisters, numActiveRegisters);
-            } else if (r.instructionLast == i) {
-                freeRegisters.push_back(r.registerIndex);
-                numActiveRegisters--;
-            }
+        if (reg < m_registersSize) {
+            FireStarterRegister& r = m_registers[reg];
+            if (r.instructionLast > r.instructionFirst)
+                if (r.instructionFirst == i) {
+                    if (!freeRegisters.empty()) {
+                        r.registerIndex = freeRegisters.back();
+                        freeRegisters.pop_back();
+                    }
+                    else
+                        r.registerIndex = numActiveRegisters;
+                    numActiveRegisters++;
+                    m_maxRegisters = max(m_maxRegisters, numActiveRegisters);
+                }
+                else if (r.instructionLast == i) {
+                    freeRegisters.push_back(r.registerIndex);
+                    numActiveRegisters--;
+                }
+        } else
+            printf("Bad register: %u  Max registers: %u\n", reg, m_registersSize);
     }
 } // OptimizeRegisters
 
@@ -83,37 +90,42 @@ void FireStarterProgram::SaveInstructions(FireStarterInstructions* instructions)
     memcpy(instructions, m_instructions.data(), FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
 } // SaveInstructions
 
-void FireStarterProgram::GenerateEvaluate(std::string& code, unsigned int tabs)
+void FireStarterProgram::SaveSettings(std::string& code)
 {
-    // Generate the evaluate function.
-    FireStarterInstructions* instructions = Instructions();
-    FireStarterRegisters* registers = (FireStarterRegisters*)m_registers.data();
-    size_t codeLength = 0;
-    FireGenerateEvaluate(nullptr, 0, codeLength, tabs, instructions, m_settings.m_instructions, registers, m_registers.size());
-    std::string generateCode;
-    generateCode.resize(codeLength, 0);
-    codeLength = 0;
-    FireGenerateEvaluate(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, m_settings.m_instructions, registers, m_registers.size());
-    code += generateCode;
-} // GenerateEvaluate
-
-void FireStarterProgram::GenerateSolution(std::string& code, FireStarterData& data, unsigned int tabs)
-{
-    FireStarterInstructions* instructions = Instructions();
-    FireStarterRegisters* registers = (FireStarterRegisters*)m_registers.data();
-    size_t codeLength = 0;
-    FireGenerateSolution(nullptr, 0, codeLength, tabs, instructions, m_settings.m_instructions, registers, m_registers.size(), &data);
-    std::string generateCode;
-    generateCode.resize(codeLength, 0);
-    codeLength = 0;
-    FireGenerateSolution(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, m_settings.m_instructions, registers, m_registers.size(), &data);
-    code += generateCode;
-} // GenerateSolution
+    code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
+    code += "{\r\n";
+    code += Format("    settings.m_instructions = %u;\r\n", m_settings.m_instructions);
+    code += Format("    settings.m_registers = %u;\r\n", m_settings.m_registers);
+    code += Format("    settings.m_opcodes = %u;\r\n", m_settings.m_opcodes);
+    code += Format("    settings.m_variations = %u;\r\n", m_settings.m_variations);
+    code += Format("    settings.m_samples = %u;\r\n", m_settings.m_samples);
+    code += Format("    settings.m_seed = %u;\r\n", m_settings.m_seed);
+    code += "\r\n";
+    code += Format("    settings.m_sampleMin = %ff;\r\n", m_settings.m_sampleMin);
+    code += Format("    settings.m_sampleMax = %ff;\r\n", m_settings.m_sampleMax);
+    code += Format("    settings.m_evolveFactor = %ff;\r\n", m_settings.m_evolveFactor);
+    code += Format("    settings.m_evolveStartFactor = %ff;\r\n", m_settings.m_evolveStartFactor);
+    code += Format("    settings.m_evolveStartResult = %ff;\r\n", m_settings.m_evolveStartResult);
+    code += Format("    settings.m_evolveCandidates = %u;\r\n", m_settings.m_evolveCandidates);
+    code += "\r\n";
+    code += Format("    settings.m_evolveMode = %u;\r\n", m_settings.m_evolveMode);
+    code += Format("    settings.m_evolveUnits = %u;\r\n", m_settings.m_evolveUnits);
+    code += Format("    settings.m_evolveStates = %u;\r\n", m_settings.m_evolveStates);
+    code += Format("    settings.m_evolvePopulation = %u;\r\n", m_settings.m_evolvePopulation);
+    code += Format("    settings.m_evolveIterations = %u;\r\n", m_settings.m_evolveIterations);
+    code += Format("    settings.m_evolveGenerations = %u;\r\n", m_settings.m_evolveGenerations);
+    code += Format("    settings.m_evolvePrecision = %u;\r\n", m_settings.m_evolvePrecision);
+    code += Format("    settings.m_evolveFailures = %u;\r\n", m_settings.m_evolveFailures);
+    code += "} // LoadSettings\r\n";
+    code += "\r\n";
+} // FireStarterProgram
 
 void FireStarterProgram::SaveProgram(std::string& code)
 {
-    code += "inline void LoadProgram(FireStarterProgram& program, const FireStarterSettings& settings)\r\n";
+    code += "inline void LoadProgram(FireStarterProgram& program)\r\n";
     code += "{\r\n";
+    code += "    FireStarterSettings settings;\r\n";
+    code += "    LoadSettings(settings);\r\n";
     code += "    program.InitProgram(settings);\r\n";
     code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
     code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
@@ -137,12 +149,22 @@ void FireStarterProgram::SaveProgram(std::string& code)
 void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
     m_settings = settings;
-    m_dataSize = m_settings.m_registers;
-    m_maxRegisters = m_settings.m_registers;
-    m_instructions.resize(FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
+
+    if (m_instructionsSize != m_settings.m_instructions) {
+        m_instructionsSize = m_settings.m_instructions;
+        m_instructions.resize(FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
+    }
+
+    if (m_registersSize != settings.m_registers) {
+        m_registersSize = settings.m_registers;
+        m_dataSize = (unsigned int)m_registersSize;
+        m_registers.reserve(m_registersSize);
+    }
+
     FireStarterInstructions* instructions = Instructions();
     for (unsigned int i = 0; i < m_settings.m_instructions; i++)
         instructions->SetOperation(i);
+    m_maxRegisters = m_dataSize;
 } // InitProgram
 
 FireStarterProgram::FireStarterProgram(void)

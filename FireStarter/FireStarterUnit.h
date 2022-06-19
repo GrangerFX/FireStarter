@@ -1,5 +1,5 @@
 #pragma once
-#include "FireStarterState.h"
+#include "FireStarterGenerate.h"
 #include "FireStarterProcess.h"
 #include "CUDAContext.h"
 #include "SerialThread.h"
@@ -28,13 +28,17 @@ private:
     SimpleTimer m_timer;
     FireStarterProcess* m_process = nullptr;
     FireStarterState m_bestState;
+    FireStarterGenerate* m_unitGenerate = nullptr;
     std::vector<FireStarterEvolveState> m_evolveStates;
     std::vector<FireStarterState> m_allStates;
     CUDAContext* m_unitContext = nullptr;
+    CUmodule m_generateModule = nullptr;
     CUmodule m_evolveModule = nullptr;
     CUmodule m_unitsModule = nullptr;
     CUmodule m_optimizeModule = nullptr;
+    CUfunction m_fireGenerateEvaluateFunction = nullptr;
     CUfunction m_evolveFunction = nullptr;
+    std::string m_fireGenerateCode;
     std::string m_evolveCode;
     std::string m_optimizeCode;
     FireStarterSettings m_settings;
@@ -49,6 +53,7 @@ private:
     void InitEvolveStates(void);
     void DeallocateEvolveStates(void);
     bool AllocateEvolveStates(void);
+    void EvaluateGenerate(void);
     void EvolveGenerate(void);
     void UnitCode(std::string &code);
     void UnitGenerate(void);

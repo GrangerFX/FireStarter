@@ -1,57 +1,21 @@
 #include "FireStarterState.h"
 #include "FireStarterCode.h"
 
-FireStarterResult* FireStarterState::Result(void)
-{
-    return (FireStarterResult*)m_result.data();
-} // Result
-
 bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
-    result = result && packet.Packetize(&m_settings, sizeof(m_settings));
     result = result && m_program.Packetize(packet);
     result = result && packet.Packetize(m_result);
     result = result && packet.Packetize(&m_generation, sizeof(m_generation));
     return result;
 } // Packetize
 
-void FireStarterState::SaveSettings(std::string& code)
-{
-    code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
-    code += "{\r\n";
-    code += Format("    settings.m_instructions = %u;\r\n", m_settings.m_instructions);
-    code += Format("    settings.m_registers = %u;\r\n", m_settings.m_registers);
-    code += Format("    settings.m_opcodes = %u;\r\n", m_settings.m_opcodes);
-    code += Format("    settings.m_variations = %u;\r\n", m_settings.m_variations);
-    code += Format("    settings.m_samples = %u;\r\n", m_settings.m_samples);
-    code += Format("    settings.m_seed = %u;\r\n", m_settings.m_seed);
-    code += "\r\n";
-    code += Format("    settings.m_sampleMin = %ff;\r\n", m_settings.m_sampleMin);
-    code += Format("    settings.m_sampleMax = %ff;\r\n", m_settings.m_sampleMax);
-    code += Format("    settings.m_evolveFactor = %ff;\r\n", m_settings.m_evolveFactor);
-    code += Format("    settings.m_evolveStartFactor = %ff;\r\n", m_settings.m_evolveStartFactor);
-    code += Format("    settings.m_evolveStartResult = %ff;\r\n", m_settings.m_evolveStartResult);
-    code += Format("    settings.m_evolveCandidates = %u;\r\n", m_settings.m_evolveCandidates);
-    code += "\r\n";
-    code += Format("    settings.m_evolveMode = %u;\r\n", m_settings.m_evolveMode);
-    code += Format("    settings.m_evolveUnits = %u;\r\n", m_settings.m_evolveUnits);
-    code += Format("    settings.m_evolveStates = %u;\r\n", m_settings.m_evolveStates);
-    code += Format("    settings.m_evolvePopulation = %u;\r\n", m_settings.m_evolvePopulation);
-    code += Format("    settings.m_evolveIterations = %u;\r\n", m_settings.m_evolveIterations);
-    code += Format("    settings.m_evolveGenerations = %u;\r\n", m_settings.m_evolveGenerations);
-    code += Format("    settings.m_evolvePrecision = %u;\r\n", m_settings.m_evolvePrecision);
-    code += Format("    settings.m_evolveFailures = %u;\r\n", m_settings.m_evolveFailures);
-    code += "} // LoadSettings\r\n";
-    code += "\r\n";
-} // SaveSettings
-
 void FireStarterState::SaveVariation(unsigned int variation, std::string& code)
 {
     code += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     code += "{\r\n";
     code += Format("    FireStarterData *data = result->Data(%u);\r\n", variation);
-    for (unsigned int i = 0; i < m_settings.m_instructions; i++)
+    for (unsigned int i = 0; i < m_program.m_settings.m_instructions; i++)
         code += Format("    data->d[%u] = %ff;\r\n", i, Result()->Data(variation)->d[i]);
     code += Format("    *result->MinResult(%u) = %ff;\r\n", variation, *Result()->MinResult(variation));
     code += Format("} // LoadVariation%u\r\n", variation);
@@ -60,11 +24,11 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code)
 
 void FireStarterState::SaveResult(std::string& code)
 {
-    for (unsigned int v = 0; v < m_settings.m_variations; v++)
+    for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
         SaveVariation(v, code);
     code += "inline void LoadResult(FireStarterState& state)\r\n";
     code += "{\r\n";
-    for (unsigned int v = 0; v < m_settings.m_variations; v++)
+    for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
         code += Format("    LoadVariation%u(state.Result());\r\n", v);
     code += "\r\n";
     code += Format("    state.Result()->maxResult = %ff;\r\n", Result()->maxResult);
@@ -77,7 +41,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "#pragma once\r\n";
     code += "#include \"FireStarterState.h\"\r\n";
     code += "\r\n";
-    SaveSettings(code);
+    m_program.SaveSettings(code);
     m_program.SaveProgram(code);
     SaveResult(code);
 
@@ -85,89 +49,20 @@ void FireStarterState::SaveState(std::string& code)
     code += "{\r\n";
     code += Format("    state.m_generation = %d;\r\n", m_generation);
     code += "\r\n";
-    code += "    LoadSettings(state.m_settings);\r\n";
-    code += "    LoadProgram(state.m_program, state.m_settings);\r\n";
+    code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 
-void FireStarterState::SaveSolution(std::string& code, const std::string& targetCode, double duration, unsigned int count)
-{
-    std::string solutionCode;
-    solutionCode += "#pragma once\r\n";
-    solutionCode += "#include <math.h>\r\n";
-    solutionCode += "\r\n";
-    code += Format("// Run date: %s\r\n", CurrentDate().c_str());
-    code += Format("// Run duration = %f seconds\r\n", duration);
-    code += Format("// Run count = %d\r\n", count);
-    code += Format("// Run units = %d\r\n", m_settings.m_evolveUnits);
-    code += Format("// Run population = %d\r\n", m_settings.m_evolvePopulation);
-    code += Format("// Run iterations = %d\r\n", m_settings.m_evolveIterations);
-    code += Format("// Run generations = %d\r\n", m_settings.m_evolveGenerations);
-    code += Format("// Run samples = %d\r\n", m_settings.m_samples);
-    code += Format("// Solution Generation = %d\r\n", m_generation);
-    code += "\r\n";
-    code += targetCode;
-    code += "\r\n";
-    code += Format("#define SOLUTION_MIN %f\r\n", m_settings.m_sampleMin);
-    code += Format("#define SOLUTION_MAX %f\r\n", m_settings.m_sampleMax);
-    code += "\r\n";
-    code += Format("#define SOLUTION_VARIATIONS %d\r\n", m_settings.m_variations);
-    code += "\r\n";
-    code += Format("// Precision = %f\r\n", Result()->maxResult);
-    if (m_settings.m_variations == 1) {
-        code += "\r\n";
-        code += Format("// Solution precision = %f\r\n", *Result()->MinResult(0));
-        code += "inline float Solution(float n)\r\n";
-        code += "{\r\n";
-        m_program.GenerateSolution(code, *Result()->Data(0));
-        code += "    return n;\r\n";
-        code += "} // Solution\r\n";
-    } else {
-        for (unsigned int v = 0; v < m_settings.m_variations; v++) {
-            code += "\r\n";
-            code += Format("// Solution%d precision = %f\r\n", v, *Result()->MinResult(v));
-            code += Format("inline float Solution%d(float n)\r\n", v);
-            code += "{\r\n";
-            m_program.GenerateSolution(code, *Result()->Data(v));
-            code += "    return n;\r\n";
-            code += Format("} // Solution%d\r\n", v);
-        }
-
-        code += "\r\n";
-        code += "inline float Solution(float n, unsigned int variation)\r\n";
-        code += "{\r\n";
-        code += "    switch (variation) {\r\n";
-        for (unsigned int v = 0; v < m_settings.m_variations; v++) {
-            code += Format("    case %d:\r\n", v);
-            code += Format("        return Solution%d(n);\r\n", v);
-        }
-        code += "    }\r\n";
-        code += "    return 0.0f;\r\n";
-        code += "} // Solution\r\n";
-    }
-} // SaveSolution
-
-void FireStarterState::EvaluateCode(std::string& code)
-{
-    // Generate the evaluate function.
-    code.clear();
-    code += "inline float Evaluate(FireStarterData data, float n)\r\n";
-    code += "{\r\n";
-    m_program.GenerateEvaluate(code);
-    code += "    return isfinite(n) ? n : 0.0f;\r\n";
-    code += "} // Evaluate\r\n";
-} // EvaluateCode
-
 void FireStarterState::OptimizeData(void)
 {
     // Optimize the use of data registers.
-    for (unsigned int v = 0; v < m_settings.m_variations; v++) {
+    for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
         FireStarterData& data = *Result()->Data(v);
         FireStarterData optimizedData(data);
         for (unsigned int i = 0; i < m_program.m_dataSize; i++)
             optimizedData.d[i] = data.d[m_program.m_registers[i].dataIndex];
-        for (unsigned int i = m_program.m_dataSize; i < m_settings.m_instructions; i++)
+        for (unsigned int i = m_program.m_dataSize; i < m_program.m_settings.m_instructions; i++)
             optimizedData.d[i] = 0.0f;
         *Result()->Data(v) = optimizedData;
     }
@@ -177,10 +72,9 @@ void FireStarterState::OptimizeData(void)
 
 void FireStarterState::InitState(const FireStarterSettings& settings)
 {
-    m_settings = settings;
-    m_program.InitProgram(m_settings);
-    m_result.resize(FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations));
-    Result()->Init(m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
+    m_program.InitProgram(settings);
+    m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_instructions, m_program.m_settings.m_variations));
+    Result()->Init(m_program.m_settings.m_instructions, m_program.m_settings.m_variations, m_program.m_settings.m_evolveStartResult);
 } // InitState
 
 FireStarterState::FireStarterState(void)
