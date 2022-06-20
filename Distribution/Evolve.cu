@@ -10,8 +10,8 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     if (member >= settings.m_evolvePopulation)
         return;
     const unsigned int thread = threadIdx.x;
-    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + seed);
-    unsigned int threadSeed = RANDOMHASH(RANDOMHASH(member * blockDim.x + thread) + seed);
+    unsigned int memberSeed = RANDOM(RANDOM(member) + seed);
+    unsigned int threadSeed = RANDOM(RANDOM(member * blockDim.x + thread) + seed);
 
     GPU_SHARED FireStarterInstructions instructions;
     float oldResult;

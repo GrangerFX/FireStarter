@@ -18,7 +18,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= settings.m_evolvePopulation)
         return;
-    unsigned int memberSeed = RANDOMHASH(RANDOMHASH(member) + seed);
+    unsigned int memberSeed = RANDOM(RANDOM(member) + seed);
 
     // Precalculate the target theta values.
     float theta[FIRESTARTER_SAMPLES];

@@ -151,9 +151,8 @@ void FireStarterUnit::UnitGenerate(void)
     if (CUDACompile::CompileProgram(m_unitsModule, code, "Unit")) {
         if (m_settings.m_evolveStates == 1)
             m_evolveStates[0].m_optimizeFunction = CUDACompile::GetFunction(m_unitsModule, "Optimize");
-        else
-            for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
-                m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
+        else for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
+            m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_unitsModule, Format("Optimize%d", i).c_str());
     }
 } // UnitGenerate
 
@@ -168,9 +167,8 @@ void FireStarterUnit::OptimizeGenerate(bool compile)
     if (compile && CUDACompile::CompileProgram(m_optimizeModule, m_optimizeCode, "Optimize")) {
         if (m_settings.m_evolveStates == 1)
             m_evolveStates[0].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
-        else
-            for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
-                m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, Format("Optimize%d", i).c_str());
+        else for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
+            m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, Format("Optimize%d", i).c_str());
     }
 } // OptimizeGenerate
 
@@ -181,7 +179,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
     unsigned int blocksPerGrid = m_settings.m_evolvePopulation;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned int seed = RANDOMHASH(RANDOMHASH(m_evolveGeneration) + m_seed);
+    unsigned int seed = RANDOM(RANDOM(m_evolveGeneration) + m_seed);
 
     for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         // Run all the evolve states in parallel.
@@ -254,7 +252,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
     unsigned int blocksPerGrid = (m_settings.m_evolvePopulation + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned int seed = RANDOMHASH(RANDOMHASH(m_evolveGeneration) + m_seed);
+    unsigned int seed = RANDOM(RANDOM(m_evolveGeneration) + m_seed);
 
     for (unsigned int g = 0; g < m_settings.m_evolveGenerations; g++) {
         // Run all the evolve states in parallel.
@@ -429,7 +427,7 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
         m_unitIndex = index;
         m_bestState = state;
         m_settings = m_bestState.Settings();
-        m_seed = RANDOMHASH(RANDOMHASH(m_unitIndex) + m_settings.m_seed);
+        m_seed = RANDOM(RANDOM(m_unitIndex) + m_settings.m_seed);
 
         m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
         for (FireStarterState &state: m_allStates)

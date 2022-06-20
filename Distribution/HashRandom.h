@@ -17,8 +17,56 @@ inline unsigned int Hash(unsigned int hash)
     return hash;
 } // Hash
 
+// Squares 32 and 64 bit random number generator
+// From Bernard Widynski's paper
+// Squares: A Fast Counter-Based RNG
+// https://arxiv.org/pdf/2004.06278v7.pdf
+inline unsigned int Squares32(unsigned long long ctr, unsigned long long key = 0x1659c2f3245a7913)
+{
+    unsigned long long x, y, z;
+    y = x = ctr * key; z = y + key;
+    x = x * x + y; x = (x >> 32) | (x << 32); /* round 1 */
+    x = x * x + z; x = (x >> 32) | (x << 32); /* round 2 */
+    x = x * x + y; x = (x >> 32) | (x << 32); /* round 3 */
+    return (x * x + z) >> 32; /* round 4 */
+} // Squares32
+
+inline unsigned long long Squares64(unsigned long long ctr, unsigned long long key = 0xfbe3c695413b867f)
+{
+    unsigned long long t, x, y, z;
+    y = x = ctr * key; z = y + key;
+    x = x * x + y; x = (x >> 32) | (x << 32); /* round 1 */
+    x = x * x + z; x = (x >> 32) | (x << 32); /* round 2 */
+    x = x * x + y; x = (x >> 32) | (x << 32); /* round 3 */
+    t = x = x * x + z; x = (x >> 32) | (x << 32); /* round 4 */
+    return t ^ ((x * x + y) >> 32); /* round 5 */
+} // Squares64
+
+/* Some keys
+0x85493e21f23649a5,
+0x1659c2f3245a7913,
+0xfbe3c695413b867f,
+0xad68b9f54f2d85eb,
+0xfb618e598e31c459,
+0xcf1d894a9b24d3c5,
+0x53481b7dcb58e243,
+0x597a326dc738e19f,
+0x7658a391f85c321d,
+0xcd64f372173e2f69,
+0x8a31de2767324ed5,
+0x47bf52ca94267d53,
+0xb5736d4981276baf,
+*/
+
 #define RANDOMHASH(seed) Hash((unsigned int)(seed))
+#define RANDOMSQUARES(seed) Squares32((unsigned long long)(seed))
+#if 0
+#define RANDOM(seed) RANDOMSQUARES(seed)
+#define RANDOMSEED(seed) RANDOMSQUARES(seed++)
+#else
+#define RANDOM(seed) RANDOMHASH(seed)
 #define RANDOMSEED(seed) RANDOMHASH(seed++)
+#endif
 #define RANDOMMOD(seed, m) ((RANDOMSEED(seed) * (unsigned long long)(m)) >> 32)
 #define RANDOMBITS(seed, bits) (RANDOMSEED(seed) >> (32 - (bits)))          // create a random number with a specific number of bits
 #define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1
