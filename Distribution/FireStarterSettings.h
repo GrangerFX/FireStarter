@@ -4,7 +4,8 @@
 #define FIRESTARTER_REGISTERS FIRESTARTER_INSTRUCTIONS
 #define FIRESTARTER_VARIATIONS 3
 #define FIRESTARTER_SAMPLES 15
-#define FIRESTARTER_SEED 7263
+#define FIRESTARTER_EVOLUTION 1
+#define FIRESTARTER_SEED 1
 
 #define FIRESTARTER_SAMPLE_MIN 0.0f
 #define FIRESTARTER_SAMPLE_MAX (2.0f * 3.14159265f)
@@ -19,7 +20,7 @@
 #define FIRESTARTER_PROCESS  3
 #define FIRESTARTER_OPTIMIZE 4
 #define FIRESTARTER_SOLUTION 6
-#define FIRESTARTER_MODE     FIRESTARTER_PROCESS
+#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
 
 #define EVOLVE_UNITS 1
 #define EVOLVE_STATES 1
@@ -71,6 +72,7 @@ public:
     unsigned int m_opcodes;
     unsigned int m_variations;
     unsigned int m_samples;
+    unsigned int m_evolution;
     unsigned int m_seed;
 
     float m_sampleMin;
@@ -96,6 +98,7 @@ public:
         m_opcodes = FIRESTARTER_OPCODES;
         m_variations = FIRESTARTER_VARIATIONS;
         m_samples = FIRESTARTER_SAMPLES;
+        m_evolution = FIRESTARTER_EVOLUTION;
         m_seed = FIRESTARTER_SEED;
 
         m_sampleMin = FIRESTARTER_SAMPLE_MIN;

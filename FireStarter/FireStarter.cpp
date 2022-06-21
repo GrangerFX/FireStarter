@@ -253,9 +253,10 @@ void FireStarter::ControlLoop(void)
     }
 
     // Load or initialize the starting state.
-    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE)
+    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
         LoadState(m_bestState);
-    else
+        m_bestState.m_program.m_settings = m_settings;
+    } else
         m_bestState.InitState(m_settings);
     for (unsigned int i = 0; i < m_units.size(); i++)
         m_units[i]->InitUnit(i, m_bestState);

@@ -134,11 +134,11 @@ void FireStarterUnit::UnitGenerate(void)
     // Evolve each state.
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         FireStarterState& state = m_evolveStates[i].m_state;
-        state = m_bestState;
-        if (!m_evolveGeneration)
-            state.m_program.RandomProgram(m_seed);
-        else
+        if (m_evolveGeneration && m_settings.m_evolution) {
+            state = m_bestState;
             state.m_program.RandomInstruction(m_seed);
+        } else
+            state.m_program.RandomProgram(m_seed);
         state.m_program.OptimizeRegisters(true);
         state.m_generation = m_evolveGeneration;
     }

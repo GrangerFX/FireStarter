@@ -94,7 +94,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     // Only read and write memory in a single thread.
     GPU_SYNCTHREADS();
     if (thread == 0) {
-        if (init || (maxResult < oldResult)) {
+        if (init || (maxResult < oldResult) || !settings.m_evolution) {
             // Save the improved results.
             *newEvolutions->Instructions(member) = instructions;
             *newResults->MaxResult(member) = maxResult;
