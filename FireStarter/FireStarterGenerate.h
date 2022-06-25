@@ -15,7 +15,7 @@ private:
 public:
 	void InitGenerate(const FireStarterState& state);
 	void GenerateEvaluate(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code);
-	void GenerateSolution(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code, const std::string& targetCode, double duration, unsigned int generation);
+	void GenerateSolution(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code, const std::string& targetCode, double duration, unsigned int generation, int optimize = true);
 	FireStarterGenerate(void);
 	~FireStarterGenerate(void);
 }; // FireStarterGenerate
