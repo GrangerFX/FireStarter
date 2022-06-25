@@ -25,7 +25,79 @@ void FireStarterGenerate::InitGenerate(const FireStarterState& state)
     }
 } // InitGenerate
 
-void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code)
+void FireStarterGenerate::GenerateEvolve(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code)
+{
+    // Allocate the device memory needed to generate the evaluate code.
+    InitGenerate(state);
+
+    // Generate the evaluate function.
+    size_t numInstructions = 0;
+    const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
+    size_t numRegisters = 0;
+    const FireStarterRegisters* registers = state.m_program.Registers(&numRegisters);
+    unsigned int evolveInstruction = state.m_program.m_evolveInstruction;
+    std::string generateCode;
+    unsigned int tabs = 1;
+
+    code.clear();
+    code += "inline float Evaluate(FireStarterData data, float n, unsigned int r)\r\n";
+    code += "{\r\n";
+
+    if (function && stream) {
+        // First pass: Determine the length of the code string.
+        dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
+        dim3 cudaGridSize(1, 1, 1);
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registers, FireStarterRegisters::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
+
+        size_t stringSize = 0;
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceString),
+                        reinterpret_cast<void*>(&stringSize),
+                        reinterpret_cast<void*>(&tabs),
+                        reinterpret_cast<void*>(&m_deviceInstructions),
+                        reinterpret_cast<void*>(&numInstructions),
+                        reinterpret_cast<void*>(&evolveInstruction) };
+
+        checkCUDAErrors(cuLaunchKernel(function,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+            0, stream,                                          // shared mem, stream */
+            &arr[0],                                            // arguments */
+            0));
+        checkCUDAErrors(cudaMemcpyAsync(&stringSize, m_deviceString, sizeof(size_t), cudaMemcpyDeviceToHost, stream));
+        checkCUDAErrors(cudaStreamSynchronize(stream));
+
+        // Second pass: Generate the code string.
+        generateCode.resize(stringSize, 0);
+        stringSize++;
+        if (stringSize > m_stringSize) {
+            m_stringSize = stringSize;
+            checkCUDAErrors(cudaFree(m_deviceString));
+            checkCUDAErrors(cudaMalloc(&m_deviceString, m_stringSize));
+        }
+
+        checkCUDAErrors(cuLaunchKernel(function,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+            0, stream,                                          // shared mem, stream */
+            &arr[0],                                            // arguments */
+            0));
+        checkCUDAErrors(cudaMemcpyAsync(generateCode.data(), m_deviceString, stringSize, cudaMemcpyDeviceToHost, stream));
+        checkCUDAErrors(cudaStreamSynchronize(stream));
+    }
+    else {
+        size_t codeLength = 0;
+        GenerateEvolveCode(nullptr, 0, codeLength, tabs, instructions, numInstructions, evolveInstruction);
+        generateCode.resize(codeLength, 0);
+        codeLength = 0;
+        GenerateEvolveCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, numInstructions, evolveInstruction);
+    }
+    code += generateCode;
+    code += "    return isfinite(n) ? n : 0.0f;\r\n";
+    code += "} // Evaluate\r\n";
+} // GenerateEvolve
+
+void FireStarterGenerate::GenerateOptimize(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code)
 {
     // Allocate the device memory needed to generate the evaluate code.
     InitGenerate(state);
@@ -95,7 +167,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, CUfunc
     code += generateCode;
     code += "    return isfinite(n) ? n : 0.0f;\r\n";
     code += "} // Evaluate\r\n";
-} // GenerateEvaluate
+} // GenerateOptimize
 
 void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code, const std::string& targetCode, double duration, unsigned int generation, int optimize)
 {

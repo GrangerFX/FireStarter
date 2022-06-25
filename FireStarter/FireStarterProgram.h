@@ -13,6 +13,7 @@ public:
     FireStarterSettings m_settings;
     unsigned int m_dataSize = 0;
     unsigned int m_maxRegisters = 0;
+    unsigned int m_evolveInstruction = 0;
 
     FireStarterInstructions* Instructions(void)
     {
@@ -35,6 +36,7 @@ public:
     void OptimizeRegisters(bool clean);
     void RandomProgram(unsigned int& seed);
     void RandomInstruction(unsigned int& seed);
+    void RandomEvolve(unsigned int& seed);
     void LoadInstructions(FireStarterInstructions* instructions);
     void SaveInstructions(FireStarterInstructions* instructions);
     void SaveSettings(std::string& code);

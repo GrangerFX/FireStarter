@@ -21,6 +21,7 @@ private:
         FireStarterEvolutions* m_hostEvolutions = nullptr;
         FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
         FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
+        CUfunction m_evolveFunction = nullptr;
         CUfunction m_optimizeFunction = nullptr;
         FireStarterState m_state;
     }; // class FireStarterEvolveState
@@ -36,6 +37,7 @@ private:
     CUmodule m_evolveModule = nullptr;
     CUmodule m_unitsModule = nullptr;
     CUmodule m_optimizeModule = nullptr;
+    CUfunction m_fireGenerateEvolveFunction = nullptr;
     CUfunction m_fireGenerateEvaluateFunction = nullptr;
     CUfunction m_evolveFunction = nullptr;
     std::string m_fireGenerateCode;
@@ -53,9 +55,10 @@ private:
     void InitEvolveStates(void);
     void DeallocateEvolveStates(void);
     bool AllocateEvolveStates(void);
-    void EvaluateGenerate(void);
-    void EvolveGenerate(void);
+    void FireGenerate(void);
+    void EvolveCode(std::string& code);
     void UnitCode(std::string &code);
+    void EvolveGenerate(void);
     void UnitGenerate(void);
     void OptimizeGenerate(bool compile = true);
     void EvolveGenerations(unsigned int init);

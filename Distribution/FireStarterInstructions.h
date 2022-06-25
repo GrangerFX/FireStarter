@@ -77,7 +77,29 @@ struct FireStarterInstruction {
         }
     } // Execute
 
-    inline size_t GenerateEvaluate(char* buffer, size_t size, size_t &length, unsigned int tabs, bool instructionLast = false) const
+    inline size_t GenerateEvolve(char* buffer, size_t size, size_t& length, unsigned int tabs) const
+    {
+        // Insert leading tabs (four spaces).
+        unsigned int tabSize = 0;
+        while (tabs--)
+            tabSize += anprintf(buffer, size, length, "    ");
+
+        // Convert the instructions.
+        switch (op) {
+        case Operation_multiply:
+            return tabSize + anprintf(buffer, size, length, "n = data.d[r] *= n;\r\n", reg);
+            break;
+        case Operation_add:
+            return tabSize + anprintf(buffer, size, length, "n = data.d[r] += n;\r\n", reg);
+            break;
+        case Operation_abs:
+            return tabSize + anprintf(buffer, size, length, "n = fabsf(n);\r\n");
+            break;
+        }
+        return 0;
+    } // GenerateEvaluate
+
+    inline size_t GenerateEvaluate(char* buffer, size_t size, size_t &length, unsigned int tabs, bool instructionLast) const
     {
         // Insert leading tabs (four spaces).
         unsigned int tabSize = 0;
@@ -153,7 +175,7 @@ struct FireStarterInstruction {
 
 typedef struct FireStarterInstructions {
     FireStarterInstruction i[FIRESTARTER_INSTRUCTIONS];
-    
+
     static inline size_t InstructionsSize(size_t instructions)
     {
         return instructions * sizeof(FireStarterInstruction);
@@ -245,6 +267,16 @@ inline void GenerateDataCode(char* buffer, size_t size, size_t& length, unsigned
         anprintf(buffer, size, length, ", %ff", data->d[i]);
     anprintf(buffer, size, length, "};\r\n");
 } // GenerateDataCode
+
+inline void GenerateEvolveCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, size_t numInstructions, unsigned int evolveInstruction)
+{
+    // Generate the evolve function code.
+    for (unsigned int i = 0; i < numInstructions; i++)
+        if (i == evolveInstruction)
+            instructions->Instruction(i).GenerateEvolve(buffer, size, length, tabs);
+        else
+            instructions->Instruction(i).GenerateEvaluate(buffer, size, length, tabs, false);
+} // GenerateEvolveCode
 
 inline void GenerateEvaluateCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, size_t numInstructions, const FireStarterRegisters* registers, size_t numRegisters)
 {
