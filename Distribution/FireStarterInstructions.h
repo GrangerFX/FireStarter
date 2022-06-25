@@ -105,7 +105,7 @@ struct FireStarterInstruction {
         return 0;
     } // GenerateEvaluate
 
-    inline size_t GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int r, float data, bool instructionFirst = false, bool instructionLast = false) const
+    inline size_t GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int r, float data, bool instructionFirst, bool instructionLast) const
     {
         // Insert leading tabs (four spaces).
         unsigned int tabSize = 0;
@@ -234,6 +234,18 @@ typedef struct FireStarterEvolutions {
     } // FireStarterResults
 } FireStarterEvolutions;
 
+inline void GenerateDataCode(char* buffer, size_t size, size_t& length, unsigned int tabs, size_t numRegisters, const FireStarterData* data)
+{
+    if (!numRegisters)
+        numRegisters = FIRESTARTER_REGISTERS;
+    for (unsigned int i = 0; i < tabs; i++)
+        anprintf(buffer, size, length, "    ");
+    anprintf(buffer, size, length, "FireStarterData data = { %f", numRegisters, data[0]);
+    for (unsigned int i = 1; i < numRegisters; i++)
+        anprintf(buffer, size, length, ", %f", data[i]);
+    anprintf(buffer, size, length, "};\r\n");
+} // GenerateDataCode
+
 inline void GenerateEvaluateCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, size_t numInstructions, const FireStarterRegisters* registers, size_t numRegisters)
 {
     // Generate the evaluate function code.
@@ -247,40 +259,31 @@ inline void GenerateEvaluateCode(char* buffer, size_t size, size_t& length, unsi
 
 inline void GenerateSolutionCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, size_t numInstructions, const FireStarterRegisters* registers, size_t numRegisters, const FireStarterData* data)
 {
-    // Generate the solution function code.
-    bool optimize = registers && numRegisters;
-
     // Find the maximum code register.
-    if (optimize) {
-        size_t maxRegister = 0;
-        for (unsigned int i = 0; i < numInstructions; i++) {
-            unsigned int reg = instructions->Register(i);
-            const FireStarterRegister& dataRegister = registers->Register(reg);
-            if ((i != dataRegister.instructionFirst) || (i != dataRegister.instructionLast)) {
-                unsigned int r = dataRegister.registerIndex;
-                if (r > maxRegister)
-                    maxRegister = r;
-            }
-        }
-
-        for (unsigned int i = 0; i < tabs; i++)
-            anprintf(buffer, size, length, "    ");
-        anprintf(buffer, size, length, "float r0");
-        for (unsigned int i = 1; i <= maxRegister; i++)
-            anprintf(buffer, size, length, ", r%u", i);
-        anprintf(buffer, size, length, ";\r\n\r\n");
-
-        for (unsigned int i = 0; i < numInstructions; i++) {
-            unsigned int reg = instructions->Register(i);
-            const FireStarterRegister& dataRegister = registers->Register(reg);
+    size_t maxRegister = 0;
+    for (unsigned int i = 0; i < numInstructions; i++) {
+        unsigned int reg = instructions->Register(i);
+        const FireStarterRegister& dataRegister = registers->Register(reg);
+        if ((i != dataRegister.instructionFirst) || (i != dataRegister.instructionLast)) {
             unsigned int r = dataRegister.registerIndex;
-            float f = data->d[reg];
-            instructions->Instruction(i).GenerateSolution(buffer, size, length, tabs, r, f, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
+            if (r > maxRegister)
+                maxRegister = r;
         }
-    } else
-        for (unsigned int i = 0; i < numInstructions; i++) {
-            unsigned int reg = instructions->Register(i);
-            float f = data->d[reg];
-            instructions->Instruction(i).GenerateSolution(buffer, size, length, tabs, reg, f, false, false);
-        }
+    }
+
+    // Generate the solution function code.
+    for (unsigned int i = 0; i < tabs; i++)
+        anprintf(buffer, size, length, "    ");
+    anprintf(buffer, size, length, "float r0");
+    for (unsigned int i = 1; i <= maxRegister; i++)
+        anprintf(buffer, size, length, ", r%u", i);
+    anprintf(buffer, size, length, ";\r\n\r\n");
+
+    for (unsigned int i = 0; i < numInstructions; i++) {
+        unsigned int reg = instructions->Register(i);
+        const FireStarterRegister& dataRegister = registers->Register(reg);
+        unsigned int r = dataRegister.registerIndex;
+        float f = data->d[reg];
+        instructions->Instruction(i).GenerateSolution(buffer, size, length, tabs, r, f, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
+    }
 } // GenerateSolutionCode

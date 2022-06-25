@@ -22,9 +22,9 @@
 #define GPU_THREADFENCE()
 #define GPU_SYNCTHREADS()
 #define GPU_SHARED
-static uint3 blockIdx;
-static dim3 blockDim;
-static uint3 threadIdx;
+const uint3 blockIdx = { 0, 0, 0 };
+const dim3 blockDim = { 1, 1, 1 };
+const uint3 threadIdx = { 0, 0, 0 };
 inline float __int_as_float(int x) { union int_float { int i; float f; } u; u.i = x; return u.f; }
 inline int __float_as_int(float x) { union int_float { int i; float f; } u; u.f = x; return u.i; }
 inline float __uint_as_float(unsigned int x) { union int_float { unsigned int i; float f; } u; u.i = x; return u.f; }
