@@ -121,7 +121,7 @@ void FireStarterUnit::EvolveCode(std::string& code)
     // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     code = m_evolveCode;
     FireStarterCode::UpdateProgram(code, evaluateCode, EVALUATE_CODE);
-    FireStarterCode::UpdateProgram(code, evolveCode, OPTIMIZE_CODE);
+    FireStarterCode::UpdateProgram(code, evolveCode, EVOLVE_CODE);
 } // EvolveCode
 
 void FireStarterUnit::UnitCode(std::string& code)
