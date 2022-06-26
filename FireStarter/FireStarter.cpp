@@ -268,12 +268,20 @@ void FireStarter::ControlLoop(void)
         for (FireStarterUnit* unit : m_units)
             unit->Execute();
 
-        // Update the best data for all the units.
+        // Update the states for all the units.
         for (FireStarterUnit* unit : m_units)
-            if (unit->Update(m_allStates.data(), m_bestState, m_bestResult)) {
+            unit->Update(m_allStates.data());
+
+        // Update the best data for all the states.
+        for (const FireStarterState& state : m_allStates) {
+            float maxResult = state.Result()->maxResult;
+            if (maxResult < m_bestResult) {
+                m_bestResult = maxResult;
+                m_bestState = state;
                 m_bestGeneration = m_generation;
                 m_controlUpdate = true;
             }
+        }
 
         // Send all the states back to all the units.
         for (FireStarterUnit* unit : m_units)
@@ -307,7 +315,7 @@ void FireStarter::ControlLoop(void)
             GetMainThread()->DispatchSync([this, bufferPixels] {
                 RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
                 m_bufferUpdate = false;
-                });
+            });
         }
 
         // Has the completion condition been met?

@@ -34,7 +34,6 @@ private:
     CUDAContext* m_unitContext = nullptr;
     CUmodule m_generateModule = nullptr;
     CUmodule m_evolveModule = nullptr;
-    CUmodule m_unitsModule = nullptr;
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_fireGenerateEvaluateFunction = nullptr;
     CUfunction m_evolveFunction = nullptr;
@@ -53,11 +52,10 @@ private:
     void InitEvolveStates(void);
     void DeallocateEvolveStates(void);
     bool AllocateEvolveStates(void);
-    void EvaluateGenerate(void);
+    void CompileGenerate(void);
     void EvolveGenerate(void);
-    void UnitCode(std::string &code);
+    void OptimizeGenerate(void);
     void UnitGenerate(void);
-    void OptimizeGenerate(bool compile = true);
     void EvolveGenerations(unsigned int init);
     void OptimizeGenerations(unsigned int init);
     void EvolveExecute(void);
@@ -73,7 +71,7 @@ public:
     void PacketizeAllStates(FireStarterPacket& packet);
     void InitUnit(unsigned int index, const FireStarterState& state);
     void Execute(void);
-    bool Update(FireStarterState* states, FireStarterState& bestState, float& bestResult);
+    void Update(FireStarterState* states);
     void Sync(FireStarterState* states);
     void Start(void);
     void Stop(void);
