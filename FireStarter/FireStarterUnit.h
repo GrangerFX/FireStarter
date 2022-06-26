@@ -59,8 +59,8 @@ private:
     void EvolveGenerations(unsigned int init);
     void OptimizeGenerations(unsigned int init);
     void EvolveExecute(void);
-    void UnitExecute(void);
     void OptimizeExecute(void);
+    void UnitExecute(void);
     bool LoadCode(void);
     void Deallocate(void);
     bool Allocate(void);

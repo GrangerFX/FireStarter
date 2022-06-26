@@ -310,16 +310,6 @@ void FireStarterUnit::EvolveExecute(void)
     m_evolveGeneration += m_settings.m_evolveGenerations;
 } // EvolveExecute
 
-void FireStarterUnit::UnitExecute(void)
-{ 
-    // Evolve, generate and compile the program.
-    UnitGenerate();
-
-    // Evolve the program data.
-    OptimizeGenerations(1);
-    m_evolveGeneration++;
-} // UnitExecute
-
 void FireStarterUnit::OptimizeExecute(void)
 {
     // Initialize each state with the best previous state.
@@ -332,6 +322,16 @@ void FireStarterUnit::OptimizeExecute(void)
     OptimizeGenerations(m_evolveGeneration == 0);
     m_evolveGeneration += m_settings.m_evolveGenerations;
 } // OptimizeExecute
+
+void FireStarterUnit::UnitExecute(void)
+{
+    // Evolve, generate and compile the program.
+    UnitGenerate();
+
+    // Evolve the program data.
+    OptimizeGenerations(1);
+    m_evolveGeneration++;
+} // UnitExecute
 
 bool FireStarterUnit::LoadCode(void)
 {
