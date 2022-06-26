@@ -51,6 +51,8 @@ void FireStarter::SaveBestCode(void)
     if (!optimizeCode.empty()) {
         // Generate the evaluate function
         std::string evaluateCode;
+        for (unsigned int i = 0; i < m_bestState.Settings().m_variations; i++)
+            m_bestState.SaveVariation(i, evaluateCode);
         m_fireStarterGenerate->GenerateEvaluate(m_bestState, m_fireGenerateEvaluateFunction, m_fireStarterContext->Stream(), evaluateCode);
 
         // Create the units code by replacing the evaluate and optimize sections of the optimize code.

@@ -38,7 +38,6 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, CUfunc
     std::string generateCode;
     unsigned int tabs = 1;
 
-    code.clear();
     code += "inline float Evaluate(FireStarterData data, float n)\r\n";
     code += "{\r\n";
 
@@ -97,7 +96,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, CUfunc
     code += "} // Evaluate\r\n";
 } // GenerateEvaluate
 
-void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code, const std::string& targetCode, double duration, unsigned int generation, int optimize)
+void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code, const std::string& targetCode, double duration, unsigned int generation)
 {
     // Allocate the device memory needed to generate the solution code.
     InitGenerate(state);
@@ -164,8 +163,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunc
                             reinterpret_cast<void*>(&numInstructions),
                             reinterpret_cast<void*>(&m_deviceRegisters),
                             reinterpret_cast<void*>(&numRegisters),
-                            reinterpret_cast<void*>(&m_deviceData),
-                            reinterpret_cast<void*>(&optimize) };
+                            reinterpret_cast<void*>(&m_deviceData) };
 
             checkCUDAErrors(cuLaunchKernel(function,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -193,20 +191,12 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunc
                 0));
             checkCUDAErrors(cudaMemcpyAsync(generateCode.data(), m_deviceString, stringSize, cudaMemcpyDeviceToHost, stream));
             checkCUDAErrors(cudaStreamSynchronize(stream));
-        } else if (optimize) {
+        } else {
             size_t codeLength = 0;
             GenerateSolutionCode(nullptr, 0, codeLength, tabs, instructions, numInstructions, registers, numRegisters, data);
             generateCode.resize(codeLength, 0);
             codeLength = 0;
             GenerateSolutionCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, numInstructions, registers, numRegisters, data);
-        } else {
-            size_t codeLength = 0;
-            GenerateDataCode(nullptr, 0, codeLength, tabs, numRegisters, data);
-            GenerateEvaluateCode(nullptr, 0, codeLength, tabs, instructions, numInstructions, registers, numRegisters);
-            generateCode.resize(codeLength, 0);
-            codeLength = 0;
-            GenerateDataCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, numRegisters, data);
-            GenerateEvaluateCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, numInstructions, registers, numRegisters);
         }
         code += generateCode;
 
