@@ -74,7 +74,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings)
 {
     m_program.InitProgram(settings);
     m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_instructions, m_program.m_settings.m_variations));
-    Result()->Init(m_program.m_settings.m_instructions, m_program.m_settings.m_variations, m_program.m_settings.m_evolveStartResult);
+    Result()->Init(m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_evolveStartResult);
 } // InitState
 
 FireStarterState::FireStarterState(void)

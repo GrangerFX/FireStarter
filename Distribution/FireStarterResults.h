@@ -15,14 +15,14 @@ typedef struct FireStarterResult {
     unsigned int dataSize;
     float data[FIRESTARTER_REGISTERS * FIRESTARTER_VARIATIONS];
 
-    static inline size_t VariationsSize(unsigned int instructions, unsigned int variations)
+    static inline size_t VariationsSize(unsigned int registers, unsigned int variations)
     {
-        return sizeof(float) * instructions * variations;
+        return sizeof(float) * registers * variations;
     } // DataSize
 
-    static inline size_t ResultSize(unsigned int instructions, unsigned int variations)
+    static inline size_t ResultSize(unsigned int registers, unsigned int variations)
     {
-        return sizeof(float) + sizeof(unsigned int) + VariationsSize(instructions, variations) + sizeof(float) * variations;
+        return sizeof(float) + sizeof(unsigned int) + VariationsSize(registers, variations) + sizeof(float) * variations;
     } // ResultSize
 
     inline float* MinResult(unsigned int variation)
@@ -45,13 +45,13 @@ typedef struct FireStarterResult {
         return (const FireStarterData*)&data[variation * dataSize];
     } // ConstData
 
-    inline void Init(unsigned int numInstructions, unsigned int numVariations, float startResult)
+    inline void Init(unsigned int registers, unsigned int variations, float startResult)
     {
         maxResult = startResult;
-        dataSize = numInstructions + 1;
-        for (unsigned int v = 0; v < numVariations; v++) {
+        dataSize = registers + 1;
+        for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
-            for (unsigned int i = 0; i < numInstructions; i++)
+            for (unsigned int i = 0; i < registers; i++)
                 data->d[i] = 1.0f;
             *MinResult(v) = startResult;
         }
@@ -60,18 +60,14 @@ typedef struct FireStarterResult {
 
 typedef struct FireStarterResults {
     size_t m_members;
-    size_t m_instructions;
+    size_t m_registers;
     size_t m_variations;
-    size_t m_instructionsSize;
-    size_t m_dataSize;
-    size_t m_variationsSize;
     size_t m_resultSize;
-    size_t m_resultsSize;
     unsigned char m_memory[16];
 
-    static inline size_t ResultsSize(unsigned int members, unsigned int instructions, unsigned int variations)
+    static inline size_t ResultsSize(unsigned int members, unsigned int registers, unsigned int variations)
     {
-        return (sizeof(FireStarterResults) - 16) + members * FireStarterResult::ResultSize(instructions, variations);
+        return (sizeof(FireStarterResults) - 16) + members * FireStarterResult::ResultSize(registers, variations);
     } // ResultsSize
 
     inline FireStarterResult* Result(unsigned int member)
@@ -114,16 +110,13 @@ typedef struct FireStarterResults {
         return &ConstResult(member)->maxResult;
     } // ConstMaxResult
 
-    inline void InitResults(unsigned int members, unsigned int instructions, unsigned int variations, float startResult)
+    inline void InitResults(unsigned int members, unsigned int registers, unsigned int variations, float startResult)
     {
         m_members = members;
-        m_instructions = instructions;
+        m_registers = registers;
         m_variations = variations;
-        m_dataSize = FireStarterData::DataSize(instructions);
-        m_variationsSize = FireStarterResult::VariationsSize(instructions, variations);
-        m_resultSize = FireStarterResult::ResultSize(instructions, variations);
-        m_resultsSize = ResultsSize(members, instructions, variations);
+        m_resultSize = FireStarterResult::ResultSize(registers, variations);
         for (unsigned int i = 0; i < members; i++)
-            Result(i)->Init(instructions, variations, startResult);
+            Result(i)->Init(registers, variations, startResult);
     } // FireStarterResults
 } FireStarterResults;

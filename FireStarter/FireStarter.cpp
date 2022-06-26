@@ -162,7 +162,11 @@ void FireStarter::RenderStatus(void)
             mode = "FireStarter_Solution";
             break;
     }
-    sprintf_s(m_statusString, "%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+    if (m_settings.m_evolution)
+        sprintf_s(m_statusString, "%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+    else
+        sprintf_s(m_statusString, "%s: Generation=%u  Seed=%u  Min=%f  Max=%f  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_seed, m_minResult, m_maxResult, m_bestResult, m_controlTime, m_runTimer.Duration());
+    GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString); });
 } // RenderStatus
 
 void FireStarter::ControlDeallocate(void)
@@ -228,6 +232,7 @@ void FireStarter::ControlLoop(void)
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireSettings();
+    m_seed = m_settings.m_seed;
     m_fireStarterMode = m_settings.m_evolveMode;
     m_bestResult = m_settings.m_evolveStartResult;
     m_bestState.InitState(m_settings);
@@ -238,7 +243,8 @@ void FireStarter::ControlLoop(void)
 
     m_generation = 0;
     m_bestGeneration = 0;
-    m_bestResult = m_settings.m_evolveStartResult;
+    m_minResult = 0.0f;
+    m_maxResult = 0.0f;
     m_controlTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;
@@ -260,11 +266,16 @@ void FireStarter::ControlLoop(void)
         m_bestState.m_program.m_settings = m_settings;
     } else
         m_bestState.InitState(m_settings);
-    for (unsigned int i = 0; i < m_units.size(); i++)
-        m_units[i]->InitUnit(i, m_bestState);
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
+        if (!m_generation || !m_settings.m_evolution) {
+            m_seed = m_settings.m_seed + m_generation;
+            m_bestState.Settings().m_seed = m_seed;
+            for (unsigned int i = 0; i < m_units.size(); i++)
+                m_units[i]->InitUnit(i, m_bestState);
+        }
+
         // Execute a generation for all the units.
         m_controlTimer.Start();
         for (FireStarterUnit* unit : m_units)
@@ -275,8 +286,12 @@ void FireStarter::ControlLoop(void)
             unit->Update(m_allStates.data());
 
         // Update the best data for all the states.
+        m_minResult = m_settings.m_evolveStartResult;
+        m_maxResult = 0.0f;
         for (const FireStarterState& state : m_allStates) {
             float maxResult = state.Result()->maxResult;
+            m_minResult = fmin(m_minResult, maxResult);
+            m_maxResult = fmax(m_maxResult, maxResult);
             if (maxResult < m_bestResult) {
                 m_bestResult = maxResult;
                 m_bestState = state;
@@ -300,10 +315,8 @@ void FireStarter::ControlLoop(void)
         }
 
         // Update the render status after every pass.
-        if (!m_quitControlThread) {
+        if (!m_quitControlThread)
             RenderStatus();
-            GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString); });
-        }
 
         // Render the buffer if the best data was updated and the previous buffer was displayed.
         if (!m_bufferUpdate && !m_quitControlThread) {
@@ -447,9 +460,12 @@ FireStarter::FireStarter(void)
     m_fireStarterGenerate = nullptr;
     m_quitControlThread = false;
     m_statusString[0] = 0;
+    m_seed = 0;
     m_generation = 0;
     m_bestGeneration = 0;
     m_bestResult = 0;
+    m_minResult = 0;
+    m_maxResult = 0;
     m_controlTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;

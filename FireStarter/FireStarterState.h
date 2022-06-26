@@ -9,6 +9,11 @@ public:
     FireStarterProgram m_program;
     unsigned int m_generation = 0;
 
+    inline FireStarterSettings& Settings(void)
+    {
+        return m_program.m_settings;
+    } // Settings
+
     inline const FireStarterSettings& Settings(void) const
     {
         return m_program.m_settings;

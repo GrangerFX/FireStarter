@@ -34,10 +34,13 @@ public:
     FrameBuffer m_buffer;
     char m_statusString[1024];
     FireStarterSettings m_settings;
+    unsigned int m_seed;
     unsigned int m_fireStarterMode;
     unsigned int m_generation;
     unsigned int m_bestGeneration;
     float m_bestResult;
+    float m_minResult;
+    float m_maxResult;
     void* m_window;
     unsigned int m_width;
     unsigned int m_height;
