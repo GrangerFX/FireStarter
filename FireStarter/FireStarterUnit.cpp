@@ -221,10 +221,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
         state.m_program.LoadInstructions(evolveState.m_hostEvolutions->Instructions(minIndex));
         state.m_program.OptimizeRegisters(false);
         state.OptimizeData();
-
-        // Find the best results.
-//      if (state.Result()->maxResult < m_bestState.Result()->maxResult)
-//          m_bestState = state;
     }
 } // EvolveGenerations
 
@@ -298,10 +294,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
         result->maxResult = *result->MinResult(0);
         for (unsigned int v = 1; v < m_settings.m_variations; v++)
             result->maxResult = fmaxf(result->maxResult, *result->MinResult(v));
-
-        // Find the best results.
-//    if (result->maxResult < m_bestState.Result()->maxResult)
-//        m_bestState = state;
     }
 } // OptimizeGenerations
 
