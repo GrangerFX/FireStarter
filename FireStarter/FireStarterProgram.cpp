@@ -80,11 +80,6 @@ void FireStarterProgram::RandomInstruction(unsigned int& seed)
     Instructions()->SetRandom(index, seed, m_settings.m_instructions, m_settings.m_opcodes);
 } // RandomInstruction
 
-void FireStarterProgram::RandomEvolve(unsigned int& seed)
-{
-    m_evolveInstruction = RANDOMMOD(seed, m_settings.m_instructions);
-} // RandomEvolve
-
 void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
 {
     memcpy(m_instructions.data(), instructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions));

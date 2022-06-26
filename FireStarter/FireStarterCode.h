@@ -2,7 +2,6 @@
 #include <string>
 
 #define EVALUATE_CODE       "// EVALUATE //"
-#define EVOLVE_CODE         "// EVOLVE //"
 #define OPTIMIZE_CODE       "// OPTMIZE //"
 #define END_CODE            "// END //"
 

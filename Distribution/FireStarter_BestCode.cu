@@ -6,42 +6,6 @@
 #include "CUDADefines.h"
 
 // EVALUATE //
-inline float Evaluate(FireStarterData data, float n)
-{
-    n = data.d[12] += n;
-    n = data.d[20] += n;
-    n = data.d[3] *= n;
-    n = data.d[29] += n;
-    n = data.d[9] *= n;
-    n = data.d[8] += n;
-    n = data.d[1] += n;
-    n = data.d[17] *= n;
-    n = data.d[10] += n;
-    n = data.d[21] += n;
-    n = data.d[10] += n;
-    n = data.d[20] *= n;
-    n = data.d[24] *= n;
-    n = data.d[15] *= n;
-    n = data.d[6] *= n;
-    n = data.d[16] += n;
-    n = data.d[19] *= n;
-    n = data.d[25] += n;
-    n = data.d[18] += n;
-    n = data.d[6] *= n;
-    n = data.d[8] += n;
-    n = data.d[4] *= n;
-    n = data.d[6] += n;
-    n = data.d[9] += n;
-    n = data.d[23] += n;
-    n = data.d[29] *= n;
-    n = data.d[6] += n;
-    n = data.d[9] *= n;
-    n = data.d[20] += n;
-    n = data.d[12] *= n;
-    n = data.d[25] *= n;
-    n = data.d[19] += n;
-    return isfinite(n) ? n : 0.0f;
-} // Evaluate
 // END //
 
 // OPTMIZE //
