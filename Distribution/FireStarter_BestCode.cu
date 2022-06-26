@@ -111,7 +111,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
 
         // Iterate to evolve the data.
         for (unsigned int p = 0; p < settings.m_evolveIterations; p++) {
-            unsigned int d = RANDOMSEED(memberSeed) % dataSize;
+            unsigned int d = RANDOMMOD(memberSeed, dataSize);
             float oldData = data.d[d];
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
             float curResult = 0.0f;
@@ -143,7 +143,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             unsigned int bestIndex = member;
             float bestResult = oldResult;
             for (int i = 0; i < settings.m_evolveCandidates; i++) {
-                unsigned int index = RANDOMSEED(memberSeed) % settings.m_evolvePopulation;
+                unsigned int index = RANDOMMOD(memberSeed, settings.m_evolvePopulation);
                 float curResult = *oldResults->MinResult(index, variation);
                 if (curResult < bestResult) {
                     bestResult = curResult;

@@ -53,7 +53,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                 // Evolve the data.
                 float evolutionFactor = settings.m_evolveStartFactor;
                 for (unsigned int p = 0; p < settings.m_evolveIterations; p++) {
-                    unsigned int d = RANDOMSEED(threadSeed) % settings.m_instructions;
+                    unsigned int d = RANDOMMOD(threadSeed, settings.m_instructions);
                     const float oldData = data.d[d];
                     data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
                     theta = settings.m_sampleMin;
@@ -104,7 +104,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             unsigned int bestIndex = member;
             float bestResult = oldResult;
             for (int i = 0; i < settings.m_evolveCandidates; i++) {
-                unsigned int index = RANDOMSEED(memberSeed) % settings.m_evolvePopulation;
+                unsigned int index = RANDOMMOD(memberSeed, settings.m_evolvePopulation);
                 float curResult = *oldResults->MaxResult(index);
                 if (curResult < bestResult) {
                     bestIndex = index;
