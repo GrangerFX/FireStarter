@@ -52,7 +52,7 @@ typedef struct FireStarterResult {
         for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
             for (unsigned int i = 0; i < registers; i++)
-                data->d[i] = 1.0f;
+                data->d[i] = 0.0f;
             *MinResult(v) = startResult;
         }
     } // Init
