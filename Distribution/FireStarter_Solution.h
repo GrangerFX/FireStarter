@@ -1,12 +1,12 @@
-// Run date: 06/25/22 16:20:24 Pacific Daylight Time
-// Run duration = 0.837631 seconds
-// Run count = 4
+// Run date: 06/25/22 18:02:14 Pacific Daylight Time
+// Run duration = 3.593526 seconds
+// Run count = 1
 // Run units = 1
-// Run population = 4352
-// Run iterations = 512
-// Run generations = 10
+// Run population = 34816
+// Run iterations = 256
+// Run generations = 100
 // Run samples = 15
-// Solution Generation = 3
+// Solution Generation = 0
 
 #ifndef __CUDACC__
 #include <cmath>
@@ -34,16 +34,16 @@ inline float SolutionTarget(float n, unsigned int variation)
 
 #define SOLUTION_VARIATIONS 3
 
-// Precision = 0.072683
+// Precision = 0.006314
 
-// Solution0 precision = 0.072683
+// Solution0 precision = 0.005796
 inline float Solution0(float n)
 {
     float r0;
 
     n += 0.00000000f;
     n = r0 += n;
-    n = r0 += n;
+    n = r0 *= n;
     n = r0 += n;
     n = r0 *= n;
     n = r0 += n;
@@ -76,14 +76,14 @@ inline float Solution0(float n)
     return n;
 } // Solution0
 
-// Solution1 precision = 0.028532
+// Solution1 precision = 0.003645
 inline float Solution1(float n)
 {
     float r0;
 
     n += 0.00000000f;
     n = r0 += n;
-    n = r0 += n;
+    n = r0 *= n;
     n = r0 += n;
     n = r0 *= n;
     n = r0 += n;
@@ -116,14 +116,14 @@ inline float Solution1(float n)
     return n;
 } // Solution1
 
-// Solution2 precision = 0.062835
+// Solution2 precision = 0.006314
 inline float Solution2(float n)
 {
     float r0;
 
     n += 0.00000000f;
     n = r0 += n;
-    n = r0 += n;
+    n = r0 *= n;
     n = r0 += n;
     n = r0 *= n;
     n = r0 += n;

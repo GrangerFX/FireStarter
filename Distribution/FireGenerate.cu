@@ -1,12 +1,12 @@
 #include "FireStarterInstructions.h"
 
 // Generate the evaluate function code.
-GPU_GLOBAL void FireGenerateEvolve(char* buffer, size_t size, unsigned int tabs, FireStarterInstructions* instructions, size_t numInstructions, unsigned int evolveInstruction)
+GPU_GLOBAL void FireGenerateEvolve(char* buffer, size_t size, unsigned int tabs, FireStarterInstructions* instructions, size_t numInstructions, size_t numRegisters, unsigned int evolveInstruction)
 {
     const unsigned int thread = threadIdx.x;
     if (thread == 0) {
         size_t length = 0;
-        GenerateEvolveCode(buffer, size, length, tabs, instructions, numInstructions, evolveInstruction);
+        GenerateEvolveCode(buffer, size, length, tabs, instructions, numInstructions, numRegisters, evolveInstruction);
         if (!size)
             *(size_t*)buffer = length;
     }

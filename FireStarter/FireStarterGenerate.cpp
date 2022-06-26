@@ -33,8 +33,7 @@ void FireStarterGenerate::GenerateEvolve(const FireStarterState& state, CUfuncti
     // Generate the evaluate function.
     size_t numInstructions = 0;
     const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
-    size_t numRegisters = 0;
-    const FireStarterRegisters* registers = state.m_program.Registers(&numRegisters);
+    size_t numRegisters = state.m_program.m_settings.m_registers;
     unsigned int evolveInstruction = state.m_program.m_evolveInstruction;
     std::string generateCode;
     unsigned int tabs = 1;
@@ -48,7 +47,6 @@ void FireStarterGenerate::GenerateEvolve(const FireStarterState& state, CUfuncti
         dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
         dim3 cudaGridSize(1, 1, 1);
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registers, FireStarterRegisters::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
 
         size_t stringSize = 0;
         void* arr[] = { reinterpret_cast<void*>(&m_deviceString),
@@ -56,6 +54,7 @@ void FireStarterGenerate::GenerateEvolve(const FireStarterState& state, CUfuncti
                         reinterpret_cast<void*>(&tabs),
                         reinterpret_cast<void*>(&m_deviceInstructions),
                         reinterpret_cast<void*>(&numInstructions),
+                        reinterpret_cast<void*>(&numRegisters),
                         reinterpret_cast<void*>(&evolveInstruction) };
 
         checkCUDAErrors(cuLaunchKernel(function,
@@ -87,10 +86,10 @@ void FireStarterGenerate::GenerateEvolve(const FireStarterState& state, CUfuncti
     }
     else {
         size_t codeLength = 0;
-        GenerateEvolveCode(nullptr, 0, codeLength, tabs, instructions, numInstructions, evolveInstruction);
+        GenerateEvolveCode(nullptr, 0, codeLength, tabs, instructions, numInstructions, numRegisters, evolveInstruction);
         generateCode.resize(codeLength, 0);
         codeLength = 0;
-        GenerateEvolveCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, numInstructions, evolveInstruction);
+        GenerateEvolveCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, numInstructions, numRegisters, evolveInstruction);
     }
     code += generateCode;
     code += "    return isfinite(n) ? n : 0.0f;\r\n";

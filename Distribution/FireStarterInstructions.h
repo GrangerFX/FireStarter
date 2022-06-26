@@ -77,93 +77,97 @@ struct FireStarterInstruction {
         }
     } // Execute
 
-    inline size_t GenerateEvolve(char* buffer, size_t size, size_t& length, unsigned int tabs) const
+    inline void GenerateTabs(char* buffer, size_t size, size_t& length, unsigned int tabs) const
     {
         // Insert leading tabs (four spaces).
-        unsigned int tabSize = 0;
         while (tabs--)
-            tabSize += anprintf(buffer, size, length, "    ");
+            anprintf(buffer, size, length, "    ");
+    } // GenerateTabs
 
+    inline void GenerateEvolve(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int registers) const
+    {
         // Convert the instructions.
         switch (op) {
-        case Operation_multiply:
-            return tabSize + anprintf(buffer, size, length, "n = data.d[r] *= n;\r\n", reg);
-            break;
-        case Operation_add:
-            return tabSize + anprintf(buffer, size, length, "n = data.d[r] += n;\r\n", reg);
-            break;
-        case Operation_abs:
-            return tabSize + anprintf(buffer, size, length, "n = fabsf(n);\r\n");
-            break;
+            case Operation_multiply:
+            case Operation_add:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "switch (r) {\r\n");
+                for (unsigned int r = 0; r < registers; r++) {
+                    GenerateTabs(buffer, size, length, tabs + 1);
+                    anprintf(buffer, size, length, "case% d: n = data.d[%d] %s n; break;\r\n", r, r, op == Operation_multiply ? "*=" : "+=");
+                }
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "}\r\n");
+                break;
+            case Operation_abs:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n = fabsf(n);\r\n");
+                break;
         }
-        return 0;
-    } // GenerateEvaluate
+    } // GenerateEvolve
 
-    inline size_t GenerateEvaluate(char* buffer, size_t size, size_t &length, unsigned int tabs, bool instructionLast) const
+    inline void GenerateEvaluate(char* buffer, size_t size, size_t &length, unsigned int tabs, bool instructionLast) const
     {
         // Insert leading tabs (four spaces).
-        unsigned int tabSize = 0;
-        while (tabs--)
-            tabSize += anprintf(buffer, size, length, "    ");
+        GenerateTabs(buffer, size, length, tabs);
 
         // Convert the instructions.
         switch (op) {
             case Operation_multiply:
                 if (instructionLast)
-                    return tabSize + anprintf(buffer, size, length, "n *= data.d[%u];\r\n", reg);
+                    anprintf(buffer, size, length, "n *= data.d[%u];\r\n", reg);
                 else
-                    return tabSize + anprintf(buffer, size, length, "n = data.d[%u] *= n;\r\n", reg);
+                    anprintf(buffer, size, length, "n = data.d[%u] *= n;\r\n", reg);
                 break;
             case Operation_add:
                 if (instructionLast)
-                    return tabSize + anprintf(buffer, size, length, "n += data.d[%u];\r\n", reg);
+                    anprintf(buffer, size, length, "n += data.d[%u];\r\n", reg);
                 else
-                    return tabSize + anprintf(buffer, size, length, "n = data.d[%u] += n;\r\n", reg);
+                    anprintf(buffer, size, length, "n = data.d[%u] += n;\r\n", reg);
                 break;
             case Operation_abs:
-                return tabSize + anprintf(buffer, size, length, "n = fabsf(n);\r\n");
+                anprintf(buffer, size, length, "n = fabsf(n);\r\n");
                 break;
         }
-        return 0;
     } // GenerateEvaluate
 
-    inline size_t GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int r, float data, bool instructionFirst, bool instructionLast) const
+    inline void GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int r, float data, bool instructionFirst, bool instructionLast) const
     {
         // Insert leading tabs (four spaces).
-        unsigned int tabSize = 0;
-        while (tabs--)
-            tabSize += anprintf(buffer, size, length, "    ");
+        GenerateTabs(buffer, size, length, tabs);
 
         // Convert the instructions.
         switch (op) {
             case Operation_multiply:
                 if (instructionFirst)
                     if (instructionLast)
-                        return tabSize + anprintf(buffer, size, length, "n *= %.8ff;\r\n", data);
+                        anprintf(buffer, size, length, "n *= %.8ff;\r\n", data);
                     else
-                        return tabSize + anprintf(buffer, size, length, "r%u = n *= %.8ff;\r\n", r, data);
+                        anprintf(buffer, size, length, "r%u = n *= %.8ff;\r\n", r, data);
                 else
                     if (instructionLast)
-                        return tabSize + anprintf(buffer, size, length, "n *= r%u;\r\n", r);
+                        anprintf(buffer, size, length, "n *= r%u;\r\n", r);
                     else
-                        return tabSize + anprintf(buffer, size, length, "n = r%u *= n;\r\n", r);
+                        anprintf(buffer, size, length, "n = r%u *= n;\r\n", r);
+                break;
 
             case Operation_add:
                 if (instructionFirst)
                     if (instructionLast)
-                        return tabSize + anprintf(buffer, size, length, "n += %.8ff;\r\n", data);
+                        anprintf(buffer, size, length, "n += %.8ff;\r\n", data);
                     else
-                        return tabSize + anprintf(buffer, size, length, "r%u = n += %.8ff;\r\n", r, data);
+                        anprintf(buffer, size, length, "r%u = n += %.8ff;\r\n", r, data);
                 else
                     if (instructionLast)
-                        return tabSize + anprintf(buffer, size, length, "n += r%u;\r\n", r);
+                        anprintf(buffer, size, length, "n += r%u;\r\n", r);
                     else
-                        return tabSize + anprintf(buffer, size, length, "n = r%u += n;\r\n", r);
+                        anprintf(buffer, size, length, "n = r%u += n;\r\n", r);
+                break;
 
             case Operation_abs:
-                return tabSize + anprintf(buffer, size, length, "n = fabsf(n);\r\n");
+                anprintf(buffer, size, length, "n = fabsf(n);\r\n");
+                break;
         }
-        return 0;
     } // GenerateSolution
 
     inline FireStarterInstruction(void)
@@ -268,12 +272,12 @@ inline void GenerateDataCode(char* buffer, size_t size, size_t& length, unsigned
     anprintf(buffer, size, length, "};\r\n");
 } // GenerateDataCode
 
-inline void GenerateEvolveCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, size_t numInstructions, unsigned int evolveInstruction)
+inline void GenerateEvolveCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, size_t numInstructions, size_t numRegisters, unsigned int evolveInstruction)
 {
     // Generate the evolve function code.
     for (unsigned int i = 0; i < numInstructions; i++)
         if (i == evolveInstruction)
-            instructions->Instruction(i).GenerateEvolve(buffer, size, length, tabs);
+            instructions->Instruction(i).GenerateEvolve(buffer, size, length, tabs, (unsigned int)numRegisters);
         else
             instructions->Instruction(i).GenerateEvaluate(buffer, size, length, tabs, false);
 } // GenerateEvolveCode

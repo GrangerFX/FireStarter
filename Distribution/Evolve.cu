@@ -19,6 +19,7 @@ GPU_GLOBAL void Evolve(unsigned int evolveInstruction, FireStarterResults* newRe
     if (member >= settings.m_evolvePopulation)
         return;
     unsigned int memberSeed = RANDOM(RANDOM(member) + seed);
+    unsigned int instructionSeed = RANDOM(RANDOM(blockIdx.x) + seed);
 
     // Precalculate the target theta values.
     float theta[FIRESTARTER_SAMPLES];
@@ -70,7 +71,7 @@ GPU_GLOBAL void Evolve(unsigned int evolveInstruction, FireStarterResults* newRe
                 data.d[i] = RANDOMFACTOR(memberSeed);
             result = oldResult = settings.m_evolveStartResult;
             evolutionFactor = settings.m_evolveStartFactor;
-            reg = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
+            reg = RANDOMMOD(instructionSeed, FIRESTARTER_REGISTERS);
         } else {
             data = *oldResults->Data(member, variation);
             result = oldResult = *oldResults->MinResult(member, variation);
@@ -80,7 +81,7 @@ GPU_GLOBAL void Evolve(unsigned int evolveInstruction, FireStarterResults* newRe
  
         // Iterate to evolve the data.
         for (unsigned int p = 0; p < settings.m_evolveIterations; p++) {
-            unsigned int r = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
+            unsigned int r = RANDOMMOD(instructionSeed, FIRESTARTER_REGISTERS);
             unsigned int d = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
             float oldData = data.d[d];
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
