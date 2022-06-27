@@ -23,6 +23,7 @@ private:
         FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
         CUfunction m_optimizeFunction = nullptr;
         FireStarterState m_state;
+        unsigned int m_evolveSeed;
     }; // class FireStarterEvolveState
 
     SimpleTimer m_timer;
@@ -45,7 +46,6 @@ private:
     size_t m_evolutionsSize = 0;
     unsigned int m_unitIndex = 0;
     unsigned int m_evolveGeneration = 0;
-    unsigned int m_seed = 0;
     bool m_client = false;
     bool m_codeLoaded = false;
 

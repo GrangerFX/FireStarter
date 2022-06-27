@@ -37,10 +37,10 @@ public:
     unsigned int m_seed;
     unsigned int m_fireStarterMode;
     unsigned int m_generation;
+    unsigned int m_bestSeed;
     unsigned int m_bestGeneration;
     float m_bestResult;
-    float m_minResult;
-    float m_maxResult;
+    float m_result;
     void* m_window;
     unsigned int m_width;
     unsigned int m_height;

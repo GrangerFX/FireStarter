@@ -162,10 +162,10 @@ void FireStarter::RenderStatus(void)
             mode = "FireStarter_Solution";
             break;
     }
-    if (m_settings.m_evolution)
+    if (m_settings.m_evolution || (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE))
         sprintf_s(m_statusString, "%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
     else
-        sprintf_s(m_statusString, "%s: Generation=%u  Seed=%u  Min=%f  Max=%f  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_seed, m_minResult, m_maxResult, m_bestResult, m_controlTime, m_runTimer.Duration());
+        sprintf_s(m_statusString, "%s: Generation=%u  Seed=%u  Result=%f  Best=%f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_seed, m_result, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
     GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString); });
 } // RenderStatus
 
@@ -243,8 +243,7 @@ void FireStarter::ControlLoop(void)
 
     m_generation = 0;
     m_bestGeneration = 0;
-    m_minResult = 0.0f;
-    m_maxResult = 0.0f;
+    m_result = 0.0f;
     m_controlTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;
@@ -269,8 +268,8 @@ void FireStarter::ControlLoop(void)
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
-        if (!m_generation || !m_settings.m_evolution) {
-            m_seed = m_settings.m_seed + m_generation;
+        if (!m_generation || (!m_settings.m_evolution && (m_settings.m_evolveMode != FIRESTARTER_OPTIMIZE))) {
+            m_seed = m_settings.m_seed + m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates;
             m_bestState.Settings().m_seed = m_seed;
             for (unsigned int i = 0; i < m_units.size(); i++)
                 m_units[i]->InitUnit(i, m_bestState);
@@ -286,16 +285,15 @@ void FireStarter::ControlLoop(void)
             unit->Update(m_allStates.data());
 
         // Update the best data for all the states.
-        m_minResult = m_settings.m_evolveStartResult;
-        m_maxResult = 0.0f;
+        m_result = m_settings.m_evolveStartResult;
         for (const FireStarterState& state : m_allStates) {
             float maxResult = state.Result()->maxResult;
-            m_minResult = fmin(m_minResult, maxResult);
-            m_maxResult = fmax(m_maxResult, maxResult);
+            m_result = fmin(m_result, maxResult);
             if (maxResult < m_bestResult) {
                 m_bestResult = maxResult;
                 m_bestState = state;
                 m_bestGeneration = m_generation;
+                m_bestSeed = m_seed;
                 m_controlUpdate = true;
             }
         }
@@ -461,11 +459,11 @@ FireStarter::FireStarter(void)
     m_quitControlThread = false;
     m_statusString[0] = 0;
     m_seed = 0;
+    m_bestSeed = 0;
     m_generation = 0;
     m_bestGeneration = 0;
     m_bestResult = 0;
-    m_minResult = 0;
-    m_maxResult = 0;
+    m_result = 0;
     m_controlTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;

@@ -60,14 +60,14 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 
 #define RANDOMHASH(seed) Hash((unsigned int)(seed))
 #define RANDOMSQUARES(seed) Squares32((unsigned long long)(seed))
-#if 0
+#if 1
 #define RANDOM(seed) RANDOMSQUARES(seed)
 #define RANDOMSEED(seed) RANDOMSQUARES(seed++)
 #else
 #define RANDOM(seed) RANDOMHASH(seed)
 #define RANDOMSEED(seed) RANDOMHASH(seed++)
 #endif
-#if 0
+#if 1
 #define RANDOMMOD(seed, m) ((RANDOMSEED(seed) * (unsigned long long)(m)) >> 32)
 #else
 #define RANDOMMOD(seed, m) ((RANDOMSEED(seed) % (unsigned int)(m)))
