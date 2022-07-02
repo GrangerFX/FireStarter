@@ -152,9 +152,6 @@ void FireStarter::RenderStatus(void)
         case FIRESTARTER_UNIT:
             mode = "FireStarter_Unit";
             break;
-        case FIRESTARTER_PROCESS:
-            mode = "FireStarter_Process";
-            break;
         case FIRESTARTER_OPTIMIZE:
             mode = "FireStarter_Optimize";
             break;
@@ -253,7 +250,7 @@ void FireStarter::ControlLoop(void)
 
     // Create the units.
     for (unsigned int i = 0; i < m_settings.m_evolveUnits; i++) {
-        FireStarterProcess* process = (m_settings.m_evolveMode == FIRESTARTER_PROCESS) ? m_server.AddProcess() : nullptr;
+        FireStarterProcess* process = (m_settings.m_process && (m_settings.m_evolveUnits > 1)) ? m_server.AddProcess() : nullptr;
         FireStarterUnit* unit = new FireStarterUnit(process);
         m_units.push_back(unit);
         unit->Start();  // Start the interprocess communication.

@@ -5,6 +5,8 @@
 #define FIRESTARTER_VARIATIONS 3
 #define FIRESTARTER_SAMPLES 15
 #define FIRESTARTER_EVOLUTION 0
+#define FIRESTARTER_PROCESS 0
+#define FIRESTARTER_CLIENTS 4
 //#define FIRESTARTER_SEED 7263
 #define FIRESTARTER_SEED 0
 
@@ -18,12 +20,10 @@
 
 #define FIRESTARTER_EVOLVE   1
 #define FIRESTARTER_UNIT     2
-#define FIRESTARTER_PROCESS  3
-#define FIRESTARTER_OPTIMIZE 4
-#define FIRESTARTER_SOLUTION 6
+#define FIRESTARTER_OPTIMIZE 3
+#define FIRESTARTER_SOLUTION 4
 #define FIRESTARTER_MODE     FIRESTARTER_UNIT
 
-#define EVOLVE_UNITS 1
 #define EVOLVE_STATES 1
 #define EVOLVE_POPULATION 4352
 #define EVOLVE_ITERATIONS 512
@@ -31,7 +31,6 @@
 #define EVOLVE_PRECISION 256
 #define EVOLVE_FAILURES 32
 
-#define UNIT_UNITS 1
 #define UNIT_STATES 1
 #define UNIT_POPULATION 4352 * 16
 #define UNIT_ITERATIONS 256
@@ -39,15 +38,6 @@
 #define UNIT_PRECISION 256
 #define UNIT_FAILURES 32
 
-#define PROCESS_UNITS 4
-#define PROCESS_STATES 4
-#define PROCESS_POPULATION 4352 * 8
-#define PROCESS_ITERATIONS 256
-#define PROCESS_GENERATIONS 100
-#define PROCESS_PRECISION 256
-#define PROCESS_FAILURES 32
-
-#define OPTIMIZE_UNITS 1
 #define OPTIMIZE_STATES 1
 #define OPTIMIZE_POPULATION 4352 * 16
 #define OPTIMIZE_ITERATIONS 512
@@ -74,6 +64,8 @@ public:
     unsigned int m_variations;
     unsigned int m_samples;
     unsigned int m_evolution;
+    unsigned int m_clients;
+    unsigned int m_process;
     unsigned int m_seed;
 
     float m_sampleMin;
@@ -84,8 +76,9 @@ public:
     unsigned int m_evolveCandidates;
 
     unsigned int m_evolveMode;
-    unsigned int m_evolveUnits;
     unsigned int m_evolveStates;
+    unsigned int m_evolveUnits;
+    unsigned int m_evolveClients;
     unsigned int m_evolvePopulation;
     unsigned int m_evolveIterations;
     unsigned int m_evolveGenerations;
@@ -100,6 +93,8 @@ public:
         m_variations = FIRESTARTER_VARIATIONS;
         m_samples = FIRESTARTER_SAMPLES;
         m_evolution = FIRESTARTER_EVOLUTION;
+        m_process = FIRESTARTER_PROCESS;
+        m_clients = FIRESTARTER_CLIENTS;
         m_seed = FIRESTARTER_SEED;
 
         m_sampleMin = FIRESTARTER_SAMPLE_MIN;
@@ -112,8 +107,8 @@ public:
         m_evolveMode = evolveMode ? evolveMode : FIRESTARTER_MODE;
         switch (m_evolveMode) {
             case FIRESTARTER_EVOLVE:
-                m_evolveUnits = EVOLVE_UNITS;
                 m_evolveStates = EVOLVE_STATES;
+                m_evolveUnits = 1;
                 m_evolvePopulation = EVOLVE_POPULATION;
                 m_evolveIterations = EVOLVE_ITERATIONS;
                 m_evolveGenerations = EVOLVE_GENERATIONS;
@@ -121,8 +116,8 @@ public:
                 m_evolveFailures = EVOLVE_FAILURES;
                 break;
             case FIRESTARTER_OPTIMIZE:
-                m_evolveUnits = OPTIMIZE_UNITS;
                 m_evolveStates = OPTIMIZE_STATES;
+                m_evolveUnits = 1;
                 m_evolvePopulation = OPTIMIZE_POPULATION;
                 m_evolveIterations = OPTIMIZE_ITERATIONS;
                 m_evolveGenerations = OPTIMIZE_GENERATIONS;
@@ -130,26 +125,17 @@ public:
                 m_evolveFailures = OPTIMIZE_FAILURES;
                 break;
             case FIRESTARTER_UNIT:
-                m_evolveUnits = UNIT_UNITS;
                 m_evolveStates = UNIT_STATES;
+                m_evolveUnits = m_process ? m_clients : 1;
                 m_evolvePopulation = UNIT_POPULATION;
                 m_evolveIterations = UNIT_ITERATIONS;
                 m_evolveGenerations = UNIT_GENERATIONS;
                 m_evolvePrecision = UNIT_PRECISION;
                 m_evolveFailures = UNIT_FAILURES;
                 break;
-            case FIRESTARTER_PROCESS:
-                m_evolveUnits = PROCESS_UNITS;
-                m_evolveStates = PROCESS_STATES;
-                m_evolvePopulation = PROCESS_POPULATION;
-                m_evolveIterations = PROCESS_ITERATIONS;
-                m_evolveGenerations = PROCESS_GENERATIONS;
-                m_evolvePrecision = PROCESS_PRECISION;
-                m_evolveFailures = PROCESS_FAILURES;
-                break;
             default:
-                m_evolveUnits = 0;
                 m_evolveStates = 0;
+                m_evolveUnits = 0;
                 m_evolvePopulation = 0;
                 m_evolveIterations = 0;
                 m_evolveGenerations = 0;

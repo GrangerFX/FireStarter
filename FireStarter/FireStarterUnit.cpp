@@ -433,28 +433,15 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
             m_unitGenerate = new FireStarterGenerate();
 
         if (LoadCode() && Allocate()) {
-            switch (m_settings.m_evolveMode) {
-                case FIRESTARTER_EVOLVE:
-                    EvolveGenerate();
-                    break;
-                case FIRESTARTER_UNIT:
-                    CompileGenerate();
-                    break;
-                case FIRESTARTER_PROCESS:
-                    CompileGenerate();
-                    if (!m_client) {
-                        FireStarterPacket sendPacket(UNIT_INIT);
-                        sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
-                        FireStarterState sendState(m_bestState);
-                        sendState.Packetize(sendPacket);
-                        m_process->SendPacket(sendPacket);
-                        FireStarterPacket receivePacket;
-                        m_process->ReceivePacket(receivePacket, UNIT_INIT);
-                    }
-                    break;
-                case FIRESTARTER_OPTIMIZE:
-                    CompileGenerate();
-                    break;
+            EvolveGenerate();
+            if (m_process && !m_client) {
+                FireStarterPacket sendPacket(UNIT_INIT);
+                sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
+                FireStarterState sendState(m_bestState);
+                sendState.Packetize(sendPacket);
+                m_process->SendPacket(sendPacket);
+                FireStarterPacket receivePacket;
+                m_process->ReceivePacket(receivePacket, UNIT_INIT);
             }
         }
     });
@@ -470,19 +457,15 @@ void FireStarterUnit::Execute(void)
             case FIRESTARTER_UNIT:
                 UnitExecute();
                 break;
-            case FIRESTARTER_PROCESS:
-                if (m_client)
-                    UnitExecute();
-                else {
-                    FireStarterPacket sendPacket(UNIT_EXECUTE);
-                    m_process->SendPacket(sendPacket);
-                    FireStarterPacket receivePacket;
-                    m_process->ReceivePacket(receivePacket, UNIT_EXECUTE);
-                }
-                break;
             case FIRESTARTER_OPTIMIZE:
                 OptimizeExecute();
                 break;
+        }
+        if (m_process && !m_client) {
+            FireStarterPacket sendPacket(UNIT_EXECUTE);
+            m_process->SendPacket(sendPacket);
+            FireStarterPacket receivePacket;
+            m_process->ReceivePacket(receivePacket, UNIT_EXECUTE);
         }
     });
 } // Execute
@@ -491,7 +474,7 @@ void FireStarterUnit::Update(FireStarterState* states)
 {
     bool result = false;
     DispatchSync([this, states] {
-        if ((m_settings.m_evolveMode == FIRESTARTER_PROCESS) && !m_client) {
+        if (m_process && !m_client) {
             // Send the entire unit back to the host.
             FireStarterPacket sendPacket(UNIT_UPDATE);
             m_process->SendPacket(sendPacket);
@@ -517,7 +500,7 @@ void FireStarterUnit::Sync(FireStarterState* states)
                 unitBestResult = m_bestState.Result()->maxResult;
             }
         }
-        if ((m_settings.m_evolveMode == FIRESTARTER_PROCESS) && (m_unitIndex == 0) && !m_client) {
+        if (m_process && !m_client && (m_unitIndex == 0)) {
             FireStarterPacket sendPacket(UNIT_SYNC);
             PacketizeAllStates(sendPacket);
             m_process->SendPacket(sendPacket);
