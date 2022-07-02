@@ -181,7 +181,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
             FireStarterEvolutions* newEvolutions = g & 1 ? evolveState.m_deviceEvolutions0 : evolveState.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? evolveState.m_deviceEvolutions1 : evolveState.m_deviceEvolutions0;
-            unsigned int seed = RANDOM(RANDOM(m_evolveGeneration) + evolveState.m_evolveSeed);
+            unsigned int seed = RANDOM(RANDOM(m_evolveGeneration) + evolveState.m_evolveSeed) + g;
 
             void* arr[] = { reinterpret_cast<void*>(&newEvolutions),
                             reinterpret_cast<void*>(&oldEvolutions),
@@ -197,7 +197,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
                 0, m_unitContext->Stream(),                         // shared mem, stream */
                 &arr[0],                                            // arguments */
                 0));
-            seed++;
         }
         init = 0;
     }
@@ -248,7 +247,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
             unsigned int dataSize = state.m_program.m_dataSize;
             FireStarterResults* newResults = g & 1 ? evolveState.m_deviceResults0 : evolveState.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
-            unsigned int seed = RANDOM(RANDOM(m_evolveGeneration) + evolveState.m_evolveSeed);
+            unsigned int seed = RANDOM(RANDOM(m_evolveGeneration) + evolveState.m_evolveSeed) + g;
+
             void* arr[] = { reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
                             reinterpret_cast<void*>(&dataSize),
@@ -262,7 +262,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
                 0, m_unitContext->Stream(),                         // shared mem, stream */
                 &arr[0],                                            // arguments */
                 0));
-            seed++;
         }
 
         // Synchronize all GPU threads.
