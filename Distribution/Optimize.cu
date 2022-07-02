@@ -93,10 +93,12 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
 
         // Calculate a more accurate estimate of the result.
-        float precisionStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_evolvePrecision - 1);
-        for (int i = 0; i < settings.m_evolvePrecision; i++) {
-            float theta = settings.m_sampleMin + i * precisionStep;
-            result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
+        if (settings.m_evolvePrecision) {
+            float precisionStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_evolvePrecision - 1);
+            for (int i = 0; i < settings.m_evolvePrecision; i++) {
+                float theta = settings.m_sampleMin + i * precisionStep;
+                result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
+            }
         }
 
         // If the result was worse, copy from a member with better results.

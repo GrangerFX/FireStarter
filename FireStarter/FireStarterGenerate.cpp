@@ -118,7 +118,8 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunc
     code += Format("// Run date: %s\r\n", CurrentDate().c_str());
     code += Format("// Run duration = %f seconds\r\n", duration);
     code += Format("// Run count = %d\r\n", generation);
-    code += Format("// Run coients = %d\r\n", settings.m_clients);
+    code += Format("// Run mode = %d\r\n", settings.m_evolveMode);
+    code += Format("// Run clients = %d\r\n", settings.m_clients);
     code += Format("// Run process = %d\r\n", settings.m_process);
     code += Format("// Run units = %d\r\n", settings.m_evolveUnits);
     code += Format("// Run states = %d\r\n", settings.m_evolveStates);

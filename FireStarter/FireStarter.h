@@ -40,6 +40,8 @@ public:
     unsigned int m_bestSeed;
     unsigned int m_bestGeneration;
     float m_bestResult;
+    float m_totalResult;
+    float m_averageResult;
     float m_result;
     void* m_window;
     unsigned int m_width;

@@ -99,7 +99,6 @@ void FireStarterProgram::SaveSettings(std::string& code)
     code += Format("    settings.m_opcodes = %u;\r\n", m_settings.m_opcodes);
     code += Format("    settings.m_variations = %u;\r\n", m_settings.m_variations);
     code += Format("    settings.m_samples = %u;\r\n", m_settings.m_samples);
-    code += Format("    settings.m_evolution = %u;\r\n", m_settings.m_evolution);
     code += Format("    settings.m_process = %u;\r\n", m_settings.m_process);
     code += Format("    settings.m_clients = %u;\r\n", m_settings.m_clients);
     code += Format("    settings.m_seed = %u;\r\n", m_settings.m_seed);

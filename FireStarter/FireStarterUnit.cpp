@@ -151,7 +151,7 @@ void FireStarterUnit::UnitGenerate(void)
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         FireStarterEvolveState& evolveState = m_evolveStates[i];
         FireStarterState& state = evolveState.m_state;
-        if (m_evolveGeneration && m_settings.m_evolution) {
+        if (m_evolveGeneration && (m_settings.m_evolveMode != FIRESTARTER_TEST)) {
             state = m_bestState;
             state.m_program.RandomInstruction(evolveState.m_evolveSeed);
         } else
@@ -455,6 +455,7 @@ void FireStarterUnit::Execute(void)
                 EvolveExecute();
                 break;
             case FIRESTARTER_UNIT:
+            case FIRESTARTER_TEST:
                 UnitExecute();
                 break;
             case FIRESTARTER_OPTIMIZE:

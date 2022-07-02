@@ -152,6 +152,9 @@ void FireStarter::RenderStatus(void)
         case FIRESTARTER_UNIT:
             mode = "FireStarter_Unit";
             break;
+        case FIRESTARTER_TEST:
+            mode = "FireStarter_Test";
+            break;
         case FIRESTARTER_OPTIMIZE:
             mode = "FireStarter_Optimize";
             break;
@@ -159,10 +162,10 @@ void FireStarter::RenderStatus(void)
             mode = "FireStarter_Solution";
             break;
     }
-    if (m_settings.m_evolution || (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE))
-        sprintf_s(m_statusString, "%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+    if (m_settings.m_evolveMode == FIRESTARTER_TEST)
+        sprintf_s(m_statusString, "%s: Generation=%u  Seed=%u  Result=%f  Average=%f  Best=%f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
     else
-        sprintf_s(m_statusString, "%s: Generation=%u  Seed=%u  Result=%f  Best=%f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_seed, m_result, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
+        sprintf_s(m_statusString, "%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
     GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString); });
 } // RenderStatus
 
@@ -265,7 +268,7 @@ void FireStarter::ControlLoop(void)
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
-        if (!m_generation || (!m_settings.m_evolution && (m_settings.m_evolveMode != FIRESTARTER_OPTIMIZE))) {
+        if (!m_generation || (m_settings.m_evolveMode == FIRESTARTER_TEST)) {
             m_seed = m_settings.m_seed + m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates;
             m_bestState.Settings().m_seed = m_seed;
             for (unsigned int i = 0; i < m_units.size(); i++)
@@ -286,8 +289,8 @@ void FireStarter::ControlLoop(void)
         for (const FireStarterState& state : m_allStates) {
             float maxResult = state.Result()->maxResult;
             m_result = fmin(m_result, maxResult);
-            if (maxResult < m_bestResult) {
-                m_bestResult = maxResult;
+            if (m_result < m_bestResult) {
+                m_bestResult = m_result;
                 m_bestState = state;
                 m_bestGeneration = m_generation;
                 m_bestSeed = m_seed;
@@ -301,6 +304,8 @@ void FireStarter::ControlLoop(void)
 
         m_controlTime = m_controlTimer.Duration();
         m_generation++;
+        m_totalResult += m_result;
+        m_averageResult = m_totalResult / m_generation;
 
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
@@ -329,7 +334,7 @@ void FireStarter::ControlLoop(void)
         }
 
         // Has the completion condition been met?
-        if (m_generation - m_bestGeneration >= m_settings.m_evolveFailures)
+        if (((m_settings.m_evolveMode == FIRESTARTER_TEST) ? m_generation : (m_generation - m_bestGeneration)) >= m_settings.m_evolveFailures)
             break;
     }
 
@@ -349,7 +354,7 @@ void FireStarter::ControlThread(void)
     ControlLoop();
 
     // Optimization evolution pass.
-    if (m_fireStarterMode != FIRESTARTER_OPTIMIZE) {
+    if ((m_fireStarterMode != FIRESTARTER_TEST) && (m_fireStarterMode != FIRESTARTER_OPTIMIZE)) {
         m_fireStarterMode = FIRESTARTER_OPTIMIZE;
         ControlLoop();
     }
@@ -460,6 +465,8 @@ FireStarter::FireStarter(void)
     m_generation = 0;
     m_bestGeneration = 0;
     m_bestResult = 0;
+    m_totalResult = 0;
+    m_averageResult = 0;
     m_result = 0;
     m_controlTime = 0.0;
     m_controlUpdate = false;

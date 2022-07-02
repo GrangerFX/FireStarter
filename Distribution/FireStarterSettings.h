@@ -7,8 +7,8 @@
 #define FIRESTARTER_EVOLUTION 0
 #define FIRESTARTER_PROCESS 0
 #define FIRESTARTER_CLIENTS 4
-//#define FIRESTARTER_SEED 7263
-#define FIRESTARTER_SEED 0
+#define FIRESTARTER_SEED 7263
+//#define FIRESTARTER_SEED 0
 
 #define FIRESTARTER_SAMPLE_MIN 0.0f
 #define FIRESTARTER_SAMPLE_MAX (2.0f * 3.14159265f)
@@ -20,9 +20,10 @@
 
 #define FIRESTARTER_EVOLVE   1
 #define FIRESTARTER_UNIT     2
-#define FIRESTARTER_OPTIMIZE 3
-#define FIRESTARTER_SOLUTION 4
-#define FIRESTARTER_MODE     FIRESTARTER_UNIT
+#define FIRESTARTER_TEST     3
+#define FIRESTARTER_OPTIMIZE 4
+#define FIRESTARTER_SOLUTION 5
+#define FIRESTARTER_MODE     FIRESTARTER_TEST
 
 #define EVOLVE_STATES 1
 #define EVOLVE_POPULATION 4352
@@ -37,6 +38,13 @@
 #define UNIT_GENERATIONS 100
 #define UNIT_PRECISION 256
 #define UNIT_FAILURES 32
+
+#define TEST_STATES 1
+#define TEST_POPULATION 4352 * 16
+#define TEST_ITERATIONS 256
+#define TEST_GENERATIONS 100
+#define TEST_PRECISION 0
+#define TEST_FAILURES 100
 
 #define OPTIMIZE_STATES 1
 #define OPTIMIZE_POPULATION 4352 * 16
@@ -63,7 +71,6 @@ public:
     unsigned int m_opcodes;
     unsigned int m_variations;
     unsigned int m_samples;
-    unsigned int m_evolution;
     unsigned int m_clients;
     unsigned int m_process;
     unsigned int m_seed;
@@ -92,7 +99,6 @@ public:
         m_opcodes = FIRESTARTER_OPCODES;
         m_variations = FIRESTARTER_VARIATIONS;
         m_samples = FIRESTARTER_SAMPLES;
-        m_evolution = FIRESTARTER_EVOLUTION;
         m_process = FIRESTARTER_PROCESS;
         m_clients = FIRESTARTER_CLIENTS;
         m_seed = FIRESTARTER_SEED;
@@ -132,6 +138,15 @@ public:
                 m_evolveGenerations = UNIT_GENERATIONS;
                 m_evolvePrecision = UNIT_PRECISION;
                 m_evolveFailures = UNIT_FAILURES;
+                break;
+            case FIRESTARTER_TEST:
+                m_evolveStates = TEST_STATES;
+                m_evolveUnits = m_process ? m_clients : 1;
+                m_evolvePopulation = TEST_POPULATION;
+                m_evolveIterations = TEST_ITERATIONS;
+                m_evolveGenerations = TEST_GENERATIONS;
+                m_evolvePrecision = TEST_PRECISION;
+                m_evolveFailures = TEST_FAILURES;
                 break;
             default:
                 m_evolveStates = 0;
