@@ -26,6 +26,15 @@ void FireStarterCode::SaveCode(const std::string& filePath, const std::string& c
     }
 } // SaveCode
 
+void FireStarterCode::AppendCode(const std::string& filePath, const std::string& code)
+{
+    std::ofstream file(filePath.c_str(), std::ios::out | std::ios::app | std::ios::binary);
+    if (file.is_open()) {
+        file << code;
+        file.close();
+    }
+} // AppendCode
+
 void FireStarterCode::ReplaceCode(std::string& code, const std::string& search, const std::string& replace)
 {
     // Get the first occurrence

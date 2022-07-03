@@ -25,14 +25,15 @@ public:
     FireStarterResult* m_fireShowResult;
     FireStarterInstructions* m_fireShowInstructions;
     FireStarterGenerate* m_fireStarterGenerate;
-    double m_controlTime;
     std::string m_solutionTargetCode;
     FireStarterState m_bestState;
     std::vector<FireStarterState> m_allStates;
     std::vector<FireStarterUnit*> m_units;
     FireStarterServer m_server;
     FrameBuffer m_buffer;
-    char m_statusString[1024];
+    std::string m_logFilePath;
+    std::string m_statusString;
+    double m_controlTime;
     FireStarterSettings m_settings;
     unsigned int m_seed;
     unsigned int m_fireStarterMode;
@@ -59,8 +60,9 @@ public:
     void SaveSolution(void);
     void FireSettings(void);
     void FireShow(void);
-    void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
+    const char* EvolveMode(void);
     void RenderStatus(void);
+    void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ControlDeallocate(void);
     void ControlAllocate(void);
     void ControlLoop(void);

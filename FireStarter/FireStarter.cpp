@@ -118,6 +118,40 @@ void FireStarter::FireShow(void)
     checkCUDAErrors(cudaStreamSynchronize(m_fireStarterContext->Stream()));
 } // FireShow
 
+const char* FireStarter::EvolveMode(void)
+{
+    switch (m_settings.m_evolveMode) {
+        case FIRESTARTER_EVOLVE:
+            return "FireStarter_Evolve";
+        case FIRESTARTER_UNIT:
+            return "FireStarter_Unit";
+        case FIRESTARTER_TEST:
+            return "FireStarter_Test";
+        case FIRESTARTER_OPTIMIZE:
+            return "FireStarter_Optimize";
+        case FIRESTARTER_SOLUTION:
+            return "FireStarter_Solution";
+        default:
+            return "FireStarter_UNKNOWN";
+    }
+} // EvolveMode
+
+void FireStarter::RenderStatus(void)
+{
+    // Update the status.
+    if (m_settings.m_evolveMode == FIRESTARTER_TEST)
+        m_statusString = Format("%s: Generation=%u  Seed=%u  Result=%f  Average=%f  Best=%f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", EvolveMode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
+    else
+        m_statusString = Format("%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", EvolveMode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+    GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString.c_str()); });
+
+    // Update the log file.
+    if (m_logFilePath.empty())
+        m_logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), EvolveMode());
+    m_statusString += "\r\n";
+    FireStarterCode::AppendCode(m_logFilePath, m_statusString);
+} // RenderStatus
+
 void FireStarter::RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels)
 {
     unsigned char buffer[4096];
@@ -140,34 +174,6 @@ void FireStarter::RenderImage(unsigned int width, unsigned int height, const uns
         GdiFlush();
     }
 } // RenderImage
-
-void FireStarter::RenderStatus(void)
-{
-    // Update the status.
-    std::string mode;
-    switch (m_settings.m_evolveMode) {
-        case FIRESTARTER_EVOLVE:
-            mode = "FireStarter_Evolve";
-            break;
-        case FIRESTARTER_UNIT:
-            mode = "FireStarter_Unit";
-            break;
-        case FIRESTARTER_TEST:
-            mode = "FireStarter_Test";
-            break;
-        case FIRESTARTER_OPTIMIZE:
-            mode = "FireStarter_Optimize";
-            break;
-        case FIRESTARTER_SOLUTION:
-            mode = "FireStarter_Solution";
-            break;
-    }
-    if (m_settings.m_evolveMode == FIRESTARTER_TEST)
-        sprintf_s(m_statusString, "%s: Generation=%u  Seed=%u  Result=%f  Average=%f  Best=%f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
-    else
-        sprintf_s(m_statusString, "%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", mode.c_str(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
-    GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString); });
-} // RenderStatus
 
 void FireStarter::ControlDeallocate(void)
 {
