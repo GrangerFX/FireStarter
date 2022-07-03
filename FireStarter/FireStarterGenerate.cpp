@@ -127,6 +127,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunc
     code += Format("// Run iterations = %d\r\n", settings.m_evolveIterations);
     code += Format("// Run generations = %d\r\n", settings.m_evolveGenerations);
     code += Format("// Run samples = %d\r\n", settings.m_samples);
+    code += Format("// Run seed = %d\r\n", settings.m_seed);
     code += Format("// Solution Generation = %d\r\n", state.m_generation);
     code += "\r\n";
     code += targetCode;
