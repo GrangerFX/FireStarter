@@ -60,7 +60,7 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 
 #define RANDOMHASH(seed) Hash((unsigned int)(seed))
 #define RANDOMSQUARES(seed) Squares32((unsigned long long)(seed))
-#if 1
+#if 0
 #define RANDOM(seed) RANDOMSQUARES(seed)
 #define RANDOMSEED(seed) RANDOMSQUARES(seed++)
 #else
