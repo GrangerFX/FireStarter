@@ -299,7 +299,7 @@ void FireStarter::ControlLoop(void)
                 m_bestResult = m_result;
                 m_bestState = state;
                 m_bestGeneration = m_generation;
-                m_bestSeed = m_seed;
+                m_bestSeed = m_bestState.m_program.m_settings.m_seed;
                 m_controlUpdate = true;
             }
         }
