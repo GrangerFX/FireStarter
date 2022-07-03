@@ -423,9 +423,9 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
         for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
             FireStarterEvolveState& evolveState = m_evolveStates[i];
             FireStarterSettings evolveSettings = m_settings;
-            evolveSettings.m_seed = m_settings.m_seed + i;
+            evolveSettings.m_seed = m_settings.m_seed + m_unitIndex * m_settings.m_evolveStates + i;
             evolveState.m_state.InitState(evolveSettings);
-            evolveState.m_evolveSeed = RANDOM(RANDOM(evolveSettings.m_seed) + m_unitIndex);
+            evolveState.m_evolveSeed = RANDOM(evolveSettings.m_seed);
         }
 
         if (!m_unitGenerate)
