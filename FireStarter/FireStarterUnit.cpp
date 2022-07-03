@@ -154,10 +154,8 @@ void FireStarterUnit::UnitGenerate(void)
         if (m_evolveGeneration && (m_settings.m_evolveMode != FIRESTARTER_TEST)) {
             state = m_bestState;
             state.m_program.RandomInstruction(evolveState.m_evolveSeed);
-        }  else {
-            state.m_program.RandomProgram(evolveState.m_evolveSeed);
-            evolveState.m_evolveSeed += m_settings.m_instructions * 6;
-        }
+        } else
+           state.m_program.RandomProgram(evolveState.m_evolveSeed);
         state.m_program.OptimizeRegisters(true);
         state.m_generation = m_evolveGeneration;
     }
@@ -183,7 +181,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
             FireStarterEvolutions* newEvolutions = g & 1 ? evolveState.m_deviceEvolutions0 : evolveState.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? evolveState.m_deviceEvolutions1 : evolveState.m_deviceEvolutions0;
-            unsigned int seed = RANDOM(RANDOM(m_evolveGeneration) + evolveState.m_evolveSeed) + g * 4;
+            unsigned int seed = evolveState.m_evolveSeed++;
 
             void* arr[] = { reinterpret_cast<void*>(&newEvolutions),
                             reinterpret_cast<void*>(&oldEvolutions),
@@ -249,7 +247,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
             unsigned int dataSize = state.m_program.m_dataSize;
             FireStarterResults* newResults = g & 1 ? evolveState.m_deviceResults0 : evolveState.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
-            unsigned int seed = RANDOM(RANDOM(m_evolveGeneration) + evolveState.m_evolveSeed) + g * 4;
+            unsigned int seed = evolveState.m_evolveSeed++;
 
             void* arr[] = { reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
@@ -427,7 +425,7 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
             FireStarterSettings evolveSettings = m_settings;
             evolveSettings.m_seed = m_settings.m_seed + i;
             evolveState.m_state.InitState(evolveSettings);
-            evolveState.m_evolveSeed = RANDOM(RANDOM(m_unitIndex) + evolveSettings.m_seed);
+            evolveState.m_evolveSeed = RANDOM(RANDOM(evolveSettings.m_seed) + m_unitIndex);
         }
 
         if (!m_unitGenerate)
