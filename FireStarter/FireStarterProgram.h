@@ -9,8 +9,8 @@ class FireStarterProgram {
 private:
     std::vector<unsigned char> m_instructions;
 public:
-    std::vector<FireStarterRegister> m_registers;
     FireStarterSettings m_settings;
+    std::vector<FireStarterRegister> m_registers;
     unsigned int m_dataSize = 0;
     unsigned int m_maxRegisters = 0;
 

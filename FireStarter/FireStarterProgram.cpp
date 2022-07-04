@@ -4,15 +4,10 @@ bool FireStarterProgram::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
     result = result && packet.Packetize(m_instructions);
-
-    size_t registersSize = m_registers.size();
-    result = result && packet.Packetize(&registersSize, sizeof(registersSize));
-    m_registers.resize(registersSize);
-    result = result && packet.Packetize(m_registers.data(), m_registers.size() * sizeof(m_registers[0]));
-
     result = result && packet.Packetize(&m_settings, sizeof(m_settings));
-
     result = result && packet.Packetize(&m_dataSize, sizeof(m_dataSize));
+    m_registers.resize(m_dataSize);
+    result = result && packet.Packetize(m_registers.data(), m_dataSize * sizeof(m_registers[0]));
     result = result && packet.Packetize(&m_maxRegisters, sizeof(m_maxRegisters));
     return result;
 } // Packetize
