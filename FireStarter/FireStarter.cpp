@@ -340,7 +340,7 @@ void FireStarter::ControlLoop(void)
         }
 
         // Has the completion condition been met?
-        if (((m_settings.m_evolveMode == FIRESTARTER_TEST) ? m_generation : (m_generation - m_bestGeneration)) >= m_settings.m_evolveAttempts)
+        if (((m_settings.m_evolveMode == FIRESTARTER_TEST) ? m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates : (m_generation - m_bestGeneration)) >= m_settings.m_evolveAttempts)
             break;
     }
 
