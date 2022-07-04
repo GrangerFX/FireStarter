@@ -1,0 +1,3 @@
+FireStarter_Test: Generation=1  Seed=8300  Result=0.000600  Average=0.021936  Best=0.000600  BestSeed=8302  Time=14.2632 Seconds  Run Time=17.1062 Seconds
+FireStarter_Test: Generation=2  Seed=8316  Result=0.000624  Average=0.106108  Best=0.000600  BestSeed=8302  Time=17.8213 Seconds  Run Time=34.9813 Seconds
+FireStarter_Test: Generation=3  Seed=8332  Result=0.000021  Average=0.137479  Best=0.000021  BestSeed=8337  Time=18.6520 Seconds  Run Time=53.6733 Seconds

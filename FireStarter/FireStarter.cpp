@@ -295,6 +295,8 @@ void FireStarter::ControlLoop(void)
         for (const FireStarterState& state : m_allStates) {
             float maxResult = state.Result()->maxResult;
             m_result = fmin(m_result, maxResult);
+            m_totalResult += maxResult;
+            printf("maxResult=%f\r\n", maxResult);
             if (m_result < m_bestResult) {
                 m_bestResult = m_result;
                 m_bestState = state;
@@ -310,8 +312,7 @@ void FireStarter::ControlLoop(void)
 
         m_controlTime = m_controlTimer.Duration();
         m_generation++;
-        m_totalResult += m_result;
-        m_averageResult = m_totalResult / m_generation;
+        m_averageResult = m_totalResult / (m_generation * m_allStates.size());
 
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
