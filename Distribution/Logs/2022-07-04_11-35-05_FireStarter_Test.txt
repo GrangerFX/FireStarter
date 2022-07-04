@@ -1,0 +1,13 @@
+FireStarter_Test: Generation=1  Seed=8337  Result=0.000017  Average=0.000017  Best=0.000017  BestSeed=8337  Time=0.9689 Seconds  Run Time=3.5315 Seconds
+FireStarter_Test: Generation=2  Seed=8338  Result=0.000721  Average=0.000369  Best=0.000017  BestSeed=8337  Time=0.5222 Seconds  Run Time=4.0578 Seconds
+FireStarter_Test: Generation=3  Seed=8339  Result=0.001111  Average=0.000616  Best=0.000017  BestSeed=8337  Time=0.5150 Seconds  Run Time=4.6035 Seconds
+FireStarter_Test: Generation=4  Seed=8340  Result=0.038185  Average=0.010008  Best=0.000017  BestSeed=8337  Time=0.5197 Seconds  Run Time=5.1587 Seconds
+FireStarter_Test: Generation=5  Seed=8341  Result=0.002321  Average=0.008471  Best=0.000017  BestSeed=8337  Time=0.5829 Seconds  Run Time=5.7706 Seconds
+FireStarter_Test: Generation=6  Seed=8342  Result=0.000365  Average=0.007120  Best=0.000017  BestSeed=8337  Time=0.5159 Seconds  Run Time=6.3584 Seconds
+FireStarter_Test: Generation=7  Seed=8343  Result=1.483245  Average=0.217995  Best=0.000017  BestSeed=8337  Time=0.5995 Seconds  Run Time=6.9930 Seconds
+FireStarter_Test: Generation=8  Seed=8344  Result=0.000869  Average=0.190854  Best=0.000017  BestSeed=8337  Time=0.5282 Seconds  Run Time=7.5876 Seconds
+FireStarter_Test: Generation=9  Seed=8345  Result=0.011786  Average=0.170958  Best=0.000017  BestSeed=8337  Time=0.5318 Seconds  Run Time=8.1397 Seconds
+FireStarter_Test: Generation=10  Seed=8346  Result=0.000768  Average=0.153939  Best=0.000017  BestSeed=8337  Time=0.5164 Seconds  Run Time=8.6734 Seconds
+FireStarter_Test: Generation=11  Seed=8347  Result=0.783621  Average=0.211183  Best=0.000017  BestSeed=8337  Time=0.5649 Seconds  Run Time=9.2729 Seconds
+FireStarter_Test: Generation=12  Seed=8348  Result=0.000884  Average=0.193658  Best=0.000017  BestSeed=8337  Time=0.5244 Seconds  Run Time=9.8976 Seconds
+FireStarter_Test: Generation=13  Seed=8349  Result=0.001134  Average=0.178848  Best=0.000017  BestSeed=8337  Time=0.5275 Seconds  Run Time=10.4534 Seconds
