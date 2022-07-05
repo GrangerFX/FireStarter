@@ -256,6 +256,8 @@ void FireStarter::ControlLoop(void)
 
     // Create the states.
     m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
+    for (FireStarterState& state : m_allStates)
+        state.InitState(m_settings);
 
     // Create the units.
     for (unsigned int i = 0; i < m_settings.m_evolveUnits; i++) {
@@ -296,7 +298,6 @@ void FireStarter::ControlLoop(void)
             float maxResult = state.Result()->maxResult;
             m_result = fmin(m_result, maxResult);
             m_totalResult += maxResult;
-            printf("maxResult=%f\r\n", maxResult);
             if (m_result < m_bestResult) {
                 m_bestResult = m_result;
                 m_bestState = state;

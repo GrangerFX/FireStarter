@@ -4,7 +4,7 @@
 #define PIPE_BUFFER_SIZE   512
 #define TEST_CONNECTION 1
 #define TEST_TERMINATE 0
-#define TEST_OUTPUT 1
+#define TEST_OUTPUT 0
 #if TEST_OUTPUT
 #define TESTPRINTF printf
 #else

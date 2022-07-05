@@ -28,7 +28,6 @@ private:
 
     SimpleTimer m_timer;
     FireStarterProcess* m_process = nullptr;
-    FireStarterState m_bestState;
     FireStarterGenerate* m_unitGenerate = nullptr;
     std::vector<FireStarterEvolveState> m_evolveStates;
     std::vector<FireStarterState> m_allStates;
@@ -46,9 +45,12 @@ private:
     size_t m_evolutionsSize = 0;
     unsigned int m_unitIndex = 0;
     unsigned int m_evolveGeneration = 0;
-    bool m_client = false;
+    unsigned int m_bestStateIndex = 0;
+    bool m_server = false;
     bool m_codeLoaded = false;
+    bool m_bestStateDirty = true;
 
+    const FireStarterState& BestState(void);
     void InitEvolveStates(void);
     void DeallocateEvolveStates(void);
     bool AllocateEvolveStates(void);
@@ -63,7 +65,7 @@ private:
     void UnitExecute(void);
     bool LoadCode(void);
     void Deallocate(void);
-    bool Allocate(void);
+    void Allocate(const FireStarterState& initState);
 
 public:
     unsigned int Index(void);

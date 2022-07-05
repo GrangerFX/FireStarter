@@ -2,6 +2,24 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
+const FireStarterState& FireStarterUnit::BestState(void)
+{
+    // Find the program's best state.
+    if (m_bestStateDirty) {
+        float unitBestResult = m_allStates[0].Result()->maxResult;
+        m_bestStateIndex = 0;
+        for (unsigned int i = 1; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++) {
+            float result = m_allStates[i].Result()->maxResult;
+            if (result < unitBestResult) {
+                unitBestResult = result;
+                m_bestStateIndex = i;
+            }
+        }
+        m_bestStateDirty = false;
+    }
+    return m_allStates[m_bestStateIndex];
+} // BestState
+
 void FireStarterUnit::InitEvolveStates(void)
 {
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
@@ -20,7 +38,7 @@ void FireStarterUnit::InitEvolveStates(void)
             checkCUDAErrors(cudaMemcpy(evolveState.m_deviceEvolutions1, evolveState.m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice));
         }
     }
-} // ClearEvoInitEvolveStateslveStates
+} // InitEvolveStates
 
 void FireStarterUnit::DeallocateEvolveStates(void)
 {
@@ -151,8 +169,8 @@ void FireStarterUnit::UnitGenerate(void)
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         FireStarterEvolveState& evolveState = m_evolveStates[i];
         FireStarterState& state = evolveState.m_state;
-        if (m_evolveGeneration && (m_settings.m_evolveMode != FIRESTARTER_TEST)) {
-            state = m_bestState;
+        if (m_evolveGeneration) {
+            state = BestState();
             state.m_program.RandomInstruction(evolveState.m_evolveSeed);
         } else
            state.m_program.RandomProgram(evolveState.m_evolveSeed);
@@ -308,7 +326,7 @@ void FireStarterUnit::EvolveExecute(void)
 {
     // Initialize each state with the best previous state.
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
-        m_evolveStates[i].m_state = m_bestState;
+        m_evolveStates[i].m_state = BestState();
         m_evolveStates[i].m_state.m_generation = m_evolveGeneration;
     }
 
@@ -321,7 +339,7 @@ void FireStarterUnit::OptimizeExecute(void)
 {
     // Initialize each state with the best previous state.
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
-        m_evolveStates[i].m_state = m_bestState;
+        m_evolveStates[i].m_state = BestState();
         m_evolveStates[i].m_state.m_generation = m_evolveGeneration;
     }
 
@@ -341,7 +359,8 @@ void FireStarterUnit::UnitExecute(void)
 
     // Evolve the program data.
     OptimizeGenerations(1);
-    m_evolveGeneration++;
+    if (m_settings.m_evolveMode != FIRESTARTER_TEST)
+        m_evolveGeneration++;
 } // UnitExecute
 
 bool FireStarterUnit::LoadCode(void)
@@ -379,11 +398,31 @@ void FireStarterUnit::Deallocate(void)
     }
 } // Deallocate
 
-bool FireStarterUnit::Allocate(void)
+void FireStarterUnit::Allocate(const FireStarterState& initState)
 {
     if (!m_unitContext)
         m_unitContext = new CUDAContext(m_unitIndex);
-    return AllocateEvolveStates();
+    m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
+    for (FireStarterState& state : m_allStates)
+        state = initState;
+
+    m_evolveStates.resize(m_settings.m_evolveStates);
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
+        FireStarterEvolveState& evolveState = m_evolveStates[i];
+        FireStarterSettings evolveSettings = m_settings;
+        evolveState.m_state = initState;
+        evolveSettings.m_seed = m_settings.m_seed + m_unitIndex * m_settings.m_evolveStates + i;
+        evolveState.m_state.m_program.m_settings.m_seed = evolveSettings.m_seed;
+        evolveState.m_evolveSeed = RANDOM(evolveSettings.m_seed);
+    }
+
+    if (!m_server)
+        AllocateEvolveStates();
+
+    if (!m_unitGenerate)
+        m_unitGenerate = new FireStarterGenerate();
+    if (m_settings.m_evolveMode == FIRESTARTER_EVOLVE)
+        EvolveGenerate();
 } // Allocate
 
 unsigned int FireStarterUnit::Index(void)
@@ -393,7 +432,6 @@ unsigned int FireStarterUnit::Index(void)
 
 void FireStarterUnit::Packetize(FireStarterPacket& packet)
 {
-    m_bestState.Packetize(packet);
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
         m_evolveStates[i].m_state.Packetize(packet);
     packet.Packetize(&m_settings, sizeof(m_settings));
@@ -411,32 +449,14 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
 {
     DispatchAsync([this, index, state] {
         m_unitIndex = index;
-        m_bestState = state;
-        m_settings = m_bestState.Settings();
+        m_settings = state.Settings();
         m_evolveGeneration = 0;
-
-        m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
-        for (FireStarterState &state: m_allStates)
-            state.InitState(m_settings);
-
-        m_evolveStates.resize(m_settings.m_evolveStates);
-        for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
-            FireStarterEvolveState& evolveState = m_evolveStates[i];
-            FireStarterSettings evolveSettings = m_settings;
-            evolveSettings.m_seed = m_settings.m_seed + m_unitIndex * m_settings.m_evolveStates + i;
-            evolveState.m_state.InitState(evolveSettings);
-            evolveState.m_evolveSeed = RANDOM(evolveSettings.m_seed);
-        }
-
-        if (!m_unitGenerate)
-            m_unitGenerate = new FireStarterGenerate();
-
-        if (LoadCode() && Allocate()) {
-            EvolveGenerate();
-            if (m_process && !m_client) {
+        if (LoadCode()) {
+            Allocate(state);
+            if (m_server) {
                 FireStarterPacket sendPacket(UNIT_INIT);
                 sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
-                FireStarterState sendState(m_bestState);
+                FireStarterState sendState(state);
                 sendState.Packetize(sendPacket);
                 m_process->SendPacket(sendPacket);
                 FireStarterPacket receivePacket;
@@ -449,23 +469,24 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state
 void FireStarterUnit::Execute(void)
 {
     DispatchAsync([this] {
-        switch (m_settings.m_evolveMode) {
-            case FIRESTARTER_EVOLVE:
-                EvolveExecute();
-                break;
-            case FIRESTARTER_UNIT:
-            case FIRESTARTER_TEST:
-                UnitExecute();
-                break;
-            case FIRESTARTER_OPTIMIZE:
-                OptimizeExecute();
-                break;
-        }
-        if (m_process && !m_client) {
+        if (m_server) {
             FireStarterPacket sendPacket(UNIT_EXECUTE);
             m_process->SendPacket(sendPacket);
             FireStarterPacket receivePacket;
             m_process->ReceivePacket(receivePacket, UNIT_EXECUTE);
+        } else {
+            switch (m_settings.m_evolveMode) {
+                case FIRESTARTER_EVOLVE:
+                    EvolveExecute();
+                    break;
+                case FIRESTARTER_UNIT:
+                case FIRESTARTER_TEST:
+                    UnitExecute();
+                    break;
+                case FIRESTARTER_OPTIMIZE:
+                    OptimizeExecute();
+                    break;
+            }
         }
     });
 } // Execute
@@ -474,7 +495,7 @@ void FireStarterUnit::Update(FireStarterState* states)
 {
     bool result = false;
     DispatchSync([this, states] {
-        if (m_process && !m_client) {
+        if (m_server) {
             // Send the entire unit back to the host.
             FireStarterPacket sendPacket(UNIT_UPDATE);
             m_process->SendPacket(sendPacket);
@@ -485,22 +506,18 @@ void FireStarterUnit::Update(FireStarterState* states)
 
         unsigned int index = m_unitIndex * m_settings.m_evolveStates;
         for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
-            states[index++] = m_evolveStates[i].m_state;
+            if (!m_evolveStates[i].m_state.m_generation || (m_evolveStates[i].m_state.Result()->maxResult < states[index].Result()->maxResult))
+                states[index++] = m_evolveStates[i].m_state;
     });
 } // Update
 
 void FireStarterUnit::Sync(FireStarterState* states)
 {
     DispatchSync([this, states] {
-        float unitBestResult = m_bestState.Result()->maxResult;
-        for (unsigned int i = 0; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++) {
+        for (unsigned int i = 0; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++)
             m_allStates[i] = states[i];
-            if (m_allStates[i].Result()->maxResult < unitBestResult) {
-                m_bestState = m_allStates[i];
-                unitBestResult = m_bestState.Result()->maxResult;
-            }
-        }
-        if (m_process && !m_client && (m_unitIndex == 0)) {
+        m_bestStateDirty = true;
+        if (m_server && (m_unitIndex == 0)) {
             FireStarterPacket sendPacket(UNIT_SYNC);
             PacketizeAllStates(sendPacket);
             m_process->SendPacket(sendPacket);
@@ -562,7 +579,7 @@ void FireStarterUnit::Client(void)
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 {
     m_process = process;
-    m_client = m_process && m_process->IsClient();
+    m_server = m_process && !m_process->IsClient();
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)

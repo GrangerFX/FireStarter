@@ -1,0 +1,2 @@
+FireStarter_Unit: Generation=1  Age=1  Result=0.000041  Best=0.000041  Time=85.1843 Seconds  Run Time=87.9941 Seconds
+FireStarter_Unit: Generation=2  Age=2  Result=2.207694  Best=0.000041  Time=130.5251 Seconds  Run Time=218.6255 Seconds
