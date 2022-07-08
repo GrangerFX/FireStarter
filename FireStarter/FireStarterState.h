@@ -19,6 +19,11 @@ public:
         return m_program.m_settings;
     } // Settings
 
+    inline size_t ResultSize(void) const
+    {
+        return FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);
+    } // ResultSize
+
     inline FireStarterResult* Result(void)
     {
         return (FireStarterResult*)m_result.data();

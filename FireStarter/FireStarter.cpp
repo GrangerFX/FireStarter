@@ -90,7 +90,7 @@ void FireStarter::FireSettings(void)
 
 void FireStarter::FireShow(void)
 {
-    size_t resultSize = FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations);
+    size_t resultSize = FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations);
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice, m_fireStarterContext->Stream()));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice, m_fireStarterContext->Stream()));
@@ -210,7 +210,7 @@ void FireStarter::ControlAllocate(void)
         m_fireStarterContext = new CUDAContext(0);
     ControlDeallocate();
     checkCUDAErrors(cudaMalloc(&m_fireSettings, sizeof(FireStarterSettings)));
-    checkCUDAErrors(cudaMalloc(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations)));
+    checkCUDAErrors(cudaMalloc(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations)));
     checkCUDAErrors(cudaMalloc(&m_fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions)));
     if (!m_fireStarterGenerate)
         m_fireStarterGenerate = new FireStarterGenerate();
@@ -317,7 +317,8 @@ void FireStarter::ControlLoop(void)
 
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
-            SaveBestState();
+            if (m_settings.m_evolveMode != FIRESTARTER_OPTIMIZE)
+                SaveBestState();
             SaveBestCode();
             SaveSolution();
         }

@@ -56,6 +56,19 @@ typedef struct FireStarterResult {
             *MinResult(v) = startResult;
         }
     } // Init
+
+    inline void Init(unsigned int registers, unsigned int variations, const FireStarterResult* initResult)
+    {
+        maxResult = initResult->maxResult;
+        dataSize = registers + 1;
+        for (unsigned int v = 0; v < variations; v++) {
+            FireStarterData* data = Data(v);
+            const FireStarterData* srcData = initResult->ConstData(v);
+            for (unsigned int i = 0; i < registers; i++)
+                data->d[i] = srcData->d[i];
+            *MinResult(v) = *initResult->ConstMinResult(v);
+        }
+    } // Init
 } FireStarterResult;
 
 typedef struct FireStarterResults {
@@ -118,5 +131,15 @@ typedef struct FireStarterResults {
         m_resultSize = FireStarterResult::ResultSize(registers, variations);
         for (unsigned int i = 0; i < members; i++)
             Result(i)->Init(registers, variations, startResult);
-    } // FireStarterResults
+    } // InitResults
+
+    inline void InitResults(unsigned int members, unsigned int registers, unsigned int variations, const FireStarterResult* initResult)
+    {
+        m_members = members;
+        m_registers = registers;
+        m_variations = variations;
+        m_resultSize = FireStarterResult::ResultSize(registers, variations);
+        for (unsigned int i = 0; i < members; i++)
+            Result(i)->Init(registers, variations, initResult);
+    } // InitResults
 } FireStarterResults;

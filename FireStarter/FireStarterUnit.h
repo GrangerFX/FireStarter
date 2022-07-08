@@ -51,7 +51,7 @@ private:
     bool m_bestStateDirty = true;
 
     const FireStarterState& BestState(void);
-    void InitEvolveStates(void);
+    void InitEvolveStates(const FireStarterState& state);
     void DeallocateEvolveStates(void);
     bool AllocateEvolveStates(void);
     void CompileGenerate(void);
@@ -65,13 +65,13 @@ private:
     void UnitExecute(void);
     bool LoadCode(void);
     void Deallocate(void);
-    void Allocate(const FireStarterState& initState);
+    void Allocate(const FireStarterState& state);
 
 public:
     unsigned int Index(void);
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
-    void InitUnit(unsigned int index, const FireStarterState& state);
+    void InitUnit(unsigned int index, const FireStarterState& intState);
     void Execute(void);
     void Update(FireStarterState* states);
     void Sync(FireStarterState* states);

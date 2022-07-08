@@ -20,11 +20,14 @@ const FireStarterState& FireStarterUnit::BestState(void)
     return m_allStates[m_bestStateIndex];
 } // BestState
 
-void FireStarterUnit::InitEvolveStates(void)
+void FireStarterUnit::InitEvolveStates(const FireStarterState &state)
 {
-    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
-        FireStarterEvolveState& evolveState = m_evolveStates[i];
-        evolveState.m_hostResults->InitResults(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
+    for (FireStarterEvolveState& evolveState : m_evolveStates) {
+        if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE)
+            evolveState.m_hostResults->InitResults(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations, state.Result());
+        else
+            evolveState.m_hostResults->InitResults(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
+
         evolveState.m_deviceResults0 = (FireStarterResults*)(evolveState.m_deviceResults);
         evolveState.m_deviceResults1 = (FireStarterResults*)(evolveState.m_deviceResults + m_resultsSize);
         checkCUDAErrors(cudaMemcpy(evolveState.m_deviceResults0, evolveState.m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
@@ -72,7 +75,7 @@ void FireStarterUnit::DeallocateEvolveStates(void)
 bool FireStarterUnit::AllocateEvolveStates(void)
 {
     bool result = true;
-    size_t resultsSize = FireStarterResults::ResultsSize(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations);
+    size_t resultsSize = FireStarterResults::ResultsSize(m_settings.m_evolvePopulation, m_settings.m_registers, m_settings.m_variations);
     size_t evolutionsSize = (m_settings.m_evolveMode == FIRESTARTER_EVOLVE) ? FireStarterEvolutions::EvolutionsSize(m_settings.m_evolvePopulation, m_settings.m_instructions) : 0;
     if ((m_resultsSize != resultsSize) || (m_evolutionsSize != evolutionsSize)) {
         DeallocateEvolveStates();
@@ -83,6 +86,7 @@ bool FireStarterUnit::AllocateEvolveStates(void)
             checkCUDAErrors(cudaMallocHost(&evolveState.m_hostResults, m_resultsSize));
             checkCUDAErrors(cudaMalloc(&evolveState.m_deviceResults, m_resultsSize * 2));
             result &= evolveState.m_hostResults && evolveState.m_deviceResults;
+
             if (m_evolutionsSize) {
                 checkCUDAErrors(cudaMallocHost(&evolveState.m_hostEvolutions, m_evolutionsSize));
                 checkCUDAErrors(cudaMalloc(&evolveState.m_deviceEvolutions, m_evolutionsSize * 2));
@@ -94,8 +98,6 @@ bool FireStarterUnit::AllocateEvolveStates(void)
         DeallocateEvolveStates();
         return false;
     }
-
-    InitEvolveStates();
     return true;
 } // AllocateEvolveStates
 
@@ -338,8 +340,9 @@ void FireStarterUnit::EvolveExecute(void)
 void FireStarterUnit::OptimizeExecute(void)
 {
     // Initialize each state with the best previous state.
+    const FireStarterState& bestState = BestState();
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
-        m_evolveStates[i].m_state = BestState();
+        m_evolveStates[i].m_state = bestState;
         m_evolveStates[i].m_state.m_generation = m_evolveGeneration;
     }
 
@@ -348,7 +351,7 @@ void FireStarterUnit::OptimizeExecute(void)
         OptimizeGenerate();
 
     // Evolve the program data.
-    OptimizeGenerations(m_evolveGeneration == 0);
+    OptimizeGenerations((m_evolveGeneration == 0) && (bestState.m_generation == 0));
     m_evolveGeneration += m_settings.m_evolveGenerations;
 } // OptimizeExecute
 
@@ -398,26 +401,26 @@ void FireStarterUnit::Deallocate(void)
     }
 } // Deallocate
 
-void FireStarterUnit::Allocate(const FireStarterState& initState)
+void FireStarterUnit::Allocate(const FireStarterState& intState)
 {
     if (!m_unitContext)
         m_unitContext = new CUDAContext(m_unitIndex);
     m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
     for (FireStarterState& state : m_allStates)
-        state = initState;
+        state = intState;
 
     m_evolveStates.resize(m_settings.m_evolveStates);
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         FireStarterEvolveState& evolveState = m_evolveStates[i];
         FireStarterSettings evolveSettings = m_settings;
-        evolveState.m_state = initState;
+        evolveState.m_state = intState;
         evolveSettings.m_seed = m_settings.m_seed + m_unitIndex * m_settings.m_evolveStates + i;
         evolveState.m_state.m_program.m_settings.m_seed = evolveSettings.m_seed;
         evolveState.m_evolveSeed = RANDOM(evolveSettings.m_seed);
     }
 
-    if (!m_server)
-        AllocateEvolveStates();
+    if (!m_server && AllocateEvolveStates())
+        InitEvolveStates(intState);
 
     if (!m_unitGenerate)
         m_unitGenerate = new FireStarterGenerate();
