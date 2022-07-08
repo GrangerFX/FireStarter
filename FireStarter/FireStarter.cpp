@@ -362,7 +362,7 @@ void FireStarter::ControlThread(void)
     ControlLoop();
 
     // Optimization evolution pass.
-    if ((m_fireStarterMode != FIRESTARTER_TEST) && (m_fireStarterMode != FIRESTARTER_OPTIMIZE)) {
+    if (0 && (m_fireStarterMode != FIRESTARTER_TEST) && (m_fireStarterMode != FIRESTARTER_OPTIMIZE)) {
         m_fireStarterMode = FIRESTARTER_OPTIMIZE;
         ControlLoop();
     }
