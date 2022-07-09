@@ -23,7 +23,7 @@ const FireStarterState& FireStarterUnit::BestState(void)
 void FireStarterUnit::InitEvolveStates(const FireStarterState &state)
 {
     for (FireStarterEvolveState& evolveState : m_evolveStates) {
-        if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE)
+        if ((m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) && OPTIMIZE_LOAD_DATA)
             evolveState.m_hostResults->InitResults(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations, state.Result());
         else
             evolveState.m_hostResults->InitResults(m_settings.m_evolvePopulation, m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
@@ -351,7 +351,7 @@ void FireStarterUnit::OptimizeExecute(void)
         OptimizeGenerate();
 
     // Evolve the program data.
-    OptimizeGenerations((m_evolveGeneration == 0) && (bestState.m_generation == 0));
+    OptimizeGenerations((m_evolveGeneration == 0) && (!OPTIMIZE_LOAD_DATA || (bestState.m_generation == 0)));
     m_evolveGeneration += m_settings.m_evolveGenerations;
 } // OptimizeExecute
 
@@ -414,9 +414,9 @@ void FireStarterUnit::Allocate(const FireStarterState& intState)
         FireStarterEvolveState& evolveState = m_evolveStates[i];
         FireStarterSettings evolveSettings = m_settings;
         evolveState.m_state = intState;
-        evolveSettings.m_seed = m_settings.m_seed + m_unitIndex * m_settings.m_evolveStates + i;
-        evolveState.m_state.m_program.m_settings.m_seed = evolveSettings.m_seed;
-        evolveState.m_evolveSeed = RANDOM(evolveSettings.m_seed);
+        evolveSettings.m_evolveSeed = m_settings.m_evolveSeed + m_unitIndex * m_settings.m_evolveStates + i;
+        evolveState.m_state.m_program.m_settings.m_evolveSeed = evolveSettings.m_evolveSeed;
+        evolveState.m_evolveSeed = RANDOM(evolveSettings.m_evolveSeed);
     }
 
     if (!m_server && AllocateEvolveStates())
@@ -483,11 +483,13 @@ void FireStarterUnit::Execute(void)
                     EvolveExecute();
                     break;
                 case FIRESTARTER_UNIT:
-                case FIRESTARTER_TEST:
                     UnitExecute();
                     break;
                 case FIRESTARTER_OPTIMIZE:
                     OptimizeExecute();
+                    break;
+                case FIRESTARTER_TEST:
+                    UnitExecute();
                     break;
             }
         }

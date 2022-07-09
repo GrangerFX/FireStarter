@@ -96,7 +96,6 @@ void FireStarterProgram::SaveSettings(std::string& code)
     code += Format("    settings.m_samples = %u;\r\n", m_settings.m_samples);
     code += Format("    settings.m_process = %u;\r\n", m_settings.m_process);
     code += Format("    settings.m_clients = %u;\r\n", m_settings.m_clients);
-    code += Format("    settings.m_seed = %u;\r\n", m_settings.m_seed);
     code += "\r\n";
     code += Format("    settings.m_sampleMin = %ff;\r\n", m_settings.m_sampleMin);
     code += Format("    settings.m_sampleMax = %ff;\r\n", m_settings.m_sampleMax);
@@ -113,6 +112,7 @@ void FireStarterProgram::SaveSettings(std::string& code)
     code += Format("    settings.m_evolveGenerations = %u;\r\n", m_settings.m_evolveGenerations);
     code += Format("    settings.m_evolvePrecision = %u;\r\n", m_settings.m_evolvePrecision);
     code += Format("    settings.m_evolveAttempts = %u;\r\n", m_settings.m_evolveAttempts);
+    code += Format("    settings.m_evolveSeed = %u;\r\n", m_settings.m_evolveSeed);
     code += "} // LoadSettings\r\n";
     code += "\r\n";
 } // FireStarterProgram

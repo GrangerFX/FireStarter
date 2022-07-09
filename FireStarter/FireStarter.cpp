@@ -238,7 +238,7 @@ void FireStarter::ControlLoop(void)
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireSettings();
-    m_seed = m_settings.m_seed;
+    m_seed = m_settings.m_evolveSeed;
     m_fireStarterMode = m_settings.m_evolveMode;
     m_bestResult = m_settings.m_evolveStartResult;
     m_bestState.InitState(m_settings);
@@ -277,8 +277,8 @@ void FireStarter::ControlLoop(void)
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
         if (!m_generation || (m_settings.m_evolveMode == FIRESTARTER_TEST)) {
-            m_seed = m_settings.m_seed + m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates;
-            m_bestState.Settings().m_seed = m_seed;
+            m_seed = m_settings.m_evolveSeed + m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates;
+            m_bestState.Settings().m_evolveSeed = m_seed;
             for (unsigned int i = 0; i < m_units.size(); i++)
                 m_units[i]->InitUnit(i, m_bestState);
         }
@@ -302,7 +302,7 @@ void FireStarter::ControlLoop(void)
                 m_bestResult = m_result;
                 m_bestState = state;
                 m_bestGeneration = m_generation;
-                m_bestSeed = m_bestState.m_program.m_settings.m_seed;
+                m_bestSeed = m_bestState.m_program.m_settings.m_evolveSeed;
                 m_controlUpdate = true;
             }
         }

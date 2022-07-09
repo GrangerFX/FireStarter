@@ -1,0 +1,1 @@
+FireStarter_Optimize: Generation=1  Age=1  Best=2.193215  Time=2.6904 Seconds  Run Time=5.9085 Seconds
