@@ -71,7 +71,7 @@ public:
     unsigned int Index(void);
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
-    void InitUnit(unsigned int index, const FireStarterState& intState);
+    void InitUnit(unsigned int index, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);
     void Sync(FireStarterState* states);

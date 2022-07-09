@@ -401,26 +401,26 @@ void FireStarterUnit::Deallocate(void)
     }
 } // Deallocate
 
-void FireStarterUnit::Allocate(const FireStarterState& intState)
+void FireStarterUnit::Allocate(const FireStarterState& initState)
 {
     if (!m_unitContext)
         m_unitContext = new CUDAContext(m_unitIndex);
     m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
     for (FireStarterState& state : m_allStates)
-        state = intState;
+        state = initState;
 
     m_evolveStates.resize(m_settings.m_evolveStates);
     for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
         FireStarterEvolveState& evolveState = m_evolveStates[i];
         FireStarterSettings evolveSettings = m_settings;
-        evolveState.m_state = intState;
+        evolveState.m_state = initState;
         evolveSettings.m_evolveSeed = m_settings.m_evolveSeed + m_unitIndex * m_settings.m_evolveStates + i;
         evolveState.m_state.m_program.m_settings.m_evolveSeed = evolveSettings.m_evolveSeed;
         evolveState.m_evolveSeed = RANDOM(evolveSettings.m_evolveSeed);
     }
 
     if (!m_server && AllocateEvolveStates())
-        InitEvolveStates(intState);
+        InitEvolveStates(initState);
 
     if (!m_unitGenerate)
         m_unitGenerate = new FireStarterGenerate();
@@ -448,18 +448,18 @@ void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)
         m_allStates[i].Packetize(packet);
 } // PacketizeAllStates
 
-void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& state)
+void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initState)
 {
-    DispatchAsync([this, index, state] {
+    DispatchAsync([this, index, initState] {
         m_unitIndex = index;
-        m_settings = state.Settings();
+        m_settings = initState.Settings();
         m_evolveGeneration = 0;
         if (LoadCode()) {
-            Allocate(state);
+            Allocate(initState);
             if (m_server) {
                 FireStarterPacket sendPacket(UNIT_INIT);
                 sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
-                FireStarterState sendState(state);
+                FireStarterState sendState(initState);
                 sendState.Packetize(sendPacket);
                 m_process->SendPacket(sendPacket);
                 FireStarterPacket receivePacket;
@@ -511,8 +511,12 @@ void FireStarterUnit::Update(FireStarterState* states)
 
         unsigned int index = m_unitIndex * m_settings.m_evolveStates;
         for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
-            if (!m_evolveStates[i].m_state.m_generation || (m_evolveStates[i].m_state.Result()->maxResult < states[index].Result()->maxResult))
-                states[index++] = m_evolveStates[i].m_state;
+            if (!m_evolveStates[i].m_state.m_generation || (m_evolveStates[i].m_state.Result()->maxResult < states[index].Result()->maxResult)) {
+                m_allStates[index] = m_evolveStates[i].m_state;
+                states[index] = m_evolveStates[i].m_state;
+                index++;
+            }
+        m_bestStateDirty = true;
     });
 } // Update
 
