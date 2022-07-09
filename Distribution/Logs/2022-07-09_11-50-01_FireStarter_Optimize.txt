@@ -1,0 +1,6 @@
+FireStarter_Optimize: Generation=1  Age=1  Best=0.000008  Time=1.3961 Seconds  Run Time=4.4104 Seconds
+FireStarter_Optimize: Generation=2  Age=1  Best=0.000004  Time=0.8571 Seconds  Run Time=5.3720 Seconds
+FireStarter_Optimize: Generation=3  Age=1  Best=0.000003  Time=0.8632 Seconds  Run Time=6.2532 Seconds
+FireStarter_Optimize: Generation=4  Age=1  Best=0.000002  Time=0.8739 Seconds  Run Time=7.1434 Seconds
+FireStarter_Optimize: Generation=5  Age=1  Best=0.000001  Time=0.8758 Seconds  Run Time=8.1307 Seconds
+FireStarter_Optimize: Generation=6  Age=1  Best=0.000001  Time=0.8822 Seconds  Run Time=9.1257 Seconds
