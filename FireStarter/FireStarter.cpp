@@ -247,13 +247,14 @@ void FireStarter::ControlLoop(void)
         m_settings.m_evolveUnits = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
 
     // Setup the best state.
-    if (!m_bestState.m_generation) {
+    if (!m_bestState.Initialized()) {
+        m_bestState.InitState(m_settings);
         if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
             LoadState(m_bestState);
             m_bestState.m_program.m_settings = m_settings;
-        } else
-            m_bestState.InitState(m_settings);
-    }
+        }
+    } else
+        m_bestState.m_program.m_settings = m_settings;
  
     m_generation = 0;
     m_bestGeneration = 0;
@@ -274,13 +275,6 @@ void FireStarter::ControlLoop(void)
         m_units.push_back(unit);
         unit->Start();  // Start the interprocess communication.
     }
-
-    // Load or initialize the starting state.
-    if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
-        LoadState(m_bestState);
-        m_bestState.m_program.m_settings = m_settings;
-    } else
-        m_bestState.InitState(m_settings);
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {

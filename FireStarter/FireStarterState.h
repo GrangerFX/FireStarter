@@ -34,6 +34,11 @@ public:
         return (const FireStarterResult*)m_result.data();
     } // Result
 
+    inline bool Initialized(void) const
+    {
+        return !m_result.empty();
+    } // Initialized
+
     bool Packetize(FireStarterPacket& packet);
     void SaveVariation(unsigned int variation, std::string& code);
     void SaveResult(std::string& code);
