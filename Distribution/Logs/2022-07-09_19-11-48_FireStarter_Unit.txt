@@ -1,0 +1,16 @@
+FireStarter_Unit: Generation=1  Age=1  Best=0.000039  Time=3.3250 Seconds  Run Time=5.8396 Seconds
+FireStarter_Unit: Generation=2  Age=1  Best=0.000029  Time=3.1810 Seconds  Run Time=9.0327 Seconds
+FireStarter_Unit: Generation=3  Age=1  Best=0.000017  Time=3.4270 Seconds  Run Time=12.4678 Seconds
+FireStarter_Unit: Generation=4  Age=2  Best=0.000017  Time=3.5998 Seconds  Run Time=16.1525 Seconds
+FireStarter_Unit: Generation=5  Age=1  Best=0.000009  Time=3.9046 Seconds  Run Time=20.0829 Seconds
+FireStarter_Unit: Generation=6  Age=1  Best=0.000007  Time=3.9562 Seconds  Run Time=24.0971 Seconds
+FireStarter_Unit: Generation=7  Age=2  Best=0.000007  Time=4.0827 Seconds  Run Time=28.2861 Seconds
+FireStarter_Unit: Generation=8  Age=3  Best=0.000007  Time=4.3988 Seconds  Run Time=32.7852 Seconds
+FireStarter_Unit: Generation=9  Age=4  Best=0.000007  Time=4.4145 Seconds  Run Time=37.2062 Seconds
+FireStarter_Unit: Generation=10  Age=5  Best=0.000007  Time=4.5170 Seconds  Run Time=41.8242 Seconds
+FireStarter_Unit: Generation=11  Age=6  Best=0.000007  Time=4.6683 Seconds  Run Time=46.5958 Seconds
+FireStarter_Unit: Generation=12  Age=7  Best=0.000007  Time=4.6175 Seconds  Run Time=51.2708 Seconds
+FireStarter_Unit: Generation=13  Age=8  Best=0.000007  Time=4.6621 Seconds  Run Time=56.0383 Seconds
+FireStarter_Unit: Generation=14  Age=9  Best=0.000007  Time=4.6062 Seconds  Run Time=60.7115 Seconds
+FireStarter_Unit: Generation=15  Age=10  Best=0.000007  Time=5.2338 Seconds  Run Time=65.9622 Seconds
+FireStarter_Unit: Generation=16  Age=11  Best=0.000007  Time=4.9082 Seconds  Run Time=70.9316 Seconds
