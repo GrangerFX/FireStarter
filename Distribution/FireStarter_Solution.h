@@ -1,5 +1,5 @@
-// Run date: 07/10/22 11:16:34 Pacific Daylight Time
-// Run duration = 1.620406 seconds
+// Run date: 07/10/22 11:29:52 Pacific Daylight Time
+// Run duration = 1.869880 seconds
 // Run count = 39
 // Run mode = 4
 // Run clients = 4
@@ -40,9 +40,9 @@ inline float SolutionTarget(float n, unsigned int variation)
 
 #define SOLUTION_VARIATIONS 3
 
-// Precision = 0.000001
+// Precision = 0.00000089
 
-// Solution0 precision = 0.000000
+// Solution0 precision = 0.00000048
 inline float Solution0(float n)
 {
     float r0, r1, r2, r3;
@@ -82,7 +82,7 @@ inline float Solution0(float n)
     return n;
 } // Solution0
 
-// Solution1 precision = 0.000001
+// Solution1 precision = 0.00000083
 inline float Solution1(float n)
 {
     float r0, r1, r2, r3;
@@ -122,7 +122,7 @@ inline float Solution1(float n)
     return n;
 } // Solution1
 
-// Solution2 precision = 0.000001
+// Solution2 precision = 0.00000089
 inline float Solution2(float n)
 {
     float r0, r1, r2, r3;

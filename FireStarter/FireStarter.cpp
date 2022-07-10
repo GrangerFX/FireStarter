@@ -140,9 +140,9 @@ void FireStarter::RenderStatus(void)
 {
     // Update the status.
     if (m_settings.m_evolveMode == FIRESTARTER_TEST)
-        m_statusString = Format("%s: Generation=%u  Seed=%u  Result=%f  Average=%f  Best=%f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", EvolveMode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
+        m_statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", EvolveMode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
     else
-        m_statusString = Format("%s: Generation=%u  Age=%u  Best=%f  Time=%.4f Seconds  Run Time=%.4f Seconds", EvolveMode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+        m_statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds", EvolveMode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
     GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString.c_str()); });
 
     // Update the log file.

@@ -244,9 +244,9 @@ inline void GenerateDataCode(char* buffer, size_t size, size_t& length, unsigned
         numRegisters = FIRESTARTER_REGISTERS;
     for (unsigned int i = 0; i < tabs; i++)
         anprintf(buffer, size, length, "    ");
-    anprintf(buffer, size, length, "FireStarterData data = { %ff", numRegisters, data->d[0]);
+    anprintf(buffer, size, length, "FireStarterData data = { %.8ff", numRegisters, data->d[0]);
     for (unsigned int i = 1; i < numRegisters; i++)
-        anprintf(buffer, size, length, ", %ff", data->d[i]);
+        anprintf(buffer, size, length, ", %.8ff", data->d[i]);
     anprintf(buffer, size, length, "};\r\n");
 } // GenerateDataCode
 
