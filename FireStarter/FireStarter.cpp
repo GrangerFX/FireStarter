@@ -241,12 +241,20 @@ void FireStarter::ControlLoop(void)
     m_seed = m_settings.m_evolveSeed;
     m_fireStarterMode = m_settings.m_evolveMode;
     m_bestResult = m_settings.m_evolveStartResult;
-    m_bestState.InitState(m_settings);
 
     // If the evolve units is set to zero, use the number of concurrent hardware threads.
     if (m_settings.m_evolveUnits == 0)
         m_settings.m_evolveUnits = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
 
+    // Setup the best state.
+    if (!m_bestState.m_generation) {
+        if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
+            LoadState(m_bestState);
+            m_bestState.m_program.m_settings = m_settings;
+        } else
+            m_bestState.InitState(m_settings);
+    }
+ 
     m_generation = 0;
     m_bestGeneration = 0;
     m_result = 0.0f;
@@ -363,7 +371,7 @@ void FireStarter::ControlThread(void)
     ControlLoop();
 
     // Optimization evolution pass.
-    if (0 && (m_fireStarterMode != FIRESTARTER_TEST) && (m_fireStarterMode != FIRESTARTER_OPTIMIZE)) {
+    if ((m_fireStarterMode != FIRESTARTER_TEST) && (m_fireStarterMode != FIRESTARTER_OPTIMIZE)) {
         m_fireStarterMode = FIRESTARTER_OPTIMIZE;
         ControlLoop();
     }

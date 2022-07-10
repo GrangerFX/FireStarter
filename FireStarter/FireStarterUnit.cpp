@@ -510,12 +510,13 @@ void FireStarterUnit::Update(FireStarterState* states)
         }
 
         unsigned int index = m_unitIndex * m_settings.m_evolveStates;
-        for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
+        for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
             if (!m_evolveStates[i].m_state.m_generation || (m_evolveStates[i].m_state.Result()->maxResult < states[index].Result()->maxResult)) {
                 m_allStates[index] = m_evolveStates[i].m_state;
                 states[index] = m_evolveStates[i].m_state;
-                index++;
             }
+            index++;
+        }
         m_bestStateDirty = true;
     });
 } // Update
