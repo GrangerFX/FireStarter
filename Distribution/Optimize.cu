@@ -64,7 +64,8 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         FireStarterData data;
         float result, oldResult;
         float evolutionFactor;
-        if (init) {
+        result = oldResult = *oldResults->MinResult(member, variation);
+        if (init || (oldResult > settings.m_evolveStartResult)) {
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR(memberSeed);
             for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
@@ -73,7 +74,6 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             evolutionFactor = settings.m_evolveStartFactor;
         } else {
             data = *oldResults->Data(member, variation);
-            result = oldResult = *oldResults->MinResult(member, variation);
             evolutionFactor = settings.m_evolveFactor * result;
         }
 
@@ -126,7 +126,10 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
                 *newResults->Data(member, variation) = data;
-                *newResults->MinResult(member, variation) = result;
+                if (RANDOMMOD(memberSeed, 4) == 1)
+                    *newResults->MinResult(member, variation) = settings.m_evolveStartResult * 2.0f;
+                else
+                    *newResults->MinResult(member, variation) = result;
                 maxResult = fmaxf(maxResult, result);
             }
         }
