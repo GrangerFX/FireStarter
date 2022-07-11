@@ -362,7 +362,7 @@ void FireStarterUnit::UnitExecute(void)
 
     // Evolve the program data.
     OptimizeGenerations(1);
-    if (m_settings.m_evolveMode != FIRESTARTER_TEST)
+    if (m_settings.m_evolveMode != FIRESTARTER_RANDOM)
         m_evolveGeneration++;
 } // UnitExecute
 
@@ -488,7 +488,7 @@ void FireStarterUnit::Execute(void)
                 case FIRESTARTER_OPTIMIZE:
                     OptimizeExecute();
                     break;
-                case FIRESTARTER_TEST:
+                case FIRESTARTER_RANDOM:
                     UnitExecute();
                     break;
             }

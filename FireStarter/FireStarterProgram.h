@@ -14,18 +14,18 @@ public:
     unsigned int m_dataSize = 0;
     unsigned int m_maxRegisters = 0;
 
-    FireStarterInstructions* Instructions(void)
+    inline FireStarterInstructions* Instructions(void)
     {
         return (FireStarterInstructions*)m_instructions.data();
     } // Instructions
 
-    const FireStarterInstructions* Instructions(size_t* numInstructions) const
+    inline const FireStarterInstructions* Instructions(size_t* numInstructions) const
     {
         *numInstructions = m_settings.m_instructions;
         return (FireStarterInstructions*)m_instructions.data();
     } // Instructions
 
-    const FireStarterRegisters* Registers(size_t* numRegisters) const
+    inline const FireStarterRegisters* Registers(size_t* numRegisters) const
     {
         *numRegisters = m_registers.size();
         return (FireStarterRegisters*)m_registers.data();

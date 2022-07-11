@@ -118,36 +118,18 @@ void FireStarter::FireShow(void)
     checkCUDAErrors(cudaStreamSynchronize(m_fireStarterContext->Stream()));
 } // FireShow
 
-const char* FireStarter::EvolveMode(void)
-{
-    switch (m_settings.m_evolveMode) {
-        case FIRESTARTER_EVOLVE:
-            return "FireStarter_Evolve";
-        case FIRESTARTER_UNIT:
-            return "FireStarter_Unit";
-        case FIRESTARTER_TEST:
-            return "FireStarter_Test";
-        case FIRESTARTER_OPTIMIZE:
-            return "FireStarter_Optimize";
-        case FIRESTARTER_SOLUTION:
-            return "FireStarter_Solution";
-        default:
-            return "FireStarter_UNKNOWN";
-    }
-} // EvolveMode
-
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
-    if (m_settings.m_evolveMode == FIRESTARTER_TEST)
-        m_statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", EvolveMode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
+    if (m_settings.m_evolveMode == FIRESTARTER_RANDOM)
+        m_statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
     else
-        m_statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds", EvolveMode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+        m_statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
     GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString.c_str()); });
 
     // Update the log file.
     if (m_logFilePath.empty())
-        m_logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), EvolveMode());
+        m_logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), m_settings.Mode());
     m_statusString += "\r\n";
     FireStarterCode::AppendCode(m_logFilePath, m_statusString);
 } // RenderStatus
@@ -270,7 +252,7 @@ void FireStarter::ControlLoop(void)
 
     // Create the units.
     for (unsigned int i = 0; i < m_settings.m_evolveUnits; i++) {
-        FireStarterProcess* process = (m_settings.m_process && (m_settings.m_evolveUnits > 1)) ? m_server.AddProcess() : nullptr;
+        FireStarterProcess* process = (m_settings.m_evolveProcess && (m_settings.m_evolveUnits > 1)) ? m_server.AddProcess() : nullptr;
         FireStarterUnit* unit = new FireStarterUnit(process);
         m_units.push_back(unit);
         unit->Start();  // Start the interprocess communication.
@@ -278,7 +260,7 @@ void FireStarter::ControlLoop(void)
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
-        if (!m_generation || (m_settings.m_evolveMode == FIRESTARTER_TEST)) {
+        if (!m_generation || (m_settings.m_evolveMode == FIRESTARTER_RANDOM)) {
             m_seed = m_settings.m_evolveSeed + m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates;
             m_bestState.Settings().m_evolveSeed = m_seed;
             for (unsigned int i = 0; i < m_units.size(); i++)
@@ -345,7 +327,7 @@ void FireStarter::ControlLoop(void)
         }
 
         // Has the completion condition been met?
-        if (((m_settings.m_evolveMode == FIRESTARTER_TEST) ? m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates : (m_generation - m_bestGeneration)) >= m_settings.m_evolveAttempts)
+        if (((m_settings.m_evolveMode == FIRESTARTER_RANDOM) ? m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates : (m_generation - m_bestGeneration)) >= m_settings.m_evolveAttempts)
             break;
     }
 
@@ -365,7 +347,7 @@ void FireStarter::ControlThread(void)
     ControlLoop();
 
     // Optimization evolution pass.
-    if ((m_fireStarterMode != FIRESTARTER_TEST) && (m_fireStarterMode != FIRESTARTER_OPTIMIZE)) {
+    if ((m_fireStarterMode != FIRESTARTER_RANDOM) && (m_fireStarterMode != FIRESTARTER_OPTIMIZE)) {
         m_fireStarterMode = FIRESTARTER_OPTIMIZE;
         ControlLoop();
     }

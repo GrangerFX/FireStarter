@@ -9,6 +9,8 @@
 #define UNIT_UPDATE  "UnitUpdate"
 #define UNIT_SYNC    "UnitSync"
 
+#define OPTIMIZE_LOAD_DATA 0
+
 class FireStarterUnit : public SerialThread {
 private:
     class FireStarterEvolveState {
