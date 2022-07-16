@@ -25,7 +25,8 @@ private:
         FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
         CUfunction m_optimizeFunction = nullptr;
         FireStarterState m_state;
-        unsigned int m_evolveSeed;
+        unsigned int m_evolveSeed = 0;
+        unsigned int m_stateID = 0;
     }; // class FireStarterEvolveState
 
     SimpleTimer m_timer;
@@ -50,8 +51,9 @@ private:
     unsigned int m_bestStateIndex = 0;
     bool m_server = false;
     bool m_codeLoaded = false;
-    bool m_bestStateDirty = true;
+    bool m_bestStateDirty = false;
 
+    const FireStarterState& BestState(void) const;
     void InitEvolveStates(const FireStarterState& state);
     void DeallocateEvolveStates(void);
     bool AllocateEvolveStates(void);
