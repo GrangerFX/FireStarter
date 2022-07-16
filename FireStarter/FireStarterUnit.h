@@ -50,7 +50,7 @@ private:
     unsigned int m_bestStateIndex = 0;
     bool m_server = false;
     bool m_codeLoaded = false;
-    bool m_bestStateDirty = false;
+    bool m_bestStateDirty = true;
 
     void InitEvolveStates(const FireStarterState& state);
     void DeallocateEvolveStates(void);
