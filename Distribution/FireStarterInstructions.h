@@ -10,14 +10,14 @@ typedef enum {
     Operation_abs
 } FireStarterOpcode;
 
-#if PROGRAM_MODE == PROGRAM_MULTIPLY_ADD
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
 const FireStarterOpcode fireStarterOpcodes[FIRESTARTER_OPCODES] = {
     Operation_multiply,
     Operation_add,
 };
 #endif
 
-#if PROGRAM_MODE == PROGRAM_MULTIPLY_ADD_ABS
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
 const FireStarterOpcode fireStarterOpcodes[FIRESTARTER_OPCODES] = {
     Operation_multiply,
     Operation_add,
