@@ -1,0 +1,16 @@
+FIRESTARTER_UNIT: Generation:   0  Best=0.02851403  Seed=C0A94A0E  ResultHash=138B  ProgramHash=E65B
+FIRESTARTER_UNIT: Generation:   1  Best=0.00053564  Seed=C0A94A75  ResultHash=BDC8  ProgramHash=9EB6
+FIRESTARTER_UNIT: Generation:   2  Best=0.00053564  Seed=C0A94ADC  ResultHash=99CD  ProgramHash=E838
+FIRESTARTER_UNIT: Generation:   3  Best=0.00036097  Seed=C0A94B43  ResultHash=1E28  ProgramHash=78D3
+FIRESTARTER_UNIT: Generation:   4  Best=0.00036097  Seed=C0A94BAA  ResultHash=6EAC  ProgramHash=1083
+FIRESTARTER_UNIT: Generation:   5  Best=0.00036097  Seed=C0A94C11  ResultHash=4CD7  ProgramHash=5668
+FIRESTARTER_UNIT: Generation:   6  Best=0.00036097  Seed=C0A94C78  ResultHash=BB5E  ProgramHash=E1A5
+FIRESTARTER_UNIT: Generation:   7  Best=0.00032234  Seed=C0A94CDF  ResultHash=83BF  ProgramHash=642D
+FIRESTARTER_UNIT: Generation:   8  Best=0.00032234  Seed=C0A94D46  ResultHash=BC0D  ProgramHash=52B8
+FIRESTARTER_UNIT: Generation:   9  Best=0.00032234  Seed=C0A94DAD  ResultHash=DDA1  ProgramHash=5D1A
+FIRESTARTER_UNIT: Generation:  10  Best=0.00032234  Seed=C0A94E14  ResultHash=A504  ProgramHash=BEF1
+FIRESTARTER_UNIT: Generation:  11  Best=0.00032234  Seed=C0A94E7B  ResultHash=20B3  ProgramHash=DC89
+FIRESTARTER_UNIT: Generation:  12  Best=0.00032234  Seed=C0A94EE2  ResultHash=EBC8  ProgramHash=CA4F
+FIRESTARTER_UNIT: Generation:  13  Best=0.00032234  Seed=C0A94F49  ResultHash=06F4  ProgramHash=004E
+FIRESTARTER_UNIT: Generation:  14  Best=0.00032234  Seed=C0A94FB0  ResultHash=EED2  ProgramHash=484A
+FIRESTARTER_UNIT: Generation:  15  Best=0.00032234  Seed=C0A95017  ResultHash=CE1A  ProgramHash=DB8F
