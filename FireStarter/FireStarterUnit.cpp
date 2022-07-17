@@ -20,7 +20,7 @@ void FireStarterUnit::InitEvolveStates(const FireStarterState &state)
         checkCUDAErrors(cudaMemcpy(evolveState.m_deviceResults0, evolveState.m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
         checkCUDAErrors(cudaMemcpy(evolveState.m_deviceResults1, evolveState.m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
 
-        if (m_settings.m_evolveMode == FIRESTARTER_EVOLVE) {
+        if (m_settings.m_evolveMode == FIRESTARTER_CODE) {
             evolveState.m_hostEvolutions->InitEvolutions(m_settings.m_evolvePopulation, m_settings.m_instructions);
             evolveState.m_deviceEvolutions0 = (FireStarterEvolutions*)(evolveState.m_deviceEvolutions);
             evolveState.m_deviceEvolutions1 = (FireStarterEvolutions*)(evolveState.m_deviceEvolutions + m_evolutionsSize);
@@ -63,7 +63,7 @@ bool FireStarterUnit::AllocateEvolveStates(void)
 {
     bool result = true;
     size_t resultsSize = FireStarterResults::ResultsSize(m_settings.m_evolvePopulation, m_settings.m_registers, m_settings.m_variations);
-    size_t evolutionsSize = (m_settings.m_evolveMode == FIRESTARTER_EVOLVE) ? FireStarterEvolutions::EvolutionsSize(m_settings.m_evolvePopulation, m_settings.m_instructions) : 0;
+    size_t evolutionsSize = (m_settings.m_evolveMode == FIRESTARTER_CODE) ? FireStarterEvolutions::EvolutionsSize(m_settings.m_evolvePopulation, m_settings.m_instructions) : 0;
     if ((m_resultsSize != resultsSize) || (m_evolutionsSize != evolutionsSize)) {
         DeallocateEvolveStates();
         m_resultsSize = resultsSize;
@@ -498,7 +498,7 @@ void FireStarterUnit::Execute(void)
             m_process->ReceivePacket(receivePacket, UNIT_EXECUTE);
         } else {
             switch (m_settings.m_evolveMode) {
-                case FIRESTARTER_EVOLVE:
+                case FIRESTARTER_CODE:
                     EvolveExecute();
                     break;
                 case FIRESTARTER_UNIT:

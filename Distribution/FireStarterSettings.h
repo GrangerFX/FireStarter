@@ -14,7 +14,7 @@
 #define FIRESTARTER_EVOLVE_CANDIDATES 16
 #define FIRESTARTER_EVOLVE_MUTATION 1
 
-#define FIRESTARTER_EVOLVE   1
+#define FIRESTARTER_CODE     1
 #define FIRESTARTER_UNIT     2
 #define FIRESTARTER_PROCESS  3
 #define FIRESTARTER_RANDOM   4
@@ -23,15 +23,15 @@
 #define FIRESTARTER_SOLUTION 7
 #define FIRESTARTER_MODE     FIRESTARTER_UNIT
 
-#define EVOLVE_STATES 1
-#define EVOLVE_UNITS 1
-#define EVOLVE_PROCESS 0
-#define EVOLVE_POPULATION 4352
-#define EVOLVE_ITERATIONS 512
-#define EVOLVE_GENERATIONS 10
-#define EVOLVE_PRECISION 256
-#define EVOLVE_ATTEMPTS 32
-#define EVOLVE_SEED 0
+#define CODE_STATES 1
+#define CODE_UNITS 1
+#define CODE_PROCESS 0
+#define CODE_POPULATION 4352
+#define CODE_ITERATIONS 512
+#define CODE_GENERATIONS 10
+#define CODE_PRECISION 256
+#define CODE_ATTEMPTS 32
+#define CODE_SEED 0
 
 #define UNIT_STATES 1
 #define UNIT_UNITS 1
@@ -41,7 +41,8 @@
 #define UNIT_GENERATIONS 100
 #define UNIT_PRECISION 256
 #define UNIT_ATTEMPTS 32
-#define UNIT_SEED 8337
+//#define UNIT_SEED 8337
+#define UNIT_SEED 0
 
 #define PROCESS_STATES 4
 #define PROCESS_UNITS 4
@@ -123,8 +124,8 @@ public:
     inline const char* Mode(void) const
     {
         switch (m_evolveMode) {
-            case FIRESTARTER_EVOLVE:
-                return "FIRESTARTER_EVOLVE";
+            case FIRESTARTER_CODE:
+                return "FIRESTARTER_CODE";
             case FIRESTARTER_UNIT:
                 return "FIRESTARTER_UNIT";
             case FIRESTARTER_PROCESS:
@@ -159,16 +160,16 @@ public:
 
         m_evolveMode = evolveMode ? evolveMode : FIRESTARTER_MODE;
         switch (m_evolveMode) {
-            case FIRESTARTER_EVOLVE:
-                m_evolveStates = EVOLVE_STATES;
-                m_evolveUnits = EVOLVE_UNITS;
-                m_evolveProcess = EVOLVE_PROCESS;
-                m_evolvePopulation = EVOLVE_POPULATION;
-                m_evolveIterations = EVOLVE_ITERATIONS;
-                m_evolveGenerations = EVOLVE_GENERATIONS;
-                m_evolvePrecision = EVOLVE_PRECISION;
-                m_evolveAttempts = EVOLVE_ATTEMPTS;
-                m_evolveSeed = EVOLVE_SEED;
+            case FIRESTARTER_CODE:
+                m_evolveStates = CODE_STATES;
+                m_evolveUnits = CODE_UNITS;
+                m_evolveProcess = CODE_PROCESS;
+                m_evolvePopulation = CODE_POPULATION;
+                m_evolveIterations = CODE_ITERATIONS;
+                m_evolveGenerations = CODE_GENERATIONS;
+                m_evolvePrecision = CODE_PRECISION;
+                m_evolveAttempts = CODE_ATTEMPTS;
+                m_evolveSeed = CODE_SEED;
                 break;
             case FIRESTARTER_UNIT:
                 m_evolveStates = UNIT_STATES;
