@@ -229,6 +229,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                 &arr[0],                                            // arguments */
                 0));
         }
+        forceInit = 0;
     }
 
     // Copy the results to the host memory.
@@ -300,6 +301,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
         // Synchronize all GPU threads.
         // Note: TODO: Each evolve state could be individualy synced if this is possible.
         checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
+        forceInit = 0;
     }
 
     // Copy the results to the host memory.

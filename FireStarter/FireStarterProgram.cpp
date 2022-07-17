@@ -111,6 +111,7 @@ void FireStarterProgram::SaveSettings(std::string& code)
     code += Format("    settings.m_iterations = %u;\r\n", m_settings.m_iterations);
     code += Format("    settings.m_generations = %u;\r\n", m_settings.m_generations);
     code += Format("    settings.m_precision = %u;\r\n", m_settings.m_precision);
+    code += Format("    settings.m_evolve = %u;\r\n", m_settings.m_evolve);
     code += Format("    settings.m_attempts = %u;\r\n", m_settings.m_attempts);
     code += Format("    settings.m_seed = %u;\r\n", m_settings.m_seed);
     code += "} // LoadSettings\r\n";
