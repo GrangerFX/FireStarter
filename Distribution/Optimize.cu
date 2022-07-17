@@ -64,7 +64,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         FireStarterData data;
         float result, oldResult;
         float evolutionFactor;
-        if (init || (oldResult > settings.m_evolveStartResult)) {
+        if (init) {
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR(memberSeed);
             for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)

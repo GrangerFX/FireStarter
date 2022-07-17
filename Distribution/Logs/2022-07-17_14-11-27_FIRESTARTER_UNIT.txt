@@ -1,0 +1,7 @@
+FIRESTARTER_UNIT: Generation:   0  Best=0.02500731  Seed=C0A94A0E  ResultHash=5852  ProgramHash=E65B
+FIRESTARTER_UNIT: Generation:   1  Best=0.00052011  Seed=C0A94A75  ResultHash=0BF4  ProgramHash=9EB6
+FIRESTARTER_UNIT: Generation:   2  Best=0.00045514  Seed=C0A94ADC  ResultHash=BD18  ProgramHash=E838
+FIRESTARTER_UNIT: Generation:   3  Best=0.00045514  Seed=C0A94B43  ResultHash=DB90  ProgramHash=DC4F
+FIRESTARTER_UNIT: Generation:   4  Best=0.00045514  Seed=C0A94BAA  ResultHash=A347  ProgramHash=E411
+FIRESTARTER_UNIT: Generation:   5  Best=0.00033003  Seed=C0A94C11  ResultHash=9D3B  ProgramHash=1AB5
+FIRESTARTER_UNIT: Generation:   6  Best=0.00033003  Seed=C0A94C78  ResultHash=7C7B  ProgramHash=018F
