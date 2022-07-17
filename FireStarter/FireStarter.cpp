@@ -121,10 +121,18 @@ void FireStarter::FireShow(void)
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
+#if 1
+    FireStarterState state;
+    m_units[0]->GetState(&state, 0);;
+    uint64_t resultHash = MurmurHash64(state.Result(), state.ResultSize());
+    uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
+    m_statusString = Format("%s: Generation:%4u  Best=%.8f  Seed=%08X  ResultHash=%04X  ProgramHash=%04X", m_settings.Mode(), m_generation, m_bestResult, state.m_seed, (unsigned short)resultHash, (unsigned short)programHash);
+#else
     if (m_settings.m_evolveMode == FIRESTARTER_RANDOM)
         m_statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
     else
         m_statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+#endif
     GetMainThread()->DispatchAsync([this] { SetWindowText((HWND)m_window, m_statusString.c_str()); });
 
     // Update the log file.
@@ -291,6 +299,10 @@ void FireStarter::ControlLoop(void)
             }
         }
 
+        // Update the render status after every pass.
+        if (!m_quitControlThread)
+            RenderStatus();
+
         // Send all the states back to all the units.
         for (FireStarterUnit* unit : m_units)
             unit->Sync(m_allStates.data());
@@ -306,10 +318,6 @@ void FireStarter::ControlLoop(void)
             SaveBestCode();
             SaveSolution();
         }
-
-        // Update the render status after every pass.
-        if (!m_quitControlThread)
-            RenderStatus();
 
         // Render the buffer if the best data was updated and the previous buffer was displayed.
         if (!m_bufferUpdate && !m_quitControlThread) {

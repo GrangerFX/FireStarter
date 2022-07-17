@@ -47,7 +47,8 @@ void FireStarterState::SaveState(std::string& code)
 
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
-    code += Format("    state.m_generation = %d;\r\n", m_generation);
+    code += Format("    state.m_generation = %u;\r\n", m_generation);
+    code += Format("    state.m_seed = %u;\r\n", m_seed);
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
@@ -79,5 +80,4 @@ void FireStarterState::InitState(const FireStarterSettings& settings)
 
 FireStarterState::FireStarterState(void)
 {
-    m_generation = 0;
 } // FireStarterState

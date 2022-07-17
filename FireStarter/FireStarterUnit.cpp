@@ -126,57 +126,51 @@ void FireStarterUnit::EvolveGenerate(void)
 
 void FireStarterUnit::OptimizeGenerate(void)
 {
-    if (!m_evolveGeneration) {
-        // Generate the optimize code for the current generation
-        std::string optimize;
-        FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
+    // Generate the optimize code for the current generation
+    std::string optimize;
+    FireStarterCode::ExtractProgram(m_optimizeCode, optimize, OPTIMIZE_CODE);
 
-        // Generate the evaluate and optimize code
-        std::string evaluateCode;
-        std::string optimizeCode;
-        for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
-            FireStarterState& state = m_evolveStates[i].m_state;
+    // Generate the evaluate and optimize code
+    std::string evaluateCode;
+    std::string optimizeCode;
+    for (unsigned int i = 0; i < m_settings.m_evolveStates; i++) {
+        FireStarterState& state = m_evolveStates[i].m_state;
 
-            // Update the Evaluate funtion.
-            std::string evaluate;
-            m_unitGenerate->GenerateEvaluate(state, m_fireGenerateEvaluateFunction, m_unitContext->Stream(), evaluate);
-            if (m_settings.m_evolveStates > 1) {
-                std::string evaluateName = Format("Evaluate%d", i);
-                FireStarterCode::ReplaceCode(evaluate, "Evaluate", evaluateName);
-            }
-            if (i)
-                evaluateCode += "\r\n";
-            evaluateCode += evaluate;
-
-            // Update the optimize function.
-            std::string optimizeUnit = optimize;
-            if (m_settings.m_evolveStates > 1) {
-                std::string optimizeName = m_settings.m_evolveStates == 1 ? "Optimize" : Format("Optimize%d", i);
-                std::string evaluateName = Format("Evaluate%d", i);
-                FireStarterCode::ReplaceCode(optimizeUnit, "Optimize", optimizeName);
-                FireStarterCode::ReplaceCode(optimizeUnit, "Evaluate", evaluateName);
-            }
-            if (i)
-                optimizeCode += "\r\n";
-            optimizeCode += optimizeUnit;
+        // Update the Evaluate funtion.
+        std::string evaluate;
+        m_unitGenerate->GenerateEvaluate(state, m_fireGenerateEvaluateFunction, m_unitContext->Stream(), evaluate);
+        if (m_settings.m_evolveStates > 1) {
+            std::string evaluateName = Format("Evaluate%d", i);
+            FireStarterCode::ReplaceCode(evaluate, "Evaluate", evaluateName);
         }
+        if (i)
+            evaluateCode += "\r\n";
+        evaluateCode += evaluate;
 
-        // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-        std::string code = m_optimizeCode;
-        FireStarterCode::UpdateProgram(code, evaluateCode, EVALUATE_CODE);
-        FireStarterCode::UpdateProgram(code, optimizeCode, OPTIMIZE_CODE);
-
-        // Compile the new code.
-        if (CUDACompile::CompileProgram(m_optimizeModule, code, "Optimize")) {
-            if (m_settings.m_evolveStates == 1)
-                m_evolveStates[0].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
-            else for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
-                m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, Format("Optimize%d", i).c_str());
+        // Update the optimize function.
+        std::string optimizeUnit = optimize;
+        if (m_settings.m_evolveStates > 1) {
+            std::string optimizeName = m_settings.m_evolveStates == 1 ? "Optimize" : Format("Optimize%d", i);
+            std::string evaluateName = Format("Evaluate%d", i);
+            FireStarterCode::ReplaceCode(optimizeUnit, "Optimize", optimizeName);
+            FireStarterCode::ReplaceCode(optimizeUnit, "Evaluate", evaluateName);
         }
-    } else {
-        // Initialize each state with the best previous state.
-        for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
-            m_evolveStates[i].m_state = m_allStates[m_bestStateIndex];
+        if (i)
+            optimizeCode += "\r\n";
+        optimizeCode += optimizeUnit;
+    }
+
+    // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+    std::string code = m_optimizeCode;
+    FireStarterCode::UpdateProgram(code, evaluateCode, EVALUATE_CODE);
+    FireStarterCode::UpdateProgram(code, optimizeCode, OPTIMIZE_CODE);
+
+    // Compile the new code.
+    if (CUDACompile::CompileProgram(m_optimizeModule, code, "Optimize")) {
+        if (m_settings.m_evolveStates == 1)
+            m_evolveStates[0].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
+        else for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
+            m_evolveStates[i].m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, Format("Optimize%d", i).c_str());
     }
 } // OptimizeGenerate
 
@@ -187,10 +181,10 @@ void FireStarterUnit::UnitGenerate(void)
         FireStarterEvolveState& evolveState = m_evolveStates[i];
         FireStarterState& state = evolveState.m_state;
         if (!m_evolveGeneration)
-            state.m_program.RandomProgram(evolveState.m_evolveSeed);
+            state.m_program.RandomProgram(evolveState.m_stateSeed);
         else {
             state = m_allStates[m_bestStateIndex];
-            state.m_program.RandomInstruction(evolveState.m_evolveSeed);
+            state.m_program.RandomInstruction(evolveState.m_stateSeed);
         }
         state.m_program.OptimizeRegisters(true);
     }
@@ -216,7 +210,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
             FireStarterEvolutions* newEvolutions = g & 1 ? evolveState.m_deviceEvolutions0 : evolveState.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? evolveState.m_deviceEvolutions1 : evolveState.m_deviceEvolutions0;
-            unsigned int seed = evolveState.m_evolveSeed++;
+            unsigned int seed = evolveState.m_stateSeed++;
 
             void* arr[] = { reinterpret_cast<void*>(&newEvolutions),
                             reinterpret_cast<void*>(&oldEvolutions),
@@ -263,7 +257,8 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
         state.m_program.LoadInstructions(evolveState.m_hostEvolutions->Instructions(minIndex));
         state.m_program.OptimizeRegisters(false);
         state.OptimizeData();
-        evolveState.m_state.m_generation = m_evolveGeneration;
+        state.m_generation = m_evolveGeneration;
+        state.m_seed = evolveState.m_stateSeed;
     }
 } // EvolveGenerations
 
@@ -283,7 +278,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
             unsigned int dataSize = state.m_program.m_dataSize;
             FireStarterResults* newResults = g & 1 ? evolveState.m_deviceResults0 : evolveState.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
-            unsigned int seed = evolveState.m_evolveSeed++;
+            unsigned int seed = evolveState.m_stateSeed++;
 
             void* arr[] = { reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
@@ -337,7 +332,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
         result->maxResult = *result->MinResult(0);
         for (unsigned int v = 1; v < m_settings.m_variations; v++)
             result->maxResult = fmaxf(result->maxResult, *result->MinResult(v));
-        evolveState.m_state.m_generation = m_evolveGeneration;
+        state.m_generation = m_evolveGeneration;
+        state.m_seed = evolveState.m_stateSeed;
     }
 } // OptimizeGenerations
 
@@ -354,7 +350,13 @@ void FireStarterUnit::EvolveExecute(void)
 void FireStarterUnit::OptimizeExecute(void)
 {
     // Generate the code for the first generation.
-    OptimizeGenerate();
+    if (!m_evolveGeneration)
+        OptimizeGenerate();
+    else {
+        // Initialize each state with the best previous state.
+        for (unsigned int i = 0; i < m_settings.m_evolveStates; i++)
+            m_evolveStates[i].m_state = m_allStates[m_bestStateIndex];
+    }
 
     // Evolve the program data.
     OptimizeGenerations((m_evolveGeneration == 0) && (!OPTIMIZE_LOAD_DATA || (BestState().m_generation == 0)));
@@ -422,7 +424,7 @@ void FireStarterUnit::Allocate(const FireStarterState& initState)
         evolveState.m_state = initState;
         evolveSettings.m_evolveSeed = m_settings.m_evolveSeed + m_unitIndex * m_settings.m_evolveStates + i;
         evolveState.m_state.m_program.m_settings.m_evolveSeed = evolveSettings.m_evolveSeed;
-        evolveState.m_evolveSeed = RANDOM(evolveSettings.m_evolveSeed);
+        evolveState.m_state.m_seed = evolveState.m_stateSeed = RANDOM(evolveSettings.m_evolveSeed);
         evolveState.m_stateID = m_unitIndex * m_settings.m_evolveStates + i;    // Index in m_allStates.
     }
 
@@ -452,6 +454,14 @@ void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)
     for (unsigned int i = 0; i < m_settings.m_evolveUnits * m_settings.m_evolveStates; i++)
         m_allStates[i].Packetize(packet);
 } // PacketizeAllStates
+
+void FireStarterUnit::GetState(FireStarterState* state, size_t index)
+{
+    DispatchSync([this, state, index] {
+        if (index < m_evolveStates.size())
+            *state = m_evolveStates[index].m_state;
+    });
+} // GetState
 
 void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initState)
 {

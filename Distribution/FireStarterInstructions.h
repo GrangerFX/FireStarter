@@ -163,6 +163,11 @@ typedef struct FireStarterInstructions {
         return instructions * sizeof(FireStarterInstruction);
     } // InstructionsSize
 
+    inline FireStarterInstruction& Instruction(unsigned int index)
+    {
+        return i[index];
+    } // Instruction
+
     inline const FireStarterInstruction& Instruction(unsigned int index) const
     {
         return i[index];
@@ -225,6 +230,11 @@ typedef struct FireStarterEvolutions {
     } // EvolutionsSize
 
     inline FireStarterInstructions* Instructions(unsigned int member)
+    {
+        return (FireStarterInstructions*)(m_memory + member * m_instructionsSize);
+    } // Instructions
+
+    inline const FireStarterInstructions* Instructions(unsigned int member) const
     {
         return (FireStarterInstructions*)(m_memory + member * m_instructionsSize);
     } // Instructions

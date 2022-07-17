@@ -25,8 +25,8 @@ private:
         FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
         CUfunction m_optimizeFunction = nullptr;
         FireStarterState m_state;
-        unsigned int m_evolveSeed = 0;
         unsigned int m_stateID = 0;
+        unsigned int m_stateSeed = 0;
     }; // class FireStarterEvolveState
 
     SimpleTimer m_timer;
@@ -75,6 +75,7 @@ public:
     unsigned int Index(void);
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
+    void GetState(FireStarterState* state, size_t index);
     void InitUnit(unsigned int index, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);

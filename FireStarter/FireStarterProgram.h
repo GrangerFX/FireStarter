@@ -19,11 +19,21 @@ public:
         return (FireStarterInstructions*)m_instructions.data();
     } // Instructions
 
+    inline const FireStarterInstructions* Instructions(void) const
+    {
+        return (const FireStarterInstructions*)m_instructions.data();
+    } // Instructions
+
     inline const FireStarterInstructions* Instructions(size_t* numInstructions) const
     {
         *numInstructions = m_settings.m_instructions;
         return (FireStarterInstructions*)m_instructions.data();
     } // Instructions
+
+    inline size_t InstructionsSize(void) const
+    {
+        return Instructions()->InstructionsSize(m_settings.m_instructions);
+    } // InstructionsSize
 
     inline const FireStarterRegisters* Registers(size_t* numRegisters) const
     {
