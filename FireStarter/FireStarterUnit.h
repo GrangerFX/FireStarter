@@ -51,7 +51,6 @@ private:
     unsigned int m_bestStateIndex = 0;
     bool m_server = false;
     bool m_codeLoaded = false;
-    bool m_bestStateDirty = false;
 
     const FireStarterState& BestState(void) const;
     void InitEvolveStates(const FireStarterState& state);
@@ -79,7 +78,7 @@ public:
     void InitUnit(unsigned int index, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);
-    void Sync(FireStarterState* states);
+    void Sync(FireStarterState* allStates);
     void Start(void);
     void Stop(void);
     void Client(void);
