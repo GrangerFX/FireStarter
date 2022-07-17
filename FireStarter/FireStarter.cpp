@@ -121,7 +121,7 @@ void FireStarter::FireShow(void)
 void FireStarter::RenderStatus(void)
 {
     // Update the status.
-#if 0
+#if 1
     FireStarterState state;
     m_units[0]->GetState(&state, 0);;
     uint64_t resultHash = MurmurHash64(state.Result(), state.ResultSize());
