@@ -2,11 +2,6 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
-const FireStarterState& FireStarterUnit::BestState(void) const
-{
-    return m_allStates[m_bestStateIndex];
-} // BestState
-
 void FireStarterUnit::InitEvolveStates(const FireStarterState &state)
 {
     for (FireStarterEvolveState& evolveState : m_evolveStates) {
@@ -90,20 +85,32 @@ bool FireStarterUnit::AllocateEvolveStates(void)
 
 void FireStarterUnit::UpdateEvolveStates(void)
 {
-    // Find the program's best state among all the states from all the units.
-    float unitBestResult = m_allStates[0].Result()->maxResult;
-    m_bestStateIndex = 0;
-    for (unsigned int i = 1; i < m_settings.m_units * m_settings.m_states; i++) {
-        float result = m_allStates[i].Result()->maxResult;
-        if (result < unitBestResult) {
-            unitBestResult = result;
-            m_bestStateIndex = i;
+    if (m_settings.m_evolve = FIRESTARTER_EVOLVE_BEST) {
+        // Find the program's best state among all the states from all the units.
+        float unitBestResult = m_allStates[0].MaxResult();
+        unsigned int bestIndex = 0;
+        for (unsigned int i = 1; i < m_settings.m_units * m_settings.m_states; i++) {
+            float result = m_allStates[i].MaxResult();
+            if (result < unitBestResult) {
+                unitBestResult = result;
+                bestIndex = i;
+            }
         }
-    }
 
-    // Initialize each state with the best previous state.
-    for (unsigned int i = 0; i < m_settings.m_states; i++)
-        m_evolveStates[i].m_state = m_allStates[m_bestStateIndex];
+        // Initialize each state with the best previous state.
+        for (unsigned int i = 0; i < m_settings.m_states; i++)
+            m_evolveStates[i].m_state = m_allStates[bestIndex];
+    } else if (m_settings.m_evolve = FIRESTARTER_EVOLVE_RANDOM) {
+        // If a state did not improve, replace it with a random state.
+        for (unsigned int i = 0; i < m_settings.m_states; i++)
+            if (m_evolveStates[i].m_state.MaxResult() > m_allStates[i].MaxResult())
+                m_evolveStates[i].m_state = m_allStates[RANDOMMOD(m_evolveStates[i].m_state.m_seed, m_allStates.size())];
+
+    } else { // m_settings.m_evolve = FIRESTARTER_EVOLVE_INDIVIDUIAL
+        // Reset each state to its own best state.
+        for (unsigned int i = 0; i < m_settings.m_states; i++)
+            m_evolveStates[i].m_state = m_allStates[i];
+    }
 } // UpdateEvolveStates
 
 void FireStarterUnit::CompileGenerate(void)
@@ -187,7 +194,7 @@ void FireStarterUnit::UnitGenerate(void)
     OptimizeGenerate();
 } // UnitGenerate
 
-void FireStarterUnit::EvolveGenerations(unsigned int init)
+void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -205,6 +212,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
             FireStarterEvolutions* newEvolutions = g & 1 ? evolveState.m_deviceEvolutions0 : evolveState.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? evolveState.m_deviceEvolutions1 : evolveState.m_deviceEvolutions0;
             unsigned int seed = evolveState.m_stateSeed++;
+            int init = forceInit || ((g == 0) && (state.m_generation == 0));
 
             void* arr[] = { reinterpret_cast<void*>(&newEvolutions),
                             reinterpret_cast<void*>(&oldEvolutions),
@@ -221,7 +229,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
                 &arr[0],                                            // arguments */
                 0));
         }
-        init = 0;
     }
 
     // Copy the results to the host memory.
@@ -256,7 +263,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int init)
     }
 } // EvolveGenerations
 
-void FireStarterUnit::OptimizeGenerations(unsigned int init)
+void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -273,6 +280,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
             FireStarterResults* newResults = g & 1 ? evolveState.m_deviceResults0 : evolveState.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? evolveState.m_deviceResults1 : evolveState.m_deviceResults0;
             unsigned int seed = evolveState.m_stateSeed++;
+            int init = forceInit || ((g == 0) && (state.m_generation == 0));
 
             void* arr[] = { reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
@@ -292,7 +300,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
         // Synchronize all GPU threads.
         // Note: TODO: Each evolve state could be individualy synced if this is possible.
         checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
-        init = 0;
     }
 
     // Copy the results to the host memory.
@@ -333,42 +340,27 @@ void FireStarterUnit::OptimizeGenerations(unsigned int init)
 
 void FireStarterUnit::EvolveExecute(void)
 {
-    // Initialize each state with the best previous state.
-    if (m_evolveGeneration)
-        for (unsigned int i = 0; i < m_settings.m_states; i++)
-            m_evolveStates[i].m_state = m_allStates[m_bestStateIndex];
-
     // Generate the code for the first generation.
     EvolveGenerate();
 
     // Evolve the program instructions.
-    EvolveGenerations(m_evolveGeneration == 0);
+    EvolveGenerations(0);
     m_evolveGeneration += m_settings.m_generations;
 } // EvolveExecute
 
 void FireStarterUnit::OptimizeExecute(void)
 {
-    // Initialize each state with the best previous state.
-    if (m_evolveGeneration)
-        for (unsigned int i = 0; i < m_settings.m_states; i++)
-            m_evolveStates[i].m_state = m_allStates[m_bestStateIndex];
-
     // Generate the code for the first generation.
     if (!m_evolveGeneration)
         OptimizeGenerate();
 
     // Evolve the program data.
-    OptimizeGenerations((m_evolveGeneration == 0) && (!OPTIMIZE_LOAD_DATA || (BestState().m_generation == 0)));
+    OptimizeGenerations(0);
     m_evolveGeneration += m_settings.m_generations;
 } // OptimizeExecute
 
 void FireStarterUnit::UnitExecute(void)
 {
-    // Initialize each state with the best previous state.
-    if (m_evolveGeneration)
-        for (unsigned int i = 0; i < m_settings.m_states; i++)
-            m_evolveStates[i].m_state = m_allStates[m_bestStateIndex];
-
     // Evolve, generate and compile the program.
     UnitGenerate();
 

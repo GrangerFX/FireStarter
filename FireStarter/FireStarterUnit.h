@@ -48,11 +48,9 @@ private:
     size_t m_evolutionsSize = 0;
     unsigned int m_unitIndex = 0;
     unsigned int m_evolveGeneration = 0;
-    unsigned int m_bestStateIndex = 0;
     bool m_server = false;
     bool m_codeLoaded = false;
 
-    const FireStarterState& BestState(void) const;
     void InitEvolveStates(const FireStarterState& state);
     void DeallocateEvolveStates(void);
     bool AllocateEvolveStates(void);
@@ -61,8 +59,8 @@ private:
     void EvolveGenerate(void);
     void OptimizeGenerate(void);
     void UnitGenerate(void);
-    void EvolveGenerations(unsigned int init);
-    void OptimizeGenerations(unsigned int init);
+    void EvolveGenerations(unsigned int forceInit);
+    void OptimizeGenerations(unsigned int forceInit);
     void EvolveExecute(void);
     void OptimizeExecute(void);
     void UnitExecute(void);

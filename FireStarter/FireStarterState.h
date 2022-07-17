@@ -35,6 +35,11 @@ public:
         return (const FireStarterResult*)m_result.data();
     } // Result
 
+    inline float MaxResult(void) const
+    {
+        return ((FireStarterResult*)m_result.data())->maxResult;
+    } // Result
+
     inline bool Initialized(void) const
     {
         return !m_result.empty();
