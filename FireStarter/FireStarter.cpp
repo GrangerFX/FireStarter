@@ -128,7 +128,7 @@ void FireStarter::RenderStatus(void)
     uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
     m_statusString = Format("%s: Generation:%4u  Best=%.8f  Seed=%08X  ResultHash=%04X  ProgramHash=%04X", m_settings.Mode(), m_generation, m_bestResult, state.m_seed, (unsigned short)resultHash, (unsigned short)programHash);
 #else
-    if (m_settings.m_evolveMode == FIRESTARTER_RANDOM)
+    if (m_settings.m_mode == FIRESTARTER_RANDOM)
         m_statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
     else
         m_statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
@@ -228,18 +228,18 @@ void FireStarter::ControlLoop(void)
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireSettings();
-    m_seed = m_settings.m_evolveSeed;
-    m_fireStarterMode = m_settings.m_evolveMode;
+    m_seed = m_settings.m_seed;
+    m_fireStarterMode = m_settings.m_mode;
     m_bestResult = m_settings.m_evolveStartResult;
 
     // If the evolve units is set to zero, use the number of concurrent hardware threads.
-    if (m_settings.m_evolveUnits == 0)
-        m_settings.m_evolveUnits = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
+    if (m_settings.m_units == 0)
+        m_settings.m_units = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
 
     // Setup the best state.
     if (!m_bestState.Initialized()) {
         m_bestState.InitState(m_settings);
-        if (m_settings.m_evolveMode == FIRESTARTER_OPTIMIZE) {
+        if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
             LoadState(m_bestState);
             m_bestState.m_program.m_settings = m_settings;
         }
@@ -254,13 +254,13 @@ void FireStarter::ControlLoop(void)
     m_bufferUpdate = false;
 
     // Create the states.
-    m_allStates.resize(m_settings.m_evolveUnits * m_settings.m_evolveStates);
+    m_allStates.resize(m_settings.m_units * m_settings.m_states);
     for (FireStarterState& state : m_allStates)
         state.InitState(m_settings);
 
     // Create the units.
-    for (unsigned int i = 0; i < m_settings.m_evolveUnits; i++) {
-        FireStarterProcess* process = (m_settings.m_evolveProcess && (m_settings.m_evolveUnits > 1)) ? m_server.AddProcess() : nullptr;
+    for (unsigned int i = 0; i < m_settings.m_units; i++) {
+        FireStarterProcess* process = (m_settings.m_process && (m_settings.m_units > 1)) ? m_server.AddProcess() : nullptr;
         FireStarterUnit* unit = new FireStarterUnit(process);
         m_units.push_back(unit);
         unit->Start();  // Start the interprocess communication.
@@ -268,9 +268,9 @@ void FireStarter::ControlLoop(void)
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
-        if (!m_generation || (m_settings.m_evolveMode == FIRESTARTER_RANDOM)) {
-            m_seed = m_settings.m_evolveSeed + m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates;
-            m_bestState.Settings().m_evolveSeed = m_seed;
+        if (!m_generation || (m_settings.m_mode == FIRESTARTER_RANDOM)) {
+            m_seed = m_settings.m_seed + m_generation * m_settings.m_units * m_settings.m_states;
+            m_bestState.Settings().m_seed = m_seed;
             for (unsigned int i = 0; i < m_units.size(); i++)
                 m_units[i]->InitUnit(i, m_bestState);
         }
@@ -294,7 +294,7 @@ void FireStarter::ControlLoop(void)
                 m_bestResult = m_result;
                 m_bestState = state;
                 m_bestGeneration = m_generation;
-                m_bestSeed = m_bestState.m_program.m_settings.m_evolveSeed;
+                m_bestSeed = m_bestState.m_program.m_settings.m_seed;
                 m_controlUpdate = true;
             }
         }
@@ -313,7 +313,7 @@ void FireStarter::ControlLoop(void)
 
         // Update the best code on disk and compile a new FireShow.
         if (m_controlUpdate && !m_quitControlThread) {
-            if (m_settings.m_evolveMode != FIRESTARTER_OPTIMIZE)
+            if (m_settings.m_mode != FIRESTARTER_OPTIMIZE)
                 SaveBestState();
             SaveBestCode();
             SaveSolution();
@@ -327,7 +327,7 @@ void FireStarter::ControlLoop(void)
             // Draw the graphs for both variations.
             FireShow();
             m_controlUpdate = false;
-            const unsigned char* bufferPixels = (m_settings.m_evolveMode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+            const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
             GetMainThread()->DispatchSync([this, bufferPixels] {
                 RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
                 m_bufferUpdate = false;
@@ -335,7 +335,7 @@ void FireStarter::ControlLoop(void)
         }
 
         // Has the completion condition been met?
-        if (((m_settings.m_evolveMode == FIRESTARTER_RANDOM) ? m_generation * m_settings.m_evolveUnits * m_settings.m_evolveStates : (m_generation - m_bestGeneration)) >= m_settings.m_evolveAttempts)
+        if (((m_settings.m_mode == FIRESTARTER_RANDOM) ? m_generation * m_settings.m_units * m_settings.m_states : (m_generation - m_bestGeneration)) >= m_settings.m_attempts)
             break;
     }
 
@@ -418,7 +418,7 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
     m_window = window;
     m_width = width;
     m_height = height;
-    if (m_settings.m_evolveMode == FIRESTARTER_SOLUTION) {
+    if (m_settings.m_mode == FIRESTARTER_SOLUTION) {
         m_buffer.Resize(m_width, m_height);
         m_buffer.Erase();
         std::string statusString = "FireStarter:";

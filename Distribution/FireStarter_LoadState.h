@@ -16,16 +16,16 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_evolveStartResult = 10.000000f;
     settings.m_evolveCandidates = 16;
 
-    settings.m_evolveMode = FIRESTARTER_UNIT;
-    settings.m_evolveStates = 1;
-    settings.m_evolveUnits = 1;
-    settings.m_evolveProcess = 0;
-    settings.m_evolvePopulation = 69632;
-    settings.m_evolveIterations = 256;
-    settings.m_evolveGenerations = 100;
-    settings.m_evolvePrecision = 256;
-    settings.m_evolveAttempts = 32;
-    settings.m_evolveSeed = 0;
+    settings.m_mode = FIRESTARTER_UNIT;
+    settings.m_states = 1;
+    settings.m_units = 1;
+    settings.m_process = 0;
+    settings.m_population = 69632;
+    settings.m_iterations = 256;
+    settings.m_generations = 100;
+    settings.m_precision = 256;
+    settings.m_attempts = 32;
+    settings.m_seed = 0;
 } // LoadSettings
 
 inline void LoadProgram(FireStarterProgram& program)

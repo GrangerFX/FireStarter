@@ -16,7 +16,7 @@ inline float Evaluate(FireStarterData data, float n)
 GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const FireStarterSettings settings, const unsigned int seed, const unsigned int init)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
-    if (member >= settings.m_evolvePopulation)
+    if (member >= settings.m_population)
         return;
     unsigned int memberSeed = RANDOM(RANDOM(seed) + member);
 
@@ -78,7 +78,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
 
         // Iterate to evolve the data.
-        for (unsigned int p = 0; p < settings.m_evolveIterations; p++) {
+        for (unsigned int p = 0; p < settings.m_iterations; p++) {
             unsigned int d = RANDOMMOD(memberSeed, dataSize);
             float oldData = data.d[d];
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
@@ -93,9 +93,9 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
         }
 
         // Calculate a more accurate estimate of the result.
-        if (settings.m_evolvePrecision) {
-            float precisionStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_evolvePrecision - 1);
-            for (int i = 0; i < settings.m_evolvePrecision; i++) {
+        if (settings.m_precision) {
+            float precisionStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_precision - 1);
+            for (int i = 0; i < settings.m_precision; i++) {
                 float theta = settings.m_sampleMin + i * precisionStep;
                 result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
             }
@@ -113,7 +113,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             unsigned int bestIndex = member;
             float bestResult = oldResult;
             for (int i = 0; i < settings.m_evolveCandidates; i++) {
-                unsigned int index = RANDOMMOD(memberSeed, settings.m_evolvePopulation);
+                unsigned int index = RANDOMMOD(memberSeed, settings.m_population);
                 float curResult = *oldResults->MinResult(index, variation);
                 if (curResult < bestResult) {
                     bestResult = curResult;

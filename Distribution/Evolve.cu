@@ -7,7 +7,7 @@
 GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterSettings settings, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = blockIdx.x;
-    if (member >= settings.m_evolvePopulation)
+    if (member >= settings.m_population)
         return;
     const unsigned int thread = threadIdx.x;
     unsigned int randomSeed = RANDOM(seed);
@@ -53,7 +53,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             if (result <= settings.m_evolveStartResult) {
                 // Evolve the data.
                 float evolutionFactor = settings.m_evolveStartFactor;
-                for (unsigned int p = 0; p < settings.m_evolveIterations; p++) {
+                for (unsigned int p = 0; p < settings.m_iterations; p++) {
                     unsigned int d = RANDOMMOD(threadSeed, settings.m_instructions);
                     const float oldData = data.d[d];
                     data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
@@ -105,7 +105,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             unsigned int bestIndex = member;
             float bestResult = oldResult;
             for (int i = 0; i < settings.m_evolveCandidates; i++) {
-                unsigned int index = RANDOMMOD(memberSeed, settings.m_evolvePopulation);
+                unsigned int index = RANDOMMOD(memberSeed, settings.m_population);
                 float curResult = *oldResults->MaxResult(index);
                 if (curResult < bestResult) {
                     bestIndex = index;

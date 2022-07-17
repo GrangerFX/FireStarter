@@ -1,26 +1,28 @@
 #pragma once
 
 #define FIRESTARTER_INSTRUCTIONS 32
-#define FIRESTARTER_REGISTERS FIRESTARTER_INSTRUCTIONS
-#define FIRESTARTER_VARIATIONS 3
-#define FIRESTARTER_SAMPLES 15
+#define FIRESTARTER_REGISTERS    FIRESTARTER_INSTRUCTIONS
+#define FIRESTARTER_VARIATIONS   3
+#define FIRESTARTER_SAMPLES      15
 
 #define FIRESTARTER_SAMPLE_MIN 0.0f
 #define FIRESTARTER_SAMPLE_MAX (2.0f * 3.14159265f)
 
-#define FIRESTARTER_EVOLVE_FACTOR 0.1f
+#define FIRESTARTER_EVOLVE_FACTOR       0.1f
 #define FIRESTARTER_EVOLVE_START_FACTOR 4.0f
 #define FIRESTARTER_EVOLVE_START_RESULT 10.0f
-#define FIRESTARTER_EVOLVE_CANDIDATES 16
-#define FIRESTARTER_EVOLVE_MUTATION 1
+#define FIRESTARTER_EVOLVE_CANDIDATES   16
+
+#define FIRESTARTER_EVOLVE_BEST   1
+#define FIRESTARTER_EVOLVE_RANDOM 2
+#define FIRESTARTER_EVOLVE_MODE   FIRESTARTER_EVOLVE_BEST
 
 #define FIRESTARTER_CODE     1
 #define FIRESTARTER_UNIT     2
 #define FIRESTARTER_PROCESS  3
 #define FIRESTARTER_RANDOM   4
-#define FIRESTARTER_PATTERN  5
-#define FIRESTARTER_OPTIMIZE 6
-#define FIRESTARTER_SOLUTION 7
+#define FIRESTARTER_OPTIMIZE 5
+#define FIRESTARTER_SOLUTION 6
 #define FIRESTARTER_MODE     FIRESTARTER_UNIT
 
 #define CODE_STATES 1
@@ -110,20 +112,20 @@ public:
     float m_evolveStartResult;
     unsigned int m_evolveCandidates;
 
-    unsigned int m_evolveMode;
-    unsigned int m_evolveStates;
-    unsigned int m_evolveUnits;
-    unsigned int m_evolveProcess;
-    unsigned int m_evolvePopulation;
-    unsigned int m_evolveIterations;
-    unsigned int m_evolveGenerations;
-    unsigned int m_evolvePrecision;
-    unsigned int m_evolveAttempts;
-    unsigned int m_evolveSeed;
+    unsigned int m_mode;
+    unsigned int m_states;
+    unsigned int m_units;
+    unsigned int m_process;
+    unsigned int m_population;
+    unsigned int m_iterations;
+    unsigned int m_generations;
+    unsigned int m_precision;
+    unsigned int m_attempts;
+    unsigned int m_seed;
 
     inline const char* Mode(void) const
     {
-        switch (m_evolveMode) {
+        switch (m_mode) {
             case FIRESTARTER_CODE:
                 return "FIRESTARTER_CODE";
             case FIRESTARTER_UNIT:
@@ -132,8 +134,6 @@ public:
                 return "FIRESTARTER_PROCESS";
             case FIRESTARTER_RANDOM:
                 return "FIRESTARTER_RANDOM";
-            case FIRESTARTER_PATTERN:
-                return "FIRESTARTER_PATTERN";
             case FIRESTARTER_OPTIMIZE:
                 return "FIRESTARTER_OPTIMIZE";
             case FIRESTARTER_SOLUTION:
@@ -158,73 +158,51 @@ public:
         m_evolveStartResult = FIRESTARTER_EVOLVE_START_RESULT;
         m_evolveCandidates = FIRESTARTER_EVOLVE_CANDIDATES;
 
-        m_evolveMode = evolveMode ? evolveMode : FIRESTARTER_MODE;
-        switch (m_evolveMode) {
+        m_mode = evolveMode ? evolveMode : FIRESTARTER_MODE;
+        switch (m_mode) {
             case FIRESTARTER_CODE:
-                m_evolveStates = CODE_STATES;
-                m_evolveUnits = CODE_UNITS;
-                m_evolveProcess = CODE_PROCESS;
-                m_evolvePopulation = CODE_POPULATION;
-                m_evolveIterations = CODE_ITERATIONS;
-                m_evolveGenerations = CODE_GENERATIONS;
-                m_evolvePrecision = CODE_PRECISION;
-                m_evolveAttempts = CODE_ATTEMPTS;
-                m_evolveSeed = CODE_SEED;
+                m_states = CODE_STATES;
+                m_units = CODE_UNITS;
+                m_process = CODE_PROCESS;
+                m_population = CODE_POPULATION;
+                m_iterations = CODE_ITERATIONS;
+                m_generations = CODE_GENERATIONS;
+                m_precision = CODE_PRECISION;
+                m_attempts = CODE_ATTEMPTS;
+                m_seed = CODE_SEED;
                 break;
             case FIRESTARTER_UNIT:
-                m_evolveStates = UNIT_STATES;
-                m_evolveUnits = UNIT_UNITS;
-                m_evolveProcess = UNIT_PROCESS;
-                m_evolvePopulation = UNIT_POPULATION;
-                m_evolveIterations = UNIT_ITERATIONS;
-                m_evolveGenerations = UNIT_GENERATIONS;
-                m_evolvePrecision = UNIT_PRECISION;
-                m_evolveAttempts = UNIT_ATTEMPTS;
-                m_evolveSeed = UNIT_SEED;
-                break;
-            case FIRESTARTER_RANDOM:
-                m_evolveStates = RANDOM_STATES;
-                m_evolveUnits = RANDOM_UNITS;
-                m_evolveProcess = RANDOM_PROCESS;
-                m_evolvePopulation = RANDOM_POPULATION;
-                m_evolveIterations = RANDOM_ITERATIONS;
-                m_evolveGenerations = RANDOM_GENERATIONS;
-                m_evolvePrecision = RANDOM_PRECISION;
-                m_evolveAttempts = RANDOM_ATTEMPTS;
-                m_evolveSeed = RANDOM_SEED;
-                break;
-            case FIRESTARTER_PATTERN:
-                m_evolveStates = PATTERN_STATES;
-                m_evolveUnits = PATTERN_UNITS;
-                m_evolveProcess = PATTERN_PROCESS;
-                m_evolvePopulation = PATTERN_POPULATION;
-                m_evolveIterations = PATTERN_ITERATIONS;
-                m_evolveGenerations = PATTERN_GENERATIONS;
-                m_evolvePrecision = PATTERN_PRECISION;
-                m_evolveAttempts = PATTERN_ATTEMPTS;
-                m_evolveSeed = PATTERN_SEED;
+                m_states = UNIT_STATES;
+                m_units = UNIT_UNITS;
+                m_process = UNIT_PROCESS;
+                m_population = UNIT_POPULATION;
+                m_iterations = UNIT_ITERATIONS;
+                m_generations = UNIT_GENERATIONS;
+                m_precision = UNIT_PRECISION;
+                m_attempts = UNIT_ATTEMPTS;
+                m_seed = UNIT_SEED;
                 break;
             case FIRESTARTER_OPTIMIZE:
-                m_evolveStates = OPTIMIZE_STATES;
-                m_evolveUnits = OPTIMIZE_UNITS;
-                m_evolveProcess = OPTIMIZE_PROCESS;
-                m_evolvePopulation = OPTIMIZE_POPULATION;
-                m_evolveIterations = OPTIMIZE_ITERATIONS;
-                m_evolveGenerations = OPTIMIZE_GENERATIONS;
-                m_evolvePrecision = OPTIMIZE_PRECISION;
-                m_evolveAttempts = OPTIMIZE_ATTEMPTS;
-                m_evolveSeed = OPTIMIZE_SEED;
+                m_states = OPTIMIZE_STATES;
+                m_units = OPTIMIZE_UNITS;
+                m_process = OPTIMIZE_PROCESS;
+                m_population = OPTIMIZE_POPULATION;
+                m_iterations = OPTIMIZE_ITERATIONS;
+                m_generations = OPTIMIZE_GENERATIONS;
+                m_precision = OPTIMIZE_PRECISION;
+                m_attempts = OPTIMIZE_ATTEMPTS;
+                m_seed = OPTIMIZE_SEED;
                 break;
             default:
-                m_evolveStates = 0;
-                m_evolveUnits = 0;
-                m_evolveProcess = 0;
-                m_evolvePopulation = 0;
-                m_evolveIterations = 0;
-                m_evolveGenerations = 0;
-                m_evolvePrecision = 0;
-                m_evolveAttempts = 0;
-                m_evolveSeed = 0;
+                m_states = 0;
+                m_units = 0;
+                m_process = 0;
+                m_population = 0;
+                m_iterations = 0;
+                m_generations = 0;
+                m_precision = 0;
+                m_attempts = 0;
+                m_seed = 0;
                 break;
         }
     } // FireStarterSettings

@@ -103,16 +103,16 @@ void FireStarterProgram::SaveSettings(std::string& code)
     code += Format("    settings.m_evolveCandidates = %u;\r\n", m_settings.m_evolveCandidates);
     code += "\r\n";
 
-    code += Format("    settings.m_evolveMode = %s;\r\n", m_settings.Mode());
-    code += Format("    settings.m_evolveStates = %u;\r\n", m_settings.m_evolveStates);
-    code += Format("    settings.m_evolveUnits = %u;\r\n", m_settings.m_evolveUnits);
-    code += Format("    settings.m_evolveProcess = %u;\r\n", m_settings.m_evolveProcess);
-    code += Format("    settings.m_evolvePopulation = %u;\r\n", m_settings.m_evolvePopulation);
-    code += Format("    settings.m_evolveIterations = %u;\r\n", m_settings.m_evolveIterations);
-    code += Format("    settings.m_evolveGenerations = %u;\r\n", m_settings.m_evolveGenerations);
-    code += Format("    settings.m_evolvePrecision = %u;\r\n", m_settings.m_evolvePrecision);
-    code += Format("    settings.m_evolveAttempts = %u;\r\n", m_settings.m_evolveAttempts);
-    code += Format("    settings.m_evolveSeed = %u;\r\n", m_settings.m_evolveSeed);
+    code += Format("    settings.m_mode = %s;\r\n", m_settings.Mode());
+    code += Format("    settings.m_states = %u;\r\n", m_settings.m_states);
+    code += Format("    settings.m_units = %u;\r\n", m_settings.m_units);
+    code += Format("    settings.m_process = %u;\r\n", m_settings.m_process);
+    code += Format("    settings.m_population = %u;\r\n", m_settings.m_population);
+    code += Format("    settings.m_iterations = %u;\r\n", m_settings.m_iterations);
+    code += Format("    settings.m_generations = %u;\r\n", m_settings.m_generations);
+    code += Format("    settings.m_precision = %u;\r\n", m_settings.m_precision);
+    code += Format("    settings.m_attempts = %u;\r\n", m_settings.m_attempts);
+    code += Format("    settings.m_seed = %u;\r\n", m_settings.m_seed);
     code += "} // LoadSettings\r\n";
     code += "\r\n";
 } // FireStarterProgram
