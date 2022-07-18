@@ -1,16 +1,30 @@
-// Run date: 07/17/22 16:24:52 Pacific Daylight Time
-// Run duration = 1.856416 seconds
+// Run date: 07/17/22 17:28:56 Pacific Daylight Time
+// Run duration = 1.984672 seconds
 // Run count = 81
-// Run mode = 5
-// Run units = 1
-// Run process = 0
-// Run states = 1
-// Run population = 69632
-// Run iterations = 512
-// Run generations = 100
-// Run samples = 15
-// Run attempts = 32
-// Run seed = 0
+// Run instructions = 32;
+// Run registers = 32;
+// Run opcodes = 2;
+// Run variations = 3;
+// Run samples = 15;
+
+// Run sampleMin = 0.000000f;
+// Run sampleMax = 6.283185f;
+// Run evolveFactor = 0.100000f;
+// Run evolveStartFactor = 4.000000f;
+// Run evolveStartResult = 10.000000f;
+// Run evolveCandidates = 16;
+
+// Run mode = FIRESTARTER_OPTIMIZE;
+// Run states = 1;
+// Run units = 1;
+// Run process = 0;
+// Run population = 69632;
+// Run iterations = 512;
+// Run generations = 100;
+// Run precision = 256;
+// Run evolve = 1;
+// Run attempts = 32;
+// Run seed = 0;
 // Solution Generation = 8000
 
 #ifndef __CUDACC__

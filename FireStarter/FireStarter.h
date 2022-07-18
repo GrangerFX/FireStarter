@@ -31,8 +31,8 @@ public:
     std::vector<FireStarterUnit*> m_units;
     FireStarterServer m_server;
     FrameBuffer m_buffer;
+    std::string m_hashFilePath;
     std::string m_logFilePath;
-    std::string m_statusString;
     double m_controlTime;
     FireStarterSettings m_settings;
     unsigned int m_seed;

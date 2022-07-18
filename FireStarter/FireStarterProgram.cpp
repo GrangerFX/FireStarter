@@ -85,38 +85,42 @@ void FireStarterProgram::SaveInstructions(FireStarterInstructions* instructions)
     memcpy(instructions, m_instructions.data(), FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
 } // SaveInstructions
 
+void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::string& code, const std::string &prefix)
+{
+    code += prefix + Format("instructions = %u;\r\n", settings.m_instructions);
+    code += prefix + Format("registers = %u;\r\n", settings.m_registers);
+    code += prefix + Format("opcodes = %u;\r\n", settings.m_opcodes);
+    code += prefix + Format("variations = %u;\r\n", settings.m_variations);
+    code += prefix + Format("samples = %u;\r\n", settings.m_samples);
+    code += "\r\n";
+    code += prefix + Format("sampleMin = %ff;\r\n", settings.m_sampleMin);
+    code += prefix + Format("sampleMax = %ff;\r\n", settings.m_sampleMax);
+    code += prefix + Format("evolveFactor = %ff;\r\n", settings.m_evolveFactor);
+    code += prefix + Format("evolveStartFactor = %ff;\r\n", settings.m_evolveStartFactor);
+    code += prefix + Format("evolveStartResult = %ff;\r\n", settings.m_evolveStartResult);
+    code += prefix + Format("evolveCandidates = %u;\r\n", settings.m_evolveCandidates);
+    code += "\r\n";
+    code += prefix + Format("mode = %s;\r\n", settings.Mode());
+    code += prefix + Format("states = %u;\r\n", settings.m_states);
+    code += prefix + Format("units = %u;\r\n", settings.m_units);
+    code += prefix + Format("process = %u;\r\n", settings.m_process);
+    code += prefix + Format("population = %u;\r\n", settings.m_population);
+    code += prefix + Format("iterations = %u;\r\n", settings.m_iterations);
+    code += prefix + Format("generations = %u;\r\n", settings.m_generations);
+    code += prefix + Format("precision = %u;\r\n", settings.m_precision);
+    code += prefix + Format("evolve = %u;\r\n", settings.m_evolve);
+    code += prefix + Format("attempts = %u;\r\n", settings.m_attempts);
+    code += prefix + Format("seed = %u;\r\n", settings.m_seed);
+} // SaveSettings
+
 void FireStarterProgram::SaveSettings(std::string& code)
 {
     code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
     code += "{\r\n";
-    code += Format("    settings.m_instructions = %u;\r\n", m_settings.m_instructions);
-    code += Format("    settings.m_registers = %u;\r\n", m_settings.m_registers);
-    code += Format("    settings.m_opcodes = %u;\r\n", m_settings.m_opcodes);
-    code += Format("    settings.m_variations = %u;\r\n", m_settings.m_variations);
-    code += Format("    settings.m_samples = %u;\r\n", m_settings.m_samples);
-    code += "\r\n";
-    code += Format("    settings.m_sampleMin = %ff;\r\n", m_settings.m_sampleMin);
-    code += Format("    settings.m_sampleMax = %ff;\r\n", m_settings.m_sampleMax);
-    code += Format("    settings.m_evolveFactor = %ff;\r\n", m_settings.m_evolveFactor);
-    code += Format("    settings.m_evolveStartFactor = %ff;\r\n", m_settings.m_evolveStartFactor);
-    code += Format("    settings.m_evolveStartResult = %ff;\r\n", m_settings.m_evolveStartResult);
-    code += Format("    settings.m_evolveCandidates = %u;\r\n", m_settings.m_evolveCandidates);
-    code += "\r\n";
-
-    code += Format("    settings.m_mode = %s;\r\n", m_settings.Mode());
-    code += Format("    settings.m_states = %u;\r\n", m_settings.m_states);
-    code += Format("    settings.m_units = %u;\r\n", m_settings.m_units);
-    code += Format("    settings.m_process = %u;\r\n", m_settings.m_process);
-    code += Format("    settings.m_population = %u;\r\n", m_settings.m_population);
-    code += Format("    settings.m_iterations = %u;\r\n", m_settings.m_iterations);
-    code += Format("    settings.m_generations = %u;\r\n", m_settings.m_generations);
-    code += Format("    settings.m_precision = %u;\r\n", m_settings.m_precision);
-    code += Format("    settings.m_evolve = %u;\r\n", m_settings.m_evolve);
-    code += Format("    settings.m_attempts = %u;\r\n", m_settings.m_attempts);
-    code += Format("    settings.m_seed = %u;\r\n", m_settings.m_seed);
+    SettingsText(m_settings, code, "    settings.m_");
     code += "} // LoadSettings\r\n";
     code += "\r\n";
-} // FireStarterProgram
+} // SaveSettings
 
 void FireStarterProgram::SaveProgram(std::string& code)
 {

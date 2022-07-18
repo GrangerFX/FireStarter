@@ -47,6 +47,7 @@ public:
     void RandomInstruction(unsigned int& seed);
     void LoadInstructions(FireStarterInstructions* instructions);
     void SaveInstructions(FireStarterInstructions* instructions);
+    static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "");
     void SaveSettings(std::string& code);
     void SaveProgram(std::string& code);
     void InitProgram(const FireStarterSettings& settings);
