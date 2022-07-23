@@ -1,0 +1,30 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_CODE;
+states = 1;
+units = 1;
+process = 0;
+population = 4352;
+iterations = 256;
+generations = 10;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best=0.30868661  Result=0.30868661  Best=0.30868661  Seed=C0A94974  ResultHash=B9C8  ProgramHash=16E1
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best=0.26688224  Result=0.26688224  Best=0.26688224  Seed=C0A9497E  ResultHash=7702  ProgramHash=B149
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best=0.24462835  Result=0.24462835  Best=0.24462835  Seed=C0A94988  ResultHash=3F0E  ProgramHash=9C26
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best=0.23704353  Result=0.23704353  Best=0.23704353  Seed=C0A94992  ResultHash=1D54  ProgramHash=FB45
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best=0.23704353  Result=0.26802221  Best=0.23704353  Seed=C0A9499C  ResultHash=E2F6  ProgramHash=E0EA

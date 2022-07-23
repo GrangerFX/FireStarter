@@ -198,7 +198,11 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
+#if 0
+    unsigned int blocksPerGrid = (m_settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
+#else
     unsigned int blocksPerGrid = m_settings.m_population;
+#endif
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
@@ -212,7 +216,11 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
             FireStarterEvolutions* newEvolutions = g & 1 ? evolveState.m_deviceEvolutions0 : evolveState.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? evolveState.m_deviceEvolutions1 : evolveState.m_deviceEvolutions0;
             unsigned int seed = evolveState.m_stateSeed++;
-            int init = forceInit || ((g == 0) && (state.m_generation == 0));
+            int init = 0;
+            if (forceInit || ((g == 0) && (state.m_generation == 0)))
+                init = 1;
+            else if (g == 0)
+                init = 2;
 
             void* arr[] = { reinterpret_cast<void*>(&newEvolutions),
                             reinterpret_cast<void*>(&oldEvolutions),
@@ -229,6 +237,10 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                 &arr[0],                                            // arguments */
                 0));
         }
+
+        // Synchronize all GPU threads.
+        // Note: TODO: Each evolve state could be individualy synced if this is possible.
+        checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
         forceInit = 0;
     }
 
@@ -242,7 +254,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     }
     checkCUDAErrors(cudaStreamSynchronize(m_unitContext->Stream()));
 
-    // Get the best result.
+    // Get the best results.
     for (unsigned int i = 0; i < m_settings.m_states; i++) {
         FireStarterEvolveState& evolveState = m_evolveStates[i];
         FireStarterState& state = evolveState.m_state;
@@ -255,7 +267,8 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                 minIndex = i;
             }
         }
-        memcpy(state.Result(), evolveState.m_hostResults->Result(minIndex), FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations));
+        FireStarterResult* result = state.Result();
+        memcpy(result, evolveState.m_hostResults->Result(minIndex), FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations));
         state.m_program.LoadInstructions(evolveState.m_hostEvolutions->Instructions(minIndex));
         state.m_program.OptimizeRegisters(false);
         state.OptimizeData();

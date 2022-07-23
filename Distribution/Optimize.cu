@@ -85,7 +85,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             float curResult = 0.0f;
             for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
                 curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
-            if (curResult < result) {
+            if (curResult <= result) {
                 result = curResult;
                 evolutionFactor = settings.m_evolveFactor * result;
             } else
