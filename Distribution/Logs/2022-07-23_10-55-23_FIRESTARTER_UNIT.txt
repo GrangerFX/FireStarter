@@ -1,0 +1,37 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_UNIT;
+states = 4;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 256;
+generations = 100;
+precision = 256;
+evolve = 0;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_UNIT: Generation=0  Age=0  Best=0.00059816  Time=0.0000 Seconds  Run Time=5.8631 Seconds
+FIRESTARTER_UNIT: Generation=1  Age=0  Best=0.00045925  Time=2.9700 Seconds  Run Time=8.6775 Seconds
+FIRESTARTER_UNIT: Generation=2  Age=0  Best=0.00034380  Time=2.7689 Seconds  Run Time=11.6264 Seconds
+FIRESTARTER_UNIT: Generation=3  Age=1  Best=0.00034380  Time=2.8445 Seconds  Run Time=14.6071 Seconds
+FIRESTARTER_UNIT: Generation=4  Age=0  Best=0.00029087  Time=2.9666 Seconds  Run Time=17.8967 Seconds
+FIRESTARTER_UNIT: Generation=5  Age=1  Best=0.00029087  Time=3.1784 Seconds  Run Time=21.1805 Seconds
+FIRESTARTER_UNIT: Generation=6  Age=2  Best=0.00029087  Time=3.1710 Seconds  Run Time=24.5510 Seconds
+FIRESTARTER_UNIT: Generation=7  Age=0  Best=0.00022788  Time=3.3463 Seconds  Run Time=27.9786 Seconds
+FIRESTARTER_UNIT: Generation=8  Age=1  Best=0.00022788  Time=3.3744 Seconds  Run Time=31.5672 Seconds
+FIRESTARTER_UNIT: Generation=9  Age=2  Best=0.00022788  Time=3.5487 Seconds  Run Time=35.3697 Seconds
+FIRESTARTER_UNIT: Generation=10  Age=3  Best=0.00022788  Time=3.7038 Seconds  Run Time=39.2614 Seconds
+FIRESTARTER_UNIT: Generation=11  Age=4  Best=0.00022788  Time=3.8248 Seconds  Run Time=43.1831 Seconds

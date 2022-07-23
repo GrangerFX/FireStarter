@@ -108,7 +108,7 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("iterations = %u;\r\n", settings.m_iterations);
     code += prefix + Format("generations = %u;\r\n", settings.m_generations);
     code += prefix + Format("precision = %u;\r\n", settings.m_precision);
-    code += prefix + Format("evolve = %u;\r\n", settings.m_evolve);
+    code += prefix + Format("evolve = %s;\r\n", settings.Evolve());
     code += prefix + Format("attempts = %u;\r\n", settings.m_attempts);
     code += prefix + Format("seed = %u;\r\n", settings.m_seed);
 } // SaveSettings

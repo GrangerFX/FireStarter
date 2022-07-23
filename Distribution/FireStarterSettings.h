@@ -13,9 +13,9 @@
 #define FIRESTARTER_EVOLVE_START_RESULT 10.0f
 #define FIRESTARTER_EVOLVE_CANDIDATES   16
 
-#define FIRESTARTER_EVOLVE_INDIVIDUAL   0
-#define FIRESTARTER_EVOLVE_BEST         1
-#define FIRESTARTER_EVOLVE_RANDOM       2
+#define FIRESTARTER_EVOLVE_INDIVIDUAL   1
+#define FIRESTARTER_EVOLVE_BEST         2
+#define FIRESTARTER_EVOLVE_RANDOM       3
 
 #define FIRESTARTER_CODE     1
 #define FIRESTARTER_UNIT     2
@@ -138,6 +138,20 @@ public:
                 return "0";
         }
     } // Mode
+
+    inline const char* Evolve(void) const
+    {
+        switch (m_evolve) {
+        case FIRESTARTER_EVOLVE_INDIVIDUAL:
+            return "FIRESTARTER_EVOLVE_INDIVIDUAL";
+        case FIRESTARTER_EVOLVE_BEST:
+            return "FIRESTARTER_EVOLVE_BEST";
+        case FIRESTARTER_EVOLVE_RANDOM:
+            return "FIRESTARTER_EVOLVE_RANDOM";
+        default:
+            return "0";
+        }
+    } // Evolve
 
     inline FireStarterSettings(unsigned int evolveMode = 0)
     {

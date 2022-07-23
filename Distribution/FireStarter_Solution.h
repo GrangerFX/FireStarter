@@ -1,5 +1,5 @@
-// Run date: 07/23/22 10:50:33 Pacific Daylight Time
-// Run duration = 4.948751 seconds
+// Run date: 07/23/22 11:02:49 Pacific Daylight Time
+// Run duration = 4.555118 seconds
 // Run count = 25
 // Run instructions = 32;
 // Run registers = 32;
@@ -22,7 +22,7 @@
 // Run iterations = 256;
 // Run generations = 100;
 // Run precision = 256;
-// Run evolve = 0;
+// Run evolve = FIRESTARTER_EVOLVE_INDIVIDUAL;
 // Run attempts = 32;
 // Run seed = 3;
 // Solution Generation = 24

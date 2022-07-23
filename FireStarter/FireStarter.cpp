@@ -132,7 +132,7 @@ void FireStarter::RenderStatus(void)
     }
 
     // Update the hash file.
-    std::string hashString = Format("%s: Generation:%4u  Best=%.8f", m_settings.Mode(), m_generation, m_bestResult);
+    std::string hashString = Format("%s:%s  Generation:%4u  Best=%.8f", m_settings.Mode(), m_settings.Evolve(), m_generation, m_bestResult);
     if ((m_settings.m_units != 1) || (m_settings.m_states != 1))
         hashString += "\r\n";
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
@@ -141,7 +141,8 @@ void FireStarter::RenderStatus(void)
             m_units[i]->GetState(&state, j);
             uint64_t resultHash = MurmurHash64(state.Result(), state.ResultSize());
             uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
-            hashString += Format("  Unit: %2u  State: %2u  Result=%.8f  Seed=%08X  ResultHash=%04X  ProgramHash=%04X\r\n", i, j, state.MaxResult(), state.m_seed, (unsigned short)resultHash, (unsigned short)programHash);
+            float bestResult = m_allStates[i * m_settings.m_states + j].MaxResult();
+            hashString += Format("  Unit: %2u  State: %2u  Result=%.8f  Best=%.8f  Seed=%08X  ResultHash=%04X  ProgramHash=%04X\r\n", i, j, state.MaxResult(), bestResult, state.m_seed, (unsigned short)resultHash, (unsigned short)programHash);
         }
     }
     FireStarterCode::AppendCode(m_hashFilePath, hashString);
