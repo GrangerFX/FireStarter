@@ -24,7 +24,7 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_iterations = 256;
     settings.m_generations = 100;
     settings.m_precision = 256;
-    settings.m_evolve = FIRESTARTER_EVOLVE_INDIVIDUAL;
+    settings.m_evolve = FIRESTARTER_EVOLVE_BEST;
     settings.m_attempts = 32;
     settings.m_seed = 3;
 } // LoadSettings

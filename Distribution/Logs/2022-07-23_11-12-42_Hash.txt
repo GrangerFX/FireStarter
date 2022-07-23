@@ -1,0 +1,45 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_UNIT;
+states = 4;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 256;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best=0.00059816
+  State: u  Result=0.02712655  Best=0.02712655  Seed=C0A94A0E  ResultHash=5ACD  ProgramHash=E65B
+  State: u  Result=0.18505797  Best=0.18505797  Seed=27922D41  ResultHash=C0AA  ProgramHash=CE64
+  State: u  Result=0.22848739  Best=0.22848739  Seed=C6793619  ResultHash=25EA  ProgramHash=0A7D
+  State: u  Result=0.00059816  Best=0.00059816  Seed=87D07062  ResultHash=71C9  ProgramHash=9875
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best=0.00045925
+  State: u  Result=0.00068426  Best=0.00068426  Seed=C0A94A75  ResultHash=33F6  ProgramHash=BAB4
+  State: u  Result=0.00045925  Best=0.00045925  Seed=27922DA8  ResultHash=E239  ProgramHash=B428
+  State: u  Result=0.00050068  Best=0.00050068  Seed=C6793680  ResultHash=9D3C  ProgramHash=17A3
+  State: u  Result=0.00046324  Best=0.00046324  Seed=87D070C9  ResultHash=4614  ProgramHash=540D
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best=0.00034380
+  State: u  Result=0.00034380  Best=0.00034380  Seed=C0A94ADC  ResultHash=CBC8  ProgramHash=9BCA
+  State: u  Result=0.00095300  Best=0.00045925  Seed=27922E0F  ResultHash=5B45  ProgramHash=F2AD
+  State: u  Result=0.00170588  Best=0.00050068  Seed=C67936E7  ResultHash=C82F  ProgramHash=631D
+  State: u  Result=0.00179172  Best=0.00046324  Seed=87D07130  ResultHash=85BB  ProgramHash=4F4E
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best=0.00034380
+  State: u  Result=0.00063053  Best=0.00034380  Seed=C0A94B43  ResultHash=69CB  ProgramHash=9BCA
+  State: u  Result=0.00391865  Best=0.00045925  Seed=27922E76  ResultHash=DA74  ProgramHash=A87F
+  State: u  Result=0.00053517  Best=0.00050068  Seed=C679374E  ResultHash=0178  ProgramHash=DA36
+  State: u  Result=0.04957986  Best=0.00046324  Seed=87D07197  ResultHash=D652  ProgramHash=C3A1

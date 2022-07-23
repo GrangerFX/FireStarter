@@ -142,7 +142,15 @@ void FireStarter::RenderStatus(void)
             uint64_t resultHash = MurmurHash64(state.Result(), state.ResultSize());
             uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
             float bestResult = m_allStates[i * m_settings.m_states + j].MaxResult();
-            hashString += Format("  Unit: %2u  State: %2u  Result=%.8f  Best=%.8f  Seed=%08X  ResultHash=%04X  ProgramHash=%04X\r\n", i, j, state.MaxResult(), bestResult, state.m_seed, (unsigned short)resultHash, (unsigned short)programHash);
+            if (m_settings.m_units >= 10)
+                hashString += Format("  Unit: %2u", i);
+            else if (m_settings.m_units >= 2)
+                hashString += Format("  Unit: %u", i);
+            if (m_settings.m_states >= 10)
+                hashString += Format("  State: %2u", j);
+            else if (m_settings.m_states >= 2)
+                hashString += Format("  State: %u", j);
+            hashString += Format("  Result=%.8f  Best=%.8f  Seed=%08X  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), bestResult, state.m_seed, (unsigned short)resultHash, (unsigned short)programHash);
         }
     }
     FireStarterCode::AppendCode(m_hashFilePath, hashString);
