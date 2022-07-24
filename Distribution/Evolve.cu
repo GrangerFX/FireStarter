@@ -53,7 +53,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         instructions = *oldEvolutions->Instructions(member);
 
         // Evolve a single program instruction for each generation.
-        if (init == 2) {
+        if (init) {
             unsigned int index = RANDOMMOD(memberSeed, settings.m_instructions);
             instructions.SetRandom(index, memberSeed, settings.m_instructions, settings.m_opcodes);
         }
@@ -78,12 +78,9 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         if (init) {
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR(memberSeed);
-            for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
-                data.d[i] = 0.0f;   // Clear the unused data.
             result = oldResult = settings.m_evolveStartResult;
             evolutionFactor = settings.m_evolveStartFactor;
-        }
-        else {
+        } else {
             data = *oldResults->Data(member, variation);
             result = oldResult = *oldResults->MinResult(member, variation);
             evolutionFactor = settings.m_evolveFactor * result;
@@ -139,13 +136,12 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             }
         }
         *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
-        if (bestIndex != member) {
+        *newResults->MaxResult(member) = bestResult;
+        if (bestIndex != member)
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                 *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
                 *newResults->MinResult(member, v) = settings.m_evolveStartResult;
             }
-        }
-        *newResults->MaxResult(member) = bestResult;
     }
 } // Evolve
 #else
@@ -161,17 +157,17 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
 
     GPU_SHARED FireStarterInstructions instructions;
     float oldResult;
-    if (init) {
+    if (init == 1) {
         // The first generation's instructions are random.
         oldResult = settings.m_evolveStartResult;
         instructions.Randomize(memberSeed, settings.m_instructions, settings.m_opcodes);
     } else {
         // Later generations randomize one instruction.
-        oldResult = *oldResults->MaxResult(member);
         instructions = *oldEvolutions->Instructions(member);
+        oldResult = *oldResults->MaxResult(member);
 
         // Evolve a single program instruction for each generation.
-        if (!thread) {
+        if (init && !thread) {
             unsigned int index = RANDOMMOD(memberSeed, settings.m_instructions);
             instructions.SetRandom(index, memberSeed, settings.m_instructions, settings.m_opcodes);
         }
@@ -181,20 +177,32 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     float maxResult = 0.0f;
     for (unsigned int v = 0; (v < settings.m_variations) && (maxResult <= oldResult); v++) {
         FireStarterData data;
-        for (int i = 0; i < settings.m_instructions; i++)
-            data.d[i] = RANDOMFACTOR(threadSeed);
+        float result, oldResult;
+        float evolutionFactor;
+        if (init) {
+            for (int i = 0; i < settings.m_instructions; i++)
+                data.d[i] = RANDOMFACTOR(threadSeed);
+            result = oldResult = settings.m_evolveStartResult;
+            evolutionFactor = settings.m_evolveStartFactor;
+        } else {
+            data = *oldResults->Data(member, v);
+            result = oldResult = *oldResults->MinResult(member, v);
+            evolutionFactor = settings.m_evolveFactor * result;
+        }
 
         // Initial check for bad results.
+        float target[FIRESTARTER_SAMPLES];
         float theta = settings.m_sampleMin;
         float sampleStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_samples - 1);
-        float result = 0.0f;
         for (int i = 0; i < settings.m_samples; i++) {
-            result = fmaxf(fabsf(instructions.Execute(data, theta, settings.m_instructions) - Target(theta, v)), result);
+            target[i] = Target(theta, v);
+            result = fmaxf(fabsf(instructions.Execute(data, theta, settings.m_instructions) - target[i]), result);
             theta += sampleStep;
         }
         if (result <= settings.m_evolveStartResult) {
             // Evolve the data.
-            float evolutionFactor = settings.m_evolveStartFactor;
+            evolutionFactor = settings.m_evolveStartFactor;
+            result = oldResult;
             for (unsigned int p = 0; p < settings.m_iterations; p++) {
                 unsigned int d = RANDOMMOD(threadSeed, settings.m_instructions);
                 const float oldData = data.d[d];
@@ -202,12 +210,12 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                 theta = settings.m_sampleMin;
                 float curResult = 0.0f;
                 for (int i = 0; i < settings.m_samples; i++) {
-                    curResult = fmaxf(fabsf(instructions.Execute(data, theta, settings.m_instructions) - Target(theta, v)), curResult);
+                    curResult = fmaxf(fabsf(instructions.Execute(data, theta, settings.m_instructions) - target[i]), curResult);
                     theta += sampleStep;
                 }
                 if (curResult <= result) {
                     result = curResult;
-                    evolutionFactor = settings.m_evolveFactor * result;
+//                    evolutionFactor = settings.m_evolveFactor * result;
                 } else
                     data.d[d] = oldData;
             }
