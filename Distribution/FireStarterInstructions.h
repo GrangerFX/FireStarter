@@ -64,21 +64,26 @@ struct FireStarterInstruction {
 
     inline void Execute(FireStarterData& data, float& n) const
     {
-        switch (op) {
-        case Operation_multiply:
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
+        if (op == Operation_multiply)
             n = data.d[reg] *= n;
-            break;
-
-        case Operation_add:
+        else
             n = data.d[reg] += n;
-            break;
+#elif FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
+        switch (op) {
+            case Operation_multiply:
+                n = data.d[reg] *= n;
+                break;
 
-#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
-        case Operation_abs:
-            n = fabsf(n);
-            break;
-#endif
+            case Operation_add:
+                n = data.d[reg] += n;
+                break;
+
+            case Operation_abs:
+                n = fabsf(n);
+                break;
         }
+#endif
     } // Execute
 
     inline void GenerateTabs(char* buffer, size_t size, size_t& length, unsigned int tabs) const
@@ -101,12 +106,14 @@ struct FireStarterInstruction {
                 else
                     anprintf(buffer, size, length, "n = data.d[%u] *= n;\r\n", reg);
                 break;
+
             case Operation_add:
                 if (instructionLast)
                     anprintf(buffer, size, length, "n += data.d[%u];\r\n", reg);
                 else
                     anprintf(buffer, size, length, "n = data.d[%u] += n;\r\n", reg);
                 break;
+
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
             case Operation_abs:
                 anprintf(buffer, size, length, "n = fabsf(n);\r\n");
