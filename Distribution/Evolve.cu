@@ -215,7 +215,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                 }
                 if (curResult <= result) {
                     result = curResult;
-//                    evolutionFactor = settings.m_evolveFactor * result;
+                    evolutionFactor = settings.m_evolveFactor * result;
                 } else
                     data.d[d] = oldData;
             }
@@ -251,14 +251,14 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         } else {
             // Copy a result from among the previous generations best results.
             unsigned int bestIndex = member;
+            float bestResult = oldResult;
             if (settings.m_evolve == FIRESTARTER_EVOLVE_BEST) {
                 // The genetic part of genetic programming and a major optimization:
                 // Copy the best data from among a random set of candidates.
-                float bestResult = oldResult;
                 for (int i = 0; i < settings.m_evolveCandidates; i++) {
                     unsigned int index = RANDOMMOD(memberSeed, settings.m_population);
                     float curResult = *oldResults->MaxResult(index);
-                    if (curResult < bestResult) {
+                    if (curResult <= bestResult) {
                         bestIndex = index;
                         bestResult = curResult;
                     }
@@ -267,11 +267,14 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                 bestIndex = RANDOMMOD(memberSeed, settings.m_population);
 
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
-            *newResults->MaxResult(member) = *oldResults->MaxResult(bestIndex);
-            for (unsigned int v = 0; v < settings.m_variations; v++) {
-                *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
-                *newResults->MinResult(member, v) = *oldResults->MinResult(bestIndex, v);
-            }
+            if (bestIndex != member) {
+                for (unsigned int v = 0; v < settings.m_variations; v++) {
+                    *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
+                    *newResults->MinResult(member, v) = settings.m_evolveStartResult;
+                }
+                *newResults->MaxResult(member) = bestResult;
+            } else
+                *newResults->MaxResult(member) = maxResult;
         }
     }
 } // Evolve

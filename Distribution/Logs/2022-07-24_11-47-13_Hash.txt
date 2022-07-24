@@ -1,0 +1,60 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_UNIT;
+states = 4;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 256;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best=0.00061512
+  State: 0  Result=0.02834219  Best=0.02834219  Seed=C0A94A0E  ResultHash=DFCC  ProgramHash=E65B
+  State: 1  Result=0.18513560  Best=0.18513560  Seed=27922D41  ResultHash=39F2  ProgramHash=CE64
+  State: 2  Result=0.22848739  Best=0.22848739  Seed=C6793619  ResultHash=0563  ProgramHash=0A7D
+  State: 3  Result=0.00061512  Best=0.00061512  Seed=87D07062  ResultHash=540A  ProgramHash=9875
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best=0.00040329
+  State: 0  Result=0.00045684  Best=0.00045684  Seed=C0A94A75  ResultHash=61BC  ProgramHash=BAB4
+  State: 1  Result=0.00040329  Best=0.00040329  Seed=27922DA8  ResultHash=26F4  ProgramHash=B428
+  State: 2  Result=0.00044245  Best=0.00044245  Seed=C6793680  ResultHash=EAAB  ProgramHash=17A3
+  State: 3  Result=0.00053167  Best=0.00053167  Seed=87D070C9  ResultHash=12E9  ProgramHash=540D
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best=0.00040329
+  State: 0  Result=0.00075078  Best=0.00045684  Seed=C0A94ADC  ResultHash=9490  ProgramHash=9BCA
+  State: 1  Result=0.00066006  Best=0.00040329  Seed=27922E0F  ResultHash=2561  ProgramHash=F2AD
+  State: 2  Result=0.00080562  Best=0.00044245  Seed=C67936E7  ResultHash=FD54  ProgramHash=631D
+  State: 3  Result=0.00184828  Best=0.00053167  Seed=87D07130  ResultHash=7F76  ProgramHash=4F4E
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best=0.00026172
+  State: 0  Result=0.00026172  Best=0.00026172  Seed=C0A94B43  ResultHash=F815  ProgramHash=B428
+  State: 1  Result=0.00394392  Best=0.00040329  Seed=27922E76  ResultHash=4401  ProgramHash=5BE2
+  State: 2  Result=0.00027585  Best=0.00027585  Seed=C679374E  ResultHash=3401  ProgramHash=EDE8
+  State: 3  Result=0.04976923  Best=0.00053167  Seed=87D07197  ResultHash=4275  ProgramHash=A88A
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best=0.00026172
+  State: 0  Result=0.00038718  Best=0.00026172  Seed=C0A94BAA  ResultHash=99ED  ProgramHash=431E
+  State: 1  Result=0.00089103  Best=0.00040329  Seed=27922EDD  ResultHash=54BC  ProgramHash=19AC
+  State: 2  Result=0.00690985  Best=0.00027585  Seed=C67937B5  ResultHash=91B6  ProgramHash=54DB
+  State: 3  Result=0.00190449  Best=0.00053167  Seed=87D071FE  ResultHash=7F0E  ProgramHash=F97F
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best=0.00026172
+  State: 0  Result=0.00161904  Best=0.00026172  Seed=C0A94C11  ResultHash=FE9C  ProgramHash=42EB
+  State: 1  Result=0.00484109  Best=0.00040329  Seed=27922F44  ResultHash=6A97  ProgramHash=BD77
+  State: 2  Result=0.00505161  Best=0.00027585  Seed=C679381C  ResultHash=D8DF  ProgramHash=6771
+  State: 3  Result=0.00033176  Best=0.00033176  Seed=87D07265  ResultHash=156B  ProgramHash=8E59
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best=0.00026172
+  State: 0  Result=0.00145613  Best=0.00026172  Seed=C0A94C78  ResultHash=C992  ProgramHash=8C68
+  State: 1  Result=0.00136852  Best=0.00040329  Seed=27922FAB  ResultHash=6F5F  ProgramHash=8E32
+  State: 2  Result=0.00085092  Best=0.00027585  Seed=C6793883  ResultHash=6A1A  ProgramHash=D60A
+  State: 3  Result=0.00064528  Best=0.00033176  Seed=87D072CC  ResultHash=44EC  ProgramHash=22C9

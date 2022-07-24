@@ -115,7 +115,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             for (int i = 0; i < settings.m_evolveCandidates; i++) {
                 unsigned int index = RANDOMMOD(memberSeed, settings.m_population);
                 float curResult = *oldResults->MinResult(index, variation);
-                if (curResult < bestResult) {
+                if (curResult <= bestResult) {
                     bestResult = curResult;
                     bestIndex = index;
                 }
