@@ -7,7 +7,9 @@
 typedef enum {
     Operation_multiply = 0,
     Operation_add,
-    Operation_abs
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
+    Operation_abs,
+#endif
 } FireStarterOpcode;
 
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
@@ -60,20 +62,22 @@ struct FireStarterInstruction {
     unsigned short op;
     unsigned short reg;
 
-    inline void Execute(float& d, float& n) const
+    inline void Execute(FireStarterData& data, float& n) const
     {
         switch (op) {
-            case Operation_multiply:
-                n = d *= n;
-                break;
+        case Operation_multiply:
+            n = data.d[reg] *= n;
+            break;
 
-            case Operation_add:
-                n = d += n;
-                break;
+        case Operation_add:
+            n = data.d[reg] += n;
+            break;
 
-            case Operation_abs:
-                n = fabsf(n);
-                break;
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
+        case Operation_abs:
+            n = fabsf(n);
+            break;
+#endif
         }
     } // Execute
 
@@ -103,9 +107,11 @@ struct FireStarterInstruction {
                 else
                     anprintf(buffer, size, length, "n = data.d[%u] += n;\r\n", reg);
                 break;
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
             case Operation_abs:
                 anprintf(buffer, size, length, "n = fabsf(n);\r\n");
                 break;
+#endif
         }
     } // GenerateEvaluate
 
@@ -142,9 +148,11 @@ struct FireStarterInstruction {
                         anprintf(buffer, size, length, "n = r%u += n;\r\n", r);
                 break;
 
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
             case Operation_abs:
                 anprintf(buffer, size, length, "n = fabsf(n);\r\n");
                 break;
+#endif
         }
     } // GenerateSolution
 
@@ -207,12 +215,10 @@ typedef struct FireStarterInstructions {
             SetRandom(i, seed, instructions, opcodes);
     } // Randomize
 
-    inline float Execute(FireStarterData data, float n, unsigned int instructions) const
+    inline float Execute(FireStarterData data, float n) const
     {
-        for (unsigned int index = 0; index < instructions; index++) {
-            const FireStarterInstruction instruction = i[index];
-            instruction.Execute(data.d[instruction.reg], n);
-        }
+        for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) // Constant loop is unrolled by compiler.
+            i[index].Execute(data, n);
         return isfinite(n) ? n : 0.0f;
     } // Execute
 } FireStarterInstructions;

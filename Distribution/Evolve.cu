@@ -196,7 +196,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         float sampleStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_samples - 1);
         for (int i = 0; i < settings.m_samples; i++) {
             target[i] = Target(theta, v);
-            result = fmaxf(fabsf(instructions.Execute(data, theta, settings.m_instructions) - target[i]), result);
+            result = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), result);
             theta += sampleStep;
         }
         if (result <= settings.m_evolveStartResult) {
@@ -210,7 +210,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                 theta = settings.m_sampleMin;
                 float curResult = 0.0f;
                 for (int i = 0; i < settings.m_samples; i++) {
-                    curResult = fmaxf(fabsf(instructions.Execute(data, theta, settings.m_instructions) - target[i]), curResult);
+                    curResult = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), curResult);
                     theta += sampleStep;
                 }
                 if (curResult <= result) {

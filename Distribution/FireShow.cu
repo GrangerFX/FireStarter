@@ -37,7 +37,7 @@ GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions*
             pixel.y = 128;
         };
         FireStarterData workData(*bestResult->Data(variation));
-        y = (int)(center + bestInstructions->Execute(workData, theta, FIRESTARTER_INSTRUCTIONS) * yScale);
+        y = (int)(center + bestInstructions->Execute(workData, theta) * yScale);
         if ((y >= 0) && (y < bufferHeight)) {
             uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
             pixel.x = pixel.y = pixel.z = 255;
