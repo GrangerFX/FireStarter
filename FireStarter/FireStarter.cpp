@@ -65,7 +65,7 @@ void FireStarter::SaveBestCode(void)
 void FireStarter::SaveSolution(void)
 {
     std::string solutionCode;
-    m_fireStarterGenerate->GenerateSolution(m_bestState, m_fireGenerateSolutionFunction, m_fireStarterContext->Stream(), solutionCode, m_solutionTargetCode, m_controlTime, m_generation);
+    m_fireStarterGenerate->GenerateSolution(m_bestState, m_fireGenerateSolutionFunction, m_fireStarterContext->Stream(), solutionCode, m_solutionTargetCode, m_generationTime, m_generation);
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
@@ -159,9 +159,9 @@ void FireStarter::RenderStatus(void)
     // Update the log file.
     std::string statusString;
     if (m_settings.m_mode == FIRESTARTER_RANDOM)
-        statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_controlTime, m_runTimer.Duration());
+        statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration());
     else
-        statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_controlTime, m_runTimer.Duration());
+        statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_generationTime, m_runTimer.Duration());
     FireStarterCode::AppendCode(m_logFilePath, statusString + "\r\n");
 
     // Update the window status.
@@ -275,7 +275,7 @@ void FireStarter::ControlLoop(void)
     m_generation = 0;
     m_bestGeneration = 0;
     m_result = 0.0f;
-    m_controlTime = 0.0;
+    m_generationTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;
 
@@ -324,6 +324,7 @@ void FireStarter::ControlLoop(void)
                 m_controlUpdate = true;
             }
         }
+        m_generationTime = m_controlTimer.Duration();
 
         // Update the render status after every pass.
         if (!m_quitControlThread)
@@ -333,7 +334,6 @@ void FireStarter::ControlLoop(void)
         for (FireStarterUnit* unit : m_units)
             unit->Sync(m_allStates.data());
 
-        m_controlTime = m_controlTimer.Duration();
         m_generation++;
         m_averageResult = m_totalResult / (m_generation * m_allStates.size());
 
@@ -494,7 +494,7 @@ FireStarter::FireStarter(void)
     m_totalResult = 0;
     m_averageResult = 0;
     m_result = 0;
-    m_controlTime = 0.0;
+    m_generationTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;
 } // FireStarter

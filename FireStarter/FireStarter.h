@@ -33,7 +33,7 @@ public:
     FrameBuffer m_buffer;
     std::string m_hashFilePath;
     std::string m_logFilePath;
-    double m_controlTime;
+    double m_generationTime;
     FireStarterSettings m_settings;
     unsigned int m_seed;
     unsigned int m_fireStarterMode;

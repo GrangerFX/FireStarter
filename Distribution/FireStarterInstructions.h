@@ -7,9 +7,7 @@
 typedef enum {
     Operation_multiply = 0,
     Operation_add,
-#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
-    Operation_abs,
-#endif
+    Operation_abs
 } FireStarterOpcode;
 
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
@@ -69,7 +67,7 @@ struct FireStarterInstruction {
             n = data.d[reg] *= n;
         else
             n = data.d[reg] += n;
-#elif FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
+#else
         switch (op) {
             case Operation_multiply:
                 n = data.d[reg] *= n;
@@ -114,11 +112,9 @@ struct FireStarterInstruction {
                     anprintf(buffer, size, length, "n = data.d[%u] += n;\r\n", reg);
                 break;
 
-#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
             case Operation_abs:
                 anprintf(buffer, size, length, "n = fabsf(n);\r\n");
                 break;
-#endif
         }
     } // GenerateEvaluate
 
@@ -155,11 +151,9 @@ struct FireStarterInstruction {
                         anprintf(buffer, size, length, "n = r%u += n;\r\n", r);
                 break;
 
-#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
             case Operation_abs:
                 anprintf(buffer, size, length, "n = fabsf(n);\r\n");
                 break;
-#endif
         }
     } // GenerateSolution
 
