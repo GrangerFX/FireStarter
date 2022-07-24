@@ -26,38 +26,13 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
         theta[i] = settings.m_sampleMin + i * sampleStep;
 
-    // Sort the variations largest first. This increases the chance that the generation can fail early.
-    int order[FIRESTARTER_VARIATIONS];
-    for (int v = 0; v < FIRESTARTER_VARIATIONS; v++)
-        order[v] = v;
-    if (!init) {
-        for (int v = 0; v < FIRESTARTER_VARIATIONS - 1; v++) {
-            int maxIndex = v;
-            float max = *oldResults->MinResult(member, order[v]);
-            for (int i = v + 1; i < FIRESTARTER_VARIATIONS; i++) {
-                float curResult = *oldResults->MinResult(member, order[i]);
-                if (curResult > max) {
-                    max = curResult;
-                    maxIndex = i;
-                }
-            }
-            if (maxIndex != v) {
-                int swapOrder = order[maxIndex];
-                order[maxIndex] = order[v];
-                order[v] = swapOrder;
-            }
-        }
-    }
-
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
-    for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-        unsigned int variation = order[v];
- 
+    for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) { 
         // Precalculate the target sample values.
         float target[FIRESTARTER_SAMPLES];
         for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-            target[i] = Target(theta[i], variation);
+            target[i] = Target(theta[i], v);
 
         // The first generation is initalized with random numbers.
         // Later generations continue to evolve the data.
@@ -72,8 +47,8 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             result = oldResult = settings.m_evolveStartResult;
             evolutionFactor = settings.m_evolveStartFactor;
         } else {
-            data = *oldResults->Data(member, variation);
-            result = oldResult = *oldResults->MinResult(member, variation);
+            data = *oldResults->Data(member, v);
+            result = oldResult = *oldResults->MinResult(member, v);
             evolutionFactor = settings.m_evolveFactor * result;
         }
 
@@ -97,15 +72,15 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             float precisionStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_precision - 1);
             for (int i = 0; i < settings.m_precision; i++) {
                 float theta = settings.m_sampleMin + i * precisionStep;
-                result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
+                result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, v)), result);
             }
         }
 
         // If the result was worse, copy from a member with better results.
         if (init || (result < oldResult)) {
             // Save better results.
-            *newResults->Data(member, variation) = data;
-            *newResults->MinResult(member, variation) = result;
+            *newResults->Data(member, v) = data;
+            *newResults->MinResult(member, v) = result;
             maxResult = fmaxf(maxResult, result);
         } else {
             // The genetic part of genetic programming and a major optimization:
@@ -114,19 +89,19 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             float bestResult = oldResult;
             for (int i = 0; i < settings.m_evolveCandidates; i++) {
                 unsigned int index = RANDOMMOD(memberSeed, settings.m_population);
-                float curResult = *oldResults->MinResult(index, variation);
+                float curResult = *oldResults->MinResult(index, v);
                 if (curResult <= bestResult) {
                     bestResult = curResult;
                     bestIndex = index;
                 }
             }
             if (bestIndex != member) {
-                *newResults->Data(member, variation) = *oldResults->Data(bestIndex, variation);
-                *newResults->MinResult(member, variation) = settings.m_evolveStartResult;
+                *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
+                *newResults->MinResult(member, v) = settings.m_evolveStartResult;
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
-                *newResults->Data(member, variation) = data;
-                *newResults->MinResult(member, variation) = result;
+                *newResults->Data(member, v) = data;
+                *newResults->MinResult(member, v) = result;
                 maxResult = fmaxf(maxResult, result);
             }
         }

@@ -1,0 +1,39 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_OPTIMIZE;
+states = 1;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 512;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_OPTIMIZE: Generation=0  Age=0  Best=0.00175714  Time=1.3538 Seconds  Run Time=3.8941 Seconds
+FIRESTARTER_OPTIMIZE: Generation=1  Age=0  Best=0.00072801  Time=0.8277 Seconds  Run Time=4.8203 Seconds
+FIRESTARTER_OPTIMIZE: Generation=2  Age=0  Best=0.00056908  Time=0.8404 Seconds  Run Time=5.7180 Seconds
+FIRESTARTER_OPTIMIZE: Generation=3  Age=0  Best=0.00036219  Time=0.8526 Seconds  Run Time=6.6133 Seconds
+FIRESTARTER_OPTIMIZE: Generation=4  Age=0  Best=0.00029403  Time=0.8686 Seconds  Run Time=7.5105 Seconds
+FIRESTARTER_OPTIMIZE: Generation=5  Age=1  Best=0.00029403  Time=0.9339 Seconds  Run Time=8.4624 Seconds
+FIRESTARTER_OPTIMIZE: Generation=6  Age=0  Best=0.00029054  Time=0.9556 Seconds  Run Time=9.4821 Seconds
+FIRESTARTER_OPTIMIZE: Generation=7  Age=1  Best=0.00029054  Time=1.0233 Seconds  Run Time=10.5516 Seconds
+FIRESTARTER_OPTIMIZE: Generation=8  Age=0  Best=0.00028682  Time=1.0406 Seconds  Run Time=11.6729 Seconds
+FIRESTARTER_OPTIMIZE: Generation=9  Age=0  Best=0.00028214  Time=1.0773 Seconds  Run Time=12.8114 Seconds
+FIRESTARTER_OPTIMIZE: Generation=10  Age=0  Best=0.00028062  Time=1.1225 Seconds  Run Time=13.9714 Seconds
+FIRESTARTER_OPTIMIZE: Generation=11  Age=1  Best=0.00028062  Time=1.2318 Seconds  Run Time=15.2961 Seconds
+FIRESTARTER_OPTIMIZE: Generation=12  Age=0  Best=0.00027838  Time=1.2363 Seconds  Run Time=16.6305 Seconds
+FIRESTARTER_OPTIMIZE: Generation=13  Age=1  Best=0.00027838  Time=1.3086 Seconds  Run Time=18.0311 Seconds

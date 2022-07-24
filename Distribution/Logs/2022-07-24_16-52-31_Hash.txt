@@ -1,0 +1,35 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_OPTIMIZE;
+states = 1;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 512;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best=0.00175714  Result=0.00175714  Best=0.00175714  Seed=C0A949CE  ResultHash=E310  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best=0.00072801  Result=0.00072801  Best=0.00072801  Seed=C0A94A32  ResultHash=5255  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best=0.00056908  Result=0.00056908  Best=0.00056908  Seed=C0A94A96  ResultHash=086A  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best=0.00036219  Result=0.00036219  Best=0.00036219  Seed=C0A94AFA  ResultHash=FCA2  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best=0.00029403  Result=0.00029403  Best=0.00029403  Seed=C0A94B5E  ResultHash=1710  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best=0.00029403  Result=0.00029618  Best=0.00029403  Seed=C0A94BC2  ResultHash=95D0  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best=0.00029054  Result=0.00029054  Best=0.00029054  Seed=C0A94C26  ResultHash=6003  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best=0.00029054  Result=0.00030422  Best=0.00029054  Seed=C0A94C8A  ResultHash=9005  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   8  Best=0.00028682  Result=0.00028682  Best=0.00028682  Seed=C0A94CEE  ResultHash=036A  ProgramHash=DCC1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   9  Best=0.00028214  Result=0.00028214  Best=0.00028214  Seed=C0A94D52  ResultHash=4481  ProgramHash=DCC1
