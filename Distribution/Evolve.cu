@@ -38,7 +38,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         FireStarterData data;
         float result, oldResult;
         float evolutionFactor;
-        if (init) {
+        if (init == 1) {
             for (int i = 0; i < settings.m_instructions; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
             result = oldResult = settings.m_evolveStartResult;
