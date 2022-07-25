@@ -58,7 +58,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             result = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), result);
             theta += sampleStep;
         }
-d        if (result <= settings.m_evolveStartResult) {
+        if (result <= settings.m_evolveStartResult) {
             // Evolve the data.
             evolutionFactor = settings.m_evolveStartFactor;
             result = oldResult;
