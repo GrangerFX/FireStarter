@@ -36,20 +36,22 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     float maxResult = 0.0f;
     for (unsigned int v = 0; (v < settings.m_variations) && (maxResult <= oldResult); v++) {
         FireStarterData data;
-        float result, oldResult;
+        float oldResult;
         float evolutionFactor;
         if (init == 1) {
             for (int i = 0; i < settings.m_registers; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
-            result = oldResult = settings.m_evolveStartResult;
+            oldResult = settings.m_evolveStartResult;
             evolutionFactor = settings.m_evolveStartFactor;
         } else {
             data = *oldResults->Data(member, v);
-            result = oldResult = *oldResults->MinResult(member, v);
-            if (init)
+            if (init) {
+                oldResult = settings.m_evolveStartResult;
                 evolutionFactor = settings.m_evolveStartFactor;
-            else
-                evolutionFactor = settings.m_evolveFactor * result;
+            } else {
+                oldResult = *oldResults->MinResult(member, v);
+                evolutionFactor = settings.m_evolveFactor * oldResult;
+            }
         }
 
         // Initial check for bad results.
@@ -58,28 +60,26 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         float sampleStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_samples - 1);
         for (int i = 0; i < settings.m_samples; i++) {
             target[i] = Target(theta, v);
-            result = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), result);
             theta += sampleStep;
         }
-        if (result <= settings.m_evolveStartResult) {
-            // Evolve the data.
-            result = oldResult;
-            for (unsigned int p = 0; p < settings.m_iterations; p++) {
-                unsigned int d = RANDOMMOD(threadSeed, settings.m_instructions);
-                const float oldData = data.d[d];
-                data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
-                theta = settings.m_sampleMin;
-                float curResult = 0.0f;
-                for (int i = 0; i < settings.m_samples; i++) {
-                    curResult = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), curResult);
-                    theta += sampleStep;
-                }
-                if (curResult <= result) {
-                    result = curResult;
-                    evolutionFactor = settings.m_evolveFactor * result;
-                } else
-                    data.d[d] = oldData;
+
+        // Evolve the data.
+        float result = oldResult;
+        for (unsigned int p = 0; p < settings.m_iterations; p++) {
+            unsigned int d = RANDOMMOD(threadSeed, settings.m_instructions);
+            const float oldData = data.d[d];
+            data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
+            theta = settings.m_sampleMin;
+            float curResult = 0.0f;
+            for (int i = 0; i < settings.m_samples; i++) {
+                curResult = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), curResult);
+                theta += sampleStep;
             }
+            if (curResult <= result) {
+                result = curResult;
+                evolutionFactor = settings.m_evolveFactor * result;
+            } else
+                data.d[d] = oldData;
         }
 
         // Find the best result among all the warp threads.
