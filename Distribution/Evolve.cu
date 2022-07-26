@@ -46,7 +46,10 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         } else {
             data = *oldResults->Data(member, v);
             result = oldResult = *oldResults->MinResult(member, v);
-            evolutionFactor = settings.m_evolveFactor * result;
+            if (init)
+                evolutionFactor = settings.m_evolveStartFactor;
+            else
+                evolutionFactor = settings.m_evolveFactor * result;
         }
 
         // Initial check for bad results.
@@ -60,7 +63,6 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         }
         if (result <= settings.m_evolveStartResult) {
             // Evolve the data.
-            evolutionFactor = settings.m_evolveStartFactor;
             result = oldResult;
             for (unsigned int p = 0; p < settings.m_iterations; p++) {
                 unsigned int d = RANDOMMOD(threadSeed, settings.m_instructions);
