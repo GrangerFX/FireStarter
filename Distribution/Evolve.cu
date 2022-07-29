@@ -11,13 +11,15 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     if (member >= settings.m_population)
         return;
     unsigned int memberSeed = RANDOM(RANDOM(seed) + member);
+    unsigned int instructionsSeed = RANDOM(RANDOM(seed) + blockIdx.x);
 
     GPU_SHARED FireStarterInstructions instructions;
+
     float oldResult;
     if (init == 1) {
         // The first generation's instructions are random.
         oldResult = settings.m_evolveStartResult;
-        instructions.Randomize(memberSeed, settings.m_instructions, settings.m_opcodes);
+        instructions.Randomize(instructionsSeed, settings.m_instructions, settings.m_opcodes);
     } else {
         // Later generations randomize one instruction.
         instructions = *oldEvolutions->Instructions(member);
@@ -25,8 +27,8 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
 
         // Evolve a single program instruction for each generation.
         if (init) {
-            unsigned int index = RANDOMMOD(memberSeed, settings.m_instructions);
-            instructions.SetRandom(index, memberSeed, settings.m_instructions, settings.m_opcodes);
+            unsigned int index = RANDOMMOD(instructionsSeed, settings.m_instructions);
+            instructions.SetRandom(index, instructionsSeed, settings.m_instructions, settings.m_opcodes);
         }
     }
 
@@ -46,8 +48,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             if (init) {
                 oldResult = settings.m_evolveStartResult;
                 evolutionFactor = settings.m_evolveStartFactor;
-            }
-            else {
+            } else {
                 oldResult = *oldResults->MinResult(member, v);
                 evolutionFactor = settings.m_evolveFactor * oldResult;
             }
@@ -99,7 +100,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of candidates.
             for (int i = 0; i < settings.m_evolveCandidates; i++) {
-                unsigned int index = RANDOMMOD(memberSeed, settings.m_population);
+                unsigned int index = RANDOMMOD(instructionsSeed, settings.m_population);
                 float curResult = *oldResults->MaxResult(index);
                 if (curResult <= bestResult) {
                     bestIndex = index;
@@ -107,7 +108,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                 }
             }
         } else if (settings.m_evolve == FIRESTARTER_EVOLVE_RANDOM)
-            bestIndex = RANDOMMOD(memberSeed, settings.m_population);
+            bestIndex = RANDOMMOD(instructionsSeed, settings.m_population);
 
         *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
         if (bestIndex != member) {

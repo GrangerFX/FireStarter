@@ -1,0 +1,26 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_CODE;
+states = 1;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 256;
+generations = 10;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best=0.13917726  Result=0.13917726  Best=0.13917726  Seed=C0A94974  ResultHash=4020  ProgramHash=9B10

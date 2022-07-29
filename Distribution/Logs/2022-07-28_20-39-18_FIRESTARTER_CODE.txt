@@ -1,0 +1,185 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_CODE;
+states = 1;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 256;
+generations = 10;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_CODE: Generation=0  Age=0  Best=0.08451390  Time=2.9234 Seconds  Run Time=5.9591 Seconds
+FIRESTARTER_CODE: Generation=1  Age=1  Best=0.08451390  Time=2.3702 Seconds  Run Time=8.4363 Seconds
+FIRESTARTER_CODE: Generation=2  Age=0  Best=0.05472589  Time=2.3315 Seconds  Run Time=10.8217 Seconds
+FIRESTARTER_CODE: Generation=3  Age=0  Best=0.04402030  Time=2.2756 Seconds  Run Time=13.1775 Seconds
+FIRESTARTER_CODE: Generation=4  Age=0  Best=0.03917217  Time=2.2861 Seconds  Run Time=15.5023 Seconds
+FIRESTARTER_CODE: Generation=5  Age=0  Best=0.02412364  Time=2.3224 Seconds  Run Time=17.9184 Seconds
+FIRESTARTER_CODE: Generation=6  Age=0  Best=0.01818937  Time=2.3229 Seconds  Run Time=20.3454 Seconds
+FIRESTARTER_CODE: Generation=7  Age=0  Best=0.01528198  Time=2.3733 Seconds  Run Time=22.8085 Seconds
+FIRESTARTER_CODE: Generation=8  Age=0  Best=0.01451492  Time=2.3517 Seconds  Run Time=25.2099 Seconds
+FIRESTARTER_CODE: Generation=9  Age=0  Best=0.01438111  Time=2.3824 Seconds  Run Time=27.6618 Seconds
+FIRESTARTER_CODE: Generation=10  Age=0  Best=0.01405671  Time=2.3897 Seconds  Run Time=30.0708 Seconds
+FIRESTARTER_CODE: Generation=11  Age=0  Best=0.01396650  Time=2.4010 Seconds  Run Time=32.4986 Seconds
+FIRESTARTER_CODE: Generation=12  Age=1  Best=0.01396650  Time=2.4308 Seconds  Run Time=34.9518 Seconds
+FIRESTARTER_CODE: Generation=13  Age=0  Best=0.01388621  Time=2.4401 Seconds  Run Time=37.4926 Seconds
+FIRESTARTER_CODE: Generation=14  Age=0  Best=0.01318204  Time=2.4302 Seconds  Run Time=40.0133 Seconds
+FIRESTARTER_CODE: Generation=15  Age=0  Best=0.01270854  Time=2.5222 Seconds  Run Time=42.6444 Seconds
+FIRESTARTER_CODE: Generation=16  Age=1  Best=0.01270854  Time=2.5642 Seconds  Run Time=45.2294 Seconds
+FIRESTARTER_CODE: Generation=17  Age=0  Best=0.01247239  Time=2.6641 Seconds  Run Time=47.9689 Seconds
+FIRESTARTER_CODE: Generation=18  Age=0  Best=0.01206580  Time=2.6416 Seconds  Run Time=50.7080 Seconds
+FIRESTARTER_CODE: Generation=19  Age=0  Best=0.01174557  Time=2.6548 Seconds  Run Time=53.3753 Seconds
+FIRESTARTER_CODE: Generation=20  Age=0  Best=0.01160634  Time=2.6759 Seconds  Run Time=56.1515 Seconds
+FIRESTARTER_CODE: Generation=21  Age=0  Best=0.01157847  Time=2.6584 Seconds  Run Time=58.8976 Seconds
+FIRESTARTER_CODE: Generation=22  Age=0  Best=0.01136768  Time=2.7016 Seconds  Run Time=61.6995 Seconds
+FIRESTARTER_CODE: Generation=23  Age=0  Best=0.01110810  Time=2.7140 Seconds  Run Time=64.4645 Seconds
+FIRESTARTER_CODE: Generation=24  Age=0  Best=0.01107318  Time=2.6908 Seconds  Run Time=67.2070 Seconds
+FIRESTARTER_CODE: Generation=25  Age=0  Best=0.01098338  Time=2.7033 Seconds  Run Time=69.9779 Seconds
+FIRESTARTER_CODE: Generation=26  Age=0  Best=0.01095247  Time=2.7051 Seconds  Run Time=72.7441 Seconds
+FIRESTARTER_CODE: Generation=27  Age=0  Best=0.01093933  Time=2.8006 Seconds  Run Time=75.5950 Seconds
+FIRESTARTER_CODE: Generation=28  Age=0  Best=0.01093042  Time=2.7887 Seconds  Run Time=78.4545 Seconds
+FIRESTARTER_CODE: Generation=29  Age=0  Best=0.01093009  Time=2.8210 Seconds  Run Time=81.3605 Seconds
+FIRESTARTER_CODE: Generation=30  Age=0  Best=0.01092827  Time=2.8002 Seconds  Run Time=84.1856 Seconds
+FIRESTARTER_CODE: Generation=31  Age=0  Best=0.01090929  Time=2.8508 Seconds  Run Time=87.0869 Seconds
+FIRESTARTER_CODE: Generation=32  Age=0  Best=0.01089230  Time=2.9269 Seconds  Run Time=90.1013 Seconds
+FIRESTARTER_CODE: Generation=33  Age=1  Best=0.01089230  Time=2.8949 Seconds  Run Time=93.0439 Seconds
+FIRESTARTER_CODE: Generation=34  Age=2  Best=0.01089230  Time=2.8929 Seconds  Run Time=96.0170 Seconds
+FIRESTARTER_CODE: Generation=35  Age=3  Best=0.01089230  Time=2.8976 Seconds  Run Time=98.9845 Seconds
+FIRESTARTER_CODE: Generation=36  Age=0  Best=0.01088446  Time=2.9115 Seconds  Run Time=101.9837 Seconds
+FIRESTARTER_CODE: Generation=37  Age=0  Best=0.01088390  Time=2.9113 Seconds  Run Time=104.9580 Seconds
+FIRESTARTER_CODE: Generation=38  Age=0  Best=0.01086956  Time=2.9677 Seconds  Run Time=107.9959 Seconds
+FIRESTARTER_CODE: Generation=39  Age=1  Best=0.01086956  Time=2.9193 Seconds  Run Time=110.9332 Seconds
+FIRESTARTER_CODE: Generation=40  Age=2  Best=0.01086956  Time=2.9615 Seconds  Run Time=113.9349 Seconds
+FIRESTARTER_CODE: Generation=41  Age=3  Best=0.01086956  Time=2.8885 Seconds  Run Time=116.9371 Seconds
+FIRESTARTER_CODE: Generation=42  Age=4  Best=0.01086956  Time=2.9764 Seconds  Run Time=120.0017 Seconds
+FIRESTARTER_CODE: Generation=43  Age=5  Best=0.01086956  Time=2.9767 Seconds  Run Time=123.0940 Seconds
+FIRESTARTER_CODE: Generation=44  Age=6  Best=0.01086956  Time=2.9573 Seconds  Run Time=126.1464 Seconds
+FIRESTARTER_CODE: Generation=45  Age=7  Best=0.01086956  Time=2.8494 Seconds  Run Time=129.0100 Seconds
+FIRESTARTER_CODE: Generation=46  Age=8  Best=0.01086956  Time=2.9722 Seconds  Run Time=132.0850 Seconds
+FIRESTARTER_CODE: Generation=47  Age=9  Best=0.01086956  Time=2.8969 Seconds  Run Time=135.0793 Seconds
+FIRESTARTER_CODE: Generation=48  Age=10  Best=0.01086956  Time=2.9137 Seconds  Run Time=138.0624 Seconds
+FIRESTARTER_CODE: Generation=49  Age=0  Best=0.01086703  Time=2.8840 Seconds  Run Time=140.9973 Seconds
+FIRESTARTER_CODE: Generation=50  Age=0  Best=0.01086509  Time=2.9685 Seconds  Run Time=144.0697 Seconds
+FIRESTARTER_CODE: Generation=51  Age=0  Best=0.01086232  Time=2.9864 Seconds  Run Time=147.1598 Seconds
+FIRESTARTER_CODE: Generation=52  Age=0  Best=0.01085427  Time=2.9341 Seconds  Run Time=150.1943 Seconds
+FIRESTARTER_CODE: Generation=53  Age=1  Best=0.01085427  Time=2.9882 Seconds  Run Time=153.2010 Seconds
+FIRESTARTER_CODE: Generation=54  Age=2  Best=0.01085427  Time=2.9540 Seconds  Run Time=156.2494 Seconds
+FIRESTARTER_CODE: Generation=55  Age=3  Best=0.01085427  Time=2.9389 Seconds  Run Time=159.2134 Seconds
+FIRESTARTER_CODE: Generation=56  Age=4  Best=0.01085427  Time=2.9413 Seconds  Run Time=162.1909 Seconds
+FIRESTARTER_CODE: Generation=57  Age=5  Best=0.01085427  Time=2.9255 Seconds  Run Time=165.1473 Seconds
+FIRESTARTER_CODE: Generation=58  Age=6  Best=0.01085427  Time=2.9471 Seconds  Run Time=168.1435 Seconds
+FIRESTARTER_CODE: Generation=59  Age=7  Best=0.01085427  Time=2.9741 Seconds  Run Time=171.1391 Seconds
+FIRESTARTER_CODE: Generation=60  Age=8  Best=0.01085427  Time=2.9179 Seconds  Run Time=174.1596 Seconds
+FIRESTARTER_CODE: Generation=61  Age=9  Best=0.01085427  Time=3.0077 Seconds  Run Time=177.2184 Seconds
+FIRESTARTER_CODE: Generation=62  Age=10  Best=0.01085427  Time=3.0079 Seconds  Run Time=180.3002 Seconds
+FIRESTARTER_CODE: Generation=63  Age=11  Best=0.01085427  Time=3.0738 Seconds  Run Time=183.4593 Seconds
+FIRESTARTER_CODE: Generation=64  Age=12  Best=0.01085427  Time=3.0428 Seconds  Run Time=186.6119 Seconds
+FIRESTARTER_CODE: Generation=65  Age=0  Best=0.01085163  Time=3.0137 Seconds  Run Time=189.6480 Seconds
+FIRESTARTER_CODE: Generation=66  Age=0  Best=0.01084942  Time=3.1003 Seconds  Run Time=192.8036 Seconds
+FIRESTARTER_CODE: Generation=67  Age=0  Best=0.01084793  Time=3.0766 Seconds  Run Time=195.9592 Seconds
+FIRESTARTER_CODE: Generation=68  Age=0  Best=0.01084775  Time=3.0416 Seconds  Run Time=199.0906 Seconds
+FIRESTARTER_CODE: Generation=69  Age=0  Best=0.01070270  Time=3.1331 Seconds  Run Time=202.2720 Seconds
+FIRESTARTER_CODE: Generation=70  Age=1  Best=0.01070270  Time=3.1309 Seconds  Run Time=205.4660 Seconds
+FIRESTARTER_CODE: Generation=71  Age=2  Best=0.01070270  Time=3.0791 Seconds  Run Time=208.6116 Seconds
+FIRESTARTER_CODE: Generation=72  Age=3  Best=0.01070270  Time=3.0466 Seconds  Run Time=211.7677 Seconds
+FIRESTARTER_CODE: Generation=73  Age=4  Best=0.01070270  Time=3.0657 Seconds  Run Time=214.8718 Seconds
+FIRESTARTER_CODE: Generation=74  Age=5  Best=0.01070270  Time=3.1590 Seconds  Run Time=218.0471 Seconds
+FIRESTARTER_CODE: Generation=75  Age=6  Best=0.01070270  Time=3.1712 Seconds  Run Time=221.2491 Seconds
+FIRESTARTER_CODE: Generation=76  Age=7  Best=0.01070270  Time=3.1318 Seconds  Run Time=224.3983 Seconds
+FIRESTARTER_CODE: Generation=77  Age=8  Best=0.01070270  Time=3.1746 Seconds  Run Time=227.6364 Seconds
+FIRESTARTER_CODE: Generation=78  Age=9  Best=0.01070270  Time=3.1247 Seconds  Run Time=230.8482 Seconds
+FIRESTARTER_CODE: Generation=79  Age=10  Best=0.01070270  Time=3.1747 Seconds  Run Time=234.0847 Seconds
+FIRESTARTER_CODE: Generation=80  Age=11  Best=0.01070270  Time=3.2005 Seconds  Run Time=237.3120 Seconds
+FIRESTARTER_CODE: Generation=81  Age=0  Best=0.01060212  Time=3.1704 Seconds  Run Time=240.5832 Seconds
+FIRESTARTER_CODE: Generation=82  Age=1  Best=0.01060212  Time=3.1955 Seconds  Run Time=243.8002 Seconds
+FIRESTARTER_CODE: Generation=83  Age=2  Best=0.01060212  Time=3.1603 Seconds  Run Time=247.0600 Seconds
+FIRESTARTER_CODE: Generation=84  Age=3  Best=0.01060212  Time=3.1594 Seconds  Run Time=250.3359 Seconds
+FIRESTARTER_CODE: Generation=85  Age=4  Best=0.01060212  Time=3.1817 Seconds  Run Time=253.6147 Seconds
+FIRESTARTER_CODE: Generation=86  Age=5  Best=0.01060212  Time=3.1395 Seconds  Run Time=256.8548 Seconds
+FIRESTARTER_CODE: Generation=87  Age=6  Best=0.01060212  Time=3.1344 Seconds  Run Time=260.0453 Seconds
+FIRESTARTER_CODE: Generation=88  Age=7  Best=0.01060212  Time=3.1376 Seconds  Run Time=264.3853 Seconds
+FIRESTARTER_CODE: Generation=89  Age=8  Best=0.01060212  Time=2.9740 Seconds  Run Time=267.4685 Seconds
+FIRESTARTER_CODE: Generation=90  Age=9  Best=0.01060212  Time=3.1251 Seconds  Run Time=270.6829 Seconds
+FIRESTARTER_CODE: Generation=91  Age=10  Best=0.01060212  Time=3.0981 Seconds  Run Time=273.8421 Seconds
+FIRESTARTER_CODE: Generation=92  Age=11  Best=0.01060212  Time=3.1056 Seconds  Run Time=277.0372 Seconds
+FIRESTARTER_CODE: Generation=93  Age=12  Best=0.01060212  Time=3.1137 Seconds  Run Time=280.2173 Seconds
+FIRESTARTER_CODE: Generation=94  Age=13  Best=0.01060212  Time=3.1426 Seconds  Run Time=283.4113 Seconds
+FIRESTARTER_CODE: Generation=95  Age=14  Best=0.01060212  Time=3.1606 Seconds  Run Time=286.5921 Seconds
+FIRESTARTER_CODE: Generation=96  Age=15  Best=0.01060212  Time=3.1662 Seconds  Run Time=289.8088 Seconds
+FIRESTARTER_CODE: Generation=97  Age=16  Best=0.01060212  Time=3.1667 Seconds  Run Time=292.9959 Seconds
+FIRESTARTER_CODE: Generation=98  Age=17  Best=0.01060212  Time=3.1198 Seconds  Run Time=296.1347 Seconds
+FIRESTARTER_CODE: Generation=99  Age=18  Best=0.01060212  Time=3.1949 Seconds  Run Time=299.3696 Seconds
+FIRESTARTER_CODE: Generation=100  Age=19  Best=0.01060212  Time=3.1886 Seconds  Run Time=302.6629 Seconds
+FIRESTARTER_CODE: Generation=101  Age=20  Best=0.01060212  Time=3.1959 Seconds  Run Time=305.9334 Seconds
+FIRESTARTER_CODE: Generation=102  Age=21  Best=0.01060212  Time=3.1662 Seconds  Run Time=309.2154 Seconds
+FIRESTARTER_CODE: Generation=103  Age=22  Best=0.01060212  Time=3.2846 Seconds  Run Time=312.5300 Seconds
+FIRESTARTER_CODE: Generation=104  Age=23  Best=0.01060212  Time=3.2300 Seconds  Run Time=315.7960 Seconds
+FIRESTARTER_CODE: Generation=105  Age=24  Best=0.01060212  Time=3.2445 Seconds  Run Time=319.1163 Seconds
+FIRESTARTER_CODE: Generation=106  Age=25  Best=0.01060212  Time=3.2865 Seconds  Run Time=322.4586 Seconds
+FIRESTARTER_CODE: Generation=107  Age=26  Best=0.01060212  Time=3.2283 Seconds  Run Time=325.8028 Seconds
+FIRESTARTER_CODE: Generation=108  Age=27  Best=0.01060212  Time=3.2140 Seconds  Run Time=329.0943 Seconds
+FIRESTARTER_CODE: Generation=109  Age=28  Best=0.01060212  Time=3.2413 Seconds  Run Time=332.4052 Seconds
+FIRESTARTER_CODE: Generation=110  Age=29  Best=0.01060212  Time=3.2442 Seconds  Run Time=335.7150 Seconds
+FIRESTARTER_CODE: Generation=111  Age=30  Best=0.01060212  Time=3.2688 Seconds  Run Time=339.0311 Seconds
+FIRESTARTER_CODE: Generation=112  Age=31  Best=0.01060212  Time=3.2725 Seconds  Run Time=342.3516 Seconds
+FIRESTARTER_OPTIMIZE: Generation=0  Age=0  Best=0.00066349  Time=2.5834 Seconds  Run Time=345.0050 Seconds
+FIRESTARTER_OPTIMIZE: Generation=1  Age=0  Best=0.00062509  Time=2.1668 Seconds  Run Time=347.2038 Seconds
+FIRESTARTER_OPTIMIZE: Generation=2  Age=0  Best=0.00059319  Time=2.2231 Seconds  Run Time=349.4519 Seconds
+FIRESTARTER_OPTIMIZE: Generation=3  Age=0  Best=0.00059223  Time=2.1824 Seconds  Run Time=351.7192 Seconds
+FIRESTARTER_OPTIMIZE: Generation=4  Age=0  Best=0.00058645  Time=2.2213 Seconds  Run Time=353.9647 Seconds
+FIRESTARTER_OPTIMIZE: Generation=5  Age=1  Best=0.00058645  Time=2.1418 Seconds  Run Time=356.2091 Seconds
+FIRESTARTER_OPTIMIZE: Generation=6  Age=0  Best=0.00057113  Time=2.2132 Seconds  Run Time=358.4745 Seconds
+FIRESTARTER_OPTIMIZE: Generation=7  Age=1  Best=0.00057113  Time=2.1477 Seconds  Run Time=360.7216 Seconds
+FIRESTARTER_OPTIMIZE: Generation=8  Age=0  Best=0.00057006  Time=2.1814 Seconds  Run Time=362.9619 Seconds
+FIRESTARTER_OPTIMIZE: Generation=9  Age=1  Best=0.00057006  Time=2.2294 Seconds  Run Time=365.2094 Seconds
+FIRESTARTER_OPTIMIZE: Generation=10  Age=2  Best=0.00057006  Time=2.1048 Seconds  Run Time=367.4090 Seconds
+FIRESTARTER_OPTIMIZE: Generation=11  Age=3  Best=0.00057006  Time=2.1532 Seconds  Run Time=369.6447 Seconds
+FIRESTARTER_OPTIMIZE: Generation=12  Age=4  Best=0.00057006  Time=2.1940 Seconds  Run Time=371.8542 Seconds
+FIRESTARTER_OPTIMIZE: Generation=13  Age=5  Best=0.00057006  Time=2.1469 Seconds  Run Time=374.1013 Seconds
+FIRESTARTER_OPTIMIZE: Generation=14  Age=6  Best=0.00057006  Time=2.2020 Seconds  Run Time=376.3531 Seconds
+FIRESTARTER_OPTIMIZE: Generation=15  Age=0  Best=0.00056279  Time=2.1142 Seconds  Run Time=378.5741 Seconds
+FIRESTARTER_OPTIMIZE: Generation=16  Age=1  Best=0.00056279  Time=2.1749 Seconds  Run Time=380.8165 Seconds
+FIRESTARTER_OPTIMIZE: Generation=17  Age=2  Best=0.00056279  Time=2.1982 Seconds  Run Time=383.0407 Seconds
+FIRESTARTER_OPTIMIZE: Generation=18  Age=3  Best=0.00056279  Time=2.1654 Seconds  Run Time=385.3215 Seconds
+FIRESTARTER_OPTIMIZE: Generation=19  Age=4  Best=0.00056279  Time=2.2696 Seconds  Run Time=387.6304 Seconds
+FIRESTARTER_OPTIMIZE: Generation=20  Age=5  Best=0.00056279  Time=2.2677 Seconds  Run Time=389.9343 Seconds
+FIRESTARTER_OPTIMIZE: Generation=21  Age=6  Best=0.00056279  Time=2.2186 Seconds  Run Time=392.1979 Seconds
+FIRESTARTER_OPTIMIZE: Generation=22  Age=7  Best=0.00056279  Time=2.2009 Seconds  Run Time=394.4937 Seconds
+FIRESTARTER_OPTIMIZE: Generation=23  Age=8  Best=0.00056279  Time=2.1427 Seconds  Run Time=396.7544 Seconds
+FIRESTARTER_OPTIMIZE: Generation=24  Age=9  Best=0.00056279  Time=2.2264 Seconds  Run Time=399.0358 Seconds
+FIRESTARTER_OPTIMIZE: Generation=25  Age=10  Best=0.00056279  Time=2.1072 Seconds  Run Time=401.2352 Seconds
+FIRESTARTER_OPTIMIZE: Generation=26  Age=11  Best=0.00056279  Time=2.1240 Seconds  Run Time=403.4571 Seconds
+FIRESTARTER_OPTIMIZE: Generation=27  Age=12  Best=0.00056279  Time=2.1688 Seconds  Run Time=405.6948 Seconds
+FIRESTARTER_OPTIMIZE: Generation=28  Age=13  Best=0.00056279  Time=2.2088 Seconds  Run Time=407.9132 Seconds
+FIRESTARTER_OPTIMIZE: Generation=29  Age=14  Best=0.00056279  Time=2.1630 Seconds  Run Time=410.1812 Seconds
+FIRESTARTER_OPTIMIZE: Generation=30  Age=15  Best=0.00056279  Time=2.2044 Seconds  Run Time=412.4347 Seconds
+FIRESTARTER_OPTIMIZE: Generation=31  Age=16  Best=0.00056279  Time=2.1264 Seconds  Run Time=414.6681 Seconds
+FIRESTARTER_OPTIMIZE: Generation=32  Age=17  Best=0.00056279  Time=2.1405 Seconds  Run Time=416.8868 Seconds
+FIRESTARTER_OPTIMIZE: Generation=33  Age=18  Best=0.00056279  Time=2.1205 Seconds  Run Time=419.0627 Seconds
+FIRESTARTER_OPTIMIZE: Generation=34  Age=19  Best=0.00056279  Time=2.1717 Seconds  Run Time=421.3207 Seconds
+FIRESTARTER_OPTIMIZE: Generation=35  Age=20  Best=0.00056279  Time=2.2371 Seconds  Run Time=423.5821 Seconds
+FIRESTARTER_OPTIMIZE: Generation=36  Age=21  Best=0.00056279  Time=2.1600 Seconds  Run Time=425.8067 Seconds
+FIRESTARTER_OPTIMIZE: Generation=37  Age=22  Best=0.00056279  Time=2.1718 Seconds  Run Time=428.0171 Seconds
+FIRESTARTER_OPTIMIZE: Generation=38  Age=23  Best=0.00056279  Time=2.1615 Seconds  Run Time=430.2144 Seconds
+FIRESTARTER_OPTIMIZE: Generation=39  Age=24  Best=0.00056279  Time=2.1901 Seconds  Run Time=432.4419 Seconds
+FIRESTARTER_OPTIMIZE: Generation=40  Age=25  Best=0.00056279  Time=2.1813 Seconds  Run Time=434.6409 Seconds
+FIRESTARTER_OPTIMIZE: Generation=41  Age=26  Best=0.00056279  Time=2.1110 Seconds  Run Time=436.8545 Seconds
+FIRESTARTER_OPTIMIZE: Generation=42  Age=27  Best=0.00056279  Time=2.1508 Seconds  Run Time=439.0987 Seconds
+FIRESTARTER_OPTIMIZE: Generation=43  Age=28  Best=0.00056279  Time=2.1458 Seconds  Run Time=441.3016 Seconds
+FIRESTARTER_OPTIMIZE: Generation=44  Age=29  Best=0.00056279  Time=2.1898 Seconds  Run Time=443.5298 Seconds
+FIRESTARTER_OPTIMIZE: Generation=45  Age=30  Best=0.00056279  Time=2.0819 Seconds  Run Time=445.7243 Seconds
+FIRESTARTER_OPTIMIZE: Generation=46  Age=31  Best=0.00056279  Time=2.2230 Seconds  Run Time=447.9597 Seconds

@@ -199,8 +199,8 @@ typedef struct FireStarterInstructions {
 
     inline void SetOperation(unsigned int index, unsigned int op = 0, unsigned int reg = 0)
     {
-        i[index].op = (unsigned short)op;
-        i[index].reg = (unsigned short)reg;
+        i[index].op = op;
+        i[index].reg = reg;
     } // SetOperation
 
     inline void SetRandomReg(unsigned int index, unsigned int& seed, unsigned int instructions)
