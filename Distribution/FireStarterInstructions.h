@@ -203,6 +203,17 @@ typedef struct FireStarterInstructions {
         i[index].reg = (unsigned short)reg;
     } // SetOperation
 
+    inline void SetRandomReg(unsigned int index, unsigned int& seed, unsigned int instructions)
+    {
+        i[index].reg = RANDOMMOD(seed, instructions);
+    } // SetRandomReg
+
+    inline void SetRandomOp(unsigned int index, unsigned int& seed, unsigned int opcodes)
+    {
+        unsigned int op = RANDOMMOD(seed, opcodes);
+        i[index].op = fireStarterOpcodes[op];
+    } // SetRandomOp
+
     inline void SetRandom(unsigned int index, unsigned int& seed, unsigned int instructions, unsigned int opcodes)
     {
         unsigned int reg = RANDOMMOD(seed, instructions);
@@ -210,10 +221,23 @@ typedef struct FireStarterInstructions {
         SetOperation(index, fireStarterOpcodes[op], reg);
     } // SetRandom
 
+    inline void SetRandom(unsigned int index, unsigned int& regSeed, unsigned int& opSeed, unsigned int instructions, unsigned int opcodes)
+    {
+        unsigned int reg = RANDOMMOD(regSeed, instructions);
+        unsigned int op = RANDOMMOD(opSeed, opcodes);
+        SetOperation(index, fireStarterOpcodes[op], reg);
+    } // SetRandom
+
     inline void Randomize(unsigned int& seed, unsigned int instructions, unsigned int opcodes)
     {
         for (unsigned int i = 0; i < instructions; i++)
             SetRandom(i, seed, instructions, opcodes);
+    } // Randomize
+
+    inline void Randomize(unsigned int& regSeed, unsigned int& opSeed, unsigned int instructions, unsigned int opcodes)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            SetRandom(i, regSeed, opSeed, instructions, opcodes);
     } // Randomize
 
     inline float Execute(FireStarterData data, float n) const

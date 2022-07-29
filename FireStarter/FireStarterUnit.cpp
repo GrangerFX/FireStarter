@@ -198,7 +198,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
-#if 0
+#if 1
     unsigned int blocksPerGrid = (m_settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
 #else
     unsigned int blocksPerGrid = m_settings.m_population;
