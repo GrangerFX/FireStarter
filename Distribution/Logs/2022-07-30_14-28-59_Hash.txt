@@ -1,0 +1,43 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_CODE;
+states = 1;
+units = 2;
+process = 0;
+population = 4352;
+iterations = 256;
+generations = 5;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best=0.08713059
+  Unit: 0  Result=0.08713059  Best=0.08713059  Seed=C0A9496F  ResultHash=264A  ProgramHash=63AC
+  Unit: 1  Result=0.10627693  Best=0.10627693  Seed=27922CA2  ResultHash=A8BE  ProgramHash=C4EB
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best=0.07458533
+  Unit: 0  Result=0.07458533  Best=0.07458533  Seed=C0A94974  ResultHash=51B5  ProgramHash=FC56
+  Unit: 1  Result=0.09588575  Best=0.09588575  Seed=27922CA7  ResultHash=780C  ProgramHash=5B33
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best=0.03699827
+  Unit: 0  Result=0.06571960  Best=0.06571960  Seed=C0A94979  ResultHash=A536  ProgramHash=CBFA
+  Unit: 1  Result=0.03699827  Best=0.03699827  Seed=27922CAC  ResultHash=57F0  ProgramHash=E4EA
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best=0.02643228
+  Unit: 0  Result=0.02643228  Best=0.02643228  Seed=C0A9497E  ResultHash=F1B9  ProgramHash=5AE9
+  Unit: 1  Result=0.02938083  Best=0.02938083  Seed=27922CB1  ResultHash=FD0C  ProgramHash=BE44
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best=0.02351588
+  Unit: 0  Result=0.02351588  Best=0.02351588  Seed=C0A94983  ResultHash=8D73  ProgramHash=B4F3
+  Unit: 1  Result=0.02808788  Best=0.02808788  Seed=27922CB6  ResultHash=7CD6  ProgramHash=0AD0
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best=0.02300745
+  Unit: 0  Result=0.02300745  Best=0.02300745  Seed=C0A94988  ResultHash=E191  ProgramHash=B4F3
+  Unit: 1  Result=0.02531171  Best=0.02531171  Seed=27922CBB  ResultHash=F21F  ProgramHash=A329
