@@ -135,4 +135,3 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         }
     }
 } // Evolve
-#endif
