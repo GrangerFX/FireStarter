@@ -1,0 +1,41 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveFactor = 0.100000f;
+evolveStartFactor = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_CODE;
+states = 1;
+units = 1;
+process = 0;
+population = 4352;
+iterations = 256;
+generations = 5;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_CODE: Generation=0  Age=0  Best=0.08713059  Time=2.1366 Seconds  Run Time=4.6799 Seconds
+FIRESTARTER_CODE: Generation=1  Age=0  Best=0.07458533  Time=1.5231 Seconds  Run Time=6.2970 Seconds
+FIRESTARTER_CODE: Generation=2  Age=0  Best=0.06842148  Time=1.4674 Seconds  Run Time=7.7989 Seconds
+FIRESTARTER_CODE: Generation=3  Age=0  Best=0.06473550  Time=1.4386 Seconds  Run Time=9.3213 Seconds
+FIRESTARTER_CODE: Generation=4  Age=0  Best=0.04946864  Time=1.4362 Seconds  Run Time=10.7659 Seconds
+FIRESTARTER_CODE: Generation=5  Age=0  Best=0.03280793  Time=1.4425 Seconds  Run Time=12.3169 Seconds
+FIRESTARTER_CODE: Generation=6  Age=1  Best=0.03280793  Time=1.4812 Seconds  Run Time=13.8960 Seconds
+FIRESTARTER_CODE: Generation=7  Age=0  Best=0.02900863  Time=1.4998 Seconds  Run Time=15.4688 Seconds
+FIRESTARTER_CODE: Generation=8  Age=0  Best=0.02841181  Time=1.5213 Seconds  Run Time=17.0369 Seconds
+FIRESTARTER_CODE: Generation=9  Age=0  Best=0.02439493  Time=1.5386 Seconds  Run Time=18.6012 Seconds
+FIRESTARTER_CODE: Generation=10  Age=0  Best=0.02134097  Time=1.5786 Seconds  Run Time=20.1943 Seconds
+FIRESTARTER_CODE: Generation=11  Age=0  Best=0.01801842  Time=1.6563 Seconds  Run Time=21.9300 Seconds
+FIRESTARTER_CODE: Generation=12  Age=0  Best=0.01612771  Time=1.6058 Seconds  Run Time=23.6451 Seconds
+FIRESTARTER_CODE: Generation=13  Age=1  Best=0.01612771  Time=1.6381 Seconds  Run Time=25.3320 Seconds
+FIRESTARTER_CODE: Generation=14  Age=0  Best=0.01428067  Time=1.6570 Seconds  Run Time=27.0148 Seconds
+FIRESTARTER_CODE: Generation=15  Age=1  Best=0.01428067  Time=1.6802 Seconds  Run Time=28.7029 Seconds

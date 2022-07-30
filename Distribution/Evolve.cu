@@ -4,124 +4,6 @@
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-#if 1
-GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterSettings settings, const unsigned int seed, const unsigned int init)
-{
-    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
-    if (member >= settings.m_population)
-        return;
-    unsigned int memberSeed = RANDOM(RANDOM(seed) + member);
-    unsigned int instructionsSeed = RANDOM(RANDOM(seed) + blockIdx.x);
-
-    GPU_SHARED FireStarterInstructions instructions;
-
-    float oldResult;
-    if (init == 1) {
-        // The first generation's instructions are random.
-        oldResult = settings.m_evolveStartResult;
-        instructions.Randomize(instructionsSeed, settings.m_instructions, settings.m_opcodes);
-    } else {
-        // Later generations randomize one instruction.
-        instructions = *oldEvolutions->Instructions(member);
-        oldResult = *oldResults->MaxResult(member);
-
-        // Evolve a single program instruction for each generation.
-        if (init) {
-            unsigned int index = RANDOMMOD(instructionsSeed, settings.m_instructions);
-            instructions.SetRandom(index, instructionsSeed, settings.m_instructions, settings.m_opcodes);
-        }
-    }
-
-    // Evolve the program data for each variation.
-    float maxResult = 0.0f;
-    for (unsigned int v = 0; (v < settings.m_variations) && (maxResult <= oldResult); v++) {
-        FireStarterData data;
-        float oldResult;
-        float evolutionFactor;
-        if (init == 1) {
-            for (int i = 0; i < settings.m_registers; i++)
-                data.d[i] = RANDOMFACTOR(memberSeed);
-            oldResult = settings.m_evolveStartResult;
-            evolutionFactor = settings.m_evolveStartFactor;
-        } else {
-            data = *oldResults->Data(member, v);
-            if (init) {
-                oldResult = settings.m_evolveStartResult;
-                evolutionFactor = settings.m_evolveStartFactor;
-            } else {
-                oldResult = *oldResults->MinResult(member, v);
-                evolutionFactor = settings.m_evolveFactor * oldResult;
-            }
-        }
-
-        // Initial check for bad results.
-        float target[FIRESTARTER_SAMPLES];
-        float theta = settings.m_sampleMin;
-        float sampleStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_samples - 1);
-        for (int i = 0; i < settings.m_samples; i++) {
-            target[i] = Target(theta, v);
-            theta += sampleStep;
-        }
-
-        // Evolve the data.
-        float result = oldResult;
-        for (unsigned int p = 0; p < settings.m_iterations; p++) {
-            unsigned int d = RANDOMMOD(memberSeed, settings.m_instructions);
-            const float oldData = data.d[d];
-            data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(memberSeed);
-            theta = settings.m_sampleMin;
-            float curResult = 0.0f;
-            for (int i = 0; i < settings.m_samples; i++) {
-                curResult = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), curResult);
-                theta += sampleStep;
-            }
-            if (curResult <= result) {
-                result = curResult;
-                evolutionFactor = settings.m_evolveFactor * result;
-            } else
-                data.d[d] = oldData;
-        }
-
-        *newResults->Data(member, v) = data;
-        *newResults->MinResult(member, v) = result;
-        maxResult = fmaxf(maxResult, result);
-    }
-
-    // Only read and write memory in a single thread.
-    if (init || (maxResult < oldResult)) {
-        // Save the improved results.
-        *newEvolutions->Instructions(member) = instructions;
-        *newResults->MaxResult(member) = maxResult;
-    } else {
-        // Copy a result from among the previous generations best results.
-        unsigned int bestIndex = member;
-        float bestResult = oldResult;
-        if (settings.m_evolve == FIRESTARTER_EVOLVE_BEST) {
-            // The genetic part of genetic programming and a major optimization:
-            // Copy the best data from among a random set of candidates.
-            for (int i = 0; i < settings.m_evolveCandidates; i++) {
-                unsigned int index = RANDOMMOD(instructionsSeed, settings.m_population);
-                float curResult = *oldResults->MaxResult(index);
-                if (curResult <= bestResult) {
-                    bestIndex = index;
-                    bestResult = curResult;
-                }
-            }
-        } else if (settings.m_evolve == FIRESTARTER_EVOLVE_RANDOM)
-            bestIndex = RANDOMMOD(instructionsSeed, settings.m_population);
-
-        *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
-        if (bestIndex != member) {
-            for (unsigned int v = 0; v < settings.m_variations; v++) {
-                *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
-                *newResults->MinResult(member, v) = settings.m_evolveStartResult;
-            }
-            *newResults->MaxResult(member) = bestResult;
-        } else
-            *newResults->MaxResult(member) = maxResult;
-    }
-} // Evolve
-#else
 GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterSettings settings, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = blockIdx.x;
@@ -151,9 +33,11 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     }
 
     // Evolve the program data for each variation.
+    GPU_SHARED float threadResults[BLOCK_THREADS];
+    GPU_SHARED FireStarterData allData[BLOCK_THREADS];
+    FireStarterData& data = allData[thread];
     float maxResult = 0.0f;
     for (unsigned int v = 0; (v < settings.m_variations) && (maxResult <= oldResult); v++) {
-        FireStarterData data;
         float oldResult;
         float evolutionFactor;
         if (init == 1) {
@@ -163,13 +47,8 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             evolutionFactor = settings.m_evolveStartFactor;
         } else {
             data = *oldResults->Data(member, v);
-            if (init) {
-                oldResult = settings.m_evolveStartResult;
-                evolutionFactor = settings.m_evolveStartFactor;
-            } else {
-                oldResult = *oldResults->MinResult(member, v);
-                evolutionFactor = settings.m_evolveFactor * oldResult;
-            }
+            oldResult = *oldResults->MinResult(member, v);
+            evolutionFactor = settings.m_evolveFactor * oldResult;
         }
 
         // Initial check for bad results.
@@ -201,7 +80,6 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         }
 
         // Find the best result among all the warp threads.
-        GPU_SHARED float threadResults[BLOCK_THREADS];
         threadResults[thread] = result;
 
         GPU_SYNCTHREADS();
