@@ -96,10 +96,6 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             *newResults->MinResult(member, v) = minResult;
         }
         maxResult = fmaxf(maxResult, minResult);
-
-        // Early out in case the result got worse.
-        if (!init && (maxResult > oldResult))
-            break;
     }
 
     // Only read and write memory in a single thread.
