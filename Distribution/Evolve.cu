@@ -98,7 +98,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         maxResult = fmaxf(maxResult, minResult);
 
         // Early out in case the result got worse.
-        if ((maxResult > oldResult) && (init != 1))
+        if (!init && (maxResult > oldResult))
             break;
     }
 
