@@ -22,9 +22,9 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
 
     // Precalculate the target theta values.
     float theta[FIRESTARTER_SAMPLES];
-    float sampleStep = (settings.m_sampleMax - settings.m_sampleMin) / (FIRESTARTER_SAMPLES - 1);
+    float sampleStep = (FIRESTARTER_SAMPLE_MAX - FIRESTARTER_SAMPLE_MIN) / (FIRESTARTER_SAMPLES - 1);
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-        theta[i] = settings.m_sampleMin + i * sampleStep;
+        theta[i] = FIRESTARTER_SAMPLE_MIN + i * sampleStep;
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
@@ -44,12 +44,12 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
                 data.d[i] = RANDOMFACTOR(memberSeed);
             for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
-            result = oldResult = settings.m_evolveStartResult;
-            evolutionFactor = settings.m_evolveStartFactor;
+            result = oldResult = FIRESTARTER_EVOLVE_START_RESULT;
+            evolutionFactor = FIRESTARTER_EVOLVE_START_FACTOR;
         } else {
             data = *oldResults->Data(member, v);
             result = oldResult = *oldResults->MinResult(member, v);
-            evolutionFactor = settings.m_evolveFactor * result;
+            evolutionFactor = FIRESTARTER_EVOLVE_FACTOR * result;
         }
 
         // Iterate to evolve the data.
@@ -69,9 +69,9 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
 
         // Calculate a more accurate estimate of the result.
         if (settings.m_precision) {
-            float precisionStep = (settings.m_sampleMax - settings.m_sampleMin) / (settings.m_precision - 1);
+            float precisionStep = (FIRESTARTER_SAMPLE_MAX - FIRESTARTER_SAMPLE_MIN) / (settings.m_precision - 1);
             for (int i = 0; i < settings.m_precision; i++) {
-                float theta = settings.m_sampleMin + i * precisionStep;
+                float theta = FIRESTARTER_SAMPLE_MIN + i * precisionStep;
                 result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, v)), result);
             }
         }
@@ -87,7 +87,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             // Copy the best data from among a random set of candidates.
             unsigned int bestIndex = member;
             float bestResult = oldResult;
-            for (int i = 0; i < settings.m_evolveCandidates; i++) {
+            for (int i = 0; i < FIRESTARTER_EVOLVE_CANDIDATES; i++) {
                 unsigned int index = RANDOMMOD(memberSeed, settings.m_population);
                 float curResult = *oldResults->MinResult(index, v);
                 if (curResult <= bestResult) {
@@ -97,7 +97,7 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
             }
             if (bestIndex != member) {
                 *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
-                *newResults->MinResult(member, v) = settings.m_evolveStartResult;
+                *newResults->MinResult(member, v) = FIRESTARTER_EVOLVE_START_RESULT;
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
                 *newResults->Data(member, v) = data;
