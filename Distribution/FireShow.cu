@@ -5,7 +5,7 @@
 #include "FireStarterTarget.h"
 #include "CUDADefines.h"
 
-GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variation)
+GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variations)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int xScale = bufferHeight / 8;
@@ -27,28 +27,30 @@ GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions*
         };
     }
     if (x < bufferWidth) {
-        float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
-        float target = Target(theta, variation);
-        float center = bufferHeight * 0.66f;
-        int y = (int)(center + target * yScale);
-        if ((y >= 0) && (y < bufferHeight)) {
-            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
-            pixel.x = 255;
-            pixel.y = 128;
-        };
-        FireStarterData workData(*bestResult->Data(variation));
-        y = (int)(center + bestInstructions->Execute(workData, theta) * yScale);
-        if ((y >= 0) && (y < bufferHeight)) {
-            uchar4 &pixel(bufferPixels[y * bufferWidth + x]);
-            pixel.x = pixel.y = pixel.z = 255;
-        };
-        int i = x / 32;
-        if (i < bestResult->dataSize) {
-            y = (int)(center + bestResult->Data(variation)->d[i] * 10.0f);
+        for (unsigned int v = 0; v < variations; v++) {
+            float theta = (x - bufferWidth * 0.5f) * (3.14159265f / xScale) + 3.14159265f;
+            float target = Target(theta, v);
+            float center = bufferHeight * 0.66f;
+            int y = (int)(center + target * yScale);
             if ((y >= 0) && (y < bufferHeight)) {
                 uchar4& pixel(bufferPixels[y * bufferWidth + x]);
-                pixel.x = pixel.y = 255;
-                pixel.z = 0;
+                pixel.x = 255;
+                pixel.y = 128;
+            };
+            FireStarterData workData(*bestResult->Data(v));
+            y = (int)(center + bestInstructions->Execute(workData, theta) * yScale);
+            if ((y >= 0) && (y < bufferHeight)) {
+                uchar4& pixel(bufferPixels[y * bufferWidth + x]);
+                pixel.x = pixel.y = pixel.z = 255;
+            };
+            int i = x / 32;
+            if (i < bestResult->dataSize) {
+                y = (int)(center + bestResult->Data(v)->d[i] * 10.0f);
+                if ((y >= 0) && (y < bufferHeight)) {
+                    uchar4& pixel(bufferPixels[y * bufferWidth + x]);
+                    pixel.x = pixel.y = 255;
+                    pixel.z = 0;
+                }
             }
         }
     }

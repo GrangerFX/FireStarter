@@ -94,27 +94,26 @@ void FireStarter::FireShow(void)
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice, m_fireStarterContext->Stream()));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice, m_fireStarterContext->Stream()));
-    for (unsigned int variation = 0; variation < m_settings.m_variations; variation++) {
-        // Launch the display kernel
-        int threadsPerBlock = BLOCK_THREADS;
-        int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
-        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-        dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-        void* arr[] = { reinterpret_cast<void*>(&m_fireShowResult),
-                        reinterpret_cast<void*>(&m_fireShowInstructions),
-                        reinterpret_cast<void*>(&m_buffer.m_deviceBase),
-                        reinterpret_cast<void*>(&m_buffer.m_width),
-                        reinterpret_cast<void*>(&m_buffer.m_height),
-                        reinterpret_cast<void*>(&variation) };
+    // Launch the display kernel
+    int threadsPerBlock = BLOCK_THREADS;
+    int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-        checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, m_fireStarterContext->Stream(),                  // shared mem, stream */
-            &arr[0],                                            // arguments */
-            0));
-    }
+    void* arr[] = { reinterpret_cast<void*>(&m_fireShowResult),
+                    reinterpret_cast<void*>(&m_fireShowInstructions),
+                    reinterpret_cast<void*>(&m_buffer.m_deviceBase),
+                    reinterpret_cast<void*>(&m_buffer.m_width),
+                    reinterpret_cast<void*>(&m_buffer.m_height),
+                    reinterpret_cast<void*>(&m_settings.m_variations) };
+
+    checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+        0, m_fireStarterContext->Stream(),                  // shared mem, stream */
+        &arr[0],                                            // arguments */
+        0));
     checkCUDAErrors(cudaStreamSynchronize(m_fireStarterContext->Stream()));
 } // FireShow
 

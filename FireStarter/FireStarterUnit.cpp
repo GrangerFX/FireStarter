@@ -264,7 +264,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
             }
         }
         FireStarterResult* result = state.Result();
-        memcpy(result, evolveState.m_hostResults->Result(minIndex), FireStarterResult::ResultSize(m_settings.m_instructions, m_settings.m_variations));
+        memcpy(result, evolveState.m_hostResults->Result(minIndex), FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations));
         state.m_program.LoadInstructions(evolveState.m_hostEvolutions->Instructions(minIndex));
         state.m_program.OptimizeRegisters(false);
         state.OptimizeData();
