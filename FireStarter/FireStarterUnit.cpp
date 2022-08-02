@@ -259,6 +259,9 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
         for (unsigned int i = 1; i < m_settings.m_population; i++) {
             float curResult = *evolveState.m_hostResults->MaxResult(i);
             if (curResult < minResult) {
+                for (unsigned int v = 0; v < m_settings.m_variations; v++)
+                    if (*evolveState.m_hostResults->MinResult(i, v) > curResult)
+                        continue;
                 minResult = curResult;
                 minIndex = i;
             }
