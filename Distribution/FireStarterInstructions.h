@@ -84,6 +84,11 @@ struct FireStarterInstruction {
 #endif
     } // Execute
 
+    inline void Execute(FireStarterData* data, float& n) const
+    {
+        Execute(*data, n);
+    } // Execute
+
     inline void GenerateTabs(char* buffer, size_t size, size_t& length, unsigned int tabs) const
     {
         // Insert leading tabs (four spaces).
@@ -279,6 +284,14 @@ typedef struct FireStarterInstructions {
     {
         for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) // Constant loop is unrolled by compiler.
             i[index].Execute(data, n);
+        return isfinite(n) ? n : 0.0f;
+    } // Execute
+
+    inline float Execute(FireStarterData* data, unsigned int instructions, float n) const
+    {
+        size_t dataSize = FireStarterData::DataSize(instructions);
+        for (unsigned int index = 0; index < instructions; index++)
+            Instruction(index).Execute(data, n);
         return isfinite(n) ? n : 0.0f;
     } // Execute
 } FireStarterInstructions;

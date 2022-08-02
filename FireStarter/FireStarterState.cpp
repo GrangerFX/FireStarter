@@ -1,5 +1,6 @@
 #include "FireStarterState.h"
 #include "FireStarterCode.h"
+#include "FireStarterTarget.h"
 
 bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
@@ -70,6 +71,31 @@ void FireStarterState::OptimizeData(void)
     for (unsigned int i = 0; i < m_program.m_dataSize; i++)
         m_program.m_registers[i].dataIndex = i;
 } // OptimizeData
+
+float FireStarterState::TestResult(void)
+{
+    float testResult = 0.0f;
+    unsigned int instructions = m_program.m_settings.m_instructions;
+    size_t dataSize = FireStarterData::DataSize(instructions);
+    FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
+    for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
+        FireStarterData* initData = Result()->Data(v);
+        float result = 0.0f;
+        float theta = FIRESTARTER_SAMPLE_MIN;
+        float sampleStep = (FIRESTARTER_SAMPLE_MAX - FIRESTARTER_SAMPLE_MIN) / (FIRESTARTER_SAMPLES - 1);
+        for (unsigned int i = 0; i < m_program.m_settings.m_samples; i++) {
+            float target = Target(theta, v);
+            memcpy(workData, initData, dataSize);
+            float difference = fabsf(m_program.Instructions()->Execute(workData, instructions, theta) - Target(theta, v));
+            theta += sampleStep;
+            result = max(result, difference);
+        }
+        float minResult = *Result()->MinResult(v);
+        testResult = max(testResult, fabsf(result - minResult));
+    }
+    free(workData);
+    return testResult;
+} // TestResult
 
 void FireStarterState::InitState(const FireStarterSettings& settings)
 {

@@ -60,7 +60,7 @@ public:
     void SaveSolution(void);
     void FireSettings(void);
     void FireShow(void);
-    void RenderStatus(void);
+    void RenderStatus(float testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ControlDeallocate(void);
     void ControlAllocate(void);

@@ -30,20 +30,20 @@ typedef struct FireStarterResult {
         return &data[variation * dataSize + (dataSize - 1)];
     } // MinResult
 
-    inline const float* ConstMinResult(unsigned int variation) const
+    inline const float* MinResult(unsigned int variation) const
     {
         return &data[variation * dataSize + (dataSize - 1)];
-    } // ConstMinResult
+    } // MinResult
 
     inline FireStarterData* Data(unsigned int variation)
     {
         return (FireStarterData*)&data[variation * dataSize];
     } // Data
 
-    inline const FireStarterData* ConstData(unsigned int variation) const
+    inline const FireStarterData* Data(unsigned int variation) const
     {
         return (const FireStarterData*)&data[variation * dataSize];
-    } // ConstData
+    } // Data
 
     inline void Init(unsigned int registers, unsigned int variations, float startResult)
     {
@@ -63,10 +63,10 @@ typedef struct FireStarterResult {
         dataSize = registers + 1;
         for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
-            const FireStarterData* srcData = initResult->ConstData(v);
+            const FireStarterData* srcData = initResult->Data(v);
             for (unsigned int i = 0; i < registers; i++)
                 data->d[i] = srcData->d[i];
-            *MinResult(v) = *initResult->ConstMinResult(v);
+            *MinResult(v) = *initResult->MinResult(v);
         }
     } // Init
 } FireStarterResult;
@@ -88,19 +88,19 @@ typedef struct FireStarterResults {
         return (FireStarterResult*)(m_memory + member * m_resultSize);
     } // Result
 
-    inline const FireStarterResult* ConstResult(unsigned int member) const
+    inline const FireStarterResult* Result(unsigned int member) const
     {
         return (const FireStarterResult*)(m_memory + member * m_resultSize);
-    } // ConstResult
+    } // Result
 
     inline FireStarterData* Data(unsigned int member, unsigned int variation)
     {
         return Result(member)->Data(variation);
     } // Data
 
-    inline const FireStarterData* ConstData(unsigned int member, unsigned int variation) const
+    inline const FireStarterData* Data(unsigned int member, unsigned int variation) const
     {
-        return ConstResult(member)->ConstData(variation);
+        return Result(member)->Data(variation);
     } // Data
 
     inline float* MinResult(unsigned int member, unsigned int variation)
@@ -108,20 +108,20 @@ typedef struct FireStarterResults {
         return Result(member)->MinResult(variation);
     } // MinResult
 
-    inline const float* ConstMinResult(unsigned int member, unsigned int variation) const
+    inline const float* MinResult(unsigned int member, unsigned int variation) const
     {
-        return ConstResult(member)->ConstMinResult(variation);
-    } // ConstMinResult
+        return Result(member)->MinResult(variation);
+    } // MinResult
 
     inline float* MaxResult(unsigned int member)
     {
         return &Result(member)->maxResult;
     } // MaxResult
 
-    inline const float* ConstMaxResult(unsigned int member) const
+    inline const float* MaxResult(unsigned int member) const
     {
-        return &ConstResult(member)->maxResult;
-    } // ConstMaxResult
+        return &Result(member)->maxResult;
+    } // MaxResult
 
     inline void InitResults(unsigned int members, unsigned int registers, unsigned int variations, float startResult)
     {
