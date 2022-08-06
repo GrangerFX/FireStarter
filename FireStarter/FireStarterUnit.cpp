@@ -8,7 +8,7 @@ void FireStarterUnit::InitEvolveStates(const FireStarterState &state)
         if ((m_settings.m_mode == FIRESTARTER_OPTIMIZE) && OPTIMIZE_LOAD_DATA)
             evolveState.m_hostResults->InitResults(m_settings.m_population, m_settings.m_instructions, m_settings.m_variations, state.Result());
         else
-            evolveState.m_hostResults->InitResults(m_settings.m_population, m_settings.m_instructions, m_settings.m_variations, m_settings.m_evolveStartResult);
+            evolveState.m_hostResults->InitResults(m_settings.m_population, m_settings.m_instructions, m_settings.m_variations, m_settings.m_startResult);
 
         evolveState.m_deviceResults0 = (FireStarterResults*)(evolveState.m_deviceResults);
         evolveState.m_deviceResults1 = (FireStarterResults*)(evolveState.m_deviceResults + m_resultsSize);

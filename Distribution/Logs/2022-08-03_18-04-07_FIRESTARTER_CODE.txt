@@ -1,0 +1,38 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveScale = 0.100000f;
+evolveStartScale = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_CODE;
+states = 1;
+units = 1;
+process = 0;
+population = 4352;
+iterations = 256;
+generations = 5;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_CODE: Generation=0  Age=0  Best=0.10465980  Time=2.1365 Seconds  Run Time=4.6660 Seconds  TestError=0.00000002
+FIRESTARTER_CODE: Generation=1  Age=0  Best=0.09254667  Time=1.5990 Seconds  Run Time=6.3741 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=2  Age=0  Best=0.07759416  Time=1.6863 Seconds  Run Time=8.1188 Seconds  TestError=0.00000006
+FIRESTARTER_CODE: Generation=3  Age=0  Best=0.04081202  Time=1.7481 Seconds  Run Time=9.9447 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=4  Age=0  Best=0.03074342  Time=1.8259 Seconds  Run Time=11.7919 Seconds  TestError=0.00000006
+FIRESTARTER_CODE: Generation=5  Age=0  Best=0.02660406  Time=1.8459 Seconds  Run Time=13.6961 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=6  Age=0  Best=0.02646941  Time=1.9251 Seconds  Run Time=15.6625 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=7  Age=0  Best=0.02218926  Time=2.1057 Seconds  Run Time=17.8421 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=8  Age=0  Best=0.02105117  Time=2.0718 Seconds  Run Time=19.9222 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=9  Age=1  Best=0.02105117  Time=2.0612 Seconds  Run Time=22.0225 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=10  Age=0  Best=0.02101403  Time=2.0931 Seconds  Run Time=24.1653 Seconds  TestError=0.00000006
+FIRESTARTER_CODE: Generation=11  Age=0  Best=0.02038950  Time=2.2427 Seconds  Run Time=26.4268 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=12  Age=1  Best=0.02038950  Time=2.2641 Seconds  Run Time=28.7825 Seconds  TestError=0.00000000

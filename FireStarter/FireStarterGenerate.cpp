@@ -123,8 +123,8 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunc
     code += "\r\n";
     code += targetCode;
     code += "\r\n";
-    code += Format("#define SOLUTION_MIN %f\r\n", settings.m_sampleMin);
-    code += Format("#define SOLUTION_MAX %f\r\n", settings.m_sampleMax);
+    code += Format("#define SOLUTION_MIN %f\r\n", settings.m_targetMin);
+    code += Format("#define SOLUTION_MAX %f\r\n", settings.m_targetMax);
     code += "\r\n";
     code += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
     code += "\r\n";

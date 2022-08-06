@@ -1,0 +1,38 @@
+instructions = 32;
+registers = 32;
+opcodes = 2;
+variations = 3;
+samples = 15;
+
+sampleMin = 0.000000f;
+sampleMax = 6.283185f;
+evolveScale = 0.100000f;
+evolveStartScale = 4.000000f;
+evolveStartResult = 10.000000f;
+evolveCandidates = 16;
+
+mode = FIRESTARTER_CODE;
+states = 1;
+units = 1;
+process = 0;
+population = 4352;
+iterations = 256;
+generations = 5;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best=0.10465980  Result=0.10465980  Best=0.10465980  Seed=C0A9496F  ResultHash=ED29  ProgramHash=4C2F
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best=0.09254667  Result=0.09254667  Best=0.09254667  Seed=C0A94974  ResultHash=2217  ProgramHash=2F48
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best=0.07759416  Result=0.07759416  Best=0.07759416  Seed=C0A94979  ResultHash=750F  ProgramHash=9F04
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best=0.04081202  Result=0.04081202  Best=0.04081202  Seed=C0A9497E  ResultHash=2669  ProgramHash=9835
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best=0.03074342  Result=0.03074342  Best=0.03074342  Seed=C0A94983  ResultHash=1F96  ProgramHash=58E5
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best=0.02660406  Result=0.02660406  Best=0.02660406  Seed=C0A94988  ResultHash=7CFD  ProgramHash=58E5
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best=0.02646941  Result=0.02646941  Best=0.02646941  Seed=C0A9498D  ResultHash=3D41  ProgramHash=58E5
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best=0.02218926  Result=0.02218926  Best=0.02218926  Seed=C0A94992  ResultHash=4C8B  ProgramHash=D8A9
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   8  Best=0.02105117  Result=0.02105117  Best=0.02105117  Seed=C0A94997  ResultHash=B30D  ProgramHash=D8A9
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:   9  Best=0.02105117  Result=0.02118605  Best=0.02105117  Seed=C0A9499C  ResultHash=0449  ProgramHash=D8A9
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:  10  Best=0.02101403  Result=0.02101403  Best=0.02101403  Seed=C0A949A1  ResultHash=71B0  ProgramHash=D8A9
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:  11  Best=0.02038950  Result=0.02038950  Best=0.02038950  Seed=C0A949A6  ResultHash=6DC9  ProgramHash=D8A9
+FIRESTARTER_CODE:FIRESTARTER_EVOLVE_BEST  Generation:  12  Best=0.02038950  Result=0.02048922  Best=0.02038950  Seed=C0A949AB  ResultHash=E88E  ProgramHash=58E5

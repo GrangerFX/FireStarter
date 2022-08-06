@@ -255,7 +255,7 @@ void FireStarter::ControlLoop(void)
     FireSettings();
     m_seed = m_settings.m_seed;
     m_fireStarterMode = m_settings.m_mode;
-    m_bestResult = m_settings.m_evolveStartResult;
+    m_bestResult = m_settings.m_startResult;
 
     // If the evolve units is set to zero, use the number of concurrent hardware threads.
     if (m_settings.m_units == 0)
@@ -310,7 +310,7 @@ void FireStarter::ControlLoop(void)
             unit->Update(m_allStates.data());
 
         // Update the best data for all the states.
-        m_result = m_settings.m_evolveStartResult;
+        m_result = m_settings.m_startResult;
         for (const FireStarterState& state : m_allStates) {
             float maxResult = state.Result()->maxResult;
             m_result = fmin(m_result, maxResult);

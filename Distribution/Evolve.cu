@@ -2,7 +2,6 @@
 
 #include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
-#include "FireStarterTarget.h"
 
 #if 0
 GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterSettings settings, const unsigned int seed, const unsigned int init)
@@ -158,7 +157,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
     float oldResult;
     if (init == 1) {
         // The first generation's instructions are random.
-        oldResult = FIRESTARTER_EVOLVE_START_RESULT;
+        oldResult = FIRESTARTER_CODE_START_RESULT;
         instructions.Randomize(memberSeed);
     } else {
         // Later generations randomize one instruction.
@@ -183,18 +182,18 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         if (init == 1) {
             for (int i = 0; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
-            oldMinResult = FIRESTARTER_EVOLVE_START_RESULT;
-            evolutionFactor = FIRESTARTER_EVOLVE_START_FACTOR;
+            oldMinResult = FIRESTARTER_CODE_START_RESULT;
+            evolutionFactor = FIRESTARTER_CODE_START_SCALE;
         } else {
             data = *oldResults->Data(member, v);
             oldMinResult = *oldResults->MinResult(member, v);
-            evolutionFactor = FIRESTARTER_EVOLVE_FACTOR * oldMinResult;
+            evolutionFactor = FIRESTARTER_CODE_SCALE * oldMinResult;
         }
 
         // Initial check for bad results.
         float target[FIRESTARTER_SAMPLES];
-        float theta = FIRESTARTER_SAMPLE_MIN;
-        float sampleStep = (FIRESTARTER_SAMPLE_MAX - FIRESTARTER_SAMPLE_MIN) / (FIRESTARTER_SAMPLES - 1);
+        float theta = TARGET_MIN;
+        float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
         for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
             target[i] = Target(theta, v);
             theta += sampleStep;
@@ -206,7 +205,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             unsigned int d = RANDOMMOD(threadSeed, FIRESTARTER_INSTRUCTIONS);
             const float oldData = data.d[d];
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
-            theta = FIRESTARTER_SAMPLE_MIN;
+            theta = TARGET_MIN;
             float curResult = 0.0f;
             for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
                 curResult = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), curResult);
@@ -214,7 +213,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             }
             if (curResult <= result) {
                 result = curResult;
-                evolutionFactor = FIRESTARTER_EVOLVE_FACTOR * result;
+                evolutionFactor = FIRESTARTER_CODE_SCALE * result;
             } else
                 data.d[d] = oldData;
         }
@@ -252,7 +251,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_BEST) {
                 // The genetic part of genetic programming and a major optimization:
                 // Copy the best data from among a random set of candidates.
-                for (int i = 0; i < FIRESTARTER_EVOLVE_CANDIDATES; i++) {
+                for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
                     unsigned int index = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
                     float curResult = *oldResults->MaxResult(index);
                     if (curResult <= bestResult) {
@@ -267,7 +266,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             if (bestIndex != member) {
                 for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                     *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
-                    *newResults->MinResult(member, v) = FIRESTARTER_EVOLVE_START_RESULT;
+                    *newResults->MinResult(member, v) = FIRESTARTER_CODE_START_RESULT;
                 }
                 *newResults->MaxResult(member) = bestResult;
             } else

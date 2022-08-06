@@ -1,6 +1,5 @@
 #include "FireStarterState.h"
 #include "FireStarterCode.h"
-#include "FireStarterTarget.h"
 
 bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
@@ -81,8 +80,8 @@ float FireStarterState::TestResult(void)
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
         FireStarterData* initData = Result()->Data(v);
         float result = 0.0f;
-        float theta = FIRESTARTER_SAMPLE_MIN;
-        float sampleStep = (FIRESTARTER_SAMPLE_MAX - FIRESTARTER_SAMPLE_MIN) / (FIRESTARTER_SAMPLES - 1);
+        float theta = m_program.m_settings.m_targetMin;
+        float sampleStep = (m_program.m_settings.m_targetMax - m_program.m_settings.m_targetMin) / (m_program.m_settings.m_samples - 1);
         for (unsigned int i = 0; i < m_program.m_settings.m_samples; i++) {
             float target = Target(theta, v);
             memcpy(workData, initData, dataSize);
@@ -101,7 +100,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings)
 {
     m_program.InitProgram(settings);
     m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
-    Result()->Init(m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_evolveStartResult);
+    Result()->Init(m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitState
 
 FireStarterState::FireStarterState(void)

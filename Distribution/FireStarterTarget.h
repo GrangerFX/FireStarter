@@ -3,6 +3,8 @@
 #endif
 
 #define TARGET_PI 3.14159265f
+#define TARGET_MIN 0.0f
+#define TARGET_MAX (2.0f * 3.14159265f)
 
 inline float Target(float n, unsigned int variation)
 {
