@@ -187,7 +187,10 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         } else {
             data = *oldResults->Data(member, v);
             oldMinResult = *oldResults->MinResult(member, v);
-            evolutionFactor = FIRESTARTER_CODE_SCALE * oldMinResult;
+            if (init)
+                evolutionFactor = FIRESTARTER_CODE_START_SCALE;
+            else
+                evolutionFactor = FIRESTARTER_CODE_SCALE * oldMinResult;
         }
 
         // Initial check for bad results.
@@ -200,7 +203,7 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         }
 
         // Evolve the data.
-        float result = oldMinResult;
+        float result = init ? FIRESTARTER_CODE_START_RESULT : oldMinResult;
         for (unsigned int p = 0; p < FIRESTARTER_CODE_ITERATIONS; p++) {
             unsigned int d = RANDOMMOD(threadSeed, FIRESTARTER_INSTRUCTIONS);
             const float oldData = data.d[d];
@@ -263,15 +266,12 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
                 bestIndex = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
 
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
-            if (bestIndex != member) {
-                for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-                    *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
-                    *newResults->MinResult(member, v) = FIRESTARTER_CODE_START_RESULT;
-                }
-                *newResults->MaxResult(member) = bestResult;
-            } else
-                *newResults->MaxResult(member) = maxResult;
-        }
+            for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+                *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
+                *newResults->MinResult(member, v) = FIRESTARTER_CODE_START_RESULT;
+            }
+            *newResults->MaxResult(member) = bestResult;
+         }
     }
 } // Evolve
 #endif
