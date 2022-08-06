@@ -121,9 +121,9 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, CUfunc
     FireStarterProgram::SettingsText(settings, code, "// Run ");
     code += Format("// Solution Generation = %d\r\n", state.m_generation);
     code += "\r\n";
-    code += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
-    code += "\r\n";
     code += targetCode;
+    code += "\r\n";
+    code += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
     code += "\r\n";
     code += Format("// Precision = %.8f\r\n", result->maxResult);
 
