@@ -12,6 +12,7 @@ bool FireStarter::LoadTargetCode(void)
     if (!FireStarterCode::LoadCode("FireStarterTarget.h", m_solutionTargetCode))
         return false;
     FireStarterCode::ReplaceCode(m_solutionTargetCode, "Target", "SolutionTarget");
+    FireStarterCode::ReplaceCode(m_solutionTargetCode, "TARGET_", "SOLUTION_");
     return true;
 } // LoadTargetCode
 
