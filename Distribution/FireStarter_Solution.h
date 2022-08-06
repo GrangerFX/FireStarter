@@ -1,6 +1,6 @@
-// Run date: 08/06/22 15:19:47 Pacific Daylight Time
-// Run duration = 2.066383 seconds
-// Run count = 43
+// Run date: 08/06/22 16:44:44 Pacific Daylight Time
+// Run duration = 1.736296 seconds
+// Run count = 42
 // Run variations = 3;
 // Run samples = 15;
 // Run instructions = 32;

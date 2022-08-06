@@ -75,19 +75,28 @@ float FireStarterState::TestResult(void)
 {
     float testResult = 0.0f;
     unsigned int instructions = m_program.m_settings.m_instructions;
-    size_t dataSize = FireStarterData::DataSize(instructions);
+    size_t dataSize = FireStarterData::DataSize(m_program.m_settings.m_registers);
     FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
+    unsigned int precision = m_program.m_settings.m_precision;
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
         FireStarterData* initData = Result()->Data(v);
         float result = 0.0f;
-        float theta = m_program.m_settings.m_targetMin;
         float sampleStep = (m_program.m_settings.m_targetMax - m_program.m_settings.m_targetMin) / (m_program.m_settings.m_samples - 1);
         for (unsigned int i = 0; i < m_program.m_settings.m_samples; i++) {
+            float theta = TARGET_MIN + i * sampleStep;
             float target = Target(theta, v);
             memcpy(workData, initData, dataSize);
             float difference = fabsf(m_program.Instructions()->Execute(workData, instructions, theta) - Target(theta, v));
-            theta += sampleStep;
             result = max(result, difference);
+        }
+        if (precision) {
+            float precisionStep = (TARGET_MAX - TARGET_MIN) / (precision - 1);
+            for (unsigned int i = 0; i < precision; i++) {
+                float theta = TARGET_MIN + i * precisionStep;
+                memcpy(workData, initData, dataSize);
+                float difference = fabsf(m_program.Instructions()->Execute(workData, instructions, theta) - Target(theta, v));
+                result = max(result, difference);
+            }
         }
         float minResult = *Result()->MinResult(v);
         testResult = max(testResult, fabsf(result - minResult));

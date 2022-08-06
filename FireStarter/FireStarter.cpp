@@ -326,6 +326,13 @@ void FireStarter::ControlLoop(void)
         }
         m_generationTime = m_controlTimer.Duration();
 
+        // Update the best code on disk and compile a new FireShow.
+        if (m_controlUpdate && !m_quitControlThread) {
+            SaveBestState();
+            SaveBestCode();
+            SaveSolution();
+        }
+
         // Test the best state
         float testError = m_bestState.TestResult();
 
@@ -339,14 +346,6 @@ void FireStarter::ControlLoop(void)
 
         m_generation++;
         m_averageResult = m_totalResult / (m_generation * m_allStates.size());
-
-        // Update the best code on disk and compile a new FireShow.
-        if (m_controlUpdate && !m_quitControlThread) {
-            if (m_settings.m_mode != FIRESTARTER_OPTIMIZE)
-                SaveBestState();
-            SaveBestCode();
-            SaveSolution();
-        }
 
         // Render the buffer if the best data was updated and the previous buffer was displayed.
         if (!m_bufferUpdate && !m_quitControlThread) {

@@ -31,6 +31,12 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
         }
     }
 
+    // Precalulate theta.
+    float theta[FIRESTARTER_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+        theta[i] = TARGET_MIN + i * sampleStep;
+
     // Evolve the program data for each variation.
     GPU_SHARED float threadResults[BLOCK_THREADS];
     GPU_SHARED FireStarterData allData[BLOCK_THREADS];
@@ -55,12 +61,9 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
 
         // Initial check for bad results.
         float target[FIRESTARTER_SAMPLES];
-        float theta = TARGET_MIN;
         float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-        for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-            target[i] = Target(theta, v);
-            theta += sampleStep;
-        }
+        for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+            target[i] = Target(theta[i], v);
 
         // Evolve the data.
         float result = init ? FIRESTARTER_CODE_START_RESULT : oldMinResult;
@@ -68,12 +71,9 @@ GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutio
             unsigned int d = RANDOMMOD(threadSeed, FIRESTARTER_INSTRUCTIONS);
             const float oldData = data.d[d];
             data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
-            theta = TARGET_MIN;
             float curResult = 0.0f;
-            for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-                curResult = fmaxf(fabsf(instructions.Execute(data, theta) - target[i]), curResult);
-                theta += sampleStep;
-            }
+            for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+                curResult = fmaxf(fabsf(instructions.Execute(data, theta[i]) - target[i]), curResult);
             if (curResult <= result) {
                 result = curResult;
                 evolutionFactor = FIRESTARTER_CODE_SCALE * result;
