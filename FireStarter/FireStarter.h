@@ -12,7 +12,7 @@ public:
     SimpleTimer m_controlTimer;
     std::string m_fireSettingsCode;
     std::string m_fireShowCode;
-    CUDAContext* m_fireStarterContext;
+    CUDAContext* m_CUDAContext;
     CUmodule m_fireSettingsModule;
     CUmodule m_fireShowModule;
     CUfunction m_fireSettingsFunction;

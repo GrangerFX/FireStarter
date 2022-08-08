@@ -75,19 +75,19 @@ void FireStarter::FireSettings(void)
     checkCUDAErrors(cuLaunchKernel(m_fireSettingsFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, m_fireStarterContext->Stream(),                  // shared mem, stream */
+        0, m_CUDAContext->Stream(),                  // shared mem, stream */
         &arr[0],                                            // arguments */
         0));
-    checkCUDAErrors(cudaMemcpyAsync(&m_settings, m_fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, m_fireStarterContext->Stream()));
-    checkCUDAErrors(cudaStreamSynchronize(m_fireStarterContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(&m_settings, m_fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, m_CUDAContext->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
 } // FireSettings
 
 void FireStarter::FireShow(void)
 {
     size_t resultSize = FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations);
-    checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice, m_fireStarterContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
-    checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice, m_fireStarterContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
 
     // Launch the display kernel
     int threadsPerBlock = BLOCK_THREADS;
@@ -105,10 +105,10 @@ void FireStarter::FireShow(void)
     checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, m_fireStarterContext->Stream(),                  // shared mem, stream */
+        0, m_CUDAContext->Stream(),                  // shared mem, stream */
         &arr[0],                                            // arguments */
         0));
-    checkCUDAErrors(cudaStreamSynchronize(m_fireStarterContext->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
 } // FireShow
 
 void FireStarter::RenderStatus(float testError)
@@ -205,14 +205,12 @@ void FireStarter::ControlDeallocate(void)
 
 void FireStarter::ControlAllocate(void)
 {
-    if (!m_fireStarterContext)
-        m_fireStarterContext = new CUDAContext(0);
+    if (!m_CUDAContext)
+        m_CUDAContext = new CUDAContext(0);
     ControlDeallocate();
     checkCUDAErrors(cudaMalloc(&m_fireSettings, sizeof(FireStarterSettings)));
     checkCUDAErrors(cudaMalloc(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations)));
     checkCUDAErrors(cudaMalloc(&m_fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions)));
-    if (!m_fireStarterGenerate)
-        m_fireStarterGenerate = new FireStarterGenerate(m_fireStarterContext->Stream());
 
     // Compile FireSettings
     if (CUDACompile::CompileProgram(m_fireSettingsModule, m_fireSettingsCode, "FireSettings"))
@@ -220,7 +218,7 @@ void FireStarter::ControlAllocate(void)
 
     // Compile FireGenerate
     if (!m_fireStarterGenerate)
-        m_fireStarterGenerate = new FireStarterGenerate(m_fireStarterContext->Stream());
+        m_fireStarterGenerate = new FireStarterGenerate(m_CUDAContext);
     m_fireStarterGenerate->InitGenerate(m_settings);
 
     // Compile FireShow.
@@ -461,8 +459,7 @@ void FireStarter::Quit(void)
 
 FireStarter::FireStarter(void)
 {
-    m_fireStarterMode = 0;
-    m_fireStarterContext = nullptr;
+    m_CUDAContext = nullptr;
     m_fireSettingsModule = nullptr;
     m_fireShowModule = nullptr;
     m_fireSettingsFunction = nullptr;
@@ -471,6 +468,7 @@ FireStarter::FireStarter(void)
     m_fireShowResult = nullptr;
     m_fireShowInstructions = nullptr;
     m_fireStarterGenerate = nullptr;
+    m_fireStarterMode = 0;
     m_quitControlThread = false;
     m_seed = 0;
     m_bestSeed = 0;
@@ -493,7 +491,7 @@ FireStarter::~FireStarter(void)
             delete m_fireStarterGenerate;
             m_fireStarterGenerate = nullptr;
         }
-        if (m_fireStarterContext)
-            delete m_fireStarterContext;
+        if (m_CUDAContext)
+            delete m_CUDAContext;
     });
 } // ~FireStarter

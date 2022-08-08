@@ -36,14 +36,29 @@ private:
         unsigned int m_firstMember = 0;
         unsigned int m_lastMember = 0;
 
+        inline void SetContext(void) const
+        {
+            m_CUDAContext->SetContext();
+        } // SetContext
+
+        inline void Syncronize(void) const
+        {
+            SetContext();
+            checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
+        } // Syncronize
+
         inline void EvolveCompile(const std::string& evolveCode)
         {
-            if (!m_evolveFunction && CUDACompile::CompileProgram(m_evolveModule, evolveCode, "Evolve"))
-                m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
+            if (!m_evolveFunction) {
+                m_CUDAContext->SetContext();
+                if (CUDACompile::CompileProgram(m_evolveModule, evolveCode, "Evolve"))
+                    m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
+            }
         } // EvolveCompile
 
         inline void OptimizeCompile(const std::string& optimizeCode)
         {
+            m_CUDAContext->SetContext();
             if (CUDACompile::CompileProgram(m_optimizeModule, optimizeCode, "Optimize"))
                 m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
         } // OptimizeCompile
@@ -53,12 +68,14 @@ private:
             m_device = device;
             m_firstMember = firstMember;
             m_lastMember = lastMember;
-            if (!m_CUDAContext)
+            if (m_CUDAContext)
+                m_CUDAContext->SetContext();
+            else
                 m_CUDAContext = new CUDAContext(m_device);
-            CUstream stream = m_CUDAContext->Stream();
             if (!m_generate)
-                m_generate = new FireStarterGenerate(stream);
+                m_generate = new FireStarterGenerate(m_CUDAContext);
 
+            CUstream stream = m_CUDAContext->Stream();
             size_t resultsSize = FireStarterResults::ResultsSize(settings.m_population, settings.m_registers, settings.m_variations);
             if (m_resultsSize != resultsSize) {
                 m_resultsSize = resultsSize;
@@ -103,13 +120,15 @@ private:
 
         inline ~FireStarterContext(void)
         {
-            if (m_evolveModule)
-                checkCUDAErrors(cuModuleUnload(m_evolveModule));
-            if (m_optimizeModule)
-                checkCUDAErrors(cuModuleUnload(m_optimizeModule));
-            delete m_generate;
-            if (m_CUDAContext)
+            if (m_CUDAContext) {
+                m_CUDAContext->SetContext();
+                if (m_evolveModule)
+                    checkCUDAErrors(cuModuleUnload(m_evolveModule));
+                if (m_optimizeModule)
+                    checkCUDAErrors(cuModuleUnload(m_optimizeModule));
+                delete m_generate;
                 delete m_CUDAContext;
+            }
         } // FireStarterContext
     }; // class FireStarterContext
 

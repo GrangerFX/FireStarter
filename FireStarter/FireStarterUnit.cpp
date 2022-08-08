@@ -68,7 +68,7 @@ void FireStarterUnit::UnitGenerate(void)
 void FireStarterUnit::SyncContexts(void)
 {
     for (FireStarterContext& context : m_contexts)
-        checkCUDAErrors(cudaStreamSynchronize(context.m_CUDAContext->Stream()));
+        context.Syncronize();
 } // SyncContexts
 
 void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
@@ -84,6 +84,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
 
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
+            context.SetContext();
             FireStarterResults* newResults = g & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
             FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
@@ -112,6 +113,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
         SyncContexts();
         if (m_gpus > 1) {
             for (FireStarterContext& context : m_contexts) {
+                context.SetContext();
                 size_t membersSize = m_hostResults->MemorySize(context.m_lastMember - context.m_firstMember);
                 size_t membersOffset = m_hostResults->MemorySize(context.m_firstMember);
                 FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
@@ -124,6 +126,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
             }
             SyncContexts();
             for (FireStarterContext& context : m_contexts) {
+                context.SetContext();
                 FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
                 checkCUDAErrors(cudaMemcpyAsync(results, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
 
@@ -139,6 +142,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     // Single GPUs have their data syncronized with the host here.
     if (m_gpus == 1) {
         FireStarterContext& context = m_contexts[0];
+        context.SetContext();
         FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
         FireStarterEvolutions* evolutions = m_settings.m_generations & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults, results, m_resultsSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
@@ -179,6 +183,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
+            context.SetContext();
             unsigned int dataSize = m_state.m_program.m_dataSize;
             FireStarterResults* newResults = g & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
@@ -206,6 +211,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
         SyncContexts();
         if (m_gpus > 1) {
             for (FireStarterContext& context : m_contexts) {
+                context.SetContext();
                 size_t membersSize = m_hostResults->MemorySize(context.m_lastMember - context.m_firstMember);
                 size_t membersOffset = m_hostResults->MemorySize(context.m_firstMember);
                 FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
@@ -213,6 +219,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
             }
             SyncContexts();
             for (FireStarterContext& context : m_contexts) {
+                context.SetContext();
                 FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
                 checkCUDAErrors(cudaMemcpyAsync(results, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
@@ -225,6 +232,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
     // Single GPUs have their data syncronized with the host here.
     if (m_gpus == 1) {
         FireStarterContext& context = m_contexts[0];
+        context.SetContext();
         size_t membersSize = m_hostResults->MemorySize(context.m_lastMember - context.m_firstMember);
         size_t membersOffset = m_hostResults->MemorySize(context.m_firstMember);
         FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;

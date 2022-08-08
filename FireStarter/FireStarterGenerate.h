@@ -1,11 +1,12 @@
 #pragma once
 #include "FireStarterProgram.h"
 #include "FireStarterState.h"
+#include "CUDAContext.h"
 
 class FireStarterGenerate {
 private:
 	std::string m_generateCode;
-	CUstream m_stream = nullptr;
+	CUDAContext* m_CUDAContext = nullptr;
 	CUmodule m_module = nullptr;
 	CUfunction m_evaluateFunction = nullptr;
 	CUfunction m_solutionFunction = nullptr;
@@ -21,6 +22,6 @@ public:
 	void InitGenerate(const FireStarterSettings& settings);
 	void GenerateEvaluate(const FireStarterState& state, std::string& code);
 	void GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, unsigned int generation);
-	FireStarterGenerate(CUstream stream);
+	FireStarterGenerate(CUDAContext* context);
 	~FireStarterGenerate(void);
 }; // FireStarterGenerate

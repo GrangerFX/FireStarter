@@ -17,7 +17,21 @@ private:
             initialized = true;
         }
     } // Initialize
+
 public:
+    inline static unsigned int CUDADevices(void)
+    {
+        // Initialize CUDA only once per process.
+        Initialize();
+
+        // Find the number of CUDA devices.
+        int count = 0;
+        checkCUDAErrors(cuDeviceGetCount(&count));
+        if (count > 0)
+            return (unsigned int)count;
+        return 0;
+    } // CUDADevices
+
     inline const CUdevice Device(void) const
     {
         return m_device;
@@ -33,18 +47,21 @@ public:
         return m_stream;
     } // Stream
 
-    inline static unsigned int CUDADevices(void)
+    inline void SetContext(void) const
     {
-        // Initialize CUDA only once per process.
-        Initialize();
+        checkCUDAErrors(cuCtxSetCurrent(m_context));
+    } // SetContext
 
-        // Find the number of CUDA devices.
-        int count = 0;
-        checkCUDAErrors(cuDeviceGetCount(&count));
-        if (count > 0)
-            return (unsigned int)count;
-        return 0;
-    } // CUDADevices
+    inline void PushContext(void) const
+    {
+        checkCUDAErrors(cuCtxPushCurrent(m_context));
+    } // PushContext
+
+    inline void PopContext(void) const
+    {
+        CUcontext oldContext = nullptr;
+        checkCUDAErrors(cuCtxPopCurrent(&oldContext));
+    } // PopContext
 
     inline CUDAContext(unsigned int device = 0)
     {
