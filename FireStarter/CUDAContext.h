@@ -8,9 +8,6 @@ private:
     CUcontext m_context = nullptr;
     CUstream m_stream = nullptr;
 
-    inline void Initialize(void)
-    {
-    } // Initialize
 public:
     inline const CUdevice Device(void) const
     {
@@ -27,9 +24,8 @@ public:
         return m_stream;
     } // Stream
 
-    inline unsigned int CUDADevices(void)
+    inline static unsigned int CUDADevices(void)
     {
-        Initialize();
         int count = 0;
         checkCUDAErrors(cuDeviceGetCount(&count));
         if (count > 0)
