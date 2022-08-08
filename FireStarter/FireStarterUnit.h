@@ -2,6 +2,7 @@
 #include "FireStarterGenerate.h"
 #include "FireStarterProcess.h"
 #include "CUDAContext.h"
+#include "CUDACompile.h"
 #include "SerialThread.h"
 
 #define UNIT_INIT    "UnitInit"
@@ -13,52 +14,131 @@
 
 class FireStarterUnit : public SerialThread {
 private:
-    class FireStarterEvolveState {
+
+    class FireStarterContext {
     public:
+        FireStarterGenerate* m_generate = nullptr;
         char* m_deviceResults = nullptr;
         char* m_deviceEvolutions = nullptr;
-        FireStarterResults* m_hostResults = nullptr;
         FireStarterResults* m_deviceResults0 = nullptr;
         FireStarterResults* m_deviceResults1 = nullptr;
-        FireStarterEvolutions* m_hostEvolutions = nullptr;
         FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
         FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
+        CUmodule m_generateModule = nullptr;
+        CUmodule m_evolveModule = nullptr;
+        CUmodule m_optimizeModule = nullptr;
+        CUfunction m_evolveFunction = nullptr;
         CUfunction m_optimizeFunction = nullptr;
-        FireStarterState m_state;
-        unsigned int m_stateID = 0;
-        unsigned int m_stateSeed = 0;
-    }; // class FireStarterEvolveState
+        CUDAContext* m_CUDAContext = nullptr;
+        size_t m_resultsSize = 0;
+        size_t m_evolutionsSize = 0;
+        unsigned int m_device = 0;
+        unsigned int m_firstMember = 0;
+        unsigned int m_lastMember = 0;
+
+        inline void EvolveCompile(const std::string& evolveCode)
+        {
+            if (!m_evolveFunction && CUDACompile::CompileProgram(m_evolveModule, evolveCode, "Evolve"))
+                m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
+        } // EvolveCompile
+
+        inline void OptimizeCompile(const std::string& optimizeCode)
+        {
+            if (CUDACompile::CompileProgram(m_optimizeModule, optimizeCode, "Optimize"))
+                m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
+        } // OptimizeCompile
+
+        inline bool InitContext(unsigned int device, unsigned int firstMember, unsigned int lastMember, FireStarterResults* hostResults, FireStarterEvolutions* hostEvolutions, const FireStarterSettings& settings)
+        {
+            m_device = device;
+            m_firstMember = firstMember;
+            m_lastMember = lastMember;
+            if (!m_CUDAContext)
+                m_CUDAContext = new CUDAContext(m_device);
+            CUstream stream = m_CUDAContext->Stream();
+            if (!m_generate)
+                m_generate = new FireStarterGenerate(stream);
+
+            size_t resultsSize = FireStarterResults::ResultsSize(settings.m_population, settings.m_registers, settings.m_variations);
+            if (m_resultsSize != resultsSize) {
+                m_resultsSize = resultsSize;
+                if (m_deviceResults) {
+                    checkCUDAErrors(cudaFreeAsync(m_deviceResults, stream));
+                    m_deviceResults = nullptr;
+                    m_deviceResults0 = nullptr;
+                    m_deviceResults1 = nullptr;
+                }
+                if (m_resultsSize) {
+                    checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize * 2, stream));
+                    m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
+                    m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
+                    checkCUDAErrors(cudaMemcpy(m_deviceResults0, hostResults, m_resultsSize, cudaMemcpyHostToDevice));
+                    checkCUDAErrors(cudaMemcpy(m_deviceResults1, hostResults, m_resultsSize, cudaMemcpyHostToDevice));
+                }
+            }
+
+            size_t evolutionsSize = (settings.m_mode == FIRESTARTER_CODE) ? FireStarterEvolutions::EvolutionsSize(settings.m_population, settings.m_instructions) : 0;
+            if (m_evolutionsSize != evolutionsSize) {
+                m_evolutionsSize = evolutionsSize;
+                if (m_deviceEvolutions) {
+                    checkCUDAErrors(cudaFreeAsync(m_deviceEvolutions, stream));
+                    m_deviceEvolutions = nullptr;
+                    m_deviceEvolutions0 = nullptr;
+                    m_deviceEvolutions1 = nullptr;
+                }
+                if (m_evolutionsSize) {
+                    checkCUDAErrors(cudaMallocAsync(&m_deviceEvolutions, m_evolutionsSize * 2, stream));
+                    m_deviceEvolutions0 = (FireStarterEvolutions*)(m_deviceEvolutions);
+                    m_deviceEvolutions1 = (FireStarterEvolutions*)(m_deviceEvolutions + m_evolutionsSize);
+                    checkCUDAErrors(cudaMemcpy(m_deviceEvolutions0, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice));
+                    checkCUDAErrors(cudaMemcpy(m_deviceEvolutions1, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice));
+                }
+            }
+            return true;
+        } // InitContext
+
+        inline FireStarterContext(void)
+        {
+        } // FireStarterContext
+
+        inline ~FireStarterContext(void)
+        {
+            if (m_evolveModule)
+                checkCUDAErrors(cuModuleUnload(m_evolveModule));
+            if (m_optimizeModule)
+                checkCUDAErrors(cuModuleUnload(m_optimizeModule));
+            delete m_generate;
+            if (m_CUDAContext)
+                delete m_CUDAContext;
+        } // FireStarterContext
+    }; // class FireStarterContext
 
     SimpleTimer m_timer;
     FireStarterProcess* m_process = nullptr;
-    FireStarterGenerate* m_unitGenerate = nullptr;
-    std::vector<FireStarterEvolveState> m_evolveStates;
+    std::vector<FireStarterContext> m_contexts;
     std::vector<FireStarterState> m_allStates;
-    CUDAContext* m_unitContext = nullptr;
-    CUmodule m_generateModule = nullptr;
-    CUmodule m_evolveModule = nullptr;
-    CUmodule m_optimizeModule = nullptr;
-    CUfunction m_fireGenerateEvaluateFunction = nullptr;
-    CUfunction m_evolveFunction = nullptr;
     std::string m_fireGenerateCode;
     std::string m_evolveCode;
     std::string m_optimizeCode;
     FireStarterSettings m_settings;
+    FireStarterState m_state;
+    FireStarterResults* m_hostResults = nullptr;
+    FireStarterEvolutions* m_hostEvolutions = nullptr;
     size_t m_resultsSize = 0;
     size_t m_evolutionsSize = 0;
     unsigned int m_unitIndex = 0;
+    unsigned int m_stateID = 0;
+    unsigned int m_stateSeed = 0;
     unsigned int m_evolveGeneration = 0;
+    unsigned int m_gpus = 0;
     bool m_server = false;
     bool m_codeLoaded = false;
 
-    void InitEvolveStates(const FireStarterState& state);
-    void DeallocateEvolveStates(void);
-    bool AllocateEvolveStates(void);
     void UpdateEvolveStates(void);
-    void CompileGenerate(void);
     void EvolveGenerate(void);
     void OptimizeGenerate(void);
     void UnitGenerate(void);
+    void SyncContexts(void);
     void EvolveGenerations(unsigned int forceInit);
     void OptimizeGenerations(unsigned int forceInit);
     void EvolveExecute(void);
@@ -72,7 +152,7 @@ public:
     unsigned int Index(void);
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
-    void GetState(FireStarterState* state, size_t index);
+    void GetState(FireStarterState* state);
     void InitUnit(unsigned int index, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);
@@ -80,6 +160,7 @@ public:
     void Start(void);
     void Stop(void);
     void Client(void);
-    FireStarterUnit(FireStarterProcess* process = nullptr);
+    FireStarterUnit(FireStarterProcess* process);
+    FireStarterUnit(unsigned int gpus);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

@@ -11,11 +11,10 @@ inline float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
-// OPTMIZE //
-GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int dataSize, const FireStarterSettings settings, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned int seed, const unsigned int init)
 {
-    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
-    if (member >= settings.m_population)
+    unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
+    if (member >= lastMember)
         return;
     unsigned int memberSeed = RANDOM(RANDOM(seed) + member);
 
@@ -107,4 +106,3 @@ GPU_GLOBAL void Optimize(FireStarterResults* newResults, FireStarterResults* old
     }
     *newResults->MaxResult(member) = maxResult;
 } // Optimize
-// END //

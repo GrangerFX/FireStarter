@@ -15,12 +15,12 @@ typedef struct FireStarterResult {
     unsigned int dataSize;
     float data[FIRESTARTER_REGISTERS * FIRESTARTER_VARIATIONS];
 
-    static inline size_t VariationsSize(unsigned int registers, unsigned int variations)
+    static inline size_t VariationsSize(size_t registers, size_t variations)
     {
         return sizeof(float) * registers * variations;
     } // DataSize
 
-    static inline size_t ResultSize(unsigned int registers, unsigned int variations)
+    static inline size_t ResultSize(size_t registers, size_t variations)
     {
         return sizeof(float) + sizeof(unsigned int) + VariationsSize(registers, variations) + sizeof(float) * variations;
     } // ResultSize
@@ -78,10 +78,15 @@ typedef struct FireStarterResults {
     size_t m_resultSize;
     unsigned char m_memory[16];
 
-    static inline size_t ResultsSize(unsigned int members, unsigned int registers, unsigned int variations)
+    static inline size_t ResultsSize(size_t members, size_t registers, size_t variations)
     {
         return (sizeof(FireStarterResults) - 16) + members * FireStarterResult::ResultSize(registers, variations);
     } // ResultsSize
+
+    inline size_t MemorySize(size_t members)
+    {
+        return members * FireStarterResult::ResultSize(m_registers, m_variations);
+    } // MemorySize
 
     inline FireStarterResult* Result(unsigned int member)
     {

@@ -11,15 +11,11 @@ public:
     SimpleTimer m_runTimer;
     SimpleTimer m_controlTimer;
     std::string m_fireSettingsCode;
-    std::string m_fireGenerateCode;
     std::string m_fireShowCode;
     CUDAContext* m_fireStarterContext;
     CUmodule m_fireSettingsModule;
-    CUmodule m_fireGenerateModule;
     CUmodule m_fireShowModule;
     CUfunction m_fireSettingsFunction;
-    CUfunction m_fireGenerateEvaluateFunction;
-    CUfunction m_fireGenerateSolutionFunction;
     CUfunction m_fireShowFunction;
     FireStarterSettings* m_fireSettings;
     FireStarterResult* m_fireShowResult;
@@ -54,7 +50,6 @@ public:
     bool LoadTargetCode(void);
     bool LoadFireShowCode(void);
     bool LoadFireSettingsCode(void);
-    bool LoadFireGenerateCode(void);
     void SaveBestState(void);
     void SaveBestCode(void);
     void SaveSolution(void);

@@ -29,7 +29,6 @@
 #define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
 
 #if 1
-#define FIRESTARTER_CODE_STATES       1
 #define FIRESTARTER_CODE_UNITS        1
 #define FIRESTARTER_CODE_PROCESS      0
 #define FIRESTARTER_CODE_POPULATION   4352
@@ -44,24 +43,22 @@
 #define FIRESTARTER_CODE_START_SCALE  4.0f
 #define FIRESTARTER_CODE_START_RESULT 10.0f
 #else
-#define FIRESTARTER_CODE_STATES       1
 #define FIRESTARTER_CODE_UNITS        1
 #define FIRESTARTER_CODE_PROCESS      0
-#define FIRESTARTER_CODE_POPULATION   4352 * 4
-#define FIRESTARTER_CODE_ITERATIONS   128
+#define FIRESTARTER_CODE_POPULATION   4352
+#define FIRESTARTER_CODE_ITERATIONS   256
 #define FIRESTARTER_CODE_CANDIDATES   16
 #define FIRESTARTER_CODE_GENERATIONS  5
 #define FIRESTARTER_CODE_PRECISION    0
 #define FIRESTARTER_CODE_EVOLVE       FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_CODE_ATTEMPTS     32
-#define FIRESTARTER_CODE_SEED         0
+#define FIRESTARTER_CODE_SEED         4321
 #define FIRESTARTER_CODE_SCALE        0.1f
 #define FIRESTARTER_CODE_START_SCALE  4.0f
 #define FIRESTARTER_CODE_START_RESULT 10.0f
 #endif
 
-#define FIRESTARTER_UNIT_STATES       4
-#define FIRESTARTER_UNIT_UNITS        1
+#define FIRESTARTER_UNIT_UNITS        4
 #define FIRESTARTER_UNIT_PROCESS      0
 #define FIRESTARTER_UNIT_POPULATION   4352 * 16
 #define FIRESTARTER_UNIT_ITERATIONS   256
@@ -76,8 +73,7 @@
 #define FIRESTARTER_UNIT_START_SCALE  4.0f
 #define FIRESTARTER_UNIT_START_RESULT 10.0f
 
-#define FIRESTARTER_PROCESS_STATES       4
-#define FIRESTARTER_PROCESS_UNITS        4
+#define FIRESTARTER_PROCESS_UNITS        16
 #define FIRESTARTER_PROCESS_PROCESS      1
 #define FIRESTARTER_PROCESS_POPULATION   4352 * 16
 #define FIRESTARTER_PROCESS_ITERATIONS   256
@@ -91,8 +87,7 @@
 #define FIRESTARTER_PROCESS_START_SCALE  4.0f
 #define FIRESTARTER_PROCESS_START_RESULT 10.0f
 
-#define FIRESTARTER_RANDOM_STATES       4
-#define FIRESTARTER_RANDOM_UNITS        8
+#define FIRESTARTER_RANDOM_UNITS        32
 #define FIRESTARTER_RANDOM_PROCESS      1
 #define FIRESTARTER_RANDOM_POPULATION   4352 * 4
 #define FIRESTARTER_RANDOM_ITERATIONS   128
@@ -106,7 +101,6 @@
 #define FIRESTARTER_RANDOM_START_SCALE  4.0f
 #define FIRESTARTER_RANDOM_START_RESULT 10.0f
 
-#define FIRESTARTER_OPTIMIZE_STATES       1
 #define FIRESTARTER_OPTIMIZE_UNITS        1
 #define FIRESTARTER_OPTIMIZE_PROCESS      0
 #define FIRESTARTER_OPTIMIZE_POPULATION   4352 * 16
@@ -133,7 +127,6 @@ public:
     float m_targetMax;
 
     unsigned int m_mode;
-    unsigned int m_states;
     unsigned int m_units;
     unsigned int m_process;
     unsigned int m_population;
@@ -197,7 +190,6 @@ public:
         m_mode = evolveMode ? evolveMode : FIRESTARTER_MODE;
         switch (m_mode) {
             case FIRESTARTER_CODE:
-                m_states =      FIRESTARTER_CODE_STATES;
                 m_units =       FIRESTARTER_CODE_UNITS;
                 m_process =     FIRESTARTER_CODE_PROCESS;
                 m_population =  FIRESTARTER_CODE_POPULATION;
@@ -214,7 +206,6 @@ public:
                 break;
 
             case FIRESTARTER_UNIT:
-                m_states =      FIRESTARTER_UNIT_STATES;
                 m_units =       FIRESTARTER_UNIT_UNITS;
                 m_process =     FIRESTARTER_UNIT_PROCESS;
                 m_population =  FIRESTARTER_UNIT_POPULATION;
@@ -231,7 +222,6 @@ public:
                 break;
 
             case FIRESTARTER_PROCESS:
-                m_states =      FIRESTARTER_PROCESS_STATES;
                 m_units =       FIRESTARTER_PROCESS_UNITS;
                 m_process =     FIRESTARTER_PROCESS_PROCESS;
                 m_population =  FIRESTARTER_PROCESS_POPULATION;
@@ -248,7 +238,6 @@ public:
                 break;
 
             case FIRESTARTER_RANDOM:
-                m_states =      FIRESTARTER_RANDOM_STATES;
                 m_units =       FIRESTARTER_RANDOM_UNITS;
                 m_process =     FIRESTARTER_RANDOM_PROCESS;
                 m_population =  FIRESTARTER_RANDOM_POPULATION;
@@ -265,7 +254,6 @@ public:
                 break;
 
             case FIRESTARTER_OPTIMIZE:
-                m_states =      FIRESTARTER_OPTIMIZE_STATES;
                 m_units =       FIRESTARTER_OPTIMIZE_UNITS;
                 m_process =     FIRESTARTER_OPTIMIZE_PROCESS;
                 m_population =  FIRESTARTER_OPTIMIZE_POPULATION;
@@ -282,7 +270,6 @@ public:
                 break;
 
             default:
-                m_states = 0;
                 m_units = 0;
                 m_process = 0;
                 m_population = 0;

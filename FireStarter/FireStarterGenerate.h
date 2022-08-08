@@ -4,6 +4,11 @@
 
 class FireStarterGenerate {
 private:
+	std::string m_generateCode;
+	CUstream m_stream = nullptr;
+	CUmodule m_module = nullptr;
+	CUfunction m_evaluateFunction = nullptr;
+	CUfunction m_solutionFunction = nullptr;
 	FireStarterInstructions* m_deviceInstructions = nullptr;
 	FireStarterRegisters* m_deviceRegisters = nullptr;
 	FireStarterData* m_deviceData = nullptr;
@@ -13,9 +18,9 @@ private:
 	size_t m_stringSize = 0;
 
 public:
-	void InitGenerate(const FireStarterState& state);
-	void GenerateEvaluate(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code);
-	void GenerateSolution(const FireStarterState& state, CUfunction function, CUstream stream, std::string& code, const std::string& targetCode, double duration, unsigned int generation);
-	FireStarterGenerate(void);
+	void InitGenerate(const FireStarterSettings& settings);
+	void GenerateEvaluate(const FireStarterState& state, std::string& code);
+	void GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, unsigned int generation);
+	FireStarterGenerate(CUstream stream);
 	~FireStarterGenerate(void);
 }; // FireStarterGenerate

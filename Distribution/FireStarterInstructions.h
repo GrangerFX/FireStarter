@@ -308,6 +308,11 @@ typedef struct FireStarterEvolutions {
         return (sizeof(FireStarterEvolutions) - 16) + members * FireStarterInstructions::InstructionsSize(instructions);
     } // EvolutionsSize
 
+    inline size_t MemorySize(unsigned int members)
+    {
+        return members * FireStarterInstructions::InstructionsSize(m_instructions);
+    } // MemorySize
+
     inline FireStarterInstructions* Instructions(unsigned int member)
     {
         return (FireStarterInstructions*)(m_memory + member * m_instructionsSize);

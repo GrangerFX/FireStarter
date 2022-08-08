@@ -3,10 +3,10 @@
 #include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
 
-GPU_GLOBAL void Evolve(FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const FireStarterSettings settings, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, const unsigned int init)
 {
-    const unsigned int member = blockIdx.x;
-    if (member >= FIRESTARTER_CODE_POPULATION)
+    const unsigned int member = firstMember + blockIdx.x;
+    if (member >= lastMember)
         return;
     const unsigned int thread = threadIdx.x;
     unsigned int randomSeed = RANDOM(seed);
