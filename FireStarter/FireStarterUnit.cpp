@@ -75,9 +75,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
-    unsigned int blocksPerGrid = m_settings.m_population;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         int init = g == 0 ? (forceInit || (m_state.m_generation == 0) ? 1 : 2) : 0;
@@ -100,6 +98,8 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                             reinterpret_cast<void*>(&m_stateSeed),
                             reinterpret_cast<void*>(&init) };
 
+            unsigned int blocksPerGrid = ((context.m_lastMember - context.m_firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
+            dim3 cudaGridSize(blocksPerGrid, 1, 1);
             checkCUDAErrors(cuLaunchKernel(context.m_evolveFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
                 cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
@@ -176,9 +176,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
-    unsigned int blocksPerGrid = (m_settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
  
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -198,6 +196,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
                             reinterpret_cast<void*>(&m_stateSeed),
                             reinterpret_cast<void*>(&init) };
 
+            unsigned int blocksPerGrid = ((context.m_lastMember - context.m_firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
+            dim3 cudaGridSize(blocksPerGrid, 1, 1);
             checkCUDAErrors(cuLaunchKernel(context.m_optimizeFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
                 cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
