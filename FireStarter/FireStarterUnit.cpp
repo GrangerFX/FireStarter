@@ -98,7 +98,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                             reinterpret_cast<void*>(&m_stateSeed),
                             reinterpret_cast<void*>(&init) };
 
-            unsigned int blocksPerGrid = ((context.m_lastMember - context.m_firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
+            unsigned int blocksPerGrid = context.m_lastMember - context.m_firstMember;
             dim3 cudaGridSize(blocksPerGrid, 1, 1);
             checkCUDAErrors(cuLaunchKernel(context.m_evolveFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
