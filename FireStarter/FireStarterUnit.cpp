@@ -365,7 +365,7 @@ void FireStarterUnit::Allocate(const FireStarterState& initState)
             unsigned int firstMember = lastMember;
             lastMember += contextMembers;
             lastMember = min(lastMember, m_settings.m_population);
-            m_contexts[contextIndex].InitContext(contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
+            m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
 
         }
     } else

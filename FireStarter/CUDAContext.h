@@ -8,6 +8,15 @@ private:
     CUcontext m_context = nullptr;
     CUstream m_stream = nullptr;
 
+    // Initialize CUDA only once per process.
+    inline static void Initialize(void)
+    {
+        static bool initialized = false;
+        if (!initialized) {
+            checkCUDAErrors(cuInit(0));
+            initialized = true;
+        }
+    } // Initialize
 public:
     inline const CUdevice Device(void) const
     {
@@ -26,6 +35,10 @@ public:
 
     inline static unsigned int CUDADevices(void)
     {
+        // Initialize CUDA only once per process.
+        Initialize();
+
+        // Find the number of CUDA devices.
         int count = 0;
         checkCUDAErrors(cuDeviceGetCount(&count));
         if (count > 0)
@@ -36,18 +49,13 @@ public:
     inline CUDAContext(unsigned int device = 0)
     {
         // Initialize CUDA only once per process.
-        static bool initialized = false;
-        if (!initialized) {
-            checkCUDAErrors(cuInit(0));
-            initialized = true;
-        }
+        Initialize();
 
         // Use all the CUDA devices.
         int count = 0;
         checkCUDAErrors(cuDeviceGetCount(&count));
         if (count > 0)
             device %= count;
-
         checkCUDAErrors(cuDeviceGet(&m_device, device));
         checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_AUTO, m_device));
         checkCUDAErrors(cudaStreamCreate(&m_stream));

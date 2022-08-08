@@ -275,7 +275,7 @@ void FireStarter::ControlLoop(void)
             unit->Start();  // Start the interprocess communication.
         }
     else {
-        FireStarterUnit* unit = new FireStarterUnit(1);
+        FireStarterUnit* unit = new FireStarterUnit(CUDAContext::CUDADevices());
         m_units.push_back(unit);
     }
 
