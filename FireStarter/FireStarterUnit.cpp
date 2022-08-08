@@ -208,23 +208,23 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
  
         // Synchronize all GPU threads and results.
         // Multiple GPUs must have their data syncronized prior to the next generation.
-        SyncContexts();
         if (m_gpus > 1) {
             for (FireStarterContext& context : m_contexts) {
                 context.SetContext();
+                context.Syncronize();
                 size_t membersSize = m_hostResults->MemorySize(context.m_lastMember - context.m_firstMember);
                 size_t membersOffset = m_hostResults->MemorySize(context.m_firstMember);
                 FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
                 checkCUDAErrors(cudaMemcpyAsync(&m_hostResults->m_memory[membersOffset], &results->m_memory[membersOffset], membersSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
             }
-            SyncContexts();
             for (FireStarterContext& context : m_contexts) {
                 context.SetContext();
+                context.Syncronize();
                 FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
                 checkCUDAErrors(cudaMemcpyAsync(results, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
+        } else
             SyncContexts();
-        }
         m_stateSeed++;
         forceInit = 0;
     }
