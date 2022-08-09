@@ -14,8 +14,8 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
     unsigned int threadSeed = RANDOM(randomSeed + member * blockDim.x + thread);
 
     GPU_SHARED FireStarterInstructions instructions;
-    float oldResult;
-    if (init == 1) {
+    float oldResult = *oldResults->MaxResult(member);
+    if ((init == 1) || (*newResults->MaxResult(member) == oldResult)) {
         // The first generation's instructions are random.
         oldResult = FIRESTARTER_CODE_START_RESULT;
         instructions.Randomize(memberSeed);
@@ -45,7 +45,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
     for (unsigned int v = 0; (v < FIRESTARTER_VARIATIONS); v++) {
         float oldMinResult;
         float evolutionFactor;
-        if (init == 1) {
+        if (oldResult == FIRESTARTER_CODE_START_RESULT) {
             for (int i = 0; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
             oldMinResult = FIRESTARTER_CODE_START_RESULT;
@@ -103,7 +103,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
     // Only read and write memory in a single thread.
     GPU_SYNCTHREADS();
     if (thread == 0) {
-        if (init || (maxResult < oldResult)) {
+        if ((init == 1) || (maxResult < oldResult)) {
             // Save the improved results.
             *newEvolutions->Instructions(member) = instructions;
             *newResults->MaxResult(member) = maxResult;
