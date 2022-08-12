@@ -14,21 +14,17 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
     unsigned int threadSeed = RANDOM(randomSeed + member * blockDim.x + thread);
 
     GPU_SHARED FireStarterInstructions instructions;
-    float oldResult = *oldResults->MaxResult(member);
-    if ((init == 1) || (*newResults->MaxResult(member) == oldResult)) {
+    float oldResult = (init == 1) ? FIRESTARTER_CODE_START_RESULT : *oldResults->MaxResult(member);
+    if ((init == 1) || (*newResults->MaxResult(member) == oldResult))
         // The first generation's instructions are random.
-        oldResult = FIRESTARTER_CODE_START_RESULT;
         instructions.Randomize(memberSeed);
-    } else {
+    else {
         // Later generations randomize one instruction.
         instructions = *oldEvolutions->Instructions(member);
-        oldResult = *oldResults->MaxResult(member);
 
         // Evolve a single program instruction for each generation.
-        if (init) {
-            unsigned int index = RANDOMMOD(memberSeed, FIRESTARTER_INSTRUCTIONS);
-            instructions.SetRandom(index, memberSeed);
-        }
+        if (init)
+            instructions.SetRandom(RANDOMMOD(memberSeed, FIRESTARTER_INSTRUCTIONS), memberSeed);
     }
 
     // Precalulate theta.
@@ -43,21 +39,11 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
     FireStarterData& data = allData[thread];
     float maxResult = 0.0f;
     for (unsigned int v = 0; (v < FIRESTARTER_VARIATIONS); v++) {
-        float oldMinResult;
-        float evolutionFactor;
-        if (oldResult == FIRESTARTER_CODE_START_RESULT) {
+        if (oldResult == FIRESTARTER_CODE_START_RESULT)
             for (int i = 0; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
-            oldMinResult = FIRESTARTER_CODE_START_RESULT;
-            evolutionFactor = FIRESTARTER_CODE_START_SCALE;
-        } else {
+        else
             data = *oldResults->Data(member, v);
-            oldMinResult = *oldResults->MinResult(member, v);
-            if (init)
-                evolutionFactor = FIRESTARTER_CODE_START_SCALE;
-            else
-                evolutionFactor = FIRESTARTER_CODE_SCALE * oldMinResult;
-        }
 
         // Initial check for bad results.
         float target[FIRESTARTER_SAMPLES];
@@ -65,8 +51,18 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
         for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
             target[i] = Target(theta[i], v);
 
+        // Get the first initial data value
+        float oldMinResult, result, evolutionFactor;
+        if (init) {
+            result = 0.0f;
+            for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+                result = fmaxf(fabsf(instructions.Execute(data, theta[i]) - target[i]), result);
+            oldMinResult = result;
+        } else
+            oldMinResult = result = *oldResults->MinResult(member, v);
+        evolutionFactor = FIRESTARTER_CODE_SCALE * oldMinResult;
+
         // Evolve the data.
-        float result = init ? FIRESTARTER_CODE_START_RESULT : oldMinResult;
         for (unsigned int p = 0; p < FIRESTARTER_CODE_ITERATIONS; p++) {
             unsigned int d = RANDOMMOD(threadSeed, FIRESTARTER_INSTRUCTIONS);
             const float oldData = data.d[d];
