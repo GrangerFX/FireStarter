@@ -563,6 +563,7 @@ void FireStarterUnit::Client(void)
 
 FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 {
+    m_gpus = 1;
     m_process = process;
     m_server = m_process && !m_process->IsClient();
 } // FireStarterUnit
