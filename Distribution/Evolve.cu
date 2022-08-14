@@ -4,7 +4,7 @@
 #include "FireStarterResults.h"
 
 // Best version.
-// 0.00700028 after 110 generations
+// 0.00344360 after 303 generations
 GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, unsigned int init)
 {
     const unsigned int member = firstMember + blockIdx.x;
@@ -120,7 +120,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
                 for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
                     unsigned int index = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
                     float curResult = *oldResults->MaxResult(index);
-                    if (curResult <= bestResult) {
+                    if (curResult < bestResult) {
                         bestIndex = index;
                         bestResult = curResult;
                     }
