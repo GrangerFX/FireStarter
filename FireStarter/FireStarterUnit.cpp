@@ -151,20 +151,39 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     }
 
     // Get the best results.
+#if 1
     float minResult = *m_hostResults->MaxResult(0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < m_settings.m_population; i++) {
         float curResult = *m_hostResults->MaxResult(i);
         if (curResult < minResult) {
-            for (unsigned int v = 0; v < m_settings.m_variations; v++)
-                if (*m_hostResults->MinResult(i, v) > curResult)
-                    continue;
             minResult = curResult;
             minIndex = i;
         }
     }
-    FireStarterResult* result = m_state.Result();
-    memcpy(result, m_hostResults->Result(minIndex), FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations));
+#else
+    float minResult = *m_hostResults->MaxResult(0);
+    float maxResult = minResult;
+    float averageResult = minResult;
+    unsigned int minIndex = 0;
+    for (unsigned int i = 1; i < m_settings.m_population; i++) {
+        float curResult = *m_hostResults->MaxResult(i);
+        for (unsigned int v = 0; v < m_settings.m_variations; v++) {
+            float variationResult = *m_hostResults->MinResult(i, v);
+            if (variationResult > curResult)
+                curResult = variationResult;
+        }
+        averageResult = (averageResult * i + curResult) / (i + 1);
+        maxResult = max(maxResult, curResult);
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
+        }
+    }
+    printf("Evolution: %d  MinResult=%f  MaxResult=%f  AverageResult=%f\n", m_state.m_generation, m_minResult, m_maxResult, m_averageResult);
+#endif
+
+    memcpy(m_state.Result(), m_hostResults->Result(minIndex), FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations));
     m_state.m_program.LoadInstructions(m_hostEvolutions->Instructions(minIndex));
     m_state.m_program.OptimizeRegisters(false);
     m_state.OptimizeData();

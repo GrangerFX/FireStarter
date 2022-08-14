@@ -1,0 +1,37 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_CODE;
+units = 1;
+process = 0;
+population = 4352;
+iterations = 256;
+candidates = 16;
+generations = 5;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 1;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_CODE: Generation=0  Age=0  Best=0.10165101  Time=1.9234 Seconds  Run Time=4.6878 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=1  Age=0  Best=0.10038513  Time=0.7220 Seconds  Run Time=5.4638 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=2  Age=0  Best=0.05678545  Time=0.7301 Seconds  Run Time=6.2458 Seconds  TestError=0.00000001
+FIRESTARTER_CODE: Generation=3  Age=0  Best=0.03921926  Time=0.7304 Seconds  Run Time=7.0177 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=4  Age=0  Best=0.03131884  Time=0.7253 Seconds  Run Time=7.7779 Seconds  TestError=0.00000012
+FIRESTARTER_CODE: Generation=5  Age=0  Best=0.02330261  Time=0.7431 Seconds  Run Time=8.5697 Seconds  TestError=0.00000006
+FIRESTARTER_CODE: Generation=6  Age=0  Best=0.01865596  Time=0.7724 Seconds  Run Time=9.3738 Seconds  TestError=0.00000012
+FIRESTARTER_CODE: Generation=7  Age=0  Best=0.01190004  Time=0.7637 Seconds  Run Time=10.2308 Seconds  TestError=0.00000001
+FIRESTARTER_CODE: Generation=8  Age=0  Best=0.01077223  Time=0.7942 Seconds  Run Time=11.1307 Seconds  TestError=0.00000001
+FIRESTARTER_CODE: Generation=9  Age=0  Best=0.01072621  Time=0.8041 Seconds  Run Time=12.0232 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=10  Age=0  Best=0.01022105  Time=0.8204 Seconds  Run Time=12.9256 Seconds  TestError=0.00000001
+FIRESTARTER_CODE: Generation=11  Age=0  Best=0.00992560  Time=0.8115 Seconds  Run Time=13.7983 Seconds  TestError=0.00000006
+FIRESTARTER_CODE: Generation=12  Age=0  Best=0.00965297  Time=0.8205 Seconds  Run Time=14.6899 Seconds  TestError=0.00000000
