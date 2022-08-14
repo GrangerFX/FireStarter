@@ -64,8 +64,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
                 result = fmaxf(fabsf(instructions.Execute(data, theta[i]) - target[i]), result);
             oldMinResult = result;
             evolutionFactor = FIRESTARTER_CODE_START_SCALE;
-        }
-        else {
+        } else {
             oldMinResult = result = *oldResults->MinResult(member, v);
             evolutionFactor = FIRESTARTER_CODE_SCALE * oldMinResult;
         }
@@ -111,8 +110,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
             // Save the improved results.
             *newEvolutions->Instructions(member) = instructions;
             *newResults->MaxResult(member) = maxResult;
-        }
-        else {
+        } else {
             // Copy a result from among the previous generations best results.
             unsigned int bestIndex = member;
             float bestResult = oldResult;
@@ -127,8 +125,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
                         bestResult = curResult;
                     }
                 }
-            }
-            else if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_RANDOM)
+            } else if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_RANDOM)
                 bestIndex = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
 
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
