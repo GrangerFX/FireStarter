@@ -112,7 +112,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
         // Synchronize all GPU threads and results.
         // Multiple GPUs must have their data syncronized prior to the next generation.
         SyncContexts();
-        if (m_gpus > 1) {
+        if (m_contexts.size() > 1) {
             for (FireStarterContext& context : m_contexts) {
                 context.SetContext();
                 size_t membersSize = m_hostResults->MemorySize(context.m_lastMember - context.m_firstMember);
@@ -141,7 +141,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     }
 
     // Single GPUs have their data syncronized with the host here.
-    if (m_gpus == 1) {
+    if (m_contexts.size() == 1) {
         FireStarterContext& context = m_contexts[0];
         context.SetContext();
         FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
@@ -236,7 +236,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
  
         // Synchronize all GPU threads and results.
         // Multiple GPUs must have their data syncronized prior to the next generation.
-        if (m_gpus > 1) {
+        if (m_contexts.size() > 1) {
             for (FireStarterContext& context : m_contexts) {
                 context.SetContext();
                 context.Syncronize();
@@ -258,7 +258,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
     }
 
     // Single GPUs have their data syncronized with the host here.
-    if (m_gpus == 1) {
+    if (m_contexts.size() == 1) {
         FireStarterContext& context = m_contexts[0];
         context.SetContext();
         size_t membersSize = m_hostResults->MemorySize(context.m_lastMember - context.m_firstMember);
@@ -394,10 +394,11 @@ void FireStarterUnit::Allocate(const FireStarterState& initState)
     }
 
     if (!m_server) {
-        unsigned int contextMembers = ((m_settings.m_population + (m_gpus - 1)) / m_gpus);
-        m_contexts.resize(m_gpus);
+        unsigned int numContexts = (m_settings.m_mode == FIRESTARTER_CODE) ? m_gpus : 1;
+        unsigned int contextMembers = ((m_settings.m_population + (numContexts - 1)) / numContexts);
+        m_contexts.resize(numContexts);
         unsigned int lastMember = 0;
-        for (unsigned int contextIndex = 0; contextIndex < m_gpus; contextIndex++) {
+        for (unsigned int contextIndex = 0; contextIndex < numContexts; contextIndex++) {
             unsigned int firstMember = lastMember;
             lastMember += contextMembers;
             lastMember = min(lastMember, m_settings.m_population);

@@ -1,0 +1,35 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_OPTIMIZE;
+units = 1;
+process = 0;
+population = 139264;
+iterations = 512;
+candidates = 16;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best=0.00031972  Result=0.00031972  Seed=C0A949CE  ResultHash=4650  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best=0.00013447  Result=0.00013447  Seed=C0A94A32  ResultHash=C19D  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best=0.00010300  Result=0.00010300  Seed=C0A94A96  ResultHash=418F  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best=0.00009143  Result=0.00009143  Seed=C0A94AFA  ResultHash=42DD  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best=0.00008249  Result=0.00008249  Seed=C0A94B5E  ResultHash=484C  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best=0.00007677  Result=0.00007677  Seed=C0A94BC2  ResultHash=FE3B  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best=0.00007558  Result=0.00007558  Seed=C0A94C26  ResultHash=8D42  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best=0.00007442  Result=0.00007442  Seed=C0A94C8A  ResultHash=FC29  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   8  Best=0.00007081  Result=0.00007081  Seed=C0A94CEE  ResultHash=0415  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   9  Best=0.00007081  Result=0.00007117  Seed=C0A94D52  ResultHash=BA41  ProgramHash=1A7C
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  10  Best=0.00007010  Result=0.00007010  Seed=C0A94DB6  ResultHash=4D35  ProgramHash=1A7C
