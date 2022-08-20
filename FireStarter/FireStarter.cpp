@@ -138,7 +138,7 @@ void FireStarter::RenderStatus(float testError)
             hashString += Format("  Unit: %2u", i);
         else if (m_settings.m_units >= 2)
             hashString += Format("  Unit: %u", i);
-        hashString += Format("  Result=%.8f  Best=%.8f  Seed=%08X  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), bestResult, state.m_seed, (unsigned short)resultHash, (unsigned short)programHash);
+        hashString += Format("  Result=%.8f  Seed=%08X  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), state.m_seed, (unsigned short)resultHash, (unsigned short)programHash);
     }
     FireStarterCode::AppendCode(m_hashFilePath, hashString);
     printf(hashString.c_str());
