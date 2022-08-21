@@ -117,22 +117,22 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                 context.SetContext();
                 size_t membersSize = m_hostResults->MemorySize(context.m_lastMember - context.m_firstMember);
                 size_t membersOffset = m_hostResults->MemorySize(context.m_firstMember);
-                FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
-                checkCUDAErrors(cudaMemcpyAsync(&m_hostResults->m_memory[membersOffset], &results->m_memory[membersOffset], membersSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
+                FireStarterResults* newResults = g & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
+                checkCUDAErrors(cudaMemcpyAsync(&m_hostResults->m_memory[membersOffset], &newResults->m_memory[membersOffset], membersSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
 
                 size_t evolutionsSize = m_hostEvolutions->MemorySize(context.m_lastMember - context.m_firstMember);
                 size_t evolutionsOffset = m_hostEvolutions->MemorySize(context.m_firstMember);
-                FireStarterEvolutions* evolutions = m_settings.m_generations & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
-                checkCUDAErrors(cudaMemcpyAsync(&m_hostEvolutions->m_memory[evolutionsOffset], &evolutions->m_memory[evolutionsOffset], evolutionsSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
+                FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
+                checkCUDAErrors(cudaMemcpyAsync(&m_hostEvolutions->m_memory[evolutionsOffset], &newEvolutions->m_memory[evolutionsOffset], evolutionsSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
             }
             SyncContexts();
             for (FireStarterContext& context : m_contexts) {
                 context.SetContext();
-                FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
-                checkCUDAErrors(cudaMemcpyAsync(results, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
+                FireStarterResults* oldResults = g & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
+                checkCUDAErrors(cudaMemcpyAsync(oldResults, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
 
-                FireStarterEvolutions* evolutions = m_settings.m_generations & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
-                checkCUDAErrors(cudaMemcpyAsync(evolutions, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
+                FireStarterEvolutions* oldEvolutions = g & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
+                checkCUDAErrors(cudaMemcpyAsync(oldEvolutions, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
             SyncContexts();
         }
@@ -212,7 +212,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
             unsigned int dataSize = m_state.m_program.m_dataSize;
             FireStarterResults* newResults = g & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
-//          int init = (g == 0) && (forceInit || (m_state.m_generation == 0));
             int init = (g == 0) && (forceInit || (m_evolveGeneration == 0));
 
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
@@ -242,14 +241,14 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
                 context.Syncronize();
                 size_t membersSize = m_hostResults->MemorySize(context.m_lastMember - context.m_firstMember);
                 size_t membersOffset = m_hostResults->MemorySize(context.m_firstMember);
-                FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
-                checkCUDAErrors(cudaMemcpyAsync(&m_hostResults->m_memory[membersOffset], &results->m_memory[membersOffset], membersSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
+                FireStarterResults* newResults = g & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
+                checkCUDAErrors(cudaMemcpyAsync(&m_hostResults->m_memory[membersOffset], &newResults->m_memory[membersOffset], membersSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
             }
             for (FireStarterContext& context : m_contexts) {
                 context.SetContext();
                 context.Syncronize();
-                FireStarterResults* results = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
-                checkCUDAErrors(cudaMemcpyAsync(results, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
+                FireStarterResults* oldResults = g & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
+                checkCUDAErrors(cudaMemcpyAsync(oldResults, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
         } else
             SyncContexts();
