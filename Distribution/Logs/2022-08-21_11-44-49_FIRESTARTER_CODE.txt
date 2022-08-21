@@ -1,0 +1,30 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_CODE;
+units = 1;
+process = 0;
+population = 17408;
+iterations = 256;
+candidates = 16;
+generations = 2;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_CODE: Generation=0  Age=0  Best=0.20093799  Time=2.1719 Seconds  Run Time=4.9421 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=1  Age=0  Best=0.11227715  Time=0.9540 Seconds  Run Time=5.9943 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=2  Age=0  Best=0.07434022  Time=0.9900 Seconds  Run Time=7.0065 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=3  Age=0  Best=0.05383921  Time=1.0556 Seconds  Run Time=8.1568 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=4  Age=0  Best=0.04274654  Time=1.0795 Seconds  Run Time=9.2708 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Generation=5  Age=0  Best=0.02931046  Time=1.1079 Seconds  Run Time=10.3876 Seconds  TestError=0.00000000

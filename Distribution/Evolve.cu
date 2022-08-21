@@ -176,10 +176,8 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
         theta[i] = TARGET_MIN + i * sampleStep;
 
     // Evolve the program data for each variation.
-    GPU_SHARED float bestMinResult[FIRESTARTER_VARIATIONS];
-    GPU_SHARED FireStarterData bestData[FIRESTARTER_VARIATIONS];
     GPU_SHARED FireStarterData allData[FIRESTARTER_VARIATIONS][BLOCK_THREADS];
-    float maxResult = 0.0f;
+    GPU_SHARED float allResults[FIRESTARTER_VARIATIONS][BLOCK_THREADS];
     for (unsigned int v = 0; (v < FIRESTARTER_VARIATIONS); v++) {
         // Initial check for bad results.
         float target[FIRESTARTER_SAMPLES];
@@ -193,7 +191,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
                 data.d[i] = RANDOMFACTOR(threadSeed);
         } else {
             data = *oldResults->Data(member, v);
-//          data.d[RANDOMMOD(threadSeed, FIRESTARTER_INSTRUCTIONS)] += FIRESTARTER_CODE_START_SCALE * RANDOMFACTOR(threadSeed);
+            data.d[RANDOMMOD(threadSeed, FIRESTARTER_INSTRUCTIONS)] += FIRESTARTER_CODE_START_SCALE * RANDOMFACTOR(threadSeed);
         }
 
         // Calculate an initial result for the instructions and registers.
@@ -216,38 +214,41 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
             } else
                 data.d[d] = oldData;
         }
-
-        // Find the best result among all the warp threads.
-        GPU_SHARED float threadResults[BLOCK_THREADS];
-        threadResults[thread] = result;
-
-        GPU_SYNCTHREADS();
-        unsigned int minIndex = 0;
-        float minResult = threadResults[0];
-        for (int i = 1; i < BLOCK_THREADS; i++) {
-            if (threadResults[i] < minResult) {
-                minIndex = i;
-                minResult = threadResults[i];
-            }
-        }
-        if (thread == minIndex) {
-            bestData[v] = data;
-            bestMinResult[v] = minResult;
-        }
-        maxResult = fmaxf(maxResult, minResult);
+        
+        // Store the result of this varation.
+        allResults[v][thread] = result;
     }
 
     // Only read and write memory in a single thread.
     GPU_SYNCTHREADS();
     if (thread == 0) {
-        float oldResult = (init == 1) ? FIRESTARTER_CODE_START_RESULT : *oldResults->MaxResult(member);
+        // Find the best result for each variation and thread.
+        float maxResult = 0;
+        unsigned int minThreads[FIRESTARTER_VARIATIONS];
+        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+            float minResult = allResults[v][0];
+            unsigned int minThread = 0;
+            for (unsigned int t = 1; t < BLOCK_THREADS; t++) {
+                float threadResult = allResults[v][t];
+                if (threadResult < minResult) {
+                    minResult = threadResult;
+                    minThread = t;
+                }
+            }
+            minThreads[v] = minThread;
+            maxResult = fmax(maxResult, minResult);
+        }
+
+        // Did this generation produce a better result?
+        float oldResult = *oldResults->MaxResult(member);
         if ((init == 1) || (maxResult < oldResult)) {
             // Save the improved results.
             *newEvolutions->Instructions(member) = instructions;
             *newResults->MaxResult(member) = maxResult;
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-                *newResults->Data(member, v) = bestData[v];
-                *newResults->MinResult(member, v) = bestMinResult[v];
+                unsigned int t = minThreads[v];
+                *newResults->Data(member, v) = allData[v][t];
+                *newResults->MinResult(member, v) = allResults[v][t];
             }
         } else {
             // Copy a result from among the previous generations best results.
