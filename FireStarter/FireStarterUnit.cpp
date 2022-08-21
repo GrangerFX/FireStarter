@@ -394,6 +394,7 @@ void FireStarterUnit::Allocate(const FireStarterState& initState)
 
     if (!m_server) {
         unsigned int numContexts = (m_settings.m_mode == FIRESTARTER_CODE) ? m_gpus : 1;
+//      unsigned int numContexts = m_gpus;
         unsigned int contextMembers = ((m_settings.m_population + (numContexts - 1)) / numContexts);
         m_contexts.resize(numContexts);
         unsigned int lastMember = 0;
