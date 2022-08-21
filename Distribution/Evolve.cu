@@ -268,6 +268,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
             } else if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_RANDOM)
                 bestIndex = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
 
+            // Switch to the selected member's instructions, data and results or revert to the previous generation.
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
             *newResults->MaxResult(member) = bestResult;
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
