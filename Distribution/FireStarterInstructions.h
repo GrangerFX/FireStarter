@@ -244,7 +244,15 @@ typedef struct FireStarterInstructions {
 
     inline void SetRandom(unsigned int index, unsigned int& seed)
     {
-        unsigned int reg = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
+        unsigned int reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+        unsigned int op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
+        SetOperation(index, fireStarterOpcodes[op], reg);
+    } // SetRandom
+
+    inline void SetRandom(unsigned int& seed)
+    {
+        unsigned int index = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
+        unsigned int reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
         unsigned int op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
         SetOperation(index, fireStarterOpcodes[op], reg);
     } // SetRandom

@@ -28,9 +28,9 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
         instructions = *oldEvolutions->Instructions(member);
         oldResult = *oldResults->MaxResult(member);
 
-        // Evolve a single program instruction.
+        // Randomize a single program instruction.
         if (init)
-            instructions.SetRandom(RANDOMMOD(memberSeed, FIRESTARTER_INSTRUCTIONS), memberSeed);
+            instructions.SetRandom(memberSeed);
     }
 
     // Precalulate theta.
@@ -168,8 +168,9 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
         // Later generations randomize one instruction.
         instructions = *oldEvolutions->Instructions(member);
 
-        // Evolve a single program instruction.
-        instructions.SetRandom(RANDOMMOD(memberSeed, FIRESTARTER_INSTRUCTIONS), memberSeed);
+        // Randomize a single program instruction.
+        instructions.SetRandom(memberSeed);
+        instructions.SetRandom(memberSeed);
     }
 
     // Precalulate theta.
