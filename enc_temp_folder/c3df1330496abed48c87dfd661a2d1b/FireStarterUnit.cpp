@@ -566,6 +566,7 @@ FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
 FireStarterUnit::FireStarterUnit(unsigned int gpus)
 {
     m_gpus = gpus;
+    m_gpus = 1; // Note: DEBUG!
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)
