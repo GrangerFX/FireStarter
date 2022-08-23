@@ -150,7 +150,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
 } // Evolve
 #else
 // Experimental version
-GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, unsigned int init)
+GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = firstMember + blockIdx.x;
     if (member >= lastMember)
@@ -161,17 +161,19 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
     unsigned int threadSeed = RANDOM(randomSeed + member * blockDim.x + thread);
 
     GPU_SHARED FireStarterInstructions instructions;
-    if (init == 1)
-        // The first generation's instructions are random.
-        instructions.Randomize(memberSeed);
-    else {
-        // Later generations randomize one instruction.
-        instructions = *oldEvolutions->Instructions(member);
+    if (thread == 0) {
+        if (init == 1)
+            // The first generation's instructions are random.
+            instructions.Randomize(memberSeed);
+        else {
+            // Later generations randomize one instruction.
+            instructions = *oldEvolutions->Instructions(member);
 
-        // Randomize a single program instruction.
-        instructions.SetRandom(memberSeed);
-        instructions.SetRandom(memberSeed);
+            // Randomize a single program instruction.
+            instructions.SetRandom(memberSeed);
+       }
     }
+    GPU_SYNCTHREADS();
 
     // Precalulate theta.
     float theta[FIRESTARTER_SAMPLES];

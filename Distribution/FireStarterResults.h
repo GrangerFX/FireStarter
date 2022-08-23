@@ -11,18 +11,14 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterResult {
-    float maxResult;
     unsigned int dataSize;
-    float data[FIRESTARTER_REGISTERS * FIRESTARTER_VARIATIONS];
-
-    static inline size_t VariationsSize(size_t registers, size_t variations)
-    {
-        return sizeof(float) * registers * variations;
-    } // DataSize
+    unsigned int a, b;  // Debug info.
+    float maxResult;
+    float data[FIRESTARTER_VARIATIONS * (FIRESTARTER_REGISTERS + 1)];
 
     static inline size_t ResultSize(size_t registers, size_t variations)
     {
-        return sizeof(float) + sizeof(unsigned int) + VariationsSize(registers, variations) + sizeof(float) * variations;
+        return sizeof(unsigned int) * 3 + sizeof(float) + variations * (registers + 1) * sizeof(float);
     } // ResultSize
 
     inline float* MinResult(unsigned int variation)
@@ -49,6 +45,7 @@ typedef struct FireStarterResult {
     {
         maxResult = startResult;
         dataSize = registers + 1;
+        a = b = 0;
         for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
             for (unsigned int i = 0; i < registers; i++)
@@ -61,6 +58,7 @@ typedef struct FireStarterResult {
     {
         maxResult = initResult->maxResult;
         dataSize = registers + 1;
+        a = b = 0;
         for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
             const FireStarterData* srcData = initResult->Data(v);

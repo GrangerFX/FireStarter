@@ -78,7 +78,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
-       int init = g == 0 ? (forceInit || (m_evolveGeneration == 0) ? 1 : 2) : 0;
+        int init = g == 0 ? (forceInit || (m_evolveGeneration == 0) ? 1 : 2) : 0;
 
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
