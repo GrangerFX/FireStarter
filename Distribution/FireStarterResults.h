@@ -126,6 +126,16 @@ typedef struct FireStarterResults {
         return &Result(member)->maxResult;
     } // MaxResult
 
+    inline unsigned int* DebugA(unsigned int member)
+    {
+        return &Result(member)->a;
+    } // DebugA
+
+    inline unsigned int* DebugB(unsigned int member)
+    {
+        return &Result(member)->b;
+    } // DebugB
+
     inline void InitResults(unsigned int members, unsigned int registers, unsigned int variations, float startResult)
     {
         m_members = members;

@@ -189,6 +189,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     m_state.OptimizeData();
     m_state.m_generation = m_evolveGeneration;
     m_state.m_seed = m_stateSeed;
+    m_state.m_best = minIndex;
 } // EvolveGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)

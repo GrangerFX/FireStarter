@@ -9,6 +9,7 @@ public:
     FireStarterProgram m_program;
     unsigned int m_generation = 0;
     unsigned int m_seed = 0;
+    unsigned int m_best = 0;
 
     inline FireStarterSettings& Settings(void)
     {
