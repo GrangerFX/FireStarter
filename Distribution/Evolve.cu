@@ -256,7 +256,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
                 *newResults->Data(member, v) = allData[v][t];
                 *newResults->MinResult(member, v) = allResults[v][t];
                 *newResults->DebugA(member) = member;
-                *newResults->DebugB(member) = seed;
+                *newResults->DebugB(member) = (init == 1) ? 1 : *oldResults->DebugB(member) + 1;
             }
         } else {
             // Copy a result from among the previous generations best results.
@@ -280,7 +280,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
             *newResults->MaxResult(member) = bestResult;
             *newResults->DebugA(member) = bestIndex;
-            *newResults->DebugB(member) = seed;
+            *newResults->DebugB(member) = *oldResults->DebugB(member);
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                 *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestIndex, v);
