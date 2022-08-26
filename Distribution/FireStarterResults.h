@@ -12,7 +12,8 @@ typedef struct FireStarterData {
 
 typedef struct FireStarterResult {
     unsigned int dataSize;
-    unsigned int a, b;  // Debug info.
+    unsigned int index;     // Index result was copied from.
+    unsigned int debug;     // Debug info.
     float maxResult;
     float data[FIRESTARTER_VARIATIONS * (FIRESTARTER_REGISTERS + 1)];
 
@@ -41,11 +42,12 @@ typedef struct FireStarterResult {
         return (const FireStarterData*)&data[variation * dataSize];
     } // Data
 
-    inline void Init(unsigned int registers, unsigned int variations, float startResult)
+    inline void Init(unsigned int i, unsigned int registers, unsigned int variations, float startResult)
     {
         maxResult = startResult;
         dataSize = registers + 1;
-        a = b = 0;
+        index = index;
+        debug = 0;
         for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
             for (unsigned int i = 0; i < registers; i++)
@@ -54,11 +56,12 @@ typedef struct FireStarterResult {
         }
     } // Init
 
-    inline void Init(unsigned int registers, unsigned int variations, const FireStarterResult* initResult)
+    inline void Init(unsigned int i, unsigned int registers, unsigned int variations, const FireStarterResult* initResult)
     {
         maxResult = initResult->maxResult;
         dataSize = registers + 1;
-        a = b = 0;
+        index = i;
+        debug = 0;
         for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
             const FireStarterData* srcData = initResult->Data(v);
@@ -126,15 +129,15 @@ typedef struct FireStarterResults {
         return &Result(member)->maxResult;
     } // MaxResult
 
-    inline unsigned int* DebugA(unsigned int member)
+    inline unsigned int* Index(unsigned int member)
     {
-        return &Result(member)->a;
-    } // DebugA
+        return &Result(member)->index;
+    } // SourceMember
 
-    inline unsigned int* DebugB(unsigned int member)
+    inline unsigned int* Debug(unsigned int member)
     {
-        return &Result(member)->b;
-    } // DebugB
+        return &Result(member)->debug;
+    } // Debug
 
     inline void InitResults(unsigned int members, unsigned int registers, unsigned int variations, float startResult)
     {
@@ -143,7 +146,7 @@ typedef struct FireStarterResults {
         m_variations = variations;
         m_resultSize = FireStarterResult::ResultSize(registers, variations);
         for (unsigned int i = 0; i < members; i++)
-            Result(i)->Init(registers, variations, startResult);
+            Result(i)->Init(i, registers, variations, startResult);
     } // InitResults
 
     inline void InitResults(unsigned int members, unsigned int registers, unsigned int variations, const FireStarterResult* initResult)
@@ -153,6 +156,6 @@ typedef struct FireStarterResults {
         m_variations = variations;
         m_resultSize = FireStarterResult::ResultSize(registers, variations);
         for (unsigned int i = 0; i < members; i++)
-            Result(i)->Init(registers, variations, initResult);
+            Result(i)->Init(i, registers, variations, initResult);
     } // InitResults
 } FireStarterResults;

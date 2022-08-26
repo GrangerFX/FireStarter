@@ -160,10 +160,13 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     float minResult = *m_hostResults->MaxResult(0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < m_settings.m_population; i++) {
-        float curResult = *m_hostResults->MaxResult(i);
-        if (curResult < minResult) {
-            minResult = curResult;
-            minIndex = i;
+        unsigned int curIndex = *m_hostResults->Index(i);
+        if (curIndex == i) {
+            float curResult = *m_hostResults->MaxResult(i);
+            if (curResult <= minResult) {
+                minResult = curResult;
+                minIndex = i;
+            }
         }
     }
 #else

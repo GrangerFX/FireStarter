@@ -79,8 +79,8 @@ GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults*
             // Save better results.
             *newResults->Data(member, v) = data;
             *newResults->MinResult(member, v) = result;
-            *newResults->DebugA(member) = member;
-            *newResults->DebugB(member) = seed;
+            *newResults->Index(member) = member;
+            *newResults->Debug(member) = seed;
             maxResult = fmaxf(maxResult, result);
         } else {
             // The genetic part of genetic programming and a major optimization:
@@ -104,8 +104,8 @@ GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults*
                 *newResults->MinResult(member, v) = result;
                 maxResult = fmaxf(maxResult, result);
             }
-            *newResults->DebugA(member) = bestIndex;
-            *newResults->DebugB(member) = seed;
+            *newResults->Index(member) = bestIndex;
+            *newResults->Debug(member) = seed;
         }
     }
     *newResults->MaxResult(member) = maxResult;
