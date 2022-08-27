@@ -156,7 +156,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     }
 
     // Get the best results.
-#if 1
     float minResult = *m_hostResults->MaxResult(0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < m_settings.m_population; i++) {
@@ -169,22 +168,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
             }
         }
     }
-#else
-    float minResult = *m_hostResults->MaxResult(0);
-    float maxResult = minResult;
-    float averageResult = minResult;
-    unsigned int minIndex = 0;
-    for (unsigned int i = 1; i < m_settings.m_population; i++) {
-        float curResult = *m_hostResults->MaxResult(i);
-        averageResult = (averageResult * i + curResult) / (i + 1);
-        maxResult = max(maxResult, curResult);
-        if (curResult < minResult) {
-            minResult = curResult;
-            minIndex = i;
-        }
-    }
-    printf("Evolution: %d  MinResult=%f  MaxResult=%f  AverageResult=%f\n", m_state.m_generation, m_minResult, m_maxResult, m_averageResult);
-#endif
 
     memcpy(m_state.Result(), m_hostResults->Result(minIndex), FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations));
     m_state.m_program.LoadInstructions(m_hostEvolutions->Instructions(minIndex));
@@ -265,21 +248,19 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
 
     // Get the best results.
     FireStarterResult* result = m_state.Result();
-    for (unsigned int v = 0; v < m_settings.m_variations; v++)
-        *result->MinResult(v) = *m_hostResults->MinResult(0, v);
-    std::vector<unsigned int> minIndex;
-    minIndex.resize(m_settings.m_variations, 0);
-    for (unsigned int i = 1; i < m_settings.m_population; i++) {
-        for (unsigned int v = 0; v < m_settings.m_variations; v++) {
+    for (unsigned int v = 0; v < m_settings.m_variations; v++) {
+        float minResult = *m_hostResults->MinResult(0, v);
+        unsigned int minIndex = 0;
+        for (unsigned int i = 1; i < m_settings.m_population; i++) {
             float curResult = *m_hostResults->MinResult(i, v);
             if (curResult < *result->MinResult(v)) {
-                *result->MinResult(v) = curResult;
-                minIndex[v] = i;
+                minResult = curResult;
+                minIndex = i;
             }
         }
+        *result->MinResult(v) = minResult;
+        *result->Data(v) = *m_hostResults->Data(minIndex, v);
     }
-    for (unsigned int v = 0; v < m_settings.m_variations; v++)
-        *result->Data(v) = *m_hostResults->Data(minIndex[v], v);
     result->maxResult = *result->MinResult(0);
     for (unsigned int v = 1; v < m_settings.m_variations; v++)
         result->maxResult = fmaxf(result->maxResult, *result->MinResult(v));
