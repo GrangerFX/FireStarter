@@ -1,0 +1,24 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_OPTIMIZE;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 512;
+candidates = 16;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+

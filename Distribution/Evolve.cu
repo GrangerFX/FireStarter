@@ -255,37 +255,39 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
                 unsigned int t = minThreads[v];
                 *newResults->Data(member, v) = allData[v][t];
                 *newResults->MinResult(member, v) = allResults[v][t];
-                *newResults->Index(member) = member;
-                *newResults->Debug(member) = (init == 1) ? 1 : *oldResults->Debug(member) + 1;
+                *newResults->Index(member, v) = member;
+                *newResults->Debug1(member) = (init == 1) ? 1 : *oldResults->Debug1(member) + 1;
+                *newResults->Debug2(member) = seed;
             }
         } else {
-            // Copy a result from among the previous generations best results.
-            unsigned int bestIndex = member;
+            // Copy a result from among the previous generation's results.
+            unsigned int bestCandidate = member;
             float bestResult = oldResult;
             if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_BEST) {
                 // The genetic part of genetic programming and a major optimization:
                 // Copy the best data from among a random set of candidates.
                 for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
-                    unsigned int index = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
-                    if (i == *oldResults->Index(i)) {   // Only select evolving members
-                        float curResult = *oldResults->MaxResult(index);
+                    unsigned int candidate = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
+                    if (candidate == *oldResults->Index(candidate, 0)) {   // Only select evolving members
+                        float curResult = *oldResults->MaxResult(candidate);
                         if (curResult < bestResult) {
-                            bestIndex = index;
+                            bestCandidate = candidate;
                             bestResult = curResult;
                         }
                     }
                 }
             } else if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_RANDOM)
-                bestIndex = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
+                bestCandidate = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
 
             // Switch to the selected member's instructions, data and results or revert to the previous generation.
-            *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestIndex);
+            *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestCandidate);
             *newResults->MaxResult(member) = bestResult;
-            *newResults->Index(member) = bestIndex;
-            *newResults->Debug(member) = *oldResults->Debug(member);
+            *newResults->Debug1(member) = *oldResults->Debug1(member);
+            *newResults->Debug2(member) = *oldResults->Debug2(member);
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-                *newResults->Data(member, v) = *oldResults->Data(bestIndex, v);
-                *newResults->MinResult(member, v) = *oldResults->MinResult(bestIndex, v);
+                *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
+                *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
+                *newResults->Index(member, v) = bestCandidate;
             }
         }
     }

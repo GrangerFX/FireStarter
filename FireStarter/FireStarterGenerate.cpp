@@ -145,10 +145,10 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
 
         code += "\r\n";
         if (settings.m_variations > 1) {
-            code += Format("// Solution%d precision = %.8f\r\n", v, *result->MinResult(v));
+            code += Format("// Solution%d precision = %.8f\r\n", v, result->MinResult(v));
             code += Format("inline float Solution%d(float n)\r\n", v);
         } else {
-            code += Format("// Solution precision = %.8f\r\n", *result->MinResult(0));
+            code += Format("// Solution precision = %.8f\r\n", result->MinResult(0));
             code += "inline float Solution(float n)\r\n";
         }
         code += "{\r\n";
