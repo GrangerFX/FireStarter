@@ -267,10 +267,12 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
                 // Copy the best data from among a random set of candidates.
                 for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
                     unsigned int index = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
-                    float curResult = *oldResults->MaxResult(index);
-                    if (curResult < bestResult) {
-                        bestIndex = index;
-                        bestResult = curResult;
+                    if (i == *oldResults->Index(i)) {   // Only select evolving members
+                        float curResult = *oldResults->MaxResult(index);
+                        if (curResult < bestResult) {
+                            bestIndex = index;
+                            bestResult = curResult;
+                        }
                     }
                 }
             } else if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_RANDOM)
