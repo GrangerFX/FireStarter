@@ -78,8 +78,6 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
-        int init = g == 0 ? (forceInit || (m_evolveGeneration == 0) ? 1 : 2) : 0;
-
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
             context.SetContext();
@@ -87,6 +85,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
             FireStarterResults* oldResults = g & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
             FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
+            int init = (g == 0) && (forceInit || (m_evolveGeneration == 0));
 
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newEvolutions),
