@@ -4,8 +4,8 @@
 #include "FireStarterResults.h"
 
 #if 0
-// Best version.
-// 0.00344360 after 303 generations
+// Old version.
+// 0.01215351 after 137 generations. Optimize 0.00009131 after 29 generations.
 GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, unsigned int init)
 {
     const unsigned int member = firstMember + blockIdx.x;
@@ -149,7 +149,8 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
     }
 } // Evolve
 #else
-// Experimental version
+// New version
+// 0.00060845 after 147 generations. Optimize 0.00015676 after 150 generations.
 GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = firstMember + blockIdx.x;
