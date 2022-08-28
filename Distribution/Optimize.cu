@@ -12,7 +12,7 @@ inline float Evaluate(FireStarterData data, float n)
 // END //
 
 #if 0
-// Best version.
+// Old version.
 GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned int seed, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
@@ -63,8 +63,7 @@ GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults*
             if (curResult <= result) {
                 result = curResult;
                 evolutionScale = settings.m_scale * result;
-            }
-            else
+            } else
                 data.d[d] = oldData;
         }
 
@@ -116,7 +115,7 @@ GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults*
     *newResults->MaxResult(member) = maxResult;
 } // Optimize
 #else
-// Experimental version
+// New improved version
 GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned int seed, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;

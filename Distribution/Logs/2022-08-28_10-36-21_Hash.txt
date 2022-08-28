@@ -1,0 +1,33 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_OPTIMIZE;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 512;
+candidates = 16;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00307596  Seed=C0A949CE  Best Result=    40  Best Generation=   13  ResultHash=71B7  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   1  Result=0.00306901  Seed=C0A94A32  Best Result=     7  Best Generation=   17  ResultHash=323A  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   1  Result=0.00306901  Seed=C0A94A96  Best Result=     6  Best Generation=   17  ResultHash=78AB  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   3  Result=0.00306797  Seed=C0A94AFA  Best Result=   141  Best Generation=   18  ResultHash=BB42  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   4  Result=0.00306601  Seed=C0A94B5E  Best Result=    82  Best Generation=   19  ResultHash=C1FC  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   5  Result=0.00306317  Seed=C0A94BC2  Best Result=    77  Best Generation=   20  ResultHash=04CA  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   6  Result=0.00306206  Seed=C0A94C26  Best Result=    65  Best Generation=   21  ResultHash=C629  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   6  Result=0.00306206  Seed=C0A94C8A  Best Result=    99  Best Generation=   21  ResultHash=8BB6  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   8  Best Generation:   6  Result=0.00306206  Seed=C0A94CEE  Best Result=   154  Best Generation=   21  ResultHash=0A2D  ProgramHash=ABCB

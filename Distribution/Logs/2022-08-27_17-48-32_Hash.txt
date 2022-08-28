@@ -1,0 +1,55 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_OPTIMIZE;
+units = 1;
+process = 0;
+population = 69632;
+iterations = 512;
+candidates = 16;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.68826854  Seed=C0A949CE  Best Result= 46702  Best Generation=   50  ResultHash=D7D6  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   1  Result=0.06826180  Seed=C0A94A32  Best Result= 62561  Best Generation=   75  ResultHash=A806  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   2  Result=0.00474358  Seed=C0A94A96  Best Result= 16498  Best Generation=   81  ResultHash=7188  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   3  Result=0.00126538  Seed=C0A94AFA  Best Result= 16317  Best Generation=  125  ResultHash=0015  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   4  Result=0.00126505  Seed=C0A94B5E  Best Result= 20862  Best Generation=  137  ResultHash=2D5B  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   5  Result=0.00125261  Seed=C0A94BC2  Best Result= 41546  Best Generation=  140  ResultHash=8DC6  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   6  Result=0.00122154  Seed=C0A94C26  Best Result= 59962  Best Generation=  147  ResultHash=CF71  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   7  Result=0.00119203  Seed=C0A94C8A  Best Result= 46135  Best Generation=  155  ResultHash=230F  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   8  Best Generation:   8  Result=0.00119194  Seed=C0A94CEE  Best Result=  3788  Best Generation=  153  ResultHash=65E4  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   9  Best Generation:   9  Result=0.00117621  Seed=C0A94D52  Best Result= 14220  Best Generation=  176  ResultHash=F25C  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  10  Best Generation:  10  Result=0.00117597  Seed=C0A94DB6  Best Result= 43507  Best Generation=  201  ResultHash=2F8A  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  11  Best Generation:  11  Result=0.00117242  Seed=C0A94E1A  Best Result= 36822  Best Generation=  205  ResultHash=569C  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  12  Best Generation:  12  Result=0.00117157  Seed=C0A94E7E  Best Result= 11001  Best Generation=  215  ResultHash=3A51  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  13  Best Generation:  13  Result=0.00116754  Seed=C0A94EE2  Best Result=  6347  Best Generation=  219  ResultHash=9F3D  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  14  Best Generation:  14  Result=0.00115547  Seed=C0A94F46  Best Result= 34131  Best Generation=  231  ResultHash=0CDC  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  15  Best Generation:  15  Result=0.00115532  Seed=C0A94FAA  Best Result=  8460  Best Generation=  234  ResultHash=F73E  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  16  Best Generation:  16  Result=0.00115126  Seed=C0A9500E  Best Result= 66569  Best Generation=  237  ResultHash=A21E  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  17  Best Generation:  16  Result=0.00115126  Seed=C0A95072  Best Result= 14094  Best Generation=  231  ResultHash=49F9  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  18  Best Generation:  16  Result=0.00122845  Seed=C0A950D6  Best Result= 69505  Best Generation=  243  ResultHash=BE71  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  19  Best Generation:  19  Result=0.00115010  Seed=C0A9513A  Best Result= 60698  Best Generation=  209  ResultHash=CFFB  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  20  Best Generation:  19  Result=0.66421729  Seed=C0A9519E  Best Result= 54033  Best Generation=  257  ResultHash=E5B4  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  21  Best Generation:  21  Result=0.00114736  Seed=C0A95202  Best Result= 69505  Best Generation=  253  ResultHash=716F  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  22  Best Generation:  21  Result=0.45060802  Seed=C0A95266  Best Result= 51059  Best Generation=  650  ResultHash=4E63  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  23  Best Generation:  21  Result=0.00186685  Seed=C0A952CA  Best Result= 32089  Best Generation=  262  ResultHash=11F9  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  24  Best Generation:  21  Result=0.64058751  Seed=C0A9532E  Best Result= 34854  Best Generation=  266  ResultHash=02A6  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  25  Best Generation:  21  Result=0.84905332  Seed=C0A95392  Best Result= 53677  Best Generation=  271  ResultHash=4775  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  26  Best Generation:  21  Result=0.06958771  Seed=C0A953F6  Best Result= 25906  Best Generation=  326  ResultHash=6E8F  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  27  Best Generation:  21  Result=1.02956176  Seed=C0A9545A  Best Result= 12587  Best Generation=  736  ResultHash=A202  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  28  Best Generation:  21  Result=0.27817398  Seed=C0A954BE  Best Result= 36686  Best Generation=  279  ResultHash=1911  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  29  Best Generation:  21  Result=0.01001543  Seed=C0A95522  Best Result= 14326  Best Generation=  712  ResultHash=51BB  ProgramHash=ABCB
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  30  Best Generation:  21  Result=0.73139197  Seed=C0A95586  Best Result= 41827  Best Generation=  733  ResultHash=F872  ProgramHash=ABCB

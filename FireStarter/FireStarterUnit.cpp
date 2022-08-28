@@ -247,19 +247,18 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
     }
 
     // Get the best variation results.
+    // Note: The best result may get worse generation to generation before it improves.
+    // This allows for better diversity among members when they struggle to evolve and yields better results.
     FireStarterResult* result = m_state.Result();
     result->maxResult = 0.0f;
     for (unsigned int v = 0; v < m_settings.m_variations; v++) {
         float minResult = *m_hostResults->MinResult(0, v);
         unsigned int minIndex = 0;
         for (unsigned int i = 1; i < m_settings.m_population; i++) {
-            unsigned int curIndex = *m_hostResults->Index(i, v);
-            if (curIndex == i) {
-                float curResult = *m_hostResults->MinResult(i, v);
-                if (curResult < *result->MinResult(v)) {
-                    minResult = curResult;
-                    minIndex = i;
-                }
+            float curResult = *m_hostResults->MinResult(i, v);
+            if (curResult <= minResult) {
+                minResult = curResult;
+                minIndex = i;
             }
         }
         memcpy(result->Data(v), m_hostResults->Data(minIndex, v), result->DataSize());
