@@ -153,13 +153,18 @@ GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults*
         } else {
             data = *oldResults->Data(member, v);
             oldResult = *oldResults->MinResult(member, v);
+            if (*oldResults->Index(member, v) != member) {
+                unsigned int d = RANDOMMOD(memberSeed, dataSize);
+                data.d[d] += settings.m_startScale * RANDOMFACTOR(memberSeed);
+                evolved = true;
+            }
         }
 
         // Find the initial result
         float result = 0.0f;
         for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
             result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
-        float evolutionScale = init || (*oldResults->Index(member, v) == member) ? settings.m_scale * result : settings.m_startScale;
+        float evolutionScale = evolved ? settings.m_startScale : settings.m_scale * result;
 
         // Iterate to evolve the data.
         for (unsigned int p = 0; p < settings.m_iterations; p++) {
