@@ -37,6 +37,11 @@ static const std::string& GetModulePath(void)
     return modulePath;
 } // GetModulePath
 
+size_t FireStarterProcess::ProcessIndex(void)
+{
+    return m_processIndex;
+} // ProcessIndex
+
 void FireStarterProcess::Terminate(void)
 {
     if (m_terminate) {
@@ -267,6 +272,16 @@ bool FireStarterProcess::StartProcess(void)
             return false;
         }
 
+        // Send the process index to the client.
+        bool indexResult = SendData(&m_processIndex, sizeof(m_processIndex));
+        if (indexResult)
+            TESTPRINTF("Index sent to client: %llu\n", m_processIndex);
+        else {
+            TESTPRINTF("Failed to send index to client. Error=%d\n", GetLastError());
+            StopProcess();
+            return false;
+        }
+
 #if TEST_CONNECTION
         // Send a message to the pipe client.
         std::string sendMessage = "Hello from server " + m_pipeName;
@@ -368,6 +383,16 @@ bool FireStarterProcess::StartClient(void)
             return false;
         }
 
+        // Receive the process index from the server.
+        bool indexResult = ReceiveData(&m_processIndex, sizeof(m_processIndex));
+        if (indexResult)
+            TESTPRINTF("\nIndex received from server: %llu\n", m_processIndex);
+        else {
+            TESTPRINTF("Failed to receive index via pipe. Error=%d\n", GetLastError());
+            StopClient();
+            return false;
+        }
+
 #if TEST_CONNECTION
         // Receive a message from the pipe server
         std::string receiveMessage;
@@ -375,7 +400,7 @@ bool FireStarterProcess::StartClient(void)
         if (receiveResult)
             TESTPRINTF("\nMessage received from server: %s\n", receiveMessage.c_str());
         else {
-            TESTPRINTF("ReadFile from pipe failed. Error=%d\n", GetLastError());
+            TESTPRINTF("Message receive from pipe failed. Error=%d\n", GetLastError());
             StopClient();
             return false;
         }
@@ -386,7 +411,7 @@ bool FireStarterProcess::StartClient(void)
         if (sendResult)
             TESTPRINTF("\nMessage sent to server: %s\n", sendMessage.c_str());
         else {
-            TESTPRINTF("WriteFile to pipe failed. Error=%d\n", GetLastError());
+            TESTPRINTF("Message send to server failed. Error=%d\n", GetLastError());
             StopClient();
             return false;
         }
@@ -428,10 +453,11 @@ void FireStarterProcess::Stop(void)
         StopProcess();
 } // Stop
 
-FireStarterProcess::FireStarterProcess(const std::string& pipeName, const std::string& processPath)
+FireStarterProcess::FireStarterProcess(const std::string& pipeName, const std::string& processPath, size_t index)
 {
     m_processPath = processPath;
     m_pipeName = pipeName;
+    m_processIndex = index;
     m_client = false;
 } // FireStarterProcess
 
@@ -439,6 +465,7 @@ FireStarterProcess::FireStarterProcess(const std::string& pipeName, volatile boo
 {
     m_pipeName = pipeName;
     m_terminate = terminate;
+    m_processIndex = 0;
     m_client = true;
 } // FireStarterProcess
 
@@ -463,7 +490,7 @@ FireStarterProcess* FireStarterServer::AddProcess(const std::string& name)
     size_t processIndex = m_processes.size() + 1;
     std::string processPipeName = "\\\\.\\pipe\\" + name + std::to_string(processIndex);
     std::string processPath = ModulePath() + name + ".exe";
-    FireStarterProcess* process = new FireStarterProcess(processPipeName, processPath);
+    FireStarterProcess* process = new FireStarterProcess(processPipeName, processPath, m_processes.size());
     m_processes.push_back(process);
     return process;
 } // AddProcess

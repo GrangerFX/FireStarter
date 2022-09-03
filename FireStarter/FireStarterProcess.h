@@ -13,11 +13,13 @@ private:
     STARTUPINFO m_processStartupInfo = {};
     PROCESS_INFORMATION m_processInformation = {};
     std::string m_processPath;
+    size_t m_processIndex = 0;
     volatile bool* m_terminate = nullptr;
     bool m_started = false;
     bool m_connected = false;
     bool m_client = false;
 public:
+    size_t ProcessIndex(void);
     void Terminate(void);
     bool ShouldTerminate(void);
     bool WaitForData(void);
@@ -36,7 +38,7 @@ public:
     bool IsClient(void);
     bool Start(void);
     void Stop(void);
-    FireStarterProcess(const std::string& pipeName, const std::string& processPath);
+    FireStarterProcess(const std::string& pipeName, const std::string& processPath, size_t index = 0);
     FireStarterProcess(const std::string& pipeName, volatile bool *terminate);
     ~FireStarterProcess(void);
 }; // class FireStarterProcess

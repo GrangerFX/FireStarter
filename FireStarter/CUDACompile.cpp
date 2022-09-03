@@ -99,3 +99,13 @@ CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& fu
     checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName.c_str()));
     return function;
 } // GetFunction
+
+CUDACompile::CUDACompile(FireStarterProcess* process)
+{
+    m_process = process;
+    m_server = m_process && !m_process->IsClient();
+} // CUDACompile
+
+CUDACompile::~CUDACompile(void)
+{
+} // ~CUDACompile
