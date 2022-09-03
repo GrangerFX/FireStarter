@@ -100,12 +100,3 @@ CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& fu
     return function;
 } // GetFunction
 
-CUDACompile::CUDACompile(FireStarterProcess* process)
-{
-    m_process = process;
-    m_server = m_process && !m_process->IsClient();
-} // CUDACompile
-
-CUDACompile::~CUDACompile(void)
-{
-} // ~CUDACompile
