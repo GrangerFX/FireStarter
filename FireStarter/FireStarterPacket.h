@@ -113,6 +113,28 @@ public:
         return true;
     } // Packetize
 
+    inline bool Packetize(std::vector<std::string>& strings)
+    {
+        if (!m_getMode) {
+            size_t size = strings.size();
+            AddData(&size, sizeof(size));
+            for (std::string& string : strings)
+                Packetize(string);
+            return true;
+        }
+        strings.clear();
+        size_t size = 0;
+        if (!GetData(&size, sizeof(size)))
+            return false;
+        if (size) {
+            strings.resize(size);
+            for (std::string& string : strings)
+                if (!Packetize(string))
+                    return false;
+        }
+        return true;
+    } // Packetize
+
     inline FireStarterPacket(const std::string &command = std::string())
     {
         m_command = command;
