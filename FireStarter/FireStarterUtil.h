@@ -55,21 +55,6 @@ inline uint64_t MurmurHash64(const void* key, uint64_t len, uint64_t seed = 0)
     return h;
 } // MurmurHash64
 
-inline std::string Format(const char* format, ...)
-{
-    char str[1024];
-    va_list argptr;
-    va_start(argptr, format);
-    int ret = vsnprintf(str, sizeof(str), format, argptr);
-    va_end(argptr);
-    return std::string(str);
-} // Format
-
-inline std::string Format(const std::string formatString, ...)
-{
-    return Format(formatString.c_str());
-} // Format
-
 inline std::string CurrentDate(void)
 {
     time_t currentTime = time(nullptr);

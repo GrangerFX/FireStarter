@@ -5,56 +5,77 @@
 
 #define COMPILE_TIME 0
 
-bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& program, const std::string& programName)
+void CUDACompile::StandardOptions(std::vector<std::string>& options)
 {
-#if COMPILE_TIME
-    SimpleTimer compileTimer;
-#endif
-     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
+    options.push_back(Format("-arch=compute_75"));
+    options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
+//  options.push_back("-G");                // Generate debug info
+//  options.push_back("-lineinfo");         // Generate line information
+} // StandardOptions
+
+bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string& program, const std::string& programName, const std::vector<std::string>& options)
+{
+    // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
     nvrtcProgram prog;
     const char* code = program.c_str();
-    checkNVRTCErrors(nvrtcCreateProgram(&prog, code, programName.c_str(), 0, nullptr, nullptr));
+    if (!logNVRTCErrors(log, nvrtcCreateProgram(&prog, code, programName.c_str(), 0, nullptr, nullptr)))
+        return false;
 
-    std::vector<const char*> options;
-    options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
- //   options.push_back("-G");              // Generate debug info
- //   options.push_back("-lineinfo");       // Generate line information
- //   options.push_back("-I\"C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.6/include/cuda/std/detail/libcxx/include\"");
+    std::vector<const char*> compileOptions;
+    for (const std::string& string : options)
+        compileOptions.push_back(string.c_str());
 
-    static std::string computeDevice;
-    if (!computeDevice.length()) {
-        int computeCapabilityMajor = 0;
-        int computeCapabilityMinor = 0;
-        CUdevice device = 0;
-        checkCUDAErrors(cuDeviceGet(&device, 0)); // Use the first CUDA device for now.
-        checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMajor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, device));
-        checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMinor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
-        computeDevice = Format("-arch=compute_%d%d", computeCapabilityMajor, computeCapabilityMinor);
-    }
-    options.push_back(computeDevice.c_str());
+    nvrtcResult result = nvrtcCompileProgram(prog, (int)compileOptions.size(), compileOptions.data());
+    if (result) {
+        logNVRTCErrors(log, result);
 
-    nvrtcResult res = nvrtcCompileProgram(prog, (int)options.size(), options.data());
-    if (res != 0) {
         // Output the compile log.
-        size_t logSize;
-        checkNVRTCErrors(nvrtcGetProgramLogSize(prog, &logSize));
-        if (logSize) {
-            char* log = reinterpret_cast<char*>(malloc(logSize + 1));
-            checkNVRTCErrors(nvrtcGetProgramLog(prog, log));
-            log[logSize] = '\x0';
-            printf("compilation log ---\n%s\nend log---\n", log);
-            free(log);
+        size_t compileLogSize;
+        logNVRTCErrors(log, nvrtcGetProgramLogSize(prog, &compileLogSize));
+        if (compileLogSize) {
+            std::string compileLog;
+            compileLog.resize(compileLogSize);
+            logNVRTCErrors(log, nvrtcGetProgramLog(prog, compileLog.data()));
+            log += compileLog;
         }
-        checkNVRTCErrors(res);
+        return false;
     }
 
     // Fetch PTX
-    std::string ptx;
     size_t ptxSize;
     checkNVRTCErrors(nvrtcGetPTXSize(prog, &ptxSize));
     ptx.resize(ptxSize);
     checkNVRTCErrors(nvrtcGetPTX(prog, ptx.data()));
     checkNVRTCErrors(nvrtcDestroyProgram(&prog));
+    return ptxSize > 0;
+} // Compile
+
+bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& program, const std::string& programName)
+{
+#if COMPILE_TIME
+    SimpleTimer compileTimer;
+#endif
+
+    std::vector<std::string> options;
+    CUdevice device = 0;
+    checkCUDAErrors(cuCtxGetDevice(&device));
+
+    // Use the current device's compute architecture
+    int computeCapabilityMajor = 0;
+    int computeCapabilityMinor = 0;
+    checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMajor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, device));
+    checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMinor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
+    options.push_back(Format("-arch=compute_%d%d", computeCapabilityMajor, computeCapabilityMinor));
+    options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
+//  options.push_back("-G");                // Generate debug info
+//  options.push_back("-lineinfo");         // Generate line information
+
+    std::string ptx, log;
+    if (!Compile(ptx, log, program, programName, options)) {
+        printf("compilation log ---\n%s\nend log---\n", log);
+        std::terminate();
+        return false;
+    }
 
     // Create the code module.
     if (cuda_module) {

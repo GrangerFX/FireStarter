@@ -1,12 +1,9 @@
 #pragma once
 #include <stdarg.h>
-#include <stdio.h>
-#include <windows.h>
+//#include <stdio.h>
 #include <iostream>
 
-#define printf printf2
-
-inline int printf2(const char *format, ...)
+inline std::string Format(const char* format, ...)
 {
 #if 1
     // initialize use of the variable argument array
@@ -27,22 +24,20 @@ inline int printf2(const char *format, ...)
     // and without assuming any compiler
     // or platform specific behavior
     std::vector<char> zc(iLen + 1);
-    int ret = std::vsnprintf(zc.data(), zc.size(), format, vaArgs);
+    std::vsnprintf(zc.data(), zc.size(), format, vaArgs);
     va_end(vaArgs);
-
-    OutputDebugStringA(zc.data());
-    std::cerr << zc.data();
-    return ret;
+    return zc.data();
 #else
-    char str[65536];
-
+    char str[1024];
     va_list argptr;
     va_start(argptr, format);
     int ret = vsnprintf(str, sizeof(str), format, argptr);
     va_end(argptr);
-    OutputDebugStringA(str);
-    std::cerr << str;
-    return ret;
+    return std::string(str);
 #endif
+} // Format
 
-} // printf2
+inline std::string Format(const std::string formatString, ...)
+{
+    return Format(formatString.c_str());
+} // Format
