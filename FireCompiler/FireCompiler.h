@@ -1,17 +1,15 @@
 #pragma once
-#include "FireStarterProcess.h"
-#include "CUDACompile.h"
+#include "FireStarterCompiler.h"
 
 class FireCompiler : public SerialThread {
 private:
 	FireStarterProcess m_process;
-	CUDACompile m_compile;
+	FireStarterCompiler m_compiler;
 	volatile bool m_terminate = false;
 
 public:
 	void Terminate(void);
 	bool ShouldTerminate(void);
-	void Client(void);
 	FireCompiler(const std::string& pipeName);
 	~FireCompiler(void);
-}; // class FireMaker
+}; // class FireCompiler
