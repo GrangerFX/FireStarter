@@ -527,32 +527,37 @@ void FireStarterUnit::Client(void)
     if (!m_process->ShouldTerminate())
         DispatchAsync([this] {
             FireStarterPacket receivePacket;
-            m_process->ReceivePacket(receivePacket);
-            const std::string& command = receivePacket.Command();
-            if (command == UNIT_INIT) {
-                bool result = true;
-                unsigned int unitIndex = 0;
-                result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
-                FireStarterState receiveState;
-                result = result && receiveState.Packetize(receivePacket);
-                if (result)
-                    InitUnit(unitIndex, receiveState);
-                m_process->SendCommand(UNIT_INIT);
-            } else if (command == UNIT_EXECUTE) {
-                Execute();
-                m_process->SendCommand(UNIT_EXECUTE);
-            } else if (command == UNIT_UPDATE) {
-                FireStarterPacket sendPacket(UNIT_UPDATE);
-                Packetize(sendPacket);
-                m_process->SendPacket(sendPacket);
-            } else if (command == UNIT_SYNC) {
-                PacketizeAllStates(receivePacket);
-                m_process->SendCommand(UNIT_SYNC);
-            } else {
-                // Error: Unknown command!
-                m_process->Terminate();
+            bool result = m_process->ReceivePacket(receivePacket);
+            if (result) {
+                const std::string& command = receivePacket.Command();
+                if (command == UNIT_INIT) {
+                    unsigned int unitIndex = 0;
+                    result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
+                    FireStarterState receiveState;
+                    result = result && receiveState.Packetize(receivePacket);
+                    if (result)
+                        InitUnit(unitIndex, receiveState);
+                    m_process->SendCommand(UNIT_INIT);
+                } else if (command == UNIT_EXECUTE) {
+                    Execute();
+                    result = result && m_process->SendCommand(UNIT_EXECUTE);
+                } else if (command == UNIT_UPDATE) {
+                    FireStarterPacket sendPacket(UNIT_UPDATE);
+                    Packetize(sendPacket);
+                    result = result && m_process->SendPacket(sendPacket);
+                } else if (command == UNIT_SYNC) {
+                    PacketizeAllStates(receivePacket);
+                    result = result && m_process->SendCommand(UNIT_SYNC);
+                } else
+                    // Error: Unknown command!
+                    result = false;
+
+                // Error: Terminate the process on failure.
+                if (!result)
+                    m_process->Terminate();
             }
-            DispatchAsync([this] { Client(); });
+            if (!m_process->ShouldTerminate())
+                DispatchAsync([this] { Client(); });
         });
 } // ClientCommand
 

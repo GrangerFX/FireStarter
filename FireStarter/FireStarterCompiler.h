@@ -5,7 +5,8 @@ class FireStarterCompiler : public SerialThread {
 public:
 	struct FireStarterCompilerJob {
 		struct FireStarterCompilerJob* next;	// Linked list pointer
-		std::string code;
+		std::string program;
+		std::string programName;
 		std::vector<std::string> options;
 		std::string ptx;
 		std::string log;
@@ -25,6 +26,7 @@ private:
 	FireStarterCompilerJob* GetCompileJob(void);
 	void CompleteCompileJob(FireStarterCompilerJob* job);
 public:
+	void Server(void);
 	void Client(void);
 	void AddCompile(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetCompile(void);
