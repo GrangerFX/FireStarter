@@ -1,6 +1,7 @@
 #pragma once
 #include "FireStarterGenerate.h"
 #include "FireStarterProcess.h"
+#include "FireStarterCompiler.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 #include "SerialThread.h"
@@ -163,6 +164,7 @@ private:
     void EvolveExecute(void);
     void OptimizeExecute(void);
     void UnitExecute(void);
+    void RandomExecute(void);
     bool LoadCode(void);
     void Deallocate(void);
     void Allocate(const FireStarterState& state);
@@ -172,6 +174,8 @@ public:
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
     void GetState(FireStarterState* state);
+    void StartRandom(unsigned int index, FireStarterCompiler &compiler, std::atomic<unsigned int>& generation, FireStarterState& bestState);
+    bool UpdateRandom(FireStarterState& state, FireStarterState& bestState);
     void InitUnit(unsigned int index, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);
@@ -179,7 +183,7 @@ public:
     void Start(void);
     void Stop(void);
     void Client(void);
-    FireStarterUnit(FireStarterProcess* process);
+    FireStarterUnit(FireStarterProcess* process = nullptr);
     FireStarterUnit(unsigned int gpus);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

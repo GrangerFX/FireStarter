@@ -311,9 +311,17 @@ void FireStarterUnit::UnitExecute(void)
 
     // Evolve the program data.
     OptimizeGenerations(1);
-    if (m_settings.m_mode != FIRESTARTER_RANDOM)
-        m_evolveGeneration++;
+    m_evolveGeneration++;
 } // UnitExecute
+
+void FireStarterUnit::RandomExecute(void)
+{
+    // Evolve, generate and compile the program.
+    UnitGenerate();
+
+    // Evolve the program data.
+    OptimizeGenerations(1);
+} // RandomExecute
 
 bool FireStarterUnit::LoadCode(void)
 {
@@ -427,6 +435,38 @@ void FireStarterUnit::GetState(FireStarterState* state)
     });
 } // GetState
 
+void FireStarterUnit::StartRandom(unsigned int index, FireStarterCompiler& compiler, std::atomic<unsigned int>& generation, FireStarterState& state)
+{
+    m_unitIndex = index;
+    m_settings = state.Settings();
+    m_evolveGeneration = 0;
+    if (LoadCode()) {
+        Allocate(state);
+        while ((generation < m_settings.m_attempts) && !WillTerminate())
+            DispatchAsync([this, &generation, &state] {
+                m_evolveGeneration = generation++;
+                if (m_evolveGeneration < m_settings.m_attempts) {
+                    m_state.Settings().m_seed = m_settings.m_seed + m_evolveGeneration;
+                    RandomExecute();
+                }
+            });
+    }
+} // Random
+
+bool FireStarterUnit::UpdateRandom(FireStarterState &state, FireStarterState& bestState)
+{
+    bool result = false;
+    if (!WillTerminate())
+        DispatchSync([this, &result, state, &bestState] {
+            float maxResult = state.MaxResult();
+            if (maxResult < bestState.MaxResult()) {
+                bestState = state;
+                result = true;
+            }
+        });
+    return result;
+}
+
 void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initState)
 {
     DispatchAsync([this, index, initState] {
@@ -462,8 +502,10 @@ void FireStarterUnit::Execute(void)
                     EvolveExecute();
                     break;
                 case FIRESTARTER_UNIT:
-                case FIRESTARTER_RANDOM:
                     UnitExecute();
+                    break;
+                case FIRESTARTER_RANDOM:
+                    RandomExecute();
                     break;
                 case FIRESTARTER_OPTIMIZE:
                     OptimizeExecute();

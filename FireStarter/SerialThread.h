@@ -219,6 +219,11 @@ public:
         return result;
     } // PollThread
 
+    inline bool WillTerminate(void)
+    {
+        return m_terminate;
+    } // WillTerminate
+
     inline void DispatchAsync(const SerialThreadWork& work)
     {
         std::unique_lock<std::mutex> lock(m_mutex);

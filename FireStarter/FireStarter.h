@@ -59,6 +59,7 @@ public:
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ControlDeallocate(void);
     void ControlAllocate(void);
+    void ControlRandom(void);
     void ControlLoop(void);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
