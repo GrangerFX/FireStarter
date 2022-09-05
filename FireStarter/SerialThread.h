@@ -143,12 +143,12 @@ private:
                     std::swap(stopToken, interruptDisabled);
                     if (!thread->m_terminate)
                         thread->DispatchAsync([timer] {
-                        timer->m_work();
-                        delete timer;
-                            });
+                            timer->m_work();
+                            delete timer;
+                        });
                     });
                 timer->m_thread.detach();
-                });
+            });
         } // AddTimer
 
         void StopTimers(void)
@@ -236,9 +236,14 @@ public:
     {
         DispatchAsync([this, duration, work] {
             m_timers.AddTimer(this, duration, work);
-            });
+        });
     } // DispatchAfter
 #endif
+
+    inline void SleepFor(double duration)
+    {
+        std::this_thread::sleep_for(std::chrono::duration<double>(duration));
+    } // SleepFor
 
     inline void DispatchSync(const SerialThreadWork& work)
     {
@@ -246,7 +251,7 @@ public:
         DispatchAsync([this, &syncSemaphore, work] {
             work();
             syncSemaphore.notify();
-            });
+        });
         if (m_pollThread)
             PollThread();
 

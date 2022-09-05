@@ -130,7 +130,7 @@ void FireStarter::RenderStatus(float testError)
         hashString += "\r\n";
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterState state;
-        m_units[i]->GetState(&state);
+        m_units[i]->GetState(state);
         FireStarterResult* result = state.Result();
         uint64_t resultHash = MurmurHash64(result, state.ResultSize());
         uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());

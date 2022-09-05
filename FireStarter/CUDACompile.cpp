@@ -93,6 +93,14 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
     return true; 
 } // CompileProgram
 
+CUmodule CUDACompile::CompileModule(const std::string& ptx)
+{
+    CUmodule cuda_module = nullptr;
+    if (!ptx.empty())
+        checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx.c_str(), 0, 0, 0));
+    return cuda_module;
+} // CompileModule
+
 CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& functionName)
 {
     CUfunction function = nullptr;

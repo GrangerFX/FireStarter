@@ -1,0 +1,59 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_UNIT;
+units = 4;
+process = 0;
+population = 69632;
+iterations = 128;
+candidates = 16;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 8337;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0
+  Unit: 0  Result=0.00001895  Seed=F8C4AC1A  Best Result= 20698  Best Generation=   70  ResultHash=5720  ProgramHash=02CD
+  Unit: 1  Result=0.00097057  Seed=E7544A2E  Best Result= 16217  Best Generation=   61  ResultHash=A86B  ProgramHash=9F14
+  Unit: 2  Result=0.00158849  Seed=ED93151A  Best Result= 18639  Best Generation=   68  ResultHash=DB6C  ProgramHash=EE14
+  Unit: 3  Result=0.03981656  Seed=BC6AFBE5  Best Result=  4060  Best Generation=   53  ResultHash=C01C  ProgramHash=4A1C
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0
+  Unit: 0  Result=0.00005603  Seed=F8C4AC81  Best Result=  2587  Best Generation=   72  ResultHash=7980  ProgramHash=02CD
+  Unit: 1  Result=0.00177038  Seed=E7544A95  Best Result= 39093  Best Generation=   76  ResultHash=568F  ProgramHash=67EC
+  Unit: 2  Result=0.00091648  Seed=ED931581  Best Result= 30695  Best Generation=   65  ResultHash=A395  ProgramHash=ED9D
+  Unit: 3  Result=0.00066519  Seed=BC6AFC4C  Best Result= 38906  Best Generation=   58  ResultHash=0CF1  ProgramHash=616B
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0
+  Unit: 0  Result=0.00159371  Seed=F8C4ACE8  Best Result= 67998  Best Generation=   64  ResultHash=A76A  ProgramHash=1D4E
+  Unit: 1  Result=0.00135100  Seed=E7544AFC  Best Result= 49503  Best Generation=   60  ResultHash=A2A8  ProgramHash=B82A
+  Unit: 2  Result=0.00005054  Seed=ED9315E8  Best Result= 46338  Best Generation=   82  ResultHash=8D5B  ProgramHash=8DC8
+  Unit: 3  Result=0.00005913  Seed=BC6AFCB3  Best Result= 60335  Best Generation=   68  ResultHash=4072  ProgramHash=02CD
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0
+  Unit: 0  Result=0.00006282  Seed=F8C4AD4F  Best Result= 23322  Best Generation=   66  ResultHash=CE82  ProgramHash=C04E
+  Unit: 1  Result=0.00043106  Seed=E7544B63  Best Result= 43292  Best Generation=   72  ResultHash=13F8  ProgramHash=5B2B
+  Unit: 2  Result=0.00003135  Seed=ED93164F  Best Result=  9939  Best Generation=   67  ResultHash=B5B7  ProgramHash=8DC8
+  Unit: 3  Result=0.00008339  Seed=BC6AFD1A  Best Result= 45482  Best Generation=   64  ResultHash=46B4  ProgramHash=1FA9
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   4
+  Unit: 0  Result=0.00000683  Seed=F8C4ADB6  Best Result= 33188  Best Generation=   71  ResultHash=E6AF  ProgramHash=F261
+  Unit: 1  Result=0.00002158  Seed=E7544BCA  Best Result= 45979  Best Generation=   56  ResultHash=643E  ProgramHash=8DC8
+  Unit: 2  Result=0.00010169  Seed=ED9316B6  Best Result= 47244  Best Generation=   73  ResultHash=59C3  ProgramHash=8DC8
+  Unit: 3  Result=0.00009274  Seed=BC6AFD81  Best Result= 35343  Best Generation=   67  ResultHash=EEFE  ProgramHash=4DF9
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   4
+  Unit: 0  Result=0.00089443  Seed=F8C4AE1D  Best Result= 31882  Best Generation=   47  ResultHash=BB34  ProgramHash=95B8
+  Unit: 1  Result=0.00008589  Seed=E7544C31  Best Result= 14227  Best Generation=   75  ResultHash=984B  ProgramHash=789A
+  Unit: 2  Result=0.00006402  Seed=ED93171D  Best Result= 28980  Best Generation=   57  ResultHash=9B23  ProgramHash=F261
+  Unit: 3  Result=0.00004467  Seed=BC6AFDE8  Best Result= 39362  Best Generation=   73  ResultHash=D822  ProgramHash=E434
+FIRESTARTER_UNIT:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   6
+  Unit: 0  Result=0.00000525  Seed=F8C4AE84  Best Result= 10522  Best Generation=   75  ResultHash=077C  ProgramHash=7BA0
+  Unit: 1  Result=0.00000644  Seed=E7544C98  Best Result=  7744  Best Generation=   57  ResultHash=2B3F  ProgramHash=EC9B
+  Unit: 2  Result=0.00000954  Seed=ED931784  Best Result=  7933  Best Generation=   67  ResultHash=247D  ProgramHash=33BA
+  Unit: 3  Result=0.00007229  Seed=BC6AFE4F  Best Result= 36660  Best Generation=   52  ResultHash=2D74  ProgramHash=89DD

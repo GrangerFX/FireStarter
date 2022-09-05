@@ -44,7 +44,9 @@ public:
     bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(bool clean);
     void RandomProgram(unsigned int& seed);
+    void RandomProgram(void);
     void RandomInstruction(unsigned int& seed);
+    void RandomInstruction(void);
     void LoadInstructions(FireStarterInstructions* instructions);
     void SaveInstructions(FireStarterInstructions* instructions);
     static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "");

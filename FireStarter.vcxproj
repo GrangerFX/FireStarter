@@ -108,9 +108,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
-    <ClCompile Include="FireStarter\FireSarterCompiler.cpp" />
     <ClCompile Include="FireStarter\FireStarter.cpp" />
     <ClCompile Include="FireStarter\FireStarterCode.cpp" />
+    <ClCompile Include="FireStarter\FireStarterCompiler.cpp" />
     <ClCompile Include="FireStarter\FireStarterGenerate.cpp" />
     <ClCompile Include="FireStarter\FireStarterMain.cpp" />
     <ClCompile Include="FireStarter\FireStarterProcess.cpp" />

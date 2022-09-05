@@ -98,7 +98,7 @@
     <ClCompile Include="FireCompiler\FireCompiler.cpp" />
     <ClCompile Include="FireCompiler\FireCompilerMain.cpp" />
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
-    <ClCompile Include="FireStarter\FireSarterCompiler.cpp" />
+    <ClCompile Include="FireStarter\FireStarterCompiler.cpp" />
     <ClCompile Include="FireStarter\FireStarterProcess.cpp" />
   </ItemGroup>
   <ItemGroup>

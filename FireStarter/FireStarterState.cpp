@@ -112,6 +112,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings)
     Result()->Init(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitState
 
-FireStarterState::FireStarterState(void)
+FireStarterState::FireStarterState(const FireStarterSettings& settings)
 {
+    InitState(settings);
 } // FireStarterState

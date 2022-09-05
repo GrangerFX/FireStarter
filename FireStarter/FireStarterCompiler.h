@@ -1,17 +1,23 @@
 #pragma once
 #include "FireStarterProcess.h"
+#include "FireStarterState.h"
+
+class FireStarterCompilerJob {
+public:
+	FireStarterState m_state;
+	std::vector<std::string> m_options;
+	std::string m_program;
+	std::string m_programName;
+	std::string m_ptx;
+	std::string m_log;
+	class FireStarterCompilerJob* m_next = nullptr;	// Linked list pointer
+
+	inline FireStarterCompilerJob(const FireStarterSettings& settings) : m_state(settings)
+	{
+	} // FireStarterCompilerJob
+}; // class FireStarterCompilerJob
 
 class FireStarterCompiler : public SerialThread {
-public:
-	struct FireStarterCompilerJob {
-		struct FireStarterCompilerJob* next;	// Linked list pointer
-		std::string program;
-		std::string programName;
-		std::vector<std::string> options;
-		std::string ptx;
-		std::string log;
-	}; // struct FireStarterCompilerJob
-
 private:
 	FireStarterProcess* m_process;
 	SerialThread m_jobThread;

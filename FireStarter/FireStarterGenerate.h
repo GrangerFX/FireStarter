@@ -22,6 +22,6 @@ public:
 	void InitGenerate(const FireStarterSettings& settings);
 	void GenerateEvaluate(const FireStarterState& state, std::string& code);
 	void GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, unsigned int generation);
-	FireStarterGenerate(CUDAContext* context);
+	FireStarterGenerate(CUDAContext* context = nullptr);
 	~FireStarterGenerate(void);
 }; // FireStarterGenerate

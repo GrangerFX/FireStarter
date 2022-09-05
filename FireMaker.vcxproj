@@ -99,6 +99,7 @@
     <ClCompile Include="FireMaker\FireMakerMain.cpp" />
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
     <ClCompile Include="FireStarter\FireStarterCode.cpp" />
+    <ClCompile Include="FireStarter\FireStarterCompiler.cpp" />
     <ClCompile Include="FireStarter\FireStarterGenerate.cpp" />
     <ClCompile Include="FireStarter\FireStarterProcess.cpp" />
     <ClCompile Include="FireStarter\FireStarterProgram.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="FireStarter\CUDAContext.h" />
     <ClInclude Include="FireStarter\CUDAErrors.h" />
     <ClInclude Include="FireStarter\FireStarterCode.h" />
+    <ClInclude Include="FireStarter\FireStarterCompiler.h" />
     <ClInclude Include="FireStarter\FireStarterGenerate.h" />
     <ClInclude Include="FireStarter\FireStarterOrder.h" />
     <ClInclude Include="FireStarter\FireStarterProcess.h" />

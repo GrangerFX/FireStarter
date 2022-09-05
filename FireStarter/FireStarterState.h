@@ -53,5 +53,6 @@ public:
     void OptimizeData(void);
     float TestResult(void);
     void InitState(const FireStarterSettings& settings);
-    FireStarterState();
+    FireStarterState(const FireStarterSettings& settings);
+    inline FireStarterState(void) {}
 }; // class FireStarterState;

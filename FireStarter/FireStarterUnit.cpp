@@ -65,6 +65,32 @@ void FireStarterUnit::UnitGenerate(void)
     OptimizeGenerate();
 } // UnitGenerate
 
+void FireStarterUnit::RandomGenerate(void)
+{
+    m_randomGenerateThread.DispatchAsync([this] {
+        unsigned int generation = 0;
+        while ((generation < m_settings.m_attempts) && !WillTerminate()) {
+            FireStarterCompilerJob* job = new FireStarterCompilerJob(m_settings);
+            job->m_state.Settings().m_seed = job->m_state.m_seed = m_settings.m_seed + m_evolveGeneration;
+            job->m_state.m_generation = generation++;
+            job->m_state.m_program.RandomProgram();
+            job->m_state.m_program.OptimizeRegisters(true);
+
+            // Generate the optimize code
+            FireStarterGenerate generate;
+            std::string evaluateCode;
+            generate.GenerateEvaluate(job->m_state, evaluateCode);
+
+            // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+            CUDACompile::StandardOptions(job->m_options);
+            job->m_programName = "Optimize";
+            job->m_program = m_optimizeCode;
+            FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
+            m_compiler->AddCompile(job);
+        }
+    });
+} // RandomGenerate
+
 void FireStarterUnit::SyncContexts(void)
 {
     for (FireStarterContext& context : m_contexts)
@@ -316,11 +342,30 @@ void FireStarterUnit::UnitExecute(void)
 
 void FireStarterUnit::RandomExecute(void)
 {
-    // Evolve, generate and compile the program.
-    UnitGenerate();
-
-    // Evolve the program data.
-    OptimizeGenerations(1);
+    DispatchAsync([this] {
+        unsigned int completed = 0;
+        while ((completed < m_settings.m_attempts) && !WillTerminate()) {
+            FireStarterCompilerJob* job = m_compiler->GetCompile();
+            if (job) {
+                if (!job->m_ptx.empty()) {
+                    CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
+                    if (cuda_module) {
+                        m_contexts[0].m_optimizeFunction = CUDACompile::GetFunction(cuda_module, job->m_programName);
+                        if (m_contexts[0].m_optimizeFunction) {
+                            m_state = job->m_state;
+                            m_stateSeed = m_state.Settings().m_seed;
+                            m_evolveGeneration = m_state.m_generation;
+                            OptimizeGenerations(1);
+                            if (m_state.MaxResult() < m_randomState->MaxResult())
+                                *m_randomState = m_state;
+                        }
+                    }
+                }
+                completed++;
+            } else
+                SleepFor(0.1);  // Note: TODO: Make the thread wait for the next available job.
+        }
+    });
 } // RandomExecute
 
 bool FireStarterUnit::LoadCode(void)
@@ -428,10 +473,10 @@ void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)
         m_allStates[i].Packetize(packet);
 } // PacketizeAllStates
 
-void FireStarterUnit::GetState(FireStarterState* state)
+void FireStarterUnit::GetState(FireStarterState& state)
 {
-    DispatchSync([this, state] {
-        *state = m_state;
+    DispatchSync([this, &state] {
+        state = m_state;
     });
 } // GetState
 
@@ -440,18 +485,14 @@ void FireStarterUnit::StartRandom(unsigned int index, FireStarterCompiler& compi
     m_unitIndex = index;
     m_settings = state.Settings();
     m_evolveGeneration = 0;
+    m_compiler = &compiler;
+    m_randomState = &state;
     if (LoadCode()) {
-        Allocate(state);
-        while ((generation < m_settings.m_attempts) && !WillTerminate())
-            DispatchAsync([this, &generation, &state] {
-                m_evolveGeneration = generation++;
-                if (m_evolveGeneration < m_settings.m_attempts) {
-                    m_state.Settings().m_seed = m_settings.m_seed + m_evolveGeneration;
-                    RandomExecute();
-                }
-            });
+        Allocate(m_state);
+        RandomGenerate();
+        RandomExecute();
     }
-} // Random
+} // StartRandom
 
 bool FireStarterUnit::UpdateRandom(FireStarterState &state, FireStarterState& bestState)
 {
@@ -465,7 +506,7 @@ bool FireStarterUnit::UpdateRandom(FireStarterState &state, FireStarterState& be
             }
         });
     return result;
-}
+} // UpdateRandom
 
 void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initState)
 {
@@ -575,7 +616,7 @@ void FireStarterUnit::Client(void)
                 if (command == UNIT_INIT) {
                     unsigned int unitIndex = 0;
                     result = result && receivePacket.Packetize(&unitIndex, sizeof(unitIndex));
-                    FireStarterState receiveState;
+                    FireStarterState receiveState(m_settings);
                     result = result && receiveState.Packetize(receivePacket);
                     if (result)
                         InitUnit(unitIndex, receiveState);
@@ -610,7 +651,7 @@ FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
     m_server = m_process && !m_process->IsClient();
 } // FireStarterUnit
 
-FireStarterUnit::FireStarterUnit(unsigned int gpus)
+FireStarterUnit::FireStarterUnit(unsigned int gpus) : m_state(m_settings)
 {
     m_gpus = gpus;
 } // FireStarterUnit

@@ -135,13 +135,16 @@ private:
 
     SimpleTimer m_timer;
     FireStarterProcess* m_process = nullptr;
+    FireStarterCompiler* m_compiler = nullptr;
     std::vector<FireStarterContext> m_contexts;
     std::vector<FireStarterState> m_allStates;
+    SerialThread m_randomGenerateThread;
     std::string m_fireGenerateCode;
     std::string m_evolveCode;
     std::string m_optimizeCode;
     FireStarterSettings m_settings;
     FireStarterState m_state;
+    FireStarterState* m_randomState = nullptr;
     FireStarterResults* m_hostResults = nullptr;
     FireStarterEvolutions* m_hostEvolutions = nullptr;
     size_t m_resultsSize = 0;
@@ -158,6 +161,7 @@ private:
     void EvolveGenerate(void);
     void OptimizeGenerate(void);
     void UnitGenerate(void);
+    void RandomGenerate(void);
     void SyncContexts(void);
     void EvolveGenerations(unsigned int forceInit);
     void OptimizeGenerations(unsigned int forceInit);
@@ -173,8 +177,8 @@ public:
     unsigned int Index(void);
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
-    void GetState(FireStarterState* state);
-    void StartRandom(unsigned int index, FireStarterCompiler &compiler, std::atomic<unsigned int>& generation, FireStarterState& bestState);
+    void GetState(FireStarterState& state);
+    void StartRandom(unsigned int index, FireStarterCompiler &compiler, std::atomic<unsigned int>& generation, FireStarterState& state);
     bool UpdateRandom(FireStarterState& state, FireStarterState& bestState);
     void InitUnit(unsigned int index, const FireStarterState& initState);
     void Execute(void);
