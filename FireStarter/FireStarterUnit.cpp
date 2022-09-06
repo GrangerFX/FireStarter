@@ -345,7 +345,7 @@ bool FireStarterUnit::LoadCode(void)
 {
     if (m_codeLoaded)
         return true;
-    if (FireStarterCode::LoadCode("FireGenerate.cu", m_fireGenerateCode) && FireStarterCode::LoadCode("Evolve.cu", m_evolveCode) && FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
+    if (FireStarterCode::LoadCode("Evolve.cu", m_evolveCode) && FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
         m_codeLoaded = true;
         return true;
     } else {

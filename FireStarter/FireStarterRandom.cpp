@@ -6,6 +6,8 @@
 void FireStarterRandom::RandomGenerate(void)
 {
     DispatchAsync([this] {
+        CUDAContext m_CUDAContext(0);
+        FireStarterGenerate generate(&m_CUDAContext);
         unsigned int generation = 0;
         while ((generation < m_settings.m_attempts) && !WillTerminate()) {
             FireStarterCompilerJob* job = new FireStarterCompilerJob(m_settings);
@@ -15,7 +17,6 @@ void FireStarterRandom::RandomGenerate(void)
             job->m_state.m_program.OptimizeRegisters(true);
 
             // Generate the optimize code
-            FireStarterGenerate generate;
             std::string evaluateCode;
             generate.GenerateEvaluate(job->m_state, evaluateCode);
 
@@ -26,12 +27,13 @@ void FireStarterRandom::RandomGenerate(void)
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
             m_manager->AddCompile(job);
         }
-        });
+    });
 } // RandomGenerate
 
 FireStarterRandom::FireStarterRandom(FireStarterSettings& settings, FireStarterCompilerManager* manager)
 {
     m_settings = settings;
+    m_manager = manager;
     if (FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
         for (unsigned int i = 0; i < m_settings.m_units; i++) {
             FireStarterProcess* process = m_server.AddProcess(FIRECOMPILER);

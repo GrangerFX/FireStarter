@@ -138,8 +138,6 @@ private:
     FireStarterCompilerManager* m_compilerManager = nullptr;
     std::vector<FireStarterContext> m_contexts;
     std::vector<FireStarterState> m_allStates;
-    SerialThread m_randomGenerateThread;
-    std::string m_fireGenerateCode;
     std::string m_evolveCode;
     std::string m_optimizeCode;
     FireStarterSettings m_settings;
