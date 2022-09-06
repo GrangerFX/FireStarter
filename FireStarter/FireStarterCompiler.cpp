@@ -127,22 +127,14 @@ void FireStarterCompiler::Client(void)
     });
 } // Client
 
-FireStarterCompiler::FireStarterCompiler(unsigned int gpus) // Server
-{
-    m_gpus = gpus;
-} // FireStarterCompiler
-
 FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process)   // Client
 {
-    m_gpus = 1;
     m_process = process;
     m_server = m_process && !m_process->IsClient();
 } // FireStarterCompiler
 
 FireStarterCompiler::~FireStarterCompiler(void)
 {
-    DispatchSync([this] {
-        if (m_process)
-            m_process->Stop();
-    });
+    if (m_process)
+        DispatchSync([this] { m_process->Stop(); });
 } // ~FireStarterCompiler

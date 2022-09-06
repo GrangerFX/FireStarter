@@ -39,10 +39,6 @@ void FireStarterGenerate::InitGenerate(const FireStarterSettings& settings)
 
 void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::string& code)
 {
-    // Allocate the device memory needed to generate the evaluate code.
-    InitGenerate(state.m_program.m_settings);
-
-    // Generate the evaluate function.
     size_t numInstructions = 0;
     const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
     size_t numRegisters = 0;
@@ -53,57 +49,66 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     code += "inline float Evaluate(FireStarterData data, float n)\r\n";
     code += "{\r\n";
 
-    if (m_evaluateFunction) {
-        // First pass: Determine the length of the code string.
-        dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
-        dim3 cudaGridSize(1, 1, 1);
-        CUstream stream = m_CUDAContext->Stream();
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registers, FireStarterRegisters::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
+    if (m_CUDAContext) {
+        // Allocate the device memory needed to generate the evaluate code.
+        InitGenerate(state.m_program.m_settings);
 
-        size_t stringSize = 0;
-        void* arr[] = { reinterpret_cast<void*>(&m_deviceString),
-                        reinterpret_cast<void*>(&stringSize),
-                        reinterpret_cast<void*>(&tabs),
-                        reinterpret_cast<void*>(&m_deviceInstructions),
-                        reinterpret_cast<void*>(&numInstructions),
-                        reinterpret_cast<void*>(&m_deviceRegisters),
-                        reinterpret_cast<void*>(&numRegisters) };
+        // Generate the evaluate function via the GPU (dynamic code generation).
+        if (m_evaluateFunction) {
+            // First pass: Determine the length of the code string.
+            dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
+            dim3 cudaGridSize(1, 1, 1);
+            CUstream stream = m_CUDAContext->Stream();
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registers, FireStarterRegisters::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
 
-        checkCUDAErrors(cuLaunchKernel(m_evaluateFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, stream,                                          // shared mem, stream */
-            &arr[0],                                            // arguments */
-            0));
-        checkCUDAErrors(cudaMemcpyAsync(&stringSize, m_deviceString, sizeof(size_t), cudaMemcpyDeviceToHost, stream));
-        checkCUDAErrors(cudaStreamSynchronize(stream));
+            size_t stringSize = 0;
+            void* arr[] = { reinterpret_cast<void*>(&m_deviceString),
+                            reinterpret_cast<void*>(&stringSize),
+                            reinterpret_cast<void*>(&tabs),
+                            reinterpret_cast<void*>(&m_deviceInstructions),
+                            reinterpret_cast<void*>(&numInstructions),
+                            reinterpret_cast<void*>(&m_deviceRegisters),
+                            reinterpret_cast<void*>(&numRegisters) };
 
-        // Second pass: Generate the code string.
-        generateCode.resize(stringSize, 0);
-        stringSize++;
-        if (stringSize > m_stringSize) {
-            m_stringSize = stringSize;
-            checkCUDAErrors(cudaFreeAsync(m_deviceString, stream));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceString, m_stringSize, stream));
+            checkCUDAErrors(cuLaunchKernel(m_evaluateFunction,
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+                0, stream,                                          // shared mem, stream */
+                &arr[0],                                            // arguments */
+                0));
+            checkCUDAErrors(cudaMemcpyAsync(&stringSize, m_deviceString, sizeof(size_t), cudaMemcpyDeviceToHost, stream));
+            checkCUDAErrors(cudaStreamSynchronize(stream));
+
+            // Second pass: Generate the code string.
+            generateCode.resize(stringSize, 0);
+            stringSize++;
+            if (stringSize > m_stringSize) {
+                m_stringSize = stringSize;
+                checkCUDAErrors(cudaFreeAsync(m_deviceString, stream));
+                checkCUDAErrors(cudaMallocAsync(&m_deviceString, m_stringSize, stream));
+            }
+
+            checkCUDAErrors(cuLaunchKernel(m_evaluateFunction,
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
+                0, stream,                                        // shared mem, stream */
+                &arr[0],                                            // arguments */
+                0));
+            checkCUDAErrors(cudaMemcpyAsync(generateCode.data(), m_deviceString, stringSize, cudaMemcpyDeviceToHost, stream));
+            checkCUDAErrors(cudaStreamSynchronize(stream));
         }
-
-        checkCUDAErrors(cuLaunchKernel(m_evaluateFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, stream,                                        // shared mem, stream */
-            &arr[0],                                            // arguments */
-            0));
-        checkCUDAErrors(cudaMemcpyAsync(generateCode.data(), m_deviceString, stringSize, cudaMemcpyDeviceToHost, stream));
-        checkCUDAErrors(cudaStreamSynchronize(stream));
     }
-    else {
+
+    // Fallback to CPU (static code generation)
+    if (generateCode.empty()) {
         size_t codeLength = 0;
         GenerateEvaluateCode(nullptr, 0, codeLength, tabs, instructions, numInstructions, registers, numRegisters);
         generateCode.resize(codeLength, 0);
         codeLength = 0;
         GenerateEvaluateCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, numInstructions, registers, numRegisters);
     }
+
     code += generateCode;
     code += "    return isfinite(n) ? n : 0.0f;\r\n";
     code += "} // Evaluate\r\n";

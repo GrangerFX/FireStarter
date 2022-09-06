@@ -342,30 +342,29 @@ void FireStarterUnit::UnitExecute(void)
 
 void FireStarterUnit::RandomExecute(void)
 {
-    DispatchAsync([this] {
-        unsigned int completed = 0;
-        while ((completed < m_settings.m_attempts) && !WillTerminate()) {
-            FireStarterCompilerJob* job = m_compiler->GetCompile();
-            if (job) {
-                if (!job->m_ptx.empty()) {
-                    CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
-                    if (cuda_module) {
-                        m_contexts[0].m_optimizeFunction = CUDACompile::GetFunction(cuda_module, job->m_programName);
-                        if (m_contexts[0].m_optimizeFunction) {
-                            m_state = job->m_state;
-                            m_stateSeed = m_state.Settings().m_seed;
-                            m_evolveGeneration = m_state.m_generation;
-                            OptimizeGenerations(1);
-                            if (m_state.MaxResult() < m_randomState->MaxResult())
-                                *m_randomState = m_state;
+    if ((m_evolveGeneration < m_settings.m_attempts) && !WillTerminate())
+        DispatchAsync([this] {
+            if ((m_evolveGeneration < m_settings.m_attempts) && !WillTerminate()) {
+                FireStarterCompilerJob* job = m_compiler->GetCompile();
+                if (job) {
+                    if (!job->m_ptx.empty()) {
+                        CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
+                        if (cuda_module) {
+                            m_contexts[0].m_optimizeFunction = CUDACompile::GetFunction(cuda_module, job->m_programName);
+                            if (m_contexts[0].m_optimizeFunction) {
+                                m_state = job->m_state;
+                                m_stateSeed = m_state.Settings().m_seed;
+                                OptimizeGenerations(1);
+                                if (m_state.MaxResult() < m_randomState->MaxResult())
+                                    *m_randomState = m_state;
+                            }
                         }
                     }
-                }
-                completed++;
-            } else
-                SleepFor(0.1);  // Note: TODO: Make the thread wait for the next available job.
-        }
-    });
+                    m_evolveGeneration++;
+                } else
+                    SleepFor(0.1);  // Note: TODO: Make the thread wait for the next available job.
+            }
+        });
 } // RandomExecute
 
 bool FireStarterUnit::LoadCode(void)
@@ -480,7 +479,7 @@ void FireStarterUnit::GetState(FireStarterState& state)
     });
 } // GetState
 
-void FireStarterUnit::StartRandom(unsigned int index, FireStarterCompiler& compiler, std::atomic<unsigned int>& generation, FireStarterState& state)
+void FireStarterUnit::StartRandom(unsigned int index, FireStarterCompiler& compiler, FireStarterState& state)
 {
     m_unitIndex = index;
     m_settings = state.Settings();
@@ -494,16 +493,23 @@ void FireStarterUnit::StartRandom(unsigned int index, FireStarterCompiler& compi
     }
 } // StartRandom
 
-bool FireStarterUnit::UpdateRandom(FireStarterState &state, FireStarterState& bestState)
+bool FireStarterUnit::FinishRandom(void)
+{
+    return m_evolveGeneration >= m_settings.m_attempts;
+} // FinishRandom
+
+bool FireStarterUnit::UpdateRandom(FireStarterState& bestState, unsigned int &generation)
 {
     bool result = false;
     if (!WillTerminate())
-        DispatchSync([this, &result, state, &bestState] {
-            float maxResult = state.MaxResult();
+        DispatchSync([this, &result, &bestState, &generation] {
+            float maxResult = m_randomState->MaxResult();
             if (maxResult < bestState.MaxResult()) {
-                bestState = state;
+                bestState = *m_randomState;
                 result = true;
             }
+            if (m_evolveGeneration > generation)
+                generation = m_evolveGeneration;
         });
     return result;
 } // UpdateRandom
@@ -593,7 +599,9 @@ void FireStarterUnit::Sync(FireStarterState* allStates)
 void FireStarterUnit::Start(void)
 {
     if (m_process)
-        DispatchAsync([this] { m_process->Start(); });
+        DispatchAsync([this] {
+            m_process->Start();
+        });
 } // Start
 
 void FireStarterUnit::Stop(void)

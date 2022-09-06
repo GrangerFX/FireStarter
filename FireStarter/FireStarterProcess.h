@@ -4,6 +4,7 @@
 #include <windows.h>
 
 #define FIREMAKER           "FireMaker"
+#define FIRECOMPILER        "FireCompiler"
 #define FIRESTARTER         "FireStarter"
 
 class FireStarterProcess : public SerialThread {

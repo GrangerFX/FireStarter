@@ -178,8 +178,9 @@ public:
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
     void GetState(FireStarterState& state);
-    void StartRandom(unsigned int index, FireStarterCompiler &compiler, std::atomic<unsigned int>& generation, FireStarterState& state);
-    bool UpdateRandom(FireStarterState& state, FireStarterState& bestState);
+    void StartRandom(unsigned int index, FireStarterCompiler &compiler, FireStarterState& state);
+    bool FinishRandom(void);
+    bool UpdateRandom(FireStarterState& bestState, unsigned int& generation);
     void InitUnit(unsigned int index, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);

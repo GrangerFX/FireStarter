@@ -229,20 +229,6 @@ void FireStarter::ControlAllocate(void)
 
 void FireStarter::ControlRandom(void)
 {
-    if (m_quitControlThread)
-        return;
-
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireSettings();
-    m_seed = m_settings.m_seed;
-    m_fireStarterMode = m_settings.m_mode;
-    m_bestResult = m_settings.m_startResult;
-
-    // If the evolve units is set to zero, use the number of concurrent hardware threads.
-    if (m_settings.m_units == 0)
-        m_settings.m_units = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
-
     // Setup the best state.
     m_bestState.InitState(m_settings);
 
@@ -253,24 +239,19 @@ void FireStarter::ControlRandom(void)
     m_controlUpdate = false;
     m_bufferUpdate = false;
 
-    // The atomic random generation
-    std::atomic<unsigned int> generation;
-
     // Create the shared compiler
-    FireStarterCompiler compiler(m_settings.m_units);
-
-    // Create the states.
-    m_allStates.resize(m_settings.m_units);
-    for (FireStarterState& state : m_allStates)
-        state.InitState(m_settings);
+    FireStarterCompiler compiler;
 
     // Create the units.
+    m_allStates.resize(m_settings.m_units);
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterState& state = m_allStates[i];
         state.InitState(m_settings);
-        FireStarterUnit* unit = new FireStarterUnit();
-        unit->StartRandom(i, compiler, generation, state);
+        FireStarterProcess* process = m_server.AddProcess(FIRECOMPILER);
+        FireStarterUnit* unit = new FireStarterUnit(process);
+        unit->StartRandom(i, compiler, state);
         m_units.push_back(unit);
+        unit->Start();  // Start the interprocess communication.
     }
 
     // Loop until the the completion condition or the host program is quit.
@@ -279,8 +260,7 @@ void FireStarter::ControlRandom(void)
         // Update the states for all the units.
         for (unsigned int i = 0; (i < m_settings.m_units) && !m_quitControlThread; i++) {
             FireStarterUnit* unit = m_units[i];
-            if (unit->UpdateRandom(m_allStates[i], m_bestState)) {
-                m_generation = generation;
+            if (unit->UpdateRandom(m_bestState, m_generation)) {
                 m_generationTime = m_controlTimer.Duration();
                 m_seed = m_settings.m_seed + m_generation;
                 m_bestResult = m_result = m_bestState.MaxResult();
@@ -325,20 +305,6 @@ void FireStarter::ControlRandom(void)
 
 void FireStarter::ControlLoop(void)
 {
-    if (m_quitControlThread)
-        return;
-
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireSettings();
-    m_seed = m_settings.m_seed;
-    m_fireStarterMode = m_settings.m_mode;
-    m_bestResult = m_settings.m_startResult;
-
-    // If the evolve units is set to zero, use the number of concurrent hardware threads.
-    if (m_settings.m_units == 0)
-        m_settings.m_units = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
-
     // Setup the best state.
     if (!m_bestState.Initialized()) {
         m_bestState.InitState(m_settings);
@@ -458,23 +424,36 @@ void FireStarter::ControlLoop(void)
 
 void FireStarter::ControlThread(void)
 {
-    m_buffer.Resize(m_width, m_height);
-    m_buffer.Erase();
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireSettings();
+    m_seed = m_settings.m_seed;
+    m_fireStarterMode = m_settings.m_mode;
+    m_bestResult = m_settings.m_startResult;
 
-    if (m_fireStarterMode == FIRESTARTER_RANDOM)
-        ControlRandom();
-    else {
-        // Initial evolution pass.
-        ControlLoop();
+    // If the evolve units is set to zero, use the number of concurrent hardware threads.
+    if (m_settings.m_units == 0)
+        m_settings.m_units = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
 
-        // Optimization evolution pass.
-        if (FIRESTARTER_SECOND_PASS && (m_fireStarterMode != FIRESTARTER_OPTIMIZE)) {
-            m_fireStarterMode = FIRESTARTER_OPTIMIZE;
+    if (!m_quitControlThread) {
+        m_buffer.Resize(m_width, m_height);
+        m_buffer.Erase();
+
+        if (m_fireStarterMode == FIRESTARTER_RANDOM)
+            ControlRandom();
+        else {
+            // Initial evolution pass.
             ControlLoop();
+
+            // Optimization evolution pass.
+            if (FIRESTARTER_SECOND_PASS && (m_fireStarterMode != FIRESTARTER_OPTIMIZE) && !m_quitControlThread) {
+                m_fireStarterMode = FIRESTARTER_OPTIMIZE;
+                ControlLoop();
+            }
         }
+        // Free the frame buffer memory.
+        m_buffer.Resize(0, 0);
     }
-    // Free the frame buffer memory.
-    m_buffer.Resize(0, 0);
 } // ControlThread
 
 float FireStarter::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation)

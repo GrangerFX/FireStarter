@@ -26,7 +26,6 @@ private:
 	FireStarterCompilerJob* m_firstCompile = nullptr;
 	FireStarterCompilerJob* m_lastCompile = nullptr;
 	volatile bool m_terminate = false;
-	unsigned int m_gpus = 0;
 	bool m_server = false;
 
 	FireStarterCompilerJob* GetCompileJob(void);
@@ -36,7 +35,6 @@ public:
 	void Client(void);
 	void AddCompile(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetCompile(void);
-	FireStarterCompiler(FireStarterProcess* process);	// Client
-	FireStarterCompiler(unsigned int gpus);				// Server
+	FireStarterCompiler(FireStarterProcess* process = nullptr);
 	~FireStarterCompiler(void);
 }; // class FireStarterCompiler
