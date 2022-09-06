@@ -3,6 +3,7 @@
 #include "FireStarterUtil.h"
 #include "FireStarter_LoadState.h"
 #include "FireStarter_Solution.h"
+#include "FireStarterRandom.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 #include "cnprintf.h" // Test
@@ -240,7 +241,8 @@ void FireStarter::ControlRandom(void)
     m_bufferUpdate = false;
 
     // Create the shared compiler
-    FireStarterCompiler compiler;
+    FireStarterCompilerManager compilerManager;
+    FireStarterRandom(m_settings, &compilerManager);
 
     // Create the units.
     m_allStates.resize(m_settings.m_units);
@@ -249,7 +251,7 @@ void FireStarter::ControlRandom(void)
         state.InitState(m_settings);
         FireStarterProcess* process = m_server.AddProcess(FIRECOMPILER);
         FireStarterUnit* unit = new FireStarterUnit(process);
-        unit->StartRandom(i, compiler, state);
+        unit->StartRandom(i, &compilerManager, state);
         m_units.push_back(unit);
         unit->Start();  // Start the interprocess communication.
     }

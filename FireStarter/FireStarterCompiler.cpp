@@ -4,10 +4,10 @@
 #define COMPILE_INIT    "CompileInit"
 #define COMPILE_EXECUTE "CompileExecute"
 
-FireStarterCompilerJob* FireStarterCompiler::GetCompileJob(void)
+FireStarterCompilerJob* FireStarterCompilerManager::GetCompileJob(void)
 {
     FireStarterCompilerJob* job = nullptr;
-    m_jobThread.DispatchSync([this, &job] {
+    DispatchSync([this, &job] {
         if (m_firstCompile) {
             job = m_firstCompile;
             m_firstCompile = m_firstCompile->m_next;
@@ -19,9 +19,9 @@ FireStarterCompilerJob* FireStarterCompiler::GetCompileJob(void)
     return job;
 } // GetCompileJob
 
-void FireStarterCompiler::CompleteCompileJob(FireStarterCompilerJob* job)
+void FireStarterCompilerManager::CompleteCompileJob(FireStarterCompilerJob* job)
 {
-    m_jobThread.DispatchAsync([this, job] {
+    DispatchAsync([this, job] {
         job->m_next = nullptr;
         if (m_lastCompile) {
             m_lastCompile->m_next = job;
@@ -33,9 +33,9 @@ void FireStarterCompiler::CompleteCompileJob(FireStarterCompilerJob* job)
     });
 } // CompleteCompileJob
 
-void FireStarterCompiler::AddCompile(FireStarterCompilerJob* job)
+void FireStarterCompilerManager::AddCompile(FireStarterCompilerJob* job)
 {
-    m_jobThread.DispatchAsync([this, job] {
+    DispatchAsync([this, job] {
         job->m_next = nullptr;
         if (m_lastJob) {
             m_lastJob->m_next = job;
@@ -47,10 +47,10 @@ void FireStarterCompiler::AddCompile(FireStarterCompilerJob* job)
     });
 } // AddCompile
 
-FireStarterCompilerJob* FireStarterCompiler::GetCompile(void)
+FireStarterCompilerJob* FireStarterCompilerManager::GetCompile(void)
 {
     FireStarterCompilerJob* job = nullptr;
-    m_jobThread.DispatchSync([this, &job] {
+    DispatchSync([this, &job] {
         if (m_firstCompile) {
             job = m_firstCompile;
             m_firstCompile = m_firstCompile->m_next;
@@ -62,10 +62,30 @@ FireStarterCompilerJob* FireStarterCompiler::GetCompile(void)
     return job;
 } // GetCompile
 
+FireStarterCompilerManager::FireStarterCompilerManager(void)
+{
+} // FireStarterCompilerManager
+
+FireStarterCompilerManager::~FireStarterCompilerManager(void)
+{
+    DispatchSync([this] {
+        while (m_firstCompile) {
+            FireStarterCompilerJob* job = m_firstCompile;
+            m_firstCompile = m_firstCompile->m_next;
+            delete job;
+        }
+        while (m_firstJob) {
+            FireStarterCompilerJob* job = m_firstJob;
+            m_firstJob = m_firstJob->m_next;
+            delete job;
+        }
+    });
+} // ~FireStarterCompilerManager
+
 void FireStarterCompiler::Server(void)
 {
     DispatchAsync([this] {
-        FireStarterCompilerJob* job = GetCompileJob();
+        FireStarterCompilerJob* job = m_compilerManager->GetCompileJob();
         if (job) {
             FireStarterPacket sendPacket;
             bool result = true;
@@ -80,7 +100,7 @@ void FireStarterCompiler::Server(void)
                 if (result && (command == COMPILE_EXECUTE)) {
                     result = result && receivePacket.Packetize(job->m_ptx);
                     result = result && receivePacket.Packetize(job->m_log);
-                    CompleteCompileJob(job);
+                    m_compilerManager->CompleteCompileJob(job);
                 }
             }
         }
@@ -127,10 +147,12 @@ void FireStarterCompiler::Client(void)
     });
 } // Client
 
-FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process)   // Client
+FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process, FireStarterCompilerManager* manager)
 {
     m_process = process;
+    m_compilerManager = manager;
     m_server = m_process && !m_process->IsClient();
+    DispatchAsync([this] { m_process->Start(); });
 } // FireStarterCompiler
 
 FireStarterCompiler::~FireStarterCompiler(void)

@@ -135,7 +135,7 @@ private:
 
     SimpleTimer m_timer;
     FireStarterProcess* m_process = nullptr;
-    FireStarterCompiler* m_compiler = nullptr;
+    FireStarterCompilerManager* m_compilerManager = nullptr;
     std::vector<FireStarterContext> m_contexts;
     std::vector<FireStarterState> m_allStates;
     SerialThread m_randomGenerateThread;
@@ -161,7 +161,6 @@ private:
     void EvolveGenerate(void);
     void OptimizeGenerate(void);
     void UnitGenerate(void);
-    void RandomGenerate(void);
     void SyncContexts(void);
     void EvolveGenerations(unsigned int forceInit);
     void OptimizeGenerations(unsigned int forceInit);
@@ -178,7 +177,7 @@ public:
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
     void GetState(FireStarterState& state);
-    void StartRandom(unsigned int index, FireStarterCompiler &compiler, FireStarterState& state);
+    void StartRandom(unsigned int index, FireStarterCompilerManager *manager, FireStarterState& state);
     bool FinishRandom(void);
     bool UpdateRandom(FireStarterState& bestState, unsigned int& generation);
     void InitUnit(unsigned int index, const FireStarterState& initState);

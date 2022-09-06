@@ -65,32 +65,6 @@ void FireStarterUnit::UnitGenerate(void)
     OptimizeGenerate();
 } // UnitGenerate
 
-void FireStarterUnit::RandomGenerate(void)
-{
-    m_randomGenerateThread.DispatchAsync([this] {
-        unsigned int generation = 0;
-        while ((generation < m_settings.m_attempts) && !WillTerminate()) {
-            FireStarterCompilerJob* job = new FireStarterCompilerJob(m_settings);
-            job->m_state.Settings().m_seed = job->m_state.m_seed = m_settings.m_seed + m_evolveGeneration;
-            job->m_state.m_generation = generation++;
-            job->m_state.m_program.RandomProgram();
-            job->m_state.m_program.OptimizeRegisters(true);
-
-            // Generate the optimize code
-            FireStarterGenerate generate;
-            std::string evaluateCode;
-            generate.GenerateEvaluate(job->m_state, evaluateCode);
-
-            // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-            CUDACompile::StandardOptions(job->m_options);
-            job->m_programName = "Optimize";
-            job->m_program = m_optimizeCode;
-            FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-            m_compiler->AddCompile(job);
-        }
-    });
-} // RandomGenerate
-
 void FireStarterUnit::SyncContexts(void)
 {
     for (FireStarterContext& context : m_contexts)
@@ -345,7 +319,7 @@ void FireStarterUnit::RandomExecute(void)
     if ((m_evolveGeneration < m_settings.m_attempts) && !WillTerminate())
         DispatchAsync([this] {
             if ((m_evolveGeneration < m_settings.m_attempts) && !WillTerminate()) {
-                FireStarterCompilerJob* job = m_compiler->GetCompile();
+                FireStarterCompilerJob* job = m_compilerManager->GetCompile();
                 if (job) {
                     if (!job->m_ptx.empty()) {
                         CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
@@ -479,16 +453,15 @@ void FireStarterUnit::GetState(FireStarterState& state)
     });
 } // GetState
 
-void FireStarterUnit::StartRandom(unsigned int index, FireStarterCompiler& compiler, FireStarterState& state)
+void FireStarterUnit::StartRandom(unsigned int index, FireStarterCompilerManager* manager, FireStarterState& state)
 {
     m_unitIndex = index;
     m_settings = state.Settings();
     m_evolveGeneration = 0;
-    m_compiler = &compiler;
+    m_compilerManager = manager;
     m_randomState = &state;
     if (LoadCode()) {
         Allocate(m_state);
-        RandomGenerate();
         RandomExecute();
     }
 } // StartRandom
