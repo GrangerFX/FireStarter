@@ -33,12 +33,14 @@ public:
 
     inline bool GetData(void* dataPtr, size_t dataSize)
     {
-        if (dataSize > GetSize()) {
-            m_getResult = false;
-            return false;
+        if (dataSize) {
+            if (dataSize > GetSize()) {
+                m_getResult = false;
+                return false;
+            }
+            memcpy(dataPtr, data() + m_getPos, dataSize);
+            m_getPos += dataSize;
         }
-        memcpy(dataPtr, data() + m_getPos, dataSize);
-        m_getPos += dataSize;
         return true;
     } // GetData
 
@@ -61,9 +63,11 @@ public:
 
     inline void AddData(const void* dataPtr, size_t dataSize)
     {
-        size_t curSize = size();
-        resize(curSize + dataSize);
-        memcpy(data() + curSize, dataPtr, dataSize);
+        if (dataSize) {
+            size_t curSize = size();
+            resize(curSize + dataSize);
+            memcpy(data() + curSize, dataPtr, dataSize);
+        }
     } // AddData
 
     inline bool Packetize(void* dataPtr, size_t dataSize)
@@ -97,18 +101,19 @@ public:
     inline bool Packetize(std::string& string)
     {
         if (!m_getMode) {
-            size_t size = string.length() + 1;
+            size_t size = string.size();
             AddData(&size, sizeof(size));
-            AddData(string.c_str(), size);
-            return true;
-        }
-        string.clear();
-        size_t length = 0;
-        if (!GetData(&length, sizeof(length)))
-            return false;
-        if (length) {
-            string.resize(length);
-            return GetData(string.data(), length);
+            if (size)
+                AddData(string.data(), size);
+        } else {
+            string.clear();
+            size_t size = 0;
+            if (!GetData(&size, sizeof(size)))
+                return false;
+            if (size) {
+                string.resize(size);
+                return GetData(string.data(), size);
+            }
         }
         return true;
     } // Packetize

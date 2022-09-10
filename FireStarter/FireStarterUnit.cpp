@@ -321,6 +321,8 @@ void FireStarterUnit::RandomExecute(void)
             if ((m_evolveGeneration < m_settings.m_attempts) && !WillTerminate()) {
                 FireStarterCompilerJob* job = m_compilerManager->GetCompile();
                 if (job) {
+                    if (!job->m_log.empty())
+                        printf("%s\n", job->m_log.c_str());
                     if (!job->m_ptx.empty()) {
                         CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
                         if (cuda_module) {
@@ -337,6 +339,7 @@ void FireStarterUnit::RandomExecute(void)
                     m_evolveGeneration++;
                 } else
                     SleepFor(0.1);  // Note: TODO: Make the thread wait for the next available job.
+                RandomExecute();
             }
         });
 } // RandomExecute

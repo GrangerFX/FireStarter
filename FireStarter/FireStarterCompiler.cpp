@@ -54,7 +54,7 @@ FireStarterCompilerJob* FireStarterCompilerManager::GetCode(void)
     DispatchSync([this, &job] {
         if (m_firstCode) {
             job = m_firstCode;
-            m_firstCompile = m_firstCode->m_next;
+            m_firstCode = m_firstCode->m_next;
             if (!m_firstCode)
                 m_lastCode = nullptr;
             job->m_next = nullptr;

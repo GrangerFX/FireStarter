@@ -164,16 +164,16 @@ bool FireStarterProcess::SendString(const std::string& string)
 
 bool FireStarterProcess::ReceiveString(std::string& string)
 {
-    size_t length = 0;
+    size_t size = 0;
     string.clear();
-    if (!ReceiveData(&length, sizeof(size_t)))
+    if (!ReceiveData(&size, sizeof(size_t)))
         return false;
-    if (!length) {
+    if (!size) {
         Terminate(); // Server commanded the client to terminate.
         return false;
     }
-    string.resize(length);
-    if (!ReceiveData(string.data(), length)) {
+    string.resize(size);
+    if (!ReceiveData(string.data(), size)) {
         string.clear();
         return false;
     }
