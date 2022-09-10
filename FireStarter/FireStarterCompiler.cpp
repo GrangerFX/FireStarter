@@ -88,7 +88,7 @@ void FireStarterCompiler::CompilerServer(void)
     if (!m_process->ShouldTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCode();
         if (job) {
-            FireStarterPacket sendPacket;
+            FireStarterPacket sendPacket(COMPILE_EXECUTE);
             bool result = true;
             result = result && sendPacket.Packetize(job->m_program);
             result = result && sendPacket.Packetize(job->m_programName);
