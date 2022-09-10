@@ -252,7 +252,6 @@ void FireStarter::ControlRandom(void)
         FireStarterUnit* unit = new FireStarterUnit();
         unit->StartRandom(i, &compilerManager, state);
         m_units.push_back(unit);
-        unit->Start();  // Start the interprocess communication.
     }
 
     // Loop until the the completion condition or the host program is quit.

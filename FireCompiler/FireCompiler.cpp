@@ -16,7 +16,6 @@ bool FireCompiler::ShouldTerminate(void)
 
 FireCompiler::FireCompiler(const std::string& pipeName) : m_process(pipeName, &m_terminate), m_compiler(&m_process)
 {
-//	DispatchAsync([this] { m_process.Start(); });
 } // FireCompiler
 
 FireCompiler::~FireCompiler(void)
