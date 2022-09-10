@@ -242,7 +242,7 @@ void FireStarter::ControlRandom(void)
 
     // Create the shared compiler
     FireStarterCompilerManager compilerManager;
-    FireStarterRandom(m_settings, &compilerManager);
+    FireStarterRandom random(m_settings, &compilerManager);
 
     // Create the units.
     m_allStates.resize(m_settings.m_units);

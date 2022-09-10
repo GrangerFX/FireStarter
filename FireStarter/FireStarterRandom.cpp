@@ -25,7 +25,7 @@ void FireStarterRandom::RandomGenerate(void)
             job->m_programName = "Optimize";
             job->m_program = m_optimizeCode;
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-            m_manager->AddCompile(job);
+            m_manager->AddCode(job);
         }
     });
 } // RandomGenerate

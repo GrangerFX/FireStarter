@@ -19,16 +19,16 @@ public:
 
 class FireStarterCompilerManager : public SerialThread {
 private:
-	FireStarterCompilerJob* m_firstJob = nullptr;
-	FireStarterCompilerJob* m_lastJob = nullptr;
+	FireStarterCompilerJob* m_firstCode = nullptr;
+	FireStarterCompilerJob* m_lastCode = nullptr;
 	FireStarterCompilerJob* m_firstCompile = nullptr;
 	FireStarterCompilerJob* m_lastCompile = nullptr;
 
 public:
-	FireStarterCompilerJob* GetCompileJob(void);
-	void CompleteCompileJob(FireStarterCompilerJob* job);
 	void AddCompile(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetCompile(void);
+	void AddCode(FireStarterCompilerJob* job);
+	FireStarterCompilerJob* GetCode(void);
 	FireStarterCompilerManager(void);
 	~FireStarterCompilerManager(void);
 }; // FireStarterCompilerManager
@@ -42,8 +42,8 @@ private:
 	bool m_server = false;
 
 public:
-	void Server(void);
-	void Client(void);
+	void CompilerServer(void);
+	void CompilerClient(void);
 	FireStarterCompiler(FireStarterProcess* process, FireStarterCompilerManager* manager = nullptr);
 	~FireStarterCompiler(void);
 }; // class FireStarterCompiler
