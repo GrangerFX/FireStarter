@@ -152,7 +152,9 @@ FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process, FireStarte
     m_process = process;
     m_compilerManager = manager;
     m_server = m_process && !m_process->IsClient();
-    DispatchAsync([this] { m_process->Start(); });
+    DispatchAsync([this] {
+        m_process->Start();
+    });
 } // FireStarterCompiler
 
 FireStarterCompiler::~FireStarterCompiler(void)

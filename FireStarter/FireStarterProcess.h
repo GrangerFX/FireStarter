@@ -7,7 +7,7 @@
 #define FIRECOMPILER        "FireCompiler"
 #define FIRESTARTER         "FireStarter"
 
-class FireStarterProcess : public SerialThread {
+class FireStarterProcess {
 private:
     HANDLE m_pipe = INVALID_HANDLE_VALUE;
     std::string m_pipeName;

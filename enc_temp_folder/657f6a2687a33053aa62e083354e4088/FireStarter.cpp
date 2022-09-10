@@ -249,7 +249,8 @@ void FireStarter::ControlRandom(void)
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterState& state = m_allStates[i];
         state.InitState(m_settings);
-        FireStarterUnit* unit = new FireStarterUnit();
+        FireStarterProcess* process = m_server.AddProcess(FIRECOMPILER);
+        FireStarterUnit* unit = new FireStarterUnit(process);
         unit->StartRandom(i, &compilerManager, state);
         m_units.push_back(unit);
         unit->Start();  // Start the interprocess communication.
