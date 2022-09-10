@@ -299,3 +299,4 @@ __pycache__/
 /Distribution/Logs/2022-08-14_10-42-54_FIRESTARTER_CODE.txt
 /Distribution/Logs/2022-08-14_10-42-11_Hash.txt
 /Distribution/Logs/2022-08-14_10-42-11_FIRESTARTER_CODE.txt
+*.exe
