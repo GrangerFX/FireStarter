@@ -316,7 +316,7 @@ void FireStarterUnit::UnitExecute(void)
 
 void FireStarterUnit::RandomExecute(void)
 {
-    if (!WillTerminate() && (m_evolveGeneration < m_settings.m_attempts)) {
+    if (!WillTerminate() && (m_evolveGeneration + 1 < m_settings.m_attempts)) {
         FireStarterCompilerJob* job = m_compilerManager->GetCompile();
         if (job) {
             if (!job->m_log.empty())
@@ -335,12 +335,10 @@ void FireStarterUnit::RandomExecute(void)
                 }
             }
             m_evolveGeneration = job->m_state.m_generation;
-        } else
-            SleepFor(0.1);  // Note: TODO: Make the thread wait for the next available job.
-        DispatchAsync([this] {
-            RandomExecute();
-        });
-    }
+            if (!WillTerminate() && (m_evolveGeneration + 1 < m_settings.m_attempts))
+                DispatchAsync([this] { RandomExecute(); });
+        }
+     }
 } // RandomExecute
 
 bool FireStarterUnit::LoadCode(void)

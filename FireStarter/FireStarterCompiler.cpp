@@ -11,17 +11,18 @@ void FireStarterCompilerManager::AddCompile(FireStarterCompilerJob* job)
         if (m_lastCompile) {
             m_lastCompile->m_next = job;
             m_lastCompile = job;
-        }
-        else {
+        } else {
             m_firstCompile = job;
             m_lastCompile = job;
         }
-        });
+        m_compileSemaphore.notify();
+    });
 } // AddCompile
 
 FireStarterCompilerJob* FireStarterCompilerManager::GetCompile(void)
 {
     FireStarterCompilerJob* job = nullptr;
+    m_compileSemaphore.wait();
     DispatchSync([this, &job] {
         if (m_firstCompile) {
             job = m_firstCompile;
@@ -45,12 +46,14 @@ void FireStarterCompilerManager::AddCode(FireStarterCompilerJob* job)
             m_firstCode = job;
             m_lastCode = job;
         }
+        m_codeSemaphore.notify();
     });
 } // AddCode
 
 FireStarterCompilerJob* FireStarterCompilerManager::GetCode(void)
 {
     FireStarterCompilerJob* job = nullptr;
+    m_codeSemaphore.wait();
     DispatchSync([this, &job] {
         if (m_firstCode) {
             job = m_firstCode;
@@ -63,11 +66,7 @@ FireStarterCompilerJob* FireStarterCompilerManager::GetCode(void)
     return job;
 } // GetCode
 
-FireStarterCompilerManager::FireStarterCompilerManager(void)
-{
-} // FireStarterCompilerManager
-
-FireStarterCompilerManager::~FireStarterCompilerManager(void)
+void FireStarterCompilerManager::ClearJobs(void)
 {
     DispatchSync([this] {
         while (m_firstCompile) {
@@ -80,7 +79,18 @@ FireStarterCompilerManager::~FireStarterCompilerManager(void)
             m_firstCode = m_firstCode->m_next;
             delete job;
         }
+        m_compileSemaphore.notify_all();
+        m_codeSemaphore.notify_all();
     });
+} // ClearJobs
+
+FireStarterCompilerManager::FireStarterCompilerManager(void)
+{
+} // FireStarterCompilerManager
+
+FireStarterCompilerManager::~FireStarterCompilerManager(void)
+{
+    ClearJobs();
 } // ~FireStarterCompilerManager
 
 void FireStarterCompiler::CompilerServer(void)
@@ -104,10 +114,9 @@ void FireStarterCompiler::CompilerServer(void)
                     m_compilerManager->AddCompile(job);
                 }
             }
-        } else
-            SleepFor(0.1);  // Note: TODO: Make the thread wait for the next available job.
-        if (!m_process->ShouldTerminate())
-            DispatchAsync([this] { CompilerServer(); });
+            if (!m_process->ShouldTerminate())
+                DispatchAsync([this] { CompilerServer(); });
+        }
     };
 } // Server
 

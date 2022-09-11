@@ -55,32 +55,42 @@
 // Reference: https://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
 class SerialThreadSemaphore {
 private:
-    std::mutex mtx;
-    std::condition_variable cv;
-    int count;
+    std::mutex m_mtx;
+    std::condition_variable m_cv;
+    int m_count;
+    int m_waiting;
 public:
-    SerialThreadSemaphore(int start_count = 0) : count(start_count) {}
+    SerialThreadSemaphore(int start_count = 0) : m_count(start_count), m_waiting(0) {}
 
     inline void notify()
     {
-        std::unique_lock<std::mutex> lock(mtx);
-        count++;
-        cv.notify_one();
+        std::unique_lock<std::mutex> lock(m_mtx);
+        m_count++;
+        m_cv.notify_one();
     } // notify
+
+    inline void notify_all()
+    {
+        std::unique_lock<std::mutex> lock(m_mtx);
+        m_count += m_waiting;
+        m_cv.notify_all();
+    } // notify_all
 
     inline void wait()
     {
-        std::unique_lock<std::mutex> lock(mtx);
-        while (count == 0)
-            cv.wait(lock);
-        count--;
+        std::unique_lock<std::mutex> lock(m_mtx);
+        m_waiting++;
+        while (m_count == 0)
+            m_cv.wait(lock);
+        m_waiting--;
+        m_count--;
     } // wait
 
     inline bool trywait()
     {
-        std::unique_lock<std::mutex> lock(mtx);
-        if (count) {
-            --count;
+        std::unique_lock<std::mutex> lock(m_mtx);
+        if (m_count) {
+            --m_count;
             return true;
         }
         return false;

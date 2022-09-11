@@ -13,7 +13,7 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_targetMax = 6.283185f;
 
     settings.m_mode = FIRESTARTER_RANDOM;
-    settings.m_units = 16;
+    settings.m_units = 6;
     settings.m_process = 1;
     settings.m_population = 17408;
     settings.m_iterations = 128;
@@ -216,7 +216,7 @@ inline void LoadResult(FireStarterState& state)
 
 inline void LoadState(FireStarterState& state)
 {
-    state.m_generation = 75;
+    state.m_generation = 82;
     state.m_seed = 252;
 
     LoadProgram(state.m_program);
