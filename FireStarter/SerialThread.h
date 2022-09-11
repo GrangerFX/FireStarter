@@ -199,13 +199,13 @@ private:
         }
     } // Thread
 
-    inline void TerminateThread(void)
+    inline void Terminate(void)
     {
 #if HAS_DISPATCH_AFTER
         m_timers.StopTimers();
 #endif
         m_terminate = true;
-    } // TerminateThread
+    } // Terminate
 
 public:
     inline bool PollThread(void)
@@ -224,11 +224,24 @@ public:
         return m_terminate;
     } // WillTerminate
 
+    inline bool IsRunning(void)
+    {
+        return m_pollThread || m_thread.joinable();
+    } // IsRunning
+
+    inline void SleepFor(double duration)
+    {
+        // Note: The calling thread will sleep.
+        std::this_thread::sleep_for(std::chrono::duration<double>(duration));
+    } // SleepFor
+
     inline void DispatchAsync(const SerialThreadWork& work)
     {
-        std::unique_lock<std::mutex> lock(m_mutex);
-        m_workQueue.push(work);
-        m_cv.notify_one();
+        if (IsRunning()) {
+            std::unique_lock<std::mutex> lock(m_mutex);
+            m_workQueue.push(work);
+            m_cv.notify_one();
+        }
     } // DispatchAsync
 
 #if HAS_DISPATCH_AFTER
@@ -240,23 +253,20 @@ public:
     } // DispatchAfter
 #endif
 
-    inline void SleepFor(double duration)
-    {
-        std::this_thread::sleep_for(std::chrono::duration<double>(duration));
-    } // SleepFor
-
     inline void DispatchSync(const SerialThreadWork& work)
     {
-        SerialThreadSemaphore syncSemaphore;
-        DispatchAsync([this, &syncSemaphore, work] {
-            work();
-            syncSemaphore.notify();
-        });
-        if (m_pollThread)
-            PollThread();
+        if (IsRunning()) {
+            SerialThreadSemaphore syncSemaphore;
+            DispatchAsync([this, &syncSemaphore, work] {
+                work();
+                syncSemaphore.notify();
+            });
+            if (m_pollThread)
+                PollThread();
 
-        // Wait for the contditional variable to be notified.
-        syncSemaphore.wait();
+            // Wait for the contditional variable to be notified.
+            syncSemaphore.wait();
+        }
     } // DispatchSync
 
     static inline SerialThread* GetMainThread(void)
@@ -269,6 +279,25 @@ public:
         MainThread() = mainThread;
     } // SetMainThread
 
+    inline bool TerminateThread(void)
+    {
+        if (m_pollThread) {
+            PollThread();
+            Terminate();
+            std::queue<SerialThreadWork> empty;
+            std::swap(m_workQueue, empty);  // Clear the work queue.
+            return true;
+        }
+        if (m_thread.joinable()) {
+            DispatchSync([this] { Terminate(); });
+            m_thread.join();
+            std::queue<SerialThreadWork> empty;
+            std::swap(m_workQueue, empty);  // Clear the work queue.
+            return true;
+        }
+        return false;
+    } // TerminateThread
+
     inline SerialThread(bool pollThread = false)
     {
         m_terminate = false;
@@ -279,12 +308,6 @@ public:
 
     inline ~SerialThread(void)
     {
-        if (m_pollThread) {
-            PollThread();
-            TerminateThread();
-        } else {
-            DispatchSync([this] { TerminateThread(); });
-            m_thread.join();
-        }
+        TerminateThread();
     } // ~SerialThread
 }; // class SerialThread

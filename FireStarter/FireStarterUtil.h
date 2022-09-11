@@ -113,8 +113,10 @@ public:
 
     inline void Erase(void)
     {
-        if (m_size)
+        if (m_size) {
             cudaMemset(m_deviceBase, 0, m_width * m_height * sizeof(uchar4));
+            cudaMemset(m_hostBase, 0, m_width * m_height * sizeof(uchar4));
+        }
     } // EraseFrameBuffer
 
     inline const unsigned char* GetDevice(void)

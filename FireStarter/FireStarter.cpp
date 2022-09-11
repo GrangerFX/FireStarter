@@ -85,9 +85,10 @@ void FireStarter::FireSettings(void)
 
 void FireStarter::FireShow(void)
 {
-    size_t resultSize = FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations);
+    FireStarterSettings settings = m_bestState.Settings();
+    size_t resultSize = FireStarterResult::ResultSize(settings.m_registers, settings.m_variations);
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, m_bestState.Result(), resultSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
-    size_t instructionsSize = FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
+    size_t instructionsSize = FireStarterInstructions::InstructionsSize(settings.m_instructions);
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, m_bestState.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
 
     // Launch the display kernel
@@ -101,12 +102,12 @@ void FireStarter::FireShow(void)
                     reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                     reinterpret_cast<void*>(&m_buffer.m_width),
                     reinterpret_cast<void*>(&m_buffer.m_height),
-                    reinterpret_cast<void*>(&m_settings.m_variations) };
+                    reinterpret_cast<void*>(&settings.m_variations) };
 
     checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, m_CUDAContext->Stream(),                  // shared mem, stream */
+        0, m_CUDAContext->Stream(),                         // shared mem, stream */
         &arr[0],                                            // arguments */
         0));
     checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
@@ -248,9 +249,9 @@ void FireStarter::ControlRandom(void)
     m_allStates.resize(m_settings.m_units);
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterState& state = m_allStates[i];
-        state.InitState(m_settings);
+        state = m_bestState;
         FireStarterUnit* unit = new FireStarterUnit();
-        unit->StartRandom(i, &compilerManager, state);
+        unit->StartRandom(i, state, &compilerManager);
         m_units.push_back(unit);
     }
 
@@ -260,26 +261,23 @@ void FireStarter::ControlRandom(void)
         // Update the states for all the units.
         for (unsigned int i = 0; (i < m_settings.m_units) && !m_quitControlThread; i++) {
             FireStarterUnit* unit = m_units[i];
-            if (unit->UpdateRandom(m_bestState, m_generation)) {
-                m_generationTime = m_controlTimer.Duration();
-                m_seed = m_settings.m_seed + m_generation;
-                m_bestResult = m_result = m_bestState.MaxResult();
-                m_bestGeneration = m_generation;
-                m_bestSeed = m_bestState.m_program.m_settings.m_seed;
-                m_totalResult += m_result;
-                m_averageResult = m_totalResult / m_generation;
+            unsigned int updateGeneration = m_generation;
+  
+            FireStarterState& state = m_allStates[i];
+            unit->UpdateRandom(state, updateGeneration);
+
+            float maxResult = state.MaxResult();
+            if (maxResult < m_bestState.MaxResult()) {
+                m_bestState = state;
+                m_bestGeneration = updateGeneration;
+                m_bestSeed = m_settings.m_seed + updateGeneration;
+                m_bestResult = maxResult;
                 m_controlUpdate = true;
 
-                // Update the best code on disk and compile a new FireShow.
+                // Update the best code on disk.
                 SaveBestState();
                 SaveBestCode();
                 SaveSolution();
-
-                // Test the best state
-                float testError = m_bestState.TestResult();
-
-                // Update the render status after every pass.
-                RenderStatus(testError);
 
                 // Erase the frame buffer
                 m_buffer.Erase();
@@ -292,6 +290,21 @@ void FireStarter::ControlRandom(void)
                     RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
                     m_bufferUpdate = false;
                 });
+            }
+
+            if (updateGeneration > m_generation) {
+                m_generation = updateGeneration;
+                m_generationTime = m_controlTimer.Duration();
+                m_seed = m_settings.m_seed + m_generation;
+                m_result = maxResult;
+                m_totalResult += m_result;
+                m_averageResult = m_totalResult / m_generation;
+
+                // Test the best state
+                float testError = state.TestResult();
+
+                // Update the render status after every pass.
+                RenderStatus(testError);
             }
         }
     }

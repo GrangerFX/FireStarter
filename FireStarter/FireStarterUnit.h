@@ -141,8 +141,9 @@ private:
     std::string m_evolveCode;
     std::string m_optimizeCode;
     FireStarterSettings m_settings;
+    FireStarterState m_initState;
+    FireStarterState m_bestState;
     FireStarterState m_state;
-    FireStarterState* m_randomState = nullptr;
     FireStarterResults* m_hostResults = nullptr;
     FireStarterEvolutions* m_hostEvolutions = nullptr;
     size_t m_resultsSize = 0;
@@ -168,14 +169,14 @@ private:
     void RandomExecute(void);
     bool LoadCode(void);
     void Deallocate(void);
-    void Allocate(const FireStarterState& state);
+    void Allocate(void);
 
 public:
     unsigned int Index(void);
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
     void GetState(FireStarterState& state);
-    void StartRandom(unsigned int index, FireStarterCompilerManager *manager, FireStarterState& state);
+    void StartRandom(unsigned int index, const FireStarterState& state, FireStarterCompilerManager *manager);
     bool FinishRandom(void);
     bool UpdateRandom(FireStarterState& bestState, unsigned int& generation);
     void InitUnit(unsigned int index, const FireStarterState& initState);
