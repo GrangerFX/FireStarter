@@ -44,7 +44,7 @@ public:
     ~FireStarterProcess(void);
 }; // class FireStarterProcess
 
-class FireStarterServer : public SerialThread {
+class FireStarterServer {
 private:
     std::vector<FireStarterProcess*> m_processes;
     std::string m_processServerName;
