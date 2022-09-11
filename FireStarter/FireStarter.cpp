@@ -256,67 +256,63 @@ void FireStarter::ControlRandom(void)
     FireStarterRandom random(m_settings, &compilerManager);
 
     // Create the units.
-    m_allStates.resize(m_settings.m_units);
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        FireStarterState& state = m_allStates[i];
-        state = m_bestState;
         FireStarterUnit* unit = new FireStarterUnit();
-        unit->StartRandom(i, state, &compilerManager);
+        unit->StartRandom(i, m_bestState, &compilerManager);
         m_units.push_back(unit);
     }
 
     // Loop until the the completion condition or the host program is quit.
     m_controlTimer.Start();
     while (!m_quitControlThread && (m_generation < m_settings.m_attempts)) {
-        // Update the states for all the units.
-        for (unsigned int i = 0; (i < m_settings.m_units) && !m_quitControlThread; i++) {
-            FireStarterUnit* unit = m_units[i];
-            FireStarterState& state = m_allStates[i];
-            unsigned int updateGeneration = m_generation;
+        // Note: The jobs may be received out of order.
+        FireStarterCompilerJob* job = compilerManager.GetComplete();
+        if (!job)
+            break;
 
-            unit->UpdateRandom(state, updateGeneration);
+        // Increment the generation and calculate the average time per generation.
+        m_generation++;
+        m_generationTime = m_controlTimer.Duration() / m_generation;
 
-            float maxResult = state.MaxResult();
-            if (maxResult < m_bestState.MaxResult()) {
-                m_bestState = state;
-                m_bestGeneration = updateGeneration;
-                m_bestSeed = m_settings.m_seed + updateGeneration;
-                m_bestResult = maxResult;
-                m_controlUpdate = true;
+        FireStarterState& state = job->m_state;
+        unsigned int generation = state.m_generation;
+        m_result = state.MaxResult();
+        m_totalResult += m_result;
+        m_averageResult = m_totalResult / m_generation;
+        m_seed = m_settings.m_seed + generation;
+        if (m_result < m_bestState.MaxResult()) {
+            m_bestState = state;
+            m_bestGeneration = generation;
+            m_bestSeed = m_seed;
+            m_bestResult = m_result;
+            m_controlUpdate = true;
 
-                // Update the best code on disk.
-                SaveBestState();
-                SaveBestCode();
-                SaveSolution();
+            // Update the best code on disk.
+            SaveBestState();
+            SaveBestCode();
+            SaveSolution();
 
-                // Erase the frame buffer
-                m_buffer.Erase();
+            // Erase the frame buffer
+            m_buffer.Erase();
 
-                // Draw the graphs for both variations.
-                FireShow();
-                m_controlUpdate = false;
-                const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-                GetMainThread()->DispatchSync([this, bufferPixels] {
-                    RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
-                    m_bufferUpdate = false;
-                });
-            }
-
-            if (updateGeneration > m_generation) {
-                m_generation = updateGeneration;
-                m_generationTime = m_controlTimer.Duration();
-                m_seed = m_settings.m_seed + m_generation;
-                m_result = maxResult;
-                m_totalResult += m_result;
-                m_averageResult = m_totalResult / m_generation;
-
-                // Test the best state
-                float testError = state.TestResult();
-
-                // Update the render status after every pass.
-                RenderStatus(testError);
-            }
+            // Draw the graphs for both variations.
+            FireShow();
+            m_controlUpdate = false;
+            const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+            GetMainThread()->DispatchSync([this, bufferPixels] {
+                RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+                m_bufferUpdate = false;
+            });
         }
+
+        // Test the best state.
+        float testError = state.TestResult();
+
+        // Update the render status after every pass.
+        RenderStatus(testError);
+
+        // Delete the job.
+        delete job;
     }
 
     // Finish processing and terminate each unit.
@@ -353,7 +349,7 @@ void FireStarter::ControlLoop(void)
     // Create the units.
     if (m_settings.m_units > 1)
         for (unsigned int i = 0; i < m_settings.m_units; i++) {
-            FireStarterProcess* process = m_settings.m_process ? m_server.AddProcess() : nullptr;
+            FireStarterProcess* process = m_settings.m_processes ? m_server.AddProcess() : nullptr;
             FireStarterUnit* unit = new FireStarterUnit(process);
             m_units.push_back(unit);
             unit->Start();  // Start the interprocess communication.
@@ -454,17 +450,26 @@ void FireStarter::ControlThread(void)
     m_fireStarterMode = m_settings.m_mode;
     m_bestResult = m_settings.m_startResult;
 
-    // If the evolve units is set to zero, use the number of concurrent hardware threads.
-    if (m_settings.m_units == 0)
-        m_settings.m_units = std::thread::hardware_concurrency(); // Returns logical core count not physical core count.
-
     if (!m_quitControlThread) {
         m_buffer.Resize(m_width, m_height);
         m_buffer.Erase();
 
-        if (m_fireStarterMode == FIRESTARTER_RANDOM)
+        if (m_fireStarterMode == FIRESTARTER_RANDOM) {
+            // If the evolve units is set to zero, use the number of gpus.
+            if (m_settings.m_units == 0)
+                m_settings.m_units = CUDAContext::CUDADevices();
+
+            // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
+            if (m_settings.m_processes == 0)
+                m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+
+            // Process compiled jobs as they are completed.
             ControlRandom();
-        else {
+        } else {
+            // If the evolve units is set to zero, use the number of concurrent hardware threads.
+            if (m_settings.m_units == 0)
+                m_settings.m_units = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+
             // Initial evolution pass.
             ControlLoop();
 

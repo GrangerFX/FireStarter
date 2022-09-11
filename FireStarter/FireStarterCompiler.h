@@ -21,16 +21,21 @@ class FireStarterCompilerManager : public SerialThread {
 private:
 	SerialThreadSemaphore m_codeSemaphore;
 	SerialThreadSemaphore m_compileSemaphore;
+	SerialThreadSemaphore m_completeSemaphore;
 	FireStarterCompilerJob* m_firstCode = nullptr;
 	FireStarterCompilerJob* m_lastCode = nullptr;
 	FireStarterCompilerJob* m_firstCompile = nullptr;
 	FireStarterCompilerJob* m_lastCompile = nullptr;
+	FireStarterCompilerJob* m_firstComplete = nullptr;
+	FireStarterCompilerJob* m_lastComplete = nullptr;
 
 public:
-	void AddCompile(FireStarterCompilerJob* job);
-	FireStarterCompilerJob* GetCompile(void);
 	void AddCode(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetCode(void);
+	void AddCompile(FireStarterCompilerJob* job);
+	FireStarterCompilerJob* GetCompile(void);
+	void AddComplete(FireStarterCompilerJob* job);
+	FireStarterCompilerJob* GetComplete(void);
 	void ClearJobs(void);
 	FireStarterCompilerManager(void);
 	~FireStarterCompilerManager(void);

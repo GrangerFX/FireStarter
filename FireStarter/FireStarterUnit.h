@@ -142,7 +142,6 @@ private:
     std::string m_optimizeCode;
     FireStarterSettings m_settings;
     FireStarterState m_initState;
-    FireStarterState m_bestState;
     FireStarterState m_state;
     FireStarterResults* m_hostResults = nullptr;
     FireStarterEvolutions* m_hostEvolutions = nullptr;
@@ -178,7 +177,6 @@ public:
     void GetState(FireStarterState& state);
     void StartRandom(unsigned int index, const FireStarterState& state, FireStarterCompilerManager *manager);
     bool FinishRandom(void);
-    bool UpdateRandom(FireStarterState& bestState, unsigned int& generation);
     void InitUnit(unsigned int index, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);

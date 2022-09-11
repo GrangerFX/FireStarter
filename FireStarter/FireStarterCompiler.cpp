@@ -4,48 +4,15 @@
 #define COMPILE_INIT    "CompileInit"
 #define COMPILE_EXECUTE "CompileExecute"
 
-void FireStarterCompilerManager::AddCompile(FireStarterCompilerJob* job)
-{
-    DispatchAsync([this, job] {
-        job->m_next = nullptr;
-        if (m_lastCompile) {
-            m_lastCompile->m_next = job;
-            m_lastCompile = job;
-        } else {
-            m_firstCompile = job;
-            m_lastCompile = job;
-        }
-        m_compileSemaphore.notify();
-    });
-} // AddCompile
-
-FireStarterCompilerJob* FireStarterCompilerManager::GetCompile(void)
-{
-    FireStarterCompilerJob* job = nullptr;
-    m_compileSemaphore.wait();
-    DispatchSync([this, &job] {
-        if (m_firstCompile) {
-            job = m_firstCompile;
-            m_firstCompile = m_firstCompile->m_next;
-            if (!m_firstCompile)
-                m_lastCompile = nullptr;
-            job->m_next = nullptr;
-        }
-    });
-    return job;
-} // GetCompile
-
 void FireStarterCompilerManager::AddCode(FireStarterCompilerJob* job)
 {
     DispatchAsync([this, job] {
         job->m_next = nullptr;
-        if (m_lastCode) {
+        if (m_lastCode)
             m_lastCode->m_next = job;
-            m_lastCode = job;
-        } else {
+        else
             m_firstCode = job;
-            m_lastCode = job;
-        }
+        m_lastCode = job;
         m_codeSemaphore.notify();
     });
 } // AddCode
@@ -66,21 +33,85 @@ FireStarterCompilerJob* FireStarterCompilerManager::GetCode(void)
     return job;
 } // GetCode
 
+void FireStarterCompilerManager::AddCompile(FireStarterCompilerJob* job)
+{
+    DispatchAsync([this, job] {
+        job->m_next = nullptr;
+        if (m_lastCompile)
+            m_lastCompile->m_next = job;
+        else
+            m_firstCompile = job;
+        m_lastCompile = job;
+        m_compileSemaphore.notify();
+    });
+} // AddCompile
+
+FireStarterCompilerJob* FireStarterCompilerManager::GetCompile(void)
+{
+    FireStarterCompilerJob* job = nullptr;
+    m_compileSemaphore.wait();
+    DispatchSync([this, &job] {
+        if (m_firstCompile) {
+            job = m_firstCompile;
+            m_firstCompile = m_firstCompile->m_next;
+            if (!m_firstCompile)
+                m_lastCompile = nullptr;
+            job->m_next = nullptr;
+        }
+    });
+    return job;
+} // GetCompile
+
+void FireStarterCompilerManager::AddComplete(FireStarterCompilerJob* job)
+{
+    DispatchAsync([this, job] {
+        job->m_next = nullptr;
+        if (m_lastComplete)
+            m_lastComplete->m_next = job;
+        else
+            m_firstComplete = job;
+        m_lastComplete = job;
+        m_completeSemaphore.notify();
+    });
+} // AddComplete
+
+FireStarterCompilerJob* FireStarterCompilerManager::GetComplete(void)
+{
+    FireStarterCompilerJob* job = nullptr;
+    m_completeSemaphore.wait();
+    DispatchSync([this, &job] {
+        if (m_firstCode) {
+            job = m_firstComplete;
+            m_firstComplete = m_firstComplete->m_next;
+            if (!m_firstComplete)
+                m_lastComplete = nullptr;
+            job->m_next = nullptr;
+        }
+        });
+    return job;
+} // GetComplete
+
 void FireStarterCompilerManager::ClearJobs(void)
 {
     DispatchSync([this] {
-        while (m_firstCompile) {
-            FireStarterCompilerJob* job = m_firstCompile;
-            m_firstCompile = m_firstCompile->m_next;
-            delete job;
-        }
         while (m_firstCode) {
             FireStarterCompilerJob* job = m_firstCode;
             m_firstCode = m_firstCode->m_next;
             delete job;
         }
-        m_compileSemaphore.notify_all();
+        while (m_firstCompile) {
+            FireStarterCompilerJob* job = m_firstCompile;
+            m_firstCompile = m_firstCompile->m_next;
+            delete job;
+        }
+        while (m_firstComplete) {
+            FireStarterCompilerJob* job = m_firstComplete;
+            m_firstComplete = m_firstComplete->m_next;
+            delete job;
+        }
         m_codeSemaphore.notify_all();
+        m_compileSemaphore.notify_all();
+        m_completeSemaphore.notify_all();
     });
 } // ClearJobs
 

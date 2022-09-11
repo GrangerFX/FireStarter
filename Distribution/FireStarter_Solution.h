@@ -1,6 +1,6 @@
-// Run date: 09/11/22 11:59:05 Pacific Daylight Time
-// Run duration = 9.509676 seconds
-// Run count = 84
+// Run date: 09/11/22 15:47:46 Pacific Daylight Time
+// Run duration = 0.177712 seconds
+// Run count = 89
 // Run variations = 3;
 // Run samples = 15;
 // Run instructions = 32;
@@ -11,8 +11,8 @@
 // Run targetMax = 6.283185f;
 
 // Run mode = FIRESTARTER_RANDOM;
-// Run units = 6;
-// Run process = 1;
+// Run units = 2;
+// Run processes = 6;
 // Run population = 17408;
 // Run iterations = 128;
 // Run candidates = 16;
@@ -24,7 +24,7 @@
 // Run scale = 0.100000f;
 // Run startScale = 4.000000f;
 // Run startResult = 10.000000f;
-// Solution Generation = 82
+// Solution Generation = 88
 
 #ifndef __CUDACC__
 #include <cmath>

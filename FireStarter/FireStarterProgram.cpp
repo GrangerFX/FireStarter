@@ -109,7 +109,7 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += "\r\n";
     code += prefix + Format("mode = %s;\r\n", settings.Mode());
     code += prefix + Format("units = %u;\r\n", settings.m_units);
-    code += prefix + Format("process = %u;\r\n", settings.m_process);
+    code += prefix + Format("processes = %u;\r\n", settings.m_processes);
     code += prefix + Format("population = %u;\r\n", settings.m_population);
     code += prefix + Format("iterations = %u;\r\n", settings.m_iterations);
     code += prefix + Format("candidates = %u;\r\n", settings.m_candidates);

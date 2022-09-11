@@ -21,7 +21,7 @@
 
 #if 1
 #define FIRESTARTER_CODE_UNITS        1
-#define FIRESTARTER_CODE_PROCESS      0
+#define FIRESTARTER_CODE_PROCESSES    0
 #define FIRESTARTER_CODE_POPULATION   4352 * 4
 #define FIRESTARTER_CODE_ITERATIONS   256
 #define FIRESTARTER_CODE_CANDIDATES   16
@@ -35,7 +35,7 @@
 #define FIRESTARTER_CODE_START_RESULT 10.0f
 #else
 #define FIRESTARTER_CODE_UNITS        1
-#define FIRESTARTER_CODE_PROCESS      0
+#define FIRESTARTER_CODE_PROCESSES    0
 #define FIRESTARTER_CODE_POPULATION   4352 * 64
 #define FIRESTARTER_CODE_ITERATIONS   16
 #define FIRESTARTER_CODE_CANDIDATES   16
@@ -50,7 +50,7 @@
 #endif
 
 #define FIRESTARTER_UNIT_UNITS        4
-#define FIRESTARTER_UNIT_PROCESS      0
+#define FIRESTARTER_UNIT_PROCESSES    0
 #define FIRESTARTER_UNIT_POPULATION   4352 * 16
 #define FIRESTARTER_UNIT_ITERATIONS   128
 #define FIRESTARTER_UNIT_CANDIDATES   16
@@ -65,7 +65,7 @@
 #define FIRESTARTER_UNIT_START_RESULT 10.0f
 
 #define FIRESTARTER_PROCESS_UNITS        16
-#define FIRESTARTER_PROCESS_PROCESS      1
+#define FIRESTARTER_PROCESS_PROCESSES    1
 #define FIRESTARTER_PROCESS_POPULATION   4352 * 16
 #define FIRESTARTER_PROCESS_ITERATIONS   256
 #define FIRESTARTER_PROCESS_CANDIDATES   16
@@ -78,8 +78,8 @@
 #define FIRESTARTER_PROCESS_START_SCALE  4.0f
 #define FIRESTARTER_PROCESS_START_RESULT 10.0f
 
-#define FIRESTARTER_RANDOM_UNITS        6
-#define FIRESTARTER_RANDOM_PROCESS      1
+#define FIRESTARTER_RANDOM_UNITS        2
+#define FIRESTARTER_RANDOM_PROCESSES    6
 #define FIRESTARTER_RANDOM_POPULATION   4352 * 4
 #define FIRESTARTER_RANDOM_ITERATIONS   128
 #define FIRESTARTER_RANDOM_CANDIDATES   16
@@ -93,7 +93,7 @@
 #define FIRESTARTER_RANDOM_START_RESULT 10.0f
 
 #define FIRESTARTER_OPTIMIZE_UNITS        1
-#define FIRESTARTER_OPTIMIZE_PROCESS      0
+#define FIRESTARTER_OPTIMIZE_PROCESSES    0
 #define FIRESTARTER_OPTIMIZE_POPULATION   4352 * 16
 #define FIRESTARTER_OPTIMIZE_ITERATIONS   512
 #define FIRESTARTER_OPTIMIZE_CANDIDATES   16
@@ -129,7 +129,7 @@ public:
 
     unsigned int m_mode;
     unsigned int m_units;
-    unsigned int m_process;
+    unsigned int m_processes;
     unsigned int m_population;
     unsigned int m_iterations;
     unsigned int m_generations;
@@ -192,7 +192,7 @@ public:
         switch (m_mode) {
             case FIRESTARTER_CODE:
                 m_units =       FIRESTARTER_CODE_UNITS;
-                m_process =     FIRESTARTER_CODE_PROCESS;
+                m_processes =   FIRESTARTER_CODE_PROCESSES;
                 m_population =  FIRESTARTER_CODE_POPULATION;
                 m_iterations =  FIRESTARTER_CODE_ITERATIONS;
                 m_candidates =  FIRESTARTER_CODE_CANDIDATES;
@@ -208,7 +208,7 @@ public:
 
             case FIRESTARTER_UNIT:
                 m_units =       FIRESTARTER_UNIT_UNITS;
-                m_process =     FIRESTARTER_UNIT_PROCESS;
+                m_processes =   FIRESTARTER_UNIT_PROCESSES;
                 m_population =  FIRESTARTER_UNIT_POPULATION;
                 m_iterations =  FIRESTARTER_UNIT_ITERATIONS;
                 m_candidates =  FIRESTARTER_UNIT_CANDIDATES;
@@ -224,7 +224,7 @@ public:
 
             case FIRESTARTER_PROCESS:
                 m_units =       FIRESTARTER_PROCESS_UNITS;
-                m_process =     FIRESTARTER_PROCESS_PROCESS;
+                m_processes =   FIRESTARTER_PROCESS_PROCESSES;
                 m_population =  FIRESTARTER_PROCESS_POPULATION;
                 m_iterations =  FIRESTARTER_PROCESS_ITERATIONS;
                 m_candidates =  FIRESTARTER_PROCESS_CANDIDATES;
@@ -240,7 +240,7 @@ public:
 
             case FIRESTARTER_RANDOM:
                 m_units =       FIRESTARTER_RANDOM_UNITS;
-                m_process =     FIRESTARTER_RANDOM_PROCESS;
+                m_processes =   FIRESTARTER_RANDOM_PROCESSES;
                 m_population =  FIRESTARTER_RANDOM_POPULATION;
                 m_iterations =  FIRESTARTER_RANDOM_ITERATIONS;
                 m_candidates =  FIRESTARTER_RANDOM_CANDIDATES;
@@ -256,7 +256,7 @@ public:
 
             case FIRESTARTER_OPTIMIZE:
                 m_units =       FIRESTARTER_OPTIMIZE_UNITS;
-                m_process =     FIRESTARTER_OPTIMIZE_PROCESS;
+                m_processes =   FIRESTARTER_OPTIMIZE_PROCESSES;
                 m_population =  FIRESTARTER_OPTIMIZE_POPULATION;
                 m_iterations =  FIRESTARTER_OPTIMIZE_ITERATIONS;
                 m_candidates =  FIRESTARTER_OPTIMIZE_CANDIDATES;
@@ -272,7 +272,7 @@ public:
 
             default:
                 m_units = 0;
-                m_process = 0;
+                m_processes = 0;
                 m_population = 0;
                 m_iterations = 0;
                 m_candidates = 0;

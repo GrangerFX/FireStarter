@@ -316,12 +316,13 @@ void FireStarterUnit::UnitExecute(void)
 
 void FireStarterUnit::RandomExecute(void)
 {
-    if (!WillTerminate() && (m_evolveGeneration + 1 < m_settings.m_attempts)) {
+    if (!WillTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCompile();
         if (job) {
             if (!job->m_log.empty())
                 printf("%s\n", job->m_log.c_str());
             if (!job->m_ptx.empty()) {
+                m_evolveGeneration = job->m_state.m_generation;
                 CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
                 if (cuda_module) {
                     m_contexts[0].m_optimizeFunction = CUDACompile::GetFunction(cuda_module, job->m_programName);
@@ -329,14 +330,13 @@ void FireStarterUnit::RandomExecute(void)
                         m_state = job->m_state;
                         m_stateSeed = m_state.Settings().m_seed;
                         OptimizeGenerations(1);
-                        if (m_state.MaxResult() < m_bestState.MaxResult())
-                            m_bestState = m_state;
+                        job->m_state = m_state;
                     }
                 }
+                m_compilerManager->AddComplete(job);
+                if (!WillTerminate())
+                    DispatchAsync([this] { RandomExecute(); });
             }
-            m_evolveGeneration = job->m_state.m_generation;
-            if (!WillTerminate() && (m_evolveGeneration + 1 < m_settings.m_attempts))
-                DispatchAsync([this] { RandomExecute(); });
         }
      }
 } // RandomExecute
@@ -460,7 +460,6 @@ void FireStarterUnit::StartRandom(unsigned int index, const FireStarterState& st
     m_evolveGeneration = 0;
     m_compilerManager = manager;
     m_initState = state;
-    m_bestState = state;
     m_state = state;
     if (LoadCode()) {
         DispatchAsync([this] {
@@ -475,24 +474,12 @@ bool FireStarterUnit::FinishRandom(void)
     return m_evolveGeneration >= m_settings.m_attempts;
 } // FinishRandom
 
-bool FireStarterUnit::UpdateRandom(FireStarterState& state, unsigned int &generation)
-{
-    bool result = false;
-    DispatchSync([this, &result, &state, &generation] {
-        state = m_bestState;
-        generation = m_evolveGeneration;
-        result = true;
-    });
-    return result;
-} // UpdateRandom
-
 void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initState)
 {
     m_unitIndex = index;
     m_settings = initState.Settings();
     m_evolveGeneration = 0;
     m_initState = initState;
-    m_bestState = initState;
     m_state = initState;
     DispatchAsync([this] {
         if (LoadCode()) {
@@ -585,6 +572,7 @@ void FireStarterUnit::Stop(void)
         DispatchAsync([this] {
             m_process->Stop();
             m_process->Terminate();
+            m_process = nullptr;
         });
 } // Stop
 
@@ -641,10 +629,7 @@ FireStarterUnit::FireStarterUnit(unsigned int gpus) : m_state(m_settings)
 
 FireStarterUnit::~FireStarterUnit(void)
 {
-    DispatchSync([this] {
-        if (m_process)
-            m_process->Stop();
-    });
+    Stop();
     TerminateThread();
     Deallocate();
 } // ~FireStarterUnit
