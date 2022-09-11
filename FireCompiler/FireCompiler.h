@@ -1,10 +1,10 @@
 #pragma once
 #include "FireStarterCompiler.h"
 
-class FireCompiler : public SerialThread {
+class FireCompiler {
 private:
-	FireStarterProcess m_process;
-	FireStarterCompiler m_compiler;
+	FireStarterProcess* m_process = nullptr;
+	FireStarterCompiler* m_compiler = nullptr;
 	volatile bool m_terminate = false;
 
 public:

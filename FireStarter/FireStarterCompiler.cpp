@@ -127,9 +127,11 @@ void FireStarterCompiler::CompilerClient(void)
                 result = result && receivePacket.Packetize(options);
 
                 if (result) {
-                    std::string ptx;
-                    std::string log;
-                    CUDACompile::Compile(ptx, log, program, programName, options);
+                    std::string ptx, log;
+                    bool result = CUDACompile::Compile(ptx, log, program, programName, options);
+                    if (log.size())
+                        printf("Client %llu: Log:%s\n\n", m_process->ProcessIndex(), log.c_str());
+
                     FireStarterPacket sendPacket(COMPILE_EXECUTE);
                     result = result && sendPacket.Packetize(ptx);
                     result = result && sendPacket.Packetize(log);

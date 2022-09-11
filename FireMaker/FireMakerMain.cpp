@@ -64,7 +64,8 @@ HRESULT Initialize(const char* commandLine)
 // ----------------------------------------------------------------------------
 int main(int argc, const char** argv)
 {
-	printf("FireMaker command line = %s\n", argv[0]);
+	DWORD processID = GetProcessId(GetCurrentProcess());
+	printf("FireMaker:%d  Command line = %s\n", processID, argv[0]);
 	Initialize(argv[0]);
 	return 0;
-} // WinMain
+} // main
