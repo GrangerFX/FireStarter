@@ -461,7 +461,9 @@ void FireStarterUnit::StartRandom(unsigned int index, const FireStarterState& st
     m_settings = state.Settings();
     m_evolveGeneration = 0;
     m_compilerManager = manager;
+    m_initState = state;
     m_bestState = state;
+    m_state = state;
     if (LoadCode()) {
         DispatchAsync([this] {
             Allocate();
@@ -489,9 +491,11 @@ bool FireStarterUnit::UpdateRandom(FireStarterState& state, unsigned int &genera
 void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initState)
 {
     m_unitIndex = index;
-    m_initState = initState;
     m_settings = initState.Settings();
     m_evolveGeneration = 0;
+    m_initState = initState;
+    m_bestState = initState;
+    m_state = initState;
     DispatchAsync([this] {
         if (LoadCode()) {
             Allocate();

@@ -214,7 +214,7 @@ bool FireStarterProcess::StartProcess(void)
     // Create the process communication pipe.
     if (m_pipe == INVALID_HANDLE_VALUE) {
         m_pipe = CreateNamedPipe(
-            m_pipeName.c_str(), // pipe name 
+            m_pipeName.c_str(),        // pipe name 
             PIPE_ACCESS_DUPLEX,        // read/write access 
             PIPE_TYPE_MESSAGE |        // message type pipe 
             PIPE_READMODE_MESSAGE |    // message-read mode 

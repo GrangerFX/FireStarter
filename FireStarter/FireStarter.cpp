@@ -115,43 +115,53 @@ void FireStarter::FireShow(void)
 
 void FireStarter::RenderStatus(float testError)
 {
-    // Create the hash and log files.
-    if (m_hashFilePath.empty() || m_logFilePath.empty()) {
-        m_hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
-        m_logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), m_settings.Mode());
-        std::string statusText;
-        FireStarterProgram::SettingsText(m_settings, statusText);
-        statusText += "\r\n";
-        FireStarterCode::AppendCode(m_hashFilePath, statusText);
-        FireStarterCode::AppendCode(m_logFilePath, statusText);
+    // Create the settings text.
+    static std::string settingsText;
+    if (settingsText.empty()) {
+        FireStarterProgram::SettingsText(m_settings, settingsText);
+        settingsText += "\r\n";
     }
 
-    // Update the hash file.
-    std::string hashString = Format("%s:%s  Generation:%4u  Best Generation:%4u", m_settings.Mode(), m_settings.Evolve(), m_generation, m_bestGeneration);
-    if (m_settings.m_units != 1)
-        hashString += "\r\n";
-    for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        FireStarterState state;
-        m_units[i]->GetState(state);
-        FireStarterResult* result = state.Result();
-        uint64_t resultHash = MurmurHash64(result, state.ResultSize());
-        uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
-        float bestResult = m_allStates[i].MaxResult();
-        if (m_settings.m_units >= 10)
-            hashString += Format("  Unit: %2u", i);
-        else if (m_settings.m_units >= 2)
-            hashString += Format("  Unit: %u", i);
-        hashString += Format("  Result=%.8f  Seed=%08X  Best Result=%6d  Best Generation=%5d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), state.m_seed, state.m_best, result->debug1, (unsigned short)resultHash, (unsigned short)programHash);
+    // Create the log file.
+    std::string statusString;
+    if (m_logFilePath.empty()) {
+        m_logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), m_settings.Mode());
+        FireStarterCode::AppendCode(m_logFilePath, settingsText);
     }
-    FireStarterCode::AppendCode(m_hashFilePath, hashString);
-    printf(hashString.c_str());
+
+    if (m_settings.m_mode != FIRESTARTER_RANDOM) {
+        // Create the hash file.
+        if (m_hashFilePath.empty()) {
+            m_hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
+            FireStarterCode::AppendCode(m_logFilePath, settingsText);
+        }
+
+        // Update the hash file.
+        std::string hashString = Format("%s:%s  Generation:%4u  Best Generation:%4u", m_settings.Mode(), m_settings.Evolve(), m_generation, m_bestGeneration);
+        if (m_settings.m_units != 1)
+            hashString += "\r\n";
+        for (unsigned int i = 0; i < m_settings.m_units; i++) {
+            FireStarterState state;
+            m_units[i]->GetState(state);
+            FireStarterResult* result = state.Result();
+            uint64_t resultHash = MurmurHash64(result, state.ResultSize());
+            uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
+            float bestResult = m_allStates[i].MaxResult();
+            if (m_settings.m_units >= 10)
+                hashString += Format("  Unit: %2u", i);
+            else if (m_settings.m_units >= 2)
+                hashString += Format("  Unit: %u", i);
+            hashString += Format("  Result=%.8f  Seed=%08X  Best Result=%6d  Best Generation=%5d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), state.m_seed, state.m_best, result->debug1, (unsigned short)resultHash, (unsigned short)programHash);
+        }
+        FireStarterCode::AppendCode(m_hashFilePath, hashString);
+        printf(hashString.c_str());
+
+        // Create the status string.
+        statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_generationTime, m_runTimer.Duration(), testError);
+    } else
+        statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration(), testError);
 
     // Update the log file.
-    std::string statusString;
-    if (m_settings.m_mode == FIRESTARTER_RANDOM)
-        statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration(), testError);
-    else
-        statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_generationTime, m_runTimer.Duration(), testError);
     FireStarterCode::AppendCode(m_logFilePath, statusString + "\r\n");
 
     // Update the window status.
