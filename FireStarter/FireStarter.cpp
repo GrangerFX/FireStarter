@@ -271,9 +271,9 @@ void FireStarter::ControlRandom(void)
         // Update the states for all the units.
         for (unsigned int i = 0; (i < m_settings.m_units) && !m_quitControlThread; i++) {
             FireStarterUnit* unit = m_units[i];
-            unsigned int updateGeneration = m_generation;
-  
             FireStarterState& state = m_allStates[i];
+            unsigned int updateGeneration = m_generation;
+
             unit->UpdateRandom(state, updateGeneration);
 
             float maxResult = state.MaxResult();
