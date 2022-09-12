@@ -53,5 +53,5 @@ public:
     void SaveSettings(std::string& code);
     void SaveProgram(std::string& code);
     void InitProgram(const FireStarterSettings& settings);
-    FireStarterProgram(void);
+    inline FireStarterProgram(void) {}
 }; // class FireStarterProgram

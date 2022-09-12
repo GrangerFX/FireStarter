@@ -4,124 +4,123 @@
 #define COMPILE_INIT    "CompileInit"
 #define COMPILE_EXECUTE "CompileExecute"
 
-void FireStarterCompilerManager::AddCode(FireStarterCompilerJob* job)
+void FireStarterJobQueue::Add(FireStarterCompilerJob* job)
 {
     DispatchAsync([this, job] {
         job->m_next = nullptr;
-        if (m_lastCode)
-            m_lastCode->m_next = job;
+        if (m_lastJob)
+            m_lastJob->m_next = job;
         else
-            m_firstCode = job;
-        m_lastCode = job;
-        m_codeSemaphore.notify();
+            m_firstJob = job;
+        m_lastJob = job;
+        m_semaphore.notify();
     });
+} // Add
+
+FireStarterCompilerJob* FireStarterJobQueue::Get(void)
+{
+    FireStarterCompilerJob* job = nullptr;
+    m_semaphore.wait();
+    DispatchSync([this, &job] {
+        if (m_firstJob) {
+            job = m_firstJob;
+            m_firstJob = m_firstJob->m_next;
+            if (!m_firstJob)
+                m_lastJob = nullptr;
+            job->m_next = nullptr;
+        }
+    });
+    return job;
+} // Get
+
+void FireStarterJobQueue::Cancel(void)
+{
+    // Terminate the thread.
+    if (IsRunning())
+        TerminateThread();
+
+    // Delete all the jobs in the queue.
+    while (m_firstJob) {
+        FireStarterCompilerJob* job = m_firstJob;
+        m_firstJob = m_firstJob->m_next;
+        delete job;
+    }
+    m_lastJob = nullptr;
+
+    // Release any waiting threads.
+    m_semaphore.terminate();
+} // Cancel
+
+FireStarterJobQueue::FireStarterJobQueue(void)
+{
+}
+FireStarterJobQueue::~FireStarterJobQueue(void)
+{
+    Cancel();
+} // ~FireStarterJobQueue
+
+void FireStarterCompilerManager::AddFree(FireStarterCompilerJob* job)
+{
+    if (job)
+        *job = FireStarterCompilerJob();
+    else
+        job = new FireStarterCompilerJob();
+    m_freeQueue.Add(job);
+} // AddFree
+
+FireStarterCompilerJob* FireStarterCompilerManager::GetFree(void)
+{
+    return m_freeQueue.Get();
+} // GetFree
+
+void FireStarterCompilerManager::AddCode(FireStarterCompilerJob* job)
+{
+    m_codeQueue.Add(job);
 } // AddCode
 
 FireStarterCompilerJob* FireStarterCompilerManager::GetCode(void)
 {
-    FireStarterCompilerJob* job = nullptr;
-    m_codeSemaphore.wait();
-    DispatchSync([this, &job] {
-        if (m_firstCode) {
-            job = m_firstCode;
-            m_firstCode = m_firstCode->m_next;
-            if (!m_firstCode)
-                m_lastCode = nullptr;
-            job->m_next = nullptr;
-        }
-    });
-    return job;
+    return m_codeQueue.Get();
 } // GetCode
 
 void FireStarterCompilerManager::AddCompile(FireStarterCompilerJob* job)
 {
-    DispatchAsync([this, job] {
-        job->m_next = nullptr;
-        if (m_lastCompile)
-            m_lastCompile->m_next = job;
-        else
-            m_firstCompile = job;
-        m_lastCompile = job;
-        m_compileSemaphore.notify();
-    });
+    m_compileQueue.Add(job);
 } // AddCompile
 
 FireStarterCompilerJob* FireStarterCompilerManager::GetCompile(void)
 {
-    FireStarterCompilerJob* job = nullptr;
-    m_compileSemaphore.wait();
-    DispatchSync([this, &job] {
-        if (m_firstCompile) {
-            job = m_firstCompile;
-            m_firstCompile = m_firstCompile->m_next;
-            if (!m_firstCompile)
-                m_lastCompile = nullptr;
-            job->m_next = nullptr;
-        }
-    });
-    return job;
+    return m_compileQueue.Get();
 } // GetCompile
 
 void FireStarterCompilerManager::AddComplete(FireStarterCompilerJob* job)
 {
-    DispatchAsync([this, job] {
-        job->m_next = nullptr;
-        if (m_lastComplete)
-            m_lastComplete->m_next = job;
-        else
-            m_firstComplete = job;
-        m_lastComplete = job;
-        m_completeSemaphore.notify();
-    });
+    m_completeQueue.Add(job);
 } // AddComplete
 
 FireStarterCompilerJob* FireStarterCompilerManager::GetComplete(void)
 {
-    FireStarterCompilerJob* job = nullptr;
-    m_completeSemaphore.wait();
-    DispatchSync([this, &job] {
-        if (m_firstComplete) {
-            job = m_firstComplete;
-            m_firstComplete = m_firstComplete->m_next;
-            if (!m_firstComplete)
-                m_lastComplete = nullptr;
-            job->m_next = nullptr;
-        }
-    });
-    return job;
+    return m_completeQueue.Get();
 } // GetComplete
 
-void FireStarterCompilerManager::ClearJobs(void)
+void FireStarterCompilerManager::Cancel(void)
 {
-    DispatchSync([this] {
-        while (m_firstCode) {
-            FireStarterCompilerJob* job = m_firstCode;
-            m_firstCode = m_firstCode->m_next;
-            delete job;
-        }
-        while (m_firstCompile) {
-            FireStarterCompilerJob* job = m_firstCompile;
-            m_firstCompile = m_firstCompile->m_next;
-            delete job;
-        }
-        while (m_firstComplete) {
-            FireStarterCompilerJob* job = m_firstComplete;
-            m_firstComplete = m_firstComplete->m_next;
-            delete job;
-        }
-        m_codeSemaphore.notify_all();
-        m_compileSemaphore.notify_all();
-        m_completeSemaphore.notify_all();
-    });
+    m_freeQueue.Cancel();
+    m_codeQueue.Cancel();
+    m_compileQueue.Cancel();
+    m_completeQueue.Cancel();
 } // ClearJobs
 
-FireStarterCompilerManager::FireStarterCompilerManager(void)
+FireStarterCompilerManager::FireStarterCompilerManager(size_t maxJobs)
 {
+    m_maxJobs = maxJobs;
+    for (size_t i = 0; i < m_maxJobs; i++)
+        AddFree();
 } // FireStarterCompilerManager
 
 FireStarterCompilerManager::~FireStarterCompilerManager(void)
 {
-    ClearJobs();
+    Cancel();
 } // ~FireStarterCompilerManager
 
 void FireStarterCompiler::CompilerServer(void)

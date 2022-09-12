@@ -171,7 +171,3 @@ void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
     m_dataSize = settings.m_registers;
     m_maxRegisters = settings.m_registers;
 } // InitProgram
-
-FireStarterProgram::FireStarterProgram(void)
-{
-} // FireStarterProgram

@@ -10,7 +10,8 @@ void FireStarterRandom::RandomGenerate(void)
         FireStarterGenerate generate(&m_CUDAContext);
         unsigned int generation = 0;
         while ((generation < m_settings.m_attempts) && !WillTerminate()) {
-            FireStarterCompilerJob* job = new FireStarterCompilerJob(m_settings);
+            FireStarterCompilerJob* job = m_manager->GetFree();
+            job->m_state.InitState(m_settings);
             job->m_state.Settings().m_seed = job->m_state.m_seed = m_settings.m_seed + generation;
             job->m_state.m_generation = generation++;
             job->m_state.m_program.RandomProgram();

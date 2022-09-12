@@ -57,13 +57,16 @@ class SerialThreadSemaphore {
 private:
     std::mutex m_mtx;
     std::condition_variable m_cv;
-    int m_count;
-    int m_waiting;
+    int m_count = 0;
+    int m_waiting = 0;
+    bool m_active = true;
 public:
-    SerialThreadSemaphore(int start_count = 0) : m_count(start_count), m_waiting(0) {}
+    SerialThreadSemaphore(int start_count = 0) : m_count(start_count) {}
 
     inline void notify()
     {
+        if (!m_active)
+            return;
         std::unique_lock<std::mutex> lock(m_mtx);
         m_count++;
         m_cv.notify_one();
@@ -71,6 +74,8 @@ public:
 
     inline void notify_all()
     {
+        if (!m_active)
+            return;
         std::unique_lock<std::mutex> lock(m_mtx);
         m_count += m_waiting;
         m_cv.notify_all();
@@ -78,6 +83,8 @@ public:
 
     inline void wait()
     {
+        if (!m_active)
+            return;
         std::unique_lock<std::mutex> lock(m_mtx);
         m_waiting++;
         while (m_count == 0)
@@ -88,6 +95,8 @@ public:
 
     inline bool trywait()
     {
+        if (!m_active)
+            return false;
         std::unique_lock<std::mutex> lock(m_mtx);
         if (m_count) {
             --m_count;
@@ -95,6 +104,16 @@ public:
         }
         return false;
     } // trywait
+
+    inline void terminate()
+    {
+        if (!m_active)
+            return;
+        std::unique_lock<std::mutex> lock(m_mtx);
+        m_active = false;
+        m_count += m_waiting;
+        m_cv.notify_all();
+    } // terminate
 }; // class SerialThreadSemaphore
 
 class SerialThread {

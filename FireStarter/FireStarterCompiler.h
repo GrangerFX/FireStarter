@@ -12,32 +12,44 @@ public:
 	std::string m_log;
 	class FireStarterCompilerJob* m_next = nullptr;	// Linked list pointer
 
-	inline FireStarterCompilerJob(const FireStarterSettings& settings) : m_state(settings)
+	inline FireStarterCompilerJob(void)
 	{
 	} // FireStarterCompilerJob
 }; // class FireStarterCompilerJob
 
-class FireStarterCompilerManager : public SerialThread {
+class FireStarterJobQueue : public SerialThread {
 private:
-	SerialThreadSemaphore m_codeSemaphore;
-	SerialThreadSemaphore m_compileSemaphore;
-	SerialThreadSemaphore m_completeSemaphore;
-	FireStarterCompilerJob* m_firstCode = nullptr;
-	FireStarterCompilerJob* m_lastCode = nullptr;
-	FireStarterCompilerJob* m_firstCompile = nullptr;
-	FireStarterCompilerJob* m_lastCompile = nullptr;
-	FireStarterCompilerJob* m_firstComplete = nullptr;
-	FireStarterCompilerJob* m_lastComplete = nullptr;
+	SerialThreadSemaphore m_semaphore;
+	FireStarterCompilerJob* m_firstJob = nullptr;
+	FireStarterCompilerJob* m_lastJob = nullptr;
+public:
+	void Add(FireStarterCompilerJob* job); 
+	FireStarterCompilerJob* Get(void);
+	void Cancel(void);
+	FireStarterJobQueue(void);
+	~FireStarterJobQueue(void);
+}; // class FireStarterJobQueue
+
+class FireStarterCompilerManager {
+private:
+	FireStarterJobQueue m_freeQueue;
+	FireStarterJobQueue m_codeQueue;
+	FireStarterJobQueue m_compileQueue;
+	FireStarterJobQueue m_completeQueue;
+	size_t m_maxJobs = 0;
 
 public:
+	void AddFree(FireStarterCompilerJob* job = nullptr);
+	FireStarterCompilerJob* GetFree(void);
 	void AddCode(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetCode(void);
 	void AddCompile(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetCompile(void);
 	void AddComplete(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetComplete(void);
-	void ClearJobs(void);
-	FireStarterCompilerManager(void);
+
+	void Cancel(void);
+	FireStarterCompilerManager(size_t maxJobs);
 	~FireStarterCompilerManager(void);
 }; // FireStarterCompilerManager
 

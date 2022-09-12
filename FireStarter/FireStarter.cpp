@@ -252,7 +252,7 @@ void FireStarter::ControlRandom(void)
     m_bufferUpdate = false;
 
     // Create the shared compiler
-    FireStarterCompilerManager compilerManager;
+    FireStarterCompilerManager compilerManager(1024);
     FireStarterRandom random(m_settings, &compilerManager);
 
     // Create the units.
@@ -311,9 +311,12 @@ void FireStarter::ControlRandom(void)
         // Update the render status after every pass.
         RenderStatus(testError);
 
-        // Delete the job.
-        delete job;
+        // Add the job to the free list.
+        compilerManager.AddFree(job);
     }
+
+    // Cancel any waiting jobs.
+    compilerManager.Cancel();
 
     // Finish processing and terminate each unit.
     for (FireStarterUnit* unit : m_units)
