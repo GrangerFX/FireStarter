@@ -98,6 +98,26 @@ public:
         return true;
     } // Packetize
 
+    inline bool Packetize(bool& n)
+    {
+        return Packetize(&n, sizeof(n));
+    } // Packetize
+
+    inline bool Packetize(int& n)
+    {
+        return Packetize(&n, sizeof(n));
+    } // Packetize
+
+    inline bool Packetize(unsigned int& n)
+    {
+        return Packetize(&n, sizeof(n));
+    } // Packetize
+
+    inline bool Packetize(float& n)
+    {
+        return Packetize(&n, sizeof(n));
+    } // Packetize
+
     inline bool Packetize(std::string& string)
     {
         if (!m_getMode) {

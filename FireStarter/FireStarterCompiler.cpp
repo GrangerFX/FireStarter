@@ -80,14 +80,14 @@ FireStarterCompilerJob* FireStarterCompilerManager::GetComplete(void)
     FireStarterCompilerJob* job = nullptr;
     m_completeSemaphore.wait();
     DispatchSync([this, &job] {
-        if (m_firstCode) {
+        if (m_firstComplete) {
             job = m_firstComplete;
             m_firstComplete = m_firstComplete->m_next;
             if (!m_firstComplete)
                 m_lastComplete = nullptr;
             job->m_next = nullptr;
         }
-        });
+    });
     return job;
 } // GetComplete
 
@@ -129,8 +129,10 @@ void FireStarterCompiler::CompilerServer(void)
     if (!m_process->ShouldTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCode();
         if (job) {
+            printf("Server Code:%d\n", job->m_state.m_generation);
             FireStarterPacket sendPacket(COMPILE_EXECUTE);
             bool result = true;
+            result = result && sendPacket.Packetize(job->m_state.m_generation);
             result = result && sendPacket.Packetize(job->m_program);
             result = result && sendPacket.Packetize(job->m_programName);
             result = result && sendPacket.Packetize(job->m_options);
@@ -159,6 +161,8 @@ void FireStarterCompiler::CompilerClient(void)
         const std::string& command = receivePacket.Command();
         if (result) {
             if (result && (command == COMPILE_EXECUTE)) {
+                unsigned int generation;
+                result = result && receivePacket.Packetize(generation);
                 std::string program;
                 result = result && receivePacket.Packetize(program);
                 std::string programName;
@@ -167,6 +171,8 @@ void FireStarterCompiler::CompilerClient(void)
                 result = result && receivePacket.Packetize(options);
 
                 if (result) {
+                    printf("Client %llu: Compile:%d\n", m_process->ProcessIndex(), generation);
+
                     std::string ptx, log;
                     bool result = CUDACompile::Compile(ptx, log, program, programName, options);
                     if (log.size())
