@@ -264,38 +264,43 @@ public:
         std::this_thread::sleep_for(std::chrono::duration<double>(duration));
     } // SleepFor
 
-    inline void DispatchAsync(const SerialThreadWork& work)
+    inline bool DispatchAsync(const SerialThreadWork& work)
     {
-        if (IsRunning()) {
-            std::unique_lock<std::mutex> lock(m_mutex);
+        std::unique_lock<std::mutex> lock(m_mutex);
+        if (!WillTerminate()) {
             m_workQueue.push(work);
             m_cv.notify_one();
+            return true;
         }
+        return false;
     } // DispatchAsync
 
 #if HAS_DISPATCH_AFTER
-    inline void DispatchAfter(double duration, const SerialThreadWork& work)
+    inline bool DispatchAfter(double duration, const SerialThreadWork& work)
     {
-        DispatchAsync([this, duration, work] {
+        return DispatchAsync([this, duration, work] {
             m_timers.AddTimer(this, duration, work);
         });
     } // DispatchAfter
 #endif
 
-    inline void DispatchSync(const SerialThreadWork& work)
+    inline bool DispatchSync(const SerialThreadWork& work)
     {
-        if (IsRunning()) {
+        if (!WillTerminate()) {
             SerialThreadSemaphore syncSemaphore;
-            DispatchAsync([this, &syncSemaphore, work] {
+            if (DispatchAsync([this, &syncSemaphore, work] {
                 work();
                 syncSemaphore.notify();
-            });
-            if (m_pollThread)
-                PollThread();
+            })) {
+                if (m_pollThread)
+                    PollThread();
 
-            // Wait for the contditional variable to be notified.
-            syncSemaphore.wait();
+                // Wait for the contditional variable to be notified.
+                syncSemaphore.wait();
+                return true;
+            }
         }
+        return false;
     } // DispatchSync
 
     static inline SerialThread* GetMainThread(void)
@@ -312,13 +317,15 @@ public:
     {
         if (m_pollThread) {
             PollThread();
+            std::unique_lock<std::mutex> lock(m_mutex);
             Terminate();
             std::queue<SerialThreadWork> empty;
             std::swap(m_workQueue, empty);  // Clear the work queue.
             return true;
         }
-        if (m_thread.joinable()) {
+        if (!m_terminate) {
             DispatchSync([this] { Terminate(); });
+            std::unique_lock<std::mutex> lock(m_mutex);
             m_thread.join();
             std::queue<SerialThreadWork> empty;
             std::swap(m_workQueue, empty);  // Clear the work queue.

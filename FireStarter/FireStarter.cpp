@@ -252,13 +252,13 @@ void FireStarter::ControlRandom(void)
     m_bufferUpdate = false;
 
     // Create the shared compiler
-    FireStarterCompilerManager compilerManager(1024);
-    FireStarterRandom random(m_settings, &compilerManager);
+    FireStarterCompilerManager *compilerManager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
+    FireStarterRandom* randomGenerator = new FireStarterRandom(m_settings, compilerManager);
 
     // Create the units.
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit();
-        unit->StartRandom(i, m_bestState, &compilerManager);
+        unit->StartRandom(i, m_bestState, compilerManager);
         m_units.push_back(unit);
     }
 
@@ -266,7 +266,7 @@ void FireStarter::ControlRandom(void)
     m_controlTimer.Start();
     while (!m_quitControlThread && (m_generation < m_settings.m_attempts)) {
         // Note: The jobs may be received out of order.
-        FireStarterCompilerJob* job = compilerManager.GetComplete();
+        FireStarterCompilerJob* job = compilerManager->GetComplete();
         if (!job)
             break;
 
@@ -312,17 +312,22 @@ void FireStarter::ControlRandom(void)
         RenderStatus(testError);
 
         // Add the job to the free list.
-        compilerManager.AddFree(job);
+        compilerManager->AddFree(job);
     }
 
-    // Cancel any waiting jobs.
-    compilerManager.Cancel();
+    // Cancel any waiting jobs
+    compilerManager->Cancel();
+
+    // Delete the random code generator.
+    delete randomGenerator;
 
     // Finish processing and terminate each unit.
     for (FireStarterUnit* unit : m_units)
         delete unit;
+
+    // Delete the compilier manager and cancel any waiting jobs.
+    delete compilerManager;
     m_units.clear();
-    m_server.ClearProcesses();
 } // ControlRandom
 
 void FireStarter::ControlLoop(void)

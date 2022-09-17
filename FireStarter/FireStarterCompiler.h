@@ -2,6 +2,8 @@
 #include "FireStarterProcess.h"
 #include "FireStarterState.h"
 
+#define FIRESTARTERCOMPILER_LOGGING 0
+
 class FireStarterCompilerJob {
 public:
 	FireStarterState m_state;
@@ -39,7 +41,8 @@ private:
 	size_t m_maxJobs = 0;
 
 public:
-	void AddFree(FireStarterCompilerJob* job = nullptr);
+	void AddFree(void);
+	void AddFree(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetFree(void);
 	void AddCode(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetCode(void);

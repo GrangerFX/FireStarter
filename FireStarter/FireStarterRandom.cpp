@@ -6,11 +6,18 @@
 void FireStarterRandom::RandomGenerate(void)
 {
     DispatchAsync([this] {
+#if 0
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
+#else
+        FireStarterGenerate generate;
+#endif
         unsigned int generation = 0;
-        while ((generation < m_settings.m_attempts) && !WillTerminate()) {
+        while (generation < m_settings.m_attempts) {
             FireStarterCompilerJob* job = m_manager->GetFree();
+            if (!job)
+                break;
+
             job->m_state.InitState(m_settings);
             job->m_state.Settings().m_seed = job->m_state.m_seed = m_settings.m_seed + generation;
             job->m_state.m_generation = generation++;
@@ -22,6 +29,7 @@ void FireStarterRandom::RandomGenerate(void)
             generate.GenerateEvaluate(job->m_state, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+            job->m_options.clear();
             CUDACompile::StandardOptions(job->m_options);
             job->m_programName = "Optimize";
             job->m_program = m_optimizeCode;
