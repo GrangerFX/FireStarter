@@ -354,7 +354,7 @@ void FireStarterUnit::RandomExecute(void)
                         bool found = true;
                         for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++) {
                             OptimizeGenerations(1, variation, variation);
-#if 0
+#if 1
                             // Optimization: If the variation result is worse, skip the rest of the variations.
                             if (maxResult > g_bestResult) {
                                 found = false;
