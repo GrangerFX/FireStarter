@@ -92,8 +92,8 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                             reinterpret_cast<void*>(&oldEvolutions),
                             reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
-                            reinterpret_cast<void*>(&context.m_firstVariation),
-                            reinterpret_cast<void*>(&context.m_lastVariation),
+                            reinterpret_cast<void*>(&m_firstVariation),
+                            reinterpret_cast<void*>(&m_lastVariation),
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&m_stateSeed),
@@ -179,7 +179,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     m_state.m_best = bestIndex;
 } // EvolveGenerations
 
-void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
+void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int variation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -197,8 +197,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
-                            reinterpret_cast<void*>(&context.m_firstVariation),
-                            reinterpret_cast<void*>(&context.m_lastVariation),
+                            reinterpret_cast<void*>(&variation),
+                            reinterpret_cast<void*>(&variation),
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&dataSize),
@@ -252,23 +252,28 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    FireStarterResult* result = m_state.Result();
-    result->maxResult = 0.0f;
-    for (unsigned int v = 0; v < m_settings.m_variations; v++) {
-        float minResult = *m_hostResults->MinResult(0, v);
-        unsigned int minIndex = 0;
-        for (unsigned int i = 1; i < m_settings.m_population; i++) {
-            float curResult = *m_hostResults->MinResult(i, v);
-            if (curResult <= minResult) {
-                minResult = curResult;
-                minIndex = i;
-            }
+    float minResult = *m_hostResults->MinResult(0, variation);
+    unsigned int minIndex = 0;
+    for (unsigned int i = 1; i < m_settings.m_population; i++) {
+        float curResult = *m_hostResults->MinResult(i, variation);
+        if (curResult <= minResult) {
+            minResult = curResult;
+            minIndex = i;
         }
-        memcpy(result->Data(v), m_hostResults->Data(minIndex, v), result->DataSize());
-        *result->Index(v) = *m_hostResults->Index(minIndex, v);
-        *result->MinResult(v) = minResult;
-        result->maxResult = fmaxf(result->maxResult, minResult);
     }
+
+    FireStarterResult* result = m_state.Result();
+    memcpy(result->Data(variation), m_hostResults->Data(minIndex, variation), result->DataSize());
+    *result->Index(variation) = *m_hostResults->Index(minIndex, variation);
+    *result->MinResult(variation) = minResult;
+    result->maxResult = fmaxf(result->maxResult, minResult);
+} // OptimizeGenerations
+
+void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
+{
+    // Evolve the program data.
+    for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++)
+        OptimizeGenerations(0, variation);
 
     // Find the best overall result for the state.
     unsigned int bestIndex = 0;
@@ -280,12 +285,13 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
             bestResult = curResult;
         }
     }
+    FireStarterResult* result = m_state.Result();
     result->debug1 = *m_hostResults->Debug1(bestIndex);
     result->debug2 = *m_hostResults->Debug2(bestIndex);
     m_state.m_generation = m_evolveGeneration;
     m_state.m_seed = m_stateSeed;
     m_state.m_best = bestIndex;
-} // OptimizeGenerations
+} // OptimizeVaraitions
 
 void FireStarterUnit::EvolveExecute(void)
 {
@@ -304,7 +310,9 @@ void FireStarterUnit::OptimizeExecute(void)
         OptimizeGenerate();
 
     // Evolve the program data.
-    OptimizeGenerations(0);
+    OptimizeVariations(1);
+
+    // Increment the generation.
     m_evolveGeneration += m_settings.m_generations;
 } // OptimizeExecute
 
@@ -314,12 +322,16 @@ void FireStarterUnit::UnitExecute(void)
     UnitGenerate();
 
     // Evolve the program data.
-    OptimizeGenerations(1);
+    OptimizeVariations(1);
+
+    // Increment the generation.
     m_evolveGeneration++;
 } // UnitExecute
 
 void FireStarterUnit::RandomExecute(void)
 {
+    static std::atomic<float> g_bestResult = FIRESTARTER_RANDOM_START_RESULT;
+
     if (!WillTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCompile();
         if (job) {
@@ -333,7 +345,39 @@ void FireStarterUnit::RandomExecute(void)
                     if (m_contexts[0].m_optimizeFunction) {
                         m_state = job->m_state;
                         m_stateSeed = m_state.Settings().m_seed;
-                        OptimizeGenerations(1);
+                        float& maxResult = m_state.Result()->maxResult;
+                        maxResult = 0;
+                        bool found = true;
+                        for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++) {
+                            OptimizeGenerations(1, variation);
+                            if (maxResult > g_bestResult) {
+                                found = false;
+                                break;
+                            }
+                        }
+
+                        // Find the best overall result for the state.
+                        if (found) {
+                            unsigned int bestIndex = 0;
+                            float bestResult = *m_hostResults->MaxResult(0);
+                            for (unsigned int i = 1; i < m_settings.m_population; i++) {
+                                float curResult = *m_hostResults->MaxResult(i);
+                                if (curResult < bestResult) {
+                                    bestIndex = i;
+                                    bestResult = curResult;
+                                }
+                            }
+                            FireStarterResult* result = m_state.Result();
+                            result->debug1 = *m_hostResults->Debug1(bestIndex);
+                            result->debug2 = *m_hostResults->Debug2(bestIndex);
+                            m_state.m_best = bestIndex;
+
+                            // Find the best result for all the units.
+                            float oldResult = g_bestResult;
+                            while ((oldResult > maxResult) && !g_bestResult.compare_exchange_weak(oldResult, maxResult));
+                        }
+                        m_state.m_generation = m_evolveGeneration;
+                        m_state.m_seed = m_stateSeed;
                         job->m_state = m_state;
                     }
                 }
@@ -384,6 +428,7 @@ void FireStarterUnit::Allocate(void)
     m_state.m_program.m_settings.m_seed = evolveSettings.m_seed;
     m_state.m_seed = m_stateSeed = RANDOM(evolveSettings.m_seed);
     m_stateID = m_unitIndex;    // Index in m_allStates.
+    m_state.Result()->maxResult = 0.0f;
 
     size_t resultsSize = FireStarterResults::ResultsSize(m_settings.m_population, m_settings.m_registers, m_settings.m_variations);
     if (m_resultsSize != resultsSize) {
@@ -424,7 +469,7 @@ void FireStarterUnit::Allocate(void)
             unsigned int firstMember = lastMember;
             lastMember += contextMembers;
             lastMember = min(lastMember, m_settings.m_population);
-            m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, m_firstVariation, m_lastVariation, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
+            m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
 
         }
     } else
@@ -490,7 +535,7 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initS
     m_state = initState;
     m_firstVariation = 0;
     m_lastVariation = m_settings.m_variations - 1;
-
+ 
     DispatchAsync([this] {
         if (LoadCode()) {
             Allocate();

@@ -1,0 +1,52 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_UNIT;
+units = 4;
+processes = 0;
+population = 69632;
+iterations = 128;
+candidates = 16;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 8337;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_UNIT;
+units = 4;
+processes = 0;
+population = 69632;
+iterations = 128;
+candidates = 16;
+generations = 100;
+precision = 256;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 8337;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_UNIT: Generation=0  Age=0  Best=10.00000000  Time=9.3929 Seconds  Run Time=12.2207 Seconds  TestError=9.00001907
+FIRESTARTER_UNIT: Generation=1  Age=1  Best=10.00000000  Time=1.3380 Seconds  Run Time=13.6759 Seconds  TestError=9.00001907
+FIRESTARTER_UNIT: Generation=2  Age=2  Best=10.00000000  Time=1.4411 Seconds  Run Time=15.2270 Seconds  TestError=9.00001907
+FIRESTARTER_UNIT: Generation=3  Age=3  Best=10.00000000  Time=1.4480 Seconds  Run Time=16.6827 Seconds  TestError=9.00001907
