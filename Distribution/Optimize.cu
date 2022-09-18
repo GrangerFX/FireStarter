@@ -16,7 +16,6 @@ GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults*
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= lastMember)
         return;
-    unsigned int memberSeed = RANDOM(RANDOM(seed) + member);
 
     // Precalculate the target theta values.
     float theta[FIRESTARTER_SAMPLES];
@@ -27,6 +26,8 @@ GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults*
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
     for (unsigned int v = firstVariation; v <= lastVariation; v++) {
+        unsigned int memberSeed = RANDOM(RANDOM(RANDOM(seed) + member) + v);
+
         // Precalculate the target sample values.
         float target[FIRESTARTER_SAMPLES];
         for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
