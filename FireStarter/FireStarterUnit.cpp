@@ -271,6 +271,9 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
 
 void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
 {
+    // Initialize maxResult.
+    m_state.Result()->maxResult = 0.0f;
+
     // Evolve the program data.
     for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++)
         OptimizeGenerations(0, variation);
@@ -310,7 +313,7 @@ void FireStarterUnit::OptimizeExecute(void)
         OptimizeGenerate();
 
     // Evolve the program data.
-    OptimizeVariations(1);
+    OptimizeVariations(0);
 
     // Increment the generation.
     m_evolveGeneration += m_settings.m_generations;
@@ -428,7 +431,6 @@ void FireStarterUnit::Allocate(void)
     m_state.m_program.m_settings.m_seed = evolveSettings.m_seed;
     m_state.m_seed = m_stateSeed = RANDOM(evolveSettings.m_seed);
     m_stateID = m_unitIndex;    // Index in m_allStates.
-    m_state.Result()->maxResult = 0.0f;
 
     size_t resultsSize = FireStarterResults::ResultsSize(m_settings.m_population, m_settings.m_registers, m_settings.m_variations);
     if (m_resultsSize != resultsSize) {
