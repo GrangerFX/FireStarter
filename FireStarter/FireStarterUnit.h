@@ -162,8 +162,8 @@ private:
     void OptimizeGenerate(void);
     void UnitGenerate(void);
     void SyncContexts(void);
-    void EvolveGenerations(unsigned int forceInit);
-    void OptimizeGenerations(unsigned int forceInit, unsigned int variation);
+    void EvolveGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
+    void OptimizeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
     void OptimizeVariations(unsigned int forceInit);
     void EvolveExecute(void);
     void OptimizeExecute(void);

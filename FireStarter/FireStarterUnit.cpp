@@ -71,7 +71,7 @@ void FireStarterUnit::SyncContexts(void)
         context.Syncronize();
 } // SyncContexts
 
-void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
+void FireStarterUnit::EvolveGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -92,8 +92,8 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                             reinterpret_cast<void*>(&oldEvolutions),
                             reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
-                            reinterpret_cast<void*>(&m_firstVariation),
-                            reinterpret_cast<void*>(&m_lastVariation),
+                            reinterpret_cast<void*>(&firstVariation),
+                            reinterpret_cast<void*>(&lastVariation),
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&m_stateSeed),
@@ -179,7 +179,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
     m_state.m_best = bestIndex;
 } // EvolveGenerations
 
-void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int variation)
+void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -197,8 +197,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
-                            reinterpret_cast<void*>(&variation),
-                            reinterpret_cast<void*>(&variation),
+                            reinterpret_cast<void*>(&firstVariation),
+                            reinterpret_cast<void*>(&lastVariation),
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&dataSize),
@@ -252,21 +252,23 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float minResult = *m_hostResults->MinResult(0, variation);
-    unsigned int minIndex = 0;
-    for (unsigned int i = 1; i < m_settings.m_population; i++) {
-        float curResult = *m_hostResults->MinResult(i, variation);
-        if (curResult <= minResult) {
-            minResult = curResult;
-            minIndex = i;
+    for (unsigned int v = firstVariation; v <= lastVariation; v++) {
+        float minResult = *m_hostResults->MinResult(0, v);
+        unsigned int minIndex = 0;
+        for (unsigned int i = 1; i < m_settings.m_population; i++) {
+            float curResult = *m_hostResults->MinResult(i, v);
+            if (curResult <= minResult) {
+                minResult = curResult;
+                minIndex = i;
+            }
         }
-    }
 
-    FireStarterResult* result = m_state.Result();
-    memcpy(result->Data(variation), m_hostResults->Data(minIndex, variation), result->DataSize());
-    *result->Index(variation) = *m_hostResults->Index(minIndex, variation);
-    *result->MinResult(variation) = minResult;
-    result->maxResult = fmaxf(result->maxResult, minResult);
+        FireStarterResult* result = m_state.Result();
+        memcpy(result->Data(v), m_hostResults->Data(minIndex, v), result->DataSize());
+        *result->Index(v) = *m_hostResults->Index(minIndex, v);
+        *result->MinResult(v) = minResult;
+        result->maxResult = fmaxf(result->maxResult, minResult);
+    }
 } // OptimizeGenerations
 
 void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
@@ -275,8 +277,7 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
     m_state.Result()->maxResult = 0.0f;
 
     // Evolve the program data.
-    for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++)
-        OptimizeGenerations(forceInit, variation);
+    OptimizeGenerations(forceInit, m_firstVariation, m_lastVariation);
 
     // Find the best overall result for the state.
     unsigned int bestIndex = 0;
@@ -302,7 +303,7 @@ void FireStarterUnit::EvolveExecute(void)
     EvolveGenerate();
 
     // Evolve the program instructions.
-    EvolveGenerations(0);
+    EvolveGenerations(0, m_firstVariation, m_lastVariation);
     m_evolveGeneration += m_settings.m_generations;
 } // EvolveExecute
 
@@ -352,7 +353,7 @@ void FireStarterUnit::RandomExecute(void)
                         maxResult = 0;
                         bool found = true;
                         for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++) {
-                            OptimizeGenerations(1, variation);
+                            OptimizeGenerations(1, variation, variation);
                             if (maxResult > g_bestResult) {
                                 found = false;
                                 break;
