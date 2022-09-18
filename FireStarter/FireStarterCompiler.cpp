@@ -7,7 +7,7 @@
 #if FIRESTARTERCOMPILER_LOGGING
 #define LOG printf
 #else
-#define LOG()
+#define LOG( ... ) {}
 #endif
 
 void FireStarterJobQueue::Add(FireStarterCompilerJob* job)

@@ -92,6 +92,8 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit)
                             reinterpret_cast<void*>(&oldEvolutions),
                             reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
+                            reinterpret_cast<void*>(&context.m_firstVariation),
+                            reinterpret_cast<void*>(&context.m_lastVariation),
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&m_stateSeed),
@@ -195,6 +197,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit)
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
+                            reinterpret_cast<void*>(&context.m_firstVariation),
+                            reinterpret_cast<void*>(&context.m_lastVariation),
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&dataSize),
@@ -420,7 +424,7 @@ void FireStarterUnit::Allocate(void)
             unsigned int firstMember = lastMember;
             lastMember += contextMembers;
             lastMember = min(lastMember, m_settings.m_population);
-            m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
+            m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, m_firstVariation, m_lastVariation, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
 
         }
     } else
@@ -461,6 +465,9 @@ void FireStarterUnit::StartRandom(unsigned int index, const FireStarterState& st
     m_compilerManager = manager;
     m_initState = state;
     m_state = state;
+    m_firstVariation = 0;
+    m_lastVariation = m_settings.m_variations - 1;
+
     if (LoadCode()) {
         DispatchAsync([this] {
             Allocate();
@@ -481,6 +488,9 @@ void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initS
     m_evolveGeneration = 0;
     m_initState = initState;
     m_state = initState;
+    m_firstVariation = 0;
+    m_lastVariation = m_settings.m_variations - 1;
+
     DispatchAsync([this] {
         if (LoadCode()) {
             Allocate();

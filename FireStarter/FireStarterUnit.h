@@ -34,6 +34,8 @@ private:
         size_t m_resultsSize = 0;
         size_t m_evolutionsSize = 0;
         unsigned int m_device = 0;
+        unsigned int m_firstVariation = 0;
+        unsigned int m_lastVariation = 0;
         unsigned int m_firstMember = 0;
         unsigned int m_lastMember = 0;
 
@@ -64,9 +66,11 @@ private:
                 m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
         } // OptimizeCompile
 
-        inline bool InitContext(unsigned int device, unsigned int firstMember, unsigned int lastMember, FireStarterResults* hostResults, FireStarterEvolutions* hostEvolutions, const FireStarterSettings& settings)
+        inline bool InitContext(unsigned int device, unsigned int firstVariation, unsigned int lastVariation, unsigned int firstMember, unsigned int lastMember, FireStarterResults* hostResults, FireStarterEvolutions* hostEvolutions, const FireStarterSettings& settings)
         {
             m_device = device;
+            m_firstVariation = firstVariation;
+            m_lastVariation = lastVariation;
             m_firstMember = firstMember;
             m_lastMember = lastMember;
             if (m_CUDAContext)
@@ -152,6 +156,8 @@ private:
     unsigned int m_stateSeed = 0;
     unsigned int m_evolveGeneration = 0;
     unsigned int m_gpus = 0;
+    unsigned int m_firstVariation = 0;
+    unsigned int m_lastVariation = 0;
     bool m_server = false;
     bool m_codeLoaded = false;
 
