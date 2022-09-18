@@ -129,7 +129,11 @@ void FireStarter::RenderStatus(float testError)
         FireStarterCode::AppendCode(m_logFilePath, settingsText);
     }
 
-    if (m_settings.m_mode != FIRESTARTER_RANDOM) {
+    if (m_settings.m_mode == FIRESTARTER_RANDOM) {
+        statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration(), testError);
+        for (unsigned int v = 0; v < m_settings.m_variations; v++)
+            statusString += Format("  V:%d=%.8f", v, *m_currentState.Result()->MinResult(v));
+    } else {
         // Create the hash file.
         if (m_hashFilePath.empty()) {
             m_hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
@@ -158,8 +162,7 @@ void FireStarter::RenderStatus(float testError)
 
         // Create the status string.
         statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_generationTime, m_runTimer.Duration(), testError);
-    } else
-        statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration(), testError);
+    }
 
     // Update the log file.
     FireStarterCode::AppendCode(m_logFilePath, statusString + "\r\n");
@@ -274,14 +277,14 @@ void FireStarter::ControlRandom(void)
         m_generation++;
         m_generationTime = m_controlTimer.Duration() / m_generation;
 
-        FireStarterState& state = job->m_state;
-        unsigned int generation = state.m_generation;
-        m_result = state.MaxResult();
+        m_currentState = job->m_state;
+        unsigned int generation = m_currentState.m_generation;
+        m_result = m_currentState.MaxResult();
         m_totalResult += m_result;
         m_averageResult = m_totalResult / m_generation;
         m_seed = m_settings.m_seed + generation;
         if (m_result < m_bestState.MaxResult()) {
-            m_bestState = state;
+            m_bestState = m_currentState;
             m_bestGeneration = generation;
             m_bestSeed = m_seed;
             m_bestResult = m_result;
@@ -306,7 +309,7 @@ void FireStarter::ControlRandom(void)
         }
 
         // Test the best state.
-        float testError = state.TestResult();
+        float testError = m_currentState.TestResult();
 
         // Update the render status after every pass.
         RenderStatus(testError);
