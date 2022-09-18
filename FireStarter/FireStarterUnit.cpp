@@ -276,7 +276,7 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
 
     // Evolve the program data.
     for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++)
-        OptimizeGenerations(0, variation);
+        OptimizeGenerations(forceInit, variation);
 
     // Find the best overall result for the state.
     unsigned int bestIndex = 0;
