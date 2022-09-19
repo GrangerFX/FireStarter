@@ -184,7 +184,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
- 
+    unsigned int generationSeed = m_stateSeed;
+
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
@@ -202,7 +203,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&dataSize),
-                            reinterpret_cast<void*>(&m_stateSeed),
+                            reinterpret_cast<void*>(&generationSeed),
                             reinterpret_cast<void*>(&init) };
 
             unsigned int blocksPerGrid = ((context.m_lastMember - context.m_firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
@@ -234,7 +235,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
                 checkCUDAErrors(cudaMemcpyAsync(oldResults, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
         }
-        m_stateSeed++;
+        generationSeed++;
         forceInit = 0;
     }
 
@@ -278,6 +279,7 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
 
     // Evolve the program data.
     OptimizeGenerations(forceInit, m_firstVariation, m_lastVariation);
+    m_stateSeed += m_settings.m_generations;
 
     // Find the best overall result for the state.
     unsigned int bestIndex = 0;
@@ -362,6 +364,7 @@ void FireStarterUnit::RandomExecute(void)
                             }
 #endif
                         }
+                        m_stateSeed += m_settings.m_generations;
 
                         // Find the best overall result for the state.
                         if (found) {
