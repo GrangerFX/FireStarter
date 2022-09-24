@@ -252,6 +252,7 @@ void FireStarter::ControlTest(void)
     m_generation = 0;
     m_bestGeneration = 0;
     m_result = 0.0f;
+    m_bestResult = m_settings.m_startResult;
     m_generationTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;
@@ -329,29 +330,30 @@ void FireStarter::ControlTest(void)
         m_totalResult += m_result;
         m_averageResult = m_totalResult / m_generation;
         m_seed = m_settings.m_seed + generation;
+        if (m_result < m_bestResult) {
+            m_bestState = m_currentState;
+            m_bestGeneration = generation;
+            m_bestSeed = m_seed;
+            m_bestResult = m_result;
+            m_controlUpdate = true;
 
-        m_bestState = m_currentState;
-        m_bestGeneration = generation;
-        m_bestSeed = m_seed;
-        m_bestResult = m_result;
-        m_controlUpdate = true;
+            // Update the best code on disk.
+            SaveBestState();
+            SaveBestCode();
+            SaveSolution();
 
-        // Update the best code on disk.
-        SaveBestState();
-        SaveBestCode();
-        SaveSolution();
+            // Erase the frame buffer
+            m_buffer.Erase();
 
-        // Erase the frame buffer
-        m_buffer.Erase();
-
-        // Draw the graphs for both variations.
-        FireShow();
-        m_controlUpdate = false;
-        const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-        GetMainThread()->DispatchSync([this, bufferPixels] {
-            RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
-            m_bufferUpdate = false;
-        });
+            // Draw the graphs for both variations.
+            FireShow();
+            m_controlUpdate = false;
+            const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+            GetMainThread()->DispatchSync([this, bufferPixels] {
+                RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+                m_bufferUpdate = false;
+            });
+        }
 
         // Test the best state.
         float testError = result2 - result1;
@@ -376,7 +378,9 @@ void FireStarter::ControlRandom(void)
 
     m_generation = 0;
     m_bestGeneration = 0;
+    m_bestSeed = 0;
     m_result = 0.0f;
+    m_bestResult = m_settings.m_startResult;
     m_generationTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;
@@ -410,7 +414,7 @@ void FireStarter::ControlRandom(void)
         m_totalResult += m_result;
         m_averageResult = m_totalResult / m_generation;
         m_seed = m_settings.m_seed + generation;
-        if (m_result < m_bestState.MaxResult()) {
+        if (m_result < m_bestResult) {
             m_bestState = m_currentState;
             m_bestGeneration = generation;
             m_bestSeed = m_seed;
@@ -474,7 +478,9 @@ void FireStarter::ControlLoop(void)
  
     m_generation = 0;
     m_bestGeneration = 0;
+    m_bestSeed = 0;
     m_result = 0.0f;
+    m_bestResult = m_settings.m_startResult;
     m_generationTime = 0.0;
     m_controlUpdate = false;
     m_bufferUpdate = false;

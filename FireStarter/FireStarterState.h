@@ -11,6 +11,11 @@ public:
     unsigned int m_seed = 0;
     unsigned int m_best = 0;
 
+    inline bool Initialized(void) const
+    {
+        return !m_result.empty();
+    } // Initialized
+
     inline FireStarterSettings& Settings(void)
     {
         return m_program.m_settings;
@@ -38,13 +43,8 @@ public:
 
     inline float MaxResult(void) const
     {
-        return ((FireStarterResult*)m_result.data())->maxResult;
+        return Initialized() ? ((FireStarterResult*)m_result.data())->maxResult : m_program.m_settings.m_startResult;
     } // Result
-
-    inline bool Initialized(void) const
-    {
-        return !m_result.empty();
-    } // Initialized
 
     bool Packetize(FireStarterPacket& packet);
     void SaveVariation(unsigned int variation, std::string& code);
