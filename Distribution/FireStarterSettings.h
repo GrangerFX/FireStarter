@@ -14,10 +14,11 @@
 #define FIRESTARTER_CODE     1
 #define FIRESTARTER_UNIT     2
 #define FIRESTARTER_PROCESS  3
-#define FIRESTARTER_RANDOM   4
-#define FIRESTARTER_OPTIMIZE 5
-#define FIRESTARTER_SOLUTION 6
-#define FIRESTARTER_MODE     FIRESTARTER_UNIT
+#define FIRESTARTER_TEST     4
+#define FIRESTARTER_RANDOM   5
+#define FIRESTARTER_OPTIMIZE 6
+#define FIRESTARTER_SOLUTION 7
+#define FIRESTARTER_MODE     FIRESTARTER_TEST
 
 #if 1
 #define FIRESTARTER_CODE_UNITS        1
@@ -78,6 +79,20 @@
 #define FIRESTARTER_PROCESS_SCALE        0.1f
 #define FIRESTARTER_PROCESS_START_SCALE  4.0f
 #define FIRESTARTER_PROCESS_START_RESULT 10.0f
+
+#define FIRESTARTER_TEST_UNITS          1
+#define FIRESTARTER_TEST_PROCESSES      0
+#define FIRESTARTER_TEST_POPULATION     4352 * 16
+#define FIRESTARTER_TEST_ITERATIONS     256
+#define FIRESTARTER_TEST_CANDIDATES     16
+#define FIRESTARTER_TEST_GENERATIONS    100
+#define FIRESTARTER_TEST_PRECISION      0
+#define FIRESTARTER_TEST_EVOLVE         FIRESTARTER_EVOLVE_BEST
+#define FIRESTARTER_TEST_ATTEMPTS       10
+#define FIRESTARTER_TEST_SEED           0
+#define FIRESTARTER_TEST_SCALE          0.1f
+#define FIRESTARTER_TEST_START_SCALE    4.0f
+#define FIRESTARTER_TEST_START_RESULT   10.0f
 
 #define FIRESTARTER_RANDOM_UNITS        2
 #define FIRESTARTER_RANDOM_PROCESSES    6
@@ -153,6 +168,8 @@ public:
                 return "FIRESTARTER_UNIT";
             case FIRESTARTER_PROCESS:
                 return "FIRESTARTER_PROCESS";
+            case FIRESTARTER_TEST:
+                return "FIRESTARTER_TEST";
             case FIRESTARTER_RANDOM:
                 return "FIRESTARTER_RANDOM";
             case FIRESTARTER_OPTIMIZE:
@@ -237,6 +254,22 @@ public:
                 m_scale =       FIRESTARTER_PROCESS_SCALE;
                 m_startScale =  FIRESTARTER_PROCESS_START_SCALE;
                 m_startResult = FIRESTARTER_PROCESS_START_RESULT;
+                break;
+
+            case FIRESTARTER_TEST:
+                m_units =       FIRESTARTER_TEST_UNITS;
+                m_processes =   FIRESTARTER_TEST_PROCESSES;
+                m_population =  FIRESTARTER_TEST_POPULATION;
+                m_iterations =  FIRESTARTER_TEST_ITERATIONS;
+                m_candidates =  FIRESTARTER_TEST_CANDIDATES;
+                m_generations = FIRESTARTER_TEST_GENERATIONS;
+                m_precision =   FIRESTARTER_TEST_PRECISION;
+                m_evolve =      FIRESTARTER_TEST_EVOLVE;
+                m_attempts =    FIRESTARTER_TEST_ATTEMPTS;
+                m_seed =        FIRESTARTER_TEST_SEED;
+                m_scale =       FIRESTARTER_TEST_SCALE;
+                m_startScale =  FIRESTARTER_TEST_START_SCALE;
+                m_startResult = FIRESTARTER_TEST_START_RESULT;
                 break;
 
             case FIRESTARTER_RANDOM:

@@ -334,67 +334,83 @@ void FireStarterUnit::UnitExecute(void)
     m_evolveGeneration++;
 } // UnitExecute
 
+bool FireStarterUnit::JobCompile(FireStarterCompilerJob* job)
+{
+    return CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
+} // JobCompile
+
+bool FireStarterUnit::JobExecute(FireStarterCompilerJob* job, std::atomic<float> &atomicResult, bool skipVariations)
+{
+    if (!job)
+        return false;
+    if (!job->m_log.empty())
+        printf("%s\n", job->m_log.c_str());
+    if (job->m_ptx.empty())
+        return false;
+
+    m_evolveGeneration = job->m_state.m_generation;
+    CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
+    if (!cuda_module)
+        return false;
+
+    m_contexts[0].m_optimizeFunction = CUDACompile::GetFunction(cuda_module, job->m_programName);
+    if (!m_contexts[0].m_optimizeFunction)
+        return false;
+
+    m_state = job->m_state;
+    m_stateSeed = m_state.Settings().m_seed;
+    float& maxResult = m_state.Result()->maxResult;
+    maxResult = 0;
+    bool found = true;
+    if (skipVariations)
+        for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++) {
+            OptimizeGenerations(1, variation, variation);
+
+            // Optimization: If the variation result is worse, skip the rest of the variations.
+            if (maxResult > atomicResult) {
+                found = false;
+                break;
+            }
+        }
+    else
+        OptimizeGenerations(1, m_firstVariation, m_lastVariation);
+    m_stateSeed += m_settings.m_generations;
+
+    // Find the best overall result for the state.
+    if (found) {
+        unsigned int bestIndex = 0;
+        float bestResult = *m_hostResults->MaxResult(0);
+        for (unsigned int i = 1; i < m_settings.m_population; i++) {
+            float curResult = *m_hostResults->MaxResult(i);
+            if (curResult < bestResult) {
+                bestIndex = i;
+                bestResult = curResult;
+            }
+        }
+        FireStarterResult* result = m_state.Result();
+        result->debug1 = *m_hostResults->Debug1(bestIndex);
+        result->debug2 = *m_hostResults->Debug2(bestIndex);
+        m_state.m_best = bestIndex;
+
+        // Find the best result for all the units.
+        float oldResult = atomicResult;
+        while ((oldResult > maxResult) && !atomicResult.compare_exchange_weak(oldResult, maxResult));
+    }
+    m_state.m_generation = m_evolveGeneration;
+    m_state.m_seed = m_stateSeed;
+    job->m_state = m_state;
+    return true;
+} // JobExecute
+
 void FireStarterUnit::RandomExecute(void)
 {
-    static std::atomic<float> g_bestResult = FIRESTARTER_RANDOM_START_RESULT;
-
+    static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
     if (!WillTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCompile();
-        if (job) {
-            if (!job->m_log.empty())
-                printf("%s\n", job->m_log.c_str());
-            if (!job->m_ptx.empty()) {
-                m_evolveGeneration = job->m_state.m_generation;
-                CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
-                if (cuda_module) {
-                    m_contexts[0].m_optimizeFunction = CUDACompile::GetFunction(cuda_module, job->m_programName);
-                    if (m_contexts[0].m_optimizeFunction) {
-                        m_state = job->m_state;
-                        m_stateSeed = m_state.Settings().m_seed;
-                        float& maxResult = m_state.Result()->maxResult;
-                        maxResult = 0;
-                        bool found = true;
-                        for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++) {
-                            OptimizeGenerations(1, variation, variation);
-#if 1
-                            // Optimization: If the variation result is worse, skip the rest of the variations.
-                            if (maxResult > g_bestResult) {
-                                found = false;
-                                break;
-                            }
-#endif
-                        }
-                        m_stateSeed += m_settings.m_generations;
-
-                        // Find the best overall result for the state.
-                        if (found) {
-                            unsigned int bestIndex = 0;
-                            float bestResult = *m_hostResults->MaxResult(0);
-                            for (unsigned int i = 1; i < m_settings.m_population; i++) {
-                                float curResult = *m_hostResults->MaxResult(i);
-                                if (curResult < bestResult) {
-                                    bestIndex = i;
-                                    bestResult = curResult;
-                                }
-                            }
-                            FireStarterResult* result = m_state.Result();
-                            result->debug1 = *m_hostResults->Debug1(bestIndex);
-                            result->debug2 = *m_hostResults->Debug2(bestIndex);
-                            m_state.m_best = bestIndex;
-
-                            // Find the best result for all the units.
-                            float oldResult = g_bestResult;
-                            while ((oldResult > maxResult) && !g_bestResult.compare_exchange_weak(oldResult, maxResult));
-                        }
-                        m_state.m_generation = m_evolveGeneration;
-                        m_state.m_seed = m_stateSeed;
-                        job->m_state = m_state;
-                    }
-                }
-                m_compilerManager->AddComplete(job);
-                if (!WillTerminate())
-                    DispatchAsync([this] { RandomExecute(); });
-            }
+        if (JobExecute(job, g_atomicResult)) {  // Returns true if the job was compiled and executed successfully.
+            m_compilerManager->AddComplete(job);
+            if (!WillTerminate())
+                DispatchAsync([this] { RandomExecute(); });
         }
      }
 } // RandomExecute
@@ -510,6 +526,16 @@ void FireStarterUnit::GetState(FireStarterState& state)
         state = m_state;
     });
 } // GetState
+
+std::string& FireStarterUnit::GetEvolveCode(void)
+{
+    return m_evolveCode;
+} // GetEvolveCode
+
+std::string& FireStarterUnit::GetOptimizeCode(void)
+{
+    return m_optimizeCode;
+} // GetOptimizeCode
 
 void FireStarterUnit::StartRandom(unsigned int index, const FireStarterState& state, FireStarterCompilerManager* manager)
 {

@@ -289,7 +289,8 @@ public:
         if (!WillTerminate()) {
             SerialThreadSemaphore syncSemaphore;
             if (DispatchAsync([this, &syncSemaphore, work] {
-                work();
+                if (work)
+                    work();
                 syncSemaphore.notify();
             })) {
                 if (m_pollThread)
@@ -302,6 +303,11 @@ public:
         }
         return false;
     } // DispatchSync
+
+    inline bool Synchronize(void)
+    {
+        return DispatchSync({});
+    } // Synchronize
 
     static inline SerialThread* GetMainThread(void)
     {

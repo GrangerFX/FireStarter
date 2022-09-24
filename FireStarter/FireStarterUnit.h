@@ -178,6 +178,10 @@ public:
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
     void GetState(FireStarterState& state);
+    std::string& GetEvolveCode(void);
+    std::string& GetOptimizeCode(void);
+    bool JobCompile(FireStarterCompilerJob* job);
+    bool JobExecute(FireStarterCompilerJob* job, std::atomic<float>& atomicResult, bool skipVariations = true);
     void StartRandom(unsigned int index, const FireStarterState& state, FireStarterCompilerManager *manager);
     bool FinishRandom(void);
     void InitUnit(unsigned int index, const FireStarterState& initState);

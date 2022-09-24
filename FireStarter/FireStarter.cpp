@@ -129,7 +129,7 @@ void FireStarter::RenderStatus(float testError)
         FireStarterCode::AppendCode(m_logFilePath, settingsText);
     }
 
-    if (m_settings.m_mode == FIRESTARTER_RANDOM) {
+    if ((m_settings.m_mode == FIRESTARTER_TEST) || (m_settings.m_mode == FIRESTARTER_RANDOM)) {
         statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration(), testError);
         for (unsigned int v = 0; v < m_settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, *m_currentState.Result()->MinResult(v));
@@ -241,6 +241,133 @@ void FireStarter::ControlAllocate(void)
     if (CUDACompile::CompileProgram(m_fireShowModule, m_fireShowCode, "FireShow"))
         m_fireShowFunction = CUDACompile::GetFunction(m_fireShowModule, "FireShow");
 } // ControlAllocate
+
+void FireStarter::ControlTest(void)
+{
+    static std::atomic<float> atomicResult = FIRESTARTER_RANDOM_START_RESULT;
+
+    // Setup the best state.
+    m_bestState.InitState(m_settings);
+
+    m_generation = 0;
+    m_bestGeneration = 0;
+    m_result = 0.0f;
+    m_generationTime = 0.0;
+    m_controlUpdate = false;
+    m_bufferUpdate = false;
+
+    // Create the code generator.
+    FireStarterGenerate generate;
+
+    // Create the unit.
+    FireStarterUnit* unit = new FireStarterUnit();
+    unit->InitUnit(0, m_bestState);
+    unit->Synchronize();
+    m_units.push_back(unit);
+    
+    // Create the job.
+    FireStarterCompilerJob* job = new FireStarterCompilerJob();
+
+    // Loop until the the completion condition or the host program is quit.
+    m_controlTimer.Start();
+    while (!m_quitControlThread && (m_generation < m_settings.m_attempts)) {
+        // Initialize the job
+        *job = FireStarterCompilerJob();
+
+        // Generate the job code.
+        job->m_state.InitState(m_settings);
+        job->m_state.Settings().m_seed = job->m_state.m_seed = m_settings.m_seed + m_generation;
+        job->m_state.m_generation = m_generation;
+        job->m_state.m_program.RandomProgram();
+        job->m_state.m_program.OptimizeRegisters(true);
+
+        // Generate the optimize code
+        std::string evaluateCode;
+        generate.GenerateEvaluate(job->m_state, evaluateCode);
+
+        // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+        job->m_options.clear();
+        CUDACompile::StandardOptions(job->m_options);
+        job->m_programName = "Optimize";
+        job->m_program = unit->GetOptimizeCode();
+        FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
+
+        // Compile the job.
+        bool compileResult = false;
+        unit->DispatchSync([unit, job, &compileResult] { compileResult = unit->JobCompile(job); });
+        if (!compileResult)
+            break;
+        if (job->m_log.size())
+            printf("compilation log ---\n%s\nend log---\n", job->m_log.c_str());
+        if (!job->m_ptx.size())
+            break;
+
+        // Execute the variations one at a time.
+        bool executeResult1 = false;
+        atomicResult = m_settings.m_startResult;
+        unit->DispatchSync([unit, job, &executeResult1] { executeResult1 = unit->JobExecute(job, atomicResult, true); });
+        float result1 = atomicResult;
+        if (!executeResult1)
+            break;
+
+        // Execute the variations all at once.
+        bool executeResult2 = false;
+        atomicResult = m_settings.m_startResult;
+        unit->DispatchSync([unit, job, &executeResult2] { executeResult2 = unit->JobExecute(job, atomicResult, false); });
+        float result2 = atomicResult;
+        if (!executeResult2)
+            break;
+
+        // Increment the generation and calculate the average time per generation.
+        m_generation++;
+        m_generationTime = m_controlTimer.Duration() / m_generation;
+
+        // Act as if each result was the best.
+        m_currentState = job->m_state;
+        unsigned int generation = m_currentState.m_generation;
+        m_result = m_currentState.MaxResult();
+        m_totalResult += m_result;
+        m_averageResult = m_totalResult / m_generation;
+        m_seed = m_settings.m_seed + generation;
+
+        m_bestState = m_currentState;
+        m_bestGeneration = generation;
+        m_bestSeed = m_seed;
+        m_bestResult = m_result;
+        m_controlUpdate = true;
+
+        // Update the best code on disk.
+        SaveBestState();
+        SaveBestCode();
+        SaveSolution();
+
+        // Erase the frame buffer
+        m_buffer.Erase();
+
+        // Draw the graphs for both variations.
+        FireShow();
+        m_controlUpdate = false;
+        const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+        GetMainThread()->DispatchSync([this, bufferPixels] {
+            RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+            m_bufferUpdate = false;
+        });
+
+        // Test the best state.
+        float testError = result2 - result1;
+
+        // Update the render status after every pass.
+        RenderStatus(testError);
+    }
+
+    // Finish processing and terminate each unit.
+    for (FireStarterUnit* unit : m_units)
+        delete unit;
+
+    // Delete the compilier manager and cancel any waiting jobs.
+    delete job;
+    m_units.clear();
+} // ControlTest
 
 void FireStarter::ControlRandom(void)
 {
@@ -465,7 +592,12 @@ void FireStarter::ControlThread(void)
         m_buffer.Resize(m_width, m_height);
         m_buffer.Erase();
 
-        if (m_fireStarterMode == FIRESTARTER_RANDOM) {
+        if (m_fireStarterMode == FIRESTARTER_TEST) {
+            // Only one test unit and no multiprocessing.
+            m_settings.m_units = 1;
+            m_settings.m_processes = 0;
+            ControlTest();
+        } else if (m_fireStarterMode == FIRESTARTER_RANDOM) {
             // If the evolve units is set to zero, use the number of gpus.
             if (m_settings.m_units == 0)
                 m_settings.m_units = CUDAContext::CUDADevices();
