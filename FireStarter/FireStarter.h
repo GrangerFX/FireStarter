@@ -58,6 +58,7 @@ public:
     void FireShow(void);
     void RenderStatus(float testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
+    void ClearUnits(void);
     void ControlDeallocate(void);
     void ControlAllocate(void);
     void ControlTest(void);

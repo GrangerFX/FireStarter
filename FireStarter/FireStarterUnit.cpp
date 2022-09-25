@@ -176,7 +176,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit, unsigned int fir
     m_state.OptimizeData();
     m_state.m_generation = m_evolveGeneration;
     m_state.m_seed = m_stateSeed;
-    m_state.m_best = bestIndex;
+    m_state.m_bestIndex = bestIndex;
 } // EvolveGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
@@ -296,7 +296,7 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
     result->debug2 = *m_hostResults->Debug2(bestIndex);
     m_state.m_generation = m_evolveGeneration;
     m_state.m_seed = m_stateSeed;
-    m_state.m_best = bestIndex;
+    m_state.m_bestIndex = bestIndex;
 } // OptimizeVaraitions
 
 void FireStarterUnit::EvolveExecute(void)
@@ -390,7 +390,7 @@ bool FireStarterUnit::JobExecute(FireStarterCompilerJob* job, std::atomic<float>
         FireStarterResult* result = m_state.Result();
         result->debug1 = *m_hostResults->Debug1(bestIndex);
         result->debug2 = *m_hostResults->Debug2(bestIndex);
-        m_state.m_best = bestIndex;
+        m_state.m_bestIndex = bestIndex;
 
         // Find the best result for all the units.
         float oldResult = atomicResult;

@@ -122,6 +122,32 @@ void FireStarter::RenderStatus(float testError)
         settingsText += "\r\n";
     }
 
+    // Create the hash file.
+    if (m_hashFilePath.empty()) {
+        m_hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
+        FireStarterCode::AppendCode(m_logFilePath, settingsText);
+    }
+
+    // Update the hash file.
+    std::string hashString = Format("%s:%s  Generation:%4u  Best Generation:%4u", m_settings.Mode(), m_settings.Evolve(), m_generation, m_bestGeneration);
+    if (m_settings.m_units != 1)
+        hashString += "\r\n";
+    for (unsigned int i = 0; i < m_settings.m_units; i++) {
+        FireStarterState state;
+        m_units[i]->GetState(state);
+        FireStarterResult* result = state.Result();
+        uint64_t resultHash = MurmurHash64(result, state.ResultSize());
+        uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
+        float bestResult = state.MaxResult();
+        if (m_settings.m_units >= 10)
+            hashString += Format("  Unit: %2u", i);
+        else if (m_settings.m_units >= 2)
+            hashString += Format("  Unit: %u", i);
+        hashString += Format("  Result=%.8f  Seed=%08X  BestIndex=%6d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), state.m_seed, state.m_bestIndex, (unsigned short)resultHash, (unsigned short)programHash);
+    }
+    FireStarterCode::AppendCode(m_hashFilePath, hashString);
+    printf(hashString.c_str());
+
     // Create the log file.
     std::string statusString;
     if (m_logFilePath.empty()) {
@@ -129,40 +155,13 @@ void FireStarter::RenderStatus(float testError)
         FireStarterCode::AppendCode(m_logFilePath, settingsText);
     }
 
+    // Update the log file and window status text.
     if ((m_settings.m_mode == FIRESTARTER_TEST) || (m_settings.m_mode == FIRESTARTER_RANDOM)) {
-        statusString = Format("%s: Generation=%u  Seed=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_seed, m_result, m_averageResult, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration(), testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_seed, m_generation, m_result, m_averageResult, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration(), testError);
         for (unsigned int v = 0; v < m_settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, *m_currentState.Result()->MinResult(v));
-    } else {
-        // Create the hash file.
-        if (m_hashFilePath.empty()) {
-            m_hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
-            FireStarterCode::AppendCode(m_logFilePath, settingsText);
-        }
-
-        // Update the hash file.
-        std::string hashString = Format("%s:%s  Generation:%4u  Best Generation:%4u", m_settings.Mode(), m_settings.Evolve(), m_generation, m_bestGeneration);
-        if (m_settings.m_units != 1)
-            hashString += "\r\n";
-        for (unsigned int i = 0; i < m_settings.m_units; i++) {
-            FireStarterState state;
-            m_units[i]->GetState(state);
-            FireStarterResult* result = state.Result();
-            uint64_t resultHash = MurmurHash64(result, state.ResultSize());
-            uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
-            float bestResult = m_allStates[i].MaxResult();
-            if (m_settings.m_units >= 10)
-                hashString += Format("  Unit: %2u", i);
-            else if (m_settings.m_units >= 2)
-                hashString += Format("  Unit: %u", i);
-            hashString += Format("  Result=%.8f  Seed=%08X  Best Result=%6d  Best Generation=%5d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), state.m_seed, state.m_best, result->debug1, (unsigned short)resultHash, (unsigned short)programHash);
-        }
-        FireStarterCode::AppendCode(m_hashFilePath, hashString);
-        printf(hashString.c_str());
-
-        // Create the status string.
-        statusString = Format("%s: Generation=%u  Age=%u  Best=%.8f  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_generation, m_generation - m_bestGeneration, m_bestResult, m_generationTime, m_runTimer.Duration(), testError);
-    }
+    } else
+        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_seed, m_generation, m_generation - m_bestGeneration, m_bestResult, m_bestSeed, m_generationTime, m_runTimer.Duration(), testError);
 
     // Update the log file.
     FireStarterCode::AppendCode(m_logFilePath, statusString + "\r\n");
@@ -193,6 +192,16 @@ void FireStarter::RenderImage(unsigned int width, unsigned int height, const uns
         GdiFlush();
     }
 } // RenderImage
+
+void FireStarter::ClearUnits(void)
+{
+    for (FireStarterUnit*& unit : m_units) {
+        delete unit;
+        unit = nullptr;
+    }
+    m_units.clear();
+    m_server.ClearProcesses();
+} // ClearUnits
 
 void FireStarter::ControlDeallocate(void)
 {
@@ -246,8 +255,10 @@ void FireStarter::ControlTest(void)
 {
     static std::atomic<float> atomicResult = FIRESTARTER_RANDOM_START_RESULT;
 
-    // Setup the best state.
-    m_bestState.InitState(m_settings);
+    // Setup the intial state
+    FireStarterSettings controlSettings(m_settings);
+    FireStarterState controlState(controlSettings);
+    m_bestState = controlState;
 
     m_generation = 0;
     m_bestGeneration = 0;
@@ -276,7 +287,8 @@ void FireStarter::ControlTest(void)
         *job = FireStarterCompilerJob();
 
         // Generate the job code.
-        job->m_state.InitState(m_settings);
+        controlSettings.m_seed = m_settings.m_seed + m_generation;
+        job->m_state.InitState(controlSettings);
         job->m_state.Settings().m_seed = job->m_state.m_seed = m_settings.m_seed + m_generation;
         job->m_state.m_generation = m_generation;
         job->m_state.m_program.RandomProgram();
@@ -319,17 +331,25 @@ void FireStarter::ControlTest(void)
         if (!executeResult2)
             break;
 
-        // Increment the generation and calculate the average time per generation.
-        m_generation++;
-        m_generationTime = m_controlTimer.Duration() / m_generation;
-
-        // Act as if each result was the best.
+        // Update the current state.
         m_currentState = job->m_state;
         unsigned int generation = m_currentState.m_generation;
         m_result = m_currentState.MaxResult();
         m_totalResult += m_result;
-        m_averageResult = m_totalResult / m_generation;
         m_seed = m_settings.m_seed + generation;
+
+        // Test the best state.
+        float testError = result2 - result1;
+
+        // Update the render status after every pass.
+        RenderStatus(testError);
+
+        // Increment the generation and calculate the average time per generation.
+        m_generation++;
+        m_generationTime = m_controlTimer.Duration() / m_generation;
+        m_averageResult = m_totalResult / m_generation;
+
+        // Update the best state.
         if (m_result < m_bestResult) {
             m_bestState = m_currentState;
             m_bestGeneration = generation;
@@ -354,27 +374,21 @@ void FireStarter::ControlTest(void)
                 m_bufferUpdate = false;
             });
         }
-
-        // Test the best state.
-        float testError = result2 - result1;
-
-        // Update the render status after every pass.
-        RenderStatus(testError);
     }
 
     // Finish processing and terminate each unit.
-    for (FireStarterUnit* unit : m_units)
-        delete unit;
+    ClearUnits();
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete job;
-    m_units.clear();
 } // ControlTest
 
 void FireStarter::ControlRandom(void)
 {
-    // Setup the best state.
-    m_bestState.InitState(m_settings);
+    // Setup the intial state
+    FireStarterSettings controlSettings(m_settings);
+    FireStarterState controlState(controlSettings);
+    m_bestState = controlState;
 
     m_generation = 0;
     m_bestGeneration = 0;
@@ -392,7 +406,7 @@ void FireStarter::ControlRandom(void)
     // Create the units.
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit();
-        unit->StartRandom(i, m_bestState, compilerManager);
+        unit->StartRandom(i, controlState, compilerManager);
         m_units.push_back(unit);
     }
 
@@ -404,16 +418,22 @@ void FireStarter::ControlRandom(void)
         if (!job)
             break;
 
-        // Increment the generation and calculate the average time per generation.
-        m_generation++;
-        m_generationTime = m_controlTimer.Duration() / m_generation;
-
         m_currentState = job->m_state;
         unsigned int generation = m_currentState.m_generation;
         m_result = m_currentState.MaxResult();
         m_totalResult += m_result;
-        m_averageResult = m_totalResult / m_generation;
         m_seed = m_settings.m_seed + generation;
+
+        // Test the best state.
+        float testError = m_currentState.TestResult();
+
+        // Update the render status after every pass.
+        RenderStatus(testError);
+
+        // Increment the generation and calculate the average time per generation.
+        m_generation++;
+        m_generationTime = m_controlTimer.Duration() / m_generation;
+        m_averageResult = m_totalResult / m_generation;
         if (m_result < m_bestResult) {
             m_bestState = m_currentState;
             m_bestGeneration = generation;
@@ -439,12 +459,6 @@ void FireStarter::ControlRandom(void)
             });
         }
 
-        // Test the best state.
-        float testError = m_currentState.TestResult();
-
-        // Update the render status after every pass.
-        RenderStatus(testError);
-
         // Add the job to the free list.
         compilerManager->AddFree(job);
     }
@@ -456,25 +470,20 @@ void FireStarter::ControlRandom(void)
     delete randomGenerator;
 
     // Finish processing and terminate each unit.
-    for (FireStarterUnit* unit : m_units)
-        delete unit;
+    ClearUnits();
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete compilerManager;
-    m_units.clear();
 } // ControlRandom
 
 void FireStarter::ControlLoop(void)
 {
-    // Setup the best state.
-    if (!m_bestState.Initialized()) {
-        m_bestState.InitState(m_settings);
-        if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
-            LoadState(m_bestState);
-            m_bestState.m_program.m_settings = m_settings;
-        }
-    } else
-        m_bestState.m_program.m_settings = m_settings;
+    // Setup the intial state
+    FireStarterSettings controlSettings(m_settings);
+    FireStarterState controlState(controlSettings);
+    if (m_settings.m_mode == FIRESTARTER_OPTIMIZE)
+        LoadState(controlState);
+    m_bestState = controlState;
  
     m_generation = 0;
     m_bestGeneration = 0;
@@ -488,30 +497,25 @@ void FireStarter::ControlLoop(void)
     // Create the states.
     m_allStates.resize(m_settings.m_units);
     for (FireStarterState& state : m_allStates)
-        state.InitState(m_settings);
+        state.InitState(controlSettings);
 
     // Create the units.
     if (m_settings.m_units > 1)
         for (unsigned int i = 0; i < m_settings.m_units; i++) {
             FireStarterProcess* process = m_settings.m_processes ? m_server.AddProcess() : nullptr;
             FireStarterUnit* unit = new FireStarterUnit(process);
-            m_units.push_back(unit);
             unit->Start();  // Start the interprocess communication.
+            unit->InitUnit(i, controlState);
+            m_units.push_back(unit);
         }
     else {
         FireStarterUnit* unit = new FireStarterUnit(CUDAContext::CUDADevices());
+        unit->InitUnit(0, controlState);
         m_units.push_back(unit);
     }
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
-        if (!m_generation) {
-            m_seed = m_settings.m_seed + m_generation * m_settings.m_units;
-            m_bestState.Settings().m_seed = m_seed;
-            for (unsigned int i = 0; i < m_units.size(); i++)
-                m_units[i]->InitUnit(i, m_bestState);
-        }
-
         // Execute a generation for all the units.
         m_controlTimer.Start();
         for (FireStarterUnit* unit : m_units)
@@ -579,10 +583,7 @@ void FireStarter::ControlLoop(void)
     }
 
     // Finish processing and terminate each unit.
-    for (FireStarterUnit* unit : m_units)
-        delete unit;
-    m_units.clear();
-    m_server.ClearProcesses();
+    ClearUnits();
 } // ControlLoop
 
 void FireStarter::ControlThread(void)

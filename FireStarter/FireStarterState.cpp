@@ -107,6 +107,9 @@ float FireStarterState::TestResult(void)
 
 void FireStarterState::InitState(const FireStarterSettings& settings)
 {
+    m_generation = 0;
+    m_seed = settings.m_seed;
+    m_bestIndex = 0;
     m_program.InitProgram(settings);
     m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
     Result()->Init(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
