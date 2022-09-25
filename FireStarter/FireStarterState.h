@@ -26,6 +26,11 @@ public:
         return m_program.m_settings;
     } // Settings
 
+    inline unsigned int& StateSeed(void)
+    {
+        return m_program.m_settings.m_seed;
+    } // StateSeed
+
     inline size_t ResultSize(void) const
     {
         return FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);

@@ -149,8 +149,6 @@ private:
     size_t m_evolutionsSize = 0;
     unsigned int m_unitIndex = 0;
     unsigned int m_stateID = 0;
-    unsigned int m_stateSeed = 0;
-    unsigned int m_evolveGeneration = 0;
     unsigned int m_gpus = 0;
     unsigned int m_firstVariation = 0;
     unsigned int m_lastVariation = 0;

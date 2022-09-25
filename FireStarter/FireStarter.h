@@ -29,13 +29,8 @@ public:
     FrameBuffer m_buffer;
     std::string m_hashFilePath;
     std::string m_logFilePath;
-    double m_generationTime;
     FireStarterSettings m_settings;
-    unsigned int m_seed;
     unsigned int m_fireStarterMode;
-    unsigned int m_generation;
-    unsigned int m_bestSeed;
-    unsigned int m_bestGeneration;
     float m_bestResult;
     float m_totalResult;
     float m_averageResult;
@@ -52,10 +47,10 @@ public:
     bool LoadFireSettingsCode(void);
     void SaveBestState(void);
     void SaveBestCode(void);
-    void SaveSolution(void);
+    void SaveSolution(unsigned int generation, double generationTime);
     void FireSettings(void);
     void FireShow(void);
-    void RenderStatus(float testError);
+    void RenderStatus(unsigned int generation, double generationTime, float testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ClearUnits(void);
     void ControlDeallocate(void);
