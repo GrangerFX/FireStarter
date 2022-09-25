@@ -161,7 +161,7 @@ void FireStarterProgram::SaveProgram(std::string& code)
 void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
     m_settings = settings;
-
+    m_settings.m_seed = RANDOM(settings.m_seed);
     m_instructions.resize(FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
     m_registers.clear();
 

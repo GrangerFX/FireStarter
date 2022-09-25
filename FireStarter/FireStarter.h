@@ -23,7 +23,6 @@ public:
     FireStarterGenerate* m_fireStarterGenerate;
     std::string m_solutionTargetCode;
     FireStarterState m_bestState;
-    FireStarterState m_currentState;
     std::vector<FireStarterState> m_allStates;
     std::vector<FireStarterUnit*> m_units;
     FireStarterServer m_server;

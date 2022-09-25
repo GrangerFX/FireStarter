@@ -18,8 +18,9 @@ void FireStarterRandom::RandomGenerate(void)
             if (!job)
                 break;
 
-            job->m_state.InitState(m_settings);
-            job->m_state.Settings().m_seed = job->m_state.m_seed = m_settings.m_seed + generation;
+            FireStarterSettings jobSettings(m_settings);
+            jobSettings.m_seed = m_settings.m_seed + generation;
+            job->m_state.InitState(jobSettings);
             job->m_state.m_generation = generation++;
             job->m_state.m_program.RandomProgram();
             job->m_state.m_program.OptimizeRegisters(true);

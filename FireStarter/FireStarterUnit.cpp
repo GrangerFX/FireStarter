@@ -449,10 +449,7 @@ void FireStarterUnit::Allocate(void)
         state = m_initState;
 
     FireStarterSettings evolveSettings = m_settings;
-    evolveSettings.m_seed = m_settings.m_seed + m_unitIndex;
     m_state = m_initState;
-    m_state.m_program.m_settings.m_seed = evolveSettings.m_seed;
-    m_state.m_seed = m_stateSeed = RANDOM(evolveSettings.m_seed);
     m_stateID = m_unitIndex;    // Index in m_allStates.
 
     size_t resultsSize = FireStarterResults::ResultsSize(m_settings.m_population, m_settings.m_registers, m_settings.m_variations);
