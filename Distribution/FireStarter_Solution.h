@@ -1,6 +1,6 @@
-// Run date: 09/25/22 13:43:19 Pacific Daylight Time
-// Run duration = 0.227893 seconds
-// Run count = 5537
+// Run date: 09/25/22 14:05:12 Pacific Daylight Time
+// Run duration = 1.803839 seconds
+// Run count = 7
 // Run variations = 3;
 // Run samples = 15;
 // Run instructions = 32;
@@ -10,21 +10,21 @@
 // Run targetMin = 0.000000f;
 // Run targetMax = 6.283185f;
 
-// Run mode = FIRESTARTER_RANDOM;
-// Run units = 2;
-// Run processes = 6;
+// Run mode = FIRESTARTER_TEST;
+// Run units = 1;
+// Run processes = 0;
 // Run population = 69632;
 // Run iterations = 256;
 // Run candidates = 16;
 // Run generations = 100;
 // Run precision = 0;
 // Run evolve = FIRESTARTER_EVOLVE_BEST;
-// Run attempts = 10000;
+// Run attempts = 10;
 // Run seed = 1075946347;
 // Run scale = 0.100000f;
 // Run startScale = 4.000000f;
 // Run startResult = 10.000000f;
-// Solution Generation = 5536
+// Solution Generation = 6
 
 #ifndef __CUDACC__
 #include <cmath>
