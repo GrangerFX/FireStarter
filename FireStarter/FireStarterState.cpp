@@ -48,7 +48,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
     code += Format("    state.m_generation = %u;\r\n", m_generation);
-    code += Format("    state.m_seed = %u;\r\n", m_seed);
+    code += Format("    state.m_bestIndex = %u;\r\n", m_bestIndex);
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
@@ -108,7 +108,6 @@ float FireStarterState::TestResult(void)
 void FireStarterState::InitState(const FireStarterSettings& settings)
 {
     m_generation = 0;
-    m_seed = settings.m_seed;
     m_bestIndex = 0;
     m_program.InitProgram(settings);
     m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));

@@ -8,7 +8,6 @@ private:
 public:
     FireStarterProgram m_program;
     unsigned int m_generation = 0;
-    unsigned int m_seed = 0;
     unsigned int m_bestIndex = 0;
 
     inline bool Initialized(void) const
@@ -26,9 +25,9 @@ public:
         return m_program.m_settings;
     } // Settings
 
-    inline unsigned int& StateSeed(void)
+    inline unsigned int StateSeed(unsigned int seed = 1337)
     {
-        return m_program.m_settings.m_seed;
+        return RANDOM(RANDOM(m_program.m_settings.m_seed + seed) + m_generation);
     } // StateSeed
 
     inline size_t ResultSize(void) const

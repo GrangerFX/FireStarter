@@ -11,7 +11,7 @@ inline float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
-GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned int generation, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= lastMember)
@@ -25,8 +25,9 @@ GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults*
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
+    unsigned int seed = RANDOM(RANDOM(RANDOM(settings.m_seed) + generation) + member);
     for (unsigned int v = firstVariation; v <= lastVariation; v++) {
-        unsigned int memberSeed = RANDOM(RANDOM(RANDOM(seed) + member) + v);
+        unsigned int memberSeed = RANDOM(seed + v);
 
         // Precalculate the target sample values.
         float target[FIRESTARTER_SAMPLES];

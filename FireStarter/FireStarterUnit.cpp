@@ -20,8 +20,10 @@ void FireStarterUnit::UpdateEvolveStates(void)
         m_state = m_allStates[bestIndex];
     } else if (m_settings.m_evolve = FIRESTARTER_EVOLVE_RANDOM) {
         // If a state did not improve, replace it with a random state.
-        if (m_state.MaxResult() > m_allStates[m_unitIndex].MaxResult())
-            m_state = m_allStates[RANDOMMOD(m_state.m_seed, m_allStates.size())];
+        if (m_state.MaxResult() > m_allStates[m_unitIndex].MaxResult()) {
+            unsigned int seed = m_state.StateSeed(1234567);
+            m_state = m_allStates[RANDOMMOD(seed, m_allStates.size())];
+        }
 
     } else { // m_settings.m_evolve = FIRESTARTER_EVOLVE_INDIVIDUIAL
         // Reset the state to its own best state.
@@ -56,9 +58,9 @@ void FireStarterUnit::UnitGenerate(void)
 {
     // Evolve each state.
     if (!m_state.m_generation)
-        m_state.m_program.RandomProgram();
+        m_state.m_program.RandomProgram(m_state.StateSeed());
     else
-        m_state.m_program.RandomInstruction();
+        m_state.m_program.RandomInstruction(m_state.StateSeed());
     m_state.m_program.OptimizeRegisters(true);
 
     // Generate the unit code for the current generation
@@ -76,7 +78,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit, unsigned int fir
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned int& stateSeed = m_state.StateSeed();
+    unsigned int stateGeneration = m_state.m_generation * m_settings.m_generations;
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -97,7 +99,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit, unsigned int fir
                             reinterpret_cast<void*>(&lastVariation),
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
-                            reinterpret_cast<void*>(&stateSeed),
+                            reinterpret_cast<void*>(&stateGeneration),
                             reinterpret_cast<void*>(&init) };
 
             unsigned int blocksPerGrid = context.m_lastMember - context.m_firstMember;
@@ -138,7 +140,7 @@ void FireStarterUnit::EvolveGenerations(unsigned int forceInit, unsigned int fir
             }
             SyncContexts();
         }
-        stateSeed++;
+        stateGeneration++;
         forceInit = 0;
     }
 
@@ -183,7 +185,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned int stateSeed = m_state.StateSeed();
+    unsigned int stateGeneration = m_state.m_generation * m_settings.m_generations;
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -193,7 +195,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
             FireStarterResults* newResults = g & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
             int init = (g == 0) && (forceInit || (m_state.m_generation == 0));
-
+ 
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
@@ -202,7 +204,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&dataSize),
-                            reinterpret_cast<void*>(&stateSeed),
+                            reinterpret_cast<void*>(&stateGeneration),
                             reinterpret_cast<void*>(&init) };
 
             unsigned int blocksPerGrid = ((context.m_lastMember - context.m_firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
@@ -234,7 +236,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
                 checkCUDAErrors(cudaMemcpyAsync(oldResults, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
         }
-        stateSeed++;
+        stateGeneration++;
         forceInit = 0;
     }
 
@@ -278,7 +280,6 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
 
     // Evolve the program data.
     OptimizeGenerations(forceInit, m_firstVariation, m_lastVariation);
-    m_state.StateSeed() += m_settings.m_generations;
 
     // Find the best overall result for the state.
     unsigned int bestIndex = 0;
@@ -295,7 +296,6 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
     result->debug2 = *m_hostResults->Debug2(bestIndex);
 
     // Increment the generation.
-    m_state.StateSeed() += m_settings.m_generations;
     m_state.m_generation++;
     m_state.m_bestIndex = bestIndex;
 } // OptimizeVaraitions
@@ -309,7 +309,6 @@ void FireStarterUnit::EvolveExecute(void)
     EvolveGenerations(0, m_firstVariation, m_lastVariation);
 
     // Increment the generation.
-    m_state.StateSeed() += m_settings.m_generations;
     m_state.m_generation++;
 } // EvolveExecute
 
@@ -370,7 +369,6 @@ bool FireStarterUnit::JobExecute(FireStarterCompilerJob* job, std::atomic<float>
         }
     else
         OptimizeGenerations(1, m_firstVariation, m_lastVariation);
-    m_state.StateSeed() += m_settings.m_generations;
 
     // Find the best overall result for the state.
     if (found) {

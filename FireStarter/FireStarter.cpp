@@ -141,7 +141,7 @@ void FireStarter::RenderStatus(unsigned int generation, double generationTime, f
             hashString += Format("  Unit: %2u", i++);
         else if (m_allStates.size() >= 2)
             hashString += Format("  Unit: %u", i++);
-        hashString += Format("  Result=%.8f  Seed=%8u  BestIndex=%6d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), state.m_seed, state.m_bestIndex, (unsigned short)resultHash, (unsigned short)programHash);
+        hashString += Format("  Result=%.8f  Seed=%8u  BestIndex=%6d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), state.m_program.m_settings.m_seed + state.m_generation, state.m_bestIndex, (unsigned short)resultHash, (unsigned short)programHash);
     }
     FireStarterCode::AppendCode(m_hashFilePath, hashString);
     printf(hashString.c_str());
@@ -155,11 +155,11 @@ void FireStarter::RenderStatus(unsigned int generation, double generationTime, f
 
     // Update the log file and window status text.
     if ((m_settings.m_mode == FIRESTARTER_TEST) || (m_settings.m_mode == FIRESTARTER_RANDOM)) {
-        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_settings.m_seed + generation, generation, m_result, m_averageResult, m_bestResult, m_bestState.m_seed, generationTime, m_runTimer.Duration(), testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_settings.m_seed + generation, generation, m_result, m_averageResult, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
         for (unsigned int v = 0; v < m_settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, *m_allStates[0].Result()->MinResult(v));
     } else
-        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_settings.m_seed + generation, generation, generation - m_bestState.m_generation, m_bestResult, m_bestState.m_seed, generationTime, m_runTimer.Duration(), testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_settings.m_seed + generation, generation, generation - m_bestState.m_generation, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
 
     // Update the log file.
     FireStarterCode::AppendCode(m_logFilePath, statusString + "\r\n");
@@ -285,10 +285,9 @@ void FireStarter::ControlTest(void)
         *job = FireStarterCompilerJob();
 
         // Generate the job code.
-        controlSettings.m_seed = m_settings.m_seed + generation;
         job->m_state.InitState(controlSettings);
-        job->m_state.m_generation = generation;
-        job->m_state.m_program.RandomProgram();
+        job->m_state.m_generation = generation++;
+        job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
         job->m_state.m_program.OptimizeRegisters(true);
 
         // Generate the optimize code
@@ -337,7 +336,6 @@ void FireStarter::ControlTest(void)
         float testError = result2 - result1;
 
         // Increment the generation and calculate the average time per generation.
-        generation++;
         m_averageResult = m_totalResult / generation;
         double generationTime = m_controlTimer.Duration() / generation;
 
@@ -358,9 +356,8 @@ void FireStarter::ControlTest(void)
             // Draw the graphs for both variations.
             FireShow();
             m_controlUpdate = false;
-            const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-            GetMainThread()->DispatchSync([this, bufferPixels] {
-                RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+            GetMainThread()->DispatchSync([this] {
+                RenderImage(m_buffer.m_width, m_buffer.m_height, m_buffer.GetDevice());
                 m_bufferUpdate = false;
             });
         }
@@ -440,8 +437,8 @@ void FireStarter::ControlRandom(void)
             // Draw the graphs for both variations.
             FireShow();
             m_controlUpdate = false;
-            const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-            GetMainThread()->DispatchSync([this, bufferPixels] {
+            GetMainThread()->DispatchSync([this] {
+                const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
                 RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
                 m_bufferUpdate = false;
             });
@@ -476,7 +473,6 @@ void FireStarter::ControlLoop(void)
     m_allStates.resize(m_settings.m_units);
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterSettings controlSettings(m_settings);
-        controlSettings.m_seed = m_settings.m_seed + i;
         FireStarterState& state = m_allStates[i];
         state.InitState(controlSettings);
         if (m_settings.m_mode == FIRESTARTER_OPTIMIZE)

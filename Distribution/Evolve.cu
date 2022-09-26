@@ -6,15 +6,15 @@
 #if 1
 // Best version.
 // 0.00060845 after 147 generations. Optimize 0.00015676 after 150 generations.
-GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int generation, const unsigned int init)
 {
     const unsigned int member = firstMember + blockIdx.x;
     if (member >= lastMember)
         return;
     const unsigned int thread = threadIdx.x;
-    unsigned int randomSeed = RANDOM(seed);
+    unsigned int randomSeed = RANDOM(RANDOM(settings.m_seed) + generation);
     unsigned int memberSeed = RANDOM(randomSeed + member);
-    unsigned int threadSeed = RANDOM(randomSeed + member * blockDim.x + thread);
+    unsigned int threadSeed = RANDOM(randomSeed + member * blockDim.x + thread);    // Note: TODO: Try using memberSeed instead of randomSeed.
 
     GPU_SHARED FireStarterInstructions instructions;
     if (thread == 0) {
@@ -113,7 +113,7 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
                 *newResults->MinResult(member, v) = allResults[v][t];
                 *newResults->Index(member, v) = member;
                 *newResults->Debug1(member) = init ? 1 : *oldResults->Debug1(member) + 1;
-                *newResults->Debug2(member) = seed;
+                *newResults->Debug2(member) = generation;
             }
         } else {
             // Copy a result from among the previous generation's results.
