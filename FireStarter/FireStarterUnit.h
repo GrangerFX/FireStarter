@@ -176,20 +176,20 @@ public:
     void Packetize(FireStarterPacket& packet);
     void PacketizeAllStates(FireStarterPacket& packet);
     void GetState(FireStarterState& state);
-    std::string& GetEvolveCode(void);
-    std::string& GetOptimizeCode(void);
+    std::string GetEvolveCode(void);
+    std::string GetOptimizeCode(void);
     bool JobCompile(FireStarterCompilerJob* job);
     bool JobExecute(FireStarterCompilerJob* job, std::atomic<float>& atomicResult, bool skipVariations = true);
-    void StartRandom(unsigned int index, const FireStarterState& state, FireStarterCompilerManager *manager);
+    void StartRandom(const FireStarterState& state, FireStarterCompilerManager *manager);
     bool FinishRandom(void);
-    void InitUnit(unsigned int index, const FireStarterState& initState);
+    void InitUnit(const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);
     void Sync(FireStarterState* allStates);
     void Start(void);
     void Stop(void);
     void Client(void);
-    FireStarterUnit(FireStarterProcess* process = nullptr);
-    FireStarterUnit(unsigned int gpus);
+    FireStarterUnit(unsigned int index, FireStarterProcess* process = nullptr);
+    FireStarterUnit(unsigned int index, unsigned int gpus);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

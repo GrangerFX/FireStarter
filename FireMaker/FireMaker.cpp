@@ -11,7 +11,7 @@ bool FireMaker::ShouldTerminate(void)
 	return m_terminate;
 } // ShouldTerminate
 
-FireMaker::FireMaker(const std::string& pipeName) : m_process(pipeName, &m_terminate), m_unit(&m_process)
+FireMaker::FireMaker(const std::string& pipeName) : m_process(pipeName, &m_terminate), m_unit(0, &m_process)
 {
 	m_unit.Start();
 	m_unit.Client();

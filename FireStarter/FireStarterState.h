@@ -27,7 +27,7 @@ public:
 
     inline unsigned int StateSeed(unsigned int seed = 1337)
     {
-        return RANDOM(RANDOM(m_program.m_settings.m_seed + seed) + m_generation);
+        return RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + seed);
     } // StateSeed
 
     inline size_t ResultSize(void) const

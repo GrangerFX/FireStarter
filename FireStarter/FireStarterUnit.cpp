@@ -399,7 +399,7 @@ void FireStarterUnit::RandomExecute(void)
     static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
     if (!WillTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCompile();
-        if (JobExecute(job, g_atomicResult)) {  // Returns true if the job was compiled and executed successfully.
+        if (JobExecute(job, g_atomicResult, FIRESTARTER_RANDOM_SKIPGENERATIONS)) {  // Returns true if the job was compiled and executed successfully.
             m_compilerManager->AddComplete(job);
             if (!WillTerminate())
                 DispatchAsync([this] { RandomExecute(); });
@@ -475,16 +475,16 @@ void FireStarterUnit::Allocate(void)
 
     if (!m_server) {
         unsigned int numContexts = (m_settings.m_mode == FIRESTARTER_CODE) ? m_gpus : 1;
-//      unsigned int numContexts = m_gpus;
-        unsigned int contextMembers = ((m_settings.m_population + (numContexts - 1)) / numContexts);
-        m_contexts.resize(numContexts);
-        unsigned int lastMember = 0;
-        for (unsigned int contextIndex = 0; contextIndex < numContexts; contextIndex++) {
-            unsigned int firstMember = lastMember;
-            lastMember += contextMembers;
-            lastMember = min(lastMember, m_settings.m_population);
-            m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
-
+        if (numContexts != m_contexts.size()) {
+            m_contexts.resize(numContexts);
+            unsigned int contextMembers = ((m_settings.m_population + (numContexts - 1)) / numContexts);
+            unsigned int lastMember = 0;
+            for (unsigned int contextIndex = 0; contextIndex < numContexts; contextIndex++) {
+                unsigned int firstMember = lastMember;
+                lastMember += contextMembers;
+                lastMember = min(lastMember, m_settings.m_population);
+                m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
+            }
         }
     } else
         m_contexts.clear();
@@ -515,19 +515,28 @@ void FireStarterUnit::GetState(FireStarterState& state)
     });
 } // GetState
 
-std::string& FireStarterUnit::GetEvolveCode(void)
+std::string FireStarterUnit::GetEvolveCode(void)
 {
-    return m_evolveCode;
+    std::string evolveCode;
+    DispatchSync([this, &evolveCode] {
+        if (LoadCode())
+            evolveCode = m_evolveCode;
+    });
+    return evolveCode;
 } // GetEvolveCode
 
-std::string& FireStarterUnit::GetOptimizeCode(void)
+std::string FireStarterUnit::GetOptimizeCode(void)
 {
-    return m_optimizeCode;
+    std::string optimizeCode;
+    DispatchSync([this, &optimizeCode] {
+        if (LoadCode())
+            optimizeCode = m_optimizeCode;
+        });
+    return optimizeCode;
 } // GetOptimizeCode
 
-void FireStarterUnit::StartRandom(unsigned int index, const FireStarterState& state, FireStarterCompilerManager* manager)
+void FireStarterUnit::StartRandom(const FireStarterState& state, FireStarterCompilerManager* manager)
 {
-    m_unitIndex = index;
     m_settings = state.Settings();
     m_compilerManager = manager;
     m_initState = state;
@@ -548,9 +557,8 @@ bool FireStarterUnit::FinishRandom(void)
     return m_state.m_generation >= m_settings.m_attempts;
 } // FinishRandom
 
-void FireStarterUnit::InitUnit(unsigned int index, const FireStarterState& initState)
+void FireStarterUnit::InitUnit(const FireStarterState& initState)
 {
-    m_unitIndex = index;
     m_settings = initState.Settings();
     m_initState = initState;
     m_state = initState;
@@ -666,7 +674,7 @@ void FireStarterUnit::Client(void)
                     FireStarterState receiveState(m_settings);
                     result = result && receiveState.Packetize(receivePacket);
                     if (result)
-                        InitUnit(unitIndex, receiveState);
+                        InitUnit(receiveState);
                     m_process->SendCommand(UNIT_INIT);
                 } else if (command == UNIT_EXECUTE) {
                     Execute();
@@ -691,15 +699,17 @@ void FireStarterUnit::Client(void)
         });
 } // ClientCommand
 
-FireStarterUnit::FireStarterUnit(FireStarterProcess* process)
+FireStarterUnit::FireStarterUnit(unsigned int index, FireStarterProcess* process)
 {
+    m_unitIndex = index;
     m_gpus = 1;
     m_process = process;
     m_server = m_process && !m_process->IsClient();
 } // FireStarterUnit
 
-FireStarterUnit::FireStarterUnit(unsigned int gpus) : m_state(m_settings)
+FireStarterUnit::FireStarterUnit(unsigned int index, unsigned int gpus) : m_state(m_settings)
 {
+    m_unitIndex = index;
     m_gpus = gpus;
 } // FireStarterUnit
 

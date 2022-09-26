@@ -1,0 +1,1 @@
+FIRESTARTER_TEST:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.11143607  Seed=       0  BestIndex=  9185  ResultHash=5224  ProgramHash=3E32

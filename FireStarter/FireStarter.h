@@ -38,8 +38,6 @@ public:
     void* m_window;
     unsigned int m_width;
     unsigned int m_height;
-    bool m_controlUpdate;
-    volatile bool m_bufferUpdate;
     volatile bool m_quitControlThread;
 
     bool LoadTargetCode(void);
@@ -50,7 +48,7 @@ public:
     void SaveSolution(unsigned int generation, double generationTime);
     void FireSettings(void);
     void FireShow(void);
-    void RenderStatus(unsigned int generation, double generationTime, float testError);
+    void RenderStatus(const FireStarterState& state, double generationTime, float testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ClearUnits(void);
     void ControlDeallocate(void);

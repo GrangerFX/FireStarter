@@ -1,0 +1,34 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_TEST;
+units = 1;
+processes = 0;
+population = 69632;
+iterations = 256;
+candidates = 16;
+generations = 100;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 10;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_TEST: Seed=0  Generation=0  Result=0.11143607  Average=0.11143607  Best=0.11143607  BestSeed=0  Time=0.7902 Seconds  Run Time=4.0094 Seconds  TestError=0.00000006  V:0=0.09025538  V:1=0.06300104  V:2=0.11143607
+FIRESTARTER_TEST: Seed=1  Generation=1  Result=0.00137043  Average=0.05640325  Best=0.00137043  BestSeed=1  Time=0.7994 Seconds  Run Time=4.8169 Seconds  TestError=0.00000024  V:0=0.00040024  V:1=0.00031960  V:2=0.00137043
+FIRESTARTER_TEST: Seed=2  Generation=2  Result=0.00134363  Average=0.03805004  Best=0.00134363  BestSeed=2  Time=0.8177 Seconds  Run Time=5.6706 Seconds  TestError=0.00000036  V:0=0.00101805  V:1=0.00034595  V:2=0.00134363
+FIRESTARTER_TEST: Seed=3  Generation=3  Result=0.00105152  Average=0.02880041  Best=0.00105152  BestSeed=3  Time=0.8286 Seconds  Run Time=6.5332 Seconds  TestError=0.00000027  V:0=0.00058371  V:1=0.00059962  V:2=0.00105152
+FIRESTARTER_TEST: Seed=4  Generation=4  Result=0.00059244  Average=0.02315882  Best=0.00059244  BestSeed=4  Time=0.8320 Seconds  Run Time=7.3769 Seconds  TestError=0.00000007  V:0=0.00018370  V:1=0.00044815  V:2=0.00059244
+FIRESTARTER_TEST: Seed=5  Generation=5  Result=1.24038529  Average=0.22602989  Best=0.00059244  BestSeed=4  Time=0.8380 Seconds  Run Time=8.2330 Seconds  TestError=0.00000000  V:0=0.97492790  V:1=1.24038529  V:2=0.20396200
+FIRESTARTER_TEST: Seed=6  Generation=6  Result=0.04748110  Average=0.20052291  Best=0.00059244  BestSeed=4  Time=0.8368 Seconds  Run Time=9.0625 Seconds  TestError=0.00000032  V:0=0.00614248  V:1=0.00348473  V:2=0.04748110
+FIRESTARTER_TEST: Seed=7  Generation=7  Result=1.48324537  Average=0.36086321  Best=0.00059244  BestSeed=4  Time=0.8354 Seconds  Run Time=9.8882 Seconds  TestError=0.00000104  V:0=0.97492790  V:1=1.48324537  V:2=0.30007342
+FIRESTARTER_TEST: Seed=8  Generation=8  Result=0.00291742  Average=0.32109147  Best=0.00059244  BestSeed=4  Time=0.8461 Seconds  Run Time=10.8199 Seconds  TestError=0.00000014  V:0=0.00035140  V:1=0.00021422  V:2=0.00291742
+FIRESTARTER_TEST: Seed=9  Generation=9  Result=0.17369379  Average=0.30635172  Best=0.00059244  BestSeed=4  Time=0.8491 Seconds  Run Time=11.6958 Seconds  TestError=0.00000034  V:0=0.09841868  V:1=0.06327355  V:2=0.17369379
