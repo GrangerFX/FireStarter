@@ -4,6 +4,7 @@
 
 void FireStarterUnit::UpdateEvolveStates(void)
 {
+    unsigned int generation = m_state.m_generation;
     if (m_settings.m_evolve = FIRESTARTER_EVOLVE_BEST) {
         // Find the program's best state among all the states from all the units.
         float unitBestResult = m_allStates[0].MaxResult();
@@ -24,11 +25,11 @@ void FireStarterUnit::UpdateEvolveStates(void)
             unsigned int seed = m_state.StateSeed(1234567);
             m_state = m_allStates[RANDOMMOD(seed, m_allStates.size())];
         }
-
     } else { // m_settings.m_evolve = FIRESTARTER_EVOLVE_INDIVIDUIAL
         // Reset the state to its own best state.
         m_state = m_allStates[m_unitIndex];
     }
+    m_state.m_generation = generation;
 } // UpdateEvolveStates
 
 void FireStarterUnit::EvolveGenerate(void)
@@ -623,6 +624,8 @@ void FireStarterUnit::Update(FireStarterState* states)
 
         if (!states[m_unitIndex].m_generation || (m_state.Result()->maxResult < states[m_unitIndex].Result()->maxResult))
             states[m_unitIndex] = m_state;
+        else
+            states[m_unitIndex].m_generation = m_state.m_generation;
     });
 } // Update
 

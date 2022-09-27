@@ -218,7 +218,7 @@ inline void LoadResult(FireStarterState& state)
 
 inline void LoadState(FireStarterState& state)
 {
-    state.m_generation = 1;
+    state.m_generation = 2;
     state.m_bestIndex = 66190;
 
     LoadProgram(state.m_program);

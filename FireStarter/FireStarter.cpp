@@ -467,9 +467,8 @@ void FireStarter::ControlLoop(void)
     while (!m_quitControlThread) {
         // Execute a generation for all the units.
         m_controlTimer.Start();
-        for (FireStarterUnit* unit : m_units) {
+        for (FireStarterUnit* unit : m_units)
             unit->Execute();
-        }
 
         // Update the states for all the units.
         for (FireStarterUnit* unit : m_units)
@@ -488,7 +487,7 @@ void FireStarter::ControlLoop(void)
                 m_bestState = state;
                 controlUpdate = true;
             }
- 
+
             // Update the best code on disk and compile a new FireShow.
             double generationTime = m_controlTimer.Duration();
             if (controlUpdate && !m_quitControlThread) {
@@ -508,7 +507,7 @@ void FireStarter::ControlLoop(void)
             if (state.m_generation - m_bestState.m_generation < m_settings.m_attempts)
                 allFinished = false;
         }
- 
+
         // Send all the states back to all the units.
         for (FireStarterUnit* unit : m_units)
             unit->Sync(m_allStates.data());
