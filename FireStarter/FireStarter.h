@@ -55,7 +55,8 @@ public:
     void ControlAllocate(void);
     void ControlTest(void);
     void ControlRandom(void);
-    void ControlLoop(void);
+    void ControlEvolve(void);
+    void ControlUnits(void);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
     bool Init(void* window, unsigned int width, unsigned int height);

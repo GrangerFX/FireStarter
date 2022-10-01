@@ -4,6 +4,7 @@
 #include "FireStarter_LoadState.h"
 #include "FireStarter_Solution.h"
 #include "FireStarterRandom.h"
+#include "FireStarterEvolve.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 
@@ -292,7 +293,7 @@ void FireStarter::ControlTest(void)
 
         // Compile the job.
         bool compileResult = false;
-        unit->DispatchSync([unit, job, &compileResult] { compileResult = unit->JobCompile(job); });
+        unit->DispatchSync([unit, job, &compileResult] { compileResult = unit->CompileJob(job); });
         if (!compileResult)
             break;
         if (job->m_log.size())
@@ -303,7 +304,7 @@ void FireStarter::ControlTest(void)
         // Execute the variations one at a time.
         bool executeResult1 = false;
         atomicResult = m_settings.m_startResult;
-        unit->DispatchSync([unit, job, &executeResult1] { executeResult1 = unit->JobExecute(job, atomicResult, false); });
+        unit->DispatchSync([unit, job, &executeResult1] { executeResult1 = unit->ExecuteJob(job, atomicResult, false); });
         if (!executeResult1)
             break;
 
@@ -366,7 +367,8 @@ void FireStarter::ControlRandom(void)
     // Create the units.
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
-        unit->StartRandom(controlState, compilerManager);
+        unit->InitUnit(controlState);
+        unit->StartRandom(compilerManager);
         m_units.push_back(unit);
     }
 
@@ -430,7 +432,88 @@ void FireStarter::ControlRandom(void)
     delete compilerManager;
 } // ControlRandom
 
-void FireStarter::ControlLoop(void)
+void FireStarter::ControlEvolve(void)
+{
+    // Setup the intial state
+    FireStarterState controlState(m_settings);
+    m_bestState = controlState;
+
+    m_result = 0.0f;
+    m_bestResult = m_settings.m_startResult;
+
+    // Create the shared compiler
+    FireStarterCompilerManager* compilerManager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
+    FireStarterRandom* randomGenerator = new FireStarterRandom(m_settings, compilerManager);
+
+    // Create the units.
+    for (unsigned int i = 0; i < m_settings.m_units; i++) {
+        FireStarterUnit* unit = new FireStarterUnit(i);
+        unit->InitUnit(controlState);
+        unit->StartEvolve(compilerManager);
+        m_units.push_back(unit);
+    }
+
+    // Loop until the the completion condition or the host program is quit.
+    m_controlTimer.Start();
+    unsigned int generation = 0;
+    while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
+        // Note: The jobs may be received out of order.
+        FireStarterCompilerJob* job = compilerManager->GetComplete();
+        if (!job)
+            break;
+
+        controlState = job->m_state;
+        m_result = controlState.MaxResult();
+        m_totalResult += m_result;
+        generation = controlState.m_generation;
+
+        // Test the current state.
+        float testError = controlState.TestResult();
+
+        // Increment the generation and calculate the average time per generation.
+        m_averageResult = m_totalResult / (generation + 1);
+        double generationTime = m_controlTimer.Duration() / (generation + 1);
+        if (m_result < m_bestResult) {
+            m_bestState = controlState;
+            m_bestResult = m_result;
+
+            // Update the best code on disk.
+            SaveBestState();
+            SaveBestCode();
+            SaveSolution(generation, generationTime);
+
+            // Erase the frame buffer
+            m_buffer.Erase();
+
+            // Draw the graphs for both variations.
+            FireShow();
+            GetMainThread()->DispatchSync([this] {
+                const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+                RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+                });
+        }
+
+        // Update the render status after every pass.
+        RenderStatus(controlState, generationTime, testError);
+
+        // Add the job to the free list.
+        compilerManager->AddFree(job);
+    }
+
+    // Cancel any waiting jobs
+    compilerManager->Cancel();
+
+    // Delete the random code generator.
+    delete randomGenerator;
+
+    // Finish processing and terminate each unit.
+    ClearUnits();
+
+    // Delete the compilier manager and cancel any waiting jobs.
+    delete compilerManager;
+} // ControlEvolve
+
+void FireStarter::ControlUnits(void)
 {
     // Setup the intial state 
     m_result = 0.0f;
@@ -453,7 +536,6 @@ void FireStarter::ControlLoop(void)
         for (unsigned int i = 0; i < m_settings.m_units; i++) {
             FireStarterProcess* process = m_settings.m_processes ? m_server.AddProcess() : nullptr;
             FireStarterUnit* unit = new FireStarterUnit(i, process);
-            unit->Start();  // Start the interprocess communication.
             unit->InitUnit(m_allStates[i]);
             m_units.push_back(unit);
         }
@@ -533,7 +615,7 @@ void FireStarter::ControlLoop(void)
 
     // Finish processing and terminate each unit.
     ClearUnits();
-} // ControlLoop
+} // ControlUnits
 
 void FireStarter::ControlThread(void)
 {
@@ -563,19 +645,30 @@ void FireStarter::ControlThread(void)
 
             // Process compiled jobs as they are completed.
             ControlRandom();
+        } else if (m_fireStarterMode == FIRESTARTER_EVOLVE) {
+            // If the evolve units is set to zero, use the number of gpus.
+            if (m_settings.m_units == 0)
+                m_settings.m_units = CUDAContext::CUDADevices();
+
+            // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
+            if (m_settings.m_processes == 0)
+                m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+
+            // Process compiled jobs as they are completed.
+            ControlEvolve();
         } else {
             // If the evolve units is set to zero, use the number of concurrent hardware threads.
             if (m_settings.m_units == 0)
                 m_settings.m_units = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
 
             // Initial evolution pass.
-            ControlLoop();
+            ControlUnits();
 
             // Optimization evolution pass.
             if (FIRESTARTER_SECOND_PASS && (m_fireStarterMode != FIRESTARTER_OPTIMIZE) && !m_quitControlThread) {
                 m_fireStarterMode = FIRESTARTER_OPTIMIZE;
                 FireSettings();
-                ControlLoop();
+                ControlUnits();
             }
         }
         // Free the frame buffer memory.

@@ -16,9 +16,10 @@
 #define FIRESTARTER_PROCESS  3
 #define FIRESTARTER_TEST     4
 #define FIRESTARTER_RANDOM   5
-#define FIRESTARTER_OPTIMIZE 6
-#define FIRESTARTER_SOLUTION 7
-#define FIRESTARTER_MODE     FIRESTARTER_UNIT
+#define FIRESTARTER_EVOLVE   6
+#define FIRESTARTER_OPTIMIZE 7
+#define FIRESTARTER_SOLUTION 8
+#define FIRESTARTER_MODE     FIRESTARTER_RANDOM
 
 #if 1
 #define FIRESTARTER_CODE_UNITS              1
@@ -59,8 +60,8 @@
 #define FIRESTARTER_UNIT_PRECISION          0
 #define FIRESTARTER_UNIT_EVOLVE             FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_UNIT_ATTEMPTS           32
-//#define FIRESTARTER_UNIT_SEED             0
-#define FIRESTARTER_UNIT_SEED               7988
+#define FIRESTARTER_UNIT_SEED               0
+//#define FIRESTARTER_UNIT_SEED               7988
 #define FIRESTARTER_UNIT_SCALE              0.1f
 #define FIRESTARTER_UNIT_START_SCALE        4.0f
 #define FIRESTARTER_UNIT_START_RESULT       10.0f
@@ -74,7 +75,7 @@
 #define FIRESTARTER_PROCESS_PRECISION       256
 #define FIRESTARTER_PROCESS_EVOLVE          FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_PROCESS_ATTEMPTS        32
-#define FIRESTARTER_PROCESS_SEED            320
+#define FIRESTARTER_PROCESS_SEED            7988
 #define FIRESTARTER_PROCESS_SCALE           0.1f
 #define FIRESTARTER_PROCESS_START_SCALE     4.0f
 #define FIRESTARTER_PROCESS_START_RESULT    10.0f
@@ -101,11 +102,25 @@
 #define FIRESTARTER_RANDOM_GENERATIONS      100
 #define FIRESTARTER_RANDOM_PRECISION        0
 #define FIRESTARTER_RANDOM_EVOLVE           FIRESTARTER_EVOLVE_BEST
-#define FIRESTARTER_RANDOM_ATTEMPTS         10000
+#define FIRESTARTER_RANDOM_ATTEMPTS         10
 #define FIRESTARTER_RANDOM_SEED             0
 #define FIRESTARTER_RANDOM_SCALE            0.1f
 #define FIRESTARTER_RANDOM_START_SCALE      4.0f
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
+
+#define FIRESTARTER_EVOLVE_UNITS            16
+#define FIRESTARTER_EVOLVE_PROCESSES        1
+#define FIRESTARTER_EVOLVE_POPULATION       4352 * 16
+#define FIRESTARTER_EVOLVE_ITERATIONS       256
+#define FIRESTARTER_EVOLVE_CANDIDATES       16
+#define FIRESTARTER_EVOLVE_GENERATIONS      100
+#define FIRESTARTER_EVOLVE_PRECISION        256
+#define FIRESTARTER_EVOLVE_EVOLVE           FIRESTARTER_EVOLVE_BEST
+#define FIRESTARTER_EVOLVE_ATTEMPTS         32
+#define FIRESTARTER_EVOLVE_SEED             7988
+#define FIRESTARTER_EVOLVE_SCALE            0.1f
+#define FIRESTARTER_EVOLVE_START_SCALE      4.0f
+#define FIRESTARTER_EVOLVE_START_RESULT     10.0f
 
 #define FIRESTARTER_OPTIMIZE_UNITS          1
 #define FIRESTARTER_OPTIMIZE_PROCESSES      0
@@ -173,6 +188,8 @@ public:
                 return "FIRESTARTER_TEST";
             case FIRESTARTER_RANDOM:
                 return "FIRESTARTER_RANDOM";
+            case FIRESTARTER_EVOLVE:
+                return "FIRESTARTER_EVOLVE";
             case FIRESTARTER_OPTIMIZE:
                 return "FIRESTARTER_OPTIMIZE";
             case FIRESTARTER_SOLUTION:
@@ -287,6 +304,22 @@ public:
                 m_scale =       FIRESTARTER_RANDOM_SCALE;
                 m_startScale =  FIRESTARTER_RANDOM_START_SCALE;
                 m_startResult = FIRESTARTER_RANDOM_START_RESULT;
+                break;
+
+            case FIRESTARTER_EVOLVE:
+                m_units =       FIRESTARTER_EVOLVE_UNITS;
+                m_processes =   FIRESTARTER_EVOLVE_PROCESSES;
+                m_population =  FIRESTARTER_EVOLVE_POPULATION;
+                m_iterations =  FIRESTARTER_EVOLVE_ITERATIONS;
+                m_candidates =  FIRESTARTER_EVOLVE_CANDIDATES;
+                m_generations = FIRESTARTER_EVOLVE_GENERATIONS;
+                m_precision =   FIRESTARTER_EVOLVE_PRECISION;
+                m_evolve =      FIRESTARTER_EVOLVE_EVOLVE;
+                m_attempts =    FIRESTARTER_EVOLVE_ATTEMPTS;
+                m_seed =        FIRESTARTER_EVOLVE_SEED;
+                m_scale =       FIRESTARTER_EVOLVE_SCALE;
+                m_startScale =  FIRESTARTER_EVOLVE_START_SCALE;
+                m_startResult = FIRESTARTER_EVOLVE_START_RESULT;
                 break;
 
             case FIRESTARTER_OPTIMIZE:

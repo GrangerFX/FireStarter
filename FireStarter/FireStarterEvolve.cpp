@@ -1,9 +1,9 @@
-#include "FireStarterRandom.h"
+#include "FireStarterEvolve.h"
 #include "FireStarterGenerate.h"
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
-void FireStarterRandom::RandomGenerate(void)
+void FireStarterEvolve::EvolveGenerate(void)
 {
     DispatchAsync([this] {
 #if 0
@@ -36,17 +36,10 @@ void FireStarterRandom::RandomGenerate(void)
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
             m_manager->AddCode(job);
         }
-
-        // Send a blank job to each client to let it know the work is complete.
-        for (unsigned int i = 0; i < m_settings.m_processes; i++) {
-            FireStarterCompilerJob* job = m_manager->GetFree();
-            if (job)
-                m_manager->AddCode(job);
-        }
     });
-} // RandomGenerate
+} // EvolveGenerate
 
-FireStarterRandom::FireStarterRandom(FireStarterSettings& settings, FireStarterCompilerManager* manager)
+FireStarterEvolve::FireStarterEvolve(FireStarterSettings& settings, FireStarterCompilerManager* manager)
 {
     m_settings = settings;
     m_manager = manager;
@@ -56,12 +49,12 @@ FireStarterRandom::FireStarterRandom(FireStarterSettings& settings, FireStarterC
             FireStarterCompiler* compiler = new FireStarterCompiler(process, m_manager);
             m_compilers.push_back(compiler);
         }
-        RandomGenerate();
+        EvolveGenerate();
     }
-} // FireStarterRandom
+} // FireStarterEvolve
 
-FireStarterRandom::~FireStarterRandom(void)
+FireStarterEvolve::~FireStarterEvolve(void)
 {
     for (FireStarterCompiler* compiler : m_compilers)
         delete compiler;
-} // ~FireStarterRandom
+} // ~FireStarterEvolve

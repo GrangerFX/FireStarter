@@ -1,9 +1,6 @@
 #include "FireCompiler.h"
 #include "CUDACompile.h"
 
-#define COMPILE_INIT    "CompileInit"
-#define COMPILE_EXECUTE "CompileExecute"
-
 void FireCompiler::Terminate(void)
 {
 	m_terminate = true;

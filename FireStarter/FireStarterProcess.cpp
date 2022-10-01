@@ -4,7 +4,7 @@
 #define PIPE_BUFFER_SIZE   512
 #define TEST_CONNECTION 1
 #define TEST_TERMINATE 0
-#define TEST_OUTPUT 0
+#define TEST_OUTPUT 1
 #if TEST_OUTPUT
 #define TESTPRINTF printf
 #else
@@ -123,12 +123,6 @@ bool FireStarterProcess::SendPacket(const FireStarterPacket& packet)
     return SendData(&size, sizeof(size_t)) && SendData(packet.data(), size);
 } // SendPacket
 
-bool FireStarterProcess::SendCommand(const std::string& command)
-{
-    FireStarterPacket packet(command);
-    return SendPacket(packet);
-} // SendCommand
-
 bool FireStarterProcess::ReceivePacket(FireStarterPacket& packet, const std::string& command)
 {
     size_t size = 0;
@@ -155,6 +149,18 @@ bool FireStarterProcess::ReceivePacket(FireStarterPacket& packet, const std::str
     }
     return true;
 } // ReceivePacket
+
+bool FireStarterProcess::SendCommand(const std::string& command)
+{
+    FireStarterPacket packet(command);
+    return SendPacket(packet);
+} // SendCommand
+
+bool FireStarterProcess::ReceiveCommand(const std::string& command)
+{
+    FireStarterPacket packet(command);
+    return ReceivePacket(packet, command);
+} // ReceiveCommand
 
 bool FireStarterProcess::SendString(const std::string& string)
 {

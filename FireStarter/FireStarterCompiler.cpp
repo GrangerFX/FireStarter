@@ -1,8 +1,8 @@
 #include "FireStarterCompiler.h"
 #include "CUDACompile.h"
 
-#define COMPILE_INIT    "CompileInit"
 #define COMPILE_EXECUTE "CompileExecute"
+#define COMPILE_FINISH  "CompileFinish"
 
 #if FIRESTARTERCOMPILER_LOGGING
 #define LOG printf
@@ -141,6 +141,16 @@ void FireStarterCompiler::CompilerServer(void)
     if (!m_process->ShouldTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCode();
         if (job) {
+            if (job->m_program.empty()) {
+#if FIRESTARTERCOMPILER_LOGGING
+                LOG("Server %llu: Finished job.\n", m_process->ProcessIndex());
+#endif
+                m_process->SendCommand(COMPILE_FINISH);
+                m_process->ReceiveCommand(COMPILE_FINISH);
+                m_process->Terminate();
+                return;
+            }
+
 #if FIRESTARTERCOMPILER_LOGGING
             LOG("Server %llu: Code:%d\n", m_process->ProcessIndex(), job->m_state.m_generation);
 #endif
@@ -220,6 +230,12 @@ void FireStarterCompiler::CompilerClient(void)
                 } else {
                     LOG("Client %llu: Bad compile command data!\n", m_process->ProcessIndex());
                 }
+            } else if (command == COMPILE_FINISH) {
+                FireStarterPacket sendPacket(COMPILE_FINISH);
+                m_process->Terminate();
+#if FIRESTARTERCOMPILER_LOGGING
+                LOG("Client %llu: Finish command received.\n", m_process->ProcessIndex());
+#endif
             } else {
                 // Error: Unknown command!
                 result = false;
@@ -239,7 +255,7 @@ void FireStarterCompiler::CompilerClient(void)
         if (!m_process->ShouldTerminate())
             DispatchAsync([this] { CompilerClient(); });
     };
-} // Client
+} // CompilerClient
 
 FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process, FireStarterCompilerManager* manager)
 {

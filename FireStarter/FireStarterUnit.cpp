@@ -32,13 +32,13 @@ void FireStarterUnit::UpdateEvolveStates(void)
     m_state.m_generation = generation;
 } // UpdateEvolveStates
 
-void FireStarterUnit::EvolveGenerate(void)
+void FireStarterUnit::GenerateCode(void)
 {
     for (FireStarterContext& context : m_contexts)
         context.EvolveCompile(m_evolveCode);
-} // EvolveGenerate
+} // GenerateCode
 
-void FireStarterUnit::OptimizeGenerate(void)
+void FireStarterUnit::GenerateOptimize(void)
 {
     // Generate the evaluate and optimize code
     std::string evaluateCode;
@@ -53,9 +53,9 @@ void FireStarterUnit::OptimizeGenerate(void)
     // Compile the new code.
     for (FireStarterContext& context : m_contexts)
         context.OptimizeCompile(code);
-} // OptimizeGenerate
+} // GenerateOptimize
 
-void FireStarterUnit::UnitGenerate(void)
+void FireStarterUnit::GenerateUnit(void)
 {
     // Evolve each state.
     if (!m_state.m_generation)
@@ -65,8 +65,8 @@ void FireStarterUnit::UnitGenerate(void)
     m_state.m_program.OptimizeRegisters(true);
 
     // Generate the unit code for the current generation
-    OptimizeGenerate();
-} // UnitGenerate
+    GenerateOptimize();
+} // GenerateUnit
 
 void FireStarterUnit::SyncContexts(void)
 {
@@ -74,7 +74,7 @@ void FireStarterUnit::SyncContexts(void)
         context.Syncronize();
 } // SyncContexts
 
-void FireStarterUnit::EvolveGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
+void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
@@ -301,43 +301,44 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
     m_state.m_bestIndex = bestIndex;
 } // OptimizeVaraitions
 
-void FireStarterUnit::EvolveExecute(void)
+void FireStarterUnit::ExecuteCode(void)
 {
     // Generate the code for the first generation.
-    EvolveGenerate();
+    GenerateCode();
 
     // Evolve the program instructions.
-    EvolveGenerations(0, m_firstVariation, m_lastVariation);
+    CodeGenerations(0, m_firstVariation, m_lastVariation);
 
     // Increment the generation.
     m_state.m_generation++;
-} // EvolveExecute
+} // ExecuteCode
 
-void FireStarterUnit::OptimizeExecute(void)
+void FireStarterUnit::ExecuteOptimize(void)
 {
     // Generate the code for the first generation.
     if (!m_state.m_generation)
-        OptimizeGenerate();
+        GenerateOptimize();
 
     // Evolve the program data.
     OptimizeVariations(0);
-} // OptimizeExecute
+} // ExecuteOptimize
 
-void FireStarterUnit::UnitExecute(void)
+void FireStarterUnit::ExecuteUnit(void)
 {
     // Evolve, generate and compile the program.
-    UnitGenerate();
+    GenerateUnit();
 
     // Evolve the program data.
     OptimizeVariations(1);
-} // UnitExecute
+} // ExecuteUnit
 
-bool FireStarterUnit::JobCompile(FireStarterCompilerJob* job)
+bool FireStarterUnit::CompileJob(FireStarterCompilerJob* job)
 {
+    // Used to test the compilation of a job in the main process.
     return CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
-} // JobCompile
+} // CompileJob
 
-bool FireStarterUnit::JobExecute(FireStarterCompilerJob* job, std::atomic<float> &atomicResult, bool skipVariations)
+bool FireStarterUnit::ExecuteJob(FireStarterCompilerJob* job, std::atomic<float> &atomicResult, bool skipVariations)
 {
     if (!job)
         return false;
@@ -393,33 +394,43 @@ bool FireStarterUnit::JobExecute(FireStarterCompilerJob* job, std::atomic<float>
     }
     job->m_state = m_state;
     return true;
-} // JobExecute
+} // ExecuteJob
 
-void FireStarterUnit::RandomExecute(void)
+void FireStarterUnit::ExecuteRandom(void)
 {
     static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
     if (!WillTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCompile();
-        if (JobExecute(job, g_atomicResult, FIRESTARTER_RANDOM_SKIPGENERATIONS)) {  // Returns true if the job was compiled and executed successfully.
+        if (ExecuteJob(job, g_atomicResult, FIRESTARTER_RANDOM_SKIPGENERATIONS)) {  // Returns true if the job was compiled and executed successfully.
             m_compilerManager->AddComplete(job);
             if (!WillTerminate())
-                DispatchAsync([this] { RandomExecute(); });
+                DispatchAsync([this] { ExecuteRandom(); });
         }
      }
-} // RandomExecute
+} // ExecuteRandom
+
+void FireStarterUnit::ExecuteEvolve(void)
+{
+    static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
+    if (!WillTerminate()) {
+        FireStarterCompilerJob* job = m_compilerManager->GetCompile();
+        if (ExecuteJob(job, g_atomicResult, FIRESTARTER_RANDOM_SKIPGENERATIONS)) {  // Returns true if the job was compiled and executed successfully.
+            m_compilerManager->AddComplete(job);
+            if (!WillTerminate())
+                DispatchAsync([this] { ExecuteEvolve(); });
+        }
+    }
+} // ExecuteEvolve
 
 bool FireStarterUnit::LoadCode(void)
 {
-    if (m_codeLoaded)
-        return true;
-    if (FireStarterCode::LoadCode("Evolve.cu", m_evolveCode) && FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
-        m_codeLoaded = true;
-        return true;
-    } else {
-        m_evolveCode.clear();
-        m_optimizeCode.clear();
-        return false;
+    static bool codeLoaded = false;
+    if (!codeLoaded) {
+        FireStarterCode::LoadCode("Evolve.cu", m_evolveCode);
+        FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode);
+        codeLoaded = true;
     }
+    return !(m_evolveCode.empty() || m_optimizeCode.empty());
 } // LoadCode
 
 void FireStarterUnit::Deallocate(void)
@@ -518,45 +529,31 @@ void FireStarterUnit::GetState(FireStarterState& state)
 
 std::string FireStarterUnit::GetEvolveCode(void)
 {
-    std::string evolveCode;
-    DispatchSync([this, &evolveCode] {
-        if (LoadCode())
-            evolveCode = m_evolveCode;
-    });
-    return evolveCode;
+    LoadCode();
+    return m_evolveCode;
 } // GetEvolveCode
 
 std::string FireStarterUnit::GetOptimizeCode(void)
 {
-    std::string optimizeCode;
-    DispatchSync([this, &optimizeCode] {
-        if (LoadCode())
-            optimizeCode = m_optimizeCode;
-        });
-    return optimizeCode;
+    LoadCode();
+    return m_optimizeCode;
 } // GetOptimizeCode
 
-void FireStarterUnit::StartRandom(const FireStarterState& state, FireStarterCompilerManager* manager)
+void FireStarterUnit::StartRandom(FireStarterCompilerManager* manager)
 {
-    m_settings = state.Settings();
     m_compilerManager = manager;
-    m_initState = state;
-    m_state = state;
-    m_firstVariation = 0;
-    m_lastVariation = m_settings.m_variations - 1;
-
-    if (LoadCode()) {
-        DispatchAsync([this] {
-            Allocate();
-            RandomExecute();
-        });
-    }
+    DispatchAsync([this] {
+        ExecuteRandom();
+    });
 } // StartRandom
 
-bool FireStarterUnit::FinishRandom(void)
+void FireStarterUnit::StartEvolve(FireStarterCompilerManager* manager)
 {
-    return m_state.m_generation >= m_settings.m_attempts;
-} // FinishRandom
+    m_compilerManager = manager;
+    DispatchAsync([this] {
+        ExecuteEvolve();
+    });
+} // StartEvolve
 
 void FireStarterUnit::InitUnit(const FireStarterState& initState)
 {
@@ -565,21 +562,20 @@ void FireStarterUnit::InitUnit(const FireStarterState& initState)
     m_state = initState;
     m_firstVariation = 0;
     m_lastVariation = m_settings.m_variations - 1;
- 
+    LoadCode();
     DispatchAsync([this] {
-        if (LoadCode()) {
-            Allocate();
-            if (m_server) {
-                FireStarterPacket sendPacket(UNIT_INIT);
-                sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
-                FireStarterState sendState(m_initState);
-                sendState.Packetize(sendPacket);
-                m_process->SendPacket(sendPacket);
-                FireStarterPacket receivePacket;
-                m_process->ReceivePacket(receivePacket, UNIT_INIT);
-            }
-        }
+        Allocate();
     });
+    if (m_server)
+        DispatchAsync([this] {
+            FireStarterPacket sendPacket(UNIT_INIT);
+            sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
+            FireStarterState sendState(m_initState);
+            sendState.Packetize(sendPacket);
+            m_process->SendPacket(sendPacket);
+            FireStarterPacket receivePacket;
+            m_process->ReceivePacket(receivePacket, UNIT_INIT);
+        });
 } // InitUnit
 
 void FireStarterUnit::Execute(void)
@@ -593,17 +589,16 @@ void FireStarterUnit::Execute(void)
         } else {
             switch (m_settings.m_mode) {
                 case FIRESTARTER_CODE:
-                    EvolveExecute();
+                    ExecuteCode();
                     break;
                 case FIRESTARTER_UNIT:
-                    UnitExecute();
-                    break;
-                case FIRESTARTER_RANDOM:
-                    RandomExecute();
+                    ExecuteUnit();
                     break;
                 case FIRESTARTER_OPTIMIZE:
-                    OptimizeExecute();
+                    ExecuteOptimize();
                     break;
+                default:
+                    break;  // Error!
             }
         }
     });
@@ -645,24 +640,6 @@ void FireStarterUnit::Sync(FireStarterState* allStates)
     });
 } // Sync
 
-void FireStarterUnit::Start(void)
-{
-    if (m_process)
-        DispatchAsync([this] {
-            m_process->Start();
-        });
-} // Start
-
-void FireStarterUnit::Stop(void)
-{
-    if (m_process)
-        DispatchAsync([this] {
-            m_process->Stop();
-            m_process->Terminate();
-            m_process = nullptr;
-        });
-} // Stop
-
 void FireStarterUnit::Client(void)
 {
     if (!m_process->ShouldTerminate())
@@ -680,7 +657,7 @@ void FireStarterUnit::Client(void)
                         InitUnit(receiveState);
                     m_process->SendCommand(UNIT_INIT);
                 } else if (command == UNIT_EXECUTE) {
-                    Execute();
+                    ExecuteOptimize();
                     result = result && m_process->SendCommand(UNIT_EXECUTE);
                 } else if (command == UNIT_UPDATE) {
                     FireStarterPacket sendPacket(UNIT_UPDATE);
@@ -708,17 +685,28 @@ FireStarterUnit::FireStarterUnit(unsigned int index, FireStarterProcess* process
     m_gpus = 1;
     m_process = process;
     m_server = m_process && !m_process->IsClient();
+    if (m_process)
+        DispatchAsync([this] {
+            m_process->Start();
+        });
 } // FireStarterUnit
 
 FireStarterUnit::FireStarterUnit(unsigned int index, unsigned int gpus) : m_state(m_settings)
 {
     m_unitIndex = index;
     m_gpus = gpus;
+    m_process = nullptr;
+    m_server = false;
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)
 {
-    Stop();
+    if (m_process)
+        DispatchAsync([this] {
+            m_process->Stop();
+            m_process->Terminate();
+            m_process = nullptr;
+        });
     TerminateThread();
     Deallocate();
 } // ~FireStarterUnit
