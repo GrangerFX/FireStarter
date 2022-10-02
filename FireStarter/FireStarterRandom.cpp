@@ -6,10 +6,12 @@
 void FireStarterRandom::RandomGenerate(void)
 {
     DispatchAsync([this] {
-#if 0
+#if 1
+        // Generate code using the GPU.
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
 #else
+        // Generate code using the CPU.
         FireStarterGenerate generate;
 #endif
         unsigned int generation = 0;
