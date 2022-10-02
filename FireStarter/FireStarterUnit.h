@@ -182,7 +182,7 @@ public:
     bool ExecuteJob(FireStarterCompilerJob* job, std::atomic<float>& atomicResult, bool skipVariations = true);
     void StartRandom(FireStarterCompilerManager *manager);
     void StartEvolve(FireStarterCompilerManager* manager);
-    void InitUnit(const FireStarterState& initState);
+    bool InitUnit(const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);
     void Sync(FireStarterState* allStates);

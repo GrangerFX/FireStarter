@@ -427,11 +427,15 @@ void FireStarterUnit::ExecuteEvolve(void)
 bool FireStarterUnit::LoadCode(void)
 {
     static bool codeLoaded = false;
+    static std::string evolveCode;
+    static std::string optimizeCode;
     if (!codeLoaded) {
-        FireStarterCode::LoadCode("Evolve.cu", m_evolveCode);
-        FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode);
+        FireStarterCode::LoadCode("Evolve.cu", evolveCode);
+        FireStarterCode::LoadCode("Optimize.cu", optimizeCode);
         codeLoaded = true;
     }
+    m_evolveCode = evolveCode;
+    m_optimizeCode = optimizeCode;
     return !(m_evolveCode.empty() || m_optimizeCode.empty());
 } // LoadCode
 
@@ -557,14 +561,15 @@ void FireStarterUnit::StartEvolve(FireStarterCompilerManager* manager)
     });
 } // StartEvolve
 
-void FireStarterUnit::InitUnit(const FireStarterState& initState)
+bool FireStarterUnit::InitUnit(const FireStarterState& initState)
 {
     m_settings = initState.Settings();
     m_initState = initState;
     m_state = initState;
     m_firstVariation = 0;
     m_lastVariation = m_settings.m_variations - 1;
-    LoadCode();
+    if (!LoadCode())
+        return false;
     DispatchAsync([this] {
         Allocate();
     });
@@ -578,6 +583,7 @@ void FireStarterUnit::InitUnit(const FireStarterState& initState)
             FireStarterPacket receivePacket;
             m_process->ReceivePacket(receivePacket, UNIT_INIT);
         });
+    return true;
 } // InitUnit
 
 void FireStarterUnit::Execute(void)

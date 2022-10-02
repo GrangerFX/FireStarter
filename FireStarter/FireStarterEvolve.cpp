@@ -6,10 +6,12 @@
 void FireStarterEvolve::EvolveGenerate(void)
 {
     DispatchAsync([this] {
-#if 0
+#if 1
+        // Generate code using the GPU.
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
 #else
+        // Generate code using the CPU.
         FireStarterGenerate generate;
 #endif
         unsigned int generation = 0;
@@ -18,10 +20,15 @@ void FireStarterEvolve::EvolveGenerate(void)
             if (!job)
                 break;
 
+            // Randomize one instruction per state except for the first generation.
             job->m_state.InitState(m_settings);
+            unsigned int programSeed = job->m_state.StateSeed();
+            job->m_state.m_program.RandomProgram(programSeed);
             job->m_state.m_generation = generation++;
-            unsigned int stateSeed = job->m_state.StateSeed();
-            job->m_state.m_program.RandomProgram(stateSeed);
+            if (job->m_state.m_generation) {
+                unsigned int instructionSeed = job->m_state.StateSeed();
+                job->m_state.m_program.RandomInstruction(instructionSeed);
+            }
             job->m_state.m_program.OptimizeRegisters(true);
 
             // Generate the optimize code
@@ -36,6 +43,10 @@ void FireStarterEvolve::EvolveGenerate(void)
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
             m_manager->AddCode(job);
         }
+
+        // Send a null job to each client to let it know the work is complete.
+        for (unsigned int i = 0; i < m_settings.m_processes; i++)
+            m_manager->AddCode(nullptr);
     });
 } // EvolveGenerate
 

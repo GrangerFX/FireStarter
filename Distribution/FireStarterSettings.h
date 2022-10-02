@@ -19,7 +19,7 @@
 #define FIRESTARTER_EVOLVE   6
 #define FIRESTARTER_OPTIMIZE 7
 #define FIRESTARTER_SOLUTION 8
-#define FIRESTARTER_MODE     FIRESTARTER_RANDOM
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #if 1
 #define FIRESTARTER_CODE_UNITS              1
@@ -102,21 +102,21 @@
 #define FIRESTARTER_RANDOM_GENERATIONS      100
 #define FIRESTARTER_RANDOM_PRECISION        0
 #define FIRESTARTER_RANDOM_EVOLVE           FIRESTARTER_EVOLVE_BEST
-#define FIRESTARTER_RANDOM_ATTEMPTS         10
+#define FIRESTARTER_RANDOM_ATTEMPTS         10000
 #define FIRESTARTER_RANDOM_SEED             0
 #define FIRESTARTER_RANDOM_SCALE            0.1f
 #define FIRESTARTER_RANDOM_START_SCALE      4.0f
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
 
-#define FIRESTARTER_EVOLVE_UNITS            16
-#define FIRESTARTER_EVOLVE_PROCESSES        1
+#define FIRESTARTER_EVOLVE_UNITS            2
+#define FIRESTARTER_EVOLVE_PROCESSES        6
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 16
 #define FIRESTARTER_EVOLVE_ITERATIONS       256
 #define FIRESTARTER_EVOLVE_CANDIDATES       16
 #define FIRESTARTER_EVOLVE_GENERATIONS      100
 #define FIRESTARTER_EVOLVE_PRECISION        256
 #define FIRESTARTER_EVOLVE_EVOLVE           FIRESTARTER_EVOLVE_BEST
-#define FIRESTARTER_EVOLVE_ATTEMPTS         32
+#define FIRESTARTER_EVOLVE_ATTEMPTS         100
 #define FIRESTARTER_EVOLVE_SEED             7988
 #define FIRESTARTER_EVOLVE_SCALE            0.1f
 #define FIRESTARTER_EVOLVE_START_SCALE      4.0f
@@ -212,6 +212,24 @@ public:
             return "0";
         }
     } // Evolve
+
+    inline void CopyModeSettings(FireStarterSettings& source)
+    {
+        m_mode = source.m_mode;
+        m_units = source.m_units;
+        m_processes = source.m_processes;
+        m_population = source.m_population;
+        m_iterations = source.m_iterations;
+        m_candidates = source.m_candidates;
+        m_generations = source.m_generations;
+        m_precision = source.m_precision;
+        m_evolve = source.m_evolve;
+        m_attempts = source.m_attempts;
+        m_seed = source.m_seed;
+        m_scale = source.m_scale;
+        m_startScale = source.m_startScale;
+        m_startResult = source.m_startResult;
+    } // CopyModeSettings
 
     inline FireStarterSettings(unsigned int evolveMode = 0)
     {

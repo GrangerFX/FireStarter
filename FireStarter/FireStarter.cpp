@@ -191,6 +191,7 @@ void FireStarter::ClearUnits(void)
     }
     m_units.clear();
     m_server.ClearProcesses();
+    m_allStates.clear();
 } // ClearUnits
 
 void FireStarter::ControlDeallocate(void)
@@ -257,7 +258,8 @@ void FireStarter::ControlTest(void)
 
     // Create the unit.
     FireStarterUnit* unit = new FireStarterUnit(0);
-    unit->InitUnit(controlState);
+    if (!unit->InitUnit(controlState))
+        return;
     unit->Synchronize();
     std::string optimizeCode = unit->GetOptimizeCode();
     m_units.push_back(unit);
@@ -365,58 +367,62 @@ void FireStarter::ControlRandom(void)
     FireStarterRandom* randomGenerator = new FireStarterRandom(m_settings, compilerManager);
 
     // Create the units.
+    bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
-        unit->InitUnit(controlState);
-        unit->StartRandom(compilerManager);
-        m_units.push_back(unit);
+        if (unit->InitUnit(controlState)) {
+            unit->StartRandom(compilerManager);
+            m_units.push_back(unit);
+        } else
+            result = false;
     }
+    if (result) {
+        // Loop until the the completion condition or the host program is quit.
+        m_controlTimer.Start();
+        unsigned int generation = 0;
+        while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
+            // Note: The jobs may be received out of order.
+            FireStarterCompilerJob* job = compilerManager->GetComplete();
+            if (!job)
+                break;
 
-    // Loop until the the completion condition or the host program is quit.
-    m_controlTimer.Start();
-    unsigned int generation = 0;
-    while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
-        // Note: The jobs may be received out of order.
-        FireStarterCompilerJob* job = compilerManager->GetComplete();
-        if (!job)
-            break;
+            controlState = job->m_state;
+            m_result = controlState.MaxResult();
+            m_totalResult += m_result;
+            generation = controlState.m_generation;
 
-        controlState = job->m_state;
-        m_result = controlState.MaxResult();
-        m_totalResult += m_result;
-        generation = controlState.m_generation;
+            // Test the current state.
+            float testError = controlState.TestResult();
 
-        // Test the current state.
-        float testError = controlState.TestResult();
+            // Increment the generation and calculate the average time per generation.
+            m_averageResult = m_totalResult / (generation + 1);
+            double generationTime = m_controlTimer.Duration() / (generation + 1);
+            if (m_result < m_bestResult) {
+                m_bestState = controlState;
+                m_bestResult = m_result;
 
-        // Increment the generation and calculate the average time per generation.
-        m_averageResult = m_totalResult / (generation + 1);
-        double generationTime = m_controlTimer.Duration() / (generation + 1);
-        if (m_result < m_bestResult) {
-            m_bestState = controlState;
-            m_bestResult = m_result;
- 
-            // Update the best code on disk.
-            SaveBestState();
-            SaveBestCode();
-            SaveSolution(generation, generationTime);
+                // Update the best code on disk.
+                SaveBestState();
+                SaveBestCode();
+                SaveSolution(generation, generationTime);
 
-            // Erase the frame buffer
-            m_buffer.Erase();
+                // Erase the frame buffer
+                m_buffer.Erase();
 
-            // Draw the graphs for both variations.
-            FireShow();
-            GetMainThread()->DispatchSync([this] {
-                const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-                RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
-            });
+                // Draw the graphs for both variations.
+                FireShow();
+                GetMainThread()->DispatchSync([this] {
+                    const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+                    RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+                    });
+            }
+
+            // Update the render status after every pass.
+            RenderStatus(controlState, generationTime, testError);
+
+            // Add the job to the free list.
+            compilerManager->AddFree(job);
         }
-
-        // Update the render status after every pass.
-        RenderStatus(controlState, generationTime, testError);
-
-        // Add the job to the free list.
-        compilerManager->AddFree(job);
     }
 
     // Cancel any waiting jobs
@@ -443,68 +449,73 @@ void FireStarter::ControlEvolve(void)
 
     // Create the shared compiler
     FireStarterCompilerManager* compilerManager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
-    FireStarterRandom* randomGenerator = new FireStarterRandom(m_settings, compilerManager);
+    FireStarterEvolve* evolveGenerator = new FireStarterEvolve(m_settings, compilerManager);
 
     // Create the units.
+    bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
-        unit->InitUnit(controlState);
-        unit->StartEvolve(compilerManager);
-        m_units.push_back(unit);
+        if (unit->InitUnit(controlState)) {
+            unit->StartEvolve(compilerManager);
+            m_units.push_back(unit);
+        } else
+            result = false;
     }
 
-    // Loop until the the completion condition or the host program is quit.
-    m_controlTimer.Start();
-    unsigned int generation = 0;
-    while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
-        // Note: The jobs may be received out of order.
-        FireStarterCompilerJob* job = compilerManager->GetComplete();
-        if (!job)
-            break;
+    if (result) {
+        // Loop until the the completion condition or the host program is quit.
+        m_controlTimer.Start();
+        unsigned int generation = 0;
+        while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
+            // Note: The jobs may be received out of order.
+            FireStarterCompilerJob* job = compilerManager->GetComplete();
+            if (!job)
+                break;
 
-        controlState = job->m_state;
-        m_result = controlState.MaxResult();
-        m_totalResult += m_result;
-        generation = controlState.m_generation;
+            controlState = job->m_state;
+            m_result = controlState.MaxResult();
+            m_totalResult += m_result;
+            generation = controlState.m_generation;
 
-        // Test the current state.
-        float testError = controlState.TestResult();
+            // Test the current state.
+            float testError = controlState.TestResult();
 
-        // Increment the generation and calculate the average time per generation.
-        m_averageResult = m_totalResult / (generation + 1);
-        double generationTime = m_controlTimer.Duration() / (generation + 1);
-        if (m_result < m_bestResult) {
-            m_bestState = controlState;
-            m_bestResult = m_result;
+            // Increment the generation and calculate the average time per generation.
+            m_averageResult = m_totalResult / (generation + 1);
+            double generationTime = m_controlTimer.Duration() / (generation + 1);
+            if (m_result < m_bestResult) {
+                m_bestState = controlState;
+                m_bestResult = m_result;
 
-            // Update the best code on disk.
-            SaveBestState();
-            SaveBestCode();
-            SaveSolution(generation, generationTime);
+                // Update the best code on disk.
+                SaveBestState();
+                SaveBestCode();
+                SaveSolution(generation, generationTime);
 
-            // Erase the frame buffer
-            m_buffer.Erase();
+                // Erase the frame buffer
+                m_buffer.Erase();
 
-            // Draw the graphs for both variations.
-            FireShow();
-            GetMainThread()->DispatchSync([this] {
-                const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-                RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
-                });
+                // Draw the graphs for both variations.
+                FireShow();
+                GetMainThread()->DispatchSync([this] {
+                    const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+                    RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+                    });
+            }
+
+            // Update the render status after every pass.
+            RenderStatus(controlState, generationTime, testError);
+
+            // Add the job to the free list.
+            compilerManager->AddFree(job);
         }
-
-        // Update the render status after every pass.
-        RenderStatus(controlState, generationTime, testError);
-
-        // Add the job to the free list.
-        compilerManager->AddFree(job);
     }
 
     // Cancel any waiting jobs
     compilerManager->Cancel();
 
     // Delete the random code generator.
-    delete randomGenerator;
+    delete evolveGenerator;
 
     // Finish processing and terminate each unit.
     ClearUnits();
@@ -526,91 +537,98 @@ void FireStarter::ControlUnits(void)
         FireStarterState& state = m_allStates[i];
         controlSettings.m_seed = m_settings.m_seed + i; // Note: Different seed for each unit!
         state.InitState(controlSettings);
-        if (m_settings.m_mode == FIRESTARTER_OPTIMIZE)
+        if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
             LoadState(state);
+            state.m_generation = 0;
+            state.m_bestIndex = 0;
+            state.Settings().CopyModeSettings(controlSettings);
+        }
     }
     m_bestState = m_allStates[0];
 
     // Create the units.
+    bool result = true;
     if (m_settings.m_units > 1)
         for (unsigned int i = 0; i < m_settings.m_units; i++) {
             FireStarterProcess* process = m_settings.m_processes ? m_server.AddProcess() : nullptr;
             FireStarterUnit* unit = new FireStarterUnit(i, process);
-            unit->InitUnit(m_allStates[i]);
             m_units.push_back(unit);
+            result &= unit->InitUnit(m_allStates[i]);
         }
     else {
         FireStarterUnit* unit = new FireStarterUnit(0, CUDAContext::CUDADevices());
-        unit->InitUnit(m_allStates[0]);
         m_units.push_back(unit);
+        result = unit->InitUnit(m_allStates[0]);
     }
 
-    // Loop until the the completion condition or the host program is quit.
-    while (!m_quitControlThread) {
-        // Execute a generation for all the units.
-        m_controlTimer.Start();
-        for (FireStarterUnit* unit : m_units)
-            unit->Execute();
+    if (result) {
+        // Loop until the the completion condition or the host program is quit.
+        while (!m_quitControlThread) {
+            // Execute a generation for all the units.
+            m_controlTimer.Start();
+            for (FireStarterUnit* unit : m_units)
+                unit->Execute();
 
-        // Update the states for all the units.
-        for (FireStarterUnit* unit : m_units)
-            unit->Update(m_allStates.data());
+            // Update the states for all the units.
+            for (FireStarterUnit* unit : m_units)
+                unit->Update(m_allStates.data());
 
-        // Update the best data for all the states.
-        m_result = m_settings.m_startResult;
-        bool allFinished = true;
-        bool controlUpdate = false;
-        for (const FireStarterState& state : m_allStates) {
-            float maxResult = state.MaxResult();
-            m_result = fmin(m_result, maxResult);
-            m_totalResult += maxResult;
-            if (m_result < m_bestResult) {
-                m_bestResult = m_result;
-                m_bestState = state;
-                controlUpdate = true;
+            // Update the best data for all the states.
+            m_result = m_settings.m_startResult;
+            bool allFinished = true;
+            bool controlUpdate = false;
+            for (const FireStarterState& state : m_allStates) {
+                float maxResult = state.MaxResult();
+                m_result = fmin(m_result, maxResult);
+                m_totalResult += maxResult;
+                if (m_result < m_bestResult) {
+                    m_bestResult = m_result;
+                    m_bestState = state;
+                    controlUpdate = true;
+                }
+
+                // Update the best code on disk and compile a new FireShow.
+                double generationTime = m_controlTimer.Duration();
+                if (controlUpdate && !m_quitControlThread) {
+                    SaveBestState();
+                    SaveBestCode();
+                    SaveSolution(state.m_generation, generationTime);
+                }
+
+                // Test the best state
+                float testError = m_bestState.TestResult();
+
+                // Update the render status after every pass.
+                m_averageResult = m_totalResult / (state.m_generation * m_allStates.size());
+                RenderStatus(state, generationTime, testError);
+
+                // Is there more work to do?
+                if (state.m_generation - m_bestState.m_generation < m_settings.m_attempts)
+                    allFinished = false;
             }
 
-            // Update the best code on disk and compile a new FireShow.
-            double generationTime = m_controlTimer.Duration();
+            // Send all the states back to all the units.
+            for (FireStarterUnit* unit : m_units)
+                unit->Sync(m_allStates.data());
+
+            // Render the buffer if the best data was updated and the previous buffer was displayed.
             if (controlUpdate && !m_quitControlThread) {
-                SaveBestState();
-                SaveBestCode();
-                SaveSolution(state.m_generation, generationTime);
+                // Erase the frame buffer
+                m_buffer.Erase();
+
+                // Draw the graphs for both variations.
+                FireShow();
+                controlUpdate = false;
+                const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+                GetMainThread()->DispatchSync([this, bufferPixels] {
+                    RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+                    });
             }
 
-            // Test the best state
-            float testError = m_bestState.TestResult();
-
-            // Update the render status after every pass.
-            m_averageResult = m_totalResult / (state.m_generation * m_allStates.size());
-            RenderStatus(state, generationTime, testError);
-
-            // Is there more work to do?
-            if (state.m_generation - m_bestState.m_generation < m_settings.m_attempts)
-                allFinished = false;
+            // Has the completion condition been met?
+            if (allFinished)
+                break;
         }
-
-        // Send all the states back to all the units.
-        for (FireStarterUnit* unit : m_units)
-            unit->Sync(m_allStates.data());
-
-        // Render the buffer if the best data was updated and the previous buffer was displayed.
-        if (controlUpdate && !m_quitControlThread) {
-            // Erase the frame buffer
-            m_buffer.Erase();
-
-            // Draw the graphs for both variations.
-            FireShow();
-            controlUpdate = false;
-            const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-            GetMainThread()->DispatchSync([this, bufferPixels] {
-                RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
-            });
-        }
-
-        // Has the completion condition been met?
-        if (allFinished)
-            break;
     }
 
     // Finish processing and terminate each unit.
@@ -656,6 +674,13 @@ void FireStarter::ControlThread(void)
 
             // Process compiled jobs as they are completed.
             ControlEvolve();
+
+            // Optimization evolution pass.
+            if (FIRESTARTER_SECOND_PASS && !m_quitControlThread) {
+                m_fireStarterMode = FIRESTARTER_OPTIMIZE;
+                FireSettings();
+                ControlUnits();
+            }
         } else {
             // If the evolve units is set to zero, use the number of concurrent hardware threads.
             if (m_settings.m_units == 0)
