@@ -2,7 +2,7 @@
 #include "FireStarterProcess.h"
 #include "FireStarterState.h"
 
-#define FIRESTARTERCOMPILER_LOGGING 1
+#define FIRESTARTERCOMPILER_LOGGING 0
 
 class FireStarterCompilerJob {
 public:

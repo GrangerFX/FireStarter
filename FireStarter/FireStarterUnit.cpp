@@ -405,7 +405,8 @@ void FireStarterUnit::ExecuteRandom(void)
             m_compilerManager->AddComplete(job);
             if (!WillTerminate())
                 DispatchAsync([this] { ExecuteRandom(); });
-        }
+        } else
+            m_compilerManager->AddComplete(nullptr);
      }
 } // ExecuteRandom
 
@@ -418,7 +419,8 @@ void FireStarterUnit::ExecuteEvolve(void)
             m_compilerManager->AddComplete(job);
             if (!WillTerminate())
                 DispatchAsync([this] { ExecuteEvolve(); });
-        }
+        }  else
+            m_compilerManager->AddComplete(nullptr);
     }
 } // ExecuteEvolve
 

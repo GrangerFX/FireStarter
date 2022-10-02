@@ -4,7 +4,7 @@
 #define PIPE_BUFFER_SIZE   512
 #define TEST_CONNECTION 1
 #define TEST_TERMINATE 0
-#define TEST_OUTPUT 1
+#define TEST_OUTPUT 0
 #if TEST_OUTPUT
 #define TESTPRINTF printf
 #else
@@ -42,10 +42,15 @@ size_t FireStarterProcess::ProcessIndex(void)
     return m_processIndex;
 } // ProcessIndex
 
+std::string FireStarterProcess::ProcessPrefix(void)
+{
+    return (m_client ? "Client " : "Server ") + std::to_string(m_processIndex);
+} // ProcessText
+
 void FireStarterProcess::Terminate(void)
 {
     if (m_terminate) {
-        TESTPRINTF("Client will terminate.\n");
+        TESTPRINTF("%s: Will terminate.\n", ProcessPrefix().c_str());
         *m_terminate = true;
     }
 } // Terminate
@@ -115,10 +120,7 @@ bool FireStarterProcess::SendPacket(const FireStarterPacket& packet)
     // Note: Maximum size is 32 bits (4GB).
     // TODO: Break up larger data blocks into smaller chunks if needed.
     const std::string& packetCommand = packet.Command();
-    if (m_client)
-        TESTPRINTF("Client sending command: %s\n", packetCommand.c_str());
-    else
-        TESTPRINTF("Server sending command: %s\n", packetCommand.c_str());
+    TESTPRINTF("%s: Sending command: %s\n", ProcessPrefix().c_str(), packetCommand.c_str());
     size_t size = packet.size();
     return SendData(&size, sizeof(size_t)) && SendData(packet.data(), size);
 } // SendPacket
@@ -139,12 +141,9 @@ bool FireStarterProcess::ReceivePacket(FireStarterPacket& packet, const std::str
         return false;
     }
     const std::string& packetCommand = packet.Command();
-    if (m_client)
-        TESTPRINTF("Client received command: %s\n", packetCommand.c_str());
-    else
-        TESTPRINTF("Server received command: %s\n", packetCommand.c_str());
+    TESTPRINTF("%s: Received command: %s\n", ProcessPrefix().c_str(), packetCommand.c_str());
     if (!command.empty() && (command != packetCommand)) {
-        TESTPRINTF("Error! Received command: %s  Expected command: %s\n", packet.Command().c_str(), command.c_str());
+        TESTPRINTF("%s: Error! Received command: %s  Expected command: %s\n", ProcessPrefix().c_str(), packet.Command().c_str(), command.c_str());
         return false;
     }
     return true;
@@ -281,9 +280,9 @@ bool FireStarterProcess::StartProcess(void)
         // Send the process index to the client.
         bool indexResult = SendData(&m_processIndex, sizeof(m_processIndex));
         if (indexResult)
-            TESTPRINTF("Index sent to client: %llu\n", m_processIndex);
+            TESTPRINTF("%s: Index sent to client: %llu\n", ProcessPrefix().c_str(), m_processIndex);
         else {
-            TESTPRINTF("Failed to send index to client. Error=%d\n", GetLastError());
+            TESTPRINTF("%s: Failed to send index to client. Error=%d\n", ProcessPrefix().c_str(), GetLastError());
             StopProcess();
             return false;
         }
@@ -293,9 +292,9 @@ bool FireStarterProcess::StartProcess(void)
         std::string sendMessage = "Hello from server " + m_pipeName;
         bool sendResult = SendString(sendMessage);
         if (sendResult)
-            TESTPRINTF("Message sent to client: %s\n", sendMessage.c_str());
+            TESTPRINTF("%s: Message sent to client: %s\n", ProcessPrefix().c_str(), sendMessage.c_str());
         else {
-            TESTPRINTF("Message send failed. Error=%d\n", GetLastError());
+            TESTPRINTF("%s: Message send failed. Error=%d\n", ProcessPrefix().c_str(), GetLastError());
             StopProcess();
             return false;
         }
@@ -304,9 +303,9 @@ bool FireStarterProcess::StartProcess(void)
         std::string receiveMessage;
         bool receiveResult = ReceiveString(receiveMessage);
         if (receiveResult)
-            TESTPRINTF("Message received from client: %s\n", receiveMessage.c_str());
+            TESTPRINTF("%s: Message received from client: %s\n", ProcessPrefix().c_str(), receiveMessage.c_str());
         else {
-            TESTPRINTF("Message receive failed. Error=%d\n", GetLastError());
+            TESTPRINTF("%s: Message receive failed. Error=%d\n", ProcessPrefix().c_str(), GetLastError());
             StopProcess();
             return false;
         }
@@ -320,13 +319,13 @@ bool FireStarterProcess::StartProcess(void)
                 // Wait for process to terminate.
                 DWORD result = WaitForSingleObject(m_processInformation.hProcess, 2000); // Wait two seconds.
                 if (!result)
-                    TESTPRINTF("Client terminated.\n");
+                    TESTPRINTF("%s: Client terminated.\n", ProcessPrefix().c_str());
                 else
-                    TESTPRINTF("Client termination timed out. Error=%d\n", result);
+                    TESTPRINTF("%s: Client termination timed out. Error=%d\n", ProcessPrefix().c_str(), result);
                 m_connected = result != 0;
             }
             else
-                TESTPRINTF("Termination command failed. Error=%d.\n", GetLastError());
+                TESTPRINTF("%s: Termination command failed. Error=%d.\n", ProcessPrefix().c_str(), GetLastError());
         }
 #endif
     }
@@ -337,7 +336,7 @@ void FireStarterProcess::StopClient(void)
 {
     if (m_pipe != INVALID_HANDLE_VALUE) {
         CloseHandle(m_pipe);
-        TESTPRINTF("Client disconnected.\n");
+        TESTPRINTF("%s: Disconnected.\n", ProcessPrefix().c_str());
         m_pipe = INVALID_HANDLE_VALUE;
         m_connected = false;
     }
@@ -464,7 +463,6 @@ FireStarterProcess::FireStarterProcess(const std::string& pipeName, const std::s
     m_processPath = processPath;
     m_pipeName = pipeName;
     m_processIndex = index;
-    m_client = false;
 } // FireStarterProcess
 
 FireStarterProcess::FireStarterProcess(const std::string& pipeName, volatile bool* terminate)

@@ -37,12 +37,9 @@ void FireStarterRandom::RandomGenerate(void)
             m_manager->AddCode(job);
         }
 
-        // Send a blank job to each client to let it know the work is complete.
-        for (unsigned int i = 0; i < m_settings.m_processes; i++) {
-            FireStarterCompilerJob* job = m_manager->GetFree();
-            if (job)
-                m_manager->AddCode(job);
-        }
+        // Send a null job to each client to let it know the work is complete.
+        for (unsigned int i = 0; i < m_settings.m_processes; i++)
+            m_manager->AddCode(nullptr);
     });
 } // RandomGenerate
 

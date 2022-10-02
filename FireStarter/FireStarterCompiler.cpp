@@ -14,12 +14,14 @@ void FireStarterJobQueue::Add(FireStarterCompilerJob* job)
     if (WillTerminate())
         return;
     DispatchAsync([this, job] {
-        job->m_next = nullptr;
-        if (m_lastJob)
-            m_lastJob->m_next = job;
-        else
-            m_firstJob = job;
-        m_lastJob = job;
+        if (job) {
+            job->m_next = nullptr;
+            if (m_lastJob)
+                m_lastJob->m_next = job;
+            else
+                m_firstJob = job;
+            m_lastJob = job;
+        }
         m_semaphore.notify();
     });
 } // Add
@@ -139,49 +141,56 @@ void FireStarterCompiler::CompilerServer(void)
 {
     if (!m_process->ShouldTerminate()) {
         FireStarterCompilerJob* job = m_compilerManager->GetCode();
-        if (job) {
+        if (!job) {
 #if FIRESTARTERCOMPILER_LOGGING
-            LOG("Server %llu: Code:%d\n", m_process->ProcessIndex(), job->m_state.m_generation);
+            LOG("%s: Last job received. Terminating process.\n", m_process->ProcessPrefix());
 #endif
-            FireStarterPacket sendPacket(COMPILE_EXECUTE);
-            bool result = true;
-            result = result && sendPacket.Packetize(job->m_state.m_generation);
-            result = result && sendPacket.Packetize(job->m_program);
-            result = result && sendPacket.Packetize(job->m_programName);
-            result = result && sendPacket.Packetize(job->m_options);
-            result = result && m_process->SendPacket(sendPacket);
+            m_process->Stop();
+            m_compilerManager->AddCompile(nullptr);
+            return;
+        }
+
+#if FIRESTARTERCOMPILER_LOGGING
+        LOG("%s: Code:%d\n", m_process->ProcessPrefix(), job->m_state.m_generation);
+#endif
+        FireStarterPacket sendPacket(COMPILE_EXECUTE);
+        bool result = true;
+        result = result && sendPacket.Packetize(job->m_state.m_generation);
+        result = result && sendPacket.Packetize(job->m_program);
+        result = result && sendPacket.Packetize(job->m_programName);
+        result = result && sendPacket.Packetize(job->m_options);
+        result = result && m_process->SendPacket(sendPacket);
+        if (result) {
+            FireStarterPacket receivePacket;
+            result = m_process->ReceivePacket(receivePacket);
             if (result) {
-                FireStarterPacket receivePacket;
-                result = m_process->ReceivePacket(receivePacket);
-                if (result) {
-                    const std::string& command = receivePacket.Command();
-                    if (result && (command == COMPILE_EXECUTE)) {
-                        result = result && receivePacket.Packetize(job->m_ptx);
-                        result = result && receivePacket.Packetize(job->m_log);
-                        if (result) {
+                const std::string& command = receivePacket.Command();
+                if (result && (command == COMPILE_EXECUTE)) {
+                    result = result && receivePacket.Packetize(job->m_ptx);
+                    result = result && receivePacket.Packetize(job->m_log);
+                    if (result) {
 #if FIRESTARTERCOMPILER_LOGGING
-                            LOG("Server %llu: Compile:%d\n", m_process->ProcessIndex(), job->m_state.m_generation);
+                        LOG("%s: Compile:%d\n", m_process->ProcessPrefix(), job->m_state.m_generation);
 #endif
-                            m_compilerManager->AddCompile(job);
-                        } else {
-                            LOG("Server %llu: Unable to receive data!\n", m_process->ProcessIndex());
-                        }
+                        m_compilerManager->AddCompile(job);
                     } else {
-                        LOG("Server %llu: Unknown command:%s\n", m_process->ProcessIndex(), command.c_str());
+                        LOG("%s: Unable to receive data!\n", m_process->ProcessPrefix());
                     }
                 } else {
-                    LOG("Server %llu: Unable to send data!\n", m_process->ProcessIndex());
+                    LOG("%s: Unknown command:%s\n", m_process->ProcessPrefix(), command.c_str());
                 }
             } else {
-                LOG("Server %llu: Client terminated!\n", m_process->ProcessIndex());
+                LOG("%s: Unable to send data!\n", m_process->ProcessPrefix());
             }
-            if (!result) {
-                LOG("Server %llu: Terminate!\n", m_process->ProcessIndex());
-                m_process->Terminate();
-            }
-            if (!m_process->ShouldTerminate())
-                DispatchAsync([this] { CompilerServer(); });
+        } else {
+            LOG("%s: Client terminated!\n", m_process->ProcessPrefix());
         }
+        if (!result) {
+            LOG("%s: Terminate!\n", m_process->ProcessPrefix());
+            m_process->Terminate();
+        }
+        if (!m_process->ShouldTerminate())
+            DispatchAsync([this] { CompilerServer(); });
     };
 } // Server
 
@@ -204,35 +213,35 @@ void FireStarterCompiler::CompilerClient(void)
 
                 if (result) {
 #if FIRESTARTERCOMPILER_LOGGING
-                    LOG("Client %llu: Compile:%d\n", m_process->ProcessIndex(), generation);
+                    LOG("%s: Compile:%d\n", m_process->ProcessPrefix(), generation);
 #endif
 
                     std::string ptx, log;
                     bool result = CUDACompile::Compile(ptx, log, program, programName, options);
                     if (log.size())
-                        LOG("Client %llu: Log:%s\n\n", m_process->ProcessIndex(), log.c_str());
+                        LOG("%s: Log:%s\n\n", m_process->ProcessPrefix(), log.c_str());
 
                     FireStarterPacket sendPacket(COMPILE_EXECUTE);
                     result = result && sendPacket.Packetize(ptx);
                     result = result && sendPacket.Packetize(log);
                     result = result && m_process->SendPacket(sendPacket);
                 } else {
-                    LOG("Client %llu: Bad compile command data!\n", m_process->ProcessIndex());
+                    LOG("%s: Bad compile command data!\n", m_process->ProcessPrefix());
                 }
             } else {
                 // Error: Unknown command!
                 result = false;
-                LOG("Client %llu: Unknown command:%s\n", m_process->ProcessIndex(), command.c_str());
+                LOG("%s: Unknown command:%s\n", m_process->ProcessPrefix(), command.c_str());
             }
 
             // Error: Terminate the process on failure.
             if (!result) {
-                LOG("Client %llu: Terminate!\n", m_process->ProcessIndex());
+                LOG("%s: Terminate!\n", m_process->ProcessPrefix());
                 m_process->Terminate();
             }
         } else {
 #if FIRESTARTERCOMPILER_LOGGING
-            LOG("Client %llu: Terminate received!\n", m_process->ProcessIndex());
+            LOG("%s: Terminate received!\n", m_process->ProcessPrefix());
 #endif
         }
         if (!m_process->ShouldTerminate())

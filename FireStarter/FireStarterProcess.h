@@ -21,6 +21,7 @@ private:
     bool m_client = false;
 public:
     size_t ProcessIndex(void);
+    std::string ProcessPrefix(void);
     void Terminate(void);
     bool ShouldTerminate(void);
     bool WaitForData(void);
