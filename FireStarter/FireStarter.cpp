@@ -64,14 +64,17 @@ void FireStarter::SaveSolution(unsigned int generation, double generationTime)
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
-void FireStarter::FireSettings(void)
+void FireStarter::FireSettings(FireStarterSettings &settings, unsigned int firestarterMode)
 {
     // Launch the load settings kernel
     dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
     dim3 cudaGridSize(1, 1, 1);
 
-    void* arr[] = { reinterpret_cast<void*>(&m_fireSettings),
-                    reinterpret_cast<void*>(&m_fireStarterMode) };
+    FireStarterSettings* fireSettings = nullptr;
+    checkCUDAErrors(cudaMalloc(&fireSettings, sizeof(FireStarterSettings)));
+
+    void* arr[] = { reinterpret_cast<void*>(&fireSettings),
+                    reinterpret_cast<void*>(&firestarterMode) };
 
     checkCUDAErrors(cuLaunchKernel(m_fireSettingsFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
@@ -79,8 +82,11 @@ void FireStarter::FireSettings(void)
         0, m_CUDAContext->Stream(),                  // shared mem, stream */
         &arr[0],                                            // arguments */
         0));
-    checkCUDAErrors(cudaMemcpyAsync(&m_settings, m_fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, m_CUDAContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(&settings, fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, m_CUDAContext->Stream()));
     checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
+
+    // Unload the fire show code and destroy the CUDA context.
+    checkCUDAErrors(cudaFree(fireSettings));
 } // FireSettings
 
 void FireStarter::FireShow(void)
@@ -196,11 +202,6 @@ void FireStarter::ClearUnits(void)
 
 void FireStarter::ControlDeallocate(void)
 {
-    // Unload the fire show code and destroy the CUDA context.
-    if (m_fireSettings) {
-        checkCUDAErrors(cudaFree(m_fireSettings));
-        m_fireSettings = nullptr;
-    }
     if (m_fireShowResult) {
         checkCUDAErrors(cudaFree(m_fireShowResult));
         m_fireShowResult = nullptr;
@@ -224,7 +225,6 @@ void FireStarter::ControlAllocate(void)
     if (!m_CUDAContext)
         m_CUDAContext = new CUDAContext(0);
     ControlDeallocate();
-    checkCUDAErrors(cudaMalloc(&m_fireSettings, sizeof(FireStarterSettings)));
     checkCUDAErrors(cudaMalloc(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations)));
     checkCUDAErrors(cudaMalloc(&m_fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions)));
 
@@ -356,9 +356,7 @@ void FireStarter::ControlTest(void)
 void FireStarter::ControlRandom(void)
 {
     // Setup the intial state
-    FireStarterState controlState(m_settings);
-    m_bestState = controlState;
-
+    m_bestState.InitState(m_settings);
     m_result = 0.0f;
     m_bestResult = m_settings.m_startResult;
 
@@ -370,7 +368,7 @@ void FireStarter::ControlRandom(void)
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
-        if (unit->InitUnit(controlState)) {
+        if (unit->InitUnit(m_bestState)) {
             unit->StartRandom(compilerManager);
             m_units.push_back(unit);
         } else
@@ -379,17 +377,16 @@ void FireStarter::ControlRandom(void)
     if (result) {
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
-        unsigned int generation = 0;
-        while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
+        while (!m_quitControlThread) {
             // Note: The jobs may be received out of order.
             FireStarterCompilerJob* job = compilerManager->GetComplete();
             if (!job)
                 break;
 
-            controlState = job->m_state;
+            FireStarterState controlState = job->m_state;
             m_result = controlState.MaxResult();
             m_totalResult += m_result;
-            generation = controlState.m_generation;
+            unsigned int generation = controlState.m_generation;
 
             // Test the current state.
             float testError = controlState.TestResult();
@@ -441,87 +438,91 @@ void FireStarter::ControlRandom(void)
 void FireStarter::ControlEvolve(void)
 {
     // Setup the intial state
-    FireStarterState controlState(m_settings);
-    m_bestState = controlState;
-
-    m_result = 0.0f;
+    FireStarterState evolveState(m_settings);
+    evolveState.m_program.RandomProgram(evolveState.StateSeed());
+    evolveState.m_program.OptimizeRegisters(true);
+    m_bestState = evolveState;
     m_bestResult = m_settings.m_startResult;
+    m_result = 0.0f;
 
-    // Create the shared compiler
-    FireStarterCompilerManager* compilerManager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
-    FireStarterEvolve* evolveGenerator = new FireStarterEvolve(m_settings, compilerManager);
-
-    // Create the units.
-    bool result = true;
-    for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i);
-        if (unit->InitUnit(controlState)) {
-            unit->StartEvolve(compilerManager);
-            m_units.push_back(unit);
-        } else
-            result = false;
-    }
-
-    if (result) {
-        // Loop until the the completion condition or the host program is quit.
-        m_controlTimer.Start();
-        unsigned int generation = 0;
-        while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
-            // Note: The jobs may be received out of order.
-            FireStarterCompilerJob* job = compilerManager->GetComplete();
-            if (!job)
-                break;
-
-            controlState = job->m_state;
-            m_result = controlState.MaxResult();
-            m_totalResult += m_result;
-            generation = controlState.m_generation;
-
-            // Test the current state.
-            float testError = controlState.TestResult();
-
-            // Increment the generation and calculate the average time per generation.
-            m_averageResult = m_totalResult / (generation + 1);
-            double generationTime = m_controlTimer.Duration() / (generation + 1);
-            if (m_result < m_bestResult) {
-                m_bestState = controlState;
-                m_bestResult = m_result;
-
-                // Update the best code on disk.
-                SaveBestState();
-                SaveBestCode();
-                SaveSolution(generation, generationTime);
-
-                // Erase the frame buffer
-                m_buffer.Erase();
-
-                // Draw the graphs for both variations.
-                FireShow();
-                GetMainThread()->DispatchSync([this] {
-                    const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
-                    RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
-                    });
-            }
-
-            // Update the render status after every pass.
-            RenderStatus(controlState, generationTime, testError);
-
-            // Add the job to the free list.
-            compilerManager->AddFree(job);
+    unsigned int evolution = 0;
+    while (!m_quitControlThread && (evolution < m_settings.m_attempts)) {
+        // Create the shared compiler
+        FireStarterCompilerManager* compilerManager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
+        evolveState.m_generation = evolution * m_settings.m_attempts;
+        FireStarterEvolve* evolveGenerator = new FireStarterEvolve(evolveState, compilerManager);
+        
+        // Create the units.
+        bool result = true;
+        for (unsigned int i = 0; i < m_settings.m_units; i++) {
+            FireStarterUnit* unit = new FireStarterUnit(i);
+            if (unit->InitUnit(evolveState)) {
+                unit->StartEvolve(compilerManager);
+                m_units.push_back(unit);
+            } else
+                result = false;
         }
+        if (result) {
+            // Loop until the the completion condition or the host program is quit.
+            m_controlTimer.Start();
+            while (!m_quitControlThread) {
+                // Note: The jobs may be received out of order.
+                FireStarterCompilerJob* job = compilerManager->GetComplete();
+                if (!job)
+                    break;
+
+                FireStarterState controlState = job->m_state;
+                m_result = controlState.MaxResult();
+                m_totalResult += m_result;
+                unsigned int generation = controlState.m_generation;
+
+                // Test the current state.
+                float testError = controlState.TestResult();
+
+                // Increment the generation and calculate the average time per generation.
+                m_averageResult = m_totalResult / (generation + 1);
+                double generationTime = m_controlTimer.Duration() / (generation + 1);
+                if (m_result < m_bestResult) {
+                    m_bestState = controlState;
+                    m_bestResult = m_result;
+
+                    // Update the best code on disk.
+                    SaveBestState();
+                    SaveBestCode();
+                    SaveSolution(generation, generationTime);
+
+                    // Erase the frame buffer
+                    m_buffer.Erase();
+
+                    // Draw the graphs for both variations.
+                    FireShow();
+                    GetMainThread()->DispatchSync([this] {
+                        const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
+                        RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
+                    });
+                }
+
+                // Update the render status after every pass.
+                RenderStatus(controlState, generationTime, testError);
+
+                // Add the job to the free list.
+                compilerManager->AddFree(job);
+            }
+        }
+
+        // Cancel any waiting jobs
+        compilerManager->Cancel();
+
+        // Delete the random code generator.
+        delete evolveGenerator;
+
+        // Finish processing and terminate each unit.
+        ClearUnits();
+
+        // Delete the compilier manager and cancel any waiting jobs.
+        delete compilerManager;
+        evolution++;
     }
-
-    // Cancel any waiting jobs
-    compilerManager->Cancel();
-
-    // Delete the random code generator.
-    delete evolveGenerator;
-
-    // Finish processing and terminate each unit.
-    ClearUnits();
-
-    // Delete the compilier manager and cancel any waiting jobs.
-    delete compilerManager;
 } // ControlEvolve
 
 void FireStarter::ControlUnits(void)
@@ -622,7 +623,7 @@ void FireStarter::ControlUnits(void)
                 const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
                 GetMainThread()->DispatchSync([this, bufferPixels] {
                     RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
-                    });
+                });
             }
 
             // Has the completion condition been met?
@@ -639,7 +640,7 @@ void FireStarter::ControlThread(void)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
-    FireSettings();
+    FireSettings(m_settings);
     m_fireStarterMode = m_settings.m_mode;
     m_bestResult = m_settings.m_startResult;
 
@@ -677,8 +678,7 @@ void FireStarter::ControlThread(void)
 
             // Optimization evolution pass.
             if (FIRESTARTER_SECOND_PASS && !m_quitControlThread) {
-                m_fireStarterMode = FIRESTARTER_OPTIMIZE;
-                FireSettings();
+                FireSettings(m_settings, FIRESTARTER_OPTIMIZE);
                 ControlUnits();
             }
         } else {
@@ -691,8 +691,7 @@ void FireStarter::ControlThread(void)
 
             // Optimization evolution pass.
             if (FIRESTARTER_SECOND_PASS && (m_fireStarterMode != FIRESTARTER_OPTIMIZE) && !m_quitControlThread) {
-                m_fireStarterMode = FIRESTARTER_OPTIMIZE;
-                FireSettings();
+                FireSettings(m_settings, FIRESTARTER_OPTIMIZE);
                 ControlUnits();
             }
         }
@@ -788,7 +787,6 @@ FireStarter::FireStarter(void)
     m_fireShowModule = nullptr;
     m_fireSettingsFunction = nullptr;
     m_fireShowFunction = nullptr;
-    m_fireSettings = nullptr;
     m_fireShowResult = nullptr;
     m_fireShowInstructions = nullptr;
     m_fireStarterGenerate = nullptr;

@@ -4,6 +4,7 @@
 
 class FireStarterEvolve : public SerialThread {
 private:
+	FireStarterState m_state;
 	FireStarterSettings m_settings;
 	FireStarterServer m_server;
 	FireStarterCompilerManager* m_manager;
@@ -11,6 +12,6 @@ private:
 	std::string m_optimizeCode;
 	void EvolveGenerate(void);
 public:
-	FireStarterEvolve(FireStarterSettings& settings, FireStarterCompilerManager* manager);
+	FireStarterEvolve(FireStarterState& state, FireStarterCompilerManager* manager);
 	~FireStarterEvolve(void);
 }; // class FireStarterEvolve

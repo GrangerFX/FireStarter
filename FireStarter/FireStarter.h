@@ -17,7 +17,6 @@ public:
     CUmodule m_fireShowModule;
     CUfunction m_fireSettingsFunction;
     CUfunction m_fireShowFunction;
-    FireStarterSettings* m_fireSettings;
     FireStarterResult* m_fireShowResult;
     FireStarterInstructions* m_fireShowInstructions;
     FireStarterGenerate* m_fireStarterGenerate;
@@ -46,7 +45,7 @@ public:
     void SaveBestState(void);
     void SaveBestCode(void);
     void SaveSolution(unsigned int generation, double generationTime);
-    void FireSettings(void);
+    void FireSettings(FireStarterSettings& settings, unsigned int firestarterMode = FIRESTARTER_MODE);
     void FireShow(void);
     void RenderStatus(const FireStarterState& state, double generationTime, float testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);

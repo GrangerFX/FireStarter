@@ -14,22 +14,20 @@ void FireStarterEvolve::EvolveGenerate(void)
         // Generate code using the CPU.
         FireStarterGenerate generate;
 #endif
-        unsigned int generation = 0;
-        while (generation < m_settings.m_attempts) {
+        for (unsigned int generation = 0; generation < m_settings.m_attempts; generation++) {
             FireStarterCompilerJob* job = m_manager->GetFree();
             if (!job)
                 break;
 
             // Randomize one instruction per state except for the first generation.
-            job->m_state.InitState(m_settings);
-            unsigned int programSeed = job->m_state.StateSeed();
-            job->m_state.m_program.RandomProgram(programSeed);
-            job->m_state.m_generation = generation++;
+            job->m_state = m_state;
+//            job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
+//            job->m_state.m_program.OptimizeRegisters(true);
+            job->m_state.m_generation = m_state.m_generation + generation;
             if (job->m_state.m_generation) {
-                unsigned int instructionSeed = job->m_state.StateSeed();
-                job->m_state.m_program.RandomInstruction(instructionSeed);
+                job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
+                job->m_state.m_program.OptimizeRegisters(true);
             }
-            job->m_state.m_program.OptimizeRegisters(true);
 
             // Generate the optimize code
             std::string evaluateCode;
@@ -50,9 +48,10 @@ void FireStarterEvolve::EvolveGenerate(void)
     });
 } // EvolveGenerate
 
-FireStarterEvolve::FireStarterEvolve(FireStarterSettings& settings, FireStarterCompilerManager* manager)
+FireStarterEvolve::FireStarterEvolve(FireStarterState& state, FireStarterCompilerManager* manager)
 {
-    m_settings = settings;
+    m_state = state;
+    m_settings = m_state.Settings();
     m_manager = manager;
     if (FireStarterCode::LoadCode("Optimize.cu", m_optimizeCode)) {
         for (unsigned int i = 0; i < m_settings.m_processes; i++) {
