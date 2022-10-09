@@ -517,7 +517,7 @@ void FireStarterUnit::Packetize(FireStarterPacket& packet)
 {
     m_state.Packetize(packet);
     packet.Packetize(&m_settings, sizeof(m_settings));
-    packet.Packetize(&m_unitIndex, sizeof(m_unitIndex));
+    packet.Packetize(m_unitIndex);
 } // Packetize
 
 void FireStarterUnit::PacketizeAllStates(FireStarterPacket& packet)

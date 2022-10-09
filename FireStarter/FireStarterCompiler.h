@@ -15,6 +15,22 @@ public:
 	std::string m_log;
 	class FireStarterCompilerJob* m_next = nullptr;	// Linked list pointer
 
+	inline void Packetize(FireStarterPacket& packet)
+	{
+		m_state.Packetize(packet);
+		packet.Packetize(m_options);
+		packet.Packetize(m_program);
+		packet.Packetize(m_programName);
+		packet.Packetize(m_programFunction);
+		packet.Packetize(m_ptx);
+		packet.Packetize(m_log);
+	} // Packetize
+
+	inline FireStarterCompilerJob(FireStarterPacket& packet)
+	{
+		Packetize(packet);
+	} // FireStarterCompilerJob
+
 	inline FireStarterCompilerJob(void)
 	{
 	} // FireStarterCompilerJob

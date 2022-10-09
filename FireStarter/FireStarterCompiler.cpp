@@ -155,11 +155,7 @@ void FireStarterCompiler::CompilerServer(void)
 #endif
         FireStarterPacket sendPacket(COMPILE_EXECUTE);
         bool result = true;
-        result = result && sendPacket.Packetize(job->m_state.m_generation);
-        result = result && sendPacket.Packetize(job->m_program);
-        result = result && sendPacket.Packetize(job->m_programName);
-        result = result && sendPacket.Packetize(job->m_programFunction);
-        result = result && sendPacket.Packetize(job->m_options);
+        job->Packetize(sendPacket);
         result = result && m_process->SendPacket(sendPacket);
         if (result) {
             FireStarterPacket receivePacket;
@@ -167,8 +163,7 @@ void FireStarterCompiler::CompilerServer(void)
             if (result) {
                 const std::string& command = receivePacket.Command();
                 if (result && (command == COMPILE_EXECUTE)) {
-                    result = result && receivePacket.Packetize(job->m_ptx);
-                    result = result && receivePacket.Packetize(job->m_log);
+                    job->Packetize(receivePacket);
                     if (result) {
 #if FIRESTARTERCOMPILER_LOGGING
                         LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job->m_state.m_generation);
@@ -203,28 +198,19 @@ void FireStarterCompiler::CompilerClient(void)
         if (result) {
             const std::string& command = receivePacket.Command();
             if (command == COMPILE_EXECUTE) {
-                unsigned int generation;
-                result = result && receivePacket.Packetize(generation);
-                std::string program;
-                result = result && receivePacket.Packetize(program);
-                std::string programName;
-                result = result && receivePacket.Packetize(programName);
-                std::vector<std::string> options;
-                result = result && receivePacket.Packetize(options);
+                FireStarterCompilerJob job(receivePacket);
 
                 if (result) {
 #if FIRESTARTERCOMPILER_LOGGING
-                    LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), generation);
+                    LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job.m_state.m_generation);
 #endif
 
-                    std::string ptx, log;
-                    bool result = CUDACompile::Compile(ptx, log, program, programName, options);
-                    if (log.size())
-                        LOG("%s: Log:%s\n\n", m_process->ProcessPrefix().c_str(), log.c_str());
+                    bool result = CUDACompile::Compile(job.m_ptx, job.m_log, job.m_program, job.m_programName, job.m_options);
+                    if (job.m_log.size())
+                        LOG("%s: Log:%s\n\n", m_process->ProcessPrefix().c_str(), job.m_log.c_str());
 
                     FireStarterPacket sendPacket(COMPILE_EXECUTE);
-                    result = result && sendPacket.Packetize(ptx);
-                    result = result && sendPacket.Packetize(log);
+                    job.Packetize(sendPacket);
                     result = result && m_process->SendPacket(sendPacket);
                 } else {
                     LOG("%s: Bad compile command data!\n", m_process->ProcessPrefix().c_str());

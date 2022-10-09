@@ -100,6 +100,8 @@
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
     <ClCompile Include="FireStarter\FireStarterCompiler.cpp" />
     <ClCompile Include="FireStarter\FireStarterProcess.cpp" />
+    <ClCompile Include="FireStarter\FireStarterProgram.cpp" />
+    <ClCompile Include="FireStarter\FireStarterState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Distribution\CUDADefines.h" />
