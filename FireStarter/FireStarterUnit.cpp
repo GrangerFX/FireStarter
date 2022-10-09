@@ -430,8 +430,8 @@ bool FireStarterUnit::LoadCode(void)
     static std::string evolveCode;
     static std::string optimizeCode;
     if (!codeLoaded) {
-        FireStarterCode::LoadCode("Evolve.cu", evolveCode);
-        FireStarterCode::LoadCode("Optimize.cu", optimizeCode);
+        FireStarterCode::LoadCode("FireInterpreter.cu", evolveCode);
+        FireStarterCode::LoadCode("FireOptimizer.cu", optimizeCode);
         codeLoaded = true;
     }
     m_evolveCode = evolveCode;

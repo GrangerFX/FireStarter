@@ -42,7 +42,7 @@ void FireStarter::SaveBestCode(void)
 {
     static std::string optimizeCode;
     if (optimizeCode.empty())
-        FireStarterCode::LoadCode("Optimize.cu", optimizeCode);
+        FireStarterCode::LoadCode("FireOptimizer.cu", optimizeCode);
     if (!optimizeCode.empty()) {
         // Generate the evaluate function
         std::string evaluateCode;
