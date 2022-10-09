@@ -277,7 +277,7 @@ void FireStarter::ControlTest(void)
         // Generate the job code.
         job->m_state.InitState(m_settings);
         job->m_state.m_generation = generation++;
-        unsigned int stateSeed = job->m_state.StateSeed();
+        unsigned long long stateSeed = job->m_state.StateSeed();
         printf("Generation=%d  Seed=%d  stateSeed=%d\n", job->m_state.m_generation, job->m_state.m_program.m_settings.m_seed + job->m_state.m_generation, stateSeed);
         job->m_state.m_program.RandomProgram(stateSeed);
         job->m_state.m_program.OptimizeRegisters(true);

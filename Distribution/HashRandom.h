@@ -58,15 +58,14 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 0xb5736d4981276baf,
 */
 
-#define RANDOMHASH(seed) Hash((unsigned int)(seed))
-#define RANDOMSQUARES(seed) Squares32((unsigned long long)(seed))
 #if 0
-#define RANDOM(seed) RANDOMSQUARES(seed)
-#define RANDOMSEED(seed) RANDOMSQUARES(seed++)
+#if 0
+#define RANDOMHASH(seed) Squares32((unsigned long long)(seed))
 #else
+#define RANDOMHASH(seed) Hash((unsigned int)(seed))
+#endif
 #define RANDOM(seed) RANDOMHASH(seed)
 #define RANDOMSEED(seed) RANDOMHASH(seed++)
-#endif
 #if 1
 #define RANDOMMOD(seed, m) ((RANDOMSEED(seed) * (unsigned long long)(m)) >> 32)
 #else
@@ -76,3 +75,17 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 #define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)               // yields a number between 0 and <1
 #define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1
 #define RANDOMFACTOR2(seed) ((int)(RANDOMSEED(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5
+#endif
+
+#define RANDOMHASH64(seed) Squares64((unsigned long long)(seed))
+#define RANDOM64(seed) RANDOMHASH64(seed)
+#define RANDOMSEED64(seed) RANDOMHASH64(seed++)
+#if 1
+#define RANDOMMOD64(seed, m) (((unsigned int)(RANDOMSEED64(seed)) * (unsigned long long)(m)) >> 32)
+#else
+#define RANDOMMOD64(seed, m) ((RANDOMSEED64(seed) % (unsigned long long)(m)))
+#endif
+#define RANDOMBITS64(seed, bits) (RANDOMSEED64(seed) >> (64 - (bits)))          // create a random number with a specific number of bits
+#define RANDOMNUM64(seed) (RANDOMSEED64(seed) * 2.328306436E-10f)               // yields a number between 0 and <1
+#define RANDOMFACTOR64(seed) ((int)(RANDOMSEED64(seed)) * 4.656612873E-10f)     // yields a number between -1 and 1
+#define RANDOMFACTOR264(seed) ((int)(RANDOMSEED64(seed)) * 2.328306436E-10f)    // yields a number between -0.5 and 0.5

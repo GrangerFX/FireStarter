@@ -169,7 +169,7 @@ public:
     unsigned int m_candidates;
     unsigned int m_evolve;
     unsigned int m_attempts;
-    unsigned int m_seed;
+    unsigned long long m_seed;
 
     float m_scale;
     float m_startScale;

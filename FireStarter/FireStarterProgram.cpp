@@ -64,14 +64,14 @@ void FireStarterProgram::OptimizeRegisters(bool clean)
     }
 } // OptimizeRegisters
 
-void FireStarterProgram::RandomProgram(unsigned int seed)
+void FireStarterProgram::RandomProgram(unsigned long long seed)
 {
     Instructions()->Randomize(seed, m_settings.m_instructions, m_settings.m_opcodes);
 } // RandomProgram
 
-void FireStarterProgram::RandomInstruction(unsigned int seed)
+void FireStarterProgram::RandomInstruction(unsigned long long seed)
 {
-    unsigned int index = RANDOMMOD(seed, m_settings.m_instructions);
+    unsigned int index = RANDOMMOD64(seed, m_settings.m_instructions);
     Instructions()->SetRandom(index, seed, m_settings.m_instructions, m_settings.m_opcodes);
 } // RandomInstruction
 

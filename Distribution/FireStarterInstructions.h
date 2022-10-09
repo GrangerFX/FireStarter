@@ -204,49 +204,49 @@ typedef struct FireStarterInstructions {
 
     inline void SetRegister(unsigned int index, unsigned int reg = 0)
     {
-        i[index].reg = reg;
+        i[index].reg = (unsigned short)reg;
     } // SetOperation
 
     inline void SetOperation(unsigned int index, unsigned int op = 0, unsigned int reg = 0)
     {
-        i[index].op = op;
-        i[index].reg = reg;
+        i[index].op = (unsigned short)op;
+        i[index].reg = (unsigned short)reg;
     } // SetOperation
 
-    inline void SetRandomReg(unsigned int index, unsigned int& seed)
+    inline void SetRandomReg(unsigned int index, unsigned long long& seed)
     {
-        i[index].reg = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
+        i[index].reg = (unsigned short)RANDOMMOD64(seed, FIRESTARTER_INSTRUCTIONS);
     } // SetRandomReg
 
-    inline void SetRandomReg(unsigned int index, unsigned int& seed, unsigned int instructions)
+    inline void SetRandomReg(unsigned int index, unsigned long long& seed, unsigned int instructions)
     {
-        i[index].reg = RANDOMMOD(seed, instructions);
+        i[index].reg = (unsigned short)RANDOMMOD64(seed, instructions);
     } // SetRandomReg
 
-    inline void SetRandomOp(unsigned int index, unsigned int& seed)
+    inline void SetRandomOp(unsigned int index, unsigned long long& seed)
     {
-        unsigned int op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
+        unsigned int op = RANDOMMOD64(seed, FIRESTARTER_OPCODES);
         i[index].op = fireStarterOpcodes[op];
     } // SetRandomOp
 
-    inline void SetRandomOp(unsigned int index, unsigned int& seed, unsigned int opcodes)
+    inline void SetRandomOp(unsigned int index, unsigned long long& seed, unsigned int opcodes)
     {
-        unsigned int op = RANDOMMOD(seed, opcodes);
+        unsigned int op = RANDOMMOD64(seed, opcodes);
         i[index].op = fireStarterOpcodes[op];
     } // SetRandomOp
 
-    inline void SetRandom(unsigned int index, unsigned int& seed, unsigned int instructions, unsigned int opcodes)
+    inline void SetRandom(unsigned int index, unsigned long long& seed, unsigned int instructions, unsigned int opcodes)
     {
-        unsigned int reg = RANDOMMOD(seed, instructions);
-        unsigned int op = RANDOMMOD(seed, opcodes);
+        unsigned int reg = RANDOMMOD64(seed, instructions);
+        unsigned int op = RANDOMMOD64(seed, opcodes);
         SetOperation(index, fireStarterOpcodes[op], reg);
     } // SetRandom
 
-    inline void SetRandom(unsigned int index, unsigned int& seed)
+    inline void SetRandom(unsigned int index, unsigned long long& seed)
     {
         for (;;) {
-            unsigned int reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
-            unsigned int op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
+            unsigned int reg = RANDOMMOD64(seed, FIRESTARTER_REGISTERS);
+            unsigned int op = RANDOMMOD64(seed, FIRESTARTER_OPCODES);
             if ((i[index].op != op) || (i[index].reg != reg)) {
                 i[index].op = op;
                 i[index].reg = reg;
@@ -255,19 +255,19 @@ typedef struct FireStarterInstructions {
         }
     } // SetRandom
 
-    inline void SetRandom(unsigned int& seed)
+    inline void SetRandom(unsigned long long& seed)
     {
-        unsigned int index = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
+        unsigned int index = RANDOMMOD64(seed, FIRESTARTER_INSTRUCTIONS);
         SetRandom(index, seed);
     } // SetRandom
 
-    inline void Randomize(unsigned int& seed)
+    inline void Randomize(unsigned long long& seed)
     {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             SetRandom(i, seed, FIRESTARTER_INSTRUCTIONS, FIRESTARTER_OPCODES);
     } // Randomize
 
-    inline void Randomize(unsigned int& seed, unsigned int instructions, unsigned int opcodes)
+    inline void Randomize(unsigned long long& seed, unsigned int instructions, unsigned int opcodes)
     {
         for (unsigned int i = 0; i < instructions; i++)
             SetRandom(i, seed, instructions, opcodes);

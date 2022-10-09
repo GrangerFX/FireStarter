@@ -25,9 +25,9 @@ public:
         return m_program.m_settings;
     } // Settings
 
-    inline unsigned int StateSeed(unsigned int seed = 1337)
+    inline unsigned long long StateSeed(unsigned long long seed = 1337)
     {
-        return RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + seed);
+        return RANDOM64(RANDOM64(m_program.m_settings.m_seed + m_generation) + seed);
     } // StateSeed
 
     inline size_t ResultSize(void) const

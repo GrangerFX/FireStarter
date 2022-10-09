@@ -22,7 +22,7 @@ void FireStarterRandom::RandomGenerate(void)
 
             job->m_state.InitState(m_settings);
             job->m_state.m_generation = generation++;
-            unsigned int stateSeed = job->m_state.StateSeed();
+            unsigned long long stateSeed = job->m_state.StateSeed();
             job->m_state.m_program.RandomProgram(stateSeed);
             job->m_state.m_program.OptimizeRegisters(true);
 
