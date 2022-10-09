@@ -440,7 +440,6 @@ void FireStarter::ControlEvolve(void)
     // Setup the intial state
     FireStarterState evolveState(m_settings);
     evolveState.m_program.RandomProgram(evolveState.StateSeed());
-    evolveState.m_program.OptimizeRegisters(true);
     m_bestState = evolveState;
     m_bestResult = m_settings.m_startResult;
     m_result = 0.0f;
