@@ -158,6 +158,7 @@ void FireStarterCompiler::CompilerServer(void)
         result = result && sendPacket.Packetize(job->m_state.m_generation);
         result = result && sendPacket.Packetize(job->m_program);
         result = result && sendPacket.Packetize(job->m_programName);
+        result = result && sendPacket.Packetize(job->m_programFunction);
         result = result && sendPacket.Packetize(job->m_options);
         result = result && m_process->SendPacket(sendPacket);
         if (result) {

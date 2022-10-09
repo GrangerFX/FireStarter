@@ -10,6 +10,7 @@ public:
 	std::vector<std::string> m_options;
 	std::string m_program;
 	std::string m_programName;
+	std::string m_programFunction;
 	std::string m_ptx;
 	std::string m_log;
 	class FireStarterCompilerJob* m_next = nullptr;	// Linked list pointer

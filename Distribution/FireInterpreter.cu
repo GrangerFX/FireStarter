@@ -6,7 +6,7 @@
 #if 1
 // Best version.
 // 0.00060845 after 147 generations. Optimize 0.00015676 after 150 generations.
-GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int generationSeed, const unsigned int init)
+GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int generationSeed, const unsigned int init)
 {
     const unsigned int member = firstMember + blockIdx.x;
     if (member >= lastMember)
@@ -147,10 +147,10 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
             }
         }
     }
-} // Evolve
+} // Interpreter
 #else
 // Experimental version
-GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVaraition, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, const unsigned int init)
+GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVaraition, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int seed, const unsigned int init)
 {
     const unsigned int member = firstMember + blockIdx.x;
     if (member >= lastMember)
@@ -305,5 +305,5 @@ GPU_GLOBAL void Evolve(const FireStarterSettings settings, FireStarterEvolutions
             }
         }
     }
-} // Evolve
+} // Interpreter
 #endif

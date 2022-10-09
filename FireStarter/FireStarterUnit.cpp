@@ -351,7 +351,7 @@ bool FireStarterUnit::ExecuteJob(FireStarterCompilerJob* job, std::atomic<float>
     if (!cuda_module)
         return false;
 
-    m_contexts[0].m_optimizeFunction = CUDACompile::GetFunction(cuda_module, job->m_programName);
+    m_contexts[0].m_optimizeFunction = CUDACompile::GetFunction(cuda_module, job->m_programFunction);
     if (!m_contexts[0].m_optimizeFunction)
         return false;
 

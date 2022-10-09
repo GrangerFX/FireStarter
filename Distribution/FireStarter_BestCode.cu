@@ -157,7 +157,7 @@ inline float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
-GPU_GLOBAL void Optimize(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned int generationSeed, const unsigned int init)
+GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned int generationSeed, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= lastMember)

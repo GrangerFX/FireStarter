@@ -52,16 +52,16 @@ private:
         {
             if (!m_evolveFunction) {
                 m_CUDAContext->SetContext();
-                if (CUDACompile::CompileProgram(m_evolveModule, evolveCode, "Evolve"))
-                    m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolve");
+                if (CUDACompile::CompileProgram(m_evolveModule, evolveCode, "FireInterpreter"))
+                    m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Interprete");
             }
         } // EvolveCompile
 
         inline void OptimizeCompile(const std::string& optimizeCode)
         {
             m_CUDAContext->SetContext();
-            if (CUDACompile::CompileProgram(m_optimizeModule, optimizeCode, "Optimize"))
-                m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimize");
+            if (CUDACompile::CompileProgram(m_optimizeModule, optimizeCode, "FireOptimizer"))
+                m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
         } // OptimizeCompile
 
         inline bool InitContext(unsigned int device, unsigned int firstMember, unsigned int lastMember, FireStarterResults* hostResults, FireStarterEvolutions* hostEvolutions, const FireStarterSettings& settings)
