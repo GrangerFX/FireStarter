@@ -10,7 +10,6 @@ private:
     std::vector<unsigned char> m_instructions;
 public:
     FireStarterSettings m_settings;
-    std::vector<FireStarterRegister> m_registers;
     unsigned int m_uniqueRegisters = 0;
 
     inline FireStarterInstructions* Instructions(void)
@@ -34,14 +33,9 @@ public:
         return Instructions()->InstructionsSize(m_settings.m_instructions);
     } // InstructionsSize
 
-    inline const FireStarterRegisters* Registers(size_t* numRegisters) const
-    {
-        *numRegisters = m_registers.size();
-        return (FireStarterRegisters*)m_registers.data();
-    } // Registers
-
     bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(void);
+    unsigned int GenerateRegisters(std::vector<FireStarterRegister>& registers) const;
     void RandomProgram(unsigned long long seed);
     void RandomInstruction(unsigned long long seed);
     void LoadInstructions(FireStarterInstructions* instructions);

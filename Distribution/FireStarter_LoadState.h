@@ -35,28 +35,6 @@ inline void LoadProgram(FireStarterProgram& program)
     program.InitProgram(settings);
     program.m_uniqueRegisters = 20;
 
-    program.m_registers.resize(20);
-    program.m_registers[0] = {0, 0, 0};
-    program.m_registers[1] = {0, 1, 30};
-    program.m_registers[2] = {2, 2, 2};
-    program.m_registers[3] = {1, 3, 16};
-    program.m_registers[4] = {2, 5, 6};
-    program.m_registers[5] = {2, 7, 18};
-    program.m_registers[6] = {3, 8, 10};
-    program.m_registers[7] = {7, 9, 9};
-    program.m_registers[8] = {3, 11, 24};
-    program.m_registers[9] = {4, 12, 22};
-    program.m_registers[10] = {5, 14, 19};
-    program.m_registers[11] = {11, 15, 15};
-    program.m_registers[12] = {12, 17, 17};
-    program.m_registers[13] = {3, 27, 28};
-    program.m_registers[14] = {14, 21, 21};
-    program.m_registers[15] = {15, 23, 23};
-    program.m_registers[16] = {16, 25, 25};
-    program.m_registers[17] = {17, 26, 26};
-    program.m_registers[18] = {18, 29, 29};
-    program.m_registers[19] = {19, 31, 31};
-
     FireStarterInstructions* instructions = program.Instructions();
     instructions->SetOperation(0, 1, 0);
     instructions->SetOperation(1, 1, 1);

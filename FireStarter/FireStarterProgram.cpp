@@ -6,8 +6,6 @@ bool FireStarterProgram::Packetize(FireStarterPacket& packet)
     result = result && packet.Packetize(m_instructions);
     result = result && packet.Packetize(&m_settings, sizeof(m_settings));
     result = result && packet.Packetize(m_uniqueRegisters);
-    m_registers.resize(m_uniqueRegisters);
-    result = result && packet.Packetize(m_registers.data(), m_uniqueRegisters * sizeof(FireStarterRegister));
     return result;
 } // Packetize
 
@@ -29,14 +27,18 @@ void FireStarterProgram::OptimizeRegisters(void)
         } else
             printf("Bad register: %u  Max registers: %u\n", r, m_settings.m_registers);
     }
- 
+} // OptimizeRegisters
+
+unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegister>& registers) const
+{
     // Optimize the registers based on the ones in use at any point in the code.
-    m_registers.resize(m_uniqueRegisters);
+    const FireStarterInstructions* instructions = Instructions();
+    registers.resize(m_uniqueRegisters);
     for (unsigned int i = 0; i < m_uniqueRegisters; i++)
-        m_registers[i] = FireStarterRegister(i, m_uniqueRegisters, m_uniqueRegisters);
+        registers[i] = FireStarterRegister(i, m_uniqueRegisters, m_uniqueRegisters);
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
         unsigned int index = instructions->Register(i);
-        FireStarterRegister& reg = m_registers[index];
+        FireStarterRegister& reg = registers[index];
         if (reg.instructionFirst == m_uniqueRegisters)
             reg.instructionFirst = i;
         reg.instructionLast = i;
@@ -46,13 +48,14 @@ void FireStarterProgram::OptimizeRegisters(void)
     unsigned int numActiveRegisters = 0;
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
         unsigned int index = instructions->Register(i);
-        FireStarterRegister& reg = m_registers[index];
+        FireStarterRegister& reg = registers[index];
         if (reg.instructionLast > reg.instructionFirst)
             if (reg.instructionFirst == i) {
                 if (!freeRegisters.empty()) {
                     reg.registerIndex = freeRegisters.back();
                     freeRegisters.pop_back();
-                } else
+                }
+                else
                     reg.registerIndex = numActiveRegisters;
                 numActiveRegisters++;
             } else if (reg.instructionLast == i) {
@@ -60,7 +63,8 @@ void FireStarterProgram::OptimizeRegisters(void)
                 numActiveRegisters--;
             }
     }
-} // OptimizeRegisters
+    return m_uniqueRegisters;
+} // GenerateRegisters
 
 void FireStarterProgram::RandomProgram(unsigned long long seed)
 {
@@ -129,12 +133,6 @@ void FireStarterProgram::SaveProgram(std::string& code)
     code += Format("    program.m_uniqueRegisters = %u;\r\n", m_uniqueRegisters);
     code += "\r\n";
 
-    unsigned int numRegisters = (unsigned int)m_registers.size();
-    code += Format("    program.m_registers.resize(%u);\r\n", numRegisters);
-    for (unsigned int i = 0; i < numRegisters; i++)
-        code += Format("    program.m_registers[%u] = {%u, %u, %u};\r\n", i, m_registers[i].registerIndex, m_registers[i].instructionFirst, m_registers[i].instructionLast);
-    code += "\r\n";
-
     FireStarterInstructions* instructions = Instructions();
     code += "    FireStarterInstructions* instructions = program.Instructions();\r\n";
     for (unsigned int i = 0; i < m_settings.m_instructions; i++)
@@ -148,7 +146,6 @@ void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
     m_settings = settings;
     m_instructions.resize(FireStarterInstructions::InstructionsSize(m_settings.m_instructions));
-    m_registers.clear();
 
     FireStarterInstructions* instructions = Instructions();
     for (unsigned int i = 0; i < m_settings.m_instructions; i++)
