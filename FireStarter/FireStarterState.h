@@ -54,7 +54,6 @@ public:
     void SaveVariation(unsigned int variation, std::string& code);
     void SaveResult(std::string& code);
     void SaveState(std::string& code);
-    void OptimizeData(void);
     float TestResult(void);
     void InitState(const FireStarterSettings& settings);
     FireStarterState(const FireStarterSettings& settings);

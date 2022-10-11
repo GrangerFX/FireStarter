@@ -11,8 +11,7 @@ private:
 public:
     FireStarterSettings m_settings;
     std::vector<FireStarterRegister> m_registers;
-    unsigned int m_dataSize = 0;
-    unsigned int m_maxRegisters = 0;
+    unsigned int m_uniqueRegisters = 0;
 
     inline FireStarterInstructions* Instructions(void)
     {
@@ -42,7 +41,7 @@ public:
     } // Registers
 
     bool Packetize(FireStarterPacket& packet);
-    void OptimizeRegisters(bool clean);
+    void OptimizeRegisters(void);
     void RandomProgram(unsigned long long seed);
     void RandomInstruction(unsigned long long seed);
     void LoadInstructions(FireStarterInstructions* instructions);

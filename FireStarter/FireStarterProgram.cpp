@@ -5,62 +5,60 @@ bool FireStarterProgram::Packetize(FireStarterPacket& packet)
     bool result = true;
     result = result && packet.Packetize(m_instructions);
     result = result && packet.Packetize(&m_settings, sizeof(m_settings));
-    result = result && packet.Packetize(&m_dataSize, sizeof(m_dataSize));
-    m_registers.resize(m_dataSize);
-    result = result && packet.Packetize(m_registers.data(), m_dataSize * sizeof(m_registers[0]));
-    result = result && packet.Packetize(&m_maxRegisters, sizeof(m_maxRegisters));
+    result = result && packet.Packetize(m_uniqueRegisters);
+    m_registers.resize(m_uniqueRegisters);
+    result = result && packet.Packetize(m_registers.data(), m_uniqueRegisters * sizeof(FireStarterRegister));
     return result;
 } // Packetize
 
-void FireStarterProgram::OptimizeRegisters(bool clean)
+void FireStarterProgram::OptimizeRegisters(void)
 {
-    FireStarterInstructions* instructions = Instructions();
-
     // Delete the unused registers and sort the remaining ones.
-    m_registers.clear();
-    std::vector<int> dataRegisters;
-    dataRegisters.resize(m_settings.m_registers, -1);
+    FireStarterInstructions* instructions = Instructions();
+    m_uniqueRegisters = 0;
+    std::vector<int> dataRegisters(m_settings.m_registers, -1);
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        unsigned int reg = Instructions()->Register(i);
-        if (reg < m_settings.m_registers) {
-            int index = dataRegisters[reg];
+        unsigned int r = instructions->Register(i);
+        if (r < m_settings.m_registers) {
+            int index = dataRegisters[r];
             if (index == -1) {
-                index = (int)m_registers.size();
-                dataRegisters[reg] = index;
-                m_registers.push_back(FireStarterRegister(clean ? index : reg, index, i, i));
-            } else
-                m_registers[index].instructionLast = i;
+                index = m_uniqueRegisters++;
+                dataRegisters[r] = index;
+            }
             instructions->SetRegister(i, index);
         } else
-            printf("Bad register: %u  Max registers: %u\n", reg, m_settings.m_registers);
+            printf("Bad register: %u  Max registers: %u\n", r, m_settings.m_registers);
     }
-    m_dataSize = (unsigned int)m_registers.size();
-
+ 
     // Optimize the registers based on the ones in use at any point in the code.
+    m_registers.resize(m_uniqueRegisters);
+    for (unsigned int i = 0; i < m_uniqueRegisters; i++)
+        m_registers[i] = FireStarterRegister(i, m_uniqueRegisters, m_uniqueRegisters);
+    for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
+        unsigned int index = instructions->Register(i);
+        FireStarterRegister& reg = m_registers[index];
+        if (reg.instructionFirst == m_uniqueRegisters)
+            reg.instructionFirst = i;
+        reg.instructionLast = i;
+    }
+
     std::vector<unsigned int> freeRegisters;
     unsigned int numActiveRegisters = 0;
-    m_maxRegisters = 0;
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        unsigned int reg = instructions->Register(i);
-        if (reg < m_settings.m_registers) {
-            FireStarterRegister& r = m_registers[reg];
-            if (r.instructionLast > r.instructionFirst)
-                if (r.instructionFirst == i) {
-                    if (!freeRegisters.empty()) {
-                        r.registerIndex = freeRegisters.back();
-                        freeRegisters.pop_back();
-                    }
-                    else
-                        r.registerIndex = numActiveRegisters;
-                    numActiveRegisters++;
-                    m_maxRegisters = max(m_maxRegisters, numActiveRegisters);
-                }
-                else if (r.instructionLast == i) {
-                    freeRegisters.push_back(r.registerIndex);
-                    numActiveRegisters--;
-                }
-        } else
-            printf("Bad register: %u  Max registers: %u\n", reg, m_settings.m_registers);
+        unsigned int index = instructions->Register(i);
+        FireStarterRegister& reg = m_registers[index];
+        if (reg.instructionLast > reg.instructionFirst)
+            if (reg.instructionFirst == i) {
+                if (!freeRegisters.empty()) {
+                    reg.registerIndex = freeRegisters.back();
+                    freeRegisters.pop_back();
+                } else
+                    reg.registerIndex = numActiveRegisters;
+                numActiveRegisters++;
+            } else if (reg.instructionLast == i) {
+                freeRegisters.push_back(reg.registerIndex);
+                numActiveRegisters--;
+            }
     }
 } // OptimizeRegisters
 
@@ -128,14 +126,13 @@ void FireStarterProgram::SaveProgram(std::string& code)
     code += "    FireStarterSettings settings;\r\n";
     code += "    LoadSettings(settings);\r\n";
     code += "    program.InitProgram(settings);\r\n";
-    code += Format("    program.m_dataSize = %u;\r\n", m_dataSize);
-    code += Format("    program.m_maxRegisters = %u;\r\n", m_maxRegisters);
+    code += Format("    program.m_uniqueRegisters = %u;\r\n", m_uniqueRegisters);
     code += "\r\n";
 
     unsigned int numRegisters = (unsigned int)m_registers.size();
     code += Format("    program.m_registers.resize(%u);\r\n", numRegisters);
     for (unsigned int i = 0; i < numRegisters; i++)
-        code += Format("    program.m_registers[%u] = {%u, %u, %u, %u};\r\n", i, m_registers[i].dataIndex, m_registers[i].registerIndex, m_registers[i].instructionFirst, m_registers[i].instructionLast);
+        code += Format("    program.m_registers[%u] = {%u, %u, %u};\r\n", i, m_registers[i].registerIndex, m_registers[i].instructionFirst, m_registers[i].instructionLast);
     code += "\r\n";
 
     FireStarterInstructions* instructions = Instructions();
@@ -156,6 +153,4 @@ void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
     FireStarterInstructions* instructions = Instructions();
     for (unsigned int i = 0; i < m_settings.m_instructions; i++)
         instructions->SetOperation(i);
-    m_dataSize = settings.m_registers;
-    m_maxRegisters = settings.m_registers;
 } // InitProgram

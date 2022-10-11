@@ -180,7 +180,6 @@ public:
     std::string GetOptimizeCode(void);
     bool CompileJob(FireStarterCompilerJob* job);
     bool ExecuteJob(FireStarterCompilerJob* job, std::atomic<float>& atomicResult, bool skipVariations = true);
-    void StartRandom(FireStarterCompilerManager *manager);
     void StartEvolve(FireStarterCompilerManager* manager);
     bool InitUnit(const FireStarterState& initState);
     void Execute(void);

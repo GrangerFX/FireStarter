@@ -55,22 +55,6 @@ void FireStarterState::SaveState(std::string& code)
     code += "} // LoadState\r\n";
 } // SaveState
 
-void FireStarterState::OptimizeData(void)
-{
-    // Optimize the use of data registers.
-    for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
-        FireStarterData& data = *Result()->Data(v);
-        FireStarterData optimizedData(data);
-        for (unsigned int i = 0; i < m_program.m_dataSize; i++)
-            optimizedData.d[i] = data.d[m_program.m_registers[i].dataIndex];
-        for (unsigned int i = m_program.m_dataSize; i < m_program.m_settings.m_instructions; i++)
-            optimizedData.d[i] = 0.0f;
-        *Result()->Data(v) = optimizedData;
-    }
-    for (unsigned int i = 0; i < m_program.m_dataSize; i++)
-        m_program.m_registers[i].dataIndex = i;
-} // OptimizeData
-
 float FireStarterState::TestResult(void)
 {
     float testResult = 0.0f;

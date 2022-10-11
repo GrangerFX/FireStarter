@@ -36,7 +36,6 @@ const FireStarterOpcode fireStarterOpcodes[FIRESTARTER_OPCODES] = {
 #endif
 
 struct FireStarterRegister {
-    unsigned int dataIndex;
     unsigned int registerIndex;
     unsigned int instructionFirst;
     unsigned int instructionLast;

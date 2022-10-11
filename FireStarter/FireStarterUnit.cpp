@@ -62,7 +62,7 @@ void FireStarterUnit::GenerateUnit(void)
         m_state.m_program.RandomProgram(m_state.StateSeed());
     else
         m_state.m_program.RandomInstruction(m_state.StateSeed());
-    m_state.m_program.OptimizeRegisters(true);
+    m_state.m_program.OptimizeRegisters();
 
     // Generate the unit code for the current generation
     GenerateOptimize();
@@ -176,8 +176,6 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
 
     memcpy(m_state.Result(), m_hostResults->Result(bestIndex), FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations));
     m_state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
-    m_state.m_program.OptimizeRegisters(false);
-    m_state.OptimizeData();
     m_state.m_bestIndex = bestIndex;
 } // EvolveGenerations
 
@@ -192,7 +190,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
             context.SetContext();
-            unsigned int dataSize = m_state.m_program.m_dataSize;
+            unsigned int maxRegister = m_state.m_program.m_uniqueRegisters;
             FireStarterResults* newResults = g & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
             FireStarterResults* oldResults = g & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
             int init = (g == 0) && (forceInit || (m_state.m_generation == 0));
@@ -204,7 +202,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
                             reinterpret_cast<void*>(&lastVariation),
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
-                            reinterpret_cast<void*>(&dataSize),
+                            reinterpret_cast<void*>(&maxRegister),
                             reinterpret_cast<void*>(&generationSeed),
                             reinterpret_cast<void*>(&init) };
 
@@ -544,14 +542,6 @@ std::string FireStarterUnit::GetOptimizeCode(void)
     LoadCode();
     return m_optimizeCode;
 } // GetOptimizeCode
-
-void FireStarterUnit::StartRandom(FireStarterCompilerManager* manager)
-{
-    m_compilerManager = manager;
-    DispatchAsync([this] {
-        ExecuteRandom();
-    });
-} // StartRandom
 
 void FireStarterUnit::StartEvolve(FireStarterCompilerManager* manager)
 {

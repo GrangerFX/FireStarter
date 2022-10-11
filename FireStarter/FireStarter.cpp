@@ -3,7 +3,6 @@
 #include "FireStarterUtil.h"
 #include "FireStarter_LoadState.h"
 #include "FireStarter_Solution.h"
-#include "FireStarterRandom.h"
 #include "FireStarterEvolve.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
@@ -157,7 +156,7 @@ void FireStarter::RenderStatus(const FireStarterState& state, double generationT
         for (unsigned int v = 0; v < m_settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
     } else
-        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_settings.m_seed + state.m_generation, state.m_generation, state.m_generation - m_bestState.m_generation, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), state.m_generation, state.m_generation, state.m_generation - m_bestState.m_generation, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
 
     // Update the log file.
     FireStarterCode::AppendCode(m_logFilePath, statusString + "\r\n");
@@ -280,7 +279,7 @@ void FireStarter::ControlTest(void)
         unsigned long long stateSeed = job->m_state.StateSeed();
         printf("Generation=%d  Seed=%d  stateSeed=%d\n", job->m_state.m_generation, job->m_state.m_program.m_settings.m_seed + job->m_state.m_generation, stateSeed);
         job->m_state.m_program.RandomProgram(stateSeed);
-        job->m_state.m_program.OptimizeRegisters(true);
+        job->m_state.m_program.OptimizeRegisters();
 
         // Generate the optimize code
         std::string evaluateCode;
@@ -356,20 +355,22 @@ void FireStarter::ControlTest(void)
 void FireStarter::ControlRandom(void)
 {
     // Setup the intial state
-    m_bestState.InitState(m_settings);
+    FireStarterState evolveState(m_settings);
+    evolveState.m_program.RandomProgram(evolveState.StateSeed());
+    m_bestState = evolveState;
     m_result = 0.0f;
     m_bestResult = m_settings.m_startResult;
 
     // Create the shared compiler
     FireStarterCompilerManager *compilerManager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
-    FireStarterRandom* randomGenerator = new FireStarterRandom(m_settings, compilerManager);
+    FireStarterEvolve* evolve = new FireStarterEvolve(evolveState, compilerManager);
 
     // Create the units.
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
         if (unit->InitUnit(m_bestState)) {
-            unit->StartRandom(compilerManager);
+            unit->StartEvolve(compilerManager);
             m_units.push_back(unit);
         } else
             result = false;
@@ -426,7 +427,7 @@ void FireStarter::ControlRandom(void)
     compilerManager->Cancel();
 
     // Delete the random code generator.
-    delete randomGenerator;
+    delete evolve;
 
     // Finish processing and terminate each unit.
     ClearUnits();
@@ -520,6 +521,7 @@ void FireStarter::ControlEvolve(void)
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete compilerManager;
+        evolveState = m_bestState;
         evolution++;
     }
 } // ControlEvolve

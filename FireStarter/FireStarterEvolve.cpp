@@ -22,9 +22,13 @@ void FireStarterEvolve::EvolveGenerate(void)
             // Randomize one instruction per state except for the first generation.
             job->m_state = m_state;
             job->m_state.m_generation = m_state.m_generation + generation;
-            if (job->m_state.m_generation)
-                job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
-            job->m_state.m_program.OptimizeRegisters(true);
+            if (generation) {
+                if (m_settings.m_mode == FIRESTARTER_RANDOM)
+                    job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
+                else
+                    job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
+            }
+            job->m_state.m_program.OptimizeRegisters();
 
             // Generate the optimize code
             std::string evaluateCode;
