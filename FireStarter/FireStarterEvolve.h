@@ -7,11 +7,13 @@ private:
 	FireStarterState m_state;
 	FireStarterSettings m_settings;
 	FireStarterServer m_server;
-	FireStarterCompilerManager* m_manager;
 	std::vector<FireStarterCompiler*> m_compilers;
 	std::string m_optimizeCode;
 	void EvolveGenerate(void);
 public:
-	FireStarterEvolve(FireStarterState& state, FireStarterCompilerManager* manager);
+	FireStarterCompilerManager* m_manager;
+
+	void Cancel(void);
+	FireStarterEvolve(FireStarterState& state);
 	~FireStarterEvolve(void);
 }; // class FireStarterEvolve

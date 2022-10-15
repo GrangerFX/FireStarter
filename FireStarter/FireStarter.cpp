@@ -362,15 +362,14 @@ void FireStarter::ControlRandom(void)
     m_bestResult = m_settings.m_startResult;
 
     // Create the shared compiler
-    FireStarterCompilerManager *compilerManager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
-    FireStarterEvolve* evolve = new FireStarterEvolve(evolveState, compilerManager);
+    FireStarterEvolve* evolve = new FireStarterEvolve(evolveState);
 
     // Create the units.
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
         if (unit->InitUnit(m_bestState)) {
-            unit->StartEvolve(compilerManager);
+            unit->StartEvolve(evolve->m_manager);
             m_units.push_back(unit);
         } else
             result = false;
@@ -380,7 +379,7 @@ void FireStarter::ControlRandom(void)
         m_controlTimer.Start();
         while (!m_quitControlThread) {
             // Note: The jobs may be received out of order.
-            FireStarterCompilerJob* job = compilerManager->GetComplete();
+            FireStarterCompilerJob* job = evolve->m_manager->GetComplete();
             if (!job)
                 break;
 
@@ -419,21 +418,18 @@ void FireStarter::ControlRandom(void)
             RenderStatus(controlState, generationTime, testError);
 
             // Add the job to the free list.
-            compilerManager->AddFree(job);
+            evolve->m_manager->AddFree(job);
         }
     }
 
     // Cancel any waiting jobs
-    compilerManager->Cancel();
-
-    // Delete the random code generator.
-    delete evolve;
+    evolve->Cancel();
 
     // Finish processing and terminate each unit.
     ClearUnits();
 
-    // Delete the compilier manager and cancel any waiting jobs.
-    delete compilerManager;
+    // Delete the random code generator.
+    delete evolve;
 } // ControlRandom
 
 void FireStarter::ControlEvolve(void)
@@ -448,16 +444,15 @@ void FireStarter::ControlEvolve(void)
     unsigned int evolution = 0;
     while (!m_quitControlThread && (evolution < m_settings.m_attempts)) {
         // Create the shared compiler
-        FireStarterCompilerManager* compilerManager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
         evolveState.m_generation = evolution * m_settings.m_attempts;
-        FireStarterEvolve* evolveGenerator = new FireStarterEvolve(evolveState, compilerManager);
+        FireStarterEvolve* evolve = new FireStarterEvolve(evolveState);
         
         // Create the units.
         bool result = true;
         for (unsigned int i = 0; i < m_settings.m_units; i++) {
             FireStarterUnit* unit = new FireStarterUnit(i);
             if (unit->InitUnit(evolveState)) {
-                unit->StartEvolve(compilerManager);
+                unit->StartEvolve(evolve->m_manager);
                 m_units.push_back(unit);
             } else
                 result = false;
@@ -467,7 +462,7 @@ void FireStarter::ControlEvolve(void)
             m_controlTimer.Start();
             while (!m_quitControlThread) {
                 // Note: The jobs may be received out of order.
-                FireStarterCompilerJob* job = compilerManager->GetComplete();
+                FireStarterCompilerJob* job = evolve->m_manager->GetComplete();
                 if (!job)
                     break;
 
@@ -506,21 +501,18 @@ void FireStarter::ControlEvolve(void)
                 RenderStatus(controlState, generationTime, testError);
 
                 // Add the job to the free list.
-                compilerManager->AddFree(job);
+                evolve->m_manager->AddFree(job);
             }
         }
 
-        // Cancel any waiting jobs
-        compilerManager->Cancel();
-
         // Delete the random code generator.
-        delete evolveGenerator;
+        evolve->Cancel();
 
         // Finish processing and terminate each unit.
         ClearUnits();
 
         // Delete the compilier manager and cancel any waiting jobs.
-        delete compilerManager;
+        delete evolve;
         evolveState = m_bestState;
         evolution++;
     }

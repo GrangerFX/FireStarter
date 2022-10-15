@@ -50,11 +50,17 @@ void FireStarterEvolve::EvolveGenerate(void)
     });
 } // EvolveGenerate
 
-FireStarterEvolve::FireStarterEvolve(FireStarterState& state, FireStarterCompilerManager* manager)
+void FireStarterEvolve::Cancel(void)
+{
+    // Cancel any waiting jobs
+    m_manager->Cancel();
+} // Cancel
+
+FireStarterEvolve::FireStarterEvolve(FireStarterState& state)
 {
     m_state = state;
     m_settings = m_state.Settings();
-    m_manager = manager;
+    m_manager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
     if (FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode)) {
         for (unsigned int i = 0; i < m_settings.m_processes; i++) {
             FireStarterProcess* process = m_server.AddProcess(FIRECOMPILER);
@@ -69,4 +75,5 @@ FireStarterEvolve::~FireStarterEvolve(void)
 {
     for (FireStarterCompiler* compiler : m_compilers)
         delete compiler;
+    delete m_manager;
 } // ~FireStarterEvolve

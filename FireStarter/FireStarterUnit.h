@@ -152,7 +152,6 @@ private:
     unsigned int m_gpus = 0;
     unsigned int m_firstVariation = 0;
     unsigned int m_lastVariation = 0;
-    bool m_server = false;
 
     void UpdateEvolveStates(void);
     void GenerateCode(void);

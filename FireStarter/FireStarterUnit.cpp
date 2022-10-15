@@ -489,21 +489,18 @@ void FireStarterUnit::Allocate(void)
         }
     }
 
-    if (!m_server) {
-        unsigned int numContexts = (m_settings.m_mode == FIRESTARTER_CODE) ? m_gpus : 1;
-        if (numContexts != m_contexts.size()) {
-            m_contexts.resize(numContexts);
-            unsigned int contextMembers = ((m_settings.m_population + (numContexts - 1)) / numContexts);
-            unsigned int lastMember = 0;
-            for (unsigned int contextIndex = 0; contextIndex < numContexts; contextIndex++) {
-                unsigned int firstMember = lastMember;
-                lastMember += contextMembers;
-                lastMember = min(lastMember, m_settings.m_population);
-                m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
-            }
+    unsigned int numContexts = (m_settings.m_mode == FIRESTARTER_CODE) ? m_gpus : 1;
+    if (numContexts != m_contexts.size()) {
+        m_contexts.resize(numContexts);
+        unsigned int contextMembers = ((m_settings.m_population + (numContexts - 1)) / numContexts);
+        unsigned int lastMember = 0;
+        for (unsigned int contextIndex = 0; contextIndex < numContexts; contextIndex++) {
+            unsigned int firstMember = lastMember;
+            lastMember += contextMembers;
+            lastMember = min(lastMember, m_settings.m_population);
+            m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
         }
-    } else
-        m_contexts.clear();
+    }
 } // Allocate
 
 unsigned int FireStarterUnit::Index(void)
@@ -563,41 +560,24 @@ bool FireStarterUnit::InitUnit(const FireStarterState& initState)
     DispatchAsync([this] {
         Allocate();
     });
-    if (m_server)
-        DispatchAsync([this] {
-            FireStarterPacket sendPacket(UNIT_INIT);
-            sendPacket.Packetize(&m_unitIndex, sizeof(m_unitIndex));
-            FireStarterState sendState(m_initState);
-            sendState.Packetize(sendPacket);
-            m_process->SendPacket(sendPacket);
-            FireStarterPacket receivePacket;
-            m_process->ReceivePacket(receivePacket, UNIT_INIT);
-        });
     return true;
 } // InitUnit
 
 void FireStarterUnit::Execute(void)
 {
     DispatchAsync([this] {
-        if (m_server) {
-            FireStarterPacket sendPacket(UNIT_EXECUTE);
-            m_process->SendPacket(sendPacket);
-            FireStarterPacket receivePacket;
-            m_process->ReceivePacket(receivePacket, UNIT_EXECUTE);
-        } else {
-            switch (m_settings.m_mode) {
-                case FIRESTARTER_CODE:
-                    ExecuteCode();
-                    break;
-                case FIRESTARTER_UNIT:
-                    ExecuteUnit();
-                    break;
-                case FIRESTARTER_OPTIMIZE:
-                    ExecuteOptimize();
-                    break;
-                default:
-                    break;  // Error!
-            }
+        switch (m_settings.m_mode) {
+            case FIRESTARTER_CODE:
+                ExecuteCode();
+                break;
+            case FIRESTARTER_UNIT:
+                ExecuteUnit();
+                break;
+            case FIRESTARTER_OPTIMIZE:
+                ExecuteOptimize();
+                break;
+            default:
+                break;  // Error!
         }
     });
 } // Execute
@@ -606,15 +586,6 @@ void FireStarterUnit::Update(FireStarterState* states)
 {
     bool result = false;
     DispatchSync([this, states] {
-        if (m_server) {
-            // Send the entire unit back to the host.
-            FireStarterPacket sendPacket(UNIT_UPDATE);
-            m_process->SendPacket(sendPacket);
-            FireStarterPacket receivePacket;
-            if (m_process->ReceivePacket(receivePacket, UNIT_UPDATE))
-                Packetize(receivePacket);
-        }
-
         if (!states[m_unitIndex].m_generation || (m_state.Result()->maxResult < states[m_unitIndex].Result()->maxResult))
             states[m_unitIndex] = m_state;
         else
@@ -627,13 +598,6 @@ void FireStarterUnit::Sync(FireStarterState* allStates)
     DispatchSync([this, allStates] {
         for (unsigned int i = 0; i < m_settings.m_units; i++)
             m_allStates[i] = allStates[i];
-        if (m_server && (m_unitIndex == 0)) {
-            FireStarterPacket sendPacket(UNIT_SYNC);
-            PacketizeAllStates(sendPacket);
-            m_process->SendPacket(sendPacket);
-            FireStarterPacket receivePacket;
-            m_process->ReceivePacket(receivePacket, UNIT_SYNC);
-        };
         UpdateEvolveStates();
     });
 } // Sync
@@ -682,7 +646,6 @@ FireStarterUnit::FireStarterUnit(unsigned int index, FireStarterProcess* process
     m_unitIndex = index;
     m_gpus = 1;
     m_process = process;
-    m_server = m_process && !m_process->IsClient();
     if (m_process)
         DispatchAsync([this] {
             m_process->Start();
@@ -694,7 +657,6 @@ FireStarterUnit::FireStarterUnit(unsigned int index, unsigned int gpus) : m_stat
     m_unitIndex = index;
     m_gpus = gpus;
     m_process = nullptr;
-    m_server = false;
 } // FireStarterUnit
 
 FireStarterUnit::~FireStarterUnit(void)
