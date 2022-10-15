@@ -60,7 +60,7 @@ FireStarterEvolve::FireStarterEvolve(FireStarterState& state)
 {
     m_state = state;
     m_settings = m_state.Settings();
-    m_manager = new FireStarterCompilerManager(max(m_settings.m_units, m_settings.m_processes) * 10);
+    m_manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
     if (FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode)) {
         for (unsigned int i = 0; i < m_settings.m_processes; i++) {
             FireStarterProcess* process = m_server.AddProcess(FIRECOMPILER);

@@ -1,6 +1,7 @@
 #include "FireStarterCompiler.h"
 #include "CUDACompile.h"
 
+#define COMPILER_JOB_MULTIPLIER 10
 #define COMPILE_EXECUTE "CompileExecute"
 
 #if FIRESTARTERCOMPILER_LOGGING
@@ -125,9 +126,11 @@ void FireStarterCompilerManager::Cancel(void)
     m_completeQueue.Cancel();
 } // ClearJobs
 
-FireStarterCompilerManager::FireStarterCompilerManager(size_t maxJobs)
+FireStarterCompilerManager::FireStarterCompilerManager(unsigned int numUnits, unsigned int numProcesses)
 {
-    m_maxJobs = maxJobs;
+    m_numUnits = numUnits;
+    m_numProcesses = numProcesses;
+    m_maxJobs = max(m_numUnits, m_numProcesses) * COMPILER_JOB_MULTIPLIER;
     for (size_t i = 0; i < m_maxJobs; i++)
         AddFree();
 } // FireStarterCompilerManager
