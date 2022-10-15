@@ -78,14 +78,16 @@ public:
 class FireStarterCompiler : public SerialThread {
 private:
 	SerialThread m_jobThread;
+	FireStarterServer* m_server = nullptr;
+	FireStarterCompilerManager* m_manager = nullptr;;
 	FireStarterProcess* m_process = nullptr;
-	FireStarterCompilerManager* m_compilerManager = nullptr;;
 	volatile bool m_terminate = false;
-	bool m_server = false;
+	bool m_isClient = true;
 
 public:
 	void CompilerServer(void);
 	void CompilerClient(void);
-	FireStarterCompiler(FireStarterProcess* process, FireStarterCompilerManager* manager = nullptr);
+	FireStarterCompiler(FireStarterProcess* process);
+	FireStarterCompiler(FireStarterServer* server, FireStarterCompilerManager* manage);
 	~FireStarterCompiler(void);
 }; // class FireStarterCompiler

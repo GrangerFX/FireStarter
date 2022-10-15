@@ -143,13 +143,13 @@ FireStarterCompilerManager::~FireStarterCompilerManager(void)
 void FireStarterCompiler::CompilerServer(void)
 {
     if (!m_process->ShouldTerminate()) {
-        FireStarterCompilerJob* job = m_compilerManager->GetCode();
+        FireStarterCompilerJob* job = m_manager->GetCode();
         if (!job) {
 #if FIRESTARTERCOMPILER_LOGGING
             LOG("%s: Last job received. Terminating process.\n", m_process->ProcessPrefix().c_str());
 #endif
             m_process->Stop();
-            m_compilerManager->AddCompile(nullptr);
+            m_manager->AddCompile(nullptr);
             return;
         }
 
@@ -171,7 +171,7 @@ void FireStarterCompiler::CompilerServer(void)
 #if FIRESTARTERCOMPILER_LOGGING
                         LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job->m_state.m_generation);
 #endif
-                        m_compilerManager->AddCompile(job);
+                        m_manager->AddCompile(job);
                     } else {
                         LOG("%s: Unable to receive data!\n", m_process->ProcessPrefix().c_str());
                     }
@@ -239,18 +239,27 @@ void FireStarterCompiler::CompilerClient(void)
     };
 } // CompilerClient
 
-FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process, FireStarterCompilerManager* manager)
+FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process)
 {
+    m_server = nullptr;
+    m_manager = nullptr;
     m_process = process;
-    m_compilerManager = manager;
-    m_server = m_process && !m_process->IsClient();
+    m_isClient = true;
     DispatchAsync([this] {
-        if (m_process->Start()) {
-            if (m_server)
-                CompilerServer();
-            else
-                CompilerClient();
-        }
+        if (m_process->Start())
+            CompilerClient();
+    });
+} // FireStarterCompiler
+
+FireStarterCompiler::FireStarterCompiler(FireStarterServer* server, FireStarterCompilerManager* manager)
+{
+    m_server = server;
+    m_manager = manager;
+    m_process = m_server->AddProcess(FIRECOMPILER);
+    m_isClient = false;
+    DispatchAsync([this] {
+        if (m_process->Start())
+            CompilerServer();
     });
 } // FireStarterCompiler
 
