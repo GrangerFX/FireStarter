@@ -82,7 +82,7 @@ private:
 	FireStarterCompilerManager* m_manager = nullptr;;
 	FireStarterProcess* m_process = nullptr;
 	volatile bool m_terminate = false;
-	bool m_isClient = true;
+	bool m_isClient = false;
 
 public:
 	void CompilerServer(void);
