@@ -1,5 +1,5 @@
-// Run date: 10/15/22 10:50:42 Pacific Daylight Time
-// Run duration = 0.417351 seconds
+// Run date: 10/15/22 12:35:59 Pacific Daylight Time
+// Run duration = 0.401974 seconds
 // Run count = 41
 // Run variations = 3;
 // Run samples = 15;
@@ -56,7 +56,7 @@ inline float SolutionTarget(float n, unsigned int variation)
 // Solution0 precision = 0.00014600
 inline float Solution0(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11;
+    float r0, r1, r2, r3, r4;
 
     r0 = n *= -1.06404555f;
     r1 = n *= 0.31580654f;
@@ -76,17 +76,17 @@ inline float Solution0(float n)
     n *= r2;
     n = r0 *= n;
     n = r1 *= n;
-    n = r11 *= n;
+    r2 = n *= 5.01903057f;
     n += 5.01923084f;
-    r2 = n += -6.00116730f;
+    r4 = n += -6.00116730f;
     n += r0;
     n *= -2.19657063f;
     n = r3 *= n;
     n += 32.43407822f;
-    n += 5.01903057f;
+    n += r2;
     n = r1 += n;
     n += 1.79121852f;
-    n *= r2;
+    n *= r4;
     n += r1;
     n += r3;
     n *= 0.21798083f;
@@ -96,7 +96,7 @@ inline float Solution0(float n)
 // Solution1 precision = 0.00026572
 inline float Solution1(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11;
+    float r0, r1, r2, r3, r4;
 
     r0 = n *= -0.77089715f;
     r1 = n *= 0.72826934f;
@@ -116,17 +116,17 @@ inline float Solution1(float n)
     n *= r2;
     n = r0 *= n;
     n = r1 *= n;
-    n = r11 *= n;
+    r2 = n *= -0.50048769f;
     n += 1.75562572f;
-    r2 = n += 4.48073149f;
+    r4 = n += 4.48073149f;
     n += r0;
     n *= 0.04003927f;
     n = r3 *= n;
     n += -0.32262698f;
-    n += -0.50048769f;
+    n += r2;
     n = r1 += n;
     n += 1.62125242f;
-    n *= r2;
+    n *= r4;
     n += r1;
     n += r3;
     n *= 0.08327358f;
@@ -136,7 +136,7 @@ inline float Solution1(float n)
 // Solution2 precision = 0.00020541
 inline float Solution2(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11;
+    float r0, r1, r2, r3, r4;
 
     r0 = n *= -0.54000074f;
     r1 = n *= 1.00846064f;
@@ -156,17 +156,17 @@ inline float Solution2(float n)
     n *= r2;
     n = r0 *= n;
     n = r1 *= n;
-    n = r11 *= n;
+    r2 = n *= 2.36374569f;
     n += -0.10834862f;
-    r2 = n += -0.39849082f;
+    r4 = n += -0.39849082f;
     n += r0;
     n *= 0.96809697f;
     n = r3 *= n;
     n += 1.59805930f;
-    n += 2.36374569f;
+    n += r2;
     n = r1 += n;
     n += 1.30178189f;
-    n *= r2;
+    n *= r4;
     n += r1;
     n += r3;
     n *= -0.59882873f;

@@ -19,13 +19,13 @@ void FireStarterProgram::OptimizeRegisters(void)
         unsigned int r = instructions->Register(i);
         if (r < m_settings.m_registers) {
             int index = dataRegisters[r];
-            if (index == -1) {
-                index = m_uniqueRegisters++;
-                dataRegisters[r] = index;
-            }
+            if (index == -1)
+                dataRegisters[r] = index = m_uniqueRegisters++;
             instructions->SetRegister(i, index);
-        } else
+        } else {
             printf("Bad register: %u  Max registers: %u\n", r, m_settings.m_registers);
+            instructions->SetRegister(i, 0);
+        }
     }
 } // OptimizeRegisters
 
@@ -33,13 +33,14 @@ unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegist
 {
     // Optimize the registers based on the ones in use at any point in the code.
     const FireStarterInstructions* instructions = Instructions();
+    unsigned int numInstructions = m_settings.m_instructions;
     registers.resize(m_uniqueRegisters);
     for (unsigned int i = 0; i < m_uniqueRegisters; i++)
-        registers[i] = FireStarterRegister(i, m_uniqueRegisters, m_uniqueRegisters);
+        registers[i] = FireStarterRegister(-1, numInstructions, numInstructions);
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
         unsigned int index = instructions->Register(i);
         FireStarterRegister& reg = registers[index];
-        if (reg.instructionFirst == m_uniqueRegisters)
+        if (reg.instructionFirst == numInstructions)
             reg.instructionFirst = i;
         reg.instructionLast = i;
     }
@@ -54,8 +55,7 @@ unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegist
                 if (!freeRegisters.empty()) {
                     reg.registerIndex = freeRegisters.back();
                     freeRegisters.pop_back();
-                }
-                else
+                } else
                     reg.registerIndex = numActiveRegisters;
                 numActiveRegisters++;
             } else if (reg.instructionLast == i) {
