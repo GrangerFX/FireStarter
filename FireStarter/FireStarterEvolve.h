@@ -6,8 +6,6 @@ class FireStarterEvolve : public SerialThread {
 private:
 	FireStarterState m_state;
 	FireStarterSettings m_settings;
-	FireStarterServer* m_server;
-	std::vector<FireStarterCompiler*> m_compilers;
 	std::string m_optimizeCode;
 	void EvolveGenerate(void);
 public:
