@@ -161,7 +161,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
         }
         code += "{\r\n";
 
-        if (0 && m_solutionFunction) {
+        if (m_solutionFunction) {
             // First pass: Determine the length of the code string.
             dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
             dim3 cudaGridSize(1, 1, 1);
