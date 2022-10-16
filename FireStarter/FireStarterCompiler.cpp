@@ -254,8 +254,16 @@ FireStarterCompilerJob* FireStarterCompilerManager::GetComplete(void)
     return m_completeQueue.Get();
 } // GetComplete
 
+void FireStarterCompilerManager::Complete(void)
+{
+    // Send a null job to each client to let it know the work is complete.
+    for (unsigned int i = 0; i < m_numProcesses; i++)
+        AddCode(nullptr);
+} // Complete
+
 void FireStarterCompilerManager::Cancel(void)
 {
+    // Note: Safe to call more than once.
     m_freeQueue.Cancel();
     m_codeQueue.Cancel();
     m_compileQueue.Cancel();

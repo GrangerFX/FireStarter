@@ -6,14 +6,9 @@
 void FireStarterEvolve::EvolveGenerate(void)
 {
     DispatchAsync([this] {
-#if 1
         // Generate code using the GPU.
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
-#else
-        // Generate code using the CPU.
-        FireStarterGenerate generate;
-#endif
         for (unsigned int generation = 0; generation < m_settings.m_attempts; generation++) {
             FireStarterCompilerJob* job = m_manager->GetFree();
             if (!job)
@@ -44,9 +39,9 @@ void FireStarterEvolve::EvolveGenerate(void)
             m_manager->AddCode(job);
         }
 
-        // Send a null job to each client to let it know the work is complete.
-        for (unsigned int i = 0; i < m_settings.m_processes; i++)
-            m_manager->AddCode(nullptr);
+        // Let all the processes know that the job is complete. This will terminate the processes
+        // once the last job in their queues is finished.
+        m_manager->Complete();
     });
 } // EvolveGenerate
 

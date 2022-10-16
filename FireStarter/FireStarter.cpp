@@ -234,8 +234,7 @@ void FireStarter::ControlAllocate(void)
     // Compile FireGenerate
     if (!m_fireStarterGenerate)
         m_fireStarterGenerate = new FireStarterGenerate(m_CUDAContext);
-    m_fireStarterGenerate->InitGenerate(m_settings);
-
+ 
     // Compile FireShow.
     if (CUDACompile::CompileProgram(m_fireShowModule, m_fireShowCode, "FireShow"))
         m_fireShowFunction = CUDACompile::GetFunction(m_fireShowModule, "FireShow");

@@ -89,6 +89,7 @@ public:
 	void AddComplete(FireStarterCompilerJob* job);
 	FireStarterCompilerJob* GetComplete(void);
 
+	void Complete(void);	// Called when there is no more work to do.
 	void Cancel(void);
 	FireStarterCompilerManager(unsigned int numUnits, unsigned int numProcesses);
 	~FireStarterCompilerManager(void);

@@ -19,7 +19,7 @@ private:
 	size_t m_stringSize = 0;
 
 public:
-	void InitGenerate(const FireStarterSettings& settings);
+	bool InitGenerateGPU(const FireStarterSettings& settings);
 	void GenerateEvaluate(const FireStarterState& state, std::string& code);
 	void GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, unsigned int generation);
 	FireStarterGenerate(CUDAContext* context = nullptr);
