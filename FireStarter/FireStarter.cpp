@@ -287,7 +287,7 @@ void FireStarter::ControlTest(void)
         // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
         job->m_options.clear();
         CUDACompile::StandardOptions(job->m_options);
-        job->m_programName = "Optimizer";
+        job->m_programName = "FireOptimizer.cu";
         job->m_program = optimizeCode;
         FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
 

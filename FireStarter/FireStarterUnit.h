@@ -48,14 +48,14 @@ private:
             checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
         } // Syncronize
 
-        inline void EvolveCompile(const std::string& evolveCode)
+        inline void CodeCompile(const std::string& evolveCode)
         {
             if (!m_evolveFunction) {
                 m_CUDAContext->SetContext();
                 if (CUDACompile::CompileProgram(m_evolveModule, evolveCode, "FireInterpreter"))
                     m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Interprete");
             }
-        } // EvolveCompile
+        } // CodeCompile
 
         inline void OptimizeCompile(const std::string& optimizeCode)
         {

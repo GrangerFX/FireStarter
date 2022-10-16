@@ -13,6 +13,22 @@ void CUDACompile::StandardOptions(std::vector<std::string>& options)
 //  options.push_back("-lineinfo");         // Generate line information
 } // StandardOptions
 
+void CUDACompile::DeviceOptions(std::vector<std::string>& options)
+{
+    CUdevice device = 0;
+    checkCUDAErrors(cuCtxGetDevice(&device));
+
+    // Use the current device's compute architecture
+    int computeCapabilityMajor = 0;
+    int computeCapabilityMinor = 0;
+    checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMajor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, device));
+    checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMinor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
+    options.push_back(Format("-arch=compute_%d%d", computeCapabilityMajor, computeCapabilityMinor));
+    options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
+//  options.push_back("-G");                // Generate debug info
+//  options.push_back("-lineinfo");         // Generate line information
+} // DeviceOptions
+
 bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string& program, const std::string& programName, const std::vector<std::string>& options)
 {
     // Compile CUDA program (from compileFileToPTX() in nvrtc_helper.h)
@@ -50,6 +66,17 @@ bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string&
     return ptxSize > 0;
 } // Compile
 
+void CUDACompile::CompileModule(CUmodule& cuda_module, const std::string& ptx)
+{
+    // Create the code module.
+    if (cuda_module) {
+        checkCUDAErrors(cuModuleUnload(cuda_module));
+        cuda_module = nullptr;
+    }
+    if (!ptx.empty())
+        checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx.c_str(), 0, 0, 0));
+} // CompileModule
+
 bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& program, const std::string& programName)
 {
 #if COMPILE_TIME
@@ -57,18 +84,7 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
 #endif
 
     std::vector<std::string> options;
-    CUdevice device = 0;
-    checkCUDAErrors(cuCtxGetDevice(&device));
-
-    // Use the current device's compute architecture
-    int computeCapabilityMajor = 0;
-    int computeCapabilityMinor = 0;
-    checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMajor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, device));
-    checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMinor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
-    options.push_back(Format("-arch=compute_%d%d", computeCapabilityMajor, computeCapabilityMinor));
-    options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
-//  options.push_back("-G");                // Generate debug info
-//  options.push_back("-lineinfo");         // Generate line information
+    DeviceOptions(options);
 
     std::string ptx, log;
     if (!Compile(ptx, log, program, programName, options)) {
@@ -78,11 +94,7 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
     }
 
     // Create the code module.
-    if (cuda_module) {
-        checkCUDAErrors(cuModuleUnload(cuda_module));
-        cuda_module = nullptr;
-    }
-    checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx.c_str(), 0, 0, 0));
+    CompileModule(cuda_module, ptx);
 
     // Optionaly output the compile time.
 #if COMPILE_TIME
@@ -92,14 +104,6 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
     // Note: Currently the program is forced to terminate if there were any compile errors.
     return true; 
 } // CompileProgram
-
-CUmodule CUDACompile::CompileModule(const std::string& ptx)
-{
-    CUmodule cuda_module = nullptr;
-    if (!ptx.empty())
-        checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx.c_str(), 0, 0, 0));
-    return cuda_module;
-} // CompileModule
 
 CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& functionName)
 {

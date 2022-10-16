@@ -35,7 +35,7 @@ void FireStarterUnit::UpdateEvolveStates(void)
 void FireStarterUnit::GenerateCode(void)
 {
     for (FireStarterContext& context : m_contexts)
-        context.EvolveCompile(m_evolveCode);
+        context.CodeCompile(m_evolveCode);
 } // GenerateCode
 
 void FireStarterUnit::GenerateOptimize(void)
@@ -345,7 +345,8 @@ bool FireStarterUnit::ExecuteJob(FireStarterCompilerJob* job, std::atomic<float>
     if (job->m_ptx.empty())
         return false;
 
-    CUmodule cuda_module = CUDACompile::CompileModule(job->m_ptx);
+    CUmodule cuda_module = nullptr;
+    CUDACompile::CompileModule(cuda_module, job->m_ptx);
     if (!cuda_module)
         return false;
 
