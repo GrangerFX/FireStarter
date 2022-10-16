@@ -133,9 +133,9 @@ private:
         } // FireStarterContext
     }; // class FireStarterContext
 
+    static std::atomic<float> g_atomicResult;
     SimpleTimer m_timer;
-    FireStarterProcess* m_process = nullptr;
-    FireStarterCompilerManager* m_compilerManager = nullptr;
+    FireStarterCompilerManager* m_manager = nullptr;
     std::vector<FireStarterContext> m_contexts;
     std::vector<FireStarterState> m_allStates;
     std::string m_evolveCode;
@@ -164,8 +164,6 @@ private:
     void ExecuteCode(void);
     void ExecuteOptimize(void);
     void ExecuteUnit(void);
-    void ExecuteRandom(void);
-    void ExecuteEvolve(void);
     bool LoadCode(void);
     void Deallocate(void);
     void Allocate(void);
@@ -177,15 +175,15 @@ public:
     void GetState(FireStarterState& state);
     std::string GetEvolveCode(void);
     std::string GetOptimizeCode(void);
-    bool CompileJob(FireStarterCompilerJob* job);
-    bool ExecuteJob(FireStarterCompilerJob* job, std::atomic<float>& atomicResult, bool skipVariations = true);
-    void StartEvolve(FireStarterCompilerManager* manager);
-    bool InitUnit(const FireStarterState& initState);
+    bool GenerateJob(unsigned int generation = 0);
+    bool CompileJob(void);
+    bool ExecuteJob(bool skipVariations = FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+    void ExecuteEvolve(void);
+    bool InitUnit(FireStarterCompilerManager* manager, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);
     void Sync(FireStarterState* allStates);
-    void Client(void);
-    FireStarterUnit(unsigned int index, FireStarterProcess* process = nullptr);
+    FireStarterUnit(unsigned int index);
     FireStarterUnit(unsigned int index, unsigned int gpus);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

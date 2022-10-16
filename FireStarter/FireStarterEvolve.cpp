@@ -45,22 +45,15 @@ void FireStarterEvolve::EvolveGenerate(void)
     });
 } // EvolveGenerate
 
-void FireStarterEvolve::Cancel(void)
+FireStarterEvolve::FireStarterEvolve(FireStarterCompilerManager* manager, FireStarterState& state)
 {
-    // Cancel any waiting jobs
-    m_manager->Cancel();
-} // Cancel
-
-FireStarterEvolve::FireStarterEvolve(FireStarterState& state)
-{
+    m_manager = manager;
     m_state = state;
     m_settings = m_state.Settings();
-    m_manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
     if (FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode))
         EvolveGenerate();
 } // FireStarterEvolve
 
 FireStarterEvolve::~FireStarterEvolve(void)
 {
-    delete m_manager;
 } // ~FireStarterEvolve

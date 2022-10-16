@@ -247,7 +247,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
         code += "    return 0.0f;\r\n";
         code += "} // Solution\r\n";
     }
-} // SaveSolution
+} // GenerateSolution
 
 FireStarterGenerate::FireStarterGenerate(CUDAContext* context)
 {

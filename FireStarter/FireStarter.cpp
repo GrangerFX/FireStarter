@@ -242,7 +242,8 @@ void FireStarter::ControlAllocate(void)
 
 void FireStarter::ControlTest(void)
 {
-    static std::atomic<float> atomicResult = FIRESTARTER_RANDOM_START_RESULT;
+    // Create the compiler manager
+    FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
 
     // Setup the intial state
     FireStarterState controlState(m_settings);
@@ -256,7 +257,7 @@ void FireStarter::ControlTest(void)
 
     // Create the unit.
     FireStarterUnit* unit = new FireStarterUnit(0);
-    if (!unit->InitUnit(controlState))
+    if (!unit->InitUnit(manager, controlState))
         return;
     unit->Synchronize();
     std::string optimizeCode = unit->GetOptimizeCode();
@@ -269,47 +270,21 @@ void FireStarter::ControlTest(void)
     m_controlTimer.Start();
     unsigned int generation = 0;
     while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
-        // Initialize the job
-        *job = FireStarterCompilerJob();
-
-        // Generate the job code.
-        job->m_state.InitState(m_settings);
-        job->m_state.m_generation = generation++;
-        unsigned long long stateSeed = job->m_state.StateSeed();
-        printf("Generation=%d  Seed=%d  stateSeed=%d\n", job->m_state.m_generation, job->m_state.m_program.m_settings.m_seed + job->m_state.m_generation, stateSeed);
-        job->m_state.m_program.RandomProgram(stateSeed);
-        job->m_state.m_program.OptimizeRegisters();
-
-        // Generate the optimize code
-        std::string evaluateCode;
-        generate.GenerateEvaluate(job->m_state, evaluateCode);
-
-        // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-        job->m_options.clear();
-        CUDACompile::StandardOptions(job->m_options);
-        job->m_programName = "FireOptimizer.cu";
-        job->m_program = optimizeCode;
-        FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-
-        // Compile the job.
-        bool compileResult = false;
-        unit->DispatchSync([unit, job, &compileResult] { compileResult = unit->CompileJob(job); });
-        if (!compileResult)
+        if (!unit->GenerateJob(generation++))
             break;
-        if (job->m_log.size())
-            printf("compilation log ---\n%s\nend log---\n", job->m_log.c_str());
-        if (!job->m_ptx.size())
+        if (!unit->CompileJob())
+            break;
+        if (!unit->ExecuteJob())
             break;
 
-        // Execute the variations one at a time.
-        bool executeResult1 = false;
-        atomicResult = m_settings.m_startResult;
-        unit->DispatchSync([unit, job, &executeResult1] { executeResult1 = unit->ExecuteJob(job, atomicResult, false); });
-        if (!executeResult1)
+        // Get the completed job.
+        FireStarterCompilerJob* job = manager->GetComplete();
+        if (!job)
             break;
 
         // Update the current state.
         controlState = job->m_state;
+
         m_result = controlState.MaxResult();
         m_totalResult += m_result;
 
@@ -335,24 +310,28 @@ void FireStarter::ControlTest(void)
 
             // Draw the graphs for both variations.
             FireShow();
-            GetMainThread()->DispatchSync([this] {
-                RenderImage(m_buffer.m_width, m_buffer.m_height, m_buffer.GetDevice());
-            });
+            GetMainThread()->DispatchSync([this] { RenderImage(m_buffer.m_width, m_buffer.m_height, m_buffer.GetDevice()); });
         }
 
         // Update the render status after every pass.
         RenderStatus(controlState, generationTime, testError);
+
+        // Free the job
+        manager->AddFree(job);
     }
 
     // Finish processing and terminate each unit.
     ClearUnits();
 
     // Delete the compilier manager and cancel any waiting jobs.
-    delete job;
+    delete manager;
 } // ControlTest
 
 void FireStarter::ControlRandom(void)
 {
+    // Create the compiler manager
+    FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
+
     // Setup the intial state
     FireStarterState evolveState(m_settings);
     evolveState.m_program.RandomProgram(evolveState.StateSeed());
@@ -361,14 +340,14 @@ void FireStarter::ControlRandom(void)
     m_bestResult = m_settings.m_startResult;
 
     // Create the shared compiler
-    FireStarterEvolve* evolve = new FireStarterEvolve(evolveState);
+    FireStarterEvolve* evolve = new FireStarterEvolve(manager, evolveState);
 
     // Create the units.
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
-        if (unit->InitUnit(m_bestState)) {
-            unit->StartEvolve(evolve->m_manager);
+        if (unit->InitUnit(manager, m_bestState)) {
+            unit->ExecuteEvolve();
             m_units.push_back(unit);
         } else
             result = false;
@@ -378,7 +357,7 @@ void FireStarter::ControlRandom(void)
         m_controlTimer.Start();
         while (!m_quitControlThread) {
             // Note: The jobs may be received out of order.
-            FireStarterCompilerJob* job = evolve->m_manager->GetComplete();
+            FireStarterCompilerJob* job = manager->GetComplete();
             if (!job)
                 break;
 
@@ -410,25 +389,28 @@ void FireStarter::ControlRandom(void)
                 GetMainThread()->DispatchSync([this] {
                     const unsigned char* bufferPixels = (m_settings.m_mode == FIRESTARTER_SOLUTION) ? m_buffer.GetHost() : m_buffer.GetDevice();
                     RenderImage(m_buffer.m_width, m_buffer.m_height, bufferPixels);
-                    });
+                });
             }
 
             // Update the render status after every pass.
             RenderStatus(controlState, generationTime, testError);
 
             // Add the job to the free list.
-            evolve->m_manager->AddFree(job);
+            manager->AddFree(job);
         }
     }
 
     // Cancel any waiting jobs
-    evolve->Cancel();
+    manager->Cancel();
 
     // Finish processing and terminate each unit.
     ClearUnits();
 
     // Delete the random code generator.
     delete evolve;
+
+    // Delete the compilier manager and cancel any waiting jobs.
+    delete manager;
 } // ControlRandom
 
 void FireStarter::ControlEvolve(void)
@@ -442,16 +424,19 @@ void FireStarter::ControlEvolve(void)
 
     unsigned int evolution = 0;
     while (!m_quitControlThread && (evolution < m_settings.m_attempts)) {
+        // Create the compiler manager
+        FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
+
         // Create the shared compiler
         evolveState.m_generation = evolution * m_settings.m_attempts;
-        FireStarterEvolve* evolve = new FireStarterEvolve(evolveState);
+        FireStarterEvolve* evolve = new FireStarterEvolve(manager, evolveState);
         
         // Create the units.
         bool result = true;
         for (unsigned int i = 0; i < m_settings.m_units; i++) {
             FireStarterUnit* unit = new FireStarterUnit(i);
-            if (unit->InitUnit(evolveState)) {
-                unit->StartEvolve(evolve->m_manager);
+            if (unit->InitUnit(manager, evolveState)) {
+                unit->ExecuteEvolve();
                 m_units.push_back(unit);
             } else
                 result = false;
@@ -461,7 +446,7 @@ void FireStarter::ControlEvolve(void)
             m_controlTimer.Start();
             while (!m_quitControlThread) {
                 // Note: The jobs may be received out of order.
-                FireStarterCompilerJob* job = evolve->m_manager->GetComplete();
+                FireStarterCompilerJob* job = manager->GetComplete();
                 if (!job)
                     break;
 
@@ -500,18 +485,22 @@ void FireStarter::ControlEvolve(void)
                 RenderStatus(controlState, generationTime, testError);
 
                 // Add the job to the free list.
-                evolve->m_manager->AddFree(job);
+                manager->AddFree(job);
             }
         }
 
         // Delete the random code generator.
-        evolve->Cancel();
+        manager->Cancel();
 
         // Finish processing and terminate each unit.
         ClearUnits();
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete evolve;
+
+        // Delete the compilier manager and cancel any waiting jobs.
+        delete manager;
+
         evolveState = m_bestState;
         evolution++;
     }
@@ -519,6 +508,9 @@ void FireStarter::ControlEvolve(void)
 
 void FireStarter::ControlUnits(void)
 {
+    // Create the compiler manager
+    FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
+
     // Setup the intial state 
     m_result = 0.0f;
     m_bestResult = m_settings.m_startResult;
@@ -543,15 +535,14 @@ void FireStarter::ControlUnits(void)
     bool result = true;
     if (m_settings.m_units > 1)
         for (unsigned int i = 0; i < m_settings.m_units; i++) {
-            FireStarterProcess* process = m_settings.m_processes ? m_server.AddProcess() : nullptr;
-            FireStarterUnit* unit = new FireStarterUnit(i, process);
+            FireStarterUnit* unit = new FireStarterUnit(i);
             m_units.push_back(unit);
-            result &= unit->InitUnit(m_allStates[i]);
+            result &= unit->InitUnit(manager, m_allStates[i]);
         }
     else {
         FireStarterUnit* unit = new FireStarterUnit(0, CUDAContext::CUDADevices());
         m_units.push_back(unit);
-        result = unit->InitUnit(m_allStates[0]);
+        result = unit->InitUnit(manager, m_allStates[0]);
     }
 
     if (result) {
@@ -624,8 +615,14 @@ void FireStarter::ControlUnits(void)
         }
     }
 
+    // Delete the random code generator.
+    manager->Cancel();
+
     // Finish processing and terminate each unit.
     ClearUnits();
+
+    // Delete the compilier manager and cancel any waiting jobs.
+    delete manager;
 } // ControlUnits
 
 void FireStarter::ControlThread(void)
