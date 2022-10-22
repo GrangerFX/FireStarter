@@ -3,22 +3,24 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
-void FireStarterEvolve::EvolveGenerate(void)
+bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigned int generations)
 {
-    DispatchAsync([this] {
+    if (m_optimizeCode.empty())
+        return false;
+    DispatchAsync([this, state, generations] {
         // Generate code using the GPU.
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
-        for (unsigned int generation = 0; generation < m_settings.m_attempts; generation++) {
+        for (unsigned int generation = 0; generation < generations; generation++) {
             FireStarterCompilerJob* job = m_manager->GetFree();
             if (!job)
                 break;
 
             // Randomize one instruction per state except for the first generation.
-            job->m_state = m_state;
-            job->m_state.m_generation = m_state.m_generation + generation;
+            job->m_state = *state;
+            job->m_state.m_generation += generation;
             if (generation) {
-                if (m_settings.m_mode == FIRESTARTER_RANDOM)
+                if (job->m_state.Settings().m_mode == FIRESTARTER_RANDOM)
                     job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
                 else
                     job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
@@ -43,15 +45,13 @@ void FireStarterEvolve::EvolveGenerate(void)
         // once the last job in their queues is finished.
         m_manager->Complete();
     });
-} // EvolveGenerate
+    return true;
+} // EvolveGenerations
 
-FireStarterEvolve::FireStarterEvolve(FireStarterCompilerManager* manager, FireStarterState& state)
+FireStarterEvolve::FireStarterEvolve(FireStarterCompilerManager* manager)
 {
     m_manager = manager;
-    m_state = state;
-    m_settings = m_state.Settings();
-    if (FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode))
-        EvolveGenerate();
+    FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode);
 } // FireStarterEvolve
 
 FireStarterEvolve::~FireStarterEvolve(void)

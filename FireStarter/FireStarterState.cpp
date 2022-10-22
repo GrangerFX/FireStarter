@@ -55,7 +55,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "} // LoadState\r\n";
 } // SaveState
 
-float FireStarterState::TestResult(void)
+float FireStarterState::TestResult(void) const
 {
     float testResult = 0.0f;
     unsigned int instructions = m_program.m_settings.m_instructions;
@@ -63,7 +63,7 @@ float FireStarterState::TestResult(void)
     FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
     unsigned int precision = m_program.m_settings.m_precision;
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
-        FireStarterData* initData = Result()->Data(v);
+        const FireStarterData* initData = Result()->Data(v);
         float result = 0.0f;
         float sampleStep = (m_program.m_settings.m_targetMax - m_program.m_settings.m_targetMin) / (m_program.m_settings.m_samples - 1);
         for (unsigned int i = 0; i < m_program.m_settings.m_samples; i++) {
@@ -82,7 +82,7 @@ float FireStarterState::TestResult(void)
                 result = max(result, difference);
             }
         }
-        float minResult = *Result()->MinResult(v);
+        float minResult = Result()->MinResult(v);
         testResult = max(testResult, fabsf(result - minResult));
     }
     free(workData);

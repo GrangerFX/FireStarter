@@ -443,18 +443,18 @@ bool FireStarterUnit::ExecuteJob(bool skipVariations)
     return true;
 } // ExecuteJob
 
-void FireStarterUnit::ExecuteEvolve(void)
+void FireStarterUnit::ExecuteRandom(void)
 {
     DispatchAsync([this] {
         if (!WillTerminate()) {
             if (ExecuteJob()) {  // Returns true if the job was compiled and executed successfully.
                 if (!WillTerminate())
-                    ExecuteEvolve();
+                    ExecuteRandom();
             } else
                 m_manager->AddComplete(nullptr);
         }
     });
-} // ExecuteEvolve
+} // ExecuteRandom
 
 bool FireStarterUnit::LoadCode(void)
 {

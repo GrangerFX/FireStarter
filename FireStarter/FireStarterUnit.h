@@ -178,7 +178,7 @@ public:
     bool GenerateJob(unsigned int generation = 0);
     bool CompileJob(void);
     bool ExecuteJob(bool skipVariations = FIRESTARTER_RANDOM_SKIP_VARIATIONS);
-    void ExecuteEvolve(void);
+    void ExecuteRandom(void);
     bool InitUnit(FireStarterCompilerManager* manager, const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);

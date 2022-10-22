@@ -52,6 +52,7 @@ public:
     void ClearUnits(void);
     void ControlDeallocate(void);
     void ControlAllocate(void);
+    void ControlResults(const FireStarterState& state);
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);
