@@ -352,13 +352,19 @@ void FireStarter::ControlRandom(void)
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
     evolve->EvolveGenerations(&evolveState, m_settings.m_attempts);
 
+    // Let all the processes know that the job is complete. This will terminate the processes
+    // once the last job in their queues is finished.
+    evolve->EvolveComplete();
+
     // Create the units.
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
         if (unit->InitUnit(manager, m_bestState)) {
-            unit->ExecuteRandom();
             m_units.push_back(unit);
+            unit->DispatchAsync([unit] {
+                unit->ExecuteRandom();
+            });
         } else
             result = false;
     }
@@ -410,7 +416,6 @@ void FireStarter::ControlEvolve(void)
     FireStarterSettings evolveSettings(m_settings);
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        m_allStates[i] = evolveState;
         FireStarterUnit* unit = new FireStarterUnit(i);
         if (unit->InitUnit(manager, evolveState)) {
             m_allStates.push_back(evolveState);
@@ -423,7 +428,7 @@ void FireStarter::ControlEvolve(void)
     }
     if (result) {
         unsigned int evolution = 0;
-        m_bestState = m_allStates[0];
+        m_bestState = evolveState;
         while (!m_quitControlThread) {
             // Loop until the the completion condition or the host program is quit.
             m_controlTimer.Start();
@@ -431,8 +436,8 @@ void FireStarter::ControlEvolve(void)
             evolveState = m_bestState;
             evolveState.m_generation = evolution * m_settings.m_units;
             evolve->EvolveGenerations(&evolveState, m_settings.m_units);
-            for (unsigned int i = 0; i < m_settings.m_units; i++)
-                m_units[i]->ExecuteJob();
+            for (FireStarterUnit* unit : m_units)
+                unit->DispatchAsync([unit] { unit->ExecuteJob(); });
 
             for (unsigned int i = 0; i < m_settings.m_units; i++) {
                 // Get the completed job.
@@ -454,7 +459,7 @@ void FireStarter::ControlEvolve(void)
             }
 
             // Has the completion condition been met?
-            if (evolution - m_bestState.m_generation / m_settings.m_units < m_settings.m_attempts)
+            if (evolution - m_bestState.m_generation / m_settings.m_units > m_settings.m_attempts)
                 break;
 
             evolution++;

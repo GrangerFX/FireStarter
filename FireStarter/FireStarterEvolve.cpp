@@ -19,7 +19,7 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
             // Randomize one instruction per state except for the first generation.
             job->m_state = *state;
             job->m_state.m_generation += generation;
-            if (generation) {
+            if (job->m_state.m_generation) {
                 if (job->m_state.Settings().m_mode == FIRESTARTER_RANDOM)
                     job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
                 else
@@ -40,13 +40,16 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
             m_manager->AddCode(job);
         }
-
-        // Let all the processes know that the job is complete. This will terminate the processes
-        // once the last job in their queues is finished.
-        m_manager->Complete();
     });
     return true;
 } // EvolveGenerations
+
+void FireStarterEvolve::EvolveComplete(void)
+{
+    DispatchAsync([this] {
+        m_manager->Complete();
+    });
+} // EvolveComplee
 
 FireStarterEvolve::FireStarterEvolve(FireStarterCompilerManager* manager)
 {

@@ -9,6 +9,7 @@ private:
 
 public:
 	bool EvolveGenerations(const FireStarterState* state, unsigned int generations);
+	void EvolveComplete(void);
 	FireStarterEvolve(FireStarterCompilerManager* manager);
 	~FireStarterEvolve(void);
 }; // class FireStarterEvolve
