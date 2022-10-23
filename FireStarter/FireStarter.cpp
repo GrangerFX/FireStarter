@@ -126,6 +126,8 @@ void FireStarter::FireShow(void)
 
 void FireStarter::RenderStatus(const FireStarterState& state, double generationTime, float result, float testError)
 {
+    const FireStarterSettings& settings = state.Settings();
+
     // Create the settings text.
     static std::string settingsText;
     if (settingsText.empty()) {
@@ -134,38 +136,40 @@ void FireStarter::RenderStatus(const FireStarterState& state, double generationT
     }
 
     // Create the hash file.
-    if (m_hashFilePath.empty()) {
-        m_hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
-        FireStarterCode::AppendCode(m_logFilePath, settingsText);
+    static std::string hashFilePath;
+    if (hashFilePath.empty()) {
+        hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
+        FireStarterCode::AppendCode(hashFilePath, settingsText);
     }
 
     // Update the hash file.
-    std::string hashString = Format("%s:%s  Generation:%4u  Best Generation:%4u", m_settings.Mode(), m_settings.Evolve(), state.m_generation, m_bestState.m_generation);
+    std::string hashString = Format("%s:%s  Generation:%4u  Best Generation:%4u", settings.Mode(), settings.Evolve(), state.m_generation, m_bestState.m_generation);
     const FireStarterResult* stateResult = state.Result();
     uint64_t resultHash = MurmurHash64(stateResult, state.ResultSize());
     uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
     float bestResult = state.MaxResult();
-    hashString += Format("  Result=%.8f  Seed=%8u  BestIndex=%6d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), state.m_program.m_settings.m_seed + state.m_generation, state.m_bestIndex, (unsigned short)resultHash, (unsigned short)programHash);
-    FireStarterCode::AppendCode(m_hashFilePath, hashString);
+    hashString += Format("  Result=%.8f  Seed=%8u  BestIndex=%6d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), settings.m_seed + state.m_generation, state.m_bestIndex, (unsigned short)resultHash, (unsigned short)programHash);
+    FireStarterCode::AppendCode(hashFilePath, hashString);
     printf(hashString.c_str());
 
     // Create the log file.
-    std::string statusString;
-    if (m_logFilePath.empty()) {
-        m_logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), m_settings.Mode());
-        FireStarterCode::AppendCode(m_logFilePath, settingsText);
+    static std::string logFilePath;
+    if (logFilePath.empty()) {
+        logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), settings.Mode());
+        FireStarterCode::AppendCode(logFilePath, settingsText);
     }
 
     // Update the log file and window status text.
-    if ((m_settings.m_mode == FIRESTARTER_TEST) || (m_settings.m_mode == FIRESTARTER_RANDOM)) {
-        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), m_settings.m_seed + state.m_generation, state.m_generation, result, m_averageResult, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
-        for (unsigned int v = 0; v < m_settings.m_variations; v++)
+    std::string statusString;
+    if ((settings.m_mode == FIRESTARTER_TEST) || (settings.m_mode == FIRESTARTER_RANDOM)) {
+        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, result, m_averageResult, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
+        for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
     } else
-        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", m_settings.Mode(), state.m_generation, state.m_generation, state.m_generation - m_bestState.m_generation, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), state.m_generation, state.m_generation, state.m_generation - m_bestState.m_generation, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
 
     // Update the log file.
-    FireStarterCode::AppendCode(m_logFilePath, statusString + "\r\n");
+    FireStarterCode::AppendCode(logFilePath, statusString + "\r\n");
 
     // Update the window status.
     GetMainThread()->DispatchAsync([this, statusString] { SetWindowText((HWND)m_window, statusString.c_str()); });
@@ -362,6 +366,7 @@ void FireStarter::ControlRandom(void)
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
         while (!m_quitControlThread) {
+            // Get the completed job.
             // Note: The jobs may be received out of order.
             FireStarterCompilerJob* job = manager->GetComplete();
             if (!job)
@@ -403,14 +408,14 @@ void FireStarter::ControlEvolve(void)
 
     // Create the states and units.
     FireStarterSettings evolveSettings(m_settings);
-    m_allStates.resize(m_settings.m_units);
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         m_allStates[i] = evolveState;
         FireStarterUnit* unit = new FireStarterUnit(i);
-        if (unit->InitUnit(manager, m_allStates[i]))
+        if (unit->InitUnit(manager, evolveState)) {
+            m_allStates.push_back(evolveState);
             m_units.push_back(unit);
-        else {
+        } else {
             delete unit;
             result = false;
             break;
@@ -429,27 +434,30 @@ void FireStarter::ControlEvolve(void)
             for (unsigned int i = 0; i < m_settings.m_units; i++)
                 m_units[i]->ExecuteJob();
 
-            // Note: The jobs may be received out of order.
-            bool allFinished = true;
-            for (FireStarterState& state : m_allStates) {
+            for (unsigned int i = 0; i < m_settings.m_units; i++) {
+                // Get the completed job.
+                // Note: The jobs may be received out of order.
                 FireStarterCompilerJob* job = manager->GetComplete();
                 if (!job)
                     break;
-                state = job->m_state;
+
+                // Update the current state.
+                FireStarterState state = job->m_state;
                 manager->AddFree(job);
                 
                 // Update the best state and display the results.
                 ControlResults(state);
 
                 // Is there more work to do?
-                if (state.m_generation - m_bestState.m_generation < m_settings.m_attempts)
-                    allFinished = false;
+                unsigned int unitIndex = state.m_generation % m_settings.m_units;
+                m_allStates[unitIndex] = state;
             }
-            evolution++;
 
             // Has the completion condition been met?
-            if (allFinished)
+            if (evolution - m_bestState.m_generation / m_settings.m_units < m_settings.m_attempts)
                 break;
+
+            evolution++;
         }
     }
 
