@@ -53,7 +53,7 @@ private:
             if (!m_evolveFunction) {
                 m_CUDAContext->SetContext();
                 if (CUDACompile::CompileProgram(m_evolveModule, evolveCode, "FireInterpreter"))
-                    m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Interprete");
+                    m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Interpreter");
             }
         } // CodeCompile
 
