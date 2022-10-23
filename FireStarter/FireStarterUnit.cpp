@@ -340,7 +340,7 @@ bool FireStarterUnit::GenerateJob(unsigned int generation)
     // Randomize one instruction per state except for the first generation.
     job->m_state = m_initState;
     job->m_state.m_generation = generation;
-    if (!job->m_state.m_generation || (m_settings.m_mode == FIRESTARTER_RANDOM))
+    if (!job->m_state.m_generation || ((m_settings.m_mode == FIRESTARTER_RANDOM) || (m_settings.m_mode == FIRESTARTER_TEST)))
         job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
     else
         job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());

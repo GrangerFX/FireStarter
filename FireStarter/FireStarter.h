@@ -33,7 +33,6 @@ public:
     float m_bestResult;
     float m_totalResult;
     float m_averageResult;
-    float m_result;
     void* m_window;
     unsigned int m_width;
     unsigned int m_height;
@@ -47,7 +46,7 @@ public:
     void SaveSolution(unsigned int generation, double generationTime);
     void FireSettings(FireStarterSettings& settings, unsigned int firestarterMode = FIRESTARTER_MODE);
     void FireShow(void);
-    void RenderStatus(const FireStarterState& state, double generationTime, float testError);
+    void RenderStatus(const FireStarterState& state, double generationTimee, float result, float testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ClearUnits(void);
     void ControlDeallocate(void);
