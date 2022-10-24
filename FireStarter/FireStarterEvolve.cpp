@@ -19,12 +19,10 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
             // Randomize one instruction per state except for the first generation.
             job->m_state = *state;
             job->m_state.m_generation += generation;
-            if (job->m_state.m_generation) {
-                if (job->m_state.Settings().m_mode == FIRESTARTER_RANDOM)
-                    job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
-                else
-                    job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
-            }
+            if ((!job->m_state.m_generation) || (job->m_state.Settings().m_mode == FIRESTARTER_RANDOM))
+                job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
+            else
+                job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
             job->m_state.m_program.OptimizeRegisters();
 
             // Generate the optimize code

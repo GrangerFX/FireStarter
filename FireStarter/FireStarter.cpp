@@ -344,7 +344,6 @@ void FireStarter::ControlRandom(void)
 
     // Setup the intial state
     FireStarterState evolveState(m_settings);
-    evolveState.m_program.RandomProgram(evolveState.StateSeed());
     m_bestState = evolveState;
     m_bestResult = m_settings.m_startResult;
 
@@ -404,7 +403,6 @@ void FireStarter::ControlEvolve(void)
 {
     // Setup the intial state
     FireStarterState evolveState(m_settings);
-    evolveState.m_program.RandomProgram(evolveState.StateSeed());
 
     // Create the compiler manager
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
@@ -486,37 +484,29 @@ void FireStarter::ControlUnits(void)
 
     // Setup the intial state 
     m_bestResult = m_settings.m_startResult;
+    m_bestState.InitState(m_settings);
 
-    // Create the states.
-    FireStarterSettings controlSettings(m_settings);
-    m_allStates.resize(m_settings.m_units);
-    for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        FireStarterState& state = m_allStates[i];
-        controlSettings.m_seed = m_settings.m_seed + i; // Note: Different seed for each unit!
-        state.InitState(controlSettings);
-        if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
-            LoadState(state);
-            state.m_generation = 0;
-            state.m_bestIndex = 0;
-            state.Settings().CopyModeSettings(controlSettings);
-        }
+    // Setup the intial state
+    if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
+        LoadState(m_bestState);
+        m_bestState.m_generation = 0;
+        m_bestState.m_bestIndex = 0;
+        m_bestState.Settings().CopyModeSettings(m_settings);
     }
-    m_bestState = m_allStates[0];
 
-    // Create the units.
+    // Create the states and units.
     bool result = true;
-    if (m_settings.m_units > 1)
-        for (unsigned int i = 0; i < m_settings.m_units; i++) {
-            FireStarterUnit* unit = new FireStarterUnit(i);
+    for (unsigned int i = 0; i < m_settings.m_units; i++) {
+        FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
+        if (unit->InitUnit(manager, m_bestState)) {
+            m_allStates.push_back(m_bestState);
             m_units.push_back(unit);
-            result &= unit->InitUnit(manager, m_allStates[i]);
+        } else {
+            delete unit;
+            result = false;
+            break;
         }
-    else {
-        FireStarterUnit* unit = new FireStarterUnit(0, CUDAContext::CUDADevices());
-        m_units.push_back(unit);
-        result = unit->InitUnit(manager, m_allStates[0]);
     }
-
     if (result) {
         // Loop until the the completion condition or the host program is quit.
         while (!m_quitControlThread) {

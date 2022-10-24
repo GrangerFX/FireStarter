@@ -129,9 +129,6 @@ void FireStarterProgram::SaveProgram(std::string& code)
 {
     code += "inline void LoadProgram(FireStarterProgram& program)\r\n";
     code += "{\r\n";
-    code += "    FireStarterSettings settings;\r\n";
-    code += "    LoadSettings(settings);\r\n";
-    code += "    program.InitProgram(settings);\r\n";
     code += Format("    program.m_uniqueRegisters = %u;\r\n", m_uniqueRegisters);
     code += "\r\n";
 
