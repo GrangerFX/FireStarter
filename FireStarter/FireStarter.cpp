@@ -261,7 +261,7 @@ void FireStarter::ControlResults(const FireStarterState& state)
     if (result < m_bestState.MaxResult()) {
         // Update the best state.
         m_bestState = state;
-        if (m_fireStarterMode != FIRESTARTER_OPTIMIZE)
+        if (state.Settings().m_mode != FIRESTARTER_OPTIMIZE)
             SaveBestState();
 
         // Update the best code on disk.
@@ -551,7 +551,6 @@ void FireStarter::ControlThread(void)
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireSettings(m_settings);
-    m_fireStarterMode = m_settings.m_mode;
 
     // If the evolve units is set to zero, use the number of gpus.
     if (m_settings.m_units == 0)
@@ -561,15 +560,15 @@ void FireStarter::ControlThread(void)
         m_buffer.Resize(m_width, m_height);
         m_buffer.Erase();
 
-        if (m_fireStarterMode == FIRESTARTER_TEST) {
+        if (m_settings.m_mode == FIRESTARTER_TEST) {
             // Only one test unit and no multiprocessing.
             m_settings.m_units = 1;
             m_settings.m_processes = 0;
             ControlTest();
-        } else if (m_fireStarterMode == FIRESTARTER_RANDOM) {
+        } else if (m_settings.m_mode == FIRESTARTER_RANDOM) {
             // Process compiled jobs as they are completed.
             ControlRandom();
-        } else if (m_fireStarterMode == FIRESTARTER_EVOLVE) {
+        } else if (m_settings.m_mode == FIRESTARTER_EVOLVE) {
             // Process compiled jobs as they are completed.
             ControlEvolve();
 
@@ -578,7 +577,7 @@ void FireStarter::ControlThread(void)
                 FireSettings(m_settings, FIRESTARTER_OPTIMIZE);
                 ControlUnits();
             }
-        } else if (m_fireStarterMode == FIRESTARTER_UNIT) {
+        } else if (m_settings.m_mode == FIRESTARTER_UNIT) {
             // Initialize the best state.
             m_bestState.InitState(m_settings);
 
@@ -586,14 +585,14 @@ void FireStarter::ControlThread(void)
             ControlUnits();
 
             // Optimization evolution pass.
-            if (FIRESTARTER_SECOND_PASS && (m_fireStarterMode != FIRESTARTER_OPTIMIZE) && !m_quitControlThread) {
+            if (FIRESTARTER_SECOND_PASS && (m_settings.m_mode != FIRESTARTER_OPTIMIZE) && !m_quitControlThread) {
                 FireSettings(m_settings, FIRESTARTER_OPTIMIZE);
                 m_bestState.Settings().CopyModeSettings(m_settings);
                 m_bestState.m_generation = 0;
                 m_bestState.m_bestIndex = 0;
                 ControlUnits();
             }
-        } else if (m_fireStarterMode == FIRESTARTER_OPTIMIZE) {
+        } else if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
             // Load the best state.
             LoadState(m_bestState);
             m_bestState.Settings().CopyModeSettings(m_settings);
@@ -699,7 +698,6 @@ FireStarter::FireStarter(void)
     m_fireShowResult = nullptr;
     m_fireShowInstructions = nullptr;
     m_fireStarterGenerate = nullptr;
-    m_fireStarterMode = 0;
     m_quitControlThread = false;
     m_totalResult = 0;
     m_averageResult = 0;
