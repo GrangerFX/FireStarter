@@ -162,11 +162,11 @@ void FireStarter::RenderStatus(const FireStarterState& state, double generationT
     // Update the log file and window status text.
     std::string statusString;
     if ((settings.m_mode == FIRESTARTER_TEST) || (settings.m_mode == FIRESTARTER_RANDOM)) {
-        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, result, m_averageResult, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, result, m_averageResult, m_bestState.MaxResult(), m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
     } else
-        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), state.m_generation, state.m_generation, state.m_generation - m_bestState.m_generation, m_bestResult, m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), state.m_generation, state.m_generation, state.m_generation - m_bestState.m_generation, m_bestState.MaxResult(), m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
 
     // Update the log file.
     FireStarterCode::AppendCode(logFilePath, statusString + "\r\n");
@@ -258,12 +258,13 @@ void FireStarter::ControlResults(const FireStarterState& state)
 
     // Increment the generation and calculate the average time per generation.
     double generationTime = m_controlTimer.Duration() / (generation + 1);
-    if (result < m_bestResult) {
+    if (result < m_bestState.MaxResult()) {
+        // Update the best state.
         m_bestState = state;
-        m_bestResult = result;
+        if (m_fireStarterMode != FIRESTARTER_OPTIMIZE)
+            SaveBestState();
 
         // Update the best code on disk.
-        SaveBestState();
         SaveBestCode();
         SaveSolution(generation, generationTime);
 
@@ -290,7 +291,6 @@ void FireStarter::ControlTest(void)
     // Setup the intial state
     FireStarterState controlState(m_settings);
     m_bestState = controlState;
-    m_bestResult = m_settings.m_startResult;
  
     // Create the code generator.
     FireStarterGenerate generate;
@@ -339,13 +339,16 @@ void FireStarter::ControlTest(void)
 
 void FireStarter::ControlRandom(void)
 {
+    // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
+    if (m_settings.m_processes == 0)
+        m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+
     // Create the compiler manager
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
 
     // Setup the intial state
     FireStarterState evolveState(m_settings);
     m_bestState = evolveState;
-    m_bestResult = m_settings.m_startResult;
 
     // Create the shared compiler
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -401,8 +404,9 @@ void FireStarter::ControlRandom(void)
 
 void FireStarter::ControlEvolve(void)
 {
-    // Setup the intial state
-    FireStarterState evolveState(m_settings);
+    // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
+    if (m_settings.m_processes == 0)
+        m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
 
     // Create the compiler manager
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
@@ -410,13 +414,16 @@ void FireStarter::ControlEvolve(void)
     // Create the shared compiler
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
+    // Setup the intial state 
+    m_bestState.InitState(m_settings);
+
     // Create the states and units.
-    FireStarterSettings evolveSettings(m_settings);
+    m_bestState.InitState(m_settings);
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i);
-        if (unit->InitUnit(manager, evolveState)) {
-            m_allStates.push_back(evolveState);
+        if (unit->InitUnit(manager, m_bestState)) {
+            m_allStates.push_back(m_bestState);
             m_units.push_back(unit);
         } else {
             delete unit;
@@ -426,12 +433,11 @@ void FireStarter::ControlEvolve(void)
     }
     if (result) {
         unsigned int evolution = 0;
-        m_bestState = evolveState;
         while (!m_quitControlThread) {
             // Loop until the the completion condition or the host program is quit.
             m_controlTimer.Start();
             
-            evolveState = m_bestState;
+            FireStarterState evolveState = m_bestState;
             evolveState.m_generation = evolution * m_settings.m_units;
             evolve->EvolveGenerations(&evolveState, m_settings.m_units);
             for (FireStarterUnit* unit : m_units)
@@ -481,18 +487,6 @@ void FireStarter::ControlUnits(void)
 {
     // Create the compiler manager
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
-
-    // Setup the intial state 
-    m_bestResult = m_settings.m_startResult;
-    m_bestState.InitState(m_settings);
-
-    // Setup the intial state
-    if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
-        LoadState(m_bestState);
-        m_bestState.m_generation = 0;
-        m_bestState.m_bestIndex = 0;
-        m_bestState.Settings().CopyModeSettings(m_settings);
-    }
 
     // Create the states and units.
     bool result = true;
@@ -558,7 +552,10 @@ void FireStarter::ControlThread(void)
     // This allows the settings to be modified without recompiling the main program.
     FireSettings(m_settings);
     m_fireStarterMode = m_settings.m_mode;
-    m_bestResult = m_settings.m_startResult;
+
+    // If the evolve units is set to zero, use the number of gpus.
+    if (m_settings.m_units == 0)
+        m_settings.m_units = CUDAContext::CUDADevices();
 
     if (!m_quitControlThread) {
         m_buffer.Resize(m_width, m_height);
@@ -570,25 +567,9 @@ void FireStarter::ControlThread(void)
             m_settings.m_processes = 0;
             ControlTest();
         } else if (m_fireStarterMode == FIRESTARTER_RANDOM) {
-            // If the evolve units is set to zero, use the number of gpus.
-            if (m_settings.m_units == 0)
-                m_settings.m_units = CUDAContext::CUDADevices();
-
-            // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
-            if (m_settings.m_processes == 0)
-                m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
-
             // Process compiled jobs as they are completed.
             ControlRandom();
         } else if (m_fireStarterMode == FIRESTARTER_EVOLVE) {
-            // If the evolve units is set to zero, use the number of gpus.
-            if (m_settings.m_units == 0)
-                m_settings.m_units = CUDAContext::CUDADevices();
-
-            // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
-            if (m_settings.m_processes == 0)
-                m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
-
             // Process compiled jobs as they are completed.
             ControlEvolve();
 
@@ -597,20 +578,32 @@ void FireStarter::ControlThread(void)
                 FireSettings(m_settings, FIRESTARTER_OPTIMIZE);
                 ControlUnits();
             }
-        } else {
-            // If the evolve units is set to zero, use the number of concurrent hardware threads.
-            if (m_settings.m_units == 0)
-                m_settings.m_units = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+        } else if (m_fireStarterMode == FIRESTARTER_UNIT) {
+            // Initialize the best state.
+            m_bestState.InitState(m_settings);
 
-            // Initial evolution pass.
+            // Program evolution pass.
             ControlUnits();
 
             // Optimization evolution pass.
             if (FIRESTARTER_SECOND_PASS && (m_fireStarterMode != FIRESTARTER_OPTIMIZE) && !m_quitControlThread) {
                 FireSettings(m_settings, FIRESTARTER_OPTIMIZE);
+                m_bestState.Settings().CopyModeSettings(m_settings);
+                m_bestState.m_generation = 0;
+                m_bestState.m_bestIndex = 0;
                 ControlUnits();
             }
+        } else if (m_fireStarterMode == FIRESTARTER_OPTIMIZE) {
+            // Load the best state.
+            LoadState(m_bestState);
+            m_bestState.Settings().CopyModeSettings(m_settings);
+            m_bestState.m_generation = 0;
+            m_bestState.m_bestIndex = 0;
+
+            // Optimization evolution pass.
+            ControlUnits();
         }
+
         // Free the frame buffer memory.
         m_buffer.Resize(0, 0);
     }
@@ -708,7 +701,6 @@ FireStarter::FireStarter(void)
     m_fireStarterGenerate = nullptr;
     m_fireStarterMode = 0;
     m_quitControlThread = false;
-    m_bestResult = 0;
     m_totalResult = 0;
     m_averageResult = 0;
 } // FireStarter

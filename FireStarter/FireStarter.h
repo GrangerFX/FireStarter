@@ -28,7 +28,6 @@ public:
     FrameBuffer m_buffer;
     FireStarterSettings m_settings;
     unsigned int m_fireStarterMode;
-    float m_bestResult;
     float m_totalResult;
     float m_averageResult;
     void* m_window;

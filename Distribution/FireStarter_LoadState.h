@@ -192,12 +192,12 @@ inline void LoadResult(FireStarterState& state)
 
 inline void LoadState(FireStarterState& state)
 {
-    FireStarterSettings settings
+    FireStarterSettings settings;
 
-    LoadSettings(settings)
-    state.InitState(settings)
-    LoadProgram(state.m_program)
-    LoadResult(state)
+    LoadSettings(settings);
+    state.InitState(settings);
+    LoadProgram(state.m_program);
+    LoadResult(state);
     state.m_generation = 66;
     state.m_bestIndex = 56737;
 

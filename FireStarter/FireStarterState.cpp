@@ -47,12 +47,12 @@ void FireStarterState::SaveState(std::string& code)
 
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
-    code += "    FireStarterSettings settings\r\n";
+    code += "    FireStarterSettings settings;\r\n";
     code += "\r\n";
-    code += "    LoadSettings(settings)\r\n";
-    code += "    state.InitState(settings)\r\n";
-    code += "    LoadProgram(state.m_program)\r\n";
-    code += "    LoadResult(state)\r\n";
+    code += "    LoadSettings(settings);\r\n";
+    code += "    state.InitState(settings);\r\n";
+    code += "    LoadProgram(state.m_program);\r\n";
+    code += "    LoadResult(state);\r\n";
     code += Format("    state.m_generation = %u;\r\n", m_generation);
     code += Format("    state.m_bestIndex = %u;\r\n", m_bestIndex);
     code += "\r\n";
