@@ -12,9 +12,9 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_targetMin = 0.000000f;
     settings.m_targetMax = 6.283185f;
 
-    settings.m_mode = FIRESTARTER_UNIT;
+    settings.m_mode = FIRESTARTER_EVOLVE;
     settings.m_units = 1;
-    settings.m_processes = 0;
+    settings.m_processes = 1;
     settings.m_population = 69632;
     settings.m_iterations = 256;
     settings.m_candidates = 16;
@@ -198,8 +198,8 @@ inline void LoadState(FireStarterState& state)
     state.InitState(settings);
     LoadProgram(state.m_program);
     LoadResult(state);
-    state.m_generation = 21;
-    state.m_bestIndex = 12031;
+    state.m_generation = 20;
+    state.m_bestIndex = 2457;
 
     LoadProgram(state.m_program);
     LoadResult(state);

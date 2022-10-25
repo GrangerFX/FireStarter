@@ -124,7 +124,7 @@ void FireStarter::FireShow(void)
     checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
 } // FireShow
 
-void FireStarter::RenderStatus(const FireStarterState& state, double generationTime, float result, float testError)
+void FireStarter::RenderStatus(const FireStarterState& state, double generationTime, float result, float average, float testError)
 {
     const FireStarterSettings& settings = state.Settings();
 
@@ -162,7 +162,7 @@ void FireStarter::RenderStatus(const FireStarterState& state, double generationT
     // Update the log file and window status text.
     std::string statusString;
     if ((settings.m_mode == FIRESTARTER_TEST) || (settings.m_mode == FIRESTARTER_RANDOM)) {
-        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, result, m_averageResult, m_bestState.MaxResult(), m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, result, average, m_bestState.MaxResult(), m_bestState.m_program.m_settings.m_seed + m_bestState.m_generation, generationTime, m_runTimer.Duration(), testError);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
     } else
@@ -254,7 +254,7 @@ void FireStarter::ControlResults(const FireStarterState& state)
 {
     unsigned int generation = state.m_generation;
     float result = state.MaxResult();
-    m_totalResult += result;
+    m_totalResult = generation ? m_totalResult + result : result;
 
     // Increment the generation and calculate the average time per generation.
     double generationTime = m_controlTimer.Duration() / (generation + 1);
@@ -279,8 +279,8 @@ void FireStarter::ControlResults(const FireStarterState& state)
     float testError = state.TestResult();
 
     // Update the render status after every pass.
-    m_averageResult = m_totalResult / (generation + 1);
-    RenderStatus(state, generationTime, result, testError);
+    float average = m_totalResult / (generation + 1);
+    RenderStatus(state, generationTime, result, average, testError);
 } // ControlResults
 
 void FireStarter::ControlTest(void)
@@ -433,10 +433,10 @@ void FireStarter::ControlEvolve(void)
     }
     if (result) {
         unsigned int evolution = 0;
-        while (!m_quitControlThread) {
-            // Loop until the the completion condition or the host program is quit.
-            m_controlTimer.Start();
-            
+
+        // Loop until the the completion condition or the host program is quit.
+        m_controlTimer.Start();
+        while (!m_quitControlThread) {    
             FireStarterState evolveState = m_bestState;
             evolveState.m_generation = evolution * m_settings.m_units;
             evolve->EvolveGenerations(&evolveState, m_settings.m_units);
@@ -503,9 +503,9 @@ void FireStarter::ControlUnits(void)
     }
     if (result) {
         // Loop until the the completion condition or the host program is quit.
+        m_controlTimer.Start();
         while (!m_quitControlThread) {
             // Execute a generation for all the units.
-            m_controlTimer.Start();
             for (FireStarterUnit* unit : m_units)
                 unit->Execute();
 
@@ -575,6 +575,9 @@ void FireStarter::ControlThread(void)
             // Optimization evolution pass.
             if (FIRESTARTER_SECOND_PASS && !m_quitControlThread) {
                 FireSettings(m_settings, FIRESTARTER_OPTIMIZE);
+                m_bestState.Settings().CopyModeSettings(m_settings);
+                m_bestState.m_generation = 0;
+                m_bestState.m_bestIndex = 0;
                 ControlUnits();
             }
         } else if (m_settings.m_mode == FIRESTARTER_UNIT) {
@@ -700,7 +703,6 @@ FireStarter::FireStarter(void)
     m_fireStarterGenerate = nullptr;
     m_quitControlThread = false;
     m_totalResult = 0;
-    m_averageResult = 0;
 } // FireStarter
 
 FireStarter::~FireStarter(void)
