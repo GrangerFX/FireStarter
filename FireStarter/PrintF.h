@@ -1,6 +1,5 @@
 #pragma once
 #include <stdarg.h>
-#include <stdio.h>
 #include <windows.h>
 #include <iostream>
 
@@ -8,7 +7,6 @@
 
 inline int printf2(const char *format, ...)
 {
-#if 1
     // initialize use of the variable argument array
     va_list vaArgs;
     va_start(vaArgs, format);
@@ -33,16 +31,4 @@ inline int printf2(const char *format, ...)
     OutputDebugStringA(zc.data());
     std::cerr << zc.data();
     return ret;
-#else
-    char str[65536];
-
-    va_list argptr;
-    va_start(argptr, format);
-    int ret = vsnprintf(str, sizeof(str), format, argptr);
-    va_end(argptr);
-    OutputDebugStringA(str);
-    std::cerr << str;
-    return ret;
-#endif
-
 } // printf2

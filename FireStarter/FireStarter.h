@@ -3,7 +3,7 @@
 #include "FireStarterResults.h"
 #include "FireStarterUnit.h"
 #include "FireStarterProcess.h"
-#include "SerialThread.h"
+#include "SerialOutput.h"
 #include "HashRandom.h"
 
 class FireStarter : public SerialThread {
@@ -27,6 +27,7 @@ public:
     FireStarterServer m_server;
     FrameBuffer m_buffer;
     FireStarterSettings m_settings;
+    SerialOutput m_output;
     float m_totalResult;
     void* m_window;
     unsigned int m_width;

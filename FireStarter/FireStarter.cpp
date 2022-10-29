@@ -6,6 +6,7 @@
 #include "FireStarterEvolve.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
+#include "SerialOutput.h"
 
 bool FireStarter::LoadTargetCode(void)
 {
@@ -150,7 +151,7 @@ void FireStarter::RenderStatus(const FireStarterState& state, double generationT
     float bestResult = state.MaxResult();
     hashString += Format("  Result=%.8f  Seed=%8u  BestIndex=%6d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), settings.m_seed + state.m_generation, state.m_bestIndex, (unsigned short)resultHash, (unsigned short)programHash);
     FireStarterCode::AppendCode(hashFilePath, hashString);
-//  printf(hashString.c_str());
+//  m_output.Output(hashString);
 
     // Create the log file.
     static std::string logFilePath;
@@ -380,7 +381,8 @@ void FireStarter::ControlRandom(void)
             if (!job)
                 break;
 
-            printf("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete());
+            // Output text using a SerialThread.
+            m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Get the current state.
             FireStarterState state = job->m_state;
