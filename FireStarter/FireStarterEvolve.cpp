@@ -12,7 +12,7 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
         for (unsigned int generation = 0; generation < generations; generation++) {
-            FireStarterCompilerJob* job = m_manager->GetFree();
+            FireStarterJob* job = m_manager->GetFree();
             if (!job)
                 break;
 

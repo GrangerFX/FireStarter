@@ -10,7 +10,7 @@
 #define LOG( ... ) {}
 #endif
 
-void FireStarterJobQueue::Add(FireStarterCompilerJob* job)
+void FireStarterJobQueue::Add(FireStarterJob* job)
 {
     if (WillTerminate())
         return;
@@ -22,18 +22,24 @@ void FireStarterJobQueue::Add(FireStarterCompilerJob* job)
             else
                 m_firstJob = job;
             m_lastJob = job;
+            m_sizeJobs++;
         }
         m_semaphore.notify();
     });
 } // Add
 
-FireStarterCompilerJob* FireStarterJobQueue::Get(void)
+FireStarterJob* FireStarterJobQueue::Get(void)
 {
     if (!IsRunning() || WillTerminate())
         return nullptr;
 
-    FireStarterCompilerJob* job = nullptr;
+    // Wait for a job to be added to the queue.
+    FireStarterJob* job = nullptr;
+    double time = m_timer.Duration();
     m_semaphore.wait();
+    m_time = m_timer.Duration() - time;
+
+    // Remove the job from the queue.
     DispatchSync([this, &job] {
         if (m_firstJob) {
             job = m_firstJob;
@@ -41,6 +47,7 @@ FireStarterCompilerJob* FireStarterJobQueue::Get(void)
             if (!m_firstJob)
                 m_lastJob = nullptr;
             job->m_next = nullptr;
+            m_sizeJobs--;
         }
     });
     return job;
@@ -53,15 +60,26 @@ void FireStarterJobQueue::Cancel(void)
 
     // Delete all the jobs in the queue.
     while (m_firstJob) {
-        FireStarterCompilerJob* job = m_firstJob;
+        FireStarterJob* job = m_firstJob;
         m_firstJob = m_firstJob->m_next;
         delete job;
+        m_sizeJobs--;
     }
     m_lastJob = nullptr;
 
     // Release any waiting threads.
     m_semaphore.terminate();
 } // Cancel
+
+double FireStarterJobQueue::Time(void)
+{
+    return m_time;
+} // Time
+
+size_t FireStarterJobQueue::Size(void)
+{
+    return m_sizeJobs;
+} // Size
 
 FireStarterJobQueue::FireStarterJobQueue(void)
 {
@@ -75,7 +93,7 @@ FireStarterJobQueue::~FireStarterJobQueue(void)
 void FireStarterCompiler::CompilerServer(void)
 {
     if (!m_process->ShouldTerminate()) {
-        FireStarterCompilerJob* job = m_manager->GetCode();
+        FireStarterJob* job = m_manager->GetCode();
         if (!job) {
 #if FIRESTARTERCOMPILER_LOGGING
             LOG("%s: Last job received. Terminating process.\n", m_process->ProcessPrefix().c_str());
@@ -137,7 +155,7 @@ void FireStarterCompiler::CompilerClient(void)
         if (result) {
             const std::string& command = receivePacket.Command();
             if (command == COMPILE_EXECUTE) {
-                FireStarterCompilerJob job(receivePacket);
+                FireStarterJob job(receivePacket);
 
                 if (result) {
 #if FIRESTARTERCOMPILER_LOGGING
@@ -210,49 +228,89 @@ FireStarterCompiler::~FireStarterCompiler(void)
 
 void FireStarterCompilerManager::AddFree(void)
 {
-    m_freeQueue.Add(new FireStarterCompilerJob());
+    m_freeQueue.Add(new FireStarterJob());
 } // AddFree
 
-void FireStarterCompilerManager::AddFree(FireStarterCompilerJob* job)
+void FireStarterCompilerManager::AddFree(FireStarterJob* job)
 {
-    *job = FireStarterCompilerJob();
+    *job = FireStarterJob();
     m_freeQueue.Add(job);
 } // AddFree
 
-FireStarterCompilerJob* FireStarterCompilerManager::GetFree(void)
+FireStarterJob* FireStarterCompilerManager::GetFree(void)
 {
     return m_freeQueue.Get();
 } // GetFree
 
-void FireStarterCompilerManager::AddCode(FireStarterCompilerJob* job)
+double FireStarterCompilerManager::TimeFree(void)
+{
+    return m_freeQueue.Time();
+} // TimeFree
+
+size_t FireStarterCompilerManager::SizeFree(void)
+{
+    return m_freeQueue.Size();
+} // SizeFree
+
+void FireStarterCompilerManager::AddCode(FireStarterJob* job)
 {
     m_codeQueue.Add(job);
 } // AddCode
 
-FireStarterCompilerJob* FireStarterCompilerManager::GetCode(void)
+FireStarterJob* FireStarterCompilerManager::GetCode(void)
 {
     return m_codeQueue.Get();
 } // GetCode
 
-void FireStarterCompilerManager::AddCompile(FireStarterCompilerJob* job)
+double FireStarterCompilerManager::TimeCode(void)
+{
+    return m_codeQueue.Time();
+} // TimeCode
+
+size_t FireStarterCompilerManager::SizeCode(void)
+{
+    return m_codeQueue.Size();
+} // SizeCode
+
+void FireStarterCompilerManager::AddCompile(FireStarterJob* job)
 {
     m_compileQueue.Add(job);
 } // AddCompile
 
-FireStarterCompilerJob* FireStarterCompilerManager::GetCompile(void)
+FireStarterJob* FireStarterCompilerManager::GetCompile(void)
 {
     return m_compileQueue.Get();
 } // GetCompile
 
-void FireStarterCompilerManager::AddComplete(FireStarterCompilerJob* job)
+double FireStarterCompilerManager::TimeCompile(void)
+{
+    return m_compileQueue.Time();
+} // TimeCompile
+
+size_t FireStarterCompilerManager::SizeCompile(void)
+{
+    return m_compileQueue.Size();
+} // SizeCompile
+
+void FireStarterCompilerManager::AddComplete(FireStarterJob* job)
 {
     m_completeQueue.Add(job);
 } // AddComplete
 
-FireStarterCompilerJob* FireStarterCompilerManager::GetComplete(void)
+FireStarterJob* FireStarterCompilerManager::GetComplete(void)
 {
     return m_completeQueue.Get();
 } // GetComplete
+
+double FireStarterCompilerManager::TimeComplete(void)
+{
+    return m_completeQueue.Time();
+} // TimeComplete
+
+size_t FireStarterCompilerManager::SizeComplete(void)
+{
+    return m_completeQueue.Size();
+} // SizeComplete
 
 void FireStarterCompilerManager::Complete(void)
 {

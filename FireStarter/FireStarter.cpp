@@ -304,7 +304,7 @@ void FireStarter::ControlTest(void)
     m_units.push_back(unit);
 
     // Create the job.
-    FireStarterCompilerJob* job = new FireStarterCompilerJob();
+    FireStarterJob* job = new FireStarterJob();
 
     // Loop until the the completion condition or the host program is quit.
     m_controlTimer.Start();
@@ -318,7 +318,7 @@ void FireStarter::ControlTest(void)
             break;
 
         // Get the completed job.
-        FireStarterCompilerJob* job = manager->GetComplete();
+        FireStarterJob* job = manager->GetComplete();
         if (!job)
             break;
 
@@ -376,9 +376,11 @@ void FireStarter::ControlRandom(void)
         while (!m_quitControlThread) {
             // Get the completed job.
             // Note: The jobs may be received out of order.
-            FireStarterCompilerJob* job = manager->GetComplete();
+            FireStarterJob* job = manager->GetComplete();
             if (!job)
                 break;
+
+            printf("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete());
 
             // Get the current state.
             FireStarterState state = job->m_state;
@@ -446,7 +448,7 @@ void FireStarter::ControlEvolve(void)
             for (unsigned int i = 0; i < m_settings.m_units; i++) {
                 // Get the completed job.
                 // Note: The jobs may be received out of order.
-                FireStarterCompilerJob* job = manager->GetComplete();
+                FireStarterJob* job = manager->GetComplete();
                 if (!job)
                     break;
 

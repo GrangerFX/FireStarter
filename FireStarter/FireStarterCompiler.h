@@ -2,9 +2,9 @@
 #include "FireStarterProcess.h"
 #include "FireStarterState.h"
 
-#define FIRESTARTERCOMPILER_LOGGING 1
+#define FIRESTARTERCOMPILER_LOGGING 0
 
-class FireStarterCompilerJob {
+class FireStarterJob {
 public:
 	FireStarterState m_state;
 	std::vector<std::string> m_options;
@@ -13,7 +13,7 @@ public:
 	std::string m_programFunction;
 	std::string m_ptx;
 	std::string m_log;
-	class FireStarterCompilerJob* m_next = nullptr;	// Linked list pointer
+	class FireStarterJob* m_next = nullptr;	// Linked list pointer
 
 	inline void Packetize(FireStarterPacket& packet)
 	{
@@ -26,24 +26,29 @@ public:
 		packet.Packetize(m_log);
 	} // Packetize
 
-	inline FireStarterCompilerJob(FireStarterPacket& packet)
+	inline FireStarterJob(FireStarterPacket& packet)
 	{
 		Packetize(packet);
 	} // FireStarterCompilerJob
 
-	inline FireStarterCompilerJob(void)
+	inline FireStarterJob(void)
 	{
-	} // FireStarterCompilerJob
-}; // class FireStarterCompilerJob
+	} // FireStarterJob
+}; // class FireStarterJob
 
 class FireStarterJobQueue : public SerialThread {
 private:
 	SerialThreadSemaphore m_semaphore;
-	FireStarterCompilerJob* m_firstJob = nullptr;
-	FireStarterCompilerJob* m_lastJob = nullptr;
+	SimpleTimer m_timer;
+	FireStarterJob* m_firstJob = nullptr;
+	FireStarterJob* m_lastJob = nullptr;
+	double m_time = 0.0;
+	size_t m_sizeJobs = 0;
 public:
-	void Add(FireStarterCompilerJob* job); 
-	FireStarterCompilerJob* Get(void);
+	void Add(FireStarterJob* job);
+	FireStarterJob* Get(void);
+	double Time(void);
+	size_t Size(void);
 	void Cancel(void);
 	FireStarterJobQueue(void);
 	~FireStarterJobQueue(void);
@@ -80,14 +85,25 @@ private:
 
 public:
 	void AddFree(void);
-	void AddFree(FireStarterCompilerJob* job);
-	FireStarterCompilerJob* GetFree(void);
-	void AddCode(FireStarterCompilerJob* job);
-	FireStarterCompilerJob* GetCode(void);
-	void AddCompile(FireStarterCompilerJob* job);
-	FireStarterCompilerJob* GetCompile(void);
-	void AddComplete(FireStarterCompilerJob* job);
-	FireStarterCompilerJob* GetComplete(void);
+	void AddFree(FireStarterJob* job);
+	FireStarterJob* GetFree(void);
+	double TimeFree(void);
+	size_t SizeFree(void);
+
+	void AddCode(FireStarterJob* job);
+	FireStarterJob* GetCode(void);
+	double TimeCode(void);
+	size_t SizeCode(void);
+
+	void AddCompile(FireStarterJob* job);
+	FireStarterJob* GetCompile(void);
+	double TimeCompile(void);
+	size_t SizeCompile(void);
+
+	void AddComplete(FireStarterJob* job);
+	FireStarterJob* GetComplete(void);
+	double TimeComplete(void);
+	size_t SizeComplete(void);
 
 	void Complete(void);	// Called when there is no more work to do.
 	void Cancel(void);

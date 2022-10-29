@@ -333,7 +333,7 @@ void FireStarterUnit::ExecuteUnit(void)
 bool FireStarterUnit::GenerateJob(unsigned int generation)
 {
     // Generate code using the GPU.
-    FireStarterCompilerJob* job = m_manager->GetFree();
+    FireStarterJob* job = m_manager->GetFree();
     if (!job)
         return false;
 
@@ -367,7 +367,7 @@ bool FireStarterUnit::GenerateJob(unsigned int generation)
 bool FireStarterUnit::CompileJob(void)
 {
     // Note: Used to test the compilation of a job in the main process.
-    FireStarterCompilerJob* job = m_manager->GetCode();
+    FireStarterJob* job = m_manager->GetCode();
     if (!job || !CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options)) {
         m_manager->AddFree(job);
         return false;
@@ -378,7 +378,7 @@ bool FireStarterUnit::CompileJob(void)
 
 bool FireStarterUnit::ExecuteJob(bool skipVariations)
 {
-    FireStarterCompilerJob* job = m_manager->GetCompile();
+    FireStarterJob* job = m_manager->GetCompile();
     if (!job)
         return false;
     if (!job->m_log.empty())
