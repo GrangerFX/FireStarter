@@ -150,7 +150,7 @@ void FireStarter::RenderStatus(const FireStarterState& state, double generationT
     float bestResult = state.MaxResult();
     hashString += Format("  Result=%.8f  Seed=%8u  BestIndex=%6d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), settings.m_seed + state.m_generation, state.m_bestIndex, (unsigned short)resultHash, (unsigned short)programHash);
     FireStarterCode::AppendCode(hashFilePath, hashString);
-    printf(hashString.c_str());
+//  printf(hashString.c_str());
 
     // Create the log file.
     static std::string logFilePath;

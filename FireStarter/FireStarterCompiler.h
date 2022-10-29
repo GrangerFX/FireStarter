@@ -44,6 +44,7 @@ private:
 	FireStarterJob* m_lastJob = nullptr;
 	double m_time = 0.0;
 	size_t m_sizeJobs = 0;
+	size_t m_totalJobs = 0;
 public:
 	void Add(FireStarterJob* job);
 	FireStarterJob* Get(void);
