@@ -1,5 +1,5 @@
-// Run date: 10/30/22 11:27:25 Pacific Daylight Time
-// Run duration = 73.662612 seconds
+// Run date: 10/30/22 11:54:32 Pacific Daylight Time
+// Run duration = 80.127325 seconds
 // Run count = 647
 // Run variations = 3;
 // Run samples = 15;
@@ -12,7 +12,7 @@
 
 // Run mode = FIRESTARTER_RANDOM;
 // Run units = 2;
-// Run processes = 6;
+// Run processes = 12;
 // Run population = 69632;
 // Run iterations = 256;
 // Run candidates = 16;

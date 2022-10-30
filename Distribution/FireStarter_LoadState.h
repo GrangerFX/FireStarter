@@ -14,7 +14,7 @@ inline void LoadSettings(FireStarterSettings& settings)
 
     settings.m_mode = FIRESTARTER_RANDOM;
     settings.m_units = 2;
-    settings.m_processes = 6;
+    settings.m_processes = 12;
     settings.m_population = 69632;
     settings.m_iterations = 256;
     settings.m_candidates = 16;

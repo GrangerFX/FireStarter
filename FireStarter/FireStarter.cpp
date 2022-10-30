@@ -125,7 +125,7 @@ void FireStarter::FireShow(void)
     checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
 } // FireShow
 
-void FireStarter::RenderStatus(const FireStarterState& state, double generationTime, float result, float average, float testError)
+void FireStarter::RenderStatus(const FireStarterState& state, double generationTime, double result, double average, double testError)
 {
     const FireStarterSettings& settings = state.Settings();
 
@@ -253,15 +253,12 @@ void FireStarter::ControlAllocate(void)
 
 void FireStarter::ControlResults(const FireStarterState& state)
 {
-    unsigned int generation = state.m_generation;
     float result = state.MaxResult();
-    m_totalResult = generation ? m_totalResult + result : result;
+    m_totalResult = m_resultsCount++ ? m_totalResult + result : result;
 
     // Increment the generation and calculate the average time per generation.
     double duration = m_controlTimer.Duration();
-    double displayTime = 0.0;
-    double weight = 1.0 / (generation + 1);
-    weight = max(weight, 0.01);
+    double weight = max(1.0 / m_resultsCount, 0.02);
     m_smoothTime = m_smoothTime * (1.0 - weight) + (duration - m_resultsTime) * weight;
     m_resultsTime = duration;
 
@@ -273,7 +270,7 @@ void FireStarter::ControlResults(const FireStarterState& state)
 
         // Update the best code on disk.
         SaveBestCode();
-        SaveSolution(generation, duration);
+        SaveSolution(state.m_generation, duration);
 
         // Draw the graphs for both variations.
         FireShow();
@@ -286,7 +283,7 @@ void FireStarter::ControlResults(const FireStarterState& state)
     float testError = state.TestResult();
 
     // Update the render status after every pass.
-    float average = m_totalResult / (generation + 1);
+    double average = m_totalResult / m_resultsCount;
     RenderStatus(state, m_smoothTime, result, average, testError);
 } // ControlResults
 
@@ -315,6 +312,7 @@ void FireStarter::ControlTest(void)
 
     // Loop until the the completion condition or the host program is quit.
     m_controlTimer.Start();
+    m_resultsCount = 0;
     unsigned int generation = 0;
     while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
         if (!unit->GenerateJob(generation++))
@@ -380,7 +378,7 @@ void FireStarter::ControlRandom(void)
     if (result) {
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
-        double weightedTime = 0.0;
+        m_resultsCount = 0;
         while (!m_quitControlThread) {
             double jobTime = m_controlTimer.Duration();
 
@@ -449,7 +447,8 @@ void FireStarter::ControlEvolve(void)
 
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
-        while (!m_quitControlThread) {    
+        m_resultsCount = 0;
+        while (!m_quitControlThread) {
             FireStarterState evolveState = m_bestState;
             evolveState.m_generation = evolution * m_settings.m_units;
             evolve->EvolveGenerations(&evolveState, m_settings.m_units);
@@ -517,6 +516,7 @@ void FireStarter::ControlUnits(void)
     if (result) {
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
+        m_resultsCount = 0;
         while (!m_quitControlThread) {
             // Execute a generation for all the units.
             for (FireStarterUnit* unit : m_units)
@@ -712,6 +712,7 @@ FireStarter::FireStarter(void)
     m_fireShowInstructions = nullptr;
     m_fireStarterGenerate = nullptr;
     m_smoothTime = 0.0;
+    m_resultsCount = 0;
     m_quitControlThread = false;
     m_totalResult = 0;
 } // FireStarter

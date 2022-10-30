@@ -28,10 +28,11 @@ public:
     FrameBuffer m_buffer;
     FireStarterSettings m_settings;
     SerialOutput m_output;
+    void* m_window;
+    size_t m_resultsCount;
     double m_resultsTime;
     double m_smoothTime;
-    float m_totalResult;
-    void* m_window;
+    double m_totalResult;
     unsigned int m_width;
     unsigned int m_height;
     volatile bool m_quitControlThread;
@@ -44,7 +45,7 @@ public:
     void SaveSolution(unsigned int generation, double generationTime);
     void FireSettings(FireStarterSettings& settings, unsigned int firestarterMode = FIRESTARTER_MODE);
     void FireShow(void);
-    void RenderStatus(const FireStarterState& state, double generationTimee, float result, float average, float testError);
+    void RenderStatus(const FireStarterState& state, double generationTimee, double result, double average, double testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ClearUnits(void);
     void ControlDeallocate(void);
