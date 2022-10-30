@@ -285,7 +285,32 @@ void FireStarter::ControlResults(const FireStarterState& state)
     // Update the render status after every pass.
     double average = m_totalResult / m_resultsCount;
     RenderStatus(state, m_smoothTime, result, average, testError);
+
+    // Save the state in the array of all states.
+    unsigned int unitIndex = state.m_generation % m_settings.m_units;
+    if (unitIndex < m_allStates.size())
+        m_allStates[unitIndex] = state;
 } // ControlResults
+
+bool FireStarter::CompleteJob(FireStarterCompilerManager* manager)
+{
+    // Get the completed job.
+    // Note: The jobs may be received out of order.
+    FireStarterJob* job = manager->GetComplete();
+    if (!job)
+        return false;
+
+    // Output text using a SerialThread.
+    m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+
+    // Update the current state.
+    FireStarterState state = job->m_state;
+    manager->AddFree(job);
+
+    // Update the best state and display the results.
+    ControlResults(state);
+    return true;
+} // CompleteJob
 
 void FireStarter::ControlTest(void)
 {
@@ -321,18 +346,8 @@ void FireStarter::ControlTest(void)
             break;
         if (!unit->ExecuteJob())
             break;
-
-        // Get the completed job.
-        FireStarterJob* job = manager->GetComplete();
-        if (!job)
+        if (!CompleteJob(manager))
             break;
-
-        // Update the current state.
-        FireStarterState state = job->m_state;
-        manager->AddFree(job);
-
-        // Update the best state and display the results.
-        ControlResults(state);
     }
 
     // Finish processing and terminate each unit.
@@ -380,23 +395,8 @@ void FireStarter::ControlRandom(void)
         m_controlTimer.Start();
         m_resultsCount = 0;
         while (!m_quitControlThread) {
-            double jobTime = m_controlTimer.Duration();
-
-            // Get the completed job.
-            // Note: The jobs may be received out of order.
-            FireStarterJob* job = manager->GetComplete();
-            if (!job)
+            if (!CompleteJob(manager))
                 break;
-
-            // Output text using a SerialThread.
-//          m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
-
-            // Get the current state.
-            FireStarterState state = job->m_state;
-            manager->AddFree(job);
-
-            // Update the best state and display the results.
-            ControlResults(state);
         }
     }
 
@@ -455,24 +455,11 @@ void FireStarter::ControlEvolve(void)
             for (FireStarterUnit* unit : m_units)
                 unit->DispatchAsync([unit] { unit->ExecuteJob(); });
 
-            for (unsigned int i = 0; i < m_settings.m_units; i++) {
-                // Get the completed job.
-                // Note: The jobs may be received out of order.
-                FireStarterJob* job = manager->GetComplete();
-                if (!job)
-                    break;
-
-                // Update the current state.
-                FireStarterState state = job->m_state;
-                manager->AddFree(job);
-                
-                // Update the best state and display the results.
-                ControlResults(state);
-
-                // Is there more work to do?
-                unsigned int unitIndex = state.m_generation % m_settings.m_units;
-                m_allStates[unitIndex] = state;
-            }
+            bool result = true;
+            for (unsigned int i = 0; i < m_settings.m_units; i++)
+                result = result && CompleteJob(manager);
+            if (!result)
+                break;
 
             // Has the completion condition been met?
             if (evolution - m_bestState.m_generation / m_settings.m_units > m_settings.m_attempts)

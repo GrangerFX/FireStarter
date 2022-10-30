@@ -51,6 +51,7 @@ public:
     void ControlDeallocate(void);
     void ControlAllocate(void);
     void ControlResults(const FireStarterState& state);
+    bool CompleteJob(FireStarterCompilerManager* manager);
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);
