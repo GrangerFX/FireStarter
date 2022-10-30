@@ -38,7 +38,7 @@ FireStarterJob* FireStarterJobQueue::Get(void)
     double waitTime = m_timer.Duration();
     m_semaphore.wait();
     m_totalJobs++;
-    m_time += m_timer.Duration() - waitTime;
+    m_waitTime += m_timer.Duration() - waitTime;
 
     // Remove the job from the queue.
     DispatchSync([this, &job] {
@@ -72,9 +72,9 @@ void FireStarterJobQueue::Cancel(void)
     m_semaphore.terminate();
 } // Cancel
 
-double FireStarterJobQueue::Time(void)
+double FireStarterJobQueue::WaitTime(void)
 {
-    return m_time / m_totalJobs;
+    return m_waitTime / m_totalJobs;
 } // Time
 
 size_t FireStarterJobQueue::Size(void)
@@ -245,7 +245,7 @@ FireStarterJob* FireStarterCompilerManager::GetFree(void)
 
 double FireStarterCompilerManager::TimeFree(void)
 {
-    return m_freeQueue.Time();
+    return m_freeQueue.WaitTime();
 } // TimeFree
 
 size_t FireStarterCompilerManager::SizeFree(void)
@@ -265,7 +265,7 @@ FireStarterJob* FireStarterCompilerManager::GetCode(void)
 
 double FireStarterCompilerManager::TimeCode(void)
 {
-    return m_codeQueue.Time();
+    return m_codeQueue.WaitTime();
 } // TimeCode
 
 size_t FireStarterCompilerManager::SizeCode(void)
@@ -285,7 +285,7 @@ FireStarterJob* FireStarterCompilerManager::GetCompile(void)
 
 double FireStarterCompilerManager::TimeCompile(void)
 {
-    return m_compileQueue.Time();
+    return m_compileQueue.WaitTime();
 } // TimeCompile
 
 size_t FireStarterCompilerManager::SizeCompile(void)
@@ -305,7 +305,7 @@ FireStarterJob* FireStarterCompilerManager::GetComplete(void)
 
 double FireStarterCompilerManager::TimeComplete(void)
 {
-    return m_completeQueue.Time();
+    return m_completeQueue.WaitTime();
 } // TimeComplete
 
 size_t FireStarterCompilerManager::SizeComplete(void)

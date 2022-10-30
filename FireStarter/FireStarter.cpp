@@ -517,9 +517,6 @@ void FireStarter::ControlUnits(void)
             for (FireStarterUnit* unit : m_units)
                 unit->Update(m_allStates.data());
 
-            // Update the best data for all the states.
-            double generationTime = m_controlTimer.Duration();
-
             bool allFinished = true;
             for (const FireStarterState& state : m_allStates) {
                 // Update the best state and display the results.

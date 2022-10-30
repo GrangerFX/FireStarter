@@ -42,13 +42,13 @@ private:
 	SimpleTimer m_timer;
 	FireStarterJob* m_firstJob = nullptr;
 	FireStarterJob* m_lastJob = nullptr;
-	double m_time = 0.0;
+	double m_waitTime = 0.0;
 	size_t m_sizeJobs = 0;
 	size_t m_totalJobs = 0;
 public:
 	void Add(FireStarterJob* job);
 	FireStarterJob* Get(void);
-	double Time(void);
+	double WaitTime(void);
 	size_t Size(void);
 	void Cancel(void);
 	FireStarterJobQueue(void);
