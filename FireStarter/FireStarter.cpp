@@ -258,7 +258,13 @@ void FireStarter::ControlResults(const FireStarterState& state)
     m_totalResult = generation ? m_totalResult + result : result;
 
     // Increment the generation and calculate the average time per generation.
-    double generationTime = m_controlTimer.Duration() / (generation + 1);
+    double duration = m_controlTimer.Duration();
+    double displayTime = 0.0;
+    double weight = 1.0 / (generation + 1);
+    weight = max(weight, 0.01);
+    m_smoothTime = m_smoothTime * (1.0 - weight) + (duration - m_resultsTime) * weight;
+    m_resultsTime = duration;
+
     if (result < m_bestState.MaxResult()) {
         // Update the best state.
         m_bestState = state;
@@ -267,7 +273,7 @@ void FireStarter::ControlResults(const FireStarterState& state)
 
         // Update the best code on disk.
         SaveBestCode();
-        SaveSolution(generation, generationTime);
+        SaveSolution(generation, duration);
 
         // Draw the graphs for both variations.
         FireShow();
@@ -281,7 +287,7 @@ void FireStarter::ControlResults(const FireStarterState& state)
 
     // Update the render status after every pass.
     float average = m_totalResult / (generation + 1);
-    RenderStatus(state, generationTime, result, average, testError);
+    RenderStatus(state, m_smoothTime, result, average, testError);
 } // ControlResults
 
 void FireStarter::ControlTest(void)
@@ -374,7 +380,10 @@ void FireStarter::ControlRandom(void)
     if (result) {
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
+        double weightedTime = 0.0;
         while (!m_quitControlThread) {
+            double jobTime = m_controlTimer.Duration();
+
             // Get the completed job.
             // Note: The jobs may be received out of order.
             FireStarterJob* job = manager->GetComplete();
@@ -382,7 +391,7 @@ void FireStarter::ControlRandom(void)
                 break;
 
             // Output text using a SerialThread.
-            m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+//          m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Get the current state.
             FireStarterState state = job->m_state;
@@ -702,6 +711,7 @@ FireStarter::FireStarter(void)
     m_fireShowResult = nullptr;
     m_fireShowInstructions = nullptr;
     m_fireStarterGenerate = nullptr;
+    m_smoothTime = 0.0;
     m_quitControlThread = false;
     m_totalResult = 0;
 } // FireStarter

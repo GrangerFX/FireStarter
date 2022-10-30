@@ -28,6 +28,8 @@ public:
     FrameBuffer m_buffer;
     FireStarterSettings m_settings;
     SerialOutput m_output;
+    double m_resultsTime;
+    double m_smoothTime;
     float m_totalResult;
     void* m_window;
     unsigned int m_width;
