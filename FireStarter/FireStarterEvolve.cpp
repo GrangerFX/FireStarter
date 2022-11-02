@@ -66,13 +66,13 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
                 job->m_state = state;
                 job->m_state.m_generation = generation++;
                 unsigned long long seed = job->m_state.StateSeed();
-                unsigned int copSrc = RANDOMMOD64(seed, numInstructions);
-                unsigned int copDst = RANDOMMOD64(seed, numInstructions);
+                unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
+                unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
                 unsigned int copyNum = RANDOMMOD64(seed, numInstructions - 1) + 1;
                 while (copyNum++) {
-                    job->m_state.m_program.Instruction(copDst++) = bestState->m_program.Instruction(copSrc++);
-                    copSrc %= numInstructions;
-                    copDst %= numInstructions;
+                    job->m_state.m_program.Instruction(copyDst++) = bestState->m_program.Instruction(copySrc++);
+                    copySrc %= numInstructions;
+                    copyDst %= numInstructions;
                 }
 
                 // Randomize one instruction per state.
