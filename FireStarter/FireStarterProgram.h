@@ -33,6 +33,16 @@ public:
         return Instructions()->InstructionsSize(m_settings.m_instructions);
     } // InstructionsSize
 
+    inline FireStarterInstruction& Instruction(unsigned int index)
+    {
+        return Instructions()->Instruction(index);
+    } // Instruction
+
+    inline const FireStarterInstruction& Instruction(unsigned int index) const
+    {
+        return Instructions()->Instruction(index);
+    } // Instruction
+
     bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(void);
     unsigned int GenerateRegisters(std::vector<FireStarterRegister>& registers) const;

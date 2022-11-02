@@ -9,6 +9,7 @@ private:
 
 public:
 	bool EvolveGenerations(const FireStarterState* state, unsigned int generations);
+	bool EvolveStates(const FireStarterState* state, std::vector<FireStarterState>& allStates, unsigned int generation);
 	void EvolveComplete(void);
 	FireStarterEvolve(FireStarterCompilerManager* manager);
 	~FireStarterEvolve(void);
