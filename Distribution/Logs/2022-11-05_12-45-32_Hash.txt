@@ -1,0 +1,45 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_EVOLVE;
+units = 8;
+processes = 8;
+population = 69632;
+iterations = 256;
+candidates = 16;
+generations = 100;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:4157731984  Best Generation:4157731984  Result=0.00599986  Seed=4157731984  BestIndex= 64903  ResultHash=FBFA  ProgramHash=8F38
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:4157731984  Best Generation:4157731984  Result=0.01061136  Seed=4157731984  BestIndex=     0  ResultHash=4470  ProgramHash=1554
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:4157731984  Best Generation:4157731984  Result=0.00056839  Seed=4157731984  BestIndex= 10669  ResultHash=BABB  ProgramHash=97A5
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:4157731984  Best Generation:4157731984  Result=0.00303042  Seed=4157731984  BestIndex=     0  ResultHash=F555  ProgramHash=FC20
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:4157731984  Best Generation:4157731984  Result=0.00314030  Seed=4157731984  BestIndex=     0  ResultHash=520D  ProgramHash=E6DC
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:4157731984  Best Generation:4157731984  Result=0.00617790  Seed=4157731984  BestIndex=     0  ResultHash=D6B0  ProgramHash=3960
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:4157731984  Best Generation:4157731984  Result=0.00758108  Seed=4157731984  BestIndex=     0  ResultHash=CEF8  ProgramHash=EB14
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:4157731984  Best Generation:4157731984  Result=0.00436112  Seed=4157731984  BestIndex=     0  ResultHash=9A7A  ProgramHash=EEA1
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   1  Result=0.00044937  Seed=       1  BestIndex= 17160  ResultHash=459C  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   2  Result=0.00031793  Seed=       2  BestIndex= 13189  ResultHash=E1F3  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   3  Result=0.00028405  Seed=       3  BestIndex= 38000  ResultHash=F54E  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   4  Result=0.00024399  Seed=       4  BestIndex= 51812  ResultHash=022C  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   5  Result=0.00023383  Seed=       5  BestIndex= 19982  ResultHash=D7DE  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   6  Result=0.00019041  Seed=       6  BestIndex=  8476  ResultHash=4E26  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   7  Result=0.00017667  Seed=       7  BestIndex= 16457  ResultHash=4433  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   8  Best Generation:   8  Result=0.00017214  Seed=       8  BestIndex= 50894  ResultHash=02A0  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   9  Best Generation:   9  Result=0.00017196  Seed=       9  BestIndex= 42084  ResultHash=E2F2  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  10  Best Generation:  10  Result=0.00017175  Seed=      10  BestIndex= 21654  ResultHash=3364  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  11  Best Generation:  10  Result=0.00017175  Seed=      11  BestIndex= 21654  ResultHash=3364  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  12  Best Generation:  10  Result=0.00017175  Seed=      12  BestIndex= 21654  ResultHash=3364  ProgramHash=97A5
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  13  Best Generation:  10  Result=0.00017175  Seed=      13  BestIndex= 21654  ResultHash=3364  ProgramHash=97A5

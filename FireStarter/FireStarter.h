@@ -43,8 +43,8 @@ public:
     void SaveBestState(void);
     void SaveBestCode(void);
     void SaveSolution(unsigned int generation, double generationTime);
-    void FireSettings(FireStarterSettings& settings, unsigned int firestarterMode = FIRESTARTER_MODE);
-    void FireShow(void);
+    void FireSettings(FireStarterSettings& settings, unsigned int firestarterMode);
+    void FireShow(const FireStarterState& state);
     void RenderStatus(const FireStarterState& state, double generationTimee, double result, double average, double testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ClearUnits(void);
@@ -56,6 +56,7 @@ public:
     void ControlRandom(void);
     void ControlEvolve(void);
     void ControlUnits(void);
+    void ControlOptimize(void);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);
     bool Init(void* window, unsigned int width, unsigned int height);

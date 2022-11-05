@@ -58,28 +58,28 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
             if (!job)
                 break;
 
-            // Randomize the entire program for the first generation
-            if (!generation) {
-                state.m_program.RandomInstruction(job->m_state.StateSeed());
-                job->m_state = state;
-            } else {
-                job->m_state = state;
-                job->m_state.m_generation = generation++;
-                unsigned long long seed = job->m_state.StateSeed();
+            // Clone or randomize instructions in the later generations.
+            state.m_generation = generation;
+            unsigned long long seed = state.StateSeed();
+            unsigned int copyNum = RANDOMMOD64(seed, numInstructions);
+
+            if (0 && copyNum) {
+                // Copy a random range of instuctions from the best state.
                 unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
                 unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
-                unsigned int copyNum = RANDOMMOD64(seed, numInstructions - 1) + 1;
                 while (copyNum--) {
-                    job->m_state.m_program.Instruction(copyDst++) = bestState->m_program.Instruction(copySrc++);
+                    state.m_program.Instruction(copyDst++) = bestState->m_program.Instruction(copySrc++);
                     copySrc %= numInstructions;
                     copyDst %= numInstructions;
                 }
-
-                // Randomize one instruction per state.
-                job->m_state.m_program.RandomInstruction(seed);
+            } else {
+                // Copy the best state and radomize one instruction
+                state.m_program = bestState->m_program;
+                state.m_program.RandomInstruction(seed);
             }
 
             // Optimize the program registers.
+            job->m_state = state;
             job->m_state.m_program.OptimizeRegisters();
 
             // Generate the evaluate code
