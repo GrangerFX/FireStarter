@@ -149,7 +149,7 @@ void FireStarter::RenderStatus(const FireStarterState& state, double generationT
     uint64_t resultHash = MurmurHash64(stateResult, state.ResultSize());
     uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
     float bestResult = state.MaxResult();
-    hashString += Format("  Result=%.8f  Seed=%8u  BestIndex=%6d  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), settings.m_seed + state.m_generation, state.m_bestIndex, (unsigned short)resultHash, (unsigned short)programHash);
+    hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), settings.m_seed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
     FireStarterCode::AppendCode(hashFilePath, hashString);
 //  m_output.Output(hashString);
 
@@ -253,6 +253,7 @@ void FireStarter::ControlAllocate(void)
 
 void FireStarter::ControlResults(const FireStarterState& state)
 {
+    // Get the result.
     float result = state.MaxResult();
     m_totalResult = m_resultsCount++ ? m_totalResult + result : result;
 
@@ -261,7 +262,6 @@ void FireStarter::ControlResults(const FireStarterState& state)
     double weight = max(1.0 / m_resultsCount, 0.02);
     m_smoothTime = m_smoothTime * (1.0 - weight) + (duration - m_resultsTime) * weight;
     m_resultsTime = duration;
-
     if (result < m_bestState.MaxResult()) {
         // Update the best state.
         m_bestState = state;
@@ -279,17 +279,19 @@ void FireStarter::ControlResults(const FireStarterState& state)
         });
     }
 
+    // Save the state in the array of all states.
+    if (state.m_index < m_allStates.size()) {
+        FireStarterState& oldState = m_allStates[state.m_index];
+        if (!state.m_generation || (result < oldState.MaxResult()))
+            oldState = state;
+    }
+
     // Test the current state.
     float testError = state.TestResult();
 
     // Update the render status after every pass.
     double average = m_totalResult / m_resultsCount;
     RenderStatus(state, m_smoothTime, result, average, testError);
-
-    // Save the state in the array of all states.
-    unsigned int unitIndex = state.m_generation % m_settings.m_units;
-    if (unitIndex < m_allStates.size())
-        m_allStates[unitIndex] = state;
 } // ControlResults
 
 bool FireStarter::CompleteJob(FireStarterCompilerManager* manager)
@@ -366,7 +368,7 @@ void FireStarter::ControlRandom(void)
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
 
     // Setup the intial state
-    m_bestState.InitState(m_settings);;
+    m_bestState.InitState(m_settings);
     FireStarterState evolveState(m_bestState);
 
     // Create the shared compiler
@@ -423,7 +425,7 @@ void FireStarter::ControlEvolve(void)
     // Create the shared compiler
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
-    // Setup the intial state 
+    // Setup the intial best state 
     m_bestState.InitState(m_settings);
     m_bestState.m_program.RandomProgram(m_bestState.StateSeed());
 
@@ -431,7 +433,7 @@ void FireStarter::ControlEvolve(void)
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         // Randomize the entire program for the first generation
-        FireStarterState state(m_bestState);
+        FireStarterState state(m_settings, i);
         state.m_program.m_settings.m_seed += i;
         state.m_program.RandomProgram(state.StateSeed());
 
@@ -490,12 +492,16 @@ void FireStarter::ControlUnits(void)
     // Create the compiler manager
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
 
+    // Setup the intial best state 
+    m_bestState.InitState(m_settings);
+
     // Create the states and units.
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
-        if (unit->InitUnit(manager, m_bestState)) {
-            m_allStates.push_back(m_bestState);
+        FireStarterState state(m_settings, i);
+        if (unit->InitUnit(manager, state)) {
+            m_allStates.push_back(state);
             m_units.push_back(unit);
         } else {
             delete unit;
@@ -551,10 +557,9 @@ void FireStarter::ControlOptimize(void)
         return;
 
     // Load the best state.
-    FireSettings(m_settings, FIRESTARTER_OPTIMIZE);
-    m_bestState.Settings().CopyModeSettings(m_settings);
-    m_bestState.m_generation = 0;
-    m_bestState.m_bestIndex = 0;
+    FireStarterSettings optimizeSettings;
+    FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
+    m_settings.CopyModeSettings(optimizeSettings);
 
     // Optimization evolution pass.
     m_resultsCount = 0;
@@ -699,9 +704,9 @@ FireStarter::FireStarter(void)
     m_fireShowResult = nullptr;
     m_fireShowInstructions = nullptr;
     m_fireStarterGenerate = nullptr;
-    m_smoothTime = 0.0;
     m_resultsCount = 0;
     m_resultsTime = 0.0;
+    m_smoothTime = 0.0;
     m_quitControlThread = false;
     m_totalResult = 0;
 } // FireStarter

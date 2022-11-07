@@ -8,7 +8,7 @@ private:
 public:
     FireStarterProgram m_program;
     unsigned int m_generation = 0;
-    unsigned int m_bestIndex = 0;
+    unsigned int m_index = 0;
 
     inline bool Initialized(void) const
     {
@@ -30,6 +30,16 @@ public:
         return RANDOM64(RANDOM64(m_program.m_settings.m_seed + m_generation) + seed);
     } // StateSeed
 
+    inline FireStarterInstructions* Instructions(void)
+    {
+        return m_program.Instructions();
+    } // Instructions
+
+    inline const FireStarterInstructions* Instructions(void) const
+    {
+        return m_program.Instructions();
+    } // Instructions
+
     inline size_t ResultSize(void) const
     {
         return FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);
@@ -47,7 +57,7 @@ public:
 
     inline float MaxResult(void) const
     {
-        return Initialized() ? ((FireStarterResult*)m_result.data())->maxResult : m_program.m_settings.m_startResult;
+        return Initialized() ? Result()->maxResult : m_program.m_settings.m_startResult;
     } // Result
 
     bool Packetize(FireStarterPacket& packet);
@@ -55,7 +65,7 @@ public:
     void SaveResult(std::string& code);
     void SaveState(std::string& code);
     float TestResult(void) const;
-    void InitState(const FireStarterSettings& settings);
-    FireStarterState(const FireStarterSettings& settings);
+    void InitState(const FireStarterSettings& settings, unsigned int index = 0);
+    FireStarterState(const FireStarterSettings& settings, unsigned int index = 0);
     inline FireStarterState(void) {}
 }; // class FireStarterState;

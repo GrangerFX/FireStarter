@@ -24,9 +24,6 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
             else
                 job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
 
-            // Optimize the program registers.
-            job->m_state.m_program.OptimizeRegisters();
-
             // Generate the evaluate code
             std::string evaluateCode;
             generate.GenerateEvaluate(job->m_state, evaluateCode);
@@ -53,34 +50,33 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
         unsigned int numInstructions = bestState->Settings().m_instructions;
-        for (FireStarterState& state : allStates) {
+        for (FireStarterState& curState : allStates) {
             FireStarterJob* job = m_manager->GetFree();
             if (!job)
                 break;
 
             // Clone or randomize instructions in the later generations.
-            state.m_generation = generation;
-            unsigned long long seed = state.StateSeed();
-            unsigned int copyNum = RANDOMMOD64(seed, numInstructions);
+            job->m_state = curState;
+            job->m_state.m_generation = generation;
+            if (generation) {
+                unsigned long long seed = job->m_state.StateSeed();
+                unsigned int copyNum = RANDOMMOD64(seed, numInstructions);
 
-            if (0 && copyNum) {
-                // Copy a random range of instuctions from the best state.
-                unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
-                unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
-                while (copyNum--) {
-                    state.m_program.Instruction(copyDst++) = bestState->m_program.Instruction(copySrc++);
-                    copySrc %= numInstructions;
-                    copyDst %= numInstructions;
+                if (copyNum) {
+                    // Copy a random range of instuctions from the best state.
+                    unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
+                    unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
+                    while (copyNum--) {
+                        job->m_state.m_program.Instruction(copyDst++) = bestState->m_program.Instruction(copySrc++);
+                        copySrc %= numInstructions;
+                        copyDst %= numInstructions;
+                    }
+                } else {
+                    // Copy the best state and radomize one instruction
+                    job->m_state.m_program = bestState->m_program;
+                    job->m_state.m_program.RandomInstruction(seed);
                 }
-            } else {
-                // Copy the best state and radomize one instruction
-                state.m_program = bestState->m_program;
-                state.m_program.RandomInstruction(seed);
             }
-
-            // Optimize the program registers.
-            job->m_state = state;
-            job->m_state.m_program.OptimizeRegisters();
 
             // Generate the evaluate code
             std::string evaluateCode;

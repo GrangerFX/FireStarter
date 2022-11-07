@@ -54,7 +54,7 @@ void FireStarterState::SaveState(std::string& code)
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
     code += Format("    state.m_generation = %u;\r\n", m_generation);
-    code += Format("    state.m_bestIndex = %u;\r\n", m_bestIndex);
+    code += Format("    state.m_index = %u;\r\n", m_index);
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
@@ -63,20 +63,35 @@ void FireStarterState::SaveState(std::string& code)
 
 float FireStarterState::TestResult(void) const
 {
-    float testResult = 0.0f;
-    unsigned int instructions = m_program.m_settings.m_instructions;
-    size_t dataSize = FireStarterData::DataSize(m_program.m_settings.m_registers);
-    FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
-    unsigned int precision = m_program.m_settings.m_precision;
+    // Check if the generation was aborted.
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
+        float minResult = Result()->MinResult(v);
+        if (minResult >= m_program.m_settings.m_startResult)
+            return m_program.m_settings.m_startResult;
+    }
+
+    // Prepare the program to run by optimizing its registers.
+    FireStarterProgram testProgram(m_program);
+    testProgram.OptimizeRegisters();
+    FireStarterInstructions* testInstructions = testProgram.Instructions();
+
+    // Get an accurate test result for the state.
+    float testResult = 0.0f;
+    unsigned int instructions = testProgram.m_settings.m_instructions;
+    size_t dataSize = FireStarterData::DataSize(testProgram.m_settings.m_registers);
+    FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
+    unsigned int precision = testProgram.m_settings.m_precision;
+    for (unsigned int v = 0; v < testProgram.m_settings.m_variations; v++) {
         const FireStarterData* initData = Result()->Data(v);
         float result = 0.0f;
-        float sampleStep = (m_program.m_settings.m_targetMax - m_program.m_settings.m_targetMin) / (m_program.m_settings.m_samples - 1);
-        for (unsigned int i = 0; i < m_program.m_settings.m_samples; i++) {
+        float sampleStep = (testProgram.m_settings.m_targetMax - testProgram.m_settings.m_targetMin) / (testProgram.m_settings.m_samples - 1);
+        for (unsigned int i = 0; i < testProgram.m_settings.m_samples; i++) {
             float theta = TARGET_MIN + i * sampleStep;
             float target = Target(theta, v);
             memcpy(workData, initData, dataSize);
-            float difference = fabsf(m_program.Instructions()->Execute(workData, instructions, theta) - Target(theta, v));
+            float sampleResult = testProgram.Instructions()->Execute(workData, instructions, theta);
+            float sampleTarget = Target(theta, v);
+            float difference = fabsf(sampleResult - sampleTarget);
             result = max(result, difference);
         }
         if (precision) {
@@ -84,7 +99,7 @@ float FireStarterState::TestResult(void) const
             for (unsigned int i = 0; i < precision; i++) {
                 float theta = TARGET_MIN + i * precisionStep;
                 memcpy(workData, initData, dataSize);
-                float difference = fabsf(m_program.Instructions()->Execute(workData, instructions, theta) - Target(theta, v));
+                float difference = fabsf(testProgram.Instructions()->Execute(workData, instructions, theta) - Target(theta, v));
                 result = max(result, difference);
             }
         }
@@ -95,16 +110,16 @@ float FireStarterState::TestResult(void) const
     return testResult;
 } // TestResult
 
-void FireStarterState::InitState(const FireStarterSettings& settings)
+void FireStarterState::InitState(const FireStarterSettings& settings, unsigned int index)
 {
     m_generation = 0;
-    m_bestIndex = 0;
+    m_index = index;
     m_program.InitProgram(settings);
     m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
     Result()->Init(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitState
 
-FireStarterState::FireStarterState(const FireStarterSettings& settings)
+FireStarterState::FireStarterState(const FireStarterSettings& settings, unsigned int index)
 {
-    InitState(settings);
+    InitState(settings, index);
 } // FireStarterState

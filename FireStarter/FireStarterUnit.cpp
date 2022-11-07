@@ -176,7 +176,6 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
 
     memcpy(m_state.Result(), m_hostResults->Result(bestIndex), FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations));
     m_state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
-    m_state.m_bestIndex = bestIndex;
 } // EvolveGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
@@ -296,7 +295,6 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
 
     // Increment the generation.
     m_state.m_generation++;
-    m_state.m_bestIndex = bestIndex;
 } // OptimizeVaraitions
 
 void FireStarterUnit::ExecuteCode(void)
@@ -432,7 +430,6 @@ bool FireStarterUnit::ExecuteJob(bool skipVariations)
         FireStarterResult* result = m_state.Result();
         result->debug1 = *m_hostResults->Debug1(bestIndex);
         result->debug2 = *m_hostResults->Debug2(bestIndex);
-        m_state.m_bestIndex = bestIndex;
 
         // Find the best result for all the units.
         float oldResult = g_atomicResult;
@@ -613,7 +610,7 @@ void FireStarterUnit::Update(FireStarterState* states)
 {
     bool result = false;
     DispatchSync([this, states] {
-        if (!states[m_unitIndex].m_generation || (m_state.Result()->maxResult < states[m_unitIndex].Result()->maxResult))
+        if (!states[m_unitIndex].m_generation || (m_state.MaxResult() < states[m_unitIndex].MaxResult()))
             states[m_unitIndex] = m_state;
         else
             states[m_unitIndex].m_generation = m_state.m_generation;

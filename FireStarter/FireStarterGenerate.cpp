@@ -55,13 +55,15 @@ bool FireStarterGenerate::InitGenerateGPU(const FireStarterSettings& settings)
 void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::string& code)
 {
     // Allocate the device memory needed to generate the solution code.
-    bool generateGPU = InitGenerateGPU(state.m_program.m_settings);
+    bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the evaluate function.
     size_t numInstructions = 0;
-    const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
+    FireStarterProgram evaluateProgram(state.m_program);
+    evaluateProgram.OptimizeRegisters();
+    const FireStarterInstructions* instructions = evaluateProgram.Instructions(&numInstructions);
     std::vector<FireStarterRegister> registers;
-    size_t numRegisters = state.m_program.GenerateRegisters(registers);
+    size_t numRegisters = evaluateProgram.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
     std::string generateCode;
     unsigned int tabs = 1;
@@ -131,13 +133,15 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
 void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, unsigned int generation)
 {
     // Allocate the device memory needed to generate the solution code.
-    bool generateGPU = InitGenerateGPU(state.m_program.m_settings);
+    bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the solution function.
     size_t numInstructions = 0;
-    const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
+    FireStarterProgram solutionProgram(state.m_program);
+    solutionProgram.OptimizeRegisters();
+    const FireStarterInstructions* instructions = solutionProgram.Instructions(&numInstructions);
     std::vector<FireStarterRegister> registers;
-    size_t numRegisters = state.m_program.GenerateRegisters(registers);
+    size_t numRegisters = solutionProgram.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
     std::string generateCode;
 
