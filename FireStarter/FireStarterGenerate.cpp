@@ -59,11 +59,9 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
 
     // Generate the evaluate function.
     size_t numInstructions = 0;
-    FireStarterProgram evaluateProgram(state.m_program);
-    evaluateProgram.OptimizeRegisters();
-    const FireStarterInstructions* instructions = evaluateProgram.Instructions(&numInstructions);
+    const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
     std::vector<FireStarterRegister> registers;
-    size_t numRegisters = evaluateProgram.GenerateRegisters(registers);
+    size_t numRegisters = state.m_program.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
     std::string generateCode;
     unsigned int tabs = 1;
@@ -137,11 +135,9 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
 
     // Generate the solution function.
     size_t numInstructions = 0;
-    FireStarterProgram solutionProgram(state.m_program);
-    solutionProgram.OptimizeRegisters();
-    const FireStarterInstructions* instructions = solutionProgram.Instructions(&numInstructions);
+    const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
     std::vector<FireStarterRegister> registers;
-    size_t numRegisters = solutionProgram.GenerateRegisters(registers);
+    size_t numRegisters = state.m_program.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
     std::string generateCode;
 

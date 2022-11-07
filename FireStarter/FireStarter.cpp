@@ -305,12 +305,9 @@ bool FireStarter::CompleteJob(FireStarterCompilerManager* manager)
     // Output job queue status.
 //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
-    // Update the current state.
-    FireStarterState state = job->m_state;
-    manager->AddFree(job);
-
     // Update the best state and display the results.
-    ControlResults(state);
+    ControlResults(job->m_state);
+    manager->AddFree(job);
     return true;
 } // CompleteJob
 

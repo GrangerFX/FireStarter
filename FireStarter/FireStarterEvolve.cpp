@@ -24,6 +24,9 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
             else
                 job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
 
+            // Optimize the program registers.
+            job->m_state.m_program.OptimizeRegisters();
+
             // Generate the evaluate code
             std::string evaluateCode;
             generate.GenerateEvaluate(job->m_state, evaluateCode);
@@ -77,6 +80,9 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
                     job->m_state.m_program.RandomInstruction(seed);
                 }
             }
+
+            // Optimize the program registers.
+            job->m_state.m_program.OptimizeRegisters();
 
             // Generate the evaluate code
             std::string evaluateCode;

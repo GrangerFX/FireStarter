@@ -400,18 +400,19 @@ bool FireStarterUnit::ExecuteJob(bool skipVariations)
     }
 
     m_state = job->m_state;
-    float& maxResult = m_state.Result()->maxResult;
-    maxResult = 0;
+    FireStarterSettings stateSettings = m_state.Settings();
+    FireStarterResult* stateResult = m_state.Result();
+    stateResult->maxResult = 0;
     bool found = true;
     if (skipVariations)
         for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++) {
-            OptimizeGenerations(1, variation, variation);
-
             // Optimization: If the variation result is worse, skip the rest of the variations.
-            if (maxResult > g_atomicResult) {
-                found = false;
-                break;
-            }
+            if (found) {
+                OptimizeGenerations(1, variation, variation);
+                found = stateResult->maxResult <= g_atomicResult;
+            } else
+                // The variation data is reset when it is skipped.
+                stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
         }
     else
         OptimizeGenerations(1, m_firstVariation, m_lastVariation);
@@ -433,7 +434,7 @@ bool FireStarterUnit::ExecuteJob(bool skipVariations)
 
         // Find the best result for all the units.
         float oldResult = g_atomicResult;
-        while ((oldResult > maxResult) && !g_atomicResult.compare_exchange_weak(oldResult, maxResult));
+        while ((oldResult > stateResult->maxResult) && !g_atomicResult.compare_exchange_weak(oldResult, stateResult->maxResult));
     }
     job->m_state = m_state;
     m_manager->AddComplete(job);
