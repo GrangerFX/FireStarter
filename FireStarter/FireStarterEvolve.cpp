@@ -70,7 +70,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
                     unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
                     unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
                     while (copyNum--) {
-                        job->m_state.m_program.Instruction(copyDst++) = bestState->m_program.Instruction(copySrc++);
+                        job->m_state.m_program.EvolvedInstruction(copyDst++) = bestState->m_program.EvolvedInstruction(copySrc++);
                         copySrc %= numInstructions;
                         copyDst %= numInstructions;
                     }

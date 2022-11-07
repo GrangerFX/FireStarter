@@ -99,7 +99,7 @@ void FireStarter::FireShow(const FireStarterState& state)
     size_t resultSize = FireStarterResult::ResultSize(settings.m_registers, settings.m_variations);
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, state.Result(), resultSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(settings.m_instructions);
-    checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.Instructions(), instructionsSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.OptimizedInstructions(), instructionsSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
 
     // Launch the display kernel
     int threadsPerBlock = BLOCK_THREADS;
@@ -147,7 +147,7 @@ void FireStarter::RenderStatus(const FireStarterState& state, double generationT
     std::string hashString = Format("%s:%s  Generation:%4u  Best Generation:%4u", settings.Mode(), settings.Evolve(), state.m_generation, m_bestState.m_generation);
     const FireStarterResult* stateResult = state.Result();
     uint64_t resultHash = MurmurHash64(stateResult, state.ResultSize());
-    uint64_t programHash = MurmurHash64(state.m_program.Instructions(), state.m_program.InstructionsSize());
+    uint64_t programHash = MurmurHash64(state.m_program.OptimizedInstructions(), state.m_program.InstructionsSize());
     float bestResult = state.MaxResult();
     hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), settings.m_seed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
     FireStarterCode::AppendCode(hashFilePath, hashString);

@@ -7,41 +7,56 @@
 
 class FireStarterProgram {
 private:
-    std::vector<unsigned char> m_instructions;
+    std::vector<unsigned char> m_evolvedInstructions;
+    std::vector<unsigned char> m_optimizedInstructions;
 public:
     FireStarterSettings m_settings;
     unsigned int m_uniqueRegisters = 0;
 
-    inline FireStarterInstructions* Instructions(void)
+    inline FireStarterInstructions* EvolvedInstructions(void)
     {
-        return (FireStarterInstructions*)m_instructions.data();
-    } // Instructions
+        return (FireStarterInstructions*)m_evolvedInstructions.data();
+    } // EvolvedInstructions
 
-    inline const FireStarterInstructions* Instructions(void) const
+    inline const FireStarterInstructions* EvolvedInstructions(void) const
     {
-        return (const FireStarterInstructions*)m_instructions.data();
-    } // Instructions
+        return (const FireStarterInstructions*)m_evolvedInstructions.data();
+    } // EvolvedInstructions
 
-    inline const FireStarterInstructions* Instructions(size_t* numInstructions) const
+    inline FireStarterInstructions* OptimizedInstructions(void)
     {
-        *numInstructions = m_settings.m_instructions;
-        return (FireStarterInstructions*)m_instructions.data();
-    } // Instructions
+        return (FireStarterInstructions*)(m_optimizedInstructions.data());
+    } // RawInstructions
+
+    inline const FireStarterInstructions* OptimizedInstructions(void) const
+    {
+        return (const FireStarterInstructions*)(m_optimizedInstructions.data());
+    } // OptimizedInstructions
 
     inline size_t InstructionsSize(void) const
     {
-        return Instructions()->InstructionsSize(m_settings.m_instructions);
+        return FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
     } // InstructionsSize
 
-    inline FireStarterInstruction& Instruction(unsigned int index)
+    inline FireStarterInstruction& EvolvedInstruction(unsigned int index)
     {
-        return Instructions()->Instruction(index);
-    } // Instruction
+        return EvolvedInstructions()->Instruction(index);
+    } // EvolvedInstruction
 
-    inline const FireStarterInstruction& Instruction(unsigned int index) const
+    inline const FireStarterInstruction& EvolvedInstruction(unsigned int index) const
     {
-        return Instructions()->Instruction(index);
-    } // Instruction
+        return EvolvedInstructions()->Instruction(index);
+    } // EvolvedInstruction
+
+    inline FireStarterInstruction& OptimizedInstruction(unsigned int index)
+    {
+        return OptimizedInstructions()->Instruction(index);
+    } // OptimizedInstruction
+
+    inline const FireStarterInstruction& OptimizedInstruction(unsigned int index) const
+    {
+        return OptimizedInstructions()->Instruction(index);
+    } // OptimizedInstruction
 
     bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(void);
@@ -49,7 +64,6 @@ public:
     void RandomProgram(unsigned long long seed);
     void RandomInstruction(unsigned long long seed);
     void LoadInstructions(FireStarterInstructions* instructions);
-    void SaveInstructions(FireStarterInstructions* instructions);
     static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "");
     void SaveSettings(std::string& code);
     void SaveProgram(std::string& code);

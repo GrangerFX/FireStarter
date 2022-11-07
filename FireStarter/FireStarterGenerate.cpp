@@ -58,8 +58,8 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the evaluate function.
-    size_t numInstructions = 0;
-    const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
+    size_t numInstructions = state.m_program.m_settings.m_instructions;
+    const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
     std::vector<FireStarterRegister> registers;
     size_t numRegisters = state.m_program.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
@@ -134,8 +134,8 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the solution function.
-    size_t numInstructions = 0;
-    const FireStarterInstructions* instructions = state.m_program.Instructions(&numInstructions);
+    size_t numInstructions = state.m_program.m_settings.m_instructions;
+    const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
     std::vector<FireStarterRegister> registers;
     size_t numRegisters = state.m_program.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();

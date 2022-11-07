@@ -1,0 +1,88 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_EVOLVE;
+units = 8;
+processes = 8;
+population = 69632;
+iterations = 256;
+candidates = 16;
+generations = 100;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00172842  Seed=       6  ResultHash=F325  ProgramHash=86CC
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00039327  Seed=       5  ResultHash=5F86  ProgramHash=CC5B
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00097457  Seed=       1  ResultHash=3807  ProgramHash=F330
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00319600  Seed=       7  ResultHash=7E07  ProgramHash=42FB
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00086308  Seed=       2  ResultHash=2D80  ProgramHash=AE8D
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.01633155  Seed=       4  ResultHash=2D8B  ProgramHash=F57B
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00555515  Seed=       0  ResultHash=FF84  ProgramHash=8F38
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00161380  Seed=       3  ResultHash=6575  ProgramHash=7691
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0  Result=0.00043295  Seed=       1  ResultHash=1802  ProgramHash=2EA9
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0  Result=0.97492790  Seed=       6  ResultHash=3F5D  ProgramHash=6536
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0  Result=0.09842038  Seed=       7  ResultHash=905D  ProgramHash=5D4F
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0  Result=0.00063324  Seed=       8  ResultHash=FA36  ProgramHash=448B
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0  Result=0.00094119  Seed=       3  ResultHash=6507  ProgramHash=60B5
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0  Result=0.00074166  Seed=       4  ResultHash=1EB9  ProgramHash=779F
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0  Result=0.00234866  Seed=       6  ResultHash=291D  ProgramHash=478B
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   0  Result=0.00072706  Seed=       5  ResultHash=7727  ProgramHash=AE9A
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0  Result=0.00074351  Seed=       7  ResultHash=3758  ProgramHash=4C9C
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0  Result=0.00089008  Seed=       4  ResultHash=6531  ProgramHash=E219
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0  Result=0.01003802  Seed=       5  ResultHash=2F39  ProgramHash=90CB
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0  Result=0.00092110  Seed=       8  ResultHash=127E  ProgramHash=1618
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0  Result=0.97492790  Seed=       6  ResultHash=2D64  ProgramHash=50B0
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0  Result=0.00051123  Seed=       3  ResultHash=3119  ProgramHash=BB68
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0  Result=0.00252461  Seed=       7  ResultHash=70AB  ProgramHash=478B
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   0  Result=0.00046754  Seed=       9  ResultHash=7E5C  ProgramHash=DB60
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0  Result=0.00243330  Seed=       8  ResultHash=2496  ProgramHash=2BFA
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0  Result=0.00042847  Seed=       9  ResultHash=C46D  ProgramHash=EE83
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0  Result=0.00310844  Seed=       5  ResultHash=BBBC  ProgramHash=6D78
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0  Result=0.00121123  Seed=       7  ResultHash=9A51  ProgramHash=9FA9
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0  Result=0.00057861  Seed=       6  ResultHash=AAE2  ProgramHash=3D13
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0  Result=0.00046444  Seed=      10  ResultHash=6E82  ProgramHash=EF88
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0  Result=0.00106180  Seed=       3  ResultHash=D107  ProgramHash=DB23
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   0  Result=0.00100784  Seed=       4  ResultHash=5BE5  ProgramHash=D829
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   0  Result=0.00244343  Seed=       8  ResultHash=2C26  ProgramHash=9BAA
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   0  Result=0.00216693  Seed=       9  ResultHash=3E0B  ProgramHash=B3FF
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   0  Result=0.00106382  Seed=       6  ResultHash=AD4D  ProgramHash=4563
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   0  Result=0.00426292  Seed=      11  ResultHash=C136  ProgramHash=DB97
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   0  Result=0.00249494  Seed=       5  ResultHash=A5F4  ProgramHash=C49B
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   0  Result=0.00090981  Seed=       4  ResultHash=B01A  ProgramHash=78AE
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   0  Result=0.00046444  Seed=      10  ResultHash=96C1  ProgramHash=EF88
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   0  Result=0.00223249  Seed=       7  ResultHash=E27E  ProgramHash=3AA8
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   0  Result=0.00345898  Seed=       6  ResultHash=D2EA  ProgramHash=A026
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   0  Result=0.00231445  Seed=       5  ResultHash=B367  ProgramHash=CC95
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   0  Result=0.00195217  Seed=       8  ResultHash=0C87  ProgramHash=FF30
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   0  Result=0.00046268  Seed=      12  ResultHash=A2F7  ProgramHash=1154
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   0  Result=0.00216693  Seed=       9  ResultHash=3B11  ProgramHash=B3FF
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   0  Result=0.00122404  Seed=      10  ResultHash=B324  ProgramHash=8D0D
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   0  Result=0.00059760  Seed=      11  ResultHash=1D13  ProgramHash=890E
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   5  Result=0.00035818  Seed=       7  ResultHash=DE02  ProgramHash=B8F9
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   5  Result=0.00101137  Seed=      12  ResultHash=8F41  ProgramHash=C717
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   5  Result=0.00078934  Seed=       9  ResultHash=DF29  ProgramHash=3BBF
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   5  Result=0.00049325  Seed=       8  ResultHash=76E5  ProgramHash=6963
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   5  Result=0.01879859  Seed=      11  ResultHash=724A  ProgramHash=EA39
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   5  Result=0.00055689  Seed=      10  ResultHash=6B0E  ProgramHash=514C
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   5  Result=0.01702803  Seed=      13  ResultHash=F48F  ProgramHash=A02F
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   5  Result=0.00067377  Seed=       6  ResultHash=BEC0  ProgramHash=A3DF
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   5  Result=0.00057495  Seed=       7  ResultHash=3EAD  ProgramHash=FFF8
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   5  Result=0.00118340  Seed=      13  ResultHash=FE19  ProgramHash=C498
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   5  Result=0.00137621  Seed=      14  ResultHash=D170  ProgramHash=F48C
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   5  Result=0.01879859  Seed=      11  ResultHash=2297  ProgramHash=EA39
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   5  Result=0.05417899  Seed=       9  ResultHash=8D62  ProgramHash=ED15
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   5  Result=0.00075215  Seed=       7  ResultHash=4BBD  ProgramHash=BCBD
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   5  Result=0.00084323  Seed=      10  ResultHash=C561  ProgramHash=269B
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   5  Result=0.00066602  Seed=       8  ResultHash=BB89  ProgramHash=8D51
+FIRESTARTER_EVOLVE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   5  Result=0.00185835  Seed=      12  ResultHash=BD55  ProgramHash=AF99

@@ -30,16 +30,6 @@ public:
         return RANDOM64(RANDOM64(m_program.m_settings.m_seed + m_generation) + seed);
     } // StateSeed
 
-    inline FireStarterInstructions* Instructions(void)
-    {
-        return m_program.Instructions();
-    } // Instructions
-
-    inline const FireStarterInstructions* Instructions(void) const
-    {
-        return m_program.Instructions();
-    } // Instructions
-
     inline size_t ResultSize(void) const
     {
         return FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);

@@ -73,7 +73,7 @@ float FireStarterState::TestResult(void) const
     // Prepare the program to run by optimizing its registers.
     FireStarterProgram testProgram(m_program);
     testProgram.OptimizeRegisters();
-    FireStarterInstructions* testInstructions = testProgram.Instructions();
+    FireStarterInstructions* testInstructions = testProgram.OptimizedInstructions();
 
     // Get an accurate test result for the state.
     float testResult = 0.0f;
@@ -89,7 +89,7 @@ float FireStarterState::TestResult(void) const
             float theta = TARGET_MIN + i * sampleStep;
             float target = Target(theta, v);
             memcpy(workData, initData, dataSize);
-            float sampleResult = testProgram.Instructions()->Execute(workData, instructions, theta);
+            float sampleResult = testProgram.OptimizedInstructions()->Execute(workData, instructions, theta);
             float sampleTarget = Target(theta, v);
             float difference = fabsf(sampleResult - sampleTarget);
             result = max(result, difference);
@@ -99,7 +99,7 @@ float FireStarterState::TestResult(void) const
             for (unsigned int i = 0; i < precision; i++) {
                 float theta = TARGET_MIN + i * precisionStep;
                 memcpy(workData, initData, dataSize);
-                float difference = fabsf(testProgram.Instructions()->Execute(workData, instructions, theta) - Target(theta, v));
+                float difference = fabsf(testProgram.OptimizedInstructions()->Execute(workData, instructions, theta) - Target(theta, v));
                 result = max(result, difference);
             }
         }
