@@ -44,8 +44,8 @@ private:
 
         inline void Syncronize(void) const
         {
-            SetContext();
-            checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
+            m_CUDAContext->SetContext();
+            m_CUDAContext->Synchronize();
         } // Syncronize
 
         inline void CodeCompile(const std::string& evolveCode)

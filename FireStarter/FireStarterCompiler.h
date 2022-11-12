@@ -65,6 +65,7 @@ private:
 	bool m_isClient = false;
 
 public:
+	static bool CompileJob(FireStarterCompilerManager* manager);
 	void CompilerServer(void);
 	void CompilerClient(void);
 	FireStarterCompiler(FireStarterProcess* process);

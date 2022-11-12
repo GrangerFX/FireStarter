@@ -4,6 +4,7 @@
 #include "FireStarter_LoadState.h"
 #include "FireStarter_Solution.h"
 #include "FireStarterEvolve.h"
+#include "FireStarterExecute.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 #include "SerialOutput.h"
@@ -199,17 +200,6 @@ void FireStarter::RenderImage(unsigned int width, unsigned int height, const uns
     }
 } // RenderImage
 
-void FireStarter::ClearUnits(void)
-{
-    for (FireStarterUnit*& unit : m_units) {
-        delete unit;
-        unit = nullptr;
-    }
-    m_units.clear();
-    m_server.ClearProcesses();
-    m_allStates.clear();
-} // ClearUnits
-
 void FireStarter::ControlDeallocate(void)
 {
     if (m_fireShowResult) {
@@ -251,7 +241,7 @@ void FireStarter::ControlAllocate(void)
         m_fireShowFunction = CUDACompile::GetFunction(m_fireShowModule, "FireShow");
 } // ControlAllocate
 
-void FireStarter::ControlResults(const FireStarterState& state)
+void FireStarter::ControlResults(const FireStarterState& state, std::vector<FireStarterState>& allStates)
 {
     // Get the result.
     float result = state.MaxResult();
@@ -280,8 +270,8 @@ void FireStarter::ControlResults(const FireStarterState& state)
     }
 
     // Save the state in the array of all states.
-    if (state.m_index < m_allStates.size()) {
-        FireStarterState& oldState = m_allStates[state.m_index];
+    if (state.m_index < allStates.size()) {
+        FireStarterState& oldState = allStates[state.m_index];
         if (!state.m_generation || (result < oldState.MaxResult()))
             oldState = state;
     }
@@ -294,7 +284,7 @@ void FireStarter::ControlResults(const FireStarterState& state)
     RenderStatus(state, m_smoothTime, result, average, testError);
 } // ControlResults
 
-bool FireStarter::CompleteJob(FireStarterCompilerManager* manager)
+bool FireStarter::CompleteJob(FireStarterCompilerManager* manager, std::vector<FireStarterState>& allStates)
 {
     // Get the completed job.
     // Note: The jobs may be received out of order.
@@ -306,7 +296,7 @@ bool FireStarter::CompleteJob(FireStarterCompilerManager* manager)
 //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
     // Update the best state and display the results.
-    ControlResults(job->m_state);
+    ControlResults(job->m_state, allStates);
     manager->AddFree(job);
     return true;
 } // CompleteJob
@@ -317,39 +307,31 @@ void FireStarter::ControlTest(void)
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
 
     // Setup the intial state
-    FireStarterState controlState(m_settings);
-    m_bestState = controlState;
- 
-    // Create the code generator.
-    FireStarterGenerate generate;
+    std::vector<FireStarterState> allStates;
+    FireStarterState testState(m_settings);
+    allStates.push_back(testState);
+    m_bestState = testState;
 
-    // Create the unit.
-    FireStarterUnit* unit = new FireStarterUnit(0);
-    if (!unit->InitUnit(manager, controlState))
-        return;
-    unit->Synchronize();
-    std::string optimizeCode = unit->GetOptimizeCode();
-    m_units.push_back(unit);
+    // Create the evolution generator.
+    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
-    // Create the job.
-    FireStarterJob* job = new FireStarterJob();
+    // Create the executionUnit.
+    FireStarterExecute* execute = new FireStarterExecute(0);
 
     // Loop until the the completion condition or the host program is quit.
     m_controlTimer.Start();
     unsigned int generation = 0;
     while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
-        if (!unit->GenerateJob(generation++))
-            break;
-        if (!unit->CompileJob())
-            break;
-        if (!unit->ExecuteJob())
-            break;
-        if (!CompleteJob(manager))
+        evolve->EvolveStates(&m_bestState, allStates, generation);
+        FireStarterCompiler::CompileJob(manager);
+        execute->ExecuteJob(manager);
+        if (!CompleteJob(manager, allStates))
             break;
     }
 
     // Finish processing and terminate each unit.
-    ClearUnits();
+    delete execute;
+    delete evolve;
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
@@ -365,8 +347,10 @@ void FireStarter::ControlRandom(void)
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
 
     // Setup the intial state
-    m_bestState.InitState(m_settings);
+    std::vector<FireStarterState> allStates;
     FireStarterState evolveState(m_bestState);
+    allStates.push_back(evolveState);
+    m_bestState.InitState(m_settings);
 
     // Create the shared compiler
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -377,22 +361,20 @@ void FireStarter::ControlRandom(void)
     evolve->EvolveComplete();
 
     // Create the units.
+    std::vector<FireStarterExecute*> executionUnits;
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i);
-        if (unit->InitUnit(manager, m_bestState)) {
-            m_units.push_back(unit);
-            unit->DispatchAsync([unit] {
-                unit->ExecuteRandom();
-            });
-        } else
-            result = false;
+        FireStarterExecute* execute = new FireStarterExecute(i);
+        executionUnits.push_back(execute);
+        execute->DispatchAsync([execute, manager] {
+            execute->ExecuteRandom(manager);
+        });
     }
     if (result) {
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
         while (!m_quitControlThread) {
-            if (!CompleteJob(manager))
+            if (!CompleteJob(manager, allStates))
                 break;
         }
     }
@@ -401,7 +383,9 @@ void FireStarter::ControlRandom(void)
     manager->Cancel();
 
     // Finish processing and terminate each unit.
-    ClearUnits();
+    for (FireStarterExecute* execute : executionUnits)
+        delete execute;
+    m_server.ClearProcesses();
 
     // Delete the random code generator.
     delete evolve;
@@ -427,36 +411,32 @@ void FireStarter::ControlEvolve(void)
     m_bestState.m_program.RandomProgram(m_bestState.StateSeed());
 
     // Create the states and units.
+    std::vector<FireStarterExecute*> executionUnits;
+    std::vector<FireStarterState> allStates;
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         // Randomize the entire program for the first generation
         FireStarterState state(m_settings, i);
         state.m_program.m_settings.m_seed += i;
         state.m_program.RandomProgram(state.StateSeed());
+        allStates.push_back(state);
 
-        FireStarterUnit* unit = new FireStarterUnit(i);
-        if (unit->InitUnit(manager, state)) {
-            m_allStates.push_back(state);
-            m_units.push_back(unit);
-        } else {
-            delete unit;
-            result = false;
-            break;
-        }
-    }
+        FireStarterExecute* execute = new FireStarterExecute(i);
+        executionUnits.push_back(execute);
+     }
     if (result) {
         unsigned int generation = 0;
 
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
         while (!m_quitControlThread) {
-            evolve->EvolveStates(&m_bestState, m_allStates, generation);
-            for (FireStarterUnit* unit : m_units)
-                unit->DispatchAsync([unit] { unit->ExecuteJob(); });
+            evolve->EvolveStates(&m_bestState, allStates, generation);
+            for (FireStarterExecute* execute : executionUnits)
+                execute->DispatchAsync([execute, manager] { execute->ExecuteJob(manager); });
 
             bool result = true;
             for (unsigned int i = 0; i < m_settings.m_units; i++)
-                result = result && CompleteJob(manager);
+                result = result && CompleteJob(manager, allStates);
             if (!result)
                 break;
 
@@ -475,7 +455,9 @@ void FireStarter::ControlEvolve(void)
     manager->Cancel();
 
     // Finish processing and terminate each unit.
-    ClearUnits();
+    for (FireStarterExecute* execute : executionUnits)
+        delete execute;
+    m_server.ClearProcesses();
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete evolve;
@@ -493,13 +475,15 @@ void FireStarter::ControlUnits(void)
     m_bestState.InitState(m_settings);
 
     // Create the states and units.
+    std::vector<FireStarterUnit*> units;
+    std::vector<FireStarterState> allStates;
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
         FireStarterState state(m_settings, i);
         if (unit->InitUnit(manager, state)) {
-            m_allStates.push_back(state);
-            m_units.push_back(unit);
+            allStates.push_back(state);
+            units.push_back(unit);
         } else {
             delete unit;
             result = false;
@@ -511,17 +495,17 @@ void FireStarter::ControlUnits(void)
         m_controlTimer.Start();
         while (!m_quitControlThread) {
             // Execute a generation for all the units.
-            for (FireStarterUnit* unit : m_units)
+            for (FireStarterUnit* unit : units)
                 unit->Execute();
 
             // Update the states for all the units.
-            for (FireStarterUnit* unit : m_units)
-                unit->Update(m_allStates.data());
+            for (FireStarterUnit* unit : units)
+                unit->Update(allStates.data());
 
             bool allFinished = true;
-            for (const FireStarterState& state : m_allStates) {
+            for (const FireStarterState& state : allStates) {
                 // Update the best state and display the results.
-                ControlResults(state);
+                ControlResults(state, allStates);
 
                 // Is there more work to do?
                 if (state.m_generation - m_bestState.m_generation < m_settings.m_attempts)
@@ -529,8 +513,8 @@ void FireStarter::ControlUnits(void)
             }
 
             // Send all the states back to all the units.
-            for (FireStarterUnit* unit : m_units)
-                unit->Sync(m_allStates.data());
+            for (FireStarterUnit* unit : units)
+                unit->Sync(allStates.data());
 
             // Has the completion condition been met?
             if (allFinished)
@@ -542,7 +526,9 @@ void FireStarter::ControlUnits(void)
     manager->Cancel();
 
     // Finish processing and terminate each unit.
-    ClearUnits();
+    for (FireStarterUnit* unit : units)
+        delete unit;
+    m_server.ClearProcesses();
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;

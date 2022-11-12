@@ -22,8 +22,6 @@ public:
     FireStarterGenerate* m_fireStarterGenerate;
     std::string m_solutionTargetCode;
     FireStarterState m_bestState;
-    std::vector<FireStarterState> m_allStates;
-    std::vector<FireStarterUnit*> m_units;
     FireStarterServer m_server;
     FrameBuffer m_buffer;
     FireStarterSettings m_settings;
@@ -47,11 +45,10 @@ public:
     void FireShow(const FireStarterState& state);
     void RenderStatus(const FireStarterState& state, double generationTimee, double result, double average, double testError);
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
-    void ClearUnits(void);
     void ControlDeallocate(void);
     void ControlAllocate(void);
-    void ControlResults(const FireStarterState& state);
-    bool CompleteJob(FireStarterCompilerManager* manager);
+    void ControlResults(const FireStarterState& state, std::vector<FireStarterState>& allStates);
+    bool CompleteJob(FireStarterCompilerManager* manager, std::vector<FireStarterState>& allStates);
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);

@@ -91,6 +91,23 @@ FireStarterJobQueue::~FireStarterJobQueue(void)
     Cancel();
 } // ~FireStarterJobQueue
 
+bool FireStarterCompiler::CompileJob(FireStarterCompilerManager* manager)
+{
+    bool result = false;
+    FireStarterJob* job = manager->GetCode();
+    if (job) {
+        result = CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
+        if (job->m_log.size())
+            LOG("Compile log:%s\n\n", job->m_log.c_str());
+        if (!result) {
+            delete job;
+            job = nullptr;
+        }
+    }
+    manager->AddCompile(job);
+    return result;
+} // CompileJob
+
 void FireStarterCompiler::CompilerServer(void)
 {
     if (!m_process->ShouldTerminate()) {
@@ -165,13 +182,12 @@ void FireStarterCompiler::CompilerClient(void)
 
                     bool result = CUDACompile::Compile(job.m_ptx, job.m_log, job.m_program, job.m_programName, job.m_options);
                     if (job.m_log.size())
-                        LOG("%s: Log:%s\n\n", m_process->ProcessPrefix().c_str(), job.m_log.c_str());
+                        LOG("%s: Compile log:%s\n\n", m_process->ProcessPrefix().c_str(), job.m_log.c_str());
 
                     FireStarterPacket sendPacket(COMPILE_EXECUTE);
                     job.Packetize(sendPacket);
                     result = result && m_process->SendPacket(sendPacket);
-                }
-                else {
+                } else {
                     LOG("%s: Bad compile command data!\n", m_process->ProcessPrefix().c_str());
                 }
             }

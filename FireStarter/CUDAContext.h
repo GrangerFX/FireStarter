@@ -52,6 +52,11 @@ public:
         checkCUDAErrors(cuCtxSetCurrent(m_context));
     } // SetContext
 
+    inline void Synchronize(void) const
+    {
+        checkCUDAErrors(cudaStreamSynchronize(m_stream));
+    } // Syncronize
+
     inline void PushContext(void) const
     {
         checkCUDAErrors(cuCtxPushCurrent(m_context));

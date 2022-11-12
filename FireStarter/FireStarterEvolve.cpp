@@ -79,7 +79,8 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
                     job->m_state.m_program = bestState->m_program;
                     job->m_state.m_program.RandomInstruction(seed);
                 }
-            }
+            } else
+                job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();

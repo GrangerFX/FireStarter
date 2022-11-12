@@ -117,6 +117,7 @@
     <ClCompile Include="FireStarter\FireStarterCode.cpp" />
     <ClCompile Include="FireStarter\FireStarterCompiler.cpp" />
     <ClCompile Include="FireStarter\FireStarterEvolve.cpp" />
+    <ClCompile Include="FireStarter\FireStarterExecute.cpp" />
     <ClCompile Include="FireStarter\FireStarterGenerate.cpp" />
     <ClCompile Include="FireStarter\FireStarterMain.cpp" />
     <ClCompile Include="FireStarter\FireStarterProcess.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="FireStarter\FireStarterCode.h" />
     <ClInclude Include="FireStarter\FireStarterCompiler.h" />
     <ClInclude Include="FireStarter\FireStarterEvolve.h" />
+    <ClInclude Include="FireStarter\FireStarterExecute.h" />
     <ClInclude Include="FireStarter\FireStarterGenerate.h" />
     <ClInclude Include="FireStarter\FireStarterProcess.h" />
     <ClInclude Include="FireStarter\FireStarterProgram.h" />

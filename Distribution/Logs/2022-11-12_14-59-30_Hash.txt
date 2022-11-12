@@ -1,0 +1,30 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_TEST;
+units = 1;
+processes = 0;
+population = 69632;
+iterations = 256;
+candidates = 16;
+generations = 100;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 100;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_TEST:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00011647  Seed=       0  ResultHash=F623  ProgramHash=8F38
+FIRESTARTER_TEST:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00011647  Seed=       0  ResultHash=F623  ProgramHash=8F38
+FIRESTARTER_TEST:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00011647  Seed=       0  ResultHash=F623  ProgramHash=8F38
+FIRESTARTER_TEST:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00011647  Seed=       0  ResultHash=F623  ProgramHash=8F38
+FIRESTARTER_TEST:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00011647  Seed=       0  ResultHash=F623  ProgramHash=8F38
+FIRESTARTER_TEST:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00011647  Seed=       0  ResultHash=F623  ProgramHash=8F38
