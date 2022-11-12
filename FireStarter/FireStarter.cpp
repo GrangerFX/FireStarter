@@ -327,6 +327,7 @@ void FireStarter::ControlTest(void)
         execute->ExecuteJob(manager);
         if (!CompleteJob(manager, allStates))
             break;
+        generation++;
     }
 
     // Finish processing and terminate each unit.

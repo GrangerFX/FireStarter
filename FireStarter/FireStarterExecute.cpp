@@ -258,7 +258,7 @@ bool FireStarterExecute::ExecuteJob(FireStarterCompilerManager* manager)
     stateResult->maxResult = 0;
     bool found = true;
 #if FIRESTARTER_RANDOM_SKIP_VARIATIONS
-    static std::atomic<float> g_atomicResult;
+    static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
     for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
         // Optimization: If the variation result is worse, skip the rest of the variations.
         if (found) {
