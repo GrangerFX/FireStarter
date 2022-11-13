@@ -135,7 +135,6 @@ private:
 
     static std::atomic<float> g_atomicResult;
     SimpleTimer m_timer;
-    FireStarterCompilerManager* m_manager = nullptr;
     std::vector<FireStarterContext> m_contexts;
     std::vector<FireStarterState> m_allStates;
     std::string m_evolveCode;
@@ -175,11 +174,7 @@ public:
     void GetState(FireStarterState& state);
     std::string GetEvolveCode(void);
     std::string GetOptimizeCode(void);
-    bool GenerateJob(unsigned int generation = 0);
-    bool CompileJob(void);
-    bool ExecuteJob(bool skipVariations = FIRESTARTER_RANDOM_SKIP_VARIATIONS);
-    void ExecuteRandom(void);
-    bool InitUnit(FireStarterCompilerManager* manager, const FireStarterState& initState);
+    bool InitUnit(const FireStarterState& initState);
     void Execute(void);
     void Update(FireStarterState* states);
     void Sync(FireStarterState* allStates);

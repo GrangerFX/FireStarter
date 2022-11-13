@@ -1,0 +1,32 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_EVOLVE;
+units = 1;
+processes = 1;
+population = 69632;
+iterations = 256;
+candidates = 16;
+generations = 100;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_EVOLVE: Seed=0  Generation=0  Age=0  Best=0.00555515  BestSeed=0  Time=2.0103 Seconds  Run Time=3.4349 Seconds  TestError=0.00000250
+FIRESTARTER_EVOLVE: Seed=1  Generation=1  Age=0  Best=0.00486380  BestSeed=1  Time=2.4443 Seconds  Run Time=5.2378 Seconds  TestError=0.00000054
+FIRESTARTER_EVOLVE: Seed=2  Generation=2  Age=0  Best=0.00462842  BestSeed=2  Time=2.2069 Seconds  Run Time=6.9700 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=3  Generation=3  Age=1  Best=0.00462842  BestSeed=2  Time=2.0947 Seconds  Run Time=8.7189 Seconds  TestError=0.00000012
+FIRESTARTER_EVOLVE: Seed=4  Generation=4  Age=0  Best=0.00326318  BestSeed=4  Time=2.0204 Seconds  Run Time=10.4514 Seconds  TestError=0.00000021
+FIRESTARTER_EVOLVE: Seed=5  Generation=5  Age=0  Best=0.00211960  BestSeed=5  Time=1.9743 Seconds  Run Time=12.1952 Seconds  TestError=0.00006014
+FIRESTARTER_EVOLVE: Seed=6  Generation=6  Age=1  Best=0.00211960  BestSeed=5  Time=1.9054 Seconds  Run Time=13.6778 Seconds  TestError=10.00000000
+FIRESTARTER_EVOLVE: Seed=7  Generation=7  Age=0  Best=0.00130385  BestSeed=7  Time=1.8869 Seconds  Run Time=15.4441 Seconds  TestError=0.00000083

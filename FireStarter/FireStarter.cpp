@@ -346,11 +346,14 @@ void FireStarter::ControlRandom(void)
     // Create the compiler manager
     FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
 
+    // Setup the intial best state 
+    m_bestState.InitState(m_settings);
+    m_bestState.m_program.RandomProgram(m_bestState.StateSeed());
+
     // Setup the intial state
     std::vector<FireStarterState> allStates;
     FireStarterState evolveState(m_bestState);
     allStates.push_back(evolveState);
-    m_bestState.InitState(m_settings);
 
     // Create the shared compiler
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -385,7 +388,6 @@ void FireStarter::ControlRandom(void)
     // Finish processing and terminate each unit.
     for (FireStarterExecute* execute : executionUnits)
         delete execute;
-    m_server.ClearProcesses();
 
     // Delete the random code generator.
     delete evolve;
@@ -457,7 +459,6 @@ void FireStarter::ControlEvolve(void)
     // Finish processing and terminate each unit.
     for (FireStarterExecute* execute : executionUnits)
         delete execute;
-    m_server.ClearProcesses();
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete evolve;
@@ -468,9 +469,6 @@ void FireStarter::ControlEvolve(void)
 
 void FireStarter::ControlUnits(void)
 {
-    // Create the compiler manager
-    FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
-
     // Setup the intial best state 
     m_bestState.InitState(m_settings);
 
@@ -481,7 +479,7 @@ void FireStarter::ControlUnits(void)
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
         FireStarterState state(m_settings, i);
-        if (unit->InitUnit(manager, state)) {
+        if (unit->InitUnit(state)) {
             allStates.push_back(state);
             units.push_back(unit);
         } else {
@@ -522,16 +520,9 @@ void FireStarter::ControlUnits(void)
         }
     }
 
-    // Delete the random code generator.
-    manager->Cancel();
-
     // Finish processing and terminate each unit.
     for (FireStarterUnit* unit : units)
         delete unit;
-    m_server.ClearProcesses();
-
-    // Delete the compilier manager and cancel any waiting jobs.
-    delete manager;
 } // ControlUnits
 
 void FireStarter::ControlOptimize(void)

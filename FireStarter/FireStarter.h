@@ -22,7 +22,6 @@ public:
     FireStarterGenerate* m_fireStarterGenerate;
     std::string m_solutionTargetCode;
     FireStarterState m_bestState;
-    FireStarterServer m_server;
     FrameBuffer m_buffer;
     FireStarterSettings m_settings;
     SerialOutput m_output;
