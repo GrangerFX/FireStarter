@@ -55,6 +55,7 @@ public:
     void SaveResult(std::string& code);
     void SaveState(std::string& code);
     float TestResult(void) const;
+    void InitResult(void);
     void InitState(const FireStarterSettings& settings, unsigned int index = 0);
     FireStarterState(const FireStarterSettings& settings, unsigned int index = 0);
     inline FireStarterState(void) {}

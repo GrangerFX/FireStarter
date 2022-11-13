@@ -375,10 +375,7 @@ void FireStarterUnit::Allocate(void)
         }
         if (m_resultsSize) {
             checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
-            if ((m_settings.m_mode == FIRESTARTER_OPTIMIZE) && OPTIMIZE_LOAD_DATA)
-                m_hostResults->InitResults(m_settings.m_population, m_settings.m_instructions, m_settings.m_variations, m_initState.Result());
-            else
-                m_hostResults->InitResults(m_settings.m_population, m_settings.m_instructions, m_settings.m_variations, m_settings.m_startResult);
+            m_hostResults->InitResults(m_settings.m_population, m_settings.m_instructions, m_settings.m_variations, m_settings.m_startResult);
         }
     }
 

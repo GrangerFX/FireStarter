@@ -469,12 +469,10 @@ void FireStarter::ControlEvolve(void)
 
 void FireStarter::ControlUnits(void)
 {
-    // Setup the intial best state 
-    m_bestState.InitState(m_settings);
-
     // Create the states and units.
     std::vector<FireStarterUnit*> units;
     std::vector<FireStarterState> allStates;
+#if 0
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
@@ -488,6 +486,21 @@ void FireStarter::ControlUnits(void)
             break;
         }
     }
+#else
+    bool result = true;
+    for (unsigned int i = 0; i < m_settings.m_units; i++) {
+        FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
+        if (unit->InitUnit(m_bestState)) {
+            allStates.push_back(m_bestState);
+            units.push_back(unit);
+        } else {
+            delete unit;
+            result = false;
+            break;
+        }
+    }
+#endif
+
     if (result) {
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
@@ -534,10 +547,13 @@ void FireStarter::ControlOptimize(void)
     FireStarterSettings optimizeSettings;
     FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
     m_settings.CopyModeSettings(optimizeSettings);
-
-    // Optimization evolution pass.
+    m_bestState.Settings() = m_settings;
+    m_bestState.m_generation = 0;
+    m_bestState.m_index = 0;
     m_resultsCount = 0;
     m_resultsTime = 0.0;
+
+    // Optimization evolution pass.
     ControlUnits();
 } // ControlOptimize
 
@@ -580,8 +596,18 @@ void FireStarter::ControlThread(void)
             // Optimization evolution pass.
             if (FIRESTARTER_SECOND_PASS)
                 ControlOptimize();
-        } else if (m_settings.m_mode == FIRESTARTER_OPTIMIZE)
-            ControlOptimize();
+        }
+        else if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
+            // Load the best state.
+            LoadState(m_bestState);
+            m_bestState.Settings().CopyModeSettings(m_settings);
+            m_bestState.m_generation = 0;
+            m_bestState.m_index = 0;
+            m_bestState.InitResult();
+
+            // Optimization evolution pass.
+            ControlUnits();
+        }
 
         // Free the frame buffer memory.
         m_buffer.Resize(0, 0);

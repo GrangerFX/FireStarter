@@ -110,13 +110,18 @@ float FireStarterState::TestResult(void) const
     return testResult;
 } // TestResult
 
+void FireStarterState::InitResult(void)
+{
+    m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
+    Result()->Init(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
+} // InitResult
+
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned int index)
 {
     m_generation = 0;
     m_index = index;
     m_program.InitProgram(settings);
-    m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
-    Result()->Init(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
+    InitResult();
 } // InitState
 
 FireStarterState::FireStarterState(const FireStarterSettings& settings, unsigned int index)
