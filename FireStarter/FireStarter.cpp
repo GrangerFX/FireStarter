@@ -323,7 +323,6 @@ void FireStarter::ControlTest(void)
     unsigned int generation = 0;
     while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
         evolve->EvolveStates(&m_bestState, allStates, generation);
-        FireStarterCompiler::CompileJob(manager);
         execute->ExecuteJob(manager);
         if (!CompleteJob(manager, allStates))
             break;

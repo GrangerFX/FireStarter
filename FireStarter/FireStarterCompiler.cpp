@@ -91,12 +91,11 @@ FireStarterJobQueue::~FireStarterJobQueue(void)
     Cancel();
 } // ~FireStarterJobQueue
 
-bool FireStarterCompiler::CompileJob(FireStarterCompilerManager* manager)
+void FireStarterCompiler::CompilerLocal(void)
 {
-    bool result = false;
-    FireStarterJob* job = manager->GetCode();
+    FireStarterJob* job = m_manager->GetCode();
     if (job) {
-        result = CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
+        bool result = CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
         if (job->m_log.size())
             LOG("Compile log:%s\n\n", job->m_log.c_str());
         if (!result) {
@@ -104,9 +103,10 @@ bool FireStarterCompiler::CompileJob(FireStarterCompilerManager* manager)
             job = nullptr;
         }
     }
-    manager->AddCompile(job);
-    return result;
-} // CompileJob
+    m_manager->AddCompile(job);
+    if (job)
+        DispatchAsync([this] { CompilerLocal(); });
+} // CompilerLocal
 
 void FireStarterCompiler::CompilerServer(void)
 {
@@ -212,6 +212,14 @@ void FireStarterCompiler::CompilerClient(void)
             DispatchAsync([this] { CompilerClient(); });
     };
 } // CompilerClient
+
+FireStarterCompiler::FireStarterCompiler(FireStarterCompilerManager* manager)
+{
+    m_server = nullptr;
+    m_manager = manager;
+    m_isClient = false;
+    DispatchAsync([this] { CompilerLocal(); });
+} // FireStarterCompiler
 
 FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process)
 {
@@ -352,9 +360,15 @@ FireStarterCompilerManager::FireStarterCompilerManager(unsigned int numUnits, un
     m_maxJobs = max(m_numUnits, m_numProcesses) * COMPILER_JOB_MULTIPLIER;
     for (size_t i = 0; i < m_maxJobs; i++)
         AddFree();
-    m_server = new FireStarterServer();
-    for (unsigned int i = 0; i < numProcesses; i++) {
-        FireStarterCompiler* compiler = new FireStarterCompiler(m_server, this);
+    if (numProcesses) {
+        m_server = new FireStarterServer();
+        for (unsigned int i = 0; i < numProcesses; i++) {
+            FireStarterCompiler* compiler = new FireStarterCompiler(m_server, this);
+            m_compilers.push_back(compiler);
+        }
+    } else {
+        m_server = nullptr;
+        FireStarterCompiler* compiler = new FireStarterCompiler(this);
         m_compilers.push_back(compiler);
     }
 } // FireStarterCompilerManager

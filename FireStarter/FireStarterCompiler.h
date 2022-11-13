@@ -65,11 +65,12 @@ private:
 	bool m_isClient = false;
 
 public:
-	static bool CompileJob(FireStarterCompilerManager* manager);
+	void CompilerLocal(void);
 	void CompilerServer(void);
 	void CompilerClient(void);
 	FireStarterCompiler(FireStarterProcess* process);
-	FireStarterCompiler(FireStarterServer* server, class FireStarterCompilerManager* manage);
+	FireStarterCompiler(FireStarterServer* server, class FireStarterCompilerManager* manager);
+	FireStarterCompiler(class FireStarterCompilerManager* manager);
 	~FireStarterCompiler(void);
 }; // class FireStarterCompiler
 
