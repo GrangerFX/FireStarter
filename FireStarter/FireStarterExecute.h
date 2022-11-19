@@ -13,6 +13,8 @@ private:
     FireStarterResults* m_deviceResults1 = nullptr;
     FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
     FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
+    FireStarterCompilerManager* m_manager = nullptr;
+    FireStarterJob* m_job = nullptr;
     CUmodule m_generateModule = nullptr;
     CUmodule m_evolveModule = nullptr;
     CUmodule m_optimizeModule = nullptr;
@@ -26,10 +28,13 @@ private:
     bool InitResults(const FireStarterState& state);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
+    void Execute(FireStarterState& state);
 
 public:
-	bool ExecuteJob(FireStarterCompilerManager* manager);
-	void ExecuteRandom(FireStarterCompilerManager* manager);
-	FireStarterExecute(unsigned int index);
+    bool ExecuteInit(void);
+    bool ExecuteOptimize(unsigned int generation);
+    bool ExecuteJob(void);
+	void ExecuteRandom(void);
+	FireStarterExecute(FireStarterCompilerManager* manager, unsigned int index);
 	~FireStarterExecute(void);
 }; // class FireStarterExecute

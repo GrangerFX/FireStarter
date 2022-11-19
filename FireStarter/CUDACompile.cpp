@@ -66,13 +66,18 @@ bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string&
     return ptxSize > 0;
 } // Compile
 
-void CUDACompile::CompileModule(CUmodule& cuda_module, const std::string& ptx)
+void CUDACompile::ReleaseModule(CUmodule& cuda_module)
 {
-    // Create the code module.
     if (cuda_module) {
         checkCUDAErrors(cuModuleUnload(cuda_module));
         cuda_module = nullptr;
     }
+} // ReleaseModule
+
+void CUDACompile::CompileModule(CUmodule& cuda_module, const std::string& ptx)
+{
+    // Create the code module.
+    ReleaseModule(cuda_module);
     if (!ptx.empty())
         checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx.c_str(), 0, 0, 0));
 } // CompileModule

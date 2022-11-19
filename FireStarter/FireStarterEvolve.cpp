@@ -49,7 +49,6 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
     if (m_optimizeCode.empty())
         return false;
     DispatchAsync([this, bestState, &allStates, &generation] {
-        // Generate code using the GPU.
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
         unsigned int numInstructions = bestState->Settings().m_instructions;
@@ -102,12 +101,34 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
     return true;
 } // EvolveStates
 
-void FireStarterEvolve::EvolveComplete(void)
+bool FireStarterEvolve::GenerateOptimize(const FireStarterState* state)
 {
-    DispatchAsync([this] {
-        m_manager->Complete();
+    if (m_optimizeCode.empty())
+        return false;
+    DispatchAsync([this, state] {
+        CUDAContext m_CUDAContext(0);
+        FireStarterGenerate generate(&m_CUDAContext);
+        FireStarterJob* job = m_manager->GetFree();
+        if (job) {
+            // The state already contains the evolved and optimized code.
+            job->m_state = *state;
+
+            // Generate the evaluate code
+            std::string evaluateCode;
+            generate.GenerateEvaluate(job->m_state, evaluateCode);
+
+            // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+            job->m_options.clear();
+            CUDACompile::StandardOptions(job->m_options);
+            job->m_programName = "FireOptimizer.cu";
+            job->m_programFunction = "Optimizer";
+            job->m_program = m_optimizeCode;
+            FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
+            m_manager->AddCode(job);
+        }
     });
-} // EvolveComplee
+    return true;
+} // GenerateOptimize
 
 FireStarterEvolve::FireStarterEvolve(FireStarterCompilerManager* manager)
 {

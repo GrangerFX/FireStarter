@@ -15,6 +15,13 @@ public:
 	std::string m_log;
 	class FireStarterJob* m_next = nullptr;	// Linked list pointer
 
+	inline void Copy(FireStarterJob* job)
+	{
+		class FireStarterJob* next = m_next;
+		*this = *job;
+		m_next = next;
+	} // Copy
+
 	inline void Packetize(FireStarterPacket& packet)
 	{
 		m_state.Packetize(packet);
