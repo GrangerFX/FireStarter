@@ -84,7 +84,7 @@ void FireStarterProgram::RandomInstruction(unsigned long long seed)
 void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
 {
     memcpy(m_evolvedInstructions.data(), instructions, InstructionsSize());
-    OptimizeRegisters();
+    memcpy(m_optimizedInstructions.data(), instructions, InstructionsSize());
 } // LoadInstructions
 
 void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::string& code, const std::string &prefix)

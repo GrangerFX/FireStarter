@@ -602,7 +602,17 @@ void FireStarter::ControlThread(void)
         m_buffer.Resize(m_width, m_height);
         m_buffer.Erase();
 
-        if (m_settings.m_mode == FIRESTARTER_TEST) {
+        if ((m_settings.m_mode == FIRESTARTER_CODE) || (m_settings.m_mode == FIRESTARTER_UNIT)) {
+            // Initialize the best state.
+            m_bestState.InitState(m_settings);
+
+            // Program evolution pass.
+            ControlUnits();
+
+            // Optimization evolution pass.
+            if (FIRESTARTER_SECOND_PASS)
+                ControlOptimize();
+        }  else if (m_settings.m_mode == FIRESTARTER_TEST) {
             // Test of jobs without processes.
             m_settings.m_units = 1;
             m_settings.m_processes = 0;
@@ -617,18 +627,7 @@ void FireStarter::ControlThread(void)
             // Optimization evolution pass.
             if (FIRESTARTER_SECOND_PASS)
                 ControlOptimize();
-        } else if (m_settings.m_mode == FIRESTARTER_UNIT) {
-            // Initialize the best state.
-            m_bestState.InitState(m_settings);
-
-            // Program evolution pass.
-            ControlUnits();
-
-            // Optimization evolution pass.
-            if (FIRESTARTER_SECOND_PASS)
-                ControlOptimize();
-        }
-        else if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
+        } else if (m_settings.m_mode == FIRESTARTER_OPTIMIZE) {
             // Load the best state.
             LoadState(m_bestState);
             m_bestState.Settings().CopyModeSettings(m_settings);

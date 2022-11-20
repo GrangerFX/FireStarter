@@ -176,7 +176,7 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
 
     memcpy(m_state.Result(), m_hostResults->Result(bestIndex), FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations));
     m_state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
-} // EvolveGenerations
+} // CodeGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
 {
