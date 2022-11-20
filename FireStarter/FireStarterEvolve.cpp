@@ -40,6 +40,10 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
             m_manager->AddCode(job);
         }
+
+        // Let all the processes know that the job is complete. This will terminate the processes
+        // once the last job in their queues is finished.
+        m_manager->Complete();
     });
     return true;
 } // EvolveGenerations

@@ -352,16 +352,11 @@ void FireStarter::ControlRandom(void)
 
     // Setup the intial state
     std::vector<FireStarterState> allStates;
-    FireStarterState evolveState(m_bestState);
-    allStates.push_back(evolveState);
+    allStates.push_back(m_bestState);
 
     // Create the shared compiler
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-    evolve->EvolveGenerations(&evolveState, m_settings.m_attempts);
-
-    // Let all the processes know that the job is complete. This will terminate the processes
-    // once the last job in their queues is finished.
-    manager->Complete();
+    evolve->EvolveGenerations(&m_bestState, m_settings.m_attempts);
 
     // Create the units.
     std::vector<FireStarterExecute*> executionUnits;
@@ -425,7 +420,7 @@ void FireStarter::ControlEvolve(void)
 
         FireStarterExecute* execute = new FireStarterExecute(manager, i);
         executionUnits.push_back(execute);
-     }
+    }
     if (result) {
         unsigned int generation = 0;
 
