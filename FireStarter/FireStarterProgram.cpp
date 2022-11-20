@@ -36,38 +36,37 @@ unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegist
     // Optimize the registers based on the ones in use at any point in the code.
     const FireStarterInstructions* instructions = OptimizedInstructions();
     unsigned int numInstructions = m_settings.m_instructions;
-    registers.resize(m_uniqueRegisters);
-    if (m_uniqueRegisters) {
-        for (unsigned int i = 0; i < m_uniqueRegisters; i++)
-            registers[i] = FireStarterRegister(-1, numInstructions, numInstructions);
-        for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-            unsigned int index = instructions->Register(i);
-            FireStarterRegister& reg = registers[index];
-            if (reg.instructionFirst == numInstructions)
-                reg.instructionFirst = i;
-            reg.instructionLast = i;
-        }
-
-        std::vector<unsigned int> freeRegisters;
-        unsigned int numActiveRegisters = 0;
-        for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-            unsigned int index = instructions->Register(i);
-            FireStarterRegister& reg = registers[index];
-            if (reg.instructionLast > reg.instructionFirst)
-                if (reg.instructionFirst == i) {
-                    if (!freeRegisters.empty()) {
-                        reg.registerIndex = freeRegisters.back();
-                        freeRegisters.pop_back();
-                    } else
-                        reg.registerIndex = numActiveRegisters;
-                    numActiveRegisters++;
-                } else if (reg.instructionLast == i) {
-                    freeRegisters.push_back(reg.registerIndex);
-                    numActiveRegisters--;
-                }
-        }
+    unsigned int uniqueRegisters = m_uniqueRegisters ? m_uniqueRegisters : m_settings.m_registers;
+    registers.resize(uniqueRegisters);
+    for (unsigned int i = 0; i < uniqueRegisters; i++)
+        registers[i] = FireStarterRegister(-1, numInstructions, numInstructions);
+    for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
+        unsigned int index = instructions->Register(i);
+        FireStarterRegister& reg = registers[index];
+        if (reg.instructionFirst == numInstructions)
+            reg.instructionFirst = i;
+        reg.instructionLast = i;
     }
-    return m_uniqueRegisters;
+
+    std::vector<unsigned int> freeRegisters;
+    unsigned int numActiveRegisters = 0;
+    for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
+        unsigned int index = instructions->Register(i);
+        FireStarterRegister& reg = registers[index];
+        if (reg.instructionLast > reg.instructionFirst)
+            if (reg.instructionFirst == i) {
+                if (!freeRegisters.empty()) {
+                    reg.registerIndex = freeRegisters.back();
+                    freeRegisters.pop_back();
+                } else
+                    reg.registerIndex = numActiveRegisters;
+                numActiveRegisters++;
+            } else if (reg.instructionLast == i) {
+                freeRegisters.push_back(reg.registerIndex);
+                numActiveRegisters--;
+            }
+    }
+    return uniqueRegisters;
 } // GenerateRegisters
 
 void FireStarterProgram::RandomProgram(unsigned long long seed)
