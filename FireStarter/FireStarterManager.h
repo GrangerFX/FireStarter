@@ -62,33 +62,12 @@ public:
 	~FireStarterJobQueue(void);
 }; // class FireStarterJobQueue
 
-class FireStarterCompiler : public SerialThread {
-private:
-	SerialThread m_jobThread;
-	FireStarterServer* m_server = nullptr;
-	class FireStarterCompilerManager* m_manager = nullptr;;
-	FireStarterProcess* m_process = nullptr;
-	volatile bool m_terminate = false;
-	bool m_isClient = false;
-
-public:
-	void CompilerLocal(void);
-	void CompilerServer(void);
-	void CompilerClient(void);
-	FireStarterCompiler(FireStarterProcess* process);
-	FireStarterCompiler(FireStarterServer* server, class FireStarterCompilerManager* manager);
-	FireStarterCompiler(class FireStarterCompilerManager* manager);
-	~FireStarterCompiler(void);
-}; // class FireStarterCompiler
-
-class FireStarterCompilerManager {
+class FireStarterManager {
 private:
 	FireStarterJobQueue m_freeQueue;
 	FireStarterJobQueue m_codeQueue;
 	FireStarterJobQueue m_compileQueue;
 	FireStarterJobQueue m_completeQueue;
-	std::vector<FireStarterCompiler*> m_compilers;
-	FireStarterServer* m_server;
 	size_t m_maxJobs = 0;
 	unsigned int m_numUnits;
 	unsigned int m_numProcesses;
@@ -117,6 +96,6 @@ public:
 
 	void Complete(void);	// Called when there is no more work to do.
 	void Cancel(void);
-	FireStarterCompilerManager(unsigned int numUnits, unsigned int numProcesses);
-	~FireStarterCompilerManager(void);
-}; // FireStarterCompilerManager
+	FireStarterManager(unsigned int maxJobs);
+	~FireStarterManager(void);
+}; // FireStarterManager

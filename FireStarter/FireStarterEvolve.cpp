@@ -134,7 +134,7 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState* state)
     return true;
 } // GenerateOptimize
 
-FireStarterEvolve::FireStarterEvolve(FireStarterCompilerManager* manager)
+FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager)
 {
     m_manager = manager;
     FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode);

@@ -335,7 +335,7 @@ void FireStarterExecute::ExecuteRandom(void)
     });
 } // ExecuteRandom
 
-FireStarterExecute::FireStarterExecute(FireStarterCompilerManager* manager, unsigned int index)
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, unsigned int index)
 {
     m_manager = manager;
     m_device = index;

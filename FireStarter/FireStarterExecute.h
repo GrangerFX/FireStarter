@@ -1,6 +1,6 @@
 #pragma once
 #include "SerialThread.h"
-#include "FireStarterCompiler.h"
+#include "FireStarterManager.h"
 #include "CUDAContext.h"
 
 class FireStarterExecute : public SerialThread {
@@ -13,7 +13,7 @@ private:
     FireStarterResults* m_deviceResults1 = nullptr;
     FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
     FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
-    FireStarterCompilerManager* m_manager = nullptr;
+    FireStarterManager* m_manager = nullptr;
     FireStarterJob* m_job = nullptr;
     CUmodule m_generateModule = nullptr;
     CUmodule m_evolveModule = nullptr;
@@ -35,6 +35,6 @@ public:
     bool ExecuteOptimize(unsigned int generation);
     bool ExecuteJob(void);
 	void ExecuteRandom(void);
-	FireStarterExecute(FireStarterCompilerManager* manager, unsigned int index);
+	FireStarterExecute(FireStarterManager* manager, unsigned int index);
 	~FireStarterExecute(void);
 }; // class FireStarterExecute

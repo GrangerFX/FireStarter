@@ -100,7 +100,8 @@
     <ClCompile Include="FireCompiler\FireCompiler.cpp" />
     <ClCompile Include="FireCompiler\FireCompilerMain.cpp" />
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
-    <ClCompile Include="FireStarter\FireStarterCompiler.cpp" />
+    <ClCompile Include="FireStarter\FireStarterCompile.cpp" />
+    <ClCompile Include="FireStarter\FireStarterManager.cpp" />
     <ClCompile Include="FireStarter\FireStarterProcess.cpp" />
     <ClCompile Include="FireStarter\FireStarterProgram.cpp" />
     <ClCompile Include="FireStarter\FireStarterState.cpp" />
@@ -110,7 +111,8 @@
     <ClInclude Include="FireCompiler\FireCompiler.h" />
     <ClInclude Include="FireStarter\CUDACompile.h" />
     <ClInclude Include="FireStarter\CUDAErrors.h" />
-    <ClInclude Include="FireStarter\FireStarterCompiler.h" />
+    <ClInclude Include="FireStarter\FireStarterCompile.h" />
+    <ClInclude Include="FireStarter\FireStarterManager.h" />
     <ClInclude Include="FireStarter\FireStarterProcess.h" />
     <ClInclude Include="FireStarter\PrintF.h" />
     <ClInclude Include="FireStarter\SerialThread.h" />

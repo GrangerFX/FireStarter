@@ -284,7 +284,7 @@ void FireStarter::ControlResults(const FireStarterState& state, std::vector<Fire
     RenderStatus(state, m_smoothTime, result, average, testError);
 } // ControlResults
 
-bool FireStarter::CompleteJob(FireStarterCompilerManager* manager, std::vector<FireStarterState>& allStates)
+bool FireStarter::CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates)
 {
     // Get the completed job.
     // Note: The jobs may be received out of order.
@@ -304,7 +304,7 @@ bool FireStarter::CompleteJob(FireStarterCompilerManager* manager, std::vector<F
 void FireStarter::ControlTest(void)
 {
     // Create the compiler manager
-    FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
+    FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
 
     // Setup the intial state
     std::vector<FireStarterState> allStates;
@@ -312,10 +312,13 @@ void FireStarter::ControlTest(void)
     allStates.push_back(testState);
     m_bestState = testState;
 
-    // Create the evolution generator.
+    // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
-    // Create the executionUnit.
+    // Create the multi-process compiler.
+    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+
+    // Create the execution unit.
     FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
     // Loop until the the completion condition or the host program is quit.
@@ -331,6 +334,11 @@ void FireStarter::ControlTest(void)
 
     // Finish processing and terminate each unit.
     delete execute;
+
+    // Delete the multi-process compiler.
+    delete compile;
+
+    // Delete the evolution code generator.
     delete evolve;
 
     // Delete the compilier manager and cancel any waiting jobs.
@@ -344,24 +352,30 @@ void FireStarter::ControlRandom(void)
         m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
 
     // Create the compiler manager
-    FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
-
-    // Setup the intial best state 
-    m_bestState.InitState(m_settings);
-    m_bestState.m_program.RandomProgram(m_bestState.StateSeed());
+    FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
 
     // Setup the intial state
     std::vector<FireStarterState> allStates;
     allStates.push_back(m_bestState);
 
-    // Create the shared compiler
+    // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
+
+    // Create the multi-process compiler.
+    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+
+    // Setup the intial best state 
+    m_bestState.InitState(m_settings);
+    m_bestState.m_program.RandomProgram(m_bestState.StateSeed());
+
+    // Start generating random code generations.
     evolve->EvolveGenerations(&m_bestState, m_settings.m_attempts);
 
     // Create the units.
     std::vector<FireStarterExecute*> executionUnits;
     bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
+        // Create an execution unit.
         FireStarterExecute* execute = new FireStarterExecute(manager, i);
         executionUnits.push_back(execute);
         execute->DispatchAsync([execute, manager] {
@@ -384,8 +398,11 @@ void FireStarter::ControlRandom(void)
     for (FireStarterExecute* execute : executionUnits)
         delete execute;
 
-    // Delete the random code generator.
+    // Delete the evolution code generator.
     delete evolve;
+
+    // Delete the multi-process compiler.
+    delete compile;
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
@@ -398,9 +415,12 @@ void FireStarter::ControlEvolve(void)
         m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
 
     // Create the compiler manager
-    FireStarterCompilerManager* manager = new FireStarterCompilerManager(m_settings.m_units, m_settings.m_processes);
+    FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
 
-    // Create the shared compiler
+    // Create the multi-process compiler.
+    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+
+    // Create the evolution generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
     // Setup the intial best state 
@@ -418,6 +438,7 @@ void FireStarter::ControlEvolve(void)
         state.m_program.RandomProgram(state.StateSeed());
         allStates.push_back(state);
 
+        // Create an execution unit.
         FireStarterExecute* execute = new FireStarterExecute(manager, i);
         executionUnits.push_back(execute);
     }
@@ -455,8 +476,11 @@ void FireStarter::ControlEvolve(void)
     for (FireStarterExecute* execute : executionUnits)
         delete execute;
 
-    // Delete the compilier manager and cancel any waiting jobs.
+    // Delete the evolution code generator.
     delete evolve;
+
+    // Delete the multi-process compiler.
+    delete compile;
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
@@ -535,16 +559,23 @@ void FireStarter::ControlOptimize(void)
     // Optimization evolution pass.
 #if 1
     // Create the compiler manager
-    FireStarterCompilerManager* manager = new FireStarterCompilerManager(1, 0);
+    FireStarterManager* manager = new FireStarterManager(1);
 
-    // Create the shared compiler
+    // Create the multi-process compiler.
+    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+
+    // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
+
+    // Create the execution unit.
+    FireStarterExecute* execute = new FireStarterExecute(manager, 0);
+
+    // Generate the optimize code.
     evolve->GenerateOptimize(&m_bestState);
 
     // Create the state and execution unit.
     std::vector<FireStarterState> allStates;
     allStates.push_back(m_bestState);
-    FireStarterExecute* execute = new FireStarterExecute(manager, 0);
     execute->DispatchAsync([execute, manager] { execute->ExecuteInit(); });
     unsigned int generation = 0;
 
@@ -573,8 +604,11 @@ void FireStarter::ControlOptimize(void)
     // Finish processing and terminate each unit.
     delete execute;
 
-    // Delete the compilier manager and cancel any waiting jobs.
+    // Delete the evolution code generator.
     delete evolve;
+
+    // Delete the multi-process compiler.
+    delete compile;
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;

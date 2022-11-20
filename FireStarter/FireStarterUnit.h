@@ -1,7 +1,7 @@
 #pragma once
 #include "FireStarterGenerate.h"
 #include "FireStarterProcess.h"
-#include "FireStarterCompiler.h"
+#include "FireStarterCompile.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 #include "SerialThread.h"

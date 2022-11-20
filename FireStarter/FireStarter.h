@@ -47,7 +47,7 @@ public:
     void ControlDeallocate(void);
     void ControlAllocate(void);
     void ControlResults(const FireStarterState& state, std::vector<FireStarterState>& allStates);
-    bool CompleteJob(FireStarterCompilerManager* manager, std::vector<FireStarterState>& allStates);
+    bool CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates);
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);
