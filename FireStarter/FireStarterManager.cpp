@@ -172,7 +172,7 @@ size_t FireStarterManager::SizeComplete(void)
 void FireStarterManager::Complete(void)
 {
     // Send a null job to each client to let it know the work is complete.
-    for (unsigned int i = 0; i < m_numProcesses; i++)
+    for (unsigned int i = 0; i < m_maxJobs; i++)
         AddCode(nullptr);
 } // Complete
 

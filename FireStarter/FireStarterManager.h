@@ -69,8 +69,6 @@ private:
 	FireStarterJobQueue m_compileQueue;
 	FireStarterJobQueue m_completeQueue;
 	size_t m_maxJobs = 0;
-	unsigned int m_numUnits;
-	unsigned int m_numProcesses;
 
 public:
 	void AddFree(void);

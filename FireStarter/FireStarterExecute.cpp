@@ -343,5 +343,6 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, unsigned int
 
 FireStarterExecute::~FireStarterExecute(void)
 {
+    TerminateThread();
     CUDACompile::ReleaseModule(m_optimizeModule);
 } // ~FireStarterExecute(void)
