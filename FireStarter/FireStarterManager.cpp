@@ -6,8 +6,8 @@ void FireStarterJobQueue::Add(FireStarterJob* job)
 {
     if (WillTerminate())
         return;
-    DispatchAsync([this, job] {
-        if (job) {
+    if (job)
+        DispatchAsync([this, job] {
             job->m_next = nullptr;
             if (m_lastJob)
                 m_lastJob->m_next = job;
@@ -15,10 +15,11 @@ void FireStarterJobQueue::Add(FireStarterJob* job)
                 m_firstJob = job;
             m_lastJob = job;
             m_sizeJobs++;
-        }
-        m_semaphore.notify();
-    });
-} // Add
+            m_semaphore.notify();
+        });
+    else
+        m_semaphore.terminate();
+    } // Add
 
 FireStarterJob* FireStarterJobQueue::Get(void)
 {
@@ -28,40 +29,38 @@ FireStarterJob* FireStarterJobQueue::Get(void)
     // Wait for a job to be added to the queue.
     FireStarterJob* job = nullptr;
     double waitTime = m_timer.Duration();
-    m_semaphore.wait();
-    m_totalJobs++;
-    m_waitTime += m_timer.Duration() - waitTime;
-
-    // Remove the job from the queue.
-    DispatchSync([this, &job] {
-        if (m_firstJob) {
-            job = m_firstJob;
-            m_firstJob = m_firstJob->m_next;
-            if (!m_firstJob)
-                m_lastJob = nullptr;
-            job->m_next = nullptr;
-            m_sizeJobs--;
-        }
-    });
+    if (m_semaphore.wait()) // Returns null if the semaphore was terminated.
+        DispatchSync([this, &job, waitTime] {
+            // Remove the job from the queue.
+            if (m_firstJob) {
+                job = m_firstJob;
+                m_firstJob = m_firstJob->m_next;
+                if (!m_firstJob)
+                    m_lastJob = nullptr;
+                job->m_next = nullptr;
+                m_sizeJobs--;
+                m_totalJobs++;
+                m_waitTime += m_timer.Duration() - waitTime;
+            }
+        });
     return job;
 } // Get
 
 void FireStarterJobQueue::Cancel(void)
 {
-    // Terminate the thread.
-    TerminateThread();
-
-    // Delete all the jobs in the queue.
-    while (m_firstJob) {
-        FireStarterJob* job = m_firstJob;
-        m_firstJob = m_firstJob->m_next;
-        delete job;
-        m_sizeJobs--;
+    // Release any waiting threads and return null jobs to new requests..
+    if (m_semaphore.terminate()) {
+        // Delete all the jobs in the queue.
+        DispatchSync([this] {
+            while (m_firstJob) {
+                FireStarterJob* job = m_firstJob;
+                m_firstJob = m_firstJob->m_next;
+                delete job;
+                m_sizeJobs--;
+            }
+            m_lastJob = nullptr;
+        });
     }
-    m_lastJob = nullptr;
-
-    // Release any waiting threads.
-    m_semaphore.terminate();
 } // Cancel
 
 double FireStarterJobQueue::WaitTime(void)
@@ -83,15 +82,13 @@ FireStarterJobQueue::~FireStarterJobQueue(void)
     Cancel();
 } // ~FireStarterJobQueue
 
-void FireStarterManager::AddFree(void)
-{
-    m_freeQueue.Add(new FireStarterJob());
-} // AddFree
-
 void FireStarterManager::AddFree(FireStarterJob* job)
 {
-    *job = FireStarterJob();
-    m_freeQueue.Add(job);
+    if (job) {
+        *job = FireStarterJob();
+        m_freeQueue.Add(job);
+    } else
+        m_freeQueue.Add(new FireStarterJob());
 } // AddFree
 
 FireStarterJob* FireStarterManager::GetFree(void)
@@ -168,13 +165,6 @@ size_t FireStarterManager::SizeComplete(void)
 {
     return m_completeQueue.Size();
 } // SizeComplete
-
-void FireStarterManager::Complete(void)
-{
-    // Send a null job to each client to let it know the work is complete.
-    for (unsigned int i = 0; i < m_maxJobs; i++)
-        AddCode(nullptr);
-} // Complete
 
 void FireStarterManager::Cancel(void)
 {

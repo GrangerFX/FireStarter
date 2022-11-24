@@ -43,7 +43,7 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
 
         // Let all the processes know that the job is complete. This will terminate the processes
         // once the last job in their queues is finished.
-        m_manager->Complete();
+        m_manager->AddCode();
     });
     return true;
 } // EvolveGenerations

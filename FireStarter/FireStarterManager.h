@@ -71,28 +71,26 @@ private:
 	size_t m_maxJobs = 0;
 
 public:
-	void AddFree(void);
-	void AddFree(FireStarterJob* job);
+	void AddFree(FireStarterJob* job = nullptr);
 	FireStarterJob* GetFree(void);
 	double TimeFree(void);
 	size_t SizeFree(void);
 
-	void AddCode(FireStarterJob* job);
+	void AddCode(FireStarterJob* job = nullptr);
 	FireStarterJob* GetCode(void);
 	double TimeCode(void);
 	size_t SizeCode(void);
 
-	void AddCompile(FireStarterJob* job);
+	void AddCompile(FireStarterJob* job = nullptr);
 	FireStarterJob* GetCompile(void);
 	double TimeCompile(void);
 	size_t SizeCompile(void);
 
-	void AddComplete(FireStarterJob* job);
+	void AddComplete(FireStarterJob* job = nullptr);
 	FireStarterJob* GetComplete(void);
 	double TimeComplete(void);
 	size_t SizeComplete(void);
 
-	void Complete(void);	// Called when there is no more work to do.
 	void Cancel(void);
 	FireStarterManager(unsigned int maxJobs);
 	~FireStarterManager(void);

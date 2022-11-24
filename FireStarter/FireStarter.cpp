@@ -354,10 +354,6 @@ void FireStarter::ControlRandom(void)
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
 
-    // Setup the intial state
-    std::vector<FireStarterState> allStates;
-    allStates.push_back(m_bestState);
-
     // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
@@ -367,6 +363,10 @@ void FireStarter::ControlRandom(void)
     // Setup the intial best state 
     m_bestState.InitState(m_settings);
     m_bestState.m_program.RandomProgram(m_bestState.StateSeed());
+
+    // Setup the intial state
+    std::vector<FireStarterState> allStates;
+    allStates.push_back(m_bestState);
 
     // Start generating random code generations.
     evolve->EvolveGenerations(&m_bestState, m_settings.m_attempts);
@@ -467,7 +467,7 @@ void FireStarter::ControlEvolve(void)
 
     // Let all the processes know that the job is complete. This will terminate the processes
     // once the last job in their queues is finished.
-    manager->Complete();
+    manager->AddCode();
 
     // Delete the random code generator.
     manager->Cancel();
@@ -596,7 +596,7 @@ void FireStarter::ControlOptimize(void)
 
     // Let all the processes know that the job is complete. This will terminate the processes
     // once the last job in their queues is finished.
-    manager->Complete();
+    manager->AddCode();
 
     // Delete the random code generator.
     manager->Cancel();

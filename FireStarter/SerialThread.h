@@ -65,39 +65,39 @@ public:
 
     inline void notify()
     {
-        if (!m_active)
-            return;
         std::unique_lock<std::mutex> lock(m_mtx);
+        m_active = true;
         m_count++;
         m_cv.notify_one();
     } // notify
 
     inline void notify_all()
     {
+        std::unique_lock<std::mutex> lock(m_mtx);
         if (!m_active)
             return;
-        std::unique_lock<std::mutex> lock(m_mtx);
         m_count += m_waiting;
         m_cv.notify_all();
     } // notify_all
 
-    inline void wait()
+    inline bool wait()
     {
-        if (!m_active)
-            return;
         std::unique_lock<std::mutex> lock(m_mtx);
-        m_waiting++;
-        while (m_count == 0)
-            m_cv.wait(lock);
-        m_waiting--;
-        m_count--;
+        if (m_active) {
+            m_waiting++;
+            while (m_count == 0)
+                m_cv.wait(lock);
+            m_waiting--;
+            m_count--;
+        }
+        return m_active;
     } // wait
 
     inline bool trywait()
     {
+        std::unique_lock<std::mutex> lock(m_mtx);
         if (!m_active)
             return false;
-        std::unique_lock<std::mutex> lock(m_mtx);
         if (m_count) {
             --m_count;
             return true;
@@ -105,14 +105,15 @@ public:
         return false;
     } // trywait
 
-    inline void terminate()
+    inline bool terminate()
     {
-        if (!m_active)
-            return;
         std::unique_lock<std::mutex> lock(m_mtx);
+        if (!m_active)
+            return false;
         m_active = false;
         m_count += m_waiting;
         m_cv.notify_all();
+        return true;
     } // terminate
 }; // class SerialThreadSemaphore
 

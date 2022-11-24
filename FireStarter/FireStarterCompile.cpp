@@ -160,7 +160,9 @@ FireStarterCompiler::FireStarterCompiler(FireStarterManager* manager, FireStarte
 FireStarterCompiler::~FireStarterCompiler(void)
 {
     if (m_process)
-        DispatchSync([this] { m_process->Stop(); });
+        DispatchSync([this] {
+            m_process->Stop();
+        });
 } // ~FireStarterCompiler
 
 FireStarterCompile::FireStarterCompile(FireStarterManager* manager, unsigned int numProcesses)
