@@ -4,7 +4,7 @@
 
 void FireStarterJobQueue::Add(FireStarterJob* job)
 {
-    if (WillTerminate())
+    if (!IsRunning() || WillTerminate())
         return;
     if (job)
         DispatchAsync([this, job] {
@@ -49,18 +49,18 @@ FireStarterJob* FireStarterJobQueue::Get(void)
 void FireStarterJobQueue::Cancel(void)
 {
     // Release any waiting threads and return null jobs to new requests..
-    if (m_semaphore.terminate()) {
-        // Delete all the jobs in the queue.
-        DispatchSync([this] {
-            while (m_firstJob) {
-                FireStarterJob* job = m_firstJob;
-                m_firstJob = m_firstJob->m_next;
-                delete job;
-                m_sizeJobs--;
-            }
-            m_lastJob = nullptr;
-        });
-    }
+    m_semaphore.terminate();
+
+    // Delete all the jobs in the queue.
+    DispatchSync([this] {
+        while (m_firstJob) {
+            FireStarterJob* job = m_firstJob;
+            m_firstJob = m_firstJob->m_next;
+            delete job;
+            m_sizeJobs--;
+        }
+        m_lastJob = nullptr;
+    });
 } // Cancel
 
 double FireStarterJobQueue::WaitTime(void)

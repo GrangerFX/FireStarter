@@ -1,0 +1,70 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_RANDOM;
+units = 2;
+processes = 12;
+population = 69632;
+iterations = 256;
+candidates = 16;
+generations = 100;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 10000;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_RANDOM: Seed=5  Generation=5  Result=0.00039327  Average=0.00039327  Best=0.00039327  BestSeed=5  Time=2.0365 Seconds  Run Time=3.7171 Seconds  TestError=0.00000006  V:0=0.00031114  V:1=0.00014979  V:2=0.00039327
+FIRESTARTER_RANDOM: Seed=10  Generation=10  Result=0.00069271  Average=0.00054299  Best=0.00039327  BestSeed=5  Time=1.6937 Seconds  Run Time=3.7176 Seconds  TestError=0.00000063  V:0=0.00034102  V:1=0.00022888  V:2=0.00069271
+FIRESTARTER_RANDOM: Seed=6  Generation=6  Result=0.00138590  Average=0.00082396  Best=0.00039327  BestSeed=5  Time=1.1293 Seconds  Run Time=3.7180 Seconds  TestError=10.00000000  V:0=0.00138590  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=7  Generation=7  Result=0.00266081  Average=0.00128317  Best=0.00039327  BestSeed=5  Time=0.8471 Seconds  Run Time=3.7184 Seconds  TestError=10.00000000  V:0=0.00266081  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=4  Generation=4  Result=0.00616675  Average=0.00225989  Best=0.00039327  BestSeed=5  Time=0.6777 Seconds  Run Time=3.7187 Seconds  TestError=10.00000000  V:0=0.00616675  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=0  Generation=0  Result=0.00125349  Average=0.00209215  Best=0.00039327  BestSeed=5  Time=0.5648 Seconds  Run Time=3.7191 Seconds  TestError=10.00000000  V:0=0.00011647  V:1=0.00125349  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=9  Generation=9  Result=0.09841970  Average=0.01585323  Best=0.00039327  BestSeed=5  Time=0.4842 Seconds  Run Time=3.7195 Seconds  TestError=10.00000000  V:0=0.09841970  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=2  Generation=2  Result=0.00041395  Average=0.01392332  Best=0.00039327  BestSeed=5  Time=0.4237 Seconds  Run Time=3.7198 Seconds  TestError=10.00000000  V:0=0.00041395  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=1  Generation=1  Result=0.00046849  Average=0.01242834  Best=0.00039327  BestSeed=5  Time=0.3767 Seconds  Run Time=3.7202 Seconds  TestError=10.00000000  V:0=0.00046849  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=3  Generation=3  Result=0.00092405  Average=0.01127791  Best=0.00039327  BestSeed=5  Time=0.3390 Seconds  Run Time=3.7206 Seconds  TestError=10.00000000  V:0=0.00092405  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=8  Generation=8  Result=0.00071478  Average=0.01031763  Best=0.00039327  BestSeed=5  Time=0.3083 Seconds  Run Time=3.7210 Seconds  TestError=10.00000000  V:0=0.00071478  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=11  Generation=11  Result=0.02856696  Average=0.01183840  Best=0.00039327  BestSeed=5  Time=0.2826 Seconds  Run Time=3.7213 Seconds  TestError=10.00000000  V:0=0.02856696  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=17  Generation=17  Result=0.00068623  Average=0.01098054  Best=0.00039327  BestSeed=5  Time=0.2609 Seconds  Run Time=3.7217 Seconds  TestError=10.00000000  V:0=0.00068623  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=19  Generation=19  Result=0.00756872  Average=0.01073684  Best=0.00039327  BestSeed=5  Time=0.2423 Seconds  Run Time=3.7221 Seconds  TestError=10.00000000  V:0=0.00756872  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=14  Generation=14  Result=0.01125300  Average=0.01077125  Best=0.00039327  BestSeed=5  Time=0.2361 Seconds  Run Time=3.8715 Seconds  TestError=10.00000000  V:0=0.01125300  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=15  Generation=15  Result=0.00260520  Average=0.01026087  Best=0.00039327  BestSeed=5  Time=0.2231 Seconds  Run Time=3.8997 Seconds  TestError=0.00000060  V:0=0.00022904  V:1=0.00037968  V:2=0.00260520
+FIRESTARTER_RANDOM: Seed=18  Generation=18  Result=0.00077599  Average=0.00970294  Best=0.00039327  BestSeed=5  Time=0.2203 Seconds  Run Time=4.0749 Seconds  TestError=10.00000000  V:0=0.00077599  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=22  Generation=22  Result=0.00042954  Average=0.00918775  Best=0.00039327  BestSeed=5  Time=0.2304 Seconds  Run Time=4.4774 Seconds  TestError=0.00000048  V:0=0.00019872  V:1=0.00007939  V:2=0.00042954
+FIRESTARTER_RANDOM: Seed=12  Generation=12  Result=0.00089157  Average=0.00875111  Best=0.00039327  BestSeed=5  Time=0.2232 Seconds  Run Time=4.5710 Seconds  TestError=0.00000018  V:0=0.00022113  V:1=0.00024348  V:2=0.00089157
+FIRESTARTER_RANDOM: Seed=13  Generation=13  Result=0.00116464  Average=0.00837179  Best=0.00039327  BestSeed=5  Time=0.2157 Seconds  Run Time=4.6443 Seconds  TestError=10.00000000  V:0=0.00116464  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=23  Generation=23  Result=0.97492790  Average=0.05439827  Best=0.00039327  BestSeed=5  Time=0.2141 Seconds  Run Time=4.8262 Seconds  TestError=10.00000000  V:0=0.97492790  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=21  Generation=21  Result=0.00061786  Average=0.05195370  Best=0.00039327  BestSeed=5  Time=0.2081 Seconds  Run Time=4.9094 Seconds  TestError=10.00000000  V:0=0.00009030  V:1=0.00061786  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=20  Generation=20  Result=0.09841883  Average=0.05397393  Best=0.00039327  BestSeed=5  Time=0.2071 Seconds  Run Time=5.0944 Seconds  TestError=10.00000000  V:0=0.09841883  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=25  Generation=25  Result=0.00572723  Average=0.05196365  Best=0.00039327  BestSeed=5  Time=0.2047 Seconds  Run Time=5.2434 Seconds  TestError=10.00000000  V:0=0.00572723  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=16  Generation=16  Result=0.00040662  Average=0.04990137  Best=0.00039327  BestSeed=5  Time=0.1977 Seconds  Run Time=5.2740 Seconds  TestError=0.00000010  V:0=0.00033402  V:1=0.00008942  V:2=0.00040662
+FIRESTARTER_RANDOM: Seed=27  Generation=27  Result=0.00094628  Average=0.04801848  Best=0.00039327  BestSeed=5  Time=0.1963 Seconds  Run Time=5.4328 Seconds  TestError=10.00000000  V:0=0.00094628  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=26  Generation=26  Result=0.09841896  Average=0.04988516  Best=0.00039327  BestSeed=5  Time=0.1900 Seconds  Run Time=5.4601 Seconds  TestError=10.00000000  V:0=0.09841896  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=24  Generation=24  Result=0.00050104  Average=0.04812145  Best=0.00039327  BestSeed=5  Time=0.1933 Seconds  Run Time=5.7431 Seconds  TestError=10.00000000  V:0=0.00036966  V:1=0.00050104  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=34  Generation=34  Result=0.00147501  Average=0.04651295  Best=0.00039327  BestSeed=5  Time=0.1940 Seconds  Run Time=5.9565 Seconds  TestError=0.00000173  V:0=0.00032044  V:1=0.00033996  V:2=0.00147501
+FIRESTARTER_RANDOM: Seed=31  Generation=31  Result=0.00212169  Average=0.04503324  Best=0.00039327  BestSeed=5  Time=0.1975 Seconds  Run Time=6.2558 Seconds  TestError=0.00000069  V:0=0.00024149  V:1=0.00009024  V:2=0.00212169
+FIRESTARTER_RANDOM: Seed=30  Generation=30  Result=0.85227418  Average=0.07107327  Best=0.00039327  BestSeed=5  Time=0.1947 Seconds  Run Time=6.3659 Seconds  TestError=10.00000000  V:0=0.00013325  V:1=0.85227418  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=32  Generation=32  Result=0.06156635  Average=0.07077618  Best=0.00039327  BestSeed=5  Time=0.1900 Seconds  Run Time=6.4115 Seconds  TestError=10.00000000  V:0=0.06156635  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=29  Generation=29  Result=0.00320879  Average=0.06872868  Best=0.00039327  BestSeed=5  Time=0.1888 Seconds  Run Time=6.5615 Seconds  TestError=10.00000000  V:0=0.00320879  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=28  Generation=28  Result=0.00089073  Average=0.06673345  Best=0.00039327  BestSeed=5  Time=0.1878 Seconds  Run Time=6.7160 Seconds  TestError=10.00000000  V:0=0.00089073  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=33  Generation=33  Result=0.00157809  Average=0.06487187  Best=0.00039327  BestSeed=5  Time=0.1872 Seconds  Run Time=6.8825 Seconds  TestError=0.00000012  V:0=0.00013274  V:1=0.00009167  V:2=0.00157809
+FIRESTARTER_RANDOM: Seed=35  Generation=35  Result=0.00050509  Average=0.06308390  Best=0.00039327  BestSeed=5  Time=0.1860 Seconds  Run Time=7.0268 Seconds  TestError=10.00000000  V:0=0.00023603  V:1=0.00050509  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=37  Generation=37  Result=0.00229302  Average=0.06144090  Best=0.00039327  BestSeed=5  Time=0.1827 Seconds  Run Time=7.0911 Seconds  TestError=10.00000000  V:0=0.00229302  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=42  Generation=42  Result=0.00044507  Average=0.05983575  Best=0.00039327  BestSeed=5  Time=0.1819 Seconds  Run Time=7.2442 Seconds  TestError=10.00000000  V:0=0.00044507  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=38  Generation=38  Result=0.00401217  Average=0.05840438  Best=0.00039327  BestSeed=5  Time=0.1816 Seconds  Run Time=7.4134 Seconds  TestError=10.00000000  V:0=0.00401217  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=36  Generation=36  Result=0.00031877  Average=0.05695224  Best=0.00031877  BestSeed=36  Time=0.1820 Seconds  Run Time=7.6281 Seconds  TestError=0.00000092  V:0=0.00020301  V:1=0.00031877  V:2=0.00031388
+FIRESTARTER_RANDOM: Seed=43  Generation=43  Result=0.00073905  Average=0.05558118  Best=0.00031877  BestSeed=36  Time=0.1817 Seconds  Run Time=7.7797 Seconds  TestError=10.00000000  V:0=0.00073905  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=41  Generation=41  Result=0.00026572  Average=0.05426415  Best=0.00026572  BestSeed=41  Time=0.1797 Seconds  Run Time=7.8974 Seconds  TestError=0.00000355  V:0=0.00014600  V:1=0.00026572  V:2=0.00020541
+FIRESTARTER_RANDOM: Seed=44  Generation=44  Result=0.20584691  Average=0.05778933  Best=0.00026572  BestSeed=41  Time=0.1771 Seconds  Run Time=7.9463 Seconds  TestError=10.00000000  V:0=0.20584691  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=39  Generation=39  Result=0.00064510  Average=0.05649060  Best=0.00026572  BestSeed=41  Time=0.1765 Seconds  Run Time=8.0965 Seconds  TestError=10.00000000  V:0=0.00064510  V:1=10.00000000  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=40  Generation=40  Result=0.01059890  Average=0.05547078  Best=0.00026572  BestSeed=41  Time=0.1756 Seconds  Run Time=8.2314 Seconds  TestError=10.00000000  V:0=0.00012887  V:1=0.01059890  V:2=10.00000000
+FIRESTARTER_RANDOM: Seed=45  Generation=45  Result=0.09841886  Average=0.05640443  Best=0.00026572  BestSeed=41  Time=0.1765 Seconds  Run Time=8.4470 Seconds  TestError=10.00000000  V:0=0.09841886  V:1=10.00000000  V:2=10.00000000
