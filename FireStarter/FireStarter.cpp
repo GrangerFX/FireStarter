@@ -332,6 +332,9 @@ void FireStarter::ControlTest(void)
         generation++;
     }
 
+    // Cancel any waiting jobs
+    manager->Cancel();
+
     // Finish processing and terminate each unit.
     delete execute;
 
@@ -465,11 +468,7 @@ void FireStarter::ControlEvolve(void)
         }
     }
 
-    // Let all the processes know that the job is complete. This will terminate the processes
-    // once the last job in their queues is finished.
-    manager->AddCode();
-
-    // Delete the random code generator.
+    // Cancel any waiting jobs
     manager->Cancel();
 
     // Finish processing and terminate each unit.
@@ -594,11 +593,7 @@ void FireStarter::ControlOptimize(void)
         generation++;
     }
 
-    // Let all the processes know that the job is complete. This will terminate the processes
-    // once the last job in their queues is finished.
-    manager->AddCode();
-
-    // Delete the random code generator.
+    // Cancel any waiting jobs
     manager->Cancel();
 
     // Finish processing and terminate each unit.
