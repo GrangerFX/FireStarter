@@ -477,14 +477,10 @@ void FireStarterUnit::Execute(void)
     });
 } // Execute
 
-void FireStarterUnit::Update(FireStarterState* states)
+void FireStarterUnit::Update(FireStarterState& state)
 {
-    bool result = false;
-    DispatchSync([this, states] {
-        if (!states[m_unitIndex].m_generation || (m_state.MaxResult() < states[m_unitIndex].MaxResult()))
-            states[m_unitIndex] = m_state;
-        else
-            states[m_unitIndex].m_generation = m_state.m_generation;
+    DispatchSync([this, &state] {
+        state = m_state;
     });
 } // Update
 

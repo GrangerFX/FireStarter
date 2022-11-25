@@ -312,25 +312,29 @@ bool FireStarterExecute::ExecuteOptimize(unsigned int generation)
     return true;
 } // ExecuteOptimize
 
-bool FireStarterExecute::ExecuteJob(void)
+void FireStarterExecute::ExecuteEvolve(void)
 {
-    if (!ExecuteInit())
-        return false;
-    Execute(m_job->m_state);
-    m_manager->AddComplete(m_job);
-    m_job = nullptr;
-    return true;
-} // ExecuteJob
+    DispatchAsync([this] {
+        if (ExecuteInit()) {
+            Execute(m_job->m_state);
+            m_manager->AddComplete(m_job);
+            m_job = nullptr;
+        } else
+            m_manager->AddComplete();
+    });
+} // ExecuteEvolve
 
 void FireStarterExecute::ExecuteRandom(void)
 {
     DispatchAsync([this] {
         if (!WillTerminate()) {
-            if (ExecuteJob()) {  // Returns true if the job was compiled and executed successfully.
-                if (!WillTerminate())
-                    ExecuteRandom();
+            if (ExecuteInit()) {
+                Execute(m_job->m_state);
+                m_manager->AddComplete(m_job);
+                m_job = nullptr;
+                ExecuteRandom();
             } else
-                m_manager->AddComplete(nullptr);
+                m_manager->AddComplete();
         }
     });
 } // ExecuteRandom

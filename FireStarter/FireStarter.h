@@ -46,7 +46,7 @@ public:
     void RenderImage(unsigned int width, unsigned int height, const unsigned char* pixels);
     void ControlDeallocate(void);
     void ControlAllocate(void);
-    void ControlResults(const FireStarterState& state, std::vector<FireStarterState>& allStates);
+    void ControlResults(const FireStarterState& state, FireStarterState& oldState);
     bool CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates);
     void ControlTest(void);
     void ControlRandom(void);

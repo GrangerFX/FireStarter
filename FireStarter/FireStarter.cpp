@@ -241,7 +241,7 @@ void FireStarter::ControlAllocate(void)
         m_fireShowFunction = CUDACompile::GetFunction(m_fireShowModule, "FireShow");
 } // ControlAllocate
 
-void FireStarter::ControlResults(const FireStarterState& state, std::vector<FireStarterState>& allStates)
+void FireStarter::ControlResults(const FireStarterState& state, FireStarterState& oldState)
 {
     // Get the result.
     float result = state.MaxResult();
@@ -270,11 +270,8 @@ void FireStarter::ControlResults(const FireStarterState& state, std::vector<Fire
     }
 
     // Save the state in the array of all states.
-    if (state.m_index < allStates.size()) {
-        FireStarterState& oldState = allStates[state.m_index];
-        if (!state.m_generation || (result < oldState.MaxResult()))
-            oldState = state;
-    }
+    if (!state.m_generation || (result < oldState.MaxResult()))
+        oldState = state;
 
     // Test the current state.
     float testError = state.TestResult();
@@ -286,18 +283,20 @@ void FireStarter::ControlResults(const FireStarterState& state, std::vector<Fire
 
 bool FireStarter::CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates)
 {
-    // Get the completed job.
-    // Note: The jobs may be received out of order.
-    FireStarterJob* job = manager->GetComplete();
-    if (!job)
-        return false;
+    for (FireStarterState& oldState : allStates) {
+        // Get the completed job.
+        // Note: The jobs may be received out of order.
+        FireStarterJob* job = manager->GetComplete();
+        if (!job)
+            return false;
 
-    // Output job queue status.
-//  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+        // Output job queue status.
+        //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
-    // Update the best state and display the results.
-    ControlResults(job->m_state, allStates);
-    manager->AddFree(job);
+        // Update the best state and display the results.
+        ControlResults(job->m_state, oldState);
+        manager->AddFree(job);
+    }
     return true;
 } // CompleteJob
 
@@ -326,7 +325,7 @@ void FireStarter::ControlTest(void)
     unsigned int generation = 0;
     while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
         evolve->EvolveStates(&m_bestState, allStates, generation);
-        execute->ExecuteJob();
+        execute->ExecuteEvolve();
         if (!CompleteJob(manager, allStates))
             break;
         generation++;
@@ -437,7 +436,6 @@ void FireStarter::ControlEvolve(void)
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         // Randomize the entire program for the first generation
         FireStarterState state(m_settings, i);
-        state.m_program.m_settings.m_seed += i;
         state.m_program.RandomProgram(state.StateSeed());
         allStates.push_back(state);
 
@@ -453,12 +451,9 @@ void FireStarter::ControlEvolve(void)
         while (!m_quitControlThread) {
             evolve->EvolveStates(&m_bestState, allStates, generation);
             for (FireStarterExecute* execute : executionUnits)
-                execute->DispatchAsync([execute, manager] { execute->ExecuteJob(); });
+                execute->ExecuteEvolve();
 
-            bool result = true;
-            for (unsigned int i = 0; i < m_settings.m_units; i++)
-                result = result && CompleteJob(manager, allStates);
-            if (!result)
+            if (!CompleteJob(manager, allStates))
                 break;
 
             // Has the completion condition been met?
@@ -512,16 +507,17 @@ void FireStarter::ControlUnits(void)
                 unit->Execute();
 
             // Update the states for all the units.
-            for (FireStarterUnit* unit : units)
-                unit->Update(allStates.data());
-
             bool allFinished = true;
-            for (const FireStarterState& state : allStates) {
+            for (FireStarterUnit* unit : units) {
+                FireStarterState state;
+                unit->Update(state);
+
                 // Update the best state and display the results.
-                ControlResults(state, allStates);
+                FireStarterState& oldState = allStates[state.m_index];
+                ControlResults(state, oldState);
 
                 // Is there more work to do?
-                if (state.m_generation - m_bestState.m_generation < m_settings.m_attempts)
+                if (oldState.m_generation - m_bestState.m_generation < m_settings.m_attempts)
                     allFinished = false;
             }
 
@@ -583,8 +579,7 @@ void FireStarter::ControlOptimize(void)
     while (!m_quitControlThread) {
         execute->DispatchAsync([execute, generation] { execute->ExecuteOptimize(generation); });
 
-        bool result = CompleteJob(manager, allStates);
-        if (!result)
+        if (!CompleteJob(manager, allStates))
             break;
 
         // Has the completion condition been met?

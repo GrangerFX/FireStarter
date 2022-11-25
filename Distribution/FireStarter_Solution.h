@@ -1,6 +1,6 @@
-// Run date: 11/24/22 13:04:38 Pacific Standard Time
-// Run duration = 38.533324 seconds
-// Run count = 51
+// Run date: 11/25/22 15:22:35 Pacific Standard Time
+// Run duration = 16.246019 seconds
+// Run count = 3
 // Run variations = 3;
 // Run samples = 15;
 // Run instructions = 32;
@@ -10,21 +10,21 @@
 // Run targetMin = 0.000000f;
 // Run targetMax = 6.283185f;
 
-// Run mode = FIRESTARTER_OPTIMIZE;
-// Run units = 1;
-// Run processes = 0;
+// Run mode = FIRESTARTER_EVOLVE;
+// Run units = 10;
+// Run processes = 16;
 // Run population = 69632;
-// Run iterations = 512;
+// Run iterations = 256;
 // Run candidates = 16;
 // Run generations = 100;
-// Run precision = 256;
+// Run precision = 0;
 // Run evolve = FIRESTARTER_EVOLVE_BEST;
 // Run attempts = 32;
-// Run seed = 0;
+// Run seed = 5;
 // Run scale = 0.100000f;
 // Run startScale = 4.000000f;
 // Run startResult = 10.000000f;
-// Solution Generation = 51
+// Solution Generation = 3
 
 #ifndef __CUDACC__
 #include <cmath>
@@ -51,125 +51,125 @@ inline float SolutionTarget(float n, unsigned int variation)
 
 #define SOLUTION_VARIATIONS 3
 
-// Precision = 0.00000620
+// Precision = 0.00033529
 
-// Solution0 precision = 0.00000173
+// Solution0 precision = 0.00033529
 inline float Solution0(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6;
+    float r0, r1, r2, r3, r4, r5, r6, r7;
 
-    r0 = n += -3.14159274f;
-    n += 0.00000000f;
-    r1 = n *= -0.16419411f;
-    n = r1 *= n;
-    n *= 0.52708405f;
-    n *= 2.93779874f;
-    r2 = n += -2.07166815f;
-    r3 = n *= 4.07837963f;
-    n += 13.96000957f;
-    n += r3;
-    r3 = n *= -0.06762912f;
-    r4 = n += 2.72481179f;
-    n = r1 += n;
-    r5 = n += -3.44128299f;
-    r6 = n *= -0.08908921f;
-    n *= r1;
-    r1 = n *= 0.05325428f;
-    n += r2;
-    n *= r5;
-    r5 = n *= 0.48969042f;
-    n = r5 *= n;
+    n += 1.90310061f;
+    r0 = n += -3.75103021f;
+    r1 = n *= 0.72410876f;
+    r2 = n += 0.49152294f;
+    r3 = n *= -0.71148789f;
+    r4 = n *= -0.74129027f;
+    r5 = n *= -0.95925361f;
+    n += 1.35337079f;
+    r6 = n += -0.51233095f;
+    n *= -1.23609197f;
+    r7 = n += -0.16776866f;
+    n *= 1.71893954f;
+    n = r3 += n;
+    n = r6 += n;
+    n *= r7;
+    n = r4 += n;
+    r7 = n *= -0.07211950f;
     n += r6;
-    n *= r4;
-    n += 13.75687408f;
-    n *= r3;
-    n += 0.40808743f;
     n *= r1;
-    n = r5 *= n;
-    n += r5;
-    n *= -76.36306763f;
-    n *= r0;
-    n += -0.00000007f;
+    n = r2 += n;
+    n *= r3;
+    n *= r4;
+    n *= r5;
+    n *= 0.65824848f;
+    n = r2 += n;
+    n += r0;
+    n *= 4.98028183f;
+    n *= -0.16593298f;
+    n += -68.74720764f;
+    n *= 0.18897401f;
+    n *= r7;
+    n *= r2;
     return n;
 } // Solution0
 
-// Solution1 precision = 0.00000620
+// Solution1 precision = 0.00008485
 inline float Solution1(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6;
+    float r0, r1, r2, r3, r4, r5, r6, r7;
 
-    r0 = n += -3.09066248f;
-    n += 0.00000713f;
-    r1 = n *= 0.07023121f;
-    n = r1 *= n;
-    n *= 2.88522720f;
-    n *= 2.62185001f;
-    r2 = n += -0.33997360f;
-    r3 = n *= -45.97430801f;
-    n += -5.87383270f;
-    n += r3;
-    r3 = n *= -0.00065369f;
-    r4 = n += -0.87004656f;
-    n = r1 += n;
-    r5 = n += -0.04017678f;
-    r6 = n *= -4.55466509f;
-    n *= r1;
-    r1 = n *= 0.25678602f;
-    n += r2;
-    n *= r5;
-    r5 = n *= -0.29069951f;
-    n = r5 *= n;
+    n += -1.15162849f;
+    r0 = n += -1.26585782f;
+    r1 = n *= -0.44285789f;
+    r2 = n += 1.16929424f;
+    r3 = n *= 0.68428630f;
+    r4 = n *= 0.74608123f;
+    r5 = n *= -1.00263059f;
+    n += 0.79486388f;
+    r6 = n += -0.33476871f;
+    n *= -0.07452762f;
+    r7 = n += -1.01547480f;
+    n *= -1.45697260f;
+    n = r3 += n;
+    n = r6 += n;
+    n *= r7;
+    n = r4 += n;
+    r7 = n *= -0.94669932f;
     n += r6;
-    n *= r4;
-    n += 7.04311991f;
-    n *= r3;
-    n += 3.94648290f;
     n *= r1;
-    n = r5 *= n;
-    n += r5;
-    n *= 1.19607854f;
-    n *= r0;
-    n += -0.11813644f;
+    n = r2 += n;
+    n *= r3;
+    n *= r4;
+    n *= r5;
+    n *= 0.76071119f;
+    n = r2 += n;
+    n += r0;
+    n *= 0.84472620f;
+    n *= -0.01745585f;
+    n += 0.37446922f;
+    n *= 0.40264791f;
+    n *= r7;
+    n *= r2;
     return n;
 } // Solution1
 
-// Solution2 precision = 0.00000072
+// Solution2 precision = 0.00033432
 inline float Solution2(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6;
+    float r0, r1, r2, r3, r4, r5, r6, r7;
 
-    r0 = n += -2.61799359f;
-    n += -0.00000028f;
-    r1 = n *= 0.30961695f;
-    n = r1 *= n;
-    n *= 0.37067536f;
-    n *= -0.48912820f;
-    r2 = n += -0.62096626f;
-    r3 = n *= -3.06070423f;
-    n += 6.30401659f;
-    n += r3;
-    r3 = n *= 0.00138788f;
-    r4 = n += -0.49246821f;
-    n = r1 += n;
-    r5 = n += -17.57951355f;
-    r6 = n *= 0.03888271f;
-    n *= r1;
-    r1 = n *= -0.67243153f;
-    n += r2;
-    n *= r5;
-    r5 = n *= -0.14343895f;
-    n = r5 *= n;
+    n += 0.24705477f;
+    r0 = n += -3.52035189f;
+    r1 = n *= 0.31983250f;
+    r2 = n += 0.03001234f;
+    r3 = n *= -0.82506680f;
+    r4 = n *= -0.83969104f;
+    r5 = n *= 0.61812741f;
+    n += -1.24772573f;
+    r6 = n += -0.72415310f;
+    n *= -1.11697960f;
+    r7 = n += 0.61288881f;
+    n *= 0.38679385f;
+    n = r3 += n;
+    n = r6 += n;
+    n *= r7;
+    n = r4 += n;
+    r7 = n *= -0.43985596f;
     n += r6;
-    n *= r4;
-    n += 0.16637076f;
-    n *= r3;
-    n += -0.87547946f;
     n *= r1;
-    n = r5 *= n;
-    n += r5;
-    n *= -0.51071912f;
-    n *= r0;
-    n += 0.52359891f;
+    n = r2 += n;
+    n *= r3;
+    n *= r4;
+    n *= r5;
+    n *= -0.65130389f;
+    n = r2 += n;
+    n += r0;
+    n *= 3.02667832f;
+    n *= -1.12763608f;
+    n += 5.31089354f;
+    n *= -0.30307573f;
+    n *= r7;
+    n *= r2;
     return n;
 } // Solution2
 

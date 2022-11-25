@@ -176,7 +176,7 @@ public:
     std::string GetOptimizeCode(void);
     bool InitUnit(const FireStarterState& initState);
     void Execute(void);
-    void Update(FireStarterState* states);
+    void Update(FireStarterState& state);
     void Sync(FireStarterState* allStates);
     FireStarterUnit(unsigned int index);
     FireStarterUnit(unsigned int index, unsigned int gpus);

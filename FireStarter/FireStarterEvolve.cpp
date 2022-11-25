@@ -66,20 +66,28 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
             job->m_state.m_generation = generation;
             if (generation) {
                 unsigned long long seed = job->m_state.StateSeed();
-                unsigned int copyNum = RANDOMMOD64(seed, numInstructions);
-
-                if (copyNum) {
+                if (!RANDOMMOD64(seed, 2)) {
+#if 1
+                    // Copy a random range of instuctions from a random state.
+                    const FireStarterState* copyState = &allStates[RANDOMMOD64(seed, allStates.size())];
+#else
                     // Copy a random range of instuctions from the best state.
+                    const FireStarterState* copyState = bestState;
+#endif
+                    unsigned int copyNum = RANDOMMOD64(seed, (numInstructions + 1) / 2);
                     unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
                     unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
                     while (copyNum--) {
-                        job->m_state.m_program.EvolvedInstruction(copyDst++) = bestState->m_program.EvolvedInstruction(copySrc++);
+                        job->m_state.m_program.EvolvedInstruction(copyDst++) = copyState->m_program.EvolvedInstruction(copySrc++);
                         copySrc %= numInstructions;
                         copyDst %= numInstructions;
                     }
                 } else {
-                    // Copy the best state and radomize one instruction
+#if 1
+                    // Copy the best state.
                     job->m_state.m_program = bestState->m_program;
+#endif
+                    // Randomize one instruction.
                     job->m_state.m_program.RandomInstruction(seed);
                 }
             } else

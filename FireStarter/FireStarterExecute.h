@@ -33,7 +33,7 @@ private:
 public:
     bool ExecuteInit(void);
     bool ExecuteOptimize(unsigned int generation);
-    bool ExecuteJob(void);
+    void ExecuteEvolve(void);
 	void ExecuteRandom(void);
 	FireStarterExecute(FireStarterManager* manager, unsigned int index);
 	~FireStarterExecute(void);
