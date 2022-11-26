@@ -292,27 +292,27 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
     FireStarterResult* result = m_state.Result();
     result->debug1 = *m_hostResults->Debug1(bestIndex);
     result->debug2 = *m_hostResults->Debug2(bestIndex);
-
-    // Increment the generation.
-    m_state.m_generation++;
 } // OptimizeVaraitions
 
 void FireStarterUnit::ExecuteCode(void)
 {
+    // Set the state's generation
+    m_state.m_generation = m_generation++;
+
     // Generate the code for the first generation.
     GenerateCode();
 
     // Evolve the program instructions.
     CodeGenerations(0, m_firstVariation, m_lastVariation);
-
-    // Increment the generation.
-    m_state.m_generation++;
 } // ExecuteCode
 
 void FireStarterUnit::ExecuteOptimize(void)
 {
+    // Set the state's generation
+    m_state.m_generation = m_generation++;
+
     // Generate the code for the first generation.
-    if (!m_state.m_generation)
+    if (!m_generation)
         GenerateOptimize();
 
     // Evolve the program data.
@@ -321,6 +321,9 @@ void FireStarterUnit::ExecuteOptimize(void)
 
 void FireStarterUnit::ExecuteUnit(void)
 {
+    // Set the state's generation
+    m_state.m_generation = m_generation++;
+
     // Evolve, generate and compile the program.
     GenerateUnit();
 
@@ -450,6 +453,7 @@ bool FireStarterUnit::InitUnit(const FireStarterState& initState)
     m_state = initState;
     m_firstVariation = 0;
     m_lastVariation = m_settings.m_variations - 1;
+    m_generation = initState.m_generation;
     if (!LoadCode())
         return false;
     DispatchAsync([this] {
@@ -476,13 +480,6 @@ void FireStarterUnit::Execute(void)
         }
     });
 } // Execute
-
-void FireStarterUnit::Update(FireStarterState& state)
-{
-    DispatchSync([this, &state] {
-        state = m_state;
-    });
-} // Update
 
 void FireStarterUnit::Sync(FireStarterState* allStates)
 {

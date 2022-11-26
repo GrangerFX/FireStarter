@@ -74,12 +74,13 @@ void CUDACompile::ReleaseModule(CUmodule& cuda_module)
     }
 } // ReleaseModule
 
-void CUDACompile::CompileModule(CUmodule& cuda_module, const std::string& ptx)
+bool CUDACompile::CompileModule(CUmodule& cuda_module, const std::string& ptx)
 {
     // Create the code module.
     ReleaseModule(cuda_module);
     if (!ptx.empty())
         checkCUDAErrors(cuModuleLoadDataEx(&cuda_module, ptx.c_str(), 0, 0, 0));
+    return cuda_module != nullptr;
 } // CompileModule
 
 bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& program, const std::string& programName)

@@ -224,10 +224,10 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
     return result;
 } // InitResults
 
-void FireStarterExecute::Execute(FireStarterState& state)
+bool FireStarterExecute::Optimize(FireStarterState& state)
 {
     if (!m_optimizeFunction)
-        return;
+        return false;
     FireStarterSettings stateSettings = state.Settings();
     FireStarterResult* stateResult = state.Result();
     stateResult->maxResult = 0;
@@ -267,56 +267,71 @@ void FireStarterExecute::Execute(FireStarterState& state)
         while ((oldResult > stateResult->maxResult) && !g_atomicResult.compare_exchange_weak(oldResult, stateResult->maxResult));
 #endif
     }
-} // Execute
+    return true;
+} // Optimize
 
-bool FireStarterExecute::ExecuteInit(void)
+bool FireStarterExecute::Compile(void)
 {
+    // Release the current job and optimize module.
     CUDACompile::ReleaseModule(m_optimizeModule);
     m_optimizeFunction = nullptr;
-
     if (m_job)
         m_manager->AddFree(m_job);
+
+    // Get the next available compile job.
     m_job = m_manager->GetCompile();
     if (!m_job)
         return false;
 
+    // Output the compile log if it is not empty.
     if (!m_job->m_log.empty())
         printf("%s\n", m_job->m_log.c_str());
-    if (m_job->m_ptx.empty())
-        return false;
 
-    if (!InitResults(m_job->m_state))
-        return false;
+    // Initialize the results and compile the CUDA module.
+    if (!m_job->m_ptx.empty())
+        if (InitResults(m_job->m_state))
+            if (CUDACompile::CompileModule(m_optimizeModule, m_job->m_ptx)) {
+                m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, m_job->m_programFunction);
+                if (m_optimizeFunction)
+                    return true;
+                CUDACompile::ReleaseModule(m_optimizeModule);
+            }
 
-    CUDACompile::CompileModule(m_optimizeModule, m_job->m_ptx);
-    if (!m_optimizeModule)
-        return false;
+    // Something went wrong so free the job.
+    m_manager->AddFree(m_job);
+    m_job = nullptr;
+    return false;
+} // Compile
 
-    m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, m_job->m_programFunction);
-    if (!m_optimizeFunction)
-        return false;
-
-    return true;
-} // ExecuteInit
-
-bool FireStarterExecute::ExecuteOptimize(unsigned int generation)
+void FireStarterExecute::ExecuteCompile(void)
 {
-    FireStarterJob *job = m_manager->GetFree();
-    if (!job)
-        return false;
+    DispatchAsync([this] {
+        if (!Compile()) {
+            m_manager->AddFree(m_job);
+            m_job = nullptr;
+        }
+    });
+} // ExecuteEvolve
 
-    job->Copy(m_job);
-    job->m_state.m_generation = generation;
-    Execute(job->m_state);
-    m_manager->AddComplete(job);
-    return true;
+void FireStarterExecute::ExecuteOptimize(unsigned int generation)
+{
+    DispatchAsync([this, generation] {
+        FireStarterJob* job = nullptr;
+        if (!WillTerminate() && m_job && (job = m_manager->GetFree())) {
+            job->Copy(m_job);
+            job->m_state.m_generation = generation;
+            Optimize(job->m_state);
+            m_manager->AddComplete(job);
+        } else
+            m_manager->AddComplete();
+    });
 } // ExecuteOptimize
 
 void FireStarterExecute::ExecuteEvolve(void)
 {
     DispatchAsync([this] {
-        if (ExecuteInit()) {
-            Execute(m_job->m_state);
+        if (!WillTerminate() && Compile()) {
+            Optimize(m_job->m_state);
             m_manager->AddComplete(m_job);
             m_job = nullptr;
         } else
@@ -327,15 +342,12 @@ void FireStarterExecute::ExecuteEvolve(void)
 void FireStarterExecute::ExecuteRandom(void)
 {
     DispatchAsync([this] {
-        if (!WillTerminate()) {
-            if (ExecuteInit()) {
-                Execute(m_job->m_state);
-                m_manager->AddComplete(m_job);
-                m_job = nullptr;
-                ExecuteRandom();
-            } else
-                m_manager->AddComplete();
+        while (!WillTerminate() && Compile()) {
+            Optimize(m_job->m_state);
+            m_manager->AddComplete(m_job);
+            m_job = nullptr;
         }
+        m_manager->AddComplete();
     });
 } // ExecuteRandom
 

@@ -151,6 +151,7 @@ private:
     unsigned int m_gpus = 0;
     unsigned int m_firstVariation = 0;
     unsigned int m_lastVariation = 0;
+    unsigned int m_generation = 0;
 
     void UpdateEvolveStates(void);
     void GenerateCode(void);
@@ -176,7 +177,6 @@ public:
     std::string GetOptimizeCode(void);
     bool InitUnit(const FireStarterState& initState);
     void Execute(void);
-    void Update(FireStarterState& state);
     void Sync(FireStarterState* allStates);
     FireStarterUnit(unsigned int index);
     FireStarterUnit(unsigned int index, unsigned int gpus);

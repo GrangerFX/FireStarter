@@ -28,11 +28,12 @@ private:
     bool InitResults(const FireStarterState& state);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
-    void Execute(FireStarterState& state);
+    bool Optimize(FireStarterState& state);
+    bool Compile(void);
 
 public:
-    bool ExecuteInit(void);
-    bool ExecuteOptimize(unsigned int generation);
+    void ExecuteCompile(void);
+    void ExecuteOptimize(unsigned int generation);
     void ExecuteEvolve(void);
 	void ExecuteRandom(void);
 	FireStarterExecute(FireStarterManager* manager, unsigned int index);

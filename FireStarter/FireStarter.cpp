@@ -323,12 +323,15 @@ void FireStarter::ControlTest(void)
     // Loop until the the completion condition or the host program is quit.
     m_controlTimer.Start();
     unsigned int generation = 0;
-    while (!m_quitControlThread && (generation < m_settings.m_attempts)) {
+    while (!m_quitControlThread) {
         evolve->EvolveStates(&m_bestState, allStates, generation);
         execute->ExecuteEvolve();
         if (!CompleteJob(manager, allStates))
             break;
-        generation++;
+
+        // Has the completion condition been met?
+        if (generation++ - m_bestState.m_generation > m_settings.m_attempts)
+            break;
     }
 
     // Cancel any waiting jobs
@@ -373,24 +376,22 @@ void FireStarter::ControlRandom(void)
     // Start generating random code generations.
     evolve->EvolveGenerations(&m_bestState, m_settings.m_attempts);
 
-    // Create the units.
+    // Create the execution units.
     std::vector<FireStarterExecute*> executionUnits;
-    bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         // Create an execution unit.
         FireStarterExecute* execute = new FireStarterExecute(manager, i);
         executionUnits.push_back(execute);
-        execute->DispatchAsync([execute, manager] {
-            execute->ExecuteRandom();
-        });
+
+        // Run a random execution thread for each unit.
+        execute->ExecuteRandom();
     }
-    if (result) {
-        // Loop until the the completion condition or the host program is quit.
-        m_controlTimer.Start();
-        while (!m_quitControlThread) {
-            if (!CompleteJob(manager, allStates))
-                break;
-        }
+
+    // Loop until the the completion condition or the host program is quit.
+    m_controlTimer.Start();
+    while (!m_quitControlThread) {
+        if (!CompleteJob(manager, allStates))
+            break;
     }
 
     // Cancel any waiting jobs
@@ -457,9 +458,8 @@ void FireStarter::ControlEvolve(void)
                 break;
 
             // Has the completion condition been met?
-            if (generation - m_bestState.m_generation > m_settings.m_attempts)
+            if (generation++ - m_bestState.m_generation > m_settings.m_attempts)
                 break;
-            generation++;
         }
     }
 
@@ -510,7 +510,7 @@ void FireStarter::ControlUnits(void)
             bool allFinished = true;
             for (FireStarterUnit* unit : units) {
                 FireStarterState state;
-                unit->Update(state);
+                unit->GetState(state);
 
                 // Update the best state and display the results.
                 FireStarterState& oldState = allStates[state.m_index];
@@ -565,27 +565,30 @@ void FireStarter::ControlOptimize(void)
     // Create the execution unit.
     FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
-    // Generate the optimize code.
-    evolve->GenerateOptimize(&m_bestState);
-
     // Create the state and execution unit.
     std::vector<FireStarterState> allStates;
     allStates.push_back(m_bestState);
-    execute->DispatchAsync([execute, manager] { execute->ExecuteInit(); });
-    unsigned int generation = 0;
+
+    // Generate the optimize code.
+    evolve->GenerateOptimize(&m_bestState);
+
+    // Compile the optimize code.
+    execute->ExecuteCompile();
 
     // Loop until the the completion condition or the host program is quit.
     m_controlTimer.Start();
+    unsigned int generation = 0;
     while (!m_quitControlThread) {
-        execute->DispatchAsync([execute, generation] { execute->ExecuteOptimize(generation); });
+        // Optimize the current generation.
+        execute->ExecuteOptimize(generation);
 
+        // Update the results in the UI.
         if (!CompleteJob(manager, allStates))
             break;
 
         // Has the completion condition been met?
-        if (generation - m_bestState.m_generation > m_settings.m_attempts)
+        if (generation++ - m_bestState.m_generation > m_settings.m_attempts)
             break;
-        generation++;
     }
 
     // Cancel any waiting jobs
