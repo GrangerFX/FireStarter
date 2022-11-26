@@ -281,6 +281,63 @@ void FireStarter::ControlResults(const FireStarterState& state, FireStarterState
     RenderStatus(state, m_smoothTime, result, average, testError);
 } // ControlResults
 
+void FireStarter::ControlUnits(void)
+{
+    // Create the states and units.
+    std::vector<FireStarterUnit*> units;
+    std::vector<FireStarterState> allStates;
+    bool result = true;
+    for (unsigned int i = 0; i < m_settings.m_units; i++) {
+        FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
+        if (unit->InitUnit(m_bestState)) {
+            allStates.push_back(m_bestState);
+            units.push_back(unit);
+        }
+        else {
+            delete unit;
+            result = false;
+            break;
+        }
+    }
+
+    if (result) {
+        // Loop until the the completion condition or the host program is quit.
+        m_controlTimer.Start();
+        while (!m_quitControlThread) {
+            // Execute a generation for all the units.
+            for (FireStarterUnit* unit : units)
+                unit->Execute();
+
+            // Update the states for all the units.
+            bool allFinished = true;
+            for (FireStarterUnit* unit : units) {
+                FireStarterState state;
+                unit->GetState(state);
+
+                // Update the best state and display the results.
+                FireStarterState& oldState = allStates[state.m_index];
+                ControlResults(state, oldState);
+
+                // Is there more work to do?
+                if (state.m_generation - m_bestState.m_generation < m_settings.m_attempts)
+                    allFinished = false;
+            }
+
+            // Send all the states back to all the units.
+            for (FireStarterUnit* unit : units)
+                unit->Sync(allStates.data());
+
+            // Has the completion condition been met?
+            if (allFinished)
+                break;
+        }
+    }
+
+    // Finish processing and terminate each unit.
+    for (FireStarterUnit* unit : units)
+        delete unit;
+} // ControlUnits
+
 bool FireStarter::CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates)
 {
     for (FireStarterState& oldState : allStates) {
@@ -330,7 +387,7 @@ void FireStarter::ControlTest(void)
             break;
 
         // Has the completion condition been met?
-        if (generation++ - m_bestState.m_generation > m_settings.m_attempts)
+        if (generation++ == m_settings.m_attempts)
             break;
     }
 
@@ -480,61 +537,6 @@ void FireStarter::ControlEvolve(void)
     delete manager;
 } // ControlEvolve
 
-void FireStarter::ControlUnits(void)
-{
-    // Create the states and units.
-    std::vector<FireStarterUnit*> units;
-    std::vector<FireStarterState> allStates;
-    bool result = true;
-    for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
-        if (unit->InitUnit(m_bestState)) {
-            allStates.push_back(m_bestState);
-            units.push_back(unit);
-        } else {
-            delete unit;
-            result = false;
-            break;
-        }
-    }
-
-    if (result) {
-        // Loop until the the completion condition or the host program is quit.
-        m_controlTimer.Start();
-        while (!m_quitControlThread) {
-            // Execute a generation for all the units.
-            for (FireStarterUnit* unit : units)
-                unit->Execute();
-
-            // Update the states for all the units.
-            bool allFinished = true;
-            for (FireStarterUnit* unit : units) {
-                FireStarterState state;
-                unit->GetState(state);
-
-                // Update the best state and display the results.
-                FireStarterState& oldState = allStates[state.m_index];
-                ControlResults(state, oldState);
-
-                // Is there more work to do?
-                if (oldState.m_generation - m_bestState.m_generation < m_settings.m_attempts)
-                    allFinished = false;
-            }
-
-            // Send all the states back to all the units.
-            for (FireStarterUnit* unit : units)
-                unit->Sync(allStates.data());
-
-            // Has the completion condition been met?
-            if (allFinished)
-                break;
-        }
-    }
-
-    // Finish processing and terminate each unit.
-    for (FireStarterUnit* unit : units)
-        delete unit;
-} // ControlUnits
 
 void FireStarter::ControlOptimize(void)
 {
@@ -632,8 +634,23 @@ void FireStarter::ControlThread(void)
             ControlUnits();
 
             // Optimization evolution pass.
+#if 0
             if (FIRESTARTER_SECOND_PASS)
                 ControlOptimize();
+#else
+            if (!m_quitControlThread) {
+                // Load the best state.
+                FireStarterSettings optimizeSettings;
+                FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
+                m_settings.CopyModeSettings(optimizeSettings);
+                m_bestState.Settings() = m_settings;
+                m_bestState.m_generation = 0;
+                m_bestState.m_index = 0;
+                m_resultsCount = 0;
+                m_resultsTime = 0.0;
+                ControlUnits();
+            }
+#endif
         }  else if (m_settings.m_mode == FIRESTARTER_TEST) {
             // Test of jobs without processes.
             m_settings.m_units = 1;

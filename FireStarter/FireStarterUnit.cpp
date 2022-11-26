@@ -309,10 +309,10 @@ void FireStarterUnit::ExecuteCode(void)
 void FireStarterUnit::ExecuteOptimize(void)
 {
     // Set the state's generation
-    m_state.m_generation = m_generation++;
+    m_state.m_generation = m_generation;
 
     // Generate the code for the first generation.
-    if (!m_generation)
+    if (!m_generation++)
         GenerateOptimize();
 
     // Evolve the program data.
