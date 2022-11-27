@@ -78,9 +78,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const std
                         copySrc %= numInstructions;
                         copyDst %= numInstructions;
                     }
-                }
-                else {
-#if 1
+                }  else {
+#if 0
                     // Copy the best state.
                     job->m_state.m_program = bestState->m_program;
 #endif
