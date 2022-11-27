@@ -387,7 +387,7 @@ void FireStarter::ControlTest(void)
     m_controlTimer.Start();
     unsigned int generation = 0;
     while (!m_quitControlThread) {
-        evolve->EvolveState(&m_bestState, &allStates[0], generation);
+        evolve->EvolveState(&m_bestState, allStates, generation);
         execute->ExecuteEvolve();
         if (!CompleteJob(manager, allStates))
             break;
@@ -520,7 +520,7 @@ void FireStarter::ControlEvolve(void)
         m_controlTimer.Start();
         while (!m_quitControlThread) {
             for (unsigned int i = 0; i < m_settings.m_units; i++)
-                evolveUnits[i]->EvolveState(&m_bestState, &allStates[i], generation);
+                evolveUnits[i]->EvolveState(&m_bestState, allStates, generation);
             for (FireStarterExecute* execute : executionUnits)
                 execute->ExecuteEvolve();
 

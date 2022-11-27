@@ -13,7 +13,7 @@ private:
 
 public:
 	bool EvolveGenerations(const FireStarterState* state, unsigned int generations);
-	bool EvolveState(const FireStarterState* bestState, const FireStarterState* state, unsigned int generation);
+	bool EvolveState(const FireStarterState* bestState, const std::vector<FireStarterState>& allStates, unsigned int generation);
 	bool GenerateOptimize(const FireStarterState* state);
 	FireStarterEvolve(FireStarterManager* manager, size_t index = 0);
 	~FireStarterEvolve(void);

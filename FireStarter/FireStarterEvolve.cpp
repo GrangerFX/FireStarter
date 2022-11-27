@@ -45,20 +45,20 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
     return true;
 } // EvolveGenerations
 
-bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const FireStarterState* state, unsigned int generation)
+bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const std::vector<FireStarterState>& allStates, unsigned int generation)
 {
     if (m_optimizeCode.empty())
         return false;
-    DispatchAsync([this, bestState, state, &generation] {
+    DispatchAsync([this, bestState, allStates, &generation] {
         unsigned int numInstructions = bestState->Settings().m_instructions;
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
             // Clone or randomize instructions in the later generations.
-            job->m_state = *state;
+            job->m_state = allStates[m_index % allStates.size()];
             job->m_state.m_generation = generation;
             if (generation) {
                 unsigned long long seed = job->m_state.StateSeed();
-#if 1
+#if 0
                 // Randomize one instruction.
                 job->m_state.m_program.RandomInstruction(seed);
 #else
