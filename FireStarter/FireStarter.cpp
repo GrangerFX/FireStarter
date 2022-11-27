@@ -410,8 +410,10 @@ void FireStarter::ControlTest(void)
 void FireStarter::ControlRandom(void)
 {
     // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
+#if 0
     if (m_settings.m_processes == 0)
         m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+#endif
 
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
