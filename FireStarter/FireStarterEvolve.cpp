@@ -1,5 +1,4 @@
 #include "FireStarterEvolve.h"
-#include "FireStarterGenerate.h"
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
@@ -9,8 +8,6 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
         return false;
     DispatchAsync([this, state, generations] {
         // Generate code using the GPU.
-        CUDAContext m_CUDAContext(0);
-        FireStarterGenerate generate(&m_CUDAContext);
         for (unsigned int generation = 0; generation < generations; generation++) {
             FireStarterJob* job = m_manager->GetFree();
             if (!job)
@@ -29,7 +26,7 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
 
             // Generate the evaluate code
             std::string evaluateCode;
-            generate.GenerateEvaluate(job->m_state, evaluateCode);
+            m_generate.GenerateEvaluate(job->m_state, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
@@ -48,21 +45,16 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
     return true;
 } // EvolveGenerations
 
-bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vector<FireStarterState>& allStates, unsigned int generation)
+bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const FireStarterState* state, unsigned int generation)
 {
     if (m_optimizeCode.empty())
         return false;
-    DispatchAsync([this, bestState, &allStates, &generation] {
-        CUDAContext m_CUDAContext(0);
-        FireStarterGenerate generate(&m_CUDAContext);
+    DispatchAsync([this, bestState, state, &generation] {
         unsigned int numInstructions = bestState->Settings().m_instructions;
-        for (FireStarterState& curState : allStates) {
-            FireStarterJob* job = m_manager->GetFree();
-            if (!job)
-                break;
-
+        FireStarterJob* job = m_manager->GetFree();
+        if (job) {
             // Clone or randomize instructions in the later generations.
-            job->m_state = curState;
+            job->m_state = *state;
             job->m_state.m_generation = generation;
             if (generation) {
                 unsigned long long seed = job->m_state.StateSeed();
@@ -86,7 +78,8 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
                         copySrc %= numInstructions;
                         copyDst %= numInstructions;
                     }
-                } else {
+                }
+                else {
 #if 1
                     // Copy the best state.
                     job->m_state.m_program = bestState->m_program;
@@ -103,7 +96,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
 
             // Generate the evaluate code
             std::string evaluateCode;
-            generate.GenerateEvaluate(job->m_state, evaluateCode);
+            m_generate.GenerateEvaluate(job->m_state, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
@@ -112,8 +105,8 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
             job->m_programFunction = "Optimizer";
             job->m_program = m_optimizeCode;
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-            m_manager->AddCode(job);
         }
+        m_manager->AddCode(job);
     });
     return true;
 } // EvolveStates
@@ -147,9 +140,10 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState* state)
     return true;
 } // GenerateOptimize
 
-FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager)
+FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) : m_CUDAContext(index), m_generate(&m_CUDAContext)
 {
     m_manager = manager;
+    m_index = index;
     FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode);
 } // FireStarterEvolve
 

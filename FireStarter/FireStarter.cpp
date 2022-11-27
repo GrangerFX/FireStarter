@@ -249,9 +249,16 @@ void FireStarter::ControlResults(const FireStarterState& state, FireStarterState
 
     // Calculate the average time per generation.
     double duration = m_controlTimer.Duration();
-    double weight = max(1.0 / m_resultsCount, 0.02);
-    m_smoothTime = m_smoothTime * (1.0 - weight) + (duration - m_resultsTime) * weight;
-    m_resultsTime = duration;
+    if (state.m_generation != m_resultsGeneration) {
+#if 0
+        double weight = max(1.0 / m_resultsCount, 0.02);
+        m_smoothTime = m_smoothTime * (1.0 - weight) + (duration - m_resultsTime) * weight;
+#else
+        m_smoothTime = duration - m_resultsTime;
+#endif
+        m_resultsTime = duration;
+        m_resultsGeneration = state.m_generation;
+    }
     if (result < m_bestState.MaxResult()) {
         // Update the best state.
         m_bestState = state;
@@ -381,7 +388,7 @@ void FireStarter::ControlTest(void)
     m_controlTimer.Start();
     unsigned int generation = 0;
     while (!m_quitControlThread) {
-        evolve->EvolveStates(&m_bestState, allStates, generation);
+        evolve->EvolveState(&m_bestState, &allStates[0], generation);
         execute->ExecuteEvolve();
         if (!CompleteJob(manager, allStates))
             break;
@@ -484,14 +491,12 @@ void FireStarter::ControlEvolve(void)
     // Create the multi-process compiler.
     FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
 
-    // Create the evolution generator.
-    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-
     // Setup the intial best state 
     m_bestState.InitState(m_settings);
     m_bestState.m_program.RandomProgram(m_bestState.StateSeed());
 
     // Create the states and units.
+    std::vector<FireStarterEvolve*> evolveUnits;
     std::vector<FireStarterExecute*> executionUnits;
     std::vector<FireStarterState> allStates;
     bool result = true;
@@ -501,7 +506,11 @@ void FireStarter::ControlEvolve(void)
         state.m_program.RandomProgram(state.StateSeed());
         allStates.push_back(state);
 
-        // Create an execution unit.
+        // Create an evolve unit.
+        FireStarterEvolve* evolve = new FireStarterEvolve(manager, i);
+        evolveUnits.push_back(evolve);
+
+        // Create an evolution generator unit.
         FireStarterExecute* execute = new FireStarterExecute(manager, i);
         executionUnits.push_back(execute);
     }
@@ -511,7 +520,8 @@ void FireStarter::ControlEvolve(void)
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
         while (!m_quitControlThread) {
-            evolve->EvolveStates(&m_bestState, allStates, generation);
+            for (unsigned int i = 0; i < m_settings.m_units; i++)
+                evolveUnits[i]->EvolveState(&m_bestState, &allStates[i], generation);
             for (FireStarterExecute* execute : executionUnits)
                 execute->ExecuteEvolve();
 
@@ -532,7 +542,8 @@ void FireStarter::ControlEvolve(void)
         delete execute;
 
     // Delete the evolution code generator.
-    delete evolve;
+    for (FireStarterEvolve* evolve : evolveUnits)
+        delete evolve;
 
     // Delete the multi-process compiler.
     delete compile;

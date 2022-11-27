@@ -27,6 +27,7 @@ public:
     SerialOutput m_output;
     void* m_window;
     size_t m_resultsCount;
+    size_t m_resultsGeneration;
     double m_resultsTime;
     double m_smoothTime;
     double m_totalResult;

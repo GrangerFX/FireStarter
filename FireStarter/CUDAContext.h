@@ -68,7 +68,7 @@ public:
         checkCUDAErrors(cuCtxPopCurrent(&oldContext));
     } // PopContext
 
-    inline CUDAContext(unsigned int device = 0)
+    inline CUDAContext(size_t device = 0)
     {
         // Initialize CUDA only once per process.
         Initialize();
@@ -78,7 +78,7 @@ public:
         checkCUDAErrors(cuDeviceGetCount(&count));
         if (count > 0)
             device %= count;
-        checkCUDAErrors(cuDeviceGet(&m_device, device));
+        checkCUDAErrors(cuDeviceGet(&m_device, (int)device));
         checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_AUTO, m_device));
         checkCUDAErrors(cudaStreamCreate(&m_stream));
     } // CUDAContext
