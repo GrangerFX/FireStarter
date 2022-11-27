@@ -250,14 +250,13 @@ void FireStarter::ControlResults(const FireStarterState& state, FireStarterState
     // Calculate the average time per generation.
     double duration = m_controlTimer.Duration();
     if (state.m_generation != m_resultsGeneration) {
-#if 0
-        double weight = max(1.0 / m_resultsCount, 0.02);
-        m_smoothTime = m_smoothTime * (1.0 - weight) + (duration - m_resultsTime) * weight;
-#else
-        m_smoothTime = duration - m_resultsTime;
-#endif
+        double time = duration - m_resultsTime;
         m_resultsTime = duration;
         m_resultsGeneration = state.m_generation;
+        if (state.Settings().m_mode == FIRESTARTER_RANDOM)
+            m_smoothTime += (time - m_smoothTime) / max(1.0 / m_resultsCount, 0.02);
+        else
+            m_smoothTime = time / state.Settings().m_units;
     }
     if (result < m_bestState.MaxResult()) {
         // Update the best state.
