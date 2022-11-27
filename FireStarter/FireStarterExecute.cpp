@@ -224,7 +224,7 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
     return result;
 } // InitResults
 
-bool FireStarterExecute::Optimize(FireStarterState& state)
+bool FireStarterExecute::Optimize(FireStarterState& state, bool skipVariations)
 {
     if (!m_optimizeFunction)
         return false;
@@ -232,20 +232,20 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     FireStarterResult* stateResult = state.Result();
     stateResult->maxResult = 0;
     bool found = true;
-#if FIRESTARTER_RANDOM_SKIP_VARIATIONS
     static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
-    for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
-        // Optimization: If the variation result is worse, skip the rest of the variations.
-        if (found) {
-            OptimizeGenerations(state, stateSettings.m_mode != FIRESTARTER_OPTIMIZE, variation, variation);
-            found = stateResult->maxResult <= g_atomicResult;
-        } else
-            // The variation data is reset when it is skipped.
-            stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
-    }
-#else
-    OptimizeGenerations(state, stateSettings.m_mode != FIRESTARTER_OPTIMIZE, m_firstVariation, m_lastVariation);
-#endif
+    if (skipVariations) {
+        for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
+            // Optimization: If the variation result is worse, skip the rest of the variations.
+            if (found) {
+                OptimizeGenerations(state, stateSettings.m_mode != FIRESTARTER_OPTIMIZE, variation, variation);
+                found = stateResult->maxResult <= g_atomicResult;
+            }
+            else
+                // The variation data is reset when it is skipped.
+                stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
+        }
+    } else
+        OptimizeGenerations(state, stateSettings.m_mode != FIRESTARTER_OPTIMIZE, 0, stateSettings.m_variations - 1);
 
     // Find the best overall result for the state.
     if (found) {
@@ -262,10 +262,10 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
         stateResult->debug2 = *m_hostResults->Debug2(bestIndex);
 
         // Find the best result for all the units.
-#if FIRESTARTER_RANDOM_SKIP_VARIATIONS
-        float oldResult = g_atomicResult;
-        while ((oldResult > stateResult->maxResult) && !g_atomicResult.compare_exchange_weak(oldResult, stateResult->maxResult));
-#endif
+        if (skipVariations) {
+            float oldResult = g_atomicResult;
+            while ((oldResult > stateResult->maxResult) && !g_atomicResult.compare_exchange_weak(oldResult, stateResult->maxResult));
+        }
     }
     return true;
 } // Optimize
@@ -343,7 +343,7 @@ void FireStarterExecute::ExecuteRandom(void)
 {
     DispatchAsync([this] {
         while (!WillTerminate() && Compile()) {
-            Optimize(m_job->m_state);
+            Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             m_manager->AddComplete(m_job);
             m_job = nullptr;
         }

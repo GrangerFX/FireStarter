@@ -471,8 +471,10 @@ void FireStarter::ControlRandom(void)
 void FireStarter::ControlEvolve(void)
 {
     // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
+#if 0
     if (m_settings.m_processes == 0)
         m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+#endif
 
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
@@ -536,7 +538,6 @@ void FireStarter::ControlEvolve(void)
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
 } // ControlEvolve
-
 
 void FireStarter::ControlOptimize(void)
 {
@@ -634,10 +635,6 @@ void FireStarter::ControlThread(void)
             ControlUnits();
 
             // Optimization evolution pass.
-#if 0
-            if (FIRESTARTER_SECOND_PASS)
-                ControlOptimize();
-#else
             if (!m_quitControlThread) {
                 // Load the best state.
                 FireStarterSettings optimizeSettings;
@@ -650,8 +647,7 @@ void FireStarter::ControlThread(void)
                 m_resultsTime = 0.0;
                 ControlUnits();
             }
-#endif
-        }  else if (m_settings.m_mode == FIRESTARTER_TEST) {
+        } else if (m_settings.m_mode == FIRESTARTER_TEST) {
             // Test of jobs without processes.
             m_settings.m_units = 1;
             m_settings.m_processes = 0;

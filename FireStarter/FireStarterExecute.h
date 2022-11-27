@@ -28,7 +28,7 @@ private:
     bool InitResults(const FireStarterState& state);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
-    bool Optimize(FireStarterState& state);
+    bool Optimize(FireStarterState& state, bool skipVariations = false);
     bool Compile(void);
 
 public:

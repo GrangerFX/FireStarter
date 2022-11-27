@@ -66,6 +66,10 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
             job->m_state.m_generation = generation;
             if (generation) {
                 unsigned long long seed = job->m_state.StateSeed();
+#if 1
+                // Randomize one instruction.
+                job->m_state.m_program.RandomInstruction(seed);
+#else
                 if (!RANDOMMOD64(seed, 2)) {
 #if 1
                     // Copy a random range of instuctions from a random state.
@@ -90,6 +94,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, std::vec
                     // Randomize one instruction.
                     job->m_state.m_program.RandomInstruction(seed);
                 }
+#endif
             } else
                 job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
 
