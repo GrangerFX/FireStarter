@@ -58,41 +58,23 @@ bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const std
             job->m_state.m_generation = generation;
             if (generation) {
                 unsigned long long seed = job->m_state.StateSeed();
-#if 0
+
+                // Copy a random range of instuctions from the best state.
+                const FireStarterState* copyState = bestState;
+//              unsigned int copyNum = RANDOMMOD64(seed, (numInstructions + 1) / 2);
+                unsigned int copyNum = 8;
+                unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
+                unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
+//              unsigned int copyDst = copySrc;
+                while (copyNum--) {
+                    job->m_state.m_program.EvolvedInstruction(copyDst++) = copyState->m_program.EvolvedInstruction(copySrc++);
+                    copySrc %= numInstructions;
+                    copyDst %= numInstructions;
+                }
+
                 // Randomize one instruction.
                 job->m_state.m_program.RandomInstruction(seed);
-#else
-                if (1 /* !RANDOMMOD64(seed, 2) */) {
-#if 0
-                    // Copy a random range of instuctions from a random state.
-                    const FireStarterState* copyState = &allStates[RANDOMMOD64(seed, allStates.size())];
-#else
-                    // Copy a random range of instuctions from the best state.
-                    const FireStarterState* copyState = bestState;
-#endif
-//                    unsigned int copyNum = RANDOMMOD64(seed, (numInstructions + 1) / 2);
-                    unsigned int copyNum = 8;
-                    unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
-//                    unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
-                    unsigned int copyDst = copySrc;
-                    while (copyNum--) {
-                        job->m_state.m_program.EvolvedInstruction(copyDst++) = copyState->m_program.EvolvedInstruction(copySrc++);
-                        copySrc %= numInstructions;
-                        copyDst %= numInstructions;
-                    }
-
-                    // Randomize one instruction.
-                    job->m_state.m_program.RandomInstruction(seed);
-                }  else {
-#if 0
-                    // Copy the best state.
-                    job->m_state.m_program = bestState->m_program;
-#endif
-                    // Randomize one instruction.
-                    job->m_state.m_program.RandomInstruction(seed);
-                }
-#endif
-            } else
+              } else
                 job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
 
             // Optimize the program registers.
