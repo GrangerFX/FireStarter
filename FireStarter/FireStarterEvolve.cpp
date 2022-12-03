@@ -61,8 +61,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const std
 
                 // Copy a random range of instuctions from the best state.
                 const FireStarterState* copyState = bestState;
-//              unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
-                unsigned int copyNum = 4;
+                unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
+//                unsigned int copyNum = 4;
                 unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
                 unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
                 while (copyNum--) {

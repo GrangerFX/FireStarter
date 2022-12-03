@@ -248,8 +248,8 @@ void FireStarter::ControlResults(const FireStarterState& state, FireStarterState
     m_totalResult = m_resultsCount++ ? m_totalResult + result : result;
 
     // Calculate the average time per generation.
-    double duration = m_controlTimer.Duration();
-    if (state.m_generation != m_resultsGeneration) {
+    if (state.m_generation > m_resultsGeneration) {
+        double duration = m_controlTimer.Duration();
         double time = duration - m_resultsTime;
         m_resultsTime = duration;
         m_resultsGeneration = state.m_generation;
@@ -266,7 +266,7 @@ void FireStarter::ControlResults(const FireStarterState& state, FireStarterState
 
         // Update the best code on disk.
         SaveBestCode();
-        SaveSolution(state.m_generation, duration);
+        SaveSolution(state.m_generation, m_resultsTime);
 
         // Draw the graphs for both variations.
         FireShow(state);
@@ -309,8 +309,7 @@ bool FireStarter::CompleteStates(FireStarterManager* manager, std::vector<FireSt
     std::vector<FireStarterState> newStates = oldStates;
     size_t numStates = oldStates.size();
     for (size_t i = 0; i < numStates; i++) {
-        // Get the completed job.
-        // Note: The jobs may be received out of order.
+        // Get the next job in the order they are completed.
         FireStarterJob* job = manager->GetComplete();
         if (!job || (job->m_state.m_index >= numStates))
             return false;
