@@ -287,24 +287,47 @@ void FireStarter::ControlResults(const FireStarterState& state, FireStarterState
     RenderStatus(state, m_smoothTime, result, average, testError);
 } // ControlResults
 
-bool FireStarter::CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates)
+bool FireStarter::CompleteRandom(FireStarterManager* manager, FireStarterState& oldState)
 {
-    for (FireStarterState& oldState : allStates) {
+    // Get the completed job.
+    // Note: The jobs may be received out of order.
+    FireStarterJob* job = manager->GetComplete();
+    if (!job)
+        return false;
+
+    // Output job queue status.
+    //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+
+    // Update the best state and display the results.
+    ControlResults(job->m_state, oldState);
+    manager->AddFree(job);
+    return true;
+} // CompleteRandom
+
+bool FireStarter::CompleteStates(FireStarterManager* manager, std::vector<FireStarterState>& oldStates)
+{
+    std::vector<FireStarterState> newStates = oldStates;
+    size_t numStates = oldStates.size();
+    for (size_t i = 0; i < numStates; i++) {
         // Get the completed job.
         // Note: The jobs may be received out of order.
         FireStarterJob* job = manager->GetComplete();
-        if (!job)
+        if (!job || (job->m_state.m_index >= numStates))
             return false;
 
         // Output job queue status.
         //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
-
-        // Update the best state and display the results.
-        ControlResults(job->m_state, oldState);
+ 
+        // Sort the completed jobs.
+        newStates[job->m_state.m_index] = job->m_state;
         manager->AddFree(job);
     }
+
+    // Update the best state and display the results.
+    for (size_t i = 0; i < numStates; i++)
+        ControlResults(newStates[i], oldStates[i]);
     return true;
-} // CompleteJob
+} // CompleteStates
 
 void FireStarter::ControlUnits(void)
 {
@@ -389,7 +412,7 @@ void FireStarter::ControlTest(void)
     while (!m_quitControlThread) {
         evolve->EvolveState(&m_bestState, allStates, generation);
         execute->ExecuteEvolve();
-        if (!CompleteJob(manager, allStates))
+        if (!CompleteStates(manager, allStates))
             break;
 
         // Has the completion condition been met?
@@ -434,10 +457,6 @@ void FireStarter::ControlRandom(void)
     m_bestState.InitState(m_settings);
     m_bestState.m_program.RandomProgram(m_bestState.StateSeed());
 
-    // Setup the intial state
-    std::vector<FireStarterState> allStates;
-    allStates.push_back(m_bestState);
-
     // Start generating random code generations.
     evolve->EvolveGenerations(&m_bestState, m_settings.m_attempts);
 
@@ -452,10 +471,13 @@ void FireStarter::ControlRandom(void)
         execute->ExecuteRandom();
     }
 
+    // Setup the work state
+    FireStarterState oldState = m_bestState;
+
     // Loop until the the completion condition or the host program is quit.
     m_controlTimer.Start();
     while (!m_quitControlThread) {
-        if (!CompleteJob(manager, allStates))
+        if (!CompleteRandom(manager, oldState))
             break;
     }
 
@@ -519,12 +541,16 @@ void FireStarter::ControlEvolve(void)
         // Loop until the the completion condition or the host program is quit.
         m_controlTimer.Start();
         while (!m_quitControlThread) {
+            // Evolve a new generation for each state.
             for (unsigned int i = 0; i < m_settings.m_units; i++)
                 evolveUnits[i]->EvolveState(&m_bestState, allStates, generation);
+
+            // Execute each state.
             for (FireStarterExecute* execute : executionUnits)
                 execute->ExecuteEvolve();
 
-            if (!CompleteJob(manager, allStates))
+            // Complete each state and display the results.
+            if (!CompleteStates(manager, allStates))
                 break;
 
             // Has the completion condition been met?
@@ -598,7 +624,7 @@ void FireStarter::ControlOptimize(void)
         execute->ExecuteOptimize(generation);
 
         // Update the results in the UI.
-        if (!CompleteJob(manager, allStates))
+        if (!CompleteStates(manager, allStates))
             break;
 
         // Has the completion condition been met?

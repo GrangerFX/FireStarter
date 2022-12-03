@@ -48,7 +48,8 @@ public:
     void ControlDeallocate(void);
     void ControlAllocate(void);
     void ControlResults(const FireStarterState& state, FireStarterState& oldState);
-    bool CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates);
+    bool CompleteRandom(FireStarterManager* manager, FireStarterState& oldStates);
+    bool CompleteStates(FireStarterManager* manager, std::vector<FireStarterState>& allStates);
     void ControlUnits(void);
     void ControlTest(void);
     void ControlRandom(void);
