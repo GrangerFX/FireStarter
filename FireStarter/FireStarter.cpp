@@ -408,7 +408,7 @@ void FireStarter::ControlTest(void)
     m_controlTimer.Start();
     unsigned int generation = 0;
     while (!m_quitControlThread) {
-        evolve->EvolveState(&m_bestState, allStates, generation);
+        evolve->EvolveStates(&m_bestState, allStates, generation);
         execute->ExecuteEvolve();
         if (!CompleteStates(manager, allStates))
             break;
@@ -541,7 +541,7 @@ void FireStarter::ControlEvolve(void)
         while (!m_quitControlThread) {
             // Evolve a new generation for each state.
             for (unsigned int i = 0; i < m_settings.m_units; i++)
-                evolveUnits[i]->EvolveState(&m_bestState, allStates, generation);
+                evolveUnits[i]->EvolveStates(&m_bestState, allStates, generation);
 
             // Execute each state.
             for (FireStarterExecute* execute : executionUnits)

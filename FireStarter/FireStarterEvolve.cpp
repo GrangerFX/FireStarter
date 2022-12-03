@@ -2,10 +2,11 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
-bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigned int generations)
+bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, unsigned int generations)
 {
     if (m_optimizeCode.empty())
         return false;
+    FireStarterState state(*initState);
     DispatchAsync([this, state, generations] {
         // Generate code using the GPU.
         for (unsigned int generation = 0; generation < generations; generation++) {
@@ -14,8 +15,8 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
                 break;
 
             // Randomize one instruction per state except for the first generation.
-            job->m_state = *state;
-            job->m_state.m_generation += generation;
+            job->m_state = state;
+            job->m_state.m_generation = state.m_generation + generation;
             if ((!job->m_state.m_generation) || (job->m_state.Settings().m_mode == FIRESTARTER_RANDOM))
                 job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
             else
@@ -45,12 +46,13 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* state, unsigne
     return true;
 } // EvolveGenerations
 
-bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const std::vector<FireStarterState>& allStates, unsigned int generation)
+bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, const std::vector<FireStarterState>& allStates, unsigned int generation)
 {
     if (m_optimizeCode.empty())
         return false;
-    DispatchAsync([this, bestState, allStates, generation] {
-        unsigned int numInstructions = bestState->Settings().m_instructions;
+    FireStarterState state(*bestState);
+    DispatchAsync([this, state, allStates, generation] {
+        unsigned int numInstructions = state.Settings().m_instructions;
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
             // Clone or randomize instructions in the later generations.
@@ -60,13 +62,12 @@ bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const std
                 unsigned long long seed = job->m_state.StateSeed();
 
                 // Copy a random range of instuctions from the best state.
-                const FireStarterState* copyState = bestState;
                 unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
 //                unsigned int copyNum = 4;
                 unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
                 unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
                 while (copyNum--) {
-                    job->m_state.m_program.EvolvedInstruction(copyDst++) = copyState->m_program.EvolvedInstruction(copySrc++);
+                    job->m_state.m_program.EvolvedInstruction(copyDst++) = state.m_program.EvolvedInstruction(copySrc++);
                     copySrc %= numInstructions;
                     copyDst %= numInstructions;
                 }
@@ -96,17 +97,18 @@ bool FireStarterEvolve::EvolveState(const FireStarterState* bestState, const std
     return true;
 } // EvolveStates
 
-bool FireStarterEvolve::GenerateOptimize(const FireStarterState* state)
+bool FireStarterEvolve::GenerateOptimize(const FireStarterState* initState)
 {
     if (m_optimizeCode.empty())
         return false;
+    FireStarterState state(*initState);
     DispatchAsync([this, state] {
         CUDAContext m_CUDAContext(0);
         FireStarterGenerate generate(&m_CUDAContext);
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
             // The state already contains the evolved and optimized code.
-            job->m_state = *state;
+            job->m_state = state;
 
             // Generate the evaluate code
             std::string evaluateCode;
