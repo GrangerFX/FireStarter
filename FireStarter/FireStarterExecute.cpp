@@ -324,7 +324,8 @@ void FireStarterExecute::ExecuteEvolve(void)
 {
     DispatchAsync([this] {
         if (!WillTerminate() && Compile()) {
-            Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+//            Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+            Optimize(m_job->m_state);
             m_manager->AddComplete(m_job);
             m_job = nullptr;
         } else
