@@ -89,7 +89,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
 
     for (unsigned int g = 0; g < settings.m_generations; g++) {
         // Run all the evolve states in parallel.
-        unsigned int maxRegister = state.m_program.m_uniqueRegisters;
+        unsigned int maxRegisters = state.m_program.m_uniqueRegisters;
         FireStarterResults* newResults = g & 1 ? m_deviceResults0 : m_deviceResults1;
         FireStarterResults* oldResults = g & 1 ? m_deviceResults1 : m_deviceResults0;
         int init = (g == 0) && (forceInit || (state.m_generation == 0));
@@ -101,7 +101,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
                         reinterpret_cast<void*>(&lastVariation),
                         reinterpret_cast<void*>(&firstMember),
                         reinterpret_cast<void*>(&lastMember),
-                        reinterpret_cast<void*>(&maxRegister),
+                        reinterpret_cast<void*>(&maxRegisters),
                         reinterpret_cast<void*>(&generationSeed),
                         reinterpret_cast<void*>(&init) };
 
@@ -230,17 +230,16 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool skipVariations)
         return false;
     FireStarterSettings stateSettings = state.Settings();
     FireStarterResult* stateResult = state.Result();
+    float bestResult = stateResult->maxResult;
     stateResult->maxResult = 0;
     bool found = true;
-    static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
-    if (skipVariations) {
+    if (skipVariations && state.m_generation) {
         for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
             // Optimization: If the variation result is worse, skip the rest of the variations.
             if (found) {
                 OptimizeGenerations(state, stateSettings.m_mode != FIRESTARTER_OPTIMIZE, variation, variation);
-                found = stateResult->maxResult <= g_atomicResult;
-            }
-            else
+                found = stateResult->maxResult <= bestResult;
+            }  else
                 // The variation data is reset when it is skipped.
                 stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
         }
@@ -260,12 +259,6 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool skipVariations)
         }
         stateResult->debug1 = *m_hostResults->Debug1(bestIndex);
         stateResult->debug2 = *m_hostResults->Debug2(bestIndex);
-
-        // Find the best result for all the units.
-        if (skipVariations) {
-            float oldResult = g_atomicResult;
-            while ((oldResult > stateResult->maxResult) && !g_atomicResult.compare_exchange_weak(oldResult, stateResult->maxResult));
-        }
     }
     return true;
 } // Optimize
@@ -331,6 +324,7 @@ void FireStarterExecute::ExecuteEvolve(void)
 {
     DispatchAsync([this] {
         if (!WillTerminate() && Compile()) {
+//          Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             Optimize(m_job->m_state);
             m_manager->AddComplete(m_job);
             m_job = nullptr;
@@ -342,8 +336,15 @@ void FireStarterExecute::ExecuteEvolve(void)
 void FireStarterExecute::ExecuteRandom(void)
 {
     DispatchAsync([this] {
+        static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
         while (!WillTerminate() && Compile()) {
+            m_job->m_state.Result()->maxResult = g_atomicResult;
             Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+            float stateResult = m_job->m_state.Result()->maxResult;
+            if (stateResult < g_atomicResult) {
+                float oldResult = g_atomicResult;
+                while ((stateResult < oldResult) && !g_atomicResult.compare_exchange_weak(oldResult, stateResult));
+            }
             m_manager->AddComplete(m_job);
             m_job = nullptr;
         }

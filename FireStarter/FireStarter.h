@@ -49,10 +49,10 @@ public:
     void ControlAllocate(void);
     void ControlResults(const FireStarterState& state, FireStarterState& oldState);
     bool CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates);
+    void ControlUnits(void);
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);
-    void ControlUnits(void);
     void ControlOptimize(void);
     void ControlThread(void);
     float DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation);

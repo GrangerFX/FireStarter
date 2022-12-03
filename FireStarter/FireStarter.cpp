@@ -287,6 +287,25 @@ void FireStarter::ControlResults(const FireStarterState& state, FireStarterState
     RenderStatus(state, m_smoothTime, result, average, testError);
 } // ControlResults
 
+bool FireStarter::CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates)
+{
+    for (FireStarterState& oldState : allStates) {
+        // Get the completed job.
+        // Note: The jobs may be received out of order.
+        FireStarterJob* job = manager->GetComplete();
+        if (!job)
+            return false;
+
+        // Output job queue status.
+        //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+
+        // Update the best state and display the results.
+        ControlResults(job->m_state, oldState);
+        manager->AddFree(job);
+    }
+    return true;
+} // CompleteJob
+
 void FireStarter::ControlUnits(void)
 {
     // Create the states and units.
@@ -343,25 +362,6 @@ void FireStarter::ControlUnits(void)
     for (FireStarterUnit* unit : units)
         delete unit;
 } // ControlUnits
-
-bool FireStarter::CompleteJob(FireStarterManager* manager, std::vector<FireStarterState>& allStates)
-{
-    for (FireStarterState& oldState : allStates) {
-        // Get the completed job.
-        // Note: The jobs may be received out of order.
-        FireStarterJob* job = manager->GetComplete();
-        if (!job)
-            return false;
-
-        // Output job queue status.
-        //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
-
-        // Update the best state and display the results.
-        ControlResults(job->m_state, oldState);
-        manager->AddFree(job);
-    }
-    return true;
-} // CompleteJob
 
 void FireStarter::ControlTest(void)
 {
