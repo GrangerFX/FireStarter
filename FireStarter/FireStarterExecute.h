@@ -23,7 +23,7 @@ private:
     CUDAContext* m_CUDAContext = nullptr;
     size_t m_resultsSize = 0;
     size_t m_evolutionsSize = 0;
-    unsigned int m_device = 0;
+    size_t m_index = 0;
 
     bool InitResults(const FireStarterState& state);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);

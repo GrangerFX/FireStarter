@@ -155,7 +155,7 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
     FireStarterSettings settings = state.Settings();
 
     if (!m_CUDAContext)
-        m_CUDAContext = new CUDAContext(m_device);
+        m_CUDAContext = new CUDAContext(m_index);
     CUstream stream = m_CUDAContext->Stream();
     m_CUDAContext->SetContext();
 
@@ -346,13 +346,14 @@ void FireStarterExecute::ExecuteRandom(void)
             m_manager->AddComplete(m_job);
             m_job = nullptr;
         }
+        LOG("Execute unit %d complete\n", (unsigned int)m_index);
     });
 } // ExecuteRandom
 
 FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index)
 {
     m_manager = manager;
-    m_device = (unsigned int)index;
+    m_index = index;
 } // FireStaterExecute
 
 FireStarterExecute::~FireStarterExecute(void)
