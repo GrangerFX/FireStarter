@@ -48,6 +48,9 @@ FireStarterJob* FireStarterJobQueue::Get(void)
 
 void FireStarterJobQueue::Cancel(void)
 {
+    // Release any waiting threads and return null jobs to new requests.
+    m_semaphore.terminate();
+
     // Delete all the jobs in the queue.
     DispatchSync([this] {
         while (m_firstJob) {
@@ -58,9 +61,6 @@ void FireStarterJobQueue::Cancel(void)
         }
         m_lastJob = nullptr;
     });
-
-    // Release any waiting threads and return null jobs to new requests..
-    m_semaphore.terminate();
 } // Cancel
 
 double FireStarterJobQueue::WaitTime(void)
