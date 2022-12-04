@@ -2,7 +2,13 @@
 #include "FireStarterProcess.h"
 #include "FireStarterState.h"
 
-#define FIRESTARTERCOMPILER_LOGGING 0
+#define FIRESTARTERCOMPILER_LOGGING 1
+
+#if FIRESTARTERCOMPILER_LOGGING
+#define LOG printf
+#else
+#define LOG( ... ) {}
+#endif
 
 class FireStarterJob {
 public:
@@ -45,6 +51,7 @@ public:
 
 class FireStarterJobQueue : public SerialThread {
 private:
+	std::string m_name;
 	SerialThreadSemaphore m_semaphore;
 	SimpleTimer m_timer;
 	FireStarterJob* m_firstJob = nullptr;
@@ -58,7 +65,7 @@ public:
 	double WaitTime(void);
 	size_t Size(void);
 	void Cancel(void);
-	FireStarterJobQueue(void);
+	FireStarterJobQueue(const std::string &name);
 	~FireStarterJobQueue(void);
 }; // class FireStarterJobQueue
 

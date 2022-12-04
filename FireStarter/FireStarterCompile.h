@@ -1,8 +1,6 @@
 #pragma once
 #include "FireStarterManager.h"
 
-#define FIRESTARTERCOMPILER_LOGGING 0
-
 class FireStarterCompiler : public SerialThread {
 private:
 	SerialThread m_jobThread;
@@ -23,10 +21,6 @@ public:
 
 class FireStarterCompile : public SerialThread {
 private:
-	FireStarterJobQueue m_freeQueue;
-	FireStarterJobQueue m_codeQueue;
-	FireStarterJobQueue m_compileQueue;
-	FireStarterJobQueue m_completeQueue;
 	std::vector<FireStarterCompiler*> m_compilers;
 	FireStarterServer* m_server;
 	unsigned int m_numProcesses;

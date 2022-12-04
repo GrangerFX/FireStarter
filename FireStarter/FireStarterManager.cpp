@@ -29,7 +29,7 @@ FireStarterJob* FireStarterJobQueue::Get(void)
     // Wait for a job to be added to the queue.
     FireStarterJob* job = nullptr;
     double waitTime = m_timer.Duration();
-    if (m_semaphore.wait()) // Returns null if the semaphore was terminated.
+    if (m_semaphore.wait())
         DispatchSync([this, &job, waitTime] {
             // Remove the job from the queue.
             if (m_firstJob) {
@@ -48,9 +48,6 @@ FireStarterJob* FireStarterJobQueue::Get(void)
 
 void FireStarterJobQueue::Cancel(void)
 {
-    // Release any waiting threads and return null jobs to new requests..
-    m_semaphore.terminate();
-
     // Delete all the jobs in the queue.
     DispatchSync([this] {
         while (m_firstJob) {
@@ -61,6 +58,9 @@ void FireStarterJobQueue::Cancel(void)
         }
         m_lastJob = nullptr;
     });
+
+    // Release any waiting threads and return null jobs to new requests..
+    m_semaphore.terminate();
 } // Cancel
 
 double FireStarterJobQueue::WaitTime(void)
@@ -73,7 +73,7 @@ size_t FireStarterJobQueue::Size(void)
     return m_sizeJobs;
 } // Size
 
-FireStarterJobQueue::FireStarterJobQueue(void)
+FireStarterJobQueue::FireStarterJobQueue(const std::string& name) : m_name(name)
 {
 } // FireStarterJobQueue
 
@@ -108,6 +108,11 @@ size_t FireStarterManager::SizeFree(void)
 
 void FireStarterManager::AddCode(FireStarterJob* job)
 {
+#if FIRESTARTERCOMPILER_LOGGING
+    if (!job) {
+        LOG("Terminating Code Queue\n");
+    }
+#endif
     m_codeQueue.Add(job);
 } // AddCode
 
@@ -128,6 +133,11 @@ size_t FireStarterManager::SizeCode(void)
 
 void FireStarterManager::AddCompile(FireStarterJob* job)
 {
+#if FIRESTARTERCOMPILER_LOGGING
+    if (!job) {
+        LOG("Terminating Compile Queue\n");
+    }
+#endif
     m_compileQueue.Add(job);
 } // AddCompile
 
@@ -148,6 +158,11 @@ size_t FireStarterManager::SizeCompile(void)
 
 void FireStarterManager::AddComplete(FireStarterJob* job)
 {
+#if FIRESTARTERCOMPILER_LOGGING
+    if (!job) {
+        LOG("Terminating Complete Queue\n");
+    }
+#endif
     m_completeQueue.Add(job);
 } // AddComplete
 
@@ -168,6 +183,9 @@ size_t FireStarterManager::SizeComplete(void)
 
 void FireStarterManager::Cancel(void)
 {
+#if FIRESTARTERCOMPILER_LOGGING
+    LOG("Canceling all queues\n");
+#endif
     // Note: Safe to call more than once.
     m_freeQueue.Cancel();
     m_codeQueue.Cancel();
@@ -175,7 +193,7 @@ void FireStarterManager::Cancel(void)
     m_completeQueue.Cancel();
 } // ClearJobs
 
-FireStarterManager::FireStarterManager(unsigned int maxUnits)
+FireStarterManager::FireStarterManager(unsigned int maxUnits) : m_freeQueue("Free"), m_codeQueue("Code"), m_compileQueue("Compile"), m_completeQueue("Complete")
 {
     m_maxJobs = maxUnits * MANAGER_JOB_MULTIPLIER;
     for (size_t i = 0; i < m_maxJobs; i++)

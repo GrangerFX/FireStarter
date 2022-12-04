@@ -83,22 +83,21 @@ public:
     inline bool wait()
     {
         std::unique_lock<std::mutex> lock(m_mtx);
-        if (m_active) {
+        if (m_active || m_count) {
             m_waiting++;
             while (m_count == 0)
                 m_cv.wait(lock);
             m_waiting--;
             m_count--;
+            return true;
         }
-        return m_active;
+        return false;
     } // wait
 
     inline bool trywait()
     {
         std::unique_lock<std::mutex> lock(m_mtx);
-        if (!m_active)
-            return false;
-        if (m_count) {
+        if (m_active && m_count) {
             --m_count;
             return true;
         }

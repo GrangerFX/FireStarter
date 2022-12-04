@@ -3,12 +3,6 @@
 
 #define COMPILE_EXECUTE "CompileExecute"
 
-#if FIRESTARTERCOMPILER_LOGGING
-#define LOG printf
-#else
-#define LOG( ... ) {}
-#endif
-
 void FireStarterCompiler::CompilerLocal(void)
 {
     DispatchAsync([this] {
