@@ -36,6 +36,14 @@ public:
     void ExecuteOptimize(unsigned int generation);
     void ExecuteEvolve(void);
 	void ExecuteRandom(void);
-	FireStarterExecute(FireStarterManager* manager, unsigned int index);
+	FireStarterExecute(FireStarterManager* manager, size_t index);
 	~FireStarterExecute(void);
 }; // class FireStarterExecute
+
+class FireStarterExecuteRandom : public SerialThread {
+private:
+    std::vector<FireStarterExecute*> m_executionUnits;
+public:
+    FireStarterExecuteRandom(FireStarterManager* manager, size_t numExecute = 1);
+    ~FireStarterExecuteRandom(void);
+}; // class FireStarterExecuteRandom

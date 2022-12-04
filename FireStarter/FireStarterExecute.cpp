@@ -327,8 +327,7 @@ void FireStarterExecute::ExecuteEvolve(void)
             Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             m_manager->AddComplete(m_job);
             m_job = nullptr;
-        } else
-            m_manager->AddComplete();
+        }
     });
 } // ExecuteEvolve
 
@@ -347,14 +346,13 @@ void FireStarterExecute::ExecuteRandom(void)
             m_manager->AddComplete(m_job);
             m_job = nullptr;
         }
-        m_manager->AddComplete();
     });
 } // ExecuteRandom
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, unsigned int index)
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index)
 {
     m_manager = manager;
-    m_device = index;
+    m_device = (unsigned int)index;
 } // FireStaterExecute
 
 FireStarterExecute::~FireStarterExecute(void)
@@ -362,3 +360,26 @@ FireStarterExecute::~FireStarterExecute(void)
     TerminateThread();
     CUDACompile::ReleaseModule(m_optimizeModule);
 } // ~FireStarterExecute(void)
+
+FireStarterExecuteRandom::FireStarterExecuteRandom(FireStarterManager* manager, size_t numExecute)
+{
+    // Create and start the random execution units.
+    for (size_t i = 0; i < numExecute; i++) {
+        FireStarterExecute* executeUnit = new FireStarterExecute(manager, i);
+        m_executionUnits.push_back(executeUnit);
+        executeUnit->ExecuteRandom();
+    }
+
+    // When the last random execution unit is complete, terminate the complete queue.
+    DispatchAsync([this, manager] {
+        for (FireStarterExecute* executeUnit : m_executionUnits)
+            executeUnit->Synchronize();
+        manager->AddComplete();
+    });
+} // FireStarterExecuteRandom
+
+FireStarterExecuteRandom::~FireStarterExecuteRandom(void)
+{
+    for (FireStarterExecute* executeUnit : m_executionUnits)
+        delete executeUnit;
+} // ~FireStarterExecuteRandom

@@ -458,16 +458,8 @@ void FireStarter::ControlRandom(void)
     // Start generating random code generations.
     evolve->EvolveGenerations(&m_bestState, m_settings.m_attempts);
 
-    // Create the execution units.
-    std::vector<FireStarterExecute*> executionUnits;
-    for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        // Create an execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager, i);
-        executionUnits.push_back(execute);
-
-        // Run a random execution thread for each unit.
-        execute->ExecuteRandom();
-    }
+    // Create and run the execution units.
+    FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, m_settings.m_units);
 
     // Setup the work state
     FireStarterState oldState = m_bestState;
@@ -483,8 +475,7 @@ void FireStarter::ControlRandom(void)
     manager->Cancel();
 
     // Finish processing and terminate each unit.
-    for (FireStarterExecute* execute : executionUnits)
-        delete execute;
+    delete executeRandom;
 
     // Delete the evolution code generator.
     delete evolve;
