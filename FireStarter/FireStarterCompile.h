@@ -21,7 +21,7 @@ public:
 	~FireStarterCompiler(void);
 }; // class FireStarterCompiler
 
-class FireStarterCompile {
+class FireStarterCompile : public SerialThread {
 private:
 	FireStarterJobQueue m_freeQueue;
 	FireStarterJobQueue m_codeQueue;

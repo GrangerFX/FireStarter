@@ -18,13 +18,14 @@ void FireStarterCompiler::CompilerLocal(void)
             if (job) {
                 bool result = CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
                 if (job->m_log.size())
-                    LOG("Compile log:%s\n\n", job->m_log.c_str());
-                if (!result) {
+                    LOG("Compile log:%s\n\n", job->m_log.c_str());        
+                if (result)
+                    m_manager->AddCompile(job);
+                else {
                     delete job;
                     job = nullptr;
                 }
             }
-            m_manager->AddCompile(job);
         } while (job && !WillTerminate());
     });
 } // CompilerLocal
@@ -87,9 +88,10 @@ void FireStarterCompiler::CompilerClient(void)
 {
     DispatchAsync([this] {
         if (m_process->Start()) {
-            while (!m_process->ShouldTerminate()) {
+            bool result = true;
+            while (result && !m_process->ShouldTerminate()) {
                 FireStarterPacket receivePacket;
-                bool result = m_process->ReceivePacket(receivePacket);
+                result = m_process->ReceivePacket(receivePacket);
                 if (result) {
                     const std::string& command = receivePacket.Command();
                     if (command == COMPILE_EXECUTE) {
@@ -170,6 +172,13 @@ FireStarterCompile::FireStarterCompile(FireStarterManager* manager, unsigned int
         FireStarterCompiler* compiler = new FireStarterCompiler(manager);
         m_compilers.push_back(compiler);
     }
+
+    // When the last compiler finishes, send a null job.
+    DispatchAsync([this, manager] {
+        for (FireStarterCompiler* compiler : m_compilers)
+            compiler->Synchronize();
+        manager->AddCompile();
+    });
 } // FireStarterCompile
 
 FireStarterCompile::~FireStarterCompile(void)
