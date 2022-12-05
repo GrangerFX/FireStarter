@@ -24,7 +24,6 @@ public:
     std::string ProcessPrefix(void);
     void Terminate(void);
     bool ShouldTerminate(void);
-    bool WaitForData(void);
     bool SendData(const void* data, size_t size);
     bool ReceiveData(void* data, size_t size);
     bool SendTerminate(void);

@@ -60,11 +60,6 @@ bool FireStarterProcess::ShouldTerminate(void)
     return m_terminate ? *m_terminate : false;
 } // ShouldTerminate
 
-bool FireStarterProcess::WaitForData(void)
-{
-    return WaitNamedPipe(m_pipeName.c_str(), 0);
-} // WaitForData
-
 bool FireStarterProcess::SendData(const void* data, size_t size)
 {
     // Note: Maximum size is 32 bits (4GB).
