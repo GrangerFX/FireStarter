@@ -1,0 +1,170 @@
+variations = 3;
+samples = 15;
+instructions = 32;
+registers = 32;
+opcodes = 2;
+
+targetMin = 0.000000f;
+targetMax = 6.283185f;
+
+mode = FIRESTARTER_CODE;
+units = 1;
+processes = 0;
+population = 17408;
+iterations = 256;
+candidates = 16;
+generations = 1;
+precision = 0;
+evolve = FIRESTARTER_EVOLVE_BEST;
+attempts = 32;
+seed = 0;
+scale = 0.100000f;
+startScale = 4.000000f;
+startResult = 10.000000f;
+
+FIRESTARTER_CODE: Seed=0  Generation=0  Age=0  Best=0.30005914  BestSeed=0  Time=0.0000 Seconds  Run Time=2.7512 Seconds  TestError=29115.17187500
+FIRESTARTER_CODE: Seed=1  Generation=1  Age=0  Best=0.17830688  BestSeed=1  Time=2.8108 Seconds  Run Time=3.2070 Seconds  TestError=404698208.00000000
+FIRESTARTER_CODE: Seed=2  Generation=2  Age=0  Best=0.16514444  BestSeed=2  Time=0.4563 Seconds  Run Time=3.6618 Seconds  TestError=83999027700913054063584608256.00000000
+FIRESTARTER_CODE: Seed=3  Generation=3  Age=0  Best=0.10096514  BestSeed=3  Time=0.4567 Seconds  Run Time=4.1188 Seconds  TestError=403312192.00000000
+FIRESTARTER_CODE: Seed=4  Generation=4  Age=0  Best=0.07698471  BestSeed=4  Time=0.4609 Seconds  Run Time=4.5797 Seconds  TestError=4750577426759680000.00000000
+FIRESTARTER_CODE: Seed=5  Generation=5  Age=0  Best=0.06513917  BestSeed=5  Time=0.4630 Seconds  Run Time=5.0426 Seconds  TestError=316472088225382400.00000000
+FIRESTARTER_CODE: Seed=6  Generation=6  Age=0  Best=0.05341016  BestSeed=6  Time=0.4645 Seconds  Run Time=5.5070 Seconds  TestError=490096503554048.00000000
+FIRESTARTER_CODE: Seed=7  Generation=7  Age=1  Best=0.05341016  BestSeed=6  Time=0.4683 Seconds  Run Time=5.9662 Seconds  TestError=490096503554048.00000000
+FIRESTARTER_CODE: Seed=8  Generation=8  Age=0  Best=0.04793134  BestSeed=8  Time=0.4579 Seconds  Run Time=6.4333 Seconds  TestError=670693435899904.00000000
+FIRESTARTER_CODE: Seed=9  Generation=9  Age=0  Best=0.04096208  BestSeed=9  Time=0.4685 Seconds  Run Time=6.9018 Seconds  TestError=281484459998445568.00000000
+FIRESTARTER_CODE: Seed=10  Generation=10  Age=0  Best=0.02753747  BestSeed=10  Time=0.4680 Seconds  Run Time=7.3698 Seconds  TestError=67593546042831798272.00000000
+FIRESTARTER_CODE: Seed=11  Generation=11  Age=1  Best=0.02753747  BestSeed=10  Time=0.4687 Seconds  Run Time=7.8294 Seconds  TestError=67593546042831798272.00000000
+FIRESTARTER_CODE: Seed=12  Generation=12  Age=2  Best=0.02753747  BestSeed=10  Time=0.4605 Seconds  Run Time=8.2900 Seconds  TestError=67593546042831798272.00000000
+FIRESTARTER_CODE: Seed=13  Generation=13  Age=0  Best=0.02180560  BestSeed=13  Time=0.4642 Seconds  Run Time=8.7633 Seconds  TestError=139020719695811575808.00000000
+FIRESTARTER_CODE: Seed=14  Generation=14  Age=0  Best=0.01917416  BestSeed=14  Time=0.4719 Seconds  Run Time=9.2352 Seconds  TestError=29024927636751007113470279680.00000000
+FIRESTARTER_CODE: Seed=15  Generation=15  Age=1  Best=0.01917416  BestSeed=14  Time=0.4724 Seconds  Run Time=9.6984 Seconds  TestError=29024927636751007113470279680.00000000
+FIRESTARTER_CODE: Seed=16  Generation=16  Age=2  Best=0.01917416  BestSeed=14  Time=0.4635 Seconds  Run Time=10.1620 Seconds  TestError=29024927636751007113470279680.00000000
+FIRESTARTER_CODE: Seed=17  Generation=17  Age=0  Best=0.01578331  BestSeed=17  Time=0.4649 Seconds  Run Time=10.6360 Seconds  TestError=64885022293107933184.00000000
+FIRESTARTER_CODE: Seed=18  Generation=18  Age=1  Best=0.01578331  BestSeed=17  Time=0.4761 Seconds  Run Time=11.1029 Seconds  TestError=64885022293107933184.00000000
+FIRESTARTER_CODE: Seed=19  Generation=19  Age=2  Best=0.01578331  BestSeed=17  Time=0.4666 Seconds  Run Time=11.5694 Seconds  TestError=64885022293107933184.00000000
+FIRESTARTER_CODE: Seed=20  Generation=20  Age=3  Best=0.01578331  BestSeed=17  Time=0.4679 Seconds  Run Time=12.0374 Seconds  TestError=64885022293107933184.00000000
+FIRESTARTER_CODE: Seed=21  Generation=21  Age=4  Best=0.01578331  BestSeed=17  Time=0.4682 Seconds  Run Time=12.5057 Seconds  TestError=64885022293107933184.00000000
+FIRESTARTER_CODE: Seed=22  Generation=22  Age=5  Best=0.01578331  BestSeed=17  Time=0.4683 Seconds  Run Time=12.9740 Seconds  TestError=64885022293107933184.00000000
+FIRESTARTER_CODE: Seed=23  Generation=23  Age=0  Best=0.01552653  BestSeed=23  Time=0.4693 Seconds  Run Time=13.4524 Seconds  TestError=260048658041007155871481856.00000000
+FIRESTARTER_CODE: Seed=24  Generation=24  Age=0  Best=0.01475734  BestSeed=24  Time=0.4784 Seconds  Run Time=13.9307 Seconds  TestError=59528153264071639040.00000000
+FIRESTARTER_CODE: Seed=25  Generation=25  Age=1  Best=0.01475734  BestSeed=24  Time=0.4814 Seconds  Run Time=14.4030 Seconds  TestError=59528153264071639040.00000000
+FIRESTARTER_CODE: Seed=26  Generation=26  Age=0  Best=0.01462895  BestSeed=26  Time=0.4740 Seconds  Run Time=14.8863 Seconds  TestError=80124992325897158656.00000000
+FIRESTARTER_CODE: Seed=27  Generation=27  Age=1  Best=0.01462895  BestSeed=26  Time=0.4821 Seconds  Run Time=15.3592 Seconds  TestError=80124992325897158656.00000000
+FIRESTARTER_CODE: Seed=28  Generation=28  Age=2  Best=0.01462895  BestSeed=26  Time=0.4784 Seconds  Run Time=15.8375 Seconds  TestError=80124992325897158656.00000000
+FIRESTARTER_CODE: Seed=29  Generation=29  Age=0  Best=0.01457584  BestSeed=29  Time=0.4814 Seconds  Run Time=16.3281 Seconds  TestError=3615570814860001280.00000000
+FIRESTARTER_CODE: Seed=30  Generation=30  Age=1  Best=0.01457584  BestSeed=29  Time=0.4875 Seconds  Run Time=16.8064 Seconds  TestError=3615570814860001280.00000000
+FIRESTARTER_CODE: Seed=31  Generation=31  Age=2  Best=0.01457584  BestSeed=29  Time=0.4835 Seconds  Run Time=17.2899 Seconds  TestError=3615570814860001280.00000000
+FIRESTARTER_CODE: Seed=32  Generation=32  Age=0  Best=0.01445508  BestSeed=32  Time=0.4900 Seconds  Run Time=17.7892 Seconds  TestError=42573829099300585472.00000000
+FIRESTARTER_CODE: Seed=33  Generation=33  Age=1  Best=0.01445508  BestSeed=32  Time=0.4893 Seconds  Run Time=18.2692 Seconds  TestError=42573829099300585472.00000000
+FIRESTARTER_CODE: Seed=34  Generation=34  Age=2  Best=0.01445508  BestSeed=32  Time=0.4970 Seconds  Run Time=18.7662 Seconds  TestError=42573829099300585472.00000000
+FIRESTARTER_CODE: Seed=35  Generation=35  Age=3  Best=0.01445508  BestSeed=32  Time=0.4846 Seconds  Run Time=19.2508 Seconds  TestError=42573829099300585472.00000000
+FIRESTARTER_CODE: Seed=36  Generation=36  Age=4  Best=0.01445508  BestSeed=32  Time=0.4957 Seconds  Run Time=19.7465 Seconds  TestError=42573829099300585472.00000000
+FIRESTARTER_CODE: Seed=37  Generation=37  Age=0  Best=0.01445496  BestSeed=37  Time=0.4966 Seconds  Run Time=20.2524 Seconds  TestError=5703519756506628096.00000000
+FIRESTARTER_CODE: Seed=38  Generation=38  Age=1  Best=0.01445496  BestSeed=37  Time=0.5051 Seconds  Run Time=20.7481 Seconds  TestError=5703519756506628096.00000000
+FIRESTARTER_CODE: Seed=39  Generation=39  Age=0  Best=0.01439583  BestSeed=39  Time=0.4990 Seconds  Run Time=21.2562 Seconds  TestError=46084270659626598400.00000000
+FIRESTARTER_CODE: Seed=40  Generation=40  Age=1  Best=0.01439583  BestSeed=39  Time=0.5046 Seconds  Run Time=21.7517 Seconds  TestError=46084270659626598400.00000000
+FIRESTARTER_CODE: Seed=41  Generation=41  Age=2  Best=0.01439583  BestSeed=39  Time=0.4968 Seconds  Run Time=22.2485 Seconds  TestError=46084270659626598400.00000000
+FIRESTARTER_CODE: Seed=42  Generation=42  Age=3  Best=0.01439583  BestSeed=39  Time=0.4969 Seconds  Run Time=22.7453 Seconds  TestError=46084270659626598400.00000000
+FIRESTARTER_CODE: Seed=43  Generation=43  Age=4  Best=0.01439583  BestSeed=39  Time=0.4991 Seconds  Run Time=23.2444 Seconds  TestError=46084270659626598400.00000000
+FIRESTARTER_CODE: Seed=44  Generation=44  Age=0  Best=0.01429045  BestSeed=44  Time=0.4974 Seconds  Run Time=23.7510 Seconds  TestError=6632388828919234560.00000000
+FIRESTARTER_CODE: Seed=45  Generation=45  Age=1  Best=0.01429045  BestSeed=44  Time=0.5060 Seconds  Run Time=24.2477 Seconds  TestError=6632388828919234560.00000000
+FIRESTARTER_CODE: Seed=46  Generation=46  Age=0  Best=0.01413000  BestSeed=46  Time=0.4974 Seconds  Run Time=24.7543 Seconds  TestError=664172506802370379776.00000000
+FIRESTARTER_CODE: Seed=47  Generation=47  Age=0  Best=0.01386547  BestSeed=47  Time=0.5083 Seconds  Run Time=25.2625 Seconds  TestError=47431616606349819904.00000000
+FIRESTARTER_CODE: Seed=48  Generation=48  Age=1  Best=0.01386547  BestSeed=47  Time=0.5095 Seconds  Run Time=25.7629 Seconds  TestError=47431616606349819904.00000000
+FIRESTARTER_CODE: Seed=49  Generation=49  Age=2  Best=0.01386547  BestSeed=47  Time=0.5028 Seconds  Run Time=26.2657 Seconds  TestError=47431616606349819904.00000000
+FIRESTARTER_CODE: Seed=50  Generation=50  Age=3  Best=0.01386547  BestSeed=47  Time=0.5076 Seconds  Run Time=26.7732 Seconds  TestError=47431616606349819904.00000000
+FIRESTARTER_CODE: Seed=51  Generation=51  Age=4  Best=0.01386547  BestSeed=47  Time=0.5073 Seconds  Run Time=27.2806 Seconds  TestError=47431616606349819904.00000000
+FIRESTARTER_CODE: Seed=52  Generation=52  Age=5  Best=0.01386547  BestSeed=47  Time=0.5046 Seconds  Run Time=27.7851 Seconds  TestError=47431616606349819904.00000000
+FIRESTARTER_CODE: Seed=53  Generation=53  Age=0  Best=0.01334989  BestSeed=53  Time=0.5048 Seconds  Run Time=28.2991 Seconds  TestError=25774245802976215040.00000000
+FIRESTARTER_CODE: Seed=54  Generation=54  Age=0  Best=0.01297754  BestSeed=54  Time=0.5177 Seconds  Run Time=28.8168 Seconds  TestError=19797551283037011968.00000000
+FIRESTARTER_CODE: Seed=55  Generation=55  Age=1  Best=0.01297754  BestSeed=54  Time=0.5182 Seconds  Run Time=29.3257 Seconds  TestError=19797551283037011968.00000000
+FIRESTARTER_CODE: Seed=56  Generation=56  Age=0  Best=0.01286614  BestSeed=56  Time=0.5118 Seconds  Run Time=29.8466 Seconds  TestError=48919119499288903680.00000000
+FIRESTARTER_CODE: Seed=57  Generation=57  Age=1  Best=0.01286614  BestSeed=56  Time=0.5172 Seconds  Run Time=30.3547 Seconds  TestError=48919119499288903680.00000000
+FIRESTARTER_CODE: Seed=58  Generation=58  Age=2  Best=0.01286614  BestSeed=56  Time=0.5112 Seconds  Run Time=30.8660 Seconds  TestError=48919119499288903680.00000000
+FIRESTARTER_CODE: Seed=59  Generation=59  Age=3  Best=0.01286614  BestSeed=56  Time=0.5158 Seconds  Run Time=31.3818 Seconds  TestError=48919119499288903680.00000000
+FIRESTARTER_CODE: Seed=60  Generation=60  Age=4  Best=0.01286614  BestSeed=56  Time=0.5129 Seconds  Run Time=31.8947 Seconds  TestError=48919119499288903680.00000000
+FIRESTARTER_CODE: Seed=61  Generation=61  Age=5  Best=0.01286614  BestSeed=56  Time=0.5174 Seconds  Run Time=32.4122 Seconds  TestError=48919119499288903680.00000000
+FIRESTARTER_CODE: Seed=62  Generation=62  Age=6  Best=0.01286614  BestSeed=56  Time=0.5139 Seconds  Run Time=32.9260 Seconds  TestError=48919119499288903680.00000000
+FIRESTARTER_CODE: Seed=63  Generation=63  Age=0  Best=0.01280057  BestSeed=63  Time=0.5210 Seconds  Run Time=33.4563 Seconds  TestError=1938072146113591607558144.00000000
+FIRESTARTER_CODE: Seed=64  Generation=64  Age=0  Best=0.01267755  BestSeed=64  Time=0.5255 Seconds  Run Time=33.9816 Seconds  TestError=50712598886052003840.00000000
+FIRESTARTER_CODE: Seed=65  Generation=65  Age=0  Best=0.01264757  BestSeed=65  Time=0.5199 Seconds  Run Time=34.5014 Seconds  TestError=62587649921474625536.00000000
+FIRESTARTER_CODE: Seed=66  Generation=66  Age=0  Best=0.01258159  BestSeed=66  Time=0.5366 Seconds  Run Time=35.0381 Seconds  TestError=48936716083379830784.00000000
+FIRESTARTER_CODE: Seed=67  Generation=67  Age=1  Best=0.01258159  BestSeed=66  Time=0.5223 Seconds  Run Time=35.5513 Seconds  TestError=48936716083379830784.00000000
+FIRESTARTER_CODE: Seed=68  Generation=68  Age=2  Best=0.01258159  BestSeed=66  Time=0.5320 Seconds  Run Time=36.0833 Seconds  TestError=48936716083379830784.00000000
+FIRESTARTER_CODE: Seed=69  Generation=69  Age=0  Best=0.01258135  BestSeed=69  Time=0.5214 Seconds  Run Time=36.6138 Seconds  TestError=45705682417904254976.00000000
+FIRESTARTER_CODE: Seed=70  Generation=70  Age=0  Best=0.01246554  BestSeed=70  Time=0.5343 Seconds  Run Time=37.1481 Seconds  TestError=245452759169272643584.00000000
+FIRESTARTER_CODE: Seed=71  Generation=71  Age=1  Best=0.01246554  BestSeed=70  Time=0.5326 Seconds  Run Time=37.6715 Seconds  TestError=245452759169272643584.00000000
+FIRESTARTER_CODE: Seed=72  Generation=72  Age=2  Best=0.01246554  BestSeed=70  Time=0.5298 Seconds  Run Time=38.2014 Seconds  TestError=245452759169272643584.00000000
+FIRESTARTER_CODE: Seed=73  Generation=73  Age=3  Best=0.01246554  BestSeed=70  Time=0.5295 Seconds  Run Time=38.7309 Seconds  TestError=245452759169272643584.00000000
+FIRESTARTER_CODE: Seed=74  Generation=74  Age=4  Best=0.01246554  BestSeed=70  Time=0.5294 Seconds  Run Time=39.2604 Seconds  TestError=245452759169272643584.00000000
+FIRESTARTER_CODE: Seed=75  Generation=75  Age=5  Best=0.01246554  BestSeed=70  Time=0.5298 Seconds  Run Time=39.7902 Seconds  TestError=245452759169272643584.00000000
+FIRESTARTER_CODE: Seed=76  Generation=76  Age=0  Best=0.01233101  BestSeed=76  Time=0.5327 Seconds  Run Time=40.3321 Seconds  TestError=108866639692333842432.00000000
+FIRESTARTER_CODE: Seed=77  Generation=77  Age=1  Best=0.01233101  BestSeed=76  Time=0.5299 Seconds  Run Time=40.8528 Seconds  TestError=108866639692333842432.00000000
+FIRESTARTER_CODE: Seed=78  Generation=78  Age=2  Best=0.01233101  BestSeed=76  Time=0.5387 Seconds  Run Time=41.3915 Seconds  TestError=108866639692333842432.00000000
+FIRESTARTER_CODE: Seed=79  Generation=79  Age=0  Best=0.01229715  BestSeed=79  Time=0.5357 Seconds  Run Time=41.9363 Seconds  TestError=568075894222189756416.00000000
+FIRESTARTER_CODE: Seed=80  Generation=80  Age=0  Best=0.01212811  BestSeed=80  Time=0.5385 Seconds  Run Time=42.4748 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=81  Generation=81  Age=1  Best=0.01212811  BestSeed=80  Time=0.5371 Seconds  Run Time=43.0029 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=82  Generation=82  Age=2  Best=0.01212811  BestSeed=80  Time=0.5385 Seconds  Run Time=43.5413 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=83  Generation=83  Age=3  Best=0.01212811  BestSeed=80  Time=0.5402 Seconds  Run Time=44.0816 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=84  Generation=84  Age=4  Best=0.01212811  BestSeed=80  Time=0.5358 Seconds  Run Time=44.6175 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=85  Generation=85  Age=5  Best=0.01212811  BestSeed=80  Time=0.5373 Seconds  Run Time=45.1547 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=86  Generation=86  Age=6  Best=0.01212811  BestSeed=80  Time=0.5409 Seconds  Run Time=45.6957 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=87  Generation=87  Age=7  Best=0.01212811  BestSeed=80  Time=0.5385 Seconds  Run Time=46.2341 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=88  Generation=88  Age=8  Best=0.01212811  BestSeed=80  Time=0.5408 Seconds  Run Time=46.7750 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=89  Generation=89  Age=9  Best=0.01212811  BestSeed=80  Time=0.5423 Seconds  Run Time=47.3173 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=90  Generation=90  Age=10  Best=0.01212811  BestSeed=80  Time=0.5329 Seconds  Run Time=47.8502 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=91  Generation=91  Age=11  Best=0.01212811  BestSeed=80  Time=0.5465 Seconds  Run Time=48.3966 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=92  Generation=92  Age=12  Best=0.01212811  BestSeed=80  Time=0.5398 Seconds  Run Time=48.9364 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=93  Generation=93  Age=13  Best=0.01212811  BestSeed=80  Time=0.5463 Seconds  Run Time=49.4827 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=94  Generation=94  Age=14  Best=0.01212811  BestSeed=80  Time=0.5431 Seconds  Run Time=50.0258 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=95  Generation=95  Age=15  Best=0.01212811  BestSeed=80  Time=0.5484 Seconds  Run Time=50.5742 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=96  Generation=96  Age=16  Best=0.01212811  BestSeed=80  Time=0.5428 Seconds  Run Time=51.1170 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=97  Generation=97  Age=17  Best=0.01212811  BestSeed=80  Time=0.5447 Seconds  Run Time=51.6617 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=98  Generation=98  Age=18  Best=0.01212811  BestSeed=80  Time=0.5493 Seconds  Run Time=52.2110 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=99  Generation=99  Age=19  Best=0.01212811  BestSeed=80  Time=0.5454 Seconds  Run Time=52.7564 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=100  Generation=100  Age=20  Best=0.01212811  BestSeed=80  Time=0.5453 Seconds  Run Time=53.3017 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=101  Generation=101  Age=21  Best=0.01212811  BestSeed=80  Time=0.5475 Seconds  Run Time=53.8491 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=102  Generation=102  Age=22  Best=0.01212811  BestSeed=80  Time=0.5558 Seconds  Run Time=54.4049 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=103  Generation=103  Age=23  Best=0.01212811  BestSeed=80  Time=0.5378 Seconds  Run Time=54.9427 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=104  Generation=104  Age=24  Best=0.01212811  BestSeed=80  Time=0.5736 Seconds  Run Time=55.5162 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=105  Generation=105  Age=25  Best=0.01212811  BestSeed=80  Time=0.5397 Seconds  Run Time=56.0560 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=106  Generation=106  Age=26  Best=0.01212811  BestSeed=80  Time=0.5619 Seconds  Run Time=56.6179 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=107  Generation=107  Age=27  Best=0.01212811  BestSeed=80  Time=0.5541 Seconds  Run Time=57.1720 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=108  Generation=108  Age=28  Best=0.01212811  BestSeed=80  Time=0.5584 Seconds  Run Time=57.7305 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=109  Generation=109  Age=29  Best=0.01212811  BestSeed=80  Time=0.5532 Seconds  Run Time=58.2838 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=110  Generation=110  Age=30  Best=0.01212811  BestSeed=80  Time=0.5603 Seconds  Run Time=58.8440 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=111  Generation=111  Age=31  Best=0.01212811  BestSeed=80  Time=0.5532 Seconds  Run Time=59.3972 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_CODE: Seed=112  Generation=112  Age=32  Best=0.01212811  BestSeed=80  Time=0.5547 Seconds  Run Time=59.9519 Seconds  TestError=225007419615615123456.00000000
+FIRESTARTER_OPTIMIZE: Seed=0  Generation=0  Age=0  Best=0.01212811  BestSeed=0  Time=2.1419 Seconds  Run Time=62.1325 Seconds  TestError=31942.76367188
+FIRESTARTER_OPTIMIZE: Seed=1  Generation=1  Age=1  Best=0.01212811  BestSeed=0  Time=0.7509 Seconds  Run Time=62.8834 Seconds  TestError=131255.76562500
+FIRESTARTER_OPTIMIZE: Seed=2  Generation=2  Age=2  Best=0.01212811  BestSeed=0  Time=0.7511 Seconds  Run Time=63.6346 Seconds  TestError=87605.57812500
+FIRESTARTER_OPTIMIZE: Seed=3  Generation=3  Age=3  Best=0.01212811  BestSeed=0  Time=0.7502 Seconds  Run Time=64.3847 Seconds  TestError=175060.20312500
+FIRESTARTER_OPTIMIZE: Seed=4  Generation=4  Age=4  Best=0.01212811  BestSeed=0  Time=0.7511 Seconds  Run Time=65.1358 Seconds  TestError=442387.90625000
+FIRESTARTER_OPTIMIZE: Seed=5  Generation=5  Age=5  Best=0.01212811  BestSeed=0  Time=0.7514 Seconds  Run Time=65.8871 Seconds  TestError=132119.12500000
+FIRESTARTER_OPTIMIZE: Seed=6  Generation=6  Age=6  Best=0.01212811  BestSeed=0  Time=0.7513 Seconds  Run Time=66.6384 Seconds  TestError=74454.55468750
+FIRESTARTER_OPTIMIZE: Seed=7  Generation=7  Age=7  Best=0.01212811  BestSeed=0  Time=0.7514 Seconds  Run Time=67.3898 Seconds  TestError=815307.75000000
+FIRESTARTER_OPTIMIZE: Seed=8  Generation=8  Age=8  Best=0.01212811  BestSeed=0  Time=0.7512 Seconds  Run Time=68.1410 Seconds  TestError=300678.96875000
+FIRESTARTER_OPTIMIZE: Seed=9  Generation=9  Age=9  Best=0.01212811  BestSeed=0  Time=0.7517 Seconds  Run Time=68.8928 Seconds  TestError=407593.71875000
+FIRESTARTER_OPTIMIZE: Seed=10  Generation=10  Age=10  Best=0.01212811  BestSeed=0  Time=0.7516 Seconds  Run Time=69.6444 Seconds  TestError=81391.37500000
+FIRESTARTER_OPTIMIZE: Seed=11  Generation=11  Age=11  Best=0.01212811  BestSeed=0  Time=0.7511 Seconds  Run Time=70.3955 Seconds  TestError=248001.10937500
+FIRESTARTER_OPTIMIZE: Seed=12  Generation=12  Age=12  Best=0.01212811  BestSeed=0  Time=0.7518 Seconds  Run Time=71.1473 Seconds  TestError=522330.46875000
+FIRESTARTER_OPTIMIZE: Seed=13  Generation=13  Age=13  Best=0.01212811  BestSeed=0  Time=0.7519 Seconds  Run Time=71.8992 Seconds  TestError=3661010.25000000
+FIRESTARTER_OPTIMIZE: Seed=14  Generation=14  Age=14  Best=0.01212811  BestSeed=0  Time=0.7531 Seconds  Run Time=72.6523 Seconds  TestError=670669.93750000
+FIRESTARTER_OPTIMIZE: Seed=15  Generation=15  Age=15  Best=0.01212811  BestSeed=0  Time=0.7515 Seconds  Run Time=73.4038 Seconds  TestError=1053467.75000000
+FIRESTARTER_OPTIMIZE: Seed=16  Generation=16  Age=16  Best=0.01212811  BestSeed=0  Time=0.7530 Seconds  Run Time=74.1568 Seconds  TestError=1291607.75000000
+FIRESTARTER_OPTIMIZE: Seed=17  Generation=17  Age=17  Best=0.01212811  BestSeed=0  Time=0.7523 Seconds  Run Time=74.9091 Seconds  TestError=62288.01171875
+FIRESTARTER_OPTIMIZE: Seed=18  Generation=18  Age=18  Best=0.01212811  BestSeed=0  Time=0.7527 Seconds  Run Time=75.6618 Seconds  TestError=2650169.25000000
+FIRESTARTER_OPTIMIZE: Seed=19  Generation=19  Age=19  Best=0.01212811  BestSeed=0  Time=0.7533 Seconds  Run Time=76.4152 Seconds  TestError=2294653.50000000
+FIRESTARTER_OPTIMIZE: Seed=20  Generation=20  Age=20  Best=0.01212811  BestSeed=0  Time=0.7528 Seconds  Run Time=77.1680 Seconds  TestError=281035.53125000
+FIRESTARTER_OPTIMIZE: Seed=21  Generation=21  Age=21  Best=0.01212811  BestSeed=0  Time=0.7537 Seconds  Run Time=77.9217 Seconds  TestError=608586.25000000
+FIRESTARTER_OPTIMIZE: Seed=22  Generation=22  Age=22  Best=0.01212811  BestSeed=0  Time=0.7546 Seconds  Run Time=78.6764 Seconds  TestError=2352889.50000000
+FIRESTARTER_OPTIMIZE: Seed=23  Generation=23  Age=23  Best=0.01212811  BestSeed=0  Time=0.7567 Seconds  Run Time=79.4330 Seconds  TestError=2682868.25000000
+FIRESTARTER_OPTIMIZE: Seed=24  Generation=24  Age=24  Best=0.01212811  BestSeed=0  Time=0.7555 Seconds  Run Time=80.1886 Seconds  TestError=1475022.37500000
+FIRESTARTER_OPTIMIZE: Seed=25  Generation=25  Age=25  Best=0.01212811  BestSeed=0  Time=0.7561 Seconds  Run Time=80.9447 Seconds  TestError=464319.28125000
+FIRESTARTER_OPTIMIZE: Seed=26  Generation=26  Age=26  Best=0.01212811  BestSeed=0  Time=0.7565 Seconds  Run Time=81.7012 Seconds  TestError=765687.12500000
+FIRESTARTER_OPTIMIZE: Seed=27  Generation=27  Age=27  Best=0.01212811  BestSeed=0  Time=0.7559 Seconds  Run Time=82.4572 Seconds  TestError=1885225.50000000
+FIRESTARTER_OPTIMIZE: Seed=28  Generation=28  Age=28  Best=0.01212811  BestSeed=0  Time=0.7561 Seconds  Run Time=83.2133 Seconds  TestError=2554410.25000000
+FIRESTARTER_OPTIMIZE: Seed=29  Generation=29  Age=29  Best=0.01212811  BestSeed=0  Time=0.7557 Seconds  Run Time=83.9689 Seconds  TestError=2087414.50000000
+FIRESTARTER_OPTIMIZE: Seed=30  Generation=30  Age=30  Best=0.01212811  BestSeed=0  Time=0.7574 Seconds  Run Time=84.7263 Seconds  TestError=836065.00000000
+FIRESTARTER_OPTIMIZE: Seed=31  Generation=31  Age=31  Best=0.01212811  BestSeed=0  Time=0.7564 Seconds  Run Time=85.4828 Seconds  TestError=2169191.75000000
+FIRESTARTER_OPTIMIZE: Seed=32  Generation=32  Age=32  Best=0.01212811  BestSeed=0  Time=0.7569 Seconds  Run Time=86.2397 Seconds  TestError=4019364.50000000
