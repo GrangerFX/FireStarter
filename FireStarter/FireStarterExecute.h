@@ -20,7 +20,7 @@ private:
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_evolveFunction = nullptr;
     CUfunction m_optimizeFunction = nullptr;
-    CUDAContext* m_CUDAContext = nullptr;
+    CUDAContext m_CUDAContext;
     size_t m_resultsSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_index = 0;
