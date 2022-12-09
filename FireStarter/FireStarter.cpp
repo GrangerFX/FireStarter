@@ -509,7 +509,6 @@ void FireStarter::ControlEvolve(void)
     std::vector<FireStarterEvolve*> evolveUnits;
     std::vector<FireStarterExecute*> executionUnits;
     std::vector<FireStarterState> allStates;
-    bool result = true;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         // Randomize the entire program for the first generation
         FireStarterState state(m_settings, i);
@@ -524,28 +523,26 @@ void FireStarter::ControlEvolve(void)
         FireStarterExecute* execute = new FireStarterExecute(manager, i);
         executionUnits.push_back(execute);
     }
-    if (result) {
-        unsigned int generation = 0;
 
-        // Loop until the the completion condition or the host program is quit.
-        m_controlTimer.Start();
-        while (!m_quitControlThread) {
-            // Evolve a new generation for each state.
-            for (unsigned int i = 0; i < m_settings.m_units; i++)
-                evolveUnits[i]->EvolveStates(&m_bestState, allStates, generation);
+    // Loop until the the completion condition or the host program is quit.
+    m_controlTimer.Start();
+    unsigned int generation = 0;
+    while (!m_quitControlThread) {
+        // Evolve a new generation for each state.
+        for (unsigned int i = 0; i < m_settings.m_units; i++)
+            evolveUnits[i]->EvolveStates(&m_bestState, allStates, generation);
 
-            // Execute each state.
-            for (FireStarterExecute* execute : executionUnits)
-                execute->ExecuteEvolve();
+        // Execute each state.
+        for (FireStarterExecute* execute : executionUnits)
+            execute->ExecuteEvolve();
 
-            // Complete each state and display the results.
-            if (!CompleteStates(manager, allStates))
-                break;
+        // Complete each state and display the results.
+        if (!CompleteStates(manager, allStates))
+            break;
 
-            // Has the completion condition been met?
-            if (generation++ - m_bestState.m_generation > m_settings.m_attempts)
-                break;
-        }
+        // Has the completion condition been met?
+        if (generation++ - m_bestState.m_generation > m_settings.m_attempts)
+            break;
     }
 
     // Cancel any waiting jobs
