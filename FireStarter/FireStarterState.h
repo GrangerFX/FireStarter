@@ -51,9 +51,9 @@ public:
     } // Result
 
     bool Packetize(FireStarterPacket& packet);
-    void SaveVariation(unsigned int variation, std::string& code);
-    void SaveResult(std::string& code);
-    void SaveState(std::string& code);
+    void SaveVariation(unsigned int variation, std::string& code) const;
+    void SaveResult(std::string& code) const;
+    void SaveState(std::string& code) const;
     float TestResult(void) const;
     void InitResult(void);
     void InitState(const FireStarterSettings& settings, unsigned int index = 0);

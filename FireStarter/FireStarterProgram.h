@@ -65,8 +65,8 @@ public:
     void RandomInstruction(unsigned long long seed);
     void LoadInstructions(FireStarterInstructions* instructions);
     static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "");
-    void SaveSettings(std::string& code);
-    void SaveProgram(std::string& code);
+    void SaveSettings(std::string& code) const;
+    void SaveProgram(std::string& code) const;
     void InitProgram(const FireStarterSettings& settings);
     inline FireStarterProgram(void) {}
 }; // class FireStarterProgram

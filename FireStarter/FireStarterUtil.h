@@ -104,12 +104,12 @@ public:
 
 class FrameBuffer {
 public:
-    unsigned char* m_hostBase;		// Pointer to the alligned native pixel format buffer in host memory
-    unsigned char* m_deviceBase;	// Pointer to the alligned native pixel format buffer in device memory
-    unsigned long m_width;			// Number of columns
-    unsigned long m_height;			// Number of rows
-    long m_rowbytes;			    // Number of bytes per row
-    size_t m_size;                  // The total size of the buffer in bytes
+    unsigned char* m_hostBase = nullptr;    // Pointer to the alligned native pixel format buffer in host memory
+    unsigned char* m_deviceBase = nullptr;  // Pointer to the alligned native pixel format buffer in device memory
+    unsigned long m_width = 0;              // Number of columns
+    unsigned long m_height = 0;             // Number of rows
+    long m_rowbytes = 0;                    // Number of bytes per row
+    size_t m_size = 0;                      // The total size of the buffer in bytes
 
     inline void Erase(void)
     {
@@ -157,12 +157,6 @@ public:
 
     inline FrameBuffer(void)
     {
-        m_hostBase = nullptr;
-        m_deviceBase = nullptr;
-        m_width = 0;
-        m_height = 0;
-        m_rowbytes = 0;
-        m_size = 0;
     } // FrameBuffer
 
     inline ~FrameBuffer(void)

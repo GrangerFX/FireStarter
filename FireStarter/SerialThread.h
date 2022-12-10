@@ -264,6 +264,23 @@ public:
         std::this_thread::sleep_for(std::chrono::duration<double>(duration));
     } // SleepFor
 
+#if HAS_DISPATCH_AFTER
+    inline bool DispatchAfter(double duration, const SerialThreadWork& work)
+    {
+        return DispatchAsync([this, duration, work] {
+            m_timers.AddTimer(this, duration, work);
+            });
+    } // DispatchAfter
+
+    inline bool DispatchMainAfter(double duration, const SerialThreadWork& work)
+    {
+        SerialThread* mainThread = MainThread();
+        if (mainThread)
+            return mainThread->DispatchAfter(duration, work);
+        return false;
+    } // DispatchMainAfter
+#endif
+
     inline bool DispatchAsync(const SerialThreadWork& work)
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -275,14 +292,13 @@ public:
         return false;
     } // DispatchAsync
 
-#if HAS_DISPATCH_AFTER
-    inline bool DispatchAfter(double duration, const SerialThreadWork& work)
+    inline bool DispatchMainAsync(const SerialThreadWork& work)
     {
-        return DispatchAsync([this, duration, work] {
-            m_timers.AddTimer(this, duration, work);
-        });
-    } // DispatchAfter
-#endif
+        SerialThread* mainThread = MainThread();
+        if (mainThread)
+            return mainThread->DispatchAsync(work);
+        return false;
+    } // DispatchMainAsync
 
     inline bool DispatchSync(const SerialThreadWork& work)
     {
@@ -304,35 +320,46 @@ public:
         return false;
     } // DispatchSync
 
+    inline bool DispatchMainSync(const SerialThreadWork& work)
+    {
+        SerialThread* mainThread = MainThread();
+        if (mainThread)
+            return mainThread->DispatchSync(work);
+        return false;
+    } // DispatchMainSync
+
     inline bool Synchronize(void)
     {
         return DispatchSync({});
     } // Synchronize
+
+    inline bool MainSynchronize(void)
+    {
+        return DispatchMainSync({});
+    } // MainSynchronize
 
     static inline SerialThread* GetMainThread(void)
     {
         return MainThread();
     } // GetMainThread
 
-    static inline void SetMainThread(SerialThread* mainThread)
+    static inline void SetMainThread(SerialThread* mainThread = nullptr)
     {
         MainThread() = mainThread;
     } // SetMainThread
 
     inline bool TerminateThread(void)
     {
-        if (m_pollThread) {
-            PollThread();
-            std::unique_lock<std::mutex> lock(m_mutex);
-            Terminate();
-            std::queue<SerialThreadWork> empty;
-            std::swap(m_workQueue, empty);  // Clear the work queue.
-            return true;
-        }
         if (!m_terminate) {
-            DispatchSync([this] { Terminate(); });
-            std::unique_lock<std::mutex> lock(m_mutex);
-            m_thread.join();
+            if (m_pollThread) {
+                PollThread();
+                std::unique_lock<std::mutex> lock(m_mutex);
+                Terminate();
+            } else {
+                DispatchSync([this] { Terminate(); });
+                std::unique_lock<std::mutex> lock(m_mutex);
+                m_thread.join();
+            }
             std::queue<SerialThreadWork> empty;
             std::swap(m_workQueue, empty);  // Clear the work queue.
             return true;

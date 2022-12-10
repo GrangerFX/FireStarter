@@ -43,7 +43,6 @@ LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 // ----------------------------------------------------------------------------
 HRESULT Initialize(HINSTANCE hInstance)
 {
-	FireStarter fireStarter;
 	HRESULT result = E_FAIL;
 
 	// Alloc Window
@@ -80,9 +79,10 @@ HRESULT Initialize(HINSTANCE hInstance)
 			DragAcceptFiles(hwnd, 1);
 			ShowWindow(hwnd, SW_SHOW);
 
-			SerialThread mainSerialThread(true);
-			SerialThread::SetMainThread(&mainSerialThread);
-			if (fireStarter.Init(hwnd, imageWidth, imageHeight)) {
+			SerialThread* mainSerialThread = new SerialThread(true);
+			SerialThread::SetMainThread(mainSerialThread);
+			FireStarter* fireStarter = new FireStarter();
+			if (fireStarter->Init(hwnd, imageWidth, imageHeight)) {
 				do {
 					MSG	msg;
 					if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
@@ -90,14 +90,16 @@ HRESULT Initialize(HINSTANCE hInstance)
 							break;
 						TranslateMessage(&msg);
 						DispatchMessage(&msg);
-					} else if (!mainSerialThread.PollThread())
+					} else if (!mainSerialThread->PollThread())
 						Sleep(100);
 				} while (1);
 
-				fireStarter.Quit();
-
+				SetWindowText(hwnd, "Quitting");
 				result = S_OK;
 			}
+			mainSerialThread->TerminateThread(); // No more updates will be accepted.
+			delete fireStarter;
+			delete mainSerialThread;
 		}
 	}
 	return result;

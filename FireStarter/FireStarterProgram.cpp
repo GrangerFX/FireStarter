@@ -113,7 +113,7 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("startResult = %ff;\r\n", settings.m_startResult);
 } // SaveSettings
 
-void FireStarterProgram::SaveSettings(std::string& code)
+void FireStarterProgram::SaveSettings(std::string& code) const
 {
     code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
     code += "{\r\n";
@@ -122,12 +122,12 @@ void FireStarterProgram::SaveSettings(std::string& code)
     code += "\r\n";
 } // SaveSettings
 
-void FireStarterProgram::SaveProgram(std::string& code)
+void FireStarterProgram::SaveProgram(std::string& code) const
 {
     code += "inline void LoadProgram(FireStarterProgram& program)\r\n";
     code += "{\r\n";
 
-    FireStarterInstructions* instructions = EvolvedInstructions();
+    const FireStarterInstructions* instructions = EvolvedInstructions();
     code += "    FireStarterInstructions* instructions = program.EvolvedInstructions();\r\n";
     for (unsigned int i = 0; i < m_settings.m_instructions; i++)
         code += Format("    instructions->SetOperation(%u, %u, %u);\r\n", i, instructions->Opcode(i), instructions->Register(i));

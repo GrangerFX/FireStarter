@@ -10,19 +10,19 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
     return result;
 } // Packetize
 
-void FireStarterState::SaveVariation(unsigned int variation, std::string& code)
+void FireStarterState::SaveVariation(unsigned int variation, std::string& code) const
 {
     code += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     code += "{\r\n";
     code += Format("    FireStarterData *data = result->Data(%u);\r\n", variation);
     for (unsigned int i = 0; i < m_program.m_settings.m_instructions; i++)
         code += Format("    data->d[%u] = %ff;\r\n", i, Result()->Data(variation)->d[i]);
-    code += Format("    *result->MinResult(%u) = %ff;\r\n", variation, *Result()->MinResult(variation));
+    code += Format("    *result->MinResult(%u) = %ff;\r\n", variation, Result()->MinResult(variation));
     code += Format("} // LoadVariation%u\r\n", variation);
     code += "\r\n";
 } // SaveVariation
 
-void FireStarterState::SaveResult(std::string& code)
+void FireStarterState::SaveResult(std::string& code) const
 {
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
         SaveVariation(v, code);
@@ -36,7 +36,7 @@ void FireStarterState::SaveResult(std::string& code)
     code += "\r\n";
 } // SaveResult
 
-void FireStarterState::SaveState(std::string& code)
+void FireStarterState::SaveState(std::string& code) const
 {
     code += "#pragma once\r\n";
     code += "#include \"FireStarterState.h\"\r\n";
