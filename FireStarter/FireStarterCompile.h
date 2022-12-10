@@ -3,11 +3,9 @@
 
 class FireStarterCompiler : public SerialThread {
 private:
-	SerialThread m_jobThread;
 	FireStarterProcess* m_process = nullptr;
 	FireStarterServer* m_server = nullptr;
 	FireStarterManager* m_manager = nullptr;
-	volatile bool m_terminate = false;
 	bool m_isClient = false;
 
 public:

@@ -27,7 +27,7 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, uns
 
             // Generate the evaluate code
             std::string evaluateCode;
-            m_generate.GenerateEvaluate(job->m_state, evaluateCode);
+            m_generate->GenerateEvaluate(job->m_state, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
@@ -81,7 +81,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, const st
 
             // Generate the evaluate code
             std::string evaluateCode;
-            m_generate.GenerateEvaluate(job->m_state, evaluateCode);
+            m_generate->GenerateEvaluate(job->m_state, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
@@ -100,10 +100,10 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState* initState)
 {
     if (m_optimizeCode.empty())
         return false;
-    FireStarterState state(*initState);
+
+    // Must copy the intitState pointer in case it becomes invalid when the code below is called.
+    FireStarterState state(*initState); 
     DispatchAsync([this, state] {
-        CUDAContext m_CUDAContext(0);
-        FireStarterGenerate generate(&m_CUDAContext);
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
             // The state already contains the evolved and optimized code.
@@ -111,7 +111,7 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState* initState)
 
             // Generate the evaluate code
             std::string evaluateCode;
-            generate.GenerateEvaluate(job->m_state, evaluateCode);
+            m_generate->GenerateEvaluate(job->m_state, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
@@ -126,13 +126,21 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState* initState)
     return true;
 } // GenerateOptimize
 
-FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) : m_CUDAContext(index), m_generate(&m_CUDAContext)
+FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index)
 {
     m_manager = manager;
     m_index = index;
     FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode);
+    DispatchAsync([this] {
+        m_CUDAContext = new CUDAContext(m_index);
+        m_generate = new FireStarterGenerate(m_CUDAContext);
+    });
 } // FireStarterEvolve
 
 FireStarterEvolve::~FireStarterEvolve(void)
 {
+    DispatchSync([this] {
+        delete m_generate;
+        delete m_CUDAContext;
+    });
 } // ~FireStarterEvolve

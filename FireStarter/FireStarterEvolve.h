@@ -5,11 +5,11 @@
 
 class FireStarterEvolve : public SerialThread {
 private:
-	CUDAContext m_CUDAContext;
-	FireStarterManager* m_manager;
-	FireStarterGenerate m_generate;
+	CUDAContext* m_CUDAContext = nullptr;
+	FireStarterManager* m_manager = nullptr;
+	FireStarterGenerate* m_generate = nullptr;
 	std::string m_optimizeCode;
-	size_t m_index;
+	size_t m_index = 0;
 
 public:
 	bool EvolveGenerations(const FireStarterState* initState, unsigned int generations);
