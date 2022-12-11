@@ -1,9 +1,8 @@
 #pragma once
-#include "SerialThread.h"
 #include "FireStarterManager.h"
-#include "CUDAContext.h"
+#include "CUDAThread.h"
 
-class FireStarterExecute : public SerialThread {
+class FireStarterExecute : public CUDAThread {
 private:
     FireStarterResults* m_hostResults = nullptr;
     FireStarterEvolutions* m_hostEvolutions = nullptr;
@@ -20,8 +19,7 @@ private:
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_evolveFunction = nullptr;
     CUfunction m_optimizeFunction = nullptr;
-    CUDAContext *m_CUDAContext = nullptr;
-    size_t m_resultsSize = 0;
+   size_t m_resultsSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_index = 0;
 

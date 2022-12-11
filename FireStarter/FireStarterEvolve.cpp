@@ -132,8 +132,7 @@ FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index)
     m_index = index;
     FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode);
     DispatchAsync([this] {
-        m_CUDAContext = new CUDAContext(m_index);
-        m_generate = new FireStarterGenerate(m_CUDAContext);
+        m_generate = new FireStarterGenerate(Context());
     });
 } // FireStarterEvolve
 
@@ -141,6 +140,5 @@ FireStarterEvolve::~FireStarterEvolve(void)
 {
     DispatchSync([this] {
         delete m_generate;
-        delete m_CUDAContext;
     });
 } // ~FireStarterEvolve

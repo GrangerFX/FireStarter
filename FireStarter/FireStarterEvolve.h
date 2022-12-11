@@ -2,10 +2,10 @@
 #include "FireStarterState.h"
 #include "FireStarterGenerate.h"
 #include "FireStarterManager.h"
+#include "CUDAThread.h"
 
-class FireStarterEvolve : public SerialThread {
+class FireStarterEvolve : public CUDAThread {
 private:
-	CUDAContext* m_CUDAContext = nullptr;
 	FireStarterManager* m_manager = nullptr;
 	FireStarterGenerate* m_generate = nullptr;
 	std::string m_optimizeCode;

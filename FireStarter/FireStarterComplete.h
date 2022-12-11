@@ -2,11 +2,10 @@
 #include "FireStarterManager.h"
 #include "FireStarterGenerate.h"
 #include "FireStarterUtil.h"
-#include "SerialThread.h"
 #include "SerialOutput.h"
-#include "CUDAContext.h"
+#include "CUDAThread.h"
 
-class FireStarterComplete : public SerialThread {
+class FireStarterComplete : public CUDAThread {
 private:
 	FireStarterSettings m_settings;
 	FrameBuffer m_buffer;
@@ -19,7 +18,6 @@ private:
 	CUmodule m_fireShowModule = nullptr;
 	FireStarterResult* m_fireShowResult = nullptr;
 	FireStarterInstructions* m_fireShowInstructions = nullptr;
-	CUDAContext* m_CUDAContext = nullptr;
 	FireStarterManager* m_manager = nullptr;
 	void* m_window = nullptr;
 	size_t m_resultsCount = 0;
