@@ -5,72 +5,21 @@
 #include "FireStarter_Solution.h"
 #include "FireStarterEvolve.h"
 #include "FireStarterExecute.h"
+#include "FireStarterComplete.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
-
-bool FireStarter::LoadFireSettingsCode(void)
-{
-    if (!FireStarterCode::LoadCode("FireSettings.cu", m_fireSettingsCode))
-        return false;
-    return true;
-} // LoadFireSettingsCode
-
-void FireStarter::FireSettings(FireStarterSettings &settings, unsigned int firestarterMode)
-{
-    // Launch the load settings kernel
-    dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
-    dim3 cudaGridSize(1, 1, 1);
-
-    FireStarterSettings* fireSettings = nullptr;
-    checkCUDAErrors(cudaMalloc(&fireSettings, sizeof(FireStarterSettings)));
-
-    void* arr[] = { reinterpret_cast<void*>(&fireSettings),
-                    reinterpret_cast<void*>(&firestarterMode) };
-
-    checkCUDAErrors(cuLaunchKernel(m_fireSettingsFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0,                                                  // shared mem
-        m_CUDAContext->Stream(),                            // CUDA stream */
-        &arr[0],                                            // arguments */
-        0));
-    checkCUDAErrors(cudaMemcpyAsync(&settings, fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, m_CUDAContext->Stream()));
-    checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
-
-    // Unload the fire show code and destroy the CUDA context.
-    checkCUDAErrors(cudaFree(fireSettings));
-} // FireSettings
-
-void FireStarter::ControlDeallocate(void)
-{
-    if (m_fireSettingsModule) {
-        checkCUDAErrors(cuModuleUnload(m_fireSettingsModule));
-        m_fireSettingsModule = nullptr;
-    }
-} // ControlDeallocate
-
-void FireStarter::ControlAllocate(void)
-{
-    if (!m_CUDAContext)
-        m_CUDAContext = new CUDAContext(0);
-    ControlDeallocate();
-
-    // Compile FireSettings
-    if (CUDACompile::CompileProgram(m_fireSettingsModule, m_fireSettingsCode, "FireSettings"))
-        m_fireSettingsFunction = CUDACompile::GetFunction(m_fireSettingsModule, "FireSettings");
-} // ControlAllocate
 
 void FireStarter::ControlUnits(const FireStarterState* evolveState)
 {
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings);
-    m_complete->CompleteInit(m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(m_settings);
+    complete->CompleteInit(m_window, m_width, m_height);
 
     // Initialize the best state.
     FireStarterState bestState;
     if (evolveState) {
         FireStarterSettings optimizeSettings;
-        FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
+        m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
         m_settings.CopyModeSettings(optimizeSettings);
         bestState = *evolveState;
     } else if (m_settings.m_mode == FIRESTARTER_OPTIMIZE)
@@ -112,7 +61,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
                 // Update the best state and display the results.
                 FireStarterState state;
                 unit->GetState(state);
-                m_complete->CompleteResults(bestState, state);
+                complete->CompleteResults(bestState, state);
 
                 // Save the state in the array of all states.
                 FireStarterState& oldState = allStates[state.m_index];
@@ -140,8 +89,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
     units.clear();
 
     // Delete the completion unit.
-    delete m_complete;
-    m_complete = nullptr;
+    delete complete;
 
     // Clear the states.
     allStates.clear();
@@ -172,15 +120,15 @@ void FireStarter::ControlTest(void)
     FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings, manager);
-    m_complete->CompleteInit(m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(m_settings, manager);
+    complete->CompleteInit(m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
     unsigned int generation = 0;
     while (!m_quitControlThread) {
         evolve->EvolveStates(bestState, allStates, generation);
         execute->ExecuteEvolve();
-        if (!m_complete->CompleteStates(bestState, allStates, generation))
+        if (!complete->CompleteStates(bestState, allStates, generation))
             break;
         generation++;
     }
@@ -189,8 +137,7 @@ void FireStarter::ControlTest(void)
     manager->Cancel();
 
     // Delete the completion unit.
-    delete m_complete;
-    m_complete = nullptr;
+    delete complete;
 
     // Finish processing and terminate each unit.
     delete execute;
@@ -233,12 +180,12 @@ void FireStarter::ControlRandom(void)
     FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, m_settings.m_units);
 
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings, manager);
-    m_complete->CompleteInit(m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(m_settings, manager);
+    complete->CompleteInit(m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
-        if (!m_complete->CompleteRandom(bestState))
+        if (!complete->CompleteRandom(bestState))
             break;
     }
 
@@ -246,8 +193,7 @@ void FireStarter::ControlRandom(void)
     manager->Cancel();
 
     // Delete the completion unit.
-    delete m_complete;
-    m_complete = nullptr;
+    delete complete;
 
     // Finish processing and terminate each unit.
     delete executeRandom;
@@ -300,8 +246,8 @@ void FireStarter::ControlEvolve(void)
     }
 
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings, manager);
-    m_complete->CompleteInit(m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(m_settings, manager);
+    complete->CompleteInit(m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
     unsigned int generation = 0;
@@ -315,7 +261,7 @@ void FireStarter::ControlEvolve(void)
             execute->ExecuteEvolve();
 
         // Complete each state and display the results.
-        if (!m_complete->CompleteStates(bestState, allStates, generation))
+        if (!complete->CompleteStates(bestState, allStates, generation))
             break;
         generation++;
     }
@@ -324,8 +270,7 @@ void FireStarter::ControlEvolve(void)
     manager->Cancel();
 
     // Delete the completion unit.
-    delete m_complete;
-    m_complete = nullptr;
+    delete complete;
 
     // Finish processing and terminate each unit.
     for (FireStarterExecute* execute : executionUnits)
@@ -357,7 +302,7 @@ void FireStarter::ControlOptimize(const FireStarterState *evolveState)
     if (evolveState) {
         // Switch the settings to optimize mode
         FireStarterSettings optimizeSettings;
-        FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
+        m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
         m_settings.CopyModeSettings(optimizeSettings);
 
         // Copy the best evolved state.
@@ -383,8 +328,8 @@ void FireStarter::ControlOptimize(const FireStarterState *evolveState)
     FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings, manager);
-    m_complete->CompleteInit(m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(m_settings, manager);
+    complete->CompleteInit(m_window, m_width, m_height);
 
     // Create the state and execution unit.
     std::vector<FireStarterState> allStates;
@@ -403,7 +348,7 @@ void FireStarter::ControlOptimize(const FireStarterState *evolveState)
         execute->ExecuteOptimize(generation);
 
         // Update the results in the UI.
-        if (!m_complete->CompleteStates(bestState, allStates, generation))
+        if (!complete->CompleteStates(bestState, allStates, generation))
             break;
         generation++;
    }
@@ -412,8 +357,7 @@ void FireStarter::ControlOptimize(const FireStarterState *evolveState)
     manager->Cancel();
 
     // Delete the completion unit.
-    delete m_complete;
-    m_complete = nullptr;
+    delete complete;
 
     // Finish processing and terminate each unit.
     delete execute;
@@ -431,54 +375,55 @@ void FireStarter::ControlOptimize(const FireStarterState *evolveState)
 void FireStarter::ControlSolution(void)
 {
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings);
-    m_complete->CompleteInit(m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(m_settings);
+    complete->CompleteInit(m_window, m_width, m_height);
 
     // Draw the solution in the window.
-    m_complete->CompleteSolution();
+    complete->CompleteSolution();
 
     // Delete the completion unit.
-    delete m_complete;
-    m_complete = nullptr;
+    delete complete;
 } // ControlSolution
 
 void FireStarter::ControlThread(void)
 {
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireSettings(m_settings, FIRESTARTER_MODE);
+    DispatchAsync([this] {
+        // Load the settings from the compiled CUDA code.
+        // This allows the settings to be modified without recompiling the main program.
+        m_buildSettings.FireSettings(m_settings, FIRESTARTER_MODE);
 
-    // If the evolve units is set to zero, use the number of gpus.
-    if (m_settings.m_units == 0)
-        m_settings.m_units = CUDAContext::CUDADevices();
+        // If the evolve units is set to zero, use the number of gpus.
+        if (m_settings.m_units == 0)
+            m_settings.m_units = CUDAContext::CUDADevices();
 
-    switch (m_settings.m_mode) {
-    case FIRESTARTER_CODE:
-    case FIRESTARTER_UNIT:
-        // Program evolution pass.
-        ControlUnits();
-        break;
-    case FIRESTARTER_TEST:
-        // Test of jobs without processes.
-        ControlTest();
-        break;
-    case FIRESTARTER_RANDOM:
-        // Random generations.
-        ControlRandom();
-        break;
-    case FIRESTARTER_EVOLVE:
-        // Evolved generations.
-        ControlEvolve();
-        break;
-    case FIRESTARTER_OPTIMIZE:
-        // Optimization evolution pass.
-        ControlOptimize();
-        break;
-    case FIRESTARTER_SOLUTION:
-        // Run the most recent solution.
-        ControlSolution();
-        break;
-    }
+        switch (m_settings.m_mode) {
+        case FIRESTARTER_CODE:
+        case FIRESTARTER_UNIT:
+            // Program evolution pass.
+            ControlUnits();
+            break;
+        case FIRESTARTER_TEST:
+            // Test of jobs without processes.
+            ControlTest();
+            break;
+        case FIRESTARTER_RANDOM:
+            // Random generations.
+            ControlRandom();
+            break;
+        case FIRESTARTER_EVOLVE:
+            // Evolved generations.
+            ControlEvolve();
+            break;
+        case FIRESTARTER_OPTIMIZE:
+            // Optimization evolution pass.
+            ControlOptimize();
+            break;
+        case FIRESTARTER_SOLUTION:
+            // Run the most recent solution.
+            ControlSolution();
+            break;
+        }
+    });
 } // ControlThread
 
 bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
@@ -486,29 +431,16 @@ bool FireStarter::Init(void* window, unsigned int width, unsigned int height)
     m_window = window;
     m_width = width;
     m_height = height;
-    if (LoadFireSettingsCode()) {
-        DispatchAsync([this] { ControlAllocate(); });
-        DispatchAsync([this] { ControlThread(); });
-        DispatchAsync([this] { ControlDeallocate(); });
-        return true;
-    }
-    return false;
+    ControlThread();
+    return true;
 } // Init
 
 FireStarter::FireStarter(void)
 {
-    m_CUDAContext = nullptr;
-    m_fireSettingsModule = nullptr;
-    m_fireSettingsFunction = nullptr;
     m_quitControlThread = false;
 } // FireStarter
 
 FireStarter::~FireStarter(void)
 {
     m_quitControlThread = true;
-    DispatchSync([this] {
-        ControlDeallocate();
-        if (m_CUDAContext)
-            delete m_CUDAContext;
-    });
 } // ~FireStarter

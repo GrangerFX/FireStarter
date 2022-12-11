@@ -3,27 +3,17 @@
 #include "FireStarterResults.h"
 #include "FireStarterUnit.h"
 #include "FireStarterProcess.h"
-#include "FireStarterComplete.h"
-#include "HashRandom.h"
-#include "SerialOutput.h"
+#include "FireStarterBuildSettings.h"
 
 class FireStarter : public SerialThread {
 public:
-    std::string m_fireSettingsCode;
-    CUDAContext* m_CUDAContext;
-    CUmodule m_fireSettingsModule;
-    CUfunction m_fireSettingsFunction;
+    FireStarterBuildSettings m_buildSettings;
     FireStarterSettings m_settings;
-    FireStarterComplete* m_complete;
     void* m_window = nullptr;
     unsigned int m_width = 0;
     unsigned int m_height = 0;
     volatile bool m_quitControlThread = false;
 
-    bool LoadFireSettingsCode(void);
-    void FireSettings(FireStarterSettings& settings, unsigned int firestarterMode);
-    void ControlDeallocate(void);
-    void ControlAllocate(void);
     void ControlUnits(const FireStarterState* evolveState = nullptr);
     void ControlTest(void);
     void ControlRandom(void);
