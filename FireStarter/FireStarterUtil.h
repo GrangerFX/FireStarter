@@ -119,19 +119,19 @@ public:
         }
     } // EraseFrameBuffer
 
-    inline const unsigned char* GetDevice(void)
+    inline const unsigned char* GetPixels(void)
     {
         if (m_size)
             checkCUDAErrors(cudaMemcpy(m_hostBase, m_deviceBase, m_size, cudaMemcpyDeviceToHost));
         return m_hostBase;
-    } // GetFrameBuffer
+    } // GetPixels
 
     inline const unsigned char* GetHost(void)
     {
          return m_hostBase;
     } // GetFrameBuffer
 
-    inline void Resize(unsigned long width, unsigned long height)
+    inline void Resize(unsigned long width = 0, unsigned long height = 0)
     {
         if ((m_width != width) || (m_height != height)) {
             if (m_hostBase) {

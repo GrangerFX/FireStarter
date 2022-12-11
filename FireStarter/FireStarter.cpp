@@ -172,7 +172,7 @@ void FireStarter::ControlTest(void)
     FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings);
+    m_complete = new FireStarterComplete(m_settings, manager);
     m_complete->CompleteInit(m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
@@ -180,7 +180,7 @@ void FireStarter::ControlTest(void)
     while (!m_quitControlThread) {
         evolve->EvolveStates(bestState, allStates, generation);
         execute->ExecuteEvolve();
-        if (!m_complete->CompleteStates(manager, bestState, allStates, generation))
+        if (!m_complete->CompleteStates(bestState, allStates, generation))
             break;
         generation++;
     }
@@ -233,12 +233,12 @@ void FireStarter::ControlRandom(void)
     FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, m_settings.m_units);
 
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings);
+    m_complete = new FireStarterComplete(m_settings, manager);
     m_complete->CompleteInit(m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
     while (!m_quitControlThread) {
-        if (!m_complete->CompleteRandom(manager, bestState))
+        if (!m_complete->CompleteRandom(bestState))
             break;
     }
 
@@ -300,7 +300,7 @@ void FireStarter::ControlEvolve(void)
     }
 
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings);
+    m_complete = new FireStarterComplete(m_settings, manager);
     m_complete->CompleteInit(m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
@@ -315,7 +315,7 @@ void FireStarter::ControlEvolve(void)
             execute->ExecuteEvolve();
 
         // Complete each state and display the results.
-        if (!m_complete->CompleteStates(manager, bestState, allStates, generation))
+        if (!m_complete->CompleteStates(bestState, allStates, generation))
             break;
         generation++;
     }
@@ -383,7 +383,7 @@ void FireStarter::ControlOptimize(const FireStarterState *evolveState)
     FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
     // Create the completion unit.
-    m_complete = new FireStarterComplete(m_settings);
+    m_complete = new FireStarterComplete(m_settings, manager);
     m_complete->CompleteInit(m_window, m_width, m_height);
 
     // Create the state and execution unit.
@@ -403,7 +403,7 @@ void FireStarter::ControlOptimize(const FireStarterState *evolveState)
         execute->ExecuteOptimize(generation);
 
         // Update the results in the UI.
-        if (!m_complete->CompleteStates(manager, bestState, allStates, generation))
+        if (!m_complete->CompleteStates(bestState, allStates, generation))
             break;
         generation++;
    }
