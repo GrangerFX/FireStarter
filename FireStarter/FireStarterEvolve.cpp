@@ -46,11 +46,11 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, uns
     return true;
 } // EvolveGenerations
 
-bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, const std::vector<FireStarterState>& allStates, unsigned int generation)
+bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, unsigned int generation)
 {
     if (m_optimizeCode.empty())
         return false;
-    FireStarterState state(*bestState);
+    FireStarterState state(bestState);
     DispatchAsync([this, state, allStates, generation] {
         unsigned int numInstructions = state.Settings().m_instructions;
         FireStarterJob* job = m_manager->GetFree();
@@ -96,13 +96,13 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState* bestState, const st
     return true;
 } // EvolveStates
 
-bool FireStarterEvolve::GenerateOptimize(const FireStarterState* initState)
+bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState)
 {
     if (m_optimizeCode.empty())
         return false;
 
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
-    FireStarterState state(*initState); 
+    FireStarterState state(initState); 
     DispatchAsync([this, state] {
         FireStarterJob* job = m_manager->GetFree();
         if (job) {

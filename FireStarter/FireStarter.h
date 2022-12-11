@@ -9,12 +9,10 @@
 
 class FireStarter : public SerialThread {
 public:
-    SimpleTimer m_controlTimer;
     std::string m_fireSettingsCode;
     CUDAContext* m_CUDAContext;
     CUmodule m_fireSettingsModule;
     CUfunction m_fireSettingsFunction;
-    FireStarterState m_bestState;
     FireStarterSettings m_settings;
     FireStarterComplete* m_complete;
     void* m_window = nullptr;
@@ -26,11 +24,11 @@ public:
     void FireSettings(FireStarterSettings& settings, unsigned int firestarterMode);
     void ControlDeallocate(void);
     void ControlAllocate(void);
-    void ControlUnits(void);
+    void ControlUnits(const FireStarterState* evolveState = nullptr);
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);
-    void ControlOptimize(void);
+    void ControlOptimize(const FireStarterState* evolveState = nullptr);
     void ControlSolution(void);
     void ControlThread(void);
     bool Init(void* window, unsigned int width, unsigned int height);

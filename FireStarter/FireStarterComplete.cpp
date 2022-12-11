@@ -28,9 +28,9 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
     // Setup the data
     FireStarterSettings settings = state.Settings();
     size_t resultSize = FireStarterResult::ResultSize(settings.m_registers, settings.m_variations);
-    checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, state.Result(), resultSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, state.Result(), resultSize, cudaMemcpyHostToDevice, m_fireShowContext->Stream()));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(settings.m_instructions);
-    checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.OptimizedInstructions(), instructionsSize, cudaMemcpyHostToDevice, m_CUDAContext->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.OptimizedInstructions(), instructionsSize, cudaMemcpyHostToDevice, m_fireShowContext->Stream()));
 
     // Launch the display kernel
     int threadsPerBlock = BLOCK_THREADS;
@@ -48,12 +48,12 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
     checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, m_CUDAContext->Stream(),                         // shared mem, stream */
+        0, m_fireShowContext->Stream(),                         // shared mem, stream */
         &arr[0],                                            // arguments */
         0));
 
     // Syncronize the stream to complete the work
-    checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
+    checkCUDAErrors(cudaStreamSynchronize(m_fireShowContext->Stream()));
 } // FireShow
 
 float FireStarterComplete::DrawSolution(uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, unsigned int variation)
@@ -219,7 +219,7 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState, unsign
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
-void FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, FireStarterState& oldState)
+void FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state)
 {
     if (!state.m_generation) {
         m_resultsCount = 0;
@@ -245,23 +245,21 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     if (result < bestState.MaxResult()) {
         // Update the best state.
         bestState = state;
-        if (settings.m_mode != FIRESTARTER_OPTIMIZE)
-            SaveBestState(bestState);
+        DispatchAsync([this, bestState] {
+            if (m_settings.m_mode != FIRESTARTER_OPTIMIZE)
+                SaveBestState(bestState);
 
-        // Update the best code on disk.
-        SaveBestCode(bestState);
-        SaveSolution(bestState, state.m_generation, m_resultsTime);
+            // Update the best code on disk.
+            SaveBestCode(bestState);
+            SaveSolution(bestState, bestState.m_generation, m_resultsTime);
 
-        // Draw the graphs for both variations.
-        FireShow(state);
-        DispatchMainSync([this] {
-            RenderImage(m_buffer.m_width, m_buffer.m_height, m_buffer.GetDevice());
+            // Draw the graphs for both variations.
+            FireShow(bestState);
+            DispatchMainSync([this] {
+                RenderImage(m_buffer.m_width, m_buffer.m_height, m_buffer.GetDevice());
+            });
         });
     }
-
-    // Save the state in the array of all states.
-    if (!state.m_generation || (result < oldState.MaxResult()))
-        oldState = state;
 
     // Test the current state.
     float testError = state.TestResult();
@@ -271,7 +269,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     RenderStatus(bestState, state, duration, m_smoothTime, result, average, testError);
 } // CompleteResults
 
-bool FireStarterComplete::CompleteRandom(FireStarterManager* manager, FireStarterState& bestState, FireStarterState& oldState)
+bool FireStarterComplete::CompleteRandom(FireStarterManager* manager, FireStarterState& bestState)
 {
     // Get the completed job.
     // Note: The jobs may be received out of order.
@@ -283,15 +281,16 @@ bool FireStarterComplete::CompleteRandom(FireStarterManager* manager, FireStarte
     //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
     // Update the best state and display the results.
-    CompleteResults(bestState, job->m_state, oldState);
+    FireStarterState &state = job->m_state;
+    CompleteResults(bestState, state);
     manager->AddFree(job);
     return true;
 } // CompleteRandom
 
 bool FireStarterComplete::CompleteStates(FireStarterManager* manager, FireStarterState& bestState, std::vector<FireStarterState>& oldStates, unsigned int generation)
 {
+    size_t numStates = m_settings.m_units;
     std::vector<FireStarterState> newStates = oldStates;
-    size_t numStates = oldStates.size();
     for (size_t i = 0; i < numStates; i++) {
         // Get the next job in the order they are completed.
         FireStarterJob* job = manager->GetComplete();
@@ -307,8 +306,14 @@ bool FireStarterComplete::CompleteStates(FireStarterManager* manager, FireStarte
     }
 
     // Update the best state and display the results.
-    for (size_t i = 0; i < numStates; i++)
-        CompleteResults(bestState, newStates[i], oldStates[i]);
+    for (size_t i = 0; i < numStates; i++) {
+        FireStarterState& state = newStates[i];
+        CompleteResults(bestState, state);
+
+        FireStarterState& oldState = oldStates[i];
+        if (!state.m_generation || (state.MaxResult() < oldState.MaxResult()))
+            oldState = state;
+    }
 
     // Has the completion condition been met?
     return generation - bestState.m_generation <= m_settings.m_attempts;
@@ -339,40 +344,51 @@ void FireStarterComplete::CompleteInit(void* window, unsigned int width, unsigne
 FireStarterComplete::FireStarterComplete(const FireStarterSettings& settings)
 {
     m_settings = settings;
-    if (settings.m_mode != FIRESTARTER_SOLUTION)
-        if (LoadSolutionTargetCode() && LoadFireShowCode()) {
-            // Create the thread's CUDA context.
-            m_CUDAContext = new CUDAContext();
+    if ((settings.m_mode != FIRESTARTER_SOLUTION) && LoadSolutionTargetCode() && LoadFireShowCode()) {
+        // Compile FireGenerate
+        m_generateContext = new CUDAContext();
+        m_generate = new FireStarterGenerate(m_generateContext);
+
+        // FireShow is called in its own thread.
+        DispatchAsync([this] {
+            // Create a CUDA context for the FireShow thread.
+            m_fireShowContext = new CUDAContext();
 
             // Allocate the results and instructions.
             checkCUDAErrors(cudaMalloc(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations)));
             checkCUDAErrors(cudaMalloc(&m_fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions)));
 
-            // Compile FireGenerate
-            m_generate = new FireStarterGenerate(m_CUDAContext);
-
             // Compile FireShow.
             if (CUDACompile::CompileProgram(m_fireShowModule, m_fireShowCode, "FireShow"))
                 m_fireShowFunction = CUDACompile::GetFunction(m_fireShowModule, "FireShow");
-        }
+        });
+
+    }
 } // FireStarterComplete
 
 FireStarterComplete::~FireStarterComplete(void)
 {
-    if (m_fireShowResult) {
-        checkCUDAErrors(cudaFree(m_fireShowResult));
-        m_fireShowResult = nullptr;
-    }
-    if (m_fireShowInstructions) {
-        checkCUDAErrors(cudaFree(m_fireShowInstructions));
-        m_fireShowInstructions = nullptr;
-    }
-    if (m_fireShowModule) {
-        checkCUDAErrors(cuModuleUnload(m_fireShowModule));
-        m_fireShowModule = nullptr;
-    }
-    if (m_generate) {
+    if (m_fireShowContext)
+        DispatchSync([this] {
+            if (m_fireShowResult) {
+                checkCUDAErrors(cudaFree(m_fireShowResult));
+                m_fireShowResult = nullptr;
+            }
+            if (m_fireShowInstructions) {
+                checkCUDAErrors(cudaFree(m_fireShowInstructions));
+                m_fireShowInstructions = nullptr;
+            }
+            if (m_fireShowModule) {
+                checkCUDAErrors(cuModuleUnload(m_fireShowModule));
+                m_fireShowModule = nullptr;
+            }
+            delete m_fireShowContext;
+            m_fireShowContext = nullptr;
+        });
+    if (m_generateContext) {
         delete m_generate;
         m_generate = nullptr;
+        delete m_generateContext;
+        m_generateContext = nullptr;
     }
 } // ~FireStarterComplete
