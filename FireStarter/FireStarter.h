@@ -1,12 +1,9 @@
 #pragma once
-#include <vector>
-#include "FireStarterResults.h"
-#include "FireStarterUnit.h"
-#include "FireStarterProcess.h"
+#include "FireStarterState.h"
 #include "FireStarterBuildSettings.h"
 
 class FireStarter : public SerialThread {
-public:
+private:
     FireStarterBuildSettings m_buildSettings;
     FireStarterSettings m_settings;
     void* m_window = nullptr;
@@ -21,6 +18,8 @@ public:
     void ControlOptimize(const FireStarterState* evolveState = nullptr);
     void ControlSolution(void);
     void ControlThread(void);
+
+public:
     FireStarter(void* window, unsigned int width, unsigned int height);
     ~FireStarter(void);
 }; // class FireStarter

@@ -1,7 +1,6 @@
 #pragma once
 #include "FireStarterManager.h"
 #include "FireStarterGenerate.h"
-#include "FireStarterUtil.h"
 #include "SerialOutput.h"
 #include "CUDAThread.h"
 
@@ -32,7 +31,6 @@ private:
 	bool LoadFireShowCode(void);
 	void DisplayImage(const unsigned char* pixels);
 	void FireShow(const FireStarterState& state);
-	void FireShowSolution(void);
 	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTimee, double result, double average, double testError);
 	void SaveBestState(const FireStarterState& bestState);
 	void SaveBestCode(const FireStarterState& bestState);
