@@ -21,7 +21,6 @@ public:
     void ControlOptimize(const FireStarterState* evolveState = nullptr);
     void ControlSolution(void);
     void ControlThread(void);
-    bool Init(void* window, unsigned int width, unsigned int height);
-    FireStarter(void);
+    FireStarter(void* window, unsigned int width, unsigned int height);
     ~FireStarter(void);
 }; // class FireStarter

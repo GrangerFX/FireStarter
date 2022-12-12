@@ -43,7 +43,6 @@ public:
 	bool CompleteRandom(FireStarterState& bestState);
 	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, unsigned int generation);
 	void CompleteSolution(void);
-	void CompleteInit(void* window, unsigned int width, unsigned int height);
-    FireStarterComplete(const FireStarterSettings& settings, FireStarterManager* manager = nullptr);
+    FireStarterComplete(FireStarterManager* manager, const FireStarterSettings& settings, void* window, unsigned int width, unsigned int height);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

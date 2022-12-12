@@ -81,25 +81,23 @@ HRESULT Initialize(HINSTANCE hInstance)
 
 			SerialThread* mainSerialThread = new SerialThread(true);
 			SerialThread::SetMainThread(mainSerialThread);
-			FireStarter* fireStarter = new FireStarter();
-			if (fireStarter->Init(hwnd, imageWidth, imageHeight)) {
-				do {
-					MSG	msg;
-					if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
-						if (msg.message == WM_QUIT)
-							break;
-						TranslateMessage(&msg);
-						DispatchMessage(&msg);
-					} else if (!mainSerialThread->PollThread())
-						Sleep(100);
-				} while (1);
+			FireStarter* fireStarter = new FireStarter(hwnd, imageWidth, imageHeight);
+			do {
+				MSG	msg;
+				if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+					if (msg.message == WM_QUIT)
+						break;
+					TranslateMessage(&msg);
+					DispatchMessage(&msg);
+				} else if (!mainSerialThread->PollThread())
+					Sleep(100);
+			} while (1);
 
-				SetWindowText(hwnd, "Quitting");
-				result = S_OK;
-			}
+			SetWindowText(hwnd, "Quitting");
 			mainSerialThread->TerminateThread(); // No more updates will be accepted.
 			delete fireStarter;
 			delete mainSerialThread;
+			result = S_OK;
 		}
 	}
 	return result;

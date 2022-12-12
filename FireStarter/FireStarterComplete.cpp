@@ -22,8 +22,6 @@ bool FireStarterComplete::LoadFireShowCode(void)
 
 void FireStarterComplete::DisplayImage(const unsigned char* pixels)
 {
-    if (!m_window)
-        return;
     DispatchMainSync([this, pixels] {
         unsigned char buffer[4096];
         BITMAPINFO* bm = (BITMAPINFO*)buffer;
@@ -267,8 +265,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 
         // Update the render status after every pass.
         double average = m_totalResult / m_resultsCount;
-        if (m_window)
-            RenderStatus(bestState, state, duration, m_smoothTime, state.MaxResult(), average, testError);
+        RenderStatus(bestState, state, duration, m_smoothTime, state.MaxResult(), average, testError);
 
         // If the best state was updated, save the stat and draw the results.
         if (update) {
@@ -281,8 +278,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
             SaveSolution(bestState, bestState.m_generation, m_resultsTime);
 
             // Draw the graphs for both variations.
-            if (m_window)
-                FireShow(bestState);
+            FireShow(bestState);
         }
     });
 } // CompleteResults
@@ -349,28 +345,22 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 
 void FireStarterComplete::CompleteSolution(void)
 {
-    if (m_window)
-        DispatchAsync([this] {
-            FireShowSolution();
-        });
+    DispatchAsync([this] {
+        FireShowSolution();
+    });
 } // CompleteSolution
 
-void FireStarterComplete::CompleteInit(void* window, unsigned int width, unsigned int height)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterSettings& settings, void* window, unsigned int width, unsigned int height)
 {
-    DispatchAsync([this, window, width, height] {
-        m_window = window;
-        m_width = width;
-        m_height = height;
+    m_manager = manager;
+    m_settings = settings;
+    m_window = window;
+    m_width = width;
+    m_height = height;
+
+    DispatchSync([this] {
         m_buffer.Resize(m_width, m_height);
         m_buffer.Erase();
-    });
-} // CompleteInit
-
-FireStarterComplete::FireStarterComplete(const FireStarterSettings& settings, FireStarterManager* manager)
-{
-    m_settings = settings;
-    m_manager = manager;
-    DispatchSync([this] {
         if ((m_settings.m_mode != FIRESTARTER_SOLUTION) && LoadFireShowCode() && LoadSolutionTargetCode()) {
             m_generate = new FireStarterGenerate(Context());
 
