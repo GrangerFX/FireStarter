@@ -13,7 +13,7 @@ public:
         return m_CUDAContext;
     } // Context
 
-    inline CUDAThread(unsigned int device = 0, bool pollThread = false) : SerialThread(pollThread)
+    inline CUDAThread(size_t device = 0, bool pollThread = false) : SerialThread(pollThread)
     {
         DispatchSync([this, device] {
             m_CUDAContext = new CUDAContext(device);

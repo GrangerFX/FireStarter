@@ -139,6 +139,7 @@
     <ClInclude Include="FireStarter\CUDACompile.h" />
     <ClInclude Include="FireStarter\CUDAContext.h" />
     <ClInclude Include="FireStarter\CUDAErrors.h" />
+    <ClInclude Include="FireStarter\CUDAThread.h" />
     <ClInclude Include="FireStarter\FireStarter.h" />
     <ClInclude Include="FireStarter\FireStarterBuildSettings.h" />
     <ClInclude Include="FireStarter\FireStarterCode.h" />
