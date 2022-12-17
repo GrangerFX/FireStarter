@@ -127,14 +127,15 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
     } else
-        statusString = Format("%s: Seed=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), state.m_generation, state.m_generation, state.m_generation - bestState.m_generation, bestState.MaxResult(), bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
+        statusString = Format("%s: Index=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), state.m_index, state.m_generation, state.m_generation - bestState.m_generation, bestState.MaxResult(), bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
 
     // Update the log file.
     FireStarterCode::AppendCode(logFilePath, statusString + "\r\n");
 
     // Update the window status.
-    DispatchMainAsync([this, statusString] {
-        SetWindowText((HWND)m_window, statusString.c_str());
+    HWND window = (HWND)m_window;
+    DispatchMainAsync([window, statusString] {
+        SetWindowText(window, statusString.c_str());
     });
 } // RenderStatus
 
@@ -259,7 +260,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
         for (size_t i = 0; i < numStates; i++) {
             // Get the next job in the order they are completed.
             FireStarterJob* job = m_manager->GetComplete();
-            if (!job || (job->m_state.m_index >= numStates)) {
+            if (!job) {
                 result = false;
                 break;
             }
@@ -268,7 +269,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Sort the completed jobs.
-            newStates[job->m_state.m_index] = job->m_state;
+            newStates[job->m_state.m_index % numStates] = job->m_state;
             m_manager->AddFree(job);
         }
         if (result) {
