@@ -127,7 +127,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
     } else
-        statusString = Format("%s: Index=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), state.m_index, state.m_generation, state.m_generation - bestState.m_generation, bestState.MaxResult(), bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
+        statusString = Format("%s: Test=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), state.m_index / settings.m_units, state.m_generation, state.m_generation - bestState.m_generation, bestState.MaxResult(), bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
 
     // Update the log file.
     FireStarterCode::AppendCode(logFilePath, statusString + "\r\n");

@@ -14,8 +14,8 @@ private:
     void ControlUnits(const FireStarterState* evolveState = nullptr);
     void ControlTest(void);
     void ControlRandom(void);
-    void ControlEvolve(void);
-    void ControlOptimize(const FireStarterState* evolveState = nullptr);
+    void ControlEvolve(unsigned int test = 0);
+    void ControlOptimize(unsigned int test = 0, const FireStarterState* evolveState = nullptr);
     void ControlSolution(void);
     void ControlThread(void);
 

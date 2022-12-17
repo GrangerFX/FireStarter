@@ -202,7 +202,7 @@ void FireStarter::ControlRandom(void)
     delete manager;
 } // ControlRandom
 
-void FireStarter::ControlEvolve(void)
+void FireStarter::ControlEvolve(unsigned int test)
 {
     // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
 #if FIRESTARTER_AUTO_PROCESS
@@ -225,17 +225,19 @@ void FireStarter::ControlEvolve(void)
     std::vector<FireStarterExecute*> executionUnits;
     std::vector<FireStarterState> allStates;
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
+        unsigned int testIndex = m_settings.m_units * test + i;
+
         // Randomize the entire program for the first generation
-        FireStarterState state(m_settings, i);
+        FireStarterState state(m_settings, testIndex);
         state.RandomProgram();
         allStates.push_back(state);
 
         // Create an evolve unit.
-        FireStarterEvolve* evolve = new FireStarterEvolve(manager, i);
+        FireStarterEvolve* evolve = new FireStarterEvolve(manager, testIndex);
         evolveUnits.push_back(evolve);
 
         // Create an evolution generator unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager, i);
+        FireStarterExecute* execute = new FireStarterExecute(manager, testIndex);
         executionUnits.push_back(execute);
     }
 
@@ -268,12 +270,10 @@ void FireStarter::ControlEvolve(void)
     // Finish processing and terminate each unit.
     for (FireStarterExecute* execute : executionUnits)
         delete execute;
-    executionUnits.clear();
 
     // Delete the evolution code generator.
     for (FireStarterEvolve* evolve : evolveUnits)
         delete evolve;
-    evolveUnits.clear();
 
     // Delete the multi-process compiler.
     delete compile;
@@ -281,90 +281,85 @@ void FireStarter::ControlEvolve(void)
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
 
-    // Clear the states.
-    allStates.clear();
-
     // Optimization evolution pass.
     if (!m_quitControlThread && (m_settings.m_mode == FIRESTARTER_EVOLVE) && FIRESTARTER_SECOND_PASS)
-        ControlOptimize(&bestState);
+        ControlOptimize(test, &bestState);
 } // ControlEvolve
 
-void FireStarter::ControlOptimize(const FireStarterState *evolveState)
+void FireStarter::ControlOptimize(unsigned int test, const FireStarterState *evolveState)
 {
-    for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++) {
-        // Convert the most recently evolved state into an optimize mode state.
-        FireStarterState bestState;
-        if (evolveState) {
-            // Switch the settings to optimize mode
-            FireStarterSettings optimizeSettings;
-            m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
-            m_settings.CopyModeSettings(optimizeSettings);
+    // Convert the most recently evolved state into an optimize mode state.
+    FireStarterState bestState;
+    if (evolveState) {
+        // Switch the settings to optimize mode
+        FireStarterSettings optimizeSettings;
+        m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
+        m_settings.CopyModeSettings(optimizeSettings);
 
-            // Copy the best evolved state.
-            bestState = *evolveState;
-        } else
-            // Load the best state from the previous Test, Random or Evolve run.
-            LoadState(bestState);
-        bestState.Settings().CopyModeSettings(m_settings);
-        bestState.m_generation = 0;
-        bestState.m_index = test;
-        bestState.InitResult();
+        // Copy the best evolved state.
+        bestState = *evolveState;
+    } else
+        // Load the best state from the previous Test, Random or Evolve run.
+        LoadState(bestState);
+    bestState.Settings().CopyModeSettings(m_settings);
+    bestState.m_generation = 0;
+    bestState.m_index = test;
+    bestState.InitResult();
 
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager(1);
+    // Create the compiler manager
+    FireStarterManager* manager = new FireStarterManager(1);
 
-        // Create the multi-process compiler.
-        FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+    // Create the multi-process compiler.
+    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
 
-        // Create the evolution code generator.
-        FireStarterEvolve* evolve = new FireStarterEvolve(manager);
+    // Create the evolution code generator.
+    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
-        // Create the execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager, 0);
+    // Create the execution unit.
+    FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
-        // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_settings, m_window, m_width, m_height);
+    // Create the completion unit.
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_settings, m_window, m_width, m_height);
 
-        // Create the state and execution unit.
-        std::vector<FireStarterState> allStates;
-        allStates.push_back(bestState);
+    // Create the state and execution unit.
+    std::vector<FireStarterState> allStates;
+    allStates.push_back(bestState);
 
-        // Generate the optimize code.
-        evolve->GenerateOptimize(bestState);
+    // Generate the optimize code.
+    evolve->GenerateOptimize(bestState);
 
-        // Compile the optimize code.
-        execute->ExecuteCompile();
+    // Compile the optimize code.
+    execute->ExecuteCompile();
 
-        // Loop until the the completion condition or the host program is quit.
-        unsigned int generation = 0;
-        while (!m_quitControlThread) {
-            // Optimize the current generation.
-            execute->ExecuteOptimize(generation);
+    // Loop until the the completion condition or the host program is quit.
+    unsigned int generation = 0;
+    while (!m_quitControlThread) {
+        // Optimize the current generation.
+        execute->ExecuteOptimize(generation);
 
-            // Update the results in the UI.
-            if (!complete->CompleteStates(bestState, allStates, generation))
-                break;
-            generation++;
-        }
-
-        // Cancel any waiting jobs
-        manager->Cancel();
-
-        // Delete the completion unit.
-        delete complete;
-
-        // Finish processing and terminate each unit.
-        delete execute;
-
-        // Delete the evolution code generator.
-        delete evolve;
-
-        // Delete the multi-process compiler.
-        delete compile;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
+        // Update the results in the UI.
+        if (!complete->CompleteStates(bestState, allStates, generation))
+            break;
+        generation++;
     }
+
+    // Cancel any waiting jobs
+    manager->Cancel();
+
+    // Delete the completion unit.
+    delete complete;
+
+    // Finish processing and terminate each unit.
+    delete execute;
+
+    // Delete the evolution code generator.
+    delete evolve;
+
+    // Delete the multi-process compiler.
+    delete compile;
+
+    // Delete the compilier manager and cancel any waiting jobs.
+    delete manager;
 } // ControlOptimize
 
 void FireStarter::ControlSolution(void)
@@ -406,11 +401,13 @@ void FireStarter::ControlThread(void)
             break;
         case FIRESTARTER_EVOLVE:
             // Evolved generations.
-            ControlEvolve();
+            for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++)
+                ControlEvolve(test);
             break;
         case FIRESTARTER_OPTIMIZE:
             // Optimization evolution pass.
-            ControlOptimize();
+            for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++)
+                ControlOptimize(test);
             break;
         case FIRESTARTER_SOLUTION:
             // Run the most recent solution.

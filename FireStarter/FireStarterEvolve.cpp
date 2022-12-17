@@ -57,6 +57,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
         if (job) {
             // Clone or randomize instructions in the later generations.
             job->m_state = allStates[m_index % allStates.size()];
+            job->m_state.m_index = (unsigned int)m_index;
             job->m_state.m_generation = generation;
             if (generation) {
                 unsigned long long seed = job->m_state.StateSeed();
