@@ -103,9 +103,8 @@ void FireStarter::ControlTest(void)
 
     // Setup the intial state
     std::vector<FireStarterState> allStates;
-    FireStarterState testState(m_settings);
-    allStates.push_back(testState);
-    FireStarterState bestState = testState;
+    FireStarterState bestState(m_settings);
+    allStates.push_back(bestState);
 
     // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -167,7 +166,7 @@ void FireStarter::ControlRandom(void)
 
     // Setup the intial best state 
     FireStarterState bestState(m_settings);
-    bestState.m_program.RandomProgram(bestState.StateSeed());
+    bestState.RandomProgram();
 
     // Start generating random code generations.
     evolve->EvolveGenerations(&bestState, m_settings.m_attempts);
@@ -219,7 +218,7 @@ void FireStarter::ControlEvolve(void)
 
     // Setup the intial best state
     FireStarterState bestState(m_settings);
-    bestState.m_program.RandomProgram(bestState.StateSeed());
+    bestState.RandomProgram();
 
     // Create the states and units.
     std::vector<FireStarterEvolve*> evolveUnits;
@@ -228,7 +227,7 @@ void FireStarter::ControlEvolve(void)
     for (unsigned int i = 0; i < m_settings.m_units; i++) {
         // Randomize the entire program for the first generation
         FireStarterState state(m_settings, i);
-        state.m_program.RandomProgram(state.StateSeed());
+        state.RandomProgram();
         allStates.push_back(state);
 
         // Create an evolve unit.

@@ -18,9 +18,9 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, uns
             job->m_state = state;
             job->m_state.m_generation = state.m_generation + generation;
             if ((!job->m_state.m_generation) || (job->m_state.Settings().m_mode == FIRESTARTER_RANDOM))
-                job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
+                job->m_state.RandomProgram();
             else
-                job->m_state.m_program.RandomInstruction(job->m_state.StateSeed());
+                job->m_state.RandomInstruction();
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();
@@ -74,7 +74,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                 // Randomize one instruction.
                 job->m_state.m_program.RandomInstruction(seed);
               } else
-                job->m_state.m_program.RandomProgram(job->m_state.StateSeed());
+                job->m_state.RandomProgram();
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();

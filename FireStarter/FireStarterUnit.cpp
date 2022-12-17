@@ -59,9 +59,9 @@ void FireStarterUnit::GenerateUnit(void)
 {
     // Evolve each state.
     if (!m_state.m_generation || (m_settings.m_mode == FIRESTARTER_RANDOM))
-        m_state.m_program.RandomProgram(m_state.StateSeed());
+        m_state.RandomProgram();
     else
-        m_state.m_program.RandomInstruction(m_state.StateSeed());
+        m_state.RandomInstruction();
     m_state.m_program.OptimizeRegisters();
 
     // Generate the unit code for the current generation
@@ -451,6 +451,7 @@ bool FireStarterUnit::InitUnit(const FireStarterState& initState)
     m_settings = initState.Settings();
     m_initState = initState;
     m_state = initState;
+    m_state.m_index = m_unitIndex;
     m_firstVariation = 0;
     m_lastVariation = m_settings.m_variations - 1;
     m_generation = initState.m_generation;

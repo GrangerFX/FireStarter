@@ -116,7 +116,6 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned i
     m_generation = 0;
     m_index = index;
     m_program.InitProgram(settings);
-    m_program.m_settings.m_seed += index;
     InitResult();
 } // InitState
 
