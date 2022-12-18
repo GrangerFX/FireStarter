@@ -39,6 +39,10 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
             // Unload the fire show code and destroy the CUDA context.
             checkCUDAErrors(cudaFree(fireSettings));
         });
+
+    // If the evolve units is set to zero, use the number of gpus.
+    if (settings.m_units == 0)
+        settings.m_units = CUDAContext::CUDADevices();
 } // FireStarterBuildSettings
 
 FireStarterBuildSettings::FireStarterBuildSettings(void)

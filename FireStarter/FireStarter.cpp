@@ -9,22 +9,27 @@
 
 void FireStarter::ControlUnits(const FireStarterState* evolveState)
 {
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings settings;
+    m_buildSettings.FireSettings(settings, FIRESTARTER_MODE);
+
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_settings, m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(nullptr, settings, m_window, m_width, m_height);
 
     // Initialize the best state.
     FireStarterState bestState;
     if (evolveState) {
         FireStarterSettings optimizeSettings;
         m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
-        m_settings.CopyModeSettings(optimizeSettings);
+        settings.CopyModeSettings(optimizeSettings);
         bestState = *evolveState;
-    } else if (m_settings.m_mode == FIRESTARTER_OPTIMIZE)
+    } else if (settings.m_mode == FIRESTARTER_OPTIMIZE)
         // Load the best state from the previous Code or Unit run.
         LoadState(bestState);
     else
-        bestState.InitState(m_settings);
-    bestState.Settings().CopyModeSettings(m_settings);
+        bestState.InitState(settings);
+    bestState.Settings().CopyModeSettings(settings);
     bestState.m_generation = 0;
     bestState.m_index = 0;
     bestState.InitResult();
@@ -33,7 +38,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
     std::vector<FireStarterUnit*> units;
     std::vector<FireStarterState> allStates;
     bool result = true;
-    for (unsigned int i = 0; i < m_settings.m_units; i++) {
+    for (unsigned int i = 0; i < settings.m_units; i++) {
         FireStarterUnit* unit = new FireStarterUnit(i, CUDAContext::CUDADevices());
         if (unit->InitUnit(bestState)) {
             allStates.push_back(bestState);
@@ -47,7 +52,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
 
     if (result) {
         // Loop until the the completion condition or the host program is quit.
-        while (!m_quitControlThread) {
+        while (!WillTerminate()) {
             // Execute a generation for all the units.
             for (FireStarterUnit* unit : units)
                 unit->Execute();
@@ -66,7 +71,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
                     oldState = state;
 
                 // Is there more work to do?
-                if (state.m_generation - bestState.m_generation < m_settings.m_attempts)
+                if (state.m_generation - bestState.m_generation < settings.m_attempts)
                     allFinished = false;
             }
 
@@ -92,35 +97,40 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
     allStates.clear();
 
     // Optimization evolution pass.
-    if (!m_quitControlThread && (m_settings.m_mode != FIRESTARTER_OPTIMIZE) && FIRESTARTER_SECOND_PASS)
+    if (!WillTerminate() && (settings.m_mode != FIRESTARTER_OPTIMIZE) && FIRESTARTER_SECOND_PASS)
         ControlUnits(&bestState);
 } // ControlUnits
 
 void FireStarter::ControlTest(void)
 {
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings settings;
+    m_buildSettings.FireSettings(settings, FIRESTARTER_TEST);
+
     // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
+    FireStarterManager* manager = new FireStarterManager(max(settings.m_units, settings.m_processes));
 
     // Setup the intial state
     std::vector<FireStarterState> allStates;
-    FireStarterState bestState(m_settings);
+    FireStarterState bestState(settings);
     allStates.push_back(bestState);
 
     // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+    FireStarterCompile* compile = new FireStarterCompile(manager, settings.m_processes);
 
     // Create the execution unit.
     FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_settings, m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
     unsigned int generation = 0;
-    while (!m_quitControlThread) {
+    while (!WillTerminate()) {
         evolve->EvolveStates(bestState, allStates, generation);
         execute->ExecuteEvolve();
         if (!complete->CompleteStates(bestState, allStates, generation))
@@ -149,36 +159,41 @@ void FireStarter::ControlTest(void)
 
 void FireStarter::ControlRandom(void)
 {
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings settings;
+    m_buildSettings.FireSettings(settings, FIRESTARTER_RANDOM);
+
     // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
 #if FIRESTARTER_AUTO_PROCESS
-    if (m_settings.m_processes == 0)
-        m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+    if (settings.m_processes == 0)
+        settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
 #endif
 
     // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
+    FireStarterManager* manager = new FireStarterManager(max(settings.m_units, settings.m_processes));
 
     // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+    FireStarterCompile* compile = new FireStarterCompile(manager, settings.m_processes);
 
     // Setup the intial best state 
-    FireStarterState bestState(m_settings);
+    FireStarterState bestState(settings);
     bestState.RandomProgram();
 
     // Start generating random code generations.
-    evolve->EvolveGenerations(&bestState, m_settings.m_attempts);
+    evolve->EvolveGenerations(&bestState, settings.m_attempts);
 
     // Create and run the execution units.
-    FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, m_settings.m_units);
+    FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, settings.m_units);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_settings, m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
-    while (!m_quitControlThread) {
+    while (!WillTerminate()) {
         if (!complete->CompleteRandom(bestState))
             break;
     }
@@ -204,31 +219,36 @@ void FireStarter::ControlRandom(void)
 
 void FireStarter::ControlEvolve(unsigned int test)
 {
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings settings;
+    m_buildSettings.FireSettings(settings, FIRESTARTER_EVOLVE);
+
     // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
 #if FIRESTARTER_AUTO_PROCESS
-    if (m_settings.m_processes == 0)
-        m_settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+    if (settings.m_processes == 0)
+        settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
 #endif
 
     // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(max(m_settings.m_units, m_settings.m_processes));
+    FireStarterManager* manager = new FireStarterManager(max(settings.m_units, settings.m_processes));
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+    FireStarterCompile* compile = new FireStarterCompile(manager, settings.m_processes);
 
     // Setup the intial best state
-    FireStarterState bestState(m_settings);
+    FireStarterState bestState(settings);
     bestState.RandomProgram();
 
     // Create the states and units.
     std::vector<FireStarterEvolve*> evolveUnits;
     std::vector<FireStarterExecute*> executionUnits;
     std::vector<FireStarterState> allStates;
-    for (unsigned int i = 0; i < m_settings.m_units; i++) {
-        unsigned int testIndex = m_settings.m_units * test + i;
+    for (unsigned int i = 0; i < settings.m_units; i++) {
+        unsigned int testIndex = settings.m_units * test + i;
 
         // Randomize the entire program for the first generation
-        FireStarterState state(m_settings, testIndex);
+        FireStarterState state(settings, testIndex);
         state.RandomProgram();
         allStates.push_back(state);
 
@@ -242,13 +262,13 @@ void FireStarter::ControlEvolve(unsigned int test)
     }
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_settings, m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
 
     // Loop until the the completion condition or the host program is quit.
     unsigned int generation = 0;
-    while (!m_quitControlThread) {
+    while (!WillTerminate()) {
         // Evolve a new generation for each state.
-        for (unsigned int i = 0; i < m_settings.m_units; i++)
+        for (unsigned int i = 0; i < settings.m_units; i++)
             evolveUnits[i]->EvolveStates(bestState, allStates, generation);
 
         // Execute each state.
@@ -282,35 +302,36 @@ void FireStarter::ControlEvolve(unsigned int test)
     delete manager;
 
     // Optimization evolution pass.
-    if (!m_quitControlThread && (m_settings.m_mode == FIRESTARTER_EVOLVE) && FIRESTARTER_SECOND_PASS)
+    if (!WillTerminate() && (settings.m_mode == FIRESTARTER_EVOLVE) && FIRESTARTER_SECOND_PASS)
         ControlOptimize(test, &bestState);
 } // ControlEvolve
 
 void FireStarter::ControlOptimize(unsigned int test, const FireStarterState *evolveState)
 {
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings settings;
+    m_buildSettings.FireSettings(settings, FIRESTARTER_OPTIMIZE);
+
     // Convert the most recently evolved state into an optimize mode state.
     FireStarterState bestState;
-    if (evolveState) {
-        // Switch the settings to optimize mode
-        FireStarterSettings optimizeSettings;
-        m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
-        m_settings.CopyModeSettings(optimizeSettings);
-
-        // Copy the best evolved state.
-        bestState = *evolveState;
-    } else
-        // Load the best state from the previous Test, Random or Evolve run.
-        LoadState(bestState);
-    bestState.Settings().CopyModeSettings(m_settings);
+    if (evolveState)
+        bestState = *evolveState; // Copy the best evolved state.
+    else
+        LoadState(bestState);     // Load the best state from the previous Test, Random or Evolve run.
     bestState.m_generation = 0;
     bestState.m_index = test;
     bestState.InitResult();
+
+    // Switch the settings to optimize mode
+    bestState.Settings().CopyModeSettings(settings);
+    settings = bestState.Settings();
 
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(1);
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, m_settings.m_processes);
+    FireStarterCompile* compile = new FireStarterCompile(manager, settings.m_processes);
 
     // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -319,7 +340,7 @@ void FireStarter::ControlOptimize(unsigned int test, const FireStarterState *evo
     FireStarterExecute* execute = new FireStarterExecute(manager, 0);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_settings, m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
 
     // Create the state and execution unit.
     std::vector<FireStarterState> allStates;
@@ -333,7 +354,7 @@ void FireStarter::ControlOptimize(unsigned int test, const FireStarterState *evo
 
     // Loop until the the completion condition or the host program is quit.
     unsigned int generation = 0;
-    while (!m_quitControlThread) {
+    while (!WillTerminate()) {
         // Optimize the current generation.
         execute->ExecuteOptimize(generation);
 
@@ -364,8 +385,13 @@ void FireStarter::ControlOptimize(unsigned int test, const FireStarterState *evo
 
 void FireStarter::ControlSolution(void)
 {
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings settings;
+    m_buildSettings.FireSettings(settings, FIRESTARTER_OPTIMIZE);
+
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_settings, m_window, m_width, m_height);
+    FireStarterComplete* complete = new FireStarterComplete(nullptr, settings, m_window, m_width, m_height);
 
     // Draw the solution in the window.
     complete->CompleteSolution();
@@ -377,42 +403,34 @@ void FireStarter::ControlSolution(void)
 void FireStarter::ControlThread(void)
 {
     DispatchAsync([this] {
-        // Load the settings from the compiled CUDA code.
-        // This allows the settings to be modified without recompiling the main program.
-        m_buildSettings.FireSettings(m_settings, FIRESTARTER_MODE);
-
-        // If the evolve units is set to zero, use the number of gpus.
-        if (m_settings.m_units == 0)
-            m_settings.m_units = CUDAContext::CUDADevices();
-
-        switch (m_settings.m_mode) {
-        case FIRESTARTER_CODE:
-        case FIRESTARTER_UNIT:
-            // Program evolution pass.
-            ControlUnits();
-            break;
-        case FIRESTARTER_TEST:
-            // Test of jobs without processes.
-            ControlTest();
-            break;
-        case FIRESTARTER_RANDOM:
-            // Random generations.
-            ControlRandom();
-            break;
-        case FIRESTARTER_EVOLVE:
-            // Evolved generations.
-            for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++)
-                ControlEvolve(test);
-            break;
-        case FIRESTARTER_OPTIMIZE:
-            // Optimization evolution pass.
-            for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++)
-                ControlOptimize(test);
-            break;
-        case FIRESTARTER_SOLUTION:
-            // Run the most recent solution.
-            ControlSolution();
-            break;
+        switch (FIRESTARTER_MODE) {
+            case FIRESTARTER_CODE:
+            case FIRESTARTER_UNIT:
+                // Program evolution pass.
+                ControlUnits();
+                break;
+            case FIRESTARTER_TEST:
+                // Test of jobs without processes.
+                ControlTest();
+                break;
+            case FIRESTARTER_RANDOM:
+                // Random generations.
+                ControlRandom();
+                break;
+            case FIRESTARTER_EVOLVE:
+                // Evolved generations.
+                for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++)
+                    ControlEvolve(test);
+                break;
+            case FIRESTARTER_OPTIMIZE:
+                // Optimization evolution pass.
+                for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++)
+                    ControlOptimize(test);
+                break;
+            case FIRESTARTER_SOLUTION:
+                // Run the most recent solution.
+                ControlSolution();
+                break;
         }
     });
 } // ControlThread
@@ -427,5 +445,4 @@ FireStarter::FireStarter(void* window, unsigned int width, unsigned int height)
 
 FireStarter::~FireStarter(void)
 {
-    m_quitControlThread = true;
 } // ~FireStarter

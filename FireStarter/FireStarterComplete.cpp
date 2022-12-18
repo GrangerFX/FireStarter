@@ -286,7 +286,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
     });
 
     // Has the completion condition been met?
-    return result && (generation - bestState.m_generation <= m_settings.m_attempts);
+    return result && (generation - bestState.m_generation < m_settings.m_attempts);
 } // CompleteStates
 
 void FireStarterComplete::CompleteSolution(void)
