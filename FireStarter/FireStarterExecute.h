@@ -24,6 +24,7 @@ private:
     size_t m_index = 0;
 
     bool InitResults(const FireStarterState& state);
+    void FinishResults(void);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
     bool Optimize(FireStarterState& state, bool skipVariations = false);

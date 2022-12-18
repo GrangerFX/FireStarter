@@ -158,7 +158,6 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
 
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
-    context->SetContext();
 
     size_t resultsSize = FireStarterResults::ResultsSize(settings.m_population, settings.m_registers, settings.m_variations);
     if (m_resultsSize != resultsSize) {
@@ -224,6 +223,32 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
     }
     return result;
 } // InitResults
+
+void FireStarterExecute::FinishResults(void)
+{
+    CUDAContext* context = Context();
+    CUstream stream = context->Stream();
+    if (m_hostResults) {
+        checkCUDAErrors(cudaFreeHost(m_hostResults));
+        m_hostResults = nullptr;
+    }
+    if (m_deviceResults) {
+        checkCUDAErrors(cudaFreeAsync(m_deviceResults, stream));
+        m_deviceResults = nullptr;
+        m_deviceResults0 = nullptr;
+        m_deviceResults1 = nullptr;
+    }
+    if (m_hostEvolutions) {
+        checkCUDAErrors(cudaFreeHost(m_hostEvolutions));
+        m_hostEvolutions = nullptr;
+    }
+    if (m_deviceEvolutions) {
+        checkCUDAErrors(cudaFreeAsync(m_deviceEvolutions, stream));
+        m_deviceEvolutions = nullptr;
+        m_deviceEvolutions0 = nullptr;
+        m_deviceEvolutions1 = nullptr;
+    }
+} // FinishResults
 
 bool FireStarterExecute::Optimize(FireStarterState& state, bool skipVariations)
 {
@@ -360,6 +385,8 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index
 FireStarterExecute::~FireStarterExecute(void)
 {
     DispatchSync([this] {
+        delete m_job;
+        FinishResults();
         CUDACompile::ReleaseModule(m_optimizeModule);
         m_optimizeModule = nullptr;
     });
