@@ -91,7 +91,7 @@
 #define FIRESTARTER_EVOLVE_GENERATIONS      100
 #define FIRESTARTER_EVOLVE_PRECISION        0
 #define FIRESTARTER_EVOLVE_EVOLVE           FIRESTARTER_EVOLVE_BEST
-#define FIRESTARTER_EVOLVE_ATTEMPTS         32
+#define FIRESTARTER_EVOLVE_ATTEMPTS         8
 #define FIRESTARTER_EVOLVE_SEED             FIRESTARTER_SEED
 #define FIRESTARTER_EVOLVE_SCALE            0.1f
 #define FIRESTARTER_EVOLVE_START_SCALE      4.0f
@@ -105,7 +105,7 @@
 #define FIRESTARTER_OPTIMIZE_GENERATIONS    100
 #define FIRESTARTER_OPTIMIZE_PRECISION      256
 #define FIRESTARTER_OPTIMIZE_EVOLVE         FIRESTARTER_EVOLVE_BEST
-#define FIRESTARTER_OPTIMIZE_ATTEMPTS       32
+#define FIRESTARTER_OPTIMIZE_ATTEMPTS       8
 #define FIRESTARTER_OPTIMIZE_SEED           0
 #define FIRESTARTER_OPTIMIZE_SCALE          0.1f
 #define FIRESTARTER_OPTIMIZE_START_SCALE    4.0f
@@ -175,16 +175,27 @@ public:
     inline const char* Evolve(void) const
     {
         switch (m_evolve) {
-        case FIRESTARTER_EVOLVE_INDIVIDUAL:
-            return "FIRESTARTER_EVOLVE_INDIVIDUAL";
-        case FIRESTARTER_EVOLVE_BEST:
-            return "FIRESTARTER_EVOLVE_BEST";
-        case FIRESTARTER_EVOLVE_RANDOM:
-            return "FIRESTARTER_EVOLVE_RANDOM";
-        default:
-            return "0";
+            case FIRESTARTER_EVOLVE_INDIVIDUAL:
+                return "FIRESTARTER_EVOLVE_INDIVIDUAL";
+            case FIRESTARTER_EVOLVE_BEST:
+                return "FIRESTARTER_EVOLVE_BEST";
+            case FIRESTARTER_EVOLVE_RANDOM:
+                return "FIRESTARTER_EVOLVE_RANDOM";
+            default:
+                return "0";
         }
     } // Evolve
+
+    inline void CopyCodeSettings(FireStarterSettings& source)
+    {
+        m_variations = source.m_variations;
+        m_samples = source.m_samples;
+        m_instructions = source.m_instructions;
+        m_registers = source.m_registers;
+        m_opcodes = source.m_opcodes;
+        m_targetMin = source.m_targetMin;
+        m_targetMax = source.m_targetMax;
+    } // CopyCodeSettings
 
     inline void CopyModeSettings(FireStarterSettings& source)
     {
@@ -193,9 +204,9 @@ public:
         m_processes = source.m_processes;
         m_population = source.m_population;
         m_iterations = source.m_iterations;
-        m_candidates = source.m_candidates;
         m_generations = source.m_generations;
         m_precision = source.m_precision;
+        m_candidates = source.m_candidates;
         m_evolve = source.m_evolve;
         m_attempts = source.m_attempts;
         m_seed = source.m_seed;

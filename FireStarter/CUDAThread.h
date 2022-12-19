@@ -24,6 +24,7 @@ public:
     {
         DispatchSync([this] {
             delete m_CUDAContext;
+            m_CUDAContext = nullptr;
         });
     } // ~CUDAThread
 }; // class CUDAThread

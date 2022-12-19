@@ -268,8 +268,8 @@ void FireStarter::ControlEvolve(unsigned int test)
     unsigned int generation = 0;
     while (!WillTerminate()) {
         // Evolve a new generation for each state.
-        for (unsigned int i = 0; i < settings.m_units; i++)
-            evolveUnits[i]->EvolveStates(bestState, allStates, generation);
+        for (FireStarterEvolve* evolve : evolveUnits)
+            evolve->EvolveStates(bestState, allStates, generation);
 
         // Execute each state.
         for (FireStarterExecute* execute : executionUnits)
@@ -419,12 +419,12 @@ void FireStarter::ControlThread(void)
                 break;
             case FIRESTARTER_EVOLVE:
                 // Evolved generations.
-                for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++)
+                for (unsigned int test = 0; (test < FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++)
                     ControlEvolve(test);
                 break;
             case FIRESTARTER_OPTIMIZE:
                 // Optimization evolution pass.
-                for (unsigned int test = 0; test < FIRESTARTER_TEST_SEEDS; test++)
+                for (unsigned int test = 0; (test < FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++)
                     ControlOptimize(test);
                 break;
             case FIRESTARTER_SOLUTION:
@@ -445,4 +445,5 @@ FireStarter::FireStarter(void* window, unsigned int width, unsigned int height)
 
 FireStarter::~FireStarter(void)
 {
+    TerminateThread();
 } // ~FireStarter

@@ -142,4 +142,5 @@ FireStarterEvolve::~FireStarterEvolve(void)
     DispatchSync([this] {
         delete m_generate;
     });
+    TerminateThread();
 } // ~FireStarterEvolve

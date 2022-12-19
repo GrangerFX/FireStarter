@@ -35,7 +35,8 @@ public:
     void ExecuteOptimize(unsigned int generation);
     void ExecuteEvolve(void);
 	void ExecuteRandom(void);
-	FireStarterExecute(FireStarterManager* manager, size_t index);
+    void ExecuteFinish(void);
+    FireStarterExecute(FireStarterManager* manager, size_t index);
 	~FireStarterExecute(void);
 }; // class FireStarterExecute
 

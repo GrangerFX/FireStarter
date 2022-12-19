@@ -125,8 +125,9 @@ private:
     std::mutex m_mutex;
     std::condition_variable m_cv;
     std::queue<SerialThreadWork> m_workQueue;
-    bool m_pollThread;
-    volatile bool m_terminate;
+    bool m_pollThread = false;
+    bool m_willTerminate = false;
+    volatile bool m_terminate = false;
 
 #if HAS_DISPATCH_AFTER
     // This gets around a missing feature of std::list: The trivial deletion of a single element by reference.
@@ -250,7 +251,7 @@ public:
 
     inline bool WillTerminate(void)
     {
-        return m_terminate;
+        return m_willTerminate;
     } // WillTerminate
 
     inline bool IsRunning(void)
@@ -284,7 +285,7 @@ public:
     inline bool DispatchAsync(const SerialThreadWork& work)
     {
         std::unique_lock<std::mutex> lock(m_mutex);
-        if (!WillTerminate()) {
+        if (!m_terminate) {
             m_workQueue.push(work);
             m_cv.notify_one();
             return true;
@@ -302,7 +303,7 @@ public:
 
     inline bool DispatchSync(const SerialThreadWork& work)
     {
-        if (!WillTerminate()) {
+        if (!m_terminate) {
             SerialThreadSemaphore syncSemaphore;
             if (DispatchAsync([this, &syncSemaphore, work] {
                 if (work)
@@ -350,7 +351,8 @@ public:
 
     inline bool TerminateThread(void)
     {
-        if (!m_terminate) {
+        if (!m_willTerminate) {
+            m_willTerminate = true;
             if (m_pollThread) {
                 PollThread();
                 std::unique_lock<std::mutex> lock(m_mutex);
@@ -369,7 +371,6 @@ public:
 
     inline SerialThread(bool pollThread = false)
     {
-        m_terminate = false;
         m_pollThread = pollThread;
         if (!m_pollThread)
             m_thread = std::thread([this] { Thread(); });

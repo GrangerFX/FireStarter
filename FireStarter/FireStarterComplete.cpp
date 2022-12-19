@@ -392,4 +392,5 @@ FireStarterComplete::~FireStarterComplete(void)
             m_generate = nullptr;
         }
     });
+    TerminateThread();
 } // ~FireStarterComplete

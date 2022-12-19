@@ -19,7 +19,7 @@ typedef struct FireStarterResult {
 
     static inline size_t ResultSize(size_t registers, size_t variations)
     {
-        return sizeof(unsigned int) * 3 + sizeof(float) + variations * (registers + 2) * sizeof(float);   // + 2 for index and minResult
+        return (sizeof(FireStarterResult) - sizeof(data)) + variations * (registers + 2) * sizeof(float);
     } // ResultSize
 
     inline unsigned int* Index(unsigned int variation)
@@ -102,7 +102,7 @@ typedef struct FireStarterResults {
 
     static inline size_t ResultsSize(size_t members, size_t registers, size_t variations)
     {
-        return (sizeof(FireStarterResults) - 16) + members * FireStarterResult::ResultSize(registers, variations);
+        return (sizeof(FireStarterResults) - sizeof(m_memory)) + members * FireStarterResult::ResultSize(registers, variations);
     } // ResultsSize
 
     inline size_t MemorySize(size_t members)

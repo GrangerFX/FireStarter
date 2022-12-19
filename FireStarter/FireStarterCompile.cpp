@@ -180,4 +180,5 @@ FireStarterCompile::~FireStarterCompile(void)
     for (FireStarterCompiler* compiler : m_compilers)
         delete compiler;
     delete m_server;
+    TerminateThread();
 } // ~FireStarterCompile

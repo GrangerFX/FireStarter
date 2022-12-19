@@ -85,9 +85,13 @@ public:
 
     inline ~CUDAContext(void)
     {
-        if (m_stream)
+        if (m_stream) {
             checkCUDAErrors(cudaStreamDestroy(m_stream));
-        if (m_context)
+            m_stream = nullptr;
+        }
+        if (m_context) {
             checkCUDAErrors(cuCtxDestroy(m_context));
+            m_context = nullptr;
+        }
     } // ~CUDAContext
 }; // class CUDAContext

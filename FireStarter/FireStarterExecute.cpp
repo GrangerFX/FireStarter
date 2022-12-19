@@ -181,7 +181,7 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
         }
         if (m_resultsSize) {
             checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize * 2, stream));
-            if (m_deviceResults) {
+            if (m_hostResults && m_deviceResults) {
                 m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
                 m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
                 checkCUDAErrors(cudaMemcpy(m_deviceResults0, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
@@ -227,26 +227,32 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
 void FireStarterExecute::FinishResults(void)
 {
     CUDAContext* context = Context();
-    CUstream stream = context->Stream();
-    if (m_hostResults) {
-        checkCUDAErrors(cudaFreeHost(m_hostResults));
-        m_hostResults = nullptr;
+    if (!context) {
+        printf("CUDA context destroyed before FinishResults() called!\n");
+        std::terminate();
     }
+
+    CUstream stream = context->Stream();
+
     if (m_deviceResults) {
         checkCUDAErrors(cudaFreeAsync(m_deviceResults, stream));
         m_deviceResults = nullptr;
         m_deviceResults0 = nullptr;
         m_deviceResults1 = nullptr;
     }
-    if (m_hostEvolutions) {
-        checkCUDAErrors(cudaFreeHost(m_hostEvolutions));
-        m_hostEvolutions = nullptr;
-    }
     if (m_deviceEvolutions) {
         checkCUDAErrors(cudaFreeAsync(m_deviceEvolutions, stream));
         m_deviceEvolutions = nullptr;
         m_deviceEvolutions0 = nullptr;
         m_deviceEvolutions1 = nullptr;
+    }
+    if (m_hostResults) {
+        checkCUDAErrors(cudaFreeHost(m_hostResults));
+        m_hostResults = nullptr;
+    }
+    if (m_hostEvolutions) {
+        checkCUDAErrors(cudaFreeHost(m_hostEvolutions));
+        m_hostEvolutions = nullptr;
     }
 } // FinishResults
 
@@ -376,6 +382,17 @@ void FireStarterExecute::ExecuteRandom(void)
     });
 } // ExecuteRandom
 
+void FireStarterExecute::ExecuteFinish(void)
+{
+    DispatchSync([this] {
+        delete m_job;
+        m_job = nullptr;
+        FinishResults();
+        CUDACompile::ReleaseModule(m_optimizeModule);
+        m_optimizeModule = nullptr;
+    });
+} // ExecuteFinish
+
 FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index) : CUDAThread(index)
 {
     m_manager = manager;
@@ -384,12 +401,8 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index
 
 FireStarterExecute::~FireStarterExecute(void)
 {
-    DispatchSync([this] {
-        delete m_job;
-        FinishResults();
-        CUDACompile::ReleaseModule(m_optimizeModule);
-        m_optimizeModule = nullptr;
-    });
+    ExecuteFinish();
+    TerminateThread();
 } // ~FireStarterExecute(void)
 
 FireStarterExecuteRandom::FireStarterExecuteRandom(FireStarterManager* manager, size_t numExecute)
