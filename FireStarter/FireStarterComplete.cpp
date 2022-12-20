@@ -80,7 +80,7 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
         0));
 
     // Syncronize the stream to complete the work
-    checkCUDAErrors(cudaStreamSynchronize(context->Stream()));
+    context->Synchronize();
 
     // Display the buffer in the window.
     DisplayImage(m_buffer.GetPixels());
@@ -368,6 +368,7 @@ FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const Fire
             // Allocate the results and instructions.
             checkCUDAErrors(cudaMallocAsync(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations), stream));
             checkCUDAErrors(cudaMallocAsync(&m_fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions), stream));
+            context->Synchronize();
 
             // Compile FireShow.
             if (CUDACompile::CompileProgram(m_fireShowModule, m_fireShowCode, "FireShow"))
@@ -395,9 +396,6 @@ FireStarterComplete::~FireStarterComplete(void)
             checkCUDAErrors(cuModuleUnload(m_fireShowModule));
             m_fireShowModule = nullptr;
         }
-        if (m_generate) {
-            delete m_generate;
-            m_generate = nullptr;
-        }
+        context->Synchronize();
     });
 } // ~FireStarterComplete

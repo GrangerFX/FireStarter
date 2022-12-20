@@ -225,6 +225,7 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
                 result = false;
         }
     }
+    context->Synchronize();
     return result;
 } // InitResults
 
@@ -237,8 +238,6 @@ void FireStarterExecute::FinishResults(void)
     }
 
     CUstream stream = context->Stream();
-    context->SetContext();
-
     if (m_deviceResults) {
         checkCUDAErrors(cudaFreeAsync(m_deviceResults, stream));
         m_deviceResults = nullptr;
@@ -259,6 +258,7 @@ void FireStarterExecute::FinishResults(void)
         checkCUDAErrors(cudaFreeHost(m_hostEvolutions));
         m_hostEvolutions = nullptr;
     }
+    context->Synchronize();
 } // FinishResults
 
 bool FireStarterExecute::Optimize(FireStarterState& state, bool skipVariations)
@@ -302,9 +302,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool skipVariations)
 
 bool FireStarterExecute::Compile(void)
 {
-    // Release the current job and optimize module.
-    CUDACompile::ReleaseModule(m_optimizeModule);
-    m_optimizeFunction = nullptr;
+    // Release the current job.
     if (m_job)
         m_manager->AddFree(m_job);
 
@@ -393,7 +391,6 @@ void FireStarterExecute::ExecuteFinish(void)
         m_job = nullptr;
         FinishResults();
         CUDACompile::ReleaseModule(m_optimizeModule);
-        m_optimizeModule = nullptr;
     });
 } // ExecuteFinish
 

@@ -18,7 +18,6 @@ private:
 
     class FireStarterContext {
     public:
-        FireStarterGenerate* m_generate = nullptr;
         char* m_deviceResults = nullptr;
         char* m_deviceEvolutions = nullptr;
         FireStarterResults* m_deviceResults0 = nullptr;
@@ -69,12 +68,9 @@ private:
             m_device = device;
             m_firstMember = firstMember;
             m_lastMember = lastMember;
-            if (m_CUDAContext)
-                m_CUDAContext->SetContext();
-            else
+            if (!m_CUDAContext)
                 m_CUDAContext = new CUDAContext(m_device);
-            if (!m_generate)
-                m_generate = new FireStarterGenerate(m_CUDAContext);
+            m_CUDAContext->SetContext();
 
             CUstream stream = m_CUDAContext->Stream();
             size_t resultsSize = FireStarterResults::ResultsSize(settings.m_population, settings.m_registers, settings.m_variations);
@@ -112,6 +108,7 @@ private:
                     checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions1, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
                 }
             }
+            m_CUDAContext->Synchronize();
             return true;
         } // InitContext
 
@@ -127,7 +124,6 @@ private:
                     checkCUDAErrors(cuModuleUnload(m_evolveModule));
                 if (m_optimizeModule)
                     checkCUDAErrors(cuModuleUnload(m_optimizeModule));
-                delete m_generate;
                 delete m_CUDAContext;
             }
         } // FireStarterContext
@@ -137,6 +133,7 @@ private:
     SimpleTimer m_timer;
     std::vector<FireStarterContext> m_contexts;
     std::vector<FireStarterState> m_allStates;
+    FireStarterGenerate* m_generate = nullptr;
     std::string m_evolveCode;
     std::string m_optimizeCode;
     FireStarterSettings m_settings;

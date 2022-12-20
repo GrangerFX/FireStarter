@@ -44,7 +44,7 @@ void FireStarterUnit::GenerateOptimize(void)
     std::string evaluateCode;
 
     // Update the Evaluate funtion.
-    m_contexts[0].m_generate->GenerateEvaluate(m_state, evaluateCode);
+    m_generate->GenerateEvaluate(m_state, evaluateCode);
 
     // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     std::string code = m_optimizeCode;
@@ -145,9 +145,9 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
     }
 
     // Single GPUs have their data syncronized with the host here.
+    FireStarterContext& context = m_contexts[0];
+    context.SetContext();
     if (m_contexts.size() == 1) {
-        FireStarterContext& context = m_contexts[0];
-        context.SetContext();
         FireStarterResults* newResults = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
         FireStarterResults* oldResults = m_settings.m_generations & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
         FireStarterEvolutions* newEvolutions = m_settings.m_generations & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
@@ -238,14 +238,14 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int f
     }
 
     // Single GPUs have their data syncronized with the host here.
+    FireStarterContext& context = m_contexts[0];
+    context.SetContext();
     if (m_contexts.size() == 1) {
-        FireStarterContext& context = m_contexts[0];
-        context.SetContext();
         FireStarterResults* newResults = m_settings.m_generations & 1 ? context.m_deviceResults1 : context.m_deviceResults0;
         FireStarterResults* oldResults = m_settings.m_generations & 1 ? context.m_deviceResults0 : context.m_deviceResults1;
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults, newResults, m_resultsSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
         checkCUDAErrors(cudaMemcpyAsync(oldResults, newResults, m_resultsSize, cudaMemcpyDeviceToDevice, context.m_CUDAContext->Stream()));
-        SyncContexts();
+        context.m_CUDAContext->Synchronize();
     }
 
     // Get the best variation results.
@@ -347,6 +347,10 @@ bool FireStarterUnit::LoadCode(void)
 
 void FireStarterUnit::Deallocate(void)
 {
+    if (m_generate) {
+        delete m_generate;
+        m_generate = nullptr;
+    }
     m_contexts.clear();
     if (m_hostResults) {
         checkCUDAErrors(cudaFreeHost(m_hostResults));
@@ -406,6 +410,9 @@ void FireStarterUnit::Allocate(void)
             m_contexts[contextIndex].InitContext(m_unitIndex + contextIndex, firstMember, lastMember, m_hostResults, m_hostEvolutions, evolveSettings);
         }
     }
+
+    if (!m_generate)
+        m_generate = new FireStarterGenerate(m_contexts[0].m_CUDAContext);
 } // Allocate
 
 unsigned int FireStarterUnit::Index(void)

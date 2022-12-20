@@ -35,10 +35,10 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
                 &arr[0],                                            // arguments
                 0));
             checkCUDAErrors(cudaMemcpyAsync(&settings, fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, stream));
-            checkCUDAErrors(cudaStreamSynchronize(stream));
 
             // Unload the fire show code and destroy the CUDA context.
             checkCUDAErrors(cudaFreeAsync(fireSettings, stream));
+            context->Synchronize();
         });
 
     // If the evolve units is set to zero, use the number of gpus.
