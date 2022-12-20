@@ -94,7 +94,7 @@ HRESULT Initialize(HINSTANCE hInstance)
 			} while (1);
 
 			SetWindowText(hwnd, "Quitting");
-			mainSerialThread->TerminateThread(); // No more updates will be accepted.
+			mainSerialThread->Synchronize(); // No more updates will be accepted.
 			delete fireStarter;
 			delete mainSerialThread;
 			result = S_OK;

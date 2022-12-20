@@ -193,10 +193,11 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
                             reinterpret_cast<void*>(&m_deviceData) };
 
             checkCUDAErrors(cuLaunchKernel(m_solutionFunction,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-                0, stream,                                          // shared mem, stream */
-                &arr[0],                                            // arguments */
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+                0,                                                  // shared mem
+                stream,                                             // stream
+                &arr[0],                                            // arguments 
                 0));
             checkCUDAErrors(cudaMemcpyAsync(&stringSize, m_deviceString, sizeof(size_t), cudaMemcpyDeviceToHost, stream));
             checkCUDAErrors(cudaStreamSynchronize(stream));
@@ -258,17 +259,18 @@ FireStarterGenerate::FireStarterGenerate(CUDAContext* context)
 FireStarterGenerate::~FireStarterGenerate(void)
 {
     if (m_CUDAContext) {
+        CUstream stream = m_CUDAContext->Stream();
         m_CUDAContext->SetContext();
         if (m_module)
             checkCUDAErrors(cuModuleUnload(m_module));
         if (m_deviceInstructions)
-            checkCUDAErrors(cudaFreeAsync(m_deviceInstructions, m_CUDAContext->Stream()));
+            checkCUDAErrors(cudaFreeAsync(m_deviceInstructions, stream));
         if (m_deviceRegisters)
-            checkCUDAErrors(cudaFreeAsync(m_deviceRegisters, m_CUDAContext->Stream()));
+            checkCUDAErrors(cudaFreeAsync(m_deviceRegisters, stream));
         if (m_deviceData)
-            checkCUDAErrors(cudaFreeAsync(m_deviceData, m_CUDAContext->Stream()));
+            checkCUDAErrors(cudaFreeAsync(m_deviceData, stream));
         if (m_deviceString)
-            checkCUDAErrors(cudaFreeAsync(m_deviceString, m_CUDAContext->Stream()));
-        checkCUDAErrors(cudaStreamSynchronize(m_CUDAContext->Stream()));
+            checkCUDAErrors(cudaFreeAsync(m_deviceString, stream));
+        checkCUDAErrors(cudaStreamSynchronize(stream));
     }
 } // ~FireStarterGenerate

@@ -349,7 +349,7 @@ public:
         MainThread() = mainThread;
     } // SetMainThread
 
-    inline bool TerminateThread(void)
+    inline virtual bool TerminateThread(void)
     {
         if (!m_willTerminate) {
             m_willTerminate = true;

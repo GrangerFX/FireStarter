@@ -80,7 +80,6 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long generationSeed = m_state.StateSeed(1);
-
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
@@ -505,6 +504,6 @@ FireStarterUnit::FireStarterUnit(unsigned int index, unsigned int gpus) : m_stat
 
 FireStarterUnit::~FireStarterUnit(void)
 {
-    TerminateThread();
+    Synchronize();
     Deallocate();
 } // ~FireStarterUnit

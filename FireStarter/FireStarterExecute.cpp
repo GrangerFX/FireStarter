@@ -5,6 +5,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
+    CUstream stream = context->Stream();
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long generationSeed = state.StateSeed(1);
@@ -37,7 +38,8 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
         checkCUDAErrors(cuLaunchKernel(m_evolveFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, context->Stream(),                 // shared mem, stream */
+            0,                                                  // shared mem
+            stream,                                             // stream */
             &arr[0],                                            // arguments */
             0));
 
@@ -54,10 +56,10 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
     FireStarterResults* oldResults = settings.m_generations & 1 ? m_deviceResults0 : m_deviceResults1;
     FireStarterEvolutions* newEvolutions = settings.m_generations & 1 ? m_deviceEvolutions1 : m_deviceEvolutions0;
     FireStarterEvolutions* oldEvolutions = settings.m_generations & 1 ? m_deviceEvolutions0 : m_deviceEvolutions1;
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, newResults, m_resultsSize, cudaMemcpyDeviceToHost, context->Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToHost, context->Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(oldResults, newResults, m_resultsSize, cudaMemcpyDeviceToDevice, context->Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(oldEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToDevice, context->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, newResults, m_resultsSize, cudaMemcpyDeviceToHost, stream));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToHost, stream));
+    checkCUDAErrors(cudaMemcpyAsync(oldResults, newResults, m_resultsSize, cudaMemcpyDeviceToDevice, stream));
+    checkCUDAErrors(cudaMemcpyAsync(oldEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
 
     // Get the best results.
@@ -82,6 +84,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
+    CUstream stream = context->Stream();
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long generationSeed = state.StateSeed(1);
@@ -110,10 +113,11 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
         unsigned int blocksPerGrid = ((lastMember - firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
         checkCUDAErrors(cuLaunchKernel(m_optimizeFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0, context->Stream(),                 // shared mem, stream */
-            &arr[0],                                            // arguments */
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            stream,                                             // stream
+            &arr[0],                                            // arguments
             0));
 
         // Synchronize all GPU threads and results.
@@ -125,8 +129,8 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     // Single GPUs have their data syncronized with the host here.
     FireStarterResults* newResults = settings.m_generations & 1 ? m_deviceResults1 : m_deviceResults0;
     FireStarterResults* oldResults = settings.m_generations & 1 ? m_deviceResults0 : m_deviceResults1;
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, newResults, m_resultsSize, cudaMemcpyDeviceToHost, context->Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(oldResults, newResults, m_resultsSize, cudaMemcpyDeviceToDevice, context->Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, newResults, m_resultsSize, cudaMemcpyDeviceToHost, stream));
+    checkCUDAErrors(cudaMemcpyAsync(oldResults, newResults, m_resultsSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
 
     // Get the best variation results.
@@ -184,8 +188,8 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
             if (m_hostResults && m_deviceResults) {
                 m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
                 m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
-                checkCUDAErrors(cudaMemcpy(m_deviceResults0, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
-                checkCUDAErrors(cudaMemcpy(m_deviceResults1, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice));
+                checkCUDAErrors(cudaMemcpyAsync(m_deviceResults0, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, stream));
+                checkCUDAErrors(cudaMemcpyAsync(m_deviceResults1, m_hostResults, m_resultsSize, cudaMemcpyHostToDevice, stream));
             } else
                 result = false;
         }
@@ -215,8 +219,8 @@ bool FireStarterExecute::InitResults(const FireStarterState& state)
             if (m_deviceEvolutions) {
                 m_deviceEvolutions0 = (FireStarterEvolutions*)(m_deviceEvolutions);
                 m_deviceEvolutions1 = (FireStarterEvolutions*)(m_deviceEvolutions + m_evolutionsSize);
-                checkCUDAErrors(cudaMemcpy(m_deviceEvolutions0, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice));
-                checkCUDAErrors(cudaMemcpy(m_deviceEvolutions1, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice));
+                checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions0, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
+                checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions1, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
             } else
                 result = false;
         }
@@ -233,6 +237,7 @@ void FireStarterExecute::FinishResults(void)
     }
 
     CUstream stream = context->Stream();
+    context->SetContext();
 
     if (m_deviceResults) {
         checkCUDAErrors(cudaFreeAsync(m_deviceResults, stream));
@@ -342,20 +347,19 @@ void FireStarterExecute::ExecuteOptimize(unsigned int generation)
 {
     DispatchAsync([this, generation] {
         FireStarterJob* job = nullptr;
-        if (!WillTerminate() && m_job && (job = m_manager->GetFree())) {
+        if (m_job && (job = m_manager->GetFree())) {
             job->Copy(m_job);
             job->m_state.m_generation = generation;
             Optimize(job->m_state);
             m_manager->AddComplete(job);
-        } else
-            m_manager->AddComplete();
+        }
     });
 } // ExecuteOptimize
 
 void FireStarterExecute::ExecuteEvolve(void)
 {
     DispatchAsync([this] {
-        if (!WillTerminate() && Compile()) {
+        if (Compile()) {
             Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             m_manager->AddComplete(m_job);
             m_job = nullptr;
@@ -367,7 +371,7 @@ void FireStarterExecute::ExecuteRandom(void)
 {
     DispatchAsync([this] {
         static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
-        while (!WillTerminate() && Compile()) {
+        while (Compile()) {
             m_job->m_state.Result()->maxResult = g_atomicResult;
             Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             float stateResult = m_job->m_state.Result()->maxResult;
@@ -402,7 +406,6 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index
 FireStarterExecute::~FireStarterExecute(void)
 {
     ExecuteFinish();
-    TerminateThread();
 } // ~FireStarterExecute(void)
 
 FireStarterExecuteRandom::FireStarterExecuteRandom(FireStarterManager* manager, size_t numExecute)

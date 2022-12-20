@@ -13,6 +13,14 @@ public:
         return m_CUDAContext;
     } // Context
 
+    inline bool TerminateThread(void) final
+    {
+        return DispatchSync([this] {
+            delete m_CUDAContext;
+            m_CUDAContext = nullptr;
+        }) && SerialThread::TerminateThread();
+    } // TerminateThread
+
     inline CUDAThread(size_t device = 0, bool pollThread = false) : SerialThread(pollThread)
     {
         DispatchSync([this, device] {
@@ -22,9 +30,6 @@ public:
 
     inline ~CUDAThread(void)
     {
-        DispatchSync([this] {
-            delete m_CUDAContext;
-            m_CUDAContext = nullptr;
-        });
+        TerminateThread();
     } // ~CUDAThread
 }; // class CUDAThread

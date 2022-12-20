@@ -90,8 +90,8 @@ private:
                     checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize * 2, stream));
                     m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
                     m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
-                    checkCUDAErrors(cudaMemcpy(m_deviceResults0, hostResults, m_resultsSize, cudaMemcpyHostToDevice));
-                    checkCUDAErrors(cudaMemcpy(m_deviceResults1, hostResults, m_resultsSize, cudaMemcpyHostToDevice));
+                    checkCUDAErrors(cudaMemcpyAsync(m_deviceResults0, hostResults, m_resultsSize, cudaMemcpyHostToDevice, stream));
+                    checkCUDAErrors(cudaMemcpyAsync(m_deviceResults1, hostResults, m_resultsSize, cudaMemcpyHostToDevice, stream));
                 }
             }
 
@@ -108,8 +108,8 @@ private:
                     checkCUDAErrors(cudaMallocAsync(&m_deviceEvolutions, m_evolutionsSize * 2, stream));
                     m_deviceEvolutions0 = (FireStarterEvolutions*)(m_deviceEvolutions);
                     m_deviceEvolutions1 = (FireStarterEvolutions*)(m_deviceEvolutions + m_evolutionsSize);
-                    checkCUDAErrors(cudaMemcpy(m_deviceEvolutions0, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice));
-                    checkCUDAErrors(cudaMemcpy(m_deviceEvolutions1, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice));
+                    checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions0, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
+                    checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions1, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
                 }
             }
             return true;
