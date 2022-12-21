@@ -150,9 +150,10 @@ FireStarterCompiler::FireStarterCompiler(FireStarterManager* manager, FireStarte
 
 FireStarterCompiler::~FireStarterCompiler(void)
 {
+    TerminateThread();
 } // ~FireStarterCompiler
 
-FireStarterCompile::FireStarterCompile(FireStarterManager* manager, unsigned int numProcesses)
+FireStarterCompile::FireStarterCompile(FireStarterManager* manager, size_t numProcesses)
 {
     m_numProcesses = numProcesses;
     if (numProcesses) {

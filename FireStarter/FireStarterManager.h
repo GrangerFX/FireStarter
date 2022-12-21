@@ -99,6 +99,6 @@ public:
 	size_t SizeComplete(void);
 
 	void Cancel(void);
-	FireStarterManager(unsigned int maxJobs);
+	FireStarterManager(size_t maxJobs = 1);
 	~FireStarterManager(void);
 }; // FireStarterManager

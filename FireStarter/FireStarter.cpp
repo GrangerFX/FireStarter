@@ -109,27 +109,27 @@ void FireStarter::ControlTest(void)
     m_buildSettings.FireSettings(settings, FIRESTARTER_TEST);
 
     // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(max(settings.m_units, settings.m_processes));
+    FireStarterManager* manager = new FireStarterManager();
+
+    // Create the evolution code generator.
+    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
+
+    // Create the multi-process compiler.
+    FireStarterCompile* compile = new FireStarterCompile(manager);
+
+    // Create the execution unit.
+    FireStarterExecute* execute = new FireStarterExecute(manager);
+
+    // Create the completion unit.
+    FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
 
     // Setup the intial state
     std::vector<FireStarterState> allStates;
     FireStarterState bestState(settings);
     allStates.push_back(bestState);
 
-    // Create the evolution code generator.
-    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-
-    // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, settings.m_processes);
-
-    // Create the execution unit.
-    FireStarterExecute* execute = new FireStarterExecute(manager, 0);
-
-    // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
-
     // Loop until the the completion condition or the host program is quit.
-    unsigned int generation = 0;
+    size_t generation = 0;
     while (!WillTerminate()) {
         evolve->EvolveStates(bestState, allStates, generation);
         execute->ExecuteEvolve();
@@ -217,7 +217,7 @@ void FireStarter::ControlRandom(void)
     delete manager;
 } // ControlRandom
 
-void FireStarter::ControlEvolve(unsigned int test)
+void FireStarter::ControlEvolve(void)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
@@ -236,49 +236,54 @@ void FireStarter::ControlEvolve(unsigned int test)
     // Create the multi-process compiler.
     FireStarterCompile* compile = new FireStarterCompile(manager, settings.m_processes);
 
-    // Setup the intial best state
-    FireStarterState bestState(settings);
-    bestState.RandomProgram();
-
     // Create the states and units.
     std::vector<FireStarterEvolve*> evolveUnits;
     std::vector<FireStarterExecute*> executionUnits;
-    std::vector<FireStarterState> allStates;
     for (unsigned int i = 0; i < settings.m_units; i++) {
-        unsigned int testIndex = settings.m_units * test + i;
-
-        // Randomize the entire program for the first generation
-        FireStarterState state(settings, testIndex);
-        state.RandomProgram();
-        allStates.push_back(state);
-
         // Create an evolve unit.
-        FireStarterEvolve* evolve = new FireStarterEvolve(manager, testIndex);
+        FireStarterEvolve* evolve = new FireStarterEvolve(manager, i);
         evolveUnits.push_back(evolve);
 
         // Create an evolution generator unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager, testIndex);
+        FireStarterExecute* execute = new FireStarterExecute(manager, i);
         executionUnits.push_back(execute);
     }
 
     // Create the completion unit.
     FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
 
-    // Loop until the the completion condition or the host program is quit.
-    unsigned int generation = 0;
-    while (!WillTerminate()) {
-        // Evolve a new generation for each state.
-        for (FireStarterEvolve* evolve : evolveUnits)
-            evolve->EvolveStates(bestState, allStates, generation);
+    for (unsigned int test = 0; (test < FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++) {
+        std::vector<FireStarterState> allStates;
+        for (unsigned int i = 0; i < settings.m_units; i++) {
+            // Randomize the entire program for the first generation
+            FireStarterState state(settings, settings.m_units * test + i);
+            state.RandomProgram();
+            allStates.push_back(state);
+        }
 
-        // Execute each state.
-        for (FireStarterExecute* execute : executionUnits)
-            execute->ExecuteEvolve();
+        // Setup the intial best state
+        FireStarterState bestState(allStates[0]);
 
-        // Complete each state and display the results.
-        if (!complete->CompleteStates(bestState, allStates, generation))
-            break;
-        generation++;
+        // Loop until the the completion condition or the host program is quit.
+        unsigned int generation = 0;
+        while (!WillTerminate()) {
+            // Evolve a new generation for each state.
+            for (FireStarterEvolve* evolve : evolveUnits)
+                evolve->EvolveStates(bestState, allStates, generation);
+
+            // Execute each state.
+            for (FireStarterExecute* execute : executionUnits)
+                execute->ExecuteEvolve();
+
+            // Complete each state and display the results.
+            if (!complete->CompleteStates(bestState, allStates, generation))
+                break;
+            generation++;
+        }
+
+        // Optimization evolution pass.
+        if (!WillTerminate() && (settings.m_mode == FIRESTARTER_EVOLVE) && FIRESTARTER_SECOND_PASS)
+            ControlOptimize(&bestState);
     }
 
     // Cancel any waiting jobs
@@ -300,13 +305,9 @@ void FireStarter::ControlEvolve(unsigned int test)
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
-
-    // Optimization evolution pass.
-    if (!WillTerminate() && (settings.m_mode == FIRESTARTER_EVOLVE) && FIRESTARTER_SECOND_PASS)
-        ControlOptimize(test, &bestState);
 } // ControlEvolve
 
-void FireStarter::ControlOptimize(unsigned int test, const FireStarterState *evolveState)
+void FireStarter::ControlOptimize(const FireStarterState* evolveState)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
@@ -314,54 +315,60 @@ void FireStarter::ControlOptimize(unsigned int test, const FireStarterState *evo
     m_buildSettings.FireSettings(settings, FIRESTARTER_OPTIMIZE);
 
     // Convert the most recently evolved state into an optimize mode state.
-    FireStarterState bestState;
+    FireStarterState startState;
     if (evolveState)
-        bestState = *evolveState; // Copy the best evolved state.
+        startState = *evolveState; // Copy the best evolved state.
     else
-        LoadState(bestState);     // Load the best state from the previous Test, Random or Evolve run.
-    bestState.m_generation = 0;
-    bestState.m_index = test;
-    bestState.InitResult();
+        LoadState(startState);     // Load the best state from the previous Test, Random or Evolve run.
 
     // Switch the settings to optimize mode
-    bestState.Settings().CopyModeSettings(settings);
-    settings = bestState.Settings();
+    startState.Settings().CopyModeSettings(settings);
+    settings = startState.Settings();
+    startState.m_generation = 0;
+    startState.m_index = 0;
+    startState.InitResult();
 
     // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(1);
+    FireStarterManager* manager = new FireStarterManager();
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, settings.m_processes);
+    FireStarterCompile* compile = new FireStarterCompile(manager);
 
     // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
     // Create the execution unit.
-    FireStarterExecute* execute = new FireStarterExecute(manager, 0);
+    FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
     FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
 
-    // Create the state and execution unit.
-    std::vector<FireStarterState> allStates;
-    allStates.push_back(bestState);
-
     // Generate the optimize code.
-    evolve->GenerateOptimize(bestState);
+    evolve->GenerateOptimize(startState);
 
     // Compile the optimize code.
     execute->ExecuteCompile();
 
-    // Loop until the the completion condition or the host program is quit.
-    unsigned int generation = 0;
-    while (!WillTerminate()) {
-        // Optimize the current generation.
-        execute->ExecuteOptimize(generation);
+    // Test one more more random seeds.
+    unsigned int tests = evolveState ? 1 : FIRESTARTER_TEST_SEEDS;
+    for (unsigned int test = 0; (test < tests) && !WillTerminate(); test++) {
+        // Create the state and execution unit.
+        FireStarterState bestState(startState);
+        bestState.m_index = test;
+        std::vector<FireStarterState> allStates;
+        allStates.push_back(bestState);
+        
+        // Loop until the the completion condition or the host program is quit.
+        unsigned int generation = 0;
+        while (!WillTerminate()) {
+            // Optimize the current generation.
+            execute->ExecuteOptimize(generation, test);
 
-        // Update the results in the UI.
-        if (!complete->CompleteStates(bestState, allStates, generation))
-            break;
-        generation++;
+            // Update the results in the UI.
+            if (!complete->CompleteStates(bestState, allStates, generation))
+                break;
+            generation++;
+        }
     }
 
     // Cancel any waiting jobs
@@ -419,13 +426,11 @@ void FireStarter::ControlThread(void)
                 break;
             case FIRESTARTER_EVOLVE:
                 // Evolved generations.
-                for (unsigned int test = 0; (test < FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++)
-                    ControlEvolve(test);
+                ControlEvolve();
                 break;
             case FIRESTARTER_OPTIMIZE:
                 // Optimization evolution pass.
-                for (unsigned int test = 0; (test < FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++)
-                    ControlOptimize(test);
+                ControlOptimize();
                 break;
             case FIRESTARTER_SOLUTION:
                 // Run the most recent solution.

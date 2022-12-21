@@ -143,12 +143,11 @@ private:
     FireStarterEvolutions* m_hostEvolutions = nullptr;
     size_t m_resultsSize = 0;
     size_t m_evolutionsSize = 0;
+    size_t m_generation = 0;
     unsigned int m_unitIndex = 0;
-    unsigned int m_stateID = 0;
     unsigned int m_gpus = 0;
     unsigned int m_firstVariation = 0;
     unsigned int m_lastVariation = 0;
-    unsigned int m_generation = 0;
 
     void UpdateEvolveStates(void);
     void GenerateCode(void);

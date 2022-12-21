@@ -21,9 +21,9 @@ class FireStarterCompile : public SerialThread {
 private:
 	std::vector<FireStarterCompiler*> m_compilers;
 	FireStarterServer* m_server;
-	unsigned int m_numProcesses;
+	size_t m_numProcesses;
 
 public:
-	FireStarterCompile(FireStarterManager* manager, unsigned int numProcesses);
+	FireStarterCompile(FireStarterManager* manager, size_t numProcesses = 0);
 	~FireStarterCompile(void);
 }; // FireStarterCompile

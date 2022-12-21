@@ -2,14 +2,14 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
-bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, unsigned int generations)
+bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, size_t generations)
 {
     if (m_optimizeCode.empty())
         return false;
     FireStarterState state(*initState);
     DispatchAsync([this, state, generations] {
         // Generate code using the GPU.
-        for (unsigned int generation = 0; generation < generations; generation++) {
+        for (size_t generation = 0; generation < generations; generation++) {
             FireStarterJob* job = m_manager->GetFree();
             if (!job)
                 break;
@@ -46,7 +46,7 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, uns
     return true;
 } // EvolveGenerations
 
-bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, unsigned int generation)
+bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, size_t generation)
 {
     if (m_optimizeCode.empty())
         return false;
@@ -56,8 +56,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
             // Clone or randomize instructions in the later generations.
-            job->m_state = allStates[m_index % allStates.size()];
-            job->m_state.m_index = (unsigned int)m_index;
+            job->m_state = allStates[m_index];
             job->m_state.m_generation = generation;
             if (generation) {
                 unsigned long long seed = job->m_state.StateSeed();

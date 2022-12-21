@@ -12,8 +12,8 @@ private:
 	size_t m_index = 0;
 
 public:
-	bool EvolveGenerations(const FireStarterState* initState, unsigned int generations);
-	bool EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, unsigned int generation);
+	bool EvolveGenerations(const FireStarterState* initState, size_t generations);
+	bool EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, size_t generation);
 	bool GenerateOptimize(const FireStarterState& initState);
 	FireStarterEvolve(FireStarterManager* manager, size_t index = 0);
 	~FireStarterEvolve(void);

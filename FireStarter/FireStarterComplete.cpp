@@ -167,7 +167,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
     }
 } // SaveBestCode
 
-void FireStarterComplete::SaveSolution(const FireStarterState& bestState, unsigned int generation, double generationTime)
+void FireStarterComplete::SaveSolution(const FireStarterState& bestState, size_t generation, double generationTime)
 {
     std::string solutionCode;
     m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode, generationTime, generation);
@@ -251,7 +251,7 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState)
     return result;
 } // CompleteRandom
 
-bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, unsigned int generation)
+bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, size_t generation)
 {
     bool result = true;
     DispatchSync([this, &bestState, &oldStates, &result] {

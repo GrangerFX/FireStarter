@@ -341,13 +341,14 @@ void FireStarterExecute::ExecuteCompile(void)
     });
 } // ExecuteEvolve
 
-void FireStarterExecute::ExecuteOptimize(unsigned int generation)
+void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index)
 {
-    DispatchAsync([this, generation] {
+    DispatchAsync([this, generation, index] {
         FireStarterJob* job = nullptr;
         if (m_job && (job = m_manager->GetFree())) {
             job->Copy(m_job);
             job->m_state.m_generation = generation;
+            job->m_state.m_index = index;
             Optimize(job->m_state);
             m_manager->AddComplete(job);
         }

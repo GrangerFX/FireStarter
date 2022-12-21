@@ -193,7 +193,7 @@ void FireStarterManager::Cancel(void)
     m_completeQueue.Cancel();
 } // ClearJobs
 
-FireStarterManager::FireStarterManager(unsigned int maxUnits) : m_freeQueue("Free"), m_codeQueue("Code"), m_compileQueue("Compile"), m_completeQueue("Complete")
+FireStarterManager::FireStarterManager(size_t maxUnits) : m_freeQueue("Free"), m_codeQueue("Code"), m_compileQueue("Compile"), m_completeQueue("Complete")
 {
     m_maxJobs = maxUnits * MANAGER_JOB_MULTIPLIER;
     for (size_t i = 0; i < m_maxJobs; i++)

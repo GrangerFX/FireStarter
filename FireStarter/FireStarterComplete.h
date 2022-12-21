@@ -34,12 +34,12 @@ private:
 	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTimee, double result, double average, double testError);
 	void SaveBestState(const FireStarterState& bestState);
 	void SaveBestCode(const FireStarterState& bestState);
-	void SaveSolution(const FireStarterState& bestState, unsigned int generation, double generationTime);
+	void SaveSolution(const FireStarterState& bestState, size_t generation, double generationTime);
 
 public:
 	void CompleteResults(FireStarterState& bestState, const FireStarterState& state);
 	bool CompleteRandom(FireStarterState& bestState);
-	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, unsigned int generation);
+	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, size_t generation);
 	void CompleteSolution(void);
     FireStarterComplete(FireStarterManager* manager, const FireStarterSettings& settings, void* window, unsigned int width, unsigned int height);
 	~FireStarterComplete(void);

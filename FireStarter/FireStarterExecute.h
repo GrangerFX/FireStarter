@@ -19,7 +19,7 @@ private:
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_evolveFunction = nullptr;
     CUfunction m_optimizeFunction = nullptr;
-   size_t m_resultsSize = 0;
+    size_t m_resultsSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_index = 0;
 
@@ -32,11 +32,11 @@ private:
 
 public:
     void ExecuteCompile(void);
-    void ExecuteOptimize(unsigned int generation);
+    void ExecuteOptimize(size_t generation, size_t index);
     void ExecuteEvolve(void);
 	void ExecuteRandom(void);
     void ExecuteFinish(void);
-    FireStarterExecute(FireStarterManager* manager, size_t index);
+    FireStarterExecute(FireStarterManager* manager, size_t index = 0);
 	~FireStarterExecute(void);
 }; // class FireStarterExecute
 

@@ -7,8 +7,8 @@ private:
     std::vector<unsigned char> m_result;
 public:
     FireStarterProgram m_program;
-    unsigned int m_generation = 0;
-    unsigned int m_index = 0;
+    size_t m_generation = 0;
+    size_t m_index = 0;
 
     inline bool Initialized(void) const
     {
@@ -66,7 +66,7 @@ public:
     void SaveState(std::string& code) const;
     float TestResult(void) const;
     void InitResult(void);
-    void InitState(const FireStarterSettings& settings, unsigned int index = 0);
-    FireStarterState(const FireStarterSettings& settings, unsigned int index = 0);
+    void InitState(const FireStarterSettings& settings, size_t index = 0);
+    FireStarterState(const FireStarterSettings& settings, size_t index = 0);
     inline FireStarterState(void) {}
 }; // class FireStarterState;

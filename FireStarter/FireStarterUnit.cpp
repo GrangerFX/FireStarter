@@ -370,7 +370,6 @@ void FireStarterUnit::Allocate(void)
 
     FireStarterSettings evolveSettings = m_settings;
     m_state = m_initState;
-    m_stateID = m_unitIndex;    // Index in m_allStates.
 
     size_t resultsSize = FireStarterResults::ResultsSize(m_settings.m_population, m_settings.m_registers, m_settings.m_variations);
     if (m_resultsSize != resultsSize) {
