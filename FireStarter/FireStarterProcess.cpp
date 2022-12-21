@@ -486,8 +486,8 @@ FireStarterProcess* FireStarterServer::Process(size_t index)
 
 FireStarterProcess* FireStarterServer::AddProcess(const std::string& name)
 {
-    size_t processIndex = m_processes.size() + 1;
-    std::string processPipeName = "\\\\.\\pipe\\" + name + std::to_string(processIndex);
+    static size_t processIndex = 0;
+    std::string processPipeName = "\\\\.\\pipe\\" + name + std::to_string(++processIndex);
     std::string processPath = ModulePath() + name + ".exe";
     FireStarterProcess* process = new FireStarterProcess(processPipeName, processPath, processIndex);
     m_processes.push_back(process);
