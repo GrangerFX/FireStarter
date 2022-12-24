@@ -17,7 +17,7 @@ public:
 	~FireStarterCompiler(void);
 }; // class FireStarterCompiler
 
-class FireStarterCompile : public SerialThread {
+class FireStarterCompile {
 private:
 	std::vector<FireStarterCompiler*> m_compilers;
 	FireStarterServer* m_server;

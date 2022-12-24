@@ -104,6 +104,15 @@ public:
         return false;
     } // trywait
 
+    inline bool restart()
+    {
+        std::unique_lock<std::mutex> lock(m_mtx);
+        if (m_active)
+            return false;
+        m_active = true;
+        return true;
+    } // restart
+
     inline bool terminate()
     {
         std::unique_lock<std::mutex> lock(m_mtx);

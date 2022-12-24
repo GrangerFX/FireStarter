@@ -46,6 +46,11 @@ FireStarterJob* FireStarterJobQueue::Get(void)
     return job;
 } // Get
 
+void FireStarterJobQueue::Restart(void)
+{
+    m_semaphore.restart();
+} // Restart
+
 void FireStarterJobQueue::Cancel(void)
 {
     // Release any waiting threads and return null jobs to new requests.
@@ -181,6 +186,22 @@ size_t FireStarterManager::SizeComplete(void)
     return m_completeQueue.Size();
 } // SizeComplete
 
+void FireStarterManager::Restart(void)
+{
+    if (!m_active) {
+#if FIRESTARTERCOMPILER_LOGGING
+        LOG("Restarting all queues\n");
+#endif
+        m_freeQueue.Restart();
+        m_codeQueue.Restart();
+        m_compileQueue.Restart();
+        m_completeQueue.Restart();
+        for (size_t i = 0; i < m_maxJobs; i++)
+            AddFree();
+        m_active = true;
+    }
+} // Start
+
 void FireStarterManager::Cancel(void)
 {
 #if FIRESTARTERCOMPILER_LOGGING
@@ -191,6 +212,7 @@ void FireStarterManager::Cancel(void)
     m_codeQueue.Cancel();
     m_compileQueue.Cancel();
     m_completeQueue.Cancel();
+    m_active = false;
 } // ClearJobs
 
 FireStarterManager::FireStarterManager(size_t maxUnits) : m_freeQueue("Free"), m_codeQueue("Code"), m_compileQueue("Compile"), m_completeQueue("Complete")
@@ -198,6 +220,7 @@ FireStarterManager::FireStarterManager(size_t maxUnits) : m_freeQueue("Free"), m
     m_maxJobs = maxUnits * MANAGER_JOB_MULTIPLIER;
     for (size_t i = 0; i < m_maxJobs; i++)
         AddFree();
+    m_active = true;
 } // FireStarterManager
 
 FireStarterManager::~FireStarterManager(void)

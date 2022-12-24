@@ -167,13 +167,6 @@ FireStarterCompile::FireStarterCompile(FireStarterManager* manager, size_t numPr
         FireStarterCompiler* compiler = new FireStarterCompiler(manager);
         m_compilers.push_back(compiler);
     }
-
-    // When the last compiler finishes, send a null job.
-    DispatchAsync([this, manager] {
-        for (FireStarterCompiler* compiler : m_compilers)
-            compiler->Synchronize();
-        manager->AddCompile();
-    });
 } // FireStarterCompile
 
 FireStarterCompile::~FireStarterCompile(void)
@@ -181,5 +174,4 @@ FireStarterCompile::~FireStarterCompile(void)
     for (FireStarterCompiler* compiler : m_compilers)
         delete compiler;
     delete m_server;
-    Synchronize();
 } // ~FireStarterCompile

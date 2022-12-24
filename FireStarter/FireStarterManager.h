@@ -64,6 +64,7 @@ public:
 	FireStarterJob* Get(void);
 	double WaitTime(void);
 	size_t Size(void);
+	void Restart(void);
 	void Cancel(void);
 	FireStarterJobQueue(const std::string &name);
 	~FireStarterJobQueue(void);
@@ -76,6 +77,7 @@ private:
 	FireStarterJobQueue m_compileQueue;
 	FireStarterJobQueue m_completeQueue;
 	size_t m_maxJobs = 0;
+	bool m_active = false;
 
 public:
 	void AddFree(FireStarterJob* job = nullptr);
@@ -98,6 +100,7 @@ public:
 	double TimeComplete(void);
 	size_t SizeComplete(void);
 
+	void Restart(void);
 	void Cancel(void);
 	FireStarterManager(size_t maxJobs = 1);
 	~FireStarterManager(void);
