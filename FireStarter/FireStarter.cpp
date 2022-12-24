@@ -155,6 +155,10 @@ void FireStarter::ControlTest(void)
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
+
+    // Optimization evolution pass.
+    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
+        ControlOptimize(&bestState);
 } // ControlTest
 
 void FireStarter::ControlRandom(void)
@@ -215,6 +219,10 @@ void FireStarter::ControlRandom(void)
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
+
+    // Optimization evolution pass.
+    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
+        ControlOptimize(&bestState);
 } // ControlRandom
 
 void FireStarter::ControlEvolve(void)
@@ -282,7 +290,7 @@ void FireStarter::ControlEvolve(void)
         }
 
         // Optimization evolution pass.
-        if (!WillTerminate() && (settings.m_mode == FIRESTARTER_EVOLVE) && FIRESTARTER_SECOND_PASS)
+        if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
             ControlOptimize(&bestState);
     }
 
