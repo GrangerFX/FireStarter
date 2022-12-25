@@ -45,17 +45,17 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
-    unsigned long long seed = RANDOM64(RANDOM64(generationSeed) + member);
+    unsigned long long memberSeed = RANDOM64(RANDOM64(generationSeed) + member);
     for (unsigned int v = firstVariation; v <= lastVariation; v++) {
         FireStarterData data;
-        unsigned long long memberSeed = RANDOM64(seed + v);
+        unsigned long long seed = RANDOM64(memberSeed + v); // Unique seed for the generation/member/variation
         float oldResult;
         bool evolved = false;
 
         if (init) {
             // The first generation is initalized with random numbers.
             for (int i = 0; i < dataSize; i++)
-                data.d[i] = RANDOMFACTOR64(memberSeed);
+                data.d[i] = RANDOMFACTOR64(seed);
             for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
             oldResult = settings.m_startResult;
@@ -65,8 +65,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             data = *oldResults->Data(member, v);
             oldResult = *oldResults->MinResult(member, v);
             if (*oldResults->Index(member, v) != member) {
-                unsigned int d = RANDOMMOD64(memberSeed, dataSize);
-                data.d[d] += settings.m_startScale * RANDOMFACTOR64(memberSeed);
+                unsigned int d = RANDOMMOD64(seed, dataSize);
+                data.d[d] += settings.m_startScale * RANDOMFACTOR64(seed);
                 evolved = true;
             }
         }
@@ -82,9 +82,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
         // Iterate to evolve the data.
         for (unsigned int p = 0; p < settings.m_iterations; p++) {
-            unsigned int d = RANDOMMOD64(memberSeed, dataSize);
+            unsigned int d = RANDOMMOD64(seed, dataSize);
             float oldData = data.d[d];
-            data.d[d] = oldData + evolutionScale * RANDOMFACTOR64(memberSeed);
+            data.d[d] = oldData + evolutionScale * RANDOMFACTOR64(seed);
             float curResult = TestEvaluate(data, target, theta);
             if (curResult <= result) {
                 result = curResult;
@@ -109,7 +109,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             *newResults->MinResult(member, v) = result;
             *newResults->Index(member, v) = member;
             *newResults->Debug1(member) = init ? 1 : *oldResults->Debug1(member) + 1;
-            *newResults->Debug2(member) = (unsigned int)seed;
+            *newResults->Debug2(member) = (unsigned int)memberSeed;
             maxResult = fmaxf(maxResult, result);
         } else {
             // Copy a result from among the previous generation's results.
@@ -119,7 +119,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
                 // The genetic part of genetic programming and a major optimization:
                 // Copy the best data from among a random set of candidates.
                 for (int i = 0; i < settings.m_candidates; i++) {
-                    unsigned int candidate = RANDOMMOD64(memberSeed, settings.m_population);
+                    unsigned int candidate = RANDOMMOD64(seed, settings.m_population);
                     if (candidate == *oldResults->Index(candidate, v)) {   // Only select evolving members
                         float curResult = *oldResults->MinResult(candidate, v);
                         if (curResult <= bestResult) {
@@ -129,7 +129,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
                     }
                 }
             } else if (settings.m_evolve == FIRESTARTER_EVOLVE_RANDOM)
-                bestCandidate = RANDOMMOD64(memberSeed, FIRESTARTER_CODE_POPULATION);
+                bestCandidate = RANDOMMOD64(seed, FIRESTARTER_CODE_POPULATION);
 
             // Switch to the selected member's data and results or revert to the previous generation.
             if (bestCandidate != member) {
