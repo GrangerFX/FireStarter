@@ -59,7 +59,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
             job->m_state = allStates[m_index];
             job->m_state.m_generation = generation;
             if (generation) {
-                unsigned long long seed = job->m_state.StateSeed();
+                unsigned long long seed = job->m_state.EvolveSeed();
 
                 // Copy a random range of instuctions from the best state.
                 unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));

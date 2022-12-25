@@ -25,19 +25,24 @@ public:
         return m_program.m_settings;
     } // Settings
 
-    inline unsigned long long StateSeed(unsigned long long seed = 1337)
+    inline unsigned long long EvolveSeed(unsigned long long seed = 1337)
     {
         return RANDOM64(RANDOM64(m_program.m_settings.m_seed + m_generation) + m_index + seed);
-    } // StateSeed
+    } // EvolveSeed
+
+    inline unsigned long long OptimizeSeed(unsigned long long seed = 1337)
+    {
+        return RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_index + seed);
+    } // OptimizeSeed
 
     inline void RandomProgram(unsigned long long seed = 0)
     {
-        m_program.RandomProgram(StateSeed() + seed);
+        m_program.RandomProgram(EvolveSeed() + seed);
     } // RandomProgram
 
     inline void RandomInstruction(unsigned long long seed = 0)
     {
-        m_program.RandomInstruction(StateSeed() + seed);
+        m_program.RandomInstruction(EvolveSeed() + seed);
     } // RandomInstruction
 
     inline size_t ResultSize(void) const
