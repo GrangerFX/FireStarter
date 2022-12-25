@@ -20,7 +20,7 @@ inline float TestEvaluate(const FireStarterData& data, const float target[], con
     return result;
 } // TestEvaluate
 
-inline float TestPrecision(const FireStarterData& data, unsigned int precision, unsigned int variation)
+inline float TestPrecision(const FireStarterData& data, unsigned int variation, unsigned int precision)
 {
     float result = 0.0f;
     float precisionStep = (TARGET_MAX - TARGET_MIN) / (precision - 1);
@@ -47,19 +47,13 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
     float maxResult = 0.0f;
     unsigned long long seed = RANDOM64(RANDOM64(generationSeed) + member);
     for (unsigned int v = firstVariation; v <= lastVariation; v++) {
-        unsigned long long memberSeed = RANDOM64(seed + v);
-
-        // Precalculate the target sample values.
-        float target[FIRESTARTER_SAMPLES];
-        for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-            target[i] = Target(theta[i], v);
-
-        // The first generation is initalized with random numbers.
-        // Later generations continue to evolve the data.
         FireStarterData data;
+        unsigned long long memberSeed = RANDOM64(seed + v);
         float oldResult;
         bool evolved = false;
+
         if (init) {
+            // The first generation is initalized with random numbers.
             for (int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR64(memberSeed);
             for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
@@ -67,6 +61,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             oldResult = settings.m_startResult;
             evolved = true;
         } else {
+            // Later generations randomize a single instruction if they were copied.
             data = *oldResults->Data(member, v);
             oldResult = *oldResults->MinResult(member, v);
             if (*oldResults->Index(member, v) != member) {
@@ -75,6 +70,11 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
                 evolved = true;
             }
         }
+
+        // Precalculate the target sample values.
+        float target[FIRESTARTER_SAMPLES];
+        for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+            target[i] = Target(theta[i], v);
 
         // Find the initial result
         float result = TestEvaluate(data, target, theta);
@@ -97,7 +97,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         // Calculate a more accurate estimate of the result.
         if (settings.m_precision) {
             if (evolved)
-                result = fmaxf(result, TestPrecision(data, settings.m_precision, v));
+                result = fmaxf(result, TestPrecision(data, v, settings.m_precision));
             else
                 result = oldResult;
         }
@@ -133,19 +133,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
             // Switch to the selected member's data and results or revert to the previous generation.
             if (bestCandidate != member) {
-#if 0
-                data = *oldResults->Data(bestCandidate, v);
-                data.d[RANDOMMOD64(memberSeed, dataSize)] += evolutionScale * RANDOMFACTOR64(memberSeed);
-                result = TestPrecision(data, settings.m_precision, v);
-                *newResults->Data(member, v) = data;
-                *newResults->MinResult(member, v) = result;
-                maxResult = fmaxf(maxResult, result);
-#else
                 *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
                 maxResult = fmaxf(maxResult, bestResult);
-#endif
-
             } else {
                 *newResults->Data(member, v) = data;
                 *newResults->MinResult(member, v) = result;
