@@ -11,6 +11,26 @@ inline float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
+//inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
+inline float TestEvaluate(const FireStarterData& data, const float target[], const float theta[])
+{
+    float result = 0.0f;
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+        result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
+    return result;
+} // TestEvaluate
+
+inline float TestPrecision(const FireStarterData& data, unsigned int precision, unsigned int variation)
+{
+    float result = 0.0f;
+    float precisionStep = (TARGET_MAX - TARGET_MIN) / (precision - 1);
+    for (int i = 0; i < precision; i++) {
+        float theta = TARGET_MIN + i * precisionStep;
+        result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
+    }
+    return result;
+} // TestPrecision
+
 GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
@@ -57,9 +77,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         }
 
         // Find the initial result
-        float result = 0.0f;
-        for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-            result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
+        float result = TestEvaluate(data, target, theta);
         float evolutionScale = evolved ? settings.m_startScale : settings.m_scale * result;
 
         // Iterate to evolve the data.
@@ -67,9 +85,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             unsigned int d = RANDOMMOD64(memberSeed, dataSize);
             float oldData = data.d[d];
             data.d[d] = oldData + evolutionScale * RANDOMFACTOR64(memberSeed);
-            float curResult = 0.0f;
-            for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-                curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
+            float curResult = TestEvaluate(data, target, theta);
             if (curResult <= result) {
                 result = curResult;
                 evolutionScale = settings.m_scale * result;
@@ -80,13 +96,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
         // Calculate a more accurate estimate of the result.
         if (settings.m_precision) {
-            if (evolved) {
-                float precisionStep = (TARGET_MAX - TARGET_MIN) / (settings.m_precision - 1);
-                for (int i = 0; i < settings.m_precision; i++) {
-                    float theta = TARGET_MIN + i * precisionStep;
-                    result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, v)), result);
-                }
-            } else
+            if (evolved)
+                result = TestPrecision(data, settings.m_precision, v);
+            else
                 result = oldResult;
         }
 
@@ -121,9 +133,19 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
             // Switch to the selected member's data and results or revert to the previous generation.
             if (bestCandidate != member) {
+#if 1
+                data = *oldResults->Data(bestCandidate, v);
+                data.d[RANDOMMOD64(memberSeed, dataSize)] += evolutionScale * RANDOMFACTOR64(memberSeed);
+                result = TestPrecision(data, settings.m_precision, v);
+                *newResults->Data(member, v) = data;
+                *newResults->MinResult(member, v) = result;
+                maxResult = fmaxf(maxResult, result);
+#else
                 *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
                 maxResult = fmaxf(maxResult, bestResult);
+#endif
+
             } else {
                 *newResults->Data(member, v) = data;
                 *newResults->MinResult(member, v) = result;

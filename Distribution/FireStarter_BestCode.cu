@@ -9,23 +9,23 @@ inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data(0);
     data->d[0] = -3.141593f;
-    data->d[1] = 0.364518f;
-    data->d[2] = 0.029690f;
-    data->d[3] = -0.921938f;
-    data->d[4] = -1.219748f;
-    data->d[5] = 3.686435f;
-    data->d[6] = -0.066796f;
-    data->d[7] = 0.589707f;
-    data->d[8] = -1.092347f;
-    data->d[9] = 1.237858f;
-    data->d[10] = 1.499511f;
-    data->d[11] = -0.158913f;
-    data->d[12] = 22.987646f;
-    data->d[13] = -19.625746f;
-    data->d[14] = 23.711294f;
-    data->d[15] = 0.001956f;
-    data->d[16] = -14.545778f;
-    data->d[17] = -1.581590f;
+    data->d[1] = 0.285550f;
+    data->d[2] = -0.793079f;
+    data->d[3] = 6.540829f;
+    data->d[4] = -0.957212f;
+    data->d[5] = -0.938749f;
+    data->d[6] = 1.089633f;
+    data->d[7] = 0.637619f;
+    data->d[8] = -0.101704f;
+    data->d[9] = 0.304403f;
+    data->d[10] = -1.299122f;
+    data->d[11] = -0.001123f;
+    data->d[12] = 5.853066f;
+    data->d[13] = -2.801615f;
+    data->d[14] = 3.988163f;
+    data->d[15] = -0.729766f;
+    data->d[16] = 1.539679f;
+    data->d[17] = 0.265921f;
     data->d[18] = -0.000000f;
     data->d[19] = 0.000000f;
     data->d[20] = 0.000000f;
@@ -47,23 +47,23 @@ inline void LoadVariation1(FireStarterResult* result)
 {
     FireStarterData *data = result->Data(1);
     data->d[0] = -3.090658f;
-    data->d[1] = 0.294273f;
-    data->d[2] = 0.467043f;
-    data->d[3] = -5.407283f;
-    data->d[4] = -1.077156f;
-    data->d[5] = 0.775772f;
-    data->d[6] = -3.541287f;
-    data->d[7] = 0.289636f;
-    data->d[8] = 0.152006f;
-    data->d[9] = -0.781819f;
-    data->d[10] = -0.061378f;
-    data->d[11] = 0.043806f;
-    data->d[12] = 9.493250f;
-    data->d[13] = -5.222623f;
-    data->d[14] = 7.255289f;
-    data->d[15] = 0.248182f;
-    data->d[16] = 0.173126f;
-    data->d[17] = 0.057331f;
+    data->d[1] = -0.171932f;
+    data->d[2] = 0.160538f;
+    data->d[3] = -1.282034f;
+    data->d[4] = 1.128775f;
+    data->d[5] = -2.551560f;
+    data->d[6] = 0.677346f;
+    data->d[7] = -0.112504f;
+    data->d[8] = 1.402526f;
+    data->d[9] = 1.326062f;
+    data->d[10] = -0.681378f;
+    data->d[11] = -0.568880f;
+    data->d[12] = -22.597523f;
+    data->d[13] = -1.391869f;
+    data->d[14] = 19.976561f;
+    data->d[15] = -0.000000f;
+    data->d[16] = -6.133626f;
+    data->d[17] = -0.250505f;
     data->d[18] = -0.118132f;
     data->d[19] = 0.000000f;
     data->d[20] = 0.000000f;
@@ -78,30 +78,30 @@ inline void LoadVariation1(FireStarterResult* result)
     data->d[29] = 0.000000f;
     data->d[30] = 0.000000f;
     data->d[31] = 0.000000f;
-    *result->MinResult(1) = 0.000001f;
+    *result->MinResult(1) = 0.000002f;
 } // LoadVariation1
 
 inline void LoadVariation2(FireStarterResult* result)
 {
     FireStarterData *data = result->Data(2);
     data->d[0] = -2.617994f;
-    data->d[1] = 0.480241f;
-    data->d[2] = 0.112727f;
-    data->d[3] = -4.157291f;
-    data->d[4] = 0.567667f;
-    data->d[5] = -1.010678f;
-    data->d[6] = -0.829096f;
-    data->d[7] = 0.439031f;
-    data->d[8] = -0.721499f;
-    data->d[9] = -0.750821f;
-    data->d[10] = 0.543289f;
-    data->d[11] = 0.304151f;
-    data->d[12] = -12.574543f;
-    data->d[13] = 4.802970f;
-    data->d[14] = 3.219914f;
-    data->d[15] = -0.009624f;
-    data->d[16] = 0.846270f;
-    data->d[17] = 0.928374f;
+    data->d[1] = -0.621441f;
+    data->d[2] = 0.010687f;
+    data->d[3] = -0.670838f;
+    data->d[4] = 1.726034f;
+    data->d[5] = 1.264552f;
+    data->d[6] = 0.349510f;
+    data->d[7] = -1.226373f;
+    data->d[8] = 1.095495f;
+    data->d[9] = -1.266308f;
+    data->d[10] = -0.346866f;
+    data->d[11] = 0.253126f;
+    data->d[12] = -12.712609f;
+    data->d[13] = 6.247823f;
+    data->d[14] = -2.948675f;
+    data->d[15] = 0.022731f;
+    data->d[16] = -2.924531f;
+    data->d[17] = 1.216885f;
     data->d[18] = 0.523599f;
     data->d[19] = 0.000000f;
     data->d[20] = 0.000000f;
@@ -157,6 +157,26 @@ inline float Evaluate(FireStarterData data, float n)
 } // Evaluate
 // END //
 
+//inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
+inline float TestEvaluate(const FireStarterData& data, const float target[], const float theta[])
+{
+    float result = 0.0f;
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+        result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
+    return result;
+} // TestEvaluate
+
+inline float TestPrecision(const FireStarterData& data, unsigned int precision, unsigned int variation)
+{
+    float result = 0.0f;
+    float precisionStep = (TARGET_MAX - TARGET_MIN) / (precision - 1);
+    for (int i = 0; i < precision; i++) {
+        float theta = TARGET_MIN + i * precisionStep;
+        result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
+    }
+    return result;
+} // TestPrecision
+
 GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
@@ -203,9 +223,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         }
 
         // Find the initial result
-        float result = 0.0f;
-        for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-            result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
+        float result = TestEvaluate(data, target, theta);
         float evolutionScale = evolved ? settings.m_startScale : settings.m_scale * result;
 
         // Iterate to evolve the data.
@@ -213,9 +231,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             unsigned int d = RANDOMMOD64(memberSeed, dataSize);
             float oldData = data.d[d];
             data.d[d] = oldData + evolutionScale * RANDOMFACTOR64(memberSeed);
-            float curResult = 0.0f;
-            for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-                curResult = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), curResult);
+            float curResult = TestEvaluate(data, target, theta);
             if (curResult <= result) {
                 result = curResult;
                 evolutionScale = settings.m_scale * result;
@@ -226,13 +242,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
         // Calculate a more accurate estimate of the result.
         if (settings.m_precision) {
-            if (evolved) {
-                float precisionStep = (TARGET_MAX - TARGET_MIN) / (settings.m_precision - 1);
-                for (int i = 0; i < settings.m_precision; i++) {
-                    float theta = TARGET_MIN + i * precisionStep;
-                    result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, v)), result);
-                }
-            } else
+            if (evolved)
+                result = TestPrecision(data, settings.m_precision, v);
+            else
                 result = oldResult;
         }
 
@@ -267,9 +279,19 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
             // Switch to the selected member's data and results or revert to the previous generation.
             if (bestCandidate != member) {
+#if 1
+                data = *oldResults->Data(bestCandidate, v);
+                data.d[RANDOMMOD64(memberSeed, dataSize)] += evolutionScale * RANDOMFACTOR64(memberSeed);
+                result = TestPrecision(data, settings.m_precision, v);
+                *newResults->Data(member, v) = data;
+                *newResults->MinResult(member, v) = result;
+                maxResult = fmaxf(maxResult, result);
+#else
                 *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
                 maxResult = fmaxf(maxResult, bestResult);
+#endif
+
             } else {
                 *newResults->Data(member, v) = data;
                 *newResults->MinResult(member, v) = result;

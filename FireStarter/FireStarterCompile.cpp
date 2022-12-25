@@ -11,14 +11,15 @@ void FireStarterCompiler::CompilerLocal(void)
             job = m_manager->GetCode();
             if (job) {
                 bool result = CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
-                if (job->m_log.size())
-                    LOG("Compile log:%s\n\n", job->m_log.c_str());        
-                if (result)
-                    m_manager->AddCompile(job);
-                else {
+                if (result) {
+                    if (job->m_log.size())
+                        LOG("Compile log: %s\n\n", job->m_log.c_str());
+                } else {
+                    printf("Compile error: %s\n", job->m_log.c_str());
                     delete job;
                     job = nullptr;
                 }
+                m_manager->AddCompile(job);
             }
         } while (job && !WillTerminate());
     });
@@ -47,9 +48,15 @@ void FireStarterCompiler::CompilerServer(void)
                             if (result && (command == COMPILE_EXECUTE)) {
                                 job->Packetize(receivePacket);
                                 if (result) {
+                                    if (!job->m_ptx.empty()) {
 #if FIRESTARTERCOMPILER_LOGGING
-                                    LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job->m_state.m_generation);
+                                        LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job->m_state.m_generation);
 #endif
+                                    } else {
+                                        printf("Compile error: %s\n", job->m_log.c_str());
+                                        delete job;
+                                        job = nullptr;
+                                    }
                                     m_manager->AddCompile(job);
                                 } else {
                                     LOG("%s: Unable to receive data!\n", m_process->ProcessPrefix().c_str());
@@ -95,13 +102,14 @@ void FireStarterCompiler::CompilerClient(void)
 #if FIRESTARTERCOMPILER_LOGGING
                             LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job.m_state.m_generation);
 #endif
-                            bool result = CUDACompile::Compile(job.m_ptx, job.m_log, job.m_program, job.m_programName, job.m_options);
+                            bool compileResult = CUDACompile::Compile(job.m_ptx, job.m_log, job.m_program, job.m_programName, job.m_options);
                             if (job.m_log.size())
                                 LOG("%s: Compile log:%s\n\n", m_process->ProcessPrefix().c_str(), job.m_log.c_str());
-
+                            if (!compileResult)
+                                job.m_ptx.clear();
                             FireStarterPacket sendPacket(COMPILE_EXECUTE);
                             job.Packetize(sendPacket);
-                            result = result && m_process->SendPacket(sendPacket);
+                            result = m_process->SendPacket(sendPacket);
                         } else {
                             LOG("%s: Bad compile command data!\n", m_process->ProcessPrefix().c_str());
                         }
