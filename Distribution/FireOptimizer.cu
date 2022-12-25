@@ -55,7 +55,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         if (init) {
             // The first generation is initalized with random numbers.
             for (int i = 0; i < dataSize; i++)
-                data.d[i] = RANDOMFACTOR64(seed);
+                data.d[i] = RANDOMFACTOR64(seed) * settings.m_startScale;
             for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
             oldResult = settings.m_startResult;
@@ -66,7 +66,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             oldResult = *oldResults->MinResult(member, v);
             if (*oldResults->Index(member, v) != member) {
                 unsigned int d = RANDOMMOD64(seed, dataSize);
-                data.d[d] += settings.m_startScale * RANDOMFACTOR64(seed);
+                data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
                 evolved = true;
             }
         }
