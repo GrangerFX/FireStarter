@@ -97,7 +97,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         // Calculate a more accurate estimate of the result.
         if (settings.m_precision) {
             if (evolved)
-                result = TestPrecision(data, settings.m_precision, v);
+                result = fmaxf(result, TestPrecision(data, settings.m_precision, v));
             else
                 result = oldResult;
         }
@@ -133,7 +133,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
             // Switch to the selected member's data and results or revert to the previous generation.
             if (bestCandidate != member) {
-#if 1
+#if 0
                 data = *oldResults->Data(bestCandidate, v);
                 data.d[RANDOMMOD64(memberSeed, dataSize)] += evolutionScale * RANDOMFACTOR64(memberSeed);
                 result = TestPrecision(data, settings.m_precision, v);
