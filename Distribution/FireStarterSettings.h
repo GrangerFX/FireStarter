@@ -14,8 +14,8 @@
 #define FIRESTARTER_EVOLVE_BEST         2
 #define FIRESTARTER_EVOLVE_RANDOM       3
 
-//#define FIRESTARTER_SEED         0
-#define FIRESTARTER_SEED         3533
+#define FIRESTARTER_SEED         0
+//#define FIRESTARTER_SEED         3533
 //#define FIRESTARTER_SEED         10484
 
 #define FIRESTARTER_CODE     1
