@@ -358,10 +358,10 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState, unsigned 
 
     // Test one more more random seeds.
     unsigned int tests = evolveState ? 1 : FIRESTARTER_TEST_SEEDS;
-    for (unsigned int test = 0; (test < tests) && !WillTerminate(); test++) {
+    for (unsigned int test = evolveTest; (test < evolveTest + tests) && !WillTerminate(); test++) {
         // Create the state and execution unit.
         FireStarterState bestState(startState);
-        bestState.m_index = evolveTest + test;
+        bestState.m_index =  test;
         std::vector<FireStarterState> allStates;
         allStates.push_back(bestState);
         

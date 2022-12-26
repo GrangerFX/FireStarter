@@ -63,7 +63,9 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                 unsigned long long seed = job->m_state.EvolveSeed();
 
                 // Copy or randomize instructions based on the quality of the previous result.
-                if (job->m_state.MaxResult() * 0.5f > bestResult) {
+                if (job->m_state.MaxResult() * 0.25f > bestResult)
+                    job->m_state.m_program = state.m_program;
+                else if (job->m_state.MaxResult() * 0.5f > bestResult) {
                     // Copy a random range of instuctions from the best state.
                     unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
                     unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
@@ -73,19 +75,16 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                         copySrc %= numInstructions;
                         copyDst %= numInstructions;
                     }
-
-                    // Randomize one instruction.
-                    job->m_state.m_program.RandomInstruction(seed++);
-                } else {
-                    // Randomize a random range of instuctions.
-                    unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
-                    unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
-                    while (randomNum--) {
-                        job->m_state.m_program.RandomInstruction(seed++, randomDst++);
-                        randomDst %= numInstructions;
-                    }
                 }
-              } else
+
+                // Randomize a random range of instuctions.
+                unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
+                unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
+                while (randomNum--) {
+                    job->m_state.m_program.RandomInstruction(seed++, randomDst++);
+                    randomDst %= numInstructions;
+                }
+             } else
                 job->m_state.RandomProgram();
 
             // Optimize the program registers.
