@@ -315,7 +315,7 @@ void FireStarter::ControlEvolve(void)
     delete manager;
 } // ControlEvolve
 
-void FireStarter::ControlOptimize(const FireStarterState* evolveState)
+void FireStarter::ControlOptimize(const FireStarterState* evolveState, unsigned int evolveTest)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
@@ -362,7 +362,7 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState)
     for (unsigned int test = 0; (test < tests) && !WillTerminate(); test++) {
         // Create the state and execution unit.
         FireStarterState bestState(startState);
-        bestState.m_index = test;
+        bestState.m_index = evolveTest + test;
         std::vector<FireStarterState> allStates;
         allStates.push_back(bestState);
         
