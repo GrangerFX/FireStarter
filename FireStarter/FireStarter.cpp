@@ -290,7 +290,7 @@ void FireStarter::ControlEvolve(void)
 
         // Optimization evolution pass.
         if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-            ControlOptimize(&bestState);
+            ControlOptimize(&bestState, test);
     }
 
     // Cancel any waiting jobs
