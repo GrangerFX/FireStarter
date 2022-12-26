@@ -53,6 +53,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
     FireStarterState state(bestState);
     DispatchAsync([this, state, allStates, generation] {
         unsigned int numInstructions = state.Settings().m_instructions;
+        float bestResult = state.MaxResult();
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
             // Clone or randomize instructions in the later generations.
@@ -61,7 +62,8 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
             if (generation) {
                 unsigned long long seed = job->m_state.EvolveSeed();
 
-                if (RANDOMMOD64(seed, 2)) {
+                // Copy or randomize instructions based on the quality of the previous result.
+                if (job->m_state.MaxResult() * 0.5f > bestResult) {
                     // Copy a random range of instuctions from the best state.
                     unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
                     unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
@@ -76,7 +78,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                     job->m_state.m_program.RandomInstruction(seed++);
                 } else {
                     // Randomize a random range of instuctions.
-                    unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 8));
+                    unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
                     unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
                     while (randomNum--) {
                         job->m_state.m_program.RandomInstruction(seed++, randomDst++);
