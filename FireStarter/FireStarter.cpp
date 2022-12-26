@@ -265,7 +265,6 @@ void FireStarter::ControlEvolve(void)
         for (unsigned int i = 0; i < settings.m_units; i++) {
             // Randomize the entire program for the first generation
             FireStarterState state(settings, settings.m_units * test + i);
-            state.RandomProgram();
             allStates.push_back(state);
         }
 

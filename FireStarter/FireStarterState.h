@@ -37,12 +37,12 @@ public:
 
     inline void RandomProgram(unsigned long long seed = 0)
     {
-        m_program.RandomProgram(EvolveSeed() + seed);
+        m_program.RandomProgram(EvolveSeed(seed));
     } // RandomProgram
 
     inline void RandomInstruction(unsigned long long seed = 0)
     {
-        m_program.RandomInstruction(EvolveSeed() + seed);
+        m_program.RandomInstruction(EvolveSeed(seed));
     } // RandomInstruction
 
     inline size_t ResultSize(void) const
