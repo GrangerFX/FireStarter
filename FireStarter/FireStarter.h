@@ -13,7 +13,7 @@ private:
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);
-    void ControlOptimize(const FireStarterState* evolveState = nullptr, unsigned int evolveTest = 0);
+    void ControlOptimize(const FireStarterState* evolveState = nullptr);
     void ControlSolution(void);
     void ControlThread(void);
 

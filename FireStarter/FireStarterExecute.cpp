@@ -261,7 +261,7 @@ void FireStarterExecute::FinishResults(void)
     context->Synchronize();
 } // FinishResults
 
-bool FireStarterExecute::Optimize(FireStarterState& state, bool skipVariations)
+bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipVariations)
 {
     if (!m_optimizeFunction)
         return false;
@@ -270,18 +270,18 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool skipVariations)
     float bestResult = stateResult->maxResult;
     stateResult->maxResult = 0;
     bool found = true;
-    if (skipVariations && state.m_generation) {
+    if (skipVariations && !init) {
         for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
             // Optimization: If the variation result is worse, skip the rest of the variations.
             if (found) {
-                OptimizeGenerations(state, stateSettings.m_mode != FIRESTARTER_OPTIMIZE, variation, variation);
+                OptimizeGenerations(state, init, variation, variation);
                 found = stateResult->maxResult <= bestResult;
             }  else
                 // The variation data is reset when it is skipped.
                 stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
         }
     } else
-        OptimizeGenerations(state, stateSettings.m_mode != FIRESTARTER_OPTIMIZE, 0, stateSettings.m_variations - 1);
+        OptimizeGenerations(state, init, 0, stateSettings.m_variations - 1);
 
     // Find the best overall result for the state.
     if (found) {
@@ -341,15 +341,15 @@ void FireStarterExecute::ExecuteCompile(void)
     });
 } // ExecuteEvolve
 
-void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index)
+void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, bool init)
 {
-    DispatchAsync([this, generation, index] {
+    DispatchAsync([this, generation, index, init] {
         FireStarterJob* job = nullptr;
         if (m_job && (job = m_manager->GetFree())) {
             job->Copy(m_job);
             job->m_state.m_generation = generation;
             job->m_state.m_index = index;
-            Optimize(job->m_state);
+            Optimize(job->m_state, init);
             m_manager->AddComplete(job);
         }
     });
@@ -359,7 +359,7 @@ void FireStarterExecute::ExecuteEvolve(void)
 {
     DispatchAsync([this] {
         if (Compile()) {
-            Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+            Optimize(m_job->m_state, true, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             m_manager->AddComplete(m_job);
             m_job = nullptr;
         }

@@ -123,7 +123,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
     // Update the log file and window status text.
     std::string statusString;
     unsigned int unit = (unsigned int)(state.m_index % settings.m_units);
-    unsigned int test = (unsigned int)(state.m_index / settings.m_units);
+    unsigned int test = (unsigned int)state.m_test;
     float newResult = state.MaxResult();
     float bestResult = bestState.MaxResult();
     if (settings.m_mode == FIRESTARTER_RANDOM) {

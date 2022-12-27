@@ -264,7 +264,7 @@ void FireStarter::ControlEvolve(void)
         std::vector<FireStarterState> allStates;
         for (unsigned int i = 0; i < settings.m_units; i++) {
             // Randomize the entire program for the first generation
-            FireStarterState state(settings, settings.m_units * test + i);
+            FireStarterState state(settings, settings.m_units * test + i, test);
             allStates.push_back(state);
         }
 
@@ -290,7 +290,7 @@ void FireStarter::ControlEvolve(void)
 
         // Optimization evolution pass.
         if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-            ControlOptimize(&bestState, test);
+            ControlOptimize(&bestState);
     }
 
     // Cancel any waiting jobs
@@ -314,7 +314,7 @@ void FireStarter::ControlEvolve(void)
     delete manager;
 } // ControlEvolve
 
-void FireStarter::ControlOptimize(const FireStarterState* evolveState, unsigned int evolveTest)
+void FireStarter::ControlOptimize(const FireStarterState* evolveState)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
@@ -331,8 +331,6 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState, unsigned 
     // Switch the settings to optimize mode
     startState.Settings().CopyModeSettings(settings);
     settings = startState.Settings();
-    startState.m_generation = 0;
-    startState.m_index = 0;
     startState.InitResult();
 
     // Create the compiler manager
@@ -357,25 +355,28 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState, unsigned 
     execute->ExecuteCompile();
 
     // Test one more more random seeds.
-    unsigned int firstTest = evolveState ? evolveTest : FIRESTARTER_TEST_START;
-    unsigned int lastTest = evolveState ? evolveTest + 1 : FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS;
+    unsigned int firstTest = evolveState ? 0 : FIRESTARTER_TEST_START;
+    unsigned int lastTest = evolveState ? 1 : FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS;
     for (unsigned int test = firstTest; (test < lastTest) && !WillTerminate(); test++) {
         // Create the state and execution unit.
         FireStarterState bestState(startState);
-        bestState.m_index =  test;
+        size_t index = startState.m_index + test;
+        bestState.m_index = index;
         std::vector<FireStarterState> allStates;
         allStates.push_back(bestState);
         
         // Loop until the the completion condition or the host program is quit.
-        unsigned int generation = 0;
+        size_t generation = startState.m_generation;
+        bool init = true;
         while (!WillTerminate()) {
             // Optimize the current generation.
-            execute->ExecuteOptimize(generation, test);
+            execute->ExecuteOptimize(generation, index, init);
 
             // Update the results in the UI.
             if (!complete->CompleteStates(bestState, allStates, generation))
                 break;
             generation++;
+            init = false;
         }
     }
 

@@ -111,15 +111,16 @@ void FireStarterState::InitResult(void)
     Result()->Init(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitResult
 
-void FireStarterState::InitState(const FireStarterSettings& settings, size_t index)
+void FireStarterState::InitState(const FireStarterSettings& settings, size_t index, size_t test)
 {
     m_generation = 0;
     m_index = index;
+    m_test = test;
     m_program.InitProgram(settings);
     InitResult();
 } // InitState
 
-FireStarterState::FireStarterState(const FireStarterSettings& settings, size_t index)
+FireStarterState::FireStarterState(const FireStarterSettings& settings, size_t index, size_t test)
 {
-    InitState(settings, index);
+    InitState(settings, index, test);
 } // FireStarterState

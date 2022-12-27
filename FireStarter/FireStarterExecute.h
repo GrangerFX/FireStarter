@@ -27,12 +27,12 @@ private:
     void FinishResults(void);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
-    bool Optimize(FireStarterState& state, bool skipVariations = false);
+    bool Optimize(FireStarterState& state, bool init, bool skipVariations = false);
     bool Compile(void);
 
 public:
     void ExecuteCompile(void);
-    void ExecuteOptimize(size_t generation, size_t index);
+    void ExecuteOptimize(size_t generation, size_t index, bool init);
     void ExecuteEvolve(void);
 	void ExecuteRandom(void);
     void ExecuteFinish(void);
