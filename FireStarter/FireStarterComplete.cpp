@@ -126,12 +126,12 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
     unsigned int test = (unsigned int)(state.m_index / settings.m_units);
     float newResult = state.MaxResult();
     float bestResult = bestState.MaxResult();
-    if ((settings.m_mode == FIRESTARTER_TEST) || (settings.m_mode == FIRESTARTER_RANDOM)) {
+    if (settings.m_mode == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, newResult, average, bestResult, bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
     } else {
-        statusString = Format("%s:", settings.Mode());
+        statusString = Format("%s: Seed=%u", settings.Mode(), settings.m_seed);
 #if FIRESTARTER_TEST_SEEDS
         statusString += Format("  Test=%u", test);
 #endif
