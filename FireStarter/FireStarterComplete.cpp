@@ -86,7 +86,7 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
     DisplayImage(m_buffer.GetPixels());
 } // FireShow
 
-void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double result, double average, double testError)
+void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double oldResult, double average, double testError)
 {
     const FireStarterSettings& settings = state.Settings();
 
@@ -109,7 +109,6 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
     const FireStarterResult* stateResult = state.Result();
     uint64_t resultHash = MurmurHash64(stateResult, state.ResultSize());
     uint64_t programHash = MurmurHash64(state.m_program.OptimizedInstructions(), state.m_program.InstructionsSize());
-    float bestResult = state.MaxResult();
     hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), settings.m_seed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
     FireStarterCode::AppendCode(hashFilePath, hashString);
 //  m_output.Output(hashString);
@@ -123,15 +122,47 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
 
     // Update the log file and window status text.
     std::string statusString;
+    unsigned int unit = (unsigned int)(state.m_index % settings.m_units);
+    unsigned int test = (unsigned int)(state.m_index / settings.m_units);
+    float newResult = state.MaxResult();
+    float bestResult = bestState.MaxResult();
     if ((settings.m_mode == FIRESTARTER_TEST) || (settings.m_mode == FIRESTARTER_RANDOM)) {
-        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, result, average, bestState.MaxResult(), bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
+        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, newResult, average, bestResult, bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
-    } else
-        statusString = Format("%s: Test=%u  Generation=%u  Age=%u  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), state.m_index / settings.m_units, state.m_generation, state.m_generation - bestState.m_generation, bestState.MaxResult(), bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
+    } else {
+        statusString = Format("%s:", settings.Mode());
+#if FIRESTARTER_TEST_SEEDS
+        statusString += Format("  Test=%u", test);
+#endif
+        if (settings.m_units > 1)
+            statusString += Format("  Unit=%u", unit);
+
+        statusString += Format("  Generation=%u  Age=%u", state.m_generation, state.m_generation - bestState.m_generation);
+
+        if (settings.m_mode == FIRESTARTER_EVOLVE) {
+            if (newResult <= bestResult)
+                statusString += " *";
+            else if (newResult < oldResult)
+                statusString += " >";
+            else
+                statusString += "  ";
+            statusString += Format("New Result=%.8f  Old Result=%.8f", newResult, oldResult);
+        } else {
+            if (newResult <= bestResult)
+                statusString += " *";
+            else
+                statusString += "  ";
+            statusString += Format("Result=%.8f", state.MaxResult());
+        }
+
+        statusString += Format("  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", bestResult, bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
+    }
 
     // Update the log file.
     FireStarterCode::AppendCode(logFilePath, statusString + "\r\n");
+    if ((unit == settings.m_units - 1) && (settings.m_units > 1))
+        FireStarterCode::AppendCode(logFilePath, "\r\n");
 
     // Update the window status.
     HWND window = (HWND)m_window;
@@ -174,7 +205,7 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState, size_t
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
-void FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state)
+void FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult)
 {
     if (!state.m_generation) {
         m_resultsCount = 0;
@@ -192,7 +223,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     }
 
     // Do all the time consuming work asynchronously.
-    DispatchAsync([this, state, bestState, update] {
+    DispatchAsync([this, bestState, state, oldResult, update] {
         double duration = m_timer.Duration();
 
         // Calculate the average time per generation.
@@ -212,7 +243,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 
         // Update the render status after every pass.
         double average = m_totalResult / m_resultsCount;
-        RenderStatus(bestState, state, duration, m_smoothTime, state.MaxResult(), average, testError);
+        RenderStatus(bestState, state, duration, m_smoothTime, oldResult, average, testError);
 
         // If the best state was updated, save the stat and draw the results.
         if (update) {
@@ -242,8 +273,7 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState)
             //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Update the best state and display the results.
-            FireStarterState& state = job->m_state;
-            CompleteResults(bestState, state);
+            CompleteResults(bestState, job->m_state);
             m_manager->AddFree(job);
             result = true;
         }
@@ -276,12 +306,13 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
         if (result) {
             // Update the best state and display the results.
             for (size_t i = 0; i < numStates; i++) {
-                FireStarterState& state = newStates[i];
-                CompleteResults(bestState, state);
-
+                FireStarterState& newState = newStates[i];
                 FireStarterState& oldState = oldStates[i];
-                if (!state.m_generation || (state.MaxResult() < oldState.MaxResult()))
-                    oldState = state;
+                CompleteResults(bestState, newState, oldState.MaxResult());
+                if (!newState.m_generation || (newState.MaxResult() < oldState.MaxResult()))
+                    oldState = newState;
+                else
+                    oldState.m_generation = newState.m_generation;
             }
         }
     });

@@ -31,13 +31,13 @@ private:
 	bool LoadFireShowCode(void);
 	void DisplayImage(const unsigned char* pixels);
 	void FireShow(const FireStarterState& state);
-	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTimee, double result, double average, double testError);
+	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTimee, double oldResult, double average, double testError);
 	void SaveBestState(const FireStarterState& bestState);
 	void SaveBestCode(const FireStarterState& bestState);
 	void SaveSolution(const FireStarterState& bestState, size_t generation, double generationTime);
 
 public:
-	void CompleteResults(FireStarterState& bestState, const FireStarterState& state);
+	void CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult = 0.0f);
 	bool CompleteRandom(FireStarterState& bestState);
 	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, size_t generation);
 	void CompleteSolution(void);

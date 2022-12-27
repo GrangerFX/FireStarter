@@ -260,7 +260,7 @@ void FireStarter::ControlEvolve(void)
     // Create the completion unit.
     FireStarterComplete* complete = new FireStarterComplete(manager, settings, m_window, m_width, m_height);
 
-    for (unsigned int test = 0; (test < FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++) {
+    for (unsigned int test = FIRESTARTER_TEST_START; (test < FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++) {
         std::vector<FireStarterState> allStates;
         for (unsigned int i = 0; i < settings.m_units; i++) {
             // Randomize the entire program for the first generation
@@ -357,8 +357,9 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState, unsigned 
     execute->ExecuteCompile();
 
     // Test one more more random seeds.
-    unsigned int tests = evolveState ? 1 : FIRESTARTER_TEST_SEEDS;
-    for (unsigned int test = evolveTest; (test < evolveTest + tests) && !WillTerminate(); test++) {
+    unsigned int firstTest = evolveState ? evolveTest : FIRESTARTER_TEST_START;
+    unsigned int lastTest = evolveState ? evolveTest + 1 : FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS;
+    for (unsigned int test = firstTest; (test < lastTest) && !WillTerminate(); test++) {
         // Create the state and execution unit.
         FireStarterState bestState(startState);
         bestState.m_index =  test;
