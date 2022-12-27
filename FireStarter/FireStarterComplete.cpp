@@ -156,7 +156,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
             statusString += Format("Result=%.8f", state.MaxResult());
         }
 
-        statusString += Format("  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", bestResult, bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
+        statusString += Format("  Best=%.8f  BestGen=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", bestResult, bestState.m_generation, generationTime, runTime, testError);
     }
 
     // Update the log file.
