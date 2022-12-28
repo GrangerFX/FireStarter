@@ -50,6 +50,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         FireStarterData data;
         unsigned long long seed = RANDOM64(memberSeed + v); // Unique seed for the generation/member/variation
         float oldResult;
+        unsigned int age;
         bool evolved = false;
 
         if (init) {
@@ -59,12 +60,14 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
             oldResult = settings.m_startResult;
+            age = 0;
             evolved = true;
         } else {
             // Later generations randomize a single instruction if they were copied.
             data = *oldResults->Data(member, v);
             oldResult = *oldResults->MinResult(member, v);
-            if (*oldResults->Index(member, v) != 0) {
+            age = *oldResults->Index(member, v);
+            if (age != 0) {
                 unsigned int d = RANDOMMOD64(seed, dataSize);
                 data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
                 evolved = true;
@@ -135,7 +138,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             if (bestCandidate != member) {
                 *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
-                *newResults->Index(member, v) = *oldResults->Index(member, v) + 1;
+                *newResults->Index(member, v) = age + 1;
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
                 *newResults->Data(member, v) = data;
