@@ -64,7 +64,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             // Later generations randomize a single instruction if they were copied.
             data = *oldResults->Data(member, v);
             oldResult = *oldResults->MinResult(member, v);
-            if (*oldResults->Index(member, v) != member) {
+            if (*oldResults->Index(member, v) != 0) {
                 unsigned int d = RANDOMMOD64(seed, dataSize);
                 data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
                 evolved = true;
@@ -107,7 +107,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             // Save better results.
             *newResults->Data(member, v) = data;
             *newResults->MinResult(member, v) = result;
-            *newResults->Index(member, v) = member;
+            *newResults->Index(member, v) = 0;
             *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
             *newResults->Debug2(member, v) = (unsigned int)memberSeed;
             maxResult = fmaxf(maxResult, result);
@@ -120,7 +120,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
                 // Copy the best data from among a random set of candidates.
                 for (int i = 0; i < settings.m_candidates; i++) {
                     unsigned int candidate = RANDOMMOD64(seed, settings.m_population);
-                    if (*oldResults->Index(candidate, v) == candidate) {   // Only select evolving members
+                    if (*oldResults->Index(candidate, v) == 0) {   // Only select evolving members
                         float curResult = *oldResults->MinResult(candidate, v);
                         if (curResult <= bestResult) {
                             bestResult = curResult;
@@ -135,13 +135,14 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             if (bestCandidate != member) {
                 *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
+                *newResults->Index(member, v) = *oldResults->Index(member, v) + 1;
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
                 *newResults->Data(member, v) = data;
                 *newResults->MinResult(member, v) = result;
+                *newResults->Index(member, v) = 0;
                 maxResult = fmaxf(maxResult, result);
             }
-            *newResults->Index(member, v) = bestCandidate;
             *newResults->Debug1(member, v) = *oldResults->Debug1(bestCandidate, v);
             *newResults->Debug2(member, v) = *oldResults->Debug2(bestCandidate, v);
         }
