@@ -294,8 +294,6 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
                 bestResult = curResult;
             }
         }
-        stateResult->debug1 = *m_hostResults->Debug1(bestIndex);
-        stateResult->debug2 = *m_hostResults->Debug2(bestIndex);
     }
     return true;
 } // Optimize

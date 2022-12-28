@@ -289,8 +289,6 @@ void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
         }
     }
     FireStarterResult* result = m_state.Result();
-    result->debug1 = *m_hostResults->Debug1(bestIndex);
-    result->debug2 = *m_hostResults->Debug2(bestIndex);
 } // OptimizeVaraitions
 
 void FireStarterUnit::ExecuteCode(void)

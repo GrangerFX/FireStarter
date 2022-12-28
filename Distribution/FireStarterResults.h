@@ -12,15 +12,23 @@ typedef struct FireStarterData {
 
 typedef struct FireStarterResult {
     unsigned int dataSize;  
-    unsigned int debug1;     // Debug1 info
-    unsigned int debug2;     // Debug2 info.
     float maxResult;
-    float data[FIRESTARTER_VARIATIONS * (FIRESTARTER_REGISTERS + 2)];   // + 2 for index and minResult
+    float data[FIRESTARTER_VARIATIONS * (FIRESTARTER_REGISTERS + 4)];   // + 4 for index, minResult, debug1 and debug2
 
     static inline size_t ResultSize(size_t registers, size_t variations)
     {
         return (sizeof(FireStarterResult) - sizeof(data)) + variations * (registers + 2) * sizeof(float);
     } // ResultSize
+
+    inline float* MinResult(unsigned int variation)
+    {
+        return &data[variation * dataSize + (dataSize - 1)];
+    } // MinResult
+
+    inline float MinResult(unsigned int variation) const
+    {
+        return data[variation * dataSize + (dataSize - 1)];
+    } // MinResult
 
     inline unsigned int* Index(unsigned int variation)
     {
@@ -32,15 +40,25 @@ typedef struct FireStarterResult {
         return *(unsigned int*)&data[variation * dataSize + (dataSize - 2)];
     } // Index
 
-    inline float* MinResult(unsigned int variation)
+    inline unsigned int* Debug1(unsigned int variation)
     {
-        return &data[variation * dataSize + (dataSize - 1)];
-    } // MinResult
+        return (unsigned int*)&data[variation * dataSize + (dataSize - 3)];
+    } // Debug1
 
-    inline float MinResult(unsigned int variation) const
+    inline unsigned int Debug1(unsigned int variation) const
     {
-        return data[variation * dataSize + (dataSize - 1)];
-    } // MinResult
+        return *(unsigned int*)&data[variation * dataSize + (dataSize - 3)];
+    } // Debug1
+
+    inline unsigned int* Debug2(unsigned int variation)
+    {
+        return (unsigned int*)&data[variation * dataSize + (dataSize - 4)];
+    } // Debug2
+
+    inline unsigned int Debug2(unsigned int variation) const
+    {
+        return *(unsigned int*)&data[variation * dataSize + (dataSize - 4)];
+    } // Debug2
 
     inline FireStarterData* Data(unsigned int variation)
     {
@@ -64,14 +82,14 @@ typedef struct FireStarterResult {
             data->d[i] = 0.0f;
         *MinResult(variation) = startResult;
         *Index(variation) = index;
+        *Debug1(variation) = 0;
+        *Debug2(variation) = 0;
     } // InitVariation
 
     inline void Init(unsigned int index, unsigned int registers, unsigned int variations, float startResult)
     {
         maxResult = startResult;
         dataSize = registers + 2;
-        debug1 = 0;
-        debug2 = 0;
         for (unsigned int v = 0; v < variations; v++)
             InitVariation(index, registers, v, startResult);
     } // Init
@@ -80,8 +98,6 @@ typedef struct FireStarterResult {
     {
         maxResult = initResult->maxResult;
         dataSize = registers + 2;
-        debug1 = 0;
-        debug2 = 0;
         for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
             const FireStarterData* srcData = initResult->Data(v);
@@ -89,6 +105,8 @@ typedef struct FireStarterResult {
                 data->d[i] = srcData->d[i];
             *MinResult(v) = initResult->MinResult(v);
             *Index(v) = index;
+            *Debug1(v) = 0;
+            *Debug2(v) = 0;
         }
     } // Init
 } FireStarterResult;
@@ -170,14 +188,14 @@ typedef struct FireStarterResults {
         return Result(member)->Index(variation);
     } // SourceMember
 
-    inline unsigned int* Debug1(unsigned int member)
+    inline unsigned int* Debug1(unsigned int member, unsigned int variation)
     {
-        return &Result(member)->debug1;
+        return Result(member)->Debug1(variation);
     } // Debug1
 
-    inline unsigned int* Debug2(unsigned int member)
+    inline unsigned int* Debug2(unsigned int member, unsigned int variation)
     {
-        return &Result(member)->debug2;
+        return Result(member)->Debug2(variation);
     } // Debug2
 
     inline void InitResults(unsigned int members, unsigned int registers, unsigned int variations, float startResult)
