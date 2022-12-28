@@ -270,7 +270,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
     float bestResult = stateResult->maxResult;
     stateResult->maxResult = 0;
     bool found = true;
-    if (skipVariations && !init) {
+    if (skipVariations) {
         for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
             // Optimization: If the variation result is worse, skip the rest of the variations.
             if (found) {
@@ -349,7 +349,7 @@ void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, bool i
             job->Copy(m_job);
             job->m_state.m_generation = generation;
             job->m_state.m_index = index;
-            Optimize(job->m_state, init);
+            Optimize(job->m_state, init, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             m_manager->AddComplete(job);
         }
     });
