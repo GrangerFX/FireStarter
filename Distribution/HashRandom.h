@@ -1,5 +1,13 @@
 #pragma once
 
+#ifndef MIN
+#define MIN(a, b) ((a) <= (b) ? (a) : (b))
+#endif
+
+#ifndef MAX
+#define MAX(a, b) ((a) >= (b) ? (a) : (b))
+#endif
+
 // 32 bit prime number generator:
 // https://asecuritysite.com/encryption/random3?val=32
 

@@ -55,9 +55,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
         if (init) {
             // The first generation is initalized with random numbers.
-            for (int i = 0; i < dataSize; i++)
+            for (unsigned int i = 0; i < dataSize; i++)
                 data.d[i] = RANDOMFACTOR64(seed) * settings.m_startScale;
-            for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
+            for (unsigned int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = 0.0f;   // Clear the unused data.
             oldResult = settings.m_startResult;
             age = 0;
@@ -67,9 +67,13 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             data = *oldResults->Data(member, v);
             oldResult = *oldResults->MinResult(member, v);
             age = *oldResults->Index(member, v);
-            if (age != 0) {
-                unsigned int d = RANDOMMOD64(seed, dataSize);
-                data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
+            if (age) {
+                unsigned int count = age / 4 + 1;
+                count = MIN(count, dataSize);
+                for (unsigned int i = 0; i < count; i++) {
+                    unsigned int d = RANDOMMOD64(seed, dataSize);
+                    data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
+                }
                 evolved = true;
             }
         }
@@ -141,6 +145,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
                 *newResults->Index(member, v) = age + 1;
                 maxResult = fmaxf(maxResult, bestResult);
             } else {
+                // Note: result will probably be larger than oldResult
                 *newResults->Data(member, v) = data;
                 *newResults->MinResult(member, v) = result;
                 *newResults->Index(member, v) = 0;
