@@ -10,14 +10,16 @@ typedef struct FireStarterData {
     } // DataSize
 } FireStarterData;
 
+#define FIRESTARTERRESULT_EXTRA_SIZE 4   // + 4 for index, minResult, debug1 and debug2
+
 typedef struct FireStarterResult {
     unsigned int dataSize;  
     float maxResult;
-    float data[FIRESTARTER_VARIATIONS * (FIRESTARTER_REGISTERS + 4)];   // + 4 for index, minResult, debug1 and debug2
+    float data[FIRESTARTER_VARIATIONS * (FIRESTARTER_REGISTERS + FIRESTARTERRESULT_EXTRA_SIZE)];
 
     static inline size_t ResultSize(size_t registers, size_t variations)
     {
-        return (sizeof(FireStarterResult) - sizeof(data)) + variations * (registers + 2) * sizeof(float);
+        return (sizeof(FireStarterResult) - sizeof(data)) + variations * (registers + FIRESTARTERRESULT_EXTRA_SIZE) * sizeof(float);
     } // ResultSize
 
     inline float* MinResult(unsigned int variation)
@@ -72,7 +74,7 @@ typedef struct FireStarterResult {
 
     inline size_t DataSize(void)
     {
-        return FireStarterData::DataSize(dataSize - 2);
+        return FireStarterData::DataSize(dataSize - FIRESTARTERRESULT_EXTRA_SIZE);
     } // DataSize
 
     inline void InitVariation(unsigned int index, unsigned int registers, unsigned int variation, float startResult)
@@ -89,7 +91,7 @@ typedef struct FireStarterResult {
     inline void Init(unsigned int index, unsigned int registers, unsigned int variations, float startResult)
     {
         maxResult = startResult;
-        dataSize = registers + 2;
+        dataSize = registers + FIRESTARTERRESULT_EXTRA_SIZE;
         for (unsigned int v = 0; v < variations; v++)
             InitVariation(index, registers, v, startResult);
     } // Init
@@ -97,7 +99,7 @@ typedef struct FireStarterResult {
     inline void Init(unsigned int index, unsigned int registers, unsigned int variations, const FireStarterResult* initResult)
     {
         maxResult = initResult->maxResult;
-        dataSize = registers + 2;
+        dataSize = registers + FIRESTARTERRESULT_EXTRA_SIZE;
         for (unsigned int v = 0; v < variations; v++) {
             FireStarterData* data = Data(v);
             const FireStarterData* srcData = initResult->Data(v);

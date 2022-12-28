@@ -108,8 +108,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             *newResults->Data(member, v) = data;
             *newResults->MinResult(member, v) = result;
             *newResults->Index(member, v) = 0;  // Reset the evolution age to zero.
-            *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
-            *newResults->Debug2(member, v) = (unsigned int)memberSeed;
+//            *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
+//            *newResults->Debug2(member, v) = (unsigned int)memberSeed;
             maxResult = fmaxf(maxResult, result);
         } else {
             // Copy a result from among the previous generation's results.
@@ -120,7 +120,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
                 // Copy the best data from among a random set of candidates.
                 for (int i = 0; i < settings.m_candidates; i++) {
                     unsigned int candidate = RANDOMMOD64(seed, settings.m_population);
-                    if (candidate == *oldResults->Index(candidate, v)) {   // Only select evolving members
+                    if (*oldResults->Index(candidate, v) == 0) {   // Only select evolving members
                         float curResult = *oldResults->MinResult(candidate, v);
                         if (curResult <= bestResult) {
                             bestResult = curResult;

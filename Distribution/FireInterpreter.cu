@@ -112,8 +112,8 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
                 *newResults->Data(member, v) = allData[v][t];
                 *newResults->MinResult(member, v) = allResults[v][t];
                 *newResults->Index(member, v) = member;
-                *newResults->Debug1(member) = init ? 1 : *oldResults->Debug1(member) + 1;
-                *newResults->Debug2(member) = (unsigned int)generationSeed;
+                *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
+                *newResults->Debug2(member, v) = (unsigned int)generationSeed;
             }
         } else {
             // Copy a result from among the previous generation's results.
@@ -138,12 +138,12 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
             // Switch to the selected member's instructions, data and results or revert to the previous generation.
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestCandidate);
             *newResults->MaxResult(member) = bestResult;
-            *newResults->Debug1(member) = *oldResults->Debug1(member);
-            *newResults->Debug2(member) = *oldResults->Debug2(member);
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                 *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
                 *newResults->Index(member, v) = bestCandidate;
+                *newResults->Debug1(member, v) = *oldResults->Debug1(member, v);
+                *newResults->Debug2(member, v) = *oldResults->Debug2(member, v);
             }
         }
     }
