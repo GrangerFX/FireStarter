@@ -108,8 +108,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             *newResults->Data(member, v) = data;
             *newResults->MinResult(member, v) = result;
             *newResults->Index(member, v) = 0;  // Reset the evolution age to zero.
-//            *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
-//            *newResults->Debug2(member, v) = (unsigned int)memberSeed;
+            *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
+            *newResults->Debug2(member, v) = (unsigned int)memberSeed;
             maxResult = fmaxf(maxResult, result);
         } else {
             // Copy a result from among the previous generation's results.
