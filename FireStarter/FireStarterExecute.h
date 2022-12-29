@@ -32,7 +32,7 @@ private:
 
 public:
     void ExecuteCompile(void);
-    void ExecuteOptimize(size_t generation, size_t index, bool init);
+    void ExecuteOptimize(size_t generation, size_t index, size_t test, bool init);
     void ExecuteEvolve(void);
 	void ExecuteRandom(void);
     void ExecuteFinish(void);

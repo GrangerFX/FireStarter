@@ -325,8 +325,10 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState)
     FireStarterState startState;
     if (evolveState)
         startState = *evolveState; // Copy the best evolved state.
-    else
+    else {
         LoadState(startState);     // Load the best state from the previous Test, Random or Evolve run.
+        startState.m_generation = 0;
+    }
 
     // Switch the settings to optimize mode
     startState.Settings().CopyModeSettings(settings);
@@ -371,7 +373,7 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState)
         bool init = true;
         while (!WillTerminate()) {
             // Optimize the current generation.
-            execute->ExecuteOptimize(generation, index, init);
+            execute->ExecuteOptimize(generation, index, test, init);
 
             // Update the results in the UI.
             if (!complete->CompleteStates(bestState, allStates, generation))
