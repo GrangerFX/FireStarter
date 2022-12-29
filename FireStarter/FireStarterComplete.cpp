@@ -229,13 +229,12 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         // Calculate the average time per generation.
         const FireStarterSettings& settings = state.Settings();
         if (state.m_generation != m_resultsGeneration) {
-            double time = duration - m_resultsTime;
-            m_resultsTime = duration;
             m_resultsGeneration = state.m_generation;
             if (settings.m_mode == FIRESTARTER_RANDOM)
-                m_smoothTime = duration / max(state.m_generation, 1.0);
+                m_smoothTime = duration / (m_resultsGeneration + 1.0);
             else
-                m_smoothTime = time / settings.m_units;
+                m_smoothTime = (duration - m_resultsTime) / settings.m_units;
+            m_resultsTime = duration;
         }
 
         // Test the current state.
