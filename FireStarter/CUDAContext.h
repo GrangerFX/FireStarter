@@ -32,6 +32,19 @@ public:
         return 0;
     } // CUDADevices
 
+    inline static void CUDAText(std::string& text, unsigned int count = 0)
+    {
+        if (!count)
+            count = CUDADevices();
+        text += Format("CUDA devices = %u\r\n", count);
+
+        for (unsigned int device = 0; device < count; device++) {
+            char deviceName[1024];
+            checkCUDAErrors(cuDeviceGetName(deviceName, sizeof(deviceName) - 1, device));
+            text += Format("Device %u: %s\r\n", device, deviceName);
+        }
+    } // CUDAText
+
     inline const CUdevice Device(void) const
     {
         return m_device;

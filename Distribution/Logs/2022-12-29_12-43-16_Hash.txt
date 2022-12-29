@@ -1,0 +1,248 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 
+instructions = 32
+registers = 32
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_OPTIMIZE
+units = 1
+processes = 0
+iterations = 256
+candidates = 16
+generations = 100
+precision = 0
+evolve = FIRESTARTER_EVOLVE_BEST
+attempts = 32
+seed = 0
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00260532  Seed=       0  ResultHash=CEA0  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   1  Result=0.00239980  Seed=       1  ResultHash=838C  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   2  Result=0.00235075  Seed=       2  ResultHash=D12C  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   3  Result=0.00234765  Seed=       3  ResultHash=4D44  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   4  Result=0.00233459  Seed=       4  ResultHash=FE75  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   5  Result=0.00232619  Seed=       5  ResultHash=0150  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   6  Result=0.00232410  Seed=       6  ResultHash=D090  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   7  Result=0.00232220  Seed=       7  ResultHash=0048  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   8  Best Generation:   8  Result=0.00232124  Seed=       8  ResultHash=201A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   9  Best Generation:   9  Result=0.00232112  Seed=       9  ResultHash=7783  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  10  Best Generation:  10  Result=0.00232100  Seed=      10  ResultHash=00C8  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  11  Best Generation:  10  Result=0.00232100  Seed=      11  ResultHash=D68E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  12  Best Generation:  10  Result=0.00232100  Seed=      12  ResultHash=B313  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  13  Best Generation:  10  Result=0.00232100  Seed=      13  ResultHash=84F1  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  14  Best Generation:  14  Result=0.00232089  Seed=      14  ResultHash=70D3  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  15  Best Generation:  14  Result=0.00232089  Seed=      15  ResultHash=DC7D  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  16  Best Generation:  14  Result=0.00232089  Seed=      16  ResultHash=6147  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  17  Best Generation:  17  Result=0.00232065  Seed=      17  ResultHash=0546  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  18  Best Generation:  17  Result=0.00232065  Seed=      18  ResultHash=196E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  19  Best Generation:  17  Result=0.00232065  Seed=      19  ResultHash=3C98  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  20  Best Generation:  20  Result=0.00232029  Seed=      20  ResultHash=D3D1  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  21  Best Generation:  20  Result=0.00232029  Seed=      21  ResultHash=86FE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  22  Best Generation:  20  Result=0.00232029  Seed=      22  ResultHash=3F1A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  23  Best Generation:  23  Result=0.00231993  Seed=      23  ResultHash=C755  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  24  Best Generation:  24  Result=0.00231981  Seed=      24  ResultHash=9B57  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  25  Best Generation:  24  Result=0.00231981  Seed=      25  ResultHash=1C77  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  26  Best Generation:  24  Result=0.00231981  Seed=      26  ResultHash=CCDF  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  27  Best Generation:  24  Result=0.00231981  Seed=      27  ResultHash=7644  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  28  Best Generation:  24  Result=0.00231981  Seed=      28  ResultHash=022C  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  29  Best Generation:  24  Result=0.00231981  Seed=      29  ResultHash=7BFE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  30  Best Generation:  24  Result=0.00231981  Seed=      30  ResultHash=B5D7  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  31  Best Generation:  24  Result=0.00231981  Seed=      31  ResultHash=7BDB  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  32  Best Generation:  24  Result=0.00231981  Seed=      32  ResultHash=8EDB  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  33  Best Generation:  33  Result=0.00231969  Seed=      33  ResultHash=7594  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  34  Best Generation:  33  Result=0.00231969  Seed=      34  ResultHash=E5EC  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  35  Best Generation:  35  Result=0.00231957  Seed=      35  ResultHash=2FAA  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  36  Best Generation:  35  Result=0.00231957  Seed=      36  ResultHash=9B14  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  37  Best Generation:  37  Result=0.00231940  Seed=      37  ResultHash=912E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  38  Best Generation:  38  Result=0.00231910  Seed=      38  ResultHash=3908  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  39  Best Generation:  39  Result=0.00231874  Seed=      39  ResultHash=6F0A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  40  Best Generation:  40  Result=0.00231850  Seed=      40  ResultHash=9C28  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  41  Best Generation:  41  Result=0.00231791  Seed=      41  ResultHash=FFC3  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  42  Best Generation:  42  Result=0.00231779  Seed=      42  ResultHash=6189  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  43  Best Generation:  42  Result=0.00231779  Seed=      43  ResultHash=F4CA  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  44  Best Generation:  44  Result=0.00231755  Seed=      44  ResultHash=00F8  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  45  Best Generation:  44  Result=0.00231755  Seed=      45  ResultHash=FA8F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  46  Best Generation:  44  Result=0.00231755  Seed=      46  ResultHash=65C2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  47  Best Generation:  44  Result=0.00231755  Seed=      47  ResultHash=038F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  48  Best Generation:  44  Result=0.00231755  Seed=      48  ResultHash=DB55  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  49  Best Generation:  44  Result=0.00231755  Seed=      49  ResultHash=4474  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  50  Best Generation:  44  Result=0.00231755  Seed=      50  ResultHash=5521  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  51  Best Generation:  44  Result=0.00231755  Seed=      51  ResultHash=6B1F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  52  Best Generation:  44  Result=0.00231755  Seed=      52  ResultHash=642C  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  53  Best Generation:  44  Result=0.00231755  Seed=      53  ResultHash=B0F8  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  54  Best Generation:  44  Result=0.00231755  Seed=      54  ResultHash=F757  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  55  Best Generation:  55  Result=0.00231743  Seed=      55  ResultHash=D05F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  56  Best Generation:  56  Result=0.00231731  Seed=      56  ResultHash=14C1  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  57  Best Generation:  56  Result=0.00231731  Seed=      57  ResultHash=8F46  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  58  Best Generation:  56  Result=0.00231731  Seed=      58  ResultHash=A852  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  59  Best Generation:  56  Result=0.00231731  Seed=      59  ResultHash=D794  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  60  Best Generation:  56  Result=0.00231731  Seed=      60  ResultHash=D8A4  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  61  Best Generation:  56  Result=0.00231731  Seed=      61  ResultHash=27AC  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  62  Best Generation:  56  Result=0.00231731  Seed=      62  ResultHash=7F3A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  63  Best Generation:  56  Result=0.00231731  Seed=      63  ResultHash=DA87  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  64  Best Generation:  56  Result=0.00231731  Seed=      64  ResultHash=9B36  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  65  Best Generation:  56  Result=0.00231731  Seed=      65  ResultHash=4EA2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  66  Best Generation:  56  Result=0.00231731  Seed=      66  ResultHash=EAE0  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  67  Best Generation:  56  Result=0.00231731  Seed=      67  ResultHash=8A72  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  68  Best Generation:  68  Result=0.00231707  Seed=      68  ResultHash=554D  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  69  Best Generation:  68  Result=0.00231707  Seed=      69  ResultHash=3E8D  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  70  Best Generation:  68  Result=0.00231707  Seed=      70  ResultHash=FED6  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  71  Best Generation:  68  Result=0.00231707  Seed=      71  ResultHash=0BCB  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  72  Best Generation:  68  Result=0.00231707  Seed=      72  ResultHash=81FD  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  73  Best Generation:  68  Result=0.00231707  Seed=      73  ResultHash=292B  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  74  Best Generation:  68  Result=0.00231707  Seed=      74  ResultHash=1EBE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  75  Best Generation:  68  Result=0.00231707  Seed=      75  ResultHash=185B  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  76  Best Generation:  68  Result=0.00231707  Seed=      76  ResultHash=2052  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  77  Best Generation:  68  Result=0.00231707  Seed=      77  ResultHash=490A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  78  Best Generation:  68  Result=0.00231707  Seed=      78  ResultHash=44AF  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  79  Best Generation:  68  Result=0.00231707  Seed=      79  ResultHash=7DFD  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  80  Best Generation:  68  Result=0.00231707  Seed=      80  ResultHash=3B94  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  81  Best Generation:  68  Result=0.00231707  Seed=      81  ResultHash=CBFB  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  82  Best Generation:  82  Result=0.00231695  Seed=      82  ResultHash=B3B8  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  83  Best Generation:  82  Result=0.00231695  Seed=      83  ResultHash=A88A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  84  Best Generation:  82  Result=0.00231695  Seed=      84  ResultHash=2DDA  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  85  Best Generation:  82  Result=0.00231695  Seed=      85  ResultHash=5A41  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  86  Best Generation:  82  Result=0.00231695  Seed=      86  ResultHash=D1BD  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  87  Best Generation:  82  Result=0.00231695  Seed=      87  ResultHash=0B51  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  88  Best Generation:  82  Result=0.00231695  Seed=      88  ResultHash=87D2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  89  Best Generation:  89  Result=0.00231683  Seed=      89  ResultHash=AEF2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  90  Best Generation:  89  Result=0.00231683  Seed=      90  ResultHash=97BE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  91  Best Generation:  89  Result=0.00231683  Seed=      91  ResultHash=E647  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  92  Best Generation:  92  Result=0.00231671  Seed=      92  ResultHash=A10A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  93  Best Generation:  92  Result=0.00231671  Seed=      93  ResultHash=3BF0  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  94  Best Generation:  92  Result=0.00231671  Seed=      94  ResultHash=BC8F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  95  Best Generation:  95  Result=0.00231659  Seed=      95  ResultHash=B53C  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  96  Best Generation:  95  Result=0.00231659  Seed=      96  ResultHash=1C3D  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  97  Best Generation:  95  Result=0.00231659  Seed=      97  ResultHash=0FAE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  98  Best Generation:  95  Result=0.00231659  Seed=      98  ResultHash=B035  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  99  Best Generation:  99  Result=0.00231645  Seed=      99  ResultHash=6806  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 100  Best Generation:  99  Result=0.00231645  Seed=     100  ResultHash=8C74  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 101  Best Generation:  99  Result=0.00231645  Seed=     101  ResultHash=EEBE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 102  Best Generation:  99  Result=0.00231645  Seed=     102  ResultHash=DDE9  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 103  Best Generation:  99  Result=0.00231645  Seed=     103  ResultHash=3A11  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 104  Best Generation:  99  Result=0.00231645  Seed=     104  ResultHash=532F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 105  Best Generation:  99  Result=0.00231645  Seed=     105  ResultHash=DD63  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 106  Best Generation: 106  Result=0.00231636  Seed=     106  ResultHash=7895  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 107  Best Generation: 107  Result=0.00231624  Seed=     107  ResultHash=CCC2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 108  Best Generation: 107  Result=0.00231624  Seed=     108  ResultHash=8355  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 109  Best Generation: 109  Result=0.00231600  Seed=     109  ResultHash=4101  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 110  Best Generation: 109  Result=0.00231600  Seed=     110  ResultHash=8AFA  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 111  Best Generation: 109  Result=0.00231600  Seed=     111  ResultHash=3285  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 112  Best Generation: 109  Result=0.00231600  Seed=     112  ResultHash=09C6  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 113  Best Generation: 109  Result=0.00231600  Seed=     113  ResultHash=357A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 114  Best Generation: 109  Result=0.00231600  Seed=     114  ResultHash=4A93  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 115  Best Generation: 115  Result=0.00231588  Seed=     115  ResultHash=ECBD  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 116  Best Generation: 115  Result=0.00231588  Seed=     116  ResultHash=5A6D  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 117  Best Generation: 115  Result=0.00231588  Seed=     117  ResultHash=83D9  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 118  Best Generation: 115  Result=0.00231588  Seed=     118  ResultHash=9BD8  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 119  Best Generation: 115  Result=0.00231588  Seed=     119  ResultHash=7AA0  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 120  Best Generation: 115  Result=0.00231588  Seed=     120  ResultHash=60CA  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 121  Best Generation: 115  Result=0.00231588  Seed=     121  ResultHash=A07D  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 122  Best Generation: 115  Result=0.00231588  Seed=     122  ResultHash=9CFE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 123  Best Generation: 115  Result=0.00231588  Seed=     123  ResultHash=D26F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 124  Best Generation: 115  Result=0.00231588  Seed=     124  ResultHash=315F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 125  Best Generation: 125  Result=0.00231576  Seed=     125  ResultHash=920E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 126  Best Generation: 125  Result=0.00231576  Seed=     126  ResultHash=0630  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 127  Best Generation: 125  Result=0.00231576  Seed=     127  ResultHash=ABD6  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 128  Best Generation: 125  Result=0.00231576  Seed=     128  ResultHash=BD00  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 129  Best Generation: 125  Result=0.00231576  Seed=     129  ResultHash=CC98  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 130  Best Generation: 130  Result=0.00231564  Seed=     130  ResultHash=779B  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 131  Best Generation: 130  Result=0.00231564  Seed=     131  ResultHash=4F7B  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 132  Best Generation: 130  Result=0.00231564  Seed=     132  ResultHash=1EDA  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 133  Best Generation: 130  Result=0.00231564  Seed=     133  ResultHash=EDC4  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 134  Best Generation: 134  Result=0.00231552  Seed=     134  ResultHash=3859  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 135  Best Generation: 134  Result=0.00231552  Seed=     135  ResultHash=6C9A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 136  Best Generation: 134  Result=0.00231552  Seed=     136  ResultHash=3BB4  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 137  Best Generation: 134  Result=0.00231552  Seed=     137  ResultHash=5CDD  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 138  Best Generation: 134  Result=0.00231552  Seed=     138  ResultHash=9DCC  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 139  Best Generation: 134  Result=0.00231552  Seed=     139  ResultHash=2C7B  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 140  Best Generation: 134  Result=0.00231552  Seed=     140  ResultHash=59D0  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 141  Best Generation: 134  Result=0.00231552  Seed=     141  ResultHash=D897  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 142  Best Generation: 134  Result=0.00231552  Seed=     142  ResultHash=99E0  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 143  Best Generation: 134  Result=0.00231552  Seed=     143  ResultHash=7FDA  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 144  Best Generation: 134  Result=0.00231552  Seed=     144  ResultHash=D837  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 145  Best Generation: 134  Result=0.00231552  Seed=     145  ResultHash=DCEB  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 146  Best Generation: 134  Result=0.00231552  Seed=     146  ResultHash=2308  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 147  Best Generation: 134  Result=0.00231552  Seed=     147  ResultHash=5725  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 148  Best Generation: 134  Result=0.00231552  Seed=     148  ResultHash=8681  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 149  Best Generation: 134  Result=0.00231552  Seed=     149  ResultHash=9C5A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 150  Best Generation: 134  Result=0.00231552  Seed=     150  ResultHash=79D0  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 151  Best Generation: 134  Result=0.00231552  Seed=     151  ResultHash=1EA3  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 152  Best Generation: 134  Result=0.00231552  Seed=     152  ResultHash=A465  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 153  Best Generation: 134  Result=0.00231552  Seed=     153  ResultHash=38A8  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 154  Best Generation: 134  Result=0.00231552  Seed=     154  ResultHash=A518  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 155  Best Generation: 134  Result=0.00231552  Seed=     155  ResultHash=C5E5  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 156  Best Generation: 156  Result=0.00231540  Seed=     156  ResultHash=A046  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 157  Best Generation: 156  Result=0.00231540  Seed=     157  ResultHash=4674  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 158  Best Generation: 156  Result=0.00231540  Seed=     158  ResultHash=24EE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 159  Best Generation: 156  Result=0.00231540  Seed=     159  ResultHash=CA8F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 160  Best Generation: 156  Result=0.00231540  Seed=     160  ResultHash=099A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 161  Best Generation: 156  Result=0.00231540  Seed=     161  ResultHash=EBC9  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 162  Best Generation: 156  Result=0.00231540  Seed=     162  ResultHash=D170  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 163  Best Generation: 163  Result=0.00231516  Seed=     163  ResultHash=63C9  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 164  Best Generation: 163  Result=0.00231516  Seed=     164  ResultHash=FB91  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 165  Best Generation: 163  Result=0.00231516  Seed=     165  ResultHash=1973  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 166  Best Generation: 163  Result=0.00231516  Seed=     166  ResultHash=C5F2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 167  Best Generation: 163  Result=0.00231516  Seed=     167  ResultHash=64E8  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 168  Best Generation: 163  Result=0.00231516  Seed=     168  ResultHash=929E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 169  Best Generation: 163  Result=0.00231516  Seed=     169  ResultHash=0078  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 170  Best Generation: 163  Result=0.00231516  Seed=     170  ResultHash=B140  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 171  Best Generation: 163  Result=0.00231516  Seed=     171  ResultHash=06B1  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 172  Best Generation: 172  Result=0.00231498  Seed=     172  ResultHash=9FCE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 173  Best Generation: 172  Result=0.00231498  Seed=     173  ResultHash=9B04  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 174  Best Generation: 172  Result=0.00231498  Seed=     174  ResultHash=E58F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 175  Best Generation: 172  Result=0.00231498  Seed=     175  ResultHash=7B7A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 176  Best Generation: 172  Result=0.00231498  Seed=     176  ResultHash=CB01  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 177  Best Generation: 172  Result=0.00231498  Seed=     177  ResultHash=5317  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 178  Best Generation: 178  Result=0.00231493  Seed=     178  ResultHash=F1C2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 179  Best Generation: 178  Result=0.00231493  Seed=     179  ResultHash=7FC6  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 180  Best Generation: 178  Result=0.00231493  Seed=     180  ResultHash=B4B5  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 181  Best Generation: 178  Result=0.00231493  Seed=     181  ResultHash=30E2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 182  Best Generation: 178  Result=0.00231493  Seed=     182  ResultHash=D1BE  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 183  Best Generation: 178  Result=0.00231493  Seed=     183  ResultHash=93C7  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 184  Best Generation: 178  Result=0.00231493  Seed=     184  ResultHash=DACB  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 185  Best Generation: 178  Result=0.00231493  Seed=     185  ResultHash=4CCC  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 186  Best Generation: 178  Result=0.00231493  Seed=     186  ResultHash=68DA  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 187  Best Generation: 178  Result=0.00231493  Seed=     187  ResultHash=5956  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 188  Best Generation: 178  Result=0.00231493  Seed=     188  ResultHash=9F79  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 189  Best Generation: 178  Result=0.00231493  Seed=     189  ResultHash=22BD  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 190  Best Generation: 178  Result=0.00231493  Seed=     190  ResultHash=47A0  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 191  Best Generation: 178  Result=0.00231493  Seed=     191  ResultHash=8454  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 192  Best Generation: 178  Result=0.00231493  Seed=     192  ResultHash=D11B  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 193  Best Generation: 178  Result=0.00231493  Seed=     193  ResultHash=01B3  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 194  Best Generation: 178  Result=0.00231493  Seed=     194  ResultHash=A6EF  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 195  Best Generation: 178  Result=0.00231493  Seed=     195  ResultHash=0ED8  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 196  Best Generation: 178  Result=0.00231493  Seed=     196  ResultHash=773A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 197  Best Generation: 178  Result=0.00231493  Seed=     197  ResultHash=1957  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 198  Best Generation: 178  Result=0.00231493  Seed=     198  ResultHash=1E4E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 199  Best Generation: 178  Result=0.00231493  Seed=     199  ResultHash=51B5  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 200  Best Generation: 178  Result=0.00231493  Seed=     200  ResultHash=F94B  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 201  Best Generation: 178  Result=0.00231493  Seed=     201  ResultHash=8755  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 202  Best Generation: 178  Result=0.00231493  Seed=     202  ResultHash=875E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 203  Best Generation: 178  Result=0.00231493  Seed=     203  ResultHash=C55D  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 204  Best Generation: 178  Result=0.00231493  Seed=     204  ResultHash=827C  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 205  Best Generation: 178  Result=0.00231493  Seed=     205  ResultHash=C988  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 206  Best Generation: 178  Result=0.00231493  Seed=     206  ResultHash=1D85  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 207  Best Generation: 178  Result=0.00231493  Seed=     207  ResultHash=6BED  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 208  Best Generation: 178  Result=0.00231493  Seed=     208  ResultHash=D58E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 209  Best Generation: 178  Result=0.00231493  Seed=     209  ResultHash=654A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation: 210  Best Generation: 178  Result=0.00231493  Seed=     210  ResultHash=3665  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   0  Best Generation:   0  Result=0.00107026  Seed=       0  ResultHash=43EC  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   1  Best Generation:   1  Result=0.00085890  Seed=       1  ResultHash=8C03  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   2  Best Generation:   2  Result=0.00082496  Seed=       2  ResultHash=2ED2  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   3  Best Generation:   3  Result=0.00082386  Seed=       3  ResultHash=4B7A  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   4  Best Generation:   4  Result=0.00081968  Seed=       4  ResultHash=2145  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   5  Best Generation:   4  Result=0.00081968  Seed=       5  ResultHash=A20E  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   6  Best Generation:   6  Result=0.00081849  Seed=       6  ResultHash=5BCF  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   7  Best Generation:   6  Result=0.00081849  Seed=       7  ResultHash=AD15  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   8  Best Generation:   8  Result=0.00081825  Seed=       8  ResultHash=EA6F  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:   9  Best Generation:   9  Result=0.00081801  Seed=       9  ResultHash=C401  ProgramHash=830A
+FIRESTARTER_OPTIMIZE:FIRESTARTER_EVOLVE_BEST  Generation:  10  Best Generation:   9  Result=0.00081801  Seed=      10  ResultHash=9A4A  ProgramHash=830A

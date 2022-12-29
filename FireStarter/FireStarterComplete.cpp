@@ -88,9 +88,15 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
 
 void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double oldResult, double average, double testError)
 {
-    const FireStarterSettings& settings = state.Settings();
+    // Create the CUDA device text.
+    static std::string cudaText;
+    if (cudaText.empty()) {
+        CUDAContext::CUDAText(cudaText);
+        cudaText += "\r\n";
+    }
 
     // Create the settings text.
+    const FireStarterSettings& settings = state.Settings();
     static std::string settingsText;
     if (settingsText.empty()) {
         FireStarterProgram::SettingsText(settings, settingsText);
@@ -101,6 +107,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
     static std::string hashFilePath;
     if (hashFilePath.empty()) {
         hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
+        FireStarterCode::AppendCode(hashFilePath, cudaText);
         FireStarterCode::AppendCode(hashFilePath, settingsText);
     }
 
@@ -117,6 +124,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
     static std::string logFilePath;
     if (logFilePath.empty()) {
         logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), settings.Mode());
+        FireStarterCode::AppendCode(logFilePath, cudaText);
         FireStarterCode::AppendCode(logFilePath, settingsText);
     }
 

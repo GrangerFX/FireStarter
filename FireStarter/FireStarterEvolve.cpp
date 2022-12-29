@@ -31,7 +31,7 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, siz
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
-            CUDACompile::DeviceOptions(job->m_options);
+            CUDACompile::CompileOptions(job->m_options);
             job->m_programName = "FireOptimizer.cu";
             job->m_programFunction = "Optimizer";
             job->m_program = m_optimizeCode;
@@ -98,7 +98,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
-            CUDACompile::DeviceOptions(job->m_options);
+            CUDACompile::CompileOptions(job->m_options);
             job->m_programName = "FireOptimizer.cu";
             job->m_programFunction = "Optimizer";
             job->m_program = m_optimizeCode;
@@ -128,7 +128,7 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState)
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
-            CUDACompile::DeviceOptions(job->m_options);
+            CUDACompile::CompileOptions(job->m_options);
             job->m_programName = "FireOptimizer.cu";
             job->m_programFunction = "Optimizer";
             job->m_program = m_optimizeCode;

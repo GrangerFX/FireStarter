@@ -4,30 +4,26 @@
 #include <vector>
 
 #define COMPILE_TIME 0
+#define USE_GPU_ARCH 1
 
-void CUDACompile::StandardOptions(std::vector<std::string>& options)
+void CUDACompile::CompileOptions(std::vector<std::string>& options)
 {
-    options.push_back(Format("-arch=compute_75"));
-    options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
-//  options.push_back("-G");                // Generate debug info
-//  options.push_back("-lineinfo");         // Generate line information
-} // StandardOptions
-
-void CUDACompile::DeviceOptions(std::vector<std::string>& options)
-{
+#if USE_GPU_ARCH
+    // Use the primary GPU's compute architecture
     CUdevice device = 0;
     checkCUDAErrors(cuCtxGetDevice(&device));
-
-    // Use the current device's compute architecture
     int computeCapabilityMajor = 0;
     int computeCapabilityMinor = 0;
     checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMajor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, device));
     checkCUDAErrors(cuDeviceGetAttribute(&computeCapabilityMinor, CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, device));
     options.push_back(Format("-arch=compute_%d%d", computeCapabilityMajor, computeCapabilityMinor));
+#else
+    options.push_back(Format("-arch=compute_75"));
+#endif
     options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
 //  options.push_back("-G");                // Generate debug info
 //  options.push_back("-lineinfo");         // Generate line information
-} // DeviceOptions
+} // CompileOptions
 
 bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string& program, const std::string& programName, const std::vector<std::string>& options)
 {
@@ -90,7 +86,7 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
 #endif
 
     std::vector<std::string> options;
-    DeviceOptions(options);
+    CompileOptions(options);
 
     std::string ptx, log;
     if (!Compile(ptx, log, program, programName, options)) {
