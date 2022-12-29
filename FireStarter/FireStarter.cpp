@@ -362,6 +362,7 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState)
         FireStarterState bestState(startState);
         size_t index = startState.m_index + test;
         bestState.m_index = index;
+        bestState.m_test = evolveState ? startState.m_test : test;
         std::vector<FireStarterState> allStates;
         allStates.push_back(bestState);
         
