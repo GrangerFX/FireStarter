@@ -112,7 +112,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
     }
 
     // Update the hash file.
-    std::string hashString = Format("%s:%s  Generation:%4u  Best Generation:%4u", settings.Mode(), settings.Evolve(), state.m_generation, bestState.m_generation);
+    std::string hashString = Format("%s: Generation:%4u  Best Generation:%4u", settings.Mode(), state.m_generation, bestState.m_generation);
     const FireStarterResult* stateResult = state.Result();
     uint64_t resultHash = MurmurHash64(stateResult, state.ResultSize());
     uint64_t programHash = MurmurHash64(state.m_program.OptimizedInstructions(), state.m_program.InstructionsSize());

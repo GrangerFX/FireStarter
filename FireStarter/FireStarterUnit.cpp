@@ -6,30 +6,19 @@ std::atomic<float> FireStarterUnit::g_atomicResult = FIRESTARTER_RANDOM_START_RE
 
 void FireStarterUnit::UpdateEvolveStates(void)
 {
-    if (m_settings.m_evolve = FIRESTARTER_EVOLVE_BEST) {
-        // Find the program's best state among all the states from all the units.
-        float unitBestResult = m_allStates[0].MaxResult();
-        unsigned int bestIndex = 0;
-        for (unsigned int i = 1; i < m_settings.m_units; i++) {
-            float result = m_allStates[i].MaxResult();
-            if (result < unitBestResult) {
-                unitBestResult = result;
-                bestIndex = i;
-            }
+    // Find the program's best state among all the states from all the units.
+    float unitBestResult = m_allStates[0].MaxResult();
+    unsigned int bestIndex = 0;
+    for (unsigned int i = 1; i < m_settings.m_units; i++) {
+        float result = m_allStates[i].MaxResult();
+        if (result < unitBestResult) {
+            unitBestResult = result;
+            bestIndex = i;
         }
-
-        // Initialize the state with the best previous state.
-        m_state = m_allStates[bestIndex];
-    } else if (m_settings.m_evolve = FIRESTARTER_EVOLVE_RANDOM) {
-        // If a state did not improve, replace it with a random state.
-        if (m_state.MaxResult() > m_allStates[m_unitIndex].MaxResult()) {
-            unsigned long long seed = m_state.EvolveSeed(1234567);
-            m_state = m_allStates[RANDOMMOD64(seed, m_allStates.size())];
-        }
-    } else { // m_settings.m_evolve = FIRESTARTER_EVOLVE_INDIVIDUIAL
-        // Reset the state to its own best state.
-        m_state = m_allStates[m_unitIndex];
     }
+
+    // Initialize the state with the best previous state.
+    m_state = m_allStates[bestIndex];
 } // UpdateEvolveStates
 
 void FireStarterUnit::GenerateCode(void)

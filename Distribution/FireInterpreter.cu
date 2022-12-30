@@ -119,21 +119,19 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
             // Copy a result from among the previous generation's results.
             unsigned int bestCandidate = member;
             float bestResult = oldResult;
-            if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_BEST) {
-                // The genetic part of genetic programming and a major optimization:
-                // Copy the best data from among a random set of candidates.
-                for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
-                    unsigned int candidate = RANDOMMOD64(memberSeed, FIRESTARTER_CODE_POPULATION);
-                    if (candidate == *oldResults->Index(candidate, 0)) {   // Only select evolving members
-                        float curResult = *oldResults->MaxResult(candidate);
-                        if (curResult < bestResult) {
-                            bestCandidate = candidate;
-                            bestResult = curResult;
-                        }
+
+            // The genetic part of genetic programming and a major optimization:
+            // Copy the best data from among a random set of candidates.
+            for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
+                unsigned int candidate = RANDOMMOD64(memberSeed, FIRESTARTER_CODE_POPULATION);
+                if (candidate == *oldResults->Index(candidate, 0)) {   // Only select evolving members
+                    float curResult = *oldResults->MaxResult(candidate);
+                    if (curResult < bestResult) {
+                        bestCandidate = candidate;
+                        bestResult = curResult;
                     }
                 }
-            } else if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_RANDOM)
-                bestCandidate = RANDOMMOD64(memberSeed, FIRESTARTER_CODE_POPULATION);
+            }
 
             // Switch to the selected member's instructions, data and results or revert to the previous generation.
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestCandidate);
@@ -263,21 +261,19 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
             // Copy a result from among the previous generation's results.
             unsigned int bestCandidate = member;
             float bestResult = oldResult;
-            if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_BEST) {
-                // The genetic part of genetic programming and a major optimization:
-                // Copy the best data from among a random set of candidates.
-                for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
-                    unsigned int candidate = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
-                    if (candidate == *oldResults->Index(candidate, 0)) {   // Only select evolving members
-                        float curResult = *oldResults->MaxResult(candidate);
-                        if (curResult < bestResult) {
-                            bestCandidate = candidate;
-                            bestResult = curResult;
-                        }
+
+            // The genetic part of genetic programming and a major optimization:
+            // Copy the best data from among a random set of candidates.
+            for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
+                unsigned int candidate = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
+                if (candidate == *oldResults->Index(candidate, 0)) {   // Only select evolving members
+                    float curResult = *oldResults->MaxResult(candidate);
+                    if (curResult < bestResult) {
+                        bestCandidate = candidate;
+                        bestResult = curResult;
                     }
                 }
-            } else if (FIRESTARTER_CODE_EVOLVE == FIRESTARTER_EVOLVE_RANDOM)
-                bestCandidate = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
+            }
 
             // Revert to the previous instructions.
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(member);

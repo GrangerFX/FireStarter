@@ -11,10 +11,6 @@
 #define FIRESTARTER_TEST_START   0
 #define FIRESTARTER_TEST_SEEDS   16
 
-#define FIRESTARTER_EVOLVE_INDIVIDUAL   1
-#define FIRESTARTER_EVOLVE_BEST         2
-#define FIRESTARTER_EVOLVE_RANDOM       3
-
 #define FIRESTARTER_SEED         0
 //#define FIRESTARTER_SEED         3533
 //#define FIRESTARTER_SEED         10484
@@ -35,7 +31,6 @@
 #define FIRESTARTER_CODE_CANDIDATES         16
 #define FIRESTARTER_CODE_GENERATIONS        1
 #define FIRESTARTER_CODE_PRECISION          0
-#define FIRESTARTER_CODE_EVOLVE             FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_CODE_ATTEMPTS           32
 #define FIRESTARTER_CODE_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_CODE_SCALE              0.1f
@@ -49,7 +44,6 @@
 #define FIRESTARTER_UNIT_CANDIDATES         16
 #define FIRESTARTER_UNIT_GENERATIONS        100
 #define FIRESTARTER_UNIT_PRECISION          0
-#define FIRESTARTER_UNIT_EVOLVE             FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_UNIT_ATTEMPTS           32
 #define FIRESTARTER_UNIT_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_UNIT_SCALE              0.1f
@@ -63,7 +57,6 @@
 #define FIRESTARTER_TEST_CANDIDATES         16
 #define FIRESTARTER_TEST_GENERATIONS        100
 #define FIRESTARTER_TEST_PRECISION          0
-#define FIRESTARTER_TEST_EVOLVE             FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_TEST_ATTEMPTS           32
 #define FIRESTARTER_TEST_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_TEST_SCALE              0.1f
@@ -77,7 +70,6 @@
 #define FIRESTARTER_RANDOM_CANDIDATES       16
 #define FIRESTARTER_RANDOM_GENERATIONS      1000
 #define FIRESTARTER_RANDOM_PRECISION        0
-#define FIRESTARTER_RANDOM_EVOLVE           FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_RANDOM_ATTEMPTS         11000
 #define FIRESTARTER_RANDOM_SEED             0
 #define FIRESTARTER_RANDOM_SCALE            0.1f
@@ -91,7 +83,6 @@
 #define FIRESTARTER_EVOLVE_CANDIDATES       16
 #define FIRESTARTER_EVOLVE_GENERATIONS      100
 #define FIRESTARTER_EVOLVE_PRECISION        0
-#define FIRESTARTER_EVOLVE_EVOLVE           FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_EVOLVE_ATTEMPTS         32
 #define FIRESTARTER_EVOLVE_SEED             FIRESTARTER_SEED
 #define FIRESTARTER_EVOLVE_SCALE            0.1f
@@ -105,7 +96,6 @@
 #define FIRESTARTER_OPTIMIZE_CANDIDATES     16
 #define FIRESTARTER_OPTIMIZE_GENERATIONS    100
 #define FIRESTARTER_OPTIMIZE_PRECISION      0
-#define FIRESTARTER_OPTIMIZE_EVOLVE         FIRESTARTER_EVOLVE_BEST
 #define FIRESTARTER_OPTIMIZE_ATTEMPTS       32
 #define FIRESTARTER_OPTIMIZE_SEED           0
 #define FIRESTARTER_OPTIMIZE_SCALE          0.1f
@@ -143,7 +133,6 @@ public:
     unsigned int m_generations;
     unsigned int m_precision;
     unsigned int m_candidates;
-    unsigned int m_evolve;
     unsigned int m_attempts;
     unsigned long long m_seed;
 
@@ -173,20 +162,6 @@ public:
         }
     } // Mode
 
-    inline const char* Evolve(void) const
-    {
-        switch (m_evolve) {
-            case FIRESTARTER_EVOLVE_INDIVIDUAL:
-                return "FIRESTARTER_EVOLVE_INDIVIDUAL";
-            case FIRESTARTER_EVOLVE_BEST:
-                return "FIRESTARTER_EVOLVE_BEST";
-            case FIRESTARTER_EVOLVE_RANDOM:
-                return "FIRESTARTER_EVOLVE_RANDOM";
-            default:
-                return "0";
-        }
-    } // Evolve
-
     inline void CopyCodeSettings(FireStarterSettings& source)
     {
         m_variations = source.m_variations;
@@ -208,7 +183,6 @@ public:
         m_generations = source.m_generations;
         m_precision = source.m_precision;
         m_candidates = source.m_candidates;
-        m_evolve = source.m_evolve;
         m_attempts = source.m_attempts;
         m_seed = source.m_seed;
         m_scale = source.m_scale;
@@ -237,7 +211,6 @@ public:
                 m_candidates =  FIRESTARTER_CODE_CANDIDATES;
                 m_generations = FIRESTARTER_CODE_GENERATIONS;
                 m_precision =   FIRESTARTER_CODE_PRECISION;
-                m_evolve =      FIRESTARTER_CODE_EVOLVE;
                 m_attempts =    FIRESTARTER_CODE_ATTEMPTS;
                 m_seed =        FIRESTARTER_CODE_SEED;
                 m_scale =       FIRESTARTER_CODE_SCALE;
@@ -253,7 +226,6 @@ public:
                 m_candidates =  FIRESTARTER_UNIT_CANDIDATES;
                 m_generations = FIRESTARTER_UNIT_GENERATIONS;
                 m_precision =   FIRESTARTER_UNIT_PRECISION;
-                m_evolve =      FIRESTARTER_UNIT_EVOLVE;
                 m_attempts =    FIRESTARTER_UNIT_ATTEMPTS;
                 m_seed =        FIRESTARTER_UNIT_SEED;
                 m_scale =       FIRESTARTER_UNIT_SCALE;
@@ -269,7 +241,6 @@ public:
                 m_candidates =  FIRESTARTER_TEST_CANDIDATES;
                 m_generations = FIRESTARTER_TEST_GENERATIONS;
                 m_precision =   FIRESTARTER_TEST_PRECISION;
-                m_evolve =      FIRESTARTER_TEST_EVOLVE;
                 m_attempts =    FIRESTARTER_TEST_ATTEMPTS;
                 m_seed =        FIRESTARTER_TEST_SEED;
                 m_scale =       FIRESTARTER_TEST_SCALE;
@@ -285,7 +256,6 @@ public:
                 m_candidates =  FIRESTARTER_RANDOM_CANDIDATES;
                 m_generations = FIRESTARTER_RANDOM_GENERATIONS;
                 m_precision =   FIRESTARTER_RANDOM_PRECISION;
-                m_evolve =      FIRESTARTER_RANDOM_EVOLVE;
                 m_attempts =    FIRESTARTER_RANDOM_ATTEMPTS;
                 m_seed =        FIRESTARTER_RANDOM_SEED;
                 m_scale =       FIRESTARTER_RANDOM_SCALE;
@@ -301,7 +271,6 @@ public:
                 m_candidates =  FIRESTARTER_EVOLVE_CANDIDATES;
                 m_generations = FIRESTARTER_EVOLVE_GENERATIONS;
                 m_precision =   FIRESTARTER_EVOLVE_PRECISION;
-                m_evolve =      FIRESTARTER_EVOLVE_EVOLVE;
                 m_attempts =    FIRESTARTER_EVOLVE_ATTEMPTS;
                 m_seed =        FIRESTARTER_EVOLVE_SEED;
                 m_scale =       FIRESTARTER_EVOLVE_SCALE;
@@ -317,7 +286,6 @@ public:
                 m_candidates =  FIRESTARTER_OPTIMIZE_CANDIDATES;
                 m_generations = FIRESTARTER_OPTIMIZE_GENERATIONS;
                 m_precision =   FIRESTARTER_OPTIMIZE_PRECISION;
-                m_evolve =      FIRESTARTER_OPTIMIZE_EVOLVE;
                 m_attempts =    FIRESTARTER_OPTIMIZE_ATTEMPTS;
                 m_seed =        FIRESTARTER_OPTIMIZE_SEED;
                 m_scale =       FIRESTARTER_OPTIMIZE_SCALE;
@@ -333,7 +301,6 @@ public:
                 m_candidates = 0;
                 m_generations = 0;
                 m_precision = 0;
-                m_evolve = 0;
                 m_attempts = 0;
                 m_seed = 0;
                 m_scale = 0.0f;
