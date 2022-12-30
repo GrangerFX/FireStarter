@@ -1,0 +1,140 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 32
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_RANDOM
+units = 8
+processes = 16
+iterations = 64
+candidates = 16
+generations = 100
+precision = 0
+attempts = 11000
+seed = 10400
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_RANDOM: Generation:  10  Best Generation:  10  Result=0.00077176  Seed=   10410  ResultHash=6DCB  ProgramHash=D050
+FIRESTARTER_RANDOM: Generation:   7  Best Generation:  10  Result=0.00094044  Seed=   10407  ResultHash=C2F3  ProgramHash=76AA
+FIRESTARTER_RANDOM: Generation:  12  Best Generation:  10  Result=0.00143397  Seed=   10412  ResultHash=C39C  ProgramHash=CC85
+FIRESTARTER_RANDOM: Generation:   0  Best Generation:  10  Result=0.01810265  Seed=   10400  ResultHash=D421  ProgramHash=17FF
+FIRESTARTER_RANDOM: Generation:  13  Best Generation:  10  Result=0.00835294  Seed=   10413  ResultHash=4F4A  ProgramHash=D223
+FIRESTARTER_RANDOM: Generation:   4  Best Generation:  10  Result=0.00159824  Seed=   10404  ResultHash=FB92  ProgramHash=EB06
+FIRESTARTER_RANDOM: Generation:   5  Best Generation:  10  Result=0.00209761  Seed=   10405  ResultHash=60DF  ProgramHash=8AA5
+FIRESTARTER_RANDOM: Generation:   2  Best Generation:  10  Result=0.00326225  Seed=   10402  ResultHash=D62A  ProgramHash=9547
+FIRESTARTER_RANDOM: Generation:  14  Best Generation:  10  Result=0.00230026  Seed=   10414  ResultHash=F613  ProgramHash=F160
+FIRESTARTER_RANDOM: Generation:   6  Best Generation:  10  Result=0.04750223  Seed=   10406  ResultHash=B97F  ProgramHash=2368
+FIRESTARTER_RANDOM: Generation:   9  Best Generation:  10  Result=0.00167628  Seed=   10409  ResultHash=D692  ProgramHash=3B93
+FIRESTARTER_RANDOM: Generation:   1  Best Generation:  10  Result=0.17369950  Seed=   10401  ResultHash=51EE  ProgramHash=E768
+FIRESTARTER_RANDOM: Generation:  11  Best Generation:  10  Result=0.85227418  Seed=   10411  ResultHash=A276  ProgramHash=8EDB
+FIRESTARTER_RANDOM: Generation:   8  Best Generation:  10  Result=0.00398099  Seed=   10408  ResultHash=E0DB  ProgramHash=0791
+FIRESTARTER_RANDOM: Generation:   3  Best Generation:  10  Result=0.78362083  Seed=   10403  ResultHash=1F01  ProgramHash=B741
+FIRESTARTER_RANDOM: Generation:  15  Best Generation:  10  Result=0.00320148  Seed=   10415  ResultHash=47B8  ProgramHash=F35B
+FIRESTARTER_RANDOM: Generation:  16  Best Generation:  10  Result=0.02335460  Seed=   10416  ResultHash=1327  ProgramHash=2F44
+FIRESTARTER_RANDOM: Generation:  17  Best Generation:  10  Result=0.00142747  Seed=   10417  ResultHash=7176  ProgramHash=1A16
+FIRESTARTER_RANDOM: Generation:  19  Best Generation:  10  Result=1.24038529  Seed=   10419  ResultHash=EE5E  ProgramHash=CC79
+FIRESTARTER_RANDOM: Generation:  23  Best Generation:  10  Result=0.00132960  Seed=   10423  ResultHash=B6F0  ProgramHash=CD8E
+FIRESTARTER_RANDOM: Generation:  26  Best Generation:  10  Result=0.04750681  Seed=   10426  ResultHash=2604  ProgramHash=9A0A
+FIRESTARTER_RANDOM: Generation:  29  Best Generation:  10  Result=0.00238205  Seed=   10429  ResultHash=BC54  ProgramHash=7F88
+FIRESTARTER_RANDOM: Generation:  18  Best Generation:  10  Result=0.17370753  Seed=   10418  ResultHash=D7D8  ProgramHash=94D0
+FIRESTARTER_RANDOM: Generation:  20  Best Generation:  10  Result=0.00769264  Seed=   10420  ResultHash=444E  ProgramHash=325C
+FIRESTARTER_RANDOM: Generation:  28  Best Generation:  10  Result=0.00150025  Seed=   10428  ResultHash=EA85  ProgramHash=6F10
+FIRESTARTER_RANDOM: Generation:  24  Best Generation:  10  Result=0.00132430  Seed=   10424  ResultHash=5AE7  ProgramHash=986C
+FIRESTARTER_RANDOM: Generation:  21  Best Generation:  10  Result=0.04521381  Seed=   10421  ResultHash=F978  ProgramHash=17AB
+FIRESTARTER_RANDOM: Generation:  22  Best Generation:  10  Result=0.00171089  Seed=   10422  ResultHash=EAC3  ProgramHash=9C0F
+FIRESTARTER_RANDOM: Generation:  27  Best Generation:  10  Result=0.00103021  Seed=   10427  ResultHash=285C  ProgramHash=C125
+FIRESTARTER_RANDOM: Generation:  30  Best Generation:  10  Result=0.00126616  Seed=   10430  ResultHash=B310  ProgramHash=5E9A
+FIRESTARTER_RANDOM: Generation:  25  Best Generation:  10  Result=0.00381279  Seed=   10425  ResultHash=8C05  ProgramHash=8B13
+FIRESTARTER_RANDOM: Generation:  31  Best Generation:  10  Result=0.01399875  Seed=   10431  ResultHash=2197  ProgramHash=9AC9
+FIRESTARTER_RANDOM: Generation:  32  Best Generation:  10  Result=0.00192821  Seed=   10432  ResultHash=81D4  ProgramHash=E638
+FIRESTARTER_RANDOM: Generation:  33  Best Generation:  10  Result=0.00117338  Seed=   10433  ResultHash=43E4  ProgramHash=C4B6
+FIRESTARTER_RANDOM: Generation:  44  Best Generation:  10  Result=0.00133884  Seed=   10444  ResultHash=64B9  ProgramHash=52AB
+FIRESTARTER_RANDOM: Generation:  34  Best Generation:  10  Result=0.00193596  Seed=   10434  ResultHash=86DE  ProgramHash=E704
+FIRESTARTER_RANDOM: Generation:  42  Best Generation:  10  Result=0.00989651  Seed=   10442  ResultHash=0ABC  ProgramHash=F0B4
+FIRESTARTER_RANDOM: Generation:  38  Best Generation:  10  Result=0.01648104  Seed=   10438  ResultHash=6E74  ProgramHash=7480
+FIRESTARTER_RANDOM: Generation:  36  Best Generation:  10  Result=0.00129271  Seed=   10436  ResultHash=0F3E  ProgramHash=B0E7
+FIRESTARTER_RANDOM: Generation:  35  Best Generation:  10  Result=0.00086156  Seed=   10435  ResultHash=EF29  ProgramHash=03F6
+FIRESTARTER_RANDOM: Generation:  37  Best Generation:  10  Result=0.62476671  Seed=   10437  ResultHash=4B1C  ProgramHash=B69B
+FIRESTARTER_RANDOM: Generation:  41  Best Generation:  10  Result=0.85227418  Seed=   10441  ResultHash=C005  ProgramHash=DD6F
+FIRESTARTER_RANDOM: Generation:  40  Best Generation:  10  Result=0.00341201  Seed=   10440  ResultHash=5C99  ProgramHash=5F13
+FIRESTARTER_RANDOM: Generation:  45  Best Generation:  10  Result=0.00186276  Seed=   10445  ResultHash=AD3F  ProgramHash=51D4
+FIRESTARTER_RANDOM: Generation:  39  Best Generation:  10  Result=0.00165848  Seed=   10439  ResultHash=A422  ProgramHash=4A1A
+FIRESTARTER_RANDOM: Generation:  43  Best Generation:  43  Result=0.00074697  Seed=   10443  ResultHash=544E  ProgramHash=00B4
+FIRESTARTER_RANDOM: Generation:  47  Best Generation:  43  Result=0.01539850  Seed=   10447  ResultHash=B176  ProgramHash=98A7
+FIRESTARTER_RANDOM: Generation:  46  Best Generation:  43  Result=0.85227418  Seed=   10446  ResultHash=59B2  ProgramHash=3B6A
+FIRESTARTER_RANDOM: Generation:  55  Best Generation:  43  Result=0.00148904  Seed=   10455  ResultHash=2310  ProgramHash=5463
+FIRESTARTER_RANDOM: Generation:  54  Best Generation:  54  Result=0.00060892  Seed=   10454  ResultHash=23D2  ProgramHash=E94B
+FIRESTARTER_RANDOM: Generation:  49  Best Generation:  54  Result=0.00165743  Seed=   10449  ResultHash=E774  ProgramHash=6B18
+FIRESTARTER_RANDOM: Generation:  52  Best Generation:  54  Result=0.00331914  Seed=   10452  ResultHash=6489  ProgramHash=47C4
+FIRESTARTER_RANDOM: Generation:  50  Best Generation:  54  Result=0.00098377  Seed=   10450  ResultHash=E51C  ProgramHash=9200
+FIRESTARTER_RANDOM: Generation:  51  Best Generation:  54  Result=0.01655686  Seed=   10451  ResultHash=5A40  ProgramHash=CC88
+FIRESTARTER_RANDOM: Generation:  57  Best Generation:  54  Result=0.00324011  Seed=   10457  ResultHash=27FC  ProgramHash=AF0D
+FIRESTARTER_RANDOM: Generation:  48  Best Generation:  54  Result=0.17369831  Seed=   10448  ResultHash=A7FC  ProgramHash=2099
+FIRESTARTER_RANDOM: Generation:  56  Best Generation:  54  Result=0.17370367  Seed=   10456  ResultHash=DC0C  ProgramHash=64EF
+FIRESTARTER_RANDOM: Generation:  60  Best Generation:  54  Result=0.00113772  Seed=   10460  ResultHash=1543  ProgramHash=B6BC
+FIRESTARTER_RANDOM: Generation:  53  Best Generation:  54  Result=0.00073779  Seed=   10453  ResultHash=7A68  ProgramHash=132B
+FIRESTARTER_RANDOM: Generation:  58  Best Generation:  54  Result=0.00605753  Seed=   10458  ResultHash=E778  ProgramHash=013C
+FIRESTARTER_RANDOM: Generation:  59  Best Generation:  54  Result=0.00091517  Seed=   10459  ResultHash=BCA9  ProgramHash=4753
+FIRESTARTER_RANDOM: Generation:  63  Best Generation:  54  Result=0.00088212  Seed=   10463  ResultHash=6D81  ProgramHash=1B98
+FIRESTARTER_RANDOM: Generation:  61  Best Generation:  54  Result=0.00305685  Seed=   10461  ResultHash=B03B  ProgramHash=DBA1
+FIRESTARTER_RANDOM: Generation:  62  Best Generation:  54  Result=0.00876892  Seed=   10462  ResultHash=11D7  ProgramHash=3E8A
+FIRESTARTER_RANDOM: Generation:  67  Best Generation:  54  Result=0.00447875  Seed=   10467  ResultHash=A0A1  ProgramHash=59D0
+FIRESTARTER_RANDOM: Generation:  68  Best Generation:  54  Result=0.00071156  Seed=   10468  ResultHash=A1C7  ProgramHash=439B
+FIRESTARTER_RANDOM: Generation:  64  Best Generation:  54  Result=0.00243592  Seed=   10464  ResultHash=8B46  ProgramHash=0722
+FIRESTARTER_RANDOM: Generation:  65  Best Generation:  54  Result=0.00410344  Seed=   10465  ResultHash=0291  ProgramHash=676C
+FIRESTARTER_RANDOM: Generation:  76  Best Generation:  54  Result=1.48324537  Seed=   10476  ResultHash=A558  ProgramHash=3CCF
+FIRESTARTER_RANDOM: Generation:  70  Best Generation:  54  Result=0.00193353  Seed=   10470  ResultHash=2626  ProgramHash=073D
+FIRESTARTER_RANDOM: Generation:  66  Best Generation:  54  Result=0.00126600  Seed=   10466  ResultHash=DDF7  ProgramHash=0C99
+FIRESTARTER_RANDOM: Generation:  71  Best Generation:  54  Result=0.00376650  Seed=   10471  ResultHash=8994  ProgramHash=3DFF
+FIRESTARTER_RANDOM: Generation:  69  Best Generation:  54  Result=0.00159705  Seed=   10469  ResultHash=0EAD  ProgramHash=A002
+FIRESTARTER_RANDOM: Generation:  73  Best Generation:  54  Result=0.01640773  Seed=   10473  ResultHash=6453  ProgramHash=EE23
+FIRESTARTER_RANDOM: Generation:  72  Best Generation:  54  Result=0.00108087  Seed=   10472  ResultHash=743C  ProgramHash=E5E7
+FIRESTARTER_RANDOM: Generation:  75  Best Generation:  54  Result=0.00155228  Seed=   10475  ResultHash=BE2C  ProgramHash=B37B
+FIRESTARTER_RANDOM: Generation:  79  Best Generation:  54  Result=0.15728861  Seed=   10479  ResultHash=5DC9  ProgramHash=7F4F
+FIRESTARTER_RANDOM: Generation:  74  Best Generation:  54  Result=0.00158828  Seed=   10474  ResultHash=C88D  ProgramHash=6CE0
+FIRESTARTER_RANDOM: Generation:  78  Best Generation:  54  Result=0.00312054  Seed=   10478  ResultHash=FFE3  ProgramHash=E1C0
+FIRESTARTER_RANDOM: Generation:  77  Best Generation:  54  Result=0.00090671  Seed=   10477  ResultHash=4443  ProgramHash=8689
+FIRESTARTER_RANDOM: Generation:  83  Best Generation:  54  Result=0.00212753  Seed=   10483  ResultHash=176C  ProgramHash=6352
+FIRESTARTER_RANDOM: Generation:  80  Best Generation:  54  Result=0.17371678  Seed=   10480  ResultHash=93C3  ProgramHash=63B0
+FIRESTARTER_RANDOM: Generation:  81  Best Generation:  54  Result=0.04752320  Seed=   10481  ResultHash=027E  ProgramHash=61C0
+FIRESTARTER_RANDOM: Generation:  84  Best Generation:  84  Result=0.00006405  Seed=   10484  ResultHash=88B5  ProgramHash=CCFF
+FIRESTARTER_RANDOM: Generation:  86  Best Generation:  84  Result=0.00117987  Seed=   10486  ResultHash=2D5C  ProgramHash=1519
+FIRESTARTER_RANDOM: Generation:  87  Best Generation:  84  Result=0.00102448  Seed=   10487  ResultHash=0943  ProgramHash=98C5
+FIRESTARTER_RANDOM: Generation:  85  Best Generation:  84  Result=0.04547464  Seed=   10485  ResultHash=B9F5  ProgramHash=4ACF
+FIRESTARTER_RANDOM: Generation:  92  Best Generation:  84  Result=0.00131930  Seed=   10492  ResultHash=CE40  ProgramHash=E347
+FIRESTARTER_RANDOM: Generation:  90  Best Generation:  84  Result=0.00065398  Seed=   10490  ResultHash=AE23  ProgramHash=4B2C
+FIRESTARTER_RANDOM: Generation:  82  Best Generation:  84  Result=0.00282956  Seed=   10482  ResultHash=29E1  ProgramHash=67E4
+FIRESTARTER_RANDOM: Generation:  91  Best Generation:  84  Result=1.48324537  Seed=   10491  ResultHash=BE2C  ProgramHash=EDAE
+FIRESTARTER_RANDOM: Generation:  88  Best Generation:  84  Result=1.48324537  Seed=   10488  ResultHash=14C6  ProgramHash=3368
+FIRESTARTER_RANDOM: Generation:  89  Best Generation:  84  Result=0.00054109  Seed=   10489  ResultHash=FC9F  ProgramHash=926E
+FIRESTARTER_RANDOM: Generation:  95  Best Generation:  84  Result=0.04750550  Seed=   10495  ResultHash=247F  ProgramHash=F4A9
+FIRESTARTER_RANDOM: Generation:  93  Best Generation:  84  Result=0.00613880  Seed=   10493  ResultHash=A5FB  ProgramHash=7CEE
+FIRESTARTER_RANDOM: Generation:  94  Best Generation:  84  Result=0.00230974  Seed=   10494  ResultHash=AC3D  ProgramHash=87B0
+FIRESTARTER_RANDOM: Generation:  99  Best Generation:  84  Result=0.00113380  Seed=   10499  ResultHash=F24B  ProgramHash=8925
+FIRESTARTER_RANDOM: Generation:  96  Best Generation:  84  Result=0.00174975  Seed=   10496  ResultHash=1875  ProgramHash=9A00
+FIRESTARTER_RANDOM: Generation:  98  Best Generation:  84  Result=0.94376886  Seed=   10498  ResultHash=3AB3  ProgramHash=C7D9
+FIRESTARTER_RANDOM: Generation: 100  Best Generation:  84  Result=0.00074992  Seed=   10500  ResultHash=8E97  ProgramHash=3B10
+FIRESTARTER_RANDOM: Generation:  97  Best Generation:  84  Result=0.78362089  Seed=   10497  ResultHash=99F1  ProgramHash=CC62
+FIRESTARTER_RANDOM: Generation: 101  Best Generation:  84  Result=0.00293958  Seed=   10501  ResultHash=5D44  ProgramHash=8ABB
+FIRESTARTER_RANDOM: Generation: 104  Best Generation:  84  Result=0.00128433  Seed=   10504  ResultHash=DED9  ProgramHash=E20B
+FIRESTARTER_RANDOM: Generation: 105  Best Generation:  84  Result=0.85227418  Seed=   10505  ResultHash=63B0  ProgramHash=BF76
+FIRESTARTER_RANDOM: Generation: 107  Best Generation:  84  Result=0.00606567  Seed=   10507  ResultHash=2FE5  ProgramHash=EDFF
+FIRESTARTER_RANDOM: Generation: 103  Best Generation:  84  Result=0.00222236  Seed=   10503  ResultHash=9886  ProgramHash=C366
+FIRESTARTER_RANDOM: Generation: 102  Best Generation:  84  Result=1.48324537  Seed=   10502  ResultHash=FBF4  ProgramHash=508E
+FIRESTARTER_RANDOM: Generation: 109  Best Generation:  84  Result=0.00398457  Seed=   10509  ResultHash=F72F  ProgramHash=2F78
+FIRESTARTER_RANDOM: Generation: 111  Best Generation:  84  Result=0.00219411  Seed=   10511  ResultHash=A6A4  ProgramHash=4E9C
+FIRESTARTER_RANDOM: Generation: 106  Best Generation:  84  Result=0.04749648  Seed=   10506  ResultHash=2B9B  ProgramHash=CE73
+FIRESTARTER_RANDOM: Generation: 108  Best Generation:  84  Result=0.18304534  Seed=   10508  ResultHash=DC2D  ProgramHash=041C
+FIRESTARTER_RANDOM: Generation: 110  Best Generation:  84  Result=0.17371568  Seed=   10510  ResultHash=1138  ProgramHash=7C16
+FIRESTARTER_RANDOM: Generation: 112  Best Generation:  84  Result=0.00159941  Seed=   10512  ResultHash=66C8  ProgramHash=FFEB
+FIRESTARTER_RANDOM: Generation: 113  Best Generation:  84  Result=0.01644802  Seed=   10513  ResultHash=7016  ProgramHash=E992
+FIRESTARTER_RANDOM: Generation: 115  Best Generation:  84  Result=0.00201106  Seed=   10515  ResultHash=A925  ProgramHash=0641
