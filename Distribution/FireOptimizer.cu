@@ -31,7 +31,7 @@ inline float TestPrecision(const FireStarterData& data, unsigned int variation, 
     return result;
 } // TestPrecision
 
-#if 0
+#if 1
 // Experimental version
 GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
 {
@@ -70,12 +70,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             oldResult = *oldResults->MinResult(member, v);
             age = *oldResults->Index(member, v);
             if (age) {
-                unsigned int count = age / 4 + 1;
-                count = MIN(count, dataSize);
-                for (unsigned int i = 0; i < count; i++) {
-                    unsigned int d = RANDOMMOD64(seed, dataSize);
-                    data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
-                }
+                unsigned int d = RANDOMMOD64(seed, dataSize);
+                data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
+                oldResult = settings.m_startResult;
                 evolved = true;
             }
         }

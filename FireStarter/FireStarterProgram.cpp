@@ -94,27 +94,27 @@ void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
 void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::string& code, const std::string &prefix, const std::string& postfix)
 {
     code += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";
-    code += prefix + Format("samples = %", settings.m_samples) + postfix + "\r\n";
-    code += prefix + Format("instructions = %u", settings.m_instructions) + "\r\n";
-    code += prefix + Format("registers = %u", settings.m_registers) + "\r\n";
-    code += prefix + Format("opcodes = %u", settings.m_opcodes) + "\r\n";
+    code += prefix + Format("samples = %u", settings.m_samples) + postfix + "\r\n";
+    code += prefix + Format("instructions = %u", settings.m_instructions) + postfix + "\r\n";
+    code += prefix + Format("registers = %u", settings.m_registers) + postfix + "\r\n";
+    code += prefix + Format("opcodes = %u", settings.m_opcodes) + postfix + "\r\n";
     code += "\r\n";
-    code += prefix + Format("targetMin = %ff", settings.m_targetMin) + "\r\n";
-    code += prefix + Format("targetMax = %ff", settings.m_targetMax) + "\r\n";
+    code += prefix + Format("targetMin = %ff", settings.m_targetMin) + postfix + "\r\n";
+    code += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
     code += "\r\n";
-    code += prefix + Format("mode = %s", settings.Mode()) + "\r\n";
-    code += prefix + Format("units = %u", settings.m_units) + "\r\n";
-    code += prefix + Format("processes = %u", settings.m_processes) + "\r\n";
-    code += prefix + Format("iterations = %u", settings.m_iterations) + "\r\n";
-    code += prefix + Format("candidates = %u", settings.m_candidates) + "\r\n";
-    code += prefix + Format("generations = %u", settings.m_generations) + "\r\n";
-    code += prefix + Format("precision = %u", settings.m_precision) + "\r\n";
-    code += prefix + Format("evolve = %s", settings.Evolve()) + "\r\n";
-    code += prefix + Format("attempts = %u", settings.m_attempts) + "\r\n";
-    code += prefix + Format("seed = %u", settings.m_seed) + "\r\n";
-    code += prefix + Format("scale = %ff", settings.m_scale) + "\r\n";
-    code += prefix + Format("startScale = %ff", settings.m_startScale) + "\r\n";
-    code += prefix + Format("startResult = %ff", settings.m_startResult) + "\r\n";
+    code += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
+    code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
+    code += prefix + Format("processes = %u", settings.m_processes) + postfix + "\r\n";
+    code += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";
+    code += prefix + Format("candidates = %u", settings.m_candidates) + postfix + "\r\n";
+    code += prefix + Format("generations = %u", settings.m_generations) + postfix + "\r\n";
+    code += prefix + Format("precision = %u", settings.m_precision) + postfix + "\r\n";
+    code += prefix + Format("evolve = %s", settings.Evolve()) + postfix + "\r\n";
+    code += prefix + Format("attempts = %u", settings.m_attempts) + postfix + "\r\n";
+    code += prefix + Format("seed = %u", settings.m_seed) + postfix + "\r\n";
+    code += prefix + Format("scale = %ff", settings.m_scale) + postfix + "\r\n";
+    code += prefix + Format("startScale = %ff", settings.m_startScale) + postfix + "\r\n";
+    code += prefix + Format("startResult = %ff", settings.m_startResult) + postfix + "\r\n";
 } // SaveSettings
 
 void FireStarterProgram::SaveSettings(std::string& code) const
