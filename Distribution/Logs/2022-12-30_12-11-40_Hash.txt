@@ -1,0 +1,32 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 32
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_TEST
+units = 1
+processes = 0
+iterations = 256
+candidates = 16
+generations = 400
+precision = 0
+attempts = 32
+seed = 10484
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_TEST: Generation:   0  Best Generation:   0  Result=0.85227418  Seed=   10484  ResultHash=7A5C  ProgramHash=C7BD
+FIRESTARTER_TEST: Generation:   1  Best Generation:   0  Result=0.85227418  Seed=   10485  ResultHash=7EC8  ProgramHash=A576
+FIRESTARTER_TEST: Generation:   2  Best Generation:   0  Result=0.97492790  Seed=   10486  ResultHash=20DD  ProgramHash=A791
+FIRESTARTER_TEST: Generation:   3  Best Generation:   0  Result=0.85227418  Seed=   10487  ResultHash=0286  ProgramHash=BF61
+FIRESTARTER_TEST: Generation:   4  Best Generation:   0  Result=0.85227418  Seed=   10488  ResultHash=DB10  ProgramHash=F363
+FIRESTARTER_TEST: Generation:   5  Best Generation:   0  Result=0.85227418  Seed=   10489  ResultHash=03D0  ProgramHash=BED0
+FIRESTARTER_TEST: Generation:   6  Best Generation:   0  Result=0.85227418  Seed=   10490  ResultHash=A4AE  ProgramHash=B825

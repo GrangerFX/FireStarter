@@ -1,0 +1,259 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 32
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_TEST
+units = 1
+processes = 0
+iterations = 64
+candidates = 16
+generations = 200
+precision = 0
+attempts = 32
+seed = 0
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=0  Age=0 *Result=0.00073004  Best=0.00073004  BestGen=0  Time=0.0000 Seconds  Run Time=2.0145 Seconds  TestError=0.00000028
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=1  Age=0 *Result=0.00046045  Best=0.00046045  BestGen=1  Time=3.2273 Seconds  Run Time=3.2273 Seconds  TestError=0.00000054
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=2  Age=0 *Result=0.00021632  Best=0.00021632  BestGen=2  Time=0.7938 Seconds  Run Time=4.0211 Seconds  TestError=0.00000036
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=3  Age=1  Result=0.00032680  Best=0.00021632  BestGen=2  Time=0.3884 Seconds  Run Time=4.4094 Seconds  TestError=0.00000001
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=4  Age=2  Result=0.00034368  Best=0.00021632  BestGen=2  Time=0.7958 Seconds  Run Time=5.2053 Seconds  TestError=0.00000131
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=5  Age=3  Result=0.00050447  Best=0.00021632  BestGen=2  Time=0.3846 Seconds  Run Time=5.5899 Seconds  TestError=0.00000032
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=6  Age=4  Result=0.00050735  Best=0.00021632  BestGen=2  Time=0.7954 Seconds  Run Time=6.3853 Seconds  TestError=0.00000226
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=7  Age=5  Result=0.00065152  Best=0.00021632  BestGen=2  Time=0.3830 Seconds  Run Time=6.7683 Seconds  TestError=0.00000010
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=8  Age=6  Result=0.00025901  Best=0.00021632  BestGen=2  Time=0.3854 Seconds  Run Time=7.1537 Seconds  TestError=0.00000039
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=9  Age=7  Result=0.00049520  Best=0.00021632  BestGen=2  Time=0.7934 Seconds  Run Time=7.9471 Seconds  TestError=0.00000000
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=10  Age=8  Result=0.00033250  Best=0.00021632  BestGen=2  Time=0.7907 Seconds  Run Time=8.7378 Seconds  TestError=0.00000140
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=11  Age=9  Result=0.00023794  Best=0.00021632  BestGen=2  Time=0.5846 Seconds  Run Time=9.3224 Seconds  TestError=0.00000012
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=12  Age=0 *Result=0.00017805  Best=0.00017805  BestGen=12  Time=0.7891 Seconds  Run Time=10.1115 Seconds  TestError=0.00000029
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=13  Age=1  Result=0.00064644  Best=0.00017805  BestGen=12  Time=0.7782 Seconds  Run Time=10.8897 Seconds  TestError=0.00000009
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=14  Age=2  Result=0.00028712  Best=0.00017805  BestGen=12  Time=0.3889 Seconds  Run Time=11.2786 Seconds  TestError=0.00000003
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=15  Age=3  Result=0.00021029  Best=0.00017805  BestGen=12  Time=0.3861 Seconds  Run Time=11.6647 Seconds  TestError=0.00000048
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=16  Age=4  Result=0.00073445  Best=0.00017805  BestGen=12  Time=0.3807 Seconds  Run Time=12.0453 Seconds  TestError=0.00000024
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=17  Age=5  Result=0.00020772  Best=0.00017805  BestGen=12  Time=0.3841 Seconds  Run Time=12.4295 Seconds  TestError=0.00000006
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=18  Age=6  Result=0.00024927  Best=0.00017805  BestGen=12  Time=0.3783 Seconds  Run Time=12.8078 Seconds  TestError=0.00000009
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=19  Age=7  Result=0.00052172  Best=0.00017805  BestGen=12  Time=0.7890 Seconds  Run Time=13.5968 Seconds  TestError=0.00000155
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=20  Age=8  Result=0.00021976  Best=0.00017805  BestGen=12  Time=0.3824 Seconds  Run Time=13.9792 Seconds  TestError=0.00000006
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=21  Age=9  Result=0.00023123  Best=0.00017805  BestGen=12  Time=0.3819 Seconds  Run Time=14.3611 Seconds  TestError=0.00000025
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=22  Age=10  Result=0.00019759  Best=0.00017805  BestGen=12  Time=0.3818 Seconds  Run Time=14.7429 Seconds  TestError=0.00000092
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=23  Age=11  Result=0.00020039  Best=0.00017805  BestGen=12  Time=0.5895 Seconds  Run Time=15.3324 Seconds  TestError=0.00000039
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=24  Age=12  Result=0.00041005  Best=0.00017805  BestGen=12  Time=0.3909 Seconds  Run Time=15.7233 Seconds  TestError=0.00000000
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=25  Age=13  Result=0.00072825  Best=0.00017805  BestGen=12  Time=0.3802 Seconds  Run Time=16.1035 Seconds  TestError=0.00000009
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=26  Age=14  Result=0.00032505  Best=0.00017805  BestGen=12  Time=0.3801 Seconds  Run Time=16.4836 Seconds  TestError=0.00000039
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=27  Age=15  Result=0.00068623  Best=0.00017805  BestGen=12  Time=0.3836 Seconds  Run Time=16.8672 Seconds  TestError=0.00000018
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=28  Age=0 *Result=0.00017321  Best=0.00017321  BestGen=28  Time=0.7717 Seconds  Run Time=17.6389 Seconds  TestError=0.00000048
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=29  Age=1  Result=0.00044259  Best=0.00017321  BestGen=28  Time=0.7805 Seconds  Run Time=18.4193 Seconds  TestError=0.00000009
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=30  Age=2  Result=0.00026047  Best=0.00017321  BestGen=28  Time=0.7781 Seconds  Run Time=19.1974 Seconds  TestError=0.00000015
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=31  Age=3  Result=0.00025630  Best=0.00017321  BestGen=28  Time=0.3751 Seconds  Run Time=19.5725 Seconds  TestError=0.00000039
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=32  Age=0 *Result=0.00015938  Best=0.00015938  BestGen=32  Time=0.7723 Seconds  Run Time=20.3448 Seconds  TestError=0.00000030
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=33  Age=1  Result=0.00017320  Best=0.00015938  BestGen=32  Time=0.7718 Seconds  Run Time=21.1166 Seconds  TestError=0.00000095
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=34  Age=0 *Result=0.00014603  Best=0.00014603  BestGen=34  Time=0.7788 Seconds  Run Time=21.8954 Seconds  TestError=0.00000113
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=35  Age=0 *Result=0.00013959  Best=0.00013959  BestGen=35  Time=0.7782 Seconds  Run Time=22.6736 Seconds  TestError=0.00000027
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=36  Age=1  Result=0.00028646  Best=0.00013959  BestGen=35  Time=0.3808 Seconds  Run Time=23.0544 Seconds  TestError=0.00000000
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=37  Age=2  Result=0.00037020  Best=0.00013959  BestGen=35  Time=0.7970 Seconds  Run Time=23.8514 Seconds  TestError=0.00000006
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=38  Age=3  Result=0.00018085  Best=0.00013959  BestGen=35  Time=0.3820 Seconds  Run Time=24.2334 Seconds  TestError=0.00000001
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=39  Age=4  Result=0.00231744  Best=0.00013959  BestGen=35  Time=0.3820 Seconds  Run Time=24.6153 Seconds  TestError=0.00000133
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=40  Age=5  Result=0.00026217  Best=0.00013959  BestGen=35  Time=0.3774 Seconds  Run Time=24.9927 Seconds  TestError=0.00000002
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=41  Age=6  Result=0.00041294  Best=0.00013959  BestGen=35  Time=0.3822 Seconds  Run Time=25.3749 Seconds  TestError=0.00000030
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=42  Age=7  Result=0.00030637  Best=0.00013959  BestGen=35  Time=0.5812 Seconds  Run Time=25.9561 Seconds  TestError=0.00000021
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=43  Age=8  Result=0.00020117  Best=0.00013959  BestGen=35  Time=0.3917 Seconds  Run Time=26.3478 Seconds  TestError=0.00000006
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=44  Age=9  Result=0.00043081  Best=0.00013959  BestGen=35  Time=0.3842 Seconds  Run Time=26.7320 Seconds  TestError=0.00000165
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=45  Age=10  Result=0.00025046  Best=0.00013959  BestGen=35  Time=0.7823 Seconds  Run Time=27.5143 Seconds  TestError=0.00000107
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=46  Age=11  Result=0.00020051  Best=0.00013959  BestGen=35  Time=0.7780 Seconds  Run Time=28.2923 Seconds  TestError=0.00000024
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=47  Age=12  Result=0.00031650  Best=0.00013959  BestGen=35  Time=0.3840 Seconds  Run Time=28.6763 Seconds  TestError=0.00000057
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=48  Age=13  Result=0.00017643  Best=0.00013959  BestGen=35  Time=0.3843 Seconds  Run Time=29.0607 Seconds  TestError=0.00000012
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=49  Age=14  Result=0.00078094  Best=0.00013959  BestGen=35  Time=0.3740 Seconds  Run Time=29.4346 Seconds  TestError=0.00000018
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=50  Age=15  Result=0.00024247  Best=0.00013959  BestGen=35  Time=0.5751 Seconds  Run Time=30.0097 Seconds  TestError=0.00000102
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=51  Age=16  Result=0.00021535  Best=0.00013959  BestGen=35  Time=0.3760 Seconds  Run Time=30.3858 Seconds  TestError=0.00000006
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=52  Age=17  Result=0.00019117  Best=0.00013959  BestGen=35  Time=0.3815 Seconds  Run Time=30.7673 Seconds  TestError=0.00000001
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=53  Age=18  Result=0.00026550  Best=0.00013959  BestGen=35  Time=0.3748 Seconds  Run Time=31.1421 Seconds  TestError=0.00000049
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=54  Age=19  Result=0.00039548  Best=0.00013959  BestGen=35  Time=0.7785 Seconds  Run Time=31.9207 Seconds  TestError=0.00000000
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=55  Age=20  Result=0.00030160  Best=0.00013959  BestGen=35  Time=0.5872 Seconds  Run Time=32.5079 Seconds  TestError=0.00000072
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=56  Age=21  Result=0.00024563  Best=0.00013959  BestGen=35  Time=0.3811 Seconds  Run Time=32.8890 Seconds  TestError=0.00000003
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=57  Age=22  Result=0.00019592  Best=0.00013959  BestGen=35  Time=0.3790 Seconds  Run Time=33.2680 Seconds  TestError=0.00000042
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=58  Age=23  Result=0.00014162  Best=0.00013959  BestGen=35  Time=0.3835 Seconds  Run Time=33.6514 Seconds  TestError=0.00000003
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=59  Age=24  Result=0.00016230  Best=0.00013959  BestGen=35  Time=0.3740 Seconds  Run Time=34.0255 Seconds  TestError=0.00000006
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=60  Age=25  Result=0.00018299  Best=0.00013959  BestGen=35  Time=0.5707 Seconds  Run Time=34.5962 Seconds  TestError=0.00000021
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=61  Age=26  Result=0.00031869  Best=0.00013959  BestGen=35  Time=0.3690 Seconds  Run Time=34.9652 Seconds  TestError=0.00000001
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=62  Age=27  Result=0.00024488  Best=0.00013959  BestGen=35  Time=0.3806 Seconds  Run Time=35.3458 Seconds  TestError=0.00000025
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=63  Age=28  Result=0.00016165  Best=0.00013959  BestGen=35  Time=0.5800 Seconds  Run Time=35.9258 Seconds  TestError=0.00000000
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=64  Age=29  Result=0.00019568  Best=0.00013959  BestGen=35  Time=0.3776 Seconds  Run Time=36.3034 Seconds  TestError=0.00000012
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=65  Age=30  Result=0.00021258  Best=0.00013959  BestGen=35  Time=0.3786 Seconds  Run Time=36.6820 Seconds  TestError=0.00000018
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=66  Age=31  Result=0.00018489  Best=0.00013959  BestGen=35  Time=0.5883 Seconds  Run Time=37.2703 Seconds  TestError=0.00000081
+FIRESTARTER_TEST: Seed=0  Test=0  Generation=67  Age=32  Result=0.00053191  Best=0.00013959  BestGen=35  Time=0.7725 Seconds  Run Time=38.0428 Seconds  TestError=0.00000024
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=35  Age=0 *Result=0.00038350  Best=0.00038350  BestGen=35  Time=1.6653 Seconds  Run Time=1.6653 Seconds  TestError=0.00000060
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=36  Age=0 *Result=0.00016654  Best=0.00016654  BestGen=36  Time=1.0354 Seconds  Run Time=2.7006 Seconds  TestError=0.00000015
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=37  Age=0 *Result=0.00010075  Best=0.00010075  BestGen=37  Time=0.3166 Seconds  Run Time=3.0173 Seconds  TestError=0.00000142
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=38  Age=0 *Result=0.00006616  Best=0.00006616  BestGen=38  Time=0.3160 Seconds  Run Time=3.3333 Seconds  TestError=0.00000030
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=39  Age=0 *Result=0.00005853  Best=0.00005853  BestGen=39  Time=0.3159 Seconds  Run Time=3.6492 Seconds  TestError=0.00000131
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=40  Age=0 *Result=0.00005835  Best=0.00005835  BestGen=40  Time=0.3163 Seconds  Run Time=3.9655 Seconds  TestError=0.00000119
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=41  Age=1 *Result=0.00005835  Best=0.00005835  BestGen=40  Time=0.3156 Seconds  Run Time=4.2810 Seconds  TestError=0.00000083
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=42  Age=0 *Result=0.00005549  Best=0.00005549  BestGen=42  Time=0.3110 Seconds  Run Time=4.5920 Seconds  TestError=0.00000077
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=43  Age=1 *Result=0.00005549  Best=0.00005549  BestGen=42  Time=0.3166 Seconds  Run Time=4.9086 Seconds  TestError=0.00000182
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=44  Age=0 *Result=0.00005541  Best=0.00005541  BestGen=44  Time=0.3102 Seconds  Run Time=5.2188 Seconds  TestError=0.00000182
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=45  Age=1 *Result=0.00005541  Best=0.00005541  BestGen=44  Time=0.3157 Seconds  Run Time=5.5345 Seconds  TestError=0.00000182
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=46  Age=2 *Result=0.00005541  Best=0.00005541  BestGen=44  Time=0.3114 Seconds  Run Time=5.8459 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=47  Age=0 *Result=0.00005352  Best=0.00005352  BestGen=47  Time=0.3106 Seconds  Run Time=6.1565 Seconds  TestError=0.00000106
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=48  Age=0 *Result=0.00005263  Best=0.00005263  BestGen=48  Time=0.3154 Seconds  Run Time=6.4719 Seconds  TestError=0.00000106
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=49  Age=0 *Result=0.00005257  Best=0.00005257  BestGen=49  Time=0.3157 Seconds  Run Time=6.7877 Seconds  TestError=0.00000113
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=50  Age=1 *Result=0.00005257  Best=0.00005257  BestGen=49  Time=0.3158 Seconds  Run Time=7.1034 Seconds  TestError=0.00000092
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=51  Age=2 *Result=0.00005257  Best=0.00005257  BestGen=49  Time=0.3107 Seconds  Run Time=7.4141 Seconds  TestError=0.00000089
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=52  Age=3 *Result=0.00005257  Best=0.00005257  BestGen=49  Time=0.3103 Seconds  Run Time=7.7244 Seconds  TestError=0.00000086
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=53  Age=4 *Result=0.00005257  Best=0.00005257  BestGen=49  Time=0.3109 Seconds  Run Time=8.0353 Seconds  TestError=0.00000085
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=54  Age=0 *Result=0.00005254  Best=0.00005254  BestGen=54  Time=0.3108 Seconds  Run Time=8.3461 Seconds  TestError=0.00000066
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=55  Age=0 *Result=0.00005239  Best=0.00005239  BestGen=55  Time=0.3158 Seconds  Run Time=8.6619 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=56  Age=0 *Result=0.00005233  Best=0.00005233  BestGen=56  Time=0.3157 Seconds  Run Time=8.9777 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=57  Age=1 *Result=0.00005233  Best=0.00005233  BestGen=56  Time=0.3163 Seconds  Run Time=9.2940 Seconds  TestError=0.00000095
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=58  Age=0 *Result=0.00005203  Best=0.00005203  BestGen=58  Time=0.3111 Seconds  Run Time=9.6051 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=59  Age=1 *Result=0.00005203  Best=0.00005203  BestGen=58  Time=0.3155 Seconds  Run Time=9.9205 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=60  Age=2 *Result=0.00005203  Best=0.00005203  BestGen=58  Time=0.3118 Seconds  Run Time=10.2323 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=61  Age=3 *Result=0.00005203  Best=0.00005203  BestGen=58  Time=0.3105 Seconds  Run Time=10.5428 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=62  Age=4 *Result=0.00005203  Best=0.00005203  BestGen=58  Time=0.3107 Seconds  Run Time=10.8535 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=63  Age=0 *Result=0.00005198  Best=0.00005198  BestGen=63  Time=0.3104 Seconds  Run Time=11.1639 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=64  Age=0 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3156 Seconds  Run Time=11.4795 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=65  Age=1 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3156 Seconds  Run Time=11.7951 Seconds  TestError=0.00000262
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=66  Age=2 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3105 Seconds  Run Time=12.1056 Seconds  TestError=0.00000274
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=67  Age=3 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3104 Seconds  Run Time=12.4160 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=68  Age=4 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3105 Seconds  Run Time=12.7265 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=69  Age=5 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3106 Seconds  Run Time=13.0371 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=70  Age=6 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3107 Seconds  Run Time=13.3478 Seconds  TestError=0.00000095
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=71  Age=7 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3103 Seconds  Run Time=13.6580 Seconds  TestError=0.00000039
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=72  Age=8 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3105 Seconds  Run Time=13.9686 Seconds  TestError=0.00000039
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=73  Age=9 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3101 Seconds  Run Time=14.2787 Seconds  TestError=0.00000095
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=74  Age=10 *Result=0.00005195  Best=0.00005195  BestGen=64  Time=0.3105 Seconds  Run Time=14.5893 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=75  Age=0 *Result=0.00005174  Best=0.00005174  BestGen=75  Time=0.3107 Seconds  Run Time=14.9000 Seconds  TestError=0.00000092
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=76  Age=1 *Result=0.00005174  Best=0.00005174  BestGen=75  Time=0.3163 Seconds  Run Time=15.2163 Seconds  TestError=0.00000131
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=77  Age=2 *Result=0.00005174  Best=0.00005174  BestGen=75  Time=0.3102 Seconds  Run Time=15.5265 Seconds  TestError=0.00000119
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=78  Age=3 *Result=0.00005174  Best=0.00005174  BestGen=75  Time=0.3109 Seconds  Run Time=15.8374 Seconds  TestError=0.00000131
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=79  Age=0 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3104 Seconds  Run Time=16.1479 Seconds  TestError=0.00000131
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=80  Age=1 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3159 Seconds  Run Time=16.4638 Seconds  TestError=0.00000119
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=81  Age=2 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3108 Seconds  Run Time=16.7746 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=82  Age=3 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3106 Seconds  Run Time=17.0853 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=83  Age=4 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3105 Seconds  Run Time=17.3957 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=84  Age=5 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3113 Seconds  Run Time=17.7070 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=85  Age=6 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3110 Seconds  Run Time=18.0180 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=86  Age=7 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3104 Seconds  Run Time=18.3284 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=87  Age=8 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3104 Seconds  Run Time=18.6388 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=88  Age=9 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3109 Seconds  Run Time=18.9497 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=89  Age=10 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3100 Seconds  Run Time=19.2596 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=90  Age=11 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3103 Seconds  Run Time=19.5700 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=91  Age=12 *Result=0.00005168  Best=0.00005168  BestGen=79  Time=0.3111 Seconds  Run Time=19.8811 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=92  Age=0 *Result=0.00005165  Best=0.00005165  BestGen=92  Time=0.3103 Seconds  Run Time=20.1914 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=93  Age=0 *Result=0.00005161  Best=0.00005161  BestGen=93  Time=0.3156 Seconds  Run Time=20.5070 Seconds  TestError=0.00000100
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=94  Age=0 *Result=0.00005138  Best=0.00005138  BestGen=94  Time=0.3159 Seconds  Run Time=20.8229 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=95  Age=0 *Result=0.00005109  Best=0.00005109  BestGen=95  Time=0.3155 Seconds  Run Time=21.1384 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=96  Age=1 *Result=0.00005109  Best=0.00005109  BestGen=95  Time=0.3153 Seconds  Run Time=21.4537 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=97  Age=2 *Result=0.00005109  Best=0.00005109  BestGen=95  Time=0.3102 Seconds  Run Time=21.7640 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=98  Age=3 *Result=0.00005109  Best=0.00005109  BestGen=95  Time=0.3105 Seconds  Run Time=22.0744 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=99  Age=0 *Result=0.00005093  Best=0.00005093  BestGen=99  Time=0.3108 Seconds  Run Time=22.3852 Seconds  TestError=0.00000131
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=100  Age=1 *Result=0.00005093  Best=0.00005093  BestGen=99  Time=0.3152 Seconds  Run Time=22.7004 Seconds  TestError=0.00000113
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=101  Age=2 *Result=0.00005093  Best=0.00005093  BestGen=99  Time=0.3116 Seconds  Run Time=23.0120 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=102  Age=3 *Result=0.00005093  Best=0.00005093  BestGen=99  Time=0.3099 Seconds  Run Time=23.3219 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=103  Age=0 *Result=0.00005090  Best=0.00005090  BestGen=103  Time=0.3114 Seconds  Run Time=23.6333 Seconds  TestError=0.00000116
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=104  Age=1 *Result=0.00005090  Best=0.00005090  BestGen=103  Time=0.3159 Seconds  Run Time=23.9492 Seconds  TestError=0.00000116
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=105  Age=2 *Result=0.00005090  Best=0.00005090  BestGen=103  Time=0.3110 Seconds  Run Time=24.2602 Seconds  TestError=0.00000024
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=106  Age=3 *Result=0.00005090  Best=0.00005090  BestGen=103  Time=0.3103 Seconds  Run Time=24.5706 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=107  Age=0 *Result=0.00005081  Best=0.00005081  BestGen=107  Time=0.3110 Seconds  Run Time=24.8816 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=108  Age=1 *Result=0.00005081  Best=0.00005081  BestGen=107  Time=0.3155 Seconds  Run Time=25.1971 Seconds  TestError=0.00000069
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=109  Age=0 *Result=0.00005072  Best=0.00005072  BestGen=109  Time=0.3112 Seconds  Run Time=25.5083 Seconds  TestError=0.00000024
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=110  Age=0 *Result=0.00005007  Best=0.00005007  BestGen=110  Time=0.3153 Seconds  Run Time=25.8236 Seconds  TestError=0.00000119
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=111  Age=0 *Result=0.00004977  Best=0.00004977  BestGen=111  Time=0.3157 Seconds  Run Time=26.1393 Seconds  TestError=0.00000054
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=112  Age=1 *Result=0.00004977  Best=0.00004977  BestGen=111  Time=0.3160 Seconds  Run Time=26.4553 Seconds  TestError=0.00000024
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=113  Age=2 *Result=0.00004977  Best=0.00004977  BestGen=111  Time=0.3106 Seconds  Run Time=26.7659 Seconds  TestError=0.00000054
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=114  Age=0 *Result=0.00004929  Best=0.00004929  BestGen=114  Time=0.3109 Seconds  Run Time=27.0768 Seconds  TestError=0.00000238
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=115  Age=0 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3154 Seconds  Run Time=27.3922 Seconds  TestError=0.00000238
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=116  Age=1 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3167 Seconds  Run Time=27.7089 Seconds  TestError=0.00000155
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=117  Age=2 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3106 Seconds  Run Time=28.0195 Seconds  TestError=0.00000048
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=118  Age=3 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3103 Seconds  Run Time=28.3298 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=119  Age=4 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3108 Seconds  Run Time=28.6406 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=120  Age=5 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3102 Seconds  Run Time=28.9508 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=121  Age=6 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3108 Seconds  Run Time=29.2616 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=122  Age=7 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3103 Seconds  Run Time=29.5719 Seconds  TestError=0.00000057
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=123  Age=8 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3108 Seconds  Run Time=29.8826 Seconds  TestError=0.00000042
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=124  Age=9 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3106 Seconds  Run Time=30.1932 Seconds  TestError=0.00000042
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=125  Age=10 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3108 Seconds  Run Time=30.5040 Seconds  TestError=0.00000042
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=126  Age=11 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3104 Seconds  Run Time=30.8145 Seconds  TestError=0.00000054
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=127  Age=12 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3106 Seconds  Run Time=31.1250 Seconds  TestError=0.00000042
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=128  Age=13 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3108 Seconds  Run Time=31.4358 Seconds  TestError=0.00000042
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=129  Age=14 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3104 Seconds  Run Time=31.7462 Seconds  TestError=0.00000045
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=130  Age=15 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3109 Seconds  Run Time=32.0572 Seconds  TestError=0.00000042
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=131  Age=16 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3107 Seconds  Run Time=32.3679 Seconds  TestError=0.00000042
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=132  Age=17 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3110 Seconds  Run Time=32.6789 Seconds  TestError=0.00000072
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=133  Age=18 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3105 Seconds  Run Time=32.9894 Seconds  TestError=0.00000072
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=134  Age=19 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3109 Seconds  Run Time=33.3002 Seconds  TestError=0.00000072
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=135  Age=20 *Result=0.00004926  Best=0.00004926  BestGen=115  Time=0.3104 Seconds  Run Time=33.6106 Seconds  TestError=0.00000072
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=136  Age=0 *Result=0.00004923  Best=0.00004923  BestGen=136  Time=0.3107 Seconds  Run Time=33.9213 Seconds  TestError=0.00000060
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=137  Age=1 *Result=0.00004923  Best=0.00004923  BestGen=136  Time=0.3151 Seconds  Run Time=34.2364 Seconds  TestError=0.00000089
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=138  Age=2 *Result=0.00004923  Best=0.00004923  BestGen=136  Time=0.3111 Seconds  Run Time=34.5475 Seconds  TestError=0.00000095
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=139  Age=0 *Result=0.00004917  Best=0.00004917  BestGen=139  Time=0.3107 Seconds  Run Time=34.8582 Seconds  TestError=0.00000095
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=140  Age=1 *Result=0.00004917  Best=0.00004917  BestGen=139  Time=0.3157 Seconds  Run Time=35.1739 Seconds  TestError=0.00000131
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=141  Age=2 *Result=0.00004917  Best=0.00004917  BestGen=139  Time=0.3104 Seconds  Run Time=35.4842 Seconds  TestError=0.00000131
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=142  Age=3 *Result=0.00004917  Best=0.00004917  BestGen=139  Time=0.3103 Seconds  Run Time=35.7945 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=143  Age=4 *Result=0.00004917  Best=0.00004917  BestGen=139  Time=0.3106 Seconds  Run Time=36.1051 Seconds  TestError=0.00000203
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=144  Age=5 *Result=0.00004917  Best=0.00004917  BestGen=139  Time=0.3104 Seconds  Run Time=36.4155 Seconds  TestError=0.00000203
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=145  Age=6 *Result=0.00004917  Best=0.00004917  BestGen=139  Time=0.3110 Seconds  Run Time=36.7265 Seconds  TestError=0.00000310
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=146  Age=7 *Result=0.00004917  Best=0.00004917  BestGen=139  Time=0.3105 Seconds  Run Time=37.0371 Seconds  TestError=0.00000167
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=147  Age=0 *Result=0.00004908  Best=0.00004908  BestGen=147  Time=0.3107 Seconds  Run Time=37.3478 Seconds  TestError=0.00000191
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=148  Age=0 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3156 Seconds  Run Time=37.6634 Seconds  TestError=0.00000167
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=149  Age=1 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3157 Seconds  Run Time=37.9790 Seconds  TestError=0.00000095
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=150  Age=2 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3104 Seconds  Run Time=38.2894 Seconds  TestError=0.00000095
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=151  Age=3 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3113 Seconds  Run Time=38.6007 Seconds  TestError=0.00000131
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=152  Age=4 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3110 Seconds  Run Time=38.9116 Seconds  TestError=0.00000095
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=153  Age=5 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3103 Seconds  Run Time=39.2219 Seconds  TestError=0.00000179
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=154  Age=6 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3107 Seconds  Run Time=39.5326 Seconds  TestError=0.00000203
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=155  Age=7 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3105 Seconds  Run Time=39.8431 Seconds  TestError=0.00000179
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=156  Age=8 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3110 Seconds  Run Time=40.1541 Seconds  TestError=0.00000215
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=157  Age=9 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3103 Seconds  Run Time=40.4643 Seconds  TestError=0.00000274
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=158  Age=10 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3112 Seconds  Run Time=40.7756 Seconds  TestError=0.00000286
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=159  Age=11 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3107 Seconds  Run Time=41.0863 Seconds  TestError=0.00000250
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=160  Age=12 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3108 Seconds  Run Time=41.3971 Seconds  TestError=0.00000226
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=161  Age=13 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3103 Seconds  Run Time=41.7074 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=162  Age=14 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3106 Seconds  Run Time=42.0180 Seconds  TestError=0.00000203
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=163  Age=15 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3103 Seconds  Run Time=42.3283 Seconds  TestError=0.00000238
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=164  Age=16 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3107 Seconds  Run Time=42.6390 Seconds  TestError=0.00000101
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=165  Age=17 *Result=0.00004902  Best=0.00004902  BestGen=148  Time=0.3103 Seconds  Run Time=42.9493 Seconds  TestError=0.00000107
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=166  Age=0 *Result=0.00004885  Best=0.00004885  BestGen=166  Time=0.3108 Seconds  Run Time=43.2600 Seconds  TestError=0.00000229
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=167  Age=0 *Result=0.00004876  Best=0.00004876  BestGen=167  Time=0.3152 Seconds  Run Time=43.5752 Seconds  TestError=0.00000298
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=168  Age=0 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3154 Seconds  Run Time=43.8906 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=169  Age=1 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3153 Seconds  Run Time=44.2059 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=170  Age=2 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3103 Seconds  Run Time=44.5162 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=171  Age=3 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3108 Seconds  Run Time=44.8270 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=172  Age=4 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3103 Seconds  Run Time=45.1373 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=173  Age=5 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3105 Seconds  Run Time=45.4479 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=174  Age=6 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3105 Seconds  Run Time=45.7583 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=175  Age=7 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3105 Seconds  Run Time=46.0688 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=176  Age=8 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3105 Seconds  Run Time=46.3793 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=177  Age=9 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3108 Seconds  Run Time=46.6901 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=178  Age=10 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3103 Seconds  Run Time=47.0004 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=179  Age=11 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3108 Seconds  Run Time=47.3112 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=180  Age=12 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3106 Seconds  Run Time=47.6218 Seconds  TestError=0.00000286
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=181  Age=13 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3101 Seconds  Run Time=47.9319 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=182  Age=14 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3113 Seconds  Run Time=48.2432 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=183  Age=15 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3110 Seconds  Run Time=48.5542 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=184  Age=16 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3103 Seconds  Run Time=48.8645 Seconds  TestError=0.00000286
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=185  Age=17 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3108 Seconds  Run Time=49.1753 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=186  Age=18 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3100 Seconds  Run Time=49.4853 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=187  Age=19 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3103 Seconds  Run Time=49.7957 Seconds  TestError=0.00000286
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=188  Age=20 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3101 Seconds  Run Time=50.1058 Seconds  TestError=0.00000310
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=189  Age=21 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3108 Seconds  Run Time=50.4166 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=190  Age=22 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3102 Seconds  Run Time=50.7268 Seconds  TestError=0.00000286
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=191  Age=23 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3107 Seconds  Run Time=51.0375 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=192  Age=24 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3103 Seconds  Run Time=51.3477 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=193  Age=25 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3105 Seconds  Run Time=51.6582 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=194  Age=26 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3106 Seconds  Run Time=51.9688 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=195  Age=27 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3108 Seconds  Run Time=52.2796 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=196  Age=28 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3104 Seconds  Run Time=52.5900 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=197  Age=29 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3109 Seconds  Run Time=52.9008 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=198  Age=30 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3103 Seconds  Run Time=53.2111 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=199  Age=31 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3108 Seconds  Run Time=53.5219 Seconds  TestError=0.00000265
+FIRESTARTER_OPTIMIZE: Seed=0  Test=0  Generation=200  Age=32 *Result=0.00004864  Best=0.00004864  BestGen=168  Time=0.3102 Seconds  Run Time=53.8321 Seconds  TestError=0.00000265
