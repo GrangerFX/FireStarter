@@ -131,8 +131,13 @@ void FireStarter::ControlTest(void)
     // Loop until the the completion condition or the host program is quit.
     size_t generation = 0;
     while (!WillTerminate()) {
+        // Evolve a new generation for the state.
         evolve->EvolveStates(bestState, allStates, generation);
+
+        // Execute the state.
         execute->ExecuteEvolve();
+
+        // Complete the state and display the results.
         if (!complete->CompleteStates(bestState, allStates, generation))
             break;
         generation++;
@@ -316,23 +321,27 @@ void FireStarter::ControlEvolve(void)
 
 void FireStarter::ControlOptimize(const FireStarterState* evolveState)
 {
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireStarterSettings settings;
-    m_buildSettings.FireSettings(settings, FIRESTARTER_OPTIMIZE);
 
     // Convert the most recently evolved state into an optimize mode state.
     FireStarterState startState;
-    if (evolveState)
+    FireStarterSettings& settings = startState.Settings();
+    if (evolveState) {
+        // Use the evolveState's settings as much as possible to maintain the random seed.
         startState = *evolveState; // Copy the best evolved state.
-    else {
+        settings.m_mode = FIRESTARTER_OPTIMIZE;
+        settings.m_units = 1;
+        settings.m_processes = 0;
+    } else {
+        // Load the settings from the compiled CUDA code.
+        // This allows the settings to be modified without recompiling the main program.
+        FireStarterSettings optimizeSettings;
+        m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
         LoadState(startState);     // Load the best state from the previous Test, Random or Evolve run.
         startState.m_generation = 0;
+        settings.CopyModeSettings(optimizeSettings);
     }
 
     // Switch the settings to optimize mode
-    startState.Settings().CopyModeSettings(settings);
-    settings = startState.Settings();
     startState.InitResult();
 
     // Create the compiler manager
@@ -357,14 +366,14 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState)
     execute->ExecuteCompile();
 
     // Test one more more random seeds.
-    unsigned int firstTest = evolveState ? 0 : FIRESTARTER_TEST_START;
-    unsigned int lastTest = evolveState ? 1 : FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS;
-    for (unsigned int test = firstTest; (test < lastTest) && !WillTerminate(); test++) {
+    size_t firstTest = evolveState ? startState.m_test : FIRESTARTER_TEST_START;
+    size_t lastTest = evolveState ? startState.m_test : FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS - 1;
+    for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
         // Create the state and execution unit.
         FireStarterState bestState(startState);
         size_t index = startState.m_index + test;
         bestState.m_index = index;
-        bestState.m_test = evolveState ? startState.m_test : test;
+        bestState.m_test = test;
         std::vector<FireStarterState> allStates;
         allStates.push_back(bestState);
         

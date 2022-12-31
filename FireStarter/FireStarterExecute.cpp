@@ -80,7 +80,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
     state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
 } // EvolveGenerations
 
-void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
+void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int variation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -102,8 +102,8 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
-                        reinterpret_cast<void*>(&firstVariation),
-                        reinterpret_cast<void*>(&lastVariation),
+                        reinterpret_cast<void*>(&variation),
+                        reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&firstMember),
                         reinterpret_cast<void*>(&lastMember),
                         reinterpret_cast<void*>(&maxRegisters),
@@ -136,23 +136,22 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    for (unsigned int v = firstVariation; v <= lastVariation; v++) {
-        float minResult = *m_hostResults->MinResult(0, v);
-        unsigned int minIndex = 0;
-        for (unsigned int i = 1; i < settings.m_population; i++) {
-            float curResult = *m_hostResults->MinResult(i, v);
-            if (curResult <= minResult) {
-                minResult = curResult;
-                minIndex = i;
-            }
+    float minResult = *m_hostResults->MinResult(0, variation);
+    unsigned int minIndex = 0;
+    for (unsigned int i = 1; i < settings.m_population; i++) {
+        float curResult = *m_hostResults->MinResult(i, variation);
+        if (curResult <= minResult) {
+            minResult = curResult;
+            minIndex = i;
         }
-
-        FireStarterResult* result = state.Result();
-        memcpy(result->Data(v), m_hostResults->Data(minIndex, v), result->DataSize());
-        *result->Index(v) = *m_hostResults->Index(minIndex, v);
-        *result->MinResult(v) = minResult;
-        result->maxResult = fmaxf(result->maxResult, minResult);
     }
+
+    FireStarterResult* result = state.Result();
+    memcpy(result->Data(variation), m_hostResults->Data(minIndex, variation), result->DataSize());
+    *result->Index(variation) = *m_hostResults->Index(minIndex, variation);
+    *result->MinResult(variation) = minResult;
+    result->maxResult = fmaxf(result->maxResult, minResult);
+    printf("  minResult= %f\n", minResult);
 } // OptimizeGenerations
 
 bool FireStarterExecute::InitResults(const FireStarterState& state)
@@ -273,10 +272,10 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
     for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
         // Optimization: If the variation result is worse, skip the rest of the variations.
         if (found) {
-            OptimizeGenerations(state, init, variation, variation);
+            OptimizeGenerations(state, init, variation);
             if (skipVariations)
                 found = stateResult->maxResult <= bestResult;
-        }  else
+        } else
             // The variation data is reset when it is skipped.
             stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
     }
