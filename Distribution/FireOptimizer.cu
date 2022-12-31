@@ -46,7 +46,6 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         theta[i] = TARGET_MIN + i * sampleStep;
 
     // Evolve the program data for each variation.
-    float maxResult = 0.0f;
     unsigned long long memberSeed = RANDOM64(RANDOM64(generationSeed) + member);
     for (unsigned int v = firstVariation; v <= lastVariation; v++) {
         FireStarterData data;
@@ -114,7 +113,6 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             *newResults->Index(member, v) = 0;
             *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
             *newResults->Debug2(member, v) = (unsigned int)memberSeed;
-            maxResult = fmaxf(maxResult, result);
         } else {
             // Copy a result from among the previous generation's results.
             unsigned int bestCandidate = member;
@@ -139,19 +137,16 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
                 *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
                 *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
                 *newResults->Index(member, v) = MAX(age, 1) + 1;
-                maxResult = fmaxf(maxResult, bestResult);
             } else {
                 // Note: result will be larger than oldResult
                 *newResults->Data(member, v) = data;
                 *newResults->MinResult(member, v) = result;
                 *newResults->Index(member, v) = 1;
-                maxResult = fmaxf(maxResult, result);
             }
             *newResults->Debug1(member, v) = *oldResults->Debug1(bestCandidate, v);
             *newResults->Debug2(member, v) = *oldResults->Debug2(bestCandidate, v);
         }
     }
-    *newResults->MaxResult(member) = maxResult;
 } // Optimizer
 #endif
 

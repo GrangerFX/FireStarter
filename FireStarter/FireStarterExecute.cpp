@@ -270,30 +270,15 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
     float bestResult = stateResult->maxResult;
     stateResult->maxResult = 0;
     bool found = true;
-    if (skipVariations) {
-        for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
-            // Optimization: If the variation result is worse, skip the rest of the variations.
-            if (found) {
-                OptimizeGenerations(state, init, variation, variation);
+    for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
+        // Optimization: If the variation result is worse, skip the rest of the variations.
+        if (found) {
+            OptimizeGenerations(state, init, variation, variation);
+            if (skipVariations)
                 found = stateResult->maxResult <= bestResult;
-            }  else
-                // The variation data is reset when it is skipped.
-                stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
-        }
-    } else
-        OptimizeGenerations(state, init, 0, stateSettings.m_variations - 1);
-
-    // Find the best overall result for the state.
-    if (found) {
-        unsigned int bestIndex = 0;
-        float bestResult = *m_hostResults->MaxResult(0);
-        for (unsigned int i = 1; i < stateSettings.m_population; i++) {
-            float curResult = *m_hostResults->MaxResult(i);
-            if (curResult < bestResult) {
-                bestIndex = i;
-                bestResult = curResult;
-            }
-        }
+        }  else
+            // The variation data is reset when it is skipped.
+            stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
     }
     return true;
 } // Optimize
