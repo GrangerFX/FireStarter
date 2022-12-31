@@ -134,6 +134,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
     unsigned int test = (unsigned int)state.m_test;
     float newResult = state.MaxResult();
     float bestResult = bestState.MaxResult();
+    bool isBestState = (state.m_index == bestState.m_index) && (state.m_generation == bestState.m_generation);
     if (settings.m_mode == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, newResult, average, bestResult, bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
         for (unsigned int v = 0; v < settings.m_variations; v++)
@@ -149,7 +150,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
         statusString += Format("  Generation=%u  Age=%u", state.m_generation, state.m_generation - bestState.m_generation);
 
         if (settings.m_mode == FIRESTARTER_EVOLVE) {
-            if (newResult <= bestResult)
+            if ((newResult == bestResult) && isBestState)
                 statusString += " *";
             else if (newResult < oldResult)
                 statusString += " >";
@@ -157,7 +158,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
                 statusString += "  ";
             statusString += Format("New Result=%.8f  Old Result=%.8f", newResult, oldResult);
         } else {
-            if (newResult <= bestResult)
+            if ((newResult == bestResult) && isBestState)
                 statusString += " *";
             else
                 statusString += "  ";
