@@ -65,9 +65,12 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         data = *oldResults->Data(member, v);
         oldResult = *oldResults->MinResult(member, v);
         unsigned int age = *oldResults->Index(member, v);
-        if (age >= 2) {
+        if (age > 1) {
             unsigned int d = RANDOMMOD64(seed, dataSize);
-            data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
+            if (age > 2)
+                data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale * (age - 1);
+            else
+                data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
             oldResult = settings.m_startResult;
             evolved = true;
         }
@@ -130,17 +133,16 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             }
         }
 
-        // Switch to the selected member's data and results or revert to the previous generation.
-        unsigned int age = *oldResults->Index(member, v);
-        if (bestCandidate != member) {
-            *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
-            *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
-            *newResults->Index(member, v) = MAX(age, 1) + 1;
-        } else {
+        // Switch to the selected member's data and results.
+        if (bestCandidate == member) {
             // Note: result will be larger than oldResult
             *newResults->Data(member, v) = data;
             *newResults->MinResult(member, v) = result;
             *newResults->Index(member, v) = 1;
+        } else {
+            *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
+            *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
+            *newResults->Index(member, v) = MAX(*oldResults->Index(member, v), 1) + 1;
         }
         *newResults->Debug1(member, v) = *oldResults->Debug1(bestCandidate, v);
         *newResults->Debug2(member, v) = *oldResults->Debug2(bestCandidate, v);

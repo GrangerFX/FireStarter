@@ -150,7 +150,6 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     *result->Index(variation) = *m_hostResults->Index(minIndex, variation);
     *result->MinResult(variation) = minResult;
     result->maxResult = fmaxf(result->maxResult, minResult);
-    printf("  minResult= %f\n", minResult);
 } // OptimizeGenerations
 
 bool FireStarterExecute::InitResults(const FireStarterState& state)

@@ -11,9 +11,9 @@
 #define FIRESTARTER_TEST_START   0
 #define FIRESTARTER_TEST_SEEDS   16
 
-//#define FIRESTARTER_SEED         0
+#define FIRESTARTER_SEED         0
 //#define FIRESTARTER_SEED         3533
-#define FIRESTARTER_SEED         10484
+//#define FIRESTARTER_SEED         10484
 
 #define FIRESTARTER_CODE     1
 #define FIRESTARTER_UNIT     2
