@@ -91,6 +91,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     unsigned long long generationSeed = state.OptimizeSeed(1) + state.m_generation * settings.m_generations;
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
+//    printf("Mode: %d  test: %llu  index: %llu  generation: %llu: seed: %llu\n", state.m_program.m_settings.m_mode, state.m_test, state.m_index, state.m_generation, generationSeed);
 
     for (unsigned int g = 0; g < settings.m_generations; g++) {
         // Run all the evolve states in parallel.

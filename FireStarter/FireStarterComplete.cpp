@@ -149,7 +149,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
 
         statusString += Format("  Generation=%u  Age=%u", state.m_generation, state.m_generation - bestState.m_generation);
 
-        if (settings.m_mode == FIRESTARTER_EVOLVE) {
+        if ((settings.m_mode == FIRESTARTER_EVOLVE) && (settings.m_units > 1)) {
             if ((newResult == bestResult) && isBestState)
                 statusString += " *";
             else if (newResult < oldResult)
