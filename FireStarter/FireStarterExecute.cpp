@@ -103,7 +103,6 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
                         reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
-                        reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&firstMember),
                         reinterpret_cast<void*>(&lastMember),
                         reinterpret_cast<void*>(&maxRegisters),

@@ -155,7 +155,7 @@ private:
     void GenerateUnit(void);
     void SyncContexts(void);
     void CodeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
-    void OptimizeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
+    void OptimizeGenerations(unsigned int forceInit, unsigned int variation);
     void OptimizeVariations(unsigned int forceInit);
     void ExecuteCode(void);
     void ExecuteOptimize(void);
