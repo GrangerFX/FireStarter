@@ -213,10 +213,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         unsigned int age = *oldResults->Index(member, v);
         if (age > 1) {
             unsigned int d = RANDOMMOD64(seed, dataSize);
-            if (age > 2)
-                data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale * (age - 1);
-            else
-                data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
+            data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale * (age - 1);
             oldResult = settings.m_startResult;
             evolved = true;
         }
