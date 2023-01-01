@@ -85,7 +85,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     // Launch the calculation kernel
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
-    unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
+    unsigned int threadsPerBlock = 16; // BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
     unsigned long long generationSeed = state.OptimizeSeed(1) + state.m_generation * settings.m_generations;
@@ -269,12 +269,28 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
     float bestResult = stateResult->maxResult;
     stateResult->maxResult = 0;
     bool found = true;
-    for (unsigned int variation = 0; variation < stateSettings.m_variations; variation++) {
+
+    if (stateSettings.m_variations != m_variationOrder.size()) {
+        m_variationOrder.resize(stateSettings.m_variations);
+        for (unsigned int v = 0; v < stateSettings.m_variations; v++)
+            m_variationOrder[v] = v;
+    }
+    for (unsigned int v = 0; v < stateSettings.m_variations; v++) {
+        unsigned int variation = m_variationOrder[v];
+
         // Optimization: If the variation result is worse, skip the rest of the variations.
         if (found) {
             OptimizeGenerations(state, init, variation);
             if (skipVariations)
-                found = stateResult->maxResult <= bestResult;
+                found = stateResult->maxResult < bestResult;
+            if (v)
+                for (unsigned int i = 0; i < v; i++) {
+                    if (stateResult->MinResult(m_variationOrder[i]) < stateResult->MinResult(variation)) {
+                        m_variationOrder[v] = m_variationOrder[i];
+                        m_variationOrder[i] = variation;
+                        variation = m_variationOrder[v];
+                    }
+                }
         } else
             // The variation data is reset when it is skipped.
             stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
