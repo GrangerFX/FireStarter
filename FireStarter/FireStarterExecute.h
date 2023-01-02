@@ -28,8 +28,8 @@ private:
     void FinishResults(void);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int variation);
-    bool Optimize(FireStarterState& state, bool init, bool skipVariations = false);
-    bool Compile(void);
+    void Optimize(FireStarterState& state, bool init, bool skipVariations = false);
+    bool CompileModule(FireStarterJob* &job);
 
 public:
     void ExecuteCompile(bool sync = false);

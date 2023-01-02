@@ -259,10 +259,8 @@ void FireStarterExecute::FinishResults(void)
     context->Synchronize();
 } // FinishResults
 
-bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipVariations)
+void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipVariations)
 {
-    if (!m_optimizeFunction)
-        return false;
     FireStarterSettings stateSettings = state.Settings();
     FireStarterResult* stateResult = state.Result();
     float bestResult = stateResult->maxResult;
@@ -294,60 +292,58 @@ bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
             // The variation data is reset when it is skipped.
             stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
     }
-    return true;
 } // Optimize
 
-bool FireStarterExecute::Compile(void)
+bool FireStarterExecute::CompileModule(FireStarterJob*& job)
 {
     // Release the current job.
-    if (m_job)
-        m_manager->AddFree(m_job);
+    if (job)
+        m_manager->AddFree(job);
 
     // Get the next available compile job.
-    m_job = m_manager->GetCompile();
-    if (!m_job)
+    job = m_manager->GetCompile();
+    if (!job)
         return false;
 
     // Output the compile log if it is not empty.
-    if (!m_job->m_log.empty())
-        printf("%s\n", m_job->m_log.c_str());
+    if (!job->m_log.empty())
+        printf("%s\n", job->m_log.c_str());
 
     // Initialize the results and compile the CUDA module.
-    if (!m_job->m_ptx.empty())
-        if (InitResults(m_job->m_state))
-            if (CUDACompile::CompileModule(m_optimizeModule, m_job->m_ptx)) {
-                m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, m_job->m_programFunction);
+    if (!job->m_ptx.empty())
+        if (InitResults(job->m_state))
+            if (CUDACompile::CompileModule(m_optimizeModule, job->m_ptx)) {
+                m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, job->m_programFunction);
                 if (m_optimizeFunction)
                     return true;
                 CUDACompile::ReleaseModule(m_optimizeModule);
             }
 
     // Something went wrong so free the job.
-    m_manager->AddFree(m_job);
-    m_job = nullptr;
+    m_manager->AddFree(job);
+    job = nullptr;
     return false;
-} // Compile
+} // CompileModule
 
 void FireStarterExecute::ExecuteCompile(bool sync)
 {
     Dispatch([this] {
-        if (!Compile()) {
-            m_manager->AddFree(m_job);
-            m_job = nullptr;
-        }
+        CompileModule(m_job);
     }, sync);
 } // ExecuteEvolve
 
 void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t test, bool init, bool sync)
 {
     Dispatch([this, generation, index, test, init] {
-        FireStarterJob* job = nullptr;
-        if (m_job && (job = m_manager->GetFree())) {
-            job->Copy(m_job);
-            job->m_state.m_generation = generation;
-            job->m_state.m_index = index;
-            job->m_state.m_test = test;
-            Optimize(job->m_state, init, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+        if (m_job) {
+            FireStarterJob* job = m_manager->GetFree();
+            if (job) {
+                job->Copy(m_job);
+                job->m_state.m_generation = generation;
+                job->m_state.m_index = index;
+                job->m_state.m_test = test;
+                Optimize(job->m_state, init, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+            }
             m_manager->AddComplete(job);
         }
     }, sync);
@@ -356,11 +352,14 @@ void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t
 void FireStarterExecute::ExecuteEvolve(bool sync)
 {
     Dispatch([this] {
-        if (Compile()) {
-            Optimize(m_job->m_state, true, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
-            m_manager->AddComplete(m_job);
-            m_job = nullptr;
+        FireStarterJob* job = nullptr;
+        if (CompileModule(job))
+            Optimize(job->m_state, true, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+        else {
+            m_manager->AddFree(job);
+            job = nullptr;
         }
+        m_manager->AddComplete(job);
     }, sync);
 } // ExecuteEvolve
 
@@ -368,16 +367,17 @@ void FireStarterExecute::ExecuteRandom(bool sync)
 {
     Dispatch([this] {
         static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
-        while (Compile()) {
-            m_job->m_state.Result()->maxResult = g_atomicResult;
-            Optimize(m_job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
-            float stateResult = m_job->m_state.Result()->maxResult;
+        FireStarterJob* job = nullptr;
+        while (CompileModule(job)) {
+            job->m_state.Result()->maxResult = g_atomicResult;
+            Optimize(job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+            float stateResult = job->m_state.Result()->maxResult;
             if (stateResult < g_atomicResult) {
                 float oldResult = g_atomicResult;
                 while ((stateResult < oldResult) && !g_atomicResult.compare_exchange_weak(oldResult, stateResult));
             }
-            m_manager->AddComplete(m_job);
-            m_job = nullptr;
+            m_manager->AddComplete(job);
+            job = nullptr;
         }
         LOG("Execute unit %d complete\n", (unsigned int)m_index);
     }, sync);
@@ -386,8 +386,13 @@ void FireStarterExecute::ExecuteRandom(bool sync)
 void FireStarterExecute::ExecuteFinish(bool sync)
 {
     DispatchSync([this] {
-        delete m_job;
-        m_job = nullptr;
+        if (m_job) {
+            if (m_manager)
+                m_manager->AddFree(m_job);
+            else
+                delete m_job;
+            m_job = nullptr;
+        }
         FinishResults();
         CUDACompile::ReleaseModule(m_optimizeModule);
     });

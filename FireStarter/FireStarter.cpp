@@ -238,7 +238,7 @@ void FireStarter::ControlTest(void)
         // Complete the state and display the results.
         bool finished = !complete->CompleteStates(bestState, allStates, generation);
         double completeTime = testTimer.Duration();
-        printf("ControlTest: Generation=%llu  evolveTime=%f  compileTime=%f  executeTime=%f  completeTime=%f  generationTime=%f\n", generation, evolveTime - startTime, compileTime - evolveTime, executeTime - compileTime, completeTime - executeTime, completeTime - startTime);
+//        printf("ControlTest: Generation=%llu  evolveTime=%f  compileTime=%f  executeTime=%f  completeTime=%f  generationTime=%f\n", generation, evolveTime - startTime, compileTime - evolveTime, executeTime - compileTime, completeTime - executeTime, completeTime - startTime);
 
         if (finished)
             break;
