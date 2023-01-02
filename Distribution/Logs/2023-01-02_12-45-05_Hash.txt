@@ -1,0 +1,187 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 32
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_OPTIMIZE
+units = 1
+processes = 0
+iterations = 64
+candidates = 16
+generations = 100
+precision = 0
+attempts = 32
+seed = 0
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Generation:   0  Best Generation:   0  Result=0.00002384  Seed=       0  ResultHash=74E1  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   1  Best Generation:   1  Result=0.00000238  Seed=       1  ResultHash=4669  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   2  Best Generation:   2  Result=0.00000167  Seed=       2  ResultHash=7DB5  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   3  Best Generation:   3  Result=0.00000131  Seed=       3  ResultHash=F2A4  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   4  Best Generation:   4  Result=0.00000095  Seed=       4  ResultHash=2FD2  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   5  Best Generation:   5  Result=0.00000075  Seed=       5  ResultHash=9145  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   6  Best Generation:   6  Result=0.00000072  Seed=       6  ResultHash=D028  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   7  Best Generation:   6  Result=0.00000072  Seed=       7  ResultHash=3373  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   8  Best Generation:   6  Result=0.00000072  Seed=       8  ResultHash=DF92  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   9  Best Generation:   9  Result=0.00000066  Seed=       9  ResultHash=A313  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  10  Best Generation:   9  Result=0.00000066  Seed=      10  ResultHash=CFE6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  11  Best Generation:   9  Result=0.00000066  Seed=      11  ResultHash=F7C6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  12  Best Generation:   9  Result=0.00000066  Seed=      12  ResultHash=A562  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  13  Best Generation:  13  Result=0.00000060  Seed=      13  ResultHash=7297  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  14  Best Generation:  13  Result=0.00000060  Seed=      14  ResultHash=8CE5  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  15  Best Generation:  13  Result=0.00000060  Seed=      15  ResultHash=43CF  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  16  Best Generation:  13  Result=0.00000060  Seed=      16  ResultHash=2671  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  17  Best Generation:  13  Result=0.00000060  Seed=      17  ResultHash=BDBF  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  18  Best Generation:  13  Result=0.00000060  Seed=      18  ResultHash=60B3  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  19  Best Generation:  13  Result=0.00000060  Seed=      19  ResultHash=1383  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  20  Best Generation:  13  Result=0.00000060  Seed=      20  ResultHash=6B9F  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  21  Best Generation:  13  Result=0.00000060  Seed=      21  ResultHash=2BA1  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  22  Best Generation:  13  Result=0.00000060  Seed=      22  ResultHash=8BA5  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  23  Best Generation:  13  Result=0.00000060  Seed=      23  ResultHash=E286  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  24  Best Generation:  13  Result=0.00000060  Seed=      24  ResultHash=7F60  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  25  Best Generation:  13  Result=0.00000060  Seed=      25  ResultHash=21D1  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  26  Best Generation:  13  Result=0.00000060  Seed=      26  ResultHash=F755  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  27  Best Generation:  13  Result=0.00000060  Seed=      27  ResultHash=4F58  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  28  Best Generation:  13  Result=0.00000060  Seed=      28  ResultHash=ECFC  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  29  Best Generation:  13  Result=0.00000060  Seed=      29  ResultHash=0B4A  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  30  Best Generation:  13  Result=0.00000060  Seed=      30  ResultHash=8037  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  31  Best Generation:  13  Result=0.00000060  Seed=      31  ResultHash=8269  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  32  Best Generation:  13  Result=0.00000060  Seed=      32  ResultHash=7AC5  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  33  Best Generation:  13  Result=0.00000060  Seed=      33  ResultHash=5BF4  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  34  Best Generation:  13  Result=0.00000060  Seed=      34  ResultHash=4E1F  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  35  Best Generation:  13  Result=0.00000060  Seed=      35  ResultHash=1D3C  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  36  Best Generation:  13  Result=0.00000060  Seed=      36  ResultHash=A045  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  37  Best Generation:  13  Result=0.00000060  Seed=      37  ResultHash=BFF1  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  38  Best Generation:  13  Result=0.00000060  Seed=      38  ResultHash=4A3E  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  39  Best Generation:  13  Result=0.00000060  Seed=      39  ResultHash=5DF4  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  40  Best Generation:  13  Result=0.00000060  Seed=      40  ResultHash=AF60  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  41  Best Generation:  13  Result=0.00000060  Seed=      41  ResultHash=65BB  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  42  Best Generation:  13  Result=0.00000060  Seed=      42  ResultHash=BFCE  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  43  Best Generation:  13  Result=0.00000060  Seed=      43  ResultHash=FE33  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  44  Best Generation:  13  Result=0.00000060  Seed=      44  ResultHash=B3C0  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  45  Best Generation:  13  Result=0.00000060  Seed=      45  ResultHash=B704  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   0  Best Generation:   0  Result=0.00002384  Seed=       0  ResultHash=D6C6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   1  Best Generation:   1  Result=0.00000086  Seed=       1  ResultHash=1AF7  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   2  Best Generation:   2  Result=0.00000060  Seed=       2  ResultHash=AC54  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   3  Best Generation:   2  Result=0.00000060  Seed=       3  ResultHash=C15D  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   4  Best Generation:   2  Result=0.00000060  Seed=       4  ResultHash=2E64  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   5  Best Generation:   2  Result=0.00000060  Seed=       5  ResultHash=1991  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   6  Best Generation:   2  Result=0.00000060  Seed=       6  ResultHash=338E  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   7  Best Generation:   2  Result=0.00000060  Seed=       7  ResultHash=6B81  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   8  Best Generation:   2  Result=0.00000060  Seed=       8  ResultHash=3677  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   9  Best Generation:   2  Result=0.00000060  Seed=       9  ResultHash=8173  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  10  Best Generation:   2  Result=0.00000060  Seed=      10  ResultHash=FF93  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  11  Best Generation:   2  Result=0.00000060  Seed=      11  ResultHash=F3C4  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  12  Best Generation:   2  Result=0.00000060  Seed=      12  ResultHash=B3F7  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  13  Best Generation:   2  Result=0.00000060  Seed=      13  ResultHash=8025  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  14  Best Generation:   2  Result=0.00000060  Seed=      14  ResultHash=61DC  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  15  Best Generation:   2  Result=0.00000060  Seed=      15  ResultHash=439D  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  16  Best Generation:   2  Result=0.00000060  Seed=      16  ResultHash=0006  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  17  Best Generation:   2  Result=0.00000060  Seed=      17  ResultHash=BA8E  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  18  Best Generation:   2  Result=0.00000060  Seed=      18  ResultHash=583E  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  19  Best Generation:   2  Result=0.00000060  Seed=      19  ResultHash=59F8  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  20  Best Generation:   2  Result=0.00000060  Seed=      20  ResultHash=BD6A  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  21  Best Generation:   2  Result=0.00000060  Seed=      21  ResultHash=B2A6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  22  Best Generation:   2  Result=0.00000060  Seed=      22  ResultHash=088B  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  23  Best Generation:   2  Result=0.00000060  Seed=      23  ResultHash=D557  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  24  Best Generation:   2  Result=0.00000060  Seed=      24  ResultHash=094A  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  25  Best Generation:   2  Result=0.00000060  Seed=      25  ResultHash=5076  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  26  Best Generation:   2  Result=0.00000060  Seed=      26  ResultHash=B415  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  27  Best Generation:   2  Result=0.00000060  Seed=      27  ResultHash=398A  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  28  Best Generation:   2  Result=0.00000060  Seed=      28  ResultHash=4539  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  29  Best Generation:   2  Result=0.00000060  Seed=      29  ResultHash=B4E0  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  30  Best Generation:   2  Result=0.00000060  Seed=      30  ResultHash=4456  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  31  Best Generation:   2  Result=0.00000060  Seed=      31  ResultHash=EF2F  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  32  Best Generation:   2  Result=0.00000060  Seed=      32  ResultHash=E9FA  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  33  Best Generation:   2  Result=0.00000060  Seed=      33  ResultHash=B777  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  34  Best Generation:   2  Result=0.00000060  Seed=      34  ResultHash=CE00  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   0  Best Generation:   0  Result=0.00002384  Seed=       0  ResultHash=D6C6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   1  Best Generation:   1  Result=0.00000086  Seed=       1  ResultHash=14A8  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   2  Best Generation:   2  Result=0.00000060  Seed=       2  ResultHash=F925  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   3  Best Generation:   2  Result=0.00000060  Seed=       3  ResultHash=7CBF  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   4  Best Generation:   2  Result=0.00000060  Seed=       4  ResultHash=1D6F  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   5  Best Generation:   2  Result=0.00000060  Seed=       5  ResultHash=C7C9  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   6  Best Generation:   2  Result=0.00000060  Seed=       6  ResultHash=BC12  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   7  Best Generation:   2  Result=0.00000060  Seed=       7  ResultHash=4792  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   8  Best Generation:   2  Result=0.00000060  Seed=       8  ResultHash=DE45  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   9  Best Generation:   2  Result=0.00000060  Seed=       9  ResultHash=64D6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  10  Best Generation:   2  Result=0.00000060  Seed=      10  ResultHash=D3CF  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  11  Best Generation:   2  Result=0.00000060  Seed=      11  ResultHash=FFF0  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  12  Best Generation:   2  Result=0.00000060  Seed=      12  ResultHash=8E03  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  13  Best Generation:   2  Result=0.00000060  Seed=      13  ResultHash=5EEF  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  14  Best Generation:   2  Result=0.00000060  Seed=      14  ResultHash=EA57  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  15  Best Generation:   2  Result=0.00000060  Seed=      15  ResultHash=E434  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  16  Best Generation:   2  Result=0.00000060  Seed=      16  ResultHash=6CF4  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  17  Best Generation:   2  Result=0.00000060  Seed=      17  ResultHash=33D2  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  18  Best Generation:   2  Result=0.00000060  Seed=      18  ResultHash=2467  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  19  Best Generation:   2  Result=0.00000060  Seed=      19  ResultHash=51A5  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  20  Best Generation:   2  Result=0.00000060  Seed=      20  ResultHash=AFB1  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  21  Best Generation:   2  Result=0.00000060  Seed=      21  ResultHash=E4E4  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  22  Best Generation:   2  Result=0.00000060  Seed=      22  ResultHash=4304  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  23  Best Generation:   2  Result=0.00000060  Seed=      23  ResultHash=4EDA  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  24  Best Generation:   2  Result=0.00000060  Seed=      24  ResultHash=1D18  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  25  Best Generation:   2  Result=0.00000060  Seed=      25  ResultHash=4B4B  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  26  Best Generation:   2  Result=0.00000060  Seed=      26  ResultHash=E063  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  27  Best Generation:   2  Result=0.00000060  Seed=      27  ResultHash=E694  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  28  Best Generation:   2  Result=0.00000060  Seed=      28  ResultHash=8144  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  29  Best Generation:   2  Result=0.00000060  Seed=      29  ResultHash=E1E7  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  30  Best Generation:   2  Result=0.00000060  Seed=      30  ResultHash=589E  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  31  Best Generation:   2  Result=0.00000060  Seed=      31  ResultHash=11D2  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  32  Best Generation:   2  Result=0.00000060  Seed=      32  ResultHash=3F91  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  33  Best Generation:   2  Result=0.00000060  Seed=      33  ResultHash=B87E  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  34  Best Generation:   2  Result=0.00000060  Seed=      34  ResultHash=56BB  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   0  Best Generation:   0  Result=0.00002384  Seed=       0  ResultHash=D6C6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   1  Best Generation:   1  Result=0.00000086  Seed=       1  ResultHash=9D99  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   2  Best Generation:   2  Result=0.00000060  Seed=       2  ResultHash=07BF  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   3  Best Generation:   2  Result=0.00000060  Seed=       3  ResultHash=C006  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   4  Best Generation:   2  Result=0.00000060  Seed=       4  ResultHash=B8F2  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   5  Best Generation:   2  Result=0.00000060  Seed=       5  ResultHash=D8FA  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   6  Best Generation:   2  Result=0.00000060  Seed=       6  ResultHash=FAC6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   7  Best Generation:   2  Result=0.00000060  Seed=       7  ResultHash=3638  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   8  Best Generation:   2  Result=0.00000060  Seed=       8  ResultHash=389C  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   9  Best Generation:   2  Result=0.00000060  Seed=       9  ResultHash=9656  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  10  Best Generation:   2  Result=0.00000060  Seed=      10  ResultHash=5AC5  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  11  Best Generation:   2  Result=0.00000060  Seed=      11  ResultHash=8C6E  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  12  Best Generation:   2  Result=0.00000060  Seed=      12  ResultHash=96F4  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  13  Best Generation:   2  Result=0.00000060  Seed=      13  ResultHash=155D  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  14  Best Generation:   2  Result=0.00000060  Seed=      14  ResultHash=EF47  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  15  Best Generation:   2  Result=0.00000060  Seed=      15  ResultHash=B29D  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  16  Best Generation:   2  Result=0.00000060  Seed=      16  ResultHash=15F5  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  17  Best Generation:   2  Result=0.00000060  Seed=      17  ResultHash=870A  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  18  Best Generation:   2  Result=0.00000060  Seed=      18  ResultHash=38DE  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  19  Best Generation:   2  Result=0.00000060  Seed=      19  ResultHash=542D  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  20  Best Generation:   2  Result=0.00000060  Seed=      20  ResultHash=29CB  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  21  Best Generation:   2  Result=0.00000060  Seed=      21  ResultHash=5634  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  22  Best Generation:   2  Result=0.00000060  Seed=      22  ResultHash=2130  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  23  Best Generation:   2  Result=0.00000060  Seed=      23  ResultHash=7417  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  24  Best Generation:   2  Result=0.00000060  Seed=      24  ResultHash=BF85  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  25  Best Generation:   2  Result=0.00000060  Seed=      25  ResultHash=F709  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  26  Best Generation:   2  Result=0.00000060  Seed=      26  ResultHash=E98B  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  27  Best Generation:   2  Result=0.00000060  Seed=      27  ResultHash=670D  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  28  Best Generation:   2  Result=0.00000060  Seed=      28  ResultHash=E1A0  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  29  Best Generation:   2  Result=0.00000060  Seed=      29  ResultHash=B5E6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  30  Best Generation:   2  Result=0.00000060  Seed=      30  ResultHash=1A4E  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  31  Best Generation:   2  Result=0.00000060  Seed=      31  ResultHash=966A  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  32  Best Generation:   2  Result=0.00000060  Seed=      32  ResultHash=45BB  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  33  Best Generation:   2  Result=0.00000060  Seed=      33  ResultHash=DCD1  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  34  Best Generation:   2  Result=0.00000060  Seed=      34  ResultHash=CE00  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   0  Best Generation:   0  Result=0.00002384  Seed=       0  ResultHash=D6C6  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   1  Best Generation:   1  Result=0.00000086  Seed=       1  ResultHash=5E86  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   2  Best Generation:   2  Result=0.00000060  Seed=       2  ResultHash=24AC  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   3  Best Generation:   2  Result=0.00000060  Seed=       3  ResultHash=9F24  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   4  Best Generation:   2  Result=0.00000060  Seed=       4  ResultHash=1989  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   5  Best Generation:   2  Result=0.00000060  Seed=       5  ResultHash=6B99  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   6  Best Generation:   2  Result=0.00000060  Seed=       6  ResultHash=22DE  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   7  Best Generation:   2  Result=0.00000060  Seed=       7  ResultHash=1E81  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   8  Best Generation:   2  Result=0.00000060  Seed=       8  ResultHash=0C78  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:   9  Best Generation:   2  Result=0.00000060  Seed=       9  ResultHash=9730  ProgramHash=5F34
+FIRESTARTER_OPTIMIZE: Generation:  10  Best Generation:   2  Result=0.00000060  Seed=      10  ResultHash=8B36  ProgramHash=5F34

@@ -219,28 +219,18 @@ void FireStarter::ControlTest(void)
 
     // Loop until the the completion condition or the host program is quit.
     size_t generation = 0;
-    SimpleTimer testTimer;
     while (!WillTerminate()) {
-        double startTime = testTimer.Duration();
-
         // Evolve a new generation for the state.
         evolve->EvolveStates(bestState, allStates, generation, true);
-        double evolveTime = testTimer.Duration();
 
         // Compile the evolved program.
         compile->CompileJob(manager, true);
-        double compileTime = testTimer.Duration();
 
         // Execute the state.
         execute->ExecuteEvolve(true);
-        double executeTime = testTimer.Duration();
 
         // Complete the state and display the results.
-        bool finished = !complete->CompleteStates(bestState, allStates, generation);
-        double completeTime = testTimer.Duration();
-//        printf("ControlTest: Generation=%llu  evolveTime=%f  compileTime=%f  executeTime=%f  completeTime=%f  generationTime=%f\n", generation, evolveTime - startTime, compileTime - evolveTime, executeTime - compileTime, completeTime - executeTime, completeTime - startTime);
-
-        if (finished)
+        if (!complete->CompleteStates(bestState, allStates, generation))
             break;
         generation++;
     }

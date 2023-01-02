@@ -78,7 +78,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
 
     memcpy(state.Result(), m_hostResults->Result(bestIndex), FireStarterResult::ResultSize(settings.m_registers, settings.m_variations));
     state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
-} // EvolveGenerations
+} // CodeGenerations
 
 void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int variation)
 {
@@ -91,7 +91,6 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     unsigned long long generationSeed = state.OptimizeSeed(1) + state.m_generation * settings.m_generations;
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
-//    printf("Mode: %d  test: %llu  index: %llu  generation: %llu: seed: %llu\n", state.m_program.m_settings.m_mode, state.m_test, state.m_index, state.m_generation, generationSeed);
 
     for (unsigned int g = 0; g < settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -338,11 +337,11 @@ void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t
         if (m_job) {
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
+                m_job->m_state.m_generation = generation;
+                m_job->m_state.m_index = index;
+                m_job->m_state.m_test = test;
+                Optimize(m_job->m_state, init, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
                 job->Copy(m_job);
-                job->m_state.m_generation = generation;
-                job->m_state.m_index = index;
-                job->m_state.m_test = test;
-                Optimize(job->m_state, init, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             }
             m_manager->AddComplete(job);
         }
