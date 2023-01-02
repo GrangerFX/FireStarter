@@ -262,7 +262,7 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
 {
     FireStarterSettings stateSettings = state.Settings();
     FireStarterResult* stateResult = state.Result();
-    float bestResult = stateResult->maxResult;
+    float bestResult = init ? stateSettings.m_startResult : stateResult->maxResult;
     stateResult->maxResult = 0;
     bool found = true;
 
