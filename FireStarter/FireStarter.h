@@ -10,10 +10,10 @@ private:
     unsigned int m_height = 0;
 
     void ControlUnits(const FireStarterState* evolveState = nullptr);
+    void ControlOptimize(const FireStarterState* evolveState = nullptr);
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);
-    void ControlOptimize(const FireStarterState* evolveState = nullptr);
     void ControlSolution(void);
     void ControlThread(void);
 

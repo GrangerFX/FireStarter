@@ -8,12 +8,14 @@ private:
 	FireStarterManager* m_manager = nullptr;
 	bool m_isClient = false;
 
+	bool Compile(FireStarterManager* manager);
 public:
 	void CompilerLocal(void);
+	void CompileJob(FireStarterManager* manager, bool sync = false);
 	void CompilerServer(void);
 	void CompilerClient(void);
 	FireStarterCompiler(FireStarterProcess* process);
-	FireStarterCompiler(FireStarterManager* manager, FireStarterServer* server = nullptr);
+	FireStarterCompiler(FireStarterManager* manager = nullptr, FireStarterServer* server = nullptr);
 	~FireStarterCompiler(void);
 }; // class FireStarterCompiler
 
@@ -24,6 +26,7 @@ private:
 	size_t m_numProcesses;
 
 public:
-	FireStarterCompile(FireStarterManager* manager, size_t numProcesses = 0);
+	void CompileJob(FireStarterManager* manager, bool sync);
+	FireStarterCompile(FireStarterManager* manager = nullptr, size_t numProcesses = 0);
 	~FireStarterCompile(void);
 }; // FireStarterCompile

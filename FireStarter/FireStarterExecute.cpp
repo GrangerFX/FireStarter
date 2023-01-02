@@ -328,19 +328,19 @@ bool FireStarterExecute::Compile(void)
     return false;
 } // Compile
 
-void FireStarterExecute::ExecuteCompile(void)
+void FireStarterExecute::ExecuteCompile(bool sync)
 {
-    DispatchAsync([this] {
+    Dispatch([this] {
         if (!Compile()) {
             m_manager->AddFree(m_job);
             m_job = nullptr;
         }
-    });
+    }, sync);
 } // ExecuteEvolve
 
-void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t test, bool init)
+void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t test, bool init, bool sync)
 {
-    DispatchAsync([this, generation, index, test, init] {
+    Dispatch([this, generation, index, test, init] {
         FireStarterJob* job = nullptr;
         if (m_job && (job = m_manager->GetFree())) {
             job->Copy(m_job);
@@ -350,23 +350,23 @@ void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t
             Optimize(job->m_state, init, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             m_manager->AddComplete(job);
         }
-    });
+    }, sync);
 } // ExecuteOptimize
 
-void FireStarterExecute::ExecuteEvolve(void)
+void FireStarterExecute::ExecuteEvolve(bool sync)
 {
-    DispatchAsync([this] {
+    Dispatch([this] {
         if (Compile()) {
             Optimize(m_job->m_state, true, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             m_manager->AddComplete(m_job);
             m_job = nullptr;
         }
-    });
+    }, sync);
 } // ExecuteEvolve
 
-void FireStarterExecute::ExecuteRandom(void)
+void FireStarterExecute::ExecuteRandom(bool sync)
 {
-    DispatchAsync([this] {
+    Dispatch([this] {
         static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
         while (Compile()) {
             m_job->m_state.Result()->maxResult = g_atomicResult;
@@ -380,10 +380,10 @@ void FireStarterExecute::ExecuteRandom(void)
             m_job = nullptr;
         }
         LOG("Execute unit %d complete\n", (unsigned int)m_index);
-    });
+    }, sync);
 } // ExecuteRandom
 
-void FireStarterExecute::ExecuteFinish(void)
+void FireStarterExecute::ExecuteFinish(bool sync)
 {
     DispatchSync([this] {
         delete m_job;

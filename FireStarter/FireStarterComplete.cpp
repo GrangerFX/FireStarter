@@ -240,9 +240,9 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         if (state.m_generation != m_resultsGeneration) {
             m_resultsGeneration = state.m_generation;
             if (settings.m_mode == FIRESTARTER_RANDOM)
-                m_smoothTime = duration / (m_resultsGeneration + 1.0);
+                m_generationTime = duration / (m_resultsGeneration + 1.0);
             else
-                m_smoothTime = (duration - m_resultsTime) / settings.m_units;
+                m_generationTime = (duration - m_resultsTime) / settings.m_units;
             m_resultsTime = duration;
         }
 
@@ -251,7 +251,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 
         // Update the render status after every pass.
         double average = m_totalResult / m_resultsCount;
-        RenderStatus(bestState, state, duration, m_smoothTime, oldResult, average, testError);
+        RenderStatus(bestState, state, duration, m_generationTime, oldResult, average, testError);
 
         // If the best state was updated, save the stat and draw the results.
         if (update) {
@@ -269,10 +269,10 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     });
 } // CompleteResults
 
-bool FireStarterComplete::CompleteRandom(FireStarterState& bestState)
+bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
 {
     bool result = false;
-    DispatchSync([this, &bestState, &result] {
+    Dispatch([this, &bestState, &result] {
         // Get the completed job.
         // Note: The jobs may be received out of order.
         FireStarterJob* job = m_manager->GetComplete();
@@ -285,11 +285,11 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState)
             m_manager->AddFree(job);
             result = true;
         }
-    });
+    }, sync);
     return result;
 } // CompleteRandom
 
-bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, size_t generation)
+bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, size_t generation, bool sync)
 {
     bool result = true;
     DispatchSync([this, &bestState, &oldStates, &result] {
@@ -329,9 +329,9 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
     return result && (generation - bestState.m_generation < m_settings.m_attempts);
 } // CompleteStates
 
-void FireStarterComplete::CompleteSolution(void)
+void FireStarterComplete::CompleteSolution(bool sync)
 {
-    DispatchAsync([this] {
+    Dispatch([this] {
         std::string statusString = "FireStarter:";
         uchar4* pixels = (uchar4*)m_buffer.GetHost();
         float maxError = 0.0f;
@@ -383,7 +383,7 @@ void FireStarterComplete::CompleteSolution(void)
         }
         DisplayImage(m_buffer.GetHost());
         SetWindowText((HWND)m_window, statusString.c_str());
-    });
+    }, false);
 } // CompleteSolution
 
 FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterSettings& settings, void* window, unsigned int width, unsigned int height)

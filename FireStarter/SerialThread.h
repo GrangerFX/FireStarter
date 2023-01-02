@@ -338,6 +338,16 @@ public:
         return false;
     } // DispatchMainSync
 
+    inline bool Dispatch(const SerialThreadWork& work, bool sync)
+    {
+        return sync ? DispatchSync(work) : DispatchAsync(work);
+    } // Dispatch
+
+    inline bool DispatchMain(const SerialThreadWork& work, bool sync)
+    {
+        return sync ? DispatchMainSync(work) : DispatchMainAsync(work);
+    } // DispatchMain
+
     inline bool Synchronize(void)
     {
         return DispatchSync({});

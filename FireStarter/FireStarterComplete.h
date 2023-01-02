@@ -22,7 +22,7 @@ private:
 	size_t m_resultsCount = 0;
 	size_t m_resultsGeneration = 0;
 	double m_resultsTime = 0.0;
-	double m_smoothTime = 0.0;
+	double m_generationTime = 0.0;
 	double m_totalResult = 0.0;
 	unsigned int m_width = 0;
 	unsigned int m_height = 0;
@@ -38,9 +38,9 @@ private:
 
 public:
 	void CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult = 0.0f);
-	bool CompleteRandom(FireStarterState& bestState);
-	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, size_t generation);
-	void CompleteSolution(void);
+	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
+	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, size_t generation, bool sync = true);
+	void CompleteSolution(bool sync = false);
     FireStarterComplete(FireStarterManager* manager, const FireStarterSettings& settings, void* window, unsigned int width, unsigned int height);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

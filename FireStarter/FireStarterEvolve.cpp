@@ -2,12 +2,12 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
-bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, size_t generations)
+bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, size_t generations, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
     FireStarterState state(*initState);
-    DispatchAsync([this, state, generations] {
+    Dispatch([this, state, generations] {
         // Generate code using the GPU.
         for (size_t generation = 0; generation < generations; generation++) {
             FireStarterJob* job = m_manager->GetFree();
@@ -42,16 +42,16 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, siz
         // Let all the processes know that the job is complete. This will terminate the processes
         // once the last job in their queues is finished.
         m_manager->AddCode();
-    });
+    }, sync);
     return true;
 } // EvolveGenerations
 
-bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, size_t generation)
+bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, size_t generation, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
     FireStarterState state(bestState);
-    DispatchAsync([this, state, allStates, generation] {
+    Dispatch([this, state, allStates, generation] {
         unsigned int numInstructions = state.Settings().m_instructions;
         float bestResult = state.MaxResult();
         FireStarterJob* job = m_manager->GetFree();
@@ -105,11 +105,11 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
         }
         m_manager->AddCode(job);
-    });
+    }, sync);
     return true;
 } // EvolveStates
 
-bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState)
+bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;

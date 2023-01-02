@@ -3,25 +3,35 @@
 
 #define COMPILE_EXECUTE "CompileExecute"
 
+bool FireStarterCompiler::Compile(FireStarterManager* manager)
+{
+    FireStarterJob* job = manager->GetCode();
+    if (job) {
+        bool result = CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
+        if (result) {
+            if (job->m_log.size())
+                LOG("Compile log: %s\n\n", job->m_log.c_str());
+        } else {
+            printf("Compile error: %s\n", job->m_log.c_str());
+            delete job;
+            job = nullptr;
+        }
+        manager->AddCompile(job);
+    }
+    return job != nullptr;
+} // void
+
+void FireStarterCompiler::CompileJob(FireStarterManager* manager, bool sync)
+{
+    Dispatch([this, manager] {
+        Compile(manager);
+    }, sync);
+} // CompileJob
+
 void FireStarterCompiler::CompilerLocal(void)
 {
     DispatchAsync([this] {
-        FireStarterJob* job;
-        do {
-            job = m_manager->GetCode();
-            if (job) {
-                bool result = CUDACompile::Compile(job->m_ptx, job->m_log, job->m_program, job->m_programName, job->m_options);
-                if (result) {
-                    if (job->m_log.size())
-                        LOG("Compile log: %s\n\n", job->m_log.c_str());
-                } else {
-                    printf("Compile error: %s\n", job->m_log.c_str());
-                    delete job;
-                    job = nullptr;
-                }
-                m_manager->AddCompile(job);
-            }
-        } while (job && !WillTerminate());
+        while (!WillTerminate() && Compile(m_manager)) {}
     });
 } // CompilerLocal
 
@@ -146,20 +156,25 @@ FireStarterCompiler::FireStarterCompiler(FireStarterManager* manager, FireStarte
 {
     m_server = server;
     m_manager = manager;
+    m_process = nullptr;
     m_isClient = false;
-    if (server) {
+    if (m_server) {
         m_process = m_server->AddProcess(FIRECOMPILER);
         CompilerServer();
-    } else {
-        m_process = nullptr;
+    } else if (m_manager)
         CompilerLocal();
-    }
 } // FireStarterCompiler
 
 FireStarterCompiler::~FireStarterCompiler(void)
 {
     TerminateThread();
 } // ~FireStarterCompiler
+
+void FireStarterCompile::CompileJob(FireStarterManager* manager, bool sync)
+{
+    if (!m_server)
+        m_compilers[0]->CompileJob(manager, sync);
+} // CompileJob
 
 FireStarterCompile::FireStarterCompile(FireStarterManager* manager, size_t numProcesses)
 {
