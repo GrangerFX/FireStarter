@@ -2,7 +2,7 @@
 #include "FireStarterProcess.h"
 #include "FireStarterState.h"
 
-#define FIRESTARTERCOMPILER_LOGGING 0
+#define FIRESTARTERCOMPILER_LOGGING 1
 
 #if FIRESTARTERCOMPILER_LOGGING
 #define LOG printf

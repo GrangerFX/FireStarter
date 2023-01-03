@@ -14,7 +14,7 @@ bool FireCompiler::ShouldTerminate(void)
 FireCompiler::FireCompiler(const std::string& pipeName)
 {
 	m_process = new FireStarterProcess(pipeName, &m_terminate);
-	m_compiler = new FireStarterCompiler(m_process);
+	m_compiler = new FireStarterCompiler(nullptr, m_process);
 } // FireCompiler
 
 FireCompiler::~FireCompiler(void)

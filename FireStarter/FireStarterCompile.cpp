@@ -91,6 +91,8 @@ void FireStarterCompiler::CompilerServer(void)
             LOG("%s: Last job received. Terminating process.\n", m_process->ProcessPrefix().c_str());
 #endif
             m_process->Stop();
+            if (m_compile)
+                m_compile->CompilerFinished(this);
         }
     });
 } // Server
@@ -143,8 +145,9 @@ void FireStarterCompiler::CompilerClient(void)
     });
 } // CompilerClient
 
-FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process)
+FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarterProcess* process)
 {
+    m_compile = compile;
     m_server = nullptr;
     m_manager = nullptr;
     m_process = process;
@@ -152,8 +155,9 @@ FireStarterCompiler::FireStarterCompiler(FireStarterProcess* process)
     CompilerClient();
 } // FireStarterCompiler
 
-FireStarterCompiler::FireStarterCompiler(FireStarterManager* manager, FireStarterServer* server)
+FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarterManager* manager, FireStarterServer* server)
 {
+    m_compile = compile;
     m_server = server;
     m_manager = manager;
     m_process = nullptr;
@@ -170,25 +174,43 @@ FireStarterCompiler::~FireStarterCompiler(void)
     TerminateThread();
 } // ~FireStarterCompiler
 
-void FireStarterCompile::CompileJob(FireStarterManager* manager, bool sync)
+void FireStarterCompile::CompilerFinished(FireStarterCompiler* compiler)
 {
-    if (!m_server)
+    // When the last compiler has finished, send a null job to terminate the other jobs.
+    unsigned int oldCompilers = m_activeCompilers;
+    unsigned int newCompilers = oldCompilers - 1;
+    while (!m_activeCompilers.compare_exchange_weak(oldCompilers, newCompilers))
+        newCompilers = oldCompilers - 1;
+    if (!newCompilers)
+        m_manager->AddCompile();
+} // Finished
+
+bool FireStarterCompile::CompileJob(FireStarterManager* manager, bool sync)
+{
+    m_manager = manager;
+    if (!m_server && m_compilers[0]->IsRunning()) {
         m_compilers[0]->CompileJob(manager, sync);
+        return true;
+    }
+    return false;
 } // CompileJob
 
 FireStarterCompile::FireStarterCompile(FireStarterManager* manager, size_t numProcesses)
 {
+    m_manager = manager;
     m_numProcesses = numProcesses;
     if (numProcesses) {
         m_server = new FireStarterServer();
         for (unsigned int i = 0; i < numProcesses; i++) {
-            FireStarterCompiler* compiler = new FireStarterCompiler(manager, m_server);
+            FireStarterCompiler* compiler = new FireStarterCompiler(this, manager, m_server);
             m_compilers.push_back(compiler);
+            m_activeCompilers++;
         }
     } else {
         m_server = nullptr;
-        FireStarterCompiler* compiler = new FireStarterCompiler(manager);
+        FireStarterCompiler* compiler = new FireStarterCompiler(this, manager);
         m_compilers.push_back(compiler);
+        m_activeCompilers++;
     }
 } // FireStarterCompile
 

@@ -103,21 +103,24 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
 
 void FireStarter::ControlOptimize(const FireStarterState* evolveState)
 {
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings optimizeSettings;
+    m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
+
     // Convert the most recently evolved state into an optimize mode state.
     FireStarterState startState;
     FireStarterSettings& settings = startState.Settings();
     if (evolveState) {
         // Use the evolveState's settings as much as possible to maintain the random seed.
-        startState = *evolveState; // Copy the best evolved state.
-        settings.m_mode = FIRESTARTER_OPTIMIZE;
-        settings.m_units = 1;
-        settings.m_processes = 0;
+        startState = *evolveState;
+        settings.m_mode = optimizeSettings.m_mode;
+        settings.m_units = optimizeSettings.m_units;
+        settings.m_processes = optimizeSettings.m_processes;
+        settings.m_attempts = optimizeSettings.m_attempts;
     } else {
-        // Load the settings from the compiled CUDA code.
-        // This allows the settings to be modified without recompiling the main program.
-        FireStarterSettings optimizeSettings;
-        m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
-        LoadState(startState);     // Load the best state from the previous Test, Random or Evolve run.
+        // Load the best state from the previous Test, Random or Evolve run.
+        LoadState(startState);     
         startState.m_generation = 0;
         settings.CopyModeSettings(optimizeSettings);
     }
