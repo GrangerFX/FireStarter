@@ -81,7 +81,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                         job->m_state.m_program.RandomInstruction(seed++);
 #endif
                 } else {
-#if 1
+#if 0
                     // Randomize a range of instuctions.
                     size_t age = generation - state.m_generation;
                     unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));

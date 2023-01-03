@@ -372,7 +372,7 @@ void FireStarterExecute::ExecuteRandom(bool sync)
         FireStarterJob* job = nullptr;
         while (CompileModule(job)) {
             job->m_state.Result()->maxResult = g_atomicResult;
-            Optimize(job->m_state, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+            Optimize(job->m_state, true, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
             float stateResult = job->m_state.Result()->maxResult;
             if (stateResult < g_atomicResult) {
                 float oldResult = g_atomicResult;
