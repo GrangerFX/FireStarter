@@ -6,8 +6,8 @@ void FireStarterJobQueue::Add(FireStarterJob* job)
 {
     if (!IsRunning() || WillTerminate())
         return;
-    if (job)
-        DispatchAsync([this, job] {
+    DispatchAsync([this, job] {
+        if (job) {
             job->m_next = nullptr;
             if (m_lastJob)
                 m_lastJob->m_next = job;
@@ -16,10 +16,10 @@ void FireStarterJobQueue::Add(FireStarterJob* job)
             m_lastJob = job;
             m_sizeJobs++;
             m_semaphore.notify();
-        });
-    else
-        m_semaphore.terminate();
-    } // Add
+        } else
+            m_semaphore.terminate();
+    });
+} // Add
 
 FireStarterJob* FireStarterJobQueue::Get(void)
 {
