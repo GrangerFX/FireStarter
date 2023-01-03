@@ -262,7 +262,7 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
 {
     FireStarterSettings stateSettings = state.Settings();
     FireStarterResult* stateResult = state.Result();
-    float bestResult = init ? stateSettings.m_startResult : stateResult->maxResult;
+    float bestResult = stateResult->maxResult;
     stateResult->maxResult = 0;
     bool found = true;
 
@@ -277,16 +277,19 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
         // Optimization: If the variation result is worse, skip the rest of the variations.
         if (found) {
             OptimizeGenerations(state, init, variation);
-            if (skipVariations)
-                found = stateResult->maxResult < bestResult;
-            if (v)
+            float variationResult = *stateResult->MinResult(variation);
+            if (skipVariations) {
+                found = variationResult < bestResult;
                 for (unsigned int i = 0; i < v; i++) {
-                    if (stateResult->MinResult(m_variationOrder[i]) < stateResult->MinResult(variation)) {
+                    float orderResult = *stateResult->MinResult(m_variationOrder[i]);
+                    if (orderResult < variationResult) {
                         m_variationOrder[v] = m_variationOrder[i];
                         m_variationOrder[i] = variation;
                         variation = m_variationOrder[v];
+                        variationResult = orderResult;
                     }
                 }
+            }
         } else
             // The variation data is reset when it is skipped.
             stateResult->InitVariation(0, stateSettings.m_registers, variation, stateSettings.m_startResult);

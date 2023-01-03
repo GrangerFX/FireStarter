@@ -63,27 +63,47 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                 unsigned long long seed = job->m_state.EvolveSeed();
 
                 // Copy or randomize instructions based on the quality of the previous result.
-                if (job->m_state.MaxResult() > bestResult * 4.0f) {
-                    job->m_state.m_program = state.m_program;
-                    job->m_state.RandomInstruction(seed++);
-                } else if (job->m_state.MaxResult() > bestResult * 2.0f) {
-                    // Copy a random range of instuctions from the best state.
-                    unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
-                    unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
-                    unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
-                    while (copyNum--) {
-                        job->m_state.m_program.EvolvedInstruction(copyDst++) = state.m_program.EvolvedInstruction(copySrc++);
-                        copySrc %= numInstructions;
-                        copyDst %= numInstructions;
-                    }
-                    job->m_state.RandomInstruction(seed++);
-                } else {
+                float oldResult = job->m_state.MaxResult();
+                if (allStates.size() == 1) {
+#if 1
                     // Randomize a random range of instuctions.
                     unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
                     unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
                     while (randomNum--) {
                         job->m_state.m_program.RandomInstruction(seed++, randomDst++);
                         randomDst %= numInstructions;
+                    }
+#else
+                    size_t age = generation - state.m_generation;
+
+                    // Randomize a random range of instuctions.
+                    unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, age / 8 + 1));
+                    while (randomNum--)
+                        job->m_state.m_program.RandomInstruction(seed++, RANDOMMOD64(seed, numInstructions));
+#endif
+                } else {
+                    if (oldResult > bestResult * 4.0f) {
+                        job->m_state.m_program = state.m_program;
+                        job->m_state.RandomInstruction(seed++);
+                    } else if (oldResult > bestResult * 2.0f) {
+                        // Copy a random range of instuctions from the best state.
+                        unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
+                        unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
+                        unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
+                        while (copyNum--) {
+                            job->m_state.m_program.EvolvedInstruction(copyDst++) = state.m_program.EvolvedInstruction(copySrc++);
+                            copySrc %= numInstructions;
+                            copyDst %= numInstructions;
+                        }
+                        job->m_state.RandomInstruction(seed++);
+                    } else {
+                        // Randomize a random range of instuctions.
+                        unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
+                        unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
+                        while (randomNum--) {
+                            job->m_state.m_program.RandomInstruction(seed++, randomDst++);
+                            randomDst %= numInstructions;
+                        }
                     }
                 }
              } else
