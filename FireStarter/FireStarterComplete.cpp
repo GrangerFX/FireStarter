@@ -216,16 +216,9 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState, size_t
 
 void FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult)
 {
-    if (!state.m_generation) {
-        m_resultsCount = 0;
-        m_resultsTime = 0.0;
-    }
-
     // Get the result.
     bool update = false;
-    float result = state.MaxResult();
-    m_totalResult = m_resultsCount++ ? m_totalResult + result : result;
-    if (result < bestState.MaxResult()) {
+    if (state.MaxResult() < bestState.MaxResult()) {
         // Update the best state.
         bestState = state;
         update = true;
@@ -234,14 +227,26 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     // Do all the time consuming work asynchronously.
     DispatchAsync([this, bestState, state, oldResult, update] {
         double duration = m_timer.Duration();
+        const FireStarterSettings& settings = state.Settings();
+        float result = state.MaxResult();
+        if (!state.m_generation) {
+            m_resultsCount = 0;
+            m_resultsTime = duration;
+            m_totalResult = 0.0;
+        }
+        m_totalResult += result;
 
         // Calculate the average time per generation.
-        const FireStarterSettings& settings = state.Settings();
         if (state.m_generation != m_resultsGeneration) {
             m_resultsGeneration = state.m_generation;
-            if (settings.m_mode == FIRESTARTER_RANDOM)
-                m_generationTime = duration / (m_resultsGeneration + 1.0);
-            else
+            if (settings.m_mode == FIRESTARTER_RANDOM) {
+                if (m_resultsCount == 0)
+                    m_generationTime = duration;
+                else if (m_resultsCount == 1)
+                    m_generationTime = duration - m_resultsTime;
+                else
+                    m_generationTime = (m_generationTime * m_resultsCount + (duration - m_resultsTime)) / (m_resultsCount + 1);
+            } else
                 m_generationTime = (duration - m_resultsTime) / settings.m_units;
             m_resultsTime = duration;
         }
@@ -250,7 +255,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         float testError = state.TestResult();
 
         // Update the render status after every pass.
-        double average = m_totalResult / m_resultsCount;
+        double average = m_totalResult / ++m_resultsCount;
         RenderStatus(bestState, state, duration, m_generationTime, oldResult, average, testError);
 
         // If the best state was updated, save the stat and draw the results.
