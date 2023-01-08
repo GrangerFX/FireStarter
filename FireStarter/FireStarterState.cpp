@@ -17,7 +17,7 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code) 
     code += "    FireStarterData *data = result->Data();\r\n";
     for (unsigned int i = 0; i < m_program.m_settings.m_instructions; i++)
         code += Format("    data->d[%u] = %ff;\r\n", i, Result(variation)->Data()->d[i]);
-    code += Format("    result->minResult = %ff;\r\n", Result(variation)->minResult);
+    code += Format("    *(result->MinResult()) = %ff;\r\n", Result(variation)->MinResult());
     code += Format("} // LoadVariation%u\r\n", variation);
     code += "\r\n";
 } // SaveVariation

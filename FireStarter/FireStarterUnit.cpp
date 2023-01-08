@@ -146,9 +146,9 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
         }
     }
 
-    for (unsigned int v = firstVariation; v <= lastVariation; v++)
-        memcpy(m_state.Result(v), m_hostEvolutions->Result(bestIndex, v), FireStarterResult::ResultSize(m_settings.m_registers));
     m_state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
+    memcpy(m_state.Results(), m_hostEvolutions->Results(bestIndex), FireStarterResults::ResultsSize(m_settings.m_registers, m_settings.m_variations));
+    m_state.m_maxResult = *m_hostEvolutions->MaxResult(bestIndex);
 } // CodeGenerations
 
 void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int variation)

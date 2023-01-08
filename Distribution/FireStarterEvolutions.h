@@ -9,7 +9,10 @@ typedef struct FireStarterEvolution {
     size_t m_instructionsSize;
     size_t m_resultsSize;
     float m_maxResult;
-    unsigned char m_memory[16];
+    struct {
+        FireStarterInstructions instructions;
+        FireStarterResults results;
+    } m_memory[1];
 
     static inline size_t EvolutionSize(size_t instructions, size_t registers, size_t variations)
     {
@@ -28,12 +31,12 @@ typedef struct FireStarterEvolution {
 
     inline FireStarterResults* Results(void)
     {
-        return (FireStarterResults*)(m_memory + m_instructionsSize);
+        return (FireStarterResults*)((unsigned char*)m_memory + m_instructionsSize);
     } // Results
 
     inline const FireStarterResults* Results(void) const
     {
-        return (const FireStarterResults*)(m_memory + m_instructionsSize);
+        return (const FireStarterResults*)((unsigned char*)m_memory + m_instructionsSize);
     } // Results
 
     inline FireStarterResult* Result(unsigned int variation)
@@ -66,7 +69,7 @@ typedef struct FireStarterEvolutions {
     size_t m_variations;
     size_t m_evolutionSize;
     size_t m_evolutionsSize;
-    unsigned char m_memory[16];
+    FireStarterEvolution m_memory[FIRESTARTER_CODE_POPULATION];
 
     static inline size_t EvolutionsSize(size_t members, size_t instructions, size_t registers, size_t variations)
     {
@@ -75,12 +78,12 @@ typedef struct FireStarterEvolutions {
 
     inline FireStarterEvolution* Evolution(unsigned int member)
     {
-        return (FireStarterEvolution*)(m_memory + member * m_evolutionSize);
+        return (FireStarterEvolution*)((unsigned char*)m_memory + member * m_evolutionSize);
     } // Evolution
 
     inline const FireStarterEvolution* Evolution(unsigned int member) const
     {
-        return (const FireStarterEvolution*)(m_memory + member * m_evolutionSize);
+        return (const FireStarterEvolution*)((unsigned char*)m_memory + member * m_evolutionSize);
     } // Evolution
 
     inline FireStarterInstructions* Instructions(unsigned int member)

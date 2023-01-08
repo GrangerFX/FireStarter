@@ -44,7 +44,7 @@ GPU_GLOBAL void FireShow(FireStarterResults* bestResults, FireStarterInstruction
             };
             int i = x / 32;
             FireStarterResult* result = bestResults->Result(v);
-            if (i < result->dataSize) {
+            if (i < result->m_dataSize) {
                 FireStarterData* data = result->Data();
                 y = (int)(center + data->d[i] * 10.0f);
                 if ((y >= 0) && (y < bufferHeight)) {

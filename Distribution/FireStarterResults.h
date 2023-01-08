@@ -11,79 +11,79 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterResult {
-    unsigned int dataSize;  
-    float minResult;
-    unsigned int debug;
-    unsigned int index;
-    float data[FIRESTARTER_REGISTERS];
+    unsigned int m_dataSize;  
+    float m_minResult;
+    unsigned int m_debug;
+    unsigned int m_index;
+    float m_data[FIRESTARTER_REGISTERS];
 
     static inline size_t ResultSize(size_t registers)
     {
-        return (sizeof(FireStarterResult) - sizeof(data)) + (registers) * sizeof(float);
+        return (sizeof(FireStarterResult) - sizeof(m_data)) + (registers) * sizeof(float);
     } // ResultSize
 
     inline float* MinResult(void)
     {
-        return &minResult;
+        return &m_minResult;
     } // MinResult
 
     inline float MinResult(void) const
     {
-        return minResult;
+        return m_minResult;
     } // MinResult
 
     inline unsigned int* Index(void)
     {
-        return &index;
+        return &m_index;
     } // Index
 
     inline unsigned int Index(void) const
     {
-        return index;
+        return m_index;
     } // Index
 
     inline unsigned int* Debug(void)
     {
-        return &debug;
+        return &m_debug;
     } // Debug
 
     inline unsigned int Debug(void) const
     {
-        return debug;
+        return m_debug;
     } // Debug
 
     inline FireStarterData* Data(void)
     {
-        return (FireStarterData*)data;
+        return (FireStarterData*)m_data;
     } // Data
 
     inline const FireStarterData* Data(void) const
     {
-        return (const FireStarterData*)data;
+        return (const FireStarterData*)m_data;
     } // Data
 
     inline size_t DataSize(void)
     {
-        return FireStarterData::DataSize(dataSize);
+        return FireStarterData::DataSize(m_dataSize);
     } // DataSize
 
     inline void Init(unsigned int index, unsigned int registers, float startResult)
     {
-        dataSize = registers;
+        m_dataSize = registers;
         FireStarterData* data = Data();
         for (unsigned int i = 0; i < registers; i++)
             data->d[i] = 0.0f;
-        minResult = startResult;
-        index = index;
-        debug = 0;
+        m_minResult = startResult;
+        m_index = index;
+        m_debug = 0;
     } // Init
 
     inline void Init(unsigned int index, unsigned int registers, const FireStarterResult* initResult)
     {
-        dataSize = registers;
-        minResult = initResult->MinResult();
-        index = index;
-        debug = 0;
+        m_dataSize = registers;
+        m_minResult = initResult->MinResult();
+        m_index = index;
+        m_debug = 0;
 
         FireStarterData* data = Data();
         const FireStarterData* srcData = initResult->Data();
@@ -97,7 +97,7 @@ typedef struct FireStarterResults {
     size_t m_variations;
     size_t m_resultSize;
     size_t m_resultsSize;
-    unsigned char m_memory[16];
+    FireStarterResult m_memory[FIRESTARTER_VARIATIONS];
 
     static inline size_t ResultsSize(size_t registers, size_t variations)
     {
@@ -106,12 +106,12 @@ typedef struct FireStarterResults {
 
     inline FireStarterResult* Result(size_t variation)
     {
-        return (FireStarterResult*)(m_memory + variation * m_resultSize);
+        return (FireStarterResult*)((unsigned char*)m_memory + variation * m_resultSize);
     } // Result
 
     inline const FireStarterResult* Result(size_t variation) const
     {
-        return (const FireStarterResult*)(m_memory + variation * m_resultSize);
+        return (const FireStarterResult*)((unsigned char*)m_memory + variation * m_resultSize);
     } // Result
 
     inline float* MinResult(size_t variation)
@@ -187,7 +187,7 @@ typedef struct FireStarterPopulation {
     size_t m_resultSize;
     size_t m_variationSize;
     size_t m_variationsSize;
-    unsigned char m_memory[16];
+    FireStarterResult m_memory[FIRESTARTER_EVOLVE_POPULATION * FIRESTARTER_VARIATIONS];
 
     static inline size_t PopulationSize(size_t members, size_t registers, size_t variations)
     {
@@ -211,17 +211,17 @@ typedef struct FireStarterPopulation {
 
     inline FireStarterResult* Result(unsigned int member, unsigned int variation)
     {
-        return (FireStarterResult*)(m_memory + variation * VariationSize() + member * m_resultSize);
+        return (FireStarterResult*)((unsigned char*)m_memory + variation * m_variationSize + member * m_resultSize);
     } // Result
 
     inline const FireStarterResult* Result(unsigned int member, unsigned int variation) const
     {
-        return (const FireStarterResult*)(m_memory + variation * VariationSize() + member * m_resultSize);
+        return (const FireStarterResult*)((unsigned char*)m_memory + variation * m_variationSize + member * m_resultSize);
     } // Result
 
     inline size_t ResultSize(void)
     {
-        return FireStarterResult::ResultSize(m_registers);
+        return m_resultSize;
     } // ResultsSize
 
     inline FireStarterData* Data(unsigned int member, unsigned int variation)
@@ -288,7 +288,7 @@ typedef struct FireStarterPopulation {
         m_registers = registers;
         m_variations = variations;
         m_resultSize = FireStarterResult::ResultSize(registers);
-        m_variationSize = m_members * FireStarterResult::ResultSize(m_registers);
+        m_variationSize = m_members * m_resultSize;
         m_variationsSize = m_variations * m_variationSize;
         for (unsigned int v = 0; v < variations; v++)
             for (unsigned int i = 0; i < members; i++)
