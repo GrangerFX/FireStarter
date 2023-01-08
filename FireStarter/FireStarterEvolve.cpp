@@ -53,7 +53,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
     FireStarterState state(bestState);
     Dispatch([this, state, allStates, generation] {
         unsigned int numInstructions = state.Settings().m_instructions;
-        float bestResult = state.MaxResult();
+        float bestResult = state.m_maxResult;
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
             // Clone or randomize instructions in the later generations.
@@ -63,7 +63,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                 unsigned long long seed = job->m_state.EvolveSeed();
 
                 // Copy or randomize instructions based on the quality of the previous result.
-                float oldResult = job->m_state.MaxResult();
+                float oldResult = job->m_state.m_maxResult;
                 if (allStates.size() == 1) {
 #if 1
                     // Randomize a random range of instuctions.

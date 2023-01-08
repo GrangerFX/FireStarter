@@ -67,7 +67,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
 
                 // Save the state in the array of all states.
                 FireStarterState& oldState = allStates[state.m_index];
-                if (!state.m_generation || (state.MaxResult() < oldState.MaxResult()))
+                if (!state.m_generation || (state.m_maxResult < oldState.m_maxResult))
                     oldState = state;
 
                 // Is there more work to do?

@@ -141,7 +141,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     std::string generateCode;
 
     const FireStarterSettings& settings = state.Settings();
-    const FireStarterResult* result = state.Result();
+    const FireStarterResults* results = state.Results();
     unsigned int tabs = 1;
     std::string solutionCode;
     solutionCode += "#pragma once\r\n";
@@ -157,17 +157,18 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     code += "\r\n";
     code += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
     code += "\r\n";
-    code += Format("// Precision = %.8f\r\n", result->maxResult);
+    code += Format("// Precision = %.8f\r\n", state.m_maxResult);
 
     for (unsigned int v = 0; v < settings.m_variations; v++) {
-        const FireStarterData* data = result->Data(v);
+        const FireStarterData* data = results->Data(v);
+        float minResult = results->MinResult(v);
 
         code += "\r\n";
         if (settings.m_variations > 1) {
-            code += Format("// Solution%d precision = %.8f\r\n", v, result->MinResult(v));
+            code += Format("// Solution%d precision = %.8f\r\n", v, minResult);
             code += Format("inline float Solution%d(float n)\r\n", v);
         } else {
-            code += Format("// Solution precision = %.8f\r\n", result->MinResult(0));
+            code += Format("// Solution precision = %.8f\r\n", minResult);
             code += "inline float Solution(float n)\r\n";
         }
         code += "{\r\n";

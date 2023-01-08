@@ -4,16 +4,17 @@
 
 class FireStarterState {
 private:
-    std::vector<unsigned char> m_result;
+    std::vector<unsigned char> m_results;
 public:
     FireStarterProgram m_program;
     size_t m_generation = 0;
     size_t m_index = 0;
     size_t m_test = 0;
+    float m_maxResult;
 
     inline bool Initialized(void) const
     {
-        return !m_result.empty();
+        return !m_results.empty();
     } // Initialized
 
     inline FireStarterSettings& Settings(void)
@@ -46,24 +47,34 @@ public:
         m_program.RandomInstruction(EvolveSeed() + seed);
     } // RandomInstruction
 
-    inline size_t ResultSize(void) const
+    inline size_t ResultsSize(void) const
     {
-        return FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);
+        return FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);
     } // ResultSize
 
-    inline FireStarterResult* Result(void)
+    inline const FireStarterResults* Results(void) const
     {
-        return (FireStarterResult*)m_result.data();
+        return m_results.empty() ? nullptr : (const FireStarterResults*)m_results.data();
+    } // Results
+
+    inline FireStarterResults* Results(void)
+    {
+        return m_results.empty() ? nullptr : (FireStarterResults*)m_results.data();
     } // Result
 
-    inline const FireStarterResult* Result(void) const
+    inline size_t ResultSize(void) const
     {
-        return (const FireStarterResult*)m_result.data();
+        return FireStarterResult::ResultSize(m_program.m_settings.m_registers);
+    } // ResultSize
+
+    inline FireStarterResult* Result(size_t variation)
+    {
+        return m_results.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
-    inline float MaxResult(void) const
+    inline const FireStarterResult* Result(size_t variation) const
     {
-        return Initialized() ? Result()->maxResult : m_program.m_settings.m_startResult;
+        return m_results.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
     bool Packetize(FireStarterPacket& packet);

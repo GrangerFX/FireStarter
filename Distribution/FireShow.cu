@@ -4,7 +4,7 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
-GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variations)
+GPU_GLOBAL void FireShow(FireStarterResults* bestResults, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variations)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int xScale = bufferHeight / 8;
@@ -36,15 +36,17 @@ GPU_GLOBAL void FireShow(FireStarterResult* bestResult, FireStarterInstructions*
                 pixel.x = 255;
                 pixel.y = 128;
             };
-            FireStarterData workData(*bestResult->Data(v));
+            FireStarterData workData(*bestResults->Data(v));
             y = (int)(center + bestInstructions->Execute(workData, theta) * yScale);
             if ((y >= 0) && (y < bufferHeight)) {
                 uchar4& pixel(bufferPixels[y * bufferWidth + x]);
                 pixel.x = pixel.y = pixel.z = 255;
             };
             int i = x / 32;
-            if (i < bestResult->dataSize) {
-                y = (int)(center + bestResult->Data(v)->d[i] * 10.0f);
+            FireStarterResult* result = bestResults->Result(v);
+            if (i < result->dataSize) {
+                FireStarterData* data = result->Data();
+                y = (int)(center + data->d[i] * 10.0f);
                 if ((y >= 0) && (y < bufferHeight)) {
                     uchar4& pixel(bufferPixels[y * bufferWidth + x]);
                     pixel.x = pixel.y = 255;

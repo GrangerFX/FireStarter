@@ -4,12 +4,12 @@
 
 class FireStarterExecute : public CUDAThread {
 private:
-    FireStarterResults* m_hostResults = nullptr;
+    FireStarterPopulation* m_hostPopulation = nullptr;
     FireStarterEvolutions* m_hostEvolutions = nullptr;
-    char* m_deviceResults = nullptr;
+    char* m_devicePopulation = nullptr;
     char* m_deviceEvolutions = nullptr;
-    FireStarterResults* m_deviceResults0 = nullptr;
-    FireStarterResults* m_deviceResults1 = nullptr;
+    FireStarterPopulation* m_devicePopulation0 = nullptr;
+    FireStarterPopulation* m_devicePopulation1 = nullptr;
     FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
     FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
     FireStarterManager* m_manager = nullptr;
@@ -20,11 +20,11 @@ private:
     CUfunction m_evolveFunction = nullptr;
     CUfunction m_optimizeFunction = nullptr;
     std::vector<unsigned int> m_variationOrder;
-    size_t m_resultsSize = 0;
+    size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_index = 0;
 
-    bool InitResults(const FireStarterState& state);
+    bool InitPopulation(const FireStarterState& state);
     void FinishResults(void);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int variation);

@@ -5,7 +5,7 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
     result = result && m_program.Packetize(packet);
-    result = result && packet.Packetize(m_result);
+    result = result && packet.Packetize(m_results);
     result = result && packet.Packetize(&m_generation, sizeof(m_generation));
     return result;
 } // Packetize
@@ -14,10 +14,10 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code) 
 {
     code += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     code += "{\r\n";
-    code += Format("    FireStarterData *data = result->Data(%u);\r\n", variation);
+    code += "    FireStarterData *data = result->Data();\r\n";
     for (unsigned int i = 0; i < m_program.m_settings.m_instructions; i++)
-        code += Format("    data->d[%u] = %ff;\r\n", i, Result()->Data(variation)->d[i]);
-    code += Format("    *result->MinResult(%u) = %ff;\r\n", variation, Result()->MinResult(variation));
+        code += Format("    data->d[%u] = %ff;\r\n", i, Result(variation)->Data()->d[i]);
+    code += Format("    *result->minResult = %ff;\r\n", Result(variation)->minResult);
     code += Format("} // LoadVariation%u\r\n", variation);
     code += "\r\n";
 } // SaveVariation
@@ -29,9 +29,9 @@ void FireStarterState::SaveResult(std::string& code) const
     code += "inline void LoadResult(FireStarterState& state)\r\n";
     code += "{\r\n";
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
-        code += Format("    LoadVariation%u(state.Result());\r\n", v);
+        code += Format("    LoadVariation%u(state.Result(v));\r\n", v);
     code += "\r\n";
-    code += Format("    state.Result()->maxResult = %ff;\r\n", Result()->maxResult);
+    code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
     code += "} // LoadResult\r\n";
     code += "\r\n";
 } // SaveResult
@@ -75,8 +75,8 @@ float FireStarterState::TestResult(void) const
     FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
     unsigned int precision = testProgram.m_settings.m_precision;
     for (unsigned int v = 0; v < testProgram.m_settings.m_variations; v++) {
-        const FireStarterData* initData = Result()->Data(v);
-        float minResult = Result()->MinResult(v);
+        const FireStarterData* initData = Results()->Data(v);
+        float minResult = Results()->MinResult(v);
         if (minResult < m_program.m_settings.m_startResult) {
             float result = 0.0f;
             float sampleStep = (testProgram.m_settings.m_targetMax - testProgram.m_settings.m_targetMin) / (testProgram.m_settings.m_samples - 1);
@@ -107,8 +107,8 @@ float FireStarterState::TestResult(void) const
 
 void FireStarterState::InitResult(void)
 {
-    m_result.resize(FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
-    Result()->Init(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
+    m_results.resize(FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
+    Results()->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitResult
 
 void FireStarterState::InitState(const FireStarterSettings& settings, size_t index, size_t test)
@@ -116,6 +116,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, size_t ind
     m_generation = 0;
     m_index = index;
     m_test = test;
+    m_maxResult = settings.m_startResult;
     m_program.InitProgram(settings);
     InitResult();
 } // InitState

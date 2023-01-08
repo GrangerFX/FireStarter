@@ -33,7 +33,7 @@ inline float TestPrecision(const FireStarterData& data, unsigned int variation, 
 
 // Experimental version
 #if 1
-GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
+GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, FireStarterPopulation* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= lastMember)
@@ -110,8 +110,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         *newResults->Data(member, v) = data;
         *newResults->MinResult(member, v) = result;
         *newResults->Index(member, v) = 0;
-        *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
-        *newResults->Debug2(member, v) = (unsigned int)memberSeed;
+        *newResults->Debug(member, v) = init ? 1 : *oldResults->Debug(member, v) + 1;
     } else {
         // Copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
@@ -141,15 +140,14 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
             *newResults->Index(member, v) = MAX(*oldResults->Index(member, v), 1) + 1;
         }
-        *newResults->Debug1(member, v) = *oldResults->Debug1(bestCandidate, v);
-        *newResults->Debug2(member, v) = *oldResults->Debug2(bestCandidate, v);
+        *newResults->Debug(member, v) = *oldResults->Debug(bestCandidate, v);
     }
 } // Optimizer
 #endif
 
 // Best version
 #if 0
-GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
+GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, FireStarterPopulation* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= lastMember)
@@ -229,8 +227,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         *newResults->Data(member, v) = data;
         *newResults->MinResult(member, v) = result;
         *newResults->Index(member, v) = 0;
-        *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
-        *newResults->Debug2(member, v) = (unsigned int)memberSeed;
+        *newResults->Debug(member, v) = init ? 1 : *oldResults->Debug(member, v) + 1;
         maxResult = fmaxf(maxResult, result);
     }
     else {
@@ -264,8 +261,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             *newResults->Index(member, v) = 0;
             maxResult = fmaxf(maxResult, result);
         }
-        *newResults->Debug1(member, v) = *oldResults->Debug1(bestCandidate, v);
-        *newResults->Debug2(member, v) = *oldResults->Debug2(bestCandidate, v);
+        *newResults->Debug(member, v) = *oldResults->Debug(bestCandidate, v);
     }
     *newResults->MaxResult(member) = maxResult;
 } // Optimizer
@@ -273,7 +269,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
 
 // Original version
 #if 0
-GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
+GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, FireStarterPopulation* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= lastMember)
@@ -350,8 +346,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
         *newResults->Data(member, v) = data;
         *newResults->MinResult(member, v) = result;
         *newResults->Index(member, v) = member;
-        *newResults->Debug1(member, v) = init ? 1 : *oldResults->Debug1(member, v) + 1;
-        *newResults->Debug2(member, v) = (unsigned int)memberSeed;
+        *newResults->Debug(member, v) = init ? 1 : *oldResults->Debug(member, v) + 1;
         maxResult = fmaxf(maxResult, result);
     }
     else {
@@ -383,8 +378,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterResults
             maxResult = fmaxf(maxResult, result);
         }
         *newResults->Index(member, v) = bestCandidate;
-        *newResults->Debug1(member, v) = *oldResults->Debug1(bestCandidate, v);
-        *newResults->Debug2(member, v) = *oldResults->Debug2(bestCandidate, v);
+        *newResults->Debug(member, v) = *oldResults->Debug(bestCandidate, v);
     }
     *newResults->MaxResult(member) = maxResult;
 } // Optimizer

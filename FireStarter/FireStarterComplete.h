@@ -15,7 +15,7 @@ private:
 	FireStarterGenerate* m_generate = nullptr;
 	CUfunction m_fireShowFunction = nullptr;
 	CUmodule m_fireShowModule = nullptr;
-	FireStarterResult* m_fireShowResult = nullptr;
+	FireStarterResults* m_fireShowResults = nullptr;
 	FireStarterInstructions* m_fireShowInstructions = nullptr;
 	FireStarterManager* m_manager = nullptr;
 	void* m_window = nullptr;

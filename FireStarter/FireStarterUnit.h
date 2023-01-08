@@ -18,10 +18,10 @@ private:
 
     class FireStarterContext {
     public:
-        char* m_deviceResults = nullptr;
+        char* m_devicePopulation = nullptr;
         char* m_deviceEvolutions = nullptr;
-        FireStarterResults* m_deviceResults0 = nullptr;
-        FireStarterResults* m_deviceResults1 = nullptr;
+        FireStarterPopulation* m_devicePopulation0 = nullptr;
+        FireStarterPopulation* m_devicePopulation1 = nullptr;
         FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
         FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
         CUmodule m_generateModule = nullptr;
@@ -30,7 +30,7 @@ private:
         CUfunction m_evolveFunction = nullptr;
         CUfunction m_optimizeFunction = nullptr;
         CUDAContext* m_CUDAContext = nullptr;
-        size_t m_resultsSize = 0;
+        size_t m_populationSize = 0;
         size_t m_evolutionsSize = 0;
         unsigned int m_device = 0;
         unsigned int m_firstMember = 0;
@@ -63,7 +63,7 @@ private:
                 m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
         } // OptimizeCompile
 
-        inline bool InitContext(unsigned int device, unsigned int firstMember, unsigned int lastMember, FireStarterResults* hostResults, FireStarterEvolutions* hostEvolutions, const FireStarterSettings& settings)
+        inline bool InitContext(unsigned int device, unsigned int firstMember, unsigned int lastMember, FireStarterPopulation* hostResults, FireStarterEvolutions* hostEvolutions, const FireStarterSettings& settings)
         {
             m_device = device;
             m_firstMember = firstMember;
@@ -73,21 +73,21 @@ private:
             m_CUDAContext->SetContext();
 
             CUstream stream = m_CUDAContext->Stream();
-            size_t resultsSize = FireStarterResults::ResultsSize(settings.m_population, settings.m_registers, settings.m_variations);
-            if (m_resultsSize != resultsSize) {
-                m_resultsSize = resultsSize;
-                if (m_deviceResults) {
-                    checkCUDAErrors(cudaFreeAsync(m_deviceResults, stream));
-                    m_deviceResults = nullptr;
-                    m_deviceResults0 = nullptr;
-                    m_deviceResults1 = nullptr;
+            size_t resultsSize = FireStarterPopulation::PopulationSize(settings.m_population, settings.m_registers, settings.m_variations);
+            if (m_populationSize != resultsSize) {
+                m_populationSize = resultsSize;
+                if (m_devicePopulation) {
+                    checkCUDAErrors(cudaFreeAsync(m_devicePopulation, stream));
+                    m_devicePopulation = nullptr;
+                    m_devicePopulation0 = nullptr;
+                    m_devicePopulation1 = nullptr;
                 }
-                if (m_resultsSize) {
-                    checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize * 2, stream));
-                    m_deviceResults0 = (FireStarterResults*)(m_deviceResults);
-                    m_deviceResults1 = (FireStarterResults*)(m_deviceResults + m_resultsSize);
-                    checkCUDAErrors(cudaMemcpyAsync(m_deviceResults0, hostResults, m_resultsSize, cudaMemcpyHostToDevice, stream));
-                    checkCUDAErrors(cudaMemcpyAsync(m_deviceResults1, hostResults, m_resultsSize, cudaMemcpyHostToDevice, stream));
+                if (m_populationSize) {
+                    checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, stream));
+                    m_devicePopulation0 = (FireStarterPopulation*)(m_devicePopulation);
+                    m_devicePopulation1 = (FireStarterPopulation*)(m_devicePopulation + m_populationSize);
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, hostResults, m_populationSize, cudaMemcpyHostToDevice, stream));
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, hostResults, m_populationSize, cudaMemcpyHostToDevice, stream));
                 }
             }
 
@@ -139,9 +139,9 @@ private:
     FireStarterSettings m_settings;
     FireStarterState m_initState;
     FireStarterState m_state;
-    FireStarterResults* m_hostResults = nullptr;
+    FireStarterPopulation* m_hostPopulation = nullptr;
     FireStarterEvolutions* m_hostEvolutions = nullptr;
-    size_t m_resultsSize = 0;
+    size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_generation = 0;
     unsigned int m_unitIndex = 0;

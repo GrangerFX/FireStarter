@@ -54,8 +54,8 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
     FireStarterSettings settings = state.Settings();
-    size_t resultSize = FireStarterResult::ResultSize(settings.m_registers, settings.m_variations);
-    checkCUDAErrors(cudaMemcpyAsync(m_fireShowResult, state.Result(), resultSize, cudaMemcpyHostToDevice, stream));
+    size_t resultsSize = FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations);
+    checkCUDAErrors(cudaMemcpyAsync(m_fireShowResults, state.Results(), resultsSize, cudaMemcpyHostToDevice, stream));
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(settings.m_instructions);
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.OptimizedInstructions(), instructionsSize, cudaMemcpyHostToDevice, stream));
 
@@ -65,7 +65,7 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    void* arr[] = { reinterpret_cast<void*>(&m_fireShowResult),
+    void* arr[] = { reinterpret_cast<void*>(&m_fireShowResults),
                     reinterpret_cast<void*>(&m_fireShowInstructions),
                     reinterpret_cast<void*>(&m_buffer.m_deviceBase),
                     reinterpret_cast<void*>(&m_buffer.m_width),
@@ -113,10 +113,10 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
 
     // Update the hash file.
     std::string hashString = Format("%s: Generation:%4u  Best Generation:%4u", settings.Mode(), state.m_generation, bestState.m_generation);
-    const FireStarterResult* stateResult = state.Result();
-    uint64_t resultHash = MurmurHash64(stateResult, state.ResultSize());
+    const FireStarterResults* stateResults = state.Results();
+    uint64_t resultHash = MurmurHash64(stateResults, state.ResultsSize());
     uint64_t programHash = MurmurHash64(state.m_program.OptimizedInstructions(), state.m_program.InstructionsSize());
-    hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.MaxResult(), settings.m_seed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
+    hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.m_maxResult, settings.m_seed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
     FireStarterCode::AppendCode(hashFilePath, hashString);
 //  m_output.Output(hashString);
 
@@ -132,13 +132,13 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
     std::string statusString;
     unsigned int unit = (unsigned int)(state.m_index % settings.m_units);
     unsigned int test = (unsigned int)state.m_test;
-    float newResult = state.MaxResult();
-    float bestResult = bestState.MaxResult();
+    float newResult = state.m_maxResult;
+    float bestResult = bestState.m_maxResult;
     bool isBestState = (state.m_index == bestState.m_index) && (state.m_generation == bestState.m_generation);
     if (settings.m_mode == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", settings.Mode(), settings.m_seed + state.m_generation, state.m_generation, newResult, average, bestResult, bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
         for (unsigned int v = 0; v < settings.m_variations; v++)
-            statusString += Format("  V:%d=%.8f", v, state.Result()->MinResult(v));
+            statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
     } else {
         statusString = Format("%s: Seed=%u", settings.Mode(), settings.m_seed);
 #if FIRESTARTER_TEST_SEEDS
@@ -162,7 +162,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
                 statusString += " *";
             else
                 statusString += "  ";
-            statusString += Format("Result=%.8f", state.MaxResult());
+            statusString += Format("Result=%.8f", state.m_maxResult);
         }
 
         statusString += Format("  Best=%.8f  BestGen=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", bestResult, bestState.m_generation, generationTime, runTime, testError);
@@ -218,7 +218,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 {
     // Get the result.
     bool update = false;
-    if (state.MaxResult() < bestState.MaxResult()) {
+    if (state.m_maxResult < bestState.m_maxResult) {
         // Update the best state.
         bestState = state;
         update = true;
@@ -228,7 +228,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     DispatchAsync([this, bestState, state, oldResult, update] {
         double duration = m_timer.Duration();
         const FireStarterSettings& settings = state.Settings();
-        float result = state.MaxResult();
+        float result = state.m_maxResult;
         if (!state.m_generation) {
             m_resultsCount = 0;
             m_resultsTime = duration;
@@ -321,8 +321,8 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
                 FireStarterState& oldState = oldStates[i];
-                CompleteResults(bestState, newState, oldState.MaxResult());
-                if (!newState.m_generation || (newState.MaxResult() < oldState.MaxResult()))
+                CompleteResults(bestState, newState, oldState.m_maxResult);
+                if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult))
                     oldState = newState;
                 else
                     oldState.m_generation = newState.m_generation;
@@ -410,7 +410,7 @@ FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const Fire
             m_generate = new FireStarterGenerate(context);
 
             // Allocate the results and instructions.
-            checkCUDAErrors(cudaMallocAsync(&m_fireShowResult, FireStarterResult::ResultSize(m_settings.m_registers, m_settings.m_variations), stream));
+            checkCUDAErrors(cudaMallocAsync(&m_fireShowResults, FireStarterResults::ResultsSize(m_settings.m_registers, m_settings.m_variations), stream));
             checkCUDAErrors(cudaMallocAsync(&m_fireShowInstructions, FireStarterInstructions::InstructionsSize(m_settings.m_instructions), stream));
             context->Synchronize();
 
@@ -428,9 +428,9 @@ FireStarterComplete::~FireStarterComplete(void)
         CUstream stream = context->Stream();
 
         m_buffer.Resize(0, 0);
-        if (m_fireShowResult) {
-            checkCUDAErrors(cudaFreeAsync(m_fireShowResult, stream));
-            m_fireShowResult = nullptr;
+        if (m_fireShowResults) {
+            checkCUDAErrors(cudaFreeAsync(m_fireShowResults, stream));
+            m_fireShowResults = nullptr;
         }
         if (m_fireShowInstructions) {
             checkCUDAErrors(cudaFreeAsync(m_fireShowInstructions, stream));
