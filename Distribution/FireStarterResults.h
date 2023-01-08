@@ -191,7 +191,7 @@ typedef struct FireStarterPopulation {
 
     static inline size_t PopulationSize(size_t members, size_t registers, size_t variations)
     {
-        return (sizeof(FireStarterPopulation) - sizeof(m_memory)) + variations * members * FireStarterResult::ResultSize(registers) + members * sizeof(float);
+        return (sizeof(FireStarterPopulation) - sizeof(m_memory)) + variations * members * FireStarterResult::ResultSize(registers);
     } // PopulationSize
 
     inline size_t MemorySize(size_t members) const
@@ -249,16 +249,6 @@ typedef struct FireStarterPopulation {
         return Result(member, variation)->MinResult();
     } // MinResult
 
-    inline float* MaxResult(unsigned int member)
-    {
-        return (float*)(m_memory + m_variationsSize + member * sizeof(float));
-    } // MaxResult
-
-    inline const float MaxResult(unsigned int member) const
-    {
-        return *(float*)(m_memory + m_variationsSize + member * sizeof(float));
-    } // MaxResult
-
     inline unsigned int* Index(unsigned int member, unsigned int variation)
     {
         return Result(member, variation)->Index();
@@ -272,12 +262,12 @@ typedef struct FireStarterPopulation {
     inline unsigned int* Debug(unsigned int member, unsigned int variation)
     {
         return Result(member, variation)->Debug();
-    } // Debug1
+    } // Debug
 
     inline unsigned int Debug(unsigned int member, unsigned int variation) const
     {
         return Result(member, variation)->Debug();
-    } // Debug2
+    } // Debug
 
     inline void InitPopulation(unsigned int members, unsigned int registers, unsigned int variations, float startResult)
     {

@@ -286,43 +286,13 @@ typedef struct FireStarterInstructions {
             Instruction(index).Execute(data, n);
         return isfinite(n) ? n : 0.0f;
     } // Execute
+
+    inline void InitInstructions(unsigned int instructions)
+    {
+        for (unsigned int index = 0; index < instructions; index++)
+            SetOperation(index);
+    } // InitInstructions
 } FireStarterInstructions;
-
-typedef struct FireStarterEvolutions {
-    size_t m_members;
-    size_t m_instructions;
-    size_t m_instructionsSize;
-    size_t m_evolutionsSize;
-    unsigned char m_memory[16];
-
-    static inline size_t EvolutionsSize(unsigned int members, unsigned int instructions)
-    {
-        return (sizeof(FireStarterEvolutions) - sizeof(m_memory)) + members * FireStarterInstructions::InstructionsSize(instructions);
-    } // EvolutionsSize
-
-    inline size_t MemorySize(unsigned int members)
-    {
-        return members * FireStarterInstructions::InstructionsSize(m_instructions);
-    } // MemorySize
-
-    inline FireStarterInstructions* Instructions(unsigned int member)
-    {
-        return (FireStarterInstructions*)(m_memory + member * m_instructionsSize);
-    } // Instructions
-
-    inline const FireStarterInstructions* Instructions(unsigned int member) const
-    {
-        return (FireStarterInstructions*)(m_memory + member * m_instructionsSize);
-    } // Instructions
-
-    inline void InitEvolutions(unsigned int members, unsigned int instructions)
-    {
-        m_members = members;
-        m_instructions = instructions;
-        m_instructionsSize = FireStarterInstructions::InstructionsSize(instructions);
-        m_evolutionsSize = EvolutionsSize(members, instructions);
-    } // FireStarterResults
-} FireStarterEvolutions;
 
 inline void GenerateDataCode(char* buffer, size_t size, size_t& length, unsigned int tabs, size_t numRegisters, const FireStarterData* data)
 {

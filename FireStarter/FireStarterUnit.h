@@ -2,6 +2,7 @@
 #include "FireStarterGenerate.h"
 #include "FireStarterProcess.h"
 #include "FireStarterCompile.h"
+#include "FireStarterEvolutions.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 #include "SerialThread.h"
@@ -73,25 +74,13 @@ private:
             m_CUDAContext->SetContext();
 
             CUstream stream = m_CUDAContext->Stream();
-            size_t resultsSize = FireStarterPopulation::PopulationSize(settings.m_population, settings.m_registers, settings.m_variations);
-            if (m_populationSize != resultsSize) {
-                m_populationSize = resultsSize;
-                if (m_devicePopulation) {
-                    checkCUDAErrors(cudaFreeAsync(m_devicePopulation, stream));
-                    m_devicePopulation = nullptr;
-                    m_devicePopulation0 = nullptr;
-                    m_devicePopulation1 = nullptr;
-                }
-                if (m_populationSize) {
-                    checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, stream));
-                    m_devicePopulation0 = (FireStarterPopulation*)(m_devicePopulation);
-                    m_devicePopulation1 = (FireStarterPopulation*)(m_devicePopulation + m_populationSize);
-                    checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, hostResults, m_populationSize, cudaMemcpyHostToDevice, stream));
-                    checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, hostResults, m_populationSize, cudaMemcpyHostToDevice, stream));
-                }
-            }
 
-            size_t evolutionsSize = (settings.m_mode == FIRESTARTER_CODE) ? FireStarterEvolutions::EvolutionsSize(settings.m_population, settings.m_instructions) : 0;
+            size_t evolutionsSize = 0;
+            size_t populationSize = 0;
+            if (settings.m_mode == FIRESTARTER_CODE)
+                evolutionsSize = FireStarterEvolutions::EvolutionsSize(settings.m_population, settings.m_instructions, settings.m_registers, settings.m_variations);
+            else
+                populationSize = FireStarterPopulation::PopulationSize(settings.m_population, settings.m_registers, settings.m_variations);
             if (m_evolutionsSize != evolutionsSize) {
                 m_evolutionsSize = evolutionsSize;
                 if (m_deviceEvolutions) {
@@ -106,6 +95,22 @@ private:
                     m_deviceEvolutions1 = (FireStarterEvolutions*)(m_deviceEvolutions + m_evolutionsSize);
                     checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions0, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
                     checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions1, hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
+                }
+            }
+            if (m_populationSize != populationSize) {
+                m_populationSize = populationSize;
+                if (m_devicePopulation) {
+                    checkCUDAErrors(cudaFreeAsync(m_devicePopulation, stream));
+                    m_devicePopulation = nullptr;
+                    m_devicePopulation0 = nullptr;
+                    m_devicePopulation1 = nullptr;
+                }
+                if (m_populationSize) {
+                    checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, stream));
+                    m_devicePopulation0 = (FireStarterPopulation*)(m_devicePopulation);
+                    m_devicePopulation1 = (FireStarterPopulation*)(m_devicePopulation + m_populationSize);
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, hostResults, m_populationSize, cudaMemcpyHostToDevice, stream));
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, hostResults, m_populationSize, cudaMemcpyHostToDevice, stream));
                 }
             }
             m_CUDAContext->Synchronize();

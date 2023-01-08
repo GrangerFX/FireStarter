@@ -1,5 +1,6 @@
 #pragma once
 #include "FireStarterManager.h"
+#include "FireStarterEvolutions.h"
 #include "CUDAThread.h"
 
 class FireStarterExecute : public CUDAThread {

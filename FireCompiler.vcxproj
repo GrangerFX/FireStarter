@@ -114,6 +114,7 @@
     <ClInclude Include="FireStarter\FireStarterCompile.h" />
     <ClInclude Include="FireStarter\FireStarterManager.h" />
     <ClInclude Include="FireStarter\FireStarterProcess.h" />
+    <ClInclude Include="FireStarter\FireStarterProgram.h" />
     <ClInclude Include="FireStarter\PrintF.h" />
     <ClInclude Include="FireStarter\SerialThread.h" />
   </ItemGroup>

@@ -40,7 +40,7 @@ inline void LoadVariation0(FireStarterResult* result)
     data->d[29] = 0.000000f;
     data->d[30] = 0.000000f;
     data->d[31] = 0.000000f;
-    *result->minResult = 0.000000f;
+    result->minResult = 0.000000f;
 } // LoadVariation0
 
 inline void LoadVariation1(FireStarterResult* result)
@@ -78,7 +78,7 @@ inline void LoadVariation1(FireStarterResult* result)
     data->d[29] = 0.000000f;
     data->d[30] = 0.000000f;
     data->d[31] = 0.000000f;
-    *result->minResult = 0.000000f;
+    result->minResult = 0.000000f;
 } // LoadVariation1
 
 inline void LoadVariation2(FireStarterResult* result)
@@ -116,7 +116,7 @@ inline void LoadVariation2(FireStarterResult* result)
     data->d[29] = 0.000000f;
     data->d[30] = 0.000000f;
     data->d[31] = 0.000000f;
-    *result->minResult = 0.000001f;
+    result->minResult = 0.000001f;
 } // LoadVariation2
 
 inline float Evaluate(FireStarterData data, float n)

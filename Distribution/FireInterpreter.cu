@@ -1,11 +1,11 @@
 #pragma once
 
 #include "FireStarterInstructions.h"
-#include "FireStarterResults.h"
+#include "FireStarterEvolutions.h"
 
 // Best version.
 // 0.00060845 after 147 generations. Optimize 0.00015676 after 150 generations.
-GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, FireStarterPopulation* newResults, FireStarterPopulation* oldResults, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned long long generationSeed, const unsigned int init)
+GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned long long generationSeed, const unsigned int init)
 {
     const unsigned int member = firstMember + blockIdx.x;
     if (member >= lastMember)
@@ -51,7 +51,7 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
             for (int i = 0; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = RANDOMFACTOR64(threadSeed);
         else {
-            data = *oldResults->Data(member, v);
+            data = *oldEvolutions->Data(member, v);
             data.d[RANDOMMOD64(threadSeed, FIRESTARTER_INSTRUCTIONS)] += FIRESTARTER_CODE_START_SCALE * RANDOMFACTOR64(threadSeed);
         }
 
@@ -101,17 +101,17 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
         }
 
         // Did this generation produce a better result?
-        float oldResult = *oldResults->MaxResult(member);
+        float oldResult = *oldEvolutions->MaxResult(member);
         if (init || (maxResult < oldResult)) {
             // Save the improved results.
             *newEvolutions->Instructions(member) = instructions;
-            *newResults->MaxResult(member) = maxResult;
+            *newEvolutions->MaxResult(member) = maxResult;
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                 unsigned int t = minThreads[v];
-                *newResults->Data(member, v) = allData[v][t];
-                *newResults->MinResult(member, v) = allResults[v][t];
-                *newResults->Index(member, v) = member;
-                *newResults->Debug(member, v) = init ? 1 : *oldResults->Debug(member, v) + 1;
+                *newEvolutions->Data(member, v) = allData[v][t];
+                *newEvolutions->MinResult(member, v) = allResults[v][t];
+                *newEvolutions->Index(member, v) = member;
+                *newEvolutions->Debug(member, v) = init ? 1 : *oldEvolutions->Debug(member, v) + 1;
             }
         } else {
             // Copy a result from among the previous generation's results.
@@ -122,8 +122,8 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
             // Copy the best data from among a random set of candidates.
             for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
                 unsigned int candidate = RANDOMMOD64(memberSeed, FIRESTARTER_CODE_POPULATION);
-                if (candidate == *oldResults->Index(candidate, 0)) {   // Only select evolving members
-                    float curResult = *oldResults->MaxResult(candidate);
+                if (candidate == *oldEvolutions->Index(candidate, 0)) {   // Only select evolving members
+                    float curResult = *oldEvolutions->MaxResult(candidate);
                     if (curResult < bestResult) {
                         bestCandidate = candidate;
                         bestResult = curResult;
@@ -133,12 +133,12 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
 
             // Switch to the selected member's instructions, data and results or revert to the previous generation.
             *newEvolutions->Instructions(member) = *oldEvolutions->Instructions(bestCandidate);
-            *newResults->MaxResult(member) = bestResult;
+            *newEvolutions->MaxResult(member) = bestResult;
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-                *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
-                *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
-                *newResults->Index(member, v) = bestCandidate;
-                *newResults->Debug(member, v) = *oldResults->Debug(member, v);
+                *newEvolutions->Data(member, v) = *oldEvolutions->Data(bestCandidate, v);
+                *newEvolutions->MinResult(member, v) = *oldEvolutions->MinResult(bestCandidate, v);
+                *newEvolutions->Index(member, v) = bestCandidate;
+                *newEvolutions->Debug(member, v) = *oldEvolutions->Debug(member, v);
             }
         }
     }

@@ -73,8 +73,6 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
             context.SetContext();
-            FireStarterPopulation* newPopulation = g & 1 ? context.m_devicePopulation0 : context.m_devicePopulation1;
-            FireStarterPopulation* oldPopulation = g & 1 ? context.m_devicePopulation1 : context.m_devicePopulation0;
             FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
             int init = (g == 0) && (forceInit || (m_state.m_generation == 0));
@@ -82,8 +80,6 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newEvolutions),
                             reinterpret_cast<void*>(&oldEvolutions),
-                            reinterpret_cast<void*>(&newPopulation),
-                            reinterpret_cast<void*>(&oldPopulation),
                             reinterpret_cast<void*>(&firstVariation),
                             reinterpret_cast<void*>(&lastVariation),
                             reinterpret_cast<void*>(&context.m_firstMember),
@@ -108,24 +104,14 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
         if (m_contexts.size() > 1) {
             for (FireStarterContext& context : m_contexts) {
                 context.SetContext();
-                for (unsigned int v = firstVariation; v <= lastVariation; v++) {
-                    FireStarterResult* hostFirstResult = m_hostPopulation->Result(context.m_firstMember, v);
-                    FireStarterResult* hostLastResult = m_hostPopulation->Result(context.m_lastMember, v);
-                    FireStarterPopulation* newPopulation = g & 1 ? context.m_devicePopulation0 : context.m_devicePopulation1;
-                    checkCUDAErrors(cudaMemcpyAsync(hostFirstResult, newPopulation->Result(context.m_firstMember, v), hostLastResult - hostLastResult, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
-
-                    size_t evolutionsSize = m_hostEvolutions->MemorySize(context.m_lastMember - context.m_firstMember);
-                    size_t evolutionsOffset = m_hostEvolutions->MemorySize(context.m_firstMember);
-                    FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
-                    checkCUDAErrors(cudaMemcpyAsync(&m_hostEvolutions->m_memory[evolutionsOffset], &newEvolutions->m_memory[evolutionsOffset], evolutionsSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
-                }
+                FireStarterEvolution* hostFirstEvolution = m_hostEvolutions->Evolution(context.m_firstMember);
+                FireStarterEvolution* hostLastEvolution = m_hostEvolutions->Evolution(context.m_lastMember);
+                FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
+                checkCUDAErrors(cudaMemcpyAsync(hostFirstEvolution, newEvolutions->Evolution(context.m_firstMember), hostLastEvolution - hostLastEvolution, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
             }
             SyncContexts();
             for (FireStarterContext& context : m_contexts) {
                 context.SetContext();
-                FireStarterPopulation* oldPopulation = g & 1 ? context.m_devicePopulation1 : context.m_devicePopulation0;
-                checkCUDAErrors(cudaMemcpyAsync(oldPopulation, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
-
                 FireStarterEvolutions* oldEvolutions = g & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
                 checkCUDAErrors(cudaMemcpyAsync(oldEvolutions, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
@@ -139,24 +125,20 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
     FireStarterContext& context = m_contexts[0];
     context.SetContext();
     if (m_contexts.size() == 1) {
-        FireStarterPopulation* newPopulation = m_settings.m_generations & 1 ? context.m_devicePopulation1 : context.m_devicePopulation0;
-        FireStarterPopulation* oldPopulation = m_settings.m_generations & 1 ? context.m_devicePopulation0 : context.m_devicePopulation1;
         FireStarterEvolutions* newEvolutions = m_settings.m_generations & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
         FireStarterEvolutions* oldEvolutions = m_settings.m_generations & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_hostEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToHost, context.m_CUDAContext->Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, context.m_CUDAContext->Stream()));
         checkCUDAErrors(cudaMemcpyAsync(oldEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToDevice, context.m_CUDAContext->Stream()));
         SyncContexts();
     }
 
     // Get the best results.
-    float bestResult = *m_hostPopulation->MaxResult(0);
+    float bestResult = *m_hostEvolutions->MaxResult(0);
     unsigned int bestIndex = 0;
     for (unsigned int i = 1; i < m_settings.m_population; i++) {
-        unsigned int curIndex = *m_hostPopulation->Index(i, 0);
+        unsigned int curIndex = *m_hostEvolutions->Index(i, 0);
         if (curIndex == i) {
-            float curResult = *m_hostPopulation->MaxResult(i);
+            float curResult = *m_hostEvolutions->MaxResult(i);
             if (curResult <= bestResult) {
                 bestResult = curResult;
                 bestIndex = i;
@@ -165,7 +147,7 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
     }
 
     for (unsigned int v = firstVariation; v <= lastVariation; v++)
-        memcpy(m_state.Result(v), m_hostPopulation->Result(bestIndex, v), FireStarterResult::ResultSize(m_settings.m_registers));
+        memcpy(m_state.Result(v), m_hostEvolutions->Result(bestIndex, v), FireStarterResult::ResultSize(m_settings.m_registers));
     m_state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
 } // CodeGenerations
 
@@ -347,7 +329,25 @@ void FireStarterUnit::Allocate(void)
     FireStarterSettings evolveSettings = m_settings;
     m_state = m_initState;
 
-    size_t populationSize = FireStarterPopulation::PopulationSize(m_settings.m_population, m_settings.m_registers, m_settings.m_variations);
+    size_t populationSize = 0;
+    size_t evolutionsSize = 0;
+    if (m_settings.m_mode == FIRESTARTER_CODE)
+        evolutionsSize = FireStarterEvolutions::EvolutionsSize(m_settings.m_population, m_settings.m_instructions, m_settings.m_registers, m_settings.m_variations);
+    else
+        populationSize = FireStarterPopulation::PopulationSize(m_settings.m_population, m_settings.m_registers, m_settings.m_variations);
+
+    if (m_evolutionsSize != evolutionsSize) {
+        m_evolutionsSize = evolutionsSize;
+        if (m_hostEvolutions) {
+            checkCUDAErrors(cudaFreeHost(m_hostEvolutions));
+            m_hostEvolutions = nullptr;
+        }
+        if (m_evolutionsSize) {
+            checkCUDAErrors(cudaMallocHost(&m_hostEvolutions, m_evolutionsSize));
+            m_hostEvolutions->InitEvolutions(m_settings.m_population, m_settings.m_instructions, m_settings.m_registers, m_settings.m_variations, m_settings.m_startResult);
+        }
+    }
+
     if (m_populationSize != populationSize) {
         m_populationSize = populationSize;
         if (m_hostPopulation) {
@@ -357,19 +357,6 @@ void FireStarterUnit::Allocate(void)
         if (m_populationSize) {
             checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
             m_hostPopulation->InitPopulation(m_settings.m_population, m_settings.m_instructions, m_settings.m_variations, m_settings.m_startResult);
-        }
-    }
-
-    size_t evolutionsSize = (m_settings.m_mode == FIRESTARTER_CODE) ? FireStarterEvolutions::EvolutionsSize(m_settings.m_population, m_settings.m_instructions) : 0;
-    if (m_evolutionsSize != evolutionsSize) {
-        m_evolutionsSize = evolutionsSize;
-        if (m_hostEvolutions) {
-            checkCUDAErrors(cudaFreeHost(m_hostEvolutions));
-            m_hostEvolutions = nullptr;
-        }
-        if (m_evolutionsSize) {
-            checkCUDAErrors(cudaMallocHost(&m_hostEvolutions, m_evolutionsSize));
-            m_hostEvolutions->InitEvolutions(m_settings.m_population, m_settings.m_instructions);
         }
     }
 
