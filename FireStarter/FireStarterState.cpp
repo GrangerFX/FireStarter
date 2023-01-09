@@ -29,7 +29,7 @@ void FireStarterState::SaveResult(std::string& code) const
     code += "inline void LoadResult(FireStarterState& state)\r\n";
     code += "{\r\n";
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
-        code += Format("    LoadVariation%u(state.Result(%u));\r\n", v);
+        code += Format("    LoadVariation%u(state.Result(%u));\r\n", v, v);
     code += "\r\n";
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
     code += "} // LoadResult\r\n";

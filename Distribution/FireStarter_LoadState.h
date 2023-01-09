@@ -180,9 +180,9 @@ inline void LoadVariation2(FireStarterResult* result)
 
 inline void LoadResult(FireStarterState& state)
 {
-    LoadVariation0(state.Result(3282477679));
+    LoadVariation0(state.Result(0));
     LoadVariation1(state.Result(1));
-    LoadVariation2(state.Result(1));
+    LoadVariation2(state.Result(2));
 
     state.m_maxResult = 0.000007f;
 } // LoadResult
