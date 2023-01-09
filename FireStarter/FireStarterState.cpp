@@ -5,7 +5,7 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
     result = result && m_program.Packetize(packet);
-    result = result && packet.Packetize(m_results);
+    result = result && packet.Packetize(m_resultsData);
     result = result && packet.Packetize(&m_generation, sizeof(m_generation));
     return result;
 } // Packetize
@@ -107,8 +107,9 @@ float FireStarterState::TestResult(void) const
 
 void FireStarterState::InitResult(void)
 {
-    m_results.resize(FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
-    Results()->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
+    m_resultsData.resize(FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
+    m_results = Results();
+    m_results->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitResult
 
 void FireStarterState::InitState(const FireStarterSettings& settings, size_t index, size_t test)

@@ -4,7 +4,8 @@
 
 class FireStarterState {
 private:
-    std::vector<unsigned char> m_results;
+    std::vector<unsigned char> m_resultsData;
+    FireStarterResults* m_results = nullptr;    // For debugging.
 public:
     FireStarterProgram m_program;
     size_t m_generation = 0;
@@ -14,7 +15,7 @@ public:
 
     inline bool Initialized(void) const
     {
-        return !m_results.empty();
+        return !m_resultsData.empty();
     } // Initialized
 
     inline FireStarterSettings& Settings(void)
@@ -54,12 +55,12 @@ public:
 
     inline const FireStarterResults* Results(void) const
     {
-        return m_results.empty() ? nullptr : (const FireStarterResults*)m_results.data();
+        return m_resultsData.empty() ? nullptr : (const FireStarterResults*)m_resultsData.data();
     } // Results
 
     inline FireStarterResults* Results(void)
     {
-        return m_results.empty() ? nullptr : (FireStarterResults*)m_results.data();
+        return m_resultsData.empty() ? nullptr : (FireStarterResults*)m_resultsData.data();
     } // Result
 
     inline size_t ResultSize(void) const
@@ -69,12 +70,12 @@ public:
 
     inline FireStarterResult* Result(size_t variation)
     {
-        return m_results.empty() ? nullptr : Results()->Result(variation);
+        return m_resultsData.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
     inline const FireStarterResult* Result(size_t variation) const
     {
-        return m_results.empty() ? nullptr : Results()->Result(variation);
+        return m_resultsData.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
     bool Packetize(FireStarterPacket& packet);

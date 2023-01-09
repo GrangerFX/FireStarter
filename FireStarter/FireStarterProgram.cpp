@@ -3,8 +3,8 @@
 bool FireStarterProgram::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
-    result = result && packet.Packetize(m_evolvedInstructions);
-    result = result && packet.Packetize(m_optimizedInstructions);
+    result = result && packet.Packetize(m_evolvedInstructionsData);
+    result = result && packet.Packetize(m_optimizedInstructionsData);
     result = result && packet.Packetize(&m_settings, sizeof(m_settings));
     result = result && packet.Packetize(m_uniqueRegisters);
     return result;
@@ -87,8 +87,8 @@ void FireStarterProgram::RandomInstruction(unsigned long long seed, unsigned int
 
 void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
 {
-    memcpy(m_evolvedInstructions.data(), instructions, InstructionsSize());
-    memcpy(m_optimizedInstructions.data(), instructions, InstructionsSize());
+    memcpy(m_evolvedInstructionsData.data(), instructions, InstructionsSize());
+    memcpy(m_optimizedInstructionsData.data(), instructions, InstructionsSize());
 } // LoadInstructions
 
 void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::string& code, const std::string &prefix, const std::string& postfix)
@@ -143,13 +143,12 @@ void FireStarterProgram::SaveProgram(std::string& code) const
 void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
     m_settings = settings;
-    m_evolvedInstructions.resize(InstructionsSize());
-    m_optimizedInstructions.resize(InstructionsSize());
-
-    FireStarterInstructions* evolvedInstructions = EvolvedInstructions();
-    FireStarterInstructions* optimiedInstructions = OptimizedInstructions();
+    m_evolvedInstructionsData.resize(InstructionsSize());
+    m_optimizedInstructionsData.resize(InstructionsSize());
+    m_evolvedInstructions = EvolvedInstructions();
+    m_optimizedInstructions = OptimizedInstructions();
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        evolvedInstructions->SetOperation(i);
-        optimiedInstructions->SetOperation(i);
+        m_evolvedInstructions->SetOperation(i);
+        m_optimizedInstructions->SetOperation(i);
     }
 } // InitProgram

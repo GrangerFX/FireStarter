@@ -7,30 +7,32 @@
 
 class FireStarterProgram {
 private:
-    std::vector<unsigned char> m_evolvedInstructions;
-    std::vector<unsigned char> m_optimizedInstructions;
+    std::vector<unsigned char> m_evolvedInstructionsData;
+    std::vector<unsigned char> m_optimizedInstructionsData;
+    FireStarterInstructions* m_evolvedInstructions = nullptr;   // For debugging.
+    FireStarterInstructions* m_optimizedInstructions = nullptr; // For debugging.
 public:
     FireStarterSettings m_settings;
     unsigned int m_uniqueRegisters = 0;
 
     inline FireStarterInstructions* EvolvedInstructions(void)
     {
-        return (FireStarterInstructions*)m_evolvedInstructions.data();
+        return (FireStarterInstructions*)m_evolvedInstructionsData.data();
     } // EvolvedInstructions
 
     inline const FireStarterInstructions* EvolvedInstructions(void) const
     {
-        return (const FireStarterInstructions*)m_evolvedInstructions.data();
+        return (const FireStarterInstructions*)m_evolvedInstructionsData.data();
     } // EvolvedInstructions
 
     inline FireStarterInstructions* OptimizedInstructions(void)
     {
-        return (FireStarterInstructions*)(m_optimizedInstructions.data());
+        return (FireStarterInstructions*)(m_optimizedInstructionsData.data());
     } // RawInstructions
 
     inline const FireStarterInstructions* OptimizedInstructions(void) const
     {
-        return (const FireStarterInstructions*)(m_optimizedInstructions.data());
+        return (const FireStarterInstructions*)(m_optimizedInstructionsData.data());
     } // OptimizedInstructions
 
     inline size_t InstructionsSize(void) const
