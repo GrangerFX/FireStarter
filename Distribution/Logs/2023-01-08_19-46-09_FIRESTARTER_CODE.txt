@@ -1,0 +1,37 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 32
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_CODE
+units = 1
+processes = 0
+iterations = 256
+candidates = 16
+generations = 1
+precision = 0
+attempts = 32
+seed = 0
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=0  Age=0 *Result=0.30005914  Best=0.30005914  BestGen=0  Time=0.0000 Seconds  Run Time=1.2426 Seconds  TestError=0.00000003
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=1  Age=0 *Result=0.13582027  Best=0.13582027  BestGen=1  Time=1.1179 Seconds  Run Time=2.3605 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=2  Age=0 *Result=0.12345231  Best=0.12345231  BestGen=2  Time=0.1713 Seconds  Run Time=2.5319 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=3  Age=0 *Result=0.09892857  Best=0.09892857  BestGen=3  Time=0.6462 Seconds  Run Time=3.1780 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=4  Age=0 *Result=0.08816338  Best=0.08816338  BestGen=4  Time=0.6481 Seconds  Run Time=3.8261 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=5  Age=0 *Result=0.05583028  Best=0.05583028  BestGen=5  Time=0.6474 Seconds  Run Time=4.4735 Seconds  TestError=0.00000006
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=6  Age=0 *Result=0.03570366  Best=0.03570366  BestGen=6  Time=0.6462 Seconds  Run Time=5.1197 Seconds  TestError=0.00000001
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=7  Age=1  Result=0.03570366  Best=0.03570366  BestGen=6  Time=0.6450 Seconds  Run Time=5.7646 Seconds  TestError=0.00000001
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=8  Age=0 *Result=0.02672791  Best=0.02672791  BestGen=8  Time=0.6401 Seconds  Run Time=6.4048 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=9  Age=1  Result=0.02672791  Best=0.02672791  BestGen=8  Time=0.6428 Seconds  Run Time=7.0475 Seconds  TestError=0.00000000
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=10  Age=0 *Result=0.02613705  Best=0.02613705  BestGen=10  Time=0.6373 Seconds  Run Time=7.6849 Seconds  TestError=0.00000006
+FIRESTARTER_CODE: Seed=0  Test=0  Generation=11  Age=0 *Result=0.02529383  Best=0.02529383  BestGen=11  Time=0.6492 Seconds  Run Time=8.3341 Seconds  TestError=0.00000000
