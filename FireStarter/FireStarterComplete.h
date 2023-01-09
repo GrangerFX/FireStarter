@@ -24,6 +24,7 @@ private:
 	double m_resultsTime = 0.0;
 	double m_generationTime = 0.0;
 	double m_totalResult = 0.0;
+	float m_testError = 0.0f;
 	unsigned int m_width = 0;
 	unsigned int m_height = 0;
 

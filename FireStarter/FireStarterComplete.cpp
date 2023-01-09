@@ -252,11 +252,12 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         }
 
         // Test the current state.
-        float testError = state.TestResult();
+        if (update)
+            m_testError = bestState.TestResult();
 
         // Update the render status after every pass.
         double average = m_totalResult / ++m_resultsCount;
-        RenderStatus(bestState, state, duration, m_generationTime, oldResult, average, testError);
+        RenderStatus(bestState, state, duration, m_generationTime, oldResult, average, m_testError);
 
         // If the best state was updated, save the stat and draw the results.
         if (update) {
