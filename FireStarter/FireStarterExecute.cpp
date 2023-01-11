@@ -47,11 +47,12 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
         forceInit = 0;
     }
 
-    // Single GPUs have their data syncronized with the host here.
+    // Syncronize the device with the host.
     FireStarterEvolutions* newEvolutions = settings.m_generations & 1 ? m_deviceEvolutions1 : m_deviceEvolutions0;
     FireStarterEvolutions* oldEvolutions = settings.m_generations & 1 ? m_deviceEvolutions0 : m_deviceEvolutions1;
     checkCUDAErrors(cudaMemcpyAsync(m_hostEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToHost, stream));
-    checkCUDAErrors(cudaMemcpyAsync(oldEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToDevice, stream));
+    if (settings.m_generations & 1)
+        checkCUDAErrors(cudaMemcpyAsync(oldEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
 
     // Get the best results.
@@ -121,7 +122,8 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     FireStarterPopulation* newPopulation = settings.m_generations & 1 ? m_devicePopulation1 : m_devicePopulation0;
     FireStarterPopulation* oldPopulation = settings.m_generations & 1 ? m_devicePopulation0 : m_devicePopulation1;
     checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, stream));
-    checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, stream));
+    if (settings.m_generations & 1)
+        checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
 
     // Get the best variation results.
@@ -249,6 +251,12 @@ void FireStarterExecute::FinishResults(void)
     context->Synchronize();
 } // FinishResults
 
+void FireStarterExecute::Code(FireStarterState& state, bool init)
+{
+    state.m_maxResult = 0;
+    CodeGenerations(state, init, 0, state.Settings().m_variations);
+} // Code
+
 void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipVariations)
 {
     FireStarterSettings stateSettings = state.Settings();
@@ -324,6 +332,18 @@ void FireStarterExecute::ExecuteCompile(bool sync)
         CompileModule(m_job);
     }, sync);
 } // ExecuteEvolve
+
+void FireStarterExecute::ExecuteCode(bool init, bool sync)
+{
+    Dispatch([this, init] {
+        if (m_job) {
+            FireStarterJob* job = m_manager->GetCode();
+            if (job)
+                Code(job->m_state, init);
+            m_manager->AddComplete(job);
+        }
+    }, sync);
+} // ExecuteCode
 
 void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t test, bool init, bool sync)
 {

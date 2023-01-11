@@ -29,11 +29,13 @@ private:
     void FinishResults(void);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int variation);
+    void Code(FireStarterState& state, bool init);
     void Optimize(FireStarterState& state, bool init, bool skipVariations = false);
     bool CompileModule(FireStarterJob* &job);
 
 public:
     void ExecuteCompile(bool sync = false);
+    void ExecuteCode(bool init, bool sync = false);
     void ExecuteOptimize(size_t generation, size_t index, size_t test, bool init, bool sync = false);
     void ExecuteEvolve(bool sync = false);
 	void ExecuteRandom(bool sync = false);
