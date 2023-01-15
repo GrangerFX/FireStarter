@@ -305,7 +305,7 @@ public:
         return false;
     } // DispatchAsync
 
-    inline bool DispatchMainAsync(const SerialThreadWork& work)
+    static inline bool DispatchMainAsync(const SerialThreadWork& work)
     {
         SerialThread* mainThread = MainThread();
         if (mainThread)
@@ -333,7 +333,7 @@ public:
         return false;
     } // DispatchSync
 
-    inline bool DispatchMainSync(const SerialThreadWork& work)
+    static inline bool DispatchMainSync(const SerialThreadWork& work)
     {
         SerialThread* mainThread = MainThread();
         if (mainThread)
@@ -346,7 +346,7 @@ public:
         return sync ? DispatchSync(work) : DispatchAsync(work);
     } // Dispatch
 
-    inline bool DispatchMain(const SerialThreadWork& work, bool sync)
+    static inline bool DispatchMain(const SerialThreadWork& work, bool sync)
     {
         return sync ? DispatchMainSync(work) : DispatchMainAsync(work);
     } // DispatchMain

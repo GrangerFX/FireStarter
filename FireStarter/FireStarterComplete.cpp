@@ -20,35 +20,10 @@ bool FireStarterComplete::LoadFireShowCode(void)
     return true;
 } // LoadFireShowCode
 
-void FireStarterComplete::DisplayImage(const unsigned char* pixels)
-{
-    DispatchMainSync([this, pixels] {
-        unsigned char buffer[4096];
-        BITMAPINFO* bm = (BITMAPINFO*)buffer;
-        bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        bm->bmiHeader.biHeight = -(int)m_height;
-        bm->bmiHeader.biPlanes = 1;
-        bm->bmiHeader.biCompression = BI_RGB;
-        bm->bmiHeader.biSizeImage = 0;
-        bm->bmiHeader.biXPelsPerMeter = 0;
-        bm->bmiHeader.biYPelsPerMeter = 0;
-        bm->bmiHeader.biClrUsed = 0;
-        bm->bmiHeader.biClrImportant = 0;
-        bm->bmiHeader.biWidth = m_width;
-        bm->bmiHeader.biBitCount = 32;
-
-        HDC hdc = GetDC((HWND)m_window);
-        if (hdc) {
-            SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, pixels, bm, DIB_RGB_COLORS);
-            GdiFlush();
-        }
-    });
-} // DisplayImage
-
 void FireStarterComplete::FireShow(const FireStarterState& state)
 {
     // Erase the frame buffer
-    m_buffer.Erase();
+    m_window->Erase();
 
     // Setup the data
     CUDAContext* context = Context();
@@ -61,29 +36,30 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
 
     // Launch the display kernel
     int threadsPerBlock = BLOCK_THREADS;
-    int blocksPerGrid = (m_buffer.m_width + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = (m_window->m_width + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     void* arr[] = { reinterpret_cast<void*>(&m_fireShowResults),
                     reinterpret_cast<void*>(&m_fireShowInstructions),
-                    reinterpret_cast<void*>(&m_buffer.m_deviceBase),
-                    reinterpret_cast<void*>(&m_buffer.m_width),
-                    reinterpret_cast<void*>(&m_buffer.m_height),
+                    reinterpret_cast<void*>(&m_window->m_deviceBase),
+                    reinterpret_cast<void*>(&m_window->m_width),
+                    reinterpret_cast<void*>(&m_window->m_height),
                     reinterpret_cast<void*>(&settings.m_variations) };
 
     checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-        0, context->Stream(),                         // shared mem, stream */
-        &arr[0],                                            // arguments */
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+        0,                                                  // shared mem
+        context->Stream(),                                  // stream
+        &arr[0],                                            // arguments
         0));
 
     // Syncronize the stream to complete the work
     context->Synchronize();
 
     // Display the buffer in the window.
-    DisplayImage(m_buffer.GetPixels());
+    m_window->DisplayImage();
 } // FireShow
 
 void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double oldResult, double average, double testError)
@@ -174,10 +150,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
         FireStarterCode::AppendCode(logFilePath, "\r\n");
 
     // Update the window status.
-    HWND window = (HWND)m_window;
-    DispatchMainAsync([window, statusString] {
-        SetWindowText(window, statusString.c_str());
-    });
+    m_window->DisplayText(statusString);
 } // RenderStatus
 
 void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
@@ -339,30 +312,32 @@ void FireStarterComplete::CompleteSolution(bool sync)
 {
     Dispatch([this] {
         std::string statusString = "FireStarter:";
-        uchar4* pixels = (uchar4*)m_buffer.GetHost();
+        uchar4* pixels = (uchar4*)m_window->GetHost();
+        unsigned int width = m_window->m_width;
+        unsigned int height = m_window->m_height;
         float maxError = 0.0f;
         for (unsigned int v = 0; v < m_settings.m_variations; v++) {
-            int xScale = m_height / 8;
-            int yScale = m_height / 16;
-            for (unsigned int y = 0; y < m_height; y++) {
-                int x0 = (m_width / 2) - xScale;
-                int x1 = (m_width / 2) + xScale;
+            int xScale = height / 8;
+            int yScale = height / 16;
+            for (unsigned int y = 0; y < height; y++) {
+                int x0 = (width / 2) - xScale;
+                int x1 = (width / 2) + xScale;
                 if (x0 >= 0) {
-                    uchar4& pixel(pixels[y * m_width + x0]);
+                    uchar4& pixel(pixels[y * width + x0]);
                     pixel.x = 64;
                     pixel.y = 128;
                     pixel.z = 64;
                 };
-                if (x1 < (int)m_width) {
-                    uchar4& pixel(pixels[y * m_width + x1]);
+                if (x1 < (int)width) {
+                    uchar4& pixel(pixels[y * width + x1]);
                     pixel.x = 64;
                     pixel.y = 128;
                     pixel.z = 64;
                 };
             }
-            for (unsigned int x = 0; x < m_width; x++) {
-                float theta = TARGET_PI * ((x - m_width * 0.5f) / xScale + 1.0f);
-                float center = m_height * 0.66f;
+            for (unsigned int x = 0; x < width; x++) {
+                float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
+                float center = height * 0.66f;
                 float target = SolutionTarget(theta, v);
 #if SOLUTION_VARIATIONS == 1
                 float solution = Solution(theta);
@@ -374,35 +349,31 @@ void FireStarterComplete::CompleteSolution(bool sync)
                     maxError = max(maxError, error);
                 }
                 int y = (int)(center + target * yScale);
-                if ((y >= 0) && (y < (int)m_height)) {
-                    uchar4& pixel(pixels[y * m_width + x]);
+                if ((y >= 0) && (y < (int)height)) {
+                    uchar4& pixel(pixels[y * width + x]);
                     pixel.x = 255;
                     pixel.y = 128;
                 };
                 y = (int)(center + solution * yScale);
-                if ((y >= 0) && (y < (int)m_height)) {
-                    uchar4& pixel(pixels[y * m_width + x]);
+                if ((y >= 0) && (y < (int)height)) {
+                    uchar4& pixel(pixels[y * width + x]);
                     pixel.x = pixel.y = pixel.z = 255;
                 };
             }
             statusString += Format(" Solution %d = %f", v, maxError);
         }
-        DisplayImage(m_buffer.GetHost());
-        SetWindowText((HWND)m_window, statusString.c_str());
-    }, false);
+        m_window->DisplayImage();
+        m_window->DisplayText(statusString);
+    }, sync);
 } // CompleteSolution
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterSettings& settings, void* window, unsigned int width, unsigned int height)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, FireStarterWindow* window, const FireStarterSettings& settings)
 {
     m_manager = manager;
-    m_settings = settings;
     m_window = window;
-    m_width = width;
-    m_height = height;
+    m_settings = settings;
 
     DispatchSync([this] {
-        m_buffer.Resize(m_width, m_height);
-        m_buffer.Erase();
         if ((m_settings.m_mode != FIRESTARTER_SOLUTION) && LoadFireShowCode() && LoadSolutionTargetCode()) {
             CUDAContext* context = Context();
             CUstream stream = context->Stream();
@@ -428,7 +399,6 @@ FireStarterComplete::~FireStarterComplete(void)
         CUDAContext* context = Context();
         CUstream stream = context->Stream();
 
-        m_buffer.Resize(0, 0);
         if (m_fireShowResults) {
             checkCUDAErrors(cudaFreeAsync(m_fireShowResults, stream));
             m_fireShowResults = nullptr;
