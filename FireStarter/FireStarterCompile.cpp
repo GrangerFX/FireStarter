@@ -3,6 +3,9 @@
 
 #define COMPILE_EXECUTE "CompileExecute"
 
+FireStarterServer* FireStarterCompile::m_server = nullptr;
+size_t FireStarterCompile::m_serverReferences = 0;
+
 bool FireStarterCompiler::Compile(FireStarterManager* manager)
 {
     FireStarterJob* job = manager->GetCode();
@@ -200,14 +203,15 @@ FireStarterCompile::FireStarterCompile(FireStarterManager* manager, size_t numPr
     m_manager = manager;
     m_numProcesses = numProcesses;
     if (numProcesses) {
-        m_server = new FireStarterServer();
+        if (!m_server)
+            m_server = new FireStarterServer();
+        m_serverReferences++;
         for (unsigned int i = 0; i < numProcesses; i++) {
             FireStarterCompiler* compiler = new FireStarterCompiler(this, manager, m_server);
             m_compilers.push_back(compiler);
             m_activeCompilers++;
         }
     } else {
-        m_server = nullptr;
         FireStarterCompiler* compiler = new FireStarterCompiler(this, manager);
         m_compilers.push_back(compiler);
         m_activeCompilers++;
@@ -218,5 +222,8 @@ FireStarterCompile::~FireStarterCompile(void)
 {
     for (FireStarterCompiler* compiler : m_compilers)
         delete compiler;
-    delete m_server;
+    if (!--m_serverReferences) {
+        delete m_server;
+        m_server = nullptr;
+    }
 } // ~FireStarterCompile

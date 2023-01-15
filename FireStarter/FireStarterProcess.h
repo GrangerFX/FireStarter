@@ -49,6 +49,7 @@ class FireStarterServer {
 private:
     std::vector<FireStarterProcess*> m_processes;
     std::string m_processServerName;
+    std::mutex m_serverMutex;
 public:
     const std::string& ModulePath(void) const;
     FireStarterProcess* Process(size_t index);

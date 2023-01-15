@@ -490,15 +490,19 @@ FireStarterProcess* FireStarterServer::AddProcess(const std::string& name)
     std::string processPipeName = "\\\\.\\pipe\\" + name + std::to_string(++processIndex);
     std::string processPath = ModulePath() + name + ".exe";
     FireStarterProcess* process = new FireStarterProcess(processPipeName, processPath, processIndex);
+    m_serverMutex.lock();
     m_processes.push_back(process);
+    m_serverMutex.unlock();
     return process;
 } // AddProcess
 
 void FireStarterServer::ClearProcesses(void)
 {
+    m_serverMutex.lock();
     for (FireStarterProcess* process : m_processes)
         delete process;
     m_processes.clear();
+    m_serverMutex.unlock();
 } // ClearProcesses
 
 FireStarterServer::FireStarterServer(const std::string& name)

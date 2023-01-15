@@ -24,7 +24,8 @@ class FireStarterCompile {
 private:
 	std::vector<FireStarterCompiler*> m_compilers;
 	FireStarterManager* m_manager = nullptr;
-	FireStarterServer* m_server = nullptr;
+	static FireStarterServer* m_server;
+	static size_t m_serverReferences;
 	size_t m_numProcesses = 0;
 	std::atomic<unsigned int> m_activeCompilers;
 
