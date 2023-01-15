@@ -5,6 +5,7 @@
 class FireStarter : public SerialThread {
 private:
     FireStarterBuildSettings m_buildSettings;
+    FireStarterSettings m_optimizeSettings;
     void* m_window = nullptr;
     unsigned int m_width = 0;
     unsigned int m_height = 0;

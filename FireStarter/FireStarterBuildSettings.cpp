@@ -11,8 +11,8 @@ bool FireStarterBuildSettings::LoadFireSettingsCode(void)
 
 void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsigned int fireStarterMode)
 {
-    if (m_fireSettingsFunction)
-        DispatchSync([this, &settings, fireStarterMode] {
+    DispatchSync([this, &settings, fireStarterMode] {
+        if (m_fireSettingsFunction) {
             CUDAContext* context = Context();
             CUstream stream = context->Stream();
 
@@ -39,27 +39,30 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
             // Unload the fire show code and destroy the CUDA context.
             checkCUDAErrors(cudaFreeAsync(fireSettings, stream));
             context->Synchronize();
-        });
+        } else
+            settings = FireStarterSettings(fireStarterMode);
 
-    // If the evolve units is set to zero, use the number of gpus.
-    if (settings.m_units == 0)
-        settings.m_units = CUDAContext::CUDADevices();
+        // If the evolve units is set to zero, use the number of gpus.
+        if (settings.m_units == 0)
+            settings.m_units = CUDAContext::CUDADevices();
+    });
 } // FireStarterBuildSettings
 
 FireStarterBuildSettings::FireStarterBuildSettings(void)
 {
-    if (LoadFireSettingsCode())
-        DispatchSync([this] {
-            // Compile FireSettings
-            if (CUDACompile::CompileProgram(m_fireSettingsModule, m_fireSettingsCode, "FireSettings"))
-                m_fireSettingsFunction = CUDACompile::GetFunction(m_fireSettingsModule, "FireSettings");
-        });
+    DispatchSync([this] {
+        // Compile FireSettings
+        if (LoadFireSettingsCode() && CUDACompile::CompileProgram(m_fireSettingsModule, m_fireSettingsCode, "FireSettings"))
+            m_fireSettingsFunction = CUDACompile::GetFunction(m_fireSettingsModule, "FireSettings");
+    });
 } // FireStarterBuildSettings
 
 FireStarterBuildSettings::~FireStarterBuildSettings(void)
 {
-    if (m_fireSettingsModule) {
-        checkCUDAErrors(cuModuleUnload(m_fireSettingsModule));
-        m_fireSettingsModule = nullptr;
-    }
+    DispatchSync([this] {
+        if (m_fireSettingsModule) {
+            checkCUDAErrors(cuModuleUnload(m_fireSettingsModule));
+            m_fireSettingsModule = nullptr;
+        }
+    });
 } // ~FireStarterBuildSettings

@@ -22,7 +22,7 @@
 #define FIRESTARTER_EVOLVE   5
 #define FIRESTARTER_OPTIMIZE 6
 #define FIRESTARTER_SOLUTION 7
-#define FIRESTARTER_MODE     FIRESTARTER_OPTIMIZE
+#define FIRESTARTER_MODE     FIRESTARTER_SOLUTION
 
 #define FIRESTARTER_CODE_UNITS              1
 #define FIRESTARTER_CODE_PROCESSES          0
@@ -173,7 +173,7 @@ public:
         m_targetMax = source.m_targetMax;
     } // CopyCodeSettings
 
-    inline void CopyModeSettings(FireStarterSettings& source)
+    inline void CopyModeSettings(const FireStarterSettings& source)
     {
         m_mode = source.m_mode;
         m_units = source.m_units;
@@ -293,6 +293,7 @@ public:
                 m_startResult = FIRESTARTER_OPTIMIZE_START_RESULT;
                 break;
 
+            case FIRESTARTER_SOLUTION:
             default:
                 m_units = 0;
                 m_processes = 0;
