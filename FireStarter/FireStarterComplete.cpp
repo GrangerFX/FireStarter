@@ -311,6 +311,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 void FireStarterComplete::CompleteSolution(bool sync)
 {
     Dispatch([this] {
+        m_window->Erase();
         std::string statusString = "FireStarter:";
         uchar4* pixels = (uchar4*)m_window->GetHost();
         unsigned int width = m_window->m_width;
@@ -362,7 +363,7 @@ void FireStarterComplete::CompleteSolution(bool sync)
             }
             statusString += Format(" Solution %d = %f", v, maxError);
         }
-        m_window->DisplayImage();
+        m_window->DisplayImage(false);
         m_window->DisplayText(statusString);
     }, sync);
 } // CompleteSolution

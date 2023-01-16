@@ -11,11 +11,11 @@ public:
     long m_rowbytes = 0;                    // Number of bytes per row
     size_t m_size = 0;                      // The total size of the buffer in bytes
 
-    inline void Erase(void)
+    inline void Erase(unsigned char gray = 0)
     {
         if (m_size) {
-            cudaMemset(m_deviceBase, 0, m_width * m_height * sizeof(uchar4));
-            cudaMemset(m_hostBase, 0, m_width * m_height * sizeof(uchar4));
+            cudaMemset(m_deviceBase, gray, m_width * m_height * sizeof(uchar4));
+//          cudaMemset(m_hostBase, gray, m_width * m_height * sizeof(uchar4));
         }
     } // EraseFrameBuffer
 
@@ -55,9 +55,9 @@ public:
         }
     } // Resize
 
-    inline void DisplayImage(void)
+    inline void DisplayImage(bool devicePixels = true)
     {
-        SerialThread::DispatchMainAsync([this] {
+        SerialThread::DispatchMainAsync([this, devicePixels] {
             if (m_window && m_width && m_height) {
                 unsigned char buffer[4096];
                 BITMAPINFO* bm = (BITMAPINFO*)buffer;
@@ -75,18 +75,18 @@ public:
 
                 HDC hdc = GetDC((HWND)m_window);
                 if (hdc) {
-                    SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, GetPixels(), bm, DIB_RGB_COLORS);
+                    SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, devicePixels ? GetPixels() : GetHost(), bm, DIB_RGB_COLORS);
                     GdiFlush();
                 }
             }
-            });
+        });
     } // DisplayImage
 
     inline void DisplayText(const std::string& string)
     {
         SerialThread::DispatchMainAsync([this, string] {
             SetWindowText((HWND)m_window, string.c_str());
-            });
+        });
     } // DisplayText
 
     inline FireStarterWindow(void* window = nullptr, unsigned long width = 0, unsigned long height = 0) : m_window(window)

@@ -4,6 +4,7 @@
 #include "FireStarterEvolve.h"
 #include "FireStarterExecute.h"
 #include "FireStarterComplete.h"
+#include "FireStarterStream.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 
@@ -196,6 +197,10 @@ void FireStarter::ControlTest(void)
     FireStarterSettings testSettings;
     m_buildSettings.FireSettings(testSettings, FIRESTARTER_TEST);
 
+#if 1
+    FireStarterStream testStream(&m_window, testSettings, m_optimizeSettings);
+    testStream.Synchronize();
+#else
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager();
 
@@ -255,6 +260,7 @@ void FireStarter::ControlTest(void)
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
         ControlOptimize(&bestState);
+#endif
 } // ControlTest
 
 void FireStarter::ControlRandom(void)
