@@ -113,6 +113,7 @@ void FireStarterStream::Evolve(void)
     // Setup the intial state
     std::vector<FireStarterState> allStates;
     FireStarterState bestState(m_evolveSettings);
+    bestState.m_index = m_index;
     allStates.push_back(bestState);
 
     // Loop until the the completion condition or the host program is quit.
@@ -154,7 +155,15 @@ void FireStarterStream::Evolve(void)
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
         Optimize(&bestState);
+
+    // This stream is now finished.
+    m_finished = true;
 } // Evolve
+
+bool FireStarterStream::Finished(void)
+{
+    return m_finished;
+} // Finished
 
 FireStarterStream::FireStarterStream(FireStarterWindow* window, const FireStarterSettings& evolveSettings, const FireStarterSettings& optimizeSettings, size_t index) : m_window(window), m_evolveSettings(evolveSettings), m_optimizeSettings(optimizeSettings), m_index(index)
 {

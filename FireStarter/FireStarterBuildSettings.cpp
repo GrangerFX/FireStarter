@@ -45,6 +45,12 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
         // If the evolve units is set to zero, use the number of gpus.
         if (settings.m_units == 0)
             settings.m_units = CUDAContext::CUDADevices();
+
+#if FIRESTARTER_AUTO_PROCESS
+        // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
+        if ((settings.m_processes == 0) && ((fireStarterMode == FIRESTARTER_EVOLVE) || (fireStarterMode == FIRESTARTER_RANDOM))
+            settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
+#endif
     });
 } // FireStarterBuildSettings
 

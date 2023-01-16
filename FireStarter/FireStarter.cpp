@@ -197,10 +197,6 @@ void FireStarter::ControlTest(void)
     FireStarterSettings testSettings;
     m_buildSettings.FireSettings(testSettings, FIRESTARTER_TEST);
 
-#if 1
-    FireStarterStream testStream(&m_window, testSettings, m_optimizeSettings);
-    testStream.Synchronize();
-#else
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager();
 
@@ -260,7 +256,6 @@ void FireStarter::ControlTest(void)
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
         ControlOptimize(&bestState);
-#endif
 } // ControlTest
 
 void FireStarter::ControlRandom(void)
@@ -269,12 +264,6 @@ void FireStarter::ControlRandom(void)
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings randomSettings;
     m_buildSettings.FireSettings(randomSettings, FIRESTARTER_RANDOM);
-
-    // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
-#if FIRESTARTER_AUTO_PROCESS
-    if (settings.m_processes == 0)
-        settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
-#endif
 
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(max(randomSettings.m_units, randomSettings.m_processes));
@@ -334,12 +323,31 @@ void FireStarter::ControlEvolve(void)
     FireStarterSettings evolveSettings;
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
 
-    // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
-#if FIRESTARTER_AUTO_PROCESS
-    if (settings.m_processes == 0)
-        settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
-#endif
+#if 1
+    // Allocate and start each stream unit.
+    std::vector<FireStarterStream*> streamUnits;
+    for (size_t i = 0; i < evolveSettings.m_units; i++) {
+        FireStarterStream* streamUnit = new FireStarterStream(&m_window, evolveSettings, m_optimizeSettings, i);
+        streamUnits.push_back(streamUnit);
+    }
 
+    // Loop until the the completion condition or the host program is quit.
+    while (!WillTerminate()) {
+        bool finished = true;
+        for (FireStarterStream* streamUnit : streamUnits)
+            if (!streamUnit->Finished()) {
+                finished = false;
+                break;
+            }
+        if (finished)
+            break;
+        SleepFor(0.1);
+    }
+
+    // Terminate and delete each stream unit.
+    for (FireStarterStream* streamUnit : streamUnits)
+        delete streamUnit;
+#else
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(max(evolveSettings.m_units, evolveSettings.m_processes));
 
@@ -414,6 +422,7 @@ void FireStarter::ControlEvolve(void)
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
+#endif
 } // ControlEvolve
 
 void FireStarter::ControlSolution(void)
