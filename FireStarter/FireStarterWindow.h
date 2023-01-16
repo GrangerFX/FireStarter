@@ -11,25 +11,45 @@ public:
     long m_rowbytes = 0;                    // Number of bytes per row
     size_t m_size = 0;                      // The total size of the buffer in bytes
 
-    inline void Erase(unsigned char gray = 0)
+    inline FireStarterWindow& operator = (const FireStarterWindow& other)
+    {
+        m_window = other.m_window;
+        Resize(other.m_width, other.m_height);
+        return *this;
+    } // operator =
+
+    inline void Allocate(CUstream stream = nullptr)
     {
         if (m_size) {
-            cudaMemset(m_deviceBase, gray, m_width * m_height * sizeof(uchar4));
-//          cudaMemset(m_hostBase, gray, m_width * m_height * sizeof(uchar4));
+            if (stream && !m_deviceBase)
+                checkCUDAErrors(cudaMalloc(&m_deviceBase, m_size));
+            if (!m_hostBase)
+                checkCUDAErrors(cudaMallocHost(&m_hostBase, m_size));
         }
-    } // EraseFrameBuffer
+    } // Allocate
 
-    inline const unsigned char* GetPixels(void)
+    inline void Erase(CUstream stream = nullptr)
     {
-        if (m_size)
-            checkCUDAErrors(cudaMemcpy(m_hostBase, m_deviceBase, m_size, cudaMemcpyDeviceToHost));
+        if (m_size) {
+            Allocate(stream);
+            if (stream)
+                cudaMemsetAsync(m_deviceBase, 0, m_size, stream);
+            else
+                cudaMemset(m_hostBase, 0, m_size);
+        }
+    } // Erase
+
+    inline const unsigned char* GetPixels(CUstream stream = nullptr)
+    {
+        if (m_size) {
+            Allocate(stream);
+            if (stream) {
+                checkCUDAErrors(cudaMemcpyAsync(m_hostBase, m_deviceBase, m_size, cudaMemcpyDeviceToHost, stream));
+                checkCUDAErrors(cudaStreamSynchronize(stream));
+            }
+        }
         return m_hostBase;
     } // GetPixels
-
-    inline const unsigned char* GetHost(void)
-    {
-        return m_hostBase;
-    } // GetFrameBuffer
 
     inline void Resize(unsigned long width = 0, unsigned long height = 0)
     {
@@ -46,40 +66,36 @@ public:
             m_height = height;
             m_rowbytes = width * sizeof(uchar4);
             m_size = m_width * m_height * sizeof(uchar4);
-
-            if (m_size) {
-                checkCUDAErrors(cudaMalloc(&m_deviceBase, m_size));
-                checkCUDAErrors(cudaMallocHost(&m_hostBase, m_size));
-                memset(m_hostBase, 0, m_width * m_height * sizeof(uchar4));
-            }
         }
     } // Resize
 
-    inline void DisplayImage(bool devicePixels = true)
+    inline void DisplayImage(CUstream stream = nullptr)
     {
-        SerialThread::DispatchMainAsync([this, devicePixels] {
-            if (m_window && m_width && m_height) {
-                unsigned char buffer[4096];
-                BITMAPINFO* bm = (BITMAPINFO*)buffer;
-                bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-                bm->bmiHeader.biHeight = -(int)m_height;
-                bm->bmiHeader.biPlanes = 1;
-                bm->bmiHeader.biCompression = BI_RGB;
-                bm->bmiHeader.biSizeImage = 0;
-                bm->bmiHeader.biXPelsPerMeter = 0;
-                bm->bmiHeader.biYPelsPerMeter = 0;
-                bm->bmiHeader.biClrUsed = 0;
-                bm->bmiHeader.biClrImportant = 0;
-                bm->bmiHeader.biWidth = m_width;
-                bm->bmiHeader.biBitCount = 32;
+        const unsigned char* pixels = GetPixels(stream);
+        if (pixels)
+            SerialThread::DispatchMainAsync([this, pixels] {
+                if (m_window && m_width && m_height) {
+                    unsigned char buffer[4096];
+                    BITMAPINFO* bm = (BITMAPINFO*)buffer;
+                    bm->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+                    bm->bmiHeader.biHeight = -(int)m_height;
+                    bm->bmiHeader.biPlanes = 1;
+                    bm->bmiHeader.biCompression = BI_RGB;
+                    bm->bmiHeader.biSizeImage = 0;
+                    bm->bmiHeader.biXPelsPerMeter = 0;
+                    bm->bmiHeader.biYPelsPerMeter = 0;
+                    bm->bmiHeader.biClrUsed = 0;
+                    bm->bmiHeader.biClrImportant = 0;
+                    bm->bmiHeader.biWidth = m_width;
+                    bm->bmiHeader.biBitCount = 32;
 
-                HDC hdc = GetDC((HWND)m_window);
-                if (hdc) {
-                    SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, devicePixels ? GetPixels() : GetHost(), bm, DIB_RGB_COLORS);
-                    GdiFlush();
+                    HDC hdc = GetDC((HWND)m_window);
+                    if (hdc) {
+                        SetDIBitsToDevice(hdc, 0, 0, m_width, m_height, 0, 0, 0, m_height, pixels, bm, DIB_RGB_COLORS);
+                        GdiFlush();
+                    }
                 }
-            }
-        });
+            });
     } // DisplayImage
 
     inline void DisplayText(const std::string& string)
@@ -88,6 +104,12 @@ public:
             SetWindowText((HWND)m_window, string.c_str());
         });
     } // DisplayText
+
+    inline FireStarterWindow(const FireStarterWindow& other)
+    {
+        m_window = other.m_window;
+        Resize(other.m_width, other.m_height);
+    } // FireStarterWindow
 
     inline FireStarterWindow(void* window = nullptr, unsigned long width = 0, unsigned long height = 0) : m_window(window)
     {

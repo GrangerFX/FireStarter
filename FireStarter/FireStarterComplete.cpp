@@ -22,9 +22,6 @@ bool FireStarterComplete::LoadFireShowCode(void)
 
 void FireStarterComplete::FireShow(const FireStarterState& state)
 {
-    // Erase the frame buffer
-    m_window->Erase();
-
     // Setup the data
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
@@ -34,32 +31,32 @@ void FireStarterComplete::FireShow(const FireStarterState& state)
     size_t instructionsSize = FireStarterInstructions::InstructionsSize(settings.m_instructions);
     checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.OptimizedInstructions(), instructionsSize, cudaMemcpyHostToDevice, stream));
 
+    // Erase the frame buffer
+    m_window.Erase(stream);
+
     // Launch the display kernel
     int threadsPerBlock = BLOCK_THREADS;
-    int blocksPerGrid = (m_window->m_width + threadsPerBlock - 1) / threadsPerBlock;
+    int blocksPerGrid = (m_window.m_width + threadsPerBlock - 1) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
     void* arr[] = { reinterpret_cast<void*>(&m_fireShowResults),
                     reinterpret_cast<void*>(&m_fireShowInstructions),
-                    reinterpret_cast<void*>(&m_window->m_deviceBase),
-                    reinterpret_cast<void*>(&m_window->m_width),
-                    reinterpret_cast<void*>(&m_window->m_height),
+                    reinterpret_cast<void*>(&m_window.m_deviceBase),
+                    reinterpret_cast<void*>(&m_window.m_width),
+                    reinterpret_cast<void*>(&m_window.m_height),
                     reinterpret_cast<void*>(&settings.m_variations) };
 
     checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
         0,                                                  // shared mem
-        context->Stream(),                                  // stream
+        stream,                                             // stream
         &arr[0],                                            // arguments
         0));
 
-    // Syncronize the stream to complete the work
-    context->Synchronize();
-
-    // Display the buffer in the window.
-    m_window->DisplayImage();
+    // Display the buffer in the window and synchronize the stream.
+    m_window.DisplayImage(stream);
 } // FireShow
 
 void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double oldResult, double average, double testError)
@@ -150,7 +147,7 @@ void FireStarterComplete::RenderStatus(const FireStarterState& bestState, const 
         FireStarterCode::AppendCode(logFilePath, "\r\n");
 
     // Update the window status.
-    m_window->DisplayText(statusString);
+    m_window.DisplayText(statusString);
 } // RenderStatus
 
 void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
@@ -311,11 +308,11 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 void FireStarterComplete::CompleteSolution(bool sync)
 {
     Dispatch([this] {
-        m_window->Erase();
+        m_window.Erase();
         std::string statusString = "FireStarter:";
-        uchar4* pixels = (uchar4*)m_window->GetHost();
-        unsigned int width = m_window->m_width;
-        unsigned int height = m_window->m_height;
+        uchar4* pixels = (uchar4*)m_window.GetPixels();
+        unsigned int width = m_window.m_width;
+        unsigned int height = m_window.m_height;
         float maxError = 0.0f;
         for (unsigned int v = 0; v < m_settings.m_variations; v++) {
             int xScale = height / 8;
@@ -363,15 +360,15 @@ void FireStarterComplete::CompleteSolution(bool sync)
             }
             statusString += Format(" Solution %d = %f", v, maxError);
         }
-        m_window->DisplayImage(false);
-        m_window->DisplayText(statusString);
+        m_window.DisplayImage(false);
+        m_window.DisplayText(statusString);
     }, sync);
 } // CompleteSolution
 
 FireStarterComplete::FireStarterComplete(FireStarterManager* manager, FireStarterWindow* window, const FireStarterSettings& settings)
 {
     m_manager = manager;
-    m_window = window;
+    m_window = *window;
     m_settings = settings;
 
     DispatchSync([this] {
