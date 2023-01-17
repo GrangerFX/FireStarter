@@ -150,21 +150,19 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState)
     size_t lastTest = evolveState ? startState.m_test : FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS - 1;
     for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
         // Create the state and execution unit.
-        FireStarterState bestState(startState);
-        bestState.m_index = evolveState ? startState.m_index : startState.m_index + test;
-        bestState.m_test = test;
-        std::vector<FireStarterState> allStates;
-        allStates.push_back(bestState);
+        FireStarterState optimizeState(startState);
+        optimizeState.m_index = evolveState ? startState.m_index : startState.m_index + test;
+        optimizeState.m_test = test;
         
         // Loop until the the completion condition or the host program is quit.
         size_t generation = startState.m_generation;
         bool init = true;
         while (!WillTerminate()) {
             // Optimize the current generation.
-            execute->ExecuteOptimize(generation, bestState.m_index, test, init);
+            execute->ExecuteOptimize(generation, optimizeState.m_index, test, init);
 
             // Update the results in the UI.
-            if (!complete->CompleteStates(bestState, allStates, generation))
+            if (!complete->CompleteState(optimizeState))
                 break;
             generation++;
             init = false;

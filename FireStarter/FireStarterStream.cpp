@@ -56,8 +56,7 @@ void FireStarterStream::Optimize(const FireStarterState* evolveState)
         FireStarterState bestState(startState);
         bestState.m_index = evolveState ? startState.m_index : startState.m_index + test;
         bestState.m_test = test;
-        std::vector<FireStarterState> allStates;
-        allStates.push_back(bestState);
+        FireStarterState optimizeState(bestState);
 
         // Loop until the the completion condition or the host program is quit.
         size_t generation = startState.m_generation;
@@ -67,7 +66,7 @@ void FireStarterStream::Optimize(const FireStarterState* evolveState)
             execute->ExecuteOptimize(generation, bestState.m_index, test, init);
 
             // Update the results in the UI.
-            if (!complete->CompleteStates(bestState, allStates, generation))
+            if (!complete->CompleteState(optimizeState))
                 break;
             generation++;
             init = false;
