@@ -213,15 +213,13 @@ void FireStarter::ControlTest(void)
     FireStarterComplete* complete = new FireStarterComplete(manager, &m_window, testSettings);
 
     // Setup the intial state
-    std::vector<FireStarterState> allStates;
-    FireStarterState bestState(testSettings);
-    allStates.push_back(bestState);
+    FireStarterState testState(testSettings);
 
     // Loop until the the completion condition or the host program is quit.
     size_t generation = 0;
     while (!WillTerminate()) {
         // Evolve a new generation for the state.
-        evolve->EvolveStates(bestState, allStates, generation, true);
+        evolve->EvolveState(testState, generation, true);
 
         // Compile the evolved program.
         compile->CompileJob(manager, true);
@@ -230,7 +228,7 @@ void FireStarter::ControlTest(void)
         execute->ExecuteEvolve(true);
 
         // Complete the state and display the results.
-        if (!complete->CompleteStates(bestState, allStates, generation))
+        if (!complete->CompleteState(testState, generation))
             break;
         generation++;
     }
@@ -255,7 +253,7 @@ void FireStarter::ControlTest(void)
 
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        ControlOptimize(&bestState);
+        ControlOptimize(&testState); 
 } // ControlTest
 
 void FireStarter::ControlRandom(void)
@@ -357,6 +355,7 @@ void FireStarter::ControlEvolve(void)
     // Create the states and units.
     std::vector<FireStarterEvolve*> evolveUnits;
     std::vector<FireStarterExecute*> executionUnits;
+    std::vector<FireStarterState> allStates(evolveSettings.m_units);
     for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
         // Create an evolve unit.
         FireStarterEvolve* evolve = new FireStarterEvolve(manager, i);
@@ -368,15 +367,12 @@ void FireStarter::ControlEvolve(void)
     }
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, &m_window, evolveSettings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, &m_window, evolveSettings, allStates);
 
     for (unsigned int test = FIRESTARTER_TEST_START; (test < FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++) {
-        std::vector<FireStarterState> allStates;
-        for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
-            // Randomize the entire program for the first generation
-            FireStarterState state(evolveSettings, evolveSettings.m_units * test + i, test);
-            allStates.push_back(state);
-        }
+        // Randomize the entire program of each state for the first generation
+        for (unsigned int i = 0; i < evolveSettings.m_units; i++)
+            allStates[i].InitState(evolveSettings, evolveSettings.m_units * test + i, test);
 
         // Setup the intial best state
         FireStarterState bestState(allStates[0]);

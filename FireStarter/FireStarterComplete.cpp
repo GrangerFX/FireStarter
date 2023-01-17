@@ -265,13 +265,50 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
     return result;
 } // CompleteRandom
 
-bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& oldStates, size_t generation, bool sync)
+bool FireStarterComplete::CompleteState(FireStarterState& state, bool sync)
 {
     bool result = true;
-    DispatchSync([this, &bestState, &oldStates, &result] {
+    DispatchSync([this, &result] {
         // Sort the states as they are received.
-        size_t numStates = m_settings.m_units;
-        std::vector<FireStarterState> newStates = oldStates;
+        std::vector<FireStarterState> newStates = m_allStates;
+        size_t numStates = newStates.size();
+
+        // Get the next job in the order they are completed.
+        FireStarterJob* job = m_manager->GetComplete();
+        if (!job)
+            result = false;
+        else {
+
+            // Output job queue status.
+            //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+
+            size_t index = job->m_state.m_index % numStates;
+            FireStarterState newState = job->m_state;
+            size_t generation = newState.m_generation;
+            m_manager->AddFree(job);
+
+            FireStarterState& oldState = m_allStates[index];
+            CompleteResults(m_bestState, newState, oldState.m_maxResult);
+            if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult))
+                oldState = newState;
+            else
+                oldState.m_generation = newState.m_generation;
+
+            // Has the completion condition been met?
+            result = generation - m_bestState.m_generation < m_settings.m_attempts;
+        }
+    });
+    state = m_bestState;
+    return result;
+} // CompleteState
+
+bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, size_t generation, bool sync)
+{
+    bool result = true;
+    DispatchSync([this, &bestState, &allStates, generation, &result] {
+        // Sort the states as they are received.
+        std::vector<FireStarterState> newStates = m_allStates;
+        size_t numStates = newStates.size();
         for (size_t i = 0; i < numStates; i++) {
             // Get the next job in the order they are completed.
             FireStarterJob* job = m_manager->GetComplete();
@@ -287,22 +324,26 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             newStates[job->m_state.m_index % numStates] = job->m_state;
             m_manager->AddFree(job);
         }
-        if (result) {
-            // Update the best state and display the results.
-            for (size_t i = 0; i < numStates; i++) {
-                FireStarterState& newState = newStates[i];
-                FireStarterState& oldState = oldStates[i];
-                CompleteResults(bestState, newState, oldState.m_maxResult);
-                if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult))
-                    oldState = newState;
-                else
-                    oldState.m_generation = newState.m_generation;
-            }
-        }
-    });
 
-    // Has the completion condition been met?
-    return result && (generation - bestState.m_generation < m_settings.m_attempts);
+        // Update the best state and display the results.
+        for (size_t i = 0; i < numStates; i++) {
+            FireStarterState& newState = newStates[i];
+            FireStarterState& oldState = m_allStates[i];
+            CompleteResults(m_bestState, newState, oldState.m_maxResult);
+            if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult))
+                oldState = newState;
+            else
+                oldState.m_generation = newState.m_generation;
+        }
+
+        // Copy the best set of states.
+        allStates = m_allStates;
+        bestState = m_bestState;
+
+        // Has the completion condition been met?
+        result = result && (generation - bestState.m_generation < m_settings.m_attempts);
+    });
+    return result;
 } // CompleteStates
 
 void FireStarterComplete::CompleteSolution(bool sync)
@@ -365,11 +406,12 @@ void FireStarterComplete::CompleteSolution(bool sync)
     }, sync);
 } // CompleteSolution
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, FireStarterWindow* window, const FireStarterSettings& settings)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, FireStarterWindow* window, const FireStarterSettings& settings) : m_settings(settings), m_bestState(settings)
 {
     m_manager = manager;
     m_window = *window;
     m_settings = settings;
+    m_allStates.resize(settings.m_units, m_bestState);
 
     DispatchSync([this] {
         if ((m_settings.m_mode != FIRESTARTER_SOLUTION) && LoadFireShowCode() && LoadSolutionTargetCode()) {
@@ -410,5 +452,7 @@ FireStarterComplete::~FireStarterComplete(void)
             m_fireShowModule = nullptr;
         }
         context->Synchronize();
+        MainSynchronize();
+        m_window.Resize();
     });
 } // ~FireStarterComplete

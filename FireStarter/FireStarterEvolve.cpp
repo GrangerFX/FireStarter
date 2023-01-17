@@ -46,6 +46,61 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, siz
     return true;
 } // EvolveGenerations
 
+bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t generation, bool sync)
+{
+    if (m_optimizeCode.empty())
+        return false;
+    Dispatch([this, state, generation] {
+        unsigned int numInstructions = state.Settings().m_instructions;
+        float bestResult = state.m_maxResult;
+        FireStarterJob* job = m_manager->GetFree();
+        if (job) {
+            // Clone or randomize instructions in the later generations.
+            job->m_state = state;
+            job->m_state.m_generation = generation;
+            if (generation) {
+                unsigned long long seed = job->m_state.EvolveSeed();
+
+                // Copy or randomize instructions based on the quality of the previous result.
+                float oldResult = job->m_state.m_maxResult;
+#if 1
+                // Randomize a random range of instuctions.
+                unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
+                unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
+                while (randomNum--) {
+                    job->m_state.m_program.RandomInstruction(seed++, randomDst++);
+                    randomDst %= numInstructions;
+                }
+#else
+                // Randomize a random set of instuctions.
+                size_t age = generation - state.m_generation;
+                unsigned int randomNum = 4; // RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
+                while (randomNum--)
+                    job->m_state.m_program.RandomInstruction(seed++);
+#endif
+            } else
+                job->m_state.RandomProgram();
+
+            // Optimize the program registers.
+            job->m_state.m_program.OptimizeRegisters();
+
+            // Generate the evaluate code
+            std::string evaluateCode;
+            m_generate->GenerateEvaluate(job->m_state, evaluateCode);
+
+            // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+            job->m_options.clear();
+            CUDACompile::CompileOptions(job->m_options);
+            job->m_programName = "FireOptimizer.cu";
+            job->m_programFunction = "Optimizer";
+            job->m_program = m_optimizeCode;
+            FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
+        }
+        m_manager->AddCode(job);
+    }, sync);
+    return true;
+} // EvolveState
+
 bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, size_t generation, bool sync)
 {
     if (m_optimizeCode.empty())

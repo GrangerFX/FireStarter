@@ -111,16 +111,14 @@ void FireStarterStream::Evolve(void)
     FireStarterComplete* complete = new FireStarterComplete(manager, m_window, m_evolveSettings);
 
     // Setup the intial state
-    std::vector<FireStarterState> allStates;
-    FireStarterState bestState(m_evolveSettings);
-    bestState.m_index = m_index;
-    allStates.push_back(bestState);
+    FireStarterState evolveState(m_evolveSettings);
+    evolveState.m_index = m_index;
 
     // Loop until the the completion condition or the host program is quit.
     size_t generation = 0;
     while (!WillTerminate()) {
         // Evolve a new generation for the state.
-        evolve->EvolveStates(bestState, allStates, generation, true);
+        evolve->EvolveState(evolveState, generation, true);
 
         // Compile the evolved program.
         compile->CompileJob(manager, true);
@@ -129,7 +127,7 @@ void FireStarterStream::Evolve(void)
         execute->ExecuteEvolve(true);
 
         // Complete the state and display the results.
-        if (!complete->CompleteStates(bestState, allStates, generation))
+        if (!complete->CompleteState(evolveState, generation))
             break;
         generation++;
     }
@@ -154,7 +152,7 @@ void FireStarterStream::Evolve(void)
 
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        Optimize(&bestState);
+        Optimize(&evolveState);
 
     // This stream is now finished.
     m_finished = true;

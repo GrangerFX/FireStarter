@@ -11,9 +11,25 @@ private:
     std::vector<unsigned char> m_optimizedInstructionsData;
     FireStarterInstructions* m_evolvedInstructions = nullptr;   // For debugging.
     FireStarterInstructions* m_optimizedInstructions = nullptr; // For debugging.
+
+    inline void swap(const FireStarterProgram& other)
+    {
+        m_evolvedInstructionsData = other.m_evolvedInstructionsData;
+        m_optimizedInstructionsData = other.m_optimizedInstructionsData;
+        m_evolvedInstructions = EvolvedInstructions();
+        m_optimizedInstructions = OptimizedInstructions();
+        m_settings = other.m_settings;
+        m_uniqueRegisters = other.m_uniqueRegisters;
+    } // swap
 public:
     FireStarterSettings m_settings;
     unsigned int m_uniqueRegisters = 0;
+
+    inline FireStarterProgram& operator = (const FireStarterProgram& other)
+    {
+        swap(other);
+        return *this;
+    } // operator =
 
     inline FireStarterInstructions* EvolvedInstructions(void)
     {
@@ -71,5 +87,6 @@ public:
     void SaveSettings(std::string& code) const;
     void SaveProgram(std::string& code) const;
     void InitProgram(const FireStarterSettings& settings);
+    inline FireStarterProgram(const FireStarterProgram& other) { swap(other); }
     inline FireStarterProgram(void) {}
 }; // class FireStarterProgram

@@ -2,19 +2,25 @@
 #include "SerialThread.h"
 
 class FireStarterWindow {
+private:
+    inline void swap(const FireStarterWindow& other)
+    {
+        m_window = other.m_window;
+        Resize(); // Deallocate the buffers
+        Resize(other.m_width, other.m_height); // Allocate new buffers.
+    } // swap
+
 public:
     void* m_window = nullptr;               // Handle to the app's main window (HWND)
     unsigned char* m_hostBase = nullptr;    // Pointer to the alligned native pixel format buffer in host memory
     unsigned char* m_deviceBase = nullptr;  // Pointer to the alligned native pixel format buffer in device memory
     unsigned long m_width = 0;              // Number of columns
     unsigned long m_height = 0;             // Number of rows
-    long m_rowbytes = 0;                    // Number of bytes per row
     size_t m_size = 0;                      // The total size of the buffer in bytes
 
     inline FireStarterWindow& operator = (const FireStarterWindow& other)
     {
-        m_window = other.m_window;
-        Resize(other.m_width, other.m_height);
+        swap(other);
         return *this;
     } // operator =
 
@@ -64,7 +70,6 @@ public:
             }
             m_width = width;
             m_height = height;
-            m_rowbytes = width * sizeof(uchar4);
             m_size = m_width * m_height * sizeof(uchar4);
         }
     } // Resize
@@ -107,8 +112,7 @@ public:
 
     inline FireStarterWindow(const FireStarterWindow& other)
     {
-        m_window = other.m_window;
-        Resize(other.m_width, other.m_height);
+        swap(other);
     } // FireStarterWindow
 
     inline FireStarterWindow(void* window = nullptr, unsigned long width = 0, unsigned long height = 0) : m_window(window)

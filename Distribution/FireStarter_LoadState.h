@@ -12,9 +12,9 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_targetMin = 0.000000f;
     settings.m_targetMax = 6.283185f;
 
-    settings.m_mode = FIRESTARTER_EVOLVE;
+    settings.m_mode = FIRESTARTER_TEST;
     settings.m_units = 1;
-    settings.m_processes = 1;
+    settings.m_processes = 0;
     settings.m_iterations = 64;
     settings.m_candidates = 16;
     settings.m_generations = 100;

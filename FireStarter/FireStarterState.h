@@ -6,12 +6,29 @@ class FireStarterState {
 private:
     std::vector<unsigned char> m_resultsData;
     FireStarterResults* m_results = nullptr;    // For debugging.
+
+    inline void swap(const FireStarterState& other)
+    {
+        m_resultsData = other.m_resultsData;
+        m_results = Results();
+        m_program = other.m_program;
+        m_generation = other.m_generation;
+        m_index = other.m_index;
+        m_maxResult = other.m_maxResult;
+    } // swap
+
 public:
     FireStarterProgram m_program;
     size_t m_generation = 0;
     size_t m_index = 0;
     size_t m_test = 0;
     float m_maxResult;
+
+    inline FireStarterState& operator = (const FireStarterState& other)
+    {
+        swap(other);
+        return *this;
+    } // operator =
 
     inline bool Initialized(void) const
     {
@@ -85,6 +102,7 @@ public:
     float TestResult(void) const;
     void InitResult(void);
     void InitState(const FireStarterSettings& settings, size_t index = 0, size_t test = 0);
+    inline FireStarterState(const FireStarterState& other) { swap(other); }
     FireStarterState(const FireStarterSettings& settings, size_t index = 0, size_t test = 0);
     inline FireStarterState(void) {}
 }; // class FireStarterState;
