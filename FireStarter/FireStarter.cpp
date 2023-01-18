@@ -107,19 +107,16 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState)
     // Convert the most recently evolved state into an optimize mode state.
     FireStarterState startState;
     FireStarterSettings& settings = startState.Settings();
-    if (evolveState) {
+    if (evolveState)
         // Use the evolveState's settings as much as possible to maintain the random seed.
         startState = *evolveState;
-        settings.m_mode = m_optimizeSettings.m_mode;
-        settings.m_units = m_optimizeSettings.m_units;
-        settings.m_processes = m_optimizeSettings.m_processes;
-        settings.m_attempts = m_optimizeSettings.m_attempts;
-    } else {
+    else
         // Load the best state from the previous Test, Random or Evolve run.
         LoadState(startState);     
-        startState.m_generation = 0;
-        settings.CopyModeSettings(m_optimizeSettings);
-    }
+    settings.m_mode = m_optimizeSettings.m_mode;
+    settings.m_units = m_optimizeSettings.m_units;
+    settings.m_processes = m_optimizeSettings.m_processes;
+    settings.m_attempts = m_optimizeSettings.m_attempts;
 
     // Switch the settings to optimize mode
     startState.InitResult();
