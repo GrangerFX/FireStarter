@@ -4,20 +4,40 @@
 
 class FireStarterWindow {
 private:
+    inline void swap(const FireStarterWindow* other)
+    {
+        m_reference = other;
+        m_window = other->m_window;
+        Clear(); // Deallocate the buffers
+        if (m_reference)
+            Resize();
+    } // swap
+
     inline void swap(const FireStarterWindow& other)
     {
+        m_reference = other.m_reference;
         m_window = other.m_window;
-        Resize(); // Deallocate the buffers
-        Resize(other.m_width, other.m_height); // Allocate new buffers.
+        Clear(); // Deallocate the buffers
+        if (m_reference)
+            Resize();
+        else
+            Resize(other.m_width, other.m_height); // Allocate new buffers.
     } // swap
 
 public:
-    void* m_window = nullptr;               // Handle to the app's main window (HWND)
-    unsigned char* m_hostBase = nullptr;    // Pointer to the alligned native pixel format buffer in host memory
-    unsigned char* m_deviceBase = nullptr;  // Pointer to the alligned native pixel format buffer in device memory
-    unsigned long m_width = 0;              // Number of columns
-    unsigned long m_height = 0;             // Number of rows
-    size_t m_size = 0;                      // The total size of the buffer in bytes
+    const FireStarterWindow* m_reference = nullptr; // Reference window for resolution changes.
+    void* m_window = nullptr;                       // Handle to the app's main window (HWND)
+    unsigned char* m_hostBase = nullptr;            // Pointer to the alligned native pixel format buffer in host memory
+    unsigned char* m_deviceBase = nullptr;          // Pointer to the alligned native pixel format buffer in device memory
+    unsigned long m_width = 0;                      // Number of columns
+    unsigned long m_height = 0;                     // Number of rows
+    size_t m_size = 0;                              // The total size of the buffer in bytes
+
+    inline FireStarterWindow& operator = (const FireStarterWindow* other)
+    {
+        swap(other);
+        return *this;
+    } // operator =
 
     inline FireStarterWindow& operator = (const FireStarterWindow& other)
     {
@@ -58,21 +78,39 @@ public:
         return m_hostBase;
     } // GetPixels
 
-    inline void Resize(unsigned long width = 0, unsigned long height = 0)
+    inline void Clear(void)
+    {
+        if (m_hostBase) {
+            checkCUDAErrors(cudaFreeHost(m_hostBase));
+            m_hostBase = nullptr;
+        }
+        if (m_deviceBase) {
+            checkCUDAErrors(cudaFree(m_deviceBase));
+            m_deviceBase = nullptr;
+        }
+        m_width = 0;
+        m_height = 0;
+    } // Clear
+
+    inline void Resize(unsigned long width, unsigned long height)
     {
         if ((m_width != width) || (m_height != height)) {
-            if (m_hostBase) {
-                checkCUDAErrors(cudaFreeHost(m_hostBase));
-                m_hostBase = nullptr;
-            }
-            if (m_deviceBase) {
-                checkCUDAErrors(cudaFree(m_deviceBase));
-                m_deviceBase = nullptr;
-            }
+            Clear();
             m_width = width;
             m_height = height;
             m_size = m_width * m_height * sizeof(uchar4);
         }
+    } // Resize
+
+    inline void Resize(void)
+    {
+        unsigned long width = 0;
+        unsigned long height = 0;
+        if (m_reference) {
+            width = m_reference->m_width;
+            height = m_reference->m_height;
+        }
+        Resize(width, height);
     } // Resize
 
     inline void DisplayImage(CUstream stream = nullptr)
@@ -110,6 +148,11 @@ public:
             SetWindowText((HWND)m_window, string.c_str());
         });
     } // DisplayText
+
+    inline FireStarterWindow(const FireStarterWindow* other)
+    {
+        swap(other);
+    } // FireStarterWindow
 
     inline FireStarterWindow(const FireStarterWindow& other)
     {

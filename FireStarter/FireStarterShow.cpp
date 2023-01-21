@@ -248,6 +248,6 @@ FireStarterShow::~FireStarterShow(void)
         }
         context->Synchronize();
         MainSynchronize();
-        m_window.Resize();
+        m_window.Clear();
     });
 } // ~FireStarterShow
