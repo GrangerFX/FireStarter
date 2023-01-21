@@ -1,5 +1,6 @@
 #pragma once
 #include "SerialThread.h"
+#include "CUDAErrors.h"
 
 class FireStarterWindow {
 private:
