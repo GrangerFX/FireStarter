@@ -11,7 +11,7 @@ public:
 	void OptimizeStream(const FireStarterWindow& window, const FireStarterState& evolveState, bool sync = false);
 	void EvolveStream(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, size_t index, bool sync = false);
 	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState);
-	static void Evolve(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, size_t index);
+	static void Evolve(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, size_t index = 0);
 	FireStarterStream(void);
 	~FireStarterStream(void);
 }; // class FireStarterStream

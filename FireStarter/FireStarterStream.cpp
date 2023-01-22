@@ -176,7 +176,7 @@ void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStar
 void FireStarterStream::Evolve(const FireStarterWindow& window, const FireStarterSettings &evolveSettings, size_t index)
 {
     FireStarterStream stream; // Provides serial thread Terminate() method.
-    stream.EvolveStream(window, evolveSettings, true);
+    stream.EvolveStream(window, evolveSettings, index, true);
 } // Evolve
 
 FireStarterStream::FireStarterStream(void)

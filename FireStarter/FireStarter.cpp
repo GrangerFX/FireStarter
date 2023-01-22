@@ -109,66 +109,8 @@ void FireStarter::ControlTest(void)
     FireStarterSettings testSettings;
     m_buildSettings.FireSettings(testSettings, FIRESTARTER_TEST);
 
-    // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager();
-
-    // Create the evolution code generator.
-    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-
-    // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile();
-
-    // Create the execution unit.
-    FireStarterExecute* execute = new FireStarterExecute(manager);
-
-    // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, testSettings);
-
-    // Setup the intial state
-    FireStarterState testState(testSettings);
-
-    // Setup the best state
-    FireStarterState bestState(testState);
-
-    // Loop until the the completion condition or the host program is quit.
-    size_t generation = 0;
-    while (!WillTerminate()) {
-        // Evolve a new generation for the state.
-        evolve->EvolveState(bestState, testState, generation, true);
-
-        // Compile the evolved program.
-        compile->CompileJob(manager, true);
-
-        // Execute the state.
-        execute->ExecuteEvolve(true);
-
-        // Complete the state and display the results.
-        if (!complete->CompleteState(bestState, testState, generation))
-            break;
-        generation++;
-    }
-
-    // Cancel any waiting jobs
-    manager->Cancel();
-
-    // Delete the completion unit.
-    delete complete;
-
-    // Finish processing and terminate each unit.
-    delete execute;
-
-    // Delete the multi-process compiler.
-    delete compile;
-
-    // Delete the evolution code generator.
-    delete evolve;
-
-    // Delete the compilier manager and cancel any waiting jobs.
-    delete manager;
-
-    // Optimization evolution pass.
-    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        FireStarterStream::Optimize(m_window, testState);
+    // Evolve a single state.
+    FireStarterStream::Evolve(m_window, testSettings);
 } // ControlTest
 
 void FireStarter::ControlRandom(void)
