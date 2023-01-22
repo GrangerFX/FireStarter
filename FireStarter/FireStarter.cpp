@@ -16,7 +16,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
     m_buildSettings.FireSettings(unitSettings, FIRESTARTER_MODE);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(nullptr, &m_window, unitSettings);
+    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_window, unitSettings);
 
     // Initialize the best state.
     FireStarterState bestState;
@@ -134,7 +134,7 @@ void FireStarter::ControlOptimize(const FireStarterState* evolveState)
     FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, &m_window, settings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, settings);
 
     // Generate the optimize code.
     evolve->GenerateOptimize(startState);
@@ -205,7 +205,7 @@ void FireStarter::ControlTest(void)
     FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, &m_window, testSettings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, testSettings);
 
     // Setup the intial state
     FireStarterState testState(testSettings);
@@ -278,7 +278,7 @@ void FireStarter::ControlRandom(void)
     FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, randomSettings.m_units);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, &m_window, randomSettings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, randomSettings);
 
     // Loop until the the completion condition or the host program is quit.
     while (!WillTerminate()) {
@@ -320,7 +320,7 @@ void FireStarter::ControlEvolve(void)
     // Allocate and start each stream unit.
     std::vector<FireStarterStream*> streamUnits;
     for (size_t i = 0; i < evolveSettings.m_units; i++) {
-        FireStarterStream* streamUnit = new FireStarterStream(&m_window, evolveSettings, m_optimizeSettings, i);
+        FireStarterStream* streamUnit = new FireStarterStream(m_window, evolveSettings, m_optimizeSettings, i);
         streamUnits.push_back(streamUnit);
     }
 
@@ -422,7 +422,7 @@ void FireStarter::ControlSolution(void)
     FireStarterSettings settings(FIRESTARTER_SOLUTION);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(nullptr, &m_window, settings);
+    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_window, settings);
 
     // Draw the solution in the window.
     complete->CompleteSolution();
@@ -467,7 +467,7 @@ void FireStarter::ControlThread(void)
     });
 } // ControlThread
 
-FireStarter::FireStarter(void* window, unsigned int width, unsigned int height) : m_window(window, width, height)
+FireStarter::FireStarter(const FireStarterWindow& window) : m_window(window)
 {
     ControlThread();
 } // FireStarter

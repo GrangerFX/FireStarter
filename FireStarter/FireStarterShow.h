@@ -23,6 +23,6 @@ public:
 	void FireShow(const FireStarterState& state, bool sync = false);
 	void FireSolution(bool sync = false);
 	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTimee, double oldResult, double average, double testError, bool sync = false);
-	FireStarterShow(FireStarterWindow* window, const FireStarterSettings& settings);
+	FireStarterShow(const FireStarterWindow& window, const FireStarterSettings& settings);
 	~FireStarterShow(void);
 }; // class FireStarterShow

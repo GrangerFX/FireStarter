@@ -161,7 +161,7 @@ bool FireStarterStream::Finished(void)
     return m_finished;
 } // Finished
 
-FireStarterStream::FireStarterStream(FireStarterWindow* window, const FireStarterSettings& evolveSettings, const FireStarterSettings& optimizeSettings, size_t index) : m_window(window), m_evolveSettings(evolveSettings), m_optimizeSettings(optimizeSettings), m_index(index)
+FireStarterStream::FireStarterStream(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, const FireStarterSettings& optimizeSettings, size_t index) : m_window(window), m_evolveSettings(evolveSettings), m_optimizeSettings(optimizeSettings), m_index(index)
 {
     DispatchAsync([this] {
         Evolve();

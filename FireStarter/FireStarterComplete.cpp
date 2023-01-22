@@ -214,7 +214,7 @@ void FireStarterComplete::CompleteSolution(bool sync)
     }, sync);
 } // CompleteSolution
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, FireStarterWindow* window, const FireStarterSettings& settings) : m_window(window), m_settings(settings), m_bestState(settings), m_fireShow(window, settings)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings) : m_window(window), m_settings(settings), m_bestState(settings), m_fireShow(window, settings)
 {
     m_manager = manager;
     m_settings = settings;

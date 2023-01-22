@@ -79,9 +79,10 @@ HRESULT Initialize(HINSTANCE hInstance)
 			DragAcceptFiles(hwnd, 1);
 			ShowWindow(hwnd, SW_SHOW);
 
-			SerialThread* mainSerialThread = new SerialThread(true);
-			SerialThread::SetMainThread(mainSerialThread);
-			FireStarter* fireStarter = new FireStarter(hwnd, imageWidth, imageHeight);
+			SerialThread mainSerialThread(true);
+			SerialThread::SetMainThread(&mainSerialThread);
+			FireStarterWindow fireStarterWindow(hwnd, imageWidth, imageHeight);
+			FireStarter* fireStarter = new FireStarter(fireStarterWindow);
 			do {
 				MSG	msg;
 				if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
@@ -89,14 +90,13 @@ HRESULT Initialize(HINSTANCE hInstance)
 						break;
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
-				} else if (!mainSerialThread->PollThread())
+				} else if (!mainSerialThread.PollThread())
 					Sleep(100);
 			} while (1);
 
 			SetWindowText(hwnd, "Quitting");
-			mainSerialThread->Synchronize(); // No more updates will be accepted.
+			mainSerialThread.Synchronize(); // No more updates will be accepted.
 			delete fireStarter;
-			delete mainSerialThread;
 			result = S_OK;
 		}
 	}

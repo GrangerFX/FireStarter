@@ -18,6 +18,6 @@ private:
     void ControlThread(void);
 
 public:
-    FireStarter(void* window, unsigned int width, unsigned int height);
+    FireStarter(const FireStarterWindow &window);
     ~FireStarter(void);
 }; // class FireStarter

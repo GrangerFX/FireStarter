@@ -4,18 +4,9 @@
 
 class FireStarterWindow {
 private:
-    inline void swap(const FireStarterWindow* other)
-    {
-        m_reference = other;
-        m_window = other->m_window;
-        Clear(); // Deallocate the buffers
-        if (m_reference)
-            Resize();
-    } // swap
-
     inline void swap(const FireStarterWindow& other)
     {
-        m_reference = other.m_reference;
+        m_reference = other.m_reference ? other.m_reference : &other;
         m_window = other.m_window;
         Clear(); // Deallocate the buffers
         if (m_reference)
@@ -32,12 +23,6 @@ public:
     unsigned long m_width = 0;                      // Number of columns
     unsigned long m_height = 0;                     // Number of rows
     size_t m_size = 0;                              // The total size of the buffer in bytes
-
-    inline FireStarterWindow& operator = (const FireStarterWindow* other)
-    {
-        swap(other);
-        return *this;
-    } // operator =
 
     inline FireStarterWindow& operator = (const FireStarterWindow& other)
     {
@@ -149,17 +134,12 @@ public:
         });
     } // DisplayText
 
-    inline FireStarterWindow(const FireStarterWindow* other)
-    {
-        swap(other);
-    } // FireStarterWindow
-
     inline FireStarterWindow(const FireStarterWindow& other)
     {
         swap(other);
     } // FireStarterWindow
 
-    inline FireStarterWindow(void* window = nullptr, unsigned long width = 0, unsigned long height = 0) : m_window(window)
+    inline FireStarterWindow(void* window, unsigned long width, unsigned long height) : m_window(window)
     {
         Resize(width, height);
     } // FireStarterWindow

@@ -32,6 +32,6 @@ public:
 	bool CompleteState(FireStarterState& state, bool sync = false);
 	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, size_t generation, bool sync = true);
 	void CompleteSolution(bool sync = false);
-    FireStarterComplete(FireStarterManager* manager, FireStarterWindow* window, const FireStarterSettings& settings);
+    FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

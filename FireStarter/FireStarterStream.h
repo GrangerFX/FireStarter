@@ -4,7 +4,7 @@
 
 class FireStarterStream : public SerialThread {
 private:
-	FireStarterWindow* m_window;
+	FireStarterWindow m_window;
 	FireStarterSettings m_evolveSettings;
 	FireStarterSettings m_optimizeSettings;
 	size_t m_index = 0;
@@ -14,6 +14,6 @@ private:
 	void Evolve(void);
 public:
 	bool Finished(void);
-	FireStarterStream(FireStarterWindow* window, const FireStarterSettings& evolveSettings, const FireStarterSettings& optimizeSettings, size_t index = 0);
+	FireStarterStream(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, const FireStarterSettings& optimizeSettings, size_t index = 0);
 	~FireStarterStream(void);
 }; // class FireStarterStream
