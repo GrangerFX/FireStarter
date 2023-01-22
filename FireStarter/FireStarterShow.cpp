@@ -160,9 +160,8 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
         } else {
             statusString = Format("%s: Seed=%u", settings.Mode(), settings.m_seed);
-    #if FIRESTARTER_TEST_SEEDS
-            statusString += Format("  Test=%u", test);
-    #endif
+            if (test)
+                statusString += Format("  Test=%u", test);
             if (settings.m_units > 1)
                 statusString += Format("  Unit=%u", unit);
 

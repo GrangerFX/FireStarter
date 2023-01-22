@@ -102,89 +102,6 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
         ControlUnits(&bestState);
 } // ControlUnits
 
-void FireStarter::ControlOptimize(const FireStarterState* evolveState)
-{
-    // Convert the most recently evolved state into an optimize mode state.
-    FireStarterState startState;
-    FireStarterSettings& settings = startState.Settings();
-    if (evolveState)
-        // Use the evolveState's settings as much as possible to maintain the random seed.
-        startState = *evolveState;
-    else
-        // Load the best state from the previous Test, Random or Evolve run.
-        LoadState(startState);     
-    settings.m_mode = m_optimizeSettings.m_mode;
-    settings.m_units = m_optimizeSettings.m_units;
-    settings.m_processes = m_optimizeSettings.m_processes;
-    settings.m_attempts = m_optimizeSettings.m_attempts;
-
-    // Switch the settings to optimize mode
-    startState.InitResult();
-
-    // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager();
-
-    // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager);
-
-    // Create the evolution code generator.
-    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-
-    // Create the execution unit.
-    FireStarterExecute* execute = new FireStarterExecute(manager);
-
-    // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, settings);
-
-    // Generate the optimize code.
-    evolve->GenerateOptimize(startState);
-
-    // Compile the optimize code.
-    execute->ExecuteCompile();
-
-    // Test one more more random seeds.
-    size_t firstTest = evolveState ? startState.m_test : FIRESTARTER_TEST_START;
-    size_t lastTest = evolveState ? startState.m_test : FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS - 1;
-    for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
-        // Create the state and execution unit.
-        FireStarterState optimizeState(startState);
-        optimizeState.m_index = evolveState ? startState.m_index : startState.m_index + test;
-        optimizeState.m_test = test;
-        
-        // Loop until the the completion condition or the host program is quit.
-        size_t generation = startState.m_generation;
-        bool init = true;
-        while (!WillTerminate()) {
-            // Optimize the current generation.
-            execute->ExecuteOptimize(generation, optimizeState.m_index, test, init);
-
-            // Update the results in the UI.
-            if (!complete->CompleteState(optimizeState))
-                break;
-            generation++;
-            init = false;
-        }
-    }
-
-    // Cancel any waiting jobs
-    manager->Cancel();
-
-    // Delete the completion unit.
-    delete complete;
-
-    // Finish processing and terminate each unit.
-    delete execute;
-
-    // Delete the evolution code generator.
-    delete evolve;
-
-    // Delete the multi-process compiler.
-    delete compile;
-
-    // Delete the compilier manager and cancel any waiting jobs.
-    delete manager;
-} // ControlOptimize
-
 void FireStarter::ControlTest(void)
 {
     // Load the settings from the compiled CUDA code.
@@ -210,11 +127,14 @@ void FireStarter::ControlTest(void)
     // Setup the intial state
     FireStarterState testState(testSettings);
 
+    // Setup the best state
+    FireStarterState bestState(testState);
+
     // Loop until the the completion condition or the host program is quit.
     size_t generation = 0;
     while (!WillTerminate()) {
         // Evolve a new generation for the state.
-        evolve->EvolveState(testState, generation, true);
+        evolve->EvolveState(bestState, testState, generation, true);
 
         // Compile the evolved program.
         compile->CompileJob(manager, true);
@@ -223,7 +143,7 @@ void FireStarter::ControlTest(void)
         execute->ExecuteEvolve(true);
 
         // Complete the state and display the results.
-        if (!complete->CompleteState(testState, generation))
+        if (!complete->CompleteState(bestState, testState, generation))
             break;
         generation++;
     }
@@ -248,7 +168,7 @@ void FireStarter::ControlTest(void)
 
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        ControlOptimize(&testState); 
+        FireStarterStream::Optimize(m_window, testState);
 } // ControlTest
 
 void FireStarter::ControlRandom(void)
@@ -272,7 +192,7 @@ void FireStarter::ControlRandom(void)
     bestState.RandomProgram();
 
     // Start generating random code generations.
-    evolve->EvolveGenerations(&bestState, randomSettings.m_attempts);
+    evolve->EvolveGenerations(&bestState, randomSettings.m_tests);
 
     // Create and run the execution units.
     FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, randomSettings.m_units);
@@ -306,7 +226,7 @@ void FireStarter::ControlRandom(void)
 
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        ControlOptimize(&bestState);
+        FireStarterStream::Optimize(m_window, bestState);
 } // ControlRandom
 
 void FireStarter::ControlEvolve(void)
@@ -320,7 +240,8 @@ void FireStarter::ControlEvolve(void)
     // Allocate and start each stream unit.
     std::vector<FireStarterStream*> streamUnits;
     for (size_t i = 0; i < evolveSettings.m_units; i++) {
-        FireStarterStream* streamUnit = new FireStarterStream(m_window, evolveSettings, m_optimizeSettings, i);
+        FireStarterStream* streamUnit = new FireStarterStream();
+        streamUnit->EvolveStream(m_window, evolveSettings, i);
         streamUnits.push_back(streamUnit);
     }
 
@@ -328,7 +249,7 @@ void FireStarter::ControlEvolve(void)
     while (!WillTerminate()) {
         bool finished = true;
         for (FireStarterStream* streamUnit : streamUnits)
-            if (!streamUnit->Finished()) {
+            if (streamUnit->IsRunning()) {
                 finished = false;
                 break;
             }
@@ -364,7 +285,7 @@ void FireStarter::ControlEvolve(void)
     // Create the completion unit.
     FireStarterComplete* complete = new FireStarterComplete(manager, &m_window, evolveSettings, allStates);
 
-    for (unsigned int test = FIRESTARTER_TEST_START; (test < FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS) && !WillTerminate(); test++) {
+    for (unsigned int test = 0; (test < evolveSettings.m_tests) && !WillTerminate(); test++) {
         // Randomize the entire program of each state for the first generation
         for (unsigned int i = 0; i < evolveSettings.m_units; i++)
             allStates[i].InitState(evolveSettings, evolveSettings.m_units * test + i, test);
@@ -456,8 +377,13 @@ void FireStarter::ControlThread(void)
                 ControlEvolve();
                 break;
             case FIRESTARTER_OPTIMIZE:
-                // Optimization evolution pass.
-                ControlOptimize();
+                {
+                    // Optimization evolution pass.
+                    FireStarterState evolveState;
+                    LoadState(evolveState);
+                    evolveState.Settings().CopyModeSettings(m_optimizeSettings);
+                    FireStarterStream::Optimize(m_window, evolveState);
+                }
                 break;
             case FIRESTARTER_SOLUTION:
                 // Run the most recent solution.

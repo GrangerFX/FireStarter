@@ -5,27 +5,20 @@
 #include "FireStarterComplete.h"
 #include "FireStarter_LoadState.h"
 
-void FireStarterStream::Optimize(const FireStarterState* evolveState)
+void FireStarterStream::OptimizeState(const FireStarterWindow& window, const FireStarterState& evolveState)
 {
     // Convert the most recently evolved state into an optimize mode state.
-    FireStarterState startState;
+    FireStarterState startState(evolveState);
     FireStarterSettings& settings = startState.Settings();
-    if (evolveState) {
-        // Use the evolveState's settings as much as possible to maintain the random seed.
-        startState = *evolveState;
-        settings.m_mode = m_optimizeSettings.m_mode;
-        settings.m_units = m_optimizeSettings.m_units;
-        settings.m_processes = m_optimizeSettings.m_processes;
-        settings.m_attempts = m_optimizeSettings.m_attempts;
-    } else {
-        // Load the best state from the previous Test, Random or Evolve run.
-        LoadState(startState);
-        startState.m_generation = 0;
-        settings.CopyModeSettings(m_optimizeSettings);
-    }
+    settings.m_mode = FIRESTARTER_OPTIMIZE;
+    settings.m_units = 1;
+    settings.m_processes = 0;
 
     // Switch the settings to optimize mode
     startState.InitResult();
+
+    // Setup the best state
+    FireStarterState bestState(startState);
 
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager();
@@ -40,7 +33,7 @@ void FireStarterStream::Optimize(const FireStarterState* evolveState)
     FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, settings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, window, settings);
 
     // Generate the optimize code.
     evolve->GenerateOptimize(startState);
@@ -49,12 +42,18 @@ void FireStarterStream::Optimize(const FireStarterState* evolveState)
     execute->ExecuteCompile();
 
     // Test one more more random seeds.
-    size_t firstTest = evolveState ? startState.m_test : FIRESTARTER_TEST_START;
-    size_t lastTest = evolveState ? startState.m_test : FIRESTARTER_TEST_START + FIRESTARTER_TEST_SEEDS - 1;
+    size_t firstTest = 0;
+    size_t lastTest = 0;
+    if (startState.m_test)
+        firstTest = lastTest = startState.m_test;
+    else if (settings.m_tests) {
+        firstTest = 1;
+        lastTest = settings.m_tests;
+    }
     for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
         // Create the state and execution unit.
         FireStarterState optimizeState(startState);
-        optimizeState.m_index = evolveState ? startState.m_index : startState.m_index + test;
+        optimizeState.m_index = startState.m_test ? startState.m_index : startState.m_index + test;
         optimizeState.m_test = test;
 
         // Loop until the the completion condition or the host program is quit.
@@ -65,7 +64,7 @@ void FireStarterStream::Optimize(const FireStarterState* evolveState)
             execute->ExecuteOptimize(generation, optimizeState.m_index, test, init);
 
             // Update the results in the UI.
-            if (!complete->CompleteState(optimizeState))
+            if (!complete->CompleteState(bestState, optimizeState))
                 break;
             generation++;
             init = false;
@@ -89,9 +88,9 @@ void FireStarterStream::Optimize(const FireStarterState* evolveState)
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
-} // Optimize
+} // OptimizeState
 
-void FireStarterStream::Evolve(void)
+void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, size_t index)
 {
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager();
@@ -106,17 +105,18 @@ void FireStarterStream::Evolve(void)
     FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, m_evolveSettings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, window, evolveSettings);
 
     // Setup the intial state
-    FireStarterState evolveState(m_evolveSettings);
-    evolveState.m_index = m_index;
+    FireStarterState evolveState(evolveSettings);
+    evolveState.m_index = index;
+    FireStarterState bestState(evolveState);
 
     // Loop until the the completion condition or the host program is quit.
     size_t generation = 0;
     while (!WillTerminate()) {
         // Evolve a new generation for the state.
-        evolve->EvolveState(evolveState, generation, true);
+        evolve->EvolveState(bestState, evolveState, generation, true);
 
         // Compile the evolved program.
         compile->CompileJob(manager, true);
@@ -125,7 +125,7 @@ void FireStarterStream::Evolve(void)
         execute->ExecuteEvolve(true);
 
         // Complete the state and display the results.
-        if (!complete->CompleteState(evolveState, generation))
+        if (!complete->CompleteState(bestState, evolveState, generation))
             break;
         generation++;
     }
@@ -150,22 +150,37 @@ void FireStarterStream::Evolve(void)
 
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        Optimize(&evolveState);
+        Optimize(window, evolveState);
+} // EvolveState
 
-    // This stream is now finished.
-    m_finished = true;
+void FireStarterStream::OptimizeStream(const FireStarterWindow& window, const FireStarterState& evolveState, bool sync)
+{
+    Dispatch([this, window, evolveState] {
+        OptimizeState(window, evolveState);
+    }, sync);
+} // OptimizeStream
+
+void FireStarterStream::EvolveStream(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, size_t index, bool sync)
+{
+    Dispatch([this, window, evolveSettings, index] {
+        EvolveState(window, evolveSettings, index);
+    }, sync);
+} // EvolveStream
+
+void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStarterState& evolveState)
+{
+    FireStarterStream stream; // Provides serial thread Terminate() method.
+    stream.OptimizeStream(window, evolveState, true);
+} // Optimize
+
+void FireStarterStream::Evolve(const FireStarterWindow& window, const FireStarterSettings &evolveSettings, size_t index)
+{
+    FireStarterStream stream; // Provides serial thread Terminate() method.
+    stream.EvolveStream(window, evolveSettings, true);
 } // Evolve
 
-bool FireStarterStream::Finished(void)
+FireStarterStream::FireStarterStream(void)
 {
-    return m_finished;
-} // Finished
-
-FireStarterStream::FireStarterStream(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, const FireStarterSettings& optimizeSettings, size_t index) : m_window(window), m_evolveSettings(evolveSettings), m_optimizeSettings(optimizeSettings), m_index(index)
-{
-    DispatchAsync([this] {
-        Evolve();
-    });
 } // FireStarterStream
 
 FireStarterStream::~FireStarterStream(void)

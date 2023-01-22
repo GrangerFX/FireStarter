@@ -9,7 +9,7 @@ private:
     CUstream m_stream = nullptr;
 
     // Initialize CUDA only once per process.
-    inline static void Initialize(void)
+    static inline void Initialize(void)
     {
         static bool initialized = false;
         if (!initialized) {
@@ -19,7 +19,7 @@ private:
     } // Initialize
 
 public:
-    inline static unsigned int CUDADevices(void)
+    static inline unsigned int CUDADevices(void)
     {
         // Initialize CUDA only once per process.
         Initialize();
@@ -32,7 +32,7 @@ public:
         return 0;
     } // CUDADevices
 
-    inline static void CUDAText(std::string& text, unsigned int count = 0)
+    static inline void CUDAText(std::string& text, unsigned int count = 0)
     {
         if (!count)
             count = CUDADevices();

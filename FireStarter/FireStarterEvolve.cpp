@@ -46,11 +46,11 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, siz
     return true;
 } // EvolveGenerations
 
-bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t generation, bool sync)
+bool FireStarterEvolve::EvolveState(const FireStarterState& bestState, const FireStarterState& state, size_t generation, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
-    Dispatch([this, state, generation] {
+    Dispatch([this, bestState, state, generation] {
         unsigned int numInstructions = state.Settings().m_instructions;
         float bestResult = state.m_maxResult;
         FireStarterJob* job = m_manager->GetFree();

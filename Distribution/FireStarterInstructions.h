@@ -44,7 +44,7 @@ struct FireStarterRegister {
 typedef struct FireStarterRegisters {
     FireStarterRegister r[FIRESTARTER_REGISTERS];
 
-    inline static size_t RegistersSize(size_t registers)
+    static inline size_t RegistersSize(size_t registers)
     {
         return sizeof(FireStarterRegister) * registers;
     } // FireStarterRegistersSize

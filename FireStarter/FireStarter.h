@@ -10,7 +10,6 @@ private:
     FireStarterWindow m_window;
 
     void ControlUnits(const FireStarterState* evolveState = nullptr);
-    void ControlOptimize(const FireStarterState* evolveState = nullptr);
     void ControlTest(void);
     void ControlRandom(void);
     void ControlEvolve(void);

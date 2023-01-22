@@ -8,8 +8,6 @@
 #define FIRESTARTER_SECOND_PASS  1
 #define FIRESTARTER_GENERATE_GPU 1
 #define FIRESTARTER_AUTO_PROCESS 0
-#define FIRESTARTER_TEST_START   0
-#define FIRESTARTER_TEST_SEEDS   16
 
 #define FIRESTARTER_SEED         0
 //#define FIRESTARTER_SEED         3533
@@ -24,6 +22,7 @@
 #define FIRESTARTER_SOLUTION 7
 #define FIRESTARTER_MODE     FIRESTARTER_TEST
 
+#define FIRESTARTER_CODE_TESTS              0
 #define FIRESTARTER_CODE_UNITS              1
 #define FIRESTARTER_CODE_PROCESSES          0
 #define FIRESTARTER_CODE_POPULATION         4352 * 4
@@ -37,6 +36,7 @@
 #define FIRESTARTER_CODE_START_SCALE        2.0f
 #define FIRESTARTER_CODE_START_RESULT       10.0f
 
+#define FIRESTARTER_UNIT_TESTS              0
 #define FIRESTARTER_UNIT_UNITS              1
 #define FIRESTARTER_UNIT_PROCESSES          0
 #define FIRESTARTER_UNIT_POPULATION         4352 * 16
@@ -50,6 +50,7 @@
 #define FIRESTARTER_UNIT_START_SCALE        2.0f
 #define FIRESTARTER_UNIT_START_RESULT       10.0f
 
+#define FIRESTARTER_TEST_TESTS              0
 #define FIRESTARTER_TEST_UNITS              1
 #define FIRESTARTER_TEST_PROCESSES          0
 #define FIRESTARTER_TEST_POPULATION         4352 * 64
@@ -63,6 +64,7 @@
 #define FIRESTARTER_TEST_START_SCALE        2.0f
 #define FIRESTARTER_TEST_START_RESULT       10.0f
 
+#define FIRESTARTER_RANDOM_TESTS            11000
 #define FIRESTARTER_RANDOM_UNITS            8
 #define FIRESTARTER_RANDOM_PROCESSES        16
 #define FIRESTARTER_RANDOM_POPULATION       4352 * 64
@@ -70,12 +72,13 @@
 #define FIRESTARTER_RANDOM_CANDIDATES       16
 #define FIRESTARTER_RANDOM_GENERATIONS      100
 #define FIRESTARTER_RANDOM_PRECISION        0
-#define FIRESTARTER_RANDOM_ATTEMPTS         11000
+#define FIRESTARTER_RANDOM_ATTEMPTS         32
 #define FIRESTARTER_RANDOM_SEED             0
 #define FIRESTARTER_RANDOM_SCALE            0.1f
 #define FIRESTARTER_RANDOM_START_SCALE      2.0f
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
 
+#define FIRESTARTER_EVOLVE_TESTS            0
 #define FIRESTARTER_EVOLVE_UNITS            8
 #define FIRESTARTER_EVOLVE_PROCESSES        8
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
@@ -89,6 +92,7 @@
 #define FIRESTARTER_EVOLVE_START_SCALE      2.0f
 #define FIRESTARTER_EVOLVE_START_RESULT     10.0f
 
+#define FIRESTARTER_OPTIMIZE_TESTS          0
 #define FIRESTARTER_OPTIMIZE_UNITS          1
 #define FIRESTARTER_OPTIMIZE_PROCESSES      0
 #define FIRESTARTER_OPTIMIZE_POPULATION     4352 * 64
@@ -126,6 +130,7 @@ public:
     float m_targetMax;
 
     unsigned int m_mode;
+    unsigned int m_tests;
     unsigned int m_units;
     unsigned int m_processes;
     unsigned int m_population;
@@ -176,6 +181,7 @@ public:
     inline void CopyModeSettings(const FireStarterSettings& source)
     {
         m_mode = source.m_mode;
+        m_tests = source.m_tests;
         m_units = source.m_units;
         m_processes = source.m_processes;
         m_population = source.m_population;
@@ -204,6 +210,7 @@ public:
         m_mode = evolveMode ? evolveMode : FIRESTARTER_MODE;
         switch (m_mode) {
             case FIRESTARTER_CODE:
+                m_tests =       FIRESTARTER_CODE_TESTS;
                 m_units =       FIRESTARTER_CODE_UNITS;
                 m_processes =   FIRESTARTER_CODE_PROCESSES;
                 m_population =  FIRESTARTER_CODE_POPULATION;
@@ -219,6 +226,7 @@ public:
                 break;
 
             case FIRESTARTER_UNIT:
+                m_tests =       FIRESTARTER_UNIT_TESTS;
                 m_units =       FIRESTARTER_UNIT_UNITS;
                 m_processes =   FIRESTARTER_UNIT_PROCESSES;
                 m_population =  FIRESTARTER_UNIT_POPULATION;
@@ -234,6 +242,7 @@ public:
                 break;
 
             case FIRESTARTER_TEST:
+                m_tests =       FIRESTARTER_TEST_TESTS;
                 m_units =       FIRESTARTER_TEST_UNITS;
                 m_processes =   FIRESTARTER_TEST_PROCESSES;
                 m_population =  FIRESTARTER_TEST_POPULATION;
@@ -249,6 +258,7 @@ public:
                 break;
 
             case FIRESTARTER_RANDOM:
+                m_tests =       FIRESTARTER_RANDOM_TESTS;
                 m_units =       FIRESTARTER_RANDOM_UNITS;
                 m_processes =   FIRESTARTER_RANDOM_PROCESSES;
                 m_population =  FIRESTARTER_RANDOM_POPULATION;
@@ -264,6 +274,7 @@ public:
                 break;
 
             case FIRESTARTER_EVOLVE:
+                m_tests =       FIRESTARTER_EVOLVE_TESTS;
                 m_units =       FIRESTARTER_EVOLVE_UNITS;
                 m_processes =   FIRESTARTER_EVOLVE_PROCESSES;
                 m_population =  FIRESTARTER_EVOLVE_POPULATION;
@@ -279,6 +290,7 @@ public:
                 break;
 
             case FIRESTARTER_OPTIMIZE:
+                m_tests =       FIRESTARTER_OPTIMIZE_TESTS;
                 m_units =       FIRESTARTER_OPTIMIZE_UNITS;
                 m_processes =   FIRESTARTER_OPTIMIZE_PROCESSES;
                 m_population =  FIRESTARTER_OPTIMIZE_POPULATION;
@@ -295,6 +307,7 @@ public:
 
             case FIRESTARTER_SOLUTION:
             default:
+                m_tests = 0;
                 m_units = 0;
                 m_processes = 0;
                 m_population = 0;
