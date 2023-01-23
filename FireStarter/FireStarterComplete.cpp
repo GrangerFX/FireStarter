@@ -146,6 +146,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             result = generation - bestState.m_generation < m_settings.m_attempts;
         }
     });
+    oldState = bestState; // Note: This overwrites the changes to oldState above. Is this correct?
     return result;
 } // CompleteState
 
