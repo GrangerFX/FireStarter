@@ -45,17 +45,20 @@ bool FireStarterComplete::LoadSolutionTargetCode(void)
     return true;
 } // LoadSolutionTargetCode
 
-void FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult)
+bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult)
 {
+    double duration = m_timer.Duration();
+
     // Get the result.
-    bool update = false;
-    if (state.m_maxResult < bestState.m_maxResult) {
+    bool update = state.m_maxResult < bestState.m_maxResult;
+    if (update) {
         // Update the best state.
         bestState = state;
-        update = true;
+
+        // Test the current state.
+        m_testError = bestState.TestResult();
     }
 
-    double duration = m_timer.Duration();
     const FireStarterSettings& settings = state.Settings();
     float result = state.m_maxResult;
     if (!state.m_generation) {
@@ -80,10 +83,6 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         m_resultsTime = duration;
     }
 
-    // Test the current state.
-    if (update)
-        m_testError = bestState.TestResult();
-
     // Update the render status after every pass.
     double average = m_totalResult / ++m_resultsCount;
     m_fireShow.RenderStatus(bestState, state, duration, m_generationTime, oldResult, average, m_testError);
@@ -101,6 +100,7 @@ void FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         // Draw the graphs for both variations.
         m_fireShow.FireShow(bestState);
     }
+    return update;
 } // CompleteResults
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
@@ -123,10 +123,10 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
     return result;
 } // CompleteRandom
 
-bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync)
+bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& state, bool sync)
 {
     bool result = true;
-    DispatchSync([this, &bestState, &oldState, &result] {
+    DispatchSync([this, &bestState, &state, &result] {
         // Get the next job in the order they are completed.
         FireStarterJob* job = m_manager->GetComplete();
         if (!job)
@@ -136,17 +136,15 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             size_t generation = newState.m_generation;
             m_manager->AddFree(job);
 
-            CompleteResults(bestState, newState, oldState.m_maxResult);
-            if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult))
-                oldState = newState;
+            if (CompleteResults(bestState, newState, state.m_maxResult))
+                state = newState;
             else
-                oldState.m_generation = newState.m_generation;
+                state = bestState;
 
             // Has the completion condition been met?
             result = generation - bestState.m_generation < m_settings.m_attempts;
         }
     });
-    oldState = bestState; // Note: This overwrites the changes to oldState above. Is this correct?
     return result;
 } // CompleteState
 
