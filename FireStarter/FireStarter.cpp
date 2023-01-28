@@ -177,12 +177,13 @@ void FireStarter::ControlEvolve(void)
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings evolveSettings;
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
+    FireStarterState bestState(evolveSettings);
 
-#if 1
+#if 0
     // Allocate and start each stream unit.
     std::vector<FireStarterStream*> streamUnits;
     for (size_t i = 0; i < evolveSettings.m_units; i++) {
-        FireStarterStream* streamUnit = new FireStarterStream();
+        FireStarterStream* streamUnit = new FireStarterStream(bestState);
         streamUnit->EvolveStream(m_window, evolveSettings, i);
         streamUnits.push_back(streamUnit);
     }
@@ -225,9 +226,15 @@ void FireStarter::ControlEvolve(void)
     }
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, &m_window, evolveSettings, allStates);
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, evolveSettings);
 
-    for (unsigned int test = 0; (test < evolveSettings.m_tests) && !WillTerminate(); test++) {
+    size_t firstTest = 0;
+    size_t lastTest = 0;
+    if (evolveSettings.m_tests) {
+        firstTest = 1;
+        lastTest = evolveSettings.m_tests;
+    }
+    for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
         // Randomize the entire program of each state for the first generation
         for (unsigned int i = 0; i < evolveSettings.m_units; i++)
             allStates[i].InitState(evolveSettings, evolveSettings.m_units * test + i, test);
@@ -254,7 +261,7 @@ void FireStarter::ControlEvolve(void)
 
         // Optimization evolution pass.
         if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-            ControlOptimize(&bestState);
+            FireStarterStream::Optimize(m_window, bestState);
     }
 
     // Cancel any waiting jobs

@@ -125,7 +125,7 @@ void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireS
         execute->ExecuteEvolve(true);
 
         // Complete the state and display the results.
-        if (!complete->CompleteState(bestState, evolveState, generation))
+        if (!complete->CompleteState(bestState, evolveState))
             break;
         generation++;
     }
@@ -169,17 +169,19 @@ void FireStarterStream::EvolveStream(const FireStarterWindow& window, const Fire
 
 void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStarterState& evolveState)
 {
-    FireStarterStream stream; // Provides serial thread Terminate() method.
+    FireStarterState bestState(evolveState);
+    FireStarterStream stream(bestState); // Provides serial thread Terminate() method.
     stream.OptimizeStream(window, evolveState, true);
 } // Optimize
 
 void FireStarterStream::Evolve(const FireStarterWindow& window, const FireStarterSettings &evolveSettings, size_t index)
 {
-    FireStarterStream stream; // Provides serial thread Terminate() method.
+    FireStarterState bestState(evolveSettings);
+    FireStarterStream stream(bestState); // Provides serial thread Terminate() method.
     stream.EvolveStream(window, evolveSettings, index, true);
 } // Evolve
 
-FireStarterStream::FireStarterStream(void)
+FireStarterStream::FireStarterStream(FireStarterState& bestState) : m_bestState(bestState)
 {
 } // FireStarterStream
 

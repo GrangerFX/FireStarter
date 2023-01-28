@@ -22,7 +22,7 @@ public:
     size_t m_generation = 0;
     size_t m_index = 0;
     size_t m_test = 0;
-    float m_maxResult;
+    float m_maxResult = 0.0f;
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {
