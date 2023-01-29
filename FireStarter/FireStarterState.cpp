@@ -53,8 +53,8 @@ void FireStarterState::SaveState(std::string& code) const
     code += "    state.InitState(settings);\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
-    code += Format("    state.m_generation = %llu;\r\n", m_generation);
-    code += Format("    state.m_index = %llu;\r\n", m_index);
+    code += Format("    state.m_generation = %zu;\r\n", m_generation);
+    code += Format("    state.m_index = %zu;\r\n", m_index);
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";

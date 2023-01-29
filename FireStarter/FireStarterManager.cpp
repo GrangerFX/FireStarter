@@ -78,7 +78,7 @@ size_t FireStarterJobQueue::Size(void)
     return m_sizeJobs;
 } // Size
 
-FireStarterJobQueue::FireStarterJobQueue(const std::string& name) : m_name(name)
+FireStarterJobQueue::FireStarterJobQueue(const std::string& name) : SerialThread(name), m_name(name)
 {
 } // FireStarterJobQueue
 

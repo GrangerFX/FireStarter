@@ -5,6 +5,9 @@
 #include <thread>
 #include <functional>
 #include <condition_variable>
+#ifdef WIN32
+#include <Windows.h>
+#endif
 
 // SerialThread by Mark Granger.
 // Contact: grangerfx@gmail.com
@@ -137,6 +140,7 @@ private:
     std::mutex m_mutex;
     std::condition_variable m_cv;
     std::queue<SerialThreadWork> m_workQueue;
+    std::string m_threadName; // For debugging
     bool m_pollThread = false;
     bool m_willTerminate = false;
     volatile bool m_terminate = false;
@@ -233,6 +237,9 @@ private:
 
     inline void Thread(void)
     {
+#ifdef WIN32
+        SetThreadDescription(GetCurrentThread(), std::wstring(m_threadName.begin(), m_threadName.end()).data());
+#endif
         SerialThreadWork work;
         m_terminate = false;
         while (!m_terminate) {
@@ -391,8 +398,19 @@ public:
         return false;
     } // TerminateThread
 
-    inline SerialThread(bool pollThread = false)
+    // Note: int is used instead of bool for correct type matching.
+    inline SerialThread(const std::string& threadName, int pollThread = false)
     {
+        m_threadName = threadName;
+        m_pollThread = pollThread;
+        if (!m_pollThread)
+            m_thread = std::thread([this] { Thread(); });
+    } // SerialThread
+
+    // Note: int is used instead of bool for correct type matching.
+    inline SerialThread(int pollThread = false)
+    {
+        m_threadName = "SerialThread"; // For debugging
         m_pollThread = pollThread;
         if (!m_pollThread)
             m_thread = std::thread([this] { Thread(); });

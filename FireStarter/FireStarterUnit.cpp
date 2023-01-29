@@ -459,13 +459,13 @@ void FireStarterUnit::Sync(FireStarterState* allStates)
     });
 } // Sync
 
-FireStarterUnit::FireStarterUnit(unsigned int index)
+FireStarterUnit::FireStarterUnit(unsigned int index) : SerialThread("FireStarterUnit")
 {
     m_unitIndex = index;
     m_gpus = 1;
 } // FireStarterUnit
 
-FireStarterUnit::FireStarterUnit(unsigned int index, unsigned int gpus) : m_state(m_settings)
+FireStarterUnit::FireStarterUnit(unsigned int index, unsigned int gpus) : SerialThread("FireStarterUnit"), m_state(m_settings)
 {
     m_unitIndex = index;
     m_gpus = gpus;

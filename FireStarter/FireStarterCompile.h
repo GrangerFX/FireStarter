@@ -16,7 +16,7 @@ public:
 	void CompilerServer(void);
 	void CompilerClient(void);
 	FireStarterCompiler(class FireStarterCompile* compile, FireStarterProcess* process);
-	FireStarterCompiler(class FireStarterCompile* compile, FireStarterManager* manager = nullptr, FireStarterServer* server = nullptr);
+	FireStarterCompiler(class FireStarterCompile* compile, FireStarterManager* manager = nullptr, FireStarterServer* server = nullptr, size_t index = 0);
 	~FireStarterCompiler(void);
 }; // class FireStarterCompiler
 

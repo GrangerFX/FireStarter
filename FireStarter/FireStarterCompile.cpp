@@ -148,7 +148,7 @@ void FireStarterCompiler::CompilerClient(void)
     });
 } // CompilerClient
 
-FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarterProcess* process)
+FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarterProcess* process) : SerialThread("FireStarterCompiler")
 {
     m_compile = compile;
     m_server = nullptr;
@@ -158,7 +158,7 @@ FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarte
     CompilerClient();
 } // FireStarterCompiler
 
-FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarterManager* manager, FireStarterServer* server)
+FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarterManager* manager, FireStarterServer* server, size_t index) : SerialThread(Format("FireStarterCompiler%zu", index))
 {
     m_compile = compile;
     m_server = server;
@@ -202,7 +202,7 @@ FireStarterCompile::FireStarterCompile(FireStarterManager* manager, size_t numPr
 {
     m_manager = manager;
     m_numProcesses = numProcesses;
-    if (numProcesses) {
+    if (m_numProcesses) {
         if (!m_server)
             m_server = new FireStarterServer();
         m_serverReferences++;
@@ -222,8 +222,9 @@ FireStarterCompile::~FireStarterCompile(void)
 {
     for (FireStarterCompiler* compiler : m_compilers)
         delete compiler;
-    if (!--m_serverReferences) {
-        delete m_server;
-        m_server = nullptr;
-    }
+    if (m_numProcesses)
+        if (!--m_serverReferences) {
+            delete m_server;
+            m_server = nullptr;
+        }
 } // ~FireStarterCompile

@@ -411,7 +411,7 @@ void FireStarterExecute::ExecuteFinish(bool sync)
     });
 } // ExecuteFinish
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index) : CUDAThread(index)
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterExecute%zu", index))
 {
     m_manager = manager;
     m_index = index;
@@ -422,7 +422,7 @@ FireStarterExecute::~FireStarterExecute(void)
     ExecuteFinish();
 } // ~FireStarterExecute(void)
 
-FireStarterExecuteRandom::FireStarterExecuteRandom(FireStarterManager* manager, size_t numExecute)
+FireStarterExecuteRandom::FireStarterExecuteRandom(FireStarterManager* manager, size_t numExecute) : SerialThread("FireStarterExecuteRandom")
 {
     // Create and start the random execution units.
     for (size_t i = 0; i < numExecute; i++) {

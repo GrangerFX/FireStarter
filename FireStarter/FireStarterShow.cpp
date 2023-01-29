@@ -203,7 +203,7 @@ bool FireStarterShow::LoadFireShowCode(void)
     return true;
 } // LoadFireShowCode
 
-FireStarterShow::FireStarterShow(const FireStarterWindow& window, const FireStarterSettings& settings) : m_window(window), m_settings(settings)
+FireStarterShow::FireStarterShow(const FireStarterWindow& window, const FireStarterSettings& settings) : CUDAThread("FireStarterShow"), m_window(window), m_settings(settings)
 {
     m_settings = settings;
 

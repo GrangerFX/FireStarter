@@ -122,7 +122,7 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
         FireStarterJob* job = m_manager->GetComplete();
         if (job) {
             // Output job queue status.
-            //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+            //  m_output.Output(Format("Free: %zu %f  Code: z %f  Compile: %zu %f  Complete: %zu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Update the best state and display the results.
             CompleteResults(bestState, job->m_state);
@@ -169,7 +169,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             }
 
             // Output job queue status.
-            //  m_output.Output(Format("Free: %llu %f  Code: %llu %f  Compile: %llu %f  Complete: %llu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+            //  m_output.Output(Format("Free: %zu %f  Code: %zu %f  Compile: %zu %f  Complete: %zu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Sort the completed jobs.
             newStates[job->m_state.m_index % numStates] = job->m_state;
@@ -197,7 +197,7 @@ void FireStarterComplete::CompleteSolution(bool sync)
     }, sync);
 } // CompleteSolution
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings) : m_window(window), m_settings(settings), m_fireShow(window, settings)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings) : CUDAThread("FireStarterComplete"), m_window(window), m_settings(settings), m_fireShow(window, settings)
 {
     m_manager = manager;
     m_settings = settings;

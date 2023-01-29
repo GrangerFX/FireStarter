@@ -79,7 +79,7 @@ HRESULT Initialize(HINSTANCE hInstance)
 			DragAcceptFiles(hwnd, 1);
 			ShowWindow(hwnd, SW_SHOW);
 
-			SerialThread mainSerialThread(true);
+			SerialThread mainSerialThread("FireStarterMain", true);
 			SerialThread::SetMainThread(&mainSerialThread);
 			FireStarterWindow fireStarterWindow(hwnd, imageWidth, imageHeight);
 			FireStarter* fireStarter = new FireStarter(fireStarterWindow);

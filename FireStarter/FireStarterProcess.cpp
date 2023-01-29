@@ -275,7 +275,7 @@ bool FireStarterProcess::StartProcess(void)
         // Send the process index to the client.
         bool indexResult = SendData(&m_processIndex, sizeof(m_processIndex));
         if (indexResult)
-            TESTPRINTF("%s: Index sent to client: %llu\n", ProcessPrefix().c_str(), m_processIndex);
+            TESTPRINTF("%s: Index sent to client: %zu\n", ProcessPrefix().c_str(), m_processIndex);
         else {
             TESTPRINTF("%s: Failed to send index to client. Error=%d\n", ProcessPrefix().c_str(), GetLastError());
             StopProcess();
@@ -386,7 +386,7 @@ bool FireStarterProcess::StartClient(void)
         // Receive the process index from the server.
         bool indexResult = ReceiveData(&m_processIndex, sizeof(m_processIndex));
         if (indexResult)
-            TESTPRINTF("\nIndex received from server: %llu\n", m_processIndex);
+            TESTPRINTF("\nIndex received from server: %zu\n", m_processIndex);
         else {
             TESTPRINTF("Failed to receive index via pipe. Error=%d\n", GetLastError());
             StopClient();

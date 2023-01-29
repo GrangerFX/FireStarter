@@ -226,7 +226,7 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool
     return true;
 } // GenerateOptimize
 
-FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index)
+FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterEvolve%zu", index))
 {
     m_manager = manager;
     m_index = index;

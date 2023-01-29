@@ -159,6 +159,7 @@
     <ClInclude Include="FireStarter\FireStarterStream.h" />
     <ClInclude Include="FireStarter\FireStarterUnit.h" />
     <ClInclude Include="FireStarter\FireStarterUtil.h" />
+    <ClInclude Include="FireStarter\Format.h" />
     <ClInclude Include="FireStarter\PrintF.h" />
     <ClInclude Include="FireStarter\SerialOutput.h" />
     <ClInclude Include="FireStarter\SerialThread.h" />

@@ -12,4 +12,8 @@ public:
 			std::cerr << text;
 		});
 	} // Output
+
+	SerialOutput(void) : SerialThread("SerialOutput")
+	{
+	} // SerialOutput
 }; // class SerialOutput

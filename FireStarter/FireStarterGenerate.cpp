@@ -149,9 +149,9 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     solutionCode += "\r\n";
     code += Format("// Run date: %s\r\n", CurrentDate().c_str());
     code += Format("// Run duration = %f seconds\r\n", duration);
-    code += Format("// Run count = %llu\r\n", generation);
+    code += Format("// Run count = %zu\r\n", generation);
     FireStarterProgram::SettingsText(settings, code, "// Run ");
-    code += Format("// Solution Generation = %llu\r\n", state.m_generation);
+    code += Format("// Solution Generation = %zu\r\n", state.m_generation);
     code += "\r\n";
     code += targetCode;
     code += "\r\n";

@@ -43,7 +43,7 @@ LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 // ----------------------------------------------------------------------------
 HRESULT Initialize(const char* commandLine)
 {
-	SerialThread mainSerialThread(true);
+	SerialThread mainSerialThread("FireCompilerMain", true);
 	SerialThread::SetMainThread(&mainSerialThread);
 	FireCompiler fireCompiler(commandLine);
 	while (!fireCompiler.ShouldTerminate()) {

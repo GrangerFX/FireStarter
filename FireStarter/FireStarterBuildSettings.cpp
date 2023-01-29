@@ -54,7 +54,7 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
     });
 } // FireStarterBuildSettings
 
-FireStarterBuildSettings::FireStarterBuildSettings(void)
+FireStarterBuildSettings::FireStarterBuildSettings(void) : CUDAThread("FireStarterBuildSettings")
 {
     DispatchSync([this] {
         // Compile FireSettings

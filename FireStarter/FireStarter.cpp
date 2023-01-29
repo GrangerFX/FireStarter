@@ -342,7 +342,7 @@ void FireStarter::ControlThread(void)
     });
 } // ControlThread
 
-FireStarter::FireStarter(const FireStarterWindow& window) : m_window(window)
+FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
 {
     ControlThread();
 } // FireStarter
