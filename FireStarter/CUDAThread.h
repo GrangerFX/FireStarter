@@ -22,15 +22,7 @@ public:
     } // TerminateThread
 
     // Note: int is used instead of bool for correct type matching.
-    inline CUDAThread(const std::string& threadName, size_t device = 0, int pollThread = false) : SerialThread(threadName, pollThread)
-    {
-        DispatchSync([this, device] {
-            m_CUDAContext = new CUDAContext(device);
-        });
-    } // CUDAThread
-
-    // Note: int is used instead of bool for correct type matching.
-    inline CUDAThread(size_t device = 0, int pollThread = false) : SerialThread(pollThread)
+    inline CUDAThread(const std::string& threadName = "CUDAThread", size_t device = 0, int pollThread = false) : SerialThread(threadName, pollThread)
     {
         DispatchSync([this, device] {
             m_CUDAContext = new CUDAContext(device);

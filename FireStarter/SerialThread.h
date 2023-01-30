@@ -399,18 +399,9 @@ public:
     } // TerminateThread
 
     // Note: int is used instead of bool for correct type matching.
-    inline SerialThread(const std::string& threadName, int pollThread = false)
+    inline SerialThread(const std::string& threadName = "SerialThread", int pollThread = false)
     {
         m_threadName = threadName;
-        m_pollThread = pollThread;
-        if (!m_pollThread)
-            m_thread = std::thread([this] { Thread(); });
-    } // SerialThread
-
-    // Note: int is used instead of bool for correct type matching.
-    inline SerialThread(int pollThread = false)
-    {
-        m_threadName = "SerialThread"; // For debugging
         m_pollThread = pollThread;
         if (!m_pollThread)
             m_thread = std::thread([this] { Thread(); });
