@@ -158,7 +158,7 @@ FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarte
     CompilerClient();
 } // FireStarterCompiler
 
-FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarterManager* manager, FireStarterServer* server, size_t index) : SerialThread(Format("FireStarterCompiler%zu", index))
+FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarterManager* manager, FireStarterServer* server, size_t index) : SerialThread(Format("FireStarterCompiler%z", index))
 {
     m_compile = compile;
     m_server = server;

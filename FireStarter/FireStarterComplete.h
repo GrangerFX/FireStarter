@@ -21,7 +21,7 @@ private:
 
 	void SaveBestState(const FireStarterState& bestState);
 	void SaveBestCode(const FireStarterState& bestState);
-	void SaveSolution(const FireStarterState& bestState, size_t generation, double generationTime);
+	void SaveSolution(const FireStarterState& bestState, double generationTime, size_t generation);
 	bool LoadSolutionTargetCode(void);
 
 public:

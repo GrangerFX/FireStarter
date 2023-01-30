@@ -29,7 +29,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
     }
 } // SaveBestCode
 
-void FireStarterComplete::SaveSolution(const FireStarterState& bestState, size_t generation, double generationTime)
+void FireStarterComplete::SaveSolution(const FireStarterState& bestState, double generationTime, size_t generation)
 {
     std::string solutionCode;
     m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode, generationTime, generation);
@@ -61,10 +61,23 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         // Update the display state.
         displayState = bestState;
     bestStateMutex.unlock();
+
+    // If the best state was updated, save the stat and draw the results.
     if (update) {
         // Test the current state.
         displayState = state;
         m_testError = displayState.TestResult();
+
+        // Update the best state.
+        if (displayState.Settings().m_mode != FIRESTARTER_OPTIMIZE)
+            SaveBestState(displayState);
+
+        // Update the best code on disk.
+        SaveBestCode(displayState);
+        SaveSolution(displayState, duration, displayState.m_generation);
+
+        // Draw the graphs for both variations.
+        m_fireShow.FireShow(displayState);
     }
 
     const FireStarterSettings& settings = state.Settings();
@@ -95,20 +108,6 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     double average = m_totalResult / ++m_resultsCount;
     m_fireShow.RenderStatus(displayState, state, duration, m_generationTime, oldResult, average, m_testError);
 
-    // If the best state was updated, save the stat and draw the results.
-    if (update) {
-        // Update the best state.
-        if (displayState.Settings().m_mode != FIRESTARTER_OPTIMIZE)
-            SaveBestState(displayState);
-
-        // Update the best code on disk.
-        SaveBestCode(displayState);
-        SaveSolution(displayState, displayState.m_generation, m_resultsTime);
-
-        // Draw the graphs for both variations.
-        m_fireShow.FireShow(displayState);
-    }
-
     // Has the completion condition been met?
     return state.m_generation - displayState.m_generation < settings.m_attempts;
 } // CompleteResults
@@ -122,7 +121,7 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
         FireStarterJob* job = m_manager->GetComplete();
         if (job) {
             // Output job queue status.
-            //  m_output.Output(Format("Free: %zu %f  Code: z %f  Compile: %zu %f  Complete: %zu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+            //  m_output.Output(Format("Free: %zu %f  Code: zu %f  Compile: %zu %f  Complete: %zu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Update the best state and display the results.
             CompleteResults(bestState, job->m_state);
@@ -169,7 +168,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             }
 
             // Output job queue status.
-            //  m_output.Output(Format("Free: %zu %f  Code: %zu %f  Compile: %zu %f  Complete: %zu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
+            //  m_output.Output(Format("Free: %zu %f  Code: %zu %f  Compile: %zu %f  Complete: %uz %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Sort the completed jobs.
             newStates[job->m_state.m_index % numStates] = job->m_state;

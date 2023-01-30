@@ -110,13 +110,12 @@ void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireS
     // Setup the intial state
     FireStarterState evolveState(evolveSettings);
     evolveState.m_index = index;
-    FireStarterState bestState(evolveState);
 
     // Loop until the the completion condition or the host program is quit.
     size_t generation = 0;
     while (!WillTerminate()) {
         // Evolve a new generation for the state.
-        evolve->EvolveState(bestState, evolveState, generation, true);
+        evolve->EvolveState(evolveState, generation, true);
 
         // Compile the evolved program.
         compile->CompileJob(manager, true);
@@ -125,7 +124,7 @@ void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireS
         execute->ExecuteEvolve(true);
 
         // Complete the state and display the results.
-        if (!complete->CompleteState(bestState, evolveState))
+        if (!complete->CompleteState(m_bestState, evolveState))
             break;
         generation++;
     }
@@ -147,23 +146,23 @@ void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireS
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
-
-    // Optimization evolution pass.
-    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        Optimize(window, evolveState);
 } // EvolveState
 
 void FireStarterStream::OptimizeStream(const FireStarterWindow& window, const FireStarterState& evolveState, bool sync)
 {
+    m_done = false;
     Dispatch([this, window, evolveState] {
         OptimizeState(window, evolveState);
+        m_done = true;
     }, sync);
 } // OptimizeStream
 
 void FireStarterStream::EvolveStream(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, size_t index, bool sync)
 {
+    m_done = false;
     Dispatch([this, window, evolveSettings, index] {
         EvolveState(window, evolveSettings, index);
+        m_done = true;
     }, sync);
 } // EvolveStream
 

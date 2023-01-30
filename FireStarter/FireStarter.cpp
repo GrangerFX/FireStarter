@@ -179,7 +179,7 @@ void FireStarter::ControlEvolve(void)
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
     FireStarterState bestState(evolveSettings);
 
-#if 0
+#if 1
     // Allocate and start each stream unit.
     std::vector<FireStarterStream*> streamUnits;
     for (size_t i = 0; i < evolveSettings.m_units; i++) {
@@ -192,7 +192,7 @@ void FireStarter::ControlEvolve(void)
     while (!WillTerminate()) {
         bool finished = true;
         for (FireStarterStream* streamUnit : streamUnits)
-            if (streamUnit->IsRunning()) {
+            if (!streamUnit->Done()) {
                 finished = false;
                 break;
             }
@@ -204,6 +204,10 @@ void FireStarter::ControlEvolve(void)
     // Terminate and delete each stream unit.
     for (FireStarterStream* streamUnit : streamUnits)
         delete streamUnit;
+
+    // Optimization evolution pass.
+    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
+        FireStarterStream::Optimize(m_window, bestState);
 #else
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(max(evolveSettings.m_units, evolveSettings.m_processes));
