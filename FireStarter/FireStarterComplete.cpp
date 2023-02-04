@@ -82,34 +82,38 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 
     const FireStarterSettings& settings = state.Settings();
     float result = state.m_maxResult;
-    if (!state.m_generation) {
-        m_resultsCount = 0;
-        m_resultsTime = duration;
-        m_totalResult = 0.0;
-    }
-    m_totalResult += result;
 
     // Calculate the average time per generation.
-    if (state.m_generation != m_resultsGeneration) {
-        m_resultsGeneration = state.m_generation;
-        if (settings.m_mode == FIRESTARTER_RANDOM) {
-            if (m_resultsCount == 0)
-                m_generationTime = duration;
-            else if (m_resultsCount == 1)
-                m_generationTime = duration - m_resultsTime;
-            else
-                m_generationTime = (m_generationTime * m_resultsCount + (duration - m_resultsTime)) / (m_resultsCount + 1);
-        } else
-            m_generationTime = (duration - m_resultsTime) / settings.m_units;
+    if (settings.m_mode == FIRESTARTER_RANDOM) {
+        if (m_resultsCount == 0)
+            m_generationTime = duration;
+        else if (m_resultsCount == 1)
+            m_generationTime = duration - m_resultsTime;
+        else
+            m_generationTime = (m_generationTime * m_resultsCount + (duration - m_resultsTime)) / (m_resultsCount + 1);
         m_resultsTime = duration;
+    } else {
+        if (!state.m_generation) {
+            m_resultsCount = 0;
+            m_resultsTime = duration;
+            m_totalResult = 0.0;
+            m_resultsGeneration = 0;
+        } else if (state.m_generation != m_resultsGeneration) {
+            m_resultsGeneration = state.m_generation;
+            m_generationTime = (duration - m_resultsTime) / settings.m_units;
+            m_resultsTime = duration;
+        }
     }
 
     // Update the render status after every pass.
+    m_totalResult += result;
     double average = m_totalResult / ++m_resultsCount;
     m_fireShow.RenderStatus(displayState, state, duration, m_generationTime, oldResult, average, m_testError);
 
     // Has the completion condition been met?
-    return state.m_generation - displayState.m_generation < settings.m_attempts;
+    if (state.m_generation - displayState.m_generation >= settings.m_attempts)
+        return false;
+    return true;
 } // CompleteResults
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)

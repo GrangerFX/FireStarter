@@ -137,9 +137,9 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         uint64_t programHash = MurmurHash64(state.m_program.OptimizedInstructions(), state.m_program.InstructionsSize());
         hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.m_maxResult, settings.m_seed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
         FireStarterCode::AppendCode(hashFilePath, hashString);
-        //  m_output.Output(hashString);
+        // m_output.Output(hashString);
 
-                // Create the log file.
+        // Create the log file.
         static std::string logFilePath;
         if (logFilePath.empty()) {
             logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), settings.Mode());

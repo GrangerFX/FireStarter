@@ -10,9 +10,12 @@ void FireStarterStream::OptimizeState(const FireStarterWindow& window, const Fir
     // Convert the most recently evolved state into an optimize mode state.
     FireStarterState startState(evolveState);
     FireStarterSettings& settings = startState.Settings();
-    settings.m_mode = FIRESTARTER_OPTIMIZE;
     settings.m_units = 1;
     settings.m_processes = 0;
+    if (settings.m_mode != FIRESTARTER_OPTIMIZE) {
+        settings.m_mode = FIRESTARTER_OPTIMIZE;
+        settings.m_tests = 0;
+    }
 
     // Switch the settings to optimize mode
     startState.InitResult();

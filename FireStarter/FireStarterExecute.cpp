@@ -354,7 +354,7 @@ void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t
                 m_job->m_state.m_generation = generation;
                 m_job->m_state.m_index = index;
                 m_job->m_state.m_test = test;
-                Optimize(m_job->m_state, init, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+                Optimize(m_job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
                 job->Copy(m_job);
             }
             m_manager->AddComplete(job);
@@ -367,7 +367,7 @@ void FireStarterExecute::ExecuteEvolve(bool sync)
     Dispatch([this] {
         FireStarterJob* job = nullptr;
         if (CompileModule(job))
-            Optimize(job->m_state, true, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+            Optimize(job->m_state, true, FIRESTARTER_SKIP_VARIATIONS);
         else {
             m_manager->AddFree(job);
             job = nullptr;
@@ -383,7 +383,7 @@ void FireStarterExecute::ExecuteRandom(bool sync)
         FireStarterJob* job = nullptr;
         while (CompileModule(job)) {
             job->m_state.m_maxResult = g_atomicResult;
-            Optimize(job->m_state, true, FIRESTARTER_RANDOM_SKIP_VARIATIONS);
+            Optimize(job->m_state, true, FIRESTARTER_SKIP_VARIATIONS);
             float stateResult = job->m_state.m_maxResult;
             if (stateResult < g_atomicResult) {
                 float oldResult = g_atomicResult;
