@@ -2,25 +2,23 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
-bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, size_t generations, bool sync)
+bool FireStarterEvolve::EvolveSeeds(const FireStarterSettings& settings, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
-    FireStarterState state(*initState);
-    Dispatch([this, state, generations] {
+    Dispatch([this, settings] {
         // Generate code using the GPU.
-        for (size_t generation = 0; generation < generations; generation++) {
+        FireStarterSettings evolveSettings(settings);
+        size_t startSeed = settings.m_seed;
+        for (size_t seed = 0; seed < settings.m_tests; seed++) {
             FireStarterJob* job = m_manager->GetFree();
             if (!job)
                 break;
 
-            // Randomize one instruction per state except for the first generation.
-            job->m_state = state;
-            job->m_state.m_generation = state.m_generation + generation;
-            if ((!job->m_state.m_generation) || (job->m_state.Settings().m_mode == FIRESTARTER_RANDOM))
-                job->m_state.RandomProgram();
-            else
-                job->m_state.RandomInstruction();
+            // Randomize the program for the current seed.
+            evolveSettings.m_seed = startSeed + seed;
+            job->m_state.InitState(evolveSettings);
+            job->m_state.RandomProgram();
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();
@@ -44,7 +42,7 @@ bool FireStarterEvolve::EvolveGenerations(const FireStarterState* initState, siz
         m_manager->AddCode();
     }, sync);
     return true;
-} // EvolveGenerations
+} // EvolveSeeds
 
 bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t generation, bool sync)
 {

@@ -90,7 +90,7 @@ void FireStarterStream::OptimizeState(const FireStarterWindow& window, const Fir
     delete manager;
 } // OptimizeState
 
-void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, size_t index)
+void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireStarterSettings& settings, size_t index, size_t test)
 {
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager();
@@ -105,15 +105,13 @@ void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireS
     FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, window, evolveSettings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, window, settings);
 
-    // Setup the intial state
-    FireStarterState evolveState(evolveSettings);
-    evolveState.m_index = index;
-
-    // Loop until the the completion condition or the host program is quit.
     size_t generation = 0;
     while (!WillTerminate()) {
+        // Setup the intial state
+        FireStarterState evolveState(settings, generation, index, test);
+            
         // Evolve a new generation for the state.
         evolve->EvolveState(evolveState, generation, true);
 
@@ -157,11 +155,21 @@ void FireStarterStream::OptimizeStream(const FireStarterWindow& window, const Fi
     }, sync);
 } // OptimizeStream
 
-void FireStarterStream::EvolveStream(const FireStarterWindow& window, const FireStarterSettings& evolveSettings, size_t index, bool sync)
+void FireStarterStream::EvolveStream(const FireStarterWindow& window, const FireStarterSettings& settings, size_t index, bool sync)
 {
     m_done = false;
-    Dispatch([this, window, evolveSettings, index] {
-        EvolveState(window, evolveSettings, index);
+    Dispatch([this, window, settings, index] {
+        FireStarterSettings evolveSettings(settings);
+        size_t startSeed = settings.m_seed;
+        static std::atomic<unsigned long long> a_seed = 0;
+        unsigned long long seed = 0;
+
+        // Loop until the the completion condition or the host program is quit.
+        while (!WillTerminate() && (seed < settings.m_tests)) {
+            seed = a_seed++;
+            evolveSettings.m_seed = startSeed + seed;
+            EvolveState(window, settings, index, 0);
+        }
         m_done = true;
     }, sync);
 } // EvolveStream

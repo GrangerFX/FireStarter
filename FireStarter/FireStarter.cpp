@@ -134,7 +134,7 @@ void FireStarter::ControlRandom(void)
     bestState.RandomProgram();
 
     // Start generating random code generations.
-    evolve->EvolveGenerations(&bestState, randomSettings.m_tests);
+    evolve->EvolveSeeds(randomSettings);
 
     // Create and run the execution units.
     FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, randomSettings.m_units);
@@ -171,7 +171,7 @@ void FireStarter::ControlRandom(void)
         FireStarterStream::Optimize(m_window, bestState);
 } // ControlRandom
 
-void FireStarter::ControlEvolve(void)
+void FireStarter::ControlRevolve(void)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
@@ -179,7 +179,6 @@ void FireStarter::ControlEvolve(void)
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
     FireStarterState bestState(evolveSettings);
 
-#if 1
     // Allocate and start each stream unit.
     std::vector<FireStarterStream*> streamUnits;
     for (size_t i = 0; i < evolveSettings.m_units; i++) {
@@ -208,7 +207,16 @@ void FireStarter::ControlEvolve(void)
     // Optimization evolution pass.
     if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
         FireStarterStream::Optimize(m_window, bestState);
-#else
+} // ControlRevolve
+
+void FireStarter::ControlEvolve(void)
+{
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings evolveSettings;
+    m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
+    FireStarterState bestState(evolveSettings);
+
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(max(evolveSettings.m_units, evolveSettings.m_processes));
 
@@ -241,7 +249,7 @@ void FireStarter::ControlEvolve(void)
     for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
         // Randomize the entire program of each state for the first generation
         for (unsigned int i = 0; i < evolveSettings.m_units; i++)
-            allStates[i].InitState(evolveSettings, evolveSettings.m_units * test + i, test);
+            allStates[i].InitState(evolveSettings, 0, i, test);
 
         // Setup the intial best state
         FireStarterState bestState(allStates[0]);
@@ -287,7 +295,6 @@ void FireStarter::ControlEvolve(void)
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
-#endif
 } // ControlEvolve
 
 void FireStarter::ControlSolution(void)
@@ -324,6 +331,10 @@ void FireStarter::ControlThread(void)
             case FIRESTARTER_RANDOM:
                 // Random generations.
                 ControlRandom();
+                break;
+            case FIRESTARTER_REVOLVE:
+                // Evolved generations.
+                ControlRevolve();
                 break;
             case FIRESTARTER_EVOLVE:
                 // Evolved generations.

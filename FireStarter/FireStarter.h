@@ -12,6 +12,7 @@ private:
     void ControlUnits(const FireStarterState* evolveState = nullptr);
     void ControlTest(void);
     void ControlRandom(void);
+    void ControlRevolve(void);
     void ControlEvolve(void);
     void ControlSolution(void);
     void ControlThread(void);

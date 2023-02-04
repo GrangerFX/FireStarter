@@ -101,8 +101,8 @@ public:
     void SaveState(std::string& code) const;
     float TestResult(void) const;
     void InitResult(void);
-    void InitState(const FireStarterSettings& settings, size_t index = 0, size_t test = 0);
+    void InitState(const FireStarterSettings& settings, size_t generation = 0, size_t index = 0, size_t test = 0);
     inline FireStarterState(const FireStarterState& other) { swap(other); }
-    FireStarterState(const FireStarterSettings& settings, size_t index = 0, size_t test = 0);
+    FireStarterState(const FireStarterSettings& settings, size_t generation = 0, size_t index = 0, size_t test = 0);
     inline FireStarterState(void) {}
 }; // class FireStarterState;

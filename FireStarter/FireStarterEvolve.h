@@ -12,7 +12,7 @@ private:
 	size_t m_index = 0;
 
 public:
-	bool EvolveGenerations(const FireStarterState* initState, size_t generations, bool sync = false);
+	bool EvolveSeeds(const FireStarterSettings& settings, bool sync = false);
 	bool EvolveState(const FireStarterState& state, size_t generation, bool sync = false);
 	bool EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, size_t generation, bool sync = false);
 	bool GenerateOptimize(const FireStarterState& initState, bool sync = false);
