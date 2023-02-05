@@ -48,16 +48,6 @@ public:
         return m_program.m_settings;
     } // Settings
 
-    inline unsigned long long EvolveSeed(void) const
-    {
-        return RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_test);
-    } // EvolveSeed
-
-    inline unsigned long long IndexSeed(void) const
-    {
-        return RANDOM64(RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_index) + m_test);
-    } // IndexSeed
-
     inline unsigned long long GenerationSeed(void) const
     {
         return RANDOM64(RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_generation) + m_test);
@@ -68,21 +58,28 @@ public:
         return RANDOM64(RANDOM64(RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
     } // StateSeed
 
-    void InitSeed(unsigned long long seed)
+    unsigned long long InitSeed(unsigned long long seed)
     {
         m_seed = seed;
+        return m_seed;
     } // InitSeed
 
-    void InitSeed(void)
+    unsigned long long InitGenerationSeed(void)
+    {
+        m_seed = GenerationSeed();
+        return m_seed;
+    } // InitGenerationSeed
+
+    unsigned long long InitStateSeed(void)
     {
         m_seed = StateSeed();
-    } // InitSeed
+        return m_seed;
+    } // InitStateSeed
 
     unsigned long long RootSeed(unsigned long long seed)
     {
         m_program.m_settings.m_seed = seed;
-        InitSeed();
-        return m_seed;
+        return InitStateSeed();
     } // RootSeed
 
     unsigned long long RandomSeed(void)

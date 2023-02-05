@@ -186,8 +186,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             result |= CompleteResults(bestState, newState, oldState.m_maxResult);
             if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult))
                 oldState = newState;
-//          else
-//              oldState.m_generation = newState.m_generation;
         }
     }, sync);
     return result;

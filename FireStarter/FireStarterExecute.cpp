@@ -8,7 +8,6 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
     CUstream stream = context->Stream();
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned long long generationSeed = state.EvolveSeed();
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
@@ -18,6 +17,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
         FireStarterEvolutions* newEvolutions = g & 1 ? m_deviceEvolutions0 : m_deviceEvolutions1;
         FireStarterEvolutions* oldEvolutions = g & 1 ? m_deviceEvolutions1 : m_deviceEvolutions0;
         int init = (g == 0) && (forceInit || (state.m_generation == 0));
+        unsigned long long generationSeed = state.RandomSeed();
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newEvolutions),
@@ -81,7 +81,6 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     unsigned int threadsPerBlock = 16; // BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
-    unsigned long long generationSeed = state.GenerationSeed();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
 
@@ -91,6 +90,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
         FireStarterPopulation* newResults = g & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = g & 1 ? m_devicePopulation1 : m_devicePopulation0;
         int init = (g == 0) && (forceInit || (state.m_generation == 0));
+        unsigned long long generationSeed = state.RandomSeed();
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),
@@ -114,7 +114,6 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
 
         // Synchronize all GPU threads and results.
         context->Synchronize();
-        generationSeed++;
         forceInit = 0;
     }
 

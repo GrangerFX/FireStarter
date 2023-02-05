@@ -33,6 +33,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
     bestState.Settings().CopyModeSettings(unitSettings);
     bestState.m_generation = 0;
     bestState.m_index = 0;
+    bestState.InitStateSeed();
     bestState.InitResult();
 
     // Create the states and units.

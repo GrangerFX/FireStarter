@@ -44,7 +44,7 @@ bool FireStarterEvolve::EvolveSeeds(const FireStarterSettings& settings, bool sy
     return true;
 } // EvolveSeeds
 
-bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t generation, bool sync)
+bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long long generation, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
@@ -56,11 +56,11 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t genera
             // Clone or randomize instructions in the later generations.
             job->m_state = state;
             job->m_state.m_generation = generation;
-            unsigned long long seed = job->m_state.GenerationSeed(); // Based on root seed and generation.
+            unsigned long long seed = job->m_state.InitGenerationSeed();
             if (generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
-#if 1
+#if 0
                 // Randomize a random range of instuctions.
                 unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
                 unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
@@ -70,8 +70,9 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t genera
                 }
 #else
                 // Randomize a random set of instuctions.
-                size_t age = generation - state.m_generation;
-                unsigned int randomNum = 4; // RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
+                unsigned long long age = generation - state.m_generation;
+                unsigned long long attempts = state.Settings().m_attempts;
+                unsigned long long randomNum = (age * 4 / attempts) + 1;
                 while (randomNum--)
                     job->m_state.RandomInstruction(seed);
 #endif
@@ -98,7 +99,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t genera
     return true;
 } // EvolveState
 
-bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, size_t generation, bool sync)
+bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const std::vector<FireStarterState>& allStates, unsigned long long generation, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
@@ -111,7 +112,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
             // Clone or randomize instructions in the later generations.
             job->m_state = allStates[m_index];
             job->m_state.m_generation = generation;
-            unsigned long long seed = job->m_state.StateSeed(); // Based on root seed, index and generation.
+            unsigned long long seed = job->m_state.InitStateSeed();
             if (generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;

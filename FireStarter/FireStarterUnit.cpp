@@ -47,7 +47,7 @@ void FireStarterUnit::GenerateOptimize(void)
 void FireStarterUnit::GenerateUnit(void)
 {
     // Evolve each state.
-    m_state.InitSeed();
+    m_state.InitStateSeed();
     if (!m_state.m_generation || (m_settings.m_mode == FIRESTARTER_RANDOM))
         m_state.RandomProgram();
     else
@@ -69,7 +69,6 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned long long generationSeed = m_state.StateSeed();
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
@@ -77,6 +76,7 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
             FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
             int init = (g == 0) && (forceInit || (m_state.m_generation == 0));
+            unsigned long long generationSeed = m_state.RandomSeed();
 
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newEvolutions),
@@ -118,7 +118,6 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
             }
             SyncContexts();
         }
-        generationSeed++;
         forceInit = 0;
     }
 
@@ -157,7 +156,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned long long generationSeed = m_state.StateSeed();
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -167,7 +165,8 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
             FireStarterPopulation* newResults = g & 1 ? context.m_devicePopulation0 : context.m_devicePopulation1;
             FireStarterPopulation* oldResults = g & 1 ? context.m_devicePopulation1 : context.m_devicePopulation0;
             int init = (g == 0) && (forceInit || (m_state.m_generation == 0));
- 
+            unsigned long long generationSeed = m_state.RandomSeed();
+
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
@@ -207,7 +206,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
                 checkCUDAErrors(cudaMemcpyAsync(oldPopulation, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
         }
-        generationSeed++;
         forceInit = 0;
     }
 
