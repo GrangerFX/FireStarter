@@ -21,7 +21,7 @@
 #define FIRESTARTER_EVOLVE   6
 #define FIRESTARTER_OPTIMIZE 7
 #define FIRESTARTER_SOLUTION 8
-#define FIRESTARTER_MODE     FIRESTARTER_RANDOM
+#define FIRESTARTER_MODE     FIRESTARTER_REVOLVE
 
 #define FIRESTARTER_CODE_TESTS              0
 #define FIRESTARTER_CODE_UNITS              1
@@ -171,6 +171,8 @@ public:
                 return "FIRESTARTER_TEST";
             case FIRESTARTER_RANDOM:
                 return "FIRESTARTER_RANDOM";
+            case FIRESTARTER_REVOLVE:
+                return "FIRESTARTER_REVOLVE";
             case FIRESTARTER_EVOLVE:
                 return "FIRESTARTER_EVOLVE";
             case FIRESTARTER_OPTIMIZE:

@@ -9,7 +9,7 @@ private:
 	bool m_done = true;
 
 	void OptimizeState(const FireStarterWindow& window, const FireStarterState& evolveState);
-	void EvolveState(const FireStarterWindow& window, const FireStarterSettings& settings, size_t index, size_t test);
+	void EvolveState(const FireStarterWindow& window, FireStarterState& evolveState);
 
 public:
 	void OptimizeStream(const FireStarterWindow& window, const FireStarterState& evolveState, bool sync = false);

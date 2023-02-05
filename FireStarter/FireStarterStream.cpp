@@ -93,7 +93,7 @@ void FireStarterStream::OptimizeState(const FireStarterWindow& window, const Fir
     delete manager;
 } // OptimizeState
 
-void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireStarterSettings& settings, size_t index, size_t test)
+void FireStarterStream::EvolveState(const FireStarterWindow& window, FireStarterState& evolveState)
 {
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager();
@@ -108,13 +108,11 @@ void FireStarterStream::EvolveState(const FireStarterWindow& window, const FireS
     FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, window, settings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, window, evolveState.Settings());
 
+    // Setup the intial state
     size_t generation = 0;
     while (!WillTerminate()) {
-        // Setup the intial state
-        FireStarterState evolveState(settings, generation, index, test);
-            
         // Evolve a new generation for the state.
         evolve->EvolveState(evolveState, generation, true);
 
@@ -171,7 +169,14 @@ void FireStarterStream::EvolveStream(const FireStarterWindow& window, const Fire
         while (!WillTerminate() && (seed < settings.m_tests)) {
             seed = a_seed++;
             evolveSettings.m_seed = startSeed + seed;
-            EvolveState(window, settings, index, 0);
+            FireStarterState evolveState(evolveSettings, 0, index, 0);
+            if (settings.m_units == 1)
+                m_bestState = evolveState;
+            EvolveState(window, evolveState);
+
+            // Optimization evolution pass.
+            if (!WillTerminate() && (settings.m_units == 1) && FIRESTARTER_SECOND_PASS)
+                FireStarterStream::Optimize(window, evolveState);
         }
         m_done = true;
     }, sync);

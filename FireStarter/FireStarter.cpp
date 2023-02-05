@@ -176,7 +176,7 @@ void FireStarter::ControlRevolve(void)
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings evolveSettings;
-    m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
+    m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_REVOLVE);
     FireStarterState bestState(evolveSettings);
 
     // Allocate and start each stream unit.
@@ -205,7 +205,7 @@ void FireStarter::ControlRevolve(void)
         delete streamUnit;
 
     // Optimization evolution pass.
-    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
+    if (!WillTerminate() && (evolveSettings.m_units > 1) && FIRESTARTER_SECOND_PASS)
         FireStarterStream::Optimize(m_window, bestState);
 } // ControlRevolve
 
