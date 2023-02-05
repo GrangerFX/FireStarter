@@ -163,11 +163,9 @@ void FireStarterStream::EvolveStream(const FireStarterWindow& window, const Fire
         FireStarterSettings evolveSettings(settings);
         size_t startSeed = settings.m_seed;
         static std::atomic<unsigned long long> a_seed = 0;
-        unsigned long long seed = 0;
 
         // Loop until the the completion condition or the host program is quit.
-        while (!WillTerminate() && (seed < settings.m_tests)) {
-            seed = a_seed++;
+        for (unsigned long long seed = a_seed++; (seed < settings.m_tests) && !WillTerminate(); seed = a_seed++) {
             evolveSettings.m_seed = startSeed + seed;
             FireStarterState evolveState(evolveSettings, 0, index, 0);
             if (settings.m_units == 1)
