@@ -47,6 +47,7 @@ void FireStarterUnit::GenerateOptimize(void)
 void FireStarterUnit::GenerateUnit(void)
 {
     // Evolve each state.
+    m_state.InitSeed();
     if (!m_state.m_generation || (m_settings.m_mode == FIRESTARTER_RANDOM))
         m_state.RandomProgram();
     else
@@ -68,7 +69,7 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned long long generationSeed = m_state.EvolveSeed(1);
+    unsigned long long generationSeed = m_state.StateSeed();
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
@@ -156,7 +157,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
     // Launch the calculation kernel
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned long long generationSeed = m_state.OptimizeSeed(1) * m_settings.m_generations;
+    unsigned long long generationSeed = m_state.StateSeed();
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.

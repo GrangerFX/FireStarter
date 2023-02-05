@@ -8,7 +8,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
     CUstream stream = context->Stream();
     unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned long long generationSeed = state.EvolveSeed(1);
+    unsigned long long generationSeed = state.EvolveSeed();
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
@@ -81,7 +81,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     unsigned int threadsPerBlock = 16; // BLOCK_THREADS;  // Same as the threads per CUDA core.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
-    unsigned long long generationSeed = state.OptimizeSeed(1) + state.m_generation * settings.m_generations;
+    unsigned long long generationSeed = state.GenerationSeed();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
 

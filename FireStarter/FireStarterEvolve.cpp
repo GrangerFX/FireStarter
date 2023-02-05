@@ -16,8 +16,8 @@ bool FireStarterEvolve::EvolveSeeds(const FireStarterSettings& settings, bool sy
                 break;
 
             // Randomize the program for the current seed.
-            evolveSettings.m_seed = startSeed + seed;
             job->m_state.InitState(evolveSettings);
+            job->m_state.RootSeed(startSeed + seed);
             job->m_state.RandomProgram();
 
             // Optimize the program registers.
@@ -56,9 +56,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t genera
             // Clone or randomize instructions in the later generations.
             job->m_state = state;
             job->m_state.m_generation = generation;
+            unsigned long long seed = job->m_state.GenerationSeed(); // Based on root seed and generation.
             if (generation) {
-                unsigned long long seed = job->m_state.EvolveSeed();
-
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
 #if 1
@@ -66,7 +65,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t genera
                 unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
                 unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
                 while (randomNum--) {
-                    job->m_state.m_program.RandomInstruction(seed++, randomDst++);
+                    job->m_state.RandomInstruction(seed++, randomDst++);
                     randomDst %= numInstructions;
                 }
 #else
@@ -74,10 +73,10 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, size_t genera
                 size_t age = generation - state.m_generation;
                 unsigned int randomNum = 4; // RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
                 while (randomNum--)
-                    job->m_state.m_program.RandomInstruction(seed++);
+                    job->m_state.RandomInstruction(seed);
 #endif
             } else
-                job->m_state.RandomProgram();
+                job->m_state.RandomProgram(seed);
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();
@@ -112,9 +111,8 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
             // Clone or randomize instructions in the later generations.
             job->m_state = allStates[m_index];
             job->m_state.m_generation = generation;
+            unsigned long long seed = job->m_state.StateSeed(); // Based on root seed, index and generation.
             if (generation) {
-                unsigned long long seed = job->m_state.EvolveSeed();
-
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
                 if (allStates.size() == 1) {
@@ -123,7 +121,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                     unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
                     unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
                     while (randomNum--) {
-                        job->m_state.m_program.RandomInstruction(seed++, randomDst++);
+                        job->m_state.RandomInstruction(seed++, randomDst++);
                         randomDst %= numInstructions;
                     }
 #else
@@ -131,7 +129,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                     size_t age = generation - state.m_generation;
                     unsigned int randomNum = 4; // RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
                     while (randomNum--)
-                        job->m_state.m_program.RandomInstruction(seed++);
+                        job->m_state.RandomInstruction(seed);
 #endif
                 } else {
 #if 0
@@ -140,14 +138,14 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                     unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
                     unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
                     while (randomNum--) {
-                        job->m_state.m_program.RandomInstruction(seed++, randomDst++);
+                        job->m_state.RandomInstruction(seed++, randomDst++);
                         randomDst %= numInstructions;
                     }
 #else
                     if (oldResult > bestResult * 4.0f) {
                         // Copy the best state and randomize one instruction.
                         job->m_state.m_program = state.m_program;
-                        job->m_state.RandomInstruction(seed++);
+                        job->m_state.RandomInstruction(seed);
                     } else if (oldResult > bestResult * 2.0f) {
                         // Copy a range of instuctions from the best state.
                         unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
@@ -158,21 +156,21 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                             copySrc %= numInstructions;
                             copyDst %= numInstructions;
                         }
-                        job->m_state.RandomInstruction(seed++);
+                        job->m_state.RandomInstruction(seed);
                     } else {
                         // Randomize a range of instuctions.
                         size_t age = generation - state.m_generation;
                         unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
                         unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
                         while (randomNum--) {
-                            job->m_state.m_program.RandomInstruction(seed++, randomDst++);
+                            job->m_state.RandomInstruction(seed++, randomDst++);
                             randomDst %= numInstructions;
                         }
                     }
 #endif
                 }
              } else
-                job->m_state.RandomProgram();
+                job->m_state.RandomProgram(seed);
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();

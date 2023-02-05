@@ -55,10 +55,10 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the evaluate function.
-    size_t numInstructions = state.m_program.m_settings.m_instructions;
+    unsigned long long numInstructions = state.m_program.m_settings.m_instructions;
     const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
     std::vector<FireStarterRegister> registers;
-    size_t numRegisters = state.m_program.GenerateRegisters(registers);
+    unsigned long long numRegisters = state.m_program.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
     std::string generateCode;
     unsigned int tabs = 1;
@@ -127,16 +127,16 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     code += "} // Evaluate\r\n";
 } // GenerateEvaluate
 
-void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, size_t generation)
+void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, unsigned long long generation)
 {
     // Allocate the device memory needed to generate the solution code.
     bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the solution function.
-    size_t numInstructions = state.m_program.m_settings.m_instructions;
+    unsigned long long numInstructions = state.m_program.m_settings.m_instructions;
     const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
     std::vector<FireStarterRegister> registers;
-    size_t numRegisters = state.m_program.GenerateRegisters(registers);
+    unsigned long long numRegisters = state.m_program.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
     std::string generateCode;
 
@@ -149,9 +149,9 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     solutionCode += "\r\n";
     code += Format("// Run date: %s\r\n", CurrentDate().c_str());
     code += Format("// Run duration = %f seconds\r\n", duration);
-    code += Format("// Run count = %zu\r\n", generation);
+    code += Format("// Run count = %llu\r\n", generation);
     FireStarterProgram::SettingsText(settings, code, "// Run ");
-    code += Format("// Solution Generation = %zu\r\n", state.m_generation);
+    code += Format("// Solution Generation = %llu\r\n", state.m_generation);
     code += "\r\n";
     code += targetCode;
     code += "\r\n";

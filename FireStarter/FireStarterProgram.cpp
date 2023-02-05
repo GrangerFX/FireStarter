@@ -69,12 +69,12 @@ unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegist
     return uniqueRegisters;
 } // GenerateRegisters
 
-void FireStarterProgram::RandomProgram(unsigned long long seed)
+void FireStarterProgram::RandomProgram(unsigned long long &seed)
 {
     EvolvedInstructions()->Randomize(seed, m_settings.m_instructions, m_settings.m_opcodes);
 } // RandomProgram
 
-void FireStarterProgram::RandomInstruction(unsigned long long seed)
+void FireStarterProgram::RandomInstruction(unsigned long long &seed)
 {
     unsigned int index = RANDOMMOD64(seed, m_settings.m_instructions);
     EvolvedInstructions()->SetRandom(index, seed, m_settings.m_instructions, m_settings.m_opcodes);

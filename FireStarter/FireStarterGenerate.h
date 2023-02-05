@@ -14,14 +14,14 @@ private:
 	FireStarterRegisters* m_deviceRegisters = nullptr;
 	FireStarterData* m_deviceData = nullptr;
 	unsigned char* m_deviceString = nullptr;
-	size_t m_numInstructions = 0;
-	size_t m_numRegisters = 0;
+	unsigned long long m_numInstructions = 0;
+	unsigned long long m_numRegisters = 0;
 	size_t m_stringSize = 0;
 
 public:
 	bool InitGenerateGPU(const FireStarterSettings& settings);
 	void GenerateEvaluate(const FireStarterState& state, std::string& code);
-	void GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, size_t generation);
+	void GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, unsigned long long generation);
 	FireStarterGenerate(CUDAContext* context = nullptr);
 	~FireStarterGenerate(void);
 }; // FireStarterGenerate

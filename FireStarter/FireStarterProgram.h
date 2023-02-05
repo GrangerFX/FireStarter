@@ -79,8 +79,8 @@ public:
     bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(void);
     unsigned int GenerateRegisters(std::vector<FireStarterRegister>& registers) const;
-    void RandomProgram(unsigned long long seed);
-    void RandomInstruction(unsigned long long seed);
+    void RandomProgram(unsigned long long& seed);
+    void RandomInstruction(unsigned long long& seed);
     void RandomInstruction(unsigned long long seed, unsigned int index);
     void LoadInstructions(FireStarterInstructions* instructions);
     static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "", const std::string& postfix = "");

@@ -56,7 +56,6 @@ void FireStarterStream::OptimizeState(const FireStarterWindow& window, const Fir
     for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
         // Create the state and execution unit.
         FireStarterState optimizeState(startState);
-        optimizeState.m_index = startState.m_test ? startState.m_index : startState.m_index + test;
         optimizeState.m_test = test;
 
         // Loop until the the completion condition or the host program is quit.

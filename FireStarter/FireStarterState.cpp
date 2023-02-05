@@ -53,8 +53,10 @@ void FireStarterState::SaveState(std::string& code) const
     code += "    state.InitState(settings);\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
-    code += Format("    state.m_generation = %zu;\r\n", m_generation);
-    code += Format("    state.m_index = %zu;\r\n", m_index);
+    code += Format("    state.m_generation = %llu;\r\n", m_generation);
+    code += Format("    state.m_index = %llu;\r\n", m_index);
+    code += Format("    state.m_test = %llu;\r\n", m_test);
+    code += Format("    state.m_seed = %llu;\r\n", m_seed);
     code += "\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
@@ -109,17 +111,18 @@ void FireStarterState::InitResult(void)
         m_results->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitResult
 
-void FireStarterState::InitState(const FireStarterSettings& settings, size_t generation, size_t index, size_t test)
+void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long test)
 {
     m_generation = generation;
-    m_index = settings.m_units * test + index;
+    m_index = index;
     m_test = test;
     m_maxResult = settings.m_startResult;
     m_program.InitProgram(settings);
+    InitSeed(StateSeed());
     InitResult();
 } // InitState
 
-FireStarterState::FireStarterState(const FireStarterSettings& settings, size_t generation, size_t index, size_t test)
+FireStarterState::FireStarterState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long test)
 {
     InitState(settings, generation, index, test);
 } // FireStarterState

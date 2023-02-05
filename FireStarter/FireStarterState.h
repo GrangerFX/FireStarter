@@ -14,14 +14,17 @@ private:
         m_program = other.m_program;
         m_generation = other.m_generation;
         m_index = other.m_index;
+        m_test = other.m_test;
+        m_seed = other.m_seed;
         m_maxResult = other.m_maxResult;
     } // swap
 
 public:
     FireStarterProgram m_program;
-    size_t m_generation = 0;
-    size_t m_index = 0;
-    size_t m_test = 0;
+    unsigned long long m_generation = 0;
+    unsigned long long m_index = 0;
+    unsigned long long m_test = 0;
+    unsigned long long m_seed = 0;
     float m_maxResult = 0.0f;
 
     inline FireStarterState& operator = (const FireStarterState& other)
@@ -45,24 +48,71 @@ public:
         return m_program.m_settings;
     } // Settings
 
-    inline unsigned long long EvolveSeed(unsigned long long seed = 1337)
+    inline unsigned long long EvolveSeed(void) const
     {
-        return RANDOM64(RANDOM64(m_program.m_settings.m_seed + m_generation) + m_index + seed);
+        return RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_test);
     } // EvolveSeed
 
-    inline unsigned long long OptimizeSeed(unsigned long long seed = 1337)
+    inline unsigned long long IndexSeed(void) const
     {
-        return RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_index + seed);
-    } // OptimizeSeed
+        return RANDOM64(RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_index) + m_test);
+    } // IndexSeed
 
-    inline void RandomProgram(unsigned long long seed = 0)
+    inline unsigned long long GenerationSeed(void) const
     {
-        m_program.RandomProgram(EvolveSeed() + seed);
+        return RANDOM64(RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_generation) + m_test);
+    } // GenerationSeed
+
+    inline unsigned long long StateSeed(void) const
+    {
+        return RANDOM64(RANDOM64(RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
+    } // StateSeed
+
+    void InitSeed(unsigned long long seed)
+    {
+        m_seed = seed;
+    } // InitSeed
+
+    void InitSeed(void)
+    {
+        m_seed = StateSeed();
+    } // InitSeed
+
+    unsigned long long RootSeed(unsigned long long seed)
+    {
+        m_program.m_settings.m_seed = seed;
+        InitSeed();
+        return m_seed;
+    } // RootSeed
+
+    unsigned long long RandomSeed(void)
+    {
+        return RANDOMSEED64(m_seed);
+    } // RandomSeed
+
+    inline void RandomProgram(void)
+    {
+        m_program.RandomProgram(m_seed);
     } // RandomProgram
 
-    inline void RandomInstruction(unsigned long long seed = 0)
+    inline void RandomProgram(unsigned long long& seed)
     {
-        m_program.RandomInstruction(EvolveSeed() + seed);
+        m_program.RandomProgram(seed);
+    } // RandomProgram
+
+    inline void RandomInstruction(void)
+    {
+        m_program.RandomInstruction(m_seed);
+    } // RandomInstruction
+
+    inline void RandomInstruction(unsigned long long& seed)
+    {
+        m_program.RandomInstruction(seed);
+    } // RandomInstruction
+
+    inline void RandomInstruction(unsigned long long seed, unsigned int index)
+    {
+        m_program.RandomInstruction(seed, index);
     } // RandomInstruction
 
     inline size_t ResultsSize(void) const
@@ -101,8 +151,8 @@ public:
     void SaveState(std::string& code) const;
     float TestResult(void) const;
     void InitResult(void);
-    void InitState(const FireStarterSettings& settings, size_t generation = 0, size_t index = 0, size_t test = 0);
+    void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long test = 0);
     inline FireStarterState(const FireStarterState& other) { swap(other); }
-    FireStarterState(const FireStarterSettings& settings, size_t generation = 0, size_t index = 0, size_t test = 0);
+    FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long test = 0);
     inline FireStarterState(void) {}
 }; // class FireStarterState;
