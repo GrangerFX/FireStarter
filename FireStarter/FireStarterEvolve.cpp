@@ -72,7 +72,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
                 // Randomize a random set of instuctions.
                 unsigned long long age = generation - state.m_generation;
                 unsigned long long attempts = state.Settings().m_attempts;
-                unsigned long long randomNum = (age * 4 / attempts) + 1;
+//                unsigned long long randomNum = (age * 2 / attempts) + 1;
+                unsigned long long randomNum = age >= 32 ? 2 : 1;
                 while (randomNum--)
                     job->m_state.RandomInstruction(seed);
 #endif
