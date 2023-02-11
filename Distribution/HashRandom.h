@@ -70,12 +70,12 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 0xb5736d4981276baf,
 */
 
-#define RANDOMHASH(seed) Hash32((unsigned int)(seed))
+//#define RANDOMHASH(seed) Hash32((unsigned int)(seed))
 //#define RANDOMHASH(seed) Squares32((unsigned long long)(seed))
-//#define RANDOMHASH(seed) Squares64((unsigned long long)(seed))
+#define RANDOMHASH(seed) Squares64((unsigned long long)(seed))
 
 #define RANDOM(seed) RANDOMHASH(seed)
 #define RANDOMSEED(seed) RANDOMHASH(seed++)
-#define RANDOMMOD(seed, m) (((unsigned int)(RANDOMSEED(seed)) * (unsigned long long)(m)) >> 32)
-#define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)                   // yields a number between 0 and <1
-#define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)         // yields a number between -1 and 1
+#define RANDOMMOD(seed, m) (((unsigned int)RANDOMSEED(seed)) * (unsigned long long)(m) >> 32)
+#define RANDOMNUM(seed) (((int)RANDOMSEED(seed)) * 2.328306436E-10f)     // yields a number between 0 and <1
+#define RANDOMFACTOR(seed) (((int)RANDOMSEED(seed)) * 4.656612873E-10f)  // yields a number between -1 and 1
