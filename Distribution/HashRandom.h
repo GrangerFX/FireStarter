@@ -76,10 +76,6 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 
 #define RANDOM(seed) RANDOMHASH(seed)
 #define RANDOMSEED(seed) RANDOMHASH(seed++)
-#if 0
-#define RANDOMMOD(seed, m) (((unsigned int)(RANDOMSEED(seed)) * (unsigned long long)(m)) >> 32)
-#else
 #define RANDOMMOD(seed, m) ((RANDOMSEED(seed) % (unsigned int)(m)))
-#endif
 #define RANDOMNUM(seed) (RANDOMSEED(seed) * 2.328306436E-10f)                   // yields a number between 0 and <1
 #define RANDOMFACTOR(seed) ((int)(RANDOMSEED(seed)) * 4.656612873E-10f)         // yields a number between -1 and 1
