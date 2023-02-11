@@ -76,7 +76,7 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 
 #define RANDOM(seed) RANDOMHASH(seed)
 #define RANDOMSEED(seed) RANDOMHASH(seed++)
-#if 1
+#if 0
 #define RANDOMMOD(seed, m) (((unsigned int)(RANDOMSEED(seed)) * (unsigned long long)(m)) >> 32)
 #else
 #define RANDOMMOD(seed, m) ((RANDOMSEED(seed) % (unsigned int)(m)))
