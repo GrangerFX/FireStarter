@@ -11,9 +11,9 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
     if (member >= lastMember)
         return;
     const unsigned int thread = threadIdx.x;
-    unsigned long long randomSeed = RANDOM64(generationSeed);
-    unsigned long long memberSeed = RANDOM64(randomSeed + member);
-    unsigned long long threadSeed = RANDOM64(randomSeed + member * blockDim.x + thread);    // Note: TODO: Try using memberSeed instead of randomSeed.
+    unsigned long long randomSeed = RANDOM(generationSeed);
+    unsigned long long memberSeed = RANDOM(randomSeed + member);
+    unsigned long long threadSeed = RANDOM(randomSeed + member * blockDim.x + thread);    // Note: TODO: Try using memberSeed instead of randomSeed.
 
     GPU_SHARED FireStarterInstructions instructions;
     if (thread == 0) {
@@ -49,10 +49,10 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
         FireStarterData& data = allData[v][thread];
         if (init)
             for (int i = 0; i < FIRESTARTER_REGISTERS; i++)
-                data.d[i] = RANDOMFACTOR64(threadSeed);
+                data.d[i] = RANDOMFACTOR(threadSeed);
         else {
             data = *oldEvolutions->Data(member, v);
-            data.d[RANDOMMOD64(threadSeed, FIRESTARTER_INSTRUCTIONS)] += FIRESTARTER_CODE_START_SCALE * RANDOMFACTOR64(threadSeed);
+            data.d[RANDOMMOD(threadSeed, FIRESTARTER_INSTRUCTIONS)] += FIRESTARTER_CODE_START_SCALE * RANDOMFACTOR(threadSeed);
         }
 
         // Calculate an initial result for the instructions and registers.
@@ -63,9 +63,9 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
 
         // Evolve the data.
         for (unsigned int p = 0; p < FIRESTARTER_CODE_ITERATIONS; p++) {
-            unsigned int d = RANDOMMOD64(threadSeed, FIRESTARTER_REGISTERS);
+            unsigned int d = RANDOMMOD(threadSeed, FIRESTARTER_REGISTERS);
             const float oldData = data.d[d];
-            data.d[d] = oldData + evolutionFactor * RANDOMFACTOR64(threadSeed);
+            data.d[d] = oldData + evolutionFactor * RANDOMFACTOR(threadSeed);
             float curResult = 0.0f;
             for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
                 curResult = fmaxf(fabsf(instructions.Execute(data, theta[i]) - target[i]), curResult);
@@ -121,7 +121,7 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
             // The genetic part of genetic programming and a major optimization:
             // Copy the best data from among a random set of candidates.
             for (int i = 0; i < FIRESTARTER_CODE_CANDIDATES; i++) {
-                unsigned int candidate = RANDOMMOD64(memberSeed, FIRESTARTER_CODE_POPULATION);
+                unsigned int candidate = RANDOMMOD(memberSeed, FIRESTARTER_CODE_POPULATION);
                 if (candidate == *oldEvolutions->Index(candidate, 0)) {   // Only select evolving members
                     float curResult = *oldEvolutions->MaxResult(candidate);
                     if (curResult < bestResult) {

@@ -76,7 +76,7 @@ void FireStarterProgram::RandomProgram(unsigned long long &seed)
 
 void FireStarterProgram::RandomInstruction(unsigned long long &seed)
 {
-    unsigned int index = RANDOMMOD64(seed, m_settings.m_instructions);
+    unsigned int index = RANDOMMOD(seed, m_settings.m_instructions);
     EvolvedInstructions()->SetRandom(index, seed, m_settings.m_instructions, m_settings.m_opcodes);
 } // RandomInstruction
 

@@ -50,12 +50,12 @@ public:
 
     inline unsigned long long GenerationSeed(void) const
     {
-        return RANDOM64(RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_generation) + m_test);
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
     } // GenerationSeed
 
     inline unsigned long long StateSeed(void) const
     {
-        return RANDOM64(RANDOM64(RANDOM64(RANDOM64(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
+        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
     } // StateSeed
 
     unsigned long long InitSeed(unsigned long long seed)
@@ -84,7 +84,7 @@ public:
 
     unsigned long long RandomSeed(void)
     {
-        return RANDOMSEED64(m_seed);
+        return RANDOMSEED(m_seed);
     } // RandomSeed
 
     inline void RandomProgram(void)

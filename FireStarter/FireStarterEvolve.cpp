@@ -62,8 +62,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
                 float oldResult = job->m_state.m_maxResult;
 #if 0
                 // Randomize a random range of instuctions.
-                unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
-                unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
+                unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
+                unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                 while (randomNum--) {
                     job->m_state.RandomInstruction(seed++, randomDst++);
                     randomDst %= numInstructions;
@@ -120,8 +120,8 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                 if (allStates.size() == 1) {
 #if 1
                     // Randomize a random range of instuctions.
-                    unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, 4));
-                    unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
+                    unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
+                    unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                     while (randomNum--) {
                         job->m_state.RandomInstruction(seed++, randomDst++);
                         randomDst %= numInstructions;
@@ -129,7 +129,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
 #else
                     // Randomize a random set of instuctions.
                     size_t age = generation - state.m_generation;
-                    unsigned int randomNum = 4; // RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
+                    unsigned int randomNum = 4; // RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
                     while (randomNum--)
                         job->m_state.RandomInstruction(seed);
 #endif
@@ -137,8 +137,8 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
 #if 0
                     // Randomize a range of instuctions.
                     size_t age = generation - state.m_generation;
-                    unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
-                    unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
+                    unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
+                    unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                     while (randomNum--) {
                         job->m_state.RandomInstruction(seed++, randomDst++);
                         randomDst %= numInstructions;
@@ -150,9 +150,9 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                         job->m_state.RandomInstruction(seed);
                     } else if (oldResult > bestResult * 2.0f) {
                         // Copy a range of instuctions from the best state.
-                        unsigned int copyNum = RANDOMMOD64(seed, min(numInstructions, 8));
-                        unsigned int copySrc = RANDOMMOD64(seed, numInstructions);
-                        unsigned int copyDst = RANDOMMOD64(seed, numInstructions);
+                        unsigned int copyNum = RANDOMMOD(seed, min(numInstructions, 8));
+                        unsigned int copySrc = RANDOMMOD(seed, numInstructions);
+                        unsigned int copyDst = RANDOMMOD(seed, numInstructions);
                         while (copyNum--) {
                             job->m_state.m_program.EvolvedInstruction(copyDst++) = state.m_program.EvolvedInstruction(copySrc++);
                             copySrc %= numInstructions;
@@ -162,8 +162,8 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                     } else {
                         // Randomize a range of instuctions.
                         size_t age = generation - state.m_generation;
-                        unsigned int randomNum = RANDOMMOD64(seed, min(numInstructions, age / 4 + 1));
-                        unsigned int randomDst = RANDOMMOD64(seed, numInstructions);
+                        unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
+                        unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                         while (randomNum--) {
                             job->m_state.RandomInstruction(seed++, randomDst++);
                             randomDst %= numInstructions;

@@ -46,16 +46,16 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         theta[i] = TARGET_MIN + i * sampleStep;
 
     // Evolve the program data for each variation.
-    unsigned long long memberSeed = RANDOM64(RANDOM64(generationSeed) + member);
+    unsigned long long memberSeed = RANDOM(RANDOM(generationSeed) + member);
     FireStarterData data;
-    unsigned long long seed = RANDOM64(memberSeed + v); // Unique seed for the generation/member/variation
+    unsigned long long seed = RANDOM(memberSeed + v); // Unique seed for the generation/member/variation
     float oldResult;
     bool evolved = false;
 
     if (init) {
         // The first generation is initalized with random numbers.
         for (unsigned int i = 0; i < dataSize; i++)
-            data.d[i] = RANDOMFACTOR64(seed) * settings.m_startScale;
+            data.d[i] = RANDOMFACTOR(seed) * settings.m_startScale;
         for (unsigned int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
             data.d[i] = 0.0f;   // Clear the unused data.
         oldResult = settings.m_startResult;
@@ -66,8 +66,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         oldResult = *oldResults->MinResult(member, v);
         unsigned int age = *oldResults->Index(member, v);
         if (age > 1) {
-            unsigned int d = RANDOMMOD64(seed, dataSize);
-            data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale * (age - 1);
+            unsigned int d = RANDOMMOD(seed, dataSize);
+            data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale * (age - 1);
             oldResult = settings.m_startResult;
             evolved = true;
         }
@@ -84,9 +84,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     // Iterate to evolve the data.
     for (unsigned int p = 0; p < settings.m_iterations; p++) {
-        unsigned int d = RANDOMMOD64(seed, dataSize);
+        unsigned int d = RANDOMMOD(seed, dataSize);
         float oldData = data.d[d];
-        data.d[d] = oldData + evolutionScale * RANDOMFACTOR64(seed);
+        data.d[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
         float curResult = TestEvaluate(data, target, theta);
         if (curResult <= result) {
             result = curResult;
@@ -119,7 +119,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
         for (int i = 0; i < settings.m_candidates; i++) {
-            unsigned int candidate = RANDOMMOD64(seed, settings.m_population);
+            unsigned int candidate = RANDOMMOD(seed, settings.m_population);
             if (*oldResults->Index(candidate, v) <= 1) {   // Only select evolving members
                 float curResult = *oldResults->MinResult(candidate, v);
                 if (curResult <= bestResult) {
@@ -161,9 +161,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
-    unsigned long long memberSeed = RANDOM64(RANDOM64(generationSeed) + member);
+    unsigned long long memberSeed = RANDOM(RANDOM(generationSeed) + member);
     FireStarterData data;
-    unsigned long long seed = RANDOM64(memberSeed + v); // Unique seed for the generation/member/variation
+    unsigned long long seed = RANDOM(memberSeed + v); // Unique seed for the generation/member/variation
     float oldResult;
     unsigned int age;
     bool evolved = false;
@@ -171,7 +171,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     if (init) {
         // The first generation is initalized with random numbers.
         for (unsigned int i = 0; i < dataSize; i++)
-            data.d[i] = RANDOMFACTOR64(seed) * settings.m_startScale;
+            data.d[i] = RANDOMFACTOR(seed) * settings.m_startScale;
         for (unsigned int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
             data.d[i] = 0.0f;   // Clear the unused data.
         oldResult = settings.m_startResult;
@@ -183,8 +183,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         oldResult = *oldResults->MinResult(member, v);
         age = *oldResults->Index(member, v);
         if (age) {
-            unsigned int d = RANDOMMOD64(seed, dataSize);
-            data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
+            unsigned int d = RANDOMMOD(seed, dataSize);
+            data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale;
             oldResult = settings.m_startResult;
             evolved = true;
         }
@@ -201,9 +201,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     // Iterate to evolve the data.
     for (unsigned int p = 0; p < settings.m_iterations; p++) {
-        unsigned int d = RANDOMMOD64(seed, dataSize);
+        unsigned int d = RANDOMMOD(seed, dataSize);
         float oldData = data.d[d];
-        data.d[d] = oldData + evolutionScale * RANDOMFACTOR64(seed);
+        data.d[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
         float curResult = TestEvaluate(data, target, theta);
         if (curResult <= result) {
             result = curResult;
@@ -238,7 +238,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
         for (int i = 0; i < settings.m_candidates; i++) {
-            unsigned int candidate = RANDOMMOD64(seed, settings.m_population);
+            unsigned int candidate = RANDOMMOD(seed, settings.m_population);
             if (*oldResults->Index(candidate, v) == 0) {   // Only select evolving members
                 float curResult = *oldResults->MinResult(candidate, v);
                 if (curResult <= bestResult) {
@@ -283,16 +283,16 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     // Evolve the program data for each variation.
     float maxResult = 0.0f;
-    unsigned long long memberSeed = RANDOM64(RANDOM64(generationSeed) + member);
+    unsigned long long memberSeed = RANDOM(RANDOM(generationSeed) + member);
     FireStarterData data;
-    unsigned long long seed = RANDOM64(memberSeed + v); // Unique seed for the generation/member/variation
+    unsigned long long seed = RANDOM(memberSeed + v); // Unique seed for the generation/member/variation
     float oldResult;
     bool evolved = false;
 
     if (init) {
         // The first generation is initalized with random numbers.
         for (int i = 0; i < dataSize; i++)
-            data.d[i] = RANDOMFACTOR64(seed) * settings.m_startScale;
+            data.d[i] = RANDOMFACTOR(seed) * settings.m_startScale;
         for (int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
             data.d[i] = 0.0f;   // Clear the unused data.
         oldResult = settings.m_startResult;
@@ -302,8 +302,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         data = *oldResults->Data(member, v);
         oldResult = *oldResults->MinResult(member, v);
         if (*oldResults->Index(member, v) != member) {
-            unsigned int d = RANDOMMOD64(seed, dataSize);
-            data.d[d] += RANDOMFACTOR64(seed) * settings.m_startScale;
+            unsigned int d = RANDOMMOD(seed, dataSize);
+            data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale;
             evolved = true;
         }
     }
@@ -319,9 +319,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     // Iterate to evolve the data.
     for (unsigned int p = 0; p < settings.m_iterations; p++) {
-        unsigned int d = RANDOMMOD64(seed, dataSize);
+        unsigned int d = RANDOMMOD(seed, dataSize);
         float oldData = data.d[d];
-        data.d[d] = oldData + evolutionScale * RANDOMFACTOR64(seed);
+        data.d[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
         float curResult = TestEvaluate(data, target, theta);
         if (curResult <= result) {
             result = curResult;
@@ -357,7 +357,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
         for (int i = 0; i < settings.m_candidates; i++) {
-            unsigned int candidate = RANDOMMOD64(seed, settings.m_population);
+            unsigned int candidate = RANDOMMOD(seed, settings.m_population);
             if (candidate == *oldResults->Index(candidate, v)) {   // Only select evolving members
                 float curResult = *oldResults->MinResult(candidate, v);
                 if (curResult <= bestResult) {
