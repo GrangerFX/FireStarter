@@ -81,7 +81,9 @@ public:
     unsigned int GenerateRegisters(std::vector<FireStarterRegister>& registers) const;
     void RandomProgram(unsigned long long& seed);
     void RandomInstruction(unsigned long long& seed);
-    void RandomInstruction(unsigned long long seed, unsigned int index);
+    void RandomInstruction(unsigned long long& seed, unsigned int index);
+    void IncrementInstruction(unsigned int index);
+    void IncrementInstruction(unsigned long long& seed, unsigned int index);
     void LoadInstructions(FireStarterInstructions* instructions);
     static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "", const std::string& postfix = "");
     void SaveSettings(std::string& code) const;

@@ -107,10 +107,20 @@ public:
         m_program.RandomInstruction(seed);
     } // RandomInstruction
 
-    inline void RandomInstruction(unsigned long long seed, unsigned int index)
+    inline void RandomInstruction(unsigned long long& seed, unsigned int index)
     {
         m_program.RandomInstruction(seed, index);
     } // RandomInstruction
+
+    inline void IncrementInstruction(unsigned int index)
+    {
+        m_program.IncrementInstruction(m_seed, index);
+    } // IncrementInstruction
+
+    inline void IncrementInstruction(unsigned long long& seed, unsigned int index)
+    {
+        m_program.IncrementInstruction(seed, index);
+    } // IncrementInstruction
 
     inline size_t ResultsSize(void) const
     {

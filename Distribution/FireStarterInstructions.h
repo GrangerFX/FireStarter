@@ -212,14 +212,34 @@ typedef struct FireStarterInstructions {
         i[index].reg = (unsigned short)reg;
     } // SetOperation
 
+    inline void IncrementReg(unsigned int index)
+    {
+        i[index].reg = (i[index].reg + 1) % FIRESTARTER_REGISTERS;
+    } // IncrementReg
+
+    inline void IncrementReg(unsigned int index, unsigned int registers)
+    {
+        i[index].reg = (i[index].reg + 1) % registers;
+    } // IncrementReg
+
+    inline void IncrementOp(unsigned int index)
+    {
+        i[index].op = (i[index].op + 1) % FIRESTARTER_OPCODES;
+    } // IncrementOp
+
+    inline void IncrementOp(unsigned int index, unsigned int opcodes)
+    {
+        i[index].op = (i[index].op + 1) % opcodes;
+    } // IncrementOp
+
     inline void SetRandomReg(unsigned int index, unsigned long long& seed)
     {
-        i[index].reg = (unsigned short)RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
+        i[index].reg = (unsigned short)RANDOMMOD(seed, FIRESTARTER_REGISTERS);
     } // SetRandomReg
 
-    inline void SetRandomReg(unsigned int index, unsigned long long& seed, unsigned int instructions)
+    inline void SetRandomReg(unsigned int index, unsigned long long& seed, unsigned int registers)
     {
-        i[index].reg = (unsigned short)RANDOMMOD(seed, instructions);
+        i[index].reg = (unsigned short)RANDOMMOD(seed, registers);
     } // SetRandomReg
 
     inline void SetRandomOp(unsigned int index, unsigned long long& seed)

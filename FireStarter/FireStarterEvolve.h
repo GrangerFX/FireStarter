@@ -10,6 +10,9 @@ private:
 	FireStarterGenerate* m_generate = nullptr;
 	std::string m_optimizeCode;
 	size_t m_index = 0;
+	unsigned long long m_evolveCount = 0;
+	unsigned long long m_evolveSeed = 0;
+	unsigned int m_evolveBits = 0;
 
 public:
 	bool EvolveSeeds(const FireStarterSettings& settings, bool sync = false);

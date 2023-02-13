@@ -49,7 +49,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
     if (m_optimizeCode.empty())
         return false;
     Dispatch([this, state, generation] {
-        unsigned int numInstructions = state.Settings().m_instructions;
+        const FireStarterSettings& settings = state.Settings();
+        unsigned int numInstructions = settings.m_instructions;
         float bestResult = state.m_maxResult;
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
@@ -65,20 +66,43 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
                 unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
                 unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                 while (randomNum--) {
-                    job->m_state.RandomInstruction(seed++, randomDst++);
+                    job->m_state.RandomInstruction(seed, randomDst++);
                     randomDst %= numInstructions;
+                    m_count++;
                 }
-#else
+#endif
+#if 1
                 // Randomize a random set of instuctions.
                 unsigned long long age = generation - state.m_generation;
-                unsigned long long attempts = state.Settings().m_attempts;
-//                unsigned long long randomNum = (age * 2 / attempts) + 1;
-                unsigned long long randomNum = age >= 32 ? 2 : 1;
-                while (randomNum--)
+                unsigned long long randomNum = age >= numInstructions ? 2 : 1;
+                while (randomNum--) {
                     job->m_state.RandomInstruction(seed);
+                    m_evolveCount++;
+                }
 #endif
-            } else
+#if 0
+                unsigned long long age = generation - state.m_generation;
+                unsigned long long randomNum = 1; // age >= numInstructions ? 2 : 1;
+                while (randomNum--) {
+                    unsigned int index = (m_evolveSeed + ReverseBits(m_evolveCount++, m_evolveBits)) % numInstructions;
+                    job->m_state.RandomInstruction(seed, index);
+                }
+#endif
+#if 0
+                unsigned long long age = generation - state.m_generation;
+                unsigned long long randomNum = 1; // age >= numInstructions ? 2 : 1;
+                while (randomNum--) {
+                    unsigned int index = (m_evolveSeed + ReverseBits(m_evolveCount++, m_evolveBits)) % numInstructions;
+                    job->m_state.IncrementInstruction(seed, index);
+                }
+#endif
+            } else {
                 job->m_state.RandomProgram(seed);
+                m_evolveSeed = seed;
+                m_evolveBits = 1;
+                while (1U << m_evolveBits < numInstructions)
+                    m_evolveBits++;
+            }
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();
@@ -123,7 +147,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                     unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
                     unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                     while (randomNum--) {
-                        job->m_state.RandomInstruction(seed++, randomDst++);
+                        job->m_state.RandomInstruction(seed, randomDst++);
                         randomDst %= numInstructions;
                     }
 #else
@@ -140,7 +164,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                     unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
                     unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                     while (randomNum--) {
-                        job->m_state.RandomInstruction(seed++, randomDst++);
+                        job->m_state.RandomInstruction(seed, randomDst++);
                         randomDst %= numInstructions;
                     }
 #else
@@ -165,7 +189,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                         unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
                         unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                         while (randomNum--) {
-                            job->m_state.RandomInstruction(seed++, randomDst++);
+                            job->m_state.RandomInstruction(seed, randomDst++);
                             randomDst %= numInstructions;
                         }
                     }
