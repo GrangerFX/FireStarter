@@ -81,6 +81,15 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
                 }
 #endif
 #if 0
+                // Randomize a random set of instuctions.
+                unsigned long long age = generation - state.m_generation;
+                unsigned long long randomNum = age / numInstructions + 1;
+                while (randomNum--) {
+                    job->m_state.RandomInstruction(seed);
+                    m_evolveCount++;
+            }
+#endif
+#if 0
                 unsigned long long age = generation - state.m_generation;
                 unsigned long long randomNum = 1; // age >= numInstructions ? 2 : 1;
                 while (randomNum--) {
