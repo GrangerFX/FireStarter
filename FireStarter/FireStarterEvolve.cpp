@@ -61,16 +61,6 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
             if (generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
-#if 0
-                // Randomize a random range of instuctions.
-                unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
-                unsigned int randomDst = RANDOMMOD(seed, numInstructions);
-                while (randomNum--) {
-                    job->m_state.RandomInstruction(seed, randomDst++);
-                    randomDst %= numInstructions;
-                    m_count++;
-                }
-#endif
 #if 1
                 // Randomize a random set of instuctions.
                 unsigned long long age = generation - state.m_generation;
@@ -87,11 +77,20 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
                 while (randomNum--) {
                     job->m_state.RandomInstruction(seed);
                     m_evolveCount++;
-            }
+                }
+#endif
+#if 0
+                // Randomize a random set of instuctions.
+                unsigned long long age = generation - state.m_generation;
+                unsigned long long randomNum = age >= numInstructions * 2 ? 2 : 1;
+                while (randomNum--) {
+                    job->m_state.RandomInstruction(seed);
+                    m_evolveCount++;
+                }
 #endif
 #if 0
                 unsigned long long age = generation - state.m_generation;
-                unsigned long long randomNum = 1; // age >= numInstructions ? 2 : 1;
+                unsigned long long randomNum = 1;
                 while (randomNum--) {
                     unsigned int index = (m_evolveSeed + ReverseBits(m_evolveCount++, m_evolveBits)) % numInstructions;
                     job->m_state.RandomInstruction(seed, index);
@@ -99,10 +98,20 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
 #endif
 #if 0
                 unsigned long long age = generation - state.m_generation;
-                unsigned long long randomNum = 1; // age >= numInstructions ? 2 : 1;
+                unsigned long long randomNum = age >= numInstructions ? 2 : 1;
                 while (randomNum--) {
                     unsigned int index = (m_evolveSeed + ReverseBits(m_evolveCount++, m_evolveBits)) % numInstructions;
                     job->m_state.IncrementInstruction(seed, index);
+                }
+#endif
+#if 0
+                // Randomize a random range of instuctions.
+                unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
+                unsigned int randomDst = RANDOMMOD(seed, numInstructions);
+                while (randomNum--) {
+                    job->m_state.RandomInstruction(seed, randomDst++);
+                    randomDst %= numInstructions;
+                    m_count++;
                 }
 #endif
             } else {

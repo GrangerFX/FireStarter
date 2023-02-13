@@ -33,6 +33,36 @@ public:
         return *this;
     } // operator =
 
+    inline size_t ResultsSize(void) const
+    {
+        return FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);
+    } // ResultSize
+
+    inline const FireStarterResults* Results(void) const
+    {
+        return m_resultsData.empty() ? nullptr : (const FireStarterResults*)m_resultsData.data();
+    } // Results
+
+    inline FireStarterResults* Results(void)
+    {
+        return m_resultsData.empty() ? nullptr : (FireStarterResults*)m_resultsData.data();
+    } // Result
+
+    inline size_t ResultSize(void) const
+    {
+        return FireStarterResult::ResultSize(m_program.m_settings.m_registers);
+    } // ResultSize
+
+    inline FireStarterResult* Result(size_t variation)
+    {
+        return m_resultsData.empty() ? nullptr : Results()->Result(variation);
+    } // Result
+
+    inline const FireStarterResult* Result(size_t variation) const
+    {
+        return m_resultsData.empty() ? nullptr : Results()->Result(variation);
+    } // Result
+
     inline bool Initialized(void) const
     {
         return !m_resultsData.empty();
@@ -87,16 +117,6 @@ public:
         return RANDOMSEED(m_seed);
     } // RandomSeed
 
-    inline void RandomProgram(void)
-    {
-        m_program.RandomProgram(m_seed);
-    } // RandomProgram
-
-    inline void RandomProgram(unsigned long long& seed)
-    {
-        m_program.RandomProgram(seed);
-    } // RandomProgram
-
     inline void RandomInstruction(void)
     {
         m_program.RandomInstruction(m_seed);
@@ -122,35 +142,27 @@ public:
         m_program.IncrementInstruction(seed, index);
     } // IncrementInstruction
 
-    inline size_t ResultsSize(void) const
+    inline void RandomProgram(void)
     {
-        return FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);
-    } // ResultSize
+        m_program.RandomProgram(m_seed);
+    } // RandomProgram
 
-    inline const FireStarterResults* Results(void) const
+    inline void RandomProgram(unsigned long long& seed)
     {
-        return m_resultsData.empty() ? nullptr : (const FireStarterResults*)m_resultsData.data();
-    } // Results
+        m_program.RandomProgram(seed);
+    } // RandomProgram
 
-    inline FireStarterResults* Results(void)
+    inline unsigned long long OldEvolveSeed(unsigned long long seed = 1337)
     {
-        return m_resultsData.empty() ? nullptr : (FireStarterResults*)m_resultsData.data();
-    } // Result
+        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
+        return m_seed;
+    } // OldEvolveSeed
 
-    inline size_t ResultSize(void) const
+    inline unsigned long long OldOptimizeSeed(unsigned long long seed = 1337)
     {
-        return FireStarterResult::ResultSize(m_program.m_settings.m_registers);
-    } // ResultSize
-
-    inline FireStarterResult* Result(size_t variation)
-    {
-        return m_resultsData.empty() ? nullptr : Results()->Result(variation);
-    } // Result
-
-    inline const FireStarterResult* Result(size_t variation) const
-    {
-        return m_resultsData.empty() ? nullptr : Results()->Result(variation);
-    } // Result
+        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index + seed);
+        return m_seed;
+    } // OldOptimizeSeed
 
     bool Packetize(FireStarterPacket& packet);
     void SaveVariation(unsigned int variation, std::string& code) const;
