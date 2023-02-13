@@ -268,9 +268,15 @@ public:
         return result;
     } // PollThread
 
+    static inline volatile bool& WillQuit(void)
+    {
+        static volatile bool m_willQuit = false;
+        return m_willQuit;
+    } // WillQuit
+
     inline bool WillTerminate(void)
     {
-        return m_willTerminate;
+        return m_willTerminate || WillQuit();
     } // WillTerminate
 
     inline bool IsRunning(void)
@@ -397,6 +403,11 @@ public:
         }
         return false;
     } // TerminateThread
+
+    inline static void QuitThreads(void)
+    {
+        WillQuit() = true;
+    } // QuitThreads
 
     // Note: int is used instead of bool for correct type matching.
     inline SerialThread(const std::string& threadName = "SerialThread", int pollThread = false)

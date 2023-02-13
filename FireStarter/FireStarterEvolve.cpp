@@ -57,11 +57,12 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
             // Clone or randomize instructions in the later generations.
             job->m_state = state;
             job->m_state.m_generation = generation;
+#if 0
             unsigned long long seed = job->m_state.InitGenerationSeed();
             if (generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
-#if 1
+
                 // Randomize a random set of instuctions.
                 unsigned long long age = generation - state.m_generation;
                 unsigned long long randomNum = age >= numInstructions ? 2 : 1;
@@ -69,51 +70,6 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
                     job->m_state.RandomInstruction(seed);
                     m_evolveCount++;
                 }
-#endif
-#if 0
-                // Randomize a random set of instuctions.
-                unsigned long long age = generation - state.m_generation;
-                unsigned long long randomNum = age / numInstructions + 1;
-                while (randomNum--) {
-                    job->m_state.RandomInstruction(seed);
-                    m_evolveCount++;
-                }
-#endif
-#if 0
-                // Randomize a random set of instuctions.
-                unsigned long long age = generation - state.m_generation;
-                unsigned long long randomNum = age >= numInstructions * 2 ? 2 : 1;
-                while (randomNum--) {
-                    job->m_state.RandomInstruction(seed);
-                    m_evolveCount++;
-                }
-#endif
-#if 0
-                unsigned long long age = generation - state.m_generation;
-                unsigned long long randomNum = 1;
-                while (randomNum--) {
-                    unsigned int index = (m_evolveSeed + ReverseBits(m_evolveCount++, m_evolveBits)) % numInstructions;
-                    job->m_state.RandomInstruction(seed, index);
-                }
-#endif
-#if 0
-                unsigned long long age = generation - state.m_generation;
-                unsigned long long randomNum = age >= numInstructions ? 2 : 1;
-                while (randomNum--) {
-                    unsigned int index = (m_evolveSeed + ReverseBits(m_evolveCount++, m_evolveBits)) % numInstructions;
-                    job->m_state.IncrementInstruction(seed, index);
-                }
-#endif
-#if 0
-                // Randomize a random range of instuctions.
-                unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
-                unsigned int randomDst = RANDOMMOD(seed, numInstructions);
-                while (randomNum--) {
-                    job->m_state.RandomInstruction(seed, randomDst++);
-                    randomDst %= numInstructions;
-                    m_count++;
-                }
-#endif
             } else {
                 job->m_state.RandomProgram(seed);
                 m_evolveSeed = seed;
@@ -121,6 +77,20 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
                 while (1U << m_evolveBits < numInstructions)
                     m_evolveBits++;
             }
+#else
+            unsigned long long seed = job->m_state.OldEvolveSeed();
+            if (generation) {
+                // Randomize a random range of instuctions.
+                unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
+                unsigned int randomDst = RANDOMMOD(seed, numInstructions);
+                while (randomNum--) {
+                    unsigned long long instructionSeed = seed++;
+                    job->m_state.m_program.RandomInstruction(instructionSeed, randomDst++);
+                    randomDst %= numInstructions;
+                }
+            } else
+                job->m_state.RandomProgram(seed);
+#endif
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();

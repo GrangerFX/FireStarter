@@ -365,5 +365,5 @@ FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireSt
 
 FireStarter::~FireStarter(void)
 {
-    TerminateThread();
+    QuitThreads();
 } // ~FireStarter
