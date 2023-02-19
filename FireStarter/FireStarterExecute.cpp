@@ -325,12 +325,12 @@ bool FireStarterExecute::CompileModule(FireStarterJob*& job)
     return false;
 } // CompileModule
 
-void FireStarterExecute::ExecuteCompile(bool sync)
+void FireStarterExecute::ExecuteCompileModule(bool sync)
 {
     Dispatch([this] {
         CompileModule(m_job);
     }, sync);
-} // ExecuteEvolve
+} // ExecuteCompileModule
 
 void FireStarterExecute::ExecuteCode(bool init, bool sync)
 {
@@ -344,15 +344,13 @@ void FireStarterExecute::ExecuteCode(bool init, bool sync)
     }, sync);
 } // ExecuteCode
 
-void FireStarterExecute::ExecuteOptimize(size_t generation, size_t index, size_t test, bool init, bool sync)
+void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool init, bool sync)
 {
-    Dispatch([this, generation, index, test, init] {
+    Dispatch([this, state, init] {
         if (m_job) {
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
-                m_job->m_state.m_generation = generation;
-                m_job->m_state.m_index = index;
-                m_job->m_state.m_test = test;
+                m_job->m_state = state;
                 Optimize(m_job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
                 job->Copy(m_job);
             }

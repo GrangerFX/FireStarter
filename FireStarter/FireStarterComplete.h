@@ -7,7 +7,6 @@ class FireStarterComplete : public CUDAThread {
 private:
 	FireStarterWindow m_window;
 	FireStarterShow m_fireShow;
-	FireStarterSettings m_settings;
 	SimpleTimer m_timer;
 	FireStarterManager* m_manager = nullptr;
 	FireStarterGenerate* m_generate = nullptr;
@@ -30,6 +29,6 @@ public:
 	bool CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
 	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, size_t generation, bool sync = true);
 	void CompleteSolution(bool sync = false);
-    FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings);
+    FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

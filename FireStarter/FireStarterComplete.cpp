@@ -93,16 +93,31 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
             m_generationTime = (m_generationTime * m_resultsCount + (duration - m_resultsTime)) / (m_resultsCount + 1);
         m_resultsTime = duration;
     } else {
-        if (!state.m_generation) {
+#if 1
+        if (m_resultsTime == 0.0) {
             m_resultsCount = 0;
-            m_resultsTime = duration;
             m_totalResult = 0.0;
             m_resultsGeneration = 0;
+            m_generationTime = 0.0;
+            m_resultsTime = duration;
+        } else {
+            m_resultsGeneration = state.m_generation;
+            m_generationTime = (duration - m_resultsTime) / settings.m_units;
+            m_resultsTime = duration;
+        }
+#else
+        if (!state.m_generation) {
+            m_resultsCount = 0;
+            m_totalResult = 0.0;
+            m_resultsGeneration = 0;
+            m_generationTime = 0.0;
+            m_resultsTime = duration;
         } else if (state.m_generation != m_resultsGeneration) {
             m_resultsGeneration = state.m_generation;
             m_generationTime = (duration - m_resultsTime) / settings.m_units;
             m_resultsTime = duration;
         }
+#endif
     }
 
     // Update the render status after every pass.
@@ -198,17 +213,14 @@ void FireStarterComplete::CompleteSolution(bool sync)
     }, sync);
 } // CompleteSolution
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings) : CUDAThread("FireStarterComplete"), m_window(window), m_settings(settings), m_fireShow(window, settings)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window) : CUDAThread("FireStarterComplete"), m_window(window), m_fireShow(window)
 {
     m_manager = manager;
-    m_settings = settings;
-
-    if ((m_settings.m_mode != FIRESTARTER_SOLUTION))
-        DispatchSync([this] {
-            if (LoadSolutionTargetCode())
-                // Create the code generator.
-                m_generate = new FireStarterGenerate(Context());
-        });
+    DispatchSync([this] {
+        if (LoadSolutionTargetCode())
+            // Create the code generator.
+            m_generate = new FireStarterGenerate(Context());
+    });
 } // FireStarterComplete
 
 FireStarterComplete::~FireStarterComplete(void)

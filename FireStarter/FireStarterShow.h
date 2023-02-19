@@ -8,9 +8,7 @@
 class FireStarterShow : public CUDAThread {
 private:
 	FireStarterWindow m_window;
-	FireStarterSettings m_settings;
 	SerialOutput m_output;
-	FireStarterGenerate* m_generate = nullptr;
 	std::string m_fireShowCode;
 	CUfunction m_fireShowFunction = nullptr;
 	CUmodule m_fireShowModule = nullptr;
@@ -22,7 +20,7 @@ private:
 public:
 	void FireShow(const FireStarterState& state, bool sync = false);
 	void FireSolution(bool sync = false);
-	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTimee, double oldResult, double average, double testError, bool sync = false);
-	FireStarterShow(const FireStarterWindow& window, const FireStarterSettings& settings);
+	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double oldResult, double average, double testError, bool sync = false);
+	FireStarterShow(const FireStarterWindow& window);
 	~FireStarterShow(void);
 }; // class FireStarterShow

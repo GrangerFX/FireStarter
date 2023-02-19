@@ -16,7 +16,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
     m_buildSettings.FireSettings(unitSettings, FIRESTARTER_MODE);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_window, unitSettings);
+    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_window);
 
     // Initialize the best state.
     FireStarterState bestState;
@@ -141,7 +141,7 @@ void FireStarter::ControlRandom(void)
     FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, randomSettings.m_units);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, randomSettings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
 
     // Loop until the the completion condition or the host program is quit.
     while (!WillTerminate()) {
@@ -210,7 +210,7 @@ void FireStarter::ControlEvolve(void)
     }
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window, evolveSettings);
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
 
     size_t firstTest = 0;
     size_t lastTest = 0;
@@ -275,7 +275,7 @@ void FireStarter::ControlSolution(void)
     FireStarterSettings settings(FIRESTARTER_SOLUTION);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_window, settings);
+    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_window);
 
     // Draw the solution in the window.
     complete->CompleteSolution();

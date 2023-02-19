@@ -34,9 +34,9 @@ private:
     bool CompileModule(FireStarterJob* &job);
 
 public:
-    void ExecuteCompile(bool sync = false);
+    void ExecuteCompileModule(bool sync = false);
     void ExecuteCode(bool init, bool sync = false);
-    void ExecuteOptimize(size_t generation, size_t index, size_t test, bool init, bool sync = false);
+    void ExecuteOptimize(const FireStarterState& state, bool init, bool sync = false);
     void ExecuteEvolve(bool sync = false);
 	void ExecuteRandom(bool sync = false);
     void ExecuteFinish(bool sync = true);
