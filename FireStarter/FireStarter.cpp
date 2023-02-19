@@ -178,36 +178,7 @@ void FireStarter::ControlRevolve(void)
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings evolveSettings;
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_REVOLVE);
-    FireStarterState bestState(evolveSettings);
-
-    // Allocate and start each stream unit.
-    std::vector<FireStarterStream*> streamUnits;
-    for (size_t i = 0; i < evolveSettings.m_units; i++) {
-        FireStarterStream* streamUnit = new FireStarterStream(bestState);
-        streamUnit->EvolveStream(m_window, evolveSettings, i);
-        streamUnits.push_back(streamUnit);
-    }
-
-    // Loop until the the completion condition or the host program is quit.
-    while (!WillTerminate()) {
-        bool finished = true;
-        for (FireStarterStream* streamUnit : streamUnits)
-            if (!streamUnit->Done()) {
-                finished = false;
-                break;
-            }
-        if (finished)
-            break;
-        SleepFor(0.1);
-    }
-
-    // Terminate and delete each stream unit.
-    for (FireStarterStream* streamUnit : streamUnits)
-        delete streamUnit;
-
-    // Optimization evolution pass.
-    if (!WillTerminate() && (evolveSettings.m_units > 1) && FIRESTARTER_SECOND_PASS)
-        FireStarterStream::Optimize(m_window, bestState);
+    FireStarterStreams streams(m_window, evolveSettings);
 } // ControlRevolve
 
 void FireStarter::ControlEvolve(void)
