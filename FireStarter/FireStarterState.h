@@ -78,15 +78,17 @@ public:
         return m_program.m_settings;
     } // Settings
 
-#if 1
-    inline unsigned long long GenerationSeed(void) const
+#if 0
+    inline unsigned long long GenerationSeed(unsigned long long seed = 1337)
     {
-        return RANDOM(m_program.m_settings.m_seed + m_generation);
+        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
+        return m_seed;
     } // GenerationSeed
 
-    inline unsigned long long StateSeed(void) const
+    inline unsigned long long StateSeed(unsigned long long seed = 1337)
     {
-        return RANDOM(m_program.m_settings.m_seed);
+        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
+        return m_seed;
     } // StateSeed
 #else
     inline unsigned long long GenerationSeed(void) const
