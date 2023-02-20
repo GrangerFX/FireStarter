@@ -213,6 +213,7 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool
         if (job) {
             // The state already contains the evolved and optimized code.
             job->m_state = state;
+            job->m_state.m_program.m_settings.m_mode = FIRESTARTER_OPTIMIZE;
 
             // Generate the evaluate code
             std::string evaluateCode;

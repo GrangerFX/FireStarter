@@ -403,19 +403,20 @@ FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, const Fi
 
     // Find the best random states.
     std::vector<FireStarterState*> bestStates;
-    float minResult = states[0].m_maxResult;
-    size_t minIndex = 0;
+    float minResult = settings.m_startResult;
     for (size_t i = 0; i < states.size(); i++) {
         FireStarterState* curState = &states[i];
-        for (size_t j = 0; j < bestStates.size(); j++) {
-            if (curState->m_maxResult < bestStates[j]->m_maxResult) {
-                FireStarterState* minState = curState;
-                curState = bestStates[j];
-                bestStates[j] = minState;
+        if (curState->m_maxResult < minResult) {
+            minResult = curState->m_maxResult;
+            for (size_t j = 0; j < bestStates.size(); j++) {
+                if (curState->m_maxResult < bestStates[j]->m_maxResult) {
+                    FireStarterState* minState = curState;
+                    curState = bestStates[j];
+                    bestStates[j] = minState;
+                }
             }
-        }
-        if (bestStates.size() < 100)
             bestStates.push_back(curState);
+        }
     }
 
     // Evolve the best streams.
@@ -428,7 +429,7 @@ FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, const Fi
 
     // Find the best evolved state.
     minResult = bestStates[0]->m_maxResult;
-    minIndex = 0;
+    size_t minIndex = 0;
     for (size_t i = 0; i < bestStates.size(); i++) {
         FireStarterState* state = bestStates[i];
         if (state->m_maxResult < minResult) {

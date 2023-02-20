@@ -262,7 +262,7 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
     FireStarterResults* stateResults = state.Results();
     float bestResult = state.m_maxResult;
     state.m_maxResult = 0;
-    bool found = true;
+    bool validResult = true;
 
     if (stateSettings.m_variations != m_variationOrder.size()) {
         m_variationOrder.resize(stateSettings.m_variations);
@@ -273,11 +273,11 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
         unsigned int variation = m_variationOrder[v];
 
         // Optimization: If the variation result is worse, skip the rest of the variations.
-        if (found) {
+        if (validResult) {
             OptimizeGenerations(state, init, variation);
-            float variationResult = *stateResults->MinResult(variation);
             if (skipVariations) {
-                found = variationResult < bestResult;
+                float variationResult = *stateResults->MinResult(variation);
+                validResult = variationResult < bestResult;
                 for (unsigned int i = 0; i < v; i++) {
                     float orderResult = *stateResults->MinResult(m_variationOrder[i]);
                     if (orderResult < variationResult) {
@@ -289,8 +289,7 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
                 }
             }
         } else
-            // The variation data is reset when it is skipped.
-            stateResults->InitResults(0, stateSettings.m_registers, variation, stateSettings.m_startResult);
+            stateResults->Result(variation)->Init(0, stateSettings.m_registers, stateSettings.m_startResult);
     }
 } // Optimize
 
@@ -351,6 +350,7 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool ini
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
                 m_job->m_state = state;
+                m_job->m_state.m_program.m_settings.m_mode = FIRESTARTER_OPTIMIZE;
                 Optimize(m_job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
                 job->Copy(m_job);
             }
