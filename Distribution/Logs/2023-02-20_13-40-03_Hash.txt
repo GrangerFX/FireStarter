@@ -1,0 +1,101 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 32
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_REVOLVE
+units = 1
+processes = 0
+iterations = 64
+candidates = 16
+generations = 100
+precision = 0
+attempts = 32
+seed = 0
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02756684  Seed=       0  ResultHash=BFA1  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       1  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       2  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       3  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       4  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       5  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       6  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       7  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       8  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=       9  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      10  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      11  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      12  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      13  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      14  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      15  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      16  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      17  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      18  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      19  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      20  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      21  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      22  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      23  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      24  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      25  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      26  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      27  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      28  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      29  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      30  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      31  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      32  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      33  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      34  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      35  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      36  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      37  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      38  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      39  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      40  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      41  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      42  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      43  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      44  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      45  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      46  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      47  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      48  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      49  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      50  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      51  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      52  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      53  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      54  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      55  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      56  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      57  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      58  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      59  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      60  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      61  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      62  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      63  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      64  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      65  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      66  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      67  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      68  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      69  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      70  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      71  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      72  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      73  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      74  ResultHash=D0E0  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02671742  Seed=      75  ResultHash=D0E0  ProgramHash=0F22

@@ -78,25 +78,25 @@ public:
         return m_program.m_settings;
     } // Settings
 
-#if 0
+#if 1
     inline unsigned long long GenerationSeed(void) const
     {
-        return RANDOM(m_program.m_settings.m_seed) + RANDOM(m_generation) + RANDOM(m_test);
+        return RANDOM(m_program.m_settings.m_seed + m_generation);
     } // GenerationSeed
 
     inline unsigned long long StateSeed(void) const
     {
-        return RANDOM(m_program.m_settings.m_seed) + RANDOM(m_index) + RANDOM(m_generation) + m_test);
+        return RANDOM(m_program.m_settings.m_seed);
     } // StateSeed
 #else
     inline unsigned long long GenerationSeed(void) const
     {
-        return RANDOM2(RANDOM1(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
     } // GenerationSeed
 
     inline unsigned long long StateSeed(void) const
     {
-        return RANDOM3(RANDOM2(RANDOM1(RANDOM(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
+        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
     } // StateSeed
 #endif
 

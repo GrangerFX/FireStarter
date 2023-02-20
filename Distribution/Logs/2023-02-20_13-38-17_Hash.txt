@@ -1,0 +1,154 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 32
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_REVOLVE
+units = 1
+processes = 0
+iterations = 64
+candidates = 16
+generations = 100
+precision = 0
+attempts = 32
+seed = 0
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02756684  Seed=       0  ResultHash=BFA1  ProgramHash=0F22
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00074133  Seed=       1  ResultHash=427A  ProgramHash=A4F0
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00100121  Seed=       2  ResultHash=7C7F  ProgramHash=D2F0
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00396751  Seed=       3  ResultHash=1846  ProgramHash=8567
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02231282  Seed=       4  ResultHash=2A92  ProgramHash=8AC6
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00116849  Seed=       5  ResultHash=35EF  ProgramHash=908A
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00050360  Seed=       6  ResultHash=B0AA  ProgramHash=D820
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.04750359  Seed=       7  ResultHash=318E  ProgramHash=D3C9
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00112253  Seed=       8  ResultHash=B589  ProgramHash=25A0
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00299072  Seed=       9  ResultHash=BA25  ProgramHash=58B1
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.17369753  Seed=      10  ResultHash=A193  ProgramHash=7689
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01656950  Seed=      11  ResultHash=8637  ProgramHash=AD28
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.04058306  Seed=      12  ResultHash=A5EF  ProgramHash=8577
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00024104  Seed=      13  ResultHash=3D12  ProgramHash=47A9
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.04751283  Seed=      14  ResultHash=E409  ProgramHash=2539
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00275940  Seed=      15  ResultHash=D9B0  ProgramHash=75F1
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00315088  Seed=      16  ResultHash=D32A  ProgramHash=3CF6
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00030330  Seed=      17  ResultHash=E9BA  ProgramHash=EC66
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00127797  Seed=      18  ResultHash=1B21  ProgramHash=C580
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.85227418  Seed=      19  ResultHash=C130  ProgramHash=47CE
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01877111  Seed=      20  ResultHash=9783  ProgramHash=8ADF
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00135994  Seed=      21  ResultHash=6E01  ProgramHash=23F8
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00067115  Seed=      22  ResultHash=4567  ProgramHash=3C4A
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00170982  Seed=      23  ResultHash=AC32  ProgramHash=67B5
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00094190  Seed=      24  ResultHash=310F  ProgramHash=4349
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00061831  Seed=      25  ResultHash=94C4  ProgramHash=0C40
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00240291  Seed=      26  ResultHash=670C  ProgramHash=DCF0
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01681298  Seed=      27  ResultHash=284D  ProgramHash=EF8C
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.02159810  Seed=      28  ResultHash=EFB2  ProgramHash=1151
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.17370301  Seed=      29  ResultHash=BEC4  ProgramHash=23D6
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01087664  Seed=      30  ResultHash=FF7D  ProgramHash=77B7
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.30590871  Seed=      31  ResultHash=72A2  ProgramHash=E8C9
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00082022  Seed=      32  ResultHash=08D1  ProgramHash=4DB2
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00140744  Seed=      33  ResultHash=06B1  ProgramHash=5CE9
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00114280  Seed=      34  ResultHash=020C  ProgramHash=274D
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00210120  Seed=      35  ResultHash=48BE  ProgramHash=B2B8
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01651766  Seed=      36  ResultHash=CDBC  ProgramHash=CB9B
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00088334  Seed=      37  ResultHash=E221  ProgramHash=6A8A
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00083554  Seed=      38  ResultHash=D996  ProgramHash=842A
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00083792  Seed=      39  ResultHash=0E6B  ProgramHash=0163
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00102425  Seed=      40  ResultHash=C675  ProgramHash=387E
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00306916  Seed=      41  ResultHash=1F81  ProgramHash=038B
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.04452312  Seed=      42  ResultHash=3D0E  ProgramHash=160D
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00256693  Seed=      43  ResultHash=C03A  ProgramHash=F7B0
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00077978  Seed=      44  ResultHash=8D88  ProgramHash=8B6F
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00254095  Seed=      45  ResultHash=2E66  ProgramHash=ACFB
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.20144954  Seed=      46  ResultHash=304C  ProgramHash=F63A
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00622118  Seed=      47  ResultHash=1CDF  ProgramHash=108B
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.15757829  Seed=      48  ResultHash=E7ED  ProgramHash=817B
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00331637  Seed=      49  ResultHash=C276  ProgramHash=30AE
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00024140  Seed=      50  ResultHash=6A83  ProgramHash=0C96
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.85227418  Seed=      51  ResultHash=737E  ProgramHash=1C27
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00095251  Seed=      52  ResultHash=9168  ProgramHash=8B02
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00104792  Seed=      53  ResultHash=1BF6  ProgramHash=EBBB
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00036493  Seed=      54  ResultHash=4E32  ProgramHash=86B6
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01063233  Seed=      55  ResultHash=0339  ProgramHash=56C6
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00270414  Seed=      56  ResultHash=91F4  ProgramHash=06FC
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00170970  Seed=      57  ResultHash=2B14  ProgramHash=6DEC
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00076145  Seed=      58  ResultHash=BAAA  ProgramHash=CAFE
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00064448  Seed=      59  ResultHash=07E3  ProgramHash=E31E
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00361025  Seed=      60  ResultHash=8AF7  ProgramHash=3E9A
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.03485758  Seed=      61  ResultHash=E297  ProgramHash=6412
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=1.48324537  Seed=      62  ResultHash=16EA  ProgramHash=3336
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.17370002  Seed=      63  ResultHash=3361  ProgramHash=EAA4
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00317806  Seed=      64  ResultHash=E888  ProgramHash=114F
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00309411  Seed=      65  ResultHash=1E46  ProgramHash=1D3E
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00358891  Seed=      66  ResultHash=6EDD  ProgramHash=A78C
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00887060  Seed=      67  ResultHash=E127  ProgramHash=9A36
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00068344  Seed=      68  ResultHash=1ED8  ProgramHash=7492
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00362086  Seed=      69  ResultHash=7EF6  ProgramHash=5601
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01723075  Seed=      70  ResultHash=DF16  ProgramHash=7DDF
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00348920  Seed=      71  ResultHash=DCAA  ProgramHash=B9B0
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00089073  Seed=      72  ResultHash=B405  ProgramHash=756F
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01889741  Seed=      73  ResultHash=8728  ProgramHash=5DD7
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00085485  Seed=      74  ResultHash=120C  ProgramHash=A6EA
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00330627  Seed=      75  ResultHash=BF84  ProgramHash=38ED
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00762093  Seed=      76  ResultHash=9658  ProgramHash=068C
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00191933  Seed=      77  ResultHash=35FF  ProgramHash=BA49
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00420260  Seed=      78  ResultHash=016C  ProgramHash=220D
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01652980  Seed=      79  ResultHash=038A  ProgramHash=6204
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00450092  Seed=      80  ResultHash=66DB  ProgramHash=E23F
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00254333  Seed=      81  ResultHash=2B13  ProgramHash=1D68
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01648563  Seed=      82  ResultHash=0B55  ProgramHash=5918
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00619983  Seed=      83  ResultHash=20EA  ProgramHash=B624
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00061485  Seed=      84  ResultHash=5786  ProgramHash=4A6F
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01643348  Seed=      85  ResultHash=C7E3  ProgramHash=3591
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.36377624  Seed=      86  ResultHash=A1D9  ProgramHash=41A3
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.01636744  Seed=      87  ResultHash=6E27  ProgramHash=E9A2
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00337446  Seed=      88  ResultHash=4C7D  ProgramHash=FFEE
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00062132  Seed=      89  ResultHash=9D5F  ProgramHash=6C0D
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00238845  Seed=      90  ResultHash=C02A  ProgramHash=8BC5
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00370073  Seed=      91  ResultHash=8159  ProgramHash=D5D2
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00666231  Seed=      92  ResultHash=E770  ProgramHash=55BD
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00361419  Seed=      93  ResultHash=4CF7  ProgramHash=F173
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00062203  Seed=      94  ResultHash=6D59  ProgramHash=61EE
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00268435  Seed=      95  ResultHash=FEDD  ProgramHash=7A05
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.48014069  Seed=      96  ResultHash=B25F  ProgramHash=D42F
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00044742  Seed=      97  ResultHash=2312  ProgramHash=12D0
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.04754353  Seed=      98  ResultHash=1267  ProgramHash=3343
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00129253  Seed=      99  ResultHash=8D6B  ProgramHash=5990
+FIRESTARTER_REVOLVE: Generation:   0  Best Generation:   0  Result=0.00035778  Seed=      13  ResultHash=2A89  ProgramHash=47A9
+FIRESTARTER_REVOLVE: Generation:   1  Best Generation:   0  Result=0.00044882  Seed=      14  ResultHash=1D2F  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:   2  Best Generation:   0  Result=0.00038674  Seed=      15  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:   3  Best Generation:   0  Result=0.00038674  Seed=      16  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:   4  Best Generation:   0  Result=0.00038674  Seed=      17  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:   5  Best Generation:   0  Result=0.00038674  Seed=      18  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:   6  Best Generation:   0  Result=0.00038674  Seed=      19  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:   7  Best Generation:   0  Result=0.00038674  Seed=      20  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:   8  Best Generation:   0  Result=0.00038674  Seed=      21  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:   9  Best Generation:   0  Result=0.00038674  Seed=      22  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  10  Best Generation:   0  Result=0.00038674  Seed=      23  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  11  Best Generation:   0  Result=0.00038674  Seed=      24  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  12  Best Generation:   0  Result=0.00038674  Seed=      25  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  13  Best Generation:   0  Result=0.00038674  Seed=      26  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  14  Best Generation:   0  Result=0.00038674  Seed=      27  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  15  Best Generation:   0  Result=0.00038674  Seed=      28  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  16  Best Generation:   0  Result=0.00038674  Seed=      29  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  17  Best Generation:   0  Result=0.00038674  Seed=      30  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  18  Best Generation:   0  Result=0.00038674  Seed=      31  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  19  Best Generation:   0  Result=0.00038674  Seed=      32  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  20  Best Generation:   0  Result=0.00038674  Seed=      33  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  21  Best Generation:   0  Result=0.00038674  Seed=      34  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  22  Best Generation:   0  Result=0.00038674  Seed=      35  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  23  Best Generation:   0  Result=0.00038674  Seed=      36  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  24  Best Generation:   0  Result=0.00038674  Seed=      37  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  25  Best Generation:   0  Result=0.00038674  Seed=      38  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  26  Best Generation:   0  Result=0.00038674  Seed=      39  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  27  Best Generation:   0  Result=0.00038674  Seed=      40  ResultHash=25F7  ProgramHash=38E0
+FIRESTARTER_REVOLVE: Generation:  28  Best Generation:   0  Result=0.00038674  Seed=      41  ResultHash=25F7  ProgramHash=38E0
