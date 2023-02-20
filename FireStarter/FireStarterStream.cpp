@@ -414,7 +414,7 @@ FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, const Fi
                 bestStates[j] = minState;
             }
         }
-        if (bestStates.size() < 10)
+        if (bestStates.size() < 100)
             bestStates.push_back(curState);
     }
 
