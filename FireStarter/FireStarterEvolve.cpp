@@ -44,11 +44,11 @@ bool FireStarterEvolve::EvolveSeeds(const FireStarterSettings& settings, bool sy
     return true;
 } // EvolveSeeds
 
-bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long long generation, bool sync)
+bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireStarterState& bestState, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
-    Dispatch([this, state, generation] {
+    Dispatch([this, state, bestState] {
         const FireStarterSettings& settings = state.Settings();
         unsigned int numInstructions = settings.m_instructions;
         float bestResult = state.m_maxResult;
@@ -56,15 +56,14 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
         if (job) {
             // Clone or randomize instructions in the later generations.
             job->m_state = state;
-            job->m_state.m_generation = generation;
 #if 1
             unsigned long long seed = job->m_state.InitGenerationSeed();
-            if (generation) {
+            if (state.m_generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
 
                 // Randomize a random set of instuctions.
-                unsigned long long age = generation - state.m_generation;
+                unsigned long long age = state.m_generation - bestState.m_generation;
                 unsigned long long randomNum = age >= numInstructions ? 2 : 1;
                 while (randomNum--) {
                     job->m_state.RandomInstruction(seed);
@@ -74,7 +73,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, unsigned long
                 job->m_state.RandomProgram(seed);
 #else
             unsigned long long seed = job->m_state.OldEvolveSeed();
-            if (generation) {
+            if (state.m_generation) {
                 // Randomize a random range of instuctions.
                 unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
                 unsigned int randomDst = RANDOMMOD(seed, numInstructions);
