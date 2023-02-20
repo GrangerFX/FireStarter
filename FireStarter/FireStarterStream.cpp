@@ -315,6 +315,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState*>& states, std
                 generation++;
             }
 
+#if 0
             // Optimize the evolved state.
             // Generate the optimize code.
             evolve->GenerateOptimize(evolveState, true);
@@ -337,6 +338,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState*>& states, std
                 evolveState.m_generation++;
                 init = false;
             }
+#endif
         }
 
         // Cancel any waiting jobs

@@ -25,11 +25,26 @@ inline unsigned int Hash32(unsigned int hash)
     return hash;
 } // Hash32
 
+// Some keys for Squares
+#define SQUARES_SEED0 0xfbe3c695413b867f
+#define SQUARES_SEED1 0x85493e21f23649a5
+#define SQUARES_SEED2 0x1659c2f3245a7913
+#define SQUARES_SEED3 0xad68b9f54f2d85eb
+#define SQUARES_SEED4 0xfb618e598e31c459
+#define SQUARES_SEED5 0xcf1d894a9b24d3c5
+#define SQUARES_SEED6 0x53481b7dcb58e243
+#define SQUARES_SEED7 0x597a326dc738e19f
+#define SQUARES_SEED8 0x7658a391f85c321d
+#define SQUARES_SEED9 0xcd64f372173e2f69
+#define SQUARES_SEED10 0x8a31de2767324ed5
+#define SQUARES_SEED11 0x47bf52ca94267d53
+#define SQUARES_SEED12 0xb5736d4981276baf
+
 // Squares 32 bit random number generator
 // From Bernard Widynski's paper
 // Squares: A Fast Counter-Based RNG
 // https://arxiv.org/pdf/2004.06278v7.pdf
-inline unsigned int Squares32(unsigned long long ctr, unsigned long long key = 0x1659c2f3245a7913)
+inline unsigned int Squares32(unsigned long long ctr, unsigned long long key = SQUARES_SEED2)
 {
     unsigned long long x, y, z;
     y = x = ctr * key; z = y + key;
@@ -43,7 +58,7 @@ inline unsigned int Squares32(unsigned long long ctr, unsigned long long key = 0
 // From Bernard Widynski's paper
 // Squares: A Fast Counter-Based RNG
 // https://arxiv.org/pdf/2004.06278v7.pdf
-inline unsigned long long Squares64(unsigned long long ctr, unsigned long long key = 0xfbe3c695413b867f)
+inline unsigned long long Squares64(unsigned long long ctr, unsigned long long key = SQUARES_SEED0)
 {
     unsigned long long t, x, y, z;
     y = x = ctr * key; z = y + key;
@@ -54,27 +69,21 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
     return t ^ ((x * x + y) >> 32); /* round 5 */
 } // Squares64
 
-/* Some keys for Squares
-0x85493e21f23649a5,
-0x1659c2f3245a7913,
-0xfbe3c695413b867f,
-0xad68b9f54f2d85eb,
-0xfb618e598e31c459,
-0xcf1d894a9b24d3c5,
-0x53481b7dcb58e243,
-0x597a326dc738e19f,
-0x7658a391f85c321d,
-0xcd64f372173e2f69,
-0x8a31de2767324ed5,
-0x47bf52ca94267d53,
-0xb5736d4981276baf,
-*/
-
 //#define RANDOMHASH(seed) Hash32((unsigned int)(seed))
 //#define RANDOMHASH(seed) Squares32((unsigned long long)(seed))
 #define RANDOMHASH(seed) Squares64((unsigned long long)(seed))
 
 #define RANDOM(seed) RANDOMHASH(seed)
+#define RANDOM1(seed) Squares64(seed, SQUARES_SEED1)
+#define RANDOM2(seed) Squares64(seed, SQUARES_SEED2)
+#define RANDOM3(seed) Squares64(seed, SQUARES_SEED3)
+#define RANDOM4(seed) Squares64(seed, SQUARES_SEED4)
+#define RANDOM5(seed) Squares64(seed, SQUARES_SEED5)
+#define RANDOM6(seed) Squares64(seed, SQUARES_SEED6)
+#define RANDOM7(seed) Squares64(seed, SQUARES_SEED7)
+#define RANDOM8(seed) Squares64(seed, SQUARES_SEED8)
+#define RANDOM9(seed) Squares64(seed, SQUARES_SEED9)
+
 #define RANDOMSEED(seed) RANDOMHASH(seed++)
 #define RANDOMMOD(seed, m) (((unsigned int)RANDOMSEED(seed)) * (unsigned long long)(m) >> 32)
 #define RANDOMNUM(seed) (((int)RANDOMSEED(seed)) * 2.328306436E-10f)     // yields a number between 0 and <1
