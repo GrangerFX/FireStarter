@@ -78,19 +78,19 @@ public:
         return m_program.m_settings;
     } // Settings
 
-#if 0
-    inline unsigned long long GenerationSeed(unsigned long long seed = 1337)
-    {
-        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
-        return m_seed;
-    } // GenerationSeed
 
-    inline unsigned long long StateSeed(unsigned long long seed = 1337)
+    inline unsigned long long OldEvolveSeed(unsigned long long seed = 1337)
     {
         m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
         return m_seed;
-    } // StateSeed
-#else
+    } // OldEvolveSeed
+
+    inline unsigned long long OldOptimizeSeed(unsigned long long seed = 1337)
+    {
+        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index + seed);
+        return m_seed;
+    } // OldOptimizeSeed
+
     inline unsigned long long GenerationSeed(void) const
     {
         return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
@@ -100,7 +100,6 @@ public:
     {
         return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
     } // StateSeed
-#endif
 
     unsigned long long InitSeed(unsigned long long seed)
     {
@@ -165,18 +164,6 @@ public:
     {
         m_program.RandomProgram(seed);
     } // RandomProgram
-
-    inline unsigned long long OldEvolveSeed(unsigned long long seed = 1337)
-    {
-        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
-        return m_seed;
-    } // OldEvolveSeed
-
-    inline unsigned long long OldOptimizeSeed(unsigned long long seed = 1337)
-    {
-        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index + seed);
-        return m_seed;
-    } // OldOptimizeSeed
 
     bool Packetize(FireStarterPacket& packet);
     void SaveVariation(unsigned int variation, std::string& code) const;
