@@ -78,7 +78,6 @@ public:
         return m_program.m_settings;
     } // Settings
 
-
     inline unsigned long long OldEvolveSeed(unsigned long long seed = 1337)
     {
         m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
