@@ -56,7 +56,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
         if (job) {
             // Clone or randomize instructions in the later generations.
             job->m_state = state;
-#if 1
+#if 0
             unsigned long long seed = job->m_state.InitGenerationSeed();
             if (state.m_generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
@@ -72,8 +72,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
             } else
                 job->m_state.RandomProgram(seed);
 #endif
-#if 0
-            unsigned long long seed = job->m_state.OldEvolveSeed(0);
+#if 1
+            unsigned long long seed = job->m_state.OldEvolveSeed(state.m_generation);
             if (state.m_generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
