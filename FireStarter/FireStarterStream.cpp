@@ -244,9 +244,9 @@ void FireStarterStream::OptimizeStream(const FireStarterState& evolveState, bool
     }, sync);
 } // OptimizeStream
 
-void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std::atomic<unsigned long long>& testCount, bool sync)
+void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std::atomic<unsigned long long>& testCount, float& maxResult, bool sync)
 {
-    Dispatch([this, &states, &testCount] {
+    Dispatch([this, &states, &testCount, &maxResult] {
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
 
@@ -266,6 +266,8 @@ void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std:
         FireStarterState bestState(states[0]);    // The best state generation is used for the status display and termination condition.
         for (unsigned long long test = testCount++; (test < states.size()) && !WillTerminate(); test = testCount++) {
             FireStarterState& evolveState = states[test];
+            if (maxResult)
+                evolveState.m_maxResult = maxResult;
 
             // Evolve a new generation for the state.
             evolve->EvolveState(evolveState, bestState, true);
@@ -278,6 +280,8 @@ void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std:
 
             // Complete the state and display the results.
             complete->CompleteState(bestState, evolveState);
+            if (maxResult > evolveState.m_maxResult)
+                maxResult = evolveState.m_maxResult;
         }
 
         // Cancel any waiting jobs
@@ -340,31 +344,32 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState*>& states, std
                 evolveState.m_generation++;
             }
 
-#if 0
-            // Optimize the evolved state.
-            // Generate the optimize code.
-            evolveState = bestState;
-            evolve->GenerateOptimize(evolveState, true);
+            // Only optimize the better quality results.
+            if (bestState.m_maxResult < 0.0001) {
+                // Optimize the evolved state.
+                // Generate the optimize code.
+                evolveState = bestState;
+                evolve->GenerateOptimize(evolveState, true);
 
-            // Compile the optimize code.
-            compile->CompileJob(manager, true);
+                // Compile the optimize code.
+                compile->CompileJob(manager, true);
 
-            // Compile the optimize module.
-            execute->ExecuteCompileModule();
+                // Compile the optimize module.
+                execute->ExecuteCompileModule();
 
-            // Loop until the the optimize completion condition or the host program is quit.
-            bool init = true;
-            while (!WillTerminate()) {
-                // Optimize the current generation.
-                execute->ExecuteOptimize(evolveState, init);
+                // Loop until the the optimize completion condition or the host program is quit.
+                bool init = true;
+                while (!WillTerminate()) {
+                    // Optimize the current generation.
+                    execute->ExecuteOptimize(evolveState, init);
 
-                // Update the results in the UI.
-                if (!complete->CompleteState(bestState, evolveState))
-                    break;
-                evolveState.m_generation++;
-                init = false;
+                    // Update the results in the UI.
+                    if (!complete->CompleteState(bestState, evolveState))
+                        break;
+                    evolveState.m_generation++;
+                    init = false;
+                }
             }
-#endif
         }
 
         // Cancel any waiting jobs
@@ -415,15 +420,16 @@ FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, const Fi
     for (size_t test = 0; test < tests; test++) {
         FireStarterSettings randomSettings(settings);
         randomSettings.m_seed = settings.m_seed + test;
-        states[test].InitState(randomSettings, 0, 0, test);
+        states[test].InitState(randomSettings, 0, 0, 0);
     }
 
     // Generate random programs and test each of them.
     std::vector<FireStarterStream*> streams;
     streams.resize(settings.m_units, nullptr);
+    float maxResult = settings.m_startResult;
     for (size_t unit = 0; unit < settings.m_units; unit++) {
         streams[unit] = new FireStarterStream(window, bestState, unit);
-        streams[unit]->RandomStream(states, m_testCount);
+        streams[unit]->RandomStream(states, m_testCount, maxResult);
     }
 
     // Wait for all the streams to finish the random pass.
@@ -431,6 +437,13 @@ FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, const Fi
 
     // Find the best random states.
     std::vector<FireStarterState*> bestStates;
+#if 1
+    for (size_t i = 0; i < states.size(); i++) {
+        FireStarterState* curState = &states[i];
+        if (curState->m_maxResult <= states[0].m_maxResult)
+            bestStates.push_back(curState);
+    }
+#else
     float minResult = settings.m_startResult;
     for (size_t i = 0; i < states.size(); i++) {
         FireStarterState* curState = &states[i];
@@ -446,6 +459,7 @@ FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, const Fi
             bestStates.push_back(curState);
         }
     }
+#endif
 
     // Evolve the best streams.
     m_testCount = 0;
@@ -456,16 +470,16 @@ FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, const Fi
     SynchronizeStreams(streams);
 
     // Find the best evolved state.
-    minResult = bestStates[0]->m_maxResult;
-    size_t minIndex = 0;
+    float bestResult = bestStates[0]->m_maxResult;
+    size_t bestIndex = 0;
     for (size_t i = 0; i < bestStates.size(); i++) {
         FireStarterState* state = bestStates[i];
-        if (state->m_maxResult < minResult) {
-            minResult = state->m_maxResult;
-            minIndex = i;
+        if (state->m_maxResult < bestResult) {
+            bestResult = state->m_maxResult;
+            bestIndex = i;
         }
     }
-    bestState = *bestStates[minIndex];
+    bestState = *bestStates[bestIndex];
 
     // Terminate and delete each stream unit.
     for (FireStarterStream*& stream : streams) {
