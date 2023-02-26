@@ -72,7 +72,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
             } else
                 job->m_state.RandomProgram(seed);
 #endif
-#if 1
+#if 0
             job->m_state.InitGenerationSeed();
             if (state.m_generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
@@ -85,6 +85,22 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                     job->m_state.RandomInstruction();
                     m_evolveCount++;
                 }
+            } else
+                job->m_state.RandomProgram();
+#endif
+#if 1
+            job->m_state.InitGenerationSeed();
+            if (state.m_generation) {
+                // Copy a range of instuctions from the best state.
+                unsigned int copyNum = RANDOMMOD(job->m_state.m_seed, min(numInstructions, 8));
+                unsigned int copySrc = RANDOMMOD(job->m_state.m_seed, numInstructions);
+                unsigned int copyDst = RANDOMMOD(job->m_state.m_seed, numInstructions);
+                while (copyNum--) {
+                    job->m_state.m_program.EvolvedInstruction(copyDst++) = state.m_program.EvolvedInstruction(copySrc++);
+                    copySrc %= numInstructions;
+                    copyDst %= numInstructions;
+                }
+                job->m_state.RandomInstruction();
             } else
                 job->m_state.RandomProgram();
 #endif
