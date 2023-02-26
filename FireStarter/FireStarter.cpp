@@ -176,9 +176,11 @@ void FireStarter::ControlRevolve(void)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
-    FireStarterSettings evolveSettings;
-    m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_REVOLVE);
-    FireStarterStreams streams(m_window, evolveSettings);
+    FireStarterSettings revolveSettings;
+    m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_REVOLVE);
+    FireStarterStreams streams(m_window, revolveSettings);
+    streams.TestStreams();
+//    streams.EvolveStreams();
 } // ControlRevolve
 
 void FireStarter::ControlEvolve(void)
