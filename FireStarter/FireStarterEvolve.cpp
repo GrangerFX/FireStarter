@@ -72,7 +72,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
             } else
                 job->m_state.RandomProgram(seed);
 #endif
-#if 0
+#if 1
             job->m_state.InitGenerationSeed();
             if (state.m_generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
@@ -80,7 +80,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
 
                 // Randomize a random set of instuctions.
                 unsigned long long age = state.m_generation - bestState.m_generation;
-                unsigned long long randomNum = 1; // age >= numInstructions ? 2 : 1;
+                unsigned long long randomNum = 2; // age >= numInstructions ? 2 : 1;
                 while (randomNum--) {
                     job->m_state.RandomInstruction();
                     m_evolveCount++;
