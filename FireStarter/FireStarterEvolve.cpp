@@ -78,11 +78,10 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
 
-                // Randomize a random set of instuctions.
-                unsigned long long age = state.m_generation - bestState.m_generation;
-                unsigned int randomNum = RANDOMMOD(job->m_state.m_seed, min(numInstructions, 4));
+                // Randomize sequential instuctions.
+                unsigned int randomNum = 1; //  RANDOMMOD(job->m_state.m_seed, min(numInstructions, 4));
                 while (randomNum--) {
-                    job->m_state.RandomInstruction();
+                    job->m_state.RandomInstruction(job->m_state.m_seed, state.m_generation % numInstructions);
                     m_evolveCount++;
                 }
             } else
