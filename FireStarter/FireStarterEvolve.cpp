@@ -79,9 +79,9 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 float oldResult = job->m_state.m_maxResult;
 
                 // Randomize sequential instuctions.
-                unsigned int randomNum = 1; //  RANDOMMOD(job->m_state.m_seed, min(numInstructions, 4));
+                unsigned int randomNum = RANDOMMOD(job->m_state.m_seed, min(numInstructions, 4));
                 while (randomNum--) {
-                    job->m_state.RandomInstruction(job->m_state.m_seed, state.m_generation % numInstructions);
+                    job->m_state.RandomInstruction(job->m_state.m_seed, (state.m_generation + settings.m_seed) % numInstructions);
                     m_evolveCount++;
                 }
             } else
