@@ -124,14 +124,29 @@ public:
         return InitStateSeed();
     } // RootSeed
 
+    unsigned long long& Seed(void)
+    {
+        return m_seed;
+    } // RandomSeed
+
     unsigned long long RandomSeed(void)
     {
         return RANDOMSEED(m_seed);
     } // RandomSeed
 
+    unsigned long long RandomMod(unsigned int m)
+    {
+        return RANDOMMOD(m_seed, m);
+    } // RandomSeed
+
     inline void RandomInstruction(void)
     {
         m_program.RandomInstruction(m_seed);
+    } // RandomInstruction
+
+    inline void RandomInstruction(unsigned int index)
+    {
+        m_program.RandomInstruction(m_seed, index);
     } // RandomInstruction
 
     inline void RandomInstruction(unsigned long long& seed)
