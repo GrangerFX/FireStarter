@@ -244,6 +244,69 @@ void FireStarterStream::OptimizeStream(const FireStarterState& evolveState, bool
     }, sync);
 } // OptimizeStream
 
+void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, float& maxResult, bool sync)
+{
+    Dispatch([this, &settings, &testCount, &maxResult] {
+        // Create the compiler manager
+        FireStarterManager* manager = new FireStarterManager();
+
+        // Create the evolution code generator.
+        FireStarterEvolve* evolve = new FireStarterEvolve(manager);
+
+        // Create the multi-process compiler.
+        FireStarterCompile* compile = new FireStarterCompile();
+
+        // Create the execution unit.
+        FireStarterExecute* execute = new FireStarterExecute(manager);
+
+        // Create the completion unit.
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
+
+        // Loop until the the completion condition or the host program is quit.
+        for (unsigned long long test = testCount++; (test < settings.m_tests) && !WillTerminate(); test = testCount++) {
+            // Setup the intial state
+            FireStarterSettings evolveSettings(settings);
+            evolveSettings.m_seed = settings.m_seed + test;
+            FireStarterState evolveState(evolveSettings, 0, 0, 0);
+
+            // The best state is used for the status display and termination condition.
+            FireStarterState bestEvolveState(evolveState);
+
+            // Evolve a new generation for the state.
+            evolve->EvolveState(evolveState, bestEvolveState, true);
+
+            // Compile the evolved program.
+            compile->CompileJob(manager, true);
+
+            // Execute the state.
+            execute->ExecuteEvolve(true);
+
+            // Complete the state and display the results.
+            complete->CompleteState(bestEvolveState, evolveState);
+            if (maxResult > evolveState.m_maxResult)
+                maxResult = evolveState.m_maxResult;
+        }
+
+        // Cancel any waiting jobs
+        manager->Cancel();
+
+        // Delete the completion unit.
+        delete complete;
+
+        // Finish processing and terminate each unit.
+        delete execute;
+
+        // Delete the multi-process compiler.
+        delete compile;
+
+        // Delete the evolution code generator.
+        delete evolve;
+
+        // Delete the compilier manager and cancel any waiting jobs.
+        delete manager;
+    }, sync);
+} // RandomStream
+
 void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std::atomic<unsigned long long>& testCount, float& maxResult, bool sync)
 {
     Dispatch([this, &states, &testCount, &maxResult] {
@@ -284,79 +347,15 @@ void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std:
             complete->CompleteState(bestState, evolveState);
             if (maxResult > evolveState.m_maxResult)
                 maxResult = evolveState.m_maxResult;
-        }
-
-        // Cancel any waiting jobs
-        manager->Cancel();
-
-        // Delete the completion unit.
-        delete complete;
-
-        // Finish processing and terminate each unit.
-        delete execute;
-
-        // Delete the multi-process compiler.
-        delete compile;
-
-        // Delete the evolution code generator.
-        delete evolve;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
-    }, sync);
-} // RandomStream
-
-void FireStarterStream::TestStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync)
-{
-    Dispatch([this, settings, &testCount] {
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
-
-        // Create the evolution code generator.
-        FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-
-        // Create the multi-process compiler.
-        FireStarterCompile* compile = new FireStarterCompile();
-
-        // Create the execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager);
-
-        // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
-
-        // Loop until the the evolve completion condition or the host program is quit.
-        for (unsigned long long test = testCount++; (test < settings.m_tests) && !WillTerminate(); test = testCount++) {
-            // Setup the intial state
-            FireStarterSettings testSettings(settings);
-            testSettings.m_seed = settings.m_seed + test;
-            FireStarterState testState(testSettings, 0, 0, 0);
-
-            // The best state is used for the status display and termination condition.
-            FireStarterState bestEvolveState(testState);
-            while (!WillTerminate()) {
-                // Evolve a new generation for the state.
-                evolve->EvolveState(testState, bestEvolveState, true);
-
-                // Compile the evolved program.
-                compile->CompileJob(manager, true);
-
-                // Execute the state.
-                execute->ExecuteEvolve(true);
-
-                // Complete the state and display the results.
-                if (!complete->CompleteState(bestEvolveState, testState))
-                    break;
-                testState.m_generation++;
-            }
 
             // Only optimize the better quality results.
-            if (testState.m_maxResult < 0.0001) {
+            if (evolveState.m_maxResult < 0.0001) {
                 // The best state is used for the status display and termination condition.
-                FireStarterState bestOptimizeState(testState);
+                FireStarterState bestOptimizeState(evolveState);
 
                 // Optimize the evolved state.
                 // Generate the optimize code.
-                evolve->GenerateOptimize(testState, true);
+                evolve->GenerateOptimize(evolveState, true);
 
                 // Compile the optimize code.
                 compile->CompileJob(manager, true);
@@ -368,12 +367,12 @@ void FireStarterStream::TestStream(const FireStarterSettings& settings, std::ato
                 bool init = true;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
-                    execute->ExecuteOptimize(testState, init);
+                    execute->ExecuteOptimize(evolveState, init);
 
                     // Update the results in the UI.
-                    if (!complete->CompleteState(bestOptimizeState, testState))
+                    if (!complete->CompleteState(bestOptimizeState, evolveState))
                         break;
-                    testState.m_generation++;
+                    evolveState.m_generation++;
                     init = false;
                 }
             }
@@ -397,7 +396,100 @@ void FireStarterStream::TestStream(const FireStarterSettings& settings, std::ato
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
     }, sync);
-} // TestStream
+} // RandomStream
+
+void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync)
+{
+    Dispatch([this, settings, &testCount] {
+        // Create the compiler manager
+        FireStarterManager* manager = new FireStarterManager();
+
+        // Create the evolution code generator.
+        FireStarterEvolve* evolve = new FireStarterEvolve(manager);
+
+        // Create the multi-process compiler.
+        FireStarterCompile* compile = new FireStarterCompile();
+
+        // Create the execution unit.
+        FireStarterExecute* execute = new FireStarterExecute(manager);
+
+        // Create the completion unit.
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
+
+        // Loop until the the evolve completion condition or the host program is quit.
+        for (unsigned long long test = testCount++; (test < settings.m_tests) && !WillTerminate(); test = testCount++) {
+            // Setup the intial state
+            FireStarterSettings evolveSettings(settings);
+            evolveSettings.m_seed = settings.m_seed + test;
+            FireStarterState evolveState(evolveSettings, 0, 0, 0);
+
+            // The best state is used for the status display and termination condition.
+            FireStarterState bestEvolveState(evolveState);
+            while (!WillTerminate()) {
+                // Evolve a new generation for the state.
+                evolve->EvolveState(evolveState, bestEvolveState, true);
+
+                // Compile the evolved program.
+                compile->CompileJob(manager, true);
+
+                // Execute the state.
+                execute->ExecuteEvolve(true);
+
+                // Complete the state and display the results.
+                if (!complete->CompleteState(bestEvolveState, evolveState))
+                    break;
+                evolveState.m_generation++;
+            }
+
+            // Only optimize the better quality results.
+            if (evolveState.m_maxResult < 0.0001) {
+                // The best state is used for the status display and termination condition.
+                FireStarterState bestOptimizeState(evolveState);
+
+                // Optimize the evolved state.
+                // Generate the optimize code.
+                evolve->GenerateOptimize(evolveState, true);
+
+                // Compile the optimize code.
+                compile->CompileJob(manager, true);
+
+                // Compile the optimize module.
+                execute->ExecuteCompileModule();
+
+                // Loop until the the optimize completion condition or the host program is quit.
+                bool init = true;
+                while (!WillTerminate()) {
+                    // Optimize the current generation.
+                    execute->ExecuteOptimize(evolveState, init);
+
+                    // Update the results in the UI.
+                    if (!complete->CompleteState(bestOptimizeState, evolveState))
+                        break;
+                    evolveState.m_generation++;
+                    init = false;
+                }
+            }
+        }
+
+        // Cancel any waiting jobs
+        manager->Cancel();
+
+        // Delete the completion unit.
+        delete complete;
+
+        // Finish processing and terminate each unit.
+        delete execute;
+
+        // Delete the multi-process compiler.
+        delete compile;
+
+        // Delete the evolution code generator.
+        delete evolve;
+
+        // Delete the compilier manager and cancel any waiting jobs.
+        delete manager;
+    }, sync);
+} // EvolveStream
 
 void FireStarterStream::EvolveStream(std::vector<FireStarterState*>& states, std::atomic<unsigned long long>& testCount, bool sync)
 {
@@ -517,7 +609,11 @@ void FireStarterStreams::TestStreams(void)
     FireStarterState bestState(m_settings);
     for (size_t unit = 0; unit < m_settings.m_units; unit++) {
         streams[unit] = new FireStarterStream(m_window, bestState, unit);
-        streams[unit]->TestStream(m_settings, m_testCount, maxResult);
+#if 0
+        streams[unit]->RandomStream(m_settings, m_testCount, maxResult);
+#else
+        streams[unit]->EvolveStream(m_settings, m_testCount, maxResult);
+#endif
     }
 
     // Wait for all the streams to finish the random pass.
