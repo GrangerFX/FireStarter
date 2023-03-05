@@ -73,7 +73,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 }
             }
 #endif
-#if 1
+#if 0
             // Alternate random evolution 1.
             // The seed is shared with the optimization.
             job->m_state.InitGenerationSeed();
@@ -90,12 +90,12 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 }
             }
 #endif
-#if 0
+#if 1
             // Alternate random evolution 2.
             job->m_state.InitGenerationSeed();
             if (state.m_generation) {
                 // Between 1 and 4 random instructions per generation.
-                unsigned int randomNum =job->m_state.RandomMod(min(numInstructions, 4)) + 1;
+                unsigned int randomNum = job->m_state.RandomMod(min(numInstructions, 4)) + 1;
                 while (randomNum--) {
                     job->m_state.RandomInstruction();
                     m_evolveCount++;

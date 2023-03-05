@@ -134,7 +134,7 @@ public:
         return RANDOMSEED(m_seed);
     } // RandomSeed
 
-    unsigned long long RandomMod(unsigned int m)
+    unsigned int RandomMod(unsigned int m)
     {
         return RANDOMMOD(m_seed, m);
     } // RandomSeed
