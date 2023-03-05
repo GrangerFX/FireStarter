@@ -104,7 +104,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 // Randomize the program.
                 job->m_state.RandomProgram();
 #endif
-#if 1
+#if 0
             // Code copy evolution.
             job->m_state.InitGenerationSeed();
             if (!state.m_generation) {
@@ -123,7 +123,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 job->m_state.RandomInstruction();
             }
 #endif
-#if 0
+#if 1
             // Old seed random evolution 1.
             job->m_state.OldEvolveSeed(state.m_generation);
             if (!state.m_generation) {
