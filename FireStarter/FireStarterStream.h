@@ -6,6 +6,7 @@ class FireStarterStream : public SerialThread {
 private:
 	FireStarterWindow m_window;
 	FireStarterState& m_bestState;
+	std::string m_resultsFilePath;
 	size_t m_index = 0;
 
 	void OptimizeState(const FireStarterState& evolveState);
@@ -18,7 +19,7 @@ public:
 	void OptimizeStream(const FireStarterState& evolveState, bool sync = false);
 	void RandomStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, float& maxResult, bool sync = false);
 	void RandomStream(std::vector<FireStarterState>& states, std::atomic<unsigned long long>& testCount, float &maxResult, bool sync = false);
-	void EvolveStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync);
+	void EvolveStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync = false);
 	void EvolveStream(std::vector<FireStarterState*>& states, std::atomic<unsigned long long>& testCount, bool sync = false);
 	FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index = 0);
 	~FireStarterStream(void);
