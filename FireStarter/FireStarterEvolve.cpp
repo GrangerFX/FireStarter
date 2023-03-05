@@ -64,7 +64,6 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 // Randomize the program.
                 job->m_state.RandomProgram(seed);
             } else {
-                if (state.m_generation) {
                 // 1 or 2 random instructions based on the age of the generation.
                 unsigned long long age = state.m_generation - bestState.m_generation;
                 unsigned long long randomNum = (age >= numInstructions) + 1;
