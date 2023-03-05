@@ -6,7 +6,7 @@
 #include "FireStarterCode.h"
 #include "FireStarter_LoadState.h"
 
-#define FIRESTARTER_STREAM_EVOLUTIONS 4
+#define FIRESTARTER_STREAM_EVOLUTIONS 100
 
 void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
 {
