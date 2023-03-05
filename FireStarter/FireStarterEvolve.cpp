@@ -123,7 +123,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 job->m_state.RandomInstruction();
             }
 #endif
-#if 1
+#if 0
             // Old seed random evolution 1.
             job->m_state.OldEvolveSeed(state.m_generation);
             if (!state.m_generation) {
@@ -139,8 +139,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 }
             }
 #endif
-#if 0
-            // Old seed random evolution 1.
+#if 1
+            // Old seed random evolution 2.
             job->m_state.OldEvolveSeed();
             if (!state.m_generation) {
                 // Randomize the program.
