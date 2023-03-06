@@ -433,6 +433,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
         // Loop until the the evolve completion condition or the host program is quit.
         for (unsigned long long test = testCount++; (test < settings.m_tests) && !WillTerminate(); test = testCount++) {
             std::string resultText;
+            float resultSum = 0.0f;
             for (unsigned int evolution = 0; evolution < FIRESTARTER_STREAM_EVOLUTIONS; evolution++) {
                 // Setup the intial state
                 FireStarterSettings evolveSettings(settings);
@@ -461,7 +462,8 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
                 }
 
                 // Output the evolve results.
-                resultText += Format("Seed=%u  Evolution=%u  Generations=%u  Evolve Result=%.8f\n", evolveState.Settings().m_seed, evolution, evolveState.m_generation, evolveState.m_maxResult);
+                resultSum += evolveState.m_maxResult;
+                resultText += Format("Seed=%u  Evolution=%u  Generations=%u  Evolve Result=%.8f  Average Result=%.8f", evolveState.Settings().m_seed, evolution, evolveState.m_generation, evolveState.m_maxResult, resultSum / (evolution + 1));
 
                 // Only optimize the better quality results.
                 if (evolveState.m_maxResult < 0.0001) {
@@ -492,8 +494,11 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
                     }
 
                     // Output the optimize results.
-                    resultText += Format("Seed=%u  Evolution=%u  Generations=%u  Optimize Result=%.8f\n", evolveState.Settings().m_seed, evolution, evolveState.m_generation, evolveState.m_maxResult);
+                    resultText += Format("  Optimize Generations=%u  Optimize Result=%.8f\n", evolveState.m_generation, evolveState.m_maxResult);
+                    if (evolveState.m_maxResult < 0.000001f)
+                        resultText += "*******";
                 }
+                resultText += "\n";
             }
 
             // Output all the results at once for a single seed.
@@ -563,7 +568,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState*>& states, std
             }
 
             // Output the evolve results.
-            std::string resultText = Format("Seed=%u  Generations=%u  Evolve Result=%.8f\n", evolveState.Settings().m_seed, evolveState.m_generation, evolveState.m_maxResult);
+            std::string resultText = Format("Seed=%u  Generations=%u  Evolve Result=%.8f  Average Result=%.8f\n", evolveState.Settings().m_seed, evolveState.m_generation, evolveState.m_maxResult );
 
             // Only optimize the better quality results.
             if (evolveState.m_maxResult < 0.0001) {
