@@ -494,9 +494,9 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
                     }
 
                     // Output the optimize results.
-                    resultText += Format("  Optimize Generations=%u  Optimize Result=%.8f\n", evolveState.m_generation, evolveState.m_maxResult);
+                    resultText += Format("  Optimize Generations=%u  Optimize Result=%.8f", evolveState.m_generation, evolveState.m_maxResult);
                     if (evolveState.m_maxResult < 0.000001f)
-                        resultText += "*******";
+                        resultText += " *******";
                 }
                 resultText += "\n";
             }
