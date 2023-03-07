@@ -73,7 +73,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 }
             }
 #endif
-#if 0
+#if 1
             // Alternate random evolution 1.
             // The seed is shared with the optimization.
             job->m_state.InitGenerationSeed();
@@ -90,7 +90,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 }
             }
 #endif
-#if 1
+#if 0
             // Alternate random evolution 2.
             job->m_state.InitGenerationSeed();
             if (state.m_generation) {
