@@ -159,16 +159,6 @@ public:
         m_program.RandomInstruction(seed, index);
     } // RandomInstruction
 
-    inline void IncrementInstruction(unsigned int index)
-    {
-        m_program.IncrementInstruction(m_seed, index);
-    } // IncrementInstruction
-
-    inline void IncrementInstruction(unsigned long long& seed, unsigned int index)
-    {
-        m_program.IncrementInstruction(seed, index);
-    } // IncrementInstruction
-
     inline void RandomProgram(void)
     {
         m_program.RandomProgram(m_seed);
