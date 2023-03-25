@@ -58,7 +58,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
             job->m_state = state;
 #if 0
             // Standard random evolution.
-            // The seed is reused for the optimization.
+            // The seed is restarted for the optimization.
             unsigned long long seed = job->m_state.InitGenerationSeed();
             if (!state.m_generation) {
                 // Randomize the program.
@@ -75,7 +75,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
 #endif
 #if 1
             // Alternate random evolution 1.
-            // The seed is shared with the optimization.
+            // The seed is continued with the optimization.
             job->m_state.InitGenerationSeed();
             if (!state.m_generation) {
                 // Randomize the program.

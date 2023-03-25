@@ -263,33 +263,49 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
     float bestResult = state.m_maxResult;
     state.m_maxResult = 0;
     bool validResult = true;
+    bool needsResort = false;
 
     if (stateSettings.m_variations != m_variationOrder.size()) {
         m_variationOrder.resize(stateSettings.m_variations);
-        for (unsigned int v = 0; v < stateSettings.m_variations; v++)
+        m_variationCount.resize(stateSettings.m_variations);
+        for (unsigned int v = 0; v < stateSettings.m_variations; v++) {
             m_variationOrder[v] = v;
+            m_variationCount[v] = 0;
+        }
     }
     for (unsigned int v = 0; v < stateSettings.m_variations; v++) {
         unsigned int variation = m_variationOrder[v];
-
-        // Optimization: If the variation result is worse, skip the rest of the variations.
         if (validResult) {
             OptimizeGenerations(state, init, variation);
             if (skipVariations) {
+                // Optimization: If the variation result is worse, skip the rest of the variations.
                 float variationResult = *stateResults->MinResult(variation);
                 validResult = variationResult < bestResult;
-                for (unsigned int i = 0; i < v; i++) {
-                    float orderResult = *stateResults->MinResult(m_variationOrder[i]);
-                    if (orderResult < variationResult) {
-                        m_variationOrder[v] = m_variationOrder[i];
-                        m_variationOrder[i] = variation;
-                        variation = m_variationOrder[v];
-                        variationResult = orderResult;
-                    }
-                }
+                if (validResult)
+                    needsResort = true;
+                else
+                    m_variationCount[variation]++;
             }
         } else
             stateResults->Result(variation)->Init(0, stateSettings.m_registers, stateSettings.m_startResult);
+    }
+
+    // Resort the variation order with the worst results first.
+    if (needsResort) {
+        for (unsigned int v = 0; v < stateSettings.m_variations - 1; v++) {
+            unsigned int variation = m_variationOrder[v];
+            unsigned int count = m_variationCount[variation];
+            for (unsigned int i = v + 1; i < stateSettings.m_variations; i++) {
+                unsigned int curVariation = m_variationOrder[i];
+                unsigned int curCount = m_variationCount[curVariation];
+                if (curCount > count) {
+                    m_variationOrder[v] = curVariation;
+                    m_variationOrder[i] = variation;
+                    variation = curVariation;
+                    count = curCount;
+                }
+            }
+        }
     }
 } // Optimize
 
