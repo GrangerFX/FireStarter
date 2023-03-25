@@ -4,44 +4,6 @@
 #include "CUDADefines.h"
 #include "cnprintf.h"
 
-typedef enum {
-    Operation_multiply = 0,
-    Operation_add,
-    Operation_abs
-} FireStarterOpcode;
-
-#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
-#if 1
-const FireStarterOpcode fireStarterOpcodes[FIRESTARTER_OPCODES] = {
-    Operation_add,
-    Operation_multiply,
-};
-#else
-const FireStarterOpcode fireStarterOpcodes[FIRESTARTER_OPCODES] = {
-    Operation_multiply,
-    Operation_add,
-};
-#endif
-#endif
-
-#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
-const FireStarterOpcode fireStarterOpcodes[FIRESTARTER_OPCODES] = {
-    Operation_multiply,
-    Operation_add,
-    Operation_multiply,
-    Operation_add,
-    Operation_multiply,
-    Operation_add,
-    Operation_multiply,
-    Operation_add,
-    Operation_multiply,
-    Operation_add,
-    Operation_multiply,
-    Operation_add,
-    Operation_abs
-};
-#endif
-
 struct FireStarterRegister {
     unsigned int registerIndex;
     unsigned int instructionFirst;
@@ -254,16 +216,16 @@ typedef struct FireStarterInstructions {
 
     inline void SetRandom(unsigned int index, unsigned long long& seed, unsigned int registers, unsigned int opcodes)
     {
-        unsigned int reg = i[index].reg + RANDOMMOD(seed, registers - 1);
         unsigned int op = index % opcodes;
+        unsigned int reg = i[index].reg + RANDOMMOD(seed, registers - 1);
         i[index].op = fireStarterOpcodes[op];
         i[index].reg = reg;
     } // SetRandom
 
     inline void SetRandom(unsigned int index, unsigned long long& seed)
     {
-        unsigned int reg = i[index].reg + RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
         unsigned int op = index % FIRESTARTER_OPCODES;
+        unsigned int reg = i[index].reg + RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
         i[index].op = fireStarterOpcodes[op];
         i[index].reg = reg;
     } // SetRandom
@@ -282,16 +244,16 @@ typedef struct FireStarterInstructions {
 
     inline void SetRandom(unsigned int index, unsigned long long& seed, unsigned int registers, unsigned int opcodes)
     {
-        unsigned int reg = RANDOMMOD(seed, registers - 1);
         unsigned int op = RANDOMMOD(seed, opcodes);
+        unsigned int reg = RANDOMMOD(seed, registers - 1);
         i[index].op = fireStarterOpcodes[op];
         i[index].reg = reg;
     } // SetRandom
 
     inline void SetRandom(unsigned int index, unsigned long long& seed)
     {
-        unsigned int reg = i[index].reg + RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
         unsigned int op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
+        unsigned int reg = i[index].reg + RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
         i[index].op = fireStarterOpcodes[op];
         i[index].reg = reg;
     } // SetRandom
@@ -306,7 +268,7 @@ typedef struct FireStarterInstructions {
     inline void Randomize(unsigned long long& seed)
     {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            SetRandom(i, seed, FIRESTARTER_INSTRUCTIONS, FIRESTARTER_OPCODES);
+            SetRandom(i, seed);
     } // Randomize
 
     inline void Randomize(unsigned long long& seed, unsigned int instructions, unsigned int opcodes)

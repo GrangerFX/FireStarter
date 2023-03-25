@@ -125,14 +125,39 @@
 #define FIRESTARTER_MULTIPLY_ADD     0
 #define FIRESTARTER_MULTIPLY_ADD_ABS 1
 #define FIRESTARTER_PROGRAM_MODE     FIRESTARTER_MULTIPLY_ADD
+
+typedef enum {
+    Operation_multiply = 0,
+    Operation_add,
+    Operation_abs
+} FireStarterOpcode;
+
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
-#define FIRESTARTER_OPCODES 2
-#endif
-#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
-#define FIRESTARTER_OPCODES 13
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_multiply,
+    Operation_add,
+};
 #endif
 
-#define FIRESTARTER_SKIP_VARIATIONS 1
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_abs
+};
+#endif
+
+#define FIRESTARTER_OPCODES (sizeof(fireStarterOpcodes) / sizeof(FireStarterOpcode))
 
 class FireStarterSettings {
 public:

@@ -3,6 +3,8 @@
 #include "FireStarterEvolutions.h"
 #include "CUDAThread.h"
 
+#define FIRESTARTER_SKIP_VARIATIONS 1
+
 class FireStarterExecute : public CUDAThread {
 private:
     FireStarterPopulation* m_hostPopulation = nullptr;
