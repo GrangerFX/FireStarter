@@ -431,9 +431,10 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
         FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
 
         // Loop until the the evolve completion condition or the host program is quit.
+        float resultSum = 0.0f;
+        unsigned long long resultCount = 0;
         for (unsigned long long evolution = testCount++; (evolution < settings.m_tests) && !WillTerminate(); evolution = testCount++) {
             std::string resultText;
-            float resultSum = 0.0f;
 
             // Setup the intial state
             FireStarterSettings evolveSettings(settings);
@@ -463,7 +464,8 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
 
             // Output the evolve results.
             resultSum += evolveState.m_maxResult;
-            resultText += Format("Seed=%u  Evolution=%u  Generations=%u  Evolve Result=%.8f  Average Result=%.8f", evolveState.Settings().m_seed, evolution, evolveState.m_generation, evolveState.m_maxResult, resultSum / (evolution + 1));
+            resultCount++;
+            resultText += Format("Seed=%u  Evolution=%u  Generations=%u  Evolve Result=%.8f  Average Result=%.8f", evolveState.Settings().m_seed, evolution, evolveState.m_generation, evolveState.m_maxResult, resultSum / resultCount);
 
             // Only optimize the better quality results.
             if (evolveState.m_maxResult < 0.0001) {
