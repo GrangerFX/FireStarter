@@ -175,8 +175,8 @@ void FireStarter::ControlRevolve(void)
     FireStarterSettings revolveSettings;
     m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_REVOLVE);
     FireStarterStreams streams(m_window, revolveSettings);
-    streams.TestStreams();
-//    streams.EvolveStreams();
+//    streams.TestStreams();
+    streams.EvolveStreams();
 } // ControlRevolve
 
 void FireStarter::ControlEvolve(void)

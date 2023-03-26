@@ -30,7 +30,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     FireStarterManager* manager = new FireStarterManager();
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager);
+    FireStarterCompile* compile = new FireStarterCompile();
 
     // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -65,7 +65,6 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
         optimizeState.m_test = test;
 
         // Loop until the the completion condition or the host program is quit.
-        size_t generation = startState.m_generation;
         bool init = true;
         while (!WillTerminate()) {
             // Optimize the current generation.
@@ -74,7 +73,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
             // Update the results in the UI.
             if (!complete->CompleteState(bestState, optimizeState))
                 break;
-            generation++;
+            optimizeState.m_generation++;
             init = false;
         }
     }
