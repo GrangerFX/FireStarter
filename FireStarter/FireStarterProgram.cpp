@@ -103,6 +103,7 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
     code += "\r\n";
     code += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
+    code += prefix + Format("tests = %u", settings.m_tests) + postfix + "\r\n";
     code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
     code += prefix + Format("processes = %u", settings.m_processes) + postfix + "\r\n";
     code += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";

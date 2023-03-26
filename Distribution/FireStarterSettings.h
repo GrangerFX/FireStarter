@@ -8,7 +8,7 @@
 #define FIRESTARTER_SECOND_PASS  1
 #define FIRESTARTER_GENERATE_GPU 1
 #define FIRESTARTER_AUTO_PROCESS 0
-#define FIRESTARTER_SEQUENTIAL   0
+#define FIRESTARTER_SEQUENTIAL   1
 
 #define FIRESTARTER_SEED         0
 //#define FIRESTARTER_SEED         3533
@@ -125,7 +125,8 @@
 
 #define FIRESTARTER_MULTIPLY_ADD     0
 #define FIRESTARTER_MULTIPLY_ADD_ABS 1
-#define FIRESTARTER_PROGRAM_MODE     FIRESTARTER_MULTIPLY_ADD
+#define FIRESTARTER_CODE_PATTERN     2
+#define FIRESTARTER_PROGRAM_MODE     FIRESTARTER_CODE_PATTERN
 
 typedef enum {
     Operation_multiply = 0,
@@ -155,6 +156,43 @@ const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_multiply,
     Operation_add,
     Operation_abs
+};
+#endif
+
+#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_CODE_PATTERN
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_add,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_add,
+    Operation_add,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_add,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_add,
 };
 #endif
 

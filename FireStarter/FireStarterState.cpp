@@ -41,7 +41,6 @@ void FireStarterState::SaveResult(std::string& code) const
     code += "{\r\n";
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
         code += Format("    LoadVariation%u(state.Result(%u));\r\n", v, v);
-    code += "\r\n";
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
     code += "} // LoadResult\r\n";
     code += "\r\n";
@@ -54,8 +53,8 @@ void FireStarterState::SaveState(std::string& code) const
     code += "\r\n";
     SaveStats(code);
     m_program.SaveSettings(code);
-    m_program.SaveProgram(code);
     SaveResult(code);
+    m_program.SaveProgram(code);
 
     code += "inline void LoadState(FireStarterState& state)\r\n";
     code += "{\r\n";
@@ -63,15 +62,12 @@ void FireStarterState::SaveState(std::string& code) const
     code += "\r\n";
     code += "    LoadSettings(settings);\r\n";
     code += "    state.InitState(settings);\r\n";
-    code += "    LoadProgram(state.m_program);\r\n";
     code += "    LoadResult(state);\r\n";
+    code += "    LoadProgram(state.m_program);\r\n";
     code += Format("    state.m_generation = %llu;\r\n", m_generation);
     code += Format("    state.m_index = %llu;\r\n", m_index);
     code += Format("    state.m_test = %llu;\r\n", m_test);
     code += Format("    state.m_seed = %llu;\r\n", m_seed);
-    code += "\r\n";
-    code += "    LoadProgram(state.m_program);\r\n";
-    code += "    LoadResult(state);\r\n";
     code += "} // LoadState\r\n";
 } // SaveState
 
