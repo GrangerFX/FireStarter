@@ -136,6 +136,7 @@ typedef enum {
 const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_multiply,
     Operation_add,
+    Operation_add,
 };
 #endif
 
