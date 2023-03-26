@@ -22,7 +22,7 @@
 #define FIRESTARTER_EVOLVE   6
 #define FIRESTARTER_OPTIMIZE 7
 #define FIRESTARTER_SOLUTION 8
-#define FIRESTARTER_MODE     FIRESTARTER_REVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_RANDOM
 
 #define FIRESTARTER_CODE_TESTS              0
 #define FIRESTARTER_CODE_UNITS              1
@@ -135,7 +135,6 @@ typedef enum {
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
 const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_multiply,
-    Operation_add,
     Operation_add,
 };
 #endif
