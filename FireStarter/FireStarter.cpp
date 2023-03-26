@@ -166,10 +166,6 @@ void FireStarter::ControlRandom(void)
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
-
-    // Optimization evolution pass.
-    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        FireStarterStream::Optimize(m_window, bestState);
 } // ControlRandom
 
 void FireStarter::ControlRevolve(void)

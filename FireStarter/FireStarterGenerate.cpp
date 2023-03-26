@@ -127,7 +127,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     code += "} // Evaluate\r\n";
 } // GenerateEvaluate
 
-void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode, double duration, unsigned long long generation)
+void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode)
 {
     // Allocate the device memory needed to generate the solution code.
     bool generateGPU = InitGenerateGPU(state.Settings());
@@ -147,30 +147,20 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     solutionCode += "#pragma once\r\n";
     solutionCode += "#include <math.h>\r\n";
     solutionCode += "\r\n";
-    code += Format("// Run date: %s\r\n", CurrentDate().c_str());
-    code += Format("// Run duration = %f seconds\r\n", duration);
-    code += Format("// Run count = %llu\r\n", generation);
-    FireStarterProgram::SettingsText(settings, code, "// Run ");
-    code += Format("// Solution Generation = %llu\r\n", state.m_generation);
-    code += "\r\n";
+    state.SaveStats(code);
     code += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
     code += "\r\n";
     code += targetCode;
-    code += "\r\n";
-    code += Format("// Precision = %.8f\r\n", state.m_maxResult);
 
     for (unsigned int v = 0; v < settings.m_variations; v++) {
         const FireStarterData* data = results->Data(v);
-        float minResult = results->MinResult(v);
 
         code += "\r\n";
         if (settings.m_variations > 1) {
-            code += Format("// Solution%d precision = %.8f\r\n", v, minResult);
+            code += Format("// Solution%d result = %.8f\r\n", v, results->MinResult(v));
             code += Format("inline float Solution%d(float n)\r\n", v);
-        } else {
-            code += Format("// Solution precision = %.8f\r\n", minResult);
+        } else
             code += "inline float Solution(float n)\r\n";
-        }
         code += "{\r\n";
 
         if (generateGPU) {

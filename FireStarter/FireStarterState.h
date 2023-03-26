@@ -12,6 +12,7 @@ private:
         m_resultsData = other.m_resultsData;
         m_results = Results();
         m_program = other.m_program;
+        m_timer = other.m_timer;
         m_generation = other.m_generation;
         m_index = other.m_index;
         m_test = other.m_test;
@@ -21,6 +22,7 @@ private:
 
 public:
     FireStarterProgram m_program;
+    SimpleTimer m_timer;
     unsigned long long m_generation = 0;
     unsigned long long m_index = 0;
     unsigned long long m_test = 0;
@@ -170,6 +172,7 @@ public:
     } // RandomProgram
 
     bool Packetize(FireStarterPacket& packet);
+    void SaveStats(std::string& code) const;
     void SaveVariation(unsigned int variation, std::string& code) const;
     void SaveResult(std::string& code) const;
     void SaveState(std::string& code) const;

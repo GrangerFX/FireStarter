@@ -17,6 +17,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
     if (!optimizeCode.empty()) {
         // Generate the evaluate function
         std::string evaluateCode;
+        bestState.SaveStats(evaluateCode);
         unsigned int variations = bestState.Settings().m_variations;
         for (unsigned int i = 0; i < variations; i++)
             bestState.SaveVariation(i, evaluateCode);
@@ -29,10 +30,10 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
     }
 } // SaveBestCode
 
-void FireStarterComplete::SaveSolution(const FireStarterState& bestState, double generationTime, size_t generation)
+void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
 {
     std::string solutionCode;
-    m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode, generationTime, generation);
+    m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
@@ -47,7 +48,6 @@ bool FireStarterComplete::LoadSolutionTargetCode(void)
 
 bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult)
 {
-    double duration = m_timer.Duration();
 
     // Get the result.
     FireStarterState displayState;
@@ -74,7 +74,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 
         // Update the best code on disk.
         SaveBestCode(displayState);
-        SaveSolution(displayState, duration, displayState.m_generation);
+        SaveSolution(displayState);
 
         // Draw the graphs for both variations.
         m_fireShow.FireShow(displayState);
@@ -82,6 +82,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 
     const FireStarterSettings& settings = state.Settings();
     float result = state.m_maxResult;
+    double duration = state.m_timer.Duration();
 
     // Calculate the average time per generation.
     if (settings.m_mode == FIRESTARTER_RANDOM) {

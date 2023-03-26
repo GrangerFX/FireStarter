@@ -10,8 +10,19 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
     return result;
 } // Packetize
 
+void FireStarterState::SaveStats(std::string& code) const
+{
+    code += Format("// Run date: %s\r\n", m_timer.StartDate().c_str());
+    code += Format("// Run duration = %f seconds\r\n", m_timer.Duration());
+    code += Format("// Run generation = %llu\r\n", m_generation);
+    code += Format("// Run result = %.8f\r\n", m_maxResult);
+    FireStarterProgram::SettingsText(Settings(), code, "// Run ");
+    code += "\r\n";
+} // SaveStats
+
 void FireStarterState::SaveVariation(unsigned int variation, std::string& code) const
 {
+    code += Format("// Variation: %d  result = %.8f\r\n", variation, Results()->MinResult(variation));
     code += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     code += "{\r\n";
     code += "    FireStarterData *data = result->Data();\r\n";
@@ -41,6 +52,7 @@ void FireStarterState::SaveState(std::string& code) const
     code += "#pragma once\r\n";
     code += "#include \"FireStarterState.h\"\r\n";
     code += "\r\n";
+    SaveStats(code);
     m_program.SaveSettings(code);
     m_program.SaveProgram(code);
     SaveResult(code);

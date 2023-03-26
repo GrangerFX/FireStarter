@@ -97,8 +97,32 @@ public:
         return (double)(time.tv_sec - m_second) + (double)(time.tv_nsec - m_nanosecond) * 0.000000001;
     } // Duration
 
+    inline std::string StartDate(void) const
+    {
+        tm localTime;
+        std::stringstream sstream;
+        localtime_s(&localTime, &m_second);
+        sstream << std::put_time(&localTime, "%c %Z");
+        return sstream.str();
+    } // StartDate
+
     inline SimpleTimer(void)
     {
-        Start();
+        // Synchronize the start times of all timers by default.
+        static time_t s_second = 0;
+        static long s_nanosecond = 0;
+        if (!s_second && !s_nanosecond) {
+            static std::mutex s_mtx;
+            s_mtx.lock();
+            if (!s_second && !s_nanosecond) {
+                timespec time;
+                timespec_get(&time, TIME_UTC);
+                s_nanosecond = time.tv_nsec;
+                s_second = time.tv_sec;
+            }
+            s_mtx.unlock();
+        }
+        m_second = s_second;
+        m_nanosecond = s_nanosecond;
     } // Start
 }; // SimpleTimer
