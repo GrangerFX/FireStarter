@@ -22,7 +22,7 @@
 #define FIRESTARTER_EVOLVE   6
 #define FIRESTARTER_OPTIMIZE 7
 #define FIRESTARTER_SOLUTION 8
-#define FIRESTARTER_MODE     FIRESTARTER_REVOLVE
+#define FIRESTARTER_MODE     FIRESTARTER_RANDOM
 
 #define FIRESTARTER_CODE_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_CODE_SEEDS              1
@@ -144,7 +144,6 @@ typedef enum {
 #if 1
 const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_add,
-    Operation_multiply,
     Operation_multiply,
     Operation_multiply,
     Operation_multiply,
