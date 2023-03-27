@@ -132,7 +132,7 @@
 #define FIRESTARTER_MULTIPLY_ADD     0
 #define FIRESTARTER_MULTIPLY_ADD_ABS 1
 #define FIRESTARTER_CODE_PATTERN     2
-#define FIRESTARTER_PROGRAM_MODE     FIRESTARTER_MULTIPLY_ADD_ABS
+#define FIRESTARTER_PROGRAM_MODE     FIRESTARTER_MULTIPLY_ADD
 
 typedef enum {
     Operation_multiply = 0,
@@ -143,10 +143,10 @@ typedef enum {
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
 #if 0
 const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_multiply,
-    Operation_multiply,
-    Operation_multiply,
     Operation_add,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
 };
 #else
 const FireStarterOpcode fireStarterOpcodes[] = {
