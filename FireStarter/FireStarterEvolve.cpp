@@ -10,7 +10,7 @@ bool FireStarterEvolve::EvolveSeeds(const FireStarterSettings& settings, bool sy
         // Generate code using the GPU.
         FireStarterSettings evolveSettings(settings);
         size_t startSeed = settings.m_seed;
-        for (size_t seed = 0; seed < settings.m_tests; seed++) {
+        for (size_t seed = 0; seed < settings.m_seeds; seed++) {
             FireStarterJob* job = m_manager->GetFree();
             if (!job)
                 break;

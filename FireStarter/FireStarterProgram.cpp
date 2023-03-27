@@ -102,6 +102,8 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("targetMin = %ff", settings.m_targetMin) + postfix + "\r\n";
     code += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
     code += "\r\n";
+    code += prefix + Format("seed = %u", settings.m_seed) + postfix + "\r\n";
+    code += prefix + Format("seeds = %u", settings.m_seeds) + postfix + "\r\n";
     code += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
     code += prefix + Format("tests = %u", settings.m_tests) + postfix + "\r\n";
     code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
@@ -111,7 +113,6 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("generations = %u", settings.m_generations) + postfix + "\r\n";
     code += prefix + Format("precision = %u", settings.m_precision) + postfix + "\r\n";
     code += prefix + Format("attempts = %u", settings.m_attempts) + postfix + "\r\n";
-    code += prefix + Format("seed = %u", settings.m_seed) + postfix + "\r\n";
     code += prefix + Format("scale = %ff", settings.m_scale) + postfix + "\r\n";
     code += prefix + Format("startScale = %ff", settings.m_startScale) + postfix + "\r\n";
     code += prefix + Format("startResult = %ff", settings.m_startResult) + postfix + "\r\n";

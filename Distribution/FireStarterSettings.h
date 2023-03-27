@@ -8,7 +8,7 @@
 #define FIRESTARTER_SECOND_PASS  1
 #define FIRESTARTER_GENERATE_GPU 1
 #define FIRESTARTER_AUTO_PROCESS 0
-#define FIRESTARTER_SEQUENTIAL   1
+#define FIRESTARTER_SEQUENTIAL   0
 
 #define FIRESTARTER_SEED         0
 //#define FIRESTARTER_SEED         3533
@@ -24,6 +24,8 @@
 #define FIRESTARTER_SOLUTION 8
 #define FIRESTARTER_MODE     FIRESTARTER_REVOLVE
 
+#define FIRESTARTER_CODE_SEED               FIRESTARTER_SEED
+#define FIRESTARTER_CODE_SEEDS              1
 #define FIRESTARTER_CODE_TESTS              0
 #define FIRESTARTER_CODE_UNITS              1
 #define FIRESTARTER_CODE_PROCESSES          0
@@ -33,11 +35,12 @@
 #define FIRESTARTER_CODE_GENERATIONS        1
 #define FIRESTARTER_CODE_PRECISION          0
 #define FIRESTARTER_CODE_ATTEMPTS           32
-#define FIRESTARTER_CODE_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_CODE_SCALE              0.1f
 #define FIRESTARTER_CODE_START_SCALE        2.0f
 #define FIRESTARTER_CODE_START_RESULT       10.0f
 
+#define FIRESTARTER_UNIT_SEED               FIRESTARTER_SEED
+#define FIRESTARTER_UNIT_SEEDS              1
 #define FIRESTARTER_UNIT_TESTS              0
 #define FIRESTARTER_UNIT_UNITS              1
 #define FIRESTARTER_UNIT_PROCESSES          0
@@ -47,12 +50,13 @@
 #define FIRESTARTER_UNIT_GENERATIONS        100
 #define FIRESTARTER_UNIT_PRECISION          0
 #define FIRESTARTER_UNIT_ATTEMPTS           32
-#define FIRESTARTER_UNIT_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_UNIT_SCALE              0.1f
 #define FIRESTARTER_UNIT_START_SCALE        2.0f
 #define FIRESTARTER_UNIT_START_RESULT       10.0f
 
-#define FIRESTARTER_TEST_TESTS              1
+#define FIRESTARTER_TEST_SEED               FIRESTARTER_SEED
+#define FIRESTARTER_TEST_SEEDS              1
+#define FIRESTARTER_TEST_TESTS              0
 #define FIRESTARTER_TEST_UNITS              1
 #define FIRESTARTER_TEST_PROCESSES          0
 #define FIRESTARTER_TEST_POPULATION         4352 * 64
@@ -61,12 +65,13 @@
 #define FIRESTARTER_TEST_GENERATIONS        100
 #define FIRESTARTER_TEST_PRECISION          0
 #define FIRESTARTER_TEST_ATTEMPTS           32
-#define FIRESTARTER_TEST_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_TEST_SCALE              0.1f
 #define FIRESTARTER_TEST_START_SCALE        2.0f
 #define FIRESTARTER_TEST_START_RESULT       10.0f
 
-#define FIRESTARTER_RANDOM_TESTS            11000
+#define FIRESTARTER_RANDOM_SEED             0
+#define FIRESTARTER_RANDOM_SEEDS            11000
+#define FIRESTARTER_RANDOM_TESTS            0
 #define FIRESTARTER_RANDOM_UNITS            8
 #define FIRESTARTER_RANDOM_PROCESSES        16
 #define FIRESTARTER_RANDOM_POPULATION       4352 * 64
@@ -75,11 +80,12 @@
 #define FIRESTARTER_RANDOM_GENERATIONS      100
 #define FIRESTARTER_RANDOM_PRECISION        0
 #define FIRESTARTER_RANDOM_ATTEMPTS         32
-#define FIRESTARTER_RANDOM_SEED             0
 #define FIRESTARTER_RANDOM_SCALE            0.1f
 #define FIRESTARTER_RANDOM_START_SCALE      2.0f
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
 
+#define FIRESTARTER_REVOLVE_SEED            FIRESTARTER_SEED
+#define FIRESTARTER_REVOLVE_SEEDS           1
 #define FIRESTARTER_REVOLVE_TESTS           100
 #define FIRESTARTER_REVOLVE_UNITS           1
 #define FIRESTARTER_REVOLVE_PROCESSES       0
@@ -89,11 +95,12 @@
 #define FIRESTARTER_REVOLVE_GENERATIONS     100
 #define FIRESTARTER_REVOLVE_PRECISION       0
 #define FIRESTARTER_REVOLVE_ATTEMPTS        64
-#define FIRESTARTER_REVOLVE_SEED            FIRESTARTER_SEED
 #define FIRESTARTER_REVOLVE_SCALE           0.1f
 #define FIRESTARTER_REVOLVE_START_SCALE     2.0f
 #define FIRESTARTER_REVOLVE_START_RESULT    10.0f
 
+#define FIRESTARTER_EVOLVE_SEED             FIRESTARTER_SEED
+#define FIRESTARTER_EVOLVE_SEEDS            1
 #define FIRESTARTER_EVOLVE_TESTS            0
 #define FIRESTARTER_EVOLVE_UNITS            8
 #define FIRESTARTER_EVOLVE_PROCESSES        0
@@ -103,11 +110,12 @@
 #define FIRESTARTER_EVOLVE_GENERATIONS      100
 #define FIRESTARTER_EVOLVE_PRECISION        0
 #define FIRESTARTER_EVOLVE_ATTEMPTS         32
-#define FIRESTARTER_EVOLVE_SEED             FIRESTARTER_SEED
 #define FIRESTARTER_EVOLVE_SCALE            0.1f
 #define FIRESTARTER_EVOLVE_START_SCALE      2.0f
 #define FIRESTARTER_EVOLVE_START_RESULT     10.0f
 
+#define FIRESTARTER_OPTIMIZE_SEED           0
+#define FIRESTARTER_OPTIMIZE_SEEDS          1
 #define FIRESTARTER_OPTIMIZE_TESTS          0
 #define FIRESTARTER_OPTIMIZE_UNITS          1
 #define FIRESTARTER_OPTIMIZE_PROCESSES      0
@@ -117,7 +125,6 @@
 #define FIRESTARTER_OPTIMIZE_GENERATIONS    100
 #define FIRESTARTER_OPTIMIZE_PRECISION      0
 #define FIRESTARTER_OPTIMIZE_ATTEMPTS       32
-#define FIRESTARTER_OPTIMIZE_SEED           0
 #define FIRESTARTER_OPTIMIZE_SCALE          0.1f
 #define FIRESTARTER_OPTIMIZE_START_SCALE    2.0f
 #define FIRESTARTER_OPTIMIZE_START_RESULT   10.0f
@@ -208,6 +215,8 @@ public:
     float m_targetMin;
     float m_targetMax;
 
+    unsigned long long m_seed;
+    unsigned int m_seeds;
     unsigned int m_mode;
     unsigned int m_tests;
     unsigned int m_units;
@@ -218,7 +227,6 @@ public:
     unsigned int m_precision;
     unsigned int m_candidates;
     unsigned int m_attempts;
-    unsigned long long m_seed;
 
     float m_scale;
     float m_startScale;
@@ -291,6 +299,8 @@ public:
         m_mode = evolveMode ? evolveMode : FIRESTARTER_MODE;
         switch (m_mode) {
             case FIRESTARTER_CODE:
+                m_seed =        FIRESTARTER_CODE_SEED;
+                m_seeds =       FIRESTARTER_CODE_SEEDS;
                 m_tests =       FIRESTARTER_CODE_TESTS;
                 m_units =       FIRESTARTER_CODE_UNITS;
                 m_processes =   FIRESTARTER_CODE_PROCESSES;
@@ -300,13 +310,14 @@ public:
                 m_generations = FIRESTARTER_CODE_GENERATIONS;
                 m_precision =   FIRESTARTER_CODE_PRECISION;
                 m_attempts =    FIRESTARTER_CODE_ATTEMPTS;
-                m_seed =        FIRESTARTER_CODE_SEED;
                 m_scale =       FIRESTARTER_CODE_SCALE;
                 m_startScale =  FIRESTARTER_CODE_START_SCALE;
                 m_startResult = FIRESTARTER_CODE_START_RESULT;
                 break;
 
             case FIRESTARTER_UNIT:
+                m_seed =        FIRESTARTER_UNIT_SEED;
+                m_seeds =       FIRESTARTER_UNIT_SEEDS;
                 m_tests =       FIRESTARTER_UNIT_TESTS;
                 m_units =       FIRESTARTER_UNIT_UNITS;
                 m_processes =   FIRESTARTER_UNIT_PROCESSES;
@@ -316,13 +327,14 @@ public:
                 m_generations = FIRESTARTER_UNIT_GENERATIONS;
                 m_precision =   FIRESTARTER_UNIT_PRECISION;
                 m_attempts =    FIRESTARTER_UNIT_ATTEMPTS;
-                m_seed =        FIRESTARTER_UNIT_SEED;
                 m_scale =       FIRESTARTER_UNIT_SCALE;
                 m_startScale =  FIRESTARTER_UNIT_START_SCALE;
                 m_startResult = FIRESTARTER_UNIT_START_RESULT;
                 break;
 
             case FIRESTARTER_TEST:
+                m_seed =        FIRESTARTER_TEST_SEED;
+                m_seeds =       FIRESTARTER_TEST_SEEDS;
                 m_tests =       FIRESTARTER_TEST_TESTS;
                 m_units =       FIRESTARTER_TEST_UNITS;
                 m_processes =   FIRESTARTER_TEST_PROCESSES;
@@ -332,13 +344,14 @@ public:
                 m_generations = FIRESTARTER_TEST_GENERATIONS;
                 m_precision =   FIRESTARTER_TEST_PRECISION;
                 m_attempts =    FIRESTARTER_TEST_ATTEMPTS;
-                m_seed =        FIRESTARTER_TEST_SEED;
                 m_scale =       FIRESTARTER_TEST_SCALE;
                 m_startScale =  FIRESTARTER_TEST_START_SCALE;
                 m_startResult = FIRESTARTER_TEST_START_RESULT;
                 break;
 
             case FIRESTARTER_RANDOM:
+                m_seed =        FIRESTARTER_RANDOM_SEED;
+                m_seeds =       FIRESTARTER_RANDOM_SEEDS;
                 m_tests =       FIRESTARTER_RANDOM_TESTS;
                 m_units =       FIRESTARTER_RANDOM_UNITS;
                 m_processes =   FIRESTARTER_RANDOM_PROCESSES;
@@ -348,13 +361,14 @@ public:
                 m_generations = FIRESTARTER_RANDOM_GENERATIONS;
                 m_precision =   FIRESTARTER_RANDOM_PRECISION;
                 m_attempts =    FIRESTARTER_RANDOM_ATTEMPTS;
-                m_seed =        FIRESTARTER_RANDOM_SEED;
                 m_scale =       FIRESTARTER_RANDOM_SCALE;
                 m_startScale =  FIRESTARTER_RANDOM_START_SCALE;
                 m_startResult = FIRESTARTER_RANDOM_START_RESULT;
                 break;
 
             case FIRESTARTER_REVOLVE:
+                m_seed =        FIRESTARTER_REVOLVE_SEED;
+                m_seeds =       FIRESTARTER_REVOLVE_SEEDS;
                 m_tests =       FIRESTARTER_REVOLVE_TESTS;
                 m_units =       FIRESTARTER_REVOLVE_UNITS;
                 m_processes =   FIRESTARTER_REVOLVE_PROCESSES;
@@ -364,13 +378,14 @@ public:
                 m_generations = FIRESTARTER_REVOLVE_GENERATIONS;
                 m_precision =   FIRESTARTER_REVOLVE_PRECISION;
                 m_attempts =    FIRESTARTER_REVOLVE_ATTEMPTS;
-                m_seed =        FIRESTARTER_REVOLVE_SEED;
                 m_scale =       FIRESTARTER_REVOLVE_SCALE;
                 m_startScale =  FIRESTARTER_REVOLVE_START_SCALE;
                 m_startResult = FIRESTARTER_REVOLVE_START_RESULT;
                 break;
 
             case FIRESTARTER_EVOLVE:
+                m_seed =        FIRESTARTER_EVOLVE_SEED;
+                m_seeds =       FIRESTARTER_EVOLVE_SEEDS;
                 m_tests =       FIRESTARTER_EVOLVE_TESTS;
                 m_units =       FIRESTARTER_EVOLVE_UNITS;
                 m_processes =   FIRESTARTER_EVOLVE_PROCESSES;
@@ -380,13 +395,14 @@ public:
                 m_generations = FIRESTARTER_EVOLVE_GENERATIONS;
                 m_precision =   FIRESTARTER_EVOLVE_PRECISION;
                 m_attempts =    FIRESTARTER_EVOLVE_ATTEMPTS;
-                m_seed =        FIRESTARTER_EVOLVE_SEED;
                 m_scale =       FIRESTARTER_EVOLVE_SCALE;
                 m_startScale =  FIRESTARTER_EVOLVE_START_SCALE;
                 m_startResult = FIRESTARTER_EVOLVE_START_RESULT;
                 break;
 
             case FIRESTARTER_OPTIMIZE:
+                m_seed =        FIRESTARTER_OPTIMIZE_SEED;
+                m_seeds =       FIRESTARTER_OPTIMIZE_SEEDS;
                 m_tests =       FIRESTARTER_OPTIMIZE_TESTS;
                 m_units =       FIRESTARTER_OPTIMIZE_UNITS;
                 m_processes =   FIRESTARTER_OPTIMIZE_PROCESSES;
@@ -396,7 +412,6 @@ public:
                 m_generations = FIRESTARTER_OPTIMIZE_GENERATIONS;
                 m_precision =   FIRESTARTER_OPTIMIZE_PRECISION;
                 m_attempts =    FIRESTARTER_OPTIMIZE_ATTEMPTS;
-                m_seed =        FIRESTARTER_OPTIMIZE_SEED;
                 m_scale =       FIRESTARTER_OPTIMIZE_SCALE;
                 m_startScale =  FIRESTARTER_OPTIMIZE_START_SCALE;
                 m_startResult = FIRESTARTER_OPTIMIZE_START_RESULT;
@@ -404,6 +419,8 @@ public:
 
             case FIRESTARTER_SOLUTION:
             default:
+                m_seed = 0;
+                m_seeds = 0;
                 m_tests = 0;
                 m_units = 0;
                 m_processes = 0;
@@ -413,7 +430,6 @@ public:
                 m_generations = 0;
                 m_precision = 0;
                 m_attempts = 0;
-                m_seed = 0;
                 m_scale = 0.0f;
                 m_startScale = 0.0f;
                 m_startResult = 0.0f;
