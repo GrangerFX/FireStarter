@@ -147,6 +147,7 @@ const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_multiply,
     Operation_multiply,
     Operation_multiply,
+    Operation_multiply,
 };
 #else
 const FireStarterOpcode fireStarterOpcodes[] = {
