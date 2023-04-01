@@ -181,83 +181,63 @@ typedef struct FireStarterInstructions {
         i[index].reg = (unsigned short)reg;
     } // SetOperation
 
-    inline void IncrementReg(unsigned int index)
-    {
-        i[index].reg = (i[index].reg + 1) % FIRESTARTER_REGISTERS;
-    } // IncrementReg
-
-    inline void IncrementReg(unsigned int index, unsigned int registers)
-    {
-        i[index].reg = (i[index].reg + 1) % registers;
-    } // IncrementReg
-
     inline void SetRandomReg(unsigned int index, unsigned long long& seed)
     {
-        i[index].reg = (unsigned short)RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+        unsigned int reg;
+        do {
+            reg = (unsigned short)RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+        } while (reg == i[index].reg);
+        i[index].reg = reg;
     } // SetRandomReg
 
     inline void SetRandomReg(unsigned int index, unsigned long long& seed, unsigned int registers)
     {
-        i[index].reg = (unsigned short)RANDOMMOD(seed, registers);
+        unsigned int reg;
+        do {
+            reg = (unsigned short)RANDOMMOD(seed, registers);
+        } while (reg == i[index].reg);
+        i[index].reg = reg;
     } // SetRandomReg
 
-#if FIRESTARTER_SEQUENTIAL
     inline void SetRandomOp(unsigned int index, unsigned long long& seed)
     {
-        unsigned int op = index % FIRESTARTER_OPCODES;
-        i[index].op = fireStarterOpcodes[op];
+        unsigned int op;
+        do {
+            op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
+        } while (op == i[index].op);
+        i[index].op = op;
     } // SetRandomOp
 
     inline void SetRandomOp(unsigned int index, unsigned long long& seed, unsigned int opcodes)
     {
-        unsigned int op = index % opcodes;
-        i[index].op = fireStarterOpcodes[op];
+        unsigned int op;
+        do {
+            op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
+        } while (op == i[index].op);
+        i[index].op = op;
     } // SetRandomOp
 
     inline void SetRandom(unsigned int index, unsigned long long& seed, unsigned int registers, unsigned int opcodes)
     {
-        unsigned int op = index % opcodes;
-        unsigned int reg = i[index].reg + RANDOMMOD(seed, registers - 1);
-        i[index].op = fireStarterOpcodes[op];
+        unsigned int op, reg;
+        do {
+            op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
+            reg = RANDOMMOD(seed, registers);
+        } while ((reg == i[index].reg) && (op == i[index].op));
+        i[index].op = op;
         i[index].reg = reg;
     } // SetRandom
 
     inline void SetRandom(unsigned int index, unsigned long long& seed)
     {
-        unsigned int op = index % FIRESTARTER_OPCODES;
-        unsigned int reg = i[index].reg + RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
-        i[index].op = fireStarterOpcodes[op];
+        unsigned int op, reg;
+        do {
+            op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
+            reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+        } while ((reg == i[index].reg) && (op == i[index].op));
+        i[index].op = op;
         i[index].reg = reg;
     } // SetRandom
-#else
-    inline void SetRandomOp(unsigned int index, unsigned long long& seed)
-    {
-        unsigned int op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
-        i[index].op = fireStarterOpcodes[op];
-    } // SetRandomOp
-
-    inline void SetRandomOp(unsigned int index, unsigned long long& seed, unsigned int opcodes)
-    {
-        unsigned int op = RANDOMMOD(seed, opcodes);
-        i[index].op = fireStarterOpcodes[op];
-    } // SetRandomOp
-
-    inline void SetRandom(unsigned int index, unsigned long long& seed, unsigned int registers, unsigned int opcodes)
-    {
-        unsigned int op = RANDOMMOD(seed, opcodes);
-        unsigned int reg = RANDOMMOD(seed, registers - 1);
-        i[index].op = fireStarterOpcodes[op];
-        i[index].reg = reg;
-    } // SetRandom
-
-    inline void SetRandom(unsigned int index, unsigned long long& seed)
-    {
-        unsigned int op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
-        unsigned int reg = i[index].reg + RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
-        i[index].op = fireStarterOpcodes[op];
-        i[index].reg = reg;
-    } // SetRandom
-#endif
 
     inline void SetRandom(unsigned long long& seed)
     {
@@ -267,14 +247,18 @@ typedef struct FireStarterInstructions {
 
     inline void Randomize(unsigned long long& seed)
     {
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            SetRandom(i, seed);
+        for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) {
+            i[index].op = fireStarterPattern[RANDOMMOD(seed, FIRESTARTER_PATTERN_OPCODES)];
+            i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+        }
     } // Randomize
 
-    inline void Randomize(unsigned long long& seed, unsigned int instructions, unsigned int opcodes)
+    inline void Randomize(unsigned long long& seed, unsigned int instructions, unsigned int registers, unsigned int opcodes)
     {
-        for (unsigned int i = 0; i < instructions; i++)
-            SetRandom(i, seed, instructions, opcodes);
+        for (unsigned int index = 0; index < instructions; index++) {
+            i[index].op = fireStarterPattern[RANDOMMOD(seed, opcodes)];
+            i[index].reg = RANDOMMOD(seed, registers);
+        }
     } // Randomize
 
     inline float Execute(FireStarterData data, float n) const

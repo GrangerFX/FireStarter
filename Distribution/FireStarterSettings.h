@@ -8,7 +8,6 @@
 #define FIRESTARTER_SECOND_PASS  1
 #define FIRESTARTER_GENERATE_GPU 1
 #define FIRESTARTER_AUTO_PROCESS 0
-#define FIRESTARTER_SEQUENTIAL   0
 
 #define FIRESTARTER_SEED         0
 //#define FIRESTARTER_SEED         3533
@@ -137,21 +136,23 @@
 typedef enum {
     Operation_multiply = 0,
     Operation_add,
-    Operation_abs
+    Operation_abs,
 } FireStarterOpcode;
 
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
-#if 1
 const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_multiply,
     Operation_add,
-    Operation_multiply,
-    Operation_multiply,
+};
+#if 1
+const FireStarterOpcode fireStarterPattern[] = {
+    Operation_add,
     Operation_multiply,
     Operation_multiply,
     Operation_multiply,
 };
 #else
-const FireStarterOpcode fireStarterOpcodes[] = {
+const FireStarterOpcode fireStarterPattern[] = {
     Operation_multiply,
     Operation_add,
 };
@@ -160,6 +161,11 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD_ABS
 const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_multiply,
+    Operation_add,
+    Operation_abs,
+};
+const FireStarterOpcode fireStarterPattern[] = {
     Operation_multiply,
     Operation_add,
     Operation_multiply,
@@ -178,6 +184,10 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_CODE_PATTERN
 const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_multiply,
+    Operation_add,
+};
+const FireStarterOpcode fireStarterPattern[] = {
     Operation_add,
     Operation_multiply,
     Operation_multiply,
@@ -214,6 +224,7 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 #endif
 
 #define FIRESTARTER_OPCODES (sizeof(fireStarterOpcodes) / sizeof(FireStarterOpcode))
+#define FIRESTARTER_PATTERN_OPCODES (sizeof(fireStarterPattern) / sizeof(FireStarterOpcode))
 
 class FireStarterSettings {
 public:
@@ -222,6 +233,7 @@ public:
     unsigned int m_instructions;
     unsigned int m_registers;
     unsigned int m_opcodes;
+    unsigned int m_patternOpcodes;
 
     float m_targetMin;
     float m_targetMax;
@@ -303,6 +315,7 @@ public:
         m_instructions = FIRESTARTER_INSTRUCTIONS;
         m_registers = FIRESTARTER_REGISTERS;
         m_opcodes = FIRESTARTER_OPCODES;
+        m_patternOpcodes = FIRESTARTER_PATTERN_OPCODES;
 
         m_targetMin = TARGET_MIN;
         m_targetMax = TARGET_MAX;

@@ -155,30 +155,6 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 }
             }
 #endif
-#if 0
-            // Simple multiply add plattern program generation.
-            job->m_state.InitGenerationSeed();
-            if (!state.m_generation) {
-                // Use a multiply add instruction pattern for the first generation.
-                unsigned long long multiply = job->m_state.RandomSeed();
-                unsigned long long add = job->m_state.RandomSeed();
-                unsigned int regops = settings.m_registers * settings.m_opcodes; // Combine the registers and opcodes into a single number.
-                for (unsigned int index = 0; index < numInstructions; index++) {
-                    unsigned int regop = (index * multiply + add) % regops;
-                    unsigned int op = regop / settings.m_registers;
-                    unsigned int reg = regop % settings.m_registers;
-                    job->m_state.m_program.EvolvedInstructions()->SetOperation(index, fireStarterOpcodes[op], reg);
-                }
-            } else {
-                // 1 or 2 random instructions based on the age of the generation.
-                unsigned long long age = state.m_generation - bestState.m_generation;
-                unsigned long long randomNum = (age >= numInstructions) + 1;
-                while (randomNum--) {
-                    job->m_state.RandomInstruction();
-                    m_evolveCount++;
-                }
-            }
-#endif
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();

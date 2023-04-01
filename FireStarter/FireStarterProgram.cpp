@@ -71,7 +71,7 @@ unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegist
 
 void FireStarterProgram::RandomProgram(unsigned long long &seed)
 {
-    EvolvedInstructions()->Randomize(seed, m_settings.m_instructions, m_settings.m_opcodes);
+    EvolvedInstructions()->Randomize(seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_patternOpcodes);
 } // RandomProgram
 
 void FireStarterProgram::RandomInstruction(unsigned long long& seed)
