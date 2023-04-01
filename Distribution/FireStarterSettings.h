@@ -140,10 +140,6 @@ typedef enum {
 } FireStarterOpcode;
 
 #if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
-const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_multiply,
-    Operation_add,
-};
 #if 1
 const FireStarterOpcode fireStarterPattern[] = {
     Operation_add,
@@ -151,8 +147,18 @@ const FireStarterOpcode fireStarterPattern[] = {
     Operation_multiply,
     Operation_multiply,
 };
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_add,
+    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
+};
 #else
 const FireStarterOpcode fireStarterPattern[] = {
+    Operation_multiply,
+    Operation_add,
+};
+const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_multiply,
     Operation_add,
 };
