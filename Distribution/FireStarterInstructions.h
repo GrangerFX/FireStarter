@@ -253,12 +253,12 @@ typedef struct FireStarterInstructions {
     // Current attempt
     inline void SetRandomReg(unsigned int index, unsigned long long& seed)
     {
-        i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
+        i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
     } // SetRandomReg
 
     inline void SetRandomReg(unsigned int index, unsigned long long& seed, unsigned int registers)
     {
-        i[index].reg = RANDOMMOD(seed, registers - 1);
+        i[index].reg = RANDOMMOD(seed, registers);
     } // SetRandomReg
 
     inline void SetRandomOp(unsigned int index, unsigned long long& seed)
@@ -274,13 +274,13 @@ typedef struct FireStarterInstructions {
     inline void SetRandom(unsigned int index, unsigned long long& seed, unsigned int registers, unsigned int opcodes)
     {
         i[index].op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
-        i[index].reg = RANDOMMOD(seed, registers - 1);
+        i[index].reg = RANDOMMOD(seed, registers);
     } // SetRandom
 
     inline void SetRandom(unsigned int index, unsigned long long& seed)
     {
         i[index].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
-        i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
+        i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
     } // SetRandom
 
     inline void SetRandom(unsigned long long& seed)
@@ -293,7 +293,7 @@ typedef struct FireStarterInstructions {
     {
         for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) {
             i[index].op = fireStarterPattern[RANDOMMOD(seed, FIRESTARTER_PATTERN_OPCODES)];
-            i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS - 1);
+            i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
         }
     } // Randomize
 
@@ -301,7 +301,7 @@ typedef struct FireStarterInstructions {
     {
         for (unsigned int index = 0; index < instructions; index++) {
             i[index].op = fireStarterPattern[RANDOMMOD(seed, opcodes)];
-            i[index].reg = RANDOMMOD(seed, registers - 1);
+            i[index].reg = RANDOMMOD(seed, registers);
         }
     } // Randomize
 #endif

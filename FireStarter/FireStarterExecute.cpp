@@ -169,7 +169,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state)
         if (m_populationSize) {
             checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
             if (m_hostPopulation)
-                m_hostPopulation->InitPopulation(settings.m_population, settings.m_instructions, settings.m_variations, settings.m_startResult);
+                m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, settings.m_startResult);
             else
                 result = false;
 
