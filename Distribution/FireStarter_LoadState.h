@@ -1,8 +1,8 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 04/02/23 14:47:12 Pacific Daylight Time
-// Run duration = 2813.541566 seconds
+// Run date: 04/02/23 15:46:56 Pacific Daylight Time
+// Run duration = 2679.778060 seconds
 // Run generation = 142
 // Run result = 0.00050163
 // Run variations = 3
@@ -168,7 +168,7 @@ inline void LoadVariation2(FireStarterResult* result)
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
     data->d[29] = 0.000000f;
-    data->d[30] = -0.000000f;
+    data->d[30] = 0.000000f;
     data->d[31] = 0.000000f;
     *(result->MinResult()) = 0.000502f;
 } // LoadVariation2
