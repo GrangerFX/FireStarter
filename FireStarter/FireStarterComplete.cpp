@@ -37,6 +37,30 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
     FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
 } // SaveSolution
 
+void FireStarterComplete::SaveBest(const FireStarterState& evolveState)
+{
+    // Save the best state among multiple parallel streams.
+    static std::mutex bestStateMutex;
+    static FireStarterState bestState;
+    if ((bestState.m_maxResult < 0.0f) || (evolveState.m_maxResult < bestState.m_maxResult)) {
+        bestStateMutex.lock();
+        if ((bestState.m_maxResult < 0.0f) || (evolveState.m_maxResult < bestState.m_maxResult)) {
+            // Update the best state.
+            bestState = evolveState;
+            DispatchSync([this] {
+                SaveBestState(bestState);
+
+                // Update the best code on disk.
+                SaveBestCode(bestState);
+
+                // Update the solution code on disk.
+                SaveSolution(bestState);
+            });
+        }
+        bestStateMutex.unlock();
+    }
+} // SaveBest
+
 bool FireStarterComplete::LoadSolutionTargetCode(void)
 {
     if (!FireStarterCode::LoadCode("FireStarterTarget.h", m_solutionTargetCode))
@@ -68,13 +92,18 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         displayState = state;
         m_testError = displayState.TestResult();
 
-        // Update the best state.
-        if (displayState.Settings().m_mode != FIRESTARTER_OPTIMIZE)
-            SaveBestState(displayState);
+        // Save the new best state.
+        if (m_saveBestState) {
+            // Update the best state.
+            if (displayState.Settings().m_mode != FIRESTARTER_OPTIMIZE)
+                SaveBestState(displayState);
 
-        // Update the best code on disk.
-        SaveBestCode(displayState);
-        SaveSolution(displayState);
+            // Update the best code on disk.
+            SaveBestCode(displayState);
+
+            // Update the solution code on disk.
+            SaveSolution(displayState);
+        }
 
         // Draw the graphs for both variations.
         m_fireShow.FireShow(displayState);
@@ -214,9 +243,10 @@ void FireStarterComplete::CompleteSolution(bool sync)
     }, sync);
 } // CompleteSolution
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window) : CUDAThread("FireStarterComplete"), m_window(window), m_fireShow(window)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState) : CUDAThread("FireStarterComplete"), m_window(window), m_fireShow(window)
 {
     m_manager = manager;
+    m_saveBestState = saveBestState;
     DispatchSync([this] {
         if (LoadSolutionTargetCode())
             // Create the code generator.

@@ -17,6 +17,7 @@ private:
 	double m_generationTime = 0.0;
 	double m_totalResult = 0.0;
 	float m_testError = 0.0f;
+	bool m_saveBestState = true;
 
 	void SaveBestState(const FireStarterState& bestState);
 	void SaveBestCode(const FireStarterState& bestState);
@@ -24,11 +25,12 @@ private:
 	bool LoadSolutionTargetCode(void);
 
 public:
+	void SaveBest(const FireStarterState& evolveState);
 	bool CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult = 0.0f);
 	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
 	bool CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
 	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, size_t generation, bool sync = true);
 	void CompleteSolution(bool sync = false);
-    FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window);
+    FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState = true);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

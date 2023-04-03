@@ -27,7 +27,7 @@ public:
     unsigned long long m_index = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
-    float m_maxResult = 0.0f;
+    float m_maxResult = -1.0f;
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {
