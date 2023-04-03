@@ -4,7 +4,7 @@
 #define FIRESTARTER_VARIATIONS   3
 #define FIRESTARTER_SAMPLES      15
 #define FIRESTARTER_INSTRUCTIONS 32
-#define FIRESTARTER_REGISTERS    28
+#define FIRESTARTER_REGISTERS    29
 #define FIRESTARTER_SECOND_PASS  1
 #define FIRESTARTER_GENERATE_GPU 1
 #define FIRESTARTER_AUTO_PROCESS 0
@@ -149,6 +149,8 @@ const FireStarterOpcode fireStarterPattern[] = {
 };
 const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_add,
+    Operation_multiply,
+    Operation_multiply,
     Operation_multiply,
 };
 #else
