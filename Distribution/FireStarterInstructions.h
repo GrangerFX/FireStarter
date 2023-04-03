@@ -249,7 +249,7 @@ typedef struct FireStarterInstructions {
         }
     } // Randomize
 #endif
-#if 1
+#if 0
     // Current attempt
     inline void SetRandomReg(unsigned int index, unsigned long long& seed)
     {
@@ -305,7 +305,7 @@ typedef struct FireStarterInstructions {
         }
     } // Randomize
 #endif
-#if 0
+#if 1
     // Worst attempt
     inline void SetRandomReg(unsigned int index, unsigned long long& seed)
     {
