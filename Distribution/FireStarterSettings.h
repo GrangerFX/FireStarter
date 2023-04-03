@@ -150,8 +150,6 @@ const FireStarterOpcode fireStarterPattern[] = {
 const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_add,
     Operation_multiply,
-    Operation_multiply,
-    Operation_multiply,
 };
 #else
 const FireStarterOpcode fireStarterPattern[] = {
