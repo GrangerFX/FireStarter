@@ -102,6 +102,11 @@ public:
         return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
     } // StateSeed
 
+    inline unsigned long long OptimizationSeed(void) const
+    {
+        return RANDOM(RANDOM(m_program.m_settings.m_seed) + m_test);
+    } // OptimizationSeed
+
     unsigned long long InitSeed(unsigned long long seed)
     {
         m_seed = seed;
@@ -119,6 +124,12 @@ public:
         m_seed = StateSeed();
         return m_seed;
     } // InitStateSeed
+
+    unsigned long long InitOptimizationSeed(void)
+    {
+        m_seed = OptimizationSeed();
+        return m_seed;
+    } // InitOptimizationSeed
 
     unsigned long long RootSeed(unsigned long long seed)
     {
