@@ -74,7 +74,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 }
             }
 #endif
-#if 1
+#if 0
             // Alternate standard random evolution.
             // The seed is restarted at generation 0 for the optimization.
             job->m_state.InitOptimizationSeed();
@@ -92,7 +92,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                 }
             }
 #endif
-#if 0
+#if 1
             // Alternate random evolution 1.
             // The seed is continued with the optimization.
             if (!evolveState.m_generation) {
