@@ -154,6 +154,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         }
 
         // Update the hash file.
+#if FIRESTARTER_OUTPUT_HASH
         std::string hashString = Format("%s: Generation:%4u  Best Generation:%4u", settings.Mode(), state.m_generation, bestState.m_generation);
         const FireStarterResults* stateResults = state.Results();
         uint64_t resultHash = MurmurHash64(stateResults, state.ResultsSize());
@@ -161,19 +162,35 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.m_maxResult, settings.m_seed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
         FireStarterCode::AppendCode(hashFilePath, hashString);
         // m_output.Output(hashString);
+#endif
 
         // Create the log file.
-        static std::string logFilePath;
-        if (logFilePath.empty()) {
-            logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), settings.Mode());
-            FireStarterCode::AppendCode(logFilePath, cudaText);
-            FireStarterCode::AppendCode(logFilePath, settingsText);
+        unsigned int unit = (unsigned int)(state.m_index % settings.m_units);
+        unsigned int test = (unsigned int)state.m_test;
+        std::string logPath;
+        if ((settings.m_mode == FIRESTARTER_REVOLVE) && (settings.m_units > 1)) {
+            static std::vector<std::string> logFilePaths;
+            if (logFilePaths.empty())
+                logFilePaths.resize(settings.m_units);
+            std::string& logFilePath = logFilePaths[unit];
+            if (logFilePath.empty()) {
+                logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate().c_str(), settings.Mode(), unit);
+                FireStarterCode::AppendCode(logFilePath, cudaText);
+                FireStarterCode::AppendCode(logFilePath, settingsText);
+            }
+            logPath = logFilePath;
+        } else {
+            static std::string logFilePath;
+            if (logFilePath.empty()) {
+                logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), settings.Mode());
+                FireStarterCode::AppendCode(logFilePath, cudaText);
+                FireStarterCode::AppendCode(logFilePath, settingsText);
+            }
+            logPath = logFilePath;
         }
 
         // Update the log file and window status text.
         std::string statusString;
-        unsigned int unit = (unsigned int)(state.m_index % settings.m_units);
-        unsigned int test = (unsigned int)state.m_test;
         float newResult = state.m_maxResult;
         float bestResult = bestState.m_maxResult;
         bool isBestState = (state.m_index == bestState.m_index) && (state.m_generation == bestState.m_generation);
@@ -183,7 +200,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
         } else {
             statusString = Format("%s: Seed=%u", settings.Mode(), settings.m_seed);
-            if (test)
+            if (settings.m_tests > 1)
                 statusString += Format("  Test=%u", test);
             if (settings.m_units > 1)
                 statusString += Format("  Unit=%u", unit);
@@ -210,9 +227,9 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         }
 
         // Update the log file.
-        FireStarterCode::AppendCode(logFilePath, statusString + "\r\n");
+        FireStarterCode::AppendCode(logPath, statusString + "\r\n");
         if ((unit == settings.m_units - 1) && (settings.m_units > 1))
-            FireStarterCode::AppendCode(logFilePath, "\r\n");
+            FireStarterCode::AppendCode(logPath, "\r\n");
 
         // Update the window status.
         m_window.DisplayText(statusString);

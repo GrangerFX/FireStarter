@@ -269,7 +269,7 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::a
             // Setup the intial state
             FireStarterSettings evolveSettings(settings);
             evolveSettings.m_seed = settings.m_seed + test / settings.m_tests;
-            FireStarterState evolveState(evolveSettings, 0, 0, test % settings.m_tests);
+            FireStarterState evolveState(evolveSettings, 0, m_index, test % settings.m_tests);
 
             // The best state is used for the status display and termination condition.
             FireStarterState bestEvolveState(evolveState);
@@ -450,7 +450,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
             FireStarterSettings evolveSettings(settings);
             unsigned int evolution = test % settings.m_tests;
             evolveSettings.m_seed = settings.m_seed + test / settings.m_tests;
-            FireStarterState evolveState(evolveSettings, 0, 0, 0);
+            FireStarterState evolveState(evolveSettings, 0, m_index, 0);
 
             // The best state is used for the status display and termination condition.
             FireStarterState bestEvolveState(evolveState);

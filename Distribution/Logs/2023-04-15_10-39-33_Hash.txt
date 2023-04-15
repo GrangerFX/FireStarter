@@ -1,0 +1,27 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 29
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+seed = 1
+seeds = 1
+mode = FIRESTARTER_REVOLVE
+tests = 100
+units = 4
+processes = 0
+iterations = 64
+candidates = 16
+generations = 100
+precision = 0
+attempts = 64
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
