@@ -366,7 +366,7 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool ini
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
                 m_job->m_state = state;
-                m_job->m_state.m_program.m_settings.m_mode = FIRESTARTER_OPTIMIZE;
+                m_job->m_state.m_optimizePass = true;
                 Optimize(m_job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
                 job->Copy(m_job);
             }

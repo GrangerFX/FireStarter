@@ -14,6 +14,7 @@
 //#define FIRESTARTER_SEED         3533
 //#define FIRESTARTER_SEED         10484
 
+#define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_CODE     1
 #define FIRESTARTER_UNIT     2
 #define FIRESTARTER_TEST     3
@@ -260,9 +261,9 @@ public:
     float m_startScale;
     float m_startResult;
 
-    inline const char* Mode(void) const
+    static inline const char* Mode(unsigned int mode)
     {
-        switch (m_mode) {
+        switch (mode) {
             case FIRESTARTER_CODE:
                 return "FIRESTARTER_CODE";
             case FIRESTARTER_UNIT:
@@ -284,6 +285,11 @@ public:
         }
     } // Mode
 
+    inline const char* Mode(void) const
+    {
+        return Mode(m_mode);
+    } // Mode
+
     inline void CopyCodeSettings(FireStarterSettings& source)
     {
         m_variations = source.m_variations;
@@ -297,7 +303,6 @@ public:
 
     inline void CopyModeSettings(const FireStarterSettings& source)
     {
-        m_mode = source.m_mode;
         m_tests = source.m_tests;
         m_units = source.m_units;
         m_processes = source.m_processes;

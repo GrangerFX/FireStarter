@@ -15,10 +15,9 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     FireStarterSettings& settings = startState.Settings();
     settings.m_units = 1;
     settings.m_processes = 0;
-    if (settings.m_mode != FIRESTARTER_OPTIMIZE) {
-        settings.m_mode = FIRESTARTER_OPTIMIZE;
+    startState.m_optimizePass = true;
+    if (settings.m_mode != FIRESTARTER_OPTIMIZE)
         settings.m_tests = 0;
-    }
 
     // Switch the settings to optimize mode
     startState.InitResult();
@@ -290,10 +289,49 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::a
 
             // Output the evolve results.
             std::string resultText = Format("Seed=%u  Test=%u  Evolve Result=%.8f\n", evolveState.Settings().m_seed, evolveState.m_test, evolveState.m_maxResult);
-            FireStarterCode::AppendCode(m_resultsFilePath, resultText);
 
             // Save the best random state for all streams.
             complete->SaveBest(bestEvolveState);
+
+#if FIRESTARTER_SECOND_PASS
+            // Only optimize the better quality results.
+            if (evolveState.m_maxResult < 0.0001) {
+                // The best state is used for the status display and termination condition.
+                FireStarterState bestOptimizeState(evolveState);
+
+                // Optimize the evolved state.
+                // Generate the optimize code.
+                evolve->GenerateOptimize(evolveState, true);
+
+                // Compile the optimize code.
+                compile->CompileJob(manager, true);
+
+                // Compile the optimize module.
+                execute->ExecuteCompileModule();
+
+                // Loop until the the optimize completion condition or the host program is quit.
+                bool init = true;
+                while (!WillTerminate()) {
+                    // Optimize the current generation.
+                    execute->ExecuteOptimize(evolveState, init);
+
+                    // Update the results in the UI.
+                    if (!complete->CompleteState(bestOptimizeState, evolveState))
+                        break;
+
+                    // Save the best optimized state for all streams.
+                    complete->SaveBest(bestOptimizeState);
+
+                    // Next generation.
+                    evolveState.m_generation++;
+                    init = false;
+                }
+
+                // Output the optimize results.
+                resultText += Format("Seed=%u  Generations=%u  Optimize Result=%.8f\n", evolveState.Settings().m_seed, evolveState.m_generation, evolveState.m_maxResult);
+            }
+#endif
+            FireStarterCode::AppendCode(m_resultsFilePath, resultText);
         }
 
         // Cancel any waiting jobs
@@ -363,6 +401,7 @@ void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std:
             // Save the best random state for all streams.
             complete->SaveBest(bestState);
 
+#if FIRESTARTER_SECOND_PASS
             // Only optimize the better quality results.
             if (evolveState.m_maxResult < 0.0001) {
                 // The best state is used for the status display and termination condition.
@@ -399,6 +438,7 @@ void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std:
                 // Output the optimize results.
                 resultText += Format("Seed=%u  Generations=%u  Optimize Result=%.8f\n", evolveState.Settings().m_seed, evolveState.m_generation, evolveState.m_maxResult);
             }
+#endif
             FireStarterCode::AppendCode(m_resultsFilePath, resultText);
         }
 
@@ -481,6 +521,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
             resultCount++;
             resultText += Format("Seed=%u  Test=%u  Evolution=%u  Generations=%u  Evolve Result=%.8f  Average Result=%.8f", evolveState.Settings().m_seed, evolveState.m_test, evolution, evolveState.m_generation, evolveState.m_maxResult, resultSum / resultCount);
 
+#if FIRESTARTER_SECOND_PASS
             // Only optimize the better quality results.
             if (evolveState.m_maxResult < 0.0001) {
                 // The best state is used for the status display and termination condition.
@@ -519,6 +560,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
                 if (evolveState.m_maxResult < 0.000001f)
                     resultText += " *******";
             }
+#endif
             resultText += "\n";
 
             // Output all the results at once for a single seed.
@@ -595,6 +637,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState*>& states, std
             // Output the evolve results.
             std::string resultText = Format("Seed=%u  Test=%u  Generations=%u  Evolve Result=%.8f  Average Result=%.8f\n", evolveState.Settings().m_seed, evolveState.m_test, evolveState.m_generation, evolveState.m_maxResult );
 
+#if FIRESTARTER_SECOND_PASS
             // Only optimize the better quality results.
             if (evolveState.m_maxResult < 0.0001) {
                 // The best state is used for the status display and termination condition.
@@ -631,6 +674,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState*>& states, std
                 // Output the optimize results.
                 resultText += Format("Seed=%u  Generations=%u  Optimize Result=%.8f\n", evolveState.Settings().m_seed, evolveState.m_generation, evolveState.m_maxResult);
             }
+#endif
             FireStarterCode::AppendCode(m_resultsFilePath, resultText);
         }
 

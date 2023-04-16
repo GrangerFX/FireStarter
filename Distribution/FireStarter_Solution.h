@@ -1,5 +1,5 @@
-// Run date: 04/15/23 10:39:29 Pacific Daylight Time
-// Run duration = 816.638763 seconds
+// Run date: 04/16/23 15:32:06 Pacific Daylight Time
+// Run duration = 814.338802 seconds
 // Run generation = 322
 // Run result = 0.00000077
 // Run variations = 3
@@ -13,7 +13,7 @@
 
 // Run seed = 1
 // Run seeds = 1
-// Run mode = FIRESTARTER_OPTIMIZE
+// Run mode = FIRESTARTER_REVOLVE
 // Run tests = 100
 // Run units = 4
 // Run processes = 0

@@ -179,7 +179,6 @@ public:
     bool InitUnit(const FireStarterState& initState);
     void Execute(void);
     void Sync(FireStarterState* allStates);
-    FireStarterUnit(unsigned int index);
-    FireStarterUnit(unsigned int index, unsigned int gpus);
+    FireStarterUnit(unsigned int index, unsigned int gpus = 1);
     ~FireStarterUnit(void);
 }; // class FireStarterUnit

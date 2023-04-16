@@ -18,6 +18,7 @@ private:
         m_test = other.m_test;
         m_seed = other.m_seed;
         m_maxResult = other.m_maxResult;
+        m_optimizePass = other.m_optimizePass;
     } // swap
 
 public:
@@ -28,6 +29,7 @@ public:
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
     float m_maxResult = -1.0f;
+    bool m_optimizePass = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {
@@ -80,6 +82,16 @@ public:
         return m_program.m_settings;
     } // Settings
 
+    inline unsigned int PassMode(void) const
+    {
+        return m_optimizePass ? FIRESTARTER_OPTIMIZE : m_program.m_settings.m_mode;
+    } // PassMode
+
+    inline const char* Mode(void) const
+    {
+        return FireStarterSettings::Mode(PassMode());
+    } // Mode(void) const
+
     inline unsigned long long OldEvolveSeed(unsigned long long seed = 1337)
     {
         m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
@@ -96,11 +108,6 @@ public:
     {
         return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
     } // GenerationSeed
-
-    inline unsigned long long StateSeed(void) const
-    {
-        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index) + m_generation) + m_test);
-    } // StateSeed
 
     inline unsigned long long OptimizationSeed(void) const
     {
@@ -119,12 +126,6 @@ public:
         return m_seed;
     } // InitGenerationSeed
 
-    unsigned long long InitStateSeed(void)
-    {
-        m_seed = StateSeed();
-        return m_seed;
-    } // InitStateSeed
-
     unsigned long long InitOptimizationSeed(void)
     {
         m_seed = OptimizationSeed();
@@ -134,7 +135,7 @@ public:
     unsigned long long RootSeed(unsigned long long seed)
     {
         m_program.m_settings.m_seed = seed;
-        return InitStateSeed();
+        return InitGenerationSeed();
     } // RootSeed
 
     unsigned long long& Seed(void)

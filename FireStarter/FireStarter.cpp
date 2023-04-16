@@ -8,7 +8,7 @@
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 
-void FireStarter::ControlUnits(const FireStarterState* evolveState)
+void FireStarter::ControlUnits(const FireStarterState* evolveState, bool optimizePass)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
@@ -31,9 +31,10 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
     else
         bestState.InitState(unitSettings);
     bestState.Settings().CopyModeSettings(unitSettings);
+    bestState.m_optimizePass = optimizePass;
     bestState.m_generation = 0;
     bestState.m_index = 0;
-    bestState.InitStateSeed();
+    bestState.InitGenerationSeed();
     bestState.InitResult();
 
     // Create the states and units.
@@ -99,8 +100,8 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState)
     allStates.clear();
 
     // Optimization evolution pass.
-    if (!WillTerminate() && (unitSettings.m_mode != FIRESTARTER_OPTIMIZE) && FIRESTARTER_SECOND_PASS)
-        ControlUnits(&bestState);
+    if (FIRESTARTER_SECOND_PASS && !WillTerminate() && !bestState.m_optimizePass)
+        ControlUnits(&bestState, true);
 } // ControlUnits
 
 void FireStarter::ControlTest(void)
@@ -287,8 +288,9 @@ void FireStarter::ControlThread(void)
     DispatchAsync([this] {
         // Load the optimize settings from the compiled CUDA code.
         // This allows the settings to be modified without recompiling the main program.
-        m_buildSettings.FireSettings(m_optimizeSettings, FIRESTARTER_OPTIMIZE);
-        switch (FIRESTARTER_MODE) {
+        FireStarterSettings controlSettings;
+        m_buildSettings.FireSettings(controlSettings, FIRESTARTER_AUTO);
+        switch (controlSettings.m_mode) {
             case FIRESTARTER_CODE:
             case FIRESTARTER_UNIT:
                 // Program evolution pass.
@@ -315,7 +317,9 @@ void FireStarter::ControlThread(void)
                     // Optimization evolution pass.
                     FireStarterState evolveState;
                     LoadState(evolveState);
-                    evolveState.Settings().CopyModeSettings(m_optimizeSettings);
+                    evolveState.Settings().CopyModeSettings(controlSettings);
+                    evolveState.m_program.m_settings.m_mode = FIRESTARTER_OPTIMIZE; // This allows optimize tests to be run.
+                    evolveState.m_optimizePass = true;
                     FireStarterStream::Optimize(m_window, evolveState);
                 }
                 break;

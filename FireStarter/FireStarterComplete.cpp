@@ -95,7 +95,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         // Save the new best state.
         if (m_saveBestState) {
             // Update the best state.
-            if (displayState.Settings().m_mode != FIRESTARTER_OPTIMIZE)
+            if (!displayState.m_optimizePass)
                 SaveBestState(displayState);
 
             // Update the best code on disk.

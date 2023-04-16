@@ -126,7 +126,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_test = test;
     m_maxResult = settings.m_startResult;
     m_program.InitProgram(settings);
-    InitStateSeed();
+    InitGenerationSeed();
     InitResult();
 } // InitState
 

@@ -47,7 +47,7 @@ void FireStarterUnit::GenerateOptimize(void)
 void FireStarterUnit::GenerateUnit(void)
 {
     // Evolve each state.
-    m_state.InitStateSeed();
+    m_state.InitGenerationSeed();
     if (!m_state.m_generation || (m_settings.m_mode == FIRESTARTER_RANDOM))
         m_state.RandomProgram();
     else
@@ -433,19 +433,22 @@ bool FireStarterUnit::InitUnit(const FireStarterState& initState)
 void FireStarterUnit::Execute(void)
 {
     DispatchAsync([this] {
-        switch (m_settings.m_mode) {
-            case FIRESTARTER_CODE:
-                ExecuteCode();
-                break;
-            case FIRESTARTER_UNIT:
-                ExecuteUnit();
-                break;
-            case FIRESTARTER_OPTIMIZE:
-                ExecuteOptimize();
-                break;
-            default:
-                break;  // Error!
-        }
+        if (m_state.m_optimizePass)
+            ExecuteOptimize();
+        else
+            switch (m_settings.m_mode) {
+                case FIRESTARTER_CODE:
+                    ExecuteCode();
+                    break;
+                case FIRESTARTER_UNIT:
+                    ExecuteUnit();
+                    break;
+                case FIRESTARTER_OPTIMIZE:
+                    ExecuteOptimize();
+                    break;
+                default:
+                    break;  // Error!
+            }
     });
 } // Execute
 
@@ -458,13 +461,7 @@ void FireStarterUnit::Sync(FireStarterState* allStates)
     });
 } // Sync
 
-FireStarterUnit::FireStarterUnit(unsigned int index) : SerialThread("FireStarterUnit")
-{
-    m_unitIndex = index;
-    m_gpus = 1;
-} // FireStarterUnit
-
-FireStarterUnit::FireStarterUnit(unsigned int index, unsigned int gpus) : SerialThread("FireStarterUnit"), m_state(m_settings)
+FireStarterUnit::FireStarterUnit(unsigned int index, unsigned int gpus) : SerialThread("FireStarterUnit"), m_state(m_settings, 0, index, index)
 {
     m_unitIndex = index;
     m_gpus = gpus;

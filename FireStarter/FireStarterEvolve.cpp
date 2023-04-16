@@ -205,7 +205,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
             // Clone or randomize instructions in the later generations.
             job->m_state = allStates[m_index];
             job->m_state.m_generation = generation;
-            unsigned long long seed = job->m_state.InitStateSeed();
+            unsigned long long seed = job->m_state.InitGenerationSeed();
             if (generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
                 float oldResult = job->m_state.m_maxResult;
@@ -298,7 +298,7 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool
         if (job) {
             // The state already contains the evolved and optimized code.
             job->m_state = state;
-            job->m_state.m_program.m_settings.m_mode = FIRESTARTER_OPTIMIZE;
+            job->m_state.m_optimizePass = true;
 
             // Generate the evaluate code
             std::string evaluateCode;
