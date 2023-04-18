@@ -331,9 +331,38 @@ void FireStarter::ControlThread(void)
     });
 } // ControlThread
 
+static void TestRandom(void)
+{
+    for (unsigned long long settingsSeed = 0; settingsSeed < 100; settingsSeed++) {
+        unsigned long long settingsGeneration = 0;
+        unsigned long long settingsTest = 0;
+        unsigned long long randomBucket[32] = {};
+        unsigned long long total = 0;
+        while (settingsGeneration < 100) {
+            unsigned long long seed = RANDOM(RANDOM(RANDOM(settingsSeed) + settingsGeneration) + settingsTest);
+            for (unsigned long long iteration = 0; iteration < 100000; iteration++) {
+                unsigned int i = RANDOMMOD(seed, 32);
+                randomBucket[i]++;
+                total++;
+            }
+            settingsGeneration++;
+        }
+        double maxq = 0.0f;
+        for (int i = 0; i < 32; i++) {
+            double q = fabs(1.0 - (double)randomBucket[i] * (32.0 / (double)total));
+            maxq = max(maxq, q);
+        }
+        printf("seed: %llu  maxq = %f\n", settingsSeed, maxq);
+    }
+} // TestRandom
+
 FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
 {
+#if 0
+    TestRandom();
+#else
     ControlThread();
+#endif
 } // FireStarter
 
 FireStarter::~FireStarter(void)
