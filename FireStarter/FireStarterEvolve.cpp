@@ -50,7 +50,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
         return false;
     Dispatch([this, state, bestState] {
         FireStarterState evolveState(state);
-        unsigned long long seed = evolveState.InitGenerationSeed();
+        evolveState.InitGenerationSeed();
         const FireStarterSettings& settings = evolveState.Settings();
         unsigned int numInstructions = settings.m_instructions;
         float bestResult = evolveState.m_maxResult;
@@ -58,43 +58,8 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
         if (job) {
             // Clone or randomize instructions in the later generations.
             job->m_state = evolveState;
-#if 0
-            // Standard random evolution.
-            // The seed is restarted for the optimization.
-            if (!evolveState.m_generation) {
-                // Randomize the program.
-                job->m_state.RandomProgram(seed);
-            } else {
-                // 1 or 2 random instructions based on the age of the generation.
-                unsigned long long age = evolveState.m_generation - bestState.m_generation;
-                unsigned long long randomNum = (age >= numInstructions) + 1;
-                while (randomNum--) {
-                    job->m_state.RandomInstruction(seed);
-                    m_evolveCount++;
-                }
-            }
-#endif
-#if 0
-            // Alternate standard random evolution.
-            // The seed is restarted at generation 0 for the optimization.
-            job->m_state.InitOptimizationSeed();
-
-            if (!evolveState.m_generation) {
-                // Randomize the program.
-                job->m_state.RandomProgram(seed);
-            } else {
-                // 1 or 2 random instructions based on the age of the generation.
-                unsigned long long age = evolveState.m_generation - bestState.m_generation;
-                unsigned long long randomNum = (age >= numInstructions) + 1;
-                while (randomNum--) {
-                    job->m_state.RandomInstruction(seed);
-                    m_evolveCount++;
-                }
-            }
-#endif
 #if 1
-            // Alternate random evolution 1.
-            // The seed is continued with the optimization.
+            // Random evolution 1.
             if (!evolveState.m_generation) {
                 // Randomize the program.
                 job->m_state.RandomProgram();
@@ -109,7 +74,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
             }
 #endif
 #if 0
-            // Alternate random evolution 2.
+            // Random evolution 2.
             if (evolveState.m_generation) {
                 // Between 1 and 4 random instructions per generation.
                 unsigned int randomNum = job->m_state.RandomMod(min(numInstructions, 4)) + 1;
@@ -137,38 +102,6 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                     copyDst %= numInstructions;
                 }
                 job->m_state.RandomInstruction();
-            }
-#endif
-#if 0
-            // Old seed random evolution 1.
-            job->m_state.OldEvolveSeed(evolveState.m_generation);
-            if (!evolveState.m_generation) {
-                // Randomize the program.
-                job->m_state.RandomProgram();
-            } else {
-                // 1 or 2 random instructions based on the age of the generation.
-                unsigned long long age = evolveState.m_generation - bestState.m_generation;
-                unsigned long long randomNum = age >= numInstructions ? 2 : 1;
-                while (randomNum--) {
-                    job->m_state.RandomInstruction();
-                    m_evolveCount++;
-                }
-            }
-#endif
-#if 0
-            // Old seed random evolution 2.
-            job->m_state.OldEvolveSeed();
-            if (!evolveState.m_generation) {
-                // Randomize the program.
-                job->m_state.RandomProgram();
-            } else {
-                // Between 1 and 4 random instructions per generation.
-                unsigned int randomNum = job->m_state.RandomMod(min(numInstructions, 4)) + 1;
-                unsigned int randomDst = job->m_state.RandomMod(numInstructions);
-                while (randomNum--) {
-                    job->m_state.RandomInstruction(randomDst++);
-                    randomDst %= numInstructions;
-                }
             }
 #endif
 

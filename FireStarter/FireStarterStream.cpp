@@ -178,7 +178,7 @@ void FireStarterStream::EvolveState(FireStarterState& evolveState)
         // Complete the state and display the results.
         if (!complete->CompleteState(bestState, evolveState))
             break;
-        evolveState.m_generation++;
+        evolveState.NextGeneration();
     }
 
     // Optimize the evolved state.
@@ -201,7 +201,7 @@ void FireStarterStream::EvolveState(FireStarterState& evolveState)
         // Update the results in the UI.
         if (!complete->CompleteState(bestState, evolveState))
             break;
-        evolveState.m_generation++;
+        evolveState.NextGeneration();
         init = false;
     }
 

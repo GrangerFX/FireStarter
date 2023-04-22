@@ -92,27 +92,20 @@ public:
         return FireStarterSettings::Mode(PassMode());
     } // Mode(void) const
 
-    inline unsigned long long OldEvolveSeed(unsigned long long seed = 1337)
-    {
-        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed + m_generation) + m_index + seed);
-        return m_seed;
-    } // OldEvolveSeed
-
-    inline unsigned long long OldOptimizeSeed(unsigned long long seed = 1337)
-    {
-        m_seed = RANDOM(RANDOM(m_program.m_settings.m_seed) + m_index + seed);
-        return m_seed;
-    } // OldOptimizeSeed
-
     inline unsigned long long GenerationSeed(void) const
     {
         return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
     } // GenerationSeed
 
-    inline unsigned long long OptimizationSeed(void) const
+    inline unsigned long long GenerationSeed(unsigned long long generation) const
     {
-        return RANDOM(RANDOM(m_program.m_settings.m_seed) + m_test);
-    } // OptimizationSeed
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed + 1337) + generation) + m_test);    // The seed offset prevents random number overlap with evolution.
+    } // GenerationSeed
+
+    inline unsigned long long GenerationSeed(unsigned long long generation, unsigned long long test) const
+    {
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed + 1337) + generation) + test);
+    } // GenerationSeed
 
     unsigned long long InitSeed(unsigned long long seed)
     {
@@ -125,12 +118,6 @@ public:
         m_seed = GenerationSeed();
         return m_seed;
     } // InitGenerationSeed
-
-    unsigned long long InitOptimizationSeed(void)
-    {
-        m_seed = OptimizationSeed();
-        return m_seed;
-    } // InitOptimizationSeed
 
     unsigned long long RootSeed(unsigned long long seed)
     {
@@ -182,6 +169,12 @@ public:
     {
         m_program.RandomProgram(seed);
     } // RandomProgram
+
+    inline void NextGeneration(void)
+    {
+        m_generation++;
+        InitGenerationSeed();
+    } // NextGeneration
 
     bool Packetize(FireStarterPacket& packet);
     void SaveStats(std::string& code) const;
