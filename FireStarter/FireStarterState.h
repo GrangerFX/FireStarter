@@ -99,12 +99,12 @@ public:
 
     inline unsigned long long GenerationSeed(unsigned long long generation) const
     {
-        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed + 1) + generation) + m_test);    // The seed offset prevents random number overlap with evolution.
+        return RANDOM(RANDOM(m_program.m_settings.m_seed) + generation);
     } // GenerationSeed
 
     inline unsigned long long GenerationSeed(unsigned long long generation, unsigned long long test) const
     {
-        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed + 1) + generation) + test);
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + generation) + test);
     } // GenerationSeed
 
     unsigned long long InitSeed(unsigned long long seed)

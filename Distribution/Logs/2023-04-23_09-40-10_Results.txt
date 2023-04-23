@@ -1,0 +1,100 @@
+Seed=0  Test=1  Evolution=1  Generations=72  Evolve Result=0.00084245  Average Result=0.00084245
+Seed=0  Test=2  Evolution=2  Generations=127  Evolve Result=0.00033471  Average Result=0.00033471
+Seed=0  Test=0  Evolution=0  Generations=126  Evolve Result=0.00041234  Average Result=0.00041234
+Seed=0  Test=6  Evolution=6  Generations=95  Evolve Result=0.00036025  Average Result=0.00038630
+Seed=0  Test=3  Evolution=3  Generations=252  Evolve Result=0.00000560  Average Result=0.00000560  Optimize Generations=320  Optimize Result=0.00000501
+Seed=0  Test=5  Evolution=5  Generations=115  Evolve Result=0.00004174  Average Result=0.00018823  Optimize Generations=255  Optimize Result=0.00001013
+Seed=0  Test=7  Evolution=7  Generations=125  Evolve Result=0.00019830  Average Result=0.00032363
+Seed=0  Test=4  Evolution=4  Generations=295  Evolve Result=0.00023985  Average Result=0.00054115
+Seed=0  Test=8  Evolution=8  Generations=140  Evolve Result=0.00028551  Average Result=0.00014555
+Seed=0  Test=9  Evolution=9  Generations=123  Evolve Result=0.00052506  Average Result=0.00030050
+Seed=0  Test=10  Evolution=10  Generations=133  Evolve Result=0.00015867  Average Result=0.00028239
+Seed=0  Test=11  Evolution=11  Generations=153  Evolve Result=0.00043774  Average Result=0.00050668
+Seed=0  Test=12  Evolution=12  Generations=110  Evolve Result=0.00037050  Average Result=0.00022054
+Seed=0  Test=14  Evolution=14  Generations=99  Evolve Result=0.00024147  Average Result=0.00027421
+Seed=0  Test=17  Evolution=17  Generations=101  Evolve Result=0.00016737  Average Result=0.00025640
+Seed=0  Test=16  Evolution=16  Generations=151  Evolve Result=0.00027490  Average Result=0.00023413
+Seed=0  Test=13  Evolution=13  Generations=172  Evolve Result=0.00000840  Average Result=0.00022748  Optimize Generations=368  Optimize Result=0.00000012 *******
+Seed=0  Test=15  Evolution=15  Generations=306  Evolve Result=0.00014117  Average Result=0.00041530
+Seed=0  Test=19  Evolution=19  Generations=98  Evolve Result=0.00033748  Average Result=0.00025480
+Seed=0  Test=18  Evolution=18  Generations=244  Evolve Result=0.00003254  Average Result=0.00022442  Optimize Generations=414  Optimize Result=0.00002401
+Seed=0  Test=22  Evolution=22  Generations=197  Evolve Result=0.00029856  Average Result=0.00026209
+Seed=0  Test=20  Evolution=20  Generations=303  Evolve Result=0.00024985  Average Result=0.00023195
+Seed=0  Test=21  Evolution=21  Generations=277  Evolve Result=0.00018233  Average Result=0.00036871
+Seed=0  Test=24  Evolution=24  Generations=95  Evolve Result=0.00033760  Average Result=0.00027288
+Seed=0  Test=23  Evolution=23  Generations=189  Evolve Result=0.00028551  Average Result=0.00023206
+Seed=0  Test=26  Evolution=26  Generations=99  Evolve Result=0.00022490  Average Result=0.00034474
+Seed=0  Test=27  Evolution=27  Generations=85  Evolve Result=0.00038373  Average Result=0.00028674
+Seed=0  Test=28  Evolution=28  Generations=155  Evolve Result=0.00048506  Average Result=0.00026017
+Seed=0  Test=25  Evolution=25  Generations=200  Evolve Result=0.00006855  Average Result=0.00020472  Optimize Generations=349  Optimize Result=0.00001240
+Seed=0  Test=30  Evolution=30  Generations=189  Evolve Result=0.00035697  Average Result=0.00029454
+Seed=0  Test=31  Evolution=31  Generations=99  Evolve Result=0.00032861  Average Result=0.00026701
+Seed=0  Test=29  Evolution=29  Generations=216  Evolve Result=0.00000691  Average Result=0.00029648  Optimize Generations=328  Optimize Result=0.00000095 *******
+Seed=0  Test=32  Evolution=32  Generations=148  Evolve Result=0.00021517  Average Result=0.00020621
+Seed=0  Test=35  Evolution=35  Generations=74  Evolve Result=0.00048971  Average Result=0.00032063
+Seed=0  Test=33  Evolution=33  Generations=144  Evolve Result=0.00034217  Average Result=0.00029930
+Seed=0  Test=34  Evolution=34  Generations=169  Evolve Result=0.00024647  Average Result=0.00026514
+Seed=0  Test=38  Evolution=38  Generations=86  Evolve Result=0.00035429  Average Result=0.00030430
+Seed=0  Test=36  Evolution=36  Generations=142  Evolve Result=0.00023818  Average Result=0.00021021
+Seed=0  Test=37  Evolution=37  Generations=154  Evolve Result=0.00023824  Average Result=0.00031148
+Seed=0  Test=39  Evolution=39  Generations=109  Evolve Result=0.00041973  Average Result=0.00027803
+Seed=0  Test=42  Evolution=42  Generations=101  Evolve Result=0.00059295  Average Result=0.00033963
+Seed=0  Test=41  Evolution=41  Generations=161  Evolve Result=0.00028506  Average Result=0.00021852
+Seed=0  Test=40  Evolution=40  Generations=178  Evolve Result=0.00025010  Average Result=0.00029978
+Seed=0  Test=43  Evolution=43  Generations=123  Evolve Result=0.00016184  Average Result=0.00026909
+Seed=0  Test=45  Evolution=45  Generations=98  Evolve Result=0.00091345  Average Result=0.00028802
+Seed=0  Test=44  Evolution=44  Generations=133  Evolve Result=0.00030042  Average Result=0.00033606
+Seed=0  Test=48  Evolution=48  Generations=82  Evolve Result=0.00013858  Average Result=0.00027443
+Seed=0  Test=46  Evolution=46  Generations=166  Evolve Result=0.00047252  Average Result=0.00031307
+Seed=0  Test=50  Evolution=50  Generations=115  Evolve Result=0.00043488  Average Result=0.00028780
+Seed=0  Test=47  Evolution=47  Generations=241  Evolve Result=0.00000370  Average Result=0.00025013  Optimize Generations=314  Optimize Result=0.00000226
+Seed=0  Test=49  Evolution=49  Generations=208  Evolve Result=0.00022173  Average Result=0.00032653
+Seed=0  Test=51  Evolution=51  Generations=243  Evolve Result=0.00031897  Average Result=0.00031349
+Seed=0  Test=52  Evolution=52  Generations=157  Evolve Result=0.00045836  Average Result=0.00030092
+Seed=0  Test=54  Evolution=54  Generations=130  Evolve Result=0.00045770  Average Result=0.00033662
+Seed=0  Test=55  Evolution=55  Generations=118  Evolve Result=0.00041707  Average Result=0.00032040
+Seed=0  Test=58  Evolution=58  Generations=85  Evolve Result=0.00049192  Average Result=0.00033112
+Seed=0  Test=56  Evolution=56  Generations=197  Evolve Result=0.00028706  Average Result=0.00029993
+Seed=0  Test=57  Evolution=57  Generations=202  Evolve Result=0.00013530  Average Result=0.00032224
+Seed=0  Test=53  Evolution=53  Generations=165  Evolve Result=0.00006270  Average Result=0.00023764  Optimize Generations=598  Optimize Result=0.00001502
+Seed=0  Test=60  Evolution=60  Generations=131  Evolve Result=0.00021803  Average Result=0.00029447
+Seed=0  Test=61  Evolution=61  Generations=149  Evolve Result=0.00054693  Average Result=0.00033722
+Seed=0  Test=59  Evolution=59  Generations=209  Evolve Result=0.00033307  Average Result=0.00033123
+Seed=0  Test=62  Evolution=62  Generations=127  Evolve Result=0.00043342  Average Result=0.00024987
+Seed=0  Test=63  Evolution=63  Generations=220  Evolve Result=0.00020638  Average Result=0.00028897
+Seed=0  Test=64  Evolution=64  Generations=175  Evolve Result=0.00048433  Average Result=0.00034642
+Seed=0  Test=68  Evolution=68  Generations=101  Evolve Result=0.00063658  Average Result=0.00036349
+Seed=0  Test=65  Evolution=65  Generations=139  Evolve Result=0.00008893  Average Result=0.00031777  Optimize Generations=354  Optimize Result=0.00000405
+Seed=0  Test=67  Evolution=67  Generations=169  Evolve Result=0.00027657  Average Result=0.00028824
+Seed=0  Test=66  Evolution=66  Generations=360  Evolve Result=0.00000262  Average Result=0.00023533  Optimize Generations=453  Optimize Result=0.00000024 *******
+Seed=0  Test=69  Evolution=69  Generations=173  Evolve Result=0.00032622  Average Result=0.00036142
+Seed=0  Test=70  Evolution=70  Generations=134  Evolve Result=0.00029147  Average Result=0.00031639
+Seed=0  Test=74  Evolution=74  Generations=104  Evolve Result=0.00026250  Average Result=0.00031369
+Seed=0  Test=71  Evolution=71  Generations=183  Evolve Result=0.00001624  Average Result=0.00027313  Optimize Generations=304  Optimize Result=0.00000453
+Seed=0  Test=73  Evolution=73  Generations=202  Evolve Result=0.00022542  Average Result=0.00035426
+Seed=0  Test=72  Evolution=72  Generations=233  Evolve Result=0.00036364  Average Result=0.00024246
+Seed=0  Test=76  Evolution=76  Generations=98  Evolve Result=0.00022976  Average Result=0.00027084
+Seed=0  Test=75  Evolution=75  Generations=163  Evolve Result=0.00018098  Average Result=0.00030737
+Seed=0  Test=77  Evolution=77  Generations=102  Evolve Result=0.00003973  Average Result=0.00033853  Optimize Generations=223  Optimize Result=0.00001526
+Seed=0  Test=78  Evolution=78  Generations=166  Evolve Result=0.00031465  Average Result=0.00024626
+Seed=0  Test=79  Evolution=79  Generations=147  Evolve Result=0.00035852  Average Result=0.00027523
+Seed=0  Test=81  Evolution=81  Generations=107  Evolve Result=0.00034508  Average Result=0.00033884
+Seed=0  Test=82  Evolution=82  Generations=131  Evolve Result=0.00049165  Average Result=0.00025853
+Seed=0  Test=80  Evolution=80  Generations=206  Evolve Result=0.00001162  Average Result=0.00029393  Optimize Generations=285  Optimize Result=0.00000453
+Seed=0  Test=83  Evolution=83  Generations=132  Evolve Result=0.00000608  Average Result=0.00026241  Optimize Generations=283  Optimize Result=0.00000048 *******
+Seed=0  Test=85  Evolution=85  Generations=103  Evolve Result=0.00011593  Average Result=0.00025174
+Seed=0  Test=88  Evolution=88  Generations=81  Evolve Result=0.00027728  Average Result=0.00025290
+Seed=0  Test=86  Evolution=86  Generations=210  Evolve Result=0.00023901  Average Result=0.00029154
+Seed=0  Test=84  Evolution=84  Generations=275  Evolve Result=0.00000420  Average Result=0.00032363  Optimize Generations=355  Optimize Result=0.00000024 *******
+Seed=0  Test=87  Evolution=87  Generations=202  Evolve Result=0.00019586  Average Result=0.00025939
+Seed=0  Test=90  Evolution=90  Generations=108  Evolve Result=0.00037289  Average Result=0.00029493
+Seed=0  Test=89  Evolution=89  Generations=187  Evolve Result=0.00042939  Average Result=0.00026057
+Seed=0  Test=92  Evolution=92  Generations=149  Evolve Result=0.00015080  Average Result=0.00025466
+Seed=0  Test=91  Evolution=91  Generations=216  Evolve Result=0.00029439  Average Result=0.00032236
+Seed=0  Test=94  Evolution=94  Generations=99  Evolve Result=0.00056782  Average Result=0.00027337
+Seed=0  Test=93  Evolution=93  Generations=186  Evolve Result=0.00031793  Average Result=0.00029585
+Seed=0  Test=97  Evolution=97  Generations=99  Evolve Result=0.00044990  Average Result=0.00028043
+Seed=0  Test=95  Evolution=95  Generations=270  Evolve Result=0.00036666  Average Result=0.00025933
+Seed=0  Test=96  Evolution=96  Generations=175  Evolve Result=0.00005499  Average Result=0.00031122  Optimize Generations=406  Optimize Result=0.00002477
+Seed=0  Test=99  Evolution=99  Generations=162  Evolve Result=0.00017422  Average Result=0.00027635
+Seed=0  Test=98  Evolution=98  Generations=259  Evolve Result=0.00030343  Average Result=0.00029614
