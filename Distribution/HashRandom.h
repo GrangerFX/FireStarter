@@ -40,11 +40,13 @@ inline unsigned int Hash32(unsigned int hash)
 #define SQUARES_SEED11 0x47bf52ca94267d53
 #define SQUARES_SEED12 0xb5736d4981276baf
 
+#define SQUARES_SEED SQUARES_SEED0
+
 // Squares 32 bit random number generator
 // From Bernard Widynski's paper
 // Squares: A Fast Counter-Based RNG
 // https://arxiv.org/pdf/2004.06278v7.pdf
-inline unsigned int Squares32(unsigned long long ctr, unsigned long long key = SQUARES_SEED2)
+inline unsigned int Squares32(unsigned long long ctr, unsigned long long key = SQUARES_SEED)
 {
     unsigned long long x, y, z;
     y = x = ctr * key; z = y + key;
@@ -58,7 +60,7 @@ inline unsigned int Squares32(unsigned long long ctr, unsigned long long key = S
 // From Bernard Widynski's paper
 // Squares: A Fast Counter-Based RNG
 // https://arxiv.org/pdf/2004.06278v7.pdf
-inline unsigned long long Squares64(unsigned long long ctr, unsigned long long key = SQUARES_SEED0)
+inline unsigned long long Squares64(unsigned long long ctr, unsigned long long key = SQUARES_SEED)
 {
     unsigned long long t, x, y, z;
     y = x = ctr * key; z = y + key;
