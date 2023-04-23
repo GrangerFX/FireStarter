@@ -40,7 +40,7 @@ inline unsigned int Hash32(unsigned int hash)
 #define SQUARES_SEED11 0x47bf52ca94267d53
 #define SQUARES_SEED12 0xb5736d4981276baf
 
-#define SQUARES_SEED SQUARES_SEED1
+#define SQUARES_SEED SQUARES_SEED2
 
 // Squares 32 bit random number generator
 // From Bernard Widynski's paper
