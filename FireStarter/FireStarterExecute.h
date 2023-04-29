@@ -28,13 +28,13 @@ private:
     size_t m_evolutionsSize = 0;
     size_t m_index = 0;
 
-    bool InitPopulation(const FireStarterState& state);
+    bool InitPopulation(const FireStarterState& state, bool init);
     void FinishResults(void);
     void CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation);
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int variation);
     void Code(FireStarterState& state, bool init);
-    void Optimize(FireStarterState& state, bool init, bool skipVariations = false);
-    bool CompileModule(FireStarterJob* &job);
+    void Optimize(FireStarterState& state, bool init, bool skipVariations);
+    bool CompileModule(FireStarterJob* &job, bool init);
 
 public:
     void ExecuteCompileModule(bool sync = false);

@@ -149,7 +149,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     state.m_maxResult = fmaxf(state.m_maxResult, minResult);
 } // OptimizeGenerations
 
-bool FireStarterExecute::InitPopulation(const FireStarterState& state)
+bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init)
 {
     bool result = true;
     FireStarterSettings settings = state.Settings();
@@ -173,7 +173,10 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state)
         if (m_populationSize) {
             checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
             if (m_hostPopulation)
-                m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, settings.m_startResult);
+                if (init)
+                    m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, state.Results());
+                else
+                    m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, settings.m_startResult);
             else
                 result = false;
 
@@ -313,7 +316,7 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
     }
 } // Optimize
 
-bool FireStarterExecute::CompileModule(FireStarterJob*& job)
+bool FireStarterExecute::CompileModule(FireStarterJob*& job, bool init)
 {
     // Release the current job.
     if (job)
@@ -330,7 +333,7 @@ bool FireStarterExecute::CompileModule(FireStarterJob*& job)
 
     // Initialize the results and compile the CUDA module.
     if (!job->m_ptx.empty())
-        if (InitPopulation(job->m_state))
+        if (InitPopulation(job->m_state, init))
             if (CUDACompile::CompileModule(m_optimizeModule, job->m_ptx)) {
                 m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, job->m_programFunction);
                 if (m_optimizeFunction)
@@ -347,7 +350,7 @@ bool FireStarterExecute::CompileModule(FireStarterJob*& job)
 void FireStarterExecute::ExecuteCompileModule(bool sync)
 {
     Dispatch([this] {
-        CompileModule(m_job);
+        CompileModule(m_job, false);
     }, sync);
 } // ExecuteCompileModule
 
@@ -383,7 +386,7 @@ void FireStarterExecute::ExecuteEvolve(bool sync)
 {
     Dispatch([this] {
         FireStarterJob* job = nullptr;
-        if (CompileModule(job))
+        if (CompileModule(job, false))
             Optimize(job->m_state, true, FIRESTARTER_SKIP_VARIATIONS);
         else {
             m_manager->AddFree(job);
@@ -398,7 +401,7 @@ void FireStarterExecute::ExecuteRandom(bool sync)
     Dispatch([this] {
         static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
         FireStarterJob* job = nullptr;
-        while (CompileModule(job)) {
+        while (CompileModule(job, false)) {
             job->m_state.m_maxResult = g_atomicResult;
             Optimize(job->m_state, true, FIRESTARTER_SKIP_VARIATIONS);
             float stateResult = job->m_state.m_maxResult;
