@@ -46,8 +46,11 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     // Compile the optimize code.
     compile->CompileJob(manager, true);
 
-    // Compile the optimize code.
-    execute->ExecuteCompileModule();
+    // Compile the optimize module.
+    execute->ExecuteCompile();
+
+    // Initialize the population data
+    execute->ExecuteInitPopulation(true);
 
     // Test one more more random seeds.
     size_t firstTest = 0;
@@ -190,7 +193,10 @@ void FireStarterStream::EvolveState(FireStarterState& evolveState)
     compile->CompileJob(manager, true);
 
     // Compile the optimize module.
-    execute->ExecuteCompileModule();
+    execute->ExecuteCompile();
+
+    // Initialize the population data
+    execute->ExecuteInitPopulation(true);
 
     // Loop until the the optimize completion condition or the host program is quit.
     bool init = true;
@@ -307,7 +313,10 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::a
                 compile->CompileJob(manager, true);
 
                 // Compile the optimize module.
-                execute->ExecuteCompileModule();
+                execute->ExecuteCompile();
+
+                // Initialize the population data
+                execute->ExecuteInitPopulation(true);
 
                 // Loop until the the optimize completion condition or the host program is quit.
                 bool init = true;
@@ -415,7 +424,10 @@ void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std:
                 compile->CompileJob(manager, true);
 
                 // Compile the optimize module.
-                execute->ExecuteCompileModule();
+                execute->ExecuteCompile();
+
+                // Initialize the population data
+                execute->ExecuteInitPopulation(true);
 
                 // Loop until the the optimize completion condition or the host program is quit.
                 bool init = true;
@@ -535,7 +547,10 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
                 compile->CompileJob(manager, true);
 
                 // Compile the optimize module.
-                execute->ExecuteCompileModule();
+                execute->ExecuteCompile();
+
+                // Initialize the population data
+                execute->ExecuteInitPopulation(true);
 
                 // Loop until the the optimize completion condition or the host program is quit.
                 bool init = true;
@@ -651,7 +666,10 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState*>& states, std
                 compile->CompileJob(manager, true);
 
                 // Compile the optimize module.
-                execute->ExecuteCompileModule();
+                execute->ExecuteCompile();
+
+                // Initialize the population data
+                execute->ExecuteInitPopulation(true);
 
                 // Loop until the the optimize completion condition or the host program is quit.
                 bool init = true;

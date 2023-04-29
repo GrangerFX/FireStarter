@@ -34,10 +34,11 @@ private:
 	void OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int variation);
     void Code(FireStarterState& state, bool init);
     void Optimize(FireStarterState& state, bool init, bool skipVariations);
-    bool CompileModule(FireStarterJob* &job, bool init);
+    bool Compile(FireStarterJob* &job);
 
 public:
-    void ExecuteCompileModule(bool sync = false);
+    void ExecuteCompile(bool sync = false);
+    void ExecuteInitPopulation(bool init, bool sync = false);
     void ExecuteCode(bool init, bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, bool init, bool sync = false);
     void ExecuteEvolve(bool sync = false);
