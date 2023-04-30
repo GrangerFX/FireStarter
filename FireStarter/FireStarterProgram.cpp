@@ -77,12 +77,12 @@ void FireStarterProgram::RandomProgram(unsigned long long &seed)
 void FireStarterProgram::RandomInstruction(unsigned long long& seed)
 {
     unsigned int index = RANDOMMOD(seed, m_settings.m_instructions);
-    EvolvedInstructions()->SetRandom(index, seed, m_settings.m_instructions, m_settings.m_opcodes);
+    EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomInstruction
 
 void FireStarterProgram::RandomInstruction(unsigned long long& seed, unsigned int index)
 {
-    EvolvedInstructions()->SetRandom(index, seed, m_settings.m_instructions, m_settings.m_opcodes);
+    EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomInstruction
 
 void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
