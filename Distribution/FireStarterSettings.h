@@ -12,7 +12,7 @@
 #define FIRESTARTER_AUTO_PROCESS 0
 #define FIRESTARTER_OUTPUT_HASH  0
 
-#define FIRESTARTER_SEED         0
+#define FIRESTARTER_SEED         1
 //#define FIRESTARTER_SEED         3533
 //#define FIRESTARTER_SEED         10484
 
