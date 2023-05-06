@@ -17,7 +17,7 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
             CUstream stream = context->Stream();
 
             // Launch the load settings kernel
-            dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
+            dim3 cudaBlockSize(WARP_THREADS, 1, 1);
             dim3 cudaGridSize(1, 1, 1);
 
             FireStarterSettings* fireSettings = nullptr;

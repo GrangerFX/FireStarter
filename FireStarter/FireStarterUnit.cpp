@@ -67,7 +67,7 @@ void FireStarterUnit::SyncContexts(void)
 void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
 {
     // Launch the calculation kernel
-    unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
+    unsigned int threadsPerBlock = WARP_THREADS;  // Same as the threads per CUDA core warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -154,7 +154,7 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
 void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int variation)
 {
     // Launch the calculation kernel
-    unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
+    unsigned int threadsPerBlock = WARP_THREADS;  // Same as the threads per CUDA core warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {

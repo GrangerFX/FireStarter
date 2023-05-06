@@ -6,7 +6,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
     // Launch the calculation kernel
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
-    unsigned int threadsPerBlock = BLOCK_THREADS;  // Same as the threads per CUDA core.
+    unsigned int threadsPerBlock = WARP_THREADS;  // Same as the threads per CUDA core warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
@@ -78,7 +78,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     // Launch the calculation kernel
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
-    unsigned int threadsPerBlock = 16; // BLOCK_THREADS;  // Same as the threads per CUDA core.
+    unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;

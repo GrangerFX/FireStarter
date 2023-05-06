@@ -37,8 +37,8 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
         theta[i] = TARGET_MIN + i * sampleStep;
 
     // Evolve the program data for each variation.
-    GPU_SHARED FireStarterData allData[FIRESTARTER_VARIATIONS][BLOCK_THREADS];
-    GPU_SHARED float allResults[FIRESTARTER_VARIATIONS][BLOCK_THREADS];
+    GPU_SHARED FireStarterData allData[FIRESTARTER_VARIATIONS][WARP_THREADS];
+    GPU_SHARED float allResults[FIRESTARTER_VARIATIONS][WARP_THREADS];
     for (unsigned int v = firstVariation; v <= lastVariation; v++) {
         // Initial check for bad results.
         float target[FIRESTARTER_SAMPLES];
@@ -89,7 +89,7 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
             float minResult = allResults[v][0];
             unsigned int minThread = 0;
-            for (unsigned int t = 1; t < BLOCK_THREADS; t++) {
+            for (unsigned int t = 1; t < WARP_THREADS; t++) {
                 float threadResult = allResults[v][t];
                 if (threadResult < minResult) {
                     minResult = threadResult;

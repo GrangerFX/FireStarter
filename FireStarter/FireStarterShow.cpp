@@ -41,7 +41,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
             m_window.Erase(stream);
 
             // Launch the display kernel
-            int threadsPerBlock = BLOCK_THREADS;
+            int threadsPerBlock = WARP_THREADS;
             int blocksPerGrid = (m_window.m_width + threadsPerBlock - 1) / threadsPerBlock;
             dim3 cudaBlockSize(threadsPerBlock, 1, 1);
             dim3 cudaGridSize(blocksPerGrid, 1, 1);

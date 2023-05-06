@@ -70,7 +70,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     if (generateGPU) {
         // Generate the evaluate function via the GPU (dynamic code generation).
         // First pass: Determine the length of the code string.
-        dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
+        dim3 cudaBlockSize(WARP_THREADS, 1, 1);
         dim3 cudaGridSize(1, 1, 1);
         CUstream stream = m_CUDAContext->Stream();
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
@@ -165,7 +165,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
 
         if (generateGPU) {
             // First pass: Determine the length of the code string.
-            dim3 cudaBlockSize(BLOCK_THREADS, 1, 1);
+            dim3 cudaBlockSize(WARP_THREADS, 1, 1);
             dim3 cudaGridSize(1, 1, 1);
             CUstream stream = m_CUDAContext->Stream();
             checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
