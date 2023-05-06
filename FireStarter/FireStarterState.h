@@ -94,16 +94,16 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long generation, unsigned long long test = 0) const
     {
-#ifdef FIRESTARTER_CONSISTENT
-        return test ? RANDOM(RANDOM(RANDOM(FIRESTARTER_OPTIMIZATION_SEED) + generation) + test) : RANDOM(RANDOM(FIRESTARTER_OPTIMIZATION_SEED) + generation);
+#ifdef FIRESTARTER_OPTIMIZATION_SEED
+        return RANDOM(RANDOM(RANDOM(FIRESTARTER_OPTIMIZATION_SEED) + generation) + test);
 #else
-        return test ? RANDOM(RANDOM(generation) + test) : RANDOM(generation);
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + generation) + test);
 #endif
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const
     {
-        return m_test ? RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test) : RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation);
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
     } // GenerationSeed
 
     inline unsigned long long GenerationSeed(unsigned long long generation, unsigned long long test = 0) const
