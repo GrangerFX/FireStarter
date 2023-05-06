@@ -175,8 +175,13 @@ typedef struct FireStarterResults {
         m_variations = variations;
         m_resultSize = FireStarterResult::ResultSize(registers);
         m_resultsSize = FireStarterResults::ResultsSize(registers, variations);
-        for (unsigned int v = 0; v < m_variations; v++)
-            Result(v)->Init(index, registers, initResults->Result(v));
+        if ((registers == initResults->m_registers) && (variations == initResults->m_variations))
+            for (unsigned int v = 0; v < m_variations; v++)
+                Result(v)->Init(index, registers, initResults->Result(v));
+        else // Note: This is a bug!
+            for (unsigned int v = 0; v < m_variations; v++)
+                Result(v)->Init(index, registers, 10.0f);
+
     } // Init
 } FireStarterResults;
 

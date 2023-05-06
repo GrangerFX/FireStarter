@@ -111,12 +111,15 @@ float FireStarterState::TestResult(void) const
     return testResult;
 } // TestResult
 
-void FireStarterState::InitResult(void)
+void FireStarterState::InitResults(FireStarterResults* initResults)
 {
     m_resultsData.resize(FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
     m_results = Results();
     if (m_results)
-        m_results->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
+        if (initResults)
+            m_results->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, initResults);
+        else
+            m_results->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitResult
 
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long test)
@@ -127,7 +130,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_maxResult = settings.m_startResult;
     m_program.InitProgram(settings);
     InitGenerationSeed();
-    InitResult();
+    InitResults();
 } // InitState
 
 FireStarterState::FireStarterState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long test)

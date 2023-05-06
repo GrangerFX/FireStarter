@@ -188,7 +188,7 @@ public:
     void SaveResult(std::string& code) const;
     void SaveState(std::string& code) const;
     float TestResult(void) const;
-    void InitResult(void);
+    void InitResults(FireStarterResults* initResult = nullptr);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long test = 0);
     inline FireStarterState(const FireStarterState& other) { swap(other); }
     FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long test = 0);

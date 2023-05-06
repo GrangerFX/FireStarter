@@ -20,7 +20,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
         settings.m_tests = 0;
 
     // Switch the settings to optimize mode
-    startState.InitResult();
+    startState.InitResults();
 
     // Setup the best state
     FireStarterState bestState(startState);

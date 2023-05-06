@@ -35,7 +35,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState, bool optimiz
     bestState.m_generation = 0;
     bestState.m_index = 0;
     bestState.InitGenerationSeed();
-    bestState.InitResult();
+    bestState.InitResults();
 
     // Create the states and units.
     std::vector<FireStarterUnit*> units;
