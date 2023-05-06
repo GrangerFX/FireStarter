@@ -132,8 +132,3 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitGenerationSeed();
     InitResults();
 } // InitState
-
-FireStarterState::FireStarterState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long test)
-{
-    InitState(settings, generation, index, test);
-} // FireStarterState
