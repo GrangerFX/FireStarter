@@ -90,7 +90,11 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
         FireStarterPopulation* newResults = g & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = g & 1 ? m_devicePopulation1 : m_devicePopulation0;
         int init = (g == 0) && (forceInit || (state.m_generation == 0));
+#if FIRESTARTER_CONSISTENT
+        unsigned long long generationSeed = (state.Settings().m_mode == FIRESTARTER_OPTIMIZE) ? state.OptimizationSeed(g, state.m_test) : state.OptimizationSeed(g);
+#else
         unsigned long long generationSeed = (state.Settings().m_mode == FIRESTARTER_OPTIMIZE) ? state.GenerationSeed(g, state.m_test) : state.GenerationSeed(g);
+#endif
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),

@@ -92,6 +92,11 @@ public:
         return FireStarterSettings::Mode(PassMode());
     } // Mode(void) const
 
+    inline unsigned long long OptimizationSeed(unsigned long long generation, unsigned long long test = 0) const
+    {
+        return test ? RANDOM(RANDOM(generation) + test) : RANDOM(generation);
+    } // OptimizationSeed
+
     inline unsigned long long GenerationSeed(void) const
     {
         return m_test ? RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test) : RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation);
