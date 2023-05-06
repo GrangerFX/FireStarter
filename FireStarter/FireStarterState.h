@@ -94,24 +94,13 @@ public:
 
     inline unsigned long long GenerationSeed(void) const
     {
-        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
+        return m_test ? RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test) : RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation);
     } // GenerationSeed
 
-    inline unsigned long long GenerationSeed(unsigned long long generation) const
+    inline unsigned long long GenerationSeed(unsigned long long generation, unsigned long long test = 0) const
     {
-        return RANDOM(RANDOM(m_program.m_settings.m_seed) + generation);
+        return test ? RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + generation) + test) : RANDOM(RANDOM(m_program.m_settings.m_seed) + generation);
     } // GenerationSeed
-
-    inline unsigned long long GenerationSeed(unsigned long long generation, unsigned long long test) const
-    {
-        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + generation) + test);
-    } // GenerationSeed
-
-    unsigned long long InitSeed(unsigned long long seed)
-    {
-        m_seed = seed;
-        return m_seed;
-    } // InitSeed
 
     unsigned long long InitGenerationSeed(void)
     {
@@ -128,7 +117,7 @@ public:
     unsigned long long& Seed(void)
     {
         return m_seed;
-    } // RandomSeed
+    } // Seed
 
     unsigned long long RandomSeed(void)
     {
@@ -138,7 +127,7 @@ public:
     unsigned int RandomMod(unsigned int m)
     {
         return RANDOMMOD(m_seed, m);
-    } // RandomSeed
+    } // RandomMod
 
     inline void RandomInstruction(void)
     {
