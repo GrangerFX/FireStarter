@@ -2,7 +2,7 @@
 #include "FireStarterSettings.h"
 
 typedef struct FireStarterData {
-    float d[FIRESTARTER_REGISTERS];
+    float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
 
     static inline size_t DataSize(size_t registers)
     {
@@ -15,7 +15,7 @@ typedef struct FireStarterResult {
     float m_minResult;
     unsigned int m_debug;
     unsigned int m_index;
-    float m_data[FIRESTARTER_REGISTERS];
+    float m_data[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
 
     static inline size_t ResultSize(size_t registers)
     {
@@ -97,7 +97,7 @@ typedef struct FireStarterResults {
     size_t m_variations;
     size_t m_resultSize;
     size_t m_resultsSize;
-    FireStarterResult m_memory[FIRESTARTER_VARIATIONS];
+    FireStarterResult m_memory[FIRESTARTER_VARIATIONS]; // Note: Dynamically allocated!
 
     static inline size_t ResultsSize(size_t registers, size_t variations)
     {
@@ -192,7 +192,7 @@ typedef struct FireStarterPopulation {
     size_t m_resultSize;
     size_t m_variationSize;
     size_t m_variationsSize;
-    FireStarterResult m_memory[FIRESTARTER_EVOLVE_POPULATION * FIRESTARTER_VARIATIONS];
+    FireStarterResult m_memory[FIRESTARTER_EVOLVE_POPULATION * FIRESTARTER_VARIATIONS]; // Note: Dynamically allocated!
 
     static inline size_t PopulationSize(size_t members, size_t registers, size_t variations)
     {
