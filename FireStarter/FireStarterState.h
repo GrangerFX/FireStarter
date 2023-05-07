@@ -94,11 +94,7 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long generation, unsigned long long test = 0) const
     {
-#ifdef FIRESTARTER_OPTIMIZATION_SEED
-        return RANDOM(RANDOM(RANDOM(FIRESTARTER_OPTIMIZATION_SEED) + generation) + test);
-#else
-        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + generation) + test);
-#endif
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + generation) + test);
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const

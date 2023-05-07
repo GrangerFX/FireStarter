@@ -15,7 +15,7 @@
 //#define FIRESTARTER_SEED         3533
 //#define FIRESTARTER_SEED         10484
 
-#define FIRESTARTER_OPTIMIZATION_SEED 0
+#define FIRESTARTER_OPTIMIZATION_SEED 0 // Set the optimization seed or comment out to use the main seed.
 
 #define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_CODE     1
@@ -247,9 +247,10 @@ public:
     float m_targetMin;
     float m_targetMax;
 
-    unsigned long long m_seed;
-    unsigned int m_seeds;
     unsigned int m_mode;
+    unsigned long long m_seed;
+    unsigned long long m_optimizeSeed;
+    unsigned int m_seeds;
     unsigned int m_tests;
     unsigned int m_units;
     unsigned int m_processes;
@@ -472,5 +473,11 @@ public:
                 m_startResult = 0.0f;
                 break;
         }
+
+#ifdef FIRESTARTER_OPTIMIZE_SEED
+        m_optimizeSeed = FIRESTARTER_OPTIMIZE_SEED;
+#else
+        m_optimizeSeed = m_seed;
+#endif
     } // FireStarterSettings
 }; // class FireStarterSettings
