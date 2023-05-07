@@ -15,7 +15,7 @@
 //#define FIRESTARTER_SEED         3533
 //#define FIRESTARTER_SEED         10484
 
-#define FIRESTARTER_OPTIMIZATION_SEED 1
+#define FIRESTARTER_OPTIMIZATION_SEED 2
 
 #define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_CODE     1

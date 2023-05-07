@@ -5,8 +5,8 @@
 #include "CUDADefines.h"
 
 // EVALUATE //
-// Run date: 05/06/23 17:22:39 Pacific Daylight Time
-// Run duration = 1266.408666 seconds
+// Run date: 05/06/23 20:25:14 Pacific Daylight Time
+// Run duration = 1251.199225 seconds
 // Run generation = 397
 // Run result = 0.00000036
 // Run variations = 3
@@ -145,7 +145,7 @@ inline void LoadVariation2(FireStarterResult* result)
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
     data->d[29] = 0.000000f;
-    data->d[30] = 22263274541928404746240.000000f;
+    data->d[30] = 495981481164800.000000f;
     data->d[31] = 0.000000f;
     *(result->MinResult()) = 0.000000f;
 } // LoadVariation2
