@@ -18,9 +18,9 @@ public:
 	static void Evolve(const FireStarterWindow& window, const FireStarterState& evolveState);
 	void OptimizeStream(const FireStarterState& evolveState, bool sync = false);
 	void RandomStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync = false);
-	void RandomStream(std::vector<FireStarterState>& states, std::atomic<unsigned long long>& seedCount, bool sync = false);
+	void RandomStream(std::vector<FireStarterState>& states, std::atomic<unsigned long long>& stateCount, bool sync = false);
 	void EvolveStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync = false);
-	void EvolveStream(std::vector<FireStarterState*>& states, std::atomic<unsigned long long>& testCount, bool sync = false);
+	void EvolveStream(std::vector<FireStarterState*>& states, std::atomic<unsigned long long>& stateCount, bool sync = false);
 	FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index = 0);
 	~FireStarterStream(void);
 }; // class FireStarterStream
