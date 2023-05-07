@@ -168,7 +168,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         unsigned int unit = (unsigned int)(state.m_index % settings.m_units);
         unsigned int test = (unsigned int)state.m_test;
         std::string logPath;
-        if ((settings.m_mode == FIRESTARTER_REVOLVE) && (settings.m_units > 1)) {
+        if (((settings.m_mode == FIRESTARTER_TEVOLVE) || (settings.m_mode == FIRESTARTER_REVOLVE)) && (settings.m_units > 1)) {
             static std::vector<std::string> logFilePaths;
             if (logFilePaths.empty())
                 logFilePaths.resize(settings.m_units);

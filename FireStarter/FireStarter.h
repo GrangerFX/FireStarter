@@ -11,7 +11,8 @@ private:
     void ControlUnits(const FireStarterState* evolveState = nullptr, bool optimizePass = false);
     void ControlTest(void);
     void ControlRandom(void);
-    void ControlRevolve(void);
+    void ControlTEvolve(void);
+    void ControlREvolve(void);
     void ControlEvolve(void);
     void ControlSolution(void);
     void ControlThread(void);

@@ -48,7 +48,7 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
 
 #if FIRESTARTER_AUTO_PROCESS
         // if the evolve proceesses is set to zero, use the number of concurrent hardware threads.
-        if ((settings.m_processes == 0) && ((fireStarterMode == FIRESTARTER_RANDOM) || (fireStarterMode == FIRESTARTER_REVOLVE) || (fireStarterMode == FIRESTARTER_EVOLVE))
+        if ((settings.m_processes == 0) && ((fireStarterMode == FIRESTARTER_RANDOM) || (fireStarterMode == FIRESTARTER_TEVOLVE) || (fireStarterMode == FIRESTARTER_REVOLVE) || (fireStarterMode == FIRESTARTER_EVOLVE))
             settings.m_processes = std::thread::hardware_concurrency(); // Note: Returns logical core count not physical core count.
 #endif
     });
