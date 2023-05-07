@@ -98,14 +98,14 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("instructions = %u", settings.m_instructions) + postfix + "\r\n";
     code += prefix + Format("registers = %u", settings.m_registers) + postfix + "\r\n";
     code += prefix + Format("opcodes = %u", settings.m_opcodes) + postfix + "\r\n";
-    code += prefix + Format("pattern opcodes = %u", settings.m_patternOpcodes) + postfix + "\r\n";
+    code += prefix + Format("patternOpcodes = %u", settings.m_patternOpcodes) + postfix + "\r\n";
     code += "\r\n";
     code += prefix + Format("targetMin = %ff", settings.m_targetMin) + postfix + "\r\n";
     code += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
     code += "\r\n";
     code += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
     code += prefix + Format("seed = %llu", settings.m_seed) + postfix + "\r\n";
-    code += prefix + Format("optimize seed = %llu", settings.m_optimizeSeed) + postfix + "\r\n";
+    code += prefix + Format("optimizeSeed = %llu", settings.m_optimizeSeed) + postfix + "\r\n";
     code += prefix + Format("seeds = %u", settings.m_seeds) + postfix + "\r\n";
     code += prefix + Format("tests = %u", settings.m_tests) + postfix + "\r\n";
     code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
