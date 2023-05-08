@@ -709,8 +709,7 @@ void FireStarterStreams::EvolveStreams(void)
                 curState = tempState;
             }
         }
-        if (bestStates.size() < streams.size())
-            bestStates.push_back(curState);
+        bestStates.push_back(curState);
     }
 
     // Evolve the best streams.
