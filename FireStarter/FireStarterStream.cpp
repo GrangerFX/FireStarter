@@ -350,6 +350,7 @@ void FireStarterStream::RandomStream(std::vector<FireStarterState>& states, std:
             FireStarterState& evolveState = states[state];
 
             // Evolve the first generation for the state.
+            evolveState.Settings().m_generations *= 4;
             evolve->EvolveState(evolveState, bestState, true);
 
             // Compile the evolved program.

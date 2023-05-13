@@ -1,0 +1,130 @@
+Seed=2  Random Result=1.48324537
+Seed=0  Random Result=0.51358211
+Seed=3  Random Result=0.00231624
+Seed=1  Random Result=0.85227418
+Seed=5  Random Result=0.00273228
+Seed=6  Random Result=0.00508152
+Seed=4  Random Result=0.00097436
+Seed=7  Random Result=0.00477493
+Seed=8  Random Result=0.00439933
+Seed=9  Random Result=0.00020128
+Seed=10  Random Result=0.00029708
+Seed=11  Random Result=0.85227418
+Seed=12  Random Result=0.85227418
+Seed=13  Random Result=0.99801952
+Seed=14  Random Result=0.00198092
+Seed=15  Random Result=0.85227418
+Seed=16  Random Result=0.27021897
+Seed=17  Random Result=0.00096177
+Seed=18  Random Result=0.01792338
+Seed=19  Random Result=0.07876801
+Seed=20  Random Result=0.06232595
+Seed=21  Random Result=0.05733451
+Seed=23  Random Result=1.24038529
+Seed=22  Random Result=0.00334424
+Seed=25  Random Result=1.26827228
+Seed=24  Random Result=0.00918788
+Seed=27  Random Result=0.00298876
+Seed=26  Random Result=0.04117346
+Seed=28  Random Result=0.46093374
+Seed=29  Random Result=0.06428419
+Seed=30  Random Result=0.30119190
+Seed=31  Random Result=0.00443840
+Seed=32  Random Result=0.00261673
+Seed=33  Random Result=1.18544722
+Seed=35  Random Result=0.00128388
+Seed=34  Random Result=0.68883771
+Seed=36  Random Result=0.38532406
+Seed=37  Random Result=0.00083790
+Seed=39  Random Result=0.33833027
+Seed=38  Random Result=0.85227418
+Seed=40  Random Result=0.85227418
+Seed=41  Random Result=0.00031912
+Seed=42  Random Result=0.21854603
+Seed=43  Random Result=0.01164438
+Seed=44  Random Result=0.02691090
+Seed=45  Random Result=0.05357718
+Seed=46  Random Result=0.85227418
+Seed=47  Random Result=0.85227418
+Seed=48  Random Result=0.00466165
+Seed=49  Random Result=0.02181196
+Seed=50  Random Result=0.85227418
+Seed=51  Random Result=0.85227418
+Seed=53  Random Result=1.25375080
+Seed=52  Random Result=0.00192928
+Seed=55  Random Result=0.02531856
+Seed=54  Random Result=0.85227418
+Seed=56  Random Result=0.28722334
+Seed=57  Random Result=0.00056791
+Seed=58  Random Result=0.98684001
+Seed=59  Random Result=0.00083659
+Seed=60  Random Result=0.20144954
+Seed=61  Random Result=0.00228328
+Seed=62  Random Result=0.00048232
+Seed=63  Random Result=0.85227418
+Seed=64  Random Result=0.63413614
+Seed=65  Random Result=0.85227418
+Seed=66  Random Result=1.48324537
+Seed=67  Random Result=0.03689371
+Seed=68  Random Result=0.00071996
+Seed=69  Random Result=0.00033294
+Seed=70  Random Result=0.56233811
+Seed=71  Random Result=0.63462073
+Seed=72  Random Result=0.07540822
+Seed=73  Random Result=0.85227418
+Seed=74  Random Result=0.00197399
+Seed=75  Random Result=0.00108056
+Seed=76  Random Result=0.00076754
+Seed=77  Random Result=0.85762393
+Seed=79  Random Result=0.08308959
+Seed=78  Random Result=0.00019550
+Seed=80  Random Result=0.85227418
+Seed=81  Random Result=0.52010405
+Seed=82  Random Result=0.00182056
+Seed=84  Random Result=0.15978208
+Seed=83  Random Result=0.07064474
+Seed=85  Random Result=0.00275409
+Seed=86  Random Result=0.09235370
+Seed=87  Random Result=0.04769180
+Seed=88  Random Result=0.00401127
+Seed=89  Random Result=0.00128925
+Seed=90  Random Result=0.00234538
+Seed=91  Random Result=0.00239629
+Seed=92  Random Result=0.17308912
+Seed=93  Random Result=0.85227418
+Seed=94  Random Result=0.03938806
+Seed=96  Random Result=0.35967326
+Seed=97  Random Result=0.03432059
+Seed=95  Random Result=0.00804728
+Seed=98  Random Result=0.00031082
+Seed=99  Random Result=0.85227418
+Seed=78  Generation=86  Evolve Result=0.00010455
+Seed=98  Generation=126  Evolve Result=0.00003874  Optimize Generation=276  Optimize Result=0.00001850
+Seed=9  Generation=154  Evolve Result=0.00004375  Optimize Generation=372  Optimize Result=0.00001967
+Seed=10  Generation=82  Evolve Result=0.00004865  Optimize Generation=343  Optimize Result=0.00001061
+Seed=69  Generation=140  Evolve Result=0.00006938  Optimize Generation=328  Optimize Result=0.00004280
+Seed=57  Generation=161  Evolve Result=0.00000060  Optimize Generation=258  Optimize Result=0.00000024 *******
+Seed=62  Generation=105  Evolve Result=0.00007105  Optimize Generation=188  Optimize Result=0.00005138
+Seed=41  Generation=120  Evolve Result=0.00003803  Optimize Generation=599  Optimize Result=0.00001633
+Seed=68  Generation=213  Evolve Result=0.00007254  Optimize Generation=277  Optimize Result=0.00007254
+Seed=59  Generation=67  Evolve Result=0.00008227  Optimize Generation=131  Optimize Result=0.00008227
+Seed=76  Generation=159  Evolve Result=0.00005716  Optimize Generation=263  Optimize Result=0.00000632
+Seed=4  Generation=72  Evolve Result=0.00002956  Optimize Generation=136  Optimize Result=0.00002956
+Seed=37  Generation=219  Evolve Result=0.00002944  Optimize Generation=454  Optimize Result=0.00002313
+Seed=75  Generation=72  Evolve Result=0.00009088  Optimize Generation=136  Optimize Result=0.00009088
+Seed=17  Generation=156  Evolve Result=0.00004840  Optimize Generation=330  Optimize Result=0.00001258
+Seed=89  Generation=76  Evolve Result=0.00018799
+Seed=82  Generation=83  Evolve Result=0.00011235
+Seed=74  Generation=69  Evolve Result=0.00015426
+Seed=35  Generation=188  Evolve Result=0.00002646  Optimize Generation=305  Optimize Result=0.00001121
+Seed=52  Generation=153  Evolve Result=0.00006376  Optimize Generation=363  Optimize Result=0.00003493
+Seed=90  Generation=79  Evolve Result=0.00015724
+Seed=14  Generation=208  Evolve Result=0.00002050  Optimize Generation=305  Optimize Result=0.00000429
+Seed=61  Generation=189  Evolve Result=0.00003731  Optimize Generation=263  Optimize Result=0.00001693
+Seed=3  Generation=120  Evolve Result=0.00008302  Optimize Generation=198  Optimize Result=0.00005043
+Seed=32  Generation=163  Evolve Result=0.00006622  Optimize Generation=258  Optimize Result=0.00002956
+Seed=5  Generation=120  Evolve Result=0.00009923  Optimize Generation=441  Optimize Result=0.00002670
+Seed=85  Generation=79  Evolve Result=0.00003814  Optimize Generation=447  Optimize Result=0.00002596
+Seed=27  Generation=178  Evolve Result=0.00000608  Optimize Generation=320  Optimize Result=0.00000384
+Seed=91  Generation=90  Evolve Result=0.00009191  Optimize Generation=730  Optimize Result=0.00002968
+Seed=88  Generation=182  Evolve Result=0.00000417  Optimize Generation=182  Optimize Result=0.00000417
