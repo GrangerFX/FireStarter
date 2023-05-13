@@ -5,8 +5,8 @@
 #include "CUDADefines.h"
 
 // EVALUATE //
-// Run date: 05/07/23 16:31:47 Pacific Daylight Time
-// Run duration = 846.873345 seconds
+// Run date: 05/13/23 12:05:05 Pacific Daylight Time
+// Run duration = 847.191220 seconds
 // Run generation = 228
 // Run result = 0.00000024
 // Run variations = 3
@@ -42,25 +42,25 @@ inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
     data->d[0] = -3.141593f;
-    data->d[1] = 0.038260f;
-    data->d[2] = 0.195387f;
-    data->d[3] = -1.123971f;
-    data->d[4] = -1.371209f;
-    data->d[5] = -1.535178f;
-    data->d[6] = 1.973887f;
-    data->d[7] = -1.584768f;
-    data->d[8] = 1.904417f;
-    data->d[9] = 2.618081f;
-    data->d[10] = 0.606853f;
-    data->d[11] = 2.217245f;
-    data->d[12] = -5.400101f;
-    data->d[13] = -0.002086f;
-    data->d[14] = 2.246034f;
-    data->d[15] = 1.920512f;
-    data->d[16] = -0.692744f;
-    data->d[17] = 0.028613f;
-    data->d[18] = -0.773336f;
-    data->d[19] = -0.000000f;
+    data->d[1] = 0.038274f;
+    data->d[2] = 0.195143f;
+    data->d[3] = -1.123425f;
+    data->d[4] = -1.372338f;
+    data->d[5] = -1.536148f;
+    data->d[6] = 1.972970f;
+    data->d[7] = -1.584262f;
+    data->d[8] = 1.903240f;
+    data->d[9] = 2.616678f;
+    data->d[10] = 0.788445f;
+    data->d[11] = 1.697097f;
+    data->d[12] = -4.522975f;
+    data->d[13] = -0.002285f;
+    data->d[14] = 1.910496f;
+    data->d[15] = 2.472639f;
+    data->d[16] = -0.694139f;
+    data->d[17] = 0.028545f;
+    data->d[18] = -0.774398f;
+    data->d[19] = 0.000000f;
     data->d[20] = 0.000000f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
@@ -149,7 +149,7 @@ inline void LoadVariation2(FireStarterResult* result)
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
     data->d[29] = 0.000000f;
-    data->d[30] = -2.284349f;
+    data->d[30] = -0.000000f;
     data->d[31] = 0.000000f;
     *(result->MinResult()) = 0.000000f;
 } // LoadVariation2
