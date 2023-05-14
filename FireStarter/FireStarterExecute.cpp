@@ -90,11 +90,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
         FireStarterPopulation* newResults = g & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = g & 1 ? m_devicePopulation1 : m_devicePopulation0;
         int init = (g == 0) && (forceInit || (state.m_generation == 0));
-#if FIRESTARTER_CONSISTENT
-        unsigned long long generationSeed = (state.Settings().m_mode == FIRESTARTER_OPTIMIZE) ? state.OptimizationSeed(g, state.m_test) : state.OptimizationSeed(g);
-#else
-        unsigned long long generationSeed = (state.Settings().m_mode == FIRESTARTER_OPTIMIZE) ? state.GenerationSeed(g, state.m_test) : state.GenerationSeed(g);
-#endif
+        unsigned long long generationSeed = state.OptimizationSeed(g, state.m_test);
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),
@@ -372,15 +368,32 @@ void FireStarterExecute::ExecuteCode(bool init, bool sync)
     }, sync);
 } // ExecuteCode
 
-void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool init, bool sync)
+void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool init, bool optimizePass, bool sync)
 {
-    Dispatch([this, state, init] {
+    Dispatch([this, state, init, optimizePass] {
         if (m_job) {
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
-                m_job->m_state = state;
-                m_job->m_state.m_optimizePass = true;
+                if (optimizePass) {
+                    m_job->m_state = state;
+                    m_job->m_state.m_optimizePass = optimizePass;
+                }
                 Optimize(m_job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
+                job->Copy(m_job);
+            }
+            m_manager->AddComplete(job);
+        }
+    }, sync);
+} // ExecuteOptimize
+
+void FireStarterExecute::ExecuteOptimize(unsigned long long test, bool sync)
+{
+    Dispatch([this, test] {
+        if (m_job) {
+            FireStarterJob* job = m_manager->GetFree();
+            if (job) {
+                m_job->m_state.m_test = test;
+                Optimize(m_job->m_state, true, FIRESTARTER_SKIP_VARIATIONS);
                 job->Copy(m_job);
             }
             m_manager->AddComplete(job);

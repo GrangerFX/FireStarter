@@ -106,8 +106,8 @@
 
 #define FIRESTARTER_REVOLVE_SEED            FIRESTARTER_SEED
 #define FIRESTARTER_REVOLVE_SEEDS           100
-#define FIRESTARTER_REVOLVE_TESTS           1
-#define FIRESTARTER_REVOLVE_UNITS           4
+#define FIRESTARTER_REVOLVE_TESTS           4
+#define FIRESTARTER_REVOLVE_UNITS           1
 #define FIRESTARTER_REVOLVE_PROCESSES       0
 #define FIRESTARTER_REVOLVE_POPULATION      4352 * 64
 #define FIRESTARTER_REVOLVE_ITERATIONS      64
@@ -509,8 +509,8 @@ public:
                 break;
         }
 
-#ifdef FIRESTARTER_OPTIMIZE_SEED
-        m_optimizeSeed = FIRESTARTER_OPTIMIZE_SEED;
+#ifdef FIRESTARTER_OPTIMIZATION_SEED
+        m_optimizeSeed = FIRESTARTER_OPTIMIZATION_SEED;
 #else
         m_optimizeSeed = m_seed;
 #endif
