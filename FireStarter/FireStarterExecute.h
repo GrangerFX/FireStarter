@@ -41,7 +41,6 @@ public:
     void ExecuteInitPopulation(bool init, bool sync = false);
     void ExecuteCode(bool init, bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, bool init, bool optimizePass, bool sync = false);
-    void ExecuteOptimize(unsigned long long test, bool sync = false);
     void ExecuteEvolve(bool sync = false);
 	void ExecuteRandom(bool sync = false);
     void ExecuteFinish(bool sync = true);

@@ -357,41 +357,27 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::v
             // Compile the optimize code.
             compile->CompileJob(manager, true);
 
-#if 1
-            // Compile the optimize module.
-            execute->ExecuteCompile(true);
-
-            // Initialize the population data
-            execute->ExecuteInitPopulation(true, true);
-#endif
 
             // Test additional optimizations.
             seedResults[seedIndex] = settings.m_startResult;
-            for (unsigned int test = 0; test < settings.m_tests; test++) {
-                evolveState.m_test = test;
 
-                // Execute the state.
-#if 1
-                execute->ExecuteOptimize(test, true);
-#else
-                execute->ExecuteEvolve(true);
-#endif
+            // Execute the state.
+            execute->ExecuteEvolve(true);
 
-                // Complete the state and display the results.
-                complete->CompleteState(bestState, evolveState);
-                seedResults[seedIndex] = MIN(seedResults[seedIndex], evolveState.m_maxResult);
+            // Complete the state and display the results.
+            complete->CompleteState(bestState, evolveState);
+            seedResults[seedIndex] = MIN(seedResults[seedIndex], evolveState.m_maxResult);
 
-                // Save the best random state for all streams.
-                complete->SaveBest(bestState);
+            // Save the best random state for all streams.
+            complete->SaveBest(bestState);
 
-                // Output the evolve results.
-                std::string resultText;
-                resultText += Format("Seed=%u  ", evolveState.Settings().m_seed);
-                if (evolveState.Settings().m_tests > 1)
-                    resultText += Format("Test=%u  ", evolveState.m_test);
-                resultText += Format("Random Result=%.8f\n", evolveState.m_maxResult);
-                FireStarterCode::AppendCode(m_resultsFilePath, resultText);
-            }
+            // Output the evolve results.
+            std::string resultText;
+            resultText += Format("Seed=%u  ", evolveState.Settings().m_seed);
+            if (evolveState.Settings().m_tests > 1)
+                resultText += Format("Test=%u  ", evolveState.m_test);
+            resultText += Format("Random Result=%.8f\n", evolveState.m_maxResult);
+            FireStarterCode::AppendCode(m_resultsFilePath, resultText);
         }
 
         // Cancel any waiting jobs

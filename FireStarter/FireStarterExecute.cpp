@@ -386,21 +386,6 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool ini
     }, sync);
 } // ExecuteOptimize
 
-void FireStarterExecute::ExecuteOptimize(unsigned long long test, bool sync)
-{
-    Dispatch([this, test] {
-        if (m_job) {
-            FireStarterJob* job = m_manager->GetFree();
-            if (job) {
-                m_job->m_state.m_test = test;
-                Optimize(m_job->m_state, true, FIRESTARTER_SKIP_VARIATIONS);
-                job->Copy(m_job);
-            }
-            m_manager->AddComplete(job);
-        }
-    }, sync);
-} // ExecuteOptimize
-
 void FireStarterExecute::ExecuteEvolve(bool sync)
 {
     Dispatch([this] {
