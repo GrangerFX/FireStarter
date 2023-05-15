@@ -368,16 +368,14 @@ void FireStarterExecute::ExecuteCode(bool init, bool sync)
     }, sync);
 } // ExecuteCode
 
-void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool init, bool optimizePass, bool sync)
+void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool init, bool sync)
 {
-    Dispatch([this, state, init, optimizePass] {
+    Dispatch([this, state, init] {
         if (m_job) {
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
-                if (optimizePass) {
-                    m_job->m_state = state;
-                    m_job->m_state.m_optimizePass = optimizePass;
-                }
+                m_job->m_state = state;
+                m_job->m_state.m_optimizePass = true;
                 Optimize(m_job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
                 job->Copy(m_job);
             }

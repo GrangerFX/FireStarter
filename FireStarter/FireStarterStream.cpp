@@ -70,7 +70,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
         bool init = true;
         while (!WillTerminate()) {
             // Optimize the current generation.
-            execute->ExecuteOptimize(optimizeState, init, true);
+            execute->ExecuteOptimize(optimizeState, init);
 
             // Update the results in the UI.
             if (!complete->CompleteState(bestState, optimizeState))
@@ -202,7 +202,7 @@ void FireStarterStream::EvolveState(FireStarterState& evolveState)
     bool init = true;
     while (!WillTerminate()) {
         // Optimize the current generation.
-        execute->ExecuteOptimize(evolveState, init, true);
+        execute->ExecuteOptimize(evolveState, init);
 
         // Update the results in the UI.
         if (!complete->CompleteState(bestState, evolveState))
@@ -486,7 +486,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
                 bool init = true;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
-                    execute->ExecuteOptimize(evolveState, init, true);
+                    execute->ExecuteOptimize(evolveState, init);
 
                     // Update the results in the UI.
                     if (!complete->CompleteState(bestOptimizeState, evolveState))
@@ -610,7 +610,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
                 bool init = true;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
-                    execute->ExecuteOptimize(evolveState, init, true);
+                    execute->ExecuteOptimize(evolveState, init);
 
                     // Update the results in the UI.
                     if (!complete->CompleteState(bestOptimizeState, evolveState))
