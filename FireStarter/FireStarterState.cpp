@@ -15,6 +15,7 @@ void FireStarterState::SaveStats(std::string& code) const
     code += Format("// Run date: %s\r\n", m_timer.StartDate().c_str());
     code += Format("// Run duration = %f seconds\r\n", m_timer.Duration());
     code += Format("// Run generation = %llu\r\n", m_generation);
+    code += Format("// Run evolution = %llu\r\n", m_evolution);
     code += Format("// Run result = %.8f\r\n", m_maxResult);
     FireStarterProgram::SettingsText(Settings(), code, "// Run ");
     code += "\r\n";
@@ -65,6 +66,7 @@ void FireStarterState::SaveState(std::string& code) const
     code += "    LoadResult(state);\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
     code += Format("    state.m_generation = %llu;\r\n", m_generation);
+    code += Format("    state.m_evolution = %llu;\r\n", m_evolution);
     code += Format("    state.m_index = %llu;\r\n", m_index);
     code += Format("    state.m_test = %llu;\r\n", m_test);
     code += Format("    state.m_seed = %llu;\r\n", m_seed);
@@ -122,9 +124,10 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
             m_results->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
 } // InitResult
 
-void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long test)
+void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long index, unsigned long long test)
 {
-    m_generation = generation;
+    m_generation = 0;
+    m_evolution = 0;
     m_index = index;
     m_test = test;
     m_maxResult = settings.m_startResult;

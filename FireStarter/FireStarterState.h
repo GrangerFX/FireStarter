@@ -25,6 +25,7 @@ public:
     FireStarterProgram m_program;
     SimpleTimer m_timer;
     unsigned long long m_generation = 0;
+    unsigned long long m_evolution = 0;
     unsigned long long m_index = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
@@ -194,11 +195,11 @@ public:
     void SaveState(std::string& code) const;
     float TestResult(void) const;
     void InitResults(FireStarterResults* initResult = nullptr);
-    void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long test = 0);
+    void InitState(const FireStarterSettings& settings, unsigned long long index = 0, unsigned long long test = 0);
 
-    inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long test = 0)
+    inline FireStarterState(const FireStarterSettings& settings, unsigned long long index = 0, unsigned long long test = 0)
     {
-        InitState(settings, generation, index, test);
+        InitState(settings, index, test);
     } // FireStarterState
 
     inline FireStarterState(const FireStarterState& other)

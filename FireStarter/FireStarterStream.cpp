@@ -274,7 +274,7 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::a
             // Setup the intial state
             FireStarterSettings evolveSettings(settings);
             evolveSettings.m_seed = settings.m_seed + test / settings.m_tests;
-            FireStarterState evolveState(evolveSettings, 0, m_index, test % settings.m_tests);
+            FireStarterState evolveState(evolveSettings, m_index, test % settings.m_tests);
 
             // The best state is used for the status display and termination condition.
             FireStarterState bestEvolveState(evolveState);
@@ -351,7 +351,7 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::v
             randomSettings.m_seed = settings.m_seed + seedIndex;
 
             // Evolve the first generation for the state.
-            FireStarterState evolveState(randomSettings, 0, m_index);
+            FireStarterState evolveState(randomSettings, m_index);
             evolve->EvolveState(evolveState, bestState, true);
 
             // Compile the optimize code.
@@ -426,7 +426,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
             FireStarterSettings evolveSettings(settings);
             unsigned int evolution = test % settings.m_tests;
             evolveSettings.m_seed = settings.m_seed + test / settings.m_tests;
-            FireStarterState evolveState(evolveSettings, 0, m_index, 0);
+            FireStarterState evolveState(evolveSettings, m_index, 0);
 
             // The best state is used for the status display and termination condition.
             FireStarterState bestEvolveState(evolveState);
@@ -744,9 +744,8 @@ void FireStarterStreams::EvolveStreams(void)
     for (size_t i = 0; i < seeds; i++) {
         FireStarterSettings randomSettings(m_settings);
         randomSettings.m_seed = m_settings.m_seed + stateSeeds[i];
-        evolveStates[i].InitState(randomSettings, 0, 0, 0);
+        evolveStates[i].InitState(randomSettings, 0, 0);
     }
-
 
     // Evolve the best streams.
     m_testCount = 0;

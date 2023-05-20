@@ -112,6 +112,7 @@ void FireStarter::ControlTest(void)
     m_buildSettings.FireSettings(testSettings, FIRESTARTER_TEST);
 
     // Evolve a single state.
+    FireStarterState evolveState(testSettings);
     FireStarterStream::Evolve(m_window, testSettings);
 } // ControlTest
 
@@ -229,7 +230,7 @@ void FireStarter::ControlEvolve(void)
     for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
         // Randomize the entire program of each state for the first generation
         for (unsigned int i = 0; i < evolveSettings.m_units; i++)
-            allStates[i].InitState(evolveSettings, 0, i, test);
+            allStates[i].InitState(evolveSettings, i, test);
 
         // Setup the intial best state
         FireStarterState bestState(allStates[0]);
