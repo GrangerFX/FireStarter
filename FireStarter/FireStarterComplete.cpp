@@ -194,9 +194,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             m_manager->AddFree(job);
 
             result = CompleteResults(bestState, newState, oldState.m_maxResult);
-            if (!newState.m_generation)
-                oldState = newState;
-            else if (newState.m_maxResult < oldState.m_maxResult) {
+            if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
                 oldState = newState;
                 oldState.m_evolution++;
             }
@@ -233,9 +231,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             FireStarterState& newState = newStates[i];
             FireStarterState& oldState = allStates[i];
             result |= CompleteResults(bestState, newState, oldState.m_maxResult);
-            if (!newState.m_generation)
-                oldState = newState;
-            else if (newState.m_maxResult < oldState.m_maxResult) {
+            if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
                 oldState = newState;
                 oldState.m_evolution++;
             }

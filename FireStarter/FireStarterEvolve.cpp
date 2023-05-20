@@ -59,6 +59,25 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
             // Clone or randomize instructions in the later generations.
             job->m_state = evolveState;
 #if 1
+            // Random evolution experiment.
+            if (!evolveState.m_generation) {
+                // Randomize the program.
+                job->m_state.RandomProgram();
+                job->m_state.RandomResults();
+            }
+            else {
+                // 1 or 2 random instructions based on the age of the generation.
+                unsigned long long age = evolveState.m_generation - bestState.m_generation;
+                unsigned long long randomNum = numInstructions / (1 << evolveState.m_evolution);
+                unsigned long long randomMin = (age >= numInstructions) + 1;
+                randomNum = MAX(randomNum, randomMin);
+                while (randomNum--) {
+                    job->m_state.RandomInstruction();
+                    m_evolveCount++;
+                }
+            }
+#endif
+#if 0
             // Random evolution 1.
             if (!evolveState.m_generation) {
                 // Randomize the program.
