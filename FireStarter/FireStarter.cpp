@@ -247,7 +247,7 @@ void FireStarter::ControlEvolve(void)
                 execute->ExecuteEvolve();
 
             // Complete each state and display the results.
-            if (!complete->CompleteStates(bestState, allStates, generation))
+            if (!complete->CompleteStates(bestState, allStates, generation, true))
                 break;
             generation++;
         }

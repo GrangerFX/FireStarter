@@ -130,82 +130,81 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
 {
     if (m_optimizeCode.empty())
         return false;
-    FireStarterState state(bestState);
-    Dispatch([this, state, allStates, generation] {
+    
+    const std::vector<FireStarterState> states(allStates);
+    const FireStarterState state(bestState);
+    Dispatch([this, state, states, generation] {
         unsigned int numInstructions = state.Settings().m_instructions;
         float bestResult = state.m_maxResult;
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
             // Clone or randomize instructions in the later generations.
-            job->m_state = allStates[m_index];
-            job->m_state.m_generation = generation;
-            unsigned long long seed = job->m_state.InitGenerationSeed();
+            FireStarterState& curState = job->m_state;
+            curState = states[m_index];
+            curState.m_generation = generation;
+            unsigned long long seed = curState.InitGenerationSeed();
             if (generation) {
                 // Copy or randomize instructions based on the quality of the previous result.
-                float oldResult = job->m_state.m_maxResult;
-                if (allStates.size() == 1) {
-#if 0
-                    // Randomize a random range of instuctions.
-                    unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, 4));
-                    unsigned int randomDst = RANDOMMOD(seed, numInstructions);
-                    while (randomNum--) {
-                        job->m_state.RandomInstruction(seed, randomDst++);
-                        randomDst %= numInstructions;
-                    }
+                float oldResult = curState.m_maxResult;
+#if 1
+                // Crosover evolution.
+                size_t numStates = states.size();
+//                size_t betterCount = 0;
+//                for (size_t i = 0; i < numStates; i++)
+//                    if (states[i].m_maxResult < oldResult)
+//                        betterCount++;
+
+                const FireStarterState& randomState = states[RANDOMMOD(seed, numStates)];
+                if (randomState.m_maxResult < oldResult) {
+                    unsigned int copySrc = RANDOMMOD(seed, numInstructions);
+                    for (unsigned int index = copySrc; index < numInstructions; index++)
+                        curState.m_program.EvolvedInstruction(index) = state.m_program.EvolvedInstruction(index);
+                } else
+                    curState.RandomInstruction(seed);
 #else
+                if (states.size() == 1) {
                     // Randomize a random set of instuctions.
                     size_t age = generation - state.m_generation;
                     unsigned int randomNum = 4; // RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
                     while (randomNum--)
-                        job->m_state.RandomInstruction(seed);
-#endif
+                        curState.RandomInstruction(seed);
                 } else {
-#if 0
-                    // Randomize a range of instuctions.
-                    size_t age = generation - state.m_generation;
-                    unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
-                    unsigned int randomDst = RANDOMMOD(seed, numInstructions);
-                    while (randomNum--) {
-                        job->m_state.RandomInstruction(seed, randomDst++);
-                        randomDst %= numInstructions;
-                    }
-#else
                     if (oldResult > bestResult * 4.0f) {
                         // Copy the best state and randomize one instruction.
-                        job->m_state.m_program = state.m_program;
-                        job->m_state.RandomInstruction(seed);
+                        curState.m_program = state.m_program;
+                        curState.RandomInstruction(seed);
                     } else if (oldResult > bestResult * 2.0f) {
                         // Copy a range of instuctions from the best state.
                         unsigned int copyNum = RANDOMMOD(seed, min(numInstructions, 8));
                         unsigned int copySrc = RANDOMMOD(seed, numInstructions);
                         unsigned int copyDst = RANDOMMOD(seed, numInstructions);
                         while (copyNum--) {
-                            job->m_state.m_program.EvolvedInstruction(copyDst++) = state.m_program.EvolvedInstruction(copySrc++);
+                            curState.m_program.EvolvedInstruction(copyDst++) = state.m_program.EvolvedInstruction(copySrc++);
                             copySrc %= numInstructions;
                             copyDst %= numInstructions;
                         }
-                        job->m_state.RandomInstruction(seed);
+                        curState.RandomInstruction(seed);
                     } else {
                         // Randomize a range of instuctions.
                         size_t age = generation - state.m_generation;
                         unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
                         unsigned int randomDst = RANDOMMOD(seed, numInstructions);
                         while (randomNum--) {
-                            job->m_state.RandomInstruction(seed, randomDst++);
+                            curState.RandomInstruction(seed, randomDst++);
                             randomDst %= numInstructions;
                         }
                     }
-#endif
                 }
+#endif
             } else
-                job->m_state.RandomProgram(seed);
+                curState.RandomProgram(seed);
 
             // Optimize the program registers.
-            job->m_state.m_program.OptimizeRegisters();
+            curState.m_program.OptimizeRegisters();
 
             // Generate the evaluate code
             std::string evaluateCode;
-            m_generate->GenerateEvaluate(job->m_state, evaluateCode);
+            m_generate->GenerateEvaluate(curState, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
