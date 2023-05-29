@@ -208,8 +208,8 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
     bool result = false;
     Dispatch([this, &bestState, &allStates, generation, &result] {
         // Sort the states as they are received.
-        std::vector<FireStarterState> newStates = allStates;
-        size_t numStates = newStates.size();
+        size_t numStates = allStates.size();
+        std::vector<FireStarterState> newStates(numStates);
         for (size_t i = 0; i < numStates; i++) {
             // Get the next job in the order they are completed.
             FireStarterJob* job = m_manager->GetComplete();
@@ -222,18 +222,36 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             //  m_output.Output(Format("Free: %zu %f  Code: %zu %f  Compile: %zu %f  Complete: %uz %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Sort the completed jobs.
-            newStates[job->m_state.m_index % numStates] = job->m_state;
+            newStates[job->m_state.m_index] = job->m_state;
             m_manager->AddFree(job);
         }
 
         // Update the best state and display the results.
         for (size_t i = 0; i < numStates; i++) {
-            FireStarterState& newState = newStates[i];
             FireStarterState& oldState = allStates[i];
+            FireStarterState& newState = newStates[oldState.m_index];
             result |= CompleteResults(bestState, newState, oldState.m_maxResult);
             if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
                 oldState = newState;
                 oldState.m_evolution++;
+            }
+        }
+
+        // Sort the states, best first.
+        for (size_t i = 0; i < numStates - 1; i++) {
+            size_t minIndex = i;
+            float minResult = allStates[i].m_maxResult;
+            for (size_t j = i + 1; j < numStates; j++) {
+                float currentResult = allStates[j].m_maxResult;
+                if (currentResult < minResult) {
+                    minResult = currentResult;
+                    minIndex = j;
+                }
+            }
+            if (minIndex != i) {
+                FireStarterState temp = allStates[i];
+                allStates[i] = allStates[minIndex];
+                allStates[minIndex] = temp;
             }
         }
     }, sync);

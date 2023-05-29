@@ -249,8 +249,9 @@ void FireStarter::ControlEvolve(void)
             for (FireStarterExecute* execute : executionUnits)
                 execute->ExecuteEvolve(evolveCount);
 
-            // Complete each state and display the results.
-            if (!complete->CompleteStates(bestState, allStates, generation, true))
+            // Complete each state and display and sort the results.
+            // This method is synchronized by default.
+            if (!complete->CompleteStates(bestState, allStates, generation))
                 break;
             generation++;
         }

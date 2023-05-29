@@ -145,23 +145,31 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                 if (generation) {
                     // Copy or randomize instructions based on the quality of the previous result.
                     float oldResult = curState.m_maxResult;
-    #if 1
-                    // Crosover evolution.
                     size_t numStates = allStates.size();
-//                  size_t betterCount = 0;
-//                  for (size_t i = 0; i < numStates; i++)
-//                      if (allStates[i].m_maxResult < oldResult)
-//                          betterCount++;
-
+#if 1
+                    // Best 10% crossover evolution.
+                    size_t bestStates = (numStates + 9) / 10;
+                    if (index > bestStates) {
+                        const FireStarterState& randomState = allStates[RANDOMMOD(seed, bestStates)];
+                        unsigned int copySrc = RANDOMMOD(seed, numInstructions);
+                        for (unsigned int index = copySrc; index < numInstructions; index++)
+                            curState.m_program.EvolvedInstruction(index) = randomState.m_program.EvolvedInstruction(index);
+                    } else
+                        curState.RandomInstruction(seed);
+#endif
+#if 0
+                    // Random crossover evolution.
                     const FireStarterState& randomState = allStates[RANDOMMOD(seed, numStates)];
                     if (randomState.m_maxResult < oldResult) {
                         unsigned int copySrc = RANDOMMOD(seed, numInstructions);
                         for (unsigned int index = copySrc; index < numInstructions; index++)
-                            curState.m_program.EvolvedInstruction(index) = bestState.m_program.EvolvedInstruction(index);
+                            curState.m_program.EvolvedInstruction(index) = randomState.m_program.EvolvedInstruction(index);
                     } else
                         curState.RandomInstruction(seed);
-    #else
-                    if (allStates.size() == 1) {
+#endif
+#if 0
+                    // Random evolution.
+                    if (numStates == 1) {
                         // Randomize a random set of instuctions.
                         size_t age = generation - bestState.m_generation;
                         unsigned int randomNum = 4; // RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
@@ -194,7 +202,7 @@ bool FireStarterEvolve::EvolveStates(const FireStarterState& bestState, const st
                             }
                         }
                     }
-    #endif
+#endif
                 } else
                     curState.RandomProgram(seed);
 
