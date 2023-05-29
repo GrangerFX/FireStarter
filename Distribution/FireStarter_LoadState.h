@@ -1,8 +1,8 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 05/28/23 15:20:53 Pacific Daylight Time
-// Run duration = 82.500686 seconds
+// Run date: 05/29/23 12:09:30 Pacific Daylight Time
+// Run duration = 247.561948 seconds
 // Run generation = 15
 // Run evolution = 0
 // Run result = 0.00052901
@@ -21,7 +21,7 @@
 // Run optimizeSeed = 0
 // Run seeds = 1
 // Run tests = 0
-// Run units = 16
+// Run units = 8
 // Run processes = 0
 // Run population = 278528
 // Run iterations = 64
@@ -51,7 +51,7 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_optimizeSeed = 0;
     settings.m_seeds = 1;
     settings.m_tests = 0;
-    settings.m_units = 16;
+    settings.m_units = 8;
     settings.m_processes = 0;
     settings.m_population = 278528;
     settings.m_iterations = 64;
@@ -177,7 +177,7 @@ inline void LoadVariation2(FireStarterResult* result)
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
     data->d[29] = 0.000000f;
-    data->d[30] = -0.000000f;
+    data->d[30] = 0.000000f;
     data->d[31] = 0.000000f;
     *(result->MinResult()) = 0.000529f;
 } // LoadVariation2

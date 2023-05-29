@@ -196,10 +196,12 @@ void FireStarter::ControlEvolve(void)
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings evolveSettings;
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
-    FireStarterState bestState(evolveSettings);
+    evolveSettings.m_units = MIN(evolveSettings.m_units, FIRESTARTER_EVOLVE_SIZE);
+    evolveSettings.m_processes = MIN(evolveSettings.m_processes, FIRESTARTER_EVOLVE_SIZE);
+    std::vector<FireStarterState> allStates(FIRESTARTER_EVOLVE_SIZE);
 
     // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(max(evolveSettings.m_units, evolveSettings.m_processes));
+    FireStarterManager* manager = new FireStarterManager(allStates.size());
 
     // Create the multi-process compiler.
     FireStarterCompile* compile = new FireStarterCompile(manager, evolveSettings.m_processes);
@@ -207,7 +209,6 @@ void FireStarter::ControlEvolve(void)
     // Create the states and units.
     std::vector<FireStarterEvolve*> evolveUnits;
     std::vector<FireStarterExecute*> executionUnits;
-    std::vector<FireStarterState> allStates(evolveSettings.m_units);
     for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
         // Create an evolve unit.
         FireStarterEvolve* evolve = new FireStarterEvolve(manager, i);
@@ -229,7 +230,7 @@ void FireStarter::ControlEvolve(void)
     }
     for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
         // Randomize the entire program of each state for the first generation
-        for (unsigned int i = 0; i < evolveSettings.m_units; i++)
+        for (unsigned long long i = 0; i < allStates.size(); i++)
             allStates[i].InitState(evolveSettings, i, test);
 
         // Setup the intial best state
@@ -239,12 +240,14 @@ void FireStarter::ControlEvolve(void)
         unsigned int generation = 0;
         while (!WillTerminate()) {
             // Evolve a new generation for each state.
+            std::atomic<unsigned long long> stateIndex = 0;
             for (FireStarterEvolve* evolve : evolveUnits)
-                evolve->EvolveStates(bestState, allStates, generation);
+                evolve->EvolveStates(bestState, allStates, stateIndex, generation);
 
             // Execute each state.
+            std::atomic<long long> evolveCount = allStates.size();
             for (FireStarterExecute* execute : executionUnits)
-                execute->ExecuteEvolve();
+                execute->ExecuteEvolve(evolveCount);
 
             // Complete each state and display the results.
             if (!complete->CompleteStates(bestState, allStates, generation, true))

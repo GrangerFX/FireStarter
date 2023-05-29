@@ -41,8 +41,9 @@ public:
     void ExecuteInitPopulation(bool init, bool sync = false);
     void ExecuteCode(bool init, bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, bool init, bool sync = false);
+    void ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync = false);
     void ExecuteEvolve(bool sync = false);
-	void ExecuteRandom(bool sync = false);
+    void ExecuteRandom(bool sync = false);
     void ExecuteFinish(bool sync = true);
     FireStarterExecute(FireStarterManager* manager, size_t index = 0);
 	~FireStarterExecute(void);

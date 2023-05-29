@@ -384,6 +384,24 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool ini
     }, sync);
 } // ExecuteOptimize
 
+void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync)
+{
+    Dispatch([this, &evolveCount] {
+        while (evolveCount-- > 0) {
+            FireStarterJob* job = nullptr;
+            if (Compile(job)) {
+                InitPopulation(job->m_state, FIRESTARTER_INIT_EVOLVE);
+                Optimize(job->m_state, FIRESTARTER_INIT_EVOLVE, FIRESTARTER_SKIP_VARIATIONS);
+                m_manager->AddComplete(job);
+            } else {
+                m_manager->AddFree(job);
+                m_manager->AddComplete(nullptr);
+                break;
+            }
+        }
+    }, sync);
+} // ExecuteEvolve
+
 void FireStarterExecute::ExecuteEvolve(bool sync)
 {
     Dispatch([this] {
@@ -391,11 +409,11 @@ void FireStarterExecute::ExecuteEvolve(bool sync)
         if (Compile(job)) {
             InitPopulation(job->m_state, FIRESTARTER_INIT_EVOLVE);
             Optimize(job->m_state, FIRESTARTER_INIT_EVOLVE, FIRESTARTER_SKIP_VARIATIONS);
+            m_manager->AddComplete(job);
         } else {
             m_manager->AddFree(job);
-            job = nullptr;
+            m_manager->AddComplete(nullptr);
         }
-        m_manager->AddComplete(job);
     }, sync);
 } // ExecuteEvolve
 
