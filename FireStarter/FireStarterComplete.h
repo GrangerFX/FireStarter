@@ -29,7 +29,7 @@ public:
 	bool CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult = 0.0f);
 	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
 	bool CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
-	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, size_t generation, bool sync = true);
+	bool CompleteStates(std::vector<FireStarterState>& allStates, size_t generation, bool sync = true);
 	void CompleteSolution(bool sync = false);
     FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState = true);
 	~FireStarterComplete(void);

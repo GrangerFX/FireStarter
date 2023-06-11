@@ -74,22 +74,20 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 {
 
     // Get the result.
-    FireStarterState displayState;
     static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
     bestStateMutex.lock();
     bool update = state.m_maxResult < bestState.m_maxResult;
     if (update)
         // Update the best state.
         bestState = state;
-    else
-        // Update the display state.
-        displayState = bestState;
+
+    // Update the display state.
+    FireStarterState displayState = bestState;
     bestStateMutex.unlock();
 
     // If the best state was updated, save the stat and draw the results.
     if (update) {
         // Test the current state.
-        displayState = state;
         m_testError = displayState.TestResult();
 
         // Save the new best state.
@@ -203,12 +201,13 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
     return result;
 } // CompleteState
 
-bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, size_t generation, bool sync)
+bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, size_t generation, bool sync)
 {
     bool result = false;
-    Dispatch([this, &bestState, &allStates, generation, &result] {
+    Dispatch([this, &allStates, generation, &result] {
         // Sort the states as they are received.
         size_t numStates = allStates.size();
+        FireStarterState bestState = allStates[0];
         std::vector<FireStarterState> newStates(numStates);
         for (size_t i = 0; i < numStates; i++) {
             // Get the next job in the order they are completed.
@@ -238,7 +237,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
         }
 
         // Sort the states, best first.
-        for (size_t i = 0; i < numStates - 1; i++) {
+        for (size_t i = 0; i < numStates; i++) {
             size_t minIndex = i;
             float minResult = allStates[i].m_maxResult;
             for (size_t j = i + 1; j < numStates; j++) {
@@ -253,6 +252,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                 allStates[i] = allStates[minIndex];
                 allStates[minIndex] = temp;
             }
+            allStates[i].m_index = i;
         }
     }, sync);
     return result;

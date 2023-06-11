@@ -233,16 +233,13 @@ void FireStarter::ControlEvolve(void)
         for (unsigned long long i = 0; i < allStates.size(); i++)
             allStates[i].InitState(evolveSettings, i, test);
 
-        // Setup the intial best state
-        FireStarterState bestState(allStates[0]);
-
         // Loop until the the completion condition or the host program is quit.
         unsigned int generation = 0;
         while (!WillTerminate()) {
             // Evolve a new generation for each state.
             std::atomic<unsigned long long> stateIndex = 0;
             for (FireStarterEvolve* evolve : evolveUnits)
-                evolve->EvolveStates(bestState, allStates, stateIndex, generation);
+                evolve->EvolveStates(allStates, stateIndex, generation);
 
             // Execute each state.
             std::atomic<long long> evolveCount = allStates.size();
@@ -251,14 +248,14 @@ void FireStarter::ControlEvolve(void)
 
             // Complete each state and display and sort the results.
             // This method is synchronized by default.
-            if (!complete->CompleteStates(bestState, allStates, generation))
+            if (!complete->CompleteStates(allStates, generation))
                 break;
             generation++;
         }
 
         // Optimization evolution pass.
         if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-            FireStarterStream::Optimize(m_window, bestState);
+            FireStarterStream::Optimize(m_window, allStates[0]);
     }
 
     // Cancel any waiting jobs
