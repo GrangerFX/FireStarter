@@ -155,6 +155,34 @@ public:
         m_program.RandomInstruction(seed, index);
     } // RandomInstruction
 
+    inline void Crossover(const FireStarterState& srcState, unsigned long long& seed)
+    {
+#if 1
+        unsigned int numInstructions = Settings().m_instructions;
+        unsigned int copyStart = RANDOMMOD(seed, numInstructions);
+        unsigned int copyEnd = copyStart + RANDOMMOD(seed, numInstructions);
+        for (unsigned int copyIndex = copyStart; copyIndex <= copyEnd; copyIndex++) {
+            unsigned int index = copyIndex % numInstructions;
+            m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
+        }
+#endif
+#if 0
+        unsigned int numInstructions = Settings().m_instructions;
+        unsigned int copyA = RANDOMMOD(seed, numInstructions);
+        unsigned int copyB = RANDOMMOD(seed, numInstructions);
+        unsigned int copyStart = MIN(copyA, copyB);
+        unsigned int copyEnd = MAX(copyA, copyB);
+        for (unsigned int index = copyStart; index <= copyEnd; index++)
+            m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
+#endif
+#if 0
+        unsigned int numInstructions = Settings().m_instructions;
+        unsigned int copySrc = RANDOMMOD(seed, numInstructions);
+        for (unsigned int index = copySrc; index < numInstructions; index++)
+            m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
+#endif
+    } // Crossover
+
     inline void RandomProgram(void)
     {
         m_program.RandomProgram(m_seed);
