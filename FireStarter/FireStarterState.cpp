@@ -27,7 +27,7 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code) 
     code += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     code += "{\r\n";
     code += "    FireStarterData *data = result->Data();\r\n";
-    for (unsigned int i = 0; i < m_program.m_settings.m_instructions; i++) {
+    for (unsigned int i = 0; i < m_program.m_settings.m_registers; i++) {
         float data = Result(variation)->Data()->d[i];
         if (std::isnan(data) || std::isinf(data))
             data = 0.0f;

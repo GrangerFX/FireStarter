@@ -196,9 +196,9 @@ void FireStarter::ControlEvolve(void)
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings evolveSettings;
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
-    evolveSettings.m_units = MIN(evolveSettings.m_units, FIRESTARTER_EVOLVE_SIZE);
-    evolveSettings.m_processes = MIN(evolveSettings.m_processes, FIRESTARTER_EVOLVE_SIZE);
-    std::vector<FireStarterState> allStates(FIRESTARTER_EVOLVE_SIZE);
+    evolveSettings.m_units = MIN(evolveSettings.m_units, evolveSettings.m_tests);
+    evolveSettings.m_processes = MIN(evolveSettings.m_processes, evolveSettings.m_tests);
+    std::vector<FireStarterState> allStates(evolveSettings.m_tests);
 
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(allStates.size());
@@ -222,41 +222,33 @@ void FireStarter::ControlEvolve(void)
     // Create the completion unit.
     FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
 
-    size_t firstTest = 0;
-    size_t lastTest = 0;
-    if (evolveSettings.m_tests) {
-        firstTest = 1;
-        lastTest = evolveSettings.m_tests;
+    // Randomize the entire program of each state for the first generation
+    for (unsigned long long i = 0; i < allStates.size(); i++)
+        allStates[i].InitState(evolveSettings, i, i);
+
+    // Loop until the the completion condition or the host program is quit.
+    unsigned int generation = 0;
+    while (!WillTerminate()) {
+        // Evolve a new generation for each state.
+        std::atomic<unsigned long long> stateIndex = 0;
+        for (FireStarterEvolve* evolve : evolveUnits)
+            evolve->EvolveStates(allStates, stateIndex, generation);
+
+        // Execute each state.
+        std::atomic<long long> evolveCount = allStates.size();
+        for (FireStarterExecute* execute : executionUnits)
+            execute->ExecuteEvolve(evolveCount);
+
+        // Complete each state and display and sort the results.
+        // This method is synchronized by default.
+        if (!complete->CompleteStates(allStates, generation))
+            break;
+        generation++;
     }
-    for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
-        // Randomize the entire program of each state for the first generation
-        for (unsigned long long i = 0; i < allStates.size(); i++)
-            allStates[i].InitState(evolveSettings, i, test);
 
-        // Loop until the the completion condition or the host program is quit.
-        unsigned int generation = 0;
-        while (!WillTerminate()) {
-            // Evolve a new generation for each state.
-            std::atomic<unsigned long long> stateIndex = 0;
-            for (FireStarterEvolve* evolve : evolveUnits)
-                evolve->EvolveStates(allStates, stateIndex, generation);
-
-            // Execute each state.
-            std::atomic<long long> evolveCount = allStates.size();
-            for (FireStarterExecute* execute : executionUnits)
-                execute->ExecuteEvolve(evolveCount);
-
-            // Complete each state and display and sort the results.
-            // This method is synchronized by default.
-            if (!complete->CompleteStates(allStates, generation))
-                break;
-            generation++;
-        }
-
-        // Optimization evolution pass.
-        if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-            FireStarterStream::Optimize(m_window, allStates[0]);
-    }
+    // Optimization evolution pass.
+    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
+        FireStarterStream::Optimize(m_window, allStates[0]);
 
     // Cancel any waiting jobs
     manager->Cancel();
