@@ -153,13 +153,13 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     // Copy or randomize instructions based on the quality of the previous result.
                     float oldResult = curState.m_maxResult;
                     size_t numStates = allStates.size();
-#if 1
+
                     // Best 10% crossover evolution.
-                    size_t bestStates = (numStates + 9) / 10;
+                    size_t bestStates = numStates / 10;
+                    size_t worstStates = numStates - bestStates;
                     if (index > bestStates) {
-                        size_t rank = (10 * (index - bestStates)) / (numStates - bestStates);
-                        unsigned int random = RANDOMMOD(seed, 10);
-                        if (random < rank) {
+                        size_t rank = index - bestStates;
+                        if (RANDOMMOD(seed, worstStates) <= index) {
                             const FireStarterState& randomState = allStates[RANDOMMOD(seed, bestStates)];
                             unsigned int copySrc = RANDOMMOD(seed, numInstructions);
                             for (unsigned int index = copySrc; index < numInstructions; index++)
@@ -168,7 +168,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                             curState.RandomInstruction(seed);
                     } else
                         curState.RandomInstruction(seed);
-#endif
 #if 0
                     // Random crossover evolution.
                     const FireStarterState& randomState = allStates[RANDOMMOD(seed, numStates)];

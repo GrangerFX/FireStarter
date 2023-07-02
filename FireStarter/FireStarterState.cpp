@@ -29,8 +29,9 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code) 
     code += "    FireStarterData *data = result->Data();\r\n";
     for (unsigned int i = 0; i < m_program.m_settings.m_registers; i++) {
         float data = Result(variation)->Data()->d[i];
-        if (std::isnan(data) || std::isinf(data))
-            data = 0.0f;
+// Fix or find bad data if nans are writen to the saved state variation data.
+//      if (std::isnan(data) || std::isinf(data))
+//          data = 0.0f;
         code += Format("    data->d[%u] = %ff;\r\n", i, data);
     }
     code += Format("    *(result->MinResult()) = %ff;\r\n", Result(variation)->MinResult());
