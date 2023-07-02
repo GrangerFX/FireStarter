@@ -153,7 +153,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 #if 1
                     // Best 10% crossover evolution.
                     size_t bestStates = (numStates + 9) / 10;
-                    if (index < bestStates) {
+                    if ((index > bestStates) && !RANDOMMOD(seed, 5)) {
                         const FireStarterState& randomState = allStates[RANDOMMOD(seed, bestStates)];
                         unsigned int copySrc = RANDOMMOD(seed, numInstructions);
                         for (unsigned int index = copySrc; index < numInstructions; index++)
