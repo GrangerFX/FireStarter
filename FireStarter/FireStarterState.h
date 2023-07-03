@@ -158,6 +158,7 @@ public:
     inline void Crossover(const FireStarterState& srcState, unsigned long long& seed)
     {
 #if 0
+        // The range of instructions can wrap around to the beginning.
         unsigned int numInstructions = Settings().m_instructions;
         unsigned int copyStart = RANDOMMOD(seed, numInstructions);
         unsigned int copyEnd = copyStart + RANDOMMOD(seed, numInstructions);
@@ -166,7 +167,8 @@ public:
             m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
         }
 #endif
-#if 1
+#if 0
+        // The range of instructions has a start and stopping point.
         unsigned int numInstructions = Settings().m_instructions;
         unsigned int copyA = RANDOMMOD(seed, numInstructions);
         unsigned int copyB = RANDOMMOD(seed, numInstructions);
@@ -175,7 +177,8 @@ public:
         for (unsigned int index = copyStart; index <= copyEnd; index++)
             m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
 #endif
-#if 0
+#if 1
+        // The range of instructions starts at a random point and stops at the end (original).
         unsigned int numInstructions = Settings().m_instructions;
         unsigned int copySrc = RANDOMMOD(seed, numInstructions);
         for (unsigned int index = copySrc; index < numInstructions; index++)
