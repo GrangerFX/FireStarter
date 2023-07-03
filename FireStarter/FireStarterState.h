@@ -157,7 +157,7 @@ public:
 
     inline void Crossover(const FireStarterState& srcState, unsigned long long& seed)
     {
-#if 1
+#if 0
         unsigned int numInstructions = Settings().m_instructions;
         unsigned int copyStart = RANDOMMOD(seed, numInstructions);
         unsigned int copyEnd = copyStart + RANDOMMOD(seed, numInstructions);
@@ -166,7 +166,7 @@ public:
             m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
         }
 #endif
-#if 0
+#if 1
         unsigned int numInstructions = Settings().m_instructions;
         unsigned int copyA = RANDOMMOD(seed, numInstructions);
         unsigned int copyB = RANDOMMOD(seed, numInstructions);
