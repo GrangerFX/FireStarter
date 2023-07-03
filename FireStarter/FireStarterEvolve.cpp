@@ -156,11 +156,9 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 
 #if 0
                     // Single best crossover evolution.
-                    if (RANDOMMOD(seed, numStates) < index) {
-                        unsigned int copySrc = RANDOMMOD(seed, numInstructions);
-                        for (unsigned int index = copySrc; index < numInstructions; index++)
-                            curState.m_program.EvolvedInstruction(index) = bestState.m_program.EvolvedInstruction(index);
-                    } else
+                    if (RANDOMMOD(seed, numStates) < index)
+                        curState.Crossover(bestState, seed);
+                    else
                         curState.RandomInstruction(seed);
 #endif
 #if 1
@@ -168,12 +166,9 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     size_t bestStates = numStates / 5;
                     if (index > bestStates) {
                         size_t rank = index - bestStates;
-                        if (RANDOMMOD(seed, numStates - bestStates) < index) {
-                            const FireStarterState& randomState = allStates[RANDOMMOD(seed, bestStates)];
-                            unsigned int copySrc = RANDOMMOD(seed, numInstructions);
-                            for (unsigned int index = copySrc; index < numInstructions; index++)
-                                curState.m_program.EvolvedInstruction(index) = randomState.m_program.EvolvedInstruction(index);
-                        } else
+                        if (RANDOMMOD(seed, numStates - bestStates) < index)
+                            curState.Crossover(allStates[RANDOMMOD(seed, bestStates)], seed);
+                        else
                             curState.RandomInstruction(seed);
                     } else
                         curState.RandomInstruction(seed);
@@ -181,11 +176,9 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 #if 0
                     // Random crossover evolution.
                     const FireStarterState& randomState = allStates[RANDOMMOD(seed, numStates)];
-                    if (randomState.m_maxResult < oldResult) {
-                        unsigned int copySrc = RANDOMMOD(seed, numInstructions);
-                        for (unsigned int index = copySrc; index < numInstructions; index++)
-                            curState.m_program.EvolvedInstruction(index) = randomState.m_program.EvolvedInstruction(index);
-                    } else
+                    if (randomState.m_maxResult < oldResult)
+                        curState.Crossover(randomState], seed);
+                    else
                         curState.RandomInstruction(seed);
 #endif
 #if 0
