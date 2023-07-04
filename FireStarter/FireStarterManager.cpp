@@ -4,10 +4,10 @@
 
 void FireStarterJobQueue::Add(FireStarterJob* job)
 {
-    if (!IsRunning() || WillTerminate())
+    if (!IsRunning())
         return;
     DispatchAsync([this, job] {
-        if (job) {
+        if (job && !WillTerminate()) {
             job->m_next = nullptr;
             if (m_lastJob)
                 m_lastJob->m_next = job;

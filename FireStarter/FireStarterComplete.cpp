@@ -72,7 +72,6 @@ bool FireStarterComplete::LoadSolutionTargetCode(void)
 
 bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult)
 {
-
     // Get the result.
     static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
     bestStateMutex.lock();
@@ -209,11 +208,12 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
         size_t numStates = allStates.size();
         FireStarterState bestState = allStates[0];
         std::vector<FireStarterState> newStates(numStates);
+        bool abort = false;
         for (size_t i = 0; i < numStates; i++) {
             // Get the next job in the order they are completed.
             FireStarterJob* job = m_manager->GetComplete();
             if (!job) {
-                result = false;
+                abort = true;
                 break;
             }
 
@@ -225,34 +225,36 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
             m_manager->AddFree(job);
         }
 
-        // Update the best state and display the results.
-        for (size_t i = 0; i < numStates; i++) {
-            FireStarterState& oldState = allStates[i];
-            FireStarterState& newState = newStates[oldState.m_index];
-            result |= CompleteResults(bestState, newState, oldState.m_maxResult);
-            if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
-                oldState = newState;
-                oldState.m_evolution++;
-            }
-        }
-
-        // Sort the states, best first.
-        for (size_t i = 0; i < numStates; i++) {
-            size_t minIndex = i;
-            float minResult = allStates[i].m_maxResult;
-            for (size_t j = i + 1; j < numStates; j++) {
-                float currentResult = allStates[j].m_maxResult;
-                if (currentResult < minResult) {
-                    minResult = currentResult;
-                    minIndex = j;
+        if (!abort) {
+            // Update the best state and display the results.
+            for (size_t i = 0; i < numStates; i++) {
+                FireStarterState& oldState = allStates[i];
+                FireStarterState& newState = newStates[oldState.m_index];
+                result |= CompleteResults(bestState, newState, oldState.m_maxResult);
+                if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
+                    oldState = newState;
+                    oldState.m_evolution++;
                 }
             }
-            if (minIndex != i) {
-                FireStarterState temp = allStates[i];
-                allStates[i] = allStates[minIndex];
-                allStates[minIndex] = temp;
+
+            // Sort the states, best first.
+            for (size_t i = 0; i < numStates; i++) {
+                size_t minIndex = i;
+                float minResult = allStates[i].m_maxResult;
+                for (size_t j = i + 1; j < numStates; j++) {
+                    float currentResult = allStates[j].m_maxResult;
+                    if (currentResult < minResult) {
+                        minResult = currentResult;
+                        minIndex = j;
+                    }
+                }
+                if (minIndex != i) {
+                    FireStarterState temp = allStates[i];
+                    allStates[i] = allStates[minIndex];
+                    allStates[minIndex] = temp;
+                }
+                allStates[i].m_index = i;
             }
-            allStates[i].m_index = i;
         }
     }, sync);
     return result;

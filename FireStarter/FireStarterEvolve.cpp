@@ -135,7 +135,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
         FireStarterState bestState = allStates[0];
         unsigned int numInstructions = bestState.Settings().m_instructions;
         float bestResult = bestState.m_maxResult;
-        for (unsigned long long index = stateIndex++; (index < allStates.size()) && !WillTerminate(); index = stateIndex++) {
+        for (unsigned long long index = stateIndex++; (index < allStates.size()); index = stateIndex++) {
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
                 // Clone or randomize instructions in the later generations.

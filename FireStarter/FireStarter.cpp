@@ -267,7 +267,7 @@ void FireStarter::ControlEvolve(void)
     delete manager;
 
     // Optimization evolution pass.
-    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
+    if (FIRESTARTER_SECOND_PASS && !WillTerminate())
         FireStarterStream::Optimize(m_window, allStates[0]);
 } // ControlEvolve
 

@@ -19,8 +19,8 @@ bool FireStarterCompiler::Compile(FireStarterManager* manager)
             delete job;
             job = nullptr;
         }
-        manager->AddCompile(job);
     }
+    manager->AddCompile(job);
     return job != nullptr;
 } // void
 
@@ -34,7 +34,7 @@ void FireStarterCompiler::CompileJob(FireStarterManager* manager, bool sync)
 void FireStarterCompiler::CompilerLocal(void)
 {
     DispatchAsync([this] {
-        while (!WillTerminate() && Compile(m_manager)) {}
+        while (Compile(m_manager)) {}
     });
 } // CompilerLocal
 
