@@ -149,76 +149,18 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 if (!generation)
                     curState.RandomProgram(seed);
                 else {
-
                     // Copy or randomize instructions based on the quality of the previous result.
                     float oldResult = curState.m_maxResult;
                     size_t numStates = allStates.size();
 
-#if 0
-                    // Single best crossover evolution.
-                    if (RANDOMMOD(seed, numStates) < index)
-                        curState.Crossover(bestState, seed);
-                    else
-                        curState.RandomInstruction(seed);
-#endif
-#if 1
-                    // Best 10% crossover evolution.
-//                    size_t bestStates = (numStates + 9) / 10; // (7)
-                    // Best 5% crossover evolution.
-//                    size_t bestStates = numStates / 5; // (12)
-                    // Best n crossover evolution.
+                    // Best n evolution.
                     size_t bestStates = 12;
                     if (index > bestStates) {
                         size_t rank = index - bestStates;
                         if (RANDOMMOD(seed, numStates - bestStates) < index)
-                            curState.Crossover(allStates[RANDOMMOD(seed, bestStates)], seed);
-                        else
-                            curState.RandomInstruction(seed);
-                    } else
-                        curState.RandomInstruction(seed);
-#endif
-#if 0
-                    // Random crossover evolution.
-                    const FireStarterState& randomState = allStates[RANDOMMOD(seed, numStates)];
-                    if (randomState.m_maxResult < oldResult)
-                        curState.Crossover(randomState], seed);
-                    else
-                        curState.RandomInstruction(seed);
-#endif
-#if 0
-                    // Random evolution.
-                    if (numStates == 1) {
-                        // Randomize a random set of instuctions.
-                        unsigned int randomNum = 4; // RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
-                        while (randomNum--)
-                            curState.RandomInstruction(seed);
-                    } else {
-                        if (oldResult > bestResult * 4.0f) {
-                            // Copy the best state and randomize one instruction.
-                            curState.m_program = bestState.m_program;
-                            curState.RandomInstruction(seed);
-                        } else if (oldResult > bestResult * 2.0f) {
-                            // Copy a range of instuctions from the best state.
-                            unsigned int copyNum = RANDOMMOD(seed, min(numInstructions, 8));
-                            unsigned int copySrc = RANDOMMOD(seed, numInstructions);
-                            unsigned int copyDst = RANDOMMOD(seed, numInstructions);
-                            while (copyNum--) {
-                                curState.m_program.EvolvedInstruction(copyDst++) = bestState.m_program.EvolvedInstruction(copySrc++);
-                                copySrc %= numInstructions;
-                                copyDst %= numInstructions;
-                            }
-                            curState.RandomInstruction(seed);
-                        } else {
-                            // Randomize a range of instuctions.
-                            unsigned int randomNum = RANDOMMOD(seed, min(numInstructions, age / 4 + 1));
-                            unsigned int randomDst = RANDOMMOD(seed, numInstructions);
-                            while (randomNum--) {
-                                curState.RandomInstruction(seed, randomDst++);
-                                randomDst %= numInstructions;
-                            }
-                        }
+                            curState.CopyInstructions(allStates[RANDOMMOD(seed, bestStates)]);
                     }
-#endif
+                    curState.RandomInstruction(seed);
                 }
 
                 // Optimize the program registers.

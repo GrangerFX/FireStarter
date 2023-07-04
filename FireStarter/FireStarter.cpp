@@ -246,10 +246,6 @@ void FireStarter::ControlEvolve(void)
         generation++;
     }
 
-    // Optimization evolution pass.
-    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
-        FireStarterStream::Optimize(m_window, allStates[0]);
-
     // Cancel any waiting jobs
     manager->Cancel();
 
@@ -269,6 +265,10 @@ void FireStarter::ControlEvolve(void)
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
+
+    // Optimization evolution pass.
+    if (!WillTerminate() && FIRESTARTER_SECOND_PASS)
+        FireStarterStream::Optimize(m_window, allStates[0]);
 } // ControlEvolve
 
 void FireStarter::ControlSolution(void)

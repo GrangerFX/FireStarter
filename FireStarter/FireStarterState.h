@@ -155,40 +155,13 @@ public:
         m_program.RandomInstruction(seed, index);
     } // RandomInstruction
 
-    inline void Crossover(const FireStarterState& srcState, unsigned long long& seed)
+    inline void CopyInstructions(const FireStarterState& srcState)
     {
-        unsigned int numInstructions = Settings().m_instructions;
-#if 0
-        // The range of instructions can wrap around to the beginning.
-        unsigned int copyStart = RANDOMMOD(seed, numInstructions);
-        unsigned int copyEnd = copyStart + RANDOMMOD(seed, numInstructions);
-        for (unsigned int copyIndex = copyStart; copyIndex <= copyEnd; copyIndex++) {
-            unsigned int index = copyIndex % numInstructions;
-            m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
-        }
-#endif
-#if 0
-        // The range of instructions has a start and stopping point.
-        unsigned int copyA = RANDOMMOD(seed, numInstructions);
-        unsigned int copyB = RANDOMMOD(seed, numInstructions);
-        unsigned int copyStart = MIN(copyA, copyB);
-        unsigned int copyEnd = MAX(copyA, copyB);
-        for (unsigned int index = copyStart; index <= copyEnd; index++)
-            m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
-#endif
-#if 0
-        // The range of instructions starts at a random point and stops at the end (original).
-        unsigned int copySrc = RANDOMMOD(seed, numInstructions);
-        for (unsigned int index = copySrc; index < numInstructions; index++)
-            m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
-#endif
-#if 1
         // Simple copy and randomize one instruction for comparison.
+        unsigned int numInstructions = Settings().m_instructions;
         for (unsigned int index = 0; index < numInstructions; index++)
             m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
-        RandomInstruction(seed);
-#endif
-    } // Crossover
+    } // CopyInstructions
 
     inline void RandomProgram(void)
     {
