@@ -143,7 +143,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 // Clone or randomize instructions in the later generations.
                 FireStarterState& curState = job->m_state;
                 curState = allStates[index];
-                size_t age = generation - curState.m_generation;
                 curState.m_generation = generation;
 
                 // Randomize each generation and index.
@@ -157,16 +156,18 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 
                     // Optimize the program registers.
                     curState.m_program.OptimizeRegisters();
+
+                    // Add the instructions to the set of unique instructions.
+                    testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                 } else {
                     // Copy or randomize instructions based on the quality of the previous result.
-                    // Keep randomizing instructions until a unique instruction set is found.
                     size_t randomCount = 0;
+                    size_t copyIndex = (index > bestStates) && (RANDOMMOD(seed, numStates - bestStates) < index) ? RANDOMMOD(seed, bestStates) : index;
+
+                    // Keep randomizing instructions until a unique instruction set is found.
                     do {
                         // Best n evolution.
-                        if ((index > bestStates) && RANDOMMOD(seed, numStates - bestStates) < index)
-                            curState.CopyInstructions(allStates[RANDOMMOD(seed, bestStates)]);
-                        else
-                            curState.CopyInstructions(allStates[index]);
+                        curState.CopyInstructions(allStates[copyIndex]);
  
                         // Randomize at least one instruction.
                         curState.RandomInstruction(seed);
@@ -177,6 +178,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // Make sure the instructions are unique.
                         testMutex.lock();
                         if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
+                            // Add the instructions to the set of unique instructions.
                             testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                             found = true;
                         }
