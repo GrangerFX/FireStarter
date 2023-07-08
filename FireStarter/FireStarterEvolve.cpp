@@ -134,6 +134,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
     static std::mutex testMutex;
     Dispatch([this, &allStates, &stateIndex, testedInstructions, generation] {
         FireStarterState bestState = allStates[0];
+        size_t numStates = allStates.size();
         unsigned int numInstructions = bestState.Settings().m_instructions;
         float bestResult = bestState.m_maxResult;
         for (unsigned long long index = stateIndex++; (index < allStates.size()); index = stateIndex++) {
@@ -152,24 +153,21 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 if (!generation) {
                     // Randomize the program for the first generation.
                     curState.RandomProgram(seed);
+                    curState.m_generation = generation;
 
                     // Optimize the program registers.
                     curState.m_program.OptimizeRegisters();
                 } else {
                     // Copy or randomize instructions based on the quality of the previous result.
-                    float oldResult = curState.m_maxResult;
-                    size_t numStates = allStates.size();
-
-                    // Best n evolution.
-                    if (index > bestStates) {
-                        size_t rank = index - bestStates;
-                        if (RANDOMMOD(seed, numStates - bestStates) < index)
-                            curState.CopyInstructions(allStates[RANDOMMOD(seed, bestStates)]);
-                    }
-
                     // Keep randomizing instructions until a unique instruction set is found.
                     size_t randomCount = 0;
                     do {
+                        // Best n evolution.
+                        if ((index > bestStates) && RANDOMMOD(seed, numStates - bestStates) < index)
+                            curState.CopyInstructions(allStates[RANDOMMOD(seed, bestStates)]);
+                        else
+                            curState.CopyInstructions(allStates[index]);
+ 
                         // Randomize at least one instruction.
                         curState.RandomInstruction(seed);
 
