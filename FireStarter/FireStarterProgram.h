@@ -31,6 +31,16 @@ public:
         return *this;
     } // operator =
 
+    inline const std::vector<unsigned char>& EvolvedInstructionsData(void) const
+    {
+        return m_evolvedInstructionsData;
+    } // EvolvedInstructionsData
+
+    inline const std::vector<unsigned char>& OptimizedInstructionsData(void) const
+    {
+        return m_optimizedInstructionsData;
+    } // OptimizedInstructionsData
+
     inline FireStarterInstructions* EvolvedInstructions(void)
     {
         return (FireStarterInstructions*)m_evolvedInstructionsData.data();

@@ -199,6 +199,7 @@ void FireStarter::ControlEvolve(void)
     evolveSettings.m_units = MIN(evolveSettings.m_units, evolveSettings.m_tests);
     evolveSettings.m_processes = MIN(evolveSettings.m_processes, evolveSettings.m_tests);
     std::vector<FireStarterState> allStates(evolveSettings.m_tests);
+    TestedInstructions testedInstructions;
 
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager(allStates.size());
@@ -232,7 +233,7 @@ void FireStarter::ControlEvolve(void)
         // Evolve a new generation for each state.
         std::atomic<unsigned long long> stateIndex = 0;
         for (FireStarterEvolve* evolve : evolveUnits)
-            evolve->EvolveStates(allStates, stateIndex, generation);
+            evolve->EvolveStates(allStates, stateIndex, &testedInstructions, generation);
 
         // Execute each state.
         std::atomic<long long> evolveCount = allStates.size();

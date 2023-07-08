@@ -126,12 +126,13 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
     return true;
 } // EvolveState
 
-bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, std::atomic<unsigned long long>& stateIndex, unsigned long long generation, bool sync)
+bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, std::atomic<unsigned long long>& stateIndex, TestedInstructions* testedInstructions, unsigned long long generation, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
-    
-    Dispatch([this, &allStates, &stateIndex, generation] {
+
+    static std::mutex testMutex;
+    Dispatch([this, &allStates, &stateIndex, testedInstructions, generation] {
         FireStarterState bestState = allStates[0];
         unsigned int numInstructions = bestState.Settings().m_instructions;
         float bestResult = bestState.m_maxResult;
@@ -146,25 +147,47 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 
                 // Randomize each generation and index.
                 unsigned long long seed = curState.InitGenerationSeed();
-                if (!generation)
+                size_t bestStates = 12;
+                bool found = false;
+                if (!generation) {
+                    // Randomize the program for the first generation.
                     curState.RandomProgram(seed);
-                else {
+
+                    // Optimize the program registers.
+                    curState.m_program.OptimizeRegisters();
+                } else {
                     // Copy or randomize instructions based on the quality of the previous result.
                     float oldResult = curState.m_maxResult;
                     size_t numStates = allStates.size();
 
                     // Best n evolution.
-                    size_t bestStates = 12;
                     if (index > bestStates) {
                         size_t rank = index - bestStates;
                         if (RANDOMMOD(seed, numStates - bestStates) < index)
                             curState.CopyInstructions(allStates[RANDOMMOD(seed, bestStates)]);
                     }
-                    curState.RandomInstruction(seed);
-                }
 
-                // Optimize the program registers.
-                curState.m_program.OptimizeRegisters();
+                    // Keep randomizing instructions until a unique instruction set is found.
+                    size_t randomCount = 0;
+                    do {
+                        // Randomize at least one instruction.
+                        curState.RandomInstruction(seed);
+
+                        // Optimize the program registers.
+                        curState.m_program.OptimizeRegisters();
+
+                        // Make sure the instructions are unique.
+                        testMutex.lock();
+                        if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
+                            testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
+                            found = true;
+                        }
+                        testMutex.unlock();
+
+                        // randomCount makes sure this is not an endless loop.
+                        randomCount++;
+                    } while (!found && (randomCount < 10));
+                }
 
                 // Generate the evaluate code
                 std::string evaluateCode;
