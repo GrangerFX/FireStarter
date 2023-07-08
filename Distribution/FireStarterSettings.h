@@ -11,11 +11,8 @@
 #define FIRESTARTER_AUTO_PROCESS 0
 #define FIRESTARTER_OUTPUT_HASH  0
 
-#define FIRESTARTER_SEED         0
-//#define FIRESTARTER_SEED         3533
-//#define FIRESTARTER_SEED         10484
-
-#define FIRESTARTER_OPTIMIZATION_SEED 0 // Set the optimization seed or comment out to use the main seed.
+#define FIRESTARTER_SEED         1  // Set the main instruction seed.
+#define FIRESTARTER_OPTIMIZATION_SEED FIRESTARTER_SEED // Set the optimization seed or comment out continue the main seed.
 
 #define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_CODE     1
@@ -122,8 +119,8 @@
 #define FIRESTARTER_EVOLVE_SEED             FIRESTARTER_SEED
 #define FIRESTARTER_EVOLVE_SEEDS            1
 #define FIRESTARTER_EVOLVE_TESTS            64
-#define FIRESTARTER_EVOLVE_UNITS            4
-#define FIRESTARTER_EVOLVE_PROCESSES        0
+#define FIRESTARTER_EVOLVE_UNITS            8
+#define FIRESTARTER_EVOLVE_PROCESSES        8
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
 #define FIRESTARTER_EVOLVE_ITERATIONS       64
 #define FIRESTARTER_EVOLVE_CANDIDATES       16
