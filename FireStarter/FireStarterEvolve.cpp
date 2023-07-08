@@ -164,7 +164,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     size_t randomCount = 0;
                     size_t copyIndex = (index > bestStates) && (RANDOMMOD(seed, numStates - bestStates) < index) ? RANDOMMOD(seed, bestStates) : index;
 
-                    // Keep randomizing instructions until a unique instruction set is found.
+                    // Keep copying and randomizing instructions until a unique set of instructions is found.
                     do {
                         // Best n evolution.
                         curState.CopyInstructions(allStates[copyIndex]);
