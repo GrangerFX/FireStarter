@@ -176,7 +176,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         curState.m_program.OptimizeRegisters();
 
                         // Make sure the instructions are unique.
-#if 0
+#if 1
                         testMutex.lock();
                         if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
                             // Add the instructions to the set of unique instructions.
@@ -191,6 +191,8 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // randomCount makes sure this is not an endless loop.
                         randomCount++;
                     } while (!found && (randomCount < 10));
+                    if (randomCount > 1)
+                        printf("generation:%d  index:%d  randomCount=%d\n", generation, index, randomCount);
                 }
 
                 // Generate the evaluate code

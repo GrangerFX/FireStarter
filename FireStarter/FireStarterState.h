@@ -98,6 +98,11 @@ public:
         return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + generation) + test);
     } // OptimizationSeed
 
+    inline unsigned long long OptimizationSeed2(unsigned long long generation, unsigned long long test = 0) const
+    {
+        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_generation) + generation) + test);
+    } // OptimizationSeed
+
     inline unsigned long long GenerationSeed(void) const
     {
         return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
