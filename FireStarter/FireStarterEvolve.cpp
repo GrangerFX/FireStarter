@@ -176,14 +176,16 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         curState.m_program.OptimizeRegisters();
 
                         // Make sure the instructions are unique.
-#if 0
-                        testMutex.lock();
-                        if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
-                            // Add the instructions to the set of unique instructions.
-                            testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
-                            found = true;
+#if 1
+                        if (index > bestStates) {
+                            testMutex.lock();
+                            if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
+                                // Add the instructions to the set of unique instructions.
+                                testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
+                                found = true;
+                            }
+                            testMutex.unlock();
                         }
-                        testMutex.unlock();
 #else
                         found = true;
 #endif
