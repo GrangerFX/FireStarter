@@ -10,10 +10,10 @@
 #define FIRESTARTER_GENERATE_GPU  1
 #define FIRESTARTER_AUTO_PROCESS  0
 #define FIRESTARTER_OUTPUT_HASH   0
-#define FIRESTARTER_EVOLVE_UNIQUE 0  // Set to 1 to only evolve unique instructions
-#define FIRESTARTER_EVOLVE_RANGE  0  // Set to 1 to copy only in a limited range above the current index.
-#define FIRESTARTER_SEED          0  // Set the main instruction seed.
-//#define FIRESTARTER_OPTIMIZATION_SEED FIRESTARTER_SEED // Set the optimization seed or comment out use the main seed.
+#define FIRESTARTER_EVOLVE_UNIQUE 1  // Set to 1 to only evolve unique instructions
+#define FIRESTARTER_EVOLVE_RANGE  1  // Set to 1 to copy only in a limited range above the current index.
+#define FIRESTARTER_SEED          1  // Set the main instruction seed.
+#define FIRESTARTER_OPTIMIZATION_SEED FIRESTARTER_SEED // Set the optimization seed or comment out use the main seed.
 
 #define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_CODE     1
