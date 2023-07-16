@@ -172,7 +172,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     // Keep copying and randomizing instructions until a unique set of instructions is found.
                     do {
                         // Best n evolution.
-                        curState.EvolveInstructions(allStates[copyIndex], FIRESTSRTER_EVOLVE_MODE, seed);
+                        curState.EvolveInstructions(allStates[copyIndex], FIRESTARTER_EVOLVE_MODE, seed);
  
                         // Optimize the program registers.
                         curState.m_program.OptimizeRegisters();

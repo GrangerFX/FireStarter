@@ -342,6 +342,25 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     return false;
 } // Compile
 
+bool FireStarterExecute::Evolve(void)
+{
+    FireStarterJob* job = nullptr;
+    if (Compile(job)) {
+        InitPopulation(job->m_state, FIRESTARTER_EVOLVE_INIT);
+        bool init = true;
+        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_OPTIMIZE; i++) {
+            Optimize(job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
+            init = false;
+        }
+        m_manager->AddComplete(job);
+        return true;
+    }
+
+    m_manager->AddFree(job);
+    m_manager->AddComplete(nullptr);
+    return false;
+} // Evolve
+
 void FireStarterExecute::ExecuteCompile(bool sync)
 {
     Dispatch([this] {
@@ -388,16 +407,8 @@ void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount, bool
 {
     Dispatch([this, &evolveCount] {
         while (evolveCount-- > 0) {
-            FireStarterJob* job = nullptr;
-            if (Compile(job)) {
-                InitPopulation(job->m_state, FIRESTARTER_INIT_EVOLVE);
-                Optimize(job->m_state, FIRESTARTER_INIT_EVOLVE, FIRESTARTER_SKIP_VARIATIONS);
-                m_manager->AddComplete(job);
-            } else {
-                m_manager->AddFree(job);
-                m_manager->AddComplete(nullptr);
+            if (!Evolve())
                 break;
-            }
         }
     }, sync);
 } // ExecuteEvolve
@@ -405,15 +416,7 @@ void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount, bool
 void FireStarterExecute::ExecuteEvolve(bool sync)
 {
     Dispatch([this] {
-        FireStarterJob* job = nullptr;
-        if (Compile(job)) {
-            InitPopulation(job->m_state, FIRESTARTER_INIT_EVOLVE);
-            Optimize(job->m_state, FIRESTARTER_INIT_EVOLVE, FIRESTARTER_SKIP_VARIATIONS);
-            m_manager->AddComplete(job);
-        } else {
-            m_manager->AddFree(job);
-            m_manager->AddComplete(nullptr);
-        }
+        Evolve();
     }, sync);
 } // ExecuteEvolve
 

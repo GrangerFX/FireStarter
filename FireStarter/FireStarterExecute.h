@@ -35,6 +35,7 @@ private:
     void Code(FireStarterState& state, bool init);
     void Optimize(FireStarterState& state, bool init, bool skipVariations);
     bool Compile(FireStarterJob* &job);
+    bool Evolve(void);
 
 public:
     void ExecuteCompile(bool sync = false);

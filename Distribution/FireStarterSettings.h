@@ -6,14 +6,16 @@
 #define FIRESTARTER_INSTRUCTIONS  32
 #define FIRESTARTER_REGISTERS     29
 #define FIRESTARTER_SECOND_PASS   1
-#define FIRESTARTER_INIT_EVOLVE   1
 #define FIRESTARTER_GENERATE_GPU  1
 #define FIRESTARTER_AUTO_PROCESS  0
 #define FIRESTARTER_OUTPUT_HASH   0
-#define FIRESTARTER_EVOLVE_UNIQUE 0  // Set to 1 to only evolve unique instructions
-#define FIRESTARTER_EVOLVE_RANGE  0  // Set to 1 to copy only in a limited range above the current index.
 #define FIRESTARTER_SEED          0  // Set the main instruction seed.
 #define FIRESTARTER_OPTIMIZATION_SEED FIRESTARTER_SEED // Set the optimization seed or comment out use the main seed.
+
+#define FIRESTARTER_EVOLVE_INIT   1
+#define FIRESTARTER_EVOLVE_OPTIMIZE 4  // Number of times to run Optimize.
+#define FIRESTARTER_EVOLVE_UNIQUE   0  // Set to 1 to only evolve unique instructions
+#define FIRESTARTER_EVOLVE_RANGE    0  // Set to 1 to copy only in a limited range above the current index.
 
 #define FIRESTARTER_EVOLVE_MODE_COPY             0
 #define FIRESTARTER_EVOLVE_MODE_CROSSOVER_FIRST  1
@@ -21,7 +23,7 @@
 #define FIRESTARTER_EVOLVE_MODE_CROSSOVER_MIDDLE 3
 #define FIRESTARTER_EVOLVE_MODE_CROSSOVER_WRAP   4
 #define FIRESTARTER_EVOLVE_MODE_CROSSOVER_RANDOM 5
-#define FIRESTSRTER_EVOLVE_MODE FIRESTARTER_EVOLVE_MODE_CROSSOVER_RANDOM
+#define FIRESTARTER_EVOLVE_MODE FIRESTARTER_EVOLVE_MODE_CROSSOVER_RANDOM
 
 #define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_CODE     1
