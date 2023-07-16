@@ -346,8 +346,8 @@ bool FireStarterExecute::Evolve(void)
 {
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
-        InitPopulation(job->m_state, FIRESTARTER_EVOLVE_INIT);
-        bool init = true;
+        bool init = FIRESTARTER_EVOLVE_INIT;
+        InitPopulation(job->m_state, init);
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_OPTIMIZE; i++) {
             Optimize(job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
             init = false;
