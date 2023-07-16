@@ -145,6 +145,15 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
             settingsText += "\r\n";
         }
 
+        // Copy FireStarterSettings.h
+        static std::string settingsPath;
+        if (settingsPath.empty()) {
+            settingsPath = Format("Logs\\FireStarterSettings_%s_%s.h", FileNameDate().c_str(), settings.Mode());
+            std::string settingsCode;
+            if (!FireStarterCode::LoadCode("FireSettings.h", settingsCode))
+                FireStarterCode::SaveCode(settingsPath, settingsCode);
+        }
+
 #if FIRESTARTER_OUTPUT_HASH
         // Create the hash file.
         static std::string hashFilePath;
