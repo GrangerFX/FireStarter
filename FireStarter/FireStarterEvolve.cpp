@@ -172,16 +172,15 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     // Keep copying and randomizing instructions until a unique set of instructions is found.
                     do {
                         // Best n evolution.
-                        curState.CopyInstructions(allStates[copyIndex]);
+                        curState.EvolveInstructions(allStates[copyIndex], FIRESTSRTER_EVOLVE_MODE, seed);
  
-                        // Randomize at least one instruction.
-                        curState.RandomInstruction(seed);
-
                         // Optimize the program registers.
                         curState.m_program.OptimizeRegisters();
 
                         // Make sure the instructions are unique.
 #if FIRESTARTER_EVOLVE_UNIQUE
+                        if (randomCount > 2)
+                            curState.RandomInstruction(seed);
                         testMutex.lock();
                         if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
                             // Add the instructions to the set of unique instructions.

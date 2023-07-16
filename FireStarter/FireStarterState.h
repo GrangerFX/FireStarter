@@ -167,6 +167,56 @@ public:
             m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
     } // CopyInstructions
 
+    inline void EvolveInstructions(const FireStarterState& srcState, unsigned int mode, unsigned long long& seed)
+    {
+        // Evolve a range of instructions.
+        unsigned int numInstructions = Settings().m_instructions;
+        unsigned int startCross, endCross, shiftCross;
+        switch (mode) {
+            case FIRESTARTER_EVOLVE_MODE_COPY:
+                startCross = 0;
+                endCross = numInstructions;
+                shiftCross = 0;
+                break;
+            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_FIRST:
+                startCross = 0;
+                endCross = RANDOMMOD(seed, numInstructions) + 1;
+                shiftCross = 0;
+                break;
+            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_MIDDLE:
+                startCross = RANDOMMOD(seed, numInstructions);
+                endCross = startCross + RANDOMMOD(seed, numInstructions) / 2 + 1;
+                if (endCross > numInstructions)
+                    endCross = numInstructions;
+                shiftCross = 0;
+                break;
+            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_LAST:
+                startCross = RANDOMMOD(seed, numInstructions);
+                endCross = numInstructions;
+                shiftCross = 0;
+                break;
+            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_WRAP:
+                startCross = RANDOMMOD(seed, numInstructions);
+                endCross = startCross + RANDOMMOD(seed, numInstructions) + 1;
+                shiftCross = 0;
+                break;
+            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_RANDOM:
+                startCross = RANDOMMOD(seed, numInstructions);
+                endCross = startCross + RANDOMMOD(seed, numInstructions) + 1;
+                shiftCross = RANDOMMOD(seed, numInstructions);
+                break;
+        }
+        for (unsigned int i = startCross; i < endCross; i++) {
+            unsigned int srcIndex = i % numInstructions;
+            unsigned int dstIndex = (i + shiftCross) % numInstructions;
+            m_program.EvolvedInstruction(dstIndex) = srcState.m_program.EvolvedInstruction(srcIndex);
+        }
+
+        // Randomize at least one instruction if all instructions are copied.
+        if (endCross - startCross == numInstructions)
+            RandomInstruction(seed);
+    } // EvolveInstructions
+
     inline void RandomProgram(void)
     {
         m_program.RandomProgram(m_seed);
