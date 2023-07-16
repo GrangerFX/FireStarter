@@ -12,7 +12,7 @@
 #define FIRESTARTER_SEED          0  // Set the main instruction seed.
 #define FIRESTARTER_OPTIMIZATION_SEED FIRESTARTER_SEED // Set the optimization seed or comment out use the main seed.
 
-#define FIRESTARTER_EVOLVE_INIT   1
+#define FIRESTARTER_EVOLVE_INIT     1
 #define FIRESTARTER_EVOLVE_OPTIMIZE 4  // Number of times to run Optimize.
 #define FIRESTARTER_EVOLVE_UNIQUE   0  // Set to 1 to only evolve unique instructions
 #define FIRESTARTER_EVOLVE_RANGE    0  // Set to 1 to copy only in a limited range above the current index.
