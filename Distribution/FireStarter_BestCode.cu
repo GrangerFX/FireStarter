@@ -5,11 +5,11 @@
 #include "CUDADefines.h"
 
 // EVALUATE //
-// Run date: 07/16/23 11:23:11 Pacific Daylight Time
-// Run duration = 1696.379191 seconds
-// Run generation = 9
+// Run date: 07/17/23 11:03:17 Pacific Daylight Time
+// Run duration = 40.795953 seconds
+// Run generation = 1
 // Run evolution = 0
-// Run result = 0.00000036
+// Run result = 0.00003362
 // Run variations = 3
 // Run samples = 15
 // Run instructions = 32
@@ -24,8 +24,8 @@
 // Run seed = 0
 // Run optimizeSeed = 0
 // Run seeds = 1
-// Run tests = 0
-// Run units = 1
+// Run tests = 64
+// Run units = 8
 // Run processes = 0
 // Run population = 278528
 // Run iterations = 64
@@ -38,30 +38,30 @@
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-// Variation: 0  result = 0.00000036
+// Variation: 0  result = 0.00000602
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -0.359438f;
-    data->d[1] = 1.129209f;
-    data->d[2] = -1.226878f;
-    data->d[3] = 0.185350f;
-    data->d[4] = 2.510312f;
-    data->d[5] = 0.593221f;
-    data->d[6] = -0.009572f;
-    data->d[7] = -0.646594f;
-    data->d[8] = 6.986971f;
-    data->d[9] = 1.864675f;
-    data->d[10] = -0.909415f;
-    data->d[11] = -3.126686f;
-    data->d[12] = 2.764864f;
-    data->d[13] = 1.305111f;
-    data->d[14] = -1.763884f;
-    data->d[15] = 1.005313f;
-    data->d[16] = -1.619314f;
-    data->d[17] = -0.678116f;
-    data->d[18] = -1.640521f;
-    data->d[19] = -0.086170f;
+    data->d[0] = -0.333952f;
+    data->d[1] = 1.049140f;
+    data->d[2] = -1.189286f;
+    data->d[3] = 0.207841f;
+    data->d[4] = 2.736475f;
+    data->d[5] = -0.135297f;
+    data->d[6] = 0.080149f;
+    data->d[7] = -1.614588f;
+    data->d[8] = 1.571697f;
+    data->d[9] = 1.938579f;
+    data->d[10] = -1.049123f;
+    data->d[11] = -0.211926f;
+    data->d[12] = 1.716920f;
+    data->d[13] = 1.772249f;
+    data->d[14] = -2.575528f;
+    data->d[15] = 1.043569f;
+    data->d[16] = -1.663315f;
+    data->d[17] = -0.768558f;
+    data->d[18] = -1.658159f;
+    data->d[19] = 0.279846f;
     data->d[20] = -0.000000f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
@@ -71,34 +71,34 @@ inline void LoadVariation0(FireStarterResult* result)
     data->d[26] = 0.000000f;
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
-    *(result->MinResult()) = 0.000000f;
+    *(result->MinResult()) = 0.000006f;
 } // LoadVariation0
 
-// Variation: 1  result = 0.00000036
+// Variation: 1  result = 0.00000489
 inline void LoadVariation1(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -0.280635f;
-    data->d[1] = 0.867347f;
-    data->d[2] = -0.036569f;
-    data->d[3] = -0.219538f;
-    data->d[4] = 38383.617188f;
-    data->d[5] = -0.172810f;
-    data->d[6] = 0.015901f;
-    data->d[7] = -3.290998f;
-    data->d[8] = 8.329458f;
-    data->d[9] = 0.045956f;
-    data->d[10] = -1.273665f;
-    data->d[11] = 28.957569f;
-    data->d[12] = 0.152025f;
-    data->d[13] = 0.250888f;
-    data->d[14] = 6.012061f;
-    data->d[15] = 0.169983f;
-    data->d[16] = -0.022528f;
-    data->d[17] = -0.884758f;
-    data->d[18] = 0.280668f;
-    data->d[19] = 78.642044f;
-    data->d[20] = -0.118132f;
+    data->d[0] = 0.244510f;
+    data->d[1] = -0.755697f;
+    data->d[2] = 0.201672f;
+    data->d[3] = 0.863218f;
+    data->d[4] = -1.576042f;
+    data->d[5] = 1.422696f;
+    data->d[6] = 3.267354f;
+    data->d[7] = -2.718297f;
+    data->d[8] = 0.488812f;
+    data->d[9] = 0.518904f;
+    data->d[10] = 0.122905f;
+    data->d[11] = -0.284106f;
+    data->d[12] = -1.587759f;
+    data->d[13] = 2.027934f;
+    data->d[14] = 1.174542f;
+    data->d[15] = -0.655775f;
+    data->d[16] = -0.911129f;
+    data->d[17] = 0.568655f;
+    data->d[18] = 0.039767f;
+    data->d[19] = -1.982097f;
+    data->d[20] = -0.118131f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
     data->d[23] = 0.000000f;
@@ -107,34 +107,34 @@ inline void LoadVariation1(FireStarterResult* result)
     data->d[26] = 0.000000f;
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
-    *(result->MinResult()) = 0.000000f;
+    *(result->MinResult()) = 0.000005f;
 } // LoadVariation1
 
-// Variation: 2  result = 0.00000013
+// Variation: 2  result = 0.00003362
 inline void LoadVariation2(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = 0.031613f;
-    data->d[1] = -0.082764f;
-    data->d[2] = 0.211417f;
-    data->d[3] = -5285.549316f;
-    data->d[4] = -0.061690f;
-    data->d[5] = -1.391893f;
-    data->d[6] = -1.800471f;
-    data->d[7] = -0.057035f;
-    data->d[8] = -0.091409f;
-    data->d[9] = -0.375238f;
-    data->d[10] = 0.378389f;
-    data->d[11] = -8.816702f;
-    data->d[12] = 10.136587f;
-    data->d[13] = 0.097068f;
-    data->d[14] = 4.766694f;
-    data->d[15] = -2.282290f;
-    data->d[16] = 0.078108f;
-    data->d[17] = -0.052428f;
-    data->d[18] = -0.153066f;
-    data->d[19] = -0.080296f;
-    data->d[20] = 0.523599f;
+    data->d[0] = -0.571336f;
+    data->d[1] = 1.495760f;
+    data->d[2] = -1.693300f;
+    data->d[3] = -0.218446f;
+    data->d[4] = 0.293955f;
+    data->d[5] = 0.929553f;
+    data->d[6] = 0.884983f;
+    data->d[7] = 3.512766f;
+    data->d[8] = 0.001847f;
+    data->d[9] = 1.720495f;
+    data->d[10] = 1.674329f;
+    data->d[11] = -1.360176f;
+    data->d[12] = 0.993792f;
+    data->d[13] = -0.878545f;
+    data->d[14] = 0.275126f;
+    data->d[15] = 1.518828f;
+    data->d[16] = -0.337460f;
+    data->d[17] = -0.236216f;
+    data->d[18] = -1.614575f;
+    data->d[19] = 0.620126f;
+    data->d[20] = 0.523620f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
     data->d[23] = 0.000000f;
@@ -143,7 +143,7 @@ inline void LoadVariation2(FireStarterResult* result)
     data->d[26] = 0.000000f;
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
-    *(result->MinResult()) = 0.000000f;
+    *(result->MinResult()) = 0.000034f;
 } // LoadVariation2
 
 inline float Evaluate(FireStarterData data, float n)
