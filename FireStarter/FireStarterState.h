@@ -169,11 +169,23 @@ public:
 
     inline void EvolveInstructions(const FireStarterState& srcState, unsigned int mode, unsigned long long& seed)
     {
-#if FIRESTARTER_EVOLVE_RANDOM
-        RandomProgram(seed);
-#else
-        // Evolve a range of instructions.
         unsigned int numInstructions = Settings().m_instructions;
+        
+        // Copy evolution.
+        if (mode == FIRESTARTER_EVOLVE_MODE_COPY) {
+            for (unsigned int i = 0; i < numInstructions; i++)
+                m_program.EvolvedInstruction(i) = srcState.m_program.EvolvedInstruction(i);
+            RandomInstruction(seed);
+            return;
+        }
+
+        // Random evolution.
+        if (mode == FIRESTARTER_EVOLVE_MODE_RANDOM) {
+            RandomProgram(seed);
+            return;
+        }
+
+        // Evolve a range of instructions.
         unsigned int startCross, endCross, shiftCross;
         switch (mode) {
             case FIRESTARTER_EVOLVE_MODE_COPY:
@@ -214,11 +226,6 @@ public:
             unsigned int dstIndex = (i + shiftCross) % numInstructions;
             m_program.EvolvedInstruction(dstIndex) = srcState.m_program.EvolvedInstruction(srcIndex);
         }
-
-        // Randomize at least one instruction if all instructions are copied.
-        if ((startCross == 0) && (endCross == numInstructions))
-            RandomInstruction(seed);
-#endif
     } // EvolveInstructions
 
     inline void RandomProgram(void)
