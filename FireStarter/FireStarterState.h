@@ -169,6 +169,9 @@ public:
 
     inline void EvolveInstructions(const FireStarterState& srcState, unsigned int mode, unsigned long long& seed)
     {
+#if FIRESTARTER_EVOLVE_RANDOM
+        RandomProgram(seed);
+#else
         // Evolve a range of instructions.
         unsigned int numInstructions = Settings().m_instructions;
         unsigned int startCross, endCross, shiftCross;
@@ -213,8 +216,9 @@ public:
         }
 
         // Randomize at least one instruction if all instructions are copied.
-        if (endCross - startCross == numInstructions)
+        if ((startCross == 0) && (endCross == numInstructions))
             RandomInstruction(seed);
+#endif
     } // EvolveInstructions
 
     inline void RandomProgram(void)
