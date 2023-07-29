@@ -259,7 +259,7 @@ void FireStarterExecute::Code(FireStarterState& state, bool init)
     CodeGenerations(state, init, 0, state.Settings().m_variations);
 } // Code
 
-void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipVariations)
+bool FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipVariations)
 {
     FireStarterSettings stateSettings = state.Settings();
     FireStarterResults* stateResults = state.Results();
@@ -310,6 +310,7 @@ void FireStarterExecute::Optimize(FireStarterState& state, bool init, bool skipV
             }
         }
     }
+    return needsResort;
 } // Optimize
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
@@ -342,14 +343,23 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     return false;
 } // Compile
 
-bool FireStarterExecute::Evolve(void)
+bool FireStarterExecute::Evolve(float bestResult)
 {
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
-        bool init = FIRESTARTER_EVOLVE_INIT;
-        InitPopulation(job->m_state, init);
+        FireStarterState& state = job->m_state;
+        InitPopulation(state);
+        float startResult = state.Settings().m_startResult;
+        if (bestResult)
+            state.m_maxResult = MIN(bestResult * 10.0f, startResult);
+        else
+            state.m_maxResult = startResult;
+        bool init = true;
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_OPTIMIZE; i++) {
-            Optimize(job->m_state, init, FIRESTARTER_SKIP_VARIATIONS);
+            bool result = Optimize(state, init, FIRESTARTER_SKIP_VARIATIONS);
+            printf("State: %d  Optimize: %d  Result=%f\n", state.m_index, i, state.m_maxResult);
+            if (!result || (bestResult && (state.m_maxResult > bestResult * 10.0f)))
+                break;
             init = false;
         }
         m_manager->AddComplete(job);
@@ -403,11 +413,11 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool ini
     }, sync);
 } // ExecuteOptimize
 
-void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync)
+void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount, float bestResult, bool sync)
 {
-    Dispatch([this, &evolveCount] {
+    Dispatch([this, &evolveCount, bestResult] {
         while (evolveCount-- > 0) {
-            if (!Evolve())
+            if (!Evolve(bestResult))
                 break;
         }
     }, sync);
@@ -426,7 +436,7 @@ void FireStarterExecute::ExecuteRandom(bool sync)
         static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
         FireStarterJob* job = nullptr;
         while (Compile(job)) {
-            InitPopulation(job->m_state, true);
+            InitPopulation(job->m_state);
             job->m_state.m_maxResult = g_atomicResult;
             Optimize(job->m_state, true, FIRESTARTER_SKIP_VARIATIONS);
             float stateResult = job->m_state.m_maxResult;

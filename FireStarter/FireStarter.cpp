@@ -230,6 +230,9 @@ void FireStarter::ControlEvolve(void)
     // Loop until the the completion condition or the host program is quit.
     unsigned int generation = 0;
     while (!WillTerminate()) {
+        // Get the current best result for all the states.
+        float bestResult = allStates[0].m_maxResult;
+
         // Evolve a new generation for each state.
         std::atomic<unsigned long long> stateIndex = 0;
         for (FireStarterEvolve* evolve : evolveUnits)
@@ -238,7 +241,7 @@ void FireStarter::ControlEvolve(void)
         // Execute each state.
         std::atomic<long long> evolveCount = allStates.size();
         for (FireStarterExecute* execute : executionUnits)
-            execute->ExecuteEvolve(evolveCount);
+            execute->ExecuteEvolve(evolveCount, bestResult);
 
         // Complete each state and display and sort the results.
         // This method is synchronized by default.

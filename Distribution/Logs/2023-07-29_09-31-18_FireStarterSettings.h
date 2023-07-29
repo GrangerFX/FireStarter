@@ -15,6 +15,7 @@
 #define FIRESTARTER_EVOLVE_OPTIMIZE  5  // Number of times to run Optimize.
 #define FIRESTARTER_EVOLVE_UNIQUE    1  // Set to 1 to only evolve unique instructions
 #define FIRESTARTER_EVOLVE_RANGE     0  // Set to 1 to copy only in a limited range above the current index.
+#define FIRESTARTER_EVOLVE_INIT      1  // Set to 1 to reset the data for each evolution.
 
 #define FIRESTARTER_EVOLVE_MODE_COPY             0
 #define FIRESTARTER_EVOLVE_MODE_RANDOM           1

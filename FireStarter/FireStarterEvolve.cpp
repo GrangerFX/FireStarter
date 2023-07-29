@@ -199,8 +199,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // randomCount makes sure this is not an endless loop.
                         randomCount++;
                     } while (!found && (randomCount < 10));
-                    if (randomCount > 1)
-                        printf("generation:%d  index:%d  randomCount=%d\n", generation, index, randomCount);
                 }
 
                 // Generate the evaluate code
