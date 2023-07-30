@@ -197,7 +197,7 @@ void FireStarterStream::EvolveState(FireStarterState& evolveState)
     execute->ExecuteInitPopulation(true);
 
     // Loop until the the optimize completion condition or the host program is quit.
-    unsigned int pass = 0;
+    unsigned long long pass = 0;
     while (!WillTerminate()) {
         // Optimize the current generation.
         execute->ExecuteOptimize(evolveState, pass);
@@ -480,7 +480,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
                 execute->ExecuteInitPopulation(true);
 
                 // Loop until the the optimize completion condition or the host program is quit.
-                unsigned int pass = 0;
+                unsigned long long pass = 0;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
                     execute->ExecuteOptimize(evolveState, pass);
@@ -609,7 +609,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
             execute->ExecuteInitPopulation(true);
 
             // Loop until the the optimize completion condition or the host program is quit.
-            unsigned int pass = 0;
+            unsigned long long pass = 0;
             while (!WillTerminate()) {
                 // Optimize the current generation.
                 execute->ExecuteOptimize(bestEvolveState, pass);
@@ -730,7 +730,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
                 execute->ExecuteInitPopulation(true);
 
                 // Loop until the the optimize completion condition or the host program is quit.
-                unsigned int pass = 0;
+                unsigned long long pass = 0;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
                     execute->ExecuteOptimize(evolveState, pass);
