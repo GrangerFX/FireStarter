@@ -196,13 +196,16 @@ void FireStarter::ControlEvolve(void)
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings evolveSettings;
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
-    evolveSettings.m_units = MIN(evolveSettings.m_units, evolveSettings.m_tests);
-    evolveSettings.m_processes = MIN(evolveSettings.m_processes, evolveSettings.m_tests);
-    std::vector<FireStarterState> allStates(evolveSettings.m_tests);
+
+    // Evolve a number of states equal to the evolveSettings.m_seeds.
+    unsigned int numStates = evolveSettings.m_seeds;
+    evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
+    evolveSettings.m_processes = MIN(evolveSettings.m_processes, numStates);
+    std::vector<FireStarterState> allStates(numStates);
     TestedInstructions testedInstructions;
 
     // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(allStates.size());
+    FireStarterManager* manager = new FireStarterManager(numStates);
 
     // Create the multi-process compiler.
     FireStarterCompile* compile = new FireStarterCompile(manager, evolveSettings.m_processes);
@@ -224,8 +227,8 @@ void FireStarter::ControlEvolve(void)
     FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
 
     // Randomize the entire program of each state for the first generation
-    for (unsigned long long i = 0; i < allStates.size(); i++)
-        allStates[i].InitState(evolveSettings, i, i);
+    for (unsigned long long i = 0; i < numStates; i++)
+        allStates[i].InitState(evolveSettings, i);
 
     // Loop until the the completion condition or the host program is quit.
     unsigned int generation = 0;
@@ -239,7 +242,7 @@ void FireStarter::ControlEvolve(void)
             evolve->EvolveStates(allStates, stateIndex, &testedInstructions, generation);
 
         // Execute each state.
-        std::atomic<long long> evolveCount = allStates.size();
+        std::atomic<long long> evolveCount = numStates;
         for (FireStarterExecute* execute : executionUnits)
             execute->ExecuteEvolve(evolveCount, bestResult);
 

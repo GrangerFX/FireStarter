@@ -131,7 +131,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
     if (m_optimizeCode.empty())
         return false;
 
-    static std::mutex testMutex;
     Dispatch([this, &allStates, &stateIndex, testedInstructions, generation] {
         FireStarterState bestState = allStates[0];
         size_t numStates = allStates.size();
@@ -186,6 +185,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 #if FIRESTARTER_EVOLVE_UNIQUE
                         if (randomCount > 2)
                             curState.RandomInstruction(seed);
+                        static std::mutex testMutex;
                         testMutex.lock();
                         if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
                             // Add the instructions to the set of unique instructions.

@@ -104,12 +104,7 @@ public:
 
     inline unsigned long long GenerationSeed(void) const
     {
-        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_test);
-    } // GenerationSeed
-
-    inline unsigned long long GenerationSeed(unsigned long long generation, unsigned long long test = 0) const
-    {
-        return test ? RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + generation) + test) : RANDOM(RANDOM(m_program.m_settings.m_seed) + generation);
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_index);
     } // GenerationSeed
 
     unsigned long long InitGenerationSeed(void)
@@ -242,7 +237,7 @@ public:
     {
         FireStarterResults* results = Results();
         const FireStarterSettings& settings = Settings();
-        unsigned long long seed = GenerationSeed(0);
+        unsigned long long seed = GenerationSeed();
 
         for (unsigned int v = 0; v < settings.m_variations; v++) {
             FireStarterResult* result = results->Result(v);

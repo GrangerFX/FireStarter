@@ -9,8 +9,8 @@
 #define FIRESTARTER_GENERATE_GPU  1
 #define FIRESTARTER_AUTO_PROCESS  0
 #define FIRESTARTER_OUTPUT_HASH   0
-#define FIRESTARTER_SEED          0  // Set the main instruction seed.
-#define FIRESTARTER_OPTIMIZATION_SEED FIRESTARTER_SEED // Set the optimization seed or comment out use the main seed.
+#define FIRESTARTER_SEED          1  // Set the main instruction seed.
+#define FIRESTARTER_OPTIMIZATION_SEED 1 // Set the optimization seed or comment out use the main seed.
 
 #define FIRESTARTER_EVOLVE_OPTIMIZE  5  // Number of times to run Optimize.
 #define FIRESTARTER_EVOLVE_UNIQUE    1  // Set to 1 to only evolve unique instructions
@@ -128,8 +128,8 @@
 #define FIRESTARTER_REVOLVE_START_RESULT    10.0f
 
 #define FIRESTARTER_EVOLVE_SEED             FIRESTARTER_SEED
-#define FIRESTARTER_EVOLVE_SEEDS            64
-#define FIRESTARTER_EVOLVE_TESTS            0
+#define FIRESTARTER_EVOLVE_SEEDS            1
+#define FIRESTARTER_EVOLVE_TESTS            64
 #define FIRESTARTER_EVOLVE_UNITS            8
 #define FIRESTARTER_EVOLVE_PROCESSES        8
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
