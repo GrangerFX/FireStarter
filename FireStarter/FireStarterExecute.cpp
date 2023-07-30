@@ -349,15 +349,9 @@ bool FireStarterExecute::Evolve(float bestResult)
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
         InitPopulation(state);
-        float startResult = state.Settings().m_startResult;
-        if (bestResult)
-            state.m_maxResult = MIN(bestResult * 10.0f, startResult);
-        else
-            state.m_maxResult = startResult;
         bool init = true;
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_OPTIMIZE; i++) {
             bool result = Optimize(state, init, FIRESTARTER_SKIP_VARIATIONS);
-            printf("State: %d  Optimize: %d  Result=%f\n", state.m_index, i, state.m_maxResult);
             if (!result || (bestResult && (state.m_maxResult > bestResult * 10.0f)))
                 break;
             init = false;

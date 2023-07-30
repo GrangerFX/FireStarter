@@ -144,6 +144,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 FireStarterState& curState = job->m_state;
                 curState = allStates[index];
                 curState.m_generation = generation;
+                curState.m_maxResult = MIN(bestResult * 10.0f, curState.Settings().m_startResult);
 
                 // Randomize each generation and index.
                 unsigned long long seed = curState.InitGenerationSeed();
@@ -199,6 +200,8 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // randomCount makes sure this is not an endless loop.
                         randomCount++;
                     } while (!found && (randomCount < 10));
+                    if (randomCount > 1)
+                        printf("generation:%d  index:%d  randomCount=%d\n", generation, index, randomCount);
                 }
 
                 // Generate the evaluate code
