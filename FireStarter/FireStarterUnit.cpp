@@ -64,12 +64,12 @@ void FireStarterUnit::SyncContexts(void)
         context.Syncronize();
 } // SyncContexts
 
-void FireStarterUnit::CodeGenerations(bool init, unsigned int firstVariation, unsigned int lastVariation)
+void FireStarterUnit::CodeGenerations(unsigned long long pass, unsigned int firstVariation, unsigned int lastVariation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = WARP_THREADS;  // Same as the threads per CUDA core warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned int initData = (unsigned int)init;
+    unsigned long long passIndex = pass * m_settings.m_generations;
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -78,6 +78,7 @@ void FireStarterUnit::CodeGenerations(bool init, unsigned int firstVariation, un
             FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
             unsigned long long generationSeed = m_state.RandomSeed();
+            unsigned int initData = passIndex == 0;
 
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newEvolutions),
@@ -119,7 +120,7 @@ void FireStarterUnit::CodeGenerations(bool init, unsigned int firstVariation, un
             }
             SyncContexts();
         }
-        initData = 0;
+        passIndex++;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -152,12 +153,12 @@ void FireStarterUnit::CodeGenerations(bool init, unsigned int firstVariation, un
     m_state.m_maxResult = *m_hostEvolutions->MaxResult(bestIndex);
 } // CodeGenerations
 
-void FireStarterUnit::OptimizeGenerations(bool init, unsigned int variation)
+void FireStarterUnit::OptimizeGenerations(unsigned long long pass, unsigned int variation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = WARP_THREADS;  // Same as the threads per CUDA core warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    unsigned int initData = (unsigned int)init;
+    unsigned long long passIndex = pass * m_settings.m_generations;
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -167,6 +168,7 @@ void FireStarterUnit::OptimizeGenerations(bool init, unsigned int variation)
             FireStarterPopulation* newResults = g & 1 ? context.m_devicePopulation0 : context.m_devicePopulation1;
             FireStarterPopulation* oldResults = g & 1 ? context.m_devicePopulation1 : context.m_devicePopulation0;
             unsigned long long generationSeed = m_state.RandomSeed();
+            unsigned int initData = passIndex == 0;
 
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
                             reinterpret_cast<void*>(&newResults),
@@ -207,7 +209,7 @@ void FireStarterUnit::OptimizeGenerations(bool init, unsigned int variation)
                 checkCUDAErrors(cudaMemcpyAsync(oldPopulation, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
         }
-        initData = 0;
+        passIndex++;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -241,14 +243,14 @@ void FireStarterUnit::OptimizeGenerations(bool init, unsigned int variation)
     m_state.m_maxResult = fmaxf(m_state.m_maxResult, minResult);
 } // OptimizeGenerations
 
-void FireStarterUnit::OptimizeVariations(bool init)
+void FireStarterUnit::OptimizeVariations(unsigned long long pass)
 {
     // Initialize maxResult.
     m_state.m_maxResult = 0.0f;
 
     // Evolve the program data.
     for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++)
-        OptimizeGenerations(init, variation);
+        OptimizeGenerations(pass, variation);
 } // OptimizeVaraitions
 
 void FireStarterUnit::ExecuteCode(void)
@@ -269,23 +271,25 @@ void FireStarterUnit::ExecuteOptimize(void)
     m_state.m_generation = m_generation;
 
     // Generate the code for the first generation.
-    if (!m_generation++)
+    if (m_generation)
         GenerateOptimize();
 
     // Evolve the program data.
-    OptimizeVariations(m_generation == 0);
+    OptimizeVariations(m_generation);
+    m_generation++;
 } // ExecuteOptimize
 
 void FireStarterUnit::ExecuteUnit(void)
 {
     // Set the state's generation
-    m_state.m_generation = m_generation++;
+    m_state.m_generation = m_generation;
 
     // Evolve, generate and compile the program.
     GenerateUnit();
 
     // Evolve the program data.
-    OptimizeVariations(true);
+    OptimizeVariations(m_generation);
+    m_generation++;
 } // ExecuteUnit
 
 bool FireStarterUnit::LoadCode(void)

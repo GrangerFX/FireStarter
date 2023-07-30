@@ -148,7 +148,7 @@ private:
     FireStarterEvolutions* m_hostEvolutions = nullptr;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
-    size_t m_generation = 0;
+    unsigned long long m_generation = 0;
     unsigned int m_unitIndex = 0;
     unsigned int m_gpus = 0;
     unsigned int m_firstVariation = 0;
@@ -159,9 +159,9 @@ private:
     void GenerateOptimize(void);
     void GenerateUnit(void);
     void SyncContexts(void);
-    void CodeGenerations(bool init, unsigned int firstVariation, unsigned int lastVariation);
-    void OptimizeGenerations(bool init, unsigned int variation);
-    void OptimizeVariations(bool init);
+    void CodeGenerations(unsigned long long pass, unsigned int firstVariation, unsigned int lastVariation);
+    void OptimizeGenerations(unsigned long long pass, unsigned int variation);
+    void OptimizeVariations(unsigned long long pass);
     void ExecuteCode(void);
     void ExecuteOptimize(void);
     void ExecuteUnit(void);

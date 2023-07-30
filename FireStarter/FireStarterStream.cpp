@@ -67,16 +67,14 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
         optimizeState.m_test = test;
 
         // Loop until the the completion condition or the host program is quit.
-        bool init = true;
         while (!WillTerminate()) {
             // Optimize the current generation.
-            execute->ExecuteOptimize(optimizeState, init);
+            execute->ExecuteOptimize(optimizeState, optimizeState.m_generation);
 
             // Update the results in the UI.
             if (!complete->CompleteState(bestState, optimizeState))
                 break;
             optimizeState.m_generation++;
-            init = false;
         }
     }
 
@@ -199,16 +197,16 @@ void FireStarterStream::EvolveState(FireStarterState& evolveState)
     execute->ExecuteInitPopulation(true);
 
     // Loop until the the optimize completion condition or the host program is quit.
-    bool init = true;
+    unsigned int pass = 0;
     while (!WillTerminate()) {
         // Optimize the current generation.
-        execute->ExecuteOptimize(evolveState, init);
+        execute->ExecuteOptimize(evolveState, pass);
 
         // Update the results in the UI.
         if (!complete->CompleteState(bestState, evolveState))
             break;
         evolveState.NextGeneration();
-        init = false;
+        pass++;
     }
 
     // Cancel any waiting jobs
@@ -482,10 +480,10 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
                 execute->ExecuteInitPopulation(true);
 
                 // Loop until the the optimize completion condition or the host program is quit.
-                bool init = true;
+                unsigned int pass = 0;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
-                    execute->ExecuteOptimize(evolveState, init);
+                    execute->ExecuteOptimize(evolveState, pass);
 
                     // Update the results in the UI.
                     if (!complete->CompleteState(bestOptimizeState, evolveState))
@@ -496,7 +494,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
 
                     // Next generation.
                     evolveState.m_generation++;
-                    init = false;
+                    pass++;
                 }
 
                 // Output the optimize results.
@@ -611,10 +609,10 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
             execute->ExecuteInitPopulation(true);
 
             // Loop until the the optimize completion condition or the host program is quit.
-            bool init = true;
+            unsigned int pass = 0;
             while (!WillTerminate()) {
                 // Optimize the current generation.
-                execute->ExecuteOptimize(bestEvolveState, init);
+                execute->ExecuteOptimize(bestEvolveState, pass);
 
                 // Update the results in the UI.
                 if (!complete->CompleteState(bestOptimizeState, bestEvolveState))
@@ -625,7 +623,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
 
                 // Next generation.
                 bestEvolveState.m_generation++;
-                init = false;
+                pass++;
             }
 
             // Output the optimize results.
@@ -732,10 +730,10 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
                 execute->ExecuteInitPopulation(true);
 
                 // Loop until the the optimize completion condition or the host program is quit.
-                bool init = true;
+                unsigned int pass = 0;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
-                    execute->ExecuteOptimize(evolveState, init);
+                    execute->ExecuteOptimize(evolveState, pass);
 
                     // Update the results in the UI.
                     if (!complete->CompleteState(bestOptimizeState, evolveState))
@@ -746,7 +744,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
 
                     // Next generation.
                     evolveState.m_generation++;
-                    init = false;
+                    pass++;
                 }
 
                 // Output the optimize results.
