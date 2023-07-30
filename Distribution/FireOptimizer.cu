@@ -31,7 +31,7 @@ inline float TestPrecision(const FireStarterData& data, unsigned int variation, 
     return result;
 } // TestPrecision
 
-GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, FireStarterPopulation* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int init)
+GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, FireStarterPopulation* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int initData)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= lastMember)
@@ -50,7 +50,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     float oldResult;
     bool evolved = false;
 
-    if (init) {
+    if (initData) {
         // The first generation is initalized with random numbers.
         for (unsigned int i = 0; i < dataSize; i++)
             data.d[i] = RANDOMFACTOR(seed) * settings.m_startScale;
@@ -103,12 +103,12 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     }
 
     // If the result was worse, copy from a member with better resulOptimizeGenerationss.
-    if (init || (result < oldResult)) {
+    if (initData || (result < oldResult)) {
         // Save better results.
         *newResults->Data(member, v) = data;
         *newResults->MinResult(member, v) = result;
         *newResults->Index(member, v) = 0;
-        *newResults->Debug(member, v) = init ? 1 : *oldResults->Debug(member, v) + 1;
+        *newResults->Debug(member, v) = initData ? 1 : *oldResults->Debug(member, v) + 1;
     } else {
         // Copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;

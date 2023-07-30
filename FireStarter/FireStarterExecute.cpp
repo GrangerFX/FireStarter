@@ -1,7 +1,7 @@
 #include "FireStarterExecute.h"
 #include "CUDACompile.h"
 
-void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
+void FireStarterExecute::CodeGenerations(FireStarterState& state, bool init, unsigned int firstVariation, unsigned int lastVariation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -11,12 +11,12 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
+    int initData = (int)init;
 
     for (unsigned int g = 0; g < settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         FireStarterEvolutions* newEvolutions = g & 1 ? m_deviceEvolutions0 : m_deviceEvolutions1;
         FireStarterEvolutions* oldEvolutions = g & 1 ? m_deviceEvolutions1 : m_deviceEvolutions0;
-        int init = (g == 0) && (forceInit || (state.m_generation == 0));
         unsigned long long generationSeed = state.RandomSeed();
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
@@ -27,7 +27,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
                         reinterpret_cast<void*>(&firstMember),
                         reinterpret_cast<void*>(&lastMember),
                         reinterpret_cast<void*>(&generationSeed),
-                        reinterpret_cast<void*>(&init) };
+                        reinterpret_cast<void*>(&initData) };
 
         unsigned int blocksPerGrid = lastMember - firstMember;
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -41,10 +41,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
 
         // Synchronize all GPU threads and results.
         context->Synchronize();
-
-        // Multiple GPUs must have their data syncronized prior to the next generation.
-        generationSeed++;
-        forceInit = 0;
+        initData = 0;
     }
 
     // Syncronize the device with the host.
@@ -73,7 +70,7 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned int f
     state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
 } // CodeGenerations
 
-void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int forceInit, unsigned int variation)
+void FireStarterExecute::OptimizeGenerations(FireStarterState& state, bool init, unsigned int variation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -83,13 +80,13 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
+    int initData = (int)init;
 
     for (unsigned int g = 0; g < settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         unsigned int maxRegisters = state.m_program.m_uniqueRegisters;
         FireStarterPopulation* newResults = g & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = g & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        int init = (g == 0) && (forceInit || (state.m_generation == 0));
         unsigned long long generationSeed = state.OptimizationSeed(g, state.m_test);
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
@@ -100,7 +97,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
                         reinterpret_cast<void*>(&lastMember),
                         reinterpret_cast<void*>(&maxRegisters),
                         reinterpret_cast<void*>(&generationSeed),
-                        reinterpret_cast<void*>(&init) };
+                        reinterpret_cast<void*>(&initData) };
 
         unsigned int blocksPerGrid = ((lastMember - firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -114,7 +111,7 @@ void FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned i
 
         // Synchronize all GPU threads and results.
         context->Synchronize();
-        forceInit = 0;
+        initData = 0;
     }
 
     // Single GPUs have their data syncronized with the host here.

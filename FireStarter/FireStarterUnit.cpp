@@ -64,18 +64,19 @@ void FireStarterUnit::SyncContexts(void)
         context.Syncronize();
 } // SyncContexts
 
-void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int firstVariation, unsigned int lastVariation)
+void FireStarterUnit::CodeGenerations(bool init, unsigned int firstVariation, unsigned int lastVariation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = WARP_THREADS;  // Same as the threads per CUDA core warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    unsigned int initData = (unsigned int)init;
+
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         for (FireStarterContext& context : m_contexts) {
             context.SetContext();
             FireStarterEvolutions* newEvolutions = g & 1 ? context.m_deviceEvolutions0 : context.m_deviceEvolutions1;
             FireStarterEvolutions* oldEvolutions = g & 1 ? context.m_deviceEvolutions1 : context.m_deviceEvolutions0;
-            int init = (g == 0) && (forceInit || (m_state.m_generation == 0));
             unsigned long long generationSeed = m_state.RandomSeed();
 
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
@@ -86,7 +87,7 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
                             reinterpret_cast<void*>(&context.m_firstMember),
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&generationSeed),
-                            reinterpret_cast<void*>(&init) };
+                            reinterpret_cast<void*>(&initData) };
 
             unsigned int blocksPerGrid = context.m_lastMember - context.m_firstMember;
             dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -118,7 +119,7 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
             }
             SyncContexts();
         }
-        forceInit = 0;
+        initData = 0;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -151,11 +152,12 @@ void FireStarterUnit::CodeGenerations(unsigned int forceInit, unsigned int first
     m_state.m_maxResult = *m_hostEvolutions->MaxResult(bestIndex);
 } // CodeGenerations
 
-void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int variation)
+void FireStarterUnit::OptimizeGenerations(bool init, unsigned int variation)
 {
     // Launch the calculation kernel
     unsigned int threadsPerBlock = WARP_THREADS;  // Same as the threads per CUDA core warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    unsigned int initData = (unsigned int)init;
 
     for (unsigned int g = 0; g < m_settings.m_generations; g++) {
         // Run all the evolve states in parallel.
@@ -164,7 +166,6 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
             unsigned int maxRegister = m_state.m_program.m_uniqueRegisters;
             FireStarterPopulation* newResults = g & 1 ? context.m_devicePopulation0 : context.m_devicePopulation1;
             FireStarterPopulation* oldResults = g & 1 ? context.m_devicePopulation1 : context.m_devicePopulation0;
-            int init = (g == 0) && (forceInit || (m_state.m_generation == 0));
             unsigned long long generationSeed = m_state.RandomSeed();
 
             void* arr[] = { reinterpret_cast<void*>(&m_settings),
@@ -175,7 +176,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
                             reinterpret_cast<void*>(&context.m_lastMember),
                             reinterpret_cast<void*>(&maxRegister),
                             reinterpret_cast<void*>(&generationSeed),
-                            reinterpret_cast<void*>(&init) };
+                            reinterpret_cast<void*>(&initData) };
 
             unsigned int blocksPerGrid = ((context.m_lastMember - context.m_firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
             dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -206,7 +207,7 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
                 checkCUDAErrors(cudaMemcpyAsync(oldPopulation, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, context.m_CUDAContext->Stream()));
             }
         }
-        forceInit = 0;
+        initData = 0;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -240,14 +241,14 @@ void FireStarterUnit::OptimizeGenerations(unsigned int forceInit, unsigned int v
     m_state.m_maxResult = fmaxf(m_state.m_maxResult, minResult);
 } // OptimizeGenerations
 
-void FireStarterUnit::OptimizeVariations(unsigned int forceInit)
+void FireStarterUnit::OptimizeVariations(bool init)
 {
     // Initialize maxResult.
     m_state.m_maxResult = 0.0f;
 
     // Evolve the program data.
     for (unsigned int variation = m_firstVariation; variation <= m_lastVariation; variation++)
-        OptimizeGenerations(forceInit, variation);
+        OptimizeGenerations(init, variation);
 } // OptimizeVaraitions
 
 void FireStarterUnit::ExecuteCode(void)
@@ -272,7 +273,7 @@ void FireStarterUnit::ExecuteOptimize(void)
         GenerateOptimize();
 
     // Evolve the program data.
-    OptimizeVariations(0);
+    OptimizeVariations(m_generation == 0);
 } // ExecuteOptimize
 
 void FireStarterUnit::ExecuteUnit(void)
@@ -284,7 +285,7 @@ void FireStarterUnit::ExecuteUnit(void)
     GenerateUnit();
 
     // Evolve the program data.
-    OptimizeVariations(1);
+    OptimizeVariations(true);
 } // ExecuteUnit
 
 bool FireStarterUnit::LoadCode(void)

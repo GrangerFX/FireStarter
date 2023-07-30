@@ -5,7 +5,7 @@
 
 // Best version.
 // 0.00060845 after 147 generations. Optimize 0.00015676 after 150 generations.
-GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned long long generationSeed, const unsigned int init)
+GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolutions* newEvolutions, FireStarterEvolutions* oldEvolutions, const unsigned int firstVariation, const unsigned int lastVariation, const unsigned int firstMember, const unsigned int lastMember, const unsigned long long generationSeed, const unsigned int initData)
 {
     const unsigned int member = firstMember + blockIdx.x;
     if (member >= lastMember)
@@ -17,7 +17,7 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
 
     GPU_SHARED FireStarterInstructions instructions;
     if (thread == 0) {
-        if (init)
+        if (initData)
             // The first generation's instructions are random.
             instructions.Randomize(memberSeed);
         else {
@@ -47,7 +47,7 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
 
         // Initialize or load the registers
         FireStarterData& data = allData[v][thread];
-        if (init)
+        if (initData)
             for (int i = 0; i < FIRESTARTER_REGISTERS; i++)
                 data.d[i] = RANDOMFACTOR(threadSeed);
         else {
@@ -102,7 +102,7 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
 
         // Did this generation produce a better result?
         float oldResult = *oldEvolutions->MaxResult(member);
-        if (init || (maxResult < oldResult)) {
+        if (initData || (maxResult < oldResult)) {
             // Save the improved results.
             *newEvolutions->Instructions(member) = instructions;
             *newEvolutions->MaxResult(member) = maxResult;
@@ -111,7 +111,7 @@ GPU_GLOBAL void Interpreter(const FireStarterSettings settings, FireStarterEvolu
                 *newEvolutions->Data(member, v) = allData[v][t];
                 *newEvolutions->MinResult(member, v) = allResults[v][t];
                 *newEvolutions->Index(member, v) = member;
-                *newEvolutions->Debug(member, v) = init ? 1 : *oldEvolutions->Debug(member, v) + 1;
+                *newEvolutions->Debug(member, v) = initData ? 1 : *oldEvolutions->Debug(member, v) + 1;
             }
         } else {
             // Copy a result from among the previous generation's results.
