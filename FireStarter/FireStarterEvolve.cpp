@@ -9,7 +9,7 @@ bool FireStarterEvolve::EvolveSeeds(const FireStarterSettings& settings, bool sy
     Dispatch([this, settings] {
         // Generate code using the GPU.
         FireStarterSettings evolveSettings(settings);
-        size_t startSeed = settings.m_seed;
+        size_t startSeed = settings.m_evolveSeed;
         for (size_t seed = 0; seed < settings.m_seeds; seed++) {
             FireStarterJob* job = m_manager->GetFree();
             if (!job)
@@ -131,6 +131,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
     if (m_optimizeCode.empty())
         return false;
 
+    static std::mutex testMutex; // Note: The static mutex must be defined outside the lambda!
     Dispatch([this, &allStates, &stateIndex, testedInstructions, generation] {
         FireStarterState bestState = allStates[0];
         size_t numStates = allStates.size();
@@ -185,7 +186,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 #if FIRESTARTER_EVOLVE_UNIQUE
                         if (randomCount > 2)
                             curState.RandomInstruction(seed);
-                        static std::mutex testMutex;
                         testMutex.lock();
                         if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
                             // Add the instructions to the set of unique instructions.

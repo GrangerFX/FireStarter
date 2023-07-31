@@ -271,7 +271,7 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::a
         for (unsigned long long test = testCount++; (test < settings.m_seeds * settings.m_tests) && !WillTerminate(); test = testCount++) {
             // Setup the intial state
             FireStarterSettings evolveSettings(settings);
-            evolveSettings.m_seed = settings.m_seed + test / settings.m_tests;
+            evolveSettings.m_evolveSeed = settings.m_evolveSeed + test / settings.m_tests;
             FireStarterState evolveState(evolveSettings, m_index, test % settings.m_tests);
 
             // The best state is used for the status display and termination condition.
@@ -295,7 +295,7 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::a
             // Output the evolve results.
             std::string resultText;
             if (evolveState.Settings().m_seeds > 1)
-                resultText += Format("Seed=%u  ", evolveState.Settings().m_seed);
+                resultText += Format("Seed=%u  ", evolveState.Settings().m_evolveSeed);
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
             resultText += Format("Random Result=%.8f\n", evolveState.m_maxResult);
@@ -346,7 +346,7 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::v
         // Loop until the the completion condition or the host program is quit.
         for (unsigned long long seedIndex = seedCount++; (seedIndex < seedResults.size()) && !WillTerminate(); seedIndex = seedCount++) {
             FireStarterSettings randomSettings(settings);
-            randomSettings.m_seed = settings.m_seed + seedIndex;
+            randomSettings.m_evolveSeed = settings.m_evolveSeed + seedIndex;
 
             // Evolve the first generation for the state.
             FireStarterState evolveState(randomSettings, m_index);
@@ -370,7 +370,7 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::v
 
             // Output the evolve results.
             std::string resultText;
-            resultText += Format("Seed=%u  ", evolveState.Settings().m_seed);
+            resultText += Format("Seed=%u  ", evolveState.Settings().m_evolveSeed);
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
             resultText += Format("Random Result=%.8f\n", evolveState.m_maxResult);
@@ -422,7 +422,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
             // Setup the intial state
             FireStarterSettings evolveSettings(settings);
             unsigned int evolution = test % settings.m_tests;
-            evolveSettings.m_seed = settings.m_seed + test / settings.m_tests;
+            evolveSettings.m_evolveSeed = settings.m_evolveSeed + test / settings.m_tests;
             FireStarterState evolveState(evolveSettings, m_index, 0);
 
             // The best state is used for the status display and termination condition.
@@ -455,7 +455,7 @@ void FireStarterStream::EvolveStream(const FireStarterSettings& settings, std::a
 
             std::string resultText;
             if (evolveState.Settings().m_seeds > 1)
-                resultText += Format("Seed=%u  ", evolveState.Settings().m_seed);
+                resultText += Format("Seed=%u  ", evolveState.Settings().m_evolveSeed);
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
             resultText += Format("Generation=%u  Evolve Result=%.8f  Average Result=%.8f", evolveState.m_generation, evolveState.m_maxResult, resultSum / resultCount);
@@ -581,7 +581,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
             // Output the evolve results.
             std::string resultText;
             if (bestEvolveState.Settings().m_seeds > 1)
-                resultText += Format("Seed=%u  ", bestEvolveState.Settings().m_seed);
+                resultText += Format("Seed=%u  ", bestEvolveState.Settings().m_evolveSeed);
             if (bestEvolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", bestEvolveState.m_test);
             resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
@@ -705,7 +705,7 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
             // Output the evolve results.
             std::string resultText;
             if (evolveState.Settings().m_seeds > 1)
-                resultText += Format("Seed=%u  ", evolveState.Settings().m_seed);
+                resultText += Format("Seed=%u  ", evolveState.Settings().m_evolveSeed);
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
             resultText += Format("Generation=%u  Evolve Result=%.8f", evolveState.m_generation, evolveState.m_maxResult);
@@ -867,7 +867,7 @@ void FireStarterStreams::EvolveStreams(void)
     std::vector<FireStarterState> evolveStates(seeds);
     for (size_t i = 0; i < seeds; i++) {
         FireStarterSettings randomSettings(m_settings);
-        randomSettings.m_seed = m_settings.m_seed + stateSeeds[i];
+        randomSettings.m_evolveSeed = m_settings.m_evolveSeed + stateSeeds[i];
         evolveStates[i].InitState(randomSettings, 0, 0);
     }
 

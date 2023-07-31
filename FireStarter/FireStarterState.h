@@ -101,9 +101,9 @@ public:
     inline unsigned long long GenerationSeed(void) const
     {
         if (m_test)
-            return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_index) + m_test);
+            return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_evolveSeed) + m_generation) + m_index) + m_test);
         else
-            return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_seed) + m_generation) + m_index);
+            return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_evolveSeed) + m_generation) + m_index);
     } // GenerationSeed
 
     unsigned long long InitGenerationSeed(void)
@@ -114,7 +114,7 @@ public:
 
     unsigned long long RootSeed(unsigned long long seed)
     {
-        m_program.m_settings.m_seed = seed;
+        m_program.m_settings.m_evolveSeed = seed;
         return InitGenerationSeed();
     } // RootSeed
 

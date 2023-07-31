@@ -169,7 +169,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         const FireStarterResults* stateResults = state.Results();
         uint64_t resultHash = MurmurHash64(stateResults, state.ResultsSize());
         uint64_t programHash = MurmurHash64(state.m_program.OptimizedInstructions(), state.m_program.InstructionsSize());
-        hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.m_maxResult, settings.m_seed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
+        hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.m_maxResult, settings.m_evolveSeed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
         FireStarterCode::AppendCode(hashFilePath, hashString);
         // m_output.Output(hashString);
 #endif
@@ -205,11 +205,11 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         float bestResult = bestState.m_maxResult;
         bool isBestState = (state.m_index == bestState.m_index) && (state.m_generation == bestState.m_generation);
         if (state.PassMode() == FIRESTARTER_RANDOM) {
-            statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", state.Mode(), settings.m_seed + state.m_generation, state.m_generation, newResult, average, bestResult, bestState.m_program.m_settings.m_seed + bestState.m_generation, generationTime, runTime, testError);
+            statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", state.Mode(), settings.m_evolveSeed + state.m_generation, state.m_generation, newResult, average, bestResult, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, testError);
             for (unsigned int v = 0; v < settings.m_variations; v++)
                 statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
         } else {
-            statusString = Format("%s: Seed=%u", state.Mode(), settings.m_seed);
+            statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
             if (settings.m_tests > 1)
                 statusString += Format("  Test=%u", test);
             if (settings.m_units > 1)
@@ -233,7 +233,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 statusString += Format("Result=%.8f", state.m_maxResult);
             }
 
-            statusString += Format("  Best=%.8f  BestSeed=%u  BestGen=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", bestResult, bestState.Settings().m_seed, bestState.m_generation, generationTime, runTime, testError);
+            statusString += Format("  Best=%.8f  BestSeed=%u  BestGen=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", bestResult, bestState.Settings().m_evolveSeed, bestState.m_generation, generationTime, runTime, testError);
         }
 
         // Update the log file.
