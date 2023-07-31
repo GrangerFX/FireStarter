@@ -10,7 +10,7 @@
 #define FIRESTARTER_AUTO_PROCESS  0
 #define FIRESTARTER_OUTPUT_HASH   0
 #define FIRESTARTER_SEED          1  // Set the main instruction seed.
-#define FIRESTARTER_OPTIMIZATION_SEED 0 // Set the optimization seed.
+#define FIRESTARTER_OPTIMIZATION_SEED FIRESTARTER_SEED // Set the optimization seed or comment out use the main seed.
 
 #define FIRESTARTER_EVOLVE_OPTIMIZE  5  // Number of times to run Optimize.
 #define FIRESTARTER_EVOLVE_UNIQUE    1  // Set to 1 to only evolve unique instructions
@@ -517,6 +517,10 @@ public:
                 break;
         }
 
+#ifdef FIRESTARTER_OPTIMIZATION_SEED
         m_optimizeSeed = FIRESTARTER_OPTIMIZATION_SEED;
+#else
+        m_optimizeSeed = m_seed;
+#endif
     } // FireStarterSettings
 }; // class FireStarterSettings
