@@ -210,14 +210,12 @@ void FireStarter::ControlEvolve(void)
     // Create the multi-process compiler.
     FireStarterCompile* compile = new FireStarterCompile(manager, evolveSettings.m_processes);
 
-    // Create the states and units.
-    std::vector<FireStarterEvolve*> evolveUnits;
+    // Create the evolution engine.
+    FireStarterEvolve evolve(manager);
+
+    // Create the execution units.
     std::vector<FireStarterExecute*> executionUnits;
     for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
-        // Create an evolve unit.
-        FireStarterEvolve* evolve = new FireStarterEvolve(manager, i);
-        evolveUnits.push_back(evolve);
-
         // Create an evolution generator unit.
         FireStarterExecute* execute = new FireStarterExecute(manager, i);
         executionUnits.push_back(execute);
@@ -237,9 +235,7 @@ void FireStarter::ControlEvolve(void)
         float bestResult = allStates[0].m_maxResult;
 
         // Evolve a new generation for each state.
-        std::atomic<unsigned long long> stateIndex = 0;
-        for (FireStarterEvolve* evolve : evolveUnits)
-            evolve->EvolveStates(allStates, stateIndex, &testedInstructions, generation);
+        evolve.EvolveStates(allStates, &testedInstructions, generation);
 
         // Execute each state.
         std::atomic<long long> evolveCount = numStates;
@@ -262,10 +258,6 @@ void FireStarter::ControlEvolve(void)
     // Finish processing and terminate each unit.
     for (FireStarterExecute* execute : executionUnits)
         delete execute;
-
-    // Delete the evolution code generator.
-    for (FireStarterEvolve* evolve : evolveUnits)
-        delete evolve;
 
     // Delete the multi-process compiler.
     delete compile;

@@ -126,18 +126,17 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
     return true;
 } // EvolveState
 
-bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, std::atomic<unsigned long long>& stateIndex, TestedInstructions* testedInstructions, unsigned long long generation, bool sync)
+bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
 
-    static std::mutex testMutex; // Note: The static mutex must be defined outside the lambda!
-    Dispatch([this, &allStates, &stateIndex, testedInstructions, generation] {
+    Dispatch([this, &allStates, testedInstructions, generation] {
         FireStarterState bestState = allStates[0];
         size_t numStates = allStates.size();
         unsigned int numInstructions = bestState.Settings().m_instructions;
         float bestResult = bestState.m_maxResult;
-        for (unsigned long long index = stateIndex++; (index < allStates.size()); index = stateIndex++) {
+        for (unsigned long long index = 0; index < allStates.size(); index++) {
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
                 // Clone or randomize instructions in the later generations.
@@ -159,7 +158,9 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     curState.m_program.OptimizeRegisters();
 
                     // Add the instructions to the set of unique instructions.
+#if FIRESTARTER_EVOLVE_UNIQUE
                     testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
+#endif
                 } else {
                     // Copy or randomize instructions based on the quality of the previous result.
                     size_t randomCount = 0;
@@ -186,13 +187,11 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 #if FIRESTARTER_EVOLVE_UNIQUE
                         if (randomCount > 2)
                             curState.RandomInstruction(seed);
-                        testMutex.lock();
                         if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
                             // Add the instructions to the set of unique instructions.
                             testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                             found = true;
                         }
-                        testMutex.unlock();
 #else
                         found = true;
 #endif
@@ -200,8 +199,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // randomCount makes sure this is not an endless loop.
                         randomCount++;
                     } while (!found && (randomCount < 10));
-                    if (randomCount > 1)
-                        printf("generation:%d  index:%d  randomCount=%d\n", generation, index, randomCount);
                 }
 
                 // Generate the evaluate code

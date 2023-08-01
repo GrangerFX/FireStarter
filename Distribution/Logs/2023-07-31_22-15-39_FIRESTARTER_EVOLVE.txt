@@ -1,0 +1,95 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 29
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+
+mode = FIRESTARTER_EVOLVE
+evolveSeed = 1
+optimizeSeed = 0
+seeds = 64
+tests = 0
+units = 1
+processes = 0
+population = 278528
+iterations = 64
+generations = 100
+precision = 0
+candidates = 16
+attempts = 32
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0 *Result=0.85227418  Best=0.85227418  BestSeed=1  BestGen=0  Time=0.0000 Seconds  Run Time=63.3430 Seconds  TestError=0.00000000
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.24038529  Best=0.85227418  BestSeed=1  BestGen=0  Time=0.1297 Seconds  Run Time=63.4727 Seconds  TestError=0.00000000
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.85227418  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4730 Seconds  TestError=0.00000000
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0 *Result=0.00026751  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0035 Seconds  Run Time=63.4765 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.48324537  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0011 Seconds  Run Time=63.4776 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4778 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4781 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00040400  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4783 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4786 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.24038529  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4788 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4790 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00128281  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4792 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00061804  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4795 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4798 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.48324537  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4800 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4803 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4805 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00798309  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4808 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00630582  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4810 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00086968  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4812 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4815 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4817 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00052810  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4820 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.10142386  Best=0.00026751  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4822 Seconds  TestError=0.00000024
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0 *Result=0.00018597  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0034 Seconds  Run Time=63.4856 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0011 Seconds  Run Time=63.4867 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.08409619  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4870 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00678265  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4873 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00034487  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4876 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0004 Seconds  Run Time=63.4880 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00281047  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4883 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.35922971  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0004 Seconds  Run Time=63.4887 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.63394719  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4890 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.21073599  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4893 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.48324537  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4895 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4899 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00247242  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4901 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4904 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.12412965  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4906 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00062492  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4909 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00035824  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4912 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.36356857  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4915 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00623345  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4917 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4919 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.07540923  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4921 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00039870  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4924 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00149882  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4926 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.02098852  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4928 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.19860546  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4930 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.25702137  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4933 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4935 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4938 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.97492790  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4941 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.00179315  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4943 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.21783972  Best=0.00018597  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4945 Seconds  TestError=0.00000030
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0 *Result=0.00008732  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0033 Seconds  Run Time=63.4979 Seconds  TestError=0.00000007
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.04530752  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0011 Seconds  Run Time=63.4990 Seconds  TestError=0.00000007
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.21970296  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4992 Seconds  TestError=0.00000007
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.24038529  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.4994 Seconds  TestError=0.00000007
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.17360258  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.4997 Seconds  TestError=0.00000007
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.5000 Seconds  TestError=0.00000007
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=1.48324537  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0002 Seconds  Run Time=63.5002 Seconds  TestError=0.00000007
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.49515241  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.5005 Seconds  TestError=0.00000007
+FIRESTARTER_EVOLVE: Seed=1  Generation=0  Age=0  Evolution=0  Result=0.85227418  Best=0.00008732  BestSeed=1  BestGen=0  Time=0.0003 Seconds  Run Time=63.5008 Seconds  TestError=0.00000007

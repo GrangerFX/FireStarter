@@ -9,8 +9,8 @@
 #define FIRESTARTER_GENERATE_GPU  1
 #define FIRESTARTER_AUTO_PROCESS  0
 #define FIRESTARTER_OUTPUT_HASH   0
-#define FIRESTARTER_EVOLVE_SEED   0
-#define FIRESTARTER_OPTIMIZE_SEED 0
+#define FIRESTARTER_SEED          0  // Set the main instruction seed.
+#define FIRESTARTER_OPTIMIZATION_SEED 0 // Set the optimization seed.
 
 #define FIRESTARTER_EVOLVE_OPTIMIZE  5  // Number of times to run Optimize.
 #define FIRESTARTER_EVOLVE_UNIQUE    1  // Set to 1 to only evolve unique instructions
@@ -37,6 +37,7 @@
 #define FIRESTARTER_SOLUTION 9
 #define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
+#define FIRESTARTER_CODE_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_CODE_SEEDS              1
 #define FIRESTARTER_CODE_TESTS              0
 #define FIRESTARTER_CODE_UNITS              1
@@ -51,6 +52,7 @@
 #define FIRESTARTER_CODE_START_SCALE        2.0f
 #define FIRESTARTER_CODE_START_RESULT       10.0f
 
+#define FIRESTARTER_UNIT_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_UNIT_SEEDS              1
 #define FIRESTARTER_UNIT_TESTS              0
 #define FIRESTARTER_UNIT_UNITS              1
@@ -65,6 +67,7 @@
 #define FIRESTARTER_UNIT_START_SCALE        2.0f
 #define FIRESTARTER_UNIT_START_RESULT       10.0f
 
+#define FIRESTARTER_TEST_SEED               FIRESTARTER_SEED
 #define FIRESTARTER_TEST_SEEDS              1
 #define FIRESTARTER_TEST_TESTS              0
 #define FIRESTARTER_TEST_UNITS              1
@@ -79,6 +82,7 @@
 #define FIRESTARTER_TEST_START_SCALE        2.0f
 #define FIRESTARTER_TEST_START_RESULT       10.0f
 
+#define FIRESTARTER_RANDOM_SEED             0
 #define FIRESTARTER_RANDOM_SEEDS            11000
 #define FIRESTARTER_RANDOM_TESTS            0
 #define FIRESTARTER_RANDOM_UNITS            8
@@ -93,6 +97,7 @@
 #define FIRESTARTER_RANDOM_START_SCALE      2.0f
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
 
+#define FIRESTARTER_TEVOLVE_SEED            FIRESTARTER_SEED
 #define FIRESTARTER_TEVOLVE_SEEDS           1
 #define FIRESTARTER_TEVOLVE_TESTS           100
 #define FIRESTARTER_TEVOLVE_UNITS           1
@@ -107,6 +112,7 @@
 #define FIRESTARTER_TEVOLVE_START_SCALE     2.0f
 #define FIRESTARTER_TEVOLVE_START_RESULT    10.0f
 
+#define FIRESTARTER_REVOLVE_SEED            FIRESTARTER_SEED
 #define FIRESTARTER_REVOLVE_SEEDS           100
 #define FIRESTARTER_REVOLVE_TESTS           1
 #define FIRESTARTER_REVOLVE_UNITS           4
@@ -121,6 +127,7 @@
 #define FIRESTARTER_REVOLVE_START_SCALE     2.0f
 #define FIRESTARTER_REVOLVE_START_RESULT    10.0f
 
+#define FIRESTARTER_EVOLVE_SEED             FIRESTARTER_SEED
 #define FIRESTARTER_EVOLVE_SEEDS            64
 #define FIRESTARTER_EVOLVE_TESTS            0
 #define FIRESTARTER_EVOLVE_UNITS            1
@@ -135,6 +142,7 @@
 #define FIRESTARTER_EVOLVE_START_SCALE      2.0f
 #define FIRESTARTER_EVOLVE_START_RESULT     10.0f
 
+#define FIRESTARTER_OPTIMIZE_SEED           0
 #define FIRESTARTER_OPTIMIZE_SEEDS          1
 #define FIRESTARTER_OPTIMIZE_TESTS          0
 #define FIRESTARTER_OPTIMIZE_UNITS          1
@@ -264,7 +272,7 @@ public:
     float m_targetMax;
 
     unsigned int m_mode;
-    unsigned long long m_evolveSeed;
+    unsigned long long m_seed;
     unsigned long long m_optimizeSeed;
     unsigned int m_seeds;
     unsigned int m_tests;
@@ -325,9 +333,6 @@ public:
 
     inline void CopyModeSettings(const FireStarterSettings& source)
     {
-        m_evolveSeed = source.m_evolveSeed;
-        m_optimizeSeed = source.m_optimizeSeed;
-        m_seeds = source.m_seeds;
         m_tests = source.m_tests;
         m_units = source.m_units;
         m_processes = source.m_processes;
@@ -337,6 +342,7 @@ public:
         m_precision = source.m_precision;
         m_candidates = source.m_candidates;
         m_attempts = source.m_attempts;
+        m_seed = source.m_seed;
         m_scale = source.m_scale;
         m_startScale = source.m_startScale;
         m_startResult = source.m_startResult;
@@ -354,12 +360,10 @@ public:
         m_targetMin = TARGET_MIN;
         m_targetMax = TARGET_MAX;
 
-        m_evolveSeed = FIRESTARTER_EVOLVE_SEED;
-        m_optimizeSeed = FIRESTARTER_OPTIMIZE_SEED;
-
         m_mode = evolveMode ? evolveMode : FIRESTARTER_MODE;
         switch (m_mode) {
             case FIRESTARTER_CODE:
+                m_seed =        FIRESTARTER_CODE_SEED;
                 m_seeds =       FIRESTARTER_CODE_SEEDS;
                 m_tests =       FIRESTARTER_CODE_TESTS;
                 m_units =       FIRESTARTER_CODE_UNITS;
@@ -376,6 +380,7 @@ public:
                 break;
 
             case FIRESTARTER_UNIT:
+                m_seed =        FIRESTARTER_UNIT_SEED;
                 m_seeds =       FIRESTARTER_UNIT_SEEDS;
                 m_tests =       FIRESTARTER_UNIT_TESTS;
                 m_units =       FIRESTARTER_UNIT_UNITS;
@@ -392,6 +397,7 @@ public:
                 break;
 
             case FIRESTARTER_TEST:
+                m_seed =        FIRESTARTER_TEST_SEED;
                 m_seeds =       FIRESTARTER_TEST_SEEDS;
                 m_tests =       FIRESTARTER_TEST_TESTS;
                 m_units =       FIRESTARTER_TEST_UNITS;
@@ -408,6 +414,7 @@ public:
                 break;
 
             case FIRESTARTER_RANDOM:
+                m_seed =        FIRESTARTER_RANDOM_SEED;
                 m_seeds =       FIRESTARTER_RANDOM_SEEDS;
                 m_tests =       FIRESTARTER_RANDOM_TESTS;
                 m_units =       FIRESTARTER_RANDOM_UNITS;
@@ -424,22 +431,24 @@ public:
                 break;
 
             case FIRESTARTER_TEVOLVE:
-                m_seeds =       FIRESTARTER_TEVOLVE_SEEDS;
-                m_tests =       FIRESTARTER_TEVOLVE_TESTS;
-                m_units =       FIRESTARTER_TEVOLVE_UNITS;
-                m_processes =   FIRESTARTER_TEVOLVE_PROCESSES;
-                m_population =  FIRESTARTER_TEVOLVE_POPULATION;
-                m_iterations =  FIRESTARTER_TEVOLVE_ITERATIONS;
-                m_candidates =  FIRESTARTER_TEVOLVE_CANDIDATES;
+                m_seed = FIRESTARTER_TEVOLVE_SEED;
+                m_seeds = FIRESTARTER_TEVOLVE_SEEDS;
+                m_tests = FIRESTARTER_TEVOLVE_TESTS;
+                m_units = FIRESTARTER_TEVOLVE_UNITS;
+                m_processes = FIRESTARTER_TEVOLVE_PROCESSES;
+                m_population = FIRESTARTER_TEVOLVE_POPULATION;
+                m_iterations = FIRESTARTER_TEVOLVE_ITERATIONS;
+                m_candidates = FIRESTARTER_TEVOLVE_CANDIDATES;
                 m_generations = FIRESTARTER_TEVOLVE_GENERATIONS;
-                m_precision =   FIRESTARTER_TEVOLVE_PRECISION;
-                m_attempts =    FIRESTARTER_TEVOLVE_ATTEMPTS;
-                m_scale =       FIRESTARTER_TEVOLVE_SCALE;
-                m_startScale =  FIRESTARTER_TEVOLVE_START_SCALE;
+                m_precision = FIRESTARTER_TEVOLVE_PRECISION;
+                m_attempts = FIRESTARTER_TEVOLVE_ATTEMPTS;
+                m_scale = FIRESTARTER_TEVOLVE_SCALE;
+                m_startScale = FIRESTARTER_TEVOLVE_START_SCALE;
                 m_startResult = FIRESTARTER_TEVOLVE_START_RESULT;
                 break;
 
             case FIRESTARTER_REVOLVE:
+                m_seed =        FIRESTARTER_REVOLVE_SEED;
                 m_seeds =       FIRESTARTER_REVOLVE_SEEDS;
                 m_tests =       FIRESTARTER_REVOLVE_TESTS;
                 m_units =       FIRESTARTER_REVOLVE_UNITS;
@@ -456,6 +465,7 @@ public:
                 break;
 
             case FIRESTARTER_EVOLVE:
+                m_seed =        FIRESTARTER_EVOLVE_SEED;
                 m_seeds =       FIRESTARTER_EVOLVE_SEEDS;
                 m_tests =       FIRESTARTER_EVOLVE_TESTS;
                 m_units =       FIRESTARTER_EVOLVE_UNITS;
@@ -472,6 +482,7 @@ public:
                 break;
 
             case FIRESTARTER_OPTIMIZE:
+                m_seed =        FIRESTARTER_OPTIMIZE_SEED;
                 m_seeds =       FIRESTARTER_OPTIMIZE_SEEDS;
                 m_tests =       FIRESTARTER_OPTIMIZE_TESTS;
                 m_units =       FIRESTARTER_OPTIMIZE_UNITS;
@@ -489,6 +500,7 @@ public:
 
             case FIRESTARTER_SOLUTION:
             default:
+                m_seed = 0;
                 m_seeds = 0;
                 m_tests = 0;
                 m_units = 0;
@@ -504,5 +516,7 @@ public:
                 m_startResult = 0.0f;
                 break;
         }
+
+        m_optimizeSeed = FIRESTARTER_OPTIMIZATION_SEED;
     } // FireStarterSettings
 }; // class FireStarterSettings
