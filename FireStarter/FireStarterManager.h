@@ -100,6 +100,7 @@ public:
 	double TimeComplete(void);
 	size_t SizeComplete(void);
 
+	inline size_t GetMaxJobs(void) { return m_maxJobs; }
 	void Restart(void);
 	void Cancel(void);
 	FireStarterManager(size_t maxJobs = 1);

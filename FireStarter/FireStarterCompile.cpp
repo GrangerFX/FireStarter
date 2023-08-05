@@ -212,9 +212,12 @@ FireStarterCompile::FireStarterCompile(FireStarterManager* manager, size_t numPr
             m_activeCompilers++;
         }
     } else {
-        FireStarterCompiler* compiler = new FireStarterCompiler(this, manager);
-        m_compilers.push_back(compiler);
-        m_activeCompilers++;
+        size_t maxJobs = 1; // manager->GetMaxJobs();
+        for (unsigned int i = 0; i < maxJobs; i++) {
+            FireStarterCompiler* compiler = new FireStarterCompiler(this, manager);
+            m_compilers.push_back(compiler);
+            m_activeCompilers++;
+        }
     }
 } // FireStarterCompile
 
