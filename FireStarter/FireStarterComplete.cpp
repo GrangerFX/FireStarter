@@ -254,7 +254,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                     allStates[i] = allStates[min];
                     allStates[min] = temp;
                 }
-                allStates[i].m_index = i;
+//                allStates[i].m_index = i;
             }
         }
     }, sync);
