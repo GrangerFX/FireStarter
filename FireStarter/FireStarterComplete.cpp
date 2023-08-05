@@ -153,9 +153,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     m_fireShow.RenderStatus(displayState, state, duration, m_generationTime, oldResult, average, m_testError);
 
     // Has the completion condition been met?
-    if (state.m_generation - displayState.m_generation >= settings.m_attempts)
-        return false;
-    return true;
+    return state.m_generation - displayState.m_generation < settings.m_attempts;
 } // CompleteResults
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
