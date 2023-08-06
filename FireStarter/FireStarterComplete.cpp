@@ -225,6 +225,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
 
         if (!abort) {
             // Update the best state and display the results.
+            bool found = false;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[oldState.m_index];
@@ -232,30 +233,32 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                 if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
                     oldState = newState;
                     oldState.m_evolution++;
+                    found = true;
                 }
             }
 
             // Sort the states, best first.
-            for (size_t i = 0; i < numStates; i++) {
-                size_t min = i;
-                unsigned long long minIndex = allStates[i].m_index;
-                float minResult = allStates[i].m_maxResult;
-                for (size_t j = i + 1; j < numStates; j++) {
-                    unsigned long long currentIndex = allStates[j].m_index;
-                    float currentResult = allStates[j].m_maxResult;
-                    if ((currentResult < minResult) || ((currentResult == minResult) && (currentIndex < minIndex))) {
-                        minIndex = currentIndex;
-                        minResult = currentResult;
-                        min = j;
+            if (found)
+                for (size_t i = 0; i < numStates; i++) {
+                    size_t min = i;
+                    unsigned long long minIndex = allStates[i].m_index;
+                    float minResult = allStates[i].m_maxResult;
+                    for (size_t j = i + 1; j < numStates; j++) {
+                        unsigned long long currentIndex = allStates[j].m_index;
+                        float currentResult = allStates[j].m_maxResult;
+                        if ((currentResult < minResult) || ((currentResult == minResult) && (currentIndex < minIndex))) {
+                            minIndex = currentIndex;
+                            minResult = currentResult;
+                            min = j;
+                        }
                     }
+                    if (min != i) {
+                        FireStarterState temp = allStates[i];
+                        allStates[i] = allStates[min];
+                        allStates[min] = temp;
+                    }
+//                  allStates[i].m_index = i;
                 }
-                if (min != i) {
-                    FireStarterState temp = allStates[i];
-                    allStates[i] = allStates[min];
-                    allStates[min] = temp;
-                }
-//                allStates[i].m_index = i;
-            }
         }
     }, sync);
     return result;

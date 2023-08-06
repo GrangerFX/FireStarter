@@ -212,12 +212,13 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
             statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
             if (settings.m_tests > 1)
                 statusString += Format("  Test=%u", test);
-            if (settings.m_units > 1)
+            if (state.PassMode() == FIRESTARTER_EVOLVE)
+                statusString += Format("  Index=%u", state.m_index);
+            else if (settings.m_units > 1)
                 statusString += Format("  Unit=%u", unit);
-
             statusString += Format("  Generation=%u  Age=%u  Evolution=%u", state.m_generation, state.m_generation - bestState.m_generation, state.m_evolution);
 
-            if ((state.PassMode() == FIRESTARTER_EVOLVE) && (settings.m_units > 1)) {
+            if (state.PassMode() == FIRESTARTER_EVOLVE) {
                 if ((newResult == bestResult) && isBestState)
                     statusString += " *";
                 else if (newResult < oldResult)
