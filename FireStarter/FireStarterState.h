@@ -14,6 +14,7 @@ private:
         m_program = other.m_program;
         m_timer = other.m_timer;
         m_generation = other.m_generation;
+        m_evolution = other.m_evolution;
         m_index = other.m_index;
         m_test = other.m_test;
         m_seed = other.m_seed;
@@ -67,6 +68,15 @@ public:
     {
         return m_resultsData.empty() ? nullptr : Results()->Result(variation);
     } // Result
+
+    inline bool ResultsValid(void) const
+    {
+        const FireStarterResults* results = Results();
+        for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
+            if (results->Result(v)->m_minResult == m_program.m_settings.m_startResult)
+                return false;
+        return true;
+    } // ResultsValid
 
     inline bool Initialized(void) const
     {

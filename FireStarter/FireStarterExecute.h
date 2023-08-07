@@ -33,7 +33,7 @@ private:
     void CodeGenerations(FireStarterState& state, unsigned long long pass, unsigned int firstVariation, unsigned int lastVariation);
 	float OptimizeGenerations(FireStarterState& state, unsigned long long pass, unsigned int variation);
     void Code(FireStarterState& state, unsigned long long pass);
-    bool Optimize(FireStarterState& state, unsigned long long pass, float bestResult, bool skipVariations);
+    bool Optimize(FireStarterState& state, unsigned long long pass, bool skipVariations);
     bool Compile(FireStarterJob* &job);
     bool Evolve(float bestResult = 0);
 

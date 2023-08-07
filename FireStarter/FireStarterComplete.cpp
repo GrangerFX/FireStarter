@@ -241,13 +241,11 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
             if (found)
                 for (size_t i = 0; i < numStates; i++) {
                     size_t min = i;
-                    unsigned long long minIndex = allStates[i].m_index;
                     float minResult = allStates[i].m_maxResult;
                     for (size_t j = i + 1; j < numStates; j++) {
-                        unsigned long long currentIndex = allStates[j].m_index;
-                        float currentResult = allStates[j].m_maxResult;
-                        if ((currentResult < minResult) || ((currentResult == minResult) && (currentIndex < minIndex))) {
-                            minIndex = currentIndex;
+                        FireStarterState& currentState = allStates[j];
+                        float currentResult = currentState.m_maxResult;
+                       if (currentResult < minResult) {
                             minResult = currentResult;
                             min = j;
                         }
@@ -257,7 +255,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                         allStates[i] = allStates[min];
                         allStates[min] = temp;
                     }
-//                  allStates[i].m_index = i;
+                    allStates[i].m_index = i;
                 }
         }
     }, sync);
