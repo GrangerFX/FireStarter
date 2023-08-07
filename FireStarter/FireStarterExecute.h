@@ -41,7 +41,7 @@ public:
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool init, bool sync = false);
     void ExecuteCode(unsigned long long pass, bool sync = false);
-    void ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync = false);
+    void ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool skipVariations, bool sync = false);
     void ExecuteEvolve(std::atomic<long long>& evolveCount, float bestResult, bool sync = false);
     void ExecuteEvolve(bool sync = false);
     void ExecuteRandom(bool sync = false);

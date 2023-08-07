@@ -351,14 +351,16 @@ bool FireStarterExecute::Evolve(float bestResult)
         InitPopulation(state);
         float oldResult = state.m_maxResult;
         state.m_maxResult = bestResult ? bestResult * 10.0f : state.Settings().m_startResult;
-        if (Optimize(state, 0, FIRESTARTER_SKIP_VARIATIONS))
-            for (unsigned int i = 1; i < FIRESTARTER_EVOLVE_OPTIMIZE; i++) {
-                FireStarterState curState = state;
-                if (Optimize(curState, i, FIRESTARTER_SKIP_VARIATIONS))
-                    state = curState;
-            }
+#if 0
+        if (!Optimize(state, 0, FIRESTARTER_SKIP_VARIATIONS) && (state.m_maxResult < oldResult))
+            state.m_maxResult = oldResult;
+#else
+        if (Optimize(state, 0, FIRESTARTER_SKIP_VARIATIONS) && (state.m_maxResult < oldResult))
+            for (unsigned int i = 1; i < FIRESTARTER_EVOLVE_OPTIMIZE; i++)
+                Optimize(state, i, false);
         else if (state.m_maxResult < oldResult)
             state.m_maxResult = oldResult;
+#endif
         m_manager->AddComplete(job);
         return true;
     }
@@ -394,15 +396,15 @@ void FireStarterExecute::ExecuteCode(unsigned long long pass, bool sync)
     }, sync);
 } // ExecuteCode
 
-void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync)
+void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool skipVariations, bool sync)
 {
-    Dispatch([this, state, pass] {
+    Dispatch([this, state, pass, skipVariations] {
         if (m_job) {
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
                 m_job->m_state = state;
                 m_job->m_state.m_optimizePass = true;
-                Optimize(m_job->m_state, pass, FIRESTARTER_SKIP_VARIATIONS);
+                Optimize(m_job->m_state, pass, skipVariations);
                 job->Copy(m_job);
             }
             m_manager->AddComplete(job);
