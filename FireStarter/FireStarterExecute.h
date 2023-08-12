@@ -33,7 +33,8 @@ private:
     void CodeGenerations(FireStarterState& state, unsigned long long pass, unsigned int firstVariation, unsigned int lastVariation);
 	float OptimizeGenerations(FireStarterState& state, unsigned long long pass, unsigned int variation);
     void Code(FireStarterState& state, unsigned long long pass);
-    bool Optimize(FireStarterState& state, unsigned long long pass, bool skipVariations);
+    bool Optimize(FireStarterState& state);
+    void OptimizePass(FireStarterState& state, unsigned long long pass);
     bool Compile(FireStarterJob* &job);
     bool Evolve(float bestResult = 0);
 
@@ -41,7 +42,7 @@ public:
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool init, bool sync = false);
     void ExecuteCode(unsigned long long pass, bool sync = false);
-    void ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool skipVariations, bool sync = false);
+    void ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync = false);
     void ExecuteEvolve(std::atomic<long long>& evolveCount, float bestResult, bool sync = false);
     void ExecuteEvolve(bool sync = false);
     void ExecuteRandom(bool sync = false);

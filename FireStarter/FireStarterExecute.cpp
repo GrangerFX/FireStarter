@@ -81,15 +81,16 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
-    unsigned long long passGeneration = pass * settings.m_generations;
+    unsigned int generations = settings.m_generations;
+    unsigned long long generation = pass * generations;
 
-    for (unsigned int g = 0; g < settings.m_generations; g++) {
+    for (unsigned int g = 0; g < generations; g++) {
         // Run all the evolve states in parallel.
         unsigned int maxRegisters = state.m_program.m_uniqueRegisters;
         FireStarterPopulation* newResults = g & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = g & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long generationSeed = state.OptimizationSeed(passGeneration, state.m_test);
-        int initData = passGeneration == 0;
+        unsigned long long generationSeed = state.OptimizationSeed(generation, state.m_test);
+        int initData = generation == 0;
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),
@@ -113,7 +114,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
         // Synchronize all GPU threads and results.
         context->Synchronize();
-        passGeneration++;
+        generation++;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -259,46 +260,47 @@ void FireStarterExecute::Code(FireStarterState& state, unsigned long long pass)
     CodeGenerations(state, pass, 0, state.Settings().m_variations);
 } // Code
 
-bool FireStarterExecute::Optimize(FireStarterState& state, unsigned long long pass, bool skipVariations)
+bool FireStarterExecute::Optimize(FireStarterState& state)
 {
-    FireStarterSettings stateSettings = state.Settings();
-    FireStarterResults* stateResults = state.Results();
+    const FireStarterSettings& settings = state.Settings();
+    FireStarterResults* results = state.Results();
+    unsigned int variations = state.Settings().m_variations;
     float bestResult = state.m_maxResult;
     state.m_maxResult = 0;
     bool validResult = true;
     bool needsResort = false;
 
-    if (stateSettings.m_variations != m_variationOrder.size()) {
-        m_variationOrder.resize(stateSettings.m_variations);
-        m_variationCount.resize(stateSettings.m_variations);
-        for (unsigned int v = 0; v < stateSettings.m_variations; v++) {
+    if (m_variationOrder.size() != variations) {
+        m_variationOrder.resize(variations);
+        m_variationCount.resize(variations);
+        for (unsigned int v = 0; v < variations; v++) {
             m_variationOrder[v] = v;
             m_variationCount[v] = 0;
         }
     }
-    for (unsigned int v = 0; v < stateSettings.m_variations; v++) {
+    for (unsigned int v = 0; v < variations; v++) {
         unsigned int variation = m_variationOrder[v];
         if (validResult) {
-            float variationResult = OptimizeGenerations(state, pass, variation);
-            if (skipVariations) {
-                // Optimization: If the variation result is worse, skip the rest of the variations.
-                if (variationResult < bestResult)
-                    needsResort = true;
-                else {
-                    m_variationCount[variation]++; // Counts the variaition that caused an invalid result.
-                    validResult = false;
-                }
+            float variationResult = OptimizeGenerations(state, 0, variation);
+#if FIRESTARTER_SKIP_VARIATIONS
+            // Optimization: If the variation result is worse, skip the rest of the variations.
+            if (variationResult < bestResult)
+                needsResort = true;
+            else {
+                m_variationCount[variation]++; // Counts the variaition that caused an invalid result.
+                validResult = false;
             }
+#endif
         } else
-            stateResults->Result(variation)->Init(0, stateSettings.m_registers, stateSettings.m_startResult);
+            results->Result(variation)->Init(0, settings.m_registers, settings.m_startResult);
     }
 
     // Resort the variation order with the highest invalidation count first.
     if (needsResort) {
-        for (unsigned int v = 0; v < stateSettings.m_variations - 1; v++) {
+        for (unsigned int v = 0; v < variations - 1; v++) {
             unsigned int variation = m_variationOrder[v];
             unsigned int count = m_variationCount[variation];
-            for (unsigned int i = v + 1; i < stateSettings.m_variations; i++) {
+            for (unsigned int i = v + 1; i < variations; i++) {
                 unsigned int curVariation = m_variationOrder[i];
                 unsigned int curCount = m_variationCount[curVariation];
                 if (curCount > count) {
@@ -312,6 +314,13 @@ bool FireStarterExecute::Optimize(FireStarterState& state, unsigned long long pa
     }
     return validResult;
 } // Optimize
+
+void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned long long pass)
+{
+    unsigned int variations = state.Settings().m_variations;
+    for (unsigned int v = 0; v < variations; v++)
+        OptimizeGenerations(state, pass, v);
+} // OptimizePass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
@@ -348,19 +357,15 @@ bool FireStarterExecute::Evolve(float bestResult)
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
+        FireStarterSettings stateSettings = state.Settings();
         InitPopulation(state);
         float oldResult = state.m_maxResult;
         state.m_maxResult = bestResult ? bestResult * 10.0f : state.Settings().m_startResult;
-#if 0
-        if (!Optimize(state, 0, FIRESTARTER_SKIP_VARIATIONS) && (state.m_maxResult < oldResult))
+        if (Optimize(state) && (state.m_maxResult < oldResult)) {
+            for (unsigned long long pass = 1; pass < FIRESTARTER_EVOLVE_OPTIMIZE; pass++)
+                OptimizePass(state, pass);
+        } else if (state.m_maxResult < oldResult)
             state.m_maxResult = oldResult;
-#else
-        if (Optimize(state, 0, FIRESTARTER_SKIP_VARIATIONS) && (state.m_maxResult < oldResult))
-            for (unsigned int i = 1; i < FIRESTARTER_EVOLVE_OPTIMIZE; i++)
-                Optimize(state, i, false);
-        else if (state.m_maxResult < oldResult)
-            state.m_maxResult = oldResult;
-#endif
         m_manager->AddComplete(job);
         return true;
     }
@@ -396,15 +401,15 @@ void FireStarterExecute::ExecuteCode(unsigned long long pass, bool sync)
     }, sync);
 } // ExecuteCode
 
-void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool skipVariations, bool sync)
+void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync)
 {
-    Dispatch([this, state, pass, skipVariations] {
+    Dispatch([this, state, pass] {
         if (m_job) {
             FireStarterJob* job = m_manager->GetFree();
             if (job) {
                 m_job->m_state = state;
                 m_job->m_state.m_optimizePass = true;
-                Optimize(m_job->m_state, pass, skipVariations);
+                OptimizePass(m_job->m_state, pass);
                 job->Copy(m_job);
             }
             m_manager->AddComplete(job);
@@ -437,7 +442,7 @@ void FireStarterExecute::ExecuteRandom(bool sync)
         while (Compile(job)) {
             InitPopulation(job->m_state);
             job->m_state.m_maxResult = g_atomicResult;
-            Optimize(job->m_state, 0, FIRESTARTER_SKIP_VARIATIONS);
+            Optimize(job->m_state);
             float newResult = job->m_state.m_maxResult;
             if (newResult < g_atomicResult) {
                 float oldResult = g_atomicResult;

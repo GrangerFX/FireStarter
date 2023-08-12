@@ -200,7 +200,7 @@ void FireStarterStream::EvolveState(FireStarterState& evolveState)
     unsigned long long pass = 0;
     while (!WillTerminate()) {
         // Optimize the current generation.
-        execute->ExecuteOptimize(evolveState, pass, FIRESTARTER_SKIP_VARIATIONS);
+        execute->ExecuteOptimize(evolveState, pass, false);
 
         // Update the results in the UI.
         if (!complete->CompleteState(bestState, evolveState))
