@@ -13,9 +13,8 @@
 #define FIRESTARTER_OPTIMIZE_SEED 0
 
 #define FIRESTARTER_EVOLVE_OPTIMIZE  5  // Number of times to run Optimize.
-#define FIRESTARTER_EVOLVE_UNIQUE    1  // Set to 1 to only evolve unique instructions
+#define FIRESTARTER_EVOLVE_UNIQUE    0  // Set to 1 to only evolve unique instructions
 #define FIRESTARTER_EVOLVE_RANGE     0  // Set to 1 to copy only in a limited range above the current index.
-#define FIRESTARTER_EVOLVE_BEST      12 // The number of best evolved states.
 
 #define FIRESTARTER_EVOLVE_MODE_COPY             0  // Copy from one of the best results.
 #define FIRESTARTER_EVOLVE_MODE_RANDOM           1  // Randomize the program.

@@ -102,15 +102,14 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             result = oldResult;
     }
 
-    // If the result was worse, copy from a member with better resulOptimizeGenerationss.
+    // If the result was better, save the results.
     if (initData || (result < oldResult)) {
-        // Save better results.
         *newResults->Data(member, v) = data;
         *newResults->MinResult(member, v) = result;
         *newResults->Index(member, v) = 0;
         *newResults->Debug(member, v) = initData ? 1 : *oldResults->Debug(member, v) + 1;
     } else {
-        // Copy a result from among the previous generation's results.
+        // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
         float bestResult = result;
 
