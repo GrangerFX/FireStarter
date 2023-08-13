@@ -30,10 +30,10 @@ private:
 
     bool InitPopulation(const FireStarterState& state, bool init = false);
     void FinishResults(void);
-    void CodeGenerations(FireStarterState& state, unsigned long long pass, unsigned int firstVariation, unsigned int lastVariation);
+    void CodeGenerations(FireStarterState& state, unsigned long long pass);
 	float OptimizeGenerations(FireStarterState& state, unsigned long long pass, unsigned int variation);
     void Code(FireStarterState& state, unsigned long long pass);
-    bool Optimize(FireStarterState& state);
+    bool Optimize(FireStarterState& state, float minResult);
     void OptimizePass(FireStarterState& state, unsigned long long pass);
     bool Compile(FireStarterJob* &job);
     bool Evolve(float bestResult = 0);

@@ -5,8 +5,8 @@
 #include "CUDADefines.h"
 
 // EVALUATE //
-// Run date: 08/12/23 17:09:18 Pacific Daylight Time
-// Run duration = 772.118938 seconds
+// Run date: 08/12/23 19:19:39 Pacific Daylight Time
+// Run duration = 776.184081 seconds
 // Run generation = 50
 // Run evolution = 2
 // Run result = 0.00000024

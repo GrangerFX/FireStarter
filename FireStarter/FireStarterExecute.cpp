@@ -1,7 +1,7 @@
 #include "FireStarterExecute.h"
 #include "CUDACompile.h"
 
-void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned long long pass, unsigned int firstVariation, unsigned int lastVariation)
+void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned long long pass)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -12,7 +12,8 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned long 
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
     unsigned long long passGeneration = pass * settings.m_generations;
-
+    unsigned int firstVariation = 0;
+    unsigned int lastVariation = settings.m_variations;
     for (unsigned int g = 0; g < settings.m_generations; g++) {
         // Run all the evolve states in parallel.
         FireStarterEvolutions* newEvolutions = g & 1 ? m_deviceEvolutions0 : m_deviceEvolutions1;
@@ -69,6 +70,9 @@ void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned long 
 
     memcpy(state.Results(), m_hostEvolutions->Results(bestIndex), FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations));
     state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
+
+    // Calculate the state's max result.
+    state.m_maxResult = state.MaxResult(); 
 } // CodeGenerations
 
 float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned long long pass, unsigned int variation)
@@ -142,7 +146,6 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     memcpy(result->Data(), m_hostPopulation->Data(minIndex, variation), result->DataSize());
     *result->Index() = *m_hostPopulation->Index(minIndex, variation);
     *result->MinResult() = minResult;
-    state.m_maxResult = fmaxf(state.m_maxResult, minResult);
     return minResult;
 } // OptimizeGenerations
 
@@ -256,19 +259,13 @@ void FireStarterExecute::FinishResults(void)
 
 void FireStarterExecute::Code(FireStarterState& state, unsigned long long pass)
 {
-    state.m_maxResult = 0;
-    CodeGenerations(state, pass, 0, state.Settings().m_variations);
+    CodeGenerations(state, pass);
 } // Code
 
-bool FireStarterExecute::Optimize(FireStarterState& state)
+bool FireStarterExecute::Optimize(FireStarterState& state, float minResult)
 {
     const FireStarterSettings& settings = state.Settings();
-    FireStarterResults* results = state.Results();
     unsigned int variations = settings.m_variations;
-    float bestResult = state.m_maxResult;
-    bool validResult = true;
-    bool needsResort = false;
-
     if (m_variationOrder.size() != variations) {
         m_variationOrder.resize(variations);
         m_variationCount.resize(variations);
@@ -277,14 +274,17 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             m_variationCount[v] = 0;
         }
     }
-    state.m_maxResult = 0; // Note: Very important!
+
+    FireStarterResults* results = state.Results();
+    bool validResult = true;
+    bool needsResort = false;
     for (unsigned int v = 0; v < variations; v++) {
         unsigned int variation = m_variationOrder[v];
         if (validResult) {
             float variationResult = OptimizeGenerations(state, 0, variation);
 #if FIRESTARTER_SKIP_VARIATIONS
             // Optimization: If the variation result is worse, skip the rest of the variations.
-            if (variationResult < bestResult)
+            if (variationResult < minResult)
                 needsResort = true;
             else {
                 m_variationCount[variation]++; // Counts the variaition that caused an invalid result.
@@ -312,15 +312,20 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             }
         }
     }
+
+    // Calculate the state's max result.
+    state.m_maxResult = validResult ? state.MaxResult() : settings.m_startResult;
     return validResult;
 } // Optimize
 
 void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned long long pass)
 {
     unsigned int variations = state.Settings().m_variations;
-    state.m_maxResult = 0; // Note: Very important!
     for (unsigned int v = 0; v < variations; v++)
         OptimizeGenerations(state, pass, v);
+
+    // Calculate the state's max result.
+    state.m_maxResult = state.MaxResult();
 } // OptimizePass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
@@ -361,12 +366,12 @@ bool FireStarterExecute::Evolve(float bestResult)
         FireStarterSettings stateSettings = state.Settings();
         InitPopulation(state);
         float oldResult = state.m_maxResult;
-        state.m_maxResult = bestResult ? bestResult * 10.0f : state.Settings().m_startResult;
-        if (Optimize(state))
+        float minResult = bestResult ? MIN(bestResult * 10.0f, state.Settings().m_startResult) : state.Settings().m_startResult;
+        if (Optimize(state, minResult))
             for (unsigned long long pass = 1; pass < FIRESTARTER_EVOLVE_OPTIMIZE; pass++)
                 OptimizePass(state, pass);
-        else if (state.m_maxResult < oldResult)
-            state.m_maxResult = oldResult;
+//      else if (state.m_maxResult < oldResult)
+//          state.m_maxResult = oldResult;
         m_manager->AddComplete(job);
         return true;
     }
@@ -441,10 +446,10 @@ void FireStarterExecute::ExecuteRandom(bool sync)
         static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
         FireStarterJob* job = nullptr;
         while (Compile(job)) {
-            InitPopulation(job->m_state);
-            job->m_state.m_maxResult = g_atomicResult;
-            Optimize(job->m_state);
-            float newResult = job->m_state.m_maxResult;
+            FireStarterState& state = job->m_state;
+            InitPopulation(state);
+            Optimize(state, g_atomicResult);
+            float newResult = state.m_maxResult;
             if (newResult < g_atomicResult) {
                 float oldResult = g_atomicResult;
                 while ((newResult < oldResult) && !g_atomicResult.compare_exchange_weak(oldResult, newResult));

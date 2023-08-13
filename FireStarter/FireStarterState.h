@@ -69,6 +69,20 @@ public:
         return m_resultsData.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
+    inline float MinResult(size_t variation) const
+    {
+        return m_resultsData.empty() ? Settings().m_startResult : Results()->MinResult(variation);
+    } // MinResult
+
+    inline float MaxResult(void) const
+    {
+        float maxResult = 0.0f;
+        size_t variations = Settings().m_variations;
+        for (size_t v = 0; v < variations; v++)
+            maxResult = MAX(maxResult, MinResult(v));
+        return maxResult;
+    } // MaxResult
+
     inline bool ResultsValid(void) const
     {
         const FireStarterResults* results = Results();
