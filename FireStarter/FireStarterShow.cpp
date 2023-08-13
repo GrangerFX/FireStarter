@@ -219,13 +219,14 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
             statusString += Format("  Generation=%u  Age=%u  Evolution=%u", state.m_generation, state.m_generation - bestState.m_generation, state.m_evolution);
 
             if (state.PassMode() == FIRESTARTER_EVOLVE) {
+                std::string spaceString;
                 if ((newResult == bestResult) && isBestState)
-                    statusString += " *";
+                    spaceString = "*";
                 else if (newResult < oldResult)
-                    statusString += " >";
+                    spaceString = ">";
                 else
-                    statusString += "  ";
-                statusString += Format("New Result=%.8f  Old Result=%.8f", newResult, oldResult);
+                    spaceString = " ";
+                statusString += Format("  Old Result=%.8f %sNew Result=%.8f", oldResult, spaceString.c_str(), MIN(newResult, oldResult));
             } else {
                 if ((newResult == bestResult) && isBestState)
                     statusString += " *";
