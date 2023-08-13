@@ -266,7 +266,6 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     FireStarterResults* results = state.Results();
     unsigned int variations = state.Settings().m_variations;
     float bestResult = state.m_maxResult;
-    state.m_maxResult = 0;
     bool validResult = true;
     bool needsResort = false;
 
@@ -278,6 +277,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             m_variationCount[v] = 0;
         }
     }
+    state.m_maxResult = 0; // Note: Very important!
     for (unsigned int v = 0; v < variations; v++) {
         unsigned int variation = m_variationOrder[v];
         if (validResult) {
@@ -318,6 +318,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
 void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned long long pass)
 {
     unsigned int variations = state.Settings().m_variations;
+    state.m_maxResult = 0; // Note: Very important!
     for (unsigned int v = 0; v < variations; v++)
         OptimizeGenerations(state, pass, v);
 } // OptimizePass
@@ -361,10 +362,10 @@ bool FireStarterExecute::Evolve(float bestResult)
         InitPopulation(state);
         float oldResult = state.m_maxResult;
         state.m_maxResult = bestResult ? bestResult * 10.0f : state.Settings().m_startResult;
-        if (Optimize(state) && (state.m_maxResult < oldResult)) {
+        if (Optimize(state))
             for (unsigned long long pass = 1; pass < FIRESTARTER_EVOLVE_OPTIMIZE; pass++)
                 OptimizePass(state, pass);
-        } else if (state.m_maxResult < oldResult)
+        else if (state.m_maxResult < oldResult)
             state.m_maxResult = oldResult;
         m_manager->AddComplete(job);
         return true;
