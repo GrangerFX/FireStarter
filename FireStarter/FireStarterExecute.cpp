@@ -264,7 +264,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
     FireStarterResults* results = state.Results();
-    unsigned int variations = state.Settings().m_variations;
+    unsigned int variations = settings.m_variations;
     float bestResult = state.m_maxResult;
     bool validResult = true;
     bool needsResort = false;
