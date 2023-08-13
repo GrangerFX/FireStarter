@@ -170,7 +170,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         }
                     } else {
                         if ((index > bestStates) && (RANDOMMOD(seed, numStates - bestStates) < index))
-                            copyIndex = RANDOMMOD(seed, bestStates) + 1;
+                            copyIndex = RANDOMMOD(seed, bestStates);
                     }
 
                     // Keep copying and randomizing instructions until a unique set of instructions is found.
