@@ -9,10 +9,12 @@
 #define FIRESTARTER_GENERATE_GPU  1
 #define FIRESTARTER_AUTO_PROCESS  0
 #define FIRESTARTER_OUTPUT_HASH   0
-#define FIRESTARTER_EVOLVE_SEED   2
-#define FIRESTARTER_OPTIMIZE_SEED 2
+#define FIRESTARTER_EVOLVE_SEED   0
+#define FIRESTARTER_OPTIMIZE_SEED 0
 
 #define FIRESTARTER_EVOLVE_OPTIMIZE  5  // Number of times to run Optimize.
+#define FIRESTARTER_EVOLVE_UNIQUE    1  // Set to 1 to only evolve unique instructions
+#define FIRESTARTER_EVOLVE_RANGE     1  // Set to 1 to copy only in a limited range above the current index.
 #define FIRESTARTER_EVOLVE_BEST      12 // The number of best evolved states.
 
 #define FIRESTARTER_EVOLVE_MODE_COPY             0  // Copy from one of the best results.

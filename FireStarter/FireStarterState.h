@@ -193,9 +193,7 @@ public:
         if (mode == FIRESTARTER_EVOLVE_MODE_COPY) {
             for (unsigned int i = 0; i < numInstructions; i++)
                 m_program.EvolvedInstruction(i) = srcState.m_program.EvolvedInstruction(i);
-#if FIRESTARTER_EVOLVE_UNIQUE
             RandomInstruction(seed);
-#endif
             return;
         }
 
