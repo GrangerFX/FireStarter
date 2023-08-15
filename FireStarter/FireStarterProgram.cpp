@@ -85,7 +85,13 @@ void FireStarterProgram::RandomInstruction(unsigned long long& seed, unsigned in
     EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomInstruction
 
-void FireStarterProgram::LoadInstructions(FireStarterInstructions* instructions)
+void FireStarterProgram::CopyInstructions(const FireStarterProgram& srcProgram)
+{
+    memcpy(m_evolvedInstructionsData.data(), srcProgram.EvolvedInstructionsData().data(), InstructionsSize());
+    memcpy(m_optimizedInstructionsData.data(), srcProgram.OptimizedInstructionsData().data(), InstructionsSize());
+} // CopyInstructions
+
+void FireStarterProgram::LoadInstructions(const FireStarterInstructions* instructions)
 {
     memcpy(m_evolvedInstructionsData.data(), instructions, InstructionsSize());
     memcpy(m_optimizedInstructionsData.data(), instructions, InstructionsSize());

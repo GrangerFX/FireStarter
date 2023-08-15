@@ -19,6 +19,7 @@ private:
         m_test = other.m_test;
         m_seed = other.m_seed;
         m_maxResult = other.m_maxResult;
+        m_lastResult = other.m_lastResult;
         m_optimizePass = other.m_optimizePass;
     } // swap
 
@@ -31,6 +32,7 @@ public:
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
     float m_maxResult = -1.0f;
+    float m_lastResult = -1.0f;
     bool m_optimizePass = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
@@ -179,11 +181,8 @@ public:
 
     inline void CopyInstructions(const FireStarterState& srcState)
     {
-        // Simple copy and randomize one instruction for comparison.
-        unsigned int numInstructions = Settings().m_instructions;
-        for (unsigned int index = 0; index < numInstructions; index++)
-            m_program.EvolvedInstruction(index) = srcState.m_program.EvolvedInstruction(index);
-    } // CopyInstructions
+        m_program.CopyInstructions(srcState.m_program);
+     } // CopyInstructions
 
     inline void EvolveInstructions(const FireStarterState& srcState, unsigned int mode, unsigned long long& seed)
     {

@@ -367,11 +367,12 @@ bool FireStarterExecute::Evolve(float bestResult)
         InitPopulation(state);
         float oldResult = state.m_maxResult;
         float minResult = bestResult ? MIN(bestResult * 10.0f, state.Settings().m_startResult) : state.Settings().m_startResult;
-        if (Optimize(state, minResult))
+        if (Optimize(state, minResult)) {
             for (unsigned long long pass = 1; pass < FIRESTARTER_EVOLVE_OPTIMIZE; pass++)
                 OptimizePass(state, pass);
-//      else if (state.m_maxResult < oldResult)
-//          state.m_maxResult = oldResult;
+            state.m_maxResult = MIN(state.m_maxResult, oldResult);
+        } else
+            state.m_maxResult = oldResult;
         m_manager->AddComplete(job);
         return true;
     }

@@ -9,20 +9,19 @@
 #define FIRESTARTER_GENERATE_GPU  1
 #define FIRESTARTER_AUTO_PROCESS  0
 #define FIRESTARTER_OUTPUT_HASH   0
-#define FIRESTARTER_EVOLVE_SEED   0
-#define FIRESTARTER_OPTIMIZE_SEED 0
+#define FIRESTARTER_EVOLVE_SEED   3
+#define FIRESTARTER_OPTIMIZE_SEED 3
 
 #define FIRESTARTER_EVOLVE_OPTIMIZE  5  // Number of times to run Optimize.
-#define FIRESTARTER_EVOLVE_BEST      0.25 // The percent of best evolved states.
+#define FIRESTARTER_EVOLVE_BEST      12 // The number of best evolved states.
 
 #define FIRESTARTER_EVOLVE_MODE_COPY             0  // Copy from one of the best results.
 #define FIRESTARTER_EVOLVE_MODE_RANDOM           1  // Randomize the program.
-#define FIRESTARTER_EVOLVE_MODE_OPTIMIZE         2  // Similar to the optimize evolution algorithm.
-#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_FIRST  3  // Copy instructions from the start of the program.
-#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_LAST   4  // Copy instructions from the end of the program.
-#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_MIDDLE 5  // Copy instructions from the middle of the program.
-#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_WRAP   6  // Copy instructions from anywhere and wrap back the beginning.
-#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_RANDOM 7  // Copy from anywhere to anywhere in the program.
+#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_FIRST  2  // Copy instructions from the start of the program.
+#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_LAST   3  // Copy instructions from the end of the program.
+#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_MIDDLE 4  // Copy instructions from the middle of the program.
+#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_WRAP   5  // Copy instructions from anywhere and wrap back the beginning.
+#define FIRESTARTER_EVOLVE_MODE_CROSSOVER_RANDOM 6  // Copy from anywhere to anywhere in the program.
 #define FIRESTARTER_EVOLVE_MODE FIRESTARTER_EVOLVE_MODE_COPY
 
 #define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.

@@ -23,7 +23,7 @@
 #define FIRESTARTER_EVOLVE_MODE_CROSSOVER_MIDDLE 5  // Copy instructions from the middle of the program.
 #define FIRESTARTER_EVOLVE_MODE_CROSSOVER_WRAP   6  // Copy instructions from anywhere and wrap back the beginning.
 #define FIRESTARTER_EVOLVE_MODE_CROSSOVER_RANDOM 7  // Copy from anywhere to anywhere in the program.
-#define FIRESTARTER_EVOLVE_MODE FIRESTARTER_EVOLVE_MODE_COPY
+#define FIRESTARTER_EVOLVE_MODE FIRESTARTER_EVOLVE_MODE_OPTIMIZE
 
 #define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_CODE     1
