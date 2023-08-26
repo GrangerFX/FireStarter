@@ -360,7 +360,7 @@ void FireStarterUnit::Allocate(void)
         }
         if (m_populationSize) {
             checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
-            m_hostPopulation->InitPopulation(m_settings.m_population, m_settings.m_instructions, m_settings.m_variations, m_settings.m_startResult);
+            m_hostPopulation->InitPopulation(m_settings.m_population, m_settings.m_registers, m_settings.m_variations, m_settings.m_startResult);
         }
     }
 
