@@ -24,6 +24,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
 
     // Setup the best state
     FireStarterState bestState(startState);
+    bestState.m_maxResult = settings.m_startResult; // Force the initial results to display.
 
     // Create the compiler manager
     FireStarterManager* manager = new FireStarterManager();
