@@ -156,6 +156,20 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     return state.m_generation - displayState.m_generation < settings.m_attempts;
 } // CompleteResults
 
+bool FireStarterComplete::CompleteUnit(FireStarterState& bestState, FireStarterState& oldState, bool sync)
+{
+    bool result = false;
+    Dispatch([this, &bestState, &oldState, &result] {
+        FireStarterState newState = oldState;
+        result = CompleteResults(bestState, newState, oldState.m_maxResult);
+        if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
+            oldState = newState;
+            oldState.m_evolution++;
+        }
+    }, sync);
+    return result;
+} // CompleteUnit
+
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
 {
     bool result = false;

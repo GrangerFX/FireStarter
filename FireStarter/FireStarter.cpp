@@ -66,7 +66,7 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState, bool optimiz
                 // Update the best state and display the results.
                 FireStarterState state;
                 unit->GetState(state);
-                complete->CompleteResults(bestState, state);
+                complete->CompleteUnit(bestState, state);
 
                 // Save the state in the array of all states.
                 FireStarterState& oldState = allStates[state.m_index];
@@ -98,10 +98,6 @@ void FireStarter::ControlUnits(const FireStarterState* evolveState, bool optimiz
 
     // Clear the states.
     allStates.clear();
-
-    // Optimization evolution pass.
-    if (FIRESTARTER_SECOND_PASS && !WillTerminate() && !bestState.m_optimizePass)
-        ControlUnits(&bestState, true);
 } // ControlUnits
 
 void FireStarter::ControlTest(void)
