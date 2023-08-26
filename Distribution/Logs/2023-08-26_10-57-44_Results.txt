@@ -1,0 +1,2 @@
+Test=0  Generation=84  Evolve Result=0.00004119  Average Result=0.00004119  Optimize Generations=270  Optimize Result=0.00001937
+Test=1  Generation=139  Evolve Result=0.00005090  Average Result=0.00004604  Optimize Generations=227  Optimize Result=0.00004590
