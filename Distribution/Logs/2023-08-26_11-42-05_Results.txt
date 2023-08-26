@@ -1,0 +1,10 @@
+Test=0  Generation=84  Evolve Result=0.00004119  Average Result=0.00004119  Optimize Generations=270  Optimize Result=0.00001937
+Test=1  Generation=139  Evolve Result=0.00005090  Average Result=0.00004604  Optimize Generations=227  Optimize Result=0.00004590
+Test=2  Generation=233  Evolve Result=0.00002292  Average Result=0.00003834  Optimize Generations=401  Optimize Result=0.00001812
+Test=3  Generation=114  Evolve Result=0.00002146  Average Result=0.00003412  Optimize Generations=300  Optimize Result=0.00001657
+Test=4  Generation=141  Evolve Result=0.00002670  Average Result=0.00003263  Optimize Generations=233  Optimize Result=0.00002587
+Test=5  Generation=269  Evolve Result=0.00000215  Average Result=0.00002755  Optimize Generations=351  Optimize Result=0.00000095 *******
+Test=6  Generation=97  Evolve Result=0.00003386  Average Result=0.00002845  Optimize Generations=277  Optimize Result=0.00002003
+Test=7  Generation=113  Evolve Result=0.00004286  Average Result=0.00003025  Optimize Generations=336  Optimize Result=0.00002658
+Test=8  Generation=199  Evolve Result=0.00004041  Average Result=0.00003138  Optimize Generations=834  Optimize Result=0.00001311
+Test=9  Generation=74  Evolve Result=0.00011134  Average Result=0.00003938

@@ -392,7 +392,8 @@ void FireStarterExecute::ExecuteCompile(bool sync)
 void FireStarterExecute::ExecuteInitPopulation(bool init, bool sync)
 {
     Dispatch([this, init] {
-        InitPopulation(m_job->m_state, init);
+        if (m_job)
+            InitPopulation(m_job->m_state, init);
     }, sync);
 } // ExecuteInitPopulation
 
