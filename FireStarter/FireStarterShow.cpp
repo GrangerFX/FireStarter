@@ -122,7 +122,7 @@ void FireStarterShow::FireSolution(bool sync)
             }
             statusString += Format(" Solution %d = %f", v, maxError);
         }
-        m_window.DisplayImage(false);
+        m_window.DisplayImage();
         m_window.DisplayText(statusString);
     }, sync);
 } // FireSolution
