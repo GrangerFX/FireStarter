@@ -6,6 +6,7 @@ class FireStarterStream : public SerialThread {
 private:
 	FireStarterWindow m_window;
 	FireStarterState& m_bestState;
+	FireStarterSettings m_settings;
 	std::string m_resultsFilePath;
 	size_t m_index = 0;
 
@@ -21,11 +22,12 @@ public:
 	void RandomStream(const FireStarterSettings& settings, std::vector<float>& seedResults, std::atomic<unsigned long long>& seedCount, bool sync = false);
 	void EvolveStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync = false);
 	void EvolveStream(std::vector<FireStarterState>& states, std::atomic<unsigned long long>& stateCount, bool sync = false);
+	void EvolveStream(std::atomic<unsigned long long>& testCount, bool sync = false);
 	FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index = 0);
 	~FireStarterStream(void);
 }; // class FireStarterStream
 
-class FireStarterStreams {
+class FireStarterStreams : public SerialThread {
 private:
 	FireStarterWindow m_window;
 	FireStarterSettings m_settings;

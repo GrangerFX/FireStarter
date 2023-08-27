@@ -178,12 +178,17 @@ void FireStarter::ControlTEvolve(void)
 
 void FireStarter::ControlREvolve(void)
 {
+    // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
+    // Note: TODO: SerialThread should have a 
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings revolveSettings;
     m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_REVOLVE);
     FireStarterStreams streams(m_window, revolveSettings);
     streams.EvolveStreams();
+    do {
+        SleepFor(0.1);
+    } while (!WillTerminate() && streams.IsRunning());
 } // ControlREvolve
 
 void FireStarter::ControlEvolve(void)
@@ -207,7 +212,7 @@ void FireStarter::ControlEvolve(void)
     FireStarterCompile* compile = new FireStarterCompile(manager, evolveSettings.m_processes);
 
     // Create the evolution engine.
-    FireStarterEvolve evolve(manager);
+    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
     // Create the execution units.
     std::vector<FireStarterExecute*> executionUnits;
@@ -231,7 +236,7 @@ void FireStarter::ControlEvolve(void)
         float bestResult = allStates[0].m_maxResult;
 
         // Evolve a new generation for each state.
-        evolve.EvolveStates(allStates, &testedInstructions, generation);
+        evolve->EvolveStates(allStates, &testedInstructions, generation);
 
         // Execute each state.
         std::atomic<long long> evolveCount = numStates;
@@ -257,6 +262,9 @@ void FireStarter::ControlEvolve(void)
 
     // Delete the multi-process compiler.
     delete compile;
+
+    // Delete the evolution code generator.
+    delete evolve;
 
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
