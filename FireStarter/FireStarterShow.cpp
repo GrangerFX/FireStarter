@@ -175,16 +175,15 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
 #endif
 
         // Create the log file.
-        unsigned int unit = (unsigned int)(state.m_index % settings.m_units);
         unsigned int test = (unsigned int)state.m_test;
         std::string logPath;
-        if (((settings.m_mode == FIRESTARTER_TEVOLVE) || (settings.m_mode == FIRESTARTER_REVOLVE)) && (settings.m_units > 1)) {
+        if (((settings.m_mode == FIRESTARTER_TEVOLVE) || (settings.m_mode == FIRESTARTER_REVOLVE)) && (settings.m_tests > 1)) {
             static std::vector<std::string> logFilePaths;
             if (logFilePaths.empty())
-                logFilePaths.resize(settings.m_units);
-            std::string& logFilePath = logFilePaths[unit];
+                logFilePaths.resize(settings.m_tests);
+            std::string& logFilePath = logFilePaths[test];
             if (logFilePath.empty()) {
-                logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate().c_str(), settings.Mode(), unit);
+                logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate().c_str(), settings.Mode(), test);
                 FireStarterCode::AppendCode(logFilePath, cudaText);
                 FireStarterCode::AppendCode(logFilePath, settingsText);
             }
@@ -212,10 +211,10 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
             statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
             if (settings.m_tests > 1)
                 statusString += Format("  Test=%u", test);
-            if (state.PassMode() == FIRESTARTER_EVOLVE)
+            if ((state.PassMode() == FIRESTARTER_EVOLVE) || (settings.m_mode == FIRESTARTER_TEVOLVE) || (state.PassMode() == FIRESTARTER_REVOLVE))
                 statusString += Format("  Index=%u", state.m_index);
             else if (settings.m_units > 1)
-                statusString += Format("  Unit=%u", unit);
+                statusString += Format("  Unit=%u", state.m_index % settings.m_units);
             statusString += Format("  Generation=%u  Age=%u  Evolution=%u", state.m_generation, state.m_generation - bestState.m_generation, state.m_evolution);
 
             if (state.PassMode() == FIRESTARTER_EVOLVE) {
