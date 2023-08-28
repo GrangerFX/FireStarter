@@ -719,10 +719,13 @@ void FireStarterStream::EvolveStream(std::atomic<unsigned long long>& testCount,
 #if FIRESTARTER_SECOND_PASS
             // The best state is used for the status display and termination condition.
             FireStarterState bestOptimizeState(bestEvolveState);
+            FireStarterState optimizeState(bestEvolveState);
+            bestOptimizeState.m_generation = 0;
+            optimizeState.m_generation = 0;
 
             // Optimize the evolved state.
             // Generate the optimize code.
-            evolve->GenerateOptimize(bestOptimizeState, true);
+            evolve->GenerateOptimize(optimizeState, true);
 
             // Compile the optimize code.
             compile->CompileJob(manager, true);
@@ -740,14 +743,14 @@ void FireStarterStream::EvolveStream(std::atomic<unsigned long long>& testCount,
             while (!WillTerminate()) {
                 // Optimize the current generation.
                 for (FireStarterExecute* execute : executionUnits)
-                    execute->ExecuteOptimize(bestOptimizeState, pass, false);
+                    execute->ExecuteOptimize(optimizeState, pass, false);
 
                 // Update the results in the UI.
-                if (!complete->CompleteState(bestOptimizeState, bestOptimizeState))
+                if (!complete->CompleteState(bestOptimizeState, optimizeState))
                     break;
 
                 // Next generation.
-                bestOptimizeState.m_generation++;
+                optimizeState.m_generation++;
                 pass++;
             }
 
