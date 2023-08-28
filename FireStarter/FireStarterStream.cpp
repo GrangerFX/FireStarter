@@ -42,7 +42,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
 
     // Generate the optimize code.
-    evolve->GenerateOptimize(startState);
+    evolve->GenerateOptimize(startState, true);
 
     // Compile the optimize code.
     compile->CompileJob(manager, true);
