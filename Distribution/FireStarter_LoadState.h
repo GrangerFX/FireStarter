@@ -1,10 +1,10 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 08/28/23 15:35:16 Pacific Daylight Time
-// Run duration = 500.883613 seconds
+// Run date: 08/30/23 11:38:18 Pacific Daylight Time
+// Run duration = 474.142608 seconds
 // Run generation = 9
-// Run evolution = 10
+// Run evolution = 7
 // Run result = 0.00000024
 // Run variations = 3
 // Run samples = 15
@@ -228,7 +228,7 @@ inline void LoadState(FireStarterState& state)
     LoadResult(state);
     LoadProgram(state.m_program);
     state.m_generation = 9;
-    state.m_evolution = 10;
+    state.m_evolution = 7;
     state.m_index = 0;
     state.m_test = 0;
     state.m_seed = 13534558261871376004;

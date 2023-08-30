@@ -658,7 +658,7 @@ void FireStarterStream::EvolveStream(std::atomic<unsigned long long>& testCount,
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_settings);
         unsigned int numStates = evolveSettings.m_seeds;
-        evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
+        evolveSettings.m_units = MIN(MAX(evolveSettings.m_units, evolveSettings.m_processes), numStates);
         evolveSettings.m_processes = MIN(evolveSettings.m_processes, numStates);
         std::vector<FireStarterState> allStates(numStates);
         TestedInstructions testedInstructions;
@@ -718,10 +718,9 @@ void FireStarterStream::EvolveStream(std::atomic<unsigned long long>& testCount,
 
 #if FIRESTARTER_SECOND_PASS
             // The best state is used for the status display and termination condition.
-            FireStarterState bestOptimizeState(bestEvolveState);
             FireStarterState optimizeState(bestEvolveState);
-            bestOptimizeState.m_generation = 0;
             optimizeState.m_generation = 0;
+            optimizeState.m_evolution = 0;
 
             // Optimize the evolved state.
             // Generate the optimize code.
@@ -739,6 +738,7 @@ void FireStarterStream::EvolveStream(std::atomic<unsigned long long>& testCount,
                 execute->ExecuteInitPopulation(true);
 
             // Loop until the the optimize completion condition or the host program is quit.
+            FireStarterState bestOptimizeState(optimizeState);
             unsigned long long pass = 0;
             while (!WillTerminate()) {
                 // Optimize the current generation.
@@ -916,8 +916,8 @@ void FireStarterStreams::EvolveStreams(void)
     // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
     // Initialize the streams.
     DispatchSync([this] {
-        size_t numStreams = 1; // Note: TODO: Add the stream count to the settings.
         m_settings.m_tests = MAX(m_settings.m_tests, 1);
+        size_t numStreams = MIN(m_settings.m_units, m_settings.m_tests);
         FireStarterState bestState(m_settings);
         std::vector<FireStarterStream*> streams(numStreams, nullptr);
         for (size_t stream = 0; stream < numStreams; stream++)
