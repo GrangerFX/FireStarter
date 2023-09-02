@@ -126,7 +126,7 @@ void FireStarter::ControlRandom(void)
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, randomSettings.m_processes);
+    FireStarterCompile* compile = new FireStarterCompile(manager, m_server, randomSettings.m_processes);
 
     // Setup the intial best state 
     FireStarterState bestState(randomSettings);
@@ -172,7 +172,7 @@ void FireStarter::ControlTEvolve(void)
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings revolveSettings;
     m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_TEVOLVE);
-    FireStarterStreams streams(m_window, revolveSettings);
+    FireStarterStreams streams(m_window, m_server, revolveSettings);
     streams.TestStreams();
 } // ControlTEvolve
 
@@ -184,11 +184,8 @@ void FireStarter::ControlREvolve(void)
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings revolveSettings;
     m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_REVOLVE);
-    FireStarterStreams streams(m_window, revolveSettings);
+    FireStarterStreams streams(m_window, m_server, revolveSettings);
     streams.EvolveStreams();
-    do {
-        SleepFor(0.1);
-    } while (!WillTerminate() && streams.IsRunning());
 } // ControlREvolve
 
 void FireStarter::ControlEvolve(void)
@@ -200,6 +197,7 @@ void FireStarter::ControlEvolve(void)
 
     // Evolve a number of states equal to the evolveSettings.m_seeds.
     unsigned int numStates = evolveSettings.m_seeds;
+    unsigned int numProcesses = evolveSettings.m_processes;
     evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
     evolveSettings.m_processes = MIN(evolveSettings.m_processes, numStates);
     std::vector<FireStarterState> allStates(numStates);
@@ -209,7 +207,7 @@ void FireStarter::ControlEvolve(void)
     FireStarterManager* manager = new FireStarterManager(numStates);
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, evolveSettings.m_processes);
+    FireStarterCompile* compile = new FireStarterCompile(manager, m_server, numProcesses);
 
     // Create the evolution engine.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -368,6 +366,7 @@ static void TestRandom(void)
 
 FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
 {
+    m_server = new FireStarterServer();
 #if 0
     TestRandom();
 #else
@@ -378,4 +377,6 @@ FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireSt
 FireStarter::~FireStarter(void)
 {
     QuitThreads();
+    Synchronize();
+    delete m_server;
 } // ~FireStarter

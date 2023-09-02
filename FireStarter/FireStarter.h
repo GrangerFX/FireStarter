@@ -2,11 +2,13 @@
 #include "FireStarterState.h"
 #include "FireStarterBuildSettings.h"
 #include "FireStarterWindow.h"
+#include "FireStarterProcess.h"
 
 class FireStarter : public SerialThread {
 private:
     FireStarterBuildSettings m_buildSettings;
     FireStarterWindow m_window;
+    FireStarterServer* m_server;
 
     void ControlUnits(const FireStarterState* evolveState = nullptr, bool optimizePass = false);
     void ControlTest(void);

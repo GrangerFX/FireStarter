@@ -233,7 +233,12 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
             //  m_output.Output(Format("Free: %zu %f  Code: %zu %f  Compile: %zu %f  Complete: %uz %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
 
             // Sort the completed jobs.
-            newStates[job->m_state.m_index] = job->m_state;
+            size_t index = job->m_state.m_index;
+            if (!newStates[index].Results()) {
+                newStates[index] = job->m_state;
+            } else {
+                printf("Error: Completed state index already received: %llu\n", index);
+            }
             m_manager->AddFree(job);
         }
 

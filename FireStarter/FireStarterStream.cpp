@@ -652,9 +652,9 @@ void FireStarterStream::EvolveStream(std::vector<FireStarterState>& states, std:
     }, sync);
 } // EvolveStream
 
-void FireStarterStream::EvolveStream(std::atomic<unsigned long long>& testCount, bool sync)
+void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync)
 {
-    Dispatch([this, &testCount] {
+    Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_settings);
         unsigned int numStates = evolveSettings.m_seeds;
@@ -667,7 +667,7 @@ void FireStarterStream::EvolveStream(std::atomic<unsigned long long>& testCount,
         FireStarterManager* manager = new FireStarterManager(numStates);
 
         // Create the multi-process compiler.
-        FireStarterCompile* compile = new FireStarterCompile(manager, evolveSettings.m_processes);
+        FireStarterCompile* compile = new FireStarterCompile(manager, server, evolveSettings.m_processes);
 
         // Create the evolution code generator.
         FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -926,7 +926,7 @@ void FireStarterStreams::EvolveStreams(void)
         // Evolve the streams.
         m_testCount = 0;
         for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream]->EvolveStream(m_testCount, false);
+            streams[stream]->EvolveStream(m_server, m_testCount, false);
 
         // Wait for all the streams to complete.
         bool streamsComplete;
@@ -949,7 +949,7 @@ void FireStarterStreams::EvolveStreams(void)
 } // EvolveStreams
 #endif
 
-FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, const FireStarterSettings& settings) : m_window(window), m_settings(settings), m_testCount(0)
+FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& settings) : m_window(window), m_server(server), m_settings(settings), m_testCount(0)
 {
 } // FireStarterStreams
 

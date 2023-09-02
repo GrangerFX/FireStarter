@@ -52,8 +52,8 @@ private:
     std::mutex m_serverMutex;
 public:
     const std::string& ModulePath(void) const;
-    FireStarterProcess* Process(size_t index);
     FireStarterProcess* AddProcess(const std::string& name = FIREMAKER);
+    void RemoveProcess(FireStarterProcess* process);
     void ClearProcesses(void);
     FireStarterServer(const std::string& name = FIRESTARTER);
     ~FireStarterServer(void);

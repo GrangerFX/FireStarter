@@ -477,24 +477,33 @@ const std::string& FireStarterServer::ModulePath(void) const
     return GetModulePath();
 } // ModulePath
 
-FireStarterProcess* FireStarterServer::Process(size_t index)
-{
-    if (index >= m_processes.size())
-        return nullptr;
-    return m_processes[index];
-} // Process
-
 FireStarterProcess* FireStarterServer::AddProcess(const std::string& name)
 {
-    static size_t processIndex = 0;
-    std::string processPipeName = "\\\\.\\pipe\\" + name + std::to_string(++processIndex);
+    m_serverMutex.lock();
+    size_t processIndex = m_processes.size() + 1;
+    std::string processPipeName = "\\\\.\\pipe\\" + name + std::to_string(processIndex);
     std::string processPath = ModulePath() + name + ".exe";
     FireStarterProcess* process = new FireStarterProcess(processPipeName, processPath, processIndex);
-    m_serverMutex.lock();
     m_processes.push_back(process);
     m_serverMutex.unlock();
     return process;
 } // AddProcess
+
+void FireStarterServer::RemoveProcess(FireStarterProcess* process)
+{
+    if (process) {
+        m_serverMutex.lock();
+        size_t processIndex = process->ProcessIndex();
+        if (!processIndex || (processIndex > m_processes.size())) {
+            TESTPRINTF("RemoveProcess failed. index=%llu  processes=%llu\n", processIndex, m_processes.size());
+        } else if (!m_processes[processIndex - 1]) {
+            TESTPRINTF("RemoveProcess failed. processes[%llu]=null\n", processIndex);
+        } else
+            m_processes[processIndex - 1] = nullptr;
+        delete process;
+        m_serverMutex.unlock();
+    }
+} // RemoveProcess
 
 void FireStarterServer::ClearProcesses(void)
 {

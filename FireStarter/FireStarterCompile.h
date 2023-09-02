@@ -24,14 +24,12 @@ class FireStarterCompile {
 private:
 	std::vector<FireStarterCompiler*> m_compilers;
 	FireStarterManager* m_manager = nullptr;
-	static FireStarterServer* m_server;
-	static size_t m_serverReferences;
-	size_t m_numProcesses = 0;
+	FireStarterServer* m_server;
 	std::atomic<unsigned int> m_activeCompilers;
 
 public:
 	void CompilerFinished(FireStarterCompiler* compiler);
 	bool CompileJob(FireStarterManager* manager, bool sync);
-	FireStarterCompile(FireStarterManager* manager = nullptr, size_t numProcesses = 0);
+	FireStarterCompile(FireStarterManager* manager = nullptr, FireStarterServer* server = nullptr, size_t numProcesses = 0);
 	~FireStarterCompile(void);
 }; // FireStarterCompile

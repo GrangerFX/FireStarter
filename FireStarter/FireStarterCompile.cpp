@@ -3,9 +3,6 @@
 
 #define COMPILE_EXECUTE "CompileExecute"
 
-FireStarterServer* FireStarterCompile::m_server = nullptr;
-size_t FireStarterCompile::m_serverReferences = 0;
-
 bool FireStarterCompiler::Compile(FireStarterManager* manager)
 {
     FireStarterJob* job = manager->GetCode();
@@ -174,6 +171,8 @@ FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarte
 
 FireStarterCompiler::~FireStarterCompiler(void)
 {
+    if (m_server && m_process)
+        m_server->RemoveProcess(m_process);
     TerminateThread();
 } // ~FireStarterCompiler
 
@@ -198,20 +197,19 @@ bool FireStarterCompile::CompileJob(FireStarterManager* manager, bool sync)
     return false;
 } // CompileJob
 
-FireStarterCompile::FireStarterCompile(FireStarterManager* manager, size_t numProcesses)
+FireStarterCompile::FireStarterCompile(FireStarterManager* manager, FireStarterServer* server, size_t numProcesses)
 {
     m_manager = manager;
-    m_numProcesses = numProcesses;
-    if (m_numProcesses) {
-        if (!m_server)
-            m_server = new FireStarterServer();
-        m_serverReferences++;
+    if (numProcesses) {
+        m_server = server;
+        m_compilers.reserve(numProcesses);
         for (unsigned int i = 0; i < numProcesses; i++) {
             FireStarterCompiler* compiler = new FireStarterCompiler(this, manager, m_server);
             m_compilers.push_back(compiler);
             m_activeCompilers++;
         }
     } else {
+        m_server = nullptr;
         size_t maxJobs = 1; // manager->GetMaxJobs();
         for (unsigned int i = 0; i < maxJobs; i++) {
             FireStarterCompiler* compiler = new FireStarterCompiler(this, manager);
@@ -225,9 +223,4 @@ FireStarterCompile::~FireStarterCompile(void)
 {
     for (FireStarterCompiler* compiler : m_compilers)
         delete compiler;
-    if (m_numProcesses)
-        if (!--m_serverReferences) {
-            delete m_server;
-            m_server = nullptr;
-        }
-} // ~FireStarterCompile
+ } // ~FireStarterCompile
