@@ -683,12 +683,13 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
 
-        // Randomize the entire program of each state for the first generation
-        for (unsigned long long i = 0; i < numStates; i++)
-            allStates[i].InitState(evolveSettings, i);
-
         // Loop until the the evolve completion condition or the host program is quit.
         for (unsigned long long testIndex = testCount++; (testIndex < evolveSettings.m_tests) && !WillTerminate(); testIndex = testCount++) {
+            // Randomize the entire program of each state for the first generation
+            for (unsigned long long i = 0; i < numStates; i++)
+                allStates[i].InitState(evolveSettings, i, testIndex);
+
+            // Evolve the current test.
             unsigned int generation = 0;
             while (!WillTerminate()) {
                 // Get the current best result for all the states.
@@ -730,20 +731,18 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             compile->CompileJob(manager, true);
 
             // Compile the optimize module.
-            for (FireStarterExecute* execute : executionUnits)
-                execute->ExecuteCompile();
+            FireStarterExecute* executeOptimize = executionUnits[0];
+            executeOptimize->ExecuteCompile();
 
             // Initialize the population data
-            for (FireStarterExecute* execute : executionUnits)
-                execute->ExecuteInitPopulation(true);
+            executeOptimize->ExecuteInitPopulation(true);
 
             // Loop until the the optimize completion condition or the host program is quit.
             FireStarterState bestOptimizeState(optimizeState);
             unsigned long long pass = 0;
             while (!WillTerminate()) {
                 // Optimize the current generation.
-                for (FireStarterExecute* execute : executionUnits)
-                    execute->ExecuteOptimize(optimizeState, pass, false);
+                executeOptimize->ExecuteOptimize(optimizeState, pass, false);
 
                 // Update the results in the UI.
                 if (!complete->CompleteState(bestOptimizeState, optimizeState))
