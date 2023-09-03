@@ -159,33 +159,8 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     // Add the instructions to the set of unique instructions.
                     testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                 } else {
-#if FIRESTARTER_EVOLVE_MODE == FIRESTARTER_EVOLVE_MODE_OPTIMIZE
-                    // Keep copying and randomizing instructions until a unique set of instructions is found.
-                    size_t randomCount = 0;
-                    do {
-                        // Similar algorithm to optimize.
-                        if (curState.m_lastResult <= curState.m_maxResult) {
-                            size_t copyIndex = RANDOMMOD(seed, numStates);
-                            if (allStates[copyIndex].m_maxResult < curState.m_maxResult)
-                                curState.CopyInstructions(allStates[copyIndex]);
-                        }
-                        curState.RandomInstruction(seed);
-
-                        // Optimize the program registers.
-                        curState.m_program.OptimizeRegisters();
-
-                        // Keep track of the tested instructions.
-                        if (!testedInstructions->count(curState.m_program.OptimizedInstructionsData())) {
-                            testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
-                            found = true;
-                        }
-
-                        // randomCount makes sure this is not an endless loop.
-                        randomCount++;
-                    } while (!found && (randomCount < 10));
-#else
                     // Copy or randomize instructions based on the quality of the previous result.
-                    size_t copyIndex = (index >= bestStates) ? RANDOMMOD(seed, bestStates) : index;
+                    size_t copyIndex = curState.m_lastEvolved || (index < bestStates) ? index : RANDOMMOD(seed, bestStates);
 
                     // Keep copying and randomizing instructions until a unique set of instructions is found.
                     size_t randomCount = 0;
@@ -213,7 +188,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // randomCount makes sure this is not an endless loop.
                         randomCount++;
                     } while (!found && (randomCount < 10));
-#endif
                 }
 
                 // Reset the last result to the previously optimized max result.

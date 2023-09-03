@@ -1,6 +1,15 @@
 #include "FireStarterExecute.h"
 #include "CUDACompile.h"
 
+// Not used currently.
+inline float Min(std::atomic<float>& minFloat, float newFloat)
+{
+    float curFloat = minFloat;
+    while ((newFloat < curFloat) && !minFloat.compare_exchange_weak(curFloat, newFloat))
+        curFloat = minFloat;
+    return curFloat;
+} // Min
+
 void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned long long pass)
 {
     // Launch the calculation kernel

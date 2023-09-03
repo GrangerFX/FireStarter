@@ -21,6 +21,7 @@ private:
         m_maxResult = other.m_maxResult;
         m_lastResult = other.m_lastResult;
         m_optimizePass = other.m_optimizePass;
+        m_lastEvolved = other.m_lastEvolved;
     } // swap
 
 public:
@@ -34,6 +35,7 @@ public:
     float m_maxResult = -1.0f;
     float m_lastResult = -1.0f;
     bool m_optimizePass = false;
+    bool m_lastEvolved = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {
