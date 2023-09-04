@@ -16,6 +16,8 @@ private:
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
         m_index = other.m_index;
+        m_id = other.m_id;
+        m_copy_id = other.m_copy_id;
         m_test = other.m_test;
         m_seed = other.m_seed;
         m_maxResult = other.m_maxResult;
@@ -30,6 +32,8 @@ public:
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_index = 0;
+    unsigned long long m_id = 0;
+    unsigned long long m_copy_id = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
     float m_maxResult = -1.0f;

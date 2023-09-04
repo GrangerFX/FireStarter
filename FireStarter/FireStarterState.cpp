@@ -134,6 +134,8 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_generation = 0;
     m_evolution = 0;
     m_index = index;
+    m_id = index;
+    m_copy_id = index;
     m_test = test;
     m_maxResult = settings.m_startResult;
     m_lastResult = settings.m_startResult;

@@ -375,7 +375,7 @@ bool FireStarterExecute::Evolve(float bestResult)
         FireStarterSettings stateSettings = state.Settings();
         InitPopulation(state);
         float oldResult = state.m_maxResult;
-        float minResult = bestResult ? MIN(bestResult * 10.0f, state.Settings().m_startResult) : state.Settings().m_startResult;
+        float minResult = bestResult ? MIN(bestResult, state.Settings().m_startResult) * 10.0f : state.Settings().m_startResult;
         if (Optimize(state, minResult)) {
             for (unsigned long long pass = 1; pass < FIRESTARTER_EVOLVE_OPTIMIZE; pass++)
                 OptimizePass(state, pass);

@@ -684,10 +684,10 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
 
         // Loop until the the evolve completion condition or the host program is quit.
-        for (unsigned long long testIndex = testCount++; (testIndex < evolveSettings.m_tests) && !WillTerminate(); testIndex = testCount++) {
+        for (unsigned long long test = testCount++; (test < evolveSettings.m_tests) && !WillTerminate(); test = testCount++) {
             // Randomize the entire program of each state for the first generation
             for (unsigned long long i = 0; i < numStates; i++)
-                allStates[i].InitState(evolveSettings, i, testIndex);
+                allStates[i].InitState(evolveSettings, i, test);
 
             // Evolve the current test.
             unsigned int generation = 0;
@@ -714,7 +714,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             FireStarterState& bestEvolveState = allStates[0];
             std::string resultText = Format("evolveSeed=%u  ", bestEvolveState.Settings().m_evolveSeed);
             if (evolveSettings.m_tests > 1)
-                resultText += Format("Test=%u  ", testIndex);
+                resultText += Format("Test=%u  ", test);
             resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
 
 #if FIRESTARTER_SECOND_PASS

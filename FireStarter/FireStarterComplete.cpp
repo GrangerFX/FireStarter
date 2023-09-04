@@ -266,7 +266,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                     for (size_t j = i + 1; j < numStates; j++) {
                         FireStarterState& currentState = allStates[j];
                         float currentResult = currentState.m_maxResult;
-                       if (currentResult < minResult) {
+                        if (currentResult < minResult) {
                             minResult = currentResult;
                             min = j;
                         }
