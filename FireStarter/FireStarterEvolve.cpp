@@ -173,7 +173,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         else {
                             // Best n evolution.
                             curState.EvolveInstructions(allStates[copyIndex], FIRESTARTER_EVOLVE_MODE, seed);
-                            curState.m_copy_id = allStates[copyIndex].m_id;
+                            curState.m_copy_id = allStates[copyIndex].m_copy_id;
                             curState.m_age = 0;
                         }
 
