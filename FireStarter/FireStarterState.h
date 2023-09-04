@@ -15,6 +15,7 @@ private:
         m_timer = other.m_timer;
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
+        m_age = other.m_age;
         m_index = other.m_index;
         m_id = other.m_id;
         m_copy_id = other.m_copy_id;
@@ -23,8 +24,8 @@ private:
         m_maxResult = other.m_maxResult;
         m_firstResult = other.m_firstResult;
         m_lastResult = other.m_lastResult;
-        m_age = other.m_age;
         m_optimizePass = other.m_optimizePass;
+        m_lastEvolved = other.m_lastEvolved;
     } // swap
 
 public:
@@ -32,15 +33,17 @@ public:
     SimpleTimer m_timer;
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
+    unsigned long long m_age = 0;
     unsigned long long m_index = 0;
     unsigned long long m_id = 0;
     unsigned long long m_copy_id = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
     float m_maxResult = -1.0f;
+    float m_firstResult = -1.0f;
     float m_lastResult = -1.0f;
-    unsigned int m_age = 0;
     bool m_optimizePass = false;
+    bool m_lastEvolved = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {

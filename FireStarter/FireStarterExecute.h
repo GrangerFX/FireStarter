@@ -34,7 +34,7 @@ private:
     bool Optimize(FireStarterState& state, float minResult);
     void OptimizePass(FireStarterState& state, unsigned long long pass);
     bool Compile(FireStarterJob* &job);
-    bool Evolve(float bestResult = 0);
+    bool Evolve(float minResult = 0.0f);
 
 public:
     void ExecuteCompile(bool sync = false);

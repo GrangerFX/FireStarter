@@ -291,15 +291,15 @@ bool FireStarterExecute::Optimize(FireStarterState& state, float minResult)
         unsigned int variation = m_variationOrder[v];
         if (validResult) {
             float variationResult = OptimizeGenerations(state, 0, variation);
-#if FIRESTARTER_SKIP_VARIATIONS
-            // Optimization: If the variation result is worse, skip the rest of the variations.
-            if (variationResult < minResult)
-                needsResort = true;
-            else {
-                m_variationCount[variation]++; // Counts the variaition that caused an invalid result.
-                validResult = false;
+            if (minResult) {
+                // Optimization: If the variation result is worse, skip the rest of the variations.
+                if (variationResult < minResult)
+                    needsResort = true;
+                else {
+                    m_variationCount[variation]++; // Counts the variaition that caused an invalid result.
+                    validResult = false;
+                }
             }
-#endif
         } else
             results->Result(variation)->Init(0, settings.m_registers, settings.m_startResult);
     }
@@ -367,7 +367,7 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     return false;
 } // Compile
 
-bool FireStarterExecute::Evolve(float bestResult)
+bool FireStarterExecute::Evolve(float minResult)
 {
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
@@ -375,8 +375,8 @@ bool FireStarterExecute::Evolve(float bestResult)
         FireStarterSettings stateSettings = state.Settings();
         InitPopulation(state);
         float oldResult = state.m_maxResult;
-        float minResult = bestResult ? MIN(bestResult, state.Settings().m_startResult) * 10.0f : state.Settings().m_startResult;
         if (Optimize(state, minResult)) {
+            state.m_firstResult = MIN(state.m_maxResult, state.m_firstResult);
             for (unsigned long long pass = 1; pass < FIRESTARTER_EVOLVE_OPTIMIZE; pass++)
                 OptimizePass(state, pass);
             state.m_maxResult = MIN(state.m_maxResult, oldResult);
@@ -434,11 +434,11 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned
     }, sync);
 } // ExecuteOptimize
 
-void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount, float bestResult, bool sync)
+void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount, float minResult, bool sync)
 {
-    Dispatch([this, &evolveCount, bestResult] {
+    Dispatch([this, &evolveCount, minResult] {
         while (evolveCount-- > 0) {
-            if (!Evolve(bestResult))
+            if (!Evolve(minResult))
                 break;
         }
     }, sync);

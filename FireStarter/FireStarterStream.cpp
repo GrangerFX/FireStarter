@@ -693,7 +693,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             unsigned int generation = 0;
             while (!WillTerminate()) {
                 // Get the current best result for all the states.
-                float bestResult = allStates[0].m_maxResult;
+                float minResult = allStates[0].m_firstResult * FIRESTARTER_EVOLVE_MINSCALE;
 
                 // Evolve a new generation for each state.
                 evolve->EvolveStates(allStates, &testedInstructions, generation);
@@ -701,7 +701,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 // Execute each state.
                 std::atomic<long long> evolveCount = numStates;
                 for (FireStarterExecute* execute : executionUnits)
-                    execute->ExecuteEvolve(evolveCount, bestResult);
+                    execute->ExecuteEvolve(evolveCount, minResult);
 
                 // Complete each state and display and sort the results.
                 // This method is synchronized by default.
