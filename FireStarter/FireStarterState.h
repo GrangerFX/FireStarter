@@ -21,6 +21,7 @@ private:
         m_test = other.m_test;
         m_seed = other.m_seed;
         m_maxResult = other.m_maxResult;
+        m_firstResult = other.m_firstResult;
         m_lastResult = other.m_lastResult;
         m_age = other.m_age;
         m_optimizePass = other.m_optimizePass;
