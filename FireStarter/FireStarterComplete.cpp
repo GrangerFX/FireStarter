@@ -252,10 +252,10 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                 if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
                     oldState = newState;
                     oldState.m_evolution++;
-                    oldState.m_lastEvolved = true;
+                    oldState.m_age = 0;
                     found = true;
                 } else
-                    oldState.m_lastEvolved = false;
+                    oldState.m_age++;
             }
 
             // Sort the states, best first.

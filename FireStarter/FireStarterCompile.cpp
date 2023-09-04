@@ -171,9 +171,9 @@ FireStarterCompiler::FireStarterCompiler(FireStarterCompile* compile, FireStarte
 
 FireStarterCompiler::~FireStarterCompiler(void)
 {
+    TerminateThread();
     if (m_server && m_process)
         m_server->RemoveProcess(m_process);
-    TerminateThread();
 } // ~FireStarterCompiler
 
 void FireStarterCompile::CompilerFinished(FireStarterCompiler* compiler)
