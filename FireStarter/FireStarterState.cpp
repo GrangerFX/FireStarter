@@ -78,9 +78,9 @@ void FireStarterState::SaveState(std::string& code) const
     code += Format("    state.m_copy_id = %llu;\r\n", m_copy_id);
     code += Format("    state.m_test = %llu;\r\n", m_test);
     code += Format("    state.m_seed = %llu;\r\n", m_seed);
-    code += Format("    state.m_maxResult = %f;\r\n", m_maxResult);
-    code += Format("    state.m_firstResult = %f;\r\n", m_firstResult);
-    code += Format("    state.m_lastResult = %f;\r\n", m_lastResult);
+    code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
+    code += Format("    state.m_firstResult = %ff;\r\n", m_firstResult);
+    code += Format("    state.m_lastResult = %ff;\r\n", m_lastResult);
     code += Format("    state.m_optimizePass = %s;\r\n", m_optimizePass ? "true" : "false");
     code += Format("    state.m_lastEvolved = %s;\r\n", m_lastEvolved ? "true" : "false");
     code += "} // LoadState\r\n";
