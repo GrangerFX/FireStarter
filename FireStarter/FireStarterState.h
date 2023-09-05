@@ -22,10 +22,9 @@ private:
         m_test = other.m_test;
         m_seed = other.m_seed;
         m_maxResult = other.m_maxResult;
-        m_firstResult = other.m_firstResult;
         m_lastResult = other.m_lastResult;
-        m_optimizePass = other.m_optimizePass;
         m_lastEvolved = other.m_lastEvolved;
+        m_optimizePass = other.m_optimizePass;
     } // swap
 
 public:
@@ -40,10 +39,9 @@ public:
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
     float m_maxResult = -1.0f;
-    float m_firstResult = -1.0f;
     float m_lastResult = -1.0f;
-    bool m_optimizePass = false;
     bool m_lastEvolved = false;
+    bool m_optimizePass = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {
@@ -203,6 +201,7 @@ public:
             for (unsigned int i = 0; i < numInstructions; i++)
                 m_program.EvolvedInstruction(i) = srcState.m_program.EvolvedInstruction(i);
             RandomInstruction(seed);
+            m_maxResult = srcState.m_maxResult;
             return;
         }
 

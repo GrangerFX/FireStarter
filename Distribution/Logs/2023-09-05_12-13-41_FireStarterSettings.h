@@ -13,6 +13,7 @@
 #define FIRESTARTER_OPTIMIZE_SEED   0
 
 #define FIRESTARTER_EVOLVE_OPTIMIZE  1    // Number of times to run Optimize.
+#define FIRESTARTER_EVOLVE_MAXSCALE  1.0f // The maximum scale of the previous result for skipping varations.
 #define FIRESTARTER_EVOLVE_BEST      0.25 // The percent of best evolved states.
 #define FIRESTARTER_EVOLVE_MAX_AGE   2    // The maximum age a member can be before it is reset
 

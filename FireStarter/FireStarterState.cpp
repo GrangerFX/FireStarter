@@ -79,7 +79,6 @@ void FireStarterState::SaveState(std::string& code) const
     code += Format("    state.m_test = %llu;\r\n", m_test);
     code += Format("    state.m_seed = %llu;\r\n", m_seed);
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
-    code += Format("    state.m_firstResult = %ff;\r\n", m_firstResult);
     code += Format("    state.m_lastResult = %ff;\r\n", m_lastResult);
     code += Format("    state.m_optimizePass = %s;\r\n", m_optimizePass ? "true" : "false");
     code += Format("    state.m_lastEvolved = %s;\r\n", m_lastEvolved ? "true" : "false");
@@ -146,7 +145,6 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_copy_id = index;
     m_test = test;
     m_maxResult = settings.m_startResult;
-    m_firstResult = settings.m_startResult;
     m_lastResult = settings.m_startResult;
     m_program.InitProgram(settings);
     InitGenerationSeed();

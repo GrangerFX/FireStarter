@@ -31,17 +31,17 @@ private:
     void CodeGenerations(FireStarterState& state, unsigned long long pass);
 	float OptimizeGenerations(FireStarterState& state, unsigned long long pass, unsigned int variation);
     void Code(FireStarterState& state, unsigned long long pass);
-    bool Optimize(FireStarterState& state, float minResult);
+    bool Optimize(FireStarterState& state);
     void OptimizePass(FireStarterState& state, unsigned long long pass);
     bool Compile(FireStarterJob* &job);
-    bool Evolve(float minResult = 0.0f);
+    bool Evolve(void);
 
 public:
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool init, bool sync = false);
     void ExecuteCode(unsigned long long pass, bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync = false);
-    void ExecuteEvolve(std::atomic<long long>& evolveCount, float bestResult, bool sync = false);
+    void ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync = false);
     void ExecuteEvolve(bool sync = false);
     void ExecuteRandom(bool sync = false);
     void ExecuteFinish(bool sync = true);
