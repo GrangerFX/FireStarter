@@ -177,7 +177,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         // Create the log file.
         unsigned int test = (unsigned int)state.m_test;
         std::string logPath;
-        if (((settings.m_mode == FIRESTARTER_TEVOLVE) || (settings.m_mode == FIRESTARTER_REVOLVE)) && (settings.m_tests > 1)) {
+        if (((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE)) && (settings.m_tests > 1)) {
             static std::vector<std::string> logFilePaths;
             if (logFilePaths.empty())
                 logFilePaths.resize(settings.m_tests);
@@ -211,7 +211,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
             statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
             if (settings.m_tests > 1)
                 statusString += Format("  Test=%u", test);
-            if ((state.PassMode() == FIRESTARTER_EVOLVE) || (settings.m_mode == FIRESTARTER_TEVOLVE) || (state.PassMode() == FIRESTARTER_REVOLVE))
+            if (state.PassMode() == FIRESTARTER_EVOLVE)
                 statusString += Format("  Index=%llu  Id=%llu  CopyId=%llu", state.m_index, state.m_id, state.m_copy_id);
             else if (settings.m_units > 1)
                 statusString += Format("  Unit=%u", state.m_index % settings.m_units);

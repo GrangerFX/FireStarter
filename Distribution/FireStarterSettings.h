@@ -11,6 +11,7 @@
 #define FIRESTARTER_OUTPUT_HASH     0
 #define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
+#define FIRESTARTER_FIRST_TEST      1
 
 #define FIRESTARTER_EVOLVE_BEST      0.25 // The percent of best evolved states.
 #define FIRESTARTER_EVOLVE_MAX_AGE   2    // The maximum age a member can be before it is reset
@@ -29,12 +30,10 @@
 #define FIRESTARTER_UNIT     2
 #define FIRESTARTER_TEST     3
 #define FIRESTARTER_RANDOM   4
-#define FIRESTARTER_TEVOLVE  5
-#define FIRESTARTER_REVOLVE  6
-#define FIRESTARTER_EVOLVE   7
-#define FIRESTARTER_OPTIMIZE 8
-#define FIRESTARTER_SOLUTION 9
-#define FIRESTARTER_MODE     FIRESTARTER_REVOLVE
+#define FIRESTARTER_EVOLVE   5
+#define FIRESTARTER_OPTIMIZE 6
+#define FIRESTARTER_SOLUTION 7
+#define FIRESTARTER_MODE     FIRESTARTER_EVOLVE
 
 #define FIRESTARTER_CODE_SEEDS              1
 #define FIRESTARTER_CODE_TESTS              0
@@ -92,42 +91,14 @@
 #define FIRESTARTER_RANDOM_START_SCALE      2.0f
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
 
-#define FIRESTARTER_TEVOLVE_SEEDS           1
-#define FIRESTARTER_TEVOLVE_TESTS           100
-#define FIRESTARTER_TEVOLVE_UNITS           1
-#define FIRESTARTER_TEVOLVE_PROCESSES       0
-#define FIRESTARTER_TEVOLVE_POPULATION      4352 * 64
-#define FIRESTARTER_TEVOLVE_ITERATIONS      64
-#define FIRESTARTER_TEVOLVE_CANDIDATES      16
-#define FIRESTARTER_TEVOLVE_GENERATIONS     100
-#define FIRESTARTER_TEVOLVE_PRECISION       0
-#define FIRESTARTER_TEVOLVE_ATTEMPTS        64
-#define FIRESTARTER_TEVOLVE_SCALE           0.1f
-#define FIRESTARTER_TEVOLVE_START_SCALE     2.0f
-#define FIRESTARTER_TEVOLVE_START_RESULT    10.0f
-
-#define FIRESTARTER_REVOLVE_SEEDS           64
-#define FIRESTARTER_REVOLVE_TESTS           16
-#define FIRESTARTER_REVOLVE_UNITS           4
-#define FIRESTARTER_REVOLVE_PROCESSES       4
-#define FIRESTARTER_REVOLVE_POPULATION      4352 * 64
-#define FIRESTARTER_REVOLVE_ITERATIONS      64
-#define FIRESTARTER_REVOLVE_CANDIDATES      16
-#define FIRESTARTER_REVOLVE_GENERATIONS     500
-#define FIRESTARTER_REVOLVE_PRECISION       0
-#define FIRESTARTER_REVOLVE_ATTEMPTS        32
-#define FIRESTARTER_REVOLVE_SCALE           0.1f
-#define FIRESTARTER_REVOLVE_START_SCALE     2.0f
-#define FIRESTARTER_REVOLVE_START_RESULT    10.0f
-
 #define FIRESTARTER_EVOLVE_SEEDS            64
-#define FIRESTARTER_EVOLVE_TESTS            4
+#define FIRESTARTER_EVOLVE_TESTS            1
 #define FIRESTARTER_EVOLVE_UNITS            4
 #define FIRESTARTER_EVOLVE_PROCESSES        4
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
 #define FIRESTARTER_EVOLVE_ITERATIONS       64
 #define FIRESTARTER_EVOLVE_CANDIDATES       16
-#define FIRESTARTER_EVOLVE_GENERATIONS      100
+#define FIRESTARTER_EVOLVE_GENERATIONS      500
 #define FIRESTARTER_EVOLVE_PRECISION        0
 #define FIRESTARTER_EVOLVE_ATTEMPTS         32
 #define FIRESTARTER_EVOLVE_SCALE            0.1f
@@ -291,10 +262,6 @@ public:
                 return "FIRESTARTER_TEST";
             case FIRESTARTER_RANDOM:
                 return "FIRESTARTER_RANDOM";
-            case FIRESTARTER_TEVOLVE:
-                return "FIRESTARTER_TEVOLVE";
-            case FIRESTARTER_REVOLVE:
-                return "FIRESTARTER_REVOLVE";
             case FIRESTARTER_EVOLVE:
                 return "FIRESTARTER_EVOLVE";
             case FIRESTARTER_OPTIMIZE:
@@ -420,38 +387,6 @@ public:
                 m_scale =       FIRESTARTER_RANDOM_SCALE;
                 m_startScale =  FIRESTARTER_RANDOM_START_SCALE;
                 m_startResult = FIRESTARTER_RANDOM_START_RESULT;
-                break;
-
-            case FIRESTARTER_TEVOLVE:
-                m_seeds =       FIRESTARTER_TEVOLVE_SEEDS;
-                m_tests =       FIRESTARTER_TEVOLVE_TESTS;
-                m_units =       FIRESTARTER_TEVOLVE_UNITS;
-                m_processes =   FIRESTARTER_TEVOLVE_PROCESSES;
-                m_population =  FIRESTARTER_TEVOLVE_POPULATION;
-                m_iterations =  FIRESTARTER_TEVOLVE_ITERATIONS;
-                m_candidates =  FIRESTARTER_TEVOLVE_CANDIDATES;
-                m_generations = FIRESTARTER_TEVOLVE_GENERATIONS;
-                m_precision =   FIRESTARTER_TEVOLVE_PRECISION;
-                m_attempts =    FIRESTARTER_TEVOLVE_ATTEMPTS;
-                m_scale =       FIRESTARTER_TEVOLVE_SCALE;
-                m_startScale =  FIRESTARTER_TEVOLVE_START_SCALE;
-                m_startResult = FIRESTARTER_TEVOLVE_START_RESULT;
-                break;
-
-            case FIRESTARTER_REVOLVE:
-                m_seeds =       FIRESTARTER_REVOLVE_SEEDS;
-                m_tests =       FIRESTARTER_REVOLVE_TESTS;
-                m_units =       FIRESTARTER_REVOLVE_UNITS;
-                m_processes =   FIRESTARTER_REVOLVE_PROCESSES;
-                m_population =  FIRESTARTER_REVOLVE_POPULATION;
-                m_iterations =  FIRESTARTER_REVOLVE_ITERATIONS;
-                m_candidates =  FIRESTARTER_REVOLVE_CANDIDATES;
-                m_generations = FIRESTARTER_REVOLVE_GENERATIONS;
-                m_precision =   FIRESTARTER_REVOLVE_PRECISION;
-                m_attempts =    FIRESTARTER_REVOLVE_ATTEMPTS;
-                m_scale =       FIRESTARTER_REVOLVE_SCALE;
-                m_startScale =  FIRESTARTER_REVOLVE_START_SCALE;
-                m_startResult = FIRESTARTER_REVOLVE_START_RESULT;
                 break;
 
             case FIRESTARTER_EVOLVE:

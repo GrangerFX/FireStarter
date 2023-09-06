@@ -112,6 +112,7 @@ void FireStarter::ControlTest(void)
     FireStarterStream::Evolve(m_window, testSettings);
 } // ControlTest
 
+#if 0
 void FireStarter::ControlRandom(void)
 {
     // Load the settings from the compiled CUDA code.
@@ -165,29 +166,19 @@ void FireStarter::ControlRandom(void)
     // Delete the compilier manager and cancel any waiting jobs.
     delete manager;
 } // ControlRandom
-
-void FireStarter::ControlTEvolve(void)
+#else
+void FireStarter::ControlRandom(void)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings revolveSettings;
-    m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_TEVOLVE);
+    m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_RANDOM);
     FireStarterStreams streams(m_window, m_server, revolveSettings);
     streams.TestStreams();
-} // ControlTEvolve
+} // ControlRandom
+#endif
 
-void FireStarter::ControlREvolve(void)
-{
-    // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
-    // Note: TODO: SerialThread should have a 
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireStarterSettings revolveSettings;
-    m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_REVOLVE);
-    FireStarterStreams streams(m_window, m_server, revolveSettings);
-    streams.EvolveStreams();
-} // ControlREvolve
-
+#if 0
 void FireStarter::ControlEvolve(void)
 {
     // Load the settings from the compiled CUDA code.
@@ -268,6 +259,17 @@ void FireStarter::ControlEvolve(void)
     if (FIRESTARTER_SECOND_PASS && !WillTerminate())
         FireStarterStream::Optimize(m_window, allStates[0]);
 } // ControlEvolve
+#else
+void FireStarter::ControlEvolve(void)
+{
+    // Load the settings from the compiled CUDA code.
+    // This allows the settings to be modified without recompiling the main program.
+    FireStarterSettings revolveSettings;
+    m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_EVOLVE);
+    FireStarterStreams streams(m_window, m_server, revolveSettings);
+    streams.EvolveStreams();
+} // ControlEvolve
+#endif
 
 void FireStarter::ControlSolution(void)
 {
@@ -304,14 +306,6 @@ void FireStarter::ControlThread(void)
             case FIRESTARTER_RANDOM:
                 // Random generations.
                 ControlRandom();
-                break;
-            case FIRESTARTER_TEVOLVE:
-                // Test evolve generations.
-                ControlTEvolve();
-                break;
-            case FIRESTARTER_REVOLVE:
-                // Random evolve generations.
-                ControlREvolve();
                 break;
             case FIRESTARTER_EVOLVE:
                 // Evolve generations.
