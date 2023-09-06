@@ -1,0 +1,1 @@
+evolveSeed=0  Generation=34  Evolve Result=0.00000066  Optimize Generation=20  Optimize Result=0.00000024 *******
