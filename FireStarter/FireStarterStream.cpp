@@ -169,9 +169,9 @@ void FireStarterStream::OptimizeStream(const FireStarterState& evolveState, bool
     }, sync);
 } // OptimizeStream
 
-void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync)
+void FireStarterStream::RandomStream(FireStarterServer* server, const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync)
 {
-    Dispatch([this, &settings, &testCount] {
+    Dispatch([this, server, &settings, &testCount] {
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
 
@@ -179,7 +179,7 @@ void FireStarterStream::RandomStream(const FireStarterSettings& settings, std::a
         FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
         // Create the multi-process compiler.
-        FireStarterCompile* compile = new FireStarterCompile();
+        FireStarterCompile* compile = new FireStarterCompile(manager, server, 1);
 
         // Create the execution unit.
         FireStarterExecute* execute = new FireStarterExecute(manager);
@@ -415,7 +415,7 @@ void FireStarterStreams::RandomStreams(void)
     // Randomize and test the streams.
     m_testCount = 0;
     for (size_t stream = 0; stream < numStreams; stream++)
-        streams[stream]->RandomStream(m_settings, m_testCount);
+        streams[stream]->RandomStream(m_server, m_settings, m_testCount);
 
     // Wait for all the streams to finish the random pass.
     SynchronizeStreams(streams);

@@ -17,7 +17,7 @@ public:
 	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState);
 	static void Randomize(const FireStarterWindow& window, const FireStarterState& evolveState);
 	void OptimizeStream(const FireStarterState& evolveState, bool sync = false);
-	void RandomStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync = false);
+	void RandomStream(FireStarterServer* server, const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync = false);
 	void EvolveStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
 	FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index = 0);
 	~FireStarterStream(void);
