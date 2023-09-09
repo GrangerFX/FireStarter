@@ -10,80 +10,6 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
     return curFloat;
 } // AtomicMin
 
-void FireStarterExecute::CodeGenerations(FireStarterState& state, unsigned long long pass)
-{
-    // Launch the calculation kernel
-    CUDAContext* context = Context();
-    CUstream stream = context->Stream();
-    unsigned int threadsPerBlock = WARP_THREADS;  // Same as the threads per CUDA core warp.
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    FireStarterSettings settings = state.Settings();
-    unsigned int firstMember = 0;
-    unsigned int lastMember = settings.m_population;
-    unsigned long long passGeneration = pass * settings.m_generations;
-    unsigned int firstVariation = 0;
-    unsigned int lastVariation = settings.m_variations;
-    for (unsigned int g = 0; g < settings.m_generations; g++) {
-        // Run all the evolve states in parallel.
-        FireStarterEvolutions* newEvolutions = g & 1 ? m_deviceEvolutions0 : m_deviceEvolutions1;
-        FireStarterEvolutions* oldEvolutions = g & 1 ? m_deviceEvolutions1 : m_deviceEvolutions0;
-        unsigned long long generationSeed = state.RandomSeed();
-        int initData = passGeneration == 0;
-
-        void* arr[] = { reinterpret_cast<void*>(&settings),
-                        reinterpret_cast<void*>(&newEvolutions),
-                        reinterpret_cast<void*>(&oldEvolutions),
-                        reinterpret_cast<void*>(&firstVariation),
-                        reinterpret_cast<void*>(&lastVariation),
-                        reinterpret_cast<void*>(&firstMember),
-                        reinterpret_cast<void*>(&lastMember),
-                        reinterpret_cast<void*>(&generationSeed),
-                        reinterpret_cast<void*>(&initData) };
-
-        unsigned int blocksPerGrid = lastMember - firstMember;
-        dim3 cudaGridSize(blocksPerGrid, 1, 1);
-        checkCUDAErrors(cuLaunchKernel(m_evolveFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim */
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim */
-            0,                                                  // shared mem
-            stream,                                             // stream */
-            &arr[0],                                            // arguments */
-            0));
-
-        // Synchronize all GPU threads and results.
-        context->Synchronize();
-        passGeneration++;
-    }
-
-    // Syncronize the device with the host.
-    FireStarterEvolutions* newEvolutions = settings.m_generations & 1 ? m_deviceEvolutions1 : m_deviceEvolutions0;
-    FireStarterEvolutions* oldEvolutions = settings.m_generations & 1 ? m_deviceEvolutions0 : m_deviceEvolutions1;
-    checkCUDAErrors(cudaMemcpyAsync(m_hostEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToHost, stream));
-    if (settings.m_generations & 1)
-        checkCUDAErrors(cudaMemcpyAsync(oldEvolutions, newEvolutions, m_evolutionsSize, cudaMemcpyDeviceToDevice, stream));
-    context->Synchronize();
-
-    // Get the best results.
-    float bestResult = *m_hostEvolutions->MaxResult(0);
-    unsigned int bestIndex = 0;
-    for (unsigned int i = 1; i < settings.m_population; i++) {
-        unsigned int curIndex = *m_hostEvolutions->Index(i, 0);
-        if (curIndex == i) {
-            float curResult = *m_hostEvolutions->MaxResult(i);
-            if (curResult <= bestResult) {
-                bestResult = curResult;
-                bestIndex = i;
-            }
-        }
-    }
-
-    memcpy(state.Results(), m_hostEvolutions->Results(bestIndex), FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations));
-    state.m_program.LoadInstructions(m_hostEvolutions->Instructions(bestIndex));
-
-    // Calculate the state's max result.
-    state.m_maxResult = state.MaxResult(); 
-} // CodeGenerations
-
 float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned long long pass, unsigned int variation)
 {
     // Launch the calculation kernel
@@ -199,37 +125,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
                 result = false;
         }
     }
-
-    size_t evolutionsSize = (settings.m_mode == FIRESTARTER_CODE) ? FireStarterEvolutions::EvolutionsSize(settings.m_population, settings.m_instructions, settings.m_registers, settings.m_variations) : 0;
-    if (m_evolutionsSize != evolutionsSize) {
-        m_evolutionsSize = evolutionsSize;
-        if (m_hostEvolutions) {
-            checkCUDAErrors(cudaFreeHost(m_hostEvolutions));
-            m_hostEvolutions = nullptr;
-        }
-        if (m_deviceEvolutions) {
-            checkCUDAErrors(cudaFreeAsync(m_deviceEvolutions, stream));
-            m_deviceEvolutions = nullptr;
-            m_deviceEvolutions0 = nullptr;
-            m_deviceEvolutions1 = nullptr;
-        }
-        if (m_evolutionsSize) {
-            checkCUDAErrors(cudaMallocHost(&m_hostEvolutions, m_evolutionsSize));
-            if (m_hostEvolutions)
-                m_hostEvolutions->InitEvolutions(settings.m_population, settings.m_instructions, settings.m_registers, settings.m_variations, settings.m_startResult);
-            else
-                result = false;
-
-            checkCUDAErrors(cudaMallocAsync(&m_deviceEvolutions, m_evolutionsSize * 2, stream));
-            if (m_deviceEvolutions) {
-                m_deviceEvolutions0 = (FireStarterEvolutions*)(m_deviceEvolutions);
-                m_deviceEvolutions1 = (FireStarterEvolutions*)(m_deviceEvolutions + m_evolutionsSize);
-                checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions0, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
-                checkCUDAErrors(cudaMemcpyAsync(m_deviceEvolutions1, m_hostEvolutions, m_evolutionsSize, cudaMemcpyHostToDevice, stream));
-            } else
-                result = false;
-        }
-    }
     context->Synchronize();
     return result;
 } // InitPopulation
@@ -249,27 +144,12 @@ void FireStarterExecute::FinishResults(void)
         m_devicePopulation0 = nullptr;
         m_devicePopulation1 = nullptr;
     }
-    if (m_deviceEvolutions) {
-        checkCUDAErrors(cudaFreeAsync(m_deviceEvolutions, stream));
-        m_deviceEvolutions = nullptr;
-        m_deviceEvolutions0 = nullptr;
-        m_deviceEvolutions1 = nullptr;
-    }
     if (m_hostPopulation) {
         checkCUDAErrors(cudaFreeHost(m_hostPopulation));
         m_hostPopulation = nullptr;
     }
-    if (m_hostEvolutions) {
-        checkCUDAErrors(cudaFreeHost(m_hostEvolutions));
-        m_hostEvolutions = nullptr;
-    }
     context->Synchronize();
 } // FinishResults
-
-void FireStarterExecute::Code(FireStarterState& state, unsigned long long pass)
-{
-    CodeGenerations(state, pass);
-} // Code
 
 bool FireStarterExecute::Optimize(FireStarterState& state)
 {
@@ -403,18 +283,6 @@ void FireStarterExecute::ExecuteInitPopulation(bool init, bool sync)
             InitPopulation(m_job->m_state, init);
     }, sync);
 } // ExecuteInitPopulation
-
-void FireStarterExecute::ExecuteCode(unsigned long long pass, bool sync)
-{
-    Dispatch([this, pass] {
-        if (m_job) {
-            FireStarterJob* job = m_manager->GetCode();
-            if (job)
-                Code(job->m_state, pass);
-            m_manager->AddComplete(job);
-        }
-    }, sync);
-} // ExecuteCode
 
 void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync)
 {

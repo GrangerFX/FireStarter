@@ -128,7 +128,6 @@
     <ClCompile Include="FireStarter\FireStarterShow.cpp" />
     <ClCompile Include="FireStarter\FireStarterState.cpp" />
     <ClCompile Include="FireStarter\FireStarterStream.cpp" />
-    <ClCompile Include="FireStarter\FireStarterUnit.cpp" />
     <ClInclude Include="Distribution\CUDADefines.h" />
     <ClInclude Include="Distribution\FireStarterEvolutions.h" />
     <ClInclude Include="Distribution\FireStarterInstructions.h" />
@@ -157,7 +156,6 @@
     <ClInclude Include="FireStarter\FireStarterShow.h" />
     <ClInclude Include="FireStarter\FireStarterState.h" />
     <ClInclude Include="FireStarter\FireStarterStream.h" />
-    <ClInclude Include="FireStarter\FireStarterUnit.h" />
     <ClInclude Include="FireStarter\FireStarterUtil.h" />
     <ClInclude Include="FireStarter\Format.h" />
     <ClInclude Include="FireStarter\PrintF.h" />
@@ -167,10 +165,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Distribution\FireStarter_BestCode.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
-    <None Include="Distribution\FireInterpreter.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>

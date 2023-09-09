@@ -1,18 +1,13 @@
 #pragma once
 #include "FireStarterManager.h"
-#include "FireStarterEvolutions.h"
 #include "CUDAThread.h"
 
 class FireStarterExecute : public CUDAThread {
 private:
     FireStarterPopulation* m_hostPopulation = nullptr;
-    FireStarterEvolutions* m_hostEvolutions = nullptr;
     char* m_devicePopulation = nullptr;
-    char* m_deviceEvolutions = nullptr;
     FireStarterPopulation* m_devicePopulation0 = nullptr;
     FireStarterPopulation* m_devicePopulation1 = nullptr;
-    FireStarterEvolutions* m_deviceEvolutions0 = nullptr;
-    FireStarterEvolutions* m_deviceEvolutions1 = nullptr;
     FireStarterManager* m_manager = nullptr;
     FireStarterJob* m_job = nullptr;
     CUmodule m_generateModule = nullptr;
@@ -28,9 +23,7 @@ private:
 
     bool InitPopulation(const FireStarterState& state, bool init = false);
     void FinishResults(void);
-    void CodeGenerations(FireStarterState& state, unsigned long long pass);
 	float OptimizeGenerations(FireStarterState& state, unsigned long long pass, unsigned int variation);
-    void Code(FireStarterState& state, unsigned long long pass);
     bool Optimize(FireStarterState& state);
     void OptimizePass(FireStarterState& state, unsigned long long pass);
     bool Compile(FireStarterJob* &job);
@@ -39,7 +32,6 @@ private:
 public:
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool init, bool sync = false);
-    void ExecuteCode(unsigned long long pass, bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync = false);
     void ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync = false);
     void ExecuteEvolve(bool sync = false);
