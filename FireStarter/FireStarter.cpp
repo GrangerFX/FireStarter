@@ -109,167 +109,28 @@ void FireStarter::ControlTest(void)
 
     // Evolve a single state.
     FireStarterState evolveState(testSettings);
-    FireStarterStream::Evolve(m_window, testSettings);
+    FireStarterStream::Randomize(m_window, testSettings);
 } // ControlTest
 
-#if 0
 void FireStarter::ControlRandom(void)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings randomSettings;
     m_buildSettings.FireSettings(randomSettings, FIRESTARTER_RANDOM);
-
-    // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(max(randomSettings.m_units, randomSettings.m_processes));
-
-    // Create the evolution code generator.
-    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-
-    // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, m_server, randomSettings.m_processes);
-
-    // Setup the intial best state 
-    FireStarterState bestState(randomSettings);
-    bestState.RandomProgram();
-
-    // Start generating random code generations.
-    evolve->EvolveSeeds(randomSettings);
-
-    // Create and run the execution units.
-    FireStarterExecuteRandom* executeRandom = new FireStarterExecuteRandom(manager, randomSettings.m_units);
-
-    // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
-
-    // Loop until the the completion condition or the host program is quit.
-    while (!WillTerminate()) {
-        if (!complete->CompleteRandom(bestState))
-            break;
-    }
-
-    // Cancel any waiting jobs
-    manager->Cancel();
-
-    // Delete the completion unit.
-    delete complete;
-
-    // Finish processing and terminate each unit.
-    delete executeRandom;
-
-    // Delete the evolution code generator.
-    delete evolve;
-
-    // Delete the multi-process compiler.
-    delete compile;
-
-    // Delete the compilier manager and cancel any waiting jobs.
-    delete manager;
+    FireStarterStreams streams(m_window, m_server, randomSettings);
+    streams.RandomStreams();
 } // ControlRandom
-#else
-void FireStarter::ControlRandom(void)
-{
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireStarterSettings revolveSettings;
-    m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_RANDOM);
-    FireStarterStreams streams(m_window, m_server, revolveSettings);
-    streams.TestStreams();
-} // ControlRandom
-#endif
 
-#if 0
 void FireStarter::ControlEvolve(void)
 {
     // Load the settings from the compiled CUDA code.
     // This allows the settings to be modified without recompiling the main program.
     FireStarterSettings evolveSettings;
     m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
-
-    // Evolve a number of states equal to the evolveSettings.m_seeds.
-    unsigned int numStates = evolveSettings.m_seeds;
-    unsigned int numProcesses = evolveSettings.m_processes;
-    evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
-    evolveSettings.m_processes = MIN(evolveSettings.m_processes, numStates);
-    std::vector<FireStarterState> allStates(numStates);
-    TestedInstructions testedInstructions;
-
-    // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager(numStates);
-
-    // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager, m_server, numProcesses);
-
-    // Create the evolution engine.
-    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-
-    // Create the execution units.
-    std::vector<FireStarterExecute*> executionUnits;
-    for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
-        // Create an evolution generator unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager, i);
-        executionUnits.push_back(execute);
-    }
-
-    // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
-
-    // Randomize the entire program of each state for the first generation
-    for (unsigned long long i = 0; i < numStates; i++)
-        allStates[i].InitState(evolveSettings, i);
-
-    // Loop until the the completion condition or the host program is quit.
-    unsigned int generation = 0;
-    while (!WillTerminate()) {
-        // Evolve a new generation for each state.
-        evolve->EvolveStates(allStates, &testedInstructions, generation);
-
-        // Execute each state.
-        std::atomic<long long> evolveCount = numStates;
-        for (FireStarterExecute* execute : executionUnits)
-            execute->ExecuteEvolve(evolveCount);
-
-        // Complete each state and display and sort the results.
-        // This method is synchronized by default.
-        if (!complete->CompleteStates(allStates, generation))
-            break;
-        generation++;
-    }
-
-    // Cancel any waiting jobs
-    manager->Cancel();
-
-    // Delete the completion unit.
-    delete complete;
-
-    // Finish processing and terminate each unit.
-    for (FireStarterExecute* execute : executionUnits)
-        delete execute;
-
-    // Delete the multi-process compiler.
-    delete compile;
-
-    // Delete the evolution code generator.
-    delete evolve;
-
-    // Delete the compilier manager and cancel any waiting jobs.
-    delete manager;
-
-    // Optimization evolution pass.
-    if (FIRESTARTER_SECOND_PASS && !WillTerminate())
-        FireStarterStream::Optimize(m_window, allStates[0]);
-} // ControlEvolve
-#else
-void FireStarter::ControlEvolve(void)
-{
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireStarterSettings revolveSettings;
-    m_buildSettings.FireSettings(revolveSettings, FIRESTARTER_EVOLVE);
-    FireStarterStreams streams(m_window, m_server, revolveSettings);
+    FireStarterStreams streams(m_window, m_server, evolveSettings);
     streams.EvolveStreams();
 } // ControlEvolve
-#endif
 
 void FireStarter::ControlSolution(void)
 {

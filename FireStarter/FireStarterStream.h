@@ -12,14 +12,12 @@ private:
 
 	void OptimizeState(const FireStarterState& evolveState);
 	void RandomState(FireStarterState& evolveState);
-	void EvolveState(FireStarterState& evolveState);
 
 public:
 	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState);
-	static void Evolve(const FireStarterWindow& window, const FireStarterState& evolveState);
+	static void Randomize(const FireStarterWindow& window, const FireStarterState& evolveState);
 	void OptimizeStream(const FireStarterState& evolveState, bool sync = false);
 	void RandomStream(const FireStarterSettings& settings, std::atomic<unsigned long long>& testCount, bool sync = false);
-	void RandomStream(const FireStarterSettings& settings, std::vector<float>& seedResults, std::atomic<unsigned long long>& seedCount, bool sync = false);
 	void EvolveStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
 	FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index = 0);
 	~FireStarterStream(void);
@@ -34,7 +32,7 @@ private:
 
 public:
 	bool SynchronizeStreams(std::vector<FireStarterStream*>& streams);
-	void TestStreams(void);
+	void RandomStreams(void);
 	void EvolveStreams(void);
 	FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& settings);
 	~FireStarterStreams(void);

@@ -2,49 +2,7 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
-bool FireStarterEvolve::EvolveSeeds(const FireStarterSettings& settings, bool sync)
-{
-    if (m_optimizeCode.empty())
-        return false;
-    Dispatch([this, settings] {
-        // Generate code using the GPU.
-        FireStarterSettings evolveSettings(settings);
-        size_t startSeed = settings.m_evolveSeed;
-        for (size_t seed = 0; seed < settings.m_seeds; seed++) {
-            FireStarterJob* job = m_manager->GetFree();
-            if (!job)
-                break;
-
-            // Randomize the program for the current seed.
-            job->m_state.InitState(evolveSettings);
-            job->m_state.RootSeed(startSeed + seed);
-            job->m_state.RandomProgram();
-
-            // Optimize the program registers.
-            job->m_state.m_program.OptimizeRegisters();
-
-            // Generate the evaluate code
-            std::string evaluateCode;
-            m_generate->GenerateEvaluate(job->m_state, evaluateCode);
-
-            // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-            job->m_options.clear();
-            CUDACompile::CompileOptions(job->m_options);
-            job->m_programName = "FireOptimizer.cu";
-            job->m_programFunction = "Optimizer";
-            job->m_program = m_optimizeCode;
-            FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-            m_manager->AddCode(job);
-        }
-
-        // Let all the processes know that the job is complete. This will terminate the processes
-        // once the last job in their queues is finished.
-        m_manager->AddCode();
-    }, sync);
-    return true;
-} // EvolveSeeds
-
-bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireStarterState& bestState, bool sync)
+bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync)
 {
     if (m_optimizeCode.empty())
         return false;
@@ -56,10 +14,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
         float bestResult = evolveState.m_maxResult;
         FireStarterJob* job = m_manager->GetFree();
         if (job) {
-            // Clone or randomize instructions in the later generations.
             job->m_state = evolveState;
-#if 1
-            // Random evolution 1.
             if (!evolveState.m_generation) {
                 // Randomize the program.
                 job->m_state.RandomProgram();
@@ -73,38 +28,6 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
                     m_evolveCount++;
                 }
             }
-#endif
-#if 0
-            // Random evolution 2.
-            if (evolveState.m_generation) {
-                // Between 1 and 4 random instructions per generation.
-                unsigned int randomNum = job->m_state.RandomMod(min(numInstructions, 4)) + 1;
-                while (randomNum--) {
-                    job->m_state.RandomInstruction();
-                    m_evolveCount++;
-                }
-            } else
-                // Randomize the program.
-                job->m_state.RandomProgram();
-#endif
-#if 0
-            // Code copy evolution.
-            if (!evolveState.m_generation) {
-                // Randomize the program.
-                job->m_state.RandomProgram();
-            } else {
-                // Up to 8 sequential instructions are copied from the best state to evolution state per generation.
-                unsigned int copyNum = job->m_state.RandomMod(min(numInstructions, 8)) + 1;
-                unsigned int copySrc = job->m_state.RandomMod(numInstructions);
-                unsigned int copyDst = job->m_state.RandomMod(numInstructions);
-                while (copyNum--) {
-                    job->m_state.m_program.EvolvedInstruction(copyDst++) = evolveState.m_program.EvolvedInstruction(copySrc++);
-                    copySrc %= numInstructions;
-                    copyDst %= numInstructions;
-                }
-                job->m_state.RandomInstruction();
-            }
-#endif
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();
@@ -124,7 +47,7 @@ bool FireStarterEvolve::EvolveState(const FireStarterState& state, const FireSta
         m_manager->AddCode(job);
     }, sync);
     return true;
-} // EvolveState
+} // RandomState
 
 bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation, bool sync)
 {

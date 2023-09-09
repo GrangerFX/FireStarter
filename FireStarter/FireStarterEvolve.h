@@ -16,8 +16,7 @@ private:
 	unsigned long long m_evolveCount = 0;
 
 public:
-	bool EvolveSeeds(const FireStarterSettings& settings, bool sync = false);
-	bool EvolveState(const FireStarterState& state, const FireStarterState& bestState, bool sync = false);
+	bool RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync = false);
 	bool EvolveStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation, bool sync = true);
 	bool GenerateOptimize(const FireStarterState& initState, bool sync = false);
 	FireStarterEvolve(FireStarterManager* manager, size_t index = 0);
