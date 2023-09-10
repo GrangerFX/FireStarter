@@ -22,8 +22,8 @@ private:
     size_t m_index = 0;
 
     bool InitPopulation(const FireStarterState& state, bool init = false);
-    void FinishResults(void);
-	float OptimizeGenerations(FireStarterState& state, unsigned long long pass, unsigned int variation);
+    void FinishPopulation(void);
+	float OptimizeGenerations(FireStarterState& state, unsigned long long generations, unsigned long long pass, unsigned int variation);
     bool Optimize(FireStarterState& state);
     void OptimizePass(FireStarterState& state, unsigned long long pass);
     bool Compile(FireStarterJob* &job);

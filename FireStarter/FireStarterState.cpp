@@ -146,6 +146,11 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_test = test;
     m_maxResult = settings.m_startResult;
     m_lastResult = settings.m_startResult;
+    if (settings.m_variations && settings.m_passes) {
+        m_variation_pass_results.resize(settings.m_variations);
+        for (unsigned int v = 0; v < settings.m_variations; v++)
+            m_variation_pass_results[v].resize(settings.m_passes, settings.m_startResult);
+    }
     m_program.InitProgram(settings);
     InitGenerationSeed();
     InitResults();

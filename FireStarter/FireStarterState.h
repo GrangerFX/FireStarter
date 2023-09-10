@@ -13,6 +13,7 @@ private:
         m_results = Results();
         m_program = other.m_program;
         m_timer = other.m_timer;
+        m_variation_pass_results = other.m_variation_pass_results;
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
         m_age = other.m_age;
@@ -30,6 +31,7 @@ private:
 public:
     FireStarterProgram m_program;
     SimpleTimer m_timer;
+    std::vector<std::vector<float>> m_variation_pass_results;
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_age = 0;
