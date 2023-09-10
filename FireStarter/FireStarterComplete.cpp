@@ -192,17 +192,17 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
 
 bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync)
 {
-    bool result = false;
+    bool result = true;
     Dispatch([this, &bestState, &oldState, &result] {
         // Get the next job in the order they are completed.
         FireStarterJob* job = m_manager->GetComplete();
         if (!job)
-            result = false;
+            result = true;
         else {
             FireStarterState newState = job->m_state;
             m_manager->AddFree(job);
 
-            result = CompleteResults(bestState, newState, oldState.m_maxResult);
+            result = !CompleteResults(bestState, newState, oldState.m_maxResult);
             if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
                 oldState = newState;
                 oldState.m_evolution++;
@@ -214,7 +214,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 
 bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, size_t generation, bool sync)
 {
-    bool result = false;
+    bool result = true;
     Dispatch([this, &allStates, generation, &result] {
         // Sort the states as they are received.
         size_t numStates = allStates.size();
@@ -248,7 +248,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[oldState.m_index];
-                result |= CompleteResults(bestState, newState, oldState.m_maxResult);
+                result &= !CompleteResults(bestState, newState, oldState.m_maxResult);
                 if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
                     oldState = newState;
                     oldState.m_evolution++;
@@ -278,6 +278,10 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                     }
                     allStates[i].m_index = i;
                 }
+
+            // Has the evolve target been reached?
+            if (bestState.m_maxResult <= FIRESTARTER_EVOLVE_TARGET)
+                result = true;
         }
     }, sync);
     return result;

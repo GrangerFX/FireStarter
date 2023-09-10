@@ -300,7 +300,7 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned
     }, sync);
 } // ExecuteOptimize
 
-void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount,  bool sync)
+void FireStarterExecute::ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync)
 {
     Dispatch([this, &evolveCount] {
         while (evolveCount-- > 0) {

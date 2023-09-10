@@ -73,7 +73,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
             execute->ExecuteOptimize(optimizeState, optimizeState.m_generation, false);
 
             // Update the results in the UI.
-            if (!complete->CompleteState(bestState, optimizeState))
+            if (complete->CompleteState(bestState, optimizeState))
                 break;
             optimizeState.m_generation++;
         }
@@ -280,21 +280,17 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             // Evolve the current test.
             unsigned int generation = 0;
             while (!WillTerminate()) {
-                // Get the current best result for all the states.
-//                float maxResult = allStates[0].m_firstResult * FIRESTARTER_EVOLVE_MAXSCALE;
-                float maxResult = 0.0f;
-
                 // Evolve a new generation for each state.
                 evolve->EvolveStates(allStates, &testedInstructions, generation);
 
                 // Execute each state.
                 std::atomic<long long> evolveCount = numStates;
                 for (FireStarterExecute* execute : executionUnits)
-                    execute->ExecuteEvolve(evolveCount, maxResult);
+                    execute->ExecuteEvolve(evolveCount);
 
                 // Complete each state and display and sort the results.
                 // This method is synchronized by default.
-                if (!complete->CompleteStates(allStates, generation))
+                if (complete->CompleteStates(allStates, generation))
                     break;
                 generation++;
             }
@@ -334,7 +330,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 executeOptimize->ExecuteOptimize(optimizeState, pass, false);
 
                 // Update the results in the UI.
-                if (!complete->CompleteState(bestOptimizeState, optimizeState))
+                if (complete->CompleteState(bestOptimizeState, optimizeState))
                     break;
 
                 // Next generation.
