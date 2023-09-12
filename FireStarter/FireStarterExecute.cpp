@@ -177,7 +177,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             float variationResult = settings.m_startResult;
             for (unsigned int pass = 0; pass < passes; pass++) {
                 float variationPassResult = OptimizeGenerations(state, generations, pass, variation);
-                if (variationPassResult > state.m_variation_pass_results[variation][pass])
+                if (variationPassResult > FIRESTARTER_EVOLVE_SKIP * state.m_variation_pass_results[variation][pass])
                     break;
                 state.m_variation_pass_results[variation][pass] = variationPassResult;
                 variationResult = variationPassResult;
