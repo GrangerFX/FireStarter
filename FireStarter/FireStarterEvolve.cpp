@@ -84,7 +84,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 } else {
                     // Copy or randomize instructions based on the quality of the previous result.
                     size_t copyIndex = (curState.m_age < FIRESTARTER_EVOLVE_MAX_AGE) || (index < bestStates) ? index : RANDOMMOD(seed, bestStates);
-                    printf("test=%llu  index=%llu  stateId=%llu  lastResult=%.8f  lastEvolved=%d  copyIndex=%llu  copyId=%llu\n", curState.m_test, index, curState.m_id, curState.m_lastResult, curState.m_lastEvolved, copyIndex, allStates[copyIndex].m_copy_id);
 
                     // Keep copying and randomizing instructions until a unique set of instructions is found.
                     size_t randomCount = 0;
@@ -94,8 +93,9 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                             curState.RandomInstruction(seed);
                         else {
                             // Best n evolution.
-                            curState.EvolveInstructions(allStates[copyIndex], FIRESTARTER_EVOLVE_MODE, seed);
-                            curState.m_copy_id = allStates[copyIndex].m_copy_id;
+                            const FireStarterState& copyState = allStates[copyIndex];
+                            curState.EvolveInstructions(copyState, FIRESTARTER_EVOLVE_MODE, seed);
+                            curState.m_copy_id = copyState.m_copy_id;
                             curState.m_age = 0;
                         }
 
@@ -119,6 +119,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 
                 // Reset the last result to the previously optimized max result.
                 curState.m_lastResult = curState.m_maxResult;
+                curState.m_lastEvolved = false;
 
                 // Generate the evaluate code
                 std::string evaluateCode;

@@ -1,0 +1,16 @@
+Duration: 1463.7  Evolve Seed=0  Test=0  Generation=10  Evolve Result=0.00000060  Optimize Generation=31  Optimize Result=0.00000024 *******
+Duration: 1598.1  Evolve Seed=0  Test=3  Generation=14  Evolve Result=0.00000060  Optimize Generation=33  Optimize Result=0.00000036 *******
+Duration: 2424.8  Evolve Seed=0  Test=1  Generation=26  Evolve Result=0.00000072  Optimize Generation=8  Optimize Result=0.00000060 *******
+Duration: 2674.5  Evolve Seed=0  Test=2  Generation=35  Evolve Result=0.00000045  Optimize Generation=29  Optimize Result=0.00000025 *******
+Duration: 4882.9  Evolve Seed=0  Test=6  Generation=2  Evolve Result=0.00003040  Optimize Generation=35  Optimize Result=0.00002265
+Duration: 4902.2  Evolve Seed=0  Test=5  Generation=15  Evolve Result=0.00000310  Optimize Generation=46  Optimize Result=0.00000072 *******
+Duration: 5798.6  Evolve Seed=0  Test=4  Generation=52  Evolve Result=0.00000334  Optimize Generation=13  Optimize Result=0.00000143
+Duration: 5630.4  Evolve Seed=0  Test=7  Generation=4  Evolve Result=0.00002909  Optimize Generation=67  Optimize Result=0.00002658
+Duration: 7217.3  Evolve Seed=0  Test=10  Generation=11  Evolve Result=0.00000075  Optimize Generation=35  Optimize Result=0.00000036 *******
+Duration: 8808.0  Evolve Seed=0  Test=11  Generation=11  Evolve Result=0.00002003  Optimize Generation=29  Optimize Result=0.00001752
+Duration: 9052.2  Evolve Seed=0  Test=8  Generation=37  Evolve Result=0.00000268  Optimize Generation=34  Optimize Result=0.00000221
+Duration: 9660.5  Evolve Seed=0  Test=12  Generation=24  Evolve Result=0.00000060  Optimize Generation=8  Optimize Result=0.00000048 *******
+Duration: 9809.8  Evolve Seed=0  Test=9  Generation=47  Evolve Result=0.00002754  Optimize Generation=54  Optimize Result=0.00001788
+Duration: 11338.6  Evolve Seed=0  Test=13  Generation=8  Evolve Result=0.00001517  Optimize Generation=136  Optimize Result=0.00000760
+Duration: 12102.2  Evolve Seed=0  Test=14  Generation=34  Evolve Result=0.00000572  Optimize Generation=13  Optimize Result=0.00000286
+Duration: 12064.4  Evolve Seed=0  Test=15  Generation=23  Evolve Result=0.00002649  Optimize Generation=63  Optimize Result=0.00001717
