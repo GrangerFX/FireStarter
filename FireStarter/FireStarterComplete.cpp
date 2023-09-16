@@ -149,7 +149,8 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 
     // Update the render status after every pass.
     m_totalResult += result;
-    double average = m_totalResult / ++m_resultsCount;
+    m_resultsCount++;
+    double average = m_totalResult / m_resultsCount;
     m_fireShow.RenderStatus(displayState, state, duration, m_generationTime, oldResult, average, m_testError);
 
     // Has the completion condition been met?

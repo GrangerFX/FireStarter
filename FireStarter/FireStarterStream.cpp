@@ -250,6 +250,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         evolveSettings.m_processes = MIN(evolveSettings.m_processes, numStates);
         std::vector<FireStarterState> allStates(numStates);
         TestedInstructions testedInstructions;
+        SimpleTimer streamTimer;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager(numStates);
@@ -297,7 +298,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
             // Output the evolve results.
             FireStarterState& bestEvolveState = allStates[0];
-            std::string resultText = Format("evolveSeed=%u  ", bestEvolveState.Settings().m_evolveSeed);
+            std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed);
             if (evolveSettings.m_tests > 1)
                 resultText += Format("Test=%u  ", test);
             resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
