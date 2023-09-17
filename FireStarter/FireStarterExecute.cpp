@@ -214,8 +214,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     }
 
     // Calculate the state's max result.
-    state.m_lastResult = variationMax;
-    state.m_lastEvolved = validResult;
+    state.m_lastOptimize = validResult;
     if (validResult)
         state.m_maxResult = variationMax;
     return validResult;

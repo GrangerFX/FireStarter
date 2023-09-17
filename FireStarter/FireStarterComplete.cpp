@@ -250,7 +250,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                 FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[oldState.m_index];
                 result &= !CompleteResults(bestState, newState, oldState.m_maxResult);
-                if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult)) {
+                if (!newState.m_generation || (newState.m_lastOptimize && ((newState.m_maxResult < newState.m_lastResult)))) {
                     oldState = newState;
                     oldState.m_evolution++;
                     oldState.m_age = 0;

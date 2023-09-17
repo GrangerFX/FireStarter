@@ -68,6 +68,10 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 curState = allStates[index];
                 curState.m_generation = generation;
 
+                // Reset the last result to the previously optimized max result.
+                curState.m_lastResult = curState.m_maxResult;
+                curState.m_lastOptimize = false;
+
                 // Randomize each generation and index.
                 unsigned long long seed = curState.InitGenerationSeed();
                 bool found = false;
@@ -83,11 +87,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                 } else {
                     // Copy or randomize instructions based on the quality of the previous result.
-#if 1
-                    size_t copyIndex = index < bestStates ? index : curState.m_index % bestStates;
-#else
                     size_t copyIndex = index < bestStates ? index : RANDOMMOD(seed, bestStates);
-#endif
 
                     // Keep copying and randomizing instructions until a unique set of instructions is found.
                     size_t randomCount = 0;
@@ -115,10 +115,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         randomCount++;
                     } while (!found && (randomCount < 10));
                 }
-
-                // Reset the last result to the previously optimized max result.
-                curState.m_lastResult = curState.m_maxResult;
-                curState.m_lastEvolved = false;
 
                 // Generate the evaluate code
                 std::string evaluateCode;

@@ -81,7 +81,7 @@ void FireStarterState::SaveState(std::string& code) const
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
     code += Format("    state.m_lastResult = %ff;\r\n", m_lastResult);
     code += Format("    state.m_optimizePass = %s;\r\n", m_optimizePass ? "true" : "false");
-    code += Format("    state.m_lastEvolved = %s;\r\n", m_lastEvolved ? "true" : "false");
+    code += Format("    state.m_lastOptimize = %s;\r\n", m_lastOptimize ? "true" : "false");
     code += "} // LoadState\r\n";
 } // SaveState
 
