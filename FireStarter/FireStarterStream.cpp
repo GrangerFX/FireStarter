@@ -296,14 +296,33 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 generation++;
             }
 
+            std::string resultText;
+#if FIRESTARTER_EVOLVE_FINAL
+            // Put the states back in their original indices.
+            for (unsigned long long i = 0; i < numStates - 1; i++) {
+                FireStarterState curState = allStates[i];
+                unsigned long long curIndex = curState.m_index;
+                if (curIndex != i) {
+                    FireStarterState copyState = allStates[curState.m_index];
+                    allStates[i] = copyState;
+                    allStates[curState.m_index] = curState;
+                }
+            }
+
+            resultText += "Final results:\n";
+            for (FireStarterState& curState : allStates)
+                resultText += Format("  %llu: id:%llu  copy_id: %llu  maxResult: %.8f\n", curState.m_index, curState.m_id, curState.m_copy_id, curState.m_maxResult);
+            resultText += "\n";
+#endif
+
             // Output the evolve results.
             FireStarterState& bestEvolveState = allStates[0];
-            std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed);
+            resultText += Format("Duration: %.1f  Evolve Seed=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed);
             if (evolveSettings.m_tests > 1)
                 resultText += Format("Test=%u  ", test);
             resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
 
-#if FIRESTARTER_SECOND_PASS
+#if FIRESTARTER_EVOLVE_OPTIMIZE
             // The best state is used for the status display and termination condition.
             FireStarterState optimizeState(bestEvolveState);
             optimizeState.m_generation = 0;
