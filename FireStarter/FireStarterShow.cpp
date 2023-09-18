@@ -202,7 +202,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         std::string statusString;
         float newResult = state.m_maxResult;
         float bestResult = bestState.m_maxResult;
-        bool isBestState = (state.m_index == bestState.m_index) && (state.m_generation == bestState.m_generation);
+        bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
         if (state.PassMode() == FIRESTARTER_RANDOM) {
             statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", state.Mode(), settings.m_evolveSeed + state.m_generation, state.m_generation, newResult, average, bestResult, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, testError);
             for (unsigned int v = 0; v < settings.m_variations; v++)

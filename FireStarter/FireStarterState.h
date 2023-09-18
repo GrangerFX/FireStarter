@@ -198,9 +198,7 @@ public:
         if (mode == FIRESTARTER_EVOLVE_MODE_COPY) {
             for (unsigned int i = 0; i < numInstructions; i++)
                 m_program.EvolvedInstruction(i) = srcState.m_program.EvolvedInstruction(i);
-            unsigned long long randomInstructions = FIRESTARTER_EVOLVE_MAX_AGE ? m_age / FIRESTARTER_EVOLVE_MAX_AGE : 1;
-            for (unsigned long long i = 0; i < randomInstructions; i++)
-                RandomInstruction(seed);
+            RandomInstruction(seed);
             m_maxResult = srcState.m_maxResult;
             return;
         }

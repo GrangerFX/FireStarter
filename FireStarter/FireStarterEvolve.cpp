@@ -67,8 +67,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 FireStarterState& curState = job->m_state;
                 curState = allStates[index];
                 curState.m_generation = generation;
-                if (index != curState.m_index)
-                    curState.m_index = index;
 
                 // Randomize each generation and index.
                 unsigned long long seed = curState.InitGenerationSeed();

@@ -351,17 +351,18 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", m_fileDate.c_str()), resultText);
 
 #if FIRESTARTER_EVOLVE_DEBUG
+#if 0
             // Put the states back in their original indices.
             for (unsigned long long i = 0; i < numStates - 1; i++) {
                 FireStarterState curState = allStates[i];
-                unsigned long long curIndex = curState.m_index;
-                if (curIndex != i) {
-                    FireStarterState copyState = allStates[curState.m_index];
+                unsigned long long curId = curState.m_id;
+                if (curId != i) {
+                    FireStarterState copyState = allStates[curId];
                     allStates[i] = copyState;
-                    allStates[curState.m_index] = curState;
+                    allStates[curId] = curState;
                 }
             }
-
+#endif
             for (FireStarterState& curState : allStates)
                 resultText += Format("%llu: id:%llu  copy_id: %llu  evolution: %llu maxResult: %.8f\n", curState.m_index, curState.m_id, curState.m_copy_id, curState.m_evolution, curState.m_maxResult);
             resultText += "\n";

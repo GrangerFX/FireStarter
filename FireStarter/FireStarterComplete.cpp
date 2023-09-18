@@ -221,11 +221,10 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
 
             // Sort the completed jobs.
             size_t index = job->m_state.m_index;
-            if (!newStates[index].Results()) {
+            if (!newStates[index].Results())
                 newStates[index] = job->m_state;
-            } else {
+            else
                 printf("Error: Completed state index already received: %llu\n", index);
-            }
             m_manager->AddFree(job);
         }
 
@@ -234,7 +233,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
             bool found = false;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& oldState = allStates[i];
-                FireStarterState& newState = newStates[oldState.m_index];
+                FireStarterState& newState = newStates[i];
                 result &= !CompleteResults(bestState, newState, oldState.m_maxResult);
                 if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult)) {
                     oldState = newState;
