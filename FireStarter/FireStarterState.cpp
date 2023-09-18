@@ -79,9 +79,7 @@ void FireStarterState::SaveState(std::string& code) const
     code += Format("    state.m_test = %llu;\r\n", m_test);
     code += Format("    state.m_seed = %llu;\r\n", m_seed);
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
-    code += Format("    state.m_lastResult = %ff;\r\n", m_lastResult);
     code += Format("    state.m_optimizePass = %s;\r\n", m_optimizePass ? "true" : "false");
-    code += Format("    state.m_lastOptimize = %s;\r\n", m_lastOptimize ? "true" : "false");
     code += "} // LoadState\r\n";
 } // SaveState
 
@@ -145,7 +143,6 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_copy_id = index;
     m_test = test;
     m_maxResult = settings.m_startResult;
-    m_lastResult = settings.m_startResult;
     m_variation_pass_results.clear();
     if (settings.m_variations && settings.m_passes) {
         m_variation_pass_results.resize(settings.m_variations);

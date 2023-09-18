@@ -217,7 +217,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, const FireStarte
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
             resultText += Format("Random Result=%.8f\n", evolveState.m_maxResult);
-            FireStarterCode::AppendCode(m_resultsFilePath, resultText);
+            FireStarterCode::AppendCode(Format("Logs\\%s_RandomResults.txt", m_fileDate.c_str()), resultText);
         }
 
         // Cancel any waiting jobs
@@ -296,28 +296,9 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 generation++;
             }
 
-            std::string resultText;
-#if FIRESTARTER_EVOLVE_FINAL
-            // Put the states back in their original indices.
-            for (unsigned long long i = 0; i < numStates - 1; i++) {
-                FireStarterState curState = allStates[i];
-                unsigned long long curIndex = curState.m_index;
-                if (curIndex != i) {
-                    FireStarterState copyState = allStates[curState.m_index];
-                    allStates[i] = copyState;
-                    allStates[curState.m_index] = curState;
-                }
-            }
-
-            resultText += "Final results:\n";
-            for (FireStarterState& curState : allStates)
-                resultText += Format("  %llu: id:%llu  copy_id: %llu  maxResult: %.8f\n", curState.m_index, curState.m_id, curState.m_copy_id, curState.m_maxResult);
-            resultText += "\n";
-#endif
-
             // Output the evolve results.
             FireStarterState& bestEvolveState = allStates[0];
-            resultText += Format("Duration: %.1f  Evolve Seed=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed);
+            std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed);
             if (evolveSettings.m_tests > 1)
                 resultText += Format("Test=%u  ", test);
             resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
@@ -367,7 +348,25 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 resultText += " *******";
 #endif
             resultText += "\n";
-            FireStarterCode::AppendCode(m_resultsFilePath, resultText);
+            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", m_fileDate.c_str()), resultText);
+
+#if FIRESTARTER_EVOLVE_DEBUG
+            // Put the states back in their original indices.
+            for (unsigned long long i = 0; i < numStates - 1; i++) {
+                FireStarterState curState = allStates[i];
+                unsigned long long curIndex = curState.m_index;
+                if (curIndex != i) {
+                    FireStarterState copyState = allStates[curState.m_index];
+                    allStates[i] = copyState;
+                    allStates[curState.m_index] = curState;
+                }
+            }
+
+            for (FireStarterState& curState : allStates)
+                resultText += Format("%llu: id:%llu  copy_id: %llu  evolution: %llu maxResult: %.8f\n", curState.m_index, curState.m_id, curState.m_copy_id, curState.m_evolution, curState.m_maxResult);
+            resultText += "\n";
+            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", m_fileDate.c_str()), resultText);
+#endif
         }
 
         // Cancel any waiting jobs
@@ -396,11 +395,10 @@ FireStarterStream::FireStarterStream(const FireStarterWindow& window, FireStarte
     // Get the stream settings.
     m_settings = m_bestState.Settings();
 
-    // Create the results file path.
-    static std::string resultsFilePath;
-    if (resultsFilePath.empty())
-        resultsFilePath = Format("Logs\\%s_Results.txt", FileNameDate().c_str());
-    m_resultsFilePath = resultsFilePath;
+    static std::string fileDate;
+    if (fileDate.empty())
+        fileDate = FileNameDate().c_str();
+    m_fileDate = fileDate;
 } // FireStarterStream
 
 FireStarterStream::~FireStarterStream(void)

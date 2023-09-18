@@ -213,10 +213,8 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
         }
     }
 
-    // Calculate the state's max result.
-    state.m_lastOptimize = validResult;
-    if (validResult)
-        state.m_maxResult = variationMax;
+    // Set the state's max result.
+    state.m_maxResult = validResult ? variationMax : settings.m_startResult;
     return validResult;
 } // Optimize
 

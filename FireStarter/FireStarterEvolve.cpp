@@ -67,10 +67,8 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 FireStarterState& curState = job->m_state;
                 curState = allStates[index];
                 curState.m_generation = generation;
-
-                // Reset the last result to the previously optimized max result.
-                curState.m_lastResult = curState.m_maxResult;
-                curState.m_lastOptimize = false;
+                if (index != curState.m_index)
+                    curState.m_index = index;
 
                 // Randomize each generation and index.
                 unsigned long long seed = curState.InitGenerationSeed();

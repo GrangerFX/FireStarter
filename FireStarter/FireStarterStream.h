@@ -7,7 +7,7 @@ private:
 	FireStarterWindow m_window;
 	FireStarterState& m_bestState;
 	FireStarterSettings m_settings;
-	std::string m_resultsFilePath;
+	std::string m_fileDate;
 	size_t m_index = 0;
 
 	void OptimizeState(const FireStarterState& evolveState);

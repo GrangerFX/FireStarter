@@ -27,7 +27,6 @@ private:
 public:
 	void SaveBest(const FireStarterState& evolveState);
 	bool CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult = 0.0f);
-	bool CompleteUnit(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
 	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
 	bool CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
 	bool CompleteStates(std::vector<FireStarterState>& allStates, size_t generation, bool sync = true);
