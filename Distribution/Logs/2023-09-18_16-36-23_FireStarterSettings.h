@@ -13,7 +13,7 @@
 #define FIRESTARTER_FIRST_TEST      0
 
 #define FIRESTARTER_EVOLVE_BEST     0.25       // The percent of best evolved states.
-#define FIRESTARTER_EVOLVE_SKIP     1.25       // The percent used to skip variation generations.
+#define FIRESTARTER_EVOLVE_SKIP     1.0        // The percent used to skip variation generations.
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008  // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    1          // Output evolve debugging information.
 #define FIRESTARTER_EVOLVE_OPTIMIZE 1          // Optimize the best evolved results.

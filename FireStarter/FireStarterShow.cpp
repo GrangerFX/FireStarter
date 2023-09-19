@@ -225,13 +225,13 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                     spaceString = ">";
                 else
                     spaceString = " ";
-                statusString += Format("  Old Result=%.8f %sNew Result=%.8f", oldResult, spaceString.c_str(), MIN(newResult, oldResult));
+                statusString += Format("  Old Result=%.8f %sNew Result=%.8f  stateSeed=%u", oldResult, spaceString.c_str(), newResult, state.m_seed);
             } else {
                 if ((newResult == bestResult) && isBestState)
                     statusString += " *";
                 else
                     statusString += "  ";
-                statusString += Format("Result=%.8f", state.m_maxResult);
+                statusString += Format("Result=%.8f", newResult);
             }
 
             statusString += Format("  Best=%.8f  BestSeed=%u  BestGen=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", bestResult, bestState.Settings().m_evolveSeed, bestState.m_generation, generationTime, runTime, testError);
