@@ -174,21 +174,20 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
         unsigned int variation = m_variationOrder[v];
         if (validResult) {
             // Optimization: If any of the varation's pass result are worse, skip the rest of the pases.
-            float variationResult = settings.m_startResult;
+            float variationResult = 0.0f;
             for (unsigned int pass = 0; pass < passes; pass++) {
-                float variationPassResult = OptimizeGenerations(state, generations, pass, variation);
-                if (variationPassResult > FIRESTARTER_EVOLVE_SKIP * state.m_variation_pass_results[variation][pass])
+                variationResult = OptimizeGenerations(state, generations, pass, variation);
+                if (variationResult > FIRESTARTER_EVOLVE_SKIP * state.m_variation_pass_results[variation][pass])
                     break;
-                state.m_variation_pass_results[variation][pass] = variationPassResult;
-                variationResult = variationPassResult;
+                state.m_variation_pass_results[variation][pass] = variationResult;
             }
             variationMax = MAX(variationMax, variationResult);
 
             // Optimization: If the variation result is worse, skip the rest of the variations.
-            if (variationResult < oldResult)
+            if (variationMax < oldResult)
                 needsResort = true;
             else {
-                m_variationCount[variation]++; // Counts the variaition that caused an invalid result.
+                m_variationCount[variation]++; // Counts the variation that caused an invalid result.
                 validResult = false;
             }
         } else
