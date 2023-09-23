@@ -143,6 +143,9 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_copy_id = index;
     m_test = test;
     m_maxResult = settings.m_startResult;
+    if (m_variation_pass_results.size()) {
+        int foo = 1;
+    }
     m_variation_pass_results.clear();
     if (settings.m_variations && settings.m_passes) {
         m_variation_pass_results.resize(settings.m_variations);
