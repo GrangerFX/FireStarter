@@ -4,7 +4,7 @@
 
 bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync)
 {
-    if (m_optimizeCode.empty())
+    if (m_evolveCode.empty())
         return false;
     Dispatch([this, state, bestState] {
         FireStarterState evolveState(state);
@@ -12,7 +12,7 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
         const FireStarterSettings& settings = evolveState.Settings();
         unsigned int numInstructions = settings.m_instructions;
         float bestResult = evolveState.m_maxResult;
-        FireStarterJob* job = m_manager->GetFree();
+        FireStarterJob* job = m_evolveManager->GetFree();
         if (job) {
             job->m_state = evolveState;
             if (!evolveState.m_generation) {
@@ -34,24 +34,24 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
 
             // Generate the evaluate code
             std::string evaluateCode;
-            m_generate->GenerateEvaluate(job->m_state, evaluateCode);
+            m_evolveGenerate->GenerateEvaluate(job->m_state, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
             CUDACompile::CompileOptions(job->m_options);
             job->m_programName = "FireOptimizer.cu";
             job->m_programFunction = "Optimizer";
-            job->m_program = m_optimizeCode;
+            job->m_program = m_evolveCode;
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
         }
-        m_manager->AddCode(job);
+        m_evolveManager->AddCode(job);
     }, sync);
     return true;
 } // RandomState
 
 bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation, bool sync)
 {
-    if (m_optimizeCode.empty())
+    if (m_evolveCode.empty())
         return false;
 
     Dispatch([this, &allStates, testedInstructions, generation] {
@@ -61,7 +61,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
         size_t bestStates = (size_t)ceil(allStates.size() * FIRESTARTER_EVOLVE_BEST);
         float bestResult = bestState.m_maxResult;
         for (unsigned long long index = 0; index < allStates.size(); index++) {
-            FireStarterJob* job = m_manager->GetFree();
+            FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Clone or randomize instructions in the later generations.
                 FireStarterState& curState = job->m_state;
@@ -114,17 +114,17 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 
                 // Generate the evaluate code
                 std::string evaluateCode;
-                m_generate->GenerateEvaluate(curState, evaluateCode);
+                m_evolveGenerate->GenerateEvaluate(curState, evaluateCode);
 
                 // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
                 job->m_options.clear();
                 CUDACompile::CompileOptions(job->m_options);
                 job->m_programName = "FireOptimizer.cu";
                 job->m_programFunction = "Optimizer";
-                job->m_program = m_optimizeCode;
+                job->m_program = m_evolveCode;
                 FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
             }
-            m_manager->AddCode(job);
+            m_evolveManager->AddCode(job);
         }
     }, sync);
     return true;
@@ -132,13 +132,13 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 
 bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool sync)
 {
-    if (m_optimizeCode.empty())
+    if (m_evolveCode.empty())
         return false;
 
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
     FireStarterState state(initState); 
     DispatchAsync([this, state] {
-        FireStarterJob* job = m_manager->GetFree();
+        FireStarterJob* job = m_evolveManager->GetFree();
         if (job) {
             // The state already contains the evolved and optimized code.
             job->m_state = state;
@@ -146,16 +146,16 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool
 
             // Generate the evaluate code
             std::string evaluateCode;
-            m_generate->GenerateEvaluate(job->m_state, evaluateCode);
+            m_evolveGenerate->GenerateEvaluate(job->m_state, evaluateCode);
 
             // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
             job->m_options.clear();
             CUDACompile::CompileOptions(job->m_options);
             job->m_programName = "FireOptimizer.cu";
             job->m_programFunction = "Optimizer";
-            job->m_program = m_optimizeCode;
+            job->m_program = m_evolveCode;
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-            m_manager->AddCode(job);
+            m_evolveManager->AddCode(job);
         }
     });
     return true;
@@ -163,17 +163,17 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool
 
 FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterEvolve%zu", index))
 {
-    m_manager = manager;
-    m_index = index;
-    FireStarterCode::LoadCode("FireOptimizer.cu", m_optimizeCode);
+    m_evolveManager = manager;
+    m_evolveIndex = index;
+    FireStarterCode::LoadCode("FireOptimizer.cu", m_evolveCode);
     DispatchAsync([this] {
-        m_generate = new FireStarterGenerate(Context());
+        m_evolveGenerate = new FireStarterGenerate(Context());
     });
 } // FireStarterEvolve
 
 FireStarterEvolve::~FireStarterEvolve(void)
 {
     DispatchSync([this] {
-        delete m_generate;
+        delete m_evolveGenerate;
     });
 } // ~FireStarterEvolve

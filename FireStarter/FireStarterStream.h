@@ -4,11 +4,11 @@
 
 class FireStarterStream : public SerialThread {
 private:
-	FireStarterWindow m_window;
-	FireStarterState& m_bestState;
-	FireStarterSettings m_settings;
-	std::string m_fileDate;
-	size_t m_index = 0;
+	FireStarterWindow m_streamWindow;
+	FireStarterState& m_streamBestState;
+	FireStarterSettings m_streamSettings;
+	std::string m_streamDate;
+	size_t m_streamIndex = 0;
 
 	void OptimizeState(const FireStarterState& evolveState);
 	void RandomState(FireStarterState& evolveState);

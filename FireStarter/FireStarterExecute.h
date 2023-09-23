@@ -8,8 +8,8 @@ private:
     char* m_devicePopulation = nullptr;
     FireStarterPopulation* m_devicePopulation0 = nullptr;
     FireStarterPopulation* m_devicePopulation1 = nullptr;
-    FireStarterManager* m_manager = nullptr;
-    FireStarterJob* m_job = nullptr;
+    FireStarterManager* m_executeManager = nullptr;
+    FireStarterJob* m_executeJob = nullptr;
     CUmodule m_generateModule = nullptr;
     CUmodule m_evolveModule = nullptr;
     CUmodule m_optimizeModule = nullptr;
@@ -19,7 +19,7 @@ private:
     std::vector<unsigned int> m_variationCount;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
-    size_t m_index = 0;
+    size_t m_executeIndex = 0;
 
     bool InitPopulation(const FireStarterState& state, bool init = false);
     void FinishPopulation(void);

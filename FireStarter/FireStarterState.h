@@ -4,16 +4,17 @@
 
 class FireStarterState {
 private:
+    std::vector<std::vector<float>> m_variation_pass_results;
     std::vector<unsigned char> m_resultsData;
-    FireStarterResults* m_results = nullptr;    // For debugging.
+    FireStarterResults* m_results = nullptr;    // Used for debugging. null pointer when uninitialized.
 
     inline void swap(const FireStarterState& other)
     {
+        m_variation_pass_results = other.m_variation_pass_results;
         m_resultsData = other.m_resultsData;
         m_results = Results();
         m_program = other.m_program;
         m_timer = other.m_timer;
-        m_variation_pass_results = other.m_variation_pass_results;
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
         m_age = other.m_age;
@@ -29,7 +30,6 @@ private:
 public:
     FireStarterProgram m_program;
     SimpleTimer m_timer;
-    std::vector<std::vector<float>> m_variation_pass_results;
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_age = 0;
@@ -46,6 +46,11 @@ public:
         swap(other);
         return *this;
     } // operator =
+
+    inline float& VariationPassResult(unsigned int variation, unsigned int pass)
+    {
+        return m_variation_pass_results[variation][pass];
+    } // VariationPassResult
 
     inline size_t ResultsSize(void) const
     {
@@ -95,7 +100,7 @@ public:
     {
         const FireStarterResults* results = Results();
         for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
-            if (results->Result(v)->m_minResult == m_program.m_settings.m_startResult)
+            if (results->Result(v)->MinResult() == m_program.m_settings.m_startResult)
                 return false;
         return true;
     } // ResultsValid
@@ -133,9 +138,9 @@ public:
     inline unsigned long long GenerationSeed(void) const
     {
         if (m_test)
-            return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_evolveSeed) + m_generation) + m_index) + m_test);
+            return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_evolveSeed) + m_generation) + m_id) + m_test);
         else
-            return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_evolveSeed) + m_generation) + m_index);
+            return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_evolveSeed) + m_generation) + m_id);
     } // GenerationSeed
 
     unsigned long long InitGenerationSeed(void)

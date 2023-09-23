@@ -177,9 +177,9 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             float variationResult = 0.0f;
             for (unsigned int pass = 0; pass < passes; pass++) {
                 variationResult = OptimizeGenerations(state, generations, pass, variation);
-                if (variationResult > FIRESTARTER_EVOLVE_SKIP * state.m_variation_pass_results[variation][pass])
+                if (variationResult > FIRESTARTER_EVOLVE_SKIP * state.VariationPassResult(variation,pass))
                     break;
-                state.m_variation_pass_results[variation][pass] = variationResult;
+                state.VariationPassResult(variation, pass) = variationResult;
             }
             variationMax = MAX(variationMax, variationResult);
 
@@ -233,10 +233,10 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
     // Release the current job.
     if (job)
-        m_manager->AddFree(job);
+        m_executeManager->AddFree(job);
 
     // Get the next available compile job.
-    job = m_manager->GetCompile();
+    job = m_executeManager->GetCompile();
     if (!job)
         return false;
 
@@ -254,7 +254,7 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
         }
 
     // Something went wrong so free the job.
-    m_manager->AddFree(job);
+    m_executeManager->AddFree(job);
     job = nullptr;
     return false;
 } // Compile
@@ -267,42 +267,42 @@ bool FireStarterExecute::Evolve(void)
         FireStarterSettings stateSettings = state.Settings();
         InitPopulation(state);
         Optimize(state);
-        m_manager->AddComplete(job);
+        m_executeManager->AddComplete(job);
         return true;
     }
 
-    m_manager->AddFree(job);
-    m_manager->AddComplete(nullptr);
+    m_executeManager->AddFree(job);
+    m_executeManager->AddComplete(nullptr);
     return false;
 } // Evolve
 
 void FireStarterExecute::ExecuteCompile(bool sync)
 {
     Dispatch([this] {
-        Compile(m_job);
+        Compile(m_executeJob);
     }, sync);
 } // ExecuteCompile
 
 void FireStarterExecute::ExecuteInitPopulation(bool init, bool sync)
 {
     Dispatch([this, init] {
-        if (m_job)
-            InitPopulation(m_job->m_state, init);
+        if (m_executeJob)
+            InitPopulation(m_executeJob->m_state, init);
     }, sync);
 } // ExecuteInitPopulation
 
 void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync)
 {
     Dispatch([this, state, pass] {
-        if (m_job) {
-            FireStarterJob* job = m_manager->GetFree();
+        if (m_executeJob) {
+            FireStarterJob* job = m_executeManager->GetFree();
             if (job) {
-                m_job->m_state = state;
-                m_job->m_state.m_optimizePass = true;
-                OptimizePass(m_job->m_state, pass);
-                job->Copy(m_job);
+                m_executeJob->m_state = state;
+                m_executeJob->m_state.m_optimizePass = true;
+                OptimizePass(m_executeJob->m_state, pass);
+                job->Copy(m_executeJob);
             }
-            m_manager->AddComplete(job);
+            m_executeManager->AddComplete(job);
         }
     }, sync);
 } // ExecuteOptimize
@@ -334,22 +334,22 @@ void FireStarterExecute::ExecuteRandom(bool sync)
             InitPopulation(state);
             Optimize(state);
             AtomicMin(g_atomicResult, state.m_maxResult);
-            m_manager->AddComplete(job);
+            m_executeManager->AddComplete(job);
             job = nullptr;
         }
-        LOG("Execute unit %d complete\n", (unsigned int)m_index);
+        LOG("Execute unit %d complete\n", (unsigned int)m_executeIndex);
     }, sync);
 } // ExecuteRandom
 
 void FireStarterExecute::ExecuteFinish(bool sync)
 {
     DispatchSync([this] {
-        if (m_job) {
-            if (m_manager)
-                m_manager->AddFree(m_job);
+        if (m_executeJob) {
+            if (m_executeManager)
+                m_executeManager->AddFree(m_executeJob);
             else
-                delete m_job;
-            m_job = nullptr;
+                delete m_executeJob;
+            m_executeJob = nullptr;
         }
         FinishPopulation();
         CUDACompile::ReleaseModule(m_optimizeModule);
@@ -358,8 +358,8 @@ void FireStarterExecute::ExecuteFinish(bool sync)
 
 FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterExecute%zu", index))
 {
-    m_manager = manager;
-    m_index = index;
+    m_executeManager = manager;
+    m_executeIndex = index;
 } // FireStaterExecute
 
 FireStarterExecute::~FireStarterExecute(void)

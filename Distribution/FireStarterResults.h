@@ -11,10 +11,10 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterResult {
-    unsigned int m_dataSize;  
-    float m_minResult;
-    unsigned int m_debug;
-    unsigned int m_index;
+    unsigned int m_resultSize;  
+    float m_resultMin;
+    unsigned int m_resultDebug;
+    unsigned int m_resultIndex;
     float m_data[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
 
     static inline size_t ResultSize(size_t registers)
@@ -24,32 +24,32 @@ typedef struct FireStarterResult {
 
     inline float* MinResult(void)
     {
-        return &m_minResult;
+        return &m_resultMin;
     } // MinResult
 
     inline float MinResult(void) const
     {
-        return m_minResult;
+        return m_resultMin;
     } // MinResult
 
     inline unsigned int* Index(void)
     {
-        return &m_index;
+        return &m_resultIndex;
     } // Index
 
     inline unsigned int Index(void) const
     {
-        return m_index;
+        return m_resultIndex;
     } // Index
 
     inline unsigned int* Debug(void)
     {
-        return &m_debug;
+        return &m_resultDebug;
     } // Debug
 
     inline unsigned int Debug(void) const
     {
-        return m_debug;
+        return m_resultDebug;
     } // Debug
 
     inline FireStarterData* Data(void)
@@ -64,26 +64,26 @@ typedef struct FireStarterResult {
 
     inline size_t DataSize(void)
     {
-        return FireStarterData::DataSize(m_dataSize);
+        return FireStarterData::DataSize(m_resultSize);
     } // DataSize
 
     inline void Init(unsigned int index, unsigned int registers, float startResult)
     {
-        m_dataSize = registers;
+        m_resultSize = registers;
         FireStarterData* data = Data();
         for (unsigned int i = 0; i < registers; i++)
             data->d[i] = 0.0f;
-        m_minResult = startResult;
-        m_index = index;
-        m_debug = 0;
+        m_resultMin = startResult;
+        m_resultIndex = index;
+        m_resultDebug = 0;
     } // Init
 
     inline void Init(unsigned int index, unsigned int registers, const FireStarterResult* initResult)
     {
-        m_dataSize = registers;
-        m_minResult = initResult->MinResult();
-        m_index = index;
-        m_debug = 0;
+        m_resultSize = registers;
+        m_resultMin = initResult->MinResult();
+        m_resultIndex = index;
+        m_resultDebug = 0;
 
         FireStarterData* data = Data();
         const FireStarterData* srcData = initResult->Data();

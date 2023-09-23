@@ -125,34 +125,40 @@ float FireStarterState::TestResult(void) const
 
 void FireStarterState::InitResults(FireStarterResults* initResults)
 {
-    m_resultsData.resize(FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations));
-    m_results = Results();
-    if (m_results)
-        if (initResults)
-            m_results->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, initResults);
-        else
-            m_results->InitResults(0, m_program.m_settings.m_registers, m_program.m_settings.m_variations, m_program.m_settings.m_startResult);
-} // InitResult
+    FireStarterSettings& settings = m_program.m_settings;
 
-void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long index, unsigned long long test)
-{
-    m_generation = 0;
-    m_evolution = 0;
-    m_index = index;
-    m_id = index;
-    m_copy_id = index;
-    m_test = test;
-    m_maxResult = settings.m_startResult;
-    if (m_variation_pass_results.size()) {
-        int foo = 1;
-    }
     m_variation_pass_results.clear();
     if (settings.m_variations && settings.m_passes) {
         m_variation_pass_results.resize(settings.m_variations);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             m_variation_pass_results[v].resize(settings.m_passes, settings.m_startResult);
     }
+
+    m_resultsData.clear();
+    m_resultsData.resize(FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations));
+    m_results = Results();
+    if (m_results)
+        if (initResults)
+            m_results->InitResults(0, settings.m_registers, settings.m_variations, initResults);
+        else
+            m_results->InitResults(0, settings.m_registers, settings.m_variations, settings.m_startResult);
+} // InitResult
+
+void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long index, unsigned long long test)
+{
     m_program.InitProgram(settings);
+
+    m_generation = 0;
+    m_evolution = 0;
+    m_age = 0;
+    m_index = index;
+    m_id = index;
+    m_copy_id = index;
+    m_test = test;
+    m_seed = 0;
+    m_maxResult = settings.m_startResult;
+    m_optimizePass = false;
+
     InitGenerationSeed();
     InitResults();
 } // InitState

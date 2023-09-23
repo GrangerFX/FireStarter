@@ -39,7 +39,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
     // Generate the optimize code.
     evolve->GenerateOptimize(startState, true);
@@ -115,7 +115,7 @@ void FireStarterStream::RandomState(FireStarterState& randomState)
     FireStarterExecute* execute = new FireStarterExecute(manager);
 
     // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
+    FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
     // Evolve a new generation for the state.
     evolve->RandomState(randomState, bestState, true);
@@ -185,7 +185,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, const FireStarte
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_window, false);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, false);
 
         // Loop until the the completion condition or the host program is quit.
         size_t randomTests = settings.m_seeds * settings.m_tests;
@@ -193,10 +193,10 @@ void FireStarterStream::RandomStream(FireStarterServer* server, const FireStarte
             // Setup the intial state
             FireStarterSettings evolveSettings(settings);
             evolveSettings.m_evolveSeed = settings.m_evolveSeed + test / settings.m_tests;
-            FireStarterState evolveState(evolveSettings, m_index, test % settings.m_tests);
+            FireStarterState evolveState(evolveSettings, m_streamIndex, test % settings.m_tests);
 
             // Evolve the first generation for the state.
-            evolve->RandomState(evolveState, m_bestState, true);
+            evolve->RandomState(evolveState, m_streamBestState, true);
 
             // Compile the evolved program.
             compile->CompileJob(manager, true);
@@ -205,10 +205,10 @@ void FireStarterStream::RandomStream(FireStarterServer* server, const FireStarte
             execute->ExecuteEvolve(true);
 
             // Complete the state and display the results.
-            complete->CompleteState(m_bestState, evolveState);
+            complete->CompleteState(m_streamBestState, evolveState);
 
             // Save the best random state for all streams.
-            complete->SaveBest(m_bestState);
+            complete->SaveBest(m_streamBestState);
 
             // Output the evolve results.
             std::string resultText;
@@ -217,7 +217,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, const FireStarte
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
             resultText += Format("Random Result=%.8f\n", evolveState.m_maxResult);
-            FireStarterCode::AppendCode(Format("Logs\\%s_RandomResults.txt", m_fileDate.c_str()), resultText);
+            FireStarterCode::AppendCode(Format("Logs\\%s_RandomResults.txt", m_streamDate.c_str()), resultText);
         }
 
         // Cancel any waiting jobs
@@ -244,7 +244,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 {
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
-        FireStarterSettings evolveSettings(m_settings);
+        FireStarterSettings evolveSettings(m_streamSettings);
         unsigned int numStates = evolveSettings.m_seeds;
         evolveSettings.m_units = MIN(MAX(evolveSettings.m_units, evolveSettings.m_processes), numStates);
         evolveSettings.m_processes = MIN(evolveSettings.m_processes, numStates);
@@ -270,7 +270,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         }
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_window);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Loop until the the evolve completion condition or the host program is quit.
         for (unsigned long long t = testCount++; (t < evolveSettings.m_tests) && !WillTerminate(); t = testCount++) {
@@ -348,7 +348,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 resultText += " *******";
 #endif
             resultText += "\n";
-            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", m_fileDate.c_str()), resultText);
+            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str()), resultText);
 
 #if FIRESTARTER_EVOLVE_DEBUG
 #if 0
@@ -366,7 +366,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             for (FireStarterState& curState : allStates)
                 resultText += Format("%llu: id:%llu  copy_id: %llu  evolution: %llu maxResult: %.8f\n", curState.m_index, curState.m_id, curState.m_copy_id, curState.m_evolution, curState.m_maxResult);
             resultText += "\n";
-            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", m_fileDate.c_str()), resultText);
+            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", m_streamDate.c_str()), resultText);
 #endif
         }
 
@@ -391,15 +391,15 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
     }, sync);
 } // EvolveStream
 
-FireStarterStream::FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index) : SerialThread(Format("FireStarterStream%zu", index)), m_window(window), m_bestState(bestState), m_index(index)
+FireStarterStream::FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index) : SerialThread(Format("FireStarterStream%zu", index)), m_streamWindow(window), m_streamBestState(bestState), m_streamIndex(index)
 {
     // Get the stream settings.
-    m_settings = m_bestState.Settings();
+    m_streamSettings = m_streamBestState.Settings();
 
     static std::string fileDate;
     if (fileDate.empty())
         fileDate = FileNameDate().c_str();
-    m_fileDate = fileDate;
+    m_streamDate = fileDate;
 } // FireStarterStream
 
 FireStarterStream::~FireStarterStream(void)

@@ -9,10 +9,10 @@ typedef std::set<std::vector<unsigned char>> TestedInstructions;
 
 class FireStarterEvolve : public CUDAThread {
 private:
-	FireStarterManager* m_manager = nullptr;
-	FireStarterGenerate* m_generate = nullptr;
-	std::string m_optimizeCode;
-	size_t m_index = 0;
+	FireStarterManager* m_evolveManager = nullptr;
+	FireStarterGenerate* m_evolveGenerate = nullptr;
+	std::string m_evolveCode;
+	size_t m_evolveIndex = 0;
 	unsigned long long m_evolveCount = 0;
 
 public:
