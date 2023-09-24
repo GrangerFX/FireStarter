@@ -254,7 +254,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         SimpleTimer streamTimer;
         std::string evolveResultsPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
 #if FIRESTARTER_EVOLVE_DEBUG
-        std::string evolveDebugPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
+        std::string evolveDebugPath = Format("Logs\\%s_EvolveDebug.txt", m_streamDate.c_str());
 #endif
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager(numStates);
@@ -315,7 +315,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
             // Optimize the evolved state.
             // Generate the optimize code.
-            evolve->GenerateOptimize(optimizeState, true);
+            evolve->GenerateOptimize(optimizeState);
 
             // Compile the optimize code.
 //          compile->CompileJob(manager, true);
