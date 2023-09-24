@@ -8,7 +8,6 @@
 class FireStarterShow : public CUDAThread {
 private:
 	FireStarterWindow m_window;
-	SerialOutput m_output;
 	std::string m_fireShowCode;
 	CUfunction m_fireShowFunction = nullptr;
 	CUmodule m_fireShowModule = nullptr;

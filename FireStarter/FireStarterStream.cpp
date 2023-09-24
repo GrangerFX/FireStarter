@@ -217,7 +217,8 @@ void FireStarterStream::RandomStream(FireStarterServer* server, const FireStarte
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
             resultText += Format("Random Result=%.8f\n", evolveState.m_maxResult);
-            FireStarterCode::AppendCode(Format("Logs\\%s_RandomResults.txt", m_streamDate.c_str()), resultText);
+            if (!m_streamDate.empty())
+                FireStarterCode::AppendCode(Format("Logs\\%s_RandomResults.txt", m_streamDate.c_str()), resultText);
         }
 
         // Cancel any waiting jobs
@@ -251,7 +252,10 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         std::vector<FireStarterState> allStates(numStates);
         TestedInstructions testedInstructions;
         SimpleTimer streamTimer;
-
+        std::string evolveResultsPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
+#if FIRESTARTER_EVOLVE_DEBUG
+        std::string evolveDebugPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
+#endif
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager(numStates);
 
@@ -314,7 +318,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             evolve->GenerateOptimize(optimizeState, true);
 
             // Compile the optimize code.
-            compile->CompileJob(manager, true);
+//          compile->CompileJob(manager, true);
 
             // Compile the optimize module.
             FireStarterExecute* executeOptimize = executionUnits[0];
@@ -348,7 +352,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 resultText += " *******";
 #endif
             resultText += "\n";
-            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str()), resultText);
+            FireStarterCode::AppendCode(evolveResultsPath, resultText);
 
 #if FIRESTARTER_EVOLVE_DEBUG
 #if 0
@@ -366,7 +370,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             for (FireStarterState& curState : allStates)
                 resultText += Format("%llu: id:%llu  copy_id: %llu  evolution: %llu maxResult: %.8f\n", curState.m_index, curState.m_id, curState.m_copy_id, curState.m_evolution, curState.m_maxResult);
             resultText += "\n";
-            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", m_streamDate.c_str()), resultText);
+            FireStarterCode::AppendCode(evolveDebugPath, resultText);
 #endif
         }
 
@@ -416,30 +420,34 @@ bool FireStarterStreams::SynchronizeStreams(std::vector<FireStarterStream*>& str
 
 void FireStarterStreams::RandomStreams(void)
 {
-    // Generate sequential random programs and test each of them.
-    m_settings.m_tests = MAX(m_settings.m_tests, 1);
-    size_t randomTests = m_settings.m_seeds * m_settings.m_tests;
-    size_t numStreams = MIN(m_settings.m_units, randomTests);
-    FireStarterState bestState(m_settings);
+    // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
+    // Initialize the streams.
+    DispatchSync([this] {
+        // Generate sequential random programs and test each of them.
+        m_settings.m_tests = MAX(m_settings.m_tests, 1);
+        size_t randomTests = m_settings.m_seeds * m_settings.m_tests;
+        size_t numStreams = MIN(m_settings.m_units, randomTests);
+        FireStarterState bestState(m_settings);
 
-    // Create the streams.
-    std::vector<FireStarterStream*> streams(numStreams, nullptr);
-    for (size_t stream = 0; stream < numStreams; stream++)
-        streams[stream] = new FireStarterStream(m_window, bestState, stream);
+        // Create the streams.
+        std::vector<FireStarterStream*> streams(numStreams, nullptr);
+        for (size_t stream = 0; stream < numStreams; stream++)
+            streams[stream] = new FireStarterStream(m_window, bestState, stream);
 
-    // Randomize and test the streams.
-    m_testCount = 0;
-    for (size_t stream = 0; stream < numStreams; stream++)
-        streams[stream]->RandomStream(m_server, m_settings, m_testCount);
+        // Randomize and test the streams.
+        m_testCount = 0;
+        for (size_t stream = 0; stream < numStreams; stream++)
+            streams[stream]->RandomStream(m_server, m_settings, m_testCount);
 
-    // Wait for all the streams to finish the random pass.
-    SynchronizeStreams(streams);
+        // Wait for all the streams to finish the random pass.
+        SynchronizeStreams(streams);
 
-    // Terminate and delete each stream unit.
-    for (FireStarterStream*& stream : streams) {
-        delete stream;
-        stream = nullptr;
-    }
+        // Terminate and delete each stream unit.
+        for (FireStarterStream*& stream : streams) {
+            delete stream;
+            stream = nullptr;
+        }
+    });
 } // RandomStreams
 
 void FireStarterStreams::EvolveStreams(void)

@@ -165,9 +165,6 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
         // Note: The jobs may be received out of order.
         FireStarterJob* job = m_manager->GetComplete();
         if (job) {
-            // Output job queue status.
-            //  m_output.Output(Format("Free: %zu %f  Code: zu %f  Compile: %zu %f  Complete: %zu %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
-
             // Update the best state and display the results.
             CompleteResults(bestState, job->m_state);
             m_manager->AddFree(job);
@@ -216,15 +213,13 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                 break;
             }
 
-            // Output job queue status.
-            //  m_output.Output(Format("Free: %zu %f  Code: %zu %f  Compile: %zu %f  Complete: %uz %f\n", manager->SizeFree(), manager->TimeFree(), manager->SizeCode(), manager->TimeCode(), manager->SizeCompile(), manager->TimeCompile(), manager->SizeComplete(), manager->TimeComplete()));
-
-            // Sort the completed jobs by id.
-            size_t id = job->m_state.m_id;
-            if (!newStates[id].Results())
-                newStates[id] = job->m_state;
+            // Sort the completed jobs by index.
+            // Note: Must be by index and not id since allStates and newStates must be in the same order for the code below.
+            size_t index = job->m_state.m_index;
+            if (!newStates[index].Results())
+                newStates[index] = job->m_state;
             else
-                printf("Error: Completed state index already received: %llu\n", id);
+                printf("Error: Completed state index already received: %llu\n", index);
             m_manager->AddFree(job);
         }
 

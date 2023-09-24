@@ -4,7 +4,7 @@
 
 bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync)
 {
-    if (m_evolveCode.empty())
+    if (m_evolveOptimizeCode.empty())
         return false;
     Dispatch([this, state, bestState] {
         FireStarterState evolveState(state);
@@ -41,7 +41,7 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
             CUDACompile::CompileOptions(job->m_options);
             job->m_programName = "FireOptimizer.cu";
             job->m_programFunction = "Optimizer";
-            job->m_program = m_evolveCode;
+            job->m_program = m_evolveOptimizeCode;
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
         }
         m_evolveManager->AddCode(job);
@@ -51,7 +51,7 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
 
 bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation, bool sync)
 {
-    if (m_evolveCode.empty())
+    if (m_evolveOptimizeCode.empty())
         return false;
 
     Dispatch([this, &allStates, testedInstructions, generation] {
@@ -121,7 +121,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 CUDACompile::CompileOptions(job->m_options);
                 job->m_programName = "FireOptimizer.cu";
                 job->m_programFunction = "Optimizer";
-                job->m_program = m_evolveCode;
+                job->m_program = m_evolveOptimizeCode;
                 FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
             }
             m_evolveManager->AddCode(job);
@@ -132,12 +132,12 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 
 bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool sync)
 {
-    if (m_evolveCode.empty())
+    if (m_evolveOptimizeCode.empty())
         return false;
 
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
     FireStarterState state(initState); 
-    DispatchAsync([this, state] {
+    Dispatch([this, state] {
         FireStarterJob* job = m_evolveManager->GetFree();
         if (job) {
             // The state already contains the evolved and optimized code.
@@ -153,11 +153,11 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool
             CUDACompile::CompileOptions(job->m_options);
             job->m_programName = "FireOptimizer.cu";
             job->m_programFunction = "Optimizer";
-            job->m_program = m_evolveCode;
+            job->m_program = m_evolveOptimizeCode;
             FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
             m_evolveManager->AddCode(job);
         }
-    });
+    }, sync);
     return true;
 } // GenerateOptimize
 
@@ -165,7 +165,7 @@ FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) 
 {
     m_evolveManager = manager;
     m_evolveIndex = index;
-    FireStarterCode::LoadCode("FireOptimizer.cu", m_evolveCode);
+    FireStarterCode::LoadCode("FireOptimizer.cu", m_evolveOptimizeCode);
     DispatchAsync([this] {
         m_evolveGenerate = new FireStarterGenerate(Context());
     });
