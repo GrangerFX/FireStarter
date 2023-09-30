@@ -232,8 +232,11 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                     statusString += "  ";
                 statusString += Format("Result=%.8f", newResult);
             }
+            statusString += Format("  TestError=%.8f  Best=%.8f  BestSeed=%u  BestGen=%u", testError, bestResult, bestState.Settings().m_evolveSeed, bestState.m_generation);
 
-            statusString += Format("  Best=%.8f  BestSeed=%u  BestGen=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", bestResult, bestState.Settings().m_evolveSeed, bestState.m_generation, generationTime, runTime, testError);
+            // Include the time when not doing tests as it prevents doing diffs to compare the results.
+            if (!settings.m_tests)
+                statusString += Format("  Time=%.4f Seconds  Run Time=%.4f Seconds", generationTime, runTime);
         }
 
         // Update the log file.
