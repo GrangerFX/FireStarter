@@ -176,11 +176,11 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         // Create the log file.
         unsigned int test = (unsigned int)state.m_test;
         std::string logPath;
-        if (((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE)) && (settings.m_tests > 1)) {
+        if (((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE)) && (settings.m_tests > 0)) {
             static std::vector<std::string> logFilePaths;
             if (logFilePaths.empty())
                 logFilePaths.resize(settings.m_tests);
-            std::string& logFilePath = logFilePaths[test];
+            std::string& logFilePath = logFilePaths[test < settings.m_tests ? test : 0];
             if (logFilePath.empty()) {
                 logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate().c_str(), settings.Mode(), test);
                 FireStarterCode::AppendCode(logFilePath, cudaText);

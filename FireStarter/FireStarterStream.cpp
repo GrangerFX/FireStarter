@@ -255,6 +255,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         std::vector<FireStarterState> allStates(numStates);
         TestedInstructions testedInstructions;
         SimpleTimer streamTimer;
+        std::string streamDate = m_streamDate;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager(numStates);
@@ -350,13 +351,13 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 resultText += " *******";
 #endif
             resultText += "\n";
-            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str()), resultText);
+            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()), resultText);
 
 #if FIRESTARTER_EVOLVE_DEBUG
             for (FireStarterState& curState : allStates)
                 resultText += Format("%llu: id:%llu  copy_id: %llu  evolution: %llu maxResult: %.8f\n", curState.m_index, curState.m_id, curState.m_copy_id, curState.m_evolution, curState.m_maxResult);
             resultText += "\n";
-            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", m_streamDate.c_str()), resultText);
+            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", streamDate.c_str()), resultText);
 #endif
         }
 
