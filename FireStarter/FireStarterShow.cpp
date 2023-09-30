@@ -208,7 +208,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
         } else {
             statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
-            if ((settings.m_tests > 1) || test)
+            if ((settings.m_tests > 0) || test)
                 statusString += Format("  Test=%u", test);
             if (state.PassMode() == FIRESTARTER_EVOLVE)
                 statusString += Format("  Index=%llu  Id=%llu  CopyId=%llu", state.m_index, state.m_id, state.m_copy_id);

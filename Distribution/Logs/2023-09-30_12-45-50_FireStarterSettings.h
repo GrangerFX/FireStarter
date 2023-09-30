@@ -10,7 +10,7 @@
 #define FIRESTARTER_OUTPUT_HASH     0
 #define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
-#define FIRESTARTER_ONE_TEST      4
+#define FIRESTARTER_FIRST_TEST      4
 
 #define FIRESTARTER_EVOLVE_BEST     0.25       // The percent of best evolved states.
 #define FIRESTARTER_EVOLVE_SKIP     1.25       // The percent used to skip variation generations.
