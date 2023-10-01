@@ -10,51 +10,6 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
     return curFloat;
 } // AtomicMin
 
-bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init)
-{
-    bool result = true;
-    FireStarterSettings settings = state.Settings();
-
-    CUDAContext* context = Context();
-    CUstream stream = context->Stream();
-
-    size_t populationSize = FireStarterPopulation::PopulationSize(settings.m_population, settings.m_registers, settings.m_variations);
-    if (m_populationSize != populationSize) {
-        m_populationSize = populationSize;
-        if (m_hostPopulation) {
-            checkCUDAErrors(cudaFreeHost(m_hostPopulation));
-            m_hostPopulation = nullptr;
-        }
-        if (m_devicePopulation) {
-            checkCUDAErrors(cudaFreeAsync(m_devicePopulation, stream));
-            m_devicePopulation = nullptr;
-            m_devicePopulation0 = nullptr;
-            m_devicePopulation1 = nullptr;
-        }
-        if (m_populationSize) {
-            checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
-            if (m_hostPopulation)
-                if (init)
-                    m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, state.Results());
-                else
-                    m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, settings.m_startResult);
-            else
-                result = false;
-
-            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, stream));
-            if (m_hostPopulation && m_devicePopulation) {
-                m_devicePopulation0 = (FireStarterPopulation*)(m_devicePopulation);
-                m_devicePopulation1 = (FireStarterPopulation*)(m_devicePopulation + m_populationSize);
-                checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
-                checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
-            } else
-                result = false;
-        }
-    }
-    context->Synchronize();
-    return result;
-} // InitPopulation
-
 void FireStarterExecute::FinishPopulation(void)
 {
     CUDAContext* context = Context();
@@ -62,8 +17,8 @@ void FireStarterExecute::FinishPopulation(void)
         printf("CUDA context destroyed before FinishPopulation() called!\n");
         std::terminate();
     }
-
     CUstream stream = context->Stream();
+
     if (m_devicePopulation) {
         checkCUDAErrors(cudaFreeAsync(m_devicePopulation, stream));
         m_devicePopulation = nullptr;
@@ -76,6 +31,49 @@ void FireStarterExecute::FinishPopulation(void)
     }
     context->Synchronize();
 } // FinishPopulation
+
+bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init)
+{
+    bool result = true;
+    FireStarterSettings settings = state.Settings();
+
+    CUDAContext* context = Context();
+    if (!context) {
+        printf("CUDA context destroyed before InitPopulation() called!\n");
+        std::terminate();
+    }
+    CUstream stream = context->Stream();
+
+    // Reallocate the populations if the size has changed.
+    size_t populationSize = FireStarterPopulation::PopulationSize(settings.m_population, settings.m_registers, settings.m_variations);
+    if (m_populationSize != populationSize) {
+        FinishPopulation();
+        m_populationSize = populationSize;
+        if (m_populationSize) {
+            checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
+            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, stream));
+            if (m_devicePopulation) {
+                m_devicePopulation0 = (FireStarterPopulation*)(m_devicePopulation);
+                m_devicePopulation1 = (FireStarterPopulation*)(m_devicePopulation + m_populationSize);
+            }
+        }
+    }
+
+    // Initialize the populations.
+    if (m_hostPopulation && m_devicePopulation) {
+        if (init)
+            m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, state.Results());
+        else
+            m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, settings.m_startResult);
+
+        checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
+        checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
+    } else
+        result = false;
+
+    context->Synchronize();
+    return result;
+} // InitPopulation
 
 float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int generations, unsigned int pass, unsigned int variation)
 {
@@ -121,7 +119,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         context->Synchronize();
         generation++;
 
-#if 1
+#if 0
         if ((state.m_generation == 1) && (state.m_id == 14)) { // Note: DEBUG!
             checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
             float hash = 0.0f;

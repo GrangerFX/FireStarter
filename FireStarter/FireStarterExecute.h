@@ -19,8 +19,8 @@ private:
     size_t m_evolutionsSize = 0;
     size_t m_executeIndex = 0;
 
-    bool InitPopulation(const FireStarterState& state, bool init = false);
     void FinishPopulation(void);
+    bool InitPopulation(const FireStarterState& state, bool init = false);
 	float OptimizeGenerations(FireStarterState& state, unsigned int generations, unsigned int pass, unsigned int variation);
     bool Optimize(FireStarterState& state);
     void OptimizePass(FireStarterState& state, unsigned int pass);
