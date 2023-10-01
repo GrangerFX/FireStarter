@@ -166,12 +166,12 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
     unsigned int variations = settings.m_variations;
-    if (m_variationOrder.size() != variations) {
-        m_variationOrder.resize(variations);
-        m_variationCount.resize(variations);
+    if (state.m_variationOrder.size() != variations) {
+        state.m_variationOrder.resize(variations);
+        state.m_variationCount.resize(variations);
         for (unsigned int v = 0; v < variations; v++) {
-            m_variationOrder[v] = v;
-            m_variationCount[v] = 0;
+            state.m_variationOrder[v] = v;
+            state.m_variationCount[v] = 0;
         }
     }
 
@@ -183,7 +183,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     unsigned int passes = settings.m_passes;
     unsigned int generations = settings.m_generations;
     for (unsigned int v = 0; v < variations; v++) {
-        unsigned int variation = m_variationOrder[v];
+        unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
             // Optimization: If any of the varation's pass result are worse, skip the rest of the pases.
             float variationResult = 0.0f;
@@ -199,7 +199,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             if (variationMax < oldResult)
                 needsResort = true;
             else {
-                m_variationCount[variation]++; // Counts the variation that caused an invalid result.
+                state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
                 validResult = false;
             }
         } else
@@ -209,14 +209,14 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     // Resort the variation order with the highest invalidation count first.
     if (needsResort) {
         for (unsigned int v = 0; v < variations - 1; v++) {
-            unsigned int variation = m_variationOrder[v];
-            unsigned int count = m_variationCount[variation];
+            unsigned int variation = state.m_variationOrder[v];
+            unsigned int count = state.m_variationCount[variation];
             for (unsigned int i = v + 1; i < variations; i++) {
-                unsigned int curVariation = m_variationOrder[i];
-                unsigned int curCount = m_variationCount[curVariation];
+                unsigned int curVariation = state.m_variationOrder[i];
+                unsigned int curCount = state.m_variationCount[curVariation];
                 if (curCount > count) {
-                    m_variationOrder[v] = curVariation;
-                    m_variationOrder[i] = variation;
+                    state.m_variationOrder[v] = curVariation;
+                    state.m_variationOrder[i] = variation;
                     variation = curVariation;
                     count = curCount;
                 }

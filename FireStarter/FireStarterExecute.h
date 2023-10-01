@@ -15,8 +15,6 @@ private:
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_evolveFunction = nullptr;
     CUfunction m_optimizeFunction = nullptr;
-    std::vector<unsigned int> m_variationOrder;
-    std::vector<unsigned int> m_variationCount;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_executeIndex = 0;

@@ -7,7 +7,7 @@ private:
     std::vector<std::vector<float>> m_variation_pass_results;
     std::vector<unsigned char> m_resultsData;
     FireStarterResults* m_results = nullptr;    // Used for debugging. null pointer when uninitialized.
-
+ 
     inline void swap(const FireStarterState& other)
     {
         m_variation_pass_results = other.m_variation_pass_results;
@@ -15,6 +15,8 @@ private:
         m_results = Results();
         m_program = other.m_program;
         m_timer = other.m_timer;
+        m_variationOrder = other.m_variationOrder;
+        m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
         m_age = other.m_age;
@@ -30,6 +32,8 @@ private:
 public:
     FireStarterProgram m_program;
     SimpleTimer m_timer;
+    std::vector<unsigned int> m_variationOrder;
+    std::vector<unsigned int> m_variationCount;
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_age = 0;
