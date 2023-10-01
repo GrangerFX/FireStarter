@@ -23,16 +23,16 @@ private:
 
     bool InitPopulation(const FireStarterState& state, bool init = false);
     void FinishPopulation(void);
-	float OptimizeGenerations(FireStarterState& state, unsigned long long generations, unsigned long long pass, unsigned int variation);
+	float OptimizeGenerations(FireStarterState& state, unsigned int generations, unsigned int pass, unsigned int variation);
     bool Optimize(FireStarterState& state);
-    void OptimizePass(FireStarterState& state, unsigned long long pass);
+    void OptimizePass(FireStarterState& state, unsigned int pass);
     bool Compile(FireStarterJob* &job);
     bool Evolve(void);
 
 public:
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool init, bool sync = false);
-    void ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync = false);
+    void ExecuteOptimize(const FireStarterState& state, unsigned int pass, bool sync = false);
     void ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync = false);
     void ExecuteEvolve(bool sync = false);
     void ExecuteRandom(bool sync = false);

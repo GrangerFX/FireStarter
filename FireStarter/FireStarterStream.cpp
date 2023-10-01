@@ -70,7 +70,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
         // Loop until the the completion condition or the host program is quit.
         while (!WillTerminate()) {
             // Optimize the current generation.
-            execute->ExecuteOptimize(optimizeState, optimizeState.m_generation, false);
+            execute->ExecuteOptimize(optimizeState, (unsigned int)optimizeState.m_generation, false);
 
             // Update the results in the UI.
             if (complete->CompleteState(bestState, optimizeState))
@@ -328,7 +328,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
             // Loop until the the optimize completion condition or the host program is quit.
             FireStarterState bestOptimizeState(optimizeState);
-            unsigned long long pass = 0;
+            unsigned int pass = 0;
             while (!WillTerminate()) {
                 // Optimize the current generation.
                 executeOptimize->ExecuteOptimize(optimizeState, pass, false);

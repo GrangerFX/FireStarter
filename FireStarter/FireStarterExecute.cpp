@@ -77,7 +77,7 @@ void FireStarterExecute::FinishPopulation(void)
     context->Synchronize();
 } // FinishPopulation
 
-float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned long long generations, unsigned long long pass, unsigned int variation)
+float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int generations, unsigned int pass, unsigned int variation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -120,6 +120,18 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         // Synchronize all GPU threads and results.
         context->Synchronize();
         generation++;
+
+#if 1
+        if ((state.m_generation == 1) && (state.m_id == 14)) { // Note: DEBUG!
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
+            float hash = 0.0f;
+            for (unsigned int i = 0; i < settings.m_population; i++) {
+                float curResult = *m_hostPopulation->MinResult(i, variation);
+                hash = fmodf(hash + curResult, 1.0f);
+            }
+            printf("Id=%u  variation=%u  pass=%u  generation=%u  hash=%.8f\n", state.m_id, variation, pass, g, hash);
+        }
+#endif
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -217,7 +229,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     return validResult;
 } // Optimize
 
-void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned long long pass)
+void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned int pass)
 {
     const FireStarterSettings& settings = state.Settings();
     unsigned int generations = settings.m_generations;
@@ -291,7 +303,7 @@ void FireStarterExecute::ExecuteInitPopulation(bool init, bool sync)
     }, sync);
 } // ExecuteInitPopulation
 
-void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync)
+void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned int pass, bool sync)
 {
     Dispatch([this, state, pass] {
         if (m_executeJob) {
