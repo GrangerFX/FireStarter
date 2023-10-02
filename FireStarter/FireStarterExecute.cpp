@@ -53,8 +53,8 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
             checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
             checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, stream));
             if (m_devicePopulation) {
-                m_devicePopulation0 = (FireStarterPopulation*)(m_devicePopulation);
-                m_devicePopulation1 = (FireStarterPopulation*)(m_devicePopulation + m_populationSize);
+                m_devicePopulation0 = m_devicePopulation;
+                m_devicePopulation1 = (FireStarterPopulation*)((char*)m_devicePopulation + m_populationSize);
             }
         }
     }

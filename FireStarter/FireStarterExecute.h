@@ -5,7 +5,7 @@
 class FireStarterExecute : public CUDAThread {
 private:
     FireStarterPopulation* m_hostPopulation = nullptr;
-    char* m_devicePopulation = nullptr;
+    FireStarterPopulation* m_devicePopulation = nullptr;
     FireStarterPopulation* m_devicePopulation0 = nullptr;
     FireStarterPopulation* m_devicePopulation1 = nullptr;
     FireStarterManager* m_executeManager = nullptr;
