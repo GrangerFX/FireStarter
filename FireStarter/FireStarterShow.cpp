@@ -178,9 +178,9 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         std::string logPath;
         if (((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE)) && (settings.m_tests > 0)) {
             static std::vector<std::string> logFilePaths;
-            if (logFilePaths.empty())
-                logFilePaths.resize(settings.m_tests);
-            std::string& logFilePath = logFilePaths[test < settings.m_tests ? test : 0];
+            if (test >= logFilePaths.size())
+                logFilePaths.resize(test + 1);
+            std::string& logFilePath = logFilePaths[test];
             if (logFilePath.empty()) {
                 logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate().c_str(), settings.Mode(), test);
                 FireStarterCode::AppendCode(logFilePath, cudaText);
