@@ -280,7 +280,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            unsigned long long test = evolveSettings.m_tests ? FIRESTARTER_START_TEST + t : t;
+            unsigned long long test = FIRESTARTER_START_TEST + t;
 
             // Randomize the entire program of each state for the first generation
             for (unsigned long long i = 0; i < numStates; i++)
@@ -411,9 +411,8 @@ void FireStarterStreams::RandomStreams(void)
     // Initialize the streams.
     DispatchSync([this] {
         // Generate sequential random programs and test each of them.
-        size_t tests = MAX(m_settings.m_tests, 1);
-        size_t randomTests = m_settings.m_seeds * tests;
-        size_t numStreams = MIN(m_settings.m_units, randomTests);
+        size_t randomTests = m_settings.m_seeds * MAX(m_settings.m_tests, 1);
+        size_t numStreams = MAX(MIN(FIRESTARTER_STREAMS, MIN(m_settings.m_units, randomTests)), 1);
         FireStarterState bestState(m_settings);
 
         // Create the streams.
@@ -440,8 +439,7 @@ void FireStarterStreams::EvolveStreams(void)
     // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
     // Initialize the streams.
     DispatchSync([this] {
-        unsigned int evolveTests = MAX(m_settings.m_tests, 1);
-        size_t numStreams = MIN(m_settings.m_units, evolveTests);
+        size_t numStreams = MAX(MIN(FIRESTARTER_STREAMS, MIN(m_settings.m_units, m_settings.m_tests)), 1);
         FireStarterState bestState(m_settings);
 
         // Create the streams.
