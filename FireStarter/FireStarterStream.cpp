@@ -280,7 +280,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            unsigned long long test = evolveSettings.m_tests == 1 ? FIRESTARTER_ONE_TEST : t;
+            unsigned long long test = evolveSettings.m_tests ? FIRESTARTER_START_TEST + t : t;
 
             // Randomize the entire program of each state for the first generation
             for (unsigned long long i = 0; i < numStates; i++)
