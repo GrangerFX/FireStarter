@@ -175,6 +175,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
         unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
             // Optimization: If any of the varation's pass result are worse, skip the rest of the pases.
+            // Note: This causes different results depending on the variation order.
             float variationResult = 0.0f;
             for (unsigned int pass = 0; pass < passes; pass++) {
                 variationResult = OptimizeGenerations(state, generations, pass, variation);
