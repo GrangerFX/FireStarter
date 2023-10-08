@@ -1,5 +1,5 @@
-// Run date: 10/07/23 12:34:18 Pacific Daylight Time
-// Run duration = 1073.213563 seconds
+// Run date: 10/07/23 14:47:28 Pacific Daylight Time
+// Run duration = 1080.070658 seconds
 // Run generation = 34
 // Run evolution = 11
 // Run result = 0.00000012
@@ -18,7 +18,7 @@
 // Run optimizeSeed = 0
 // Run seeds = 64
 // Run tests = 2
-// Run units = 4
+// Run units = 1
 // Run processes = 0
 // Run population = 278528
 // Run iterations = 64
