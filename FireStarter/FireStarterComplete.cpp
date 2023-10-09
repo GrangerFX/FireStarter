@@ -190,7 +190,9 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
                 oldState = newState;
                 oldState.m_evolution++;
-            }
+                oldState.m_age = 0;
+            } else
+                oldState.m_age++;
         }
     }, sync);
     return result;
