@@ -1,0 +1,9 @@
+Duration: 1174.5  Evolve Seed=0  Test=17  Generation=19  Evolve Result=0.00000060  Optimize Generation=135  Optimize Result=0.00000024 *******
+Duration: 2849.4  Evolve Seed=0  Test=19  Generation=35  Evolve Result=0.00000024  Optimize Generation=12  Optimize Result=0.00000012 *******
+Duration: 4755.8  Evolve Seed=0  Test=18  Generation=132  Evolve Result=0.00001142  Optimize Generation=79  Optimize Result=0.00000644
+Duration: 5167.0  Evolve Seed=0  Test=20  Generation=75  Evolve Result=0.00000054  Optimize Generation=29  Optimize Result=0.00000012 *******
+Duration: 7264.1  Evolve Seed=0  Test=22  Generation=46  Evolve Result=0.00000072  Optimize Generation=0  Optimize Result=0.00000072 *******
+Duration: 9966.1  Evolve Seed=0  Test=23  Generation=31  Evolve Result=0.00002372  Optimize Generation=52  Optimize Result=0.00000572
+Duration: 11363.4  Evolve Seed=0  Test=24  Generation=26  Evolve Result=0.00000032  Optimize Generation=9  Optimize Result=0.00000012 *******
+Duration: 12792.0  Evolve Seed=0  Test=21  Generation=300  Evolve Result=0.00000167  Optimize Generation=0  Optimize Result=0.00000167
+Duration: 12792.1  Evolve Seed=0  Test=25  Generation=30  Evolve Result=0.00002980  Optimize Generation=0  Optimize Result=0.00002980
