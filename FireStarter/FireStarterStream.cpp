@@ -14,7 +14,6 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     FireStarterState startState(evolveState);
     FireStarterSettings& settings = startState.Settings();
     settings.m_units = 1;
-    settings.m_processes = 0;
     startState.m_optimizePass = true;
     if (settings.m_mode != FIRESTARTER_OPTIMIZE)
         settings.m_tests = 0;
@@ -30,7 +29,8 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     FireStarterManager* manager = new FireStarterManager();
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile();
+    FireStarterCompile* compile = new FireStarterCompile(manager);
+    compile->AddCompiler();
 
     // Create the evolution code generator.
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -45,7 +45,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     evolve->GenerateOptimize(startState, true);
 
     // Compile the optimize code.
-    compile->CompileJob(manager, true);
+    compile->CompileJob(true);
 
     // Compile the optimize module.
     execute->ExecuteCompile();
@@ -109,7 +109,8 @@ void FireStarterStream::RandomState(FireStarterState& randomState)
     FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
     // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile();
+    FireStarterCompile* compile = new FireStarterCompile(manager);
+    compile->AddCompiler();
 
     // Create the execution unit.
     FireStarterExecute* execute = new FireStarterExecute(manager);
@@ -121,7 +122,7 @@ void FireStarterStream::RandomState(FireStarterState& randomState)
     evolve->RandomState(randomState, bestState, true);
 
     // Compile the evolved program.
-    compile->CompileJob(manager, true);
+    compile->CompileJob(true);
 
     // Execute the state.
     execute->ExecuteEvolve(true);
@@ -181,7 +182,8 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
         // Create the multi-process compiler.
-        FireStarterCompile* compile = new FireStarterCompile(manager, server, 1);
+        FireStarterCompile* compile = new FireStarterCompile(manager, server);
+        compile->AddCompiler();
 
         // Create the execution unit.
         FireStarterExecute* execute = new FireStarterExecute(manager);
@@ -202,7 +204,8 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
             evolve->RandomState(evolveState, m_streamBestState, true);
 
             // Compile the evolved program.
-            compile->CompileJob(manager, true);
+            // Note: This does nothing when using a multiprocess server.
+            compile->CompileJob(true);
 
             // Execute the state.
             execute->ExecuteEvolve(true);
@@ -250,8 +253,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
         unsigned int numStates = evolveSettings.m_seeds;
-        evolveSettings.m_units = MIN(MAX(evolveSettings.m_units, evolveSettings.m_processes), numStates);
-        evolveSettings.m_processes = MIN(evolveSettings.m_processes, numStates);
+        evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
         std::vector<FireStarterState> allStates(numStates);
         TestedInstructions testedInstructions;
         SimpleTimer streamTimer;
@@ -260,8 +262,10 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager(numStates);
 
-        // Create the multi-process compiler.
-        FireStarterCompile* compile = new FireStarterCompile(manager, server, evolveSettings.m_processes);
+        // Create a multi-process compiler for each unit.
+        FireStarterCompile* compile = new FireStarterCompile(manager, server);
+        for (unsigned int i = 0; i < evolveSettings.m_units; i++)
+            compile->AddCompiler();
 
         // Create the evolution code generator.
         FireStarterEvolve* evolve = new FireStarterEvolve(manager);
@@ -269,7 +273,6 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Create the execution units.
         std::vector<FireStarterExecute*> executionUnits;
         for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
-            // Create an evolution generator unit.
             FireStarterExecute* execute = new FireStarterExecute(manager, i);
             executionUnits.push_back(execute);
         }

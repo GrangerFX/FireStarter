@@ -8,7 +8,7 @@ class FireStarter : public SerialThread {
 private:
     FireStarterBuildSettings m_buildSettings;
     FireStarterWindow m_window;
-    FireStarterServer* m_server;
+    FireStarterServer* m_server = nullptr;
 
     void ControlRandom(void);
     void ControlEvolve(void);

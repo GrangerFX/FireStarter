@@ -29,7 +29,8 @@ private:
 
 public:
 	void CompilerFinished(FireStarterCompiler* compiler);
-	bool CompileJob(FireStarterManager* manager, bool sync);
-	FireStarterCompile(FireStarterManager* manager = nullptr, FireStarterServer* server = nullptr, size_t numProcesses = 0);
+	bool CompileJob(bool sync);
+	FireStarterCompiler* AddCompiler(void);
+	FireStarterCompile(FireStarterManager* manager = nullptr, FireStarterServer* server = nullptr);
 	~FireStarterCompile(void);
 }; // FireStarterCompile

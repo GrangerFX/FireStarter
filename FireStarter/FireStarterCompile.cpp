@@ -178,45 +178,41 @@ FireStarterCompiler::~FireStarterCompiler(void)
 
 void FireStarterCompile::CompilerFinished(FireStarterCompiler* compiler)
 {
+    // Note: This is called from another thread when the server's client process shuts down.
     // When the last compiler has finished, send a null job to terminate the other jobs.
-    unsigned int oldCompilers = m_activeCompilers;
-    unsigned int newCompilers = oldCompilers - 1;
-    while (!m_activeCompilers.compare_exchange_weak(oldCompilers, newCompilers))
+    unsigned int oldCompilers;
+    unsigned int newCompilers;
+    do {
+        oldCompilers = m_activeCompilers;
         newCompilers = oldCompilers - 1;
+    } while (!m_activeCompilers.compare_exchange_weak(oldCompilers, newCompilers));
+
+    // When the last compiler is finished, send an empty compile job to terminate any waiting threads.
     if (!newCompilers)
         m_manager->AddCompile();
 } // Finished
 
-bool FireStarterCompile::CompileJob(FireStarterManager* manager, bool sync)
+bool FireStarterCompile::CompileJob(bool sync)
 {
-    m_manager = manager;
-    if (!m_server && m_compilers[0]->IsRunning()) {
-        m_compilers[0]->CompileJob(manager, sync);
+    if (!m_server && !m_compilers.empty() && m_compilers[0]->IsRunning()) {
+        m_compilers[0]->CompileJob(m_manager, sync);
         return true;
     }
     return false;
 } // CompileJob
 
-FireStarterCompile::FireStarterCompile(FireStarterManager* manager, FireStarterServer* server, size_t numProcesses)
+FireStarterCompiler* FireStarterCompile::AddCompiler(void)
+{
+    FireStarterCompiler* compiler = new FireStarterCompiler(this, m_manager, m_server, m_compilers.size());
+    m_compilers.push_back(compiler);
+    m_activeCompilers++; // Atomic increment
+    return compiler;
+} // AddCompiler
+
+FireStarterCompile::FireStarterCompile(FireStarterManager* manager, FireStarterServer* server)
 {
     m_manager = manager;
-    if (numProcesses) {
-        m_server = server;
-        m_compilers.reserve(numProcesses);
-        for (unsigned int i = 0; i < numProcesses; i++) {
-            FireStarterCompiler* compiler = new FireStarterCompiler(this, manager, m_server);
-            m_compilers.push_back(compiler);
-            m_activeCompilers++;
-        }
-    } else {
-        m_server = nullptr;
-        size_t maxJobs = 1; // manager->GetMaxJobs();
-        for (unsigned int i = 0; i < maxJobs; i++) {
-            FireStarterCompiler* compiler = new FireStarterCompiler(this, manager);
-            m_compilers.push_back(compiler);
-            m_activeCompilers++;
-        }
-    }
+    m_server = server;
 } // FireStarterCompile
 
 FireStarterCompile::~FireStarterCompile(void)
