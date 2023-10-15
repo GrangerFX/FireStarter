@@ -211,7 +211,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
             if ((settings.m_tests > 0) || test)
                 statusString += Format("  Test=%u", test);
             if (state.PassMode() == FIRESTARTER_EVOLVE)
-                statusString += Format("  Index=%llu  Id=%llu  CopyId=%llu", state.m_index, state.m_id, state.m_copy_id);
+                statusString += Format("  Index=%llu  Id=%llu  CopyId=%llu  CopyAge=%llu", state.m_index, state.m_id, state.m_copy_id, state.m_age);
             else if (settings.m_units > 1)
                 statusString += Format("  Unit=%u", state.m_index % settings.m_units);
             statusString += Format("  Generation=%u  Age=%u  Evolution=%u", state.m_generation, state.m_generation - bestState.m_generation, state.m_evolution);
