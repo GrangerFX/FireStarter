@@ -8,6 +8,7 @@
 
 void CUDACompile::CompileOptions(std::vector<std::string>& options)
 {
+    options.clear();
 #if USE_GPU_ARCH
     // Use the primary GPU's compute architecture
     CUdevice device = 0;

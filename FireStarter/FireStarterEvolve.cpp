@@ -2,6 +2,21 @@
 #include "FireStarterCode.h"
 #include "CUDACompile.h"
 
+void FireStarterEvolve::GenerateCode(FireStarterJob* job)
+{
+    // Generate the evaluate code
+    std::string evaluateCode;
+    m_evolveGenerate->GenerateEvaluate(job->m_state, evaluateCode);
+
+    // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+    CUDACompile::CompileOptions(job->m_options);
+    job->m_programName = "FireOptimizer.cu";
+    job->m_programFunction = "Optimizer";
+    job->m_program = m_evolveOptimizeCode;
+    FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
+    m_evolveManager->AddCode(job);
+} // GenearateCode
+
 bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync)
 {
     if (m_evolveOptimizeCode.empty())
@@ -33,18 +48,9 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
             job->m_state.m_program.OptimizeRegisters();
 
             // Generate the evaluate code
-            std::string evaluateCode;
-            m_evolveGenerate->GenerateEvaluate(job->m_state, evaluateCode);
-
-            // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-            job->m_options.clear();
-            CUDACompile::CompileOptions(job->m_options);
-            job->m_programName = "FireOptimizer.cu";
-            job->m_programFunction = "Optimizer";
-            job->m_program = m_evolveOptimizeCode;
-            FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-        }
-        m_evolveManager->AddCode(job);
+            GenerateCode(job);
+        } else
+            m_evolveManager->AddCode();
     }, sync);
     return true;
 } // RandomState
@@ -118,18 +124,9 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 }
 
                 // Generate the evaluate code
-                std::string evaluateCode;
-                m_evolveGenerate->GenerateEvaluate(curState, evaluateCode);
-
-                // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-                job->m_options.clear();
-                CUDACompile::CompileOptions(job->m_options);
-                job->m_programName = "FireOptimizer.cu";
-                job->m_programFunction = "Optimizer";
-                job->m_program = m_evolveOptimizeCode;
-                FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-            }
-            m_evolveManager->AddCode(job);
+                GenerateCode(job);
+            } else
+                m_evolveManager->AddCode();
         }
     }, sync);
     return true;
@@ -150,17 +147,7 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool
             job->m_state.m_optimizePass = true;
 
             // Generate the evaluate code
-            std::string evaluateCode;
-            m_evolveGenerate->GenerateEvaluate(job->m_state, evaluateCode);
-
-            // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-            job->m_options.clear();
-            CUDACompile::CompileOptions(job->m_options);
-            job->m_programName = "FireOptimizer.cu";
-            job->m_programFunction = "Optimizer";
-            job->m_program = m_evolveOptimizeCode;
-            FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
-            m_evolveManager->AddCode(job);
+            GenerateCode(job);
         }
     }, sync);
     return true;

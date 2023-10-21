@@ -7,7 +7,7 @@
 #define FIRESTARTER_REGISTERS       29
 #define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_OUTPUT_HASH     0
-#define FIRESTARTER_EVOLVE_SEED     1
+#define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
 #define FIRESTARTER_START_TEST      0          // The starting test index.
 #define FIRESTARTER_STREAMS         4          // Maximum number of streams

@@ -15,6 +15,8 @@ private:
 	size_t m_evolveIndex = 0;
 	unsigned long long m_evolveCount = 0;
 
+	void GenerateCode(FireStarterJob* job);
+
 public:
 	bool RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync = false);
 	bool EvolveStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation, bool sync = true);
