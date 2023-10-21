@@ -50,6 +50,7 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
             // Generate the evaluate code
             GenerateCode(job);
         } else
+            // Pass along the null job to cause the next stage to exit.
             m_evolveManager->AddCode();
     }, sync);
     return true;
@@ -126,6 +127,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 // Generate the evaluate code
                 GenerateCode(job);
             } else
+                // Pass along the null job to cause the next stage to exit.
                 m_evolveManager->AddCode();
         }
     }, sync);
