@@ -134,25 +134,26 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
     return true;
 } // EvolveStates
 
-bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState, bool sync)
+bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState)
 {
-    if (m_evolveOptimizeCode.empty())
-        return false;
+    bool result = false;
+    if (!m_evolveOptimizeCode.empty()) {
+        // Must copy the intitState pointer in case it becomes invalid when the code below is called.
+        FireStarterState state(initState);
+        DispatchSync([this, state, &result] {
+            FireStarterJob* job = m_evolveManager->GetFree();
+            if (job) {
+                // The state already contains the evolved and optimized code.
+                job->m_state = state;
+                job->m_state.m_optimizePass = true;
 
-    // Must copy the intitState pointer in case it becomes invalid when the code below is called.
-    FireStarterState state(initState); 
-    Dispatch([this, state] {
-        FireStarterJob* job = m_evolveManager->GetFree();
-        if (job) {
-            // The state already contains the evolved and optimized code.
-            job->m_state = state;
-            job->m_state.m_optimizePass = true;
-
-            // Generate the evaluate code
-            GenerateCode(job);
-        }
-    }, sync);
-    return true;
+                // Generate the evaluate code
+                GenerateCode(job);
+                result = true;
+            }
+        });
+    }
+    return result;
 } // GenerateOptimize
 
 FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterEvolve%zu", index))

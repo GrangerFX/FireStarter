@@ -42,40 +42,40 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
     // Generate the optimize code.
-    evolve->GenerateOptimize(startState, true);
+    if (evolve->GenerateOptimize(startState)) {
+        // Compile the optimize code.
+        compile->CompileJob(true);
 
-    // Compile the optimize code.
-    compile->CompileJob(true);
+        // Compile the optimize module.
+        execute->ExecuteCompile();
 
-    // Compile the optimize module.
-    execute->ExecuteCompile();
+        // Initialize the population data
+        execute->ExecuteInitPopulation(true);
 
-    // Initialize the population data
-    execute->ExecuteInitPopulation(true);
+        // Test one more more random seeds.
+        size_t firstTest = 0;
+        size_t lastTest = 0;
+        if (startState.m_test)
+            firstTest = lastTest = startState.m_test;
+        else if (settings.m_tests) {
+            firstTest = 1;
+            lastTest = settings.m_tests;
+        }
+        for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
+            // Create the state and execution unit.
+            FireStarterState optimizeState(startState);
+            optimizeState.m_test = test;
 
-    // Test one more more random seeds.
-    size_t firstTest = 0;
-    size_t lastTest = 0;
-    if (startState.m_test)
-        firstTest = lastTest = startState.m_test;
-    else if (settings.m_tests) {
-        firstTest = 1;
-        lastTest = settings.m_tests;
-    }
-    for (size_t test = firstTest; (test <= lastTest) && !WillTerminate(); test++) {
-        // Create the state and execution unit.
-        FireStarterState optimizeState(startState);
-        optimizeState.m_test = test;
+            // Loop until the the completion condition or the host program is quit.
+            while (!WillTerminate()) {
+                // Optimize the current generation.
+                execute->ExecuteOptimize(optimizeState, (unsigned int)optimizeState.m_generation, false);
 
-        // Loop until the the completion condition or the host program is quit.
-        while (!WillTerminate()) {
-            // Optimize the current generation.
-            execute->ExecuteOptimize(optimizeState, (unsigned int)optimizeState.m_generation, false);
-
-            // Update the results in the UI.
-            if (complete->CompleteState(bestState, optimizeState))
-                break;
-            optimizeState.m_generation++;
+                // Update the results in the UI.
+                if (complete->CompleteState(bestState, optimizeState))
+                    break;
+                optimizeState.m_generation++;
+            }
         }
     }
 
@@ -320,38 +320,39 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
             // Optimize the evolved state.
             // Generate the optimize code.
-            evolve->GenerateOptimize(optimizeState);
+            if (evolve->GenerateOptimize(optimizeState)) {
 
-            // Compile the optimize module.
-            FireStarterExecute* executeOptimize = executionUnits[0];
-            executeOptimize->ExecuteCompile();
+                // Compile the optimize module.
+                FireStarterExecute* executeOptimize = executionUnits[0];
+                executeOptimize->ExecuteCompile();
 
-            // Initialize the population data
-            executeOptimize->ExecuteInitPopulation(true);
+                // Initialize the population data
+                executeOptimize->ExecuteInitPopulation(true);
 
-            // Loop until the the optimize completion condition or the host program is quit.
-            FireStarterState bestOptimizeState(optimizeState);
-            unsigned int pass = 0;
-            while (!WillTerminate()) {
-                // Optimize the current generation.
-                executeOptimize->ExecuteOptimize(optimizeState, pass, false);
+                // Loop until the the optimize completion condition or the host program is quit.
+                FireStarterState bestOptimizeState(optimizeState);
+                unsigned int pass = 0;
+                while (!WillTerminate()) {
+                    // Optimize the current generation.
+                    executeOptimize->ExecuteOptimize(optimizeState, pass, false);
 
-                // Update the results in the UI.
-                if (complete->CompleteState(bestOptimizeState, optimizeState))
-                    break;
+                    // Update the results in the UI.
+                    if (complete->CompleteState(bestOptimizeState, optimizeState))
+                        break;
 
-                // Next generation.
-                optimizeState.m_generation++;
-                pass++;
+                    // Next generation.
+                    optimizeState.m_generation++;
+                    pass++;
+                }
+
+                // Save the best optimized state for all streams.
+                complete->SaveBest(bestOptimizeState);
+
+                // Output the optimize results.
+                resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
+                if (bestOptimizeState.m_maxResult < 0.000001f)
+                    resultText += " *******";
             }
-
-            // Save the best optimized state for all streams.
-            complete->SaveBest(bestOptimizeState);
-
-            // Output the optimize results.
-            resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
-            if (bestOptimizeState.m_maxResult < 0.000001f)
-                resultText += " *******";
 #endif
             resultText += "\n";
             FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()), resultText);
