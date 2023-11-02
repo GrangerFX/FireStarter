@@ -208,7 +208,7 @@ public:
             for (unsigned int i = 0; i < numInstructions; i++)
                 m_program.EvolvedInstruction(i) = srcState.m_program.EvolvedInstruction(i);
             RandomInstruction(seed);
-            m_maxResult = srcState.m_maxResult;
+//            m_maxResult = srcState.m_maxResult;
             return;
         }
 
