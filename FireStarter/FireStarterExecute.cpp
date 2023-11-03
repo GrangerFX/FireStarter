@@ -167,7 +167,6 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     FireStarterResults* results = state.Results();
     float oldResult = state.m_maxResult;
     bool validResult = true;
-    bool needsResort = false;
     float variationMax = 0.0f;
     unsigned int passes = settings.m_passes;
     unsigned int generations = settings.m_generations;
@@ -186,9 +185,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             variationMax = MAX(variationMax, variationResult);
 
             // Optimization: If the variation result is worse, skip the rest of the variations.
-            if (variationMax < oldResult)
-                needsResort = true;
-            else {
+            if (variationMax >= oldResult) {
                 state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
                 validResult = false;
             }
@@ -197,7 +194,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     }
 
     // Resort the variation order with the highest invalidation count first.
-    if (needsResort) {
+    if (validResult) {
         for (unsigned int v = 0; v < variations - 1; v++) {
             unsigned int variation = state.m_variationOrder[v];
             unsigned int count = state.m_variationCount[variation];

@@ -80,6 +80,7 @@ void FireStarterState::SaveState(std::string& code) const
     code += Format("    state.m_seed = %llu;\r\n", m_seed);
     code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
     code += Format("    state.m_optimizePass = %s;\r\n", m_optimizePass ? "true" : "false");
+    code += Format("    state.m_optimizeValid = %s;\r\n", m_optimizeValid ? "true" : "false");
     code += "} // LoadState\r\n";
 } // SaveState
 
@@ -165,6 +166,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_seed = 0;
     m_maxResult = settings.m_startResult;
     m_optimizePass = false;
+    m_optimizeValid = false;
 
     InitGenerationSeed();
     InitResults();

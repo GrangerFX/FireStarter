@@ -75,7 +75,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     // Get the result.
     static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
     bestStateMutex.lock();
-    bool update = state.m_maxResult < bestState.m_maxResult;
+    bool update = state.m_optimizeValid && (state.m_maxResult < bestState.m_maxResult);
     if (update)
         // Update the best state.
         bestState = state;
@@ -187,7 +187,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             m_manager->AddFree(job);
 
             result = !CompleteResults(bestState, newState, oldState.m_maxResult);
-            if ((!newState.m_generation) || (newState.m_maxResult < oldState.m_maxResult)) {
+            if ((!newState.m_generation) || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
                 oldState = newState;
                 oldState.m_evolution++;
                 oldState.m_age = 0;
@@ -232,7 +232,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                 FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[i];
                 result &= !CompleteResults(bestState, newState, oldState.m_maxResult);
-                if (!newState.m_generation || (newState.m_maxResult < oldState.m_maxResult)) {
+                if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
                     oldState = newState;
                     oldState.m_evolution++;
                     oldState.m_age = 0;
