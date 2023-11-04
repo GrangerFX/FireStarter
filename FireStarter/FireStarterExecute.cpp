@@ -178,8 +178,10 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             float variationResult = 0.0f;
             for (unsigned int pass = 0; pass < passes; pass++) {
                 variationResult = OptimizeGenerations(state, generations, pass, variation);
-                if (variationResult > FIRESTARTER_EVOLVE_SKIP * state.VariationPassResult(variation, pass))
+                if (variationResult > FIRESTARTER_EVOLVE_SKIP * state.VariationPassResult(variation, pass)) {
+                    validResult = false;
                     break;
+                }
                 state.VariationPassResult(variation, pass) = variationResult;
             }
             variationMax = MAX(variationMax, variationResult);
@@ -213,6 +215,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
 
     // Set the state's max result.
     state.m_maxResult = validResult ? variationMax : MAX(variationMax, oldResult);
+    state.m_optimizeValid = validResult;
     return validResult;
 } // Optimize
 

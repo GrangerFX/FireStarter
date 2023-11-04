@@ -8,7 +8,7 @@
 #if TEST_OUTPUT
 #define TESTPRINTF printf
 #else
-#define TESTPRINTF
+#define TESTPRINTF noprintf
 #endif
 
 static const std::string& GetModulePath(void)
