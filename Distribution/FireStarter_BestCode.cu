@@ -5,11 +5,11 @@
 #include "CUDADefines.h"
 
 // EVALUATE //
-// Run date: 11/04/23 10:51:36 Pacific Daylight Time
-// Run duration = 6480.126486 seconds
-// Run generation = 242
-// Run evolution = 32
-// Run result = 0.00000691
+// Run date: 11/04/23 12:43:52 Pacific Daylight Time
+// Run duration = 20985.291063 seconds
+// Run generation = 245
+// Run evolution = 16
+// Run result = 0.00000048
 // Run variations = 3
 // Run samples = 15
 // Run instructions = 32
@@ -38,30 +38,30 @@
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-// Variation: 0  result = 0.00000104
+// Variation: 0  result = 0.00000003
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -3.141593f;
-    data->d[1] = 0.112403f;
-    data->d[2] = -0.046706f;
-    data->d[3] = -0.131752f;
-    data->d[4] = 0.889723f;
-    data->d[5] = -0.005475f;
-    data->d[6] = 1.094809f;
-    data->d[7] = 0.949309f;
-    data->d[8] = 0.949770f;
-    data->d[9] = -2.530382f;
-    data->d[10] = 1.537983f;
-    data->d[11] = 5.029068f;
-    data->d[12] = 0.061088f;
-    data->d[13] = -5.988616f;
-    data->d[14] = 2.999099f;
-    data->d[15] = -1.258527f;
-    data->d[16] = -0.000300f;
-    data->d[17] = 2.207225f;
-    data->d[18] = 3.630664f;
-    data->d[19] = 0.046706f;
+    data->d[0] = -2.846789f;
+    data->d[1] = -0.589607f;
+    data->d[2] = -0.041073f;
+    data->d[3] = -1.319622f;
+    data->d[4] = -0.000000f;
+    data->d[5] = -2.356978f;
+    data->d[6] = 1.659530f;
+    data->d[7] = -0.300550f;
+    data->d[8] = -0.895685f;
+    data->d[9] = -0.235747f;
+    data->d[10] = -3.671488f;
+    data->d[11] = 1.615765f;
+    data->d[12] = -2.266123f;
+    data->d[13] = 2.786639f;
+    data->d[14] = 0.523629f;
+    data->d[15] = -0.672652f;
+    data->d[16] = -0.066816f;
+    data->d[17] = -0.079246f;
+    data->d[18] = -0.125609f;
+    data->d[19] = 0.000000f;
     data->d[20] = 0.000000f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
@@ -71,33 +71,33 @@ inline void LoadVariation0(FireStarterResult* result)
     data->d[26] = 0.000000f;
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
-    *(result->MinResult()) = 0.000001f;
+    *(result->MinResult()) = 0.000000f;
 } // LoadVariation0
 
-// Variation: 1  result = 0.00000167
+// Variation: 1  result = 0.00000006
 inline void LoadVariation1(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -3.090636f;
-    data->d[1] = 0.187883f;
-    data->d[2] = -0.377318f;
-    data->d[3] = -0.086634f;
-    data->d[4] = -0.600893f;
-    data->d[5] = 0.019642f;
-    data->d[6] = -1.137230f;
-    data->d[7] = -1.841764f;
-    data->d[8] = 1.022052f;
-    data->d[9] = 1.236449f;
-    data->d[10] = -1.982926f;
-    data->d[11] = 1.917947f;
-    data->d[12] = -0.241458f;
-    data->d[13] = -7.666340f;
-    data->d[14] = 3.051257f;
-    data->d[15] = -13.855042f;
-    data->d[16] = 0.003915f;
-    data->d[17] = -0.268647f;
-    data->d[18] = -11.811447f;
-    data->d[19] = 0.259169f;
+    data->d[0] = -2.089627f;
+    data->d[1] = -2.002063f;
+    data->d[2] = -0.033613f;
+    data->d[3] = -1.108685f;
+    data->d[4] = -0.000000f;
+    data->d[5] = 0.626015f;
+    data->d[6] = -0.554233f;
+    data->d[7] = 2.466864f;
+    data->d[8] = 0.411558f;
+    data->d[9] = -0.708124f;
+    data->d[10] = -0.261532f;
+    data->d[11] = 6.564789f;
+    data->d[12] = -0.460804f;
+    data->d[13] = -0.736762f;
+    data->d[14] = 0.093585f;
+    data->d[15] = -0.087683f;
+    data->d[16] = 1.767803f;
+    data->d[17] = -0.098924f;
+    data->d[18] = -0.197259f;
+    data->d[19] = 0.000000f;
     data->d[20] = 0.000000f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
@@ -107,33 +107,33 @@ inline void LoadVariation1(FireStarterResult* result)
     data->d[26] = 0.000000f;
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
-    *(result->MinResult()) = 0.000002f;
+    *(result->MinResult()) = 0.000000f;
 } // LoadVariation1
 
-// Variation: 2  result = 0.00000691
+// Variation: 2  result = 0.00000048
 inline void LoadVariation2(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -2.617997f;
-    data->d[1] = -0.076335f;
-    data->d[2] = 1.728543f;
-    data->d[3] = -0.519920f;
-    data->d[4] = 0.476933f;
-    data->d[5] = 0.428622f;
-    data->d[6] = -1.362729f;
-    data->d[7] = -2.236918f;
-    data->d[8] = -0.608571f;
-    data->d[9] = 23.577864f;
-    data->d[10] = -6.314373f;
-    data->d[11] = -0.033461f;
-    data->d[12] = 18.074175f;
-    data->d[13] = -2.775022f;
-    data->d[14] = -10.318760f;
-    data->d[15] = 4.561727f;
-    data->d[16] = -21.198448f;
-    data->d[17] = -0.013019f;
-    data->d[18] = 27.549665f;
-    data->d[19] = -1.204943f;
+    data->d[0] = -2.358336f;
+    data->d[1] = -0.519316f;
+    data->d[2] = -0.050126f;
+    data->d[3] = -0.869071f;
+    data->d[4] = -0.000000f;
+    data->d[5] = 2.625697f;
+    data->d[6] = -1.064833f;
+    data->d[7] = -0.913459f;
+    data->d[8] = -1.145499f;
+    data->d[9] = 0.030068f;
+    data->d[10] = 0.877567f;
+    data->d[11] = -1.560669f;
+    data->d[12] = -4.012474f;
+    data->d[13] = 0.064843f;
+    data->d[14] = 1.041523f;
+    data->d[15] = 0.413563f;
+    data->d[16] = -0.095619f;
+    data->d[17] = 0.179580f;
+    data->d[18] = 0.416400f;
+    data->d[19] = 0.000000f;
     data->d[20] = 0.000000f;
     data->d[21] = 0.000000f;
     data->d[22] = 0.000000f;
@@ -143,43 +143,43 @@ inline void LoadVariation2(FireStarterResult* result)
     data->d[26] = 0.000000f;
     data->d[27] = 0.000000f;
     data->d[28] = 0.000000f;
-    *(result->MinResult()) = 0.000007f;
+    *(result->MinResult()) = 0.000000f;
 } // LoadVariation2
 
 inline float Evaluate(FireStarterData data, float n)
 {
     n = data.d[0] += n;
-    n *= data.d[1];
-    n = data.d[2] += n;
-    n *= data.d[3];
-    n *= data.d[4];
-    n = data.d[5] += n;
-    n *= data.d[0];
-    n = data.d[6] += n;
-    n = data.d[7] *= n;
-    n = data.d[6] *= n;
-    n += data.d[8];
-    n = data.d[7] *= n;
-    n += data.d[9];
-    n = data.d[7] += n;
-    n = data.d[10] *= n;
-    n *= data.d[11];
-    n *= data.d[7];
-    n += data.d[12];
-    n = data.d[10] += n;
-    n = data.d[13] += n;
-    n = data.d[14] += n;
-    n += data.d[15];
-    n += data.d[10];
-    n *= data.d[16];
-    n += data.d[13];
-    n *= data.d[17];
-    n *= data.d[6];
-    n += data.d[14];
-    n += data.d[18];
+    n = data.d[1] += n;
+    n = data.d[0] += n;
+    n = data.d[2] *= n;
+    n = data.d[3] *= n;
+    n = data.d[4] += n;
     n *= data.d[5];
-    n += data.d[19];
-    n += data.d[2];
+    n *= data.d[4];
+    n += data.d[6];
+    n = data.d[7] *= n;
+    n = data.d[8] *= n;
+    n = data.d[8] *= n;
+    n *= data.d[0];
+    n = data.d[3] += n;
+    n *= data.d[2];
+    n = data.d[8] += n;
+    n *= data.d[9];
+    n += data.d[7];
+    n += data.d[10];
+    n *= data.d[8];
+    n *= data.d[11];
+    n *= data.d[12];
+    n *= data.d[3];
+    n = data.d[1] += n;
+    n += data.d[1];
+    n *= data.d[13];
+    n *= data.d[14];
+    n += data.d[15];
+    n = data.d[16] *= n;
+    n += data.d[17];
+    n += data.d[18];
+    n += data.d[16];
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 // END //
