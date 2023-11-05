@@ -85,16 +85,26 @@ void FireStarterProgram::RandomInstruction(unsigned long long& seed, unsigned in
     EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomInstruction
 
-void FireStarterProgram::CopyInstructions(const FireStarterProgram& srcProgram)
+bool FireStarterProgram::CopyInstructions(const FireStarterProgram& srcProgram)
 {
-    memcpy(m_evolvedInstructionsData.data(), srcProgram.EvolvedInstructionsData().data(), InstructionsSize());
-    memcpy(m_optimizedInstructionsData.data(), srcProgram.OptimizedInstructionsData().data(), InstructionsSize());
+    size_t instructionsSize = InstructionsSize();
+    if ((EvolvedInstructionsData().size() == instructionsSize) && (OptimizedInstructionsData().size() == instructionsSize) && (srcProgram.EvolvedInstructionsData().size() == instructionsSize) && (srcProgram.OptimizedInstructionsData().size() == instructionsSize)) {
+        memcpy(m_evolvedInstructionsData.data(), srcProgram.EvolvedInstructionsData().data(), instructionsSize);
+        memcpy(m_optimizedInstructionsData.data(), srcProgram.OptimizedInstructionsData().data(), instructionsSize);
+        return true;
+    }
+    return false;
 } // CopyInstructions
 
-void FireStarterProgram::LoadInstructions(const FireStarterInstructions* instructions)
+bool FireStarterProgram::LoadInstructions(const FireStarterInstructions* instructions)
 {
-    memcpy(m_evolvedInstructionsData.data(), instructions, InstructionsSize());
-    memcpy(m_optimizedInstructionsData.data(), instructions, InstructionsSize());
+    size_t instructionsSize = InstructionsSize();
+    if ((EvolvedInstructionsData().size() == instructionsSize) && (OptimizedInstructionsData().size() == instructionsSize)) {
+        memcpy(m_evolvedInstructionsData.data(), instructions, instructionsSize);
+        memcpy(m_optimizedInstructionsData.data(), instructions, instructionsSize);
+        return true;
+    }
+    return false;
 } // LoadInstructions
 
 void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::string& code, const std::string &prefix, const std::string& postfix)
@@ -112,8 +122,8 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
     code += prefix + Format("evolveSeed = %llu", settings.m_evolveSeed) + postfix + "\r\n";
     code += prefix + Format("optimizeSeed = %llu", settings.m_optimizeSeed) + postfix + "\r\n";
-    code += prefix + Format("seeds = %u", settings.m_seeds) + postfix + "\r\n";
     code += prefix + Format("tests = %u", settings.m_tests) + postfix + "\r\n";
+    code += prefix + Format("seeds = %u", settings.m_seeds) + postfix + "\r\n";
     code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
     code += prefix + Format("population = %u", settings.m_population) + postfix + "\r\n";
     code += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";

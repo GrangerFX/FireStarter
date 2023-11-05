@@ -70,7 +70,7 @@ bool FireStarterComplete::LoadSolutionTargetCode(void)
     return true;
 } // LoadSolutionTargetCode
 
-bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, float oldResult)
+bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, float oldResult, float newResult)
 {
     // Get the result.
     static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
@@ -120,7 +120,6 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
             m_generationTime = (m_generationTime * m_resultsCount + (duration - m_resultsTime)) / (m_resultsCount + 1);
         m_resultsTime = duration;
     } else {
-#if 1
         if (m_resultsTime == 0.0) {
             m_resultsCount = 0;
             m_totalResult = 0.0;
@@ -132,26 +131,13 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
             m_generationTime = (duration - m_resultsTime) / settings.m_units;
             m_resultsTime = duration;
         }
-#else
-        if (!state.m_generation) {
-            m_resultsCount = 0;
-            m_totalResult = 0.0;
-            m_resultsGeneration = 0;
-            m_generationTime = 0.0;
-            m_resultsTime = duration;
-        } else if (state.m_generation != m_resultsGeneration) {
-            m_resultsGeneration = state.m_generation;
-            m_generationTime = (duration - m_resultsTime) / settings.m_units;
-            m_resultsTime = duration;
-        }
-#endif
     }
 
     // Update the render status after every pass.
     m_totalResult += result;
     m_resultsCount++;
     double average = m_totalResult / m_resultsCount;
-    m_fireShow.RenderStatus(displayState, state, duration, m_generationTime, oldResult, average, m_testError);
+    m_fireShow.RenderStatus(displayState, state, generation, duration, m_generationTime, oldResult, newResult, average, m_testError);
 
     // Has the completion condition been met?
     return state.m_generation - displayState.m_generation < settings.m_attempts;
@@ -166,7 +152,7 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
         FireStarterJob* job = m_manager->GetComplete();
         if (job) {
             // Update the best state and display the results.
-            CompleteResults(bestState, job->m_state);
+            CompleteResults(bestState, job->m_state, job->m_state.m_generation, job->m_state.m_maxResult, job->m_state.m_maxResult);
             m_manager->AddFree(job);
             result = true;
         }
@@ -186,22 +172,22 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             FireStarterState newState = job->m_state;
             m_manager->AddFree(job);
 
-            result = !CompleteResults(bestState, newState, oldState.m_maxResult);
-            if ((!newState.m_generation) || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
+            float oldResult = oldState.m_maxResult;
+            float newResult = newState.m_maxResult;
+            if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
                 oldState = newState;
                 oldState.m_evolution++;
-                oldState.m_age = 0;
-            } else
-                oldState.m_age++;
+            }
+            result = !CompleteResults(bestState, oldState, newState.m_generation, oldResult, newResult);
         }
     }, sync);
     return result;
 } // CompleteState
 
-bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, size_t generation, bool sync)
+bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, bool sync)
 {
     bool result = true;
-    Dispatch([this, &allStates, generation, &result] {
+    Dispatch([this, &allStates, &result] {
         // Sort the states as they are received.
         size_t numStates = allStates.size();
         FireStarterState bestState = allStates[0];
@@ -231,14 +217,14 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[i];
-                result &= !CompleteResults(bestState, newState, oldState.m_maxResult);
+                float oldResult = oldState.m_maxResult;
+                float newResult = newState.m_optimizeValid ? newState.m_maxResult : 0.0f;
                 if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
                     oldState = newState;
                     oldState.m_evolution++;
-                    oldState.m_age = 0;
                     found = true;
-                } else
-                    oldState.m_age++;
+                }
+                result &= !CompleteResults(bestState, oldState, newState.m_generation, oldResult, newResult);
             }
 
             // Sort the states, least maximum result first.
@@ -247,8 +233,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                     size_t min = i;
                     float minResult = allStates[i].m_maxResult;
                     for (size_t j = i + 1; j < numStates; j++) {
-                        FireStarterState& currentState = allStates[j];
-                        float currentResult = currentState.m_maxResult;
+                        float currentResult = allStates[j].m_maxResult;
                         if (currentResult < minResult) {
                             minResult = currentResult;
                             min = j;

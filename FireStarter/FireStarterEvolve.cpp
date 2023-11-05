@@ -93,7 +93,8 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // Randomly select an index to copy that is better (lower) than the current index.
                         size_t copyIndex = index ? RANDOMMOD(seed, index) : 0;
 
-                        // Copy the state and randomize.
+                        // Copy the program and randomize.
+                        curState.m_copy_id = allStates[copyIndex].m_id;
                         curState.m_program = allStates[copyIndex].m_program;
 
                         // Randomize one instruction per 10 attempts.
@@ -104,6 +105,9 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // Optimize the program registers.
                         curState.m_program.OptimizeRegisters();
                         count++;
+                        if (index == 63) {
+                            printf("Evolve %llu:  Generation=%llu  Count=%u  id=%llu  copy=%llu\n", index, generation, count, curState.m_id, curState.m_copy_id);
+                        }
                    } while (testedInstructions->count(curState.m_program.OptimizedInstructionsData()));
 
                     // Keep track of the tested instructions.

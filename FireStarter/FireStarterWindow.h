@@ -127,11 +127,11 @@ public:
             });
     } // DisplayImage
 
-    inline void DisplayText(const std::string& string)
+    inline void DisplayText(const std::string& string, bool sync = false)
     {
-        SerialThread::DispatchMainAsync([this, string] {
+        SerialThread::DispatchMain([this, string] {
             SetWindowText((HWND)m_window, string.c_str());
-        });
+        }, sync);
     } // DisplayText
 
     inline FireStarterWindow(const FireStarterWindow& other)

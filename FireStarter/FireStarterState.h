@@ -19,7 +19,6 @@ private:
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
-        m_age = other.m_age;
         m_index = other.m_index;
         m_id = other.m_id;
         m_copy_id = other.m_copy_id;
@@ -37,7 +36,6 @@ public:
     std::vector<unsigned int> m_variationCount;
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
-    unsigned long long m_age = 0;
     unsigned long long m_index = 0;
     unsigned long long m_id = 0;
     unsigned long long m_copy_id = 0;
@@ -199,69 +197,7 @@ public:
     inline void CopyInstructions(const FireStarterState& srcState)
     {
         m_program.CopyInstructions(srcState.m_program);
-     } // CopyInstructions
-
-    inline void EvolveInstructions(const FireStarterState& srcState, unsigned int mode, unsigned long long& seed)
-    {
-        unsigned int numInstructions = Settings().m_instructions;
-        
-        // Copy evolution.
-        if (mode == FIRESTARTER_EVOLVE_MODE_COPY) {
-            for (unsigned int i = 0; i < numInstructions; i++)
-                m_program.EvolvedInstruction(i) = srcState.m_program.EvolvedInstruction(i);
-            RandomInstruction(seed);
-            m_maxResult = srcState.m_maxResult;
-            return;
-        }
-
-        // Random evolution.
-        if (mode == FIRESTARTER_EVOLVE_MODE_RANDOM) {
-            RandomProgram(seed);
-            return;
-        }
-
-        // Evolve a range of instructions.
-        unsigned int startCross, endCross, shiftCross;
-        switch (mode) {
-            case FIRESTARTER_EVOLVE_MODE_COPY:
-                startCross = 0;
-                endCross = numInstructions;
-                shiftCross = 0;
-                break;
-            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_FIRST:
-                startCross = 0;
-                endCross = RANDOMMOD(seed, numInstructions) + 1;
-                shiftCross = 0;
-                break;
-            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_MIDDLE:
-                startCross = RANDOMMOD(seed, numInstructions);
-                endCross = startCross + RANDOMMOD(seed, numInstructions) / 2 + 1;
-                if (endCross > numInstructions)
-                    endCross = numInstructions;
-                shiftCross = 0;
-                break;
-            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_LAST:
-                startCross = RANDOMMOD(seed, numInstructions);
-                endCross = numInstructions;
-                shiftCross = 0;
-                break;
-            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_WRAP:
-                startCross = RANDOMMOD(seed, numInstructions);
-                endCross = startCross + RANDOMMOD(seed, numInstructions) + 1;
-                shiftCross = 0;
-                break;
-            case FIRESTARTER_EVOLVE_MODE_CROSSOVER_RANDOM:
-                startCross = RANDOMMOD(seed, numInstructions);
-                endCross = startCross + RANDOMMOD(seed, numInstructions) + 1;
-                shiftCross = RANDOMMOD(seed, numInstructions);
-                break;
-        }
-        for (unsigned int i = startCross; i < endCross; i++) {
-            unsigned int srcIndex = i % numInstructions;
-            unsigned int dstIndex = (i + shiftCross) % numInstructions;
-            m_program.EvolvedInstruction(dstIndex) = srcState.m_program.EvolvedInstruction(srcIndex);
-        }
-    } // EvolveInstructions
+    } // CopyInstructions
 
     inline void RandomProgram(void)
     {

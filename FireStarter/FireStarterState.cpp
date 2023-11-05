@@ -72,7 +72,6 @@ void FireStarterState::SaveState(std::string& code) const
     code += "    LoadProgram(state.m_program);\r\n";
     code += Format("    state.m_generation = %llu;\r\n", m_generation);
     code += Format("    state.m_evolution = %llu;\r\n", m_evolution);
-    code += Format("    state.m_age = %llu;\r\n", m_age);
     code += Format("    state.m_index = %llu;\r\n", m_index);
     code += Format("    state.m_id = %llu;\r\n", m_id);
     code += Format("    state.m_copy_id = %llu;\r\n", m_copy_id);
@@ -158,7 +157,6 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
 
     m_generation = 0;
     m_evolution = 0;
-    m_age = 0;
     m_index = index;
     m_id = index;
     m_copy_id = index;

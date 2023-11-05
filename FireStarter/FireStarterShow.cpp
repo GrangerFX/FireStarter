@@ -127,124 +127,109 @@ void FireStarterShow::FireSolution(bool sync)
     }, sync);
 } // FireSolution
 
-void FireStarterShow::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double oldResult, double average, double testError, bool sync)
+void FireStarterShow::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double oldResult, double newResult, double average, double testError, bool sync)
 {
-    DispatchSync([this, bestState, state, runTime, generationTime, oldResult, average, testError] {
-        // Create the CUDA device text.
-        static std::string cudaText;
-        if (cudaText.empty()) {
-            CUDAContext::CUDAText(cudaText);
-            cudaText += "\r\n";
+    // Create the CUDA device text.
+    static std::string cudaText;
+    if (cudaText.empty()) {
+        CUDAContext::CUDAText(cudaText);
+        cudaText += "\r\n";
+    }
+
+    // Create the settings text.
+    const FireStarterSettings& settings = state.Settings();
+    static std::string settingsText;
+    if (settingsText.empty()) {
+        FireStarterProgram::SettingsText(settings, settingsText);
+        settingsText += "\r\n";
+    }
+
+    // Copy FireStarterSettings.h
+    static std::string settingsPath;
+    if (settingsPath.empty()) {
+        const std::string settingsFileName = "FireStarterSettings.h";
+        settingsPath = Format("Logs\\%s_%s", FileNameDate().c_str(), settingsFileName.c_str());
+        std::string settingsCode;
+        if (FireStarterCode::LoadCode(settingsFileName, settingsCode))
+            FireStarterCode::SaveCode(settingsPath, settingsCode);
+    }
+
+    // Create the log file.
+    unsigned int test = (unsigned int)state.m_test;
+    std::string logPath;
+    if (((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE)) && (settings.m_tests > 0)) {
+        static std::vector<std::string> logFilePaths;
+        if (logFilePaths.empty())
+            logFilePaths.resize(FIRESTARTER_START_TEST + settings.m_tests);
+        if (logFilePaths[test].empty()) {
+            logFilePaths[test] = Format("Logs\\%s_%s_%d.txt", FileNameDate().c_str(), settings.Mode(), test);
+            Dispatch([test] {
+                FireStarterCode::AppendCode(logFilePaths[test], cudaText);
+                FireStarterCode::AppendCode(logFilePaths[test], settingsText);
+            }, sync);
         }
-
-        // Create the settings text.
-        const FireStarterSettings& settings = state.Settings();
-        static std::string settingsText;
-        if (settingsText.empty()) {
-            FireStarterProgram::SettingsText(settings, settingsText);
-            settingsText += "\r\n";
-        }
-
-        // Copy FireStarterSettings.h
-        static std::string settingsPath;
-        if (settingsPath.empty()) {
-            const std::string settingsFileName = "FireStarterSettings.h";
-            settingsPath = Format("Logs\\%s_%s", FileNameDate().c_str(), settingsFileName.c_str());
-            std::string settingsCode;
-            if (FireStarterCode::LoadCode(settingsFileName, settingsCode))
-                FireStarterCode::SaveCode(settingsPath, settingsCode);
-        }
-
-#if FIRESTARTER_OUTPUT_HASH
-        // Create the hash file.
-        static std::string hashFilePath;
-        if (hashFilePath.empty()) {
-            hashFilePath = Format("Logs\\%s_Hash.txt", FileNameDate().c_str());
-            FireStarterCode::AppendCode(hashFilePath, cudaText);
-            FireStarterCode::AppendCode(hashFilePath, settingsText);
-        }
-
-        // Update the hash file.
-        std::string hashString = Format("%s: Generation:%4u  Best Generation:%4u", state.Mode(), state.m_generation, bestState.m_generation);
-        const FireStarterResults* stateResults = state.Results();
-        uint64_t resultHash = MurmurHash64(stateResults, state.ResultsSize());
-        uint64_t programHash = MurmurHash64(state.m_program.OptimizedInstructions(), state.m_program.InstructionsSize());
-        hashString += Format("  Result=%.8f  Seed=%8u  ResultHash=%04X  ProgramHash=%04X\r\n", state.m_maxResult, settings.m_evolveSeed + state.m_generation, (unsigned short)resultHash, (unsigned short)programHash);
-        FireStarterCode::AppendCode(hashFilePath, hashString);
-#endif
-
-        // Create the log file.
-        unsigned int test = (unsigned int)state.m_test;
-        std::string logPath;
-        if (((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE)) && (settings.m_tests > 0)) {
-            static std::vector<std::string> logFilePaths;
-            if (logFilePaths.empty())
-                logFilePaths.resize(FIRESTARTER_START_TEST + settings.m_tests);
-            std::string& logFilePath = logFilePaths[test];
-            if (logFilePath.empty()) {
-                logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate().c_str(), settings.Mode(), test);
+        logPath = logFilePaths[test];
+    } else {
+        static std::string logFilePath;
+        if (logFilePath.empty()) {
+            logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), settings.Mode());
+            Dispatch([] {
                 FireStarterCode::AppendCode(logFilePath, cudaText);
                 FireStarterCode::AppendCode(logFilePath, settingsText);
-            }
-            logPath = logFilePath;
-        } else {
-            static std::string logFilePath;
-            if (logFilePath.empty()) {
-                logFilePath = Format("Logs\\%s_%s.txt", FileNameDate().c_str(), settings.Mode());
-                FireStarterCode::AppendCode(logFilePath, cudaText);
-                FireStarterCode::AppendCode(logFilePath, settingsText);
-            }
-            logPath = logFilePath;
+            }, sync);
         }
+        logPath = logFilePath;
+    }
 
-        // Update the log file and window status text.
-        std::string statusString;
-        float newResult = state.m_maxResult;
-        float bestResult = bestState.m_maxResult;
-        bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
-        if (state.PassMode() == FIRESTARTER_RANDOM) {
-            statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", state.Mode(), settings.m_evolveSeed + state.m_generation, state.m_generation, newResult, average, bestResult, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, testError);
-            for (unsigned int v = 0; v < settings.m_variations; v++)
-                statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
-        } else {
-            statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
-            if ((settings.m_tests > 0) || test)
-                statusString += Format("  Test=%u", test);
-            if (state.PassMode() == FIRESTARTER_EVOLVE)
-                statusString += Format("  Index=%llu  Id=%llu  CopyId=%llu  CopyAge=%llu", state.m_index, state.m_id, state.m_copy_id, state.m_age);
-            else if (settings.m_units > 1)
-                statusString += Format("  Unit=%u", state.m_index % settings.m_units);
-            statusString += Format("  Generation=%u  Age=%u  Evolution=%u", state.m_generation, state.m_generation - bestState.m_generation, state.m_evolution);
+    // Update the log file and window status text.
+    std::string statusString;
+    float bestResult = bestState.m_maxResult;
+    bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
+    if (state.PassMode() == FIRESTARTER_RANDOM) {
+        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", state.Mode(), settings.m_evolveSeed + generation, generation, newResult, average, bestResult, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, testError);
+        for (unsigned int v = 0; v < settings.m_variations; v++)
+            statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
+    } else {
+        statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
+        if ((settings.m_tests > 0) || test)
+            statusString += Format("  Test=%u", test);
+        if (state.PassMode() == FIRESTARTER_EVOLVE)
+            statusString += Format("  Index=%llu  Id=%llu  CopyId=%llu  CopyAge=%llu", state.m_index, state.m_id, state.m_copy_id, generation - state.m_generation);
+        else if (settings.m_units > 1)
+            statusString += Format("  Unit=%u", state.m_index % settings.m_units);
+        statusString += Format("  Generation=%u  Age=%u  Evolution=%u", generation, generation - state.m_generation, state.m_evolution);
 
-            if (state.PassMode() == FIRESTARTER_EVOLVE) {
-                std::string spaceString;
-                if ((newResult == bestResult) && isBestState)
-                    spaceString = "*";
-                else if (newResult < oldResult)
-                    spaceString = ">";
-                else
-                    spaceString = " ";
-                statusString += Format("  Old Result=%.8f %sNew Result=%.8f  stateSeed=%u", oldResult, spaceString.c_str(), newResult, state.m_seed);
-            } else {
-                if ((newResult == bestResult) && isBestState)
-                    statusString += " *";
-                else
-                    statusString += "  ";
-                statusString += Format("Result=%.8f", newResult);
-            }
-            statusString += Format("  TestError=%.8f  Best=%.8f  BestSeed=%u  BestGen=%u", testError, bestResult, bestState.Settings().m_evolveSeed, bestState.m_generation);
-
-            // Include the time when not doing tests as it prevents doing diffs to compare the results.
-            if (!settings.m_tests)
-                statusString += Format("  Time=%.4f Seconds  Run Time=%.4f Seconds", generationTime, runTime);
+        if (state.PassMode() == FIRESTARTER_EVOLVE) {
+            std::string spaceString;
+            if (newResult == 0.0f) {
+                newResult = oldResult;
+                spaceString = " Bad";
+            } else if ((newResult == bestResult) && isBestState)
+                spaceString = "*New";
+            else if (newResult < oldResult)
+                spaceString = ">New";
+            else
+                spaceString = " New";
+            statusString += Format("  Old Result=%.8f %s Result=%.8f  stateSeed=%u", oldResult, spaceString.c_str(), newResult, state.m_seed);
+         } else {
+            if ((newResult == bestResult) && isBestState)
+                statusString += " *";
+            else
+                statusString += "  ";
+            statusString += Format("Result=%.8f", newResult);
         }
+        statusString += Format("  TestError=%.8f  Best=%.8f  BestSeed=%u  BestGen=%u", testError, bestResult, bestState.Settings().m_evolveSeed, bestState.m_generation);
 
-        // Update the log file.
-        FireStarterCode::AppendCode(logPath, statusString + "\r\n");
+        // Include the time when not doing tests as it prevents doing diffs to compare the results.
+        if (!settings.m_tests)
+            statusString += Format("  Time=%.4f Seconds  Run Time=%.4f Seconds", generationTime, runTime);
+    }
 
-        // Update the window status.
-        m_window.DisplayText(statusString);
-    });
+    // Update the log file.
+    Dispatch([logPath, statusString] { FireStarterCode::AppendCode(logPath, statusString + "\r\n"); }, sync);
+
+    // Update the window status.
+    m_window.DisplayText(statusString, sync);
 } // RenderStatus
 
 FireStarterShow::FireStarterShow(const FireStarterWindow& window) : CUDAThread("FireStarterShow"), m_window(window)
