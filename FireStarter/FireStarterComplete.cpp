@@ -87,7 +87,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     // If the best state was updated, save the stat and draw the results.
     if (update) {
         // Test the current state.
-        m_testError = displayState.TestResult();
+        m_bestError = displayState.TestResult();
 
         // Save the new best state.
         if (m_saveBestState) {
@@ -137,7 +137,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     m_totalResult += result;
     m_resultsCount++;
     double average = m_totalResult / m_resultsCount;
-    m_fireShow.RenderStatus(displayState, state, generation, duration, m_generationTime, oldResult, newResult, average, m_testError);
+    m_fireShow.RenderStatus(displayState, state, generation, duration, m_generationTime, oldResult, newResult, average, m_bestError);
 
     // Has the completion condition been met?
     return state.m_generation - displayState.m_generation < settings.m_attempts;

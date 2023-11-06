@@ -19,7 +19,7 @@ private:
 public:
 	void FireShow(const FireStarterState& state, bool sync = false);
 	void FireSolution(bool sync = false);
-	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double oldResult, double newResult, double average, double testError, bool sync = false);
+	void RenderStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double oldResult, double newResult, double average, double bestError, bool sync = false);
 	FireStarterShow(const FireStarterWindow& window);
 	~FireStarterShow(void);
 }; // class FireStarterShow

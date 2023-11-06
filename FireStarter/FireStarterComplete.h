@@ -16,7 +16,7 @@ private:
 	double m_resultsTime = 0.0;
 	double m_generationTime = 0.0;
 	double m_totalResult = 0.0;
-	float m_testError = 0.0f;
+	float m_bestError = 0.0f;
 	bool m_saveBestState = true;
 
 	void SaveBestState(const FireStarterState& bestState);

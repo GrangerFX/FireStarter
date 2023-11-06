@@ -118,18 +118,6 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         // Synchronize all GPU threads and results.
         context->Synchronize();
         generation++;
-
-#if 0
-        if ((state.m_generation == 1) && (state.m_id == 14)) { // Note: DEBUG!
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
-            float hash = 0.0f;
-            for (unsigned int i = 0; i < settings.m_population; i++) {
-                float curResult = *m_hostPopulation->MinResult(i, variation);
-                hash = fmodf(hash + curResult, 1.0f);
-            }
-            printf("Id=%u  variation=%u  pass=%u  generation=%u  hash=%.8f\n", state.m_id, variation, pass, g, hash);
-        }
-#endif
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -174,6 +162,15 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
         unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
 #if 1
+            // Optimization: If the variation result is worse, skip the rest of the variations.
+            float variationResult = OptimizeGenerations(state, generations * passes, 0, variation);
+            variationMax = MAX(variationMax, variationResult);
+            if (variationMax >= oldResult) {
+                state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
+                validResult = false;
+            }
+#endif
+#if 0
             float variationResult = OptimizeGenerations(state, generations, 0, variation);
             state.VariationPassResult(variation, 0) = variationResult;
 
@@ -194,7 +191,8 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
                  state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
                  validResult = false;
             }
-#else
+#endif
+#if 0
             // Optimization: If any of the varation's pass result are worse, skip the rest of the pases.
             float variationResult = 0.0f;
             for (unsigned int pass = 0; pass < passes; pass++) {
