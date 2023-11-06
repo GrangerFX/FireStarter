@@ -186,18 +186,18 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
     float bestResult = bestState.m_maxResult;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%u  Generation=%u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", state.Mode(), settings.m_evolveSeed + generation, generation, newResult, average, bestResult, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, testError);
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Average=%.8f  Best=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds  TestError=%.8f", state.Mode(), settings.m_evolveSeed + generation, generation, newResult, average, bestResult, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, testError);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
     } else {
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
-            statusString += Format("  Test=%u", test);
+            statusString += Format("  Test=%2u", test);
         if (state.PassMode() == FIRESTARTER_EVOLVE)
-            statusString += Format("  Index=%llu  Id=%llu  CopyId=%llu  CopyAge=%llu", state.m_index, state.m_id, state.m_copy_id, generation - state.m_generation);
+            statusString += Format("  Index=%2llu  Id=%2llu  CopyId=%2llu", state.m_index, state.m_id, state.m_copy_id);
         else if (settings.m_units > 1)
             statusString += Format("  Unit=%u", state.m_index % settings.m_units);
-        statusString += Format("  Generation=%u  Age=%u  Evolution=%u", generation, generation - state.m_generation, state.m_evolution);
+        statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u", generation, generation - state.m_generation, state.m_evolution);
 
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
             std::string spaceString;
@@ -210,7 +210,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 spaceString = ">New";
             else
                 spaceString = " New";
-            statusString += Format("  Old Result=%.8f %s Result=%.8f  stateSeed=%u", oldResult, spaceString.c_str(), newResult, state.m_seed);
+            statusString += Format("  Old Result=%.8f %s Result=%.8f  stateSeed=%10u", oldResult, spaceString.c_str(), newResult, state.m_seed);
          } else {
             if ((newResult == bestResult) && isBestState)
                 statusString += " *";
