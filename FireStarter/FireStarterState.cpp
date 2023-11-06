@@ -127,13 +127,6 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
 {
     FireStarterSettings& settings = m_program.m_settings;
 
-    m_variation_pass_results.clear();
-    if (settings.m_variations && settings.m_passes) {
-        m_variation_pass_results.resize(settings.m_variations);
-        for (unsigned int v = 0; v < settings.m_variations; v++)
-            m_variation_pass_results[v].resize(settings.m_passes, settings.m_startResult);
-    }
-
     m_resultsData.clear();
     m_resultsData.resize(FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations));
     m_results = Results();

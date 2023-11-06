@@ -4,13 +4,11 @@
 
 class FireStarterState {
 private:
-    std::vector<std::vector<float>> m_variation_pass_results;
     std::vector<unsigned char> m_resultsData;
     FireStarterResults* m_results = nullptr;    // Used for debugging. null pointer when uninitialized.
  
     inline void swap(const FireStarterState& other)
     {
-        m_variation_pass_results = other.m_variation_pass_results;
         m_resultsData = other.m_resultsData;
         m_results = Results();
         m_program = other.m_program;
@@ -50,11 +48,6 @@ public:
         swap(other);
         return *this;
     } // operator =
-
-    inline float& VariationPassResult(unsigned int variation, unsigned int pass)
-    {
-        return m_variation_pass_results[variation][pass];
-    } // VariationPassResult
 
     inline size_t ResultsSize(void) const
     {

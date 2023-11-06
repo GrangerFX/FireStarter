@@ -161,7 +161,6 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     for (unsigned int v = 0; v < variations; v++) {
         unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
-#if 1
             // Optimization: If the variation result is worse, skip the rest of the variations.
             float variationResult = OptimizeGenerations(state, generations * passes, 0, variation);
             variationMax = MAX(variationMax, variationResult);
@@ -169,48 +168,6 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
                 state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
                 validResult = false;
             }
-#endif
-#if 0
-            float variationResult = OptimizeGenerations(state, generations, 0, variation);
-            state.VariationPassResult(variation, 0) = variationResult;
-
-            // Optimization: If the result of the first pass is significantly worse worse, skip the rest of the passes.
-            if (variationResult < FIRESTARTER_EVOLVE_SKIP * state.VariationPassResult(variation, 0)) {
-                for (unsigned int pass = 1; pass < passes; pass++) {
-                    variationResult = OptimizeGenerations(state, generations, pass, variation);
-                    state.VariationPassResult(variation, pass) = variationResult;
-                }
-
-                // Optimization: If the variation result is worse, skip the rest of the variations.
-                variationMax = MAX(variationMax, variationResult);
-                if (variationMax >= oldResult) {
-                    state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
-                    validResult = false;
-                }
-            } else {
-                 state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
-                 validResult = false;
-            }
-#endif
-#if 0
-            // Optimization: If any of the varation's pass result are worse, skip the rest of the pases.
-            float variationResult = 0.0f;
-            for (unsigned int pass = 0; pass < passes; pass++) {
-                variationResult = OptimizeGenerations(state, generations, pass, variation);
-                if (variationResult > FIRESTARTER_EVOLVE_SKIP * state.VariationPassResult(variation, pass)) {
-                    validResult = false;
-                    break;
-                }
-                state.VariationPassResult(variation, pass) = variationResult;
-            }
-
-            // Optimization: If the variation result is worse, skip the rest of the variations.
-            variationMax = MAX(variationMax, variationResult);
-            if (variationMax >= oldResult) {
-                state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
-                validResult = false;
-            }
-#endif
         } else
             results->Result(variation)->Init(0, settings.m_registers, settings.m_startResult);
     }

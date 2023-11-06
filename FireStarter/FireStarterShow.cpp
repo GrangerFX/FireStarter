@@ -210,7 +210,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 spaceString = ">New";
             else
                 spaceString = " New";
-            statusString += Format("  Old Result=%.8f %s Result=%.8f  stateSeed=%10u", oldResult, spaceString.c_str(), newResult, state.m_seed);
+            statusString += Format("  Old Result=%.8f %s Result=%.8f", oldResult, spaceString.c_str(), newResult);
          } else {
             if ((newResult == bestResult) && isBestState)
                 statusString += " *";
@@ -218,7 +218,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 statusString += "  ";
             statusString += Format("Result=%.8f", newResult);
         }
-        statusString += Format("  Best=%.8f  BestSeed=%u  BestAge=%u  BestError=%.8f", bestResult, bestState.Settings().m_evolveSeed, generation - bestState.m_generation, bestError);
+        statusString += Format("  Best=%.8f  BestError=%.8f  BestAge=%u", bestResult, bestError, generation - bestState.m_generation);
 
         // Include the time when not doing tests as it prevents doing diffs to compare the results.
         if (!settings.m_tests)
