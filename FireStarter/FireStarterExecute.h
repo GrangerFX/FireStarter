@@ -21,7 +21,7 @@ private:
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterState& state, bool init = false);
-	float OptimizeGenerations(FireStarterState& state, unsigned int generations, unsigned int pass, unsigned int variation);
+	float OptimizeGenerations(FireStarterState& state, unsigned long long generation, unsigned long long generations, unsigned int variation);
     bool Optimize(FireStarterState& state);
     void OptimizePass(FireStarterState& state, unsigned int pass);
     bool Compile(FireStarterJob* &job);

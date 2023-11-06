@@ -12,7 +12,6 @@ private:
 	FireStarterGenerate* m_generate = nullptr;
 	std::string m_solutionTargetCode;
 	size_t m_resultsCount = 0;
-	size_t m_resultsGeneration = 0;
 	double m_resultsTime = 0.0;
 	double m_generationTime = 0.0;
 	double m_totalResult = 0.0;

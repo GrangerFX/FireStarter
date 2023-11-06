@@ -143,9 +143,11 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
 
     m_variationOrder.resize(settings.m_variations);
     m_variationCount.resize(settings.m_variations);
+    m_variationFirst.resize(settings.m_variations);
     for (unsigned int v = 0; v < settings.m_variations; v++) {
         m_variationOrder[v] = v;
         m_variationCount[v] = 0;
+        m_variationFirst[v] = settings.m_startResult;
     }
 
     m_generation = 0;

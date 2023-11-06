@@ -15,6 +15,7 @@ private:
         m_timer = other.m_timer;
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
+        m_variationFirst = other.m_variationFirst;
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
         m_index = other.m_index;
@@ -32,6 +33,7 @@ public:
     SimpleTimer m_timer;
     std::vector<unsigned int> m_variationOrder;
     std::vector<unsigned int> m_variationCount;
+    std::vector<float> m_variationFirst;
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_index = 0;

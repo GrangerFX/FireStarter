@@ -123,11 +123,9 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         if (m_resultsTime == 0.0) {
             m_resultsCount = 0;
             m_totalResult = 0.0;
-            m_resultsGeneration = 0;
             m_generationTime = 0.0;
             m_resultsTime = duration;
         } else {
-            m_resultsGeneration = state.m_generation;
             m_generationTime = (duration - m_resultsTime) / settings.m_units;
             m_resultsTime = duration;
         }
@@ -140,7 +138,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     m_fireShow.RenderStatus(displayState, state, generation, duration, m_generationTime, oldResult, newResult, average, m_bestError);
 
     // Has the completion condition been met?
-    return state.m_generation - displayState.m_generation < settings.m_attempts;
+    return generation - displayState.m_generation < settings.m_attempts;
 } // CompleteResults
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)

@@ -75,7 +75,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
     return result;
 } // InitPopulation
 
-float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int generations, unsigned int pass, unsigned int variation)
+float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned long long generation, unsigned long long generations, unsigned int variation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -85,7 +85,6 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
-    unsigned long long generation = pass * generations;
 
     for (unsigned int g = 0; g < generations; g++) {
         // Run all the evolve states in parallel.
@@ -161,13 +160,34 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     for (unsigned int v = 0; v < variations; v++) {
         unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
+#if 1
+            // If the result was not less than the previous first result, skip the rest of the variations.
+            float firstResult = OptimizeGenerations(state, 0, generations, variation);
+            if (v || (firstResult < state.m_variationFirst[variation])) {
+                state.m_variationFirst[variation] = firstResult;
+
+                // If the variation result is worse, skip the rest of the variations.
+                float variationResult = OptimizeGenerations(state, generations, generations * (passes - 1), variation);
+                if (variationResult < oldResult)
+                    variationMax = MAX(variationMax, variationResult);
+                else
+                    validResult = false;
+            } else
+                validResult = false;
+
+            // Count the variation that caused an invalid result.
+            if (!validResult)
+                state.m_variationCount[variation]++; 
+#else
+            float variationResult = state.m_variationFirst[variation] = OptimizeGenerations(state, 0, generations * passes, variation);
+
             // Optimization: If the variation result is worse, skip the rest of the variations.
-            float variationResult = OptimizeGenerations(state, generations * passes, 0, variation);
             variationMax = MAX(variationMax, variationResult);
             if (variationMax >= oldResult) {
                 state.m_variationCount[variation]++; // Counts the variation that caused an invalid result.
                 validResult = false;
             }
+#endif
         } else
             results->Result(variation)->Init(0, settings.m_registers, settings.m_startResult);
     }
@@ -202,7 +222,7 @@ void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned int pass
     unsigned int generations = settings.m_generations;
     unsigned int variations = settings.m_variations;
     for (unsigned int v = 0; v < variations; v++)
-        OptimizeGenerations(state, generations, pass, v);
+        OptimizeGenerations(state, generations * pass, generations, v);
 
     // Calculate the state's max result.
     state.m_maxResult = state.MaxResult();
