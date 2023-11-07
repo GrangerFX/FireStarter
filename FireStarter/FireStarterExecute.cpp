@@ -163,7 +163,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
 #if 1
             // If the result was not less than the previous first result, skip the rest of the variations.
             float firstResult = OptimizeGenerations(state, 0, generations, variation);
-            if (v || (firstResult < 2.0f * state.m_variationFirst[variation])) {
+            if (v || (firstResult < FIRESTARTER_EVOLVE_SKIP * state.m_variationFirst[variation])) {
                 state.m_variationFirst[variation] = firstResult;
 
                 // If the variation result is worse, skip the rest of the variations.

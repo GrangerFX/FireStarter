@@ -8,12 +8,11 @@
 #define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
-#define FIRESTARTER_START_TEST      15          // The starting test index.
+#define FIRESTARTER_START_TEST      0          // The starting test index.
 #define FIRESTARTER_STREAMS         4          // Maximum number of streams
 #define FIRESTARTER_MULTIPROCESS    1          // Use multi-processing to compile each generation.
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008  // Stop evolution when this target is reached.
-#define FIRESTARTER_EVOLVE_SKIP     2.0f       // The percent used to skip variation generations.
 #define FIRESTARTER_EVOLVE_DEBUG    0          // Output evolve debugging information.
 #define FIRESTARTER_EVOLVE_OPTIMIZE 1          // Optimize the best evolved results.
 
@@ -38,7 +37,7 @@
 #define FIRESTARTER_RANDOM_START_SCALE      2.0f
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
 
-#define FIRESTARTER_EVOLVE_TESTS            1
+#define FIRESTARTER_EVOLVE_TESTS            16
 #define FIRESTARTER_EVOLVE_SEEDS            64
 #define FIRESTARTER_EVOLVE_UNITS            4
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
