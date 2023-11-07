@@ -104,7 +104,7 @@ static void TestRandom(void)
 
 FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
 {
-#if FIRESTARTER_EVOLVE_MULTIPROCESS
+#if FIRESTARTER_MULTIPROCESS
     m_server = new FireStarterServer();
 #endif
 #if 0

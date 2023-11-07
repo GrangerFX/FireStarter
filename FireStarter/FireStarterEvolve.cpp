@@ -65,7 +65,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
         FireStarterState bestState = allStates[0];
         size_t numStates = allStates.size();
         unsigned int numInstructions = bestState.Settings().m_instructions;
-        size_t bestStates = (size_t)ceil(allStates.size() * FIRESTARTER_EVOLVE_BEST);
         float bestResult = bestState.m_maxResult;
         for (unsigned long long index = 0; index < allStates.size(); index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
