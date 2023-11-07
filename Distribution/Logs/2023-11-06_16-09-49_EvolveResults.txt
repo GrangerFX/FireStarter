@@ -1,0 +1,4 @@
+Duration: 217.9  Evolve Seed=0  Test=3  Generation=0  Evolve Result=10.00000000
+Duration: 228.8  Evolve Seed=0  Test=0  Generation=0  Evolve Result=10.00000000
+Duration: 228.9  Evolve Seed=0  Test=1  Generation=0  Evolve Result=10.00000000
+Duration: 232.2  Evolve Seed=0  Test=2  Generation=0  Evolve Result=10.00000000
