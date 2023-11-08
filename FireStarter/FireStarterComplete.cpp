@@ -107,7 +107,6 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     }
 
     const FireStarterSettings& settings = state.Settings();
-    float result = state.m_maxResult;
     double duration = state.m_timer.Duration();
 
     // Calculate the average time per generation.
@@ -132,7 +131,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     }
 
     // Update the render status after every pass.
-    m_totalResult += result;
+    m_totalResult += state.m_maxResult;
     m_resultsCount++;
     double average = m_totalResult / m_resultsCount;
     m_fireShow.RenderStatus(displayState, state, generation, duration, m_generationTime, oldResult, newResult, average, m_bestError);
@@ -216,7 +215,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                 FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[i];
                 float oldResult = oldState.m_maxResult;
-                float newResult = newState.m_optimizeValid ? newState.m_maxResult : 0.0f;
+                float newResult = newState.m_maxResult;
                 if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
                     oldState = newState;
                     oldState.m_evolution++;

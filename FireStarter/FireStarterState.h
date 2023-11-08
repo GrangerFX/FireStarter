@@ -15,7 +15,6 @@ private:
         m_timer = other.m_timer;
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
-        m_variationFirst = other.m_variationFirst;
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
         m_index = other.m_index;
@@ -23,6 +22,7 @@ private:
         m_copy_id = other.m_copy_id;
         m_test = other.m_test;
         m_seed = other.m_seed;
+        m_firstResult = other.m_firstResult;
         m_maxResult = other.m_maxResult;
         m_optimizePass = other.m_optimizePass;
         m_optimizeValid = other.m_optimizeValid;
@@ -33,7 +33,6 @@ public:
     SimpleTimer m_timer;
     std::vector<unsigned int> m_variationOrder;
     std::vector<unsigned int> m_variationCount;
-    std::vector<float> m_variationFirst;
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_index = 0;
@@ -41,6 +40,7 @@ public:
     unsigned long long m_copy_id = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
+    float m_firstResult = -1.0f;
     float m_maxResult = -1.0f;
     bool m_optimizePass = false;
     bool m_optimizeValid = false;
