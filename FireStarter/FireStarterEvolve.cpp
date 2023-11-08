@@ -104,9 +104,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         // Optimize the program registers.
                         curState.m_program.OptimizeRegisters();
                         count++;
-                        if (index == 63) {
-                            printf("Evolve %llu:  Generation=%llu  Count=%u  id=%llu  copy=%llu\n", index, generation, count, curState.m_id, curState.m_copy_id);
-                        }
                    } while (testedInstructions->count(curState.m_program.OptimizedInstructionsData()));
 
                     // Keep track of the tested instructions.
