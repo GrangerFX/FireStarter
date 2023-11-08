@@ -161,7 +161,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     for (unsigned int v = 0; v < variations; v++) {
         unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
-#if 0
+#ifdef FIRESTARTER_EVOLVE_SKIP
             // If the result was not less than the previous first result, skip the rest of the variations.
             float firstResult = OptimizeGenerations(state, 0, generations, variation);
             variationFirst = MAX(variationFirst, firstResult);
