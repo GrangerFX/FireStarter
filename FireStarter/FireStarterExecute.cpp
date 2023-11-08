@@ -169,7 +169,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
                 // If the variation result is worse, skip the rest of the variations.
                 float variationResult = OptimizeGenerations(state, generations, generations * (passes - 1), variation);
                 variationMax = MAX(variationMax, variationResult);
-                validResult = variationMax < oldResult;
+                validResult = variationMax <= oldResult;
             } else {
                 validResult = false;
                 variationMax = -firstResult;
@@ -184,7 +184,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
             if (!v)
                 variationFirst = variationResult;
             variationMax = MAX(variationMax, variationResult);
-            if (variationMax >= oldResult) {
+            if (variationMax > oldResult) {
                 // Count the variation that caused an invalid result.
                 state.m_variationCount[variation]++;
                 validResult = false;

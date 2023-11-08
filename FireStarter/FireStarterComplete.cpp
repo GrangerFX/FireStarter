@@ -171,7 +171,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 
             float oldResult = oldState.m_maxResult;
             float newResult = newState.m_maxResult;
-            if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
+            if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult <= oldState.m_maxResult))) {
                 oldState = newState;
                 oldState.m_evolution++;
             }
@@ -216,7 +216,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                 FireStarterState& newState = newStates[i];
                 float oldResult = oldState.m_maxResult;
                 float newResult = newState.m_maxResult;
-                if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
+                if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult <= oldState.m_maxResult))) {
                     oldState = newState;
                     oldState.m_evolution++;
                     found = true;
