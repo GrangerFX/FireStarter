@@ -13,6 +13,7 @@
 #define FIRESTARTER_MULTIPROCESS    1          // Use multi-processing to compile each generation.
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008  // Stop evolution when this target is reached.
+//#define FIRESTARTER_EVOLVE_SKIP     4.0f       // The percent used to skip variation generations.
 #define FIRESTARTER_EVOLVE_DEBUG    0          // Output evolve debugging information.
 #define FIRESTARTER_EVOLVE_OPTIMIZE 1          // Optimize the best evolved results.
 

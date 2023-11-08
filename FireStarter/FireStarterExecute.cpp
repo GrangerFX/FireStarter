@@ -154,42 +154,20 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     FireStarterResults* results = state.Results();
     float oldResult = state.m_maxResult;
     bool validResult = true;
-    float variationFirst = 0.0f;
     float variationMax = 0.0f;
     unsigned int passes = settings.m_passes;
     unsigned int generations = settings.m_generations;
     for (unsigned int v = 0; v < variations; v++) {
         unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
-#ifdef FIRESTARTER_EVOLVE_SKIP
-            // If the result was not less than the previous first result, skip the rest of the variations.
-            float firstResult = OptimizeGenerations(state, 0, generations, variation);
-            variationFirst = MAX(variationFirst, firstResult);
-            if (v || (firstResult < FIRESTARTER_EVOLVE_SKIP * state.m_firstResult)) {
-                // If the variation result is worse, skip the rest of the variations.
-                float variationResult = OptimizeGenerations(state, generations, generations * (passes - 1), variation);
-                variationMax = MAX(variationMax, variationResult);
-                validResult = variationMax < oldResult;
-            } else {
-                validResult = false;
-                variationMax = -firstResult;
-            }
-
-            // Count the variation that caused an invalid result.
-            if (!validResult)
-                state.m_variationCount[variation]++; 
-#else
             // If the variation result is worse, skip the rest of the variations.
             float variationResult = OptimizeGenerations(state, 0, generations * passes, variation);
-            if (!v)
-                variationFirst = variationResult;
             variationMax = MAX(variationMax, variationResult);
             if (variationMax >= oldResult) {
                 // Count the variation that caused an invalid result.
                 state.m_variationCount[variation]++;
                 validResult = false;
             }
-#endif
         } else
             results->Result(variation)->Init(0, settings.m_registers, settings.m_startResult);
     }
@@ -213,7 +191,6 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     }
 
     // Set the state's max result.
-    state.m_firstResult = variationFirst;
     state.m_maxResult = variationMax;
     state.m_optimizeValid = validResult;
     return validResult;

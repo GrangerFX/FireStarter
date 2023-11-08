@@ -86,14 +86,14 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     // Add the instructions to the set of unique instructions.
                     testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                 } else {
+                    // Randomly select an index to copy that is better (lower) than the current index.
+                    size_t copyIndex = index ? RANDOMMOD(seed, index) : 0;
+                    curState.m_copy_id = allStates[copyIndex].m_id;
+
                     // Keep copying and randomizing instructions until a unique set of instructions is found.
                     unsigned int count = 0;
                     do {
-                        // Randomly select an index to copy that is better (lower) than the current index.
-                        size_t copyIndex = index ? RANDOMMOD(seed, index) : 0;
-
-                        // Copy the program and randomize.
-                        curState.m_copy_id = allStates[copyIndex].m_id;
+                        // Copy the program from the random index.
                         curState.m_program = allStates[copyIndex].m_program;
 
                         // Randomize one instruction per 10 attempts.

@@ -184,7 +184,6 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
     // Update the log file and window status text.
     std::string statusString;
     float bestResult = bestState.m_maxResult;
-    float firstResult = state.m_firstResult;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Average=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + generation, generation, newResult, average, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
@@ -202,16 +201,13 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
 
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
             std::string spaceString;
-            if (newResult < 0.0f) {
-                newResult = -newResult;
-                spaceString = "Failed Skip";
-            } else if (newResult >= oldResult)
+            if (newResult >= oldResult)
                 spaceString = " Bad Result";
             else if ((newResult == bestResult) && isBestState)
                 spaceString = "*New Result";
             else
                 spaceString = ">New Result";
-             statusString += Format("  Skip Result=%.8f  Old Result=%.8f %s=%.8f", firstResult, oldResult, spaceString.c_str(), newResult);
+             statusString += Format("  Old Result=%.8f %s=%.8f", oldResult, spaceString.c_str(), newResult);
          } else {
             if ((newResult == bestResult) && isBestState)
                 statusString += " *";
