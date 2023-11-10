@@ -75,7 +75,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
     return result;
 } // InitPopulation
 
-float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned long long generation, unsigned long long generations, unsigned int variation)
+float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -85,14 +85,15 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
+    unsigned long long optimizations = settings.m_optimizations;
 
-    for (unsigned int g = 0; g < generations; g++) {
+    for (unsigned int g = 0; g < optimizations; g++) {
         // Run all the evolve states in parallel.
         unsigned int maxRegisters = state.m_program.m_uniqueRegisters;
         FireStarterPopulation* newResults = g & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = g & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long generationSeed = state.OptimizationSeed(generation, state.m_test);
-        int initData = generation == 0;
+        unsigned long long optimizationSeed = state.OptimizationSeed();
+        int initData = state.m_optimization == 0;
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),
@@ -101,7 +102,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
                         reinterpret_cast<void*>(&firstMember),
                         reinterpret_cast<void*>(&lastMember),
                         reinterpret_cast<void*>(&maxRegisters),
-                        reinterpret_cast<void*>(&generationSeed),
+                        reinterpret_cast<void*>(&optimizationSeed),
                         reinterpret_cast<void*>(&initData) };
 
         unsigned int blocksPerGrid = ((lastMember - firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
@@ -116,14 +117,14 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
         // Synchronize all GPU threads and results.
         context->Synchronize();
-        generation++;
+        state.m_optimization++;
     }
 
     // Single GPUs have their data syncronized with the host here.
-    FireStarterPopulation* newPopulation = settings.m_generations & 1 ? m_devicePopulation1 : m_devicePopulation0;
-    FireStarterPopulation* oldPopulation = settings.m_generations & 1 ? m_devicePopulation0 : m_devicePopulation1;
+    FireStarterPopulation* newPopulation = settings.m_optimizations & 1 ? m_devicePopulation1 : m_devicePopulation0;
+    FireStarterPopulation* oldPopulation = settings.m_optimizations & 1 ? m_devicePopulation0 : m_devicePopulation1;
     checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, stream));
-    if (settings.m_generations & 1)
+    if (settings.m_optimizations & 1)
         checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
 
@@ -155,13 +156,11 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     float oldResult = state.m_maxResult;
     bool validResult = true;
     float variationMax = 0.0f;
-    unsigned int passes = settings.m_passes;
-    unsigned int generations = settings.m_generations;
     for (unsigned int v = 0; v < variations; v++) {
         unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
             // If the variation result is worse, skip the rest of the variations.
-            float variationResult = OptimizeGenerations(state, 0, generations * passes, variation);
+            float variationResult = OptimizeGenerations(state, variation);
             variationMax = MAX(variationMax, variationResult);
             if (variationMax >= oldResult) {
                 // Count the variation that caused an invalid result.
@@ -196,13 +195,13 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     return validResult;
 } // Optimize
 
-void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned int pass)
+void FireStarterExecute::OptimizePass(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
-    unsigned int generations = settings.m_generations;
+    unsigned int optimizations = settings.m_optimizations;
     unsigned int variations = settings.m_variations;
     for (unsigned int v = 0; v < variations; v++)
-        OptimizeGenerations(state, generations * pass, generations, v);
+        OptimizeGenerations(state, v);
 
     // Calculate the state's max result.
     state.m_maxResult = state.MaxResult();
@@ -270,15 +269,15 @@ void FireStarterExecute::ExecuteInitPopulation(bool init, bool sync)
     }, sync);
 } // ExecuteInitPopulation
 
-void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned int pass, bool sync)
+void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool sync)
 {
-    Dispatch([this, state, pass] {
+    Dispatch([this, state] {
         if (m_executeJob) {
             FireStarterJob* job = m_executeManager->GetFree();
             if (job) {
                 m_executeJob->m_state = state;
                 m_executeJob->m_state.m_optimizePass = true;
-                OptimizePass(m_executeJob->m_state, pass);
+                OptimizePass(m_executeJob->m_state);
                 job->Copy(m_executeJob);
             }
             m_executeManager->AddComplete(job);

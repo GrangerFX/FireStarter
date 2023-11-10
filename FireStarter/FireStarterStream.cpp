@@ -69,11 +69,13 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
             // Loop until the the completion condition or the host program is quit.
             while (!WillTerminate()) {
                 // Optimize the current generation.
-                execute->ExecuteOptimize(optimizeState, (unsigned int)optimizeState.m_generation, false);
+                execute->ExecuteOptimize(optimizeState, false);
 
                 // Update the results in the UI.
                 if (complete->CompleteState(bestState, optimizeState))
                     break;
+
+                // Increment the generation.
                 optimizeState.m_generation++;
             }
         }
@@ -162,13 +164,6 @@ void FireStarterStream::Randomize(const FireStarterWindow& window, const FireSta
     FireStarterStream stream(window, bestState, 0); // Provides serial thread WillTerminate() method.
     stream.RandomState(bestState);
 } // Randomize
-
-void FireStarterStream::OptimizeStream(const FireStarterState& evolveState, bool sync)
-{
-    Dispatch([this, evolveState] {
-        OptimizeState(evolveState);
-    }, sync);
-} // OptimizeStream
 
 void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync)
 {
@@ -304,6 +299,8 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 // This method is synchronized by default.
                 if (complete->CompleteStates(allStates))
                     break;
+
+                // Increment the generation.
                 generation++;
             }
 
@@ -315,8 +312,6 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 #if FIRESTARTER_EVOLVE_OPTIMIZE
             // The best state is used for the status display and termination condition.
             FireStarterState optimizeState(bestEvolveState);
-            optimizeState.m_generation = 0;
-            optimizeState.m_evolution = 0;
 
             // Optimize the evolved state.
             // Generate the optimize code.
@@ -331,19 +326,17 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
                 // Loop until the the optimize completion condition or the host program is quit.
                 FireStarterState bestOptimizeState(optimizeState);
-                unsigned int pass = 0;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
-                    executeOptimize->ExecuteOptimize(optimizeState, pass, false);
+                    executeOptimize->ExecuteOptimize(optimizeState, false);
 
                     // Update the results in the UI.
                     if (complete->CompleteState(bestOptimizeState, optimizeState))
                         break;
 
-                    // Next generation.
+                    // Increment the generation.
                     optimizeState.m_generation++;
-                    pass++;
-                }
+               }
 
                 // Save the best optimized state for all streams.
                 complete->SaveBest(bestOptimizeState);

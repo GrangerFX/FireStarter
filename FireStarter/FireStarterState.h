@@ -16,6 +16,7 @@ private:
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
+        m_optimization = other.m_optimization;
         m_evolution = other.m_evolution;
         m_index = other.m_index;
         m_id = other.m_id;
@@ -33,6 +34,7 @@ public:
     std::vector<unsigned int> m_variationOrder;
     std::vector<unsigned int> m_variationCount;
     unsigned long long m_generation = 0;
+    unsigned long long m_optimization = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_index = 0;
     unsigned long long m_id = 0;
@@ -127,14 +129,14 @@ public:
         return FireStarterSettings::Mode(PassMode());
     } // Mode(void) const
 
-    inline unsigned long long OptimizationSeed(unsigned long long generation, unsigned long long test = 0) const
+    inline unsigned long long OptimizationSeed(void) const
     {
 #if FIRESTARTER_EVOLVE_CHAOS == 1
-        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_generation) + generation) + test);
+        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_generation) + m_optimization) + m_test);
 #elif FIRESTARTER_EVOLVE_CHAOS == 2
-        return RANDOM(RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_index) + m_generation) + generation) + test);
+        return RANDOM(RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_id) + m_generation) + m_optimization) + m_test);
 #else
-        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + generation) + test);
+        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_optimization) + m_test);
 #endif
     } // OptimizationSeed
 

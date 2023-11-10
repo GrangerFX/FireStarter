@@ -31,7 +31,7 @@ inline float TestPrecision(const FireStarterData& data, unsigned int variation, 
     return result;
 } // TestPrecision
 
-GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, FireStarterPopulation* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long generationSeed, const unsigned int initData)
+GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, FireStarterPopulation* oldResults, const unsigned int v, const unsigned int firstMember, const unsigned int lastMember, const unsigned int dataSize, const unsigned long long optimizationSeed, const unsigned int initData)
 {
     unsigned int member = firstMember + blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= lastMember)
@@ -44,7 +44,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         theta[i] = TARGET_MIN + i * sampleStep;
 
     // Evolve the program data for each variation.
-    unsigned long long memberSeed = RANDOM(RANDOM(generationSeed) + member);
+    unsigned long long memberSeed = RANDOM(RANDOM(optimizationSeed) + member);
     FireStarterData data;
     unsigned long long seed = RANDOM(memberSeed + v); // Unique seed for the generation/member/variation
     float oldResult;
