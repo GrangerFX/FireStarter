@@ -129,8 +129,10 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long generation, unsigned long long test = 0) const
     {
-#if FIRESTARTER_EVOLVE_CHAOS
+#if FIRESTARTER_EVOLVE_CHAOS == 1
         return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_generation) + generation) + test);
+#elif FIRESTARTER_EVOLVE_CHAOS == 2
+        return RANDOM(RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_index) + m_generation) + generation) + test);
 #else
         return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + generation) + test);
 #endif
