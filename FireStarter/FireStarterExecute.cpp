@@ -206,6 +206,7 @@ void FireStarterExecute::OptimizePass(FireStarterState& state)
 
     // Calculate the state's max result.
     state.m_maxResult = state.MaxResult();
+    state.m_optimizeValid = true;
 
     // Increment the state's optimizations.
     state.m_optimization += optimizations;
@@ -280,7 +281,6 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool syn
             FireStarterJob* job = m_executeManager->GetFree();
             if (job) {
                 m_executeJob->m_state = state;
-                m_executeJob->m_state.m_optimizePass = true;
                 OptimizePass(m_executeJob->m_state);
                 job->Copy(m_executeJob);
             }

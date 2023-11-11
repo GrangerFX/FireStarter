@@ -64,7 +64,7 @@ void FireStarter::ControlThread(void)
                     FireStarterState evolveState;
                     LoadState(evolveState);
                     evolveState.Settings().CopyModeSettings(controlSettings);
-                    evolveState.m_program.m_settings.m_mode = FIRESTARTER_OPTIMIZE; // This allows optimize tests to be run.
+                    evolveState.Settings().m_mode = FIRESTARTER_OPTIMIZE; // This allows optimize tests to be run.
                     evolveState.m_optimizePass = true;
                     FireStarterStream::Optimize(m_window, evolveState);
                 }

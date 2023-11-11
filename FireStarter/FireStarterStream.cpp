@@ -13,8 +13,8 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     // Convert the most recently evolved state into an optimize mode state.
     FireStarterState startState(evolveState);
     FireStarterSettings& settings = startState.Settings();
-    settings.m_units = 1;
     startState.m_optimizePass = true;
+    settings.m_units = 1;
     if (settings.m_mode != FIRESTARTER_OPTIMIZE)
         settings.m_tests = 0;
 
@@ -295,8 +295,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 for (FireStarterExecute* execute : executionUnits)
                     execute->ExecuteEvolve(evolveCount);
 
-                // Complete each state and display and sort the results.
-                // This method is synchronized by default.
+                // Complete and sort the states by result, update the UI and check for completion.
                 if (complete->CompleteStates(allStates))
                     break;
 
@@ -310,10 +309,14 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
 
 #if FIRESTARTER_EVOLVE_OPTIMIZE
-            // The best state is used for the status display and termination condition.
-            FireStarterState optimizeState(bestEvolveState);
-
             // Optimize the evolved state.
+            FireStarterState optimizeState(m_streamSettings, bestEvolveState.m_id, bestEvolveState.m_test);
+            optimizeState.m_program = bestEvolveState.m_program;
+            optimizeState.Settings().m_units = 1;
+            optimizeState.m_generation = bestEvolveState.m_generation;
+            optimizeState.m_optimizePass = true;
+            optimizeState.m_optimization = 0;
+
             // Generate the optimize code.
             if (evolve->GenerateOptimize(optimizeState)) {
 
@@ -324,13 +327,15 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 // Initialize the population data
                 executeOptimize->ExecuteInitPopulation(true);
 
-                // Loop until the the optimize completion condition or the host program is quit.
+                // The best state is used for the status display and termination condition.
                 FireStarterState bestOptimizeState(optimizeState);
+
+                // Loop until the the optimize completion condition or the host program is quit.
                 while (!WillTerminate()) {
                     // Optimize the current generation.
                     executeOptimize->ExecuteOptimize(optimizeState, false);
 
-                    // Update the results in the UI.
+                    // Update the results in the UI and check for completion.
                     if (complete->CompleteState(bestOptimizeState, optimizeState))
                         break;
 
