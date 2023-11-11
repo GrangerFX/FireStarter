@@ -86,14 +86,15 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
     unsigned long long optimizations = settings.m_optimizations;
+    unsigned long long optimization = state.m_optimization;
 
     for (unsigned int g = 0; g < optimizations; g++) {
         // Run all the evolve states in parallel.
         unsigned int maxRegisters = state.m_program.m_uniqueRegisters;
         FireStarterPopulation* newResults = g & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = g & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long optimizationSeed = state.OptimizationSeed();
-        int initData = state.m_optimization == 0;
+        unsigned long long optimizationSeed = state.OptimizationSeed(optimization);
+        int initData = optimization == 0;
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),
@@ -117,7 +118,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
         // Synchronize all GPU threads and results.
         context->Synchronize();
-        state.m_optimization++;
+        optimization++;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -205,6 +206,9 @@ void FireStarterExecute::OptimizePass(FireStarterState& state)
 
     // Calculate the state's max result.
     state.m_maxResult = state.MaxResult();
+
+    // Increment the state's optimizations.
+    state.m_optimization += optimizations;
 } // OptimizePass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
