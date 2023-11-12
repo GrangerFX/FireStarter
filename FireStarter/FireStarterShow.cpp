@@ -193,13 +193,10 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
             statusString += Format("  Test=%2u", test);
-        if (state.PassMode() == FIRESTARTER_EVOLVE)
-            statusString += Format("  Index=%2llu  Id=%2llu  CopyId=%2llu", state.m_index, state.m_id, state.m_copy_id);
-        else if (settings.m_units > 1)
-            statusString += Format("  Unit=%u", state.m_index % settings.m_units);
-        statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u", generation, generation - state.m_generation, state.m_evolution);
-
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
+            statusString += Format("  Index=%2llu  Id=%2llu  CopyId=%2llu", state.m_index, state.m_id, state.m_copy_id);
+            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u", generation, generation - state.m_generation, state.m_evolution);
+
             std::string spaceString;
             if (newResult >= oldResult)
                 spaceString = " Bad Result";
@@ -207,14 +204,19 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 spaceString = "*New Result";
             else
                 spaceString = ">New Result";
-             statusString += Format("  Old Result=%.8f %s=%.8f", oldResult, spaceString.c_str(), newResult);
-         } else {
+            statusString += Format("  Old Result=%.8f %s=%.8f", oldResult, spaceString.c_str(), newResult);
+        } else {
+            if (settings.m_units > 1)
+                statusString += Format("  Unit=%u", state.m_index % settings.m_units);
+
+            statusString += Format("  Generation=%3u", generation);
             if ((newResult == bestResult) && isBestState)
                 statusString += " *";
             else
                 statusString += "  ";
             statusString += Format("Result=%.8f", newResult);
         }
+
         statusString += Format("  Best=%.8f  BestError=%.8f  BestAge=%u", bestResult, bestError, generation - bestState.m_generation);
 
         // Include the time when not doing tests as it prevents doing diffs to compare the results.
