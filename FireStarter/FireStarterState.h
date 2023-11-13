@@ -135,6 +135,8 @@ public:
 #if FIRESTARTER_EVOLVE_CHAOS == 1
         return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_generation) + optimization) + m_test);
 #elif FIRESTARTER_EVOLVE_CHAOS == 2
+        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_id) + optimization) + m_test);
+#elif FIRESTARTER_EVOLVE_CHAOS == 3
         return RANDOM(RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_id) + m_generation) + optimization) + m_test);
 #else
         return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + optimization) + m_test);
