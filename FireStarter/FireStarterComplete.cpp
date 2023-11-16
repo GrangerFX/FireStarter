@@ -137,7 +137,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
     m_fireShow.RenderStatus(displayState, state, generation, duration, m_generationTime, oldResult, newResult, average, m_bestError);
 
     // Has the completion condition been met?
-    return generation - displayState.m_generation < settings.m_attempts;
+    return generation < settings.m_attempts;
 } // CompleteResults
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
@@ -187,8 +187,8 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
     Dispatch([this, &allStates, &result] {
         // Sort the states as they are received.
         size_t numStates = allStates.size();
-        FireStarterState bestState = allStates[0];
         std::vector<FireStarterState> newStates(numStates);
+        std::vector<FireStarterState> addStates;
         bool abort = false;
         for (size_t i = 0; i < numStates; i++) {
             // Get the next job in the order they are completed.
@@ -210,39 +210,38 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
 
         if (!abort) {
             // Update the best state and display the results.
-            bool found = false;
+            FireStarterState bestState = allStates[0];
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[i];
                 float oldResult = oldState.m_maxResult;
                 float newResult = newState.m_maxResult;
-                if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
-                    oldState = newState;
-                    oldState.m_evolution++;
-                    found = true;
-                }
-                result &= !CompleteResults(bestState, oldState, newState.m_generation, oldResult, newResult);
+                if (!newState.m_generation || (newState.m_optimizeValid && (newResult < oldResult))) {
+                    newState.m_evolution++;
+                    addStates.push_back(newState);
+                    result &= !CompleteResults(bestState, newState, newState.m_generation, oldResult, newResult);
+                } else
+                    result &= !CompleteResults(bestState, oldState, newState.m_generation, oldResult, newResult);
             }
 
-            // Sort the states, least maximum result first.
-            if (found)
-                for (size_t i = 0; i < numStates; i++) {
-                    size_t min = i;
-                    float minResult = allStates[i].m_maxResult;
-                    for (size_t j = i + 1; j < numStates; j++) {
+            // Sort the states by maxResult, least first.
+            size_t addedStates = addStates.size();
+            if (addedStates) {
+                for (size_t i = 0; i < addedStates; i++) {
+                    FireStarterState state = addStates[i];
+                    float minResult = state.m_maxResult;
+                    for (size_t j = 0; j < numStates; j++) {
                         float currentResult = allStates[j].m_maxResult;
-                        if (currentResult < minResult) {
+                        if (currentResult >= minResult) {
+                            FireStarterState temp = allStates[j];
+                            allStates[j] = state;
+                            allStates[j].m_index = j;
+                            state = temp;
                             minResult = currentResult;
-                            min = j;
                         }
                     }
-                    if (min != i) {
-                        FireStarterState temp = allStates[i];
-                        allStates[i] = allStates[min];
-                        allStates[min] = temp;
-                    }
-                    allStates[i].m_index = i;
                 }
+            }
 
             // Has the evolve target been reached?
             if (bestState.m_maxResult <= FIRESTARTER_EVOLVE_TARGET)
