@@ -10,8 +10,9 @@ private:
     FireStarterWindow m_window;
     FireStarterServer* m_server = nullptr;
 
-    void ControlRandom(void);
-    void ControlEvolve(void);
+    void ControlRandom(const FireStarterSettings& randomSettings);
+    void ControlEvolve(const FireStarterSettings& evolveSettings);
+    void ControlOptimize(const FireStarterSettings& optimizeSettings);
     void ControlSolution(void);
     void ControlThread(void);
 

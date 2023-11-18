@@ -67,64 +67,62 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
     }, sync);
 } // FireShow
 
-void FireStarterShow::FireSolution(bool sync)
+void FireStarterShow::FireSolution(FireStarterWindow& window)
 {
-    Dispatch([this] {
-        m_window.Erase();
-        std::string statusString = "FireStarter:";
-        uchar4* pixels = (uchar4*)m_window.GetPixels();
-        unsigned int width = m_window.m_width;
-        unsigned int height = m_window.m_height;
-        float maxError = 0.0f;
-        for (unsigned int v = 0; v < SOLUTION_VARIATIONS; v++) {
-            int xScale = height / 8;
-            int yScale = height / 16;
-            for (unsigned int y = 0; y < height; y++) {
-                int x0 = (width / 2) - xScale;
-                int x1 = (width / 2) + xScale;
-                if (x0 >= 0) {
-                    uchar4& pixel(pixels[y * width + x0]);
-                    pixel.x = 64;
-                    pixel.y = 128;
-                    pixel.z = 64;
-                };
-                if (x1 < (int)width) {
-                    uchar4& pixel(pixels[y * width + x1]);
-                    pixel.x = 64;
-                    pixel.y = 128;
-                    pixel.z = 64;
-                };
-            }
-            for (unsigned int x = 0; x < width; x++) {
-                float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
-                float center = height * 0.66f;
-                float target = SolutionTarget(theta, v);
-#if SOLUTION_VARIATIONS == 1
-                float solution = Solution(theta);
-#else
-                float solution = Solution(theta, v);
-#endif
-                if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
-                    float error = fabsf(solution - target);
-                    maxError = max(maxError, error);
-                }
-                int y = (int)(center + target * yScale);
-                if ((y >= 0) && (y < (int)height)) {
-                    uchar4& pixel(pixels[y * width + x]);
-                    pixel.x = 255;
-                    pixel.y = 128;
-                };
-                y = (int)(center + solution * yScale);
-                if ((y >= 0) && (y < (int)height)) {
-                    uchar4& pixel(pixels[y * width + x]);
-                    pixel.x = pixel.y = pixel.z = 255;
-                };
-            }
-            statusString += Format(" Solution %d = %f", v, maxError);
+    window.Erase();
+    std::string statusString = "FireStarter:";
+    uchar4* pixels = (uchar4*)window.GetPixels();
+    unsigned int width = window.m_width;
+    unsigned int height = window.m_height;
+    float maxError = 0.0f;
+    for (unsigned int v = 0; v < SOLUTION_VARIATIONS; v++) {
+        int xScale = height / 8;
+        int yScale = height / 16;
+        for (unsigned int y = 0; y < height; y++) {
+            int x0 = (width / 2) - xScale;
+            int x1 = (width / 2) + xScale;
+            if (x0 >= 0) {
+                uchar4& pixel(pixels[y * width + x0]);
+                pixel.x = 64;
+                pixel.y = 128;
+                pixel.z = 64;
+            };
+            if (x1 < (int)width) {
+                uchar4& pixel(pixels[y * width + x1]);
+                pixel.x = 64;
+                pixel.y = 128;
+                pixel.z = 64;
+            };
         }
-        m_window.DisplayImage();
-        m_window.DisplayText(statusString);
-    }, sync);
+        for (unsigned int x = 0; x < width; x++) {
+            float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
+            float center = height * 0.66f;
+            float target = SolutionTarget(theta, v);
+#if SOLUTION_VARIATIONS == 1
+            float solution = Solution(theta);
+#else
+            float solution = Solution(theta, v);
+#endif
+            if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
+                float error = fabsf(solution - target);
+                maxError = max(maxError, error);
+            }
+            int y = (int)(center + target * yScale);
+            if ((y >= 0) && (y < (int)height)) {
+                uchar4& pixel(pixels[y * width + x]);
+                pixel.x = 255;
+                pixel.y = 128;
+            };
+            y = (int)(center + solution * yScale);
+            if ((y >= 0) && (y < (int)height)) {
+                uchar4& pixel(pixels[y * width + x]);
+                pixel.x = pixel.y = pixel.z = 255;
+            };
+        }
+        statusString += Format(" Solution %d = %f", v, maxError);
+    }
+    window.DisplayImage();
+    window.DisplayText(statusString);
 } // FireSolution
 
 void FireStarterShow::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double oldResult, double newResult, double average, double bestError, bool sync)

@@ -324,13 +324,6 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
 } // CompleteStates
 #endif
 
-void FireStarterComplete::CompleteSolution(bool sync)
-{
-    Dispatch([this] {
-        m_fireShow.FireSolution();
-    }, sync);
-} // CompleteSolution
-
 FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState) : CUDAThread("FireStarterComplete"), m_window(window), m_fireShow(window)
 {
     m_manager = manager;

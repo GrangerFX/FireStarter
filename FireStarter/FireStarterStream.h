@@ -7,6 +7,7 @@ private:
 	FireStarterWindow m_streamWindow;
 	FireStarterState& m_streamBestState;
 	FireStarterSettings m_streamSettings;
+	FireStarterSettings m_optimizeSettings;
 	std::string m_streamDate;
 	size_t m_streamIndex = 0;
 
@@ -14,18 +15,19 @@ private:
 	void RandomState(FireStarterState& evolveState);
 
 public:
-	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState);
-	static void Randomize(const FireStarterWindow& window, const FireStarterState& evolveState);
+	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings);
+	static void Randomize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings);
 	void RandomStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
 	void EvolveStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
-	FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index = 0);
+	FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings);
 	~FireStarterStream(void);
 }; // class FireStarterStream
 
 class FireStarterStreams : public SerialThread {
 private:
 	FireStarterWindow m_window;
-	FireStarterSettings m_settings;
+	FireStarterSettings m_streamSettings;
+	FireStarterSettings m_optimizeSettings;
 	FireStarterServer* m_server;
 	std::atomic<unsigned long long> m_testCount;
 
@@ -33,6 +35,6 @@ public:
 	bool SynchronizeStreams(std::vector<FireStarterStream*>& streams);
 	void RandomStreams(void);
 	void EvolveStreams(void);
-	FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& settings);
+	FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings);
 	~FireStarterStreams(void);
 }; // class FireStarterStreams

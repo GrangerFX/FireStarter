@@ -7,39 +7,35 @@
 #include "CUDAContext.h"
 #include "CUDACompile.h"
 
-void FireStarter::ControlRandom(void)
+void FireStarter::ControlRandom(const FireStarterSettings& randomSettings)
 {
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireStarterSettings randomSettings;
-    m_buildSettings.FireSettings(randomSettings, FIRESTARTER_RANDOM);
-    FireStarterStreams streams(m_window, m_server, randomSettings);
+    FireStarterSettings optimizeSettings;
+    m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
+    FireStarterStreams streams(m_window, m_server, randomSettings, optimizeSettings);
     streams.RandomStreams();
 } // ControlRandom
 
-void FireStarter::ControlEvolve(void)
+void FireStarter::ControlEvolve(const FireStarterSettings& evolveSettings)
 {
-    // Load the settings from the compiled CUDA code.
-    // This allows the settings to be modified without recompiling the main program.
-    FireStarterSettings evolveSettings;
-    m_buildSettings.FireSettings(evolveSettings, FIRESTARTER_EVOLVE);
-    FireStarterStreams streams(m_window, m_server, evolveSettings);
+    FireStarterSettings optimizeSettings;
+    m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
+    FireStarterStreams streams(m_window, m_server, evolveSettings, optimizeSettings);
     streams.EvolveStreams();
 } // ControlEvolve
 
+void FireStarter::ControlOptimize(const FireStarterSettings& optimizeSettings)
+{
+    FireStarterState evolveState;
+    LoadState(evolveState);
+    evolveState.Settings().CopyModeSettings(optimizeSettings);
+    evolveState.m_optimizePass = true;
+    FireStarterStream::Optimize(m_window, evolveState, optimizeSettings, optimizeSettings);
+} // ControlOptimize
+
 void FireStarter::ControlSolution(void)
 {
-    // The solution settings are all zeros. Only the mode is used.
-    FireStarterSettings settings(FIRESTARTER_SOLUTION);
-
-    // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(nullptr, m_window);
-
     // Draw the solution in the window.
-    complete->CompleteSolution();
-
-    // Delete the completion unit.
-    delete complete;
+    FireStarterShow::FireSolution(m_window);
 } // ControlSolution
 
 void FireStarter::ControlThread(void)
@@ -52,22 +48,14 @@ void FireStarter::ControlThread(void)
         switch (controlSettings.m_mode) {
             case FIRESTARTER_RANDOM:
                 // Random generations.
-                ControlRandom();
+                ControlRandom(controlSettings);
                 break;
             case FIRESTARTER_EVOLVE:
                 // Evolve generations.
-                ControlEvolve();
+                ControlEvolve(controlSettings);
                 break;
             case FIRESTARTER_OPTIMIZE:
-                {
-                    // Optimization evolution pass.
-                    FireStarterState evolveState;
-                    LoadState(evolveState);
-                    evolveState.Settings().CopyModeSettings(controlSettings);
-                    evolveState.Settings().m_mode = FIRESTARTER_OPTIMIZE; // This allows optimize tests to be run.
-                    evolveState.m_optimizePass = true;
-                    FireStarterStream::Optimize(m_window, evolveState);
-                }
+                ControlOptimize(controlSettings);
                 break;
             case FIRESTARTER_SOLUTION:
                 // Run the most recent solution.

@@ -91,6 +91,7 @@ bool FireStarterProgram::CopyInstructions(const FireStarterProgram& srcProgram)
     if ((EvolvedInstructionsData().size() == instructionsSize) && (OptimizedInstructionsData().size() == instructionsSize) && (srcProgram.EvolvedInstructionsData().size() == instructionsSize) && (srcProgram.OptimizedInstructionsData().size() == instructionsSize)) {
         memcpy(m_evolvedInstructionsData.data(), srcProgram.EvolvedInstructionsData().data(), instructionsSize);
         memcpy(m_optimizedInstructionsData.data(), srcProgram.OptimizedInstructionsData().data(), instructionsSize);
+        m_uniqueRegisters = srcProgram.m_uniqueRegisters;
         return true;
     }
     return false;

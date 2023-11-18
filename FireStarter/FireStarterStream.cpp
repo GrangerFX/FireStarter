@@ -151,17 +151,17 @@ void FireStarterStream::RandomState(FireStarterState& randomState)
     delete manager;
 } // RandomState
 
-void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStarterState& evolveState)
+void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings)
 {
     FireStarterState bestState(evolveState);
-    FireStarterStream stream(window, bestState, 0); // Provides serial thread WillTerminate() method.
+    FireStarterStream stream(0, window, bestState, streamSettings, optimizeSettings); // Provides serial thread WillTerminate() method.
     stream.OptimizeState(evolveState);
 } // Optimize
 
-void FireStarterStream::Randomize(const FireStarterWindow& window, const FireStarterState& evolveState)
+void FireStarterStream::Randomize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings)
 {
     FireStarterState bestState(evolveState);
-    FireStarterStream stream(window, bestState, 0); // Provides serial thread WillTerminate() method.
+    FireStarterStream stream(0, window, bestState, streamSettings, optimizeSettings); // Provides serial thread WillTerminate() method.
     stream.RandomState(bestState);
 } // Randomize
 
@@ -310,8 +310,8 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
 #if FIRESTARTER_EVOLVE_OPTIMIZE
             // Optimize the evolved state.
-            FireStarterState optimizeState(m_streamSettings, bestEvolveState.m_id, bestEvolveState.m_test);
-            optimizeState.m_program = bestEvolveState.m_program;
+            FireStarterState optimizeState(m_optimizeSettings, bestEvolveState.m_id, bestEvolveState.m_test);
+            optimizeState.m_program.CopyInstructions(bestEvolveState.m_program);
             optimizeState.Settings().m_units = 1;
             optimizeState.m_generation = bestEvolveState.m_generation;
             optimizeState.m_optimizePass = true;
@@ -384,11 +384,13 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
     }, sync);
 } // EvolveStream
 
-FireStarterStream::FireStarterStream(const FireStarterWindow& window, FireStarterState& bestState, size_t index) : SerialThread(Format("FireStarterStream%zu", index)), m_streamWindow(window), m_streamBestState(bestState), m_streamIndex(index)
+FireStarterStream::FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings) : SerialThread(Format("FireStarterStream%zu", index)),
+    m_streamIndex(index),
+    m_streamWindow(window),
+    m_streamBestState(bestState),
+    m_streamSettings(streamSettings),
+    m_optimizeSettings(optimizeSettings)
 {
-    // Get the stream settings.
-    m_streamSettings = m_streamBestState.Settings();
-
     static std::string fileDate;
     if (fileDate.empty())
         fileDate = FileNameDate().c_str();
@@ -413,14 +415,14 @@ void FireStarterStreams::RandomStreams(void)
     // Initialize the streams.
     DispatchSync([this] {
         // Generate sequential random programs and test each of them.
-        size_t randomTests = m_settings.m_seeds * MAX(m_settings.m_tests, 1);
-        size_t numStreams = MAX(MIN(FIRESTARTER_STREAMS, MIN(m_settings.m_units, randomTests)), 1);
-        FireStarterState bestState(m_settings);
+        size_t randomTests = m_streamSettings.m_seeds * MAX(m_streamSettings.m_tests, 1);
+        size_t numStreams = MAX(MIN(FIRESTARTER_STREAMS, MIN(m_streamSettings.m_units, randomTests)), 1);
+        FireStarterState bestState(m_streamSettings);
 
         // Create the streams.
         std::vector<FireStarterStream*> streams(numStreams, nullptr);
         for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream] = new FireStarterStream(m_window, bestState, stream);
+            streams[stream] = new FireStarterStream(stream, m_window, bestState, m_streamSettings, m_optimizeSettings);
 
         // Randomize and test the streams.
         m_testCount = 0;
@@ -441,13 +443,13 @@ void FireStarterStreams::EvolveStreams(void)
     // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
     // Initialize the streams.
     DispatchSync([this] {
-        size_t numStreams = MAX(MIN(FIRESTARTER_STREAMS, MIN(m_settings.m_units, m_settings.m_tests)), 1);
-        FireStarterState bestState(m_settings);
+        size_t numStreams = MAX(MIN(FIRESTARTER_STREAMS, MIN(m_streamSettings.m_units, m_streamSettings.m_tests)), 1);
+        FireStarterState bestState(m_streamSettings);
 
         // Create the streams.
         std::vector<FireStarterStream*> streams(numStreams, nullptr);
         for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream] = new FireStarterStream(m_window, bestState, stream);
+            streams[stream] = new FireStarterStream(stream, m_window, bestState, m_streamSettings, m_optimizeSettings);
 
         // Evolve the streams.
         m_testCount = 0;
@@ -473,7 +475,7 @@ void FireStarterStreams::EvolveStreams(void)
     });
 } // EvolveStreams
 
-FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& settings) : m_window(window), m_server(server), m_settings(settings), m_testCount(0)
+FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings) : m_window(window), m_server(server), m_streamSettings(streamSettings), m_optimizeSettings(optimizeSettings), m_testCount(0)
 {
 } // FireStarterStreams
 
