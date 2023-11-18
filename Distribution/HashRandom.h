@@ -42,6 +42,17 @@ inline unsigned int Hash32(unsigned int hash)
 
 #define SQUARES_SEED SQUARES_SEED0
 
+#define SEED(seed) ((seed) * SQUARES_SEED)
+#define SEED1(seed) ((seed) * SQUARES_SEED1)
+#define SEED2(seed) ((seed) * SQUARES_SEED2)
+#define SEED3(seed) ((seed) * SQUARES_SEED3)
+#define SEED4(seed) ((seed) * SQUARES_SEED4)
+#define SEED5(seed) ((seed) * SQUARES_SEED5)
+#define SEED6(seed) ((seed) * SQUARES_SEED6)
+#define SEED7(seed) ((seed) * SQUARES_SEED7)
+#define SEED8(seed) ((seed) * SQUARES_SEED8)
+#define SEED9(seed) ((seed) * SQUARES_SEED9)
+
 // Squares 32 bit random number generator
 // From Bernard Widynski's paper
 // Squares: A Fast Counter-Based RNG
