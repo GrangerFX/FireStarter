@@ -133,22 +133,19 @@ public:
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
 #if FIRESTARTER_EVOLVE_CHAOS == 1
-        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_generation) + optimization) + m_test);
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(m_generation) + SEED3(optimization) + SEED4(m_test);
 #elif FIRESTARTER_EVOLVE_CHAOS == 2
-        return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_id) + optimization) + m_test);
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(m_id) + SEED3(optimization) + SEED4(m_test);
 #elif FIRESTARTER_EVOLVE_CHAOS == 3
-        return RANDOM(RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + m_id) + m_generation) + optimization) + m_test);
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(m_id) + SEED3(m_generation) + SEED4(optimization) + SEED5(m_test);
 #else
-        return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_optimizeSeed) + optimization) + m_test);
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
 #endif
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const
     {
-        if (m_test)
-            return RANDOM(RANDOM(RANDOM(RANDOM(m_program.m_settings.m_evolveSeed) + m_generation) + m_id) + m_test);
-        else
-            return RANDOM(RANDOM(RANDOM(m_program.m_settings.m_evolveSeed) + m_generation) + m_id);
+        return SEED1(m_program.m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_id) + SEED4(m_test);
     } // GenerationSeed
 
     unsigned long long InitGenerationSeed(void)

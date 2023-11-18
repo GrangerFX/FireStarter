@@ -42,16 +42,16 @@ inline unsigned int Hash32(unsigned int hash)
 
 #define SQUARES_SEED SQUARES_SEED0
 
-#define SEED(seed) ((seed) * SQUARES_SEED)
-#define SEED1(seed) ((seed) * SQUARES_SEED1)
-#define SEED2(seed) ((seed) * SQUARES_SEED2)
-#define SEED3(seed) ((seed) * SQUARES_SEED3)
-#define SEED4(seed) ((seed) * SQUARES_SEED4)
-#define SEED5(seed) ((seed) * SQUARES_SEED5)
-#define SEED6(seed) ((seed) * SQUARES_SEED6)
-#define SEED7(seed) ((seed) * SQUARES_SEED7)
-#define SEED8(seed) ((seed) * SQUARES_SEED8)
-#define SEED9(seed) ((seed) * SQUARES_SEED9)
+#define SEED(seed)  ((unsigned long long)(seed) * SQUARES_SEED)
+#define SEED1(seed) ((unsigned long long)(seed) * SQUARES_SEED1)
+#define SEED2(seed) ((unsigned long long)(seed) * SQUARES_SEED2)
+#define SEED3(seed) ((unsigned long long)(seed) * SQUARES_SEED3)
+#define SEED4(seed) ((unsigned long long)(seed) * SQUARES_SEED4)
+#define SEED5(seed) ((unsigned long long)(seed) * SQUARES_SEED5)
+#define SEED6(seed) ((unsigned long long)(seed) * SQUARES_SEED6)
+#define SEED7(seed) ((unsigned long long)(seed) * SQUARES_SEED7)
+#define SEED8(seed) ((unsigned long long)(seed) * SQUARES_SEED8)
+#define SEED9(seed) ((unsigned long long)(seed) * SQUARES_SEED9)
 
 // Squares 32 bit random number generator
 // From Bernard Widynski's paper
@@ -86,7 +86,7 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 //#define RANDOMHASH(seed) Squares32((unsigned long long)(seed))
 #define RANDOMHASH(seed) Squares64((unsigned long long)(seed))
 
-#define RANDOM(seed) RANDOMHASH(seed)
+#define RANDOM(seed)  RANDOMHASH(seed)
 #define RANDOM1(seed) Squares64(seed, SQUARES_SEED1)
 #define RANDOM2(seed) Squares64(seed, SQUARES_SEED2)
 #define RANDOM3(seed) Squares64(seed, SQUARES_SEED3)
