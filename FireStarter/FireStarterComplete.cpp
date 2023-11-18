@@ -181,6 +181,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
     return result;
 } // CompleteState
 
+#if 0
 bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, bool sync)
 {
     bool result = true;
@@ -250,6 +251,78 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
     }, sync);
     return result;
 } // CompleteStates
+#else
+bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, bool sync)
+{
+    bool result = true;
+    Dispatch([this, &allStates, &result] {
+        // Sort the states as they are received.
+        size_t numStates = allStates.size();
+        FireStarterState bestState = allStates[0];
+        std::vector<FireStarterState> newStates(numStates);
+        bool abort = false;
+        for (size_t i = 0; i < numStates; i++) {
+            // Get the next job in the order they are completed.
+            FireStarterJob* job = m_manager->GetComplete();
+            if (!job) {
+                abort = true;
+                break;
+            }
+
+            // Sort the completed jobs by index.
+            // Note: Must be by index and not id since allStates and newStates must be in the same order for the code below.
+            size_t index = job->m_state.m_index;
+            if (!newStates[index].Results())
+                newStates[index] = job->m_state;
+            else
+                printf("Error: Completed state index already received: %llu\n", index);
+            m_manager->AddFree(job);
+        }
+
+        if (!abort) {
+            // Update the best state and display the results.
+            bool found = false;
+            for (size_t i = 0; i < numStates; i++) {
+                FireStarterState& oldState = allStates[i];
+                FireStarterState& newState = newStates[i];
+                float oldResult = oldState.m_maxResult;
+                float newResult = newState.m_maxResult;
+                if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
+                    oldState = newState;
+                    oldState.m_evolution++;
+                    found = true;
+                }
+                result &= !CompleteResults(bestState, oldState, newState.m_generation, oldResult, newResult);
+            }
+
+            // Sort the states, least maximum result first.
+            if (found)
+                for (size_t i = 0; i < numStates; i++) {
+                    size_t min = i;
+                    float minResult = allStates[i].m_maxResult;
+                    for (size_t j = i + 1; j < numStates; j++) {
+                        float currentResult = allStates[j].m_maxResult;
+                        if (currentResult < minResult) {
+                            minResult = currentResult;
+                            min = j;
+                        }
+                    }
+                    if (min != i) {
+                        FireStarterState temp = allStates[i];
+                        allStates[i] = allStates[min];
+                        allStates[min] = temp;
+                    }
+                    allStates[i].m_index = i;
+                }
+
+            // Has the evolve target been reached?
+            if (bestState.m_maxResult <= FIRESTARTER_EVOLVE_TARGET)
+                result = true;
+        }
+    }, sync);
+    return result;
+} // CompleteStates
+#endif
 
 void FireStarterComplete::CompleteSolution(bool sync)
 {
