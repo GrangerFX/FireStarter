@@ -313,8 +313,9 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             FireStarterState optimizeState(m_optimizeSettings, bestEvolveState.m_id, bestEvolveState.m_test);
             optimizeState.m_program.CopyInstructions(bestEvolveState.m_program);
             optimizeState.Settings().m_units = 1;
-            optimizeState.m_generation = bestEvolveState.m_generation;
+            optimizeState.Settings().m_mode = m_streamSettings.m_mode;
             optimizeState.m_optimizePass = true;
+            optimizeState.m_generation = bestEvolveState.m_generation;
             optimizeState.m_optimization = 0;
 
             // Generate the optimize code.
