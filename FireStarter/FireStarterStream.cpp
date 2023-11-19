@@ -151,17 +151,17 @@ void FireStarterStream::RandomState(FireStarterState& randomState)
     delete manager;
 } // RandomState
 
-void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings)
+void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings)
 {
     FireStarterState bestState(evolveState);
-    FireStarterStream stream(0, window, bestState, streamSettings, optimizeSettings); // Provides serial thread WillTerminate() method.
+    FireStarterStream stream(0, window, bestState, streamSettings); // Provides serial thread WillTerminate() method.
     stream.OptimizeState(evolveState);
 } // Optimize
 
-void FireStarterStream::Randomize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings)
+void FireStarterStream::Randomize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings)
 {
     FireStarterState bestState(evolveState);
-    FireStarterStream stream(0, window, bestState, streamSettings, optimizeSettings); // Provides serial thread WillTerminate() method.
+    FireStarterStream stream(0, window, bestState, streamSettings); // Provides serial thread WillTerminate() method.
     stream.RandomState(bestState);
 } // Randomize
 
@@ -308,51 +308,48 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed, test);
             resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
 
-#if FIRESTARTER_EVOLVE_OPTIMIZE
             // Optimize the evolved state.
-            FireStarterState optimizeState(m_optimizeSettings, bestEvolveState.m_id, bestEvolveState.m_test);
-            optimizeState.m_program.CopyInstructions(bestEvolveState.m_program);
-            optimizeState.Settings().m_units = 1;
-            optimizeState.Settings().m_mode = m_streamSettings.m_mode;
-            optimizeState.m_optimizePass = true;
-            optimizeState.m_generation = bestEvolveState.m_generation;
-            optimizeState.m_optimization = 0;
+            if (evolveSettings.m_optimize) {
+                FireStarterState optimizeState(bestEvolveState);
+                optimizeState.m_optimizePass = true;
+                optimizeState.m_optimization = 0;
 
-            // Generate the optimize code.
-            if (evolve->GenerateOptimize(optimizeState)) {
+                // Generate the optimize code.
+                if (evolve->GenerateOptimize(optimizeState)) {
 
-                // Compile the optimize module.
-                FireStarterExecute* executeOptimize = executionUnits[0];
-                executeOptimize->ExecuteCompile();
+                    // Compile the optimize module.
+                    FireStarterExecute* executeOptimize = executionUnits[0];
+                    executeOptimize->ExecuteCompile();
 
-                // Initialize the population data
-                executeOptimize->ExecuteInitPopulation(true);
+                    // Initialize the population data
+                    executeOptimize->ExecuteInitPopulation(true);
 
-                // The best state is used for the status display and termination condition.
-                FireStarterState bestOptimizeState(optimizeState);
+                    // The best state is used for the status display and termination condition.
+                    FireStarterState bestOptimizeState(optimizeState);
 
-                // Loop until the the optimize completion condition or the host program is quit.
-                while (!WillTerminate()) {
-                    // Optimize the current generation.
-                    executeOptimize->ExecuteOptimize(optimizeState, false);
+                    // Loop until the the optimize completion condition or the host program is quit.
+                    while (!WillTerminate()) {
+                        // Optimize the current generation.
+                        executeOptimize->ExecuteOptimize(optimizeState, false);
 
-                    // Update the results in the UI and check for completion.
-                    if (complete->CompleteState(bestOptimizeState, optimizeState))
-                        break;
+                        // Update the results in the UI and check for completion.
+                        if (complete->CompleteState(bestOptimizeState, optimizeState))
+                            break;
 
-                    // Increment the generation.
-                    optimizeState.m_generation++;
-               }
+                        // Increment the generation.
+                        optimizeState.m_generation++;
+                    }
 
-                // Save the best optimized state for all streams.
-                complete->SaveBest(bestOptimizeState);
+                    // Save the best optimized state for all streams.
+                    complete->SaveBest(bestOptimizeState);
 
-                // Output the optimize results.
-                resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
-                if (bestOptimizeState.m_maxResult < 0.000001f)
-                    resultText += " *******";
+                    // Output the optimize results.
+                    resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
+                }
             }
-#endif
+
+            if (bestEvolveState.m_maxResult < 0.000001f)
+                resultText += " *******";
             resultText += "\n";
             FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()), resultText);
 
@@ -385,12 +382,11 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
     }, sync);
 } // EvolveStream
 
-FireStarterStream::FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings) : SerialThread(Format("FireStarterStream%zu", index)),
+FireStarterStream::FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings) : SerialThread(Format("FireStarterStream%zu", index)),
     m_streamIndex(index),
     m_streamWindow(window),
     m_streamBestState(bestState),
-    m_streamSettings(streamSettings),
-    m_optimizeSettings(optimizeSettings)
+    m_streamSettings(streamSettings)
 {
     static std::string fileDate;
     if (fileDate.empty())
@@ -423,7 +419,7 @@ void FireStarterStreams::RandomStreams(void)
         // Create the streams.
         std::vector<FireStarterStream*> streams(numStreams, nullptr);
         for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream] = new FireStarterStream(stream, m_window, bestState, m_streamSettings, m_optimizeSettings);
+            streams[stream] = new FireStarterStream(stream, m_window, bestState, m_streamSettings);
 
         // Randomize and test the streams.
         m_testCount = 0;
@@ -450,7 +446,7 @@ void FireStarterStreams::EvolveStreams(void)
         // Create the streams.
         std::vector<FireStarterStream*> streams(numStreams, nullptr);
         for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream] = new FireStarterStream(stream, m_window, bestState, m_streamSettings, m_optimizeSettings);
+            streams[stream] = new FireStarterStream(stream, m_window, bestState, m_streamSettings);
 
         // Evolve the streams.
         m_testCount = 0;
@@ -476,7 +472,7 @@ void FireStarterStreams::EvolveStreams(void)
     });
 } // EvolveStreams
 
-FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings) : m_window(window), m_server(server), m_streamSettings(streamSettings), m_optimizeSettings(optimizeSettings), m_testCount(0)
+FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings) : m_window(window), m_server(server), m_streamSettings(streamSettings), m_testCount(0)
 {
 } // FireStarterStreams
 

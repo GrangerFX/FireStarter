@@ -11,7 +11,6 @@
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008  // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    0          // Output evolve debugging information.
-#define FIRESTARTER_EVOLVE_OPTIMIZE 1          // Optimize the best evolved results.
 #define FIRESTARTER_EVOLVE_CHAOS    1          // Randomize the data for each member
 #define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
@@ -31,25 +30,27 @@
 #define FIRESTARTER_RANDOM_POPULATION       4352 * 64
 #define FIRESTARTER_RANDOM_ITERATIONS       256
 #define FIRESTARTER_RANDOM_CANDIDATES       16
-#define FIRESTARTER_RANDOM_OPTIMIZATIONS    100
+#define FIRESTARTER_RANDOM_PASSES           100
 #define FIRESTARTER_RANDOM_PRECISION        0
 #define FIRESTARTER_RANDOM_ATTEMPTS         32
 #define FIRESTARTER_RANDOM_SCALE            0.1f
 #define FIRESTARTER_RANDOM_START_SCALE      2.0f
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
+#define FIRESTARTER_RANDOM_OPTIMIZE         0
 
-#define FIRESTARTER_EVOLVE_TESTS            16
+#define FIRESTARTER_EVOLVE_TESTS            1
 #define FIRESTARTER_EVOLVE_SEEDS            64
 #define FIRESTARTER_EVOLVE_UNITS            4
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
 #define FIRESTARTER_EVOLVE_ITERATIONS       64
 #define FIRESTARTER_EVOLVE_CANDIDATES       16
-#define FIRESTARTER_EVOLVE_OPTIMIZATIONS    500
+#define FIRESTARTER_EVOLVE_PASSES           500
 #define FIRESTARTER_EVOLVE_PRECISION        0
 #define FIRESTARTER_EVOLVE_ATTEMPTS         64
 #define FIRESTARTER_EVOLVE_SCALE            0.1f
 #define FIRESTARTER_EVOLVE_START_SCALE      2.0f
 #define FIRESTARTER_EVOLVE_START_RESULT     10.0f
+#define FIRESTARTER_EVOLVE_OPTIMIZE         8
 
 #define FIRESTARTER_OPTIMIZE_TESTS          0
 #define FIRESTARTER_OPTIMIZE_SEEDS          1
@@ -57,12 +58,13 @@
 #define FIRESTARTER_OPTIMIZE_POPULATION     4352 * 64
 #define FIRESTARTER_OPTIMIZE_ITERATIONS     64
 #define FIRESTARTER_OPTIMIZE_CANDIDATES     16
-#define FIRESTARTER_OPTIMIZE_OPTIMIZATIONS  100
+#define FIRESTARTER_OPTIMIZE_PASSES         100
 #define FIRESTARTER_OPTIMIZE_PRECISION      0
 #define FIRESTARTER_OPTIMIZE_ATTEMPTS       32
 #define FIRESTARTER_OPTIMIZE_SCALE          0.1f
 #define FIRESTARTER_OPTIMIZE_START_SCALE    2.0f
 #define FIRESTARTER_OPTIMIZE_START_RESULT   10.0f
+#define FIRESTARTER_OPTIMIZE_OPTIMIZE       0
 
 #define FIRESTARTER_MULTIPLY_ADD     0
 #define FIRESTARTER_MULTIPLY_ADD_ABS 1
@@ -186,10 +188,11 @@ public:
     unsigned int m_units;
     unsigned int m_population;
     unsigned int m_iterations;
-    unsigned int m_optimizations;
-    unsigned int m_precision;
     unsigned int m_candidates;
+    unsigned int m_passes;
+    unsigned int m_precision;
     unsigned int m_attempts;
+    unsigned int m_optimize;
 
     float m_scale;
     float m_startScale;
@@ -223,24 +226,26 @@ public:
         m_instructions = source.m_instructions;
         m_registers = source.m_registers;
         m_opcodes = source.m_opcodes;
+        m_patternOpcodes = source.m_patternOpcodes;
         m_targetMin = source.m_targetMin;
         m_targetMax = source.m_targetMax;
     } // CopyCodeSettings
 
     inline void CopyModeSettings(const FireStarterSettings& source)
     {
-        m_mode = source.m_mode;
         m_evolveSeed = source.m_evolveSeed;
         m_optimizeSeed = source.m_optimizeSeed;
+        m_mode = source.m_mode;
         m_tests = source.m_tests;
         m_seeds = source.m_seeds;
         m_units = source.m_units;
         m_population = source.m_population;
         m_iterations = source.m_iterations;
-        m_optimizations = source.m_optimizations;
-        m_precision = source.m_precision;
         m_candidates = source.m_candidates;
+        m_passes = source.m_passes;
+        m_precision = source.m_precision;
         m_attempts = source.m_attempts;
+        m_optimize = source.m_optimize;
         m_scale = source.m_scale;
         m_startScale = source.m_startScale;
         m_startResult = source.m_startResult;
@@ -270,9 +275,10 @@ public:
                 m_population =    FIRESTARTER_RANDOM_POPULATION;
                 m_iterations =    FIRESTARTER_RANDOM_ITERATIONS;
                 m_candidates =    FIRESTARTER_RANDOM_CANDIDATES;
-                m_optimizations = FIRESTARTER_RANDOM_OPTIMIZATIONS;
+                m_passes =        FIRESTARTER_RANDOM_PASSES;
                 m_precision =     FIRESTARTER_RANDOM_PRECISION;
                 m_attempts =      FIRESTARTER_RANDOM_ATTEMPTS;
+                m_optimize =      FIRESTARTER_RANDOM_OPTIMIZE;
                 m_scale =         FIRESTARTER_RANDOM_SCALE;
                 m_startScale =    FIRESTARTER_RANDOM_START_SCALE;
                 m_startResult =   FIRESTARTER_RANDOM_START_RESULT;
@@ -285,9 +291,10 @@ public:
                 m_population =    FIRESTARTER_EVOLVE_POPULATION;
                 m_iterations =    FIRESTARTER_EVOLVE_ITERATIONS;
                 m_candidates =    FIRESTARTER_EVOLVE_CANDIDATES;
-                m_optimizations = FIRESTARTER_EVOLVE_OPTIMIZATIONS;
+                m_passes =        FIRESTARTER_EVOLVE_PASSES;
                 m_precision =     FIRESTARTER_EVOLVE_PRECISION;
                 m_attempts =      FIRESTARTER_EVOLVE_ATTEMPTS;
+                m_optimize =      FIRESTARTER_EVOLVE_OPTIMIZE;
                 m_scale =         FIRESTARTER_EVOLVE_SCALE;
                 m_startScale =    FIRESTARTER_EVOLVE_START_SCALE;
                 m_startResult =   FIRESTARTER_EVOLVE_START_RESULT;
@@ -300,9 +307,10 @@ public:
                 m_population =    FIRESTARTER_OPTIMIZE_POPULATION;
                 m_iterations =    FIRESTARTER_OPTIMIZE_ITERATIONS;
                 m_candidates =    FIRESTARTER_OPTIMIZE_CANDIDATES;
-                m_optimizations = FIRESTARTER_OPTIMIZE_OPTIMIZATIONS;
+                m_passes =        FIRESTARTER_OPTIMIZE_PASSES;
                 m_precision =     FIRESTARTER_OPTIMIZE_PRECISION;
                 m_attempts =      FIRESTARTER_OPTIMIZE_ATTEMPTS;
+                m_optimize =      FIRESTARTER_OPTIMIZE_OPTIMIZE;
                 m_scale =         FIRESTARTER_OPTIMIZE_SCALE;
                 m_startScale =    FIRESTARTER_OPTIMIZE_START_SCALE;
                 m_startResult =   FIRESTARTER_OPTIMIZE_START_RESULT;
@@ -316,9 +324,10 @@ public:
                 m_population = 0;
                 m_iterations = 0;
                 m_candidates = 0;
-                m_optimizations = 0;
+                m_passes = 0;
                 m_precision = 0;
                 m_attempts = 0;
+                m_optimize = 0;
                 m_scale = 0.0f;
                 m_startScale = 0.0f;
                 m_startResult = 0.0f;

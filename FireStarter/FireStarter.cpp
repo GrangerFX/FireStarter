@@ -9,27 +9,23 @@
 
 void FireStarter::ControlRandom(const FireStarterSettings& randomSettings)
 {
-    FireStarterSettings optimizeSettings;
-    m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
-    FireStarterStreams streams(m_window, m_server, randomSettings, optimizeSettings);
+    FireStarterStreams streams(m_window, m_server, randomSettings);
     streams.RandomStreams();
 } // ControlRandom
 
 void FireStarter::ControlEvolve(const FireStarterSettings& evolveSettings)
 {
-    FireStarterSettings optimizeSettings;
-    m_buildSettings.FireSettings(optimizeSettings, FIRESTARTER_OPTIMIZE);
-    FireStarterStreams streams(m_window, m_server, evolveSettings, optimizeSettings);
+    FireStarterStreams streams(m_window, m_server, evolveSettings);
     streams.EvolveStreams();
 } // ControlEvolve
 
 void FireStarter::ControlOptimize(const FireStarterSettings& optimizeSettings)
 {
-    FireStarterState evolveState;
-    LoadState(evolveState);
-    evolveState.Settings().CopyModeSettings(optimizeSettings);
-    evolveState.m_optimizePass = true;
-    FireStarterStream::Optimize(m_window, evolveState, optimizeSettings, optimizeSettings);
+    FireStarterState optimizeState;
+    LoadState(optimizeState);
+    optimizeState.Settings().CopyModeSettings(optimizeSettings);
+    optimizeState.m_optimizePass = true;
+    FireStarterStream::Optimize(m_window, optimizeState, optimizeSettings);
 } // ControlOptimize
 
 void FireStarter::ControlSolution(void)

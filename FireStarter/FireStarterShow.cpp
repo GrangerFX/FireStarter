@@ -204,7 +204,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
                 spaceString = ">New Result";
             statusString += Format("  Old Result=%.8f %s=%.8f", oldResult, spaceString.c_str(), newResult);
         } else {
-            if (settings.m_units > 1)
+            if ((settings.m_units > 1) && !state.m_optimizePass)
                 statusString += Format("  Unit=%u", state.m_index % settings.m_units);
 
             statusString += Format("  Generation=%3u", generation);

@@ -15,11 +15,11 @@ private:
 	void RandomState(FireStarterState& evolveState);
 
 public:
-	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings);
-	static void Randomize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings);
+	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings);
+	static void Randomize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings);
 	void RandomStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
 	void EvolveStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
-	FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings);
+	FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
 	~FireStarterStream(void);
 }; // class FireStarterStream
 
@@ -35,6 +35,6 @@ public:
 	bool SynchronizeStreams(std::vector<FireStarterStream*>& streams);
 	void RandomStreams(void);
 	void EvolveStreams(void);
-	FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings, const FireStarterSettings& optimizeSettings);
+	FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings);
 	~FireStarterStreams(void);
 }; // class FireStarterStreams

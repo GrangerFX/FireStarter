@@ -85,14 +85,14 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     FireStarterSettings settings = state.Settings();
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
-    unsigned long long optimizations = settings.m_optimizations;
+    unsigned long long passes = settings.m_passes;
     unsigned long long optimization = state.m_optimization;
 
-    for (unsigned int g = 0; g < optimizations; g++) {
+    for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
         unsigned int maxRegisters = state.m_program.m_uniqueRegisters;
-        FireStarterPopulation* newResults = g & 1 ? m_devicePopulation0 : m_devicePopulation1;
-        FireStarterPopulation* oldResults = g & 1 ? m_devicePopulation1 : m_devicePopulation0;
+        FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
+        FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long optimizationSeed = state.OptimizationSeed(optimization);
         int initData = optimization == 0;
 
@@ -122,10 +122,11 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     }
 
     // Single GPUs have their data syncronized with the host here.
-    FireStarterPopulation* newPopulation = settings.m_optimizations & 1 ? m_devicePopulation1 : m_devicePopulation0;
-    FireStarterPopulation* oldPopulation = settings.m_optimizations & 1 ? m_devicePopulation0 : m_devicePopulation1;
+    bool oddPasses = settings.m_passes & 1;
+    FireStarterPopulation* newPopulation = oddPasses ? m_devicePopulation1 : m_devicePopulation0;
+    FireStarterPopulation* oldPopulation = oddPasses ? m_devicePopulation0 : m_devicePopulation1;
     checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, stream));
-    if (settings.m_optimizations & 1)
+    if (oddPasses)
         checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
 
@@ -199,7 +200,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
 void FireStarterExecute::OptimizePass(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
-    unsigned int optimizations = settings.m_optimizations;
+    unsigned int passes = settings.m_passes;
     unsigned int variations = settings.m_variations;
     for (unsigned int v = 0; v < variations; v++)
         OptimizeGenerations(state, v);
@@ -209,7 +210,7 @@ void FireStarterExecute::OptimizePass(FireStarterState& state)
     state.m_optimizeValid = true;
 
     // Increment the state's optimizations.
-    state.m_optimization += optimizations;
+    state.m_optimization += passes;
 } // OptimizePass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
