@@ -1,13 +1,5 @@
 #pragma once
 
-#ifndef MIN
-#define MIN(a, b) ((a) <= (b) ? (a) : (b))
-#endif
-
-#ifndef MAX
-#define MAX(a, b) ((a) >= (b) ? (a) : (b))
-#endif
-
 // Some keys for Squares
 #define SQUARES_SEED0 0xfbe3c695413b867f
 #define SQUARES_SEED1 0x85493e21f23649a5
@@ -54,98 +46,8 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
     return t ^ ((x * x + y) >> 32); /* round 5 */
 } // Squares64
 
-#define RANDOMHASH(seed) Squares64((unsigned long long)(seed))
-#define RANDOM(seed) RANDOMHASH(seed)
-
-#if 1
-// New way: Prefer the high 32 bits for mod and float random.
-#define RANDOMSEED(seed)   ((unsigned int)(RANDOM(seed++) >> 32))
-#else
-// Old way: Prefer the low 32 bits for mod and float random.
-#define RANDOMSEED(seed)   (unsigned int)RANDOM(seed++)
-#endif
+#define RANDOM(seed)       ((unsigned int)(Squares64(seed) >> 32))
+#define RANDOMSEED(seed)   RANDOM(seed++)
 #define RANDOMMOD(seed, m) ((RANDOMSEED(seed) * (unsigned long long)(m)) >> 32)
 #define RANDOMNUM(seed)    (RANDOMSEED(seed) * 2.328306436E-10f)         // yields a number between 0 and <1
 #define RANDOMFACTOR(seed) (((int)RANDOMSEED(seed)) * 4.656612873E-10f)  // yields a number between -1 and 1
-
-// From: Correlated Multi-Jittered Sampling by Andrew Kensler
-// https://graphics.pixar.com/library/MultiJitteredSampling/paper.pdf
-inline unsigned int CorrelatedPermute(unsigned int i, unsigned int l, unsigned int p)
-{
-	unsigned int w = l - 1;
-	w |= w >> 1;
-	w |= w >> 2;
-	w |= w >> 4;
-	w |= w >> 8;
-	w |= w >> 16;
-	do {
-		i ^= p;
-		i *= 0xe170893d;
-		i ^= p >> 16;
-		i ^= (i & w) >> 4;
-		i ^= p >> 8;
-		i *= 0x0929eb3f;
-		i ^= p >> 23;
-		i ^= (i & w) >> 1;
-		i *= 1 | p >> 27;
-		i *= 0x6935fa69;
-		i ^= (i & w) >> 11;
-		i *= 0x74dcb303;
-		i ^= (i & w) >> 2;
-		i *= 0x9e501cc3;
-		i ^= (i & w) >> 2;
-		i *= 0xc860a3df;
-		i &= w;
-		i ^= i >> 5;
-	} while (i >= l);
-	return (i + p) % l;
-} // CorrelatedPermute
-
-inline unsigned int CorrelatedRandom(unsigned int i, unsigned int p)
-{
-	i ^= p;
-	i ^= i >> 17;
-	i ^= i >> 10;
-	i *= 0xb36534e5;
-	i ^= i >> 12;
-	i ^= i >> 21;
-	i *= 0x93fc4795;
-	i ^= 0xdf6e307f;
-	i ^= i >> 17;
-	return i * (1 | (p >> 18));
-} // CorrelatedRandom
-
-inline double CorrelatedRandomFloat(unsigned int i, unsigned int p)
-{
-	return CorrelatedRandom(i, p) * 2.328306436538696e-10;
-} // CorrelatedRandomFloat
-
-inline void CorrelatedMultiJitteredSample(unsigned int s, unsigned int p, unsigned int &m, unsigned int &n)
-{
-	unsigned int N = m * n;
-	s = CorrelatedPermute(s, N, p * 0x51633e2d);
-	int sx = CorrelatedPermute(s % m, m, p * 0x68bc21eb);
-	int sy = CorrelatedPermute(s / m, n, p * 0x02e5be93);
-	double jx = CorrelatedRandomFloat(s, p * 0x967a889b);
-	double jy = CorrelatedRandomFloat(s, p * 0x368cc8b7);
-	double x = (sx + (sy + jx) / n) / m;
-	double y = (s + jy) / N;
-	m = (unsigned int)floor(x * m);
-	n = (unsigned int)floor(x * n);
-} // CorrelatedMultiJitteredSample
-
-inline unsigned long long ReverseBits(unsigned long long data, unsigned int bits)
-{
-	unsigned long long result = 0;
-	unsigned int a = 1 << (bits - 1);
-	unsigned int b = 1;
-	while (a > b) {
-		if (data & a)
-			result |= b;
-		if (data & b)
-			result |= a;
-		a >>= 1;
-		b <<= 1;
-	}
-	return result;
-} // ReverseBits

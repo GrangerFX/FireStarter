@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <ImportGroup Label="PropertySheets" />
         <PropertyGroup Label="UserMacros">
-            <CUDAVer>12.1</CUDAVer>
+            <CUDAVer>12.3</CUDAVer>
 		<CUDA_PATH>C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v$(CUDAVer)</CUDA_PATH>
             <OptiXVer>7.7.0</OptiXVer>
             <OPTIX_PATH>C:/ProgramData/NVIDIA Corporation/OptiX SDK $(OptiXVer)</OPTIX_PATH>

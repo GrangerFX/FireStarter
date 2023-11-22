@@ -71,6 +71,9 @@
 #define FIRESTARTER_CODE_PATTERN     2
 #define FIRESTARTER_PROGRAM_MODE     FIRESTARTER_MULTIPLY_ADD
 
+#define MIN(a, b) ((a) <= (b) ? (a) : (b))
+#define MAX(a, b) ((a) >= (b) ? (a) : (b))
+
 typedef enum {
     Operation_multiply = 0,
     Operation_add,
