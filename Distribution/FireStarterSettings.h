@@ -11,7 +11,7 @@
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008  // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    0          // Output evolve debugging information.
-#define FIRESTARTER_EVOLVE_CHAOS    2          // Randomize the data for each member
+#define FIRESTARTER_EVOLVE_CHAOS    1          // Randomize the data for each member
 #define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
 

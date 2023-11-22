@@ -69,7 +69,7 @@ static void TestRandom(void)
         unsigned long long randomBucket[32] = {};
         unsigned long long total = 0;
         while (settingsGeneration < 100) {
-            unsigned long long seed = RANDOM(RANDOM(RANDOM(settingsSeed) + settingsGeneration) + settingsTest);
+            unsigned long long seed = SEED1(settingsSeed) + SEED2(settingsGeneration) + SEED3(settingsTest);
             for (unsigned long long iteration = 0; iteration < 100000; iteration++) {
                 unsigned int i = RANDOMMOD(seed, 32);
                 randomBucket[i]++;
