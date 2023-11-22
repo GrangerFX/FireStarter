@@ -181,7 +181,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
     return result;
 } // CompleteState
 
-#if 0
+#if FIRESTARTER_EVOLVE_ADD
 // Add new states and sort them for the best results.
 bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, bool sync)
 {
