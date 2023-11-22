@@ -194,13 +194,15 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     // Set the state's max result.
     state.m_maxResult = variationMax;
     state.m_optimizeValid = validResult;
+
+    // Increment the state's optimizations.
+    state.m_optimization += settings.m_passes;
     return validResult;
 } // Optimize
 
 void FireStarterExecute::OptimizePass(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
-    unsigned int passes = settings.m_passes;
     unsigned int variations = settings.m_variations;
     for (unsigned int v = 0; v < variations; v++)
         OptimizeGenerations(state, v);
@@ -210,7 +212,7 @@ void FireStarterExecute::OptimizePass(FireStarterState& state)
     state.m_optimizeValid = true;
 
     // Increment the state's optimizations.
-    state.m_optimization += passes;
+    state.m_optimization += settings.m_passes;
 } // OptimizePass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
