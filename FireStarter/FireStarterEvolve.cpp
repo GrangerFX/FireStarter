@@ -100,6 +100,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     do {
                         // Copy the program from the random index.
                         curState.m_program = allStates[copyIndex].m_program;
+                        curState.m_copy_id = allStates[copyIndex].m_copy_id;
 
                         // Randomize one instruction per 10 attempts.
                         unsigned int randomCount = (count / 10) + 1;
