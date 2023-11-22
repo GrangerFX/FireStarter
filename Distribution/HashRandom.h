@@ -46,8 +46,8 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
     return t ^ ((x * x + y) >> 32); /* round 5 */
 } // Squares64
 
-#define RANDOM(seed)       ((unsigned int)(Squares64(seed) >> 32))
-#define RANDOMSEED(seed)   RANDOM(seed++)
-#define RANDOMMOD(seed, m) ((RANDOMSEED(seed) * (unsigned long long)(m)) >> 32)
-#define RANDOMNUM(seed)    (RANDOMSEED(seed) * 2.328306436E-10f)         // yields a number between 0 and <1
-#define RANDOMFACTOR(seed) (((int)RANDOMSEED(seed)) * 4.656612873E-10f)  // yields a number between -1 and 1
+#define RANDOM(seed)       ((unsigned int)(Squares64(seed) >> 32))              // 32 bit psudeo random number generator based on a binary hash
+#define RANDOMSEED(seed)   RANDOM(seed++)                                       // generate the next random number in the sequence
+#define RANDOMMOD(seed, m) ((RANDOMSEED(seed) * (unsigned long long)(m)) >> 32) // yields a number between 0 and m - 1
+#define RANDOMNUM(seed)    (RANDOMSEED(seed) * 2.328306436E-10f)                // yields a number between 0 and <1
+#define RANDOMFACTOR(seed) (((int)RANDOMSEED(seed)) * 4.656612873E-10f)         // yields a number between -1 and 1
