@@ -44,12 +44,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         theta[i] = TARGET_MIN + i * sampleStep;
 
     // Evolve the program data for each variation.
-#if 1
-    unsigned long long seed = SEED1(optimizationSeed) + SEED2(v) + SEED3(member); // Unique seed for the generation/variation/member
-#else
-    unsigned long long memberSeed = RANDOM(RANDOM(optimizationSeed) + member);
-    unsigned long long seed = RANDOM(memberSeed + v); // Unique seed for the generation/member/variation
-#endif
+    unsigned long long seed = optimizationSeed + SEED10(v) + SEED11(member); // Unique seed for the generation/variation/member
     FireStarterData data;
     float oldResult;
     bool evolved = false;

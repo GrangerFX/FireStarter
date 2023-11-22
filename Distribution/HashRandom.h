@@ -33,6 +33,9 @@
 #define SEED7(seed) ((unsigned long long)(seed) * SQUARES_SEED7)
 #define SEED8(seed) ((unsigned long long)(seed) * SQUARES_SEED8)
 #define SEED9(seed) ((unsigned long long)(seed) * SQUARES_SEED9)
+#define SEED10(seed) ((unsigned long long)(seed) * SQUARES_SEED10)
+#define SEED11(seed) ((unsigned long long)(seed) * SQUARES_SEED11)
+#define SEED12(seed) ((unsigned long long)(seed) * SQUARES_SEED12)
 
 #define SQUARES_SEED SQUARES_SEED0
 
@@ -56,14 +59,14 @@ inline unsigned long long Squares64(unsigned long long ctr, unsigned long long k
 
 #if 1
 // New way: Prefer the high 32 bits for mod and float random.
-#define RANDOMSEED(seed)   (unsigned int)(RANDOM(seed++) >> 32)
+#define RANDOMSEED(seed)   ((unsigned int)(RANDOM(seed++) >> 32))
 #else
 // Old way: Prefer the low 32 bits for mod and float random.
 #define RANDOMSEED(seed)   (unsigned int)RANDOM(seed++)
 #endif
 #define RANDOMMOD(seed, m) ((RANDOMSEED(seed) * (unsigned long long)(m)) >> 32)
-#define RANDOMNUM(seed)    (RANDOMSEED(seed) * 2.328306436E-10f)       // yields a number between 0 and <1
-#define RANDOMFACTOR(seed) ((int)RANDOMSEED(seed) * 4.656612873E-10f)  // yields a number between -1 and 1
+#define RANDOMNUM(seed)    (RANDOMSEED(seed) * 2.328306436E-10f)         // yields a number between 0 and <1
+#define RANDOMFACTOR(seed) (((int)RANDOMSEED(seed)) * 4.656612873E-10f)  // yields a number between -1 and 1
 
 // From: Correlated Multi-Jittered Sampling by Andrew Kensler
 // https://graphics.pixar.com/library/MultiJitteredSampling/paper.pdf
