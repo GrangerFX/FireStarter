@@ -88,9 +88,9 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 } else {
 #if 1
                     // Select a random index lower but close to the current index.
-//                    size_t randomIndex = RANDOMMOD(seed, numStates / 2);
-//                    size_t copyIndex = index > randomIndex ? index - randomIndex : index;
-                    size_t copyIndex = index;
+                    size_t randomIndex = RANDOMMOD(seed, numStates / 2);
+                    size_t copyIndex = index > randomIndex ? index - randomIndex : index;
+//                    size_t copyIndex = index;
 #else
                     // Randomly select an index to copy that is the same or better (lower) than the current index.
                     size_t copyIndex = index ? RANDOMMOD(seed, index) : 0;
