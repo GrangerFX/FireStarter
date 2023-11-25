@@ -87,6 +87,11 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                 } else {
 #if 1
+                    // Select a random index a based on a probability curve.
+                    float randomFactor = RANDOMNUM(seed);
+                    size_t copyIndex = (size_t)(numStates * (randomFactor * randomFactor));
+#endif
+#if 0
                     // Select a random index in the best 50%.
                     size_t copyIndex = RANDOMMOD(seed, numStates / 2);
 #endif

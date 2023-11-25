@@ -1,0 +1,16 @@
+Duration: 6392.4  Evolve Seed=0  Test=2  Generation=12  Evolve Result=0.00000048  Optimize Generation=12  Optimize Result=0.00000048 *******
+Duration: 8189.0  Evolve Seed=0  Test=1  Generation=15  Evolve Result=0.00000036  Optimize Generation=15  Optimize Result=0.00000036 *******
+Duration: 9254.4  Evolve Seed=0  Test=0  Generation=20  Evolve Result=0.00000072  Optimize Generation=20  Optimize Result=0.00000072 *******
+Duration: 16091.9  Evolve Seed=0  Test=4  Generation=20  Evolve Result=0.00000077  Optimize Generation=20  Optimize Result=0.00000077 *******
+Duration: 17135.5  Evolve Seed=0  Test=6  Generation=16  Evolve Result=0.00000012  Optimize Generation=16  Optimize Result=0.00000012 *******
+Duration: 28335.5  Evolve Seed=0  Test=8  Generation=23  Evolve Result=0.00000030  Optimize Generation=23  Optimize Result=0.00000030 *******
+Duration: 44169.8  Evolve Seed=0  Test=7  Generation=13  Evolve Result=0.00001922  Optimize Generation=13  Optimize Result=0.00001922
+Duration: 55948.6  Evolve Seed=0  Test=5  Generation=79  Evolve Result=0.00000596  Optimize Generation=79  Optimize Result=0.00000596
+Duration: 63943.2  Evolve Seed=0  Test=9  Generation=98  Evolve Result=0.00000077  Optimize Generation=98  Optimize Result=0.00000077 *******
+Duration: 65047.9  Evolve Seed=0  Test=10  Generation=55  Evolve Result=0.00000057  Optimize Generation=55  Optimize Result=0.00000057 *******
+Duration: 70041.3  Evolve Seed=0  Test=13  Generation=8  Evolve Result=0.00000077  Optimize Generation=8  Optimize Result=0.00000077 *******
+Duration: 71764.7  Evolve Seed=0  Test=11  Generation=34  Evolve Result=0.00000052  Optimize Generation=34  Optimize Result=0.00000052 *******
+Duration: 72165.2  Evolve Seed=0  Test=12  Generation=17  Evolve Result=0.00000048  Optimize Generation=17  Optimize Result=0.00000048 *******
+Duration: 73388.3  Evolve Seed=0  Test=3  Generation=199  Evolve Result=0.00000679
+Duration: 73389.7  Evolve Seed=0  Test=15  Generation=1  Evolve Result=0.00015375
+Duration: 73394.2  Evolve Seed=0  Test=14  Generation=3  Evolve Result=0.00008750
