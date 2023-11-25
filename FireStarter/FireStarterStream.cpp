@@ -355,7 +355,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
 #if FIRESTARTER_EVOLVE_DEBUG
             for (FireStarterState& curState : allStates)
-                resultText += Format("%llu: id:%llu  copy_id: %llu  evolution: %llu  age: %llu  maxResult: %.8f\n", curState.m_index, curState.m_id, curState.m_copy_id, curState.m_evolution, generation - curState.m_generation, curState.m_maxResult);
+                resultText += Format("%2llu: copy_index=%2llu  id:%2llu  copy_id: %2llu  evolution: %2llu  age: %3llu  maxResult: %.8f\n", curState.m_index, curState.m_copy_index, curState.m_id, curState.m_copy_id, curState.m_evolution, generation - curState.m_generation, curState.m_maxResult);
             resultText += "\n";
             FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", streamDate.c_str()), resultText);
 #endif

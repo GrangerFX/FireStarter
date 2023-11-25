@@ -6,7 +6,9 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 {
     std::string bestStateCode;
     bestState.SaveState(bestStateCode);
-    FireStarterCode::SaveCode("FireStarter_LoadState.h", bestStateCode);
+    std::string saveFile = "FireStarter_LoadState.h";
+    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%d", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
+    FireStarterCode::SaveCode(savePath, bestStateCode);
 } // SaveBestState
 
 void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
@@ -26,7 +28,9 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         // Create the units code by replacing the evaluate and optimize sections of the optimize code.
         std::string bestCode = optimizeCode;
         FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
-        FireStarterCode::SaveCode("FireStarter_BestCode.cu", bestCode);
+        std::string saveFile = "FireStarter_BestCode.h";
+        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%d", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
+        FireStarterCode::SaveCode(savePath, bestCode);
     }
 } // SaveBestCode
 
@@ -34,7 +38,9 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
 {
     std::string solutionCode;
     m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
-    FireStarterCode::SaveCode("FireStarter_Solution.h", solutionCode);
+    std::string saveFile = "FireStarter_Solution.h";
+    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%d", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
+    FireStarterCode::SaveCode(savePath, savePath);
 } // SaveSolution
 
 void FireStarterComplete::SaveBest(const FireStarterState& evolveState)
@@ -222,8 +228,18 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                     newState.m_evolution++;
                     addStates.push_back(newState);
                     result &= !CompleteResults(bestState, newState, newState.m_generation, oldResult, newResult);
-                } else
+                } else {
+                    // Update the copy state if the new state was better.
+                    if (newState.m_optimizeValid) {
+                        FireStarterState& copyState = allStates[newState.m_copy_index];
+                        if (newResult < copyState.m_maxResult) {
+                            copyState = newState;
+                            copyState.m_evolution++;
+                            found = true;
+                        }
+                    }
                     result &= !CompleteResults(bestState, oldState, newState.m_generation, oldResult, newResult);
+                }
             }
 
             // Sort the states by maxResult, least first.
@@ -293,6 +309,16 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                     oldState = newState;
                     oldState.m_evolution++;
                     found = true;
+                } else {
+                    // Update the copy state if the new state was better.
+                    if (newState.m_optimizeValid) {
+                        FireStarterState& copyState = allStates[newState.m_copy_index];
+                        if (newResult < copyState.m_maxResult) {
+                            copyState = newState;
+                            copyState.m_evolution++;
+                            found = true;
+                        }
+                    }
                 }
                 result &= !CompleteResults(bestState, oldState, newState.m_generation, oldResult, newResult);
             }

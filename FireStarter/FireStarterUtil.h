@@ -66,12 +66,13 @@ inline std::string CurrentDate(void)
     return sstream.str();
 } // CurrentDate
 
-inline std::string FileNameDate(void)
+inline std::string FileNameDate(time_t fileTime = 0)
 {
-    time_t currentTime = time(nullptr);
+    if (!fileTime)
+        fileTime = time(nullptr);
     struct tm tm_struct;
     struct tm* tm = &tm_struct;
-    errno_t err = localtime_s(tm, &currentTime);
+    errno_t err = localtime_s(tm, &fileTime);
     if (err)
         return "";
     return Format("%04d-%02d-%02d_%02d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);

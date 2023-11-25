@@ -19,6 +19,7 @@ private:
         m_optimization = other.m_optimization;
         m_evolution = other.m_evolution;
         m_index = other.m_index;
+        m_copy_index = other.m_copy_index;
         m_id = other.m_id;
         m_copy_id = other.m_copy_id;
         m_test = other.m_test;
@@ -38,6 +39,7 @@ public:
     unsigned long long m_optimization = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_index = 0;
+    unsigned long long m_copy_index = 0;
     unsigned long long m_id = 0;
     unsigned long long m_copy_id = 0;
     unsigned long long m_test = 0;

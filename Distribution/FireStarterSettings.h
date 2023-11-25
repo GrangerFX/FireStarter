@@ -14,8 +14,8 @@
 #define FIRESTARTER_EVOLVE_CHAOS    0          // Randomize the data for each member
 #define FIRESTARTER_EVOLVE_ADD      0          // Add improved states to the sorted list.
 
-#define FIRESTARTER_EVOLVE_SEED     1
-#define FIRESTARTER_OPTIMIZE_SEED   1
+#define FIRESTARTER_EVOLVE_SEED     0
+#define FIRESTARTER_OPTIMIZE_SEED   0
 
 #define FIRESTARTER_START_TEST      0          // The starting test index.
 
