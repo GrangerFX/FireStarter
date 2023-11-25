@@ -16,7 +16,7 @@ void FireStarterState::SaveStats(std::string& code) const
     code += Format("// Run duration = %f seconds\r\n", m_timer.Duration());
     code += Format("// Run generation = %llu\r\n", m_generation);
     code += Format("// Run evolution = %llu\r\n", m_evolution);
-    code += Format("// Run result = %.8f\r\n", m_maxResult);
+    code += Format("// Run max result = %.8f\r\n", m_maxResult);
     FireStarterProgram::SettingsText(Settings(), code, "// Run ");
     code += "\r\n";
 } // SaveStats
