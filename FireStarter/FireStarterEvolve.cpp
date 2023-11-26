@@ -101,13 +101,14 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 #endif
                     // Save the copy index in the state.
                     curState.m_copy_index = copyIndex;
+                    curState.m_copy_id = allStates[copyIndex].m_copy_id;
+                    curState.m_maxResult = MAX(curState.m_maxResult, allStates[copyIndex].m_maxResult);
 
                     // Keep copying and randomizing instructions until a unique set of instructions is found.
                     unsigned int count = 0;
                     do {
                         // Copy the program from the random index.
                         curState.m_program = allStates[copyIndex].m_program;
-                        curState.m_copy_id = allStates[copyIndex].m_copy_id;
 
                         // Randomize one instruction per 10 attempts.
                         unsigned int randomCount = (count / 10) + 1;

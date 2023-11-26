@@ -250,7 +250,7 @@ bool FireStarterExecute::Evolve(void)
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
-        FireStarterSettings stateSettings = state.Settings();
+        state.m_optimization = 0;
         InitPopulation(state);
         Optimize(state);
         m_executeManager->AddComplete(job);

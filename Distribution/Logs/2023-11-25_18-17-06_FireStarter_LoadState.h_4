@@ -1,0 +1,241 @@
+#pragma once
+#include "FireStarterState.h"
+
+// Run date: 11/25/23 18:17:06 Pacific Standard Time
+// Run duration = 7669.159094 seconds
+// Run generation = 16
+// Run evolution = 8
+// Run max result = 0.00000073
+// Run variations = 3
+// Run samples = 15
+// Run instructions = 32
+// Run registers = 29
+// Run opcodes = 2
+// Run patternOpcodes = 4
+
+// Run targetMin = 0.000000f
+// Run targetMax = 6.283185f
+
+// Run mode = FIRESTARTER_EVOLVE
+// Run evolveSeed = 0
+// Run optimizeSeed = 0
+// Run tests = 16
+// Run seeds = 64
+// Run units = 4
+// Run population = 278528
+// Run iterations = 64
+// Run passes = 500
+// Run precision = 0
+// Run candidates = 16
+// Run attempts = 64
+// Run optimize = 8
+
+// Run scale = 0.100000f
+// Run startScale = 2.000000f
+// Run startResult = 10.000000f
+
+inline void LoadSettings(FireStarterSettings& settings)
+{
+    settings.m_variations = 3;
+    settings.m_samples = 15;
+    settings.m_instructions = 32;
+    settings.m_registers = 29;
+    settings.m_opcodes = 2;
+    settings.m_patternOpcodes = 4;
+
+    settings.m_targetMin = 0.000000f;
+    settings.m_targetMax = 6.283185f;
+
+    settings.m_mode = FIRESTARTER_EVOLVE;
+    settings.m_evolveSeed = 0;
+    settings.m_optimizeSeed = 0;
+    settings.m_tests = 16;
+    settings.m_seeds = 64;
+    settings.m_units = 4;
+    settings.m_population = 278528;
+    settings.m_iterations = 64;
+    settings.m_passes = 500;
+    settings.m_precision = 0;
+    settings.m_candidates = 16;
+    settings.m_attempts = 64;
+    settings.m_optimize = 8;
+
+    settings.m_scale = 0.100000f;
+    settings.m_startScale = 2.000000f;
+    settings.m_startResult = 10.000000f;
+} // LoadSettings
+
+// Variation: 0  result = 0.00000015
+inline void LoadVariation0(FireStarterResult* result)
+{
+    FireStarterData *data = result->Data();
+    data->d[0] = -3.141593f;
+    data->d[1] = 0.000002f;
+    data->d[2] = -3.234548f;
+    data->d[3] = -0.534436f;
+    data->d[4] = 0.049411f;
+    data->d[5] = 1.449270f;
+    data->d[6] = -1.123073f;
+    data->d[7] = 0.468101f;
+    data->d[8] = 1.536258f;
+    data->d[9] = -0.792712f;
+    data->d[10] = -1.503418f;
+    data->d[11] = -4.701531f;
+    data->d[12] = 0.000461f;
+    data->d[13] = -0.114595f;
+    data->d[14] = -2.156229f;
+    data->d[15] = -1.812822f;
+    data->d[16] = 0.225741f;
+    data->d[17] = 0.672241f;
+    data->d[18] = 0.997581f;
+    data->d[19] = 0.661746f;
+    data->d[20] = -0.000001f;
+    data->d[21] = 0.000000f;
+    data->d[22] = 0.000000f;
+    data->d[23] = 0.000000f;
+    data->d[24] = 0.000000f;
+    data->d[25] = 0.000000f;
+    data->d[26] = 0.000000f;
+    data->d[27] = 0.000000f;
+    data->d[28] = 0.000000f;
+    *(result->MinResult()) = 0.000000f;
+} // LoadVariation0
+
+// Variation: 1  result = 0.00000060
+inline void LoadVariation1(FireStarterResult* result)
+{
+    FireStarterData *data = result->Data();
+    data->d[0] = -3.090658f;
+    data->d[1] = -0.000000f;
+    data->d[2] = -3.272424f;
+    data->d[3] = -0.027777f;
+    data->d[4] = 0.493270f;
+    data->d[5] = 0.895198f;
+    data->d[6] = -2.373872f;
+    data->d[7] = 0.431065f;
+    data->d[8] = -0.728348f;
+    data->d[9] = -1.871197f;
+    data->d[10] = 1.313855f;
+    data->d[11] = 3.818569f;
+    data->d[12] = -0.029359f;
+    data->d[13] = -1.001534f;
+    data->d[14] = -0.639641f;
+    data->d[15] = -0.831046f;
+    data->d[16] = 1.692248f;
+    data->d[17] = 0.159500f;
+    data->d[18] = -1.432920f;
+    data->d[19] = 0.347292f;
+    data->d[20] = -0.118131f;
+    data->d[21] = 0.000000f;
+    data->d[22] = 0.000000f;
+    data->d[23] = 0.000000f;
+    data->d[24] = 0.000000f;
+    data->d[25] = 0.000000f;
+    data->d[26] = 0.000000f;
+    data->d[27] = 0.000000f;
+    data->d[28] = 0.000000f;
+    *(result->MinResult()) = 0.000001f;
+} // LoadVariation1
+
+// Variation: 2  result = 0.00000073
+inline void LoadVariation2(FireStarterResult* result)
+{
+    FireStarterData *data = result->Data();
+    data->d[0] = -2.617997f;
+    data->d[1] = 0.000006f;
+    data->d[2] = -3.106574f;
+    data->d[3] = -0.140636f;
+    data->d[4] = 0.411208f;
+    data->d[5] = 1.819846f;
+    data->d[6] = -0.250724f;
+    data->d[7] = 4.190605f;
+    data->d[8] = 0.463182f;
+    data->d[9] = 2.198235f;
+    data->d[10] = 4.321216f;
+    data->d[11] = 1.526434f;
+    data->d[12] = -0.001828f;
+    data->d[13] = -0.590441f;
+    data->d[14] = 0.922821f;
+    data->d[15] = 0.332139f;
+    data->d[16] = -0.230171f;
+    data->d[17] = 1.383587f;
+    data->d[18] = -0.487810f;
+    data->d[19] = 0.114703f;
+    data->d[20] = 0.523595f;
+    data->d[21] = 0.000000f;
+    data->d[22] = 0.000000f;
+    data->d[23] = 0.000000f;
+    data->d[24] = 0.000000f;
+    data->d[25] = 0.000000f;
+    data->d[26] = 0.000000f;
+    data->d[27] = 0.000000f;
+    data->d[28] = 0.000000f;
+    *(result->MinResult()) = 0.000001f;
+} // LoadVariation2
+
+inline void LoadResult(FireStarterState& state)
+{
+    LoadVariation0(state.Result(0));
+    LoadVariation1(state.Result(1));
+    LoadVariation2(state.Result(2));
+    state.m_maxResult = 0.000001f;
+} // LoadResult
+
+inline void LoadProgram(FireStarterProgram& program)
+{
+    FireStarterInstructions* instructions = program.EvolvedInstructions();
+    instructions->SetOperation(0, 1, 5);
+    instructions->SetOperation(1, 1, 15);
+    instructions->SetOperation(2, 0, 15);
+    instructions->SetOperation(3, 1, 4);
+    instructions->SetOperation(4, 0, 27);
+    instructions->SetOperation(5, 0, 8);
+    instructions->SetOperation(6, 1, 18);
+    instructions->SetOperation(7, 0, 13);
+    instructions->SetOperation(8, 0, 10);
+    instructions->SetOperation(9, 0, 0);
+    instructions->SetOperation(10, 0, 10);
+    instructions->SetOperation(11, 0, 11);
+    instructions->SetOperation(12, 1, 28);
+    instructions->SetOperation(13, 1, 1);
+    instructions->SetOperation(14, 0, 27);
+    instructions->SetOperation(15, 0, 7);
+    instructions->SetOperation(16, 1, 16);
+    instructions->SetOperation(17, 0, 19);
+    instructions->SetOperation(18, 0, 0);
+    instructions->SetOperation(19, 1, 15);
+    instructions->SetOperation(20, 0, 24);
+    instructions->SetOperation(21, 0, 3);
+    instructions->SetOperation(22, 1, 16);
+    instructions->SetOperation(23, 0, 14);
+    instructions->SetOperation(24, 1, 18);
+    instructions->SetOperation(25, 0, 10);
+    instructions->SetOperation(26, 1, 12);
+    instructions->SetOperation(27, 0, 28);
+    instructions->SetOperation(28, 0, 9);
+    instructions->SetOperation(29, 0, 5);
+    instructions->SetOperation(30, 0, 19);
+    instructions->SetOperation(31, 1, 17);
+    program.OptimizeRegisters();
+} // LoadProgram
+
+inline void LoadState(FireStarterState& state)
+{
+    FireStarterSettings settings;
+
+    LoadSettings(settings);
+    state.InitState(settings);
+    LoadResult(state);
+    LoadProgram(state.m_program);
+    state.m_generation = 16;
+    state.m_evolution = 8;
+    state.m_index = 29;
+    state.m_copy_index = 1;
+    state.m_id = 20;
+    state.m_copy_id = 17;
+    state.m_test = 4;
+    state.m_seed = 16091625088016521456;
+    state.m_maxResult = 0.000001f;
+    state.m_optimizePass = false;
+    state.m_optimizeValid = true;
+} // LoadState
