@@ -1,0 +1,190 @@
+// Run date: 11/26/23 09:13:14 Pacific Standard Time
+// Run duration = 15673.949220 seconds
+// Run generation = 33
+// Run evolution = 11
+// Run max result = 0.00000060
+// Run variations = 3
+// Run samples = 15
+// Run instructions = 32
+// Run registers = 29
+// Run opcodes = 2
+// Run patternOpcodes = 4
+
+// Run targetMin = 0.000000f
+// Run targetMax = 6.283185f
+
+// Run mode = FIRESTARTER_EVOLVE
+// Run evolveSeed = 0
+// Run optimizeSeed = 0
+// Run tests = 16
+// Run seeds = 64
+// Run units = 4
+// Run population = 278528
+// Run iterations = 64
+// Run passes = 500
+// Run precision = 0
+// Run candidates = 16
+// Run attempts = 64
+// Run optimize = 8
+
+// Run scale = 0.100000f
+// Run startScale = 2.000000f
+// Run startResult = 10.000000f
+
+#define SOLUTION_VARIATIONS 3
+
+#ifndef __CUDACC__
+#include <cmath>
+#endif
+
+#define SOLUTION_PI 3.14159265f
+#define SOLUTION_MIN 0.0f
+#define SOLUTION_MAX (2.0f * 3.14159265f)
+
+inline float SolutionTarget(float n, unsigned int variation)
+{
+    switch (variation) {
+    default:
+    case 0:
+        return sinf(n);
+    case 1:
+        return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
+    case 2:
+        return sinf(n * 1.2f) + n * 0.2f;
+    case 3:
+        return fabsf(fmodf(fabsf(n - SOLUTION_PI * 0.5f), SOLUTION_PI * 2.0f) - SOLUTION_PI) - SOLUTION_PI * 0.5f;
+    }
+} // SolutionTarget
+
+// Solution0 result = 0.00000054
+inline float Solution0(float n)
+{
+    float r0, r1, r2, r3, r4, r5, r6;
+
+    n += -1.49392366f;
+    n *= -1.59501886f;
+    n += 1.21991253f;
+    r0 = n += 1.40815067f;
+    n *= 0.00000000f;
+    r1 = n += -0.49286518f;
+    r2 = n += -0.95745790f;
+    n *= r0;
+    r0 = n *= -0.10003608f;
+    r3 = n *= 0.52896690f;
+    n = r0 *= n;
+    n += 0.58563608f;
+    r4 = n += -0.86521387f;
+    r5 = n += -1.03235686f;
+    r6 = n *= -1.96812701f;
+    n = r5 *= n;
+    n += -3.25397038f;
+    n = r1 *= n;
+    n += -3.04817557f;
+    n *= 13.34556770f;
+    n *= r2;
+    n *= 3.70620704f;
+    n += 1.17083001f;
+    n *= r6;
+    n *= 0.00033248f;
+    n *= r0;
+    n += 2.63519406f;
+    n *= r4;
+    n *= r5;
+    n *= r3;
+    n *= r1;
+    n += 0.00000003f;
+    return n;
+} // Solution0
+
+// Solution1 result = 0.00000012
+inline float Solution1(float n)
+{
+    float r0, r1, r2, r3, r4, r5, r6;
+
+    n += -0.75843459f;
+    n *= -0.32147267f;
+    n += -0.26285416f;
+    r0 = n += 1.01259983f;
+    n *= -0.00000155f;
+    r1 = n += 0.66619700f;
+    r2 = n += -2.75800610f;
+    n *= r0;
+    r0 = n *= -0.30719280f;
+    r3 = n *= -1.41529763f;
+    n = r0 *= n;
+    n += 1.62608051f;
+    r4 = n += 0.97785890f;
+    r5 = n += -1.04477608f;
+    r6 = n *= -0.11731861f;
+    n = r5 *= n;
+    n += -1.98019063f;
+    n = r1 *= n;
+    n += 5.61200714f;
+    n *= -0.01130217f;
+    n *= r2;
+    n *= 0.01216579f;
+    n += -14.52573967f;
+    n *= r6;
+    n *= -0.00075229f;
+    n *= r0;
+    n += -3.35691810f;
+    n *= r4;
+    n *= r5;
+    n *= r3;
+    n *= r1;
+    n += -0.11812970f;
+    return n;
+} // Solution1
+
+// Solution2 result = 0.00000060
+inline float Solution2(float n)
+{
+    float r0, r1, r2, r3, r4, r5, r6;
+
+    n += -0.92586166f;
+    n *= 0.27969640f;
+    n += 1.01248038f;
+    r0 = n += -1.48576379f;
+    n *= 0.00000042f;
+    r1 = n += 1.74323606f;
+    r2 = n += -0.40301806f;
+    n *= r0;
+    r0 = n *= -0.60563016f;
+    r3 = n *= 0.99638760f;
+    n = r0 *= n;
+    n += 1.31524396f;
+    r4 = n += -1.57115006f;
+    r5 = n += -1.96555722f;
+    r6 = n *= 0.38513196f;
+    n = r5 *= n;
+    n += 0.60829830f;
+    n = r1 *= n;
+    n += -2.56274271f;
+    n *= 9.46981621f;
+    n *= r2;
+    n *= -0.00255458f;
+    n += -1.34173262f;
+    n *= r6;
+    n *= 0.20516081f;
+    n *= r0;
+    n += -2.07824588f;
+    n *= r4;
+    n *= r5;
+    n *= r3;
+    n *= r1;
+    n += 0.52359867f;
+    return n;
+} // Solution2
+
+inline float Solution(float n, unsigned int variation)
+{
+    switch (variation) {
+    case 0:
+        return Solution0(n);
+    case 1:
+        return Solution1(n);
+    case 2:
+        return Solution2(n);
+    }
+    return 0.0f;
+} // Solution

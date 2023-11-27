@@ -67,9 +67,10 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
             optimizeState.m_test = test;
 
             // Loop until the the completion condition or the host program is quit.
+            size_t pass = 0;
             while (!WillTerminate()) {
                 // Optimize the current generation.
-                execute->ExecuteOptimize(optimizeState, false);
+                execute->ExecuteOptimize(optimizeState, pass, false);
 
                 // Update the results in the UI.
                 if (complete->CompleteState(bestState, optimizeState))
@@ -77,6 +78,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
 
                 // Increment the generation.
                 optimizeState.m_generation++;
+                pass++;
             }
         }
     }
@@ -312,7 +314,6 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             if (evolveSettings.m_optimize) {
                 FireStarterState optimizeState(bestEvolveState);
                 optimizeState.m_optimizePass = true;
-                optimizeState.m_optimization = 0;
 
                 // Generate the optimize code.
                 if (evolve->GenerateOptimize(optimizeState)) {
@@ -328,9 +329,10 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     FireStarterState bestOptimizeState(optimizeState);
 
                     // Loop until the the optimize completion condition or the host program is quit.
+                    size_t pass = 0;
                     while (!WillTerminate()) {
                         // Optimize the current generation.
-                        executeOptimize->ExecuteOptimize(optimizeState, false);
+                        executeOptimize->ExecuteOptimize(optimizeState, pass, false);
 
                         // Update the results in the UI and check for completion.
                         if (complete->CompleteState(bestOptimizeState, optimizeState))
@@ -338,6 +340,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
                         // Increment the generation.
                         optimizeState.m_generation++;
+                        pass++;
                     }
 
                     // Save the best optimized state for all streams.

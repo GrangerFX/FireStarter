@@ -150,7 +150,6 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     }
 
     m_generation = 0;
-    m_optimization = 0;
     m_evolution = 0;
     m_index = index;
     m_id = index;

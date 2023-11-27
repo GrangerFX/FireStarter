@@ -16,7 +16,6 @@ private:
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
-        m_optimization = other.m_optimization;
         m_evolution = other.m_evolution;
         m_index = other.m_index;
         m_copy_index = other.m_copy_index;
@@ -36,7 +35,6 @@ public:
     std::vector<unsigned int> m_variationOrder;
     std::vector<unsigned int> m_variationCount;
     unsigned long long m_generation = 0;
-    unsigned long long m_optimization = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_index = 0;
     unsigned long long m_copy_index = 0;
