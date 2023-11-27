@@ -186,7 +186,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, false);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Loop until the the completion condition or the host program is quit.
         size_t tests = MAX(randomSettings.m_tests, 1);
@@ -209,9 +209,6 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
 
             // Complete the state and display the results.
             complete->CompleteState(m_streamBestState, evolveState);
-
-            // Save the best random state for all streams.
-            complete->SaveBest(m_streamBestState);
 
             // Output the evolve results.
             std::string resultText;
@@ -298,7 +295,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     execute->ExecuteEvolve(evolveCount);
 
                 // Complete and sort the states by result, update the UI and check for completion.
-                if (complete->CompleteStates(allStates))
+                if (complete->CompleteStates(m_streamBestState, allStates))
                     break;
 
                 // Increment the generation.
@@ -325,9 +322,6 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     // Initialize the population data
                     executeOptimize->ExecuteInitPopulation(true);
 
-                    // The best state is used for the status display and termination condition.
-                    FireStarterState bestOptimizeState(optimizeState);
-
                     // Loop until the the optimize completion condition or the host program is quit.
                     size_t pass = 0;
                     while (!WillTerminate()) {
@@ -335,7 +329,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                         executeOptimize->ExecuteOptimize(optimizeState, pass, false);
 
                         // Update the results in the UI and check for completion.
-                        if (complete->CompleteState(bestOptimizeState, optimizeState))
+                        if (complete->CompleteState(m_streamBestState, optimizeState))
                             break;
 
                         // Increment the generation.
@@ -343,11 +337,8 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                         pass++;
                     }
 
-                    // Save the best optimized state for all streams.
-                    complete->SaveBest(bestOptimizeState);
-
                     // Output the optimize results.
-                    resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
+                    resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", optimizeState.m_generation, optimizeState.m_maxResult);
                 }
             }
 

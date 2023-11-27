@@ -7,7 +7,7 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
     std::string bestStateCode;
     bestState.SaveState(bestStateCode);
     std::string saveFile = "FireStarter_LoadState.h";
-    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%d", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
+    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str()) : saveFile;
     FireStarterCode::SaveCode(savePath, bestStateCode);
 } // SaveBestState
 
@@ -29,7 +29,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         std::string bestCode = optimizeCode;
         FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
         std::string saveFile = "FireStarter_BestCode.h";
-        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%d", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
+        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str()) : saveFile;
         FireStarterCode::SaveCode(savePath, bestCode);
     }
 } // SaveBestCode
@@ -39,33 +39,9 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
     std::string solutionCode;
     m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
     std::string saveFile = "FireStarter_Solution.h";
-    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%d", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
+    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str()) : saveFile;
     FireStarterCode::SaveCode(savePath, solutionCode);
 } // SaveSolution
-
-void FireStarterComplete::SaveBest(const FireStarterState& evolveState)
-{
-    // Save the best state among multiple parallel streams.
-    static std::mutex bestStateMutex;
-    static FireStarterState bestState;
-    if ((bestState.m_maxResult < 0.0f) || (evolveState.m_maxResult < bestState.m_maxResult)) {
-        bestStateMutex.lock();
-        if ((bestState.m_maxResult < 0.0f) || (evolveState.m_maxResult < bestState.m_maxResult)) {
-            // Update the best state.
-            bestState = evolveState;
-            DispatchSync([this] {
-                SaveBestState(bestState);
-
-                // Update the best code on disk.
-                SaveBestCode(bestState);
-
-                // Update the solution code on disk.
-                SaveSolution(bestState);
-            });
-        }
-        bestStateMutex.unlock();
-    }
-} // SaveBest
 
 bool FireStarterComplete::LoadSolutionTargetCode(void)
 {
@@ -98,8 +74,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
         // Save the new best state.
         if (m_saveBestState) {
             // Update the best state.
-            if (!displayState.m_optimizePass)
-                SaveBestState(displayState);
+            SaveBestState(displayState);
 
             // Update the best code on disk.
             SaveBestCode(displayState);
@@ -189,10 +164,10 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 
 #if FIRESTARTER_EVOLVE_ADD
 // Add new states and sort them for the best results.
-bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, bool sync)
+bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, bool sync)
 {
     bool result = true;
-    Dispatch([this, &allStates, &result] {
+    Dispatch([this, &bestState, &allStates, &result] {
         // Sort the states as they are received.
         size_t numStates = allStates.size();
         std::vector<FireStarterState> newStates(numStates);
@@ -218,7 +193,6 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
 
         if (!abort) {
             // Update the best state and display the results.
-            FireStarterState bestState = allStates[0];
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[i];
@@ -262,7 +236,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
             }
 
             // Has the evolve target been reached?
-            if (bestState.m_maxResult <= FIRESTARTER_EVOLVE_TARGET)
+            if (allStates[0].m_maxResult <= FIRESTARTER_EVOLVE_TARGET)
                 result = true;
         }
     }, sync);
@@ -270,13 +244,12 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
 } // CompleteStates
 #else
 // Replace old states with new ones when better and resort the list.
-bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allStates, bool sync)
+bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, bool sync)
 {
     bool result = true;
-    Dispatch([this, &allStates, &result] {
+    Dispatch([this, &bestState, &allStates, &result] {
         // Sort the states as they are received.
         size_t numStates = allStates.size();
-        FireStarterState bestState = allStates[0];
         std::vector<FireStarterState> newStates(numStates);
         bool abort = false;
         for (size_t i = 0; i < numStates; i++) {
@@ -344,7 +317,7 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
                 }
 
             // Has the evolve target been reached?
-            if (bestState.m_maxResult <= FIRESTARTER_EVOLVE_TARGET)
+            if (allStates[0].m_maxResult <= FIRESTARTER_EVOLVE_TARGET)
                 result = true;
         }
     }, sync);
@@ -352,10 +325,8 @@ bool FireStarterComplete::CompleteStates(std::vector<FireStarterState>& allState
 } // CompleteStates
 #endif
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState) : CUDAThread("FireStarterComplete"), m_window(window), m_fireShow(window)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState) : CUDAThread("FireStarterComplete"), m_manager(manager), m_window(window), m_saveBestState(saveBestState), m_fireShow(window)
 {
-    m_manager = manager;
-    m_saveBestState = saveBestState;
     DispatchSync([this] {
         if (LoadSolutionTargetCode())
             // Create the code generator.

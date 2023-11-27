@@ -24,11 +24,10 @@ private:
 	bool LoadSolutionTargetCode(void);
 
 public:
-	void SaveBest(const FireStarterState& evolveState);
 	bool CompleteResults(FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, float oldResult, float newResult);
 	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
 	bool CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
-	bool CompleteStates(std::vector<FireStarterState>& allStates, bool sync = true);
+	bool CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, bool sync = true);
     FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState = true);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve
