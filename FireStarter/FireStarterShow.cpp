@@ -125,7 +125,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
     window.DisplayText(statusString);
 } // FireSolution
 
-void FireStarterShow::RenderStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double oldResult, double newResult, double average, double bestError, bool sync)
+void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double oldResult, double newResult, double bestError, bool sync)
 {
     // Create the CUDA device text.
     static std::string cudaText;
@@ -184,7 +184,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
     float bestResult = bestState.m_maxResult;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Average=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + generation, generation, newResult, average, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + generation, generation, newResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
     } else {
@@ -227,7 +227,7 @@ void FireStarterShow::RenderStatus(const FireStarterState& bestState, const Fire
 
     // Update the window status.
     m_window.DisplayText(statusString, sync);
-} // RenderStatus
+} // ShowStatus
 
 FireStarterShow::FireStarterShow(const FireStarterWindow& window) : CUDAThread("FireStarterShow"), m_window(window)
 {
