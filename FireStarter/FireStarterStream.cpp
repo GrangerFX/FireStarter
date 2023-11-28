@@ -384,7 +384,7 @@ FireStarterStream::FireStarterStream(size_t index, const FireStarterWindow& wind
 {
     static std::string fileDate;
     if (fileDate.empty())
-        fileDate = FileNameDate().c_str();
+        fileDate = FileNameDate(bestState.m_timer.m_second).c_str();
     m_streamDate = fileDate;
 } // FireStarterStream
 
