@@ -168,7 +168,11 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             CompleteStatus(bestState, oldState, newState.m_generation, oldResult, newResult);
 
             // Has the completion condition been met?
-            result = newState.m_generation - bestState.m_generation >= (newState.m_optimizePass ? newState.Settings().m_optimize : newState.Settings().m_attempts);
+            unsigned long long age = newState.m_generation - oldState.m_generation;
+            if (newState.m_optimizePass)
+                result = age >= newState.Settings().m_optimize;
+            else
+                result = (age >= newState.Settings().m_attempts) || (oldState.m_maxResult <= newState.Settings().m_evolveTarget);
         }
     }, sync);
     return result;
@@ -204,7 +208,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 
         if (!abort) {
             bool found = false;
-            unsigned long long maxGeneration = 0;
             FireStarterState* firstState = allStates.data();
 
             for (size_t i = 0; i < numStates; i++) {
@@ -218,7 +221,8 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                     if (newResult < firstState->m_maxResult)
                         firstState = &newState;
                     found = true;
-                } else {
+                }
+                else {
                     // Update the copy state if the new state was better.
                     if (newState.m_optimizeValid) {
                         FireStarterState& copyState = allStates[newState.m_copy_index];
@@ -237,8 +241,8 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 
                 // Update the render status after every pass.
                 CompleteStatus(*firstState, oldState, newState.m_generation, oldResult, newResult);
-                maxGeneration = MAX(maxGeneration, newState.m_generation - oldState.m_generation);
             }
+
 
             // Sort the states, least maximum result first.
             if (found) {
@@ -259,13 +263,14 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                     }
                     allStates[i].m_index = i;
                 }
+            }
 
-                // Has the evolve target been reached?
-                if (allStates[0].m_maxResult <= FIRESTARTER_EVOLVE_TARGET)
-                    result = true;
-            } else
-                // Has the maximum number of attempts been reached?
-                result = maxGeneration >= (allStates[0].m_optimizePass ? allStates[0].Settings().m_optimize : allStates[0].Settings().m_attempts);
+            // Has the evolve target or the maximum number of attempts been reached?
+            unsigned long long age = newStates[0].m_generation - allStates[0].m_generation;
+            if (newStates[0].m_optimizePass)
+                result = age >= allStates[0].Settings().m_optimize;
+            else
+                result = (allStates[0].m_maxResult <= newStates[0].Settings().m_evolveTarget) || (age >= newStates[0].Settings().m_attempts);
         }
     }, sync);
     return result;
