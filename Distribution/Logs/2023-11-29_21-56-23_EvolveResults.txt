@@ -1,0 +1,16 @@
+Duration: 3053.1  Evolve Seed=0  Test=0  Generation=10  Evolve Result=0.00000077  Optimize Generation=23  Optimize Result=0.00000077 *******
+Duration: 6359.3  Evolve Seed=0  Test=1  Generation=24  Evolve Result=0.00000072  Optimize Generation=36  Optimize Result=0.00000072 *******
+Duration: 6424.2  Evolve Seed=0  Test=4  Generation=10  Evolve Result=0.00000060  Optimize Generation=26  Optimize Result=0.00000060 *******
+Duration: 10881.9  Evolve Seed=0  Test=5  Generation=15  Evolve Result=0.00000027  Optimize Generation=30  Optimize Result=0.00000027 *******
+Duration: 11049.3  Evolve Seed=0  Test=3  Generation=50  Evolve Result=0.00000054  Optimize Generation=83  Optimize Result=0.00000054 *******
+Duration: 11686.8  Evolve Seed=0  Test=6  Generation=20  Evolve Result=0.00000060  Optimize Generation=37  Optimize Result=0.00000060 *******
+Duration: 22134.8  Evolve Seed=0  Test=8  Generation=46  Evolve Result=0.00000060  Optimize Generation=57  Optimize Result=0.00000060 *******
+Duration: 24510.0  Evolve Seed=0  Test=9  Generation=70  Evolve Result=0.00000072  Optimize Generation=91  Optimize Result=0.00000072 *******
+Duration: 33153.8  Evolve Seed=0  Test=10  Generation=55  Evolve Result=0.00000036  Optimize Generation=67  Optimize Result=0.00000036 *******
+Duration: 37352.7  Evolve Seed=0  Test=2  Generation=218  Evolve Result=0.00000072  Optimize Generation=240  Optimize Result=0.00000072 *******
+Duration: 39768.0  Evolve Seed=0  Test=12  Generation=25  Evolve Result=0.00000036  Optimize Generation=38  Optimize Result=0.00000036 *******
+Duration: 40052.5  Evolve Seed=0  Test=13  Generation=7  Evolve Result=0.00000060  Optimize Generation=16  Optimize Result=0.00000060 *******
+Duration: 44359.6  Evolve Seed=0  Test=11  Generation=86  Evolve Result=0.00000578
+Duration: 44360.2  Evolve Seed=0  Test=7  Generation=178  Evolve Result=0.00000167
+Duration: 44360.4  Evolve Seed=0  Test=14  Generation=15  Evolve Result=0.00000507
+Duration: 44360.9  Evolve Seed=0  Test=15  Generation=14  Evolve Result=0.00000918
