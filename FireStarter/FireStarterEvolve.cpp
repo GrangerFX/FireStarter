@@ -87,8 +87,8 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                 } else {
 #if 1
-                    // Select a random index in the best 10%.
-                    size_t copyIndex = RANDOMMOD(seed, (numStates / 10) + 1);
+                    // Select a random index in the best 25%.
+                    size_t copyIndex = RANDOMMOD(seed, (numStates / 4) + 1);
 #endif
 #if 0
                     // Select a random index in the best 50%.
