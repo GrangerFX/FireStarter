@@ -88,7 +88,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 } else {
 #if 1
                     // Select a random index in the best 33%.
-                    size_t copyIndex = RANDOMMOD(seed, (numStates / 3) + 1);
+                    size_t copyIndex = RANDOMMOD(seed, MIN(index * 2, (numStates + 1) / 2) + 1);
 #endif
 #if 0
                     // Select a random index in the best 50%.
