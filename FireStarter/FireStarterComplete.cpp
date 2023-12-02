@@ -165,7 +165,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             CompleteResults(bestState, oldState);
 
             // Update the render status after every pass.
-            CompleteStatus(bestState, oldState, newState.m_generation, oldResult, newResult);
+            CompleteStatus(oldState, oldState, newState.m_generation, oldResult, newResult);
 
             // Has the completion condition been met?
             unsigned long long age = newState.m_generation - oldState.m_generation;
