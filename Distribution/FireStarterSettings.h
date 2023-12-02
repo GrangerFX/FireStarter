@@ -13,8 +13,8 @@
 #define FIRESTARTER_EVOLVE_DEBUG    0          // Output evolve debugging information.
 #define FIRESTARTER_EVOLVE_CHAOS    0          // Randomize the data for each member
 
-#define FIRESTARTER_EVOLVE_SEED     1
-#define FIRESTARTER_OPTIMIZE_SEED   1
+#define FIRESTARTER_EVOLVE_SEED     0
+#define FIRESTARTER_OPTIMIZE_SEED   0
 
 #define FIRESTARTER_START_TEST      0          // The starting test index.
 
