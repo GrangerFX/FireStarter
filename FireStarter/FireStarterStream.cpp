@@ -339,7 +339,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     }
 
                     // Output the optimize results.
-                    resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", optimizeState.m_generation, optimizeState.m_maxResult);
+                    resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
                 }
             }
 
