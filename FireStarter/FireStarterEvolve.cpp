@@ -103,7 +103,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         curState.m_program = allStates[copyIndex].m_program;
 
                         // Generate one or two random instructions based on the age of the state.
-                        unsigned int randomCount = age < 8 ? 1 : 2;
+                        unsigned int randomCount = age > 8 ? 2 : 1;
 
                         // Randomize one additional instruction per 10 attempts.
                         randomCount += count / 10;
