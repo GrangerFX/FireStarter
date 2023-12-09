@@ -7,7 +7,7 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
     std::string bestStateCode;
     bestState.SaveState(bestStateCode);
     std::string saveFile = "FireStarter_LoadState.h";
-    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str()) : saveFile;
+    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
     FireStarterCode::SaveCode(savePath, bestStateCode);
 } // SaveBestState
 
@@ -29,7 +29,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         std::string bestCode = optimizeCode;
         FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
         std::string saveFile = "FireStarter_BestCode.h";
-        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str()) : saveFile;
+        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
         FireStarterCode::SaveCode(savePath, bestCode);
     }
 } // SaveBestCode
@@ -39,7 +39,7 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
     std::string solutionCode;
     m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
     std::string saveFile = "FireStarter_Solution.h";
-    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(bestState.m_timer.m_second).c_str(), saveFile.c_str()) : saveFile;
+    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
     FireStarterCode::SaveCode(savePath, solutionCode);
 } // SaveSolution
 
@@ -93,7 +93,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
 void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, float oldResult, float newResult)
 {
     const FireStarterSettings& settings = state.Settings();
-    double duration = state.m_timer.Duration();
+    double duration = SimpleTimer::RunDuration();
 
     // Calculate the average time per generation.
     if (settings.m_mode == FIRESTARTER_RANDOM) {
@@ -103,17 +103,9 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
             m_generationTime = duration - m_resultsTime;
         else
             m_generationTime = (m_generationTime * m_resultsCount + (duration - m_resultsTime)) / (m_resultsCount + 1);
-        m_resultsTime = duration;
-    } else {
-        if (m_resultsTime == 0.0) {
-            m_resultsCount = 0;
-            m_generationTime = 0.0;
-            m_resultsTime = duration;
-        } else {
-            m_generationTime = (duration - m_resultsTime) / settings.m_units;
-            m_resultsTime = duration;
-        }
-    }
+    } else
+        m_generationTime = state.m_timer.Duration();
+    m_resultsTime = duration;
     m_resultsCount++;
 
     // Update the status text.
@@ -166,6 +158,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 
             // Update the render status after every pass.
             CompleteStatus(oldState, oldState, newState.m_generation, oldResult, newResult);
+            oldState.m_timer.StartDate();
 
             // Has the completion condition been met?
             unsigned long long age = newState.m_generation - oldState.m_generation;
@@ -221,8 +214,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                     if (newResult < firstState->m_maxResult)
                         firstState = &newState;
                     found = true;
-                }
-                else {
+                } else {
                     // Update the copy state if the new state was better.
                     if (newState.m_optimizeValid) {
                         FireStarterState& copyState = allStates[newState.m_copy_index];
@@ -241,6 +233,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 
                 // Update the render status after every pass.
                 CompleteStatus(*firstState, oldState, newState.m_generation, oldResult, newResult);
+                oldState.m_timer.StartDate();
             }
 
 

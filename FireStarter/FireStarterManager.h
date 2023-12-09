@@ -53,7 +53,6 @@ class FireStarterJobQueue : public SerialThread {
 private:
 	std::string m_name;
 	SerialThreadSemaphore m_semaphore;
-	SimpleTimer m_timer;
 	FireStarterJob* m_firstJob = nullptr;
 	FireStarterJob* m_lastJob = nullptr;
 	double m_waitTime = 0.0;

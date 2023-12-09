@@ -7,7 +7,6 @@ class FireStarterComplete : public CUDAThread {
 private:
 	FireStarterWindow m_window;
 	FireStarterShow m_fireShow;
-	SimpleTimer m_timer;
 	FireStarterManager* m_manager = nullptr;
 	FireStarterGenerate* m_generate = nullptr;
 	std::string m_solutionTargetCode;

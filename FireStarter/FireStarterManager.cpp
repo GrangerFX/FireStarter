@@ -28,7 +28,7 @@ FireStarterJob* FireStarterJobQueue::Get(void)
 
     // Wait for a job to be added to the queue.
     FireStarterJob* job = nullptr;
-    double waitTime = m_timer.Duration();
+    double waitTime = SimpleTimer::RunDuration();
     if (m_semaphore.wait())
         DispatchSync([this, &job, waitTime] {
             // Remove the job from the queue.
@@ -40,7 +40,7 @@ FireStarterJob* FireStarterJobQueue::Get(void)
                 job->m_next = nullptr;
                 m_sizeJobs--;
                 m_totalJobs++;
-                m_waitTime += m_timer.Duration() - waitTime;
+                m_waitTime += SimpleTimer::RunDuration() - waitTime;
             }
         });
     return job;

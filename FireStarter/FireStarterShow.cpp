@@ -146,7 +146,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     static std::string settingsPath;
     if (settingsPath.empty()) {
         const std::string settingsFileName = "FireStarterSettings.h";
-        settingsPath = Format("Logs\\%s_%s", FileNameDate(bestState.m_timer.m_second).c_str(), settingsFileName.c_str());
+        settingsPath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), settingsFileName.c_str());
         std::string settingsCode;
         if (FireStarterCode::LoadCode(settingsFileName, settingsCode))
             FireStarterCode::SaveCode(settingsPath, settingsCode);
@@ -160,7 +160,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if (logFilePaths.empty())
             logFilePaths.resize(FIRESTARTER_START_TEST + settings.m_tests);
         if (logFilePaths[test].empty()) {
-            logFilePaths[test] = Format("Logs\\%s_%s_%d.txt", FileNameDate(bestState.m_timer.m_second).c_str(), settings.Mode(), test);
+            logFilePaths[test] = Format("Logs\\%s_%s_%d.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
             Dispatch([test] {
                 FireStarterCode::AppendCode(logFilePaths[test], cudaText);
                 FireStarterCode::AppendCode(logFilePaths[test], settingsText);
@@ -170,7 +170,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     } else {
         static std::string logFilePath;
         if (logFilePath.empty()) {
-            logFilePath = Format("Logs\\%s_%s.txt", FileNameDate(bestState.m_timer.m_second).c_str(), settings.Mode());
+            logFilePath = Format("Logs\\%s_%s.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode());
             Dispatch([] {
                 FireStarterCode::AppendCode(logFilePath, cudaText);
                 FireStarterCode::AppendCode(logFilePath, settingsText);

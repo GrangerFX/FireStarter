@@ -12,8 +12,8 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
 
 void FireStarterState::SaveStats(std::string& code) const
 {
-    code += Format("// Run date: %s\r\n", m_timer.StartDate().c_str());
-    code += Format("// Run duration = %f seconds\r\n", m_timer.Duration());
+    code += Format("// Run date: %s\r\n", SimpleTimer::RunDate().c_str());
+    code += Format("// Run duration = %f seconds\r\n", SimpleTimer::RunDuration());
     code += Format("// Run generation = %llu\r\n", m_generation);
     code += Format("// Run evolution = %llu\r\n", m_evolution);
     code += Format("// Run max result = %.8f\r\n", m_maxResult);
@@ -140,6 +140,7 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
 
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long index, unsigned long long test)
 {
+    m_timer.StartDate();
     m_program.InitProgram(settings);
 
     m_variationOrder.resize(settings.m_variations);
