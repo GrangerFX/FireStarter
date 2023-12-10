@@ -72,7 +72,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 // Clone or randomize instructions in the later generations.
                 FireStarterState& curState = job->m_state;
                 curState = allStates[index];
-                unsigned long long age = generation - curState.m_generation;
+//              unsigned long long age = generation - curState.m_generation;
                 curState.m_generation = generation;
 
                 // Randomize each generation and index.
@@ -104,8 +104,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                         curState.m_program = allStates[copyIndex].m_program;
 
                         // Randomize one additional instruction per 10 attempts.
-                        unsigned long long age = generation - curState.m_generation;
-                        unsigned long long randomCount = ((2 * age) / curState.m_settings.m_attempts) + (count / 10) + 1;
+                        unsigned long long randomCount = (count / 10) + 1;
                         while (randomCount--)
                             curState.RandomInstruction(seed);
 
