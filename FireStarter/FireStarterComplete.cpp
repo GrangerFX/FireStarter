@@ -200,33 +200,37 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
         }
 
         if (!abort) {
+            FireStarterState* firstState = &allStates[0];
             bool found = false;
-            FireStarterState* firstState = allStates.data();
 
             for (size_t i = 0; i < numStates; i++) {
-                FireStarterState& oldState = allStates[i];
                 FireStarterState& newState = newStates[i];
+                FireStarterState& oldState = allStates[i];
                 float oldResult = oldState.m_maxResult;
                 float newResult = newState.m_maxResult;
-                if (!newState.m_generation || (newState.m_optimizeValid && (newResult < oldResult))) {
+
+                if (!newState.m_generation) {
                     oldState = newState;
                     oldState.m_evolution++;
-                    if (newResult < firstState->m_maxResult)
-                        firstState = &newState;
                     found = true;
-                } else {
-                    // Update the copy state if the new state was better.
-                    if (newState.m_optimizeValid) {
+                } else if (newState.m_optimizeValid) {
+                    if (newResult < oldResult) {
+                        oldState = newState;
+                        oldState.m_evolution++;
+                        found = true;
+                    } else {
+                        // Update the copy state if the new state was better.
                         FireStarterState& copyState = allStates[newState.m_copy_index];
-                        if (newResult < copyState.m_maxResult) {
+                        float copyResult = copyState.m_maxResult;
+                        if (newResult < copyResult) {
                             copyState = newState;
                             copyState.m_evolution++;
-                            if (newResult < firstState->m_maxResult)
-                                firstState = &newState;
                             found = true;
                         }
                     }
                 }
+                if (newResult < firstState->m_maxResult)
+                    firstState = &newState;
 
                 // Update the best state and display the results.
                 CompleteResults(bestState, oldState);
