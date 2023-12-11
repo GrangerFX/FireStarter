@@ -286,15 +286,19 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             // Evolve the current test.
             unsigned int generation = 0;
             while (!WillTerminate()) {
-                // Evolve a new generation for each state.
-                evolve->EvolveStates(allStates, &testedInstructions, generation);
+                if (!generation)
+                    // Randomize the first generation.
+                    evolve->RandomStates(allStates, &testedInstructions);
+                else
+                    // Evolve a new generation.
+                    evolve->EvolveStates(allStates, &testedInstructions, generation);
 
-                // Execute each state.
+                // Execute each state using one of the execution units.
                 std::atomic<long long> evolveCount = numStates;
                 for (FireStarterExecute* execute : executionUnits)
                     execute->ExecuteEvolve(evolveCount);
 
-                // Complete and sort the states by result, update the UI and check for completion.
+                // Gather and sort the results, update the UI and check for the completion condition.
                 if (complete->CompleteStates(m_streamBestState, allStates))
                     break;
 
@@ -302,51 +306,54 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 generation++;
             }
 
-            // Output the evolve results.
-            FireStarterState& bestEvolveState = allStates[0];
-            std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed, test);
-            resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
+            if (!WillTerminate()) {
+                // Output the evolve results.
+                FireStarterState& bestEvolveState = allStates[0];
+                std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed, test);
+                resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
 
-            // Optimize the evolved state.
-            if (evolveSettings.m_optimize) {
-                FireStarterState bestOptimizeState(bestEvolveState);
-                bestOptimizeState.m_optimizePass = true;
-                FireStarterState optimizeState(bestOptimizeState);
+                // Optimize the evolved state.
+                if (evolveSettings.m_optimize) {
+                    FireStarterState bestOptimizeState(bestEvolveState);
+                    bestOptimizeState.m_optimizePass = true;
+                    FireStarterState optimizeState(bestOptimizeState);
 
-                // Generate the optimize code.
-                if (evolve->GenerateOptimize(optimizeState)) {
+                    // Generate the optimize code.
+                    if (evolve->GenerateOptimize(optimizeState)) {
 
-                    // Compile the optimize module.
-                    FireStarterExecute* executeOptimize = executionUnits[0];
-                    executeOptimize->ExecuteCompile();
+                        // Compile the optimize module.
+                        FireStarterExecute* executeOptimize = executionUnits[0];
+                        executeOptimize->ExecuteCompile();
 
-                    // Initialize the population data
-                    executeOptimize->ExecuteInitPopulation(true);
+                        // Initialize the population data
+                        executeOptimize->ExecuteInitPopulation(true);
 
-                    // Loop until the the optimize completion condition or the host program is quit.
-                    size_t pass = 0;
-                    while (!WillTerminate()) {
-                        // Optimize the current generation.
-                        executeOptimize->ExecuteOptimize(optimizeState, pass, false);
+                        // Loop until the the optimize completion condition or the host program is quit.
+                        size_t pass = 0;
+                        while (!WillTerminate()) {
+                            // Optimize the current generation.
+                            executeOptimize->ExecuteOptimize(optimizeState, pass, false);
 
-                        // Update the results in the UI and check for completion.
-                        if (complete->CompleteState(m_streamBestState, bestOptimizeState))
-                            break;
+                            // Update the results in the UI and check for completion.
+                            if (complete->CompleteState(m_streamBestState, bestOptimizeState))
+                                break;
 
-                        // Increment the generation.
-                        optimizeState.m_generation++;
-                        pass++;
+                            // Increment the generation.
+                            optimizeState.m_generation++;
+                            pass++;
+                        }
+
+                        // Output the optimize results.
+                        if (!WillTerminate())
+                            resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
                     }
-
-                    // Output the optimize results.
-                    resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
                 }
-            }
 
-            if (bestEvolveState.m_maxResult < 0.000001f)
-                resultText += " *******";
-            resultText += "\n";
-            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()), resultText);
+                if (bestEvolveState.m_maxResult < 0.000001f)
+                    resultText += " *******";
+                resultText += "\n";
+                FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()), resultText);
+            }
 
 #if FIRESTARTER_EVOLVE_DEBUG
             for (FireStarterState& curState : allStates)

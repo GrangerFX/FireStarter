@@ -19,8 +19,6 @@ void FireStarterEvolve::GenerateCode(FireStarterJob* job)
 
 bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync)
 {
-    if (m_evolveOptimizeCode.empty())
-        return false;
     Dispatch([this, state, bestState] {
         FireStarterState evolveState(state);
         evolveState.InitGenerationSeed();
@@ -56,75 +54,93 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
     return true;
 } // RandomState
 
-bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation, bool sync)
+bool FireStarterEvolve::RandomStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, bool sync)
 {
-    if (m_evolveOptimizeCode.empty())
-        return false;
-
-    Dispatch([this, &allStates, testedInstructions, generation] {
-        FireStarterState bestState = allStates[0];
+    Dispatch([this, &allStates, testedInstructions] {
         size_t numStates = allStates.size();
-        unsigned int numInstructions = bestState.Settings().m_instructions;
-        float bestResult = bestState.m_maxResult;
-        float worstResult = allStates[numStates - 1].m_maxResult;
         for (unsigned long long index = 0; index < allStates.size(); index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Clone or randomize instructions in the later generations.
                 FireStarterState& curState = job->m_state;
                 curState = allStates[index];
-//              unsigned long long age = generation - curState.m_generation;
+                curState.m_generation = 0;
+
+                // Randomize each generation and index.
+                unsigned long long seed = curState.InitGenerationSeed();
+
+                // Randomize the program for the first generation.
+                curState.RandomProgram(seed);
+
+                // Optimize the program registers.
+                curState.m_program.OptimizeRegisters();
+
+                // Add the instructions to the set of unique instructions.
+                testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
+
+                // Generate the evaluate code
+                GenerateCode(job);
+            } else
+                // Pass along the null job to cause the next stage to exit.
+                m_evolveManager->AddCode();
+        }
+    }, sync);
+    return true;
+} // RandomStates
+
+bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation, bool sync)
+{
+    Dispatch([this, &allStates, testedInstructions, generation] {
+        size_t numStates = allStates.size();
+        unsigned long long halfIndex = (numStates + 1) / 2;
+        float halfResult = allStates[halfIndex - 1].m_maxResult;
+        for (unsigned long long index = 0; index < allStates.size(); index++) {
+            FireStarterJob* job = m_evolveManager->GetFree();
+            if (job) {
+                // Clone or randomize instructions in the later generations.
+                FireStarterState& curState = job->m_state;
+                curState = allStates[index];
                 curState.m_generation = generation;
 
                 // Randomize each generation and index.
                 unsigned long long seed = curState.InitGenerationSeed();
-                if (!generation) {
-                    // Randomize the program for the first generation.
-                    curState.RandomProgram(seed);
+
+                // Select a random index in the best 50%.
+                size_t copyIndex = RANDOMMOD(seed, halfIndex);
+
+                // Save the copy index in the state.
+                curState.m_copy_index = copyIndex;
+                curState.m_copy_id = allStates[copyIndex].m_copy_id;
+
+                // Increment the evolution.
+                curState.m_evolution++;
+
+#if 1
+                // Set the new state's max result to the worst result.
+                curState.m_maxResult = halfResult;
+#else
+                // The max result must include both the current and copy state because both can get evolved at the same time.
+                curState.m_maxResult = MAX(curState.m_maxResult, allStates[copyIndex].m_maxResult);
+#endif
+
+                // Keep copying and randomizing instructions until a unique set of instructions is found.
+                unsigned int count = 0;
+                do {
+                    // Copy the program from the random index.
+                    curState.m_program = allStates[copyIndex].m_program;
+
+                    // Randomize one additional instruction per 10 attempts.
+                    unsigned long long randomCount = (count / 10) + 1;
+                    while (randomCount--)
+                        curState.RandomInstruction(seed);
 
                     // Optimize the program registers.
                     curState.m_program.OptimizeRegisters();
+                    count++;
+                } while (testedInstructions->count(curState.m_program.OptimizedInstructionsData()));
 
-                    // Add the instructions to the set of unique instructions.
-                    testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
-                } else {
-                    // Select a random index in the best 50%.
-                    size_t copyIndex = RANDOMMOD(seed, (numStates + 1) / 2);
-
-                    // Save the copy index in the state.
-                    curState.m_copy_index = copyIndex;
-                    curState.m_copy_id = allStates[copyIndex].m_copy_id;
-
-                    // Increment the evolution.
-                    curState.m_evolution++;
-
-#if 1
-                    // Set the new state's max result to the worst result.
-                    curState.m_maxResult = worstResult;
-#else
-                    // The max result must include both the current and copy state because both can get evolved at the same time.
-                    curState.m_maxResult = MAX(curState.m_maxResult, allStates[copyIndex].m_maxResult);
-#endif
-
-                    // Keep copying and randomizing instructions until a unique set of instructions is found.
-                    unsigned int count = 0;
-                    do {
-                        // Copy the program from the random index.
-                        curState.m_program = allStates[copyIndex].m_program;
-
-                        // Randomize one additional instruction per 10 attempts.
-                        unsigned long long randomCount = (count / 10) + 1;
-                        while (randomCount--)
-                            curState.RandomInstruction(seed);
-
-                        // Optimize the program registers.
-                        curState.m_program.OptimizeRegisters();
-                        count++;
-                    } while (testedInstructions->count(curState.m_program.OptimizedInstructionsData()));
-
-                    // Keep track of the tested instructions.
-                    testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
-                }
+                // Keep track of the tested instructions.
+                testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
 
                 // Generate the evaluate code
                 GenerateCode(job);
@@ -139,21 +155,20 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState)
 {
     bool result = false;
-    if (!m_evolveOptimizeCode.empty()) {
-        // Must copy the intitState pointer in case it becomes invalid when the code below is called.
-        FireStarterState state(initState);
-        DispatchSync([this, state, &result] {
-            FireStarterJob* job = m_evolveManager->GetFree();
-            if (job) {
-                // The state already contains the evolved and optimized code.
-                job->m_state = state;
+ 
+    // Must copy the intitState pointer in case it becomes invalid when the code below is called.
+    FireStarterState state(initState);
+    DispatchSync([this, state, &result] {
+        FireStarterJob* job = m_evolveManager->GetFree();
+        if (job) {
+            // The state already contains the evolved and optimized code.
+            job->m_state = state;
 
-                // Generate the evaluate code
-                GenerateCode(job);
-                result = true;
-            }
-        });
-    }
+            // Generate the evaluate code
+            GenerateCode(job);
+            result = true;
+        }
+    });
     return result;
 } // GenerateOptimize
 
@@ -162,9 +177,13 @@ FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) 
     m_evolveManager = manager;
     m_evolveIndex = index;
     FireStarterCode::LoadCode("FireOptimizer.cu", m_evolveOptimizeCode);
-    DispatchAsync([this] {
-        m_evolveGenerate = new FireStarterGenerate(Context());
-    });
+    if (m_evolveOptimizeCode.empty()) {
+        printf("FireOptimize.cu could not be loaded!\n");
+        std::terminate();
+    } else
+        DispatchAsync([this] {
+            m_evolveGenerate = new FireStarterGenerate(Context());
+        });
 } // FireStarterEvolve
 
 FireStarterEvolve::~FireStarterEvolve(void)

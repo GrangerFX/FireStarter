@@ -210,6 +210,8 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                 for (size_t i = 0; i < numStates; i++) {
                     FireStarterState& newState = newStates[i];
                     FireStarterState& oldState = allStates[i];
+                    float oldResult = oldState.m_maxResult;
+                    float newResult = newState.m_maxResult;
                     oldState = newState;
 
                     // Update the current best state.
@@ -220,7 +222,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                     CompleteResults(bestState, oldState);
 
                     // Update the render status after every pass.
-                    CompleteStatus(*firstState, oldState, newState.m_generation, oldState.m_maxResult, newState.m_maxResult);
+                    CompleteStatus(*firstState, oldState, newState.m_generation, oldResult, newResult);
                     oldState.m_timer.StartDate();
                 }
 
@@ -245,9 +247,12 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             } else {
                 // Later generations: The worst states in the list are replaced by the successful evolution states.
                 std::vector<FireStarterState> addedStates;
+                float worstResult = allStates[numStates - 1].m_maxResult;
                 for (size_t i = 0; i < numStates; i++) {
                     FireStarterState& newState = newStates[i];
                     FireStarterState& oldState = allStates[i];
+                    float oldResult = oldState.m_maxResult;
+                    float newResult = newState.m_maxResult;
                     if (newState.m_optimizeValid) {
                         addedStates.push_back(newState);
 
@@ -259,13 +264,13 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                         CompleteResults(bestState, newState);
 
                         // Update the render status after every pass.
-                        CompleteStatus(*firstState, newState, newState.m_generation, newState.m_maxResult, newState.m_maxResult);
+                        CompleteStatus(*firstState, newState, newState.m_generation, worstResult, newResult);
                     } else {
                         // Update the best state and display the results.
                         CompleteResults(bestState, oldState);
 
                         // Update the render status after every pass.
-                        CompleteStatus(*firstState, oldState, newState.m_generation, oldState.m_maxResult, newState.m_maxResult);
+                        CompleteStatus(*firstState, oldState, newState.m_generation, worstResult, newResult);
                     }
                     oldState.m_timer.StartDate();
                 }
