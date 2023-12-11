@@ -201,10 +201,97 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 
         if (!abort) {
             FireStarterState* firstState = &allStates[0];
-            bool found = false;
+            unsigned long long generation = newStates[0].m_generation;
 
-            for (size_t i = 0; i < numStates; i++) {
+            // New sorting algorithm.
 #if 1
+            if (!generation) {
+                // First generation: All the states are updated and sorted.
+                for (size_t i = 0; i < numStates; i++) {
+                    FireStarterState& newState = newStates[i];
+                    FireStarterState& oldState = allStates[i];
+                    oldState = newState;
+
+                    // Update the current best state.
+                    if (newState.m_maxResult < firstState->m_maxResult)
+                        firstState = &newState;
+
+                    // Update the best state and display the results.
+                    CompleteResults(bestState, oldState);
+
+                    // Update the render status after every pass.
+                    CompleteStatus(*firstState, oldState, newState.m_generation, oldState.m_maxResult, newState.m_maxResult);
+                    oldState.m_timer.StartDate();
+                }
+
+                // Sort the states, least maximum result first.
+                for (size_t i = 0; i < numStates; i++) {
+                    size_t min = i;
+                    float minResult = allStates[i].m_maxResult;
+                    for (size_t j = i + 1; j < numStates; j++) {
+                        float currentResult = allStates[j].m_maxResult;
+                        if (currentResult < minResult) {
+                            minResult = currentResult;
+                            min = j;
+                        }
+                    }
+                    if (min != i) {
+                        FireStarterState temp = allStates[i];
+                        allStates[i] = allStates[min];
+                        allStates[min] = temp;
+                    }
+                    allStates[i].m_index = i;
+                }
+            } else {
+                // Later generations: The worst states in the list are replaced by the successful evolution states.
+                std::vector<FireStarterState> addedStates;
+                for (size_t i = 0; i < numStates; i++) {
+                    FireStarterState& newState = newStates[i];
+                    FireStarterState& oldState = allStates[i];
+                    if (newState.m_optimizeValid) {
+                        addedStates.push_back(newState);
+
+                        // Update the current best state.
+                        if (newState.m_maxResult < firstState->m_maxResult)
+                            firstState = &newState;
+
+                        // Update the best state and display the results.
+                        CompleteResults(bestState, newState);
+
+                        // Update the render status after every pass.
+                        CompleteStatus(*firstState, newState, newState.m_generation, newState.m_maxResult, newState.m_maxResult);
+                    } else {
+                        // Update the best state and display the results.
+                        CompleteResults(bestState, oldState);
+
+                        // Update the render status after every pass.
+                        CompleteStatus(*firstState, oldState, newState.m_generation, oldState.m_maxResult, newState.m_maxResult);
+                    }
+                    oldState.m_timer.StartDate();
+                }
+
+                // Sort the states by maxResult, least first.
+                for (size_t i = 0; i < addedStates.size(); i++) {
+                    FireStarterState state = addedStates[i];
+                    float minResult = state.m_maxResult;
+                    for (size_t j = 0; j < numStates; j++) {
+                        float currentResult = allStates[j].m_maxResult;
+                        if (currentResult >= minResult) {
+                            FireStarterState temp = allStates[j];
+                            allStates[j] = state;
+                            allStates[j].m_index = j;
+                            state = temp;
+                            minResult = currentResult;
+                        }
+                    }
+                }
+            }
+#endif
+
+            // Modified sorting algorithm to replace the worse of the two states.
+#if 0
+            bool found = false;
+            for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
                 FireStarterState& oldState = allStates[MAX(i, newState.m_copy_index)];
                 float oldResult = oldState.m_maxResult;
@@ -212,40 +299,12 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 
                 if (newState.m_optimizeValid && (newResult < oldResult)) {
                     oldState = newState;
-                    oldState.m_evolution++;
                     found = true;
                 }
-                if (newResult < firstState->m_maxResult)
-                    firstState = &newState;
-#else
-                FireStarterState& newState = newStates[i];
-                FireStarterState& oldState = allStates[i];
-                float oldResult = oldState.m_maxResult;
-                float newResult = newState.m_maxResult;
 
-                if (!newState.m_generation) {
-                    oldState = newState;
-                    oldState.m_evolution++;
-                    found = true;
-                } else if (newState.m_optimizeValid) {
-                    if (newResult < oldResult) {
-                        oldState = newState;
-                        oldState.m_evolution++;
-                        found = true;
-                    } else {
-                        // Update the copy state if the new state was better.
-                        FireStarterState& copyState = allStates[newState.m_copy_index];
-                        float copyResult = copyState.m_maxResult;
-                        if (newResult < copyResult) {
-                            copyState = newState;
-                            copyState.m_evolution++;
-                            found = true;
-                        }
-                    }
-                }
+                // Update the current best state.
                 if (newResult < firstState->m_maxResult)
                     firstState = &newState;
-#endif
 
                 // Update the best state and display the results.
                 CompleteResults(bestState, oldState);
@@ -254,7 +313,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                 CompleteStatus(*firstState, oldState, newState.m_generation, oldResult, newResult);
                 oldState.m_timer.StartDate();
             }
-
 
             // Sort the states, least maximum result first.
             if (found) {
@@ -276,9 +334,73 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                     allStates[i].m_index = i;
                 }
             }
+#endif
+
+            // Original sorting algorithm.
+#if 0
+            bool found = false;
+            for (size_t i = 0; i < numStates; i++) {
+                FireStarterState& newState = newStates[i];
+                FireStarterState& oldState = allStates[i];
+                float oldResult = oldState.m_maxResult;
+                float newResult = newState.m_maxResult;
+
+                if (!newState.m_generation) {
+                    oldState = newState;
+                    found = true;
+                } else if (newState.m_optimizeValid) {
+                    if (newResult < oldResult) {
+                        oldState = newState;
+                        oldState.m_evolution++;
+                        found = true;
+                    } else {
+                        // Update the copy state if the new state was better.
+                        FireStarterState& copyState = allStates[newState.m_copy_index];
+                        float copyResult = copyState.m_maxResult;
+                        if (newResult < copyResult) {
+                            copyState = newState;
+                            copyState.m_evolution++;
+                            found = true;
+                        }
+                    }
+                }
+
+                // Update the current best state.
+                if (newResult < firstState->m_maxResult)
+                    firstState = &newState;
+
+                // Update the best state and display the results.
+                CompleteResults(bestState, oldState);
+
+                // Update the render status after every pass.
+                CompleteStatus(*firstState, oldState, newState.m_generation, oldResult, newResult);
+                oldState.m_timer.StartDate();
+            }
+
+            // Sort the states, least maximum result first.
+            if (found) {
+                for (size_t i = 0; i < numStates; i++) {
+                    size_t min = i;
+                    float minResult = allStates[i].m_maxResult;
+                    for (size_t j = i + 1; j < numStates; j++) {
+                        float currentResult = allStates[j].m_maxResult;
+                        if (currentResult < minResult) {
+                            minResult = currentResult;
+                            min = j;
+                        }
+                    }
+                    if (min != i) {
+                        FireStarterState temp = allStates[i];
+                        allStates[i] = allStates[min];
+                        allStates[min] = temp;
+                    }
+                    allStates[i].m_index = i;
+                }
+            }
+#endif
 
             // Has the evolve target or the maximum number of attempts been reached?
-            unsigned long long age = newStates[0].m_generation - allStates[0].m_generation;
+            unsigned long long age = generation - allStates[0].m_generation;
             if (newStates[0].m_optimizePass)
                 result = age >= allStates[0].Settings().m_optimize;
             else
