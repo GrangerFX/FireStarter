@@ -93,7 +93,6 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
     Dispatch([this, &allStates, testedInstructions, generation] {
         size_t numStates = allStates.size();
         unsigned long long halfIndex = (numStates + 1) / 2;
-        float halfResult = allStates[halfIndex - 1].m_maxResult;
         for (unsigned long long index = 0; index < allStates.size(); index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
@@ -115,13 +114,8 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 // Increment the evolution.
                 curState.m_evolution++;
 
-#if 0
-                // Set the new state's max result to the worst result.
-                curState.m_maxResult = halfResult;
-#else
                 // The max result must include both the current and copy state because both can get evolved at the same time.
                 curState.m_maxResult = MAX(curState.m_maxResult, allStates[copyIndex].m_maxResult);
-#endif
 
                 // Keep copying and randomizing instructions until a unique set of instructions is found.
                 unsigned int count = 0;
