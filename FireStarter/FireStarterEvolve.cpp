@@ -115,7 +115,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 // Increment the evolution.
                 curState.m_evolution++;
 
-#if 1
+#if 0
                 // Set the new state's max result to the worst result.
                 curState.m_maxResult = halfResult;
 #else

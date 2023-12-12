@@ -204,7 +204,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             unsigned long long generation = newStates[0].m_generation;
 
             // New sorting algorithm.
-#if 1
+#if 0
             if (!generation) {
                 // First generation: All the states are updated and sorted.
                 for (size_t i = 0; i < numStates; i++) {
@@ -276,17 +276,15 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                 }
 
                 // Sort the states by maxResult, least first.
-                for (size_t i = 0; i < addedStates.size(); i++) {
-                    FireStarterState state = addedStates[i];
-                    float minResult = state.m_maxResult;
+                for (FireStarterState& state : addedStates) {
+                    float stateResult = state.m_maxResult;
                     for (size_t j = 0; j < numStates; j++) {
                         float currentResult = allStates[j].m_maxResult;
-                        if (currentResult >= minResult) {
+                        if (currentResult >= stateResult) {
                             FireStarterState temp = allStates[j];
                             allStates[j] = state;
                             allStates[j].m_index = j;
                             state = temp;
-                            minResult = currentResult;
                         }
                     }
                 }
@@ -294,16 +292,19 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 #endif
 
             // Modified sorting algorithm to replace the worse of the two states.
-#if 0
+#if 1
             bool found = false;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
-                FireStarterState& oldState = allStates[MAX(i, newState.m_copy_index)];
+                FireStarterState& oldState = allStates[i];
                 float oldResult = oldState.m_maxResult;
                 float newResult = newState.m_maxResult;
 
-                if (newState.m_optimizeValid && (newResult < oldResult)) {
-                    oldState = newState;
+                size_t evolveIndex = MAX(i, newState.m_copy_index);
+                FireStarterState& evolveState = allStates[evolveIndex];
+                if (newState.m_optimizeValid && (newResult < evolveState.m_maxResult)) {
+                    evolveState = newState;
+                    evolveState.m_index = evolveIndex;
                     found = true;
                 }
 
