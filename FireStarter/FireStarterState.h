@@ -132,15 +132,7 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
-#if FIRESTARTER_EVOLVE_CHAOS == 1
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(m_generation) + SEED3(optimization) + SEED4(m_test);
-#elif FIRESTARTER_EVOLVE_CHAOS == 2
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(m_id) + SEED3(optimization) + SEED4(m_test);
-#elif FIRESTARTER_EVOLVE_CHAOS == 3
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(m_id) + SEED3(m_generation) + SEED4(optimization) + SEED5(m_test);
-#else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
-#endif
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const
