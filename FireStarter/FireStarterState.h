@@ -197,11 +197,6 @@ public:
         m_program.RandomProgram(m_seed);
     } // RandomProgram
 
-    inline void RandomProgram(unsigned long long& seed)
-    {
-        m_program.RandomProgram(seed);
-    } // RandomProgram
-
     inline void RandomResults(void)
     {
         FireStarterResults* results = Results();

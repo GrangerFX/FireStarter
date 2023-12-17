@@ -67,10 +67,10 @@ bool FireStarterEvolve::RandomStates(const std::vector<FireStarterState>& allSta
                 curState.m_generation = 0;
 
                 // Randomize each generation and index.
-                unsigned long long seed = curState.InitGenerationSeed();
+                curState.InitGenerationSeed();
 
                 // Randomize the program for the first generation.
-                curState.RandomProgram(seed);
+                curState.RandomProgram();
 
                 // Optimize the program registers.
                 curState.m_program.OptimizeRegisters();
@@ -103,10 +103,12 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 curState.m_generation = generation;
 
                 // Randomize each generation and index.
-                unsigned long long seed = curState.InitGenerationSeed();
+                curState.InitGenerationSeed();
 
                 // Select a random index in the best 50%.
-                size_t copyIndex = RANDOMMOD(seed, halfIndex);
+//                size_t copyIndex = curState.RandomMod(halfIndex);
+                // All states evolve the best state.
+                size_t copyIndex = 0;
 
                 // Save the copy index in the state.
                 curState.m_copy_index = copyIndex;
@@ -127,7 +129,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                     // Randomize one additional instruction per 10 attempts.
                     unsigned long long randomCount = (count / 10) + 1;
                     while (randomCount--)
-                        curState.RandomInstruction(seed);
+                        curState.RandomInstruction();
 
                     // Optimize the program registers.
                     curState.m_program.OptimizeRegisters();
