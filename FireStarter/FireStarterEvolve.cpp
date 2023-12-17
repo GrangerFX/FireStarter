@@ -92,8 +92,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
 {
     Dispatch([this, &allStates, testedInstructions, generation] {
         size_t numStates = allStates.size();
-//        unsigned long long halfIndex = (numStates + 1) / 2;
-        unsigned long long halfIndex = (numStates + 2) / 3;
+        unsigned long long halfIndex = (numStates + 1) / 2;
         for (unsigned long long index = 0; index < allStates.size(); index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
@@ -106,9 +105,7 @@ bool FireStarterEvolve::EvolveStates(const std::vector<FireStarterState>& allSta
                 curState.InitGenerationSeed();
 
                 // Select a random index in the best 50%.
-//                size_t copyIndex = curState.RandomMod(halfIndex);
-                // All states evolve the best state.
-                size_t copyIndex = 0;
+                size_t copyIndex = curState.RandomMod(halfIndex);
 
                 // Save the copy index in the state.
                 curState.m_copy_index = copyIndex;
