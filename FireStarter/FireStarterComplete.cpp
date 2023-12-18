@@ -202,10 +202,11 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             FireStarterState firstState = allStates[0];
             unsigned long long generation = newStates[0].m_generation;
             bool found = false;
-#if 1
+#if FIRESTARTER_EVOLVE_NEW
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
                 float newResult = newState.m_maxResult;
+                float oldResult = allStates[i].m_maxResult;
 
                 if (!newState.m_generation) {
                     allStates[i] = newState;
@@ -223,7 +224,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                 CompleteResults(bestState, allStates[i]);
 
                 // Update the render status after every pass.
-                CompleteStatus(firstState, allStates[i], newState.m_generation, allStates[i].m_maxResult, newResult);
+                CompleteStatus(firstState, allStates[i], newState.m_generation, oldResult, newResult);
                 allStates[i].m_timer.StartDate();
             }
 

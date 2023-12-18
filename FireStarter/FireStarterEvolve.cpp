@@ -88,7 +88,7 @@ bool FireStarterEvolve::RandomStates(const std::vector<FireStarterState>& allSta
     return true;
 } // RandomStates
 
-#if 1
+#if FIRESTARTER_EVOLVE_NEW
 bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, size_t numStates, TestedInstructions* testedInstructions, unsigned long long generation)
 {
     DispatchSync([this, &allStates, numStates, testedInstructions, generation] {
@@ -97,12 +97,6 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
             if (job) {
                 // Clone or randomize instructions in the later generations.
                 FireStarterState& curState = job->m_state;
-                curState = allStates[index];
-                curState.m_generation = generation;
-                curState.m_children = 0;
-
-                // Randomize each generation and index.
-                curState.InitGenerationSeed();
 
                 // Find the best state to evolve based on a weighting algorithm.
                 float copyValue = curState.Settings().m_startResult;
@@ -115,9 +109,15 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                     }
                 }
 
-                // Save the copy index in the state.
+                // Copy and setup the state.
+                curState = allStates[copyIndex];
+                curState.m_index = index;
                 curState.m_copy_index = copyIndex;
                 curState.m_copy_id = allStates[copyIndex].m_copy_id;
+                curState.m_maxResult = allStates[copyIndex].m_maxResult;
+                curState.m_generation = generation;
+                curState.m_children = 0;
+                curState.InitGenerationSeed();
 
                 // Increment the copied state's children.
                 allStates[copyIndex].m_children++;
@@ -131,7 +131,7 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                 // Keep copying and randomizing instructions until a unique set of instructions is found.
                 unsigned int count = 0;
                 do {
-                    // Copy the program from the random index.
+                    // Copy the program and result from the random index.
                     curState.m_program = allStates[copyIndex].m_program;
 
                     // Randomize one additional instruction per 10 attempts.
