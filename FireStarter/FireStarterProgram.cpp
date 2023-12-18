@@ -125,7 +125,7 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("evolveSeed = %llu", settings.m_evolveSeed) + postfix + "\r\n";
     code += prefix + Format("optimizeSeed = %llu", settings.m_optimizeSeed) + postfix + "\r\n";
     code += prefix + Format("tests = %u", settings.m_tests) + postfix + "\r\n";
-    code += prefix + Format("seeds = %u", settings.m_seeds) + postfix + "\r\n";
+    code += prefix + Format("states = %u", settings.m_states) + postfix + "\r\n";
     code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
     code += prefix + Format("population = %u", settings.m_population) + postfix + "\r\n";
     code += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";

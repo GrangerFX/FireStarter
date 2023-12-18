@@ -190,7 +190,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
 
         // Loop until the the completion condition or the host program is quit.
         size_t tests = MAX(randomSettings.m_tests, 1);
-        size_t randomTests = randomSettings.m_seeds * tests;
+        size_t randomTests = randomSettings.m_states * tests;
         for (unsigned long long test = testCount++; (test < randomTests) && !WillTerminate(); test = testCount++) {
             // Setup the intial state
             FireStarterSettings evolveSettings(randomSettings);
@@ -212,7 +212,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
 
             // Output the evolve results.
             std::string resultText;
-            if (evolveState.Settings().m_seeds > 1)
+            if (evolveState.Settings().m_states > 1)
                 resultText += Format("Seed=%u  ", evolveState.Settings().m_evolveSeed);
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
@@ -246,7 +246,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
-        unsigned int numStates = evolveSettings.m_seeds;
+        unsigned int numStates = evolveSettings.m_states;
         evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
         std::vector<FireStarterState> allStates(numStates);
         TestedInstructions testedInstructions;
@@ -291,7 +291,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     evolve->RandomStates(allStates, &testedInstructions);
                 else
                     // Evolve a new generation.
-                    evolve->EvolveStates(allStates, &testedInstructions, generation);
+                    evolve->EvolveStates(allStates, numStates, &testedInstructions, generation);
 
                 // Execute each state using one of the execution units.
                 std::atomic<long long> evolveCount = numStates;
@@ -299,7 +299,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     execute->ExecuteEvolve(evolveCount);
 
                 // Gather and sort the results, update the UI and check for the completion condition.
-                if (complete->CompleteStates(m_streamBestState, allStates))
+                if (complete->CompleteStates(m_streamBestState, allStates, numStates))
                     break;
 
                 // Increment the generation.
@@ -414,7 +414,7 @@ void FireStarterStreams::RandomStreams(void)
     // Initialize the streams.
     DispatchSync([this] {
         // Generate sequential random programs and test each of them.
-        size_t randomTests = m_streamSettings.m_seeds * MAX(m_streamSettings.m_tests, 1);
+        size_t randomTests = m_streamSettings.m_states * MAX(m_streamSettings.m_tests, 1);
         size_t numStreams = MAX(MIN(FIRESTARTER_STREAMS, MIN(m_streamSettings.m_units, randomTests)), 1);
         FireStarterState bestState(m_streamSettings);
 

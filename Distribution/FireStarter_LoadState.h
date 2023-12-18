@@ -50,7 +50,7 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_evolveSeed = 1;
     settings.m_optimizeSeed = 1;
     settings.m_tests = 16;
-    settings.m_seeds = 64;
+    settings.m_states = 64;
     settings.m_units = 4;
     settings.m_population = 278528;
     settings.m_iterations = 64;

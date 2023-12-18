@@ -17,6 +17,7 @@ private:
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
         m_evolution = other.m_evolution;
+        m_children = other.m_children;
         m_index = other.m_index;
         m_copy_index = other.m_copy_index;
         m_id = other.m_id;
@@ -36,6 +37,7 @@ public:
     std::vector<unsigned int> m_variationCount;
     unsigned long long m_generation = 0;
     unsigned long long m_evolution = 0;
+    unsigned long long m_children = 0;
     unsigned long long m_index = 0;
     unsigned long long m_copy_index = 0;
     unsigned long long m_id = 0;
