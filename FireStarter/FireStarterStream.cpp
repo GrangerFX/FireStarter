@@ -248,7 +248,6 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         FireStarterSettings evolveSettings(m_streamSettings);
         unsigned int numStates = evolveSettings.m_states;
         evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
-        std::vector<FireStarterState> allStates(numStates);
         TestedInstructions testedInstructions;
         SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
@@ -277,6 +276,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
+            std::vector<FireStarterState> allStates(numStates);
             unsigned long long test = FIRESTARTER_START_TEST + t;
 
             // Randomize the entire program of each state for the first generation
@@ -288,7 +288,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             while (!WillTerminate()) {
                 if (!generation)
                     // Randomize the first generation.
-                    evolve->RandomStates(allStates, &testedInstructions);
+                    evolve->RandomStates(allStates, numStates, &testedInstructions);
                 else
                     // Evolve a new generation.
                     evolve->EvolveStates(allStates, numStates, &testedInstructions, generation);

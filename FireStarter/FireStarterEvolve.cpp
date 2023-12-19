@@ -54,11 +54,10 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
     return true;
 } // RandomState
 
-bool FireStarterEvolve::RandomStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation)
+bool FireStarterEvolve::RandomStates(const std::vector<FireStarterState>& allStates, size_t numStates, TestedInstructions* testedInstructions, unsigned long long generation)
 {
-    DispatchSync([this, &allStates, testedInstructions] {
-        size_t numStates = allStates.size();
-        for (unsigned long long index = 0; index < allStates.size(); index++) {
+    DispatchSync([this, &allStates, numStates, testedInstructions] {
+        for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Clone or randomize instructions in the later generations.
@@ -117,16 +116,8 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                 curState.m_maxResult = allStates[copyIndex].m_maxResult;
                 curState.m_generation = generation;
                 curState.m_children = 0;
-                curState.InitGenerationSeed();
-
-                // Increment the copied state's children.
-                allStates[copyIndex].m_children++;
-
-                // Increment the evolution.
                 curState.m_evolution++;
-
-                // The max result must include both the current and copy state because both can get evolved at the same time.
-                curState.m_maxResult = MAX(curState.m_maxResult, allStates[copyIndex].m_maxResult);
+                curState.InitGenerationSeed();
 
                 // Keep copying and randomizing instructions until a unique set of instructions is found.
                 unsigned int count = 0;
@@ -146,6 +137,9 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
 
                 // Keep track of the tested instructions.
                 testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
+
+                // Increment the copied state's children.
+                allStates[copyIndex].m_children++;
 
                 // Generate the evaluate code
                 GenerateCode(job);

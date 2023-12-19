@@ -19,7 +19,7 @@ private:
 
 public:
 	bool RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync = false);
-	bool RandomStates(const std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation = 0);
+	bool RandomStates(const std::vector<FireStarterState>& allStates, size_t numStates, TestedInstructions* testedInstructions, unsigned long long generation = 0);
 	bool EvolveStates(std::vector<FireStarterState>& allStates, size_t numStates, TestedInstructions* testedInstructions, unsigned long long generation);
 	bool GenerateOptimize(const FireStarterState& initState);
 	FireStarterEvolve(FireStarterManager* manager, size_t index = 0);
