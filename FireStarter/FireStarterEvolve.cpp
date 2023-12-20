@@ -100,46 +100,71 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                 // Find the best state to evolve based on a weighting algorithm.
                 float copyValue = curState.Settings().m_startResult;
                 size_t copyIndex = 0;
+                unsigned long long copyAge = 0;
                 for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
-                    float curValue = (allStates[curIndex].m_generation + allStates[curIndex].m_children) * allStates[curIndex].m_maxResult;
+                    size_t curAge = generation - allStates[curIndex].m_generation;
+                    float curValue = (curAge + allStates[curIndex].m_children) * allStates[curIndex].m_maxResult;
                     if (curValue < copyValue) {
                         copyValue = curValue;
                         copyIndex = curIndex;
+                        copyAge = curAge;
                     }
                 }
 
-                // Copy and setup the state.
-                curState = allStates[copyIndex];
-                curState.m_index = index;
-                curState.m_copy_index = copyIndex;
-                curState.m_copy_id = allStates[copyIndex].m_copy_id;
-                curState.m_maxResult = allStates[copyIndex].m_maxResult;
-                curState.m_generation = generation;
-                curState.m_children = 0;
-                curState.m_evolution++;
-                curState.InitGenerationSeed();
+                if (copyAge > 8) {
+                    // If the age is too great, randomize the state.
+                    curState = allStates[copyIndex];
+                    curState.m_index = index;
+                    curState.m_copy_index = copyIndex;
+                    curState.m_copy_id = allStates[copyIndex].m_copy_id;
+                    curState.m_maxResult = allStates[copyIndex].Settings().m_startResult;
+                    curState.m_generation = generation;
+                    curState.m_children = 0;
+                    curState.m_evolution = 0;
+                    curState.InitGenerationSeed();
 
-                // Keep copying and randomizing instructions until a unique set of instructions is found.
-                unsigned int count = 0;
-                do {
-                    // Copy the program and result from the random index.
-                    curState.m_program = allStates[copyIndex].m_program;
-
-                    // Randomize one additional instruction per 10 attempts.
-                    unsigned long long randomCount = (count / 10) + 1;
-                    while (randomCount--)
-                        curState.RandomInstruction();
+                    // Randomize the program for the first generation.
+                    curState.RandomProgram();
 
                     // Optimize the program registers.
                     curState.m_program.OptimizeRegisters();
-                    count++;
-                } while (testedInstructions->count(curState.m_program.OptimizedInstructionsData()));
+
+                    // Add the instructions to the set of unique instructions.
+                    testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
+                } else {
+                    // Copy and setup the state.
+                    curState = allStates[copyIndex];
+                    curState.m_index = index;
+                    curState.m_copy_index = copyIndex;
+                    curState.m_copy_id = allStates[copyIndex].m_copy_id;
+                    curState.m_maxResult = allStates[copyIndex].m_maxResult;
+                    curState.m_generation = generation;
+                    curState.m_children = 0;
+                    curState.m_evolution++;
+                    curState.InitGenerationSeed();
+
+                    // Increment the copied state's children.
+                    allStates[copyIndex].m_children++;
+
+                    // Keep copying and randomizing instructions until a unique set of instructions is found.
+                    unsigned int count = 0;
+                    do {
+                        // Copy the program and result from the random index.
+                        curState.m_program = allStates[copyIndex].m_program;
+
+                        // Randomize one additional instruction per 10 attempts.
+                        unsigned long long randomCount = (count / 10) + 1;
+                        while (randomCount--)
+                            curState.RandomInstruction();
+
+                        // Optimize the program registers.
+                        curState.m_program.OptimizeRegisters();
+                        count++;
+                    } while (testedInstructions->count(curState.m_program.OptimizedInstructionsData()));
+                }
 
                 // Keep track of the tested instructions.
                 testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
-
-                // Increment the copied state's children.
-                allStates[copyIndex].m_children++;
 
                 // Generate the evaluate code
                 GenerateCode(job);
