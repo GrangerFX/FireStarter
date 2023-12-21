@@ -94,34 +94,19 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
-                // Clone or randomize instructions in the later generations.
-                FireStarterState& curState = job->m_state;
-
-                // Find the best state to evolve based on a weighting algorithm.
-                float copyValue = curState.Settings().m_startResult;
-                size_t copyIndex = 0;
-                unsigned long long copyAge = 0;
-                for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
-                    size_t curAge = generation - allStates[curIndex].m_generation;
-                    float curValue = (curAge + allStates[curIndex].m_children) * allStates[curIndex].m_maxResult;
-                    if (curValue < copyValue) {
-                        copyValue = curValue;
-                        copyIndex = curIndex;
-                        copyAge = curAge;
-                    }
-                }
-
-                if (copyAge > 8) {
-                    // If the age is too great, randomize the state.
-                    curState = allStates[copyIndex];
+                if (generation - allStates[index].m_generation > 4) {
+                    // Setup the new state.
+                    FireStarterState& curState = job->m_state;
+                    curState = allStates[index];
                     curState.m_index = index;
-                    curState.m_copy_index = copyIndex;
-                    curState.m_copy_id = allStates[copyIndex].m_copy_id;
-                    curState.m_maxResult = allStates[copyIndex].Settings().m_startResult;
+                    curState.m_copy_index = index;
                     curState.m_generation = generation;
-                    curState.m_children = 0;
                     curState.m_evolution = 0;
+                    curState.m_children = 0;
                     curState.InitGenerationSeed();
+
+                    // If the age is too great, randomize the state.
+                    curState.m_maxResult = curState.Settings().m_startResult;
 
                     // Randomize the program for the first generation.
                     curState.RandomProgram();
@@ -132,15 +117,29 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                     // Add the instructions to the set of unique instructions.
                     testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
                 } else {
-                    // Copy and setup the state.
+                    // Find the best state to evolve based on a weighting algorithm.
+                    float copyValue = 0.0f;
+                    size_t copyIndex = 0;
+                    unsigned long long copyAge = 0;
+                    for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
+                        size_t curAge = generation - allStates[curIndex].m_generation;
+                        float curValue = (curAge + allStates[curIndex].m_children) * allStates[curIndex].m_maxResult;
+                        if (!curIndex || (curValue < copyValue)) {
+                            copyValue = curValue;
+                            copyIndex = curIndex;
+                            copyAge = curAge;
+                        }
+                    }
+
+                    // Copy and setup the new state.
+                    FireStarterState& curState = job->m_state;
                     curState = allStates[copyIndex];
                     curState.m_index = index;
                     curState.m_copy_index = copyIndex;
-                    curState.m_copy_id = allStates[copyIndex].m_copy_id;
-                    curState.m_maxResult = allStates[copyIndex].m_maxResult;
+                    curState.m_id = allStates[index].m_id;
                     curState.m_generation = generation;
-                    curState.m_children = 0;
                     curState.m_evolution++;
+                    curState.m_children = 0;
                     curState.InitGenerationSeed();
 
                     // Increment the copied state's children.
@@ -161,10 +160,10 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                         curState.m_program.OptimizeRegisters();
                         count++;
                     } while (testedInstructions->count(curState.m_program.OptimizedInstructionsData()));
-                }
 
-                // Keep track of the tested instructions.
-                testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
+                    // Keep track of the tested instructions.
+                    testedInstructions->insert(curState.m_program.OptimizedInstructionsData());
+                }
 
                 // Generate the evaluate code
                 GenerateCode(job);

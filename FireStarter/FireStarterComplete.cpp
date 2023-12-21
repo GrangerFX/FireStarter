@@ -211,7 +211,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                 if (!newState.m_generation) {
                     allStates[i] = newState;
                     found = true;
-                }  else if (newState.m_optimizeValid && (newResult < allStates[i].m_maxResult)) {
+                } else if (newState.m_optimizeValid) {
                     allStates.push_back(newState);
                     found = true;
                 }
