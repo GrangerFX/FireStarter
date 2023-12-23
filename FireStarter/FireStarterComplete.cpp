@@ -206,13 +206,15 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
                 float newResult = newState.m_maxResult;
-                float oldResult = allStates[i].m_maxResult;
+                float oldResult = newState.m_oldResult;
 
-                if (!newState.m_generation) {
-                    allStates[i] = newState;
-                    found = true;
-                } else if (newState.m_optimizeValid) {
-                    allStates.push_back(newState);
+                // Keep the valid results.
+                if (newState.m_optimizeValid) {
+                    if (newState.m_evolution) {
+                        newState.m_id = allStates.size();
+                        allStates.push_back(newState);
+                    } else
+                        allStates[i] = newState;
                     found = true;
                 }
 

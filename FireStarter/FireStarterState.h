@@ -24,6 +24,7 @@ private:
         m_copy_id = other.m_copy_id;
         m_test = other.m_test;
         m_seed = other.m_seed;
+        m_oldResult = other.m_oldResult;
         m_maxResult = other.m_maxResult;
         m_optimizePass = other.m_optimizePass;
         m_optimizeValid = other.m_optimizeValid;
@@ -44,7 +45,8 @@ public:
     unsigned long long m_copy_id = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
-    float m_maxResult = -1.0f;
+    float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
+    float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     bool m_optimizePass = false;
     bool m_optimizeValid = false;
 

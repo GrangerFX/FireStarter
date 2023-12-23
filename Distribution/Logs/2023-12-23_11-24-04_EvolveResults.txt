@@ -1,0 +1,1 @@
+Duration: 3538.4  Evolve Seed=0  Test=1  Generation=74  Evolve Result=0.00000048 *******

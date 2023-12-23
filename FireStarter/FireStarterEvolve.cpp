@@ -94,7 +94,7 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
-                if (generation - allStates[index].m_generation > 4) {
+                if ((generation - allStates[index].m_generation > 8) && (index * 4 >= numStates)) {
                     // Setup the new state.
                     FireStarterState& curState = job->m_state;
                     curState = allStates[index];
@@ -106,7 +106,7 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                     curState.InitGenerationSeed();
 
                     // If the age is too great, randomize the state.
-                    curState.m_maxResult = curState.Settings().m_startResult;
+                    curState.m_oldResult = curState.m_maxResult = curState.Settings().m_startResult;
 
                     // Randomize the program for the first generation.
                     curState.RandomProgram();
@@ -140,6 +140,7 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                     curState.m_generation = generation;
                     curState.m_evolution++;
                     curState.m_children = 0;
+                    curState.m_oldResult = curState.m_maxResult;
                     curState.InitGenerationSeed();
 
                     // Increment the copied state's children.
