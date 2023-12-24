@@ -94,7 +94,7 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
-                if ((generation - allStates[index].m_generation > 8) && (index * 4 >= numStates)) {
+                if ((generation - allStates[index].m_generation > 8) && (index * 2 >= numStates)) {
                     // Setup the new state.
                     FireStarterState& curState = job->m_state;
                     curState = allStates[index];
