@@ -199,8 +199,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
         }
 
         if (!abort) {
-            FireStarterState firstState = allStates[0];
-            unsigned long long generation = newStates[0].m_generation;
+            FireStarterState firstState(bestState.Settings());
             bool found = false;
 #if FIRESTARTER_EVOLVE_NEW
             for (size_t i = 0; i < numStates; i++) {
@@ -210,11 +209,8 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 
                 // Keep the valid results.
                 if (newState.m_optimizeValid) {
-                    if (newState.m_evolution) {
-                        newState.m_id = allStates.size();
-                        allStates.push_back(newState);
-                    } else
-                        allStates[i] = newState;
+                    newState.m_id = allStates.size();
+                    allStates.push_back(newState);            
                     found = true;
                 }
 
@@ -310,7 +306,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
 #endif
 
             // Has the evolve target or the maximum number of attempts been reached?
-            unsigned long long age = generation - allStates[0].m_generation;
+            unsigned long long age = newStates[0].m_generation - allStates[0].m_generation;
             if (newStates[0].m_optimizePass)
                 result = age >= allStates[0].Settings().m_optimize;
             else

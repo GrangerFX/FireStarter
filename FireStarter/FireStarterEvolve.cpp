@@ -54,16 +54,16 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
     return true;
 } // RandomState
 
-bool FireStarterEvolve::RandomStates(const std::vector<FireStarterState>& allStates, size_t numStates, TestedInstructions* testedInstructions, unsigned long long generation)
+bool FireStarterEvolve::RandomStates(unsigned long long test, const FireStarterSettings& evolveSettings, TestedInstructions* testedInstructions, unsigned long long generation)
 {
-    DispatchSync([this, &allStates, numStates, testedInstructions] {
+    DispatchSync([this, test, &evolveSettings, testedInstructions] {
+        unsigned long long numStates = evolveSettings.m_states;
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Clone or randomize instructions in the later generations.
                 FireStarterState& curState = job->m_state;
-                curState = allStates[index];
-                curState.m_generation = 0;
+                curState.InitState(evolveSettings, index, test);
 
                 // Randomize each generation and index.
                 curState.InitGenerationSeed();
@@ -88,21 +88,18 @@ bool FireStarterEvolve::RandomStates(const std::vector<FireStarterState>& allSta
 } // RandomStates
 
 #if FIRESTARTER_EVOLVE_NEW
-bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, size_t numStates, TestedInstructions* testedInstructions, unsigned long long generation)
+bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, std::vector<FireStarterState>& allStates, TestedInstructions* testedInstructions, unsigned long long generation)
 {
-    DispatchSync([this, &allStates, numStates, testedInstructions, generation] {
+    DispatchSync([this, test, &evolveSettings, &allStates, testedInstructions, generation] {
+        unsigned long long numStates = evolveSettings.m_states;
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
-                if ((generation - allStates[index].m_generation > 8) && (index * 2 >= numStates)) {
+                if ((generation - allStates[index].m_children > 8) && (index * 2 >= numStates)) {
                     // Setup the new state.
                     FireStarterState& curState = job->m_state;
-                    curState = allStates[index];
-                    curState.m_index = index;
-                    curState.m_copy_index = index;
+                    curState.InitState(evolveSettings, index, test);
                     curState.m_generation = generation;
-                    curState.m_evolution = 0;
-                    curState.m_children = 0;
                     curState.InitGenerationSeed();
 
                     // If the age is too great, randomize the state.
@@ -153,8 +150,8 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                         // Copy the program and result from the random index.
                         curState.m_program = allStates[copyIndex].m_program;
 
-                        // Randomize one additional instruction per 10 attempts.
-                        unsigned long long randomCount = (count / 10) + 1;
+                        // Randomize one additional instruction per 16 attempts.
+                        unsigned long long randomCount = (count / evolveSettings.m_instructions) + 1;
                         while (randomCount--)
                             curState.RandomInstruction();
 

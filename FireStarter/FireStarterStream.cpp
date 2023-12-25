@@ -276,22 +276,18 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            std::vector<FireStarterState> allStates(numStates);
+            std::vector<FireStarterState> allStates;
             unsigned long long test = FIRESTARTER_START_TEST + t;
-
-            // Randomize the entire program of each state for the first generation
-            for (unsigned long long i = 0; i < numStates; i++)
-                allStates[i].InitState(evolveSettings, i, test);
 
             // Evolve the current test.
             unsigned int generation = 0;
             while (!WillTerminate()) {
                 if (!generation)
                     // Randomize the first generation.
-                    evolve->RandomStates(allStates, numStates, &testedInstructions);
+                    evolve->RandomStates(test, evolveSettings, &testedInstructions, generation);
                 else
                     // Evolve a new generation.
-                    evolve->EvolveStates(allStates, numStates, &testedInstructions, generation);
+                    evolve->EvolveStates(test, evolveSettings, allStates, &testedInstructions, generation);
 
                 // Execute each state using one of the execution units.
                 std::atomic<long long> evolveCount = numStates;
@@ -306,7 +302,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 generation++;
             }
 
-            if (!WillTerminate()) {
+            if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
                 FireStarterState& bestEvolveState = allStates[0];
                 std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed, test);
