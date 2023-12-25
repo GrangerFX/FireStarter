@@ -123,7 +123,8 @@ bool FireStarterEvolve::EvolveStates(std::vector<FireStarterState>& allStates, s
                     unsigned long long copyAge = 0;
                     for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
                         size_t curAge = generation - allStates[curIndex].m_generation;
-                        float curValue = (curAge + allStates[curIndex].m_children) * allStates[curIndex].m_maxResult;
+//                      float curValue = (curAge + allStates[curIndex].m_children) * allStates[curIndex].m_maxResult;
+                        float curValue = (allStates[curIndex].m_children + 1) * allStates[curIndex].m_maxResult;
                         if (!curIndex || (curValue < copyValue)) {
                             copyValue = curValue;
                             copyIndex = curIndex;
