@@ -172,12 +172,12 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 } // CompleteState
 
 // Replace old states with new ones when better and resort the list.
-bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vector<FireStarterState>& allStates, size_t numStates)
+bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates)
 {
     bool result = false;
     DispatchSync([this, &bestState, &allStates, numStates, &result] {
         // Sort the states as they are received.
-        std::vector<FireStarterState> newStates(numStates);
+        FireStarterStates newStates(numStates);
         bool abort = false;
 
         for (size_t i = 0; i < numStates; i++) {
@@ -193,15 +193,16 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
             size_t index = job->m_state.m_index;
             if (!newStates[index].Results())
                 newStates[index] = job->m_state;
-            else
+            else {
                 printf("Error: Completed state index already received: %llu\n", index);
+                std::terminate();
+            }
             m_manager->AddFree(job);
         }
 
         if (!abort) {
-            FireStarterState firstState = allStates.empty() ? bestState : allStates[0];
+            FireStarterState firstState = allStates.empty() ? FireStarterState(bestState.Settings()) : allStates[0];
             bool found = false;
-#if FIRESTARTER_EVOLVE_NEW
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
                 float newResult = newState.m_maxResult;
@@ -212,18 +213,17 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                     newState.m_id = allStates.size();
                     allStates.push_back(newState);            
                     found = true;
+
+                    // Update the best state and display the results.
+                    CompleteResults(bestState, newState);
                 }
 
                 // Update the current best state.
                 if (newResult < firstState.m_maxResult)
                     firstState = newState;
 
-                // Update the best state and display the results.
-                CompleteResults(bestState, allStates[i]);
-
                 // Update the render status after every pass.
-                CompleteStatus(firstState, allStates[i], newState.m_generation, oldResult, newResult);
-                allStates[i].m_timer.StartDate();
+                CompleteStatus(firstState, newState, newState.m_generation, oldResult, newResult);
             }
 
             // Sort the states, least maximum result first.
@@ -247,63 +247,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
                     allStates[i].m_index = i;
                 }
             }
-#else
-            for (size_t i = 0; i < numStates; i++) {
-                FireStarterState& newState = newStates[i];
-                FireStarterState& oldState = allStates[i];
-                float oldResult = oldState.m_maxResult;
-                float newResult = newState.m_maxResult;
-
-                if (!newState.m_generation) {
-                    oldState = newState;
-                    found = true;
-                } else if (newState.m_optimizeValid) {
-                    if (newResult < oldResult) {
-                        oldState = newState;
-                        found = true;
-                    } else {
-                        // Update the copy state if the new state was better.
-                        FireStarterState& copyState = allStates[newState.m_copy_index];
-                        float copyResult = copyState.m_maxResult;
-                        if (newResult < copyResult) {
-                            copyState = newState;
-                            found = true;
-                        }
-                    }
-                }
-
-                // Update the current best state.
-                if (newResult < firstState->m_maxResult)
-                    firstState = &newState;
-
-                // Update the best state and display the results.
-                CompleteResults(bestState, oldState);
-
-                // Update the render status after every pass.
-                CompleteStatus(*firstState, oldState, newState.m_generation, oldResult, newResult);
-                oldState.m_timer.StartDate();
-            }
-
-            if (found) {
-                for (size_t i = 0; i < numStates; i++) {
-                    size_t min = i;
-                    float minResult = allStates[i].m_maxResult;
-                    for (size_t j = i + 1; j < numStates; j++) {
-                        float currentResult = allStates[j].m_maxResult;
-                        if (currentResult < minResult) {
-                            minResult = currentResult;
-                            min = j;
-                        }
-                    }
-                    if (min != i) {
-                        FireStarterState temp = allStates[i];
-                        allStates[i] = allStates[min];
-                        allStates[min] = temp;
-                    }
-                    allStates[i].m_index = i;
-                }
-            }
-#endif
 
             // Has the evolve target or the maximum number of attempts been reached?
             unsigned long long age = newStates[0].m_generation - allStates[0].m_generation;

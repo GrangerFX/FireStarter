@@ -1,6 +1,9 @@
 #pragma once
 #include "FireStarterProgram.h"
 #include "FireStarterResults.h"
+#include <vector>
+
+typedef std::vector<class FireStarterState> FireStarterStates;
 
 class FireStarterState {
 private:

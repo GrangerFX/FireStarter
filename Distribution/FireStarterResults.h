@@ -181,7 +181,6 @@ typedef struct FireStarterResults {
         else // Note: This is a bug!
             for (unsigned int v = 0; v < m_variations; v++)
                 Result(v)->Init(index, registers, 10.0f);
-
     } // Init
 } FireStarterResults;
 
