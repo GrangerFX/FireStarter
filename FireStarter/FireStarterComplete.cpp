@@ -199,7 +199,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, std::vecto
         }
 
         if (!abort) {
-            FireStarterState firstState(bestState.Settings());
+            FireStarterState firstState = allStates.empty() ? bestState : allStates[0];
             bool found = false;
 #if FIRESTARTER_EVOLVE_NEW
             for (size_t i = 0; i < numStates; i++) {
