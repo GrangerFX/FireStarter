@@ -92,21 +92,17 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 {
     DispatchSync([this, test, &evolveSettings, &allStates, &testedInstructions, generation] {
         unsigned long long numStates = evolveSettings.m_states;
-        unsigned long long evolveAge = generation - allStates[0].m_generation;
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Find the best state to evolve based on a weighting algorithm.
                 float copyValue = 0.0f;
                 size_t copyIndex = 0;
-                unsigned long long copyAge = 0;
                 for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
-                    size_t curAge = generation - allStates[curIndex].m_generation;
                     float curValue = (allStates[curIndex].m_children + 1) * allStates[curIndex].m_maxResult;
                     if (!curIndex || (curValue < copyValue)) {
                         copyValue = curValue;
                         copyIndex = curIndex;
-                        copyAge = curAge;
                     }
                 }
 
@@ -114,7 +110,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                 allStates[copyIndex].m_children++;
 
                 // If the age is too great, randomize the state.
-                if ((evolveAge > 8) && (allStates[copyIndex].m_children > 8)) {
+                unsigned long long copyAge = (generation - allStates[copyIndex].m_generation) * numStates + index;
+                unsigned long long copyChildren = allStates[copyIndex].m_children;
+                if ((copyAge > FIRESTARTER_EVOLVE_AGE) && (copyChildren > FIRESTARTER_EVOLVE_CHILDREN)) {
                     // Setup the new candidate state.
                     FireStarterState& curState = job->m_state;
                     curState.InitState(evolveSettings, index, test);
