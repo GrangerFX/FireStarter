@@ -185,7 +185,8 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
-                if ((allStates[index].m_children > 8) && (index * 2 >= numStates)) {
+                if (allStates[index].m_children > FIRESTARTER_EVOLVE_CHILDREN) {
+//              if ((allStates[index].m_children > FIRESTARTER_EVOLVE_CHILDREN) && (index * 2 >= numStates)) {
                     // Setup the new state.
                     FireStarterState& curState = job->m_state;
                     curState.InitState(evolveSettings, index, test);
@@ -203,8 +204,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 
                     // Add the instructions to the set of unique instructions.
                     testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
-                }
-                else {
+                } else {
                     // Find the best state to evolve based on a weighting algorithm.
                     float copyValue = 0.0f;
                     size_t copyIndex = 0;
