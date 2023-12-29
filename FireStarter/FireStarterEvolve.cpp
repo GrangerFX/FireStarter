@@ -185,8 +185,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
-                if ((index * 2 < numStates) && (allStates[index].m_children > FIRESTARTER_EVOLVE_CHILDREN)) {
-//              if ((index * 2 >= numStates) && (allStates[index].m_children > FIRESTARTER_EVOLVE_CHILDREN)) {
+                if ((index * 2 >= numStates) && (allStates[index].m_children > FIRESTARTER_EVOLVE_CHILDREN)) {
                     // Setup the new state.
                     FireStarterState& curState = job->m_state;
                     curState.InitState(evolveSettings, index, test);
