@@ -273,6 +273,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Loop until the the evolve completion condition or the host program is quit.
+        unsigned long long evolveID = 0;
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             TestedInstructions testedInstructions;
@@ -284,10 +285,10 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             while (!WillTerminate()) {
                 if (!generation)
                     // Randomize the first generation.
-                    evolve->RandomStates(test, evolveSettings, testedInstructions, generation);
+                    evolve->RandomStates(test, evolveSettings, testedInstructions, evolveID, generation);
                 else
                     // Evolve a new generation.
-                    evolve->EvolveStates(test, evolveSettings, allStates, testedInstructions, generation);
+                    evolve->EvolveStates(test, evolveSettings, allStates, testedInstructions, evolveID, generation);
 
                 // Execute each state using one of the execution units.
                 std::atomic<long long> evolveCount = numStates;
@@ -353,7 +354,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
 #if FIRESTARTER_EVOLVE_DEBUG
             for (FireStarterState& curState : allStates)
-                resultText += Format("%2llu: copy_index=%2llu  id:%2llu  copy_id: %2llu  evolution: %2llu  age: %3llu  maxResult: %.8f\n", curState.m_index, curState.m_copy_index, curState.m_id, curState.m_copy_id, curState.m_evolution, generation - curState.m_generation, curState.m_maxResult);
+                resultText += Format("%2llu: copy_index=%2llu  id:%2llu  evolution: %2llu  age: %3llu  maxResult: %.8f\n", curState.m_index, curState.m_copy_index, curState.m_id, curState.m_evolution, generation - curState.m_generation, curState.m_maxResult);
             resultText += "\n";
             FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", streamDate.c_str()), resultText);
 #endif

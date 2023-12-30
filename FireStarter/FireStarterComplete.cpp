@@ -210,7 +210,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
 
                 // Keep the valid results.
                 if (newState.m_optimizeValid) {
-                    newState.m_id = allStates.size();
                     allStates.push_back(newState);            
                     found = true;
 

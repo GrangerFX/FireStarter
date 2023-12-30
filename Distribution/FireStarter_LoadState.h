@@ -231,7 +231,6 @@ inline void LoadState(FireStarterState& state)
     state.m_evolution = 12;
     state.m_index = 51;
     state.m_id = 8;
-    state.m_copy_id = 33;
     state.m_test = 14;
     state.m_seed = 3457586422085517704;
     state.m_maxResult = 0.000001f;

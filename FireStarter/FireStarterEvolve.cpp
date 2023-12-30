@@ -54,25 +54,28 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
     return true;
 } // RandomState
 
-bool FireStarterEvolve::RandomStates(unsigned long long test, const FireStarterSettings& evolveSettings, TestedInstructions& testedInstructions, unsigned long long generation)
+bool FireStarterEvolve::RandomStates(unsigned long long test, const FireStarterSettings& evolveSettings, TestedInstructions& testedInstructions, unsigned long long& evolveID, unsigned long long generation)
 {
-    DispatchSync([this, test, &evolveSettings, &testedInstructions] {
+    DispatchSync([this, test, &evolveSettings, &testedInstructions, &evolveID] {
         unsigned long long numStates = evolveSettings.m_states;
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Clone or randomize instructions in the later generations.
                 FireStarterState& curState = job->m_state;
-                curState.InitState(evolveSettings, index, test);
+                curState.InitState(evolveSettings, index, evolveID++, test);
 
                 // Randomize each generation and index.
                 curState.InitGenerationSeed();
 
-                // Randomize the program for the first generation.
-                curState.RandomProgram();
+                // Keep randomizing instructions until a unique set of instructions is found.
+                do {
+                    // Randomize the program.
+                    curState.RandomProgram();
 
-                // Optimize the program registers.
-                curState.m_program.OptimizeRegisters();
+                    // Optimize the program registers.
+                    curState.m_program.OptimizeRegisters();
+                } while (testedInstructions.count(curState.m_program.OptimizedInstructionsData()));
 
                 // Add the instructions to the set of unique instructions.
                 testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
@@ -88,9 +91,9 @@ bool FireStarterEvolve::RandomStates(unsigned long long test, const FireStarterS
 } // RandomStates
 
 #if FIRESTARTER_EVOLVE_NEW
-bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedInstructions& testedInstructions, unsigned long long generation)
+bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedInstructions& testedInstructions, unsigned long long& evolveID, unsigned long long generation)
 {
-    DispatchSync([this, test, &evolveSettings, &allStates, &testedInstructions, generation] {
+    DispatchSync([this, test, &evolveSettings, &allStates, &testedInstructions, &evolveID, generation] {
         unsigned long long numStates = evolveSettings.m_states;
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
@@ -115,9 +118,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                 if ((copyAge > FIRESTARTER_EVOLVE_AGE) && (copyChildren > FIRESTARTER_EVOLVE_CHILDREN)) {
                     // Setup the new candidate state.
                     FireStarterState& curState = job->m_state;
-                    curState.InitState(evolveSettings, index, test);
-                    curState.m_id = allStates[copyIndex].m_id;
-                    curState.m_copy_id = allStates[copyIndex].m_copy_id;
+                    curState.InitState(evolveSettings, index, evolveID++, test);
                     curState.m_generation = generation;
                     curState.InitGenerationSeed();
 
@@ -136,7 +137,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Copy and setup the new candidate state.
                     FireStarterState& curState = job->m_state;
                     curState = allStates[copyIndex];
-                    curState.m_timer.StartDate();
                     curState.m_index = index;
                     curState.m_copy_index = copyIndex;
                     curState.m_generation = generation;
@@ -144,6 +144,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     curState.m_children = 0;
                     curState.m_oldResult = curState.m_maxResult;
                     curState.InitGenerationSeed();
+                    curState.m_timer.StartDate();
 
                     // Increment the copied state's children.
                     allStates[copyIndex].m_children++;
@@ -188,7 +189,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                 if ((index * 2 >= numStates) && (allStates[index].m_children > FIRESTARTER_EVOLVE_CHILDREN)) {
                     // Setup the new state.
                     FireStarterState& curState = job->m_state;
-                    curState.InitState(evolveSettings, index, test);
+                    curState.InitState(evolveSettings, index, index, test);
                     curState.m_generation = generation;
                     curState.InitGenerationSeed();
 

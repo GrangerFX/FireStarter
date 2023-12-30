@@ -76,7 +76,6 @@ void FireStarterState::SaveState(std::string& code) const
     code += Format("    state.m_index = %llu;\r\n", m_index);
     code += Format("    state.m_copy_index = %llu;\r\n", m_copy_index);
     code += Format("    state.m_id = %llu;\r\n", m_id);
-    code += Format("    state.m_copy_id = %llu;\r\n", m_copy_id);
     code += Format("    state.m_test = %llu;\r\n", m_test);
     code += Format("    state.m_seed = %llu;\r\n", m_seed);
     code += Format("    state.m_oldResult = %ff;\r\n", m_oldResult);
@@ -140,7 +139,7 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
             m_results->InitResults(0, settings.m_registers, settings.m_variations, settings.m_startResult);
 } // InitResult
 
-void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long index, unsigned long long test)
+void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long index, unsigned long long id, unsigned long long test)
 {
     m_timer.StartDate();
     m_program.InitProgram(settings);
@@ -157,8 +156,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_children = 0;
     m_index = index;
     m_copy_index = index;
-    m_id = index;
-    m_copy_id = index;
+    m_id = id;
     m_test = test;
     m_seed = 0;
     m_oldResult = settings.m_startResult;

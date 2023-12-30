@@ -24,7 +24,6 @@ private:
         m_index = other.m_index;
         m_copy_index = other.m_copy_index;
         m_id = other.m_id;
-        m_copy_id = other.m_copy_id;
         m_test = other.m_test;
         m_seed = other.m_seed;
         m_oldResult = other.m_oldResult;
@@ -45,7 +44,6 @@ public:
     unsigned long long m_index = 0;
     unsigned long long m_copy_index = 0;
     unsigned long long m_id = 0;
-    unsigned long long m_copy_id = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
@@ -139,7 +137,11 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
+#if FIRESTARTER_EVOLVE_NEW
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED3(m_test);
+#else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
+#endif
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const
@@ -234,11 +236,11 @@ public:
     void SaveState(std::string& code) const;
     float TestResult(void) const;
     void InitResults(FireStarterResults* initResult = nullptr);
-    void InitState(const FireStarterSettings& settings, unsigned long long index = 0, unsigned long long test = 0);
+    void InitState(const FireStarterSettings& settings, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
 
-    inline FireStarterState(const FireStarterSettings& settings, unsigned long long index = 0, unsigned long long test = 0)
+    inline FireStarterState(const FireStarterSettings& settings, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
-        InitState(settings, index, test);
+        InitState(settings, index, id, test);
     } // FireStarterState
 
     inline FireStarterState(const FireStarterState& other)
