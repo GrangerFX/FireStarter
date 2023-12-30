@@ -152,6 +152,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     }
 
     m_generation = 0;
+    m_age = 0;
     m_evolution = 0;
     m_children = 0;
     m_index = index;

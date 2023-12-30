@@ -39,6 +39,7 @@ public:
     std::vector<unsigned int> m_variationOrder;
     std::vector<unsigned int> m_variationCount;
     unsigned long long m_generation = 0;
+    unsigned long long m_age = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_children = 0;
     unsigned long long m_index = 0;

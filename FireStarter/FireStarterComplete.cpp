@@ -90,7 +90,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
      return update;
 } // CompleteResults
 
-void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, float oldResult, float newResult)
+void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, float oldResult, float newResult)
 {
     const FireStarterSettings& settings = state.Settings();
     double duration = SimpleTimer::RunDuration();
@@ -210,6 +210,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
 
                 // Keep the valid results.
                 if (newState.m_optimizeValid) {
+                    newState.m_id = allStates.size();
                     allStates.push_back(newState);            
                     found = true;
 

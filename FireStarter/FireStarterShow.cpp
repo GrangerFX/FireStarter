@@ -125,7 +125,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
     window.DisplayText(statusString);
 } // FireSolution
 
-void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double oldResult, double newResult, double bestError, bool sync)
+void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, unsigned long long age, double runTime, double generationTime, double oldResult, double newResult, double bestError, bool sync)
 {
     // Create the CUDA device text.
     static std::string cudaText;
@@ -193,7 +193,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  Test=%2u", test);
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
             statusString += Format("  Index=%4llu  CopyIndex=%4llu  Id=%4llu", state.m_index, state.m_copy_index, state.m_id);
-            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u", generation, generation - state.m_generation, state.m_evolution);
+            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u", generation, age, state.m_evolution);
 
             std::string spaceString;
             if (newResult >= oldResult)
