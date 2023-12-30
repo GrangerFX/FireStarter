@@ -139,7 +139,7 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
             m_results->InitResults(0, settings.m_registers, settings.m_variations, settings.m_startResult);
 } // InitResult
 
-void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long index, unsigned long long id, unsigned long long test)
+void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long id, unsigned long long test)
 {
     m_timer.StartDate();
     m_program.InitProgram(settings);
@@ -151,8 +151,8 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
         m_variationCount[v] = 0;
     }
 
-    m_generation = 0;
-    m_age = 0;
+    m_generation = generation;
+    m_copy_generation = generation;
     m_evolution = 0;
     m_children = 0;
     m_index = index;

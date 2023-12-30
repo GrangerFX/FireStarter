@@ -19,6 +19,7 @@ private:
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
+        m_copy_generation = other.m_copy_generation;
         m_evolution = other.m_evolution;
         m_children = other.m_children;
         m_index = other.m_index;
@@ -39,7 +40,7 @@ public:
     std::vector<unsigned int> m_variationOrder;
     std::vector<unsigned int> m_variationCount;
     unsigned long long m_generation = 0;
-    unsigned long long m_age = 0;
+    unsigned long long m_copy_generation = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_children = 0;
     unsigned long long m_index = 0;
@@ -237,11 +238,11 @@ public:
     void SaveState(std::string& code) const;
     float TestResult(void) const;
     void InitResults(FireStarterResults* initResult = nullptr);
-    void InitState(const FireStarterSettings& settings, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
+    void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
 
-    inline FireStarterState(const FireStarterSettings& settings, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
+    inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
-        InitState(settings, index, id, test);
+        InitState(settings, generation, index, id, test);
     } // FireStarterState
 
     inline FireStarterState(const FireStarterState& other)

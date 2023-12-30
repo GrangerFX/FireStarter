@@ -1,5 +1,5 @@
-// Run date: 12/30/23 11:14:49 Pacific Standard Time
-// Run duration = 875.600021 seconds
+// Run date: 12/30/23 10:55:00 Pacific Standard Time
+// Run duration = 881.373158 seconds
 // Run generation = 16
 // Run evolution = 10
 // Run max result = 0.00000060
@@ -17,7 +17,7 @@
 // Run mode = FIRESTARTER_EVOLVE
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
-// Run tests = 0
+// Run tests = 1
 // Run states = 64
 // Run units = 4
 // Run population = 278528

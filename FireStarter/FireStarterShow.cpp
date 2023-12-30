@@ -125,7 +125,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
     window.DisplayText(statusString);
 } // FireSolution
 
-void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, unsigned long long age, double runTime, double generationTime, double oldResult, double newResult, double bestError, bool sync)
+void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double bestError, bool sync)
 {
     // Create the CUDA device text.
     static std::string cudaText;
@@ -182,9 +182,10 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     // Update the log file and window status text.
     std::string statusString;
     float bestResult = bestState.m_maxResult;
-    bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
+    unsigned long long generation = state.m_generation;
+    bool isBestState = (state.m_id == bestState.m_id) && (generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + generation, generation, newResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + generation, generation, state.m_maxResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
     } else {
@@ -193,26 +194,26 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  Test=%2u", test);
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
             statusString += Format("  Index=%4llu  CopyIndex=%4llu  Id=%4llu", state.m_index, state.m_copy_index, state.m_id);
-            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u", generation, age, state.m_evolution);
+            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u", generation, generation - state.m_copy_generation, state.m_evolution);
 
             std::string spaceString;
-            if (newResult >= oldResult)
+            if (state.m_maxResult >= state.m_oldResult)
                 spaceString = " Bad Result";
-            else if ((newResult == bestResult) && isBestState)
+            else if ((state.m_maxResult == bestResult) && isBestState)
                 spaceString = "*New Result";
             else
                 spaceString = ">New Result";
-            statusString += Format("  Old Result=%.8f %s=%.8f", oldResult, spaceString.c_str(), newResult);
+            statusString += Format("  Old Result=%.8f %s=%.8f", state.m_oldResult, spaceString.c_str(), state.m_maxResult);
         } else {
             if ((settings.m_units > 1) && !state.m_optimizePass)
                 statusString += Format("  Unit=%u", state.m_index % settings.m_units);
 
             statusString += Format("  Generation=%3u", generation);
-            if ((newResult == bestResult) && isBestState)
+            if ((state.m_maxResult == bestResult) && isBestState)
                 statusString += " *";
             else
                 statusString += "  ";
-            statusString += Format("Result=%.8f", newResult);
+            statusString += Format("Result=%.8f", state.m_maxResult);
         }
 
         statusString += Format("  Best=%.8f  BestError=%.8f  BestAge=%u", bestResult, bestError, generation - bestState.m_generation);

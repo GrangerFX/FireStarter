@@ -449,7 +449,7 @@ void FireStarterStreams::EvolveStreams(void)
 
         // Evolve the streams.
         m_testCount = 0;
-        FireStarterServer* server = numStreams > 1 ? m_server : nullptr;
+        FireStarterServer* server = m_streamSettings.m_units > 1 ? m_server : nullptr;
         for (size_t stream = 0; stream < numStreams; stream++)
             streams[stream]->EvolveStream(server, m_testCount);
 

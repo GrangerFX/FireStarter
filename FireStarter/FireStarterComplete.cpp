@@ -90,7 +90,7 @@ bool FireStarterComplete::CompleteResults(FireStarterState& bestState, const Fir
      return update;
 } // CompleteResults
 
-void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, float oldResult, float newResult)
+void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
     double duration = SimpleTimer::RunDuration();
@@ -109,7 +109,7 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
     m_resultsCount++;
 
     // Update the status text.
-    m_fireShow.ShowStatus(bestState, state, generation, duration, m_generationTime, oldResult, newResult, m_bestError);
+    m_fireShow.ShowStatus(bestState, state, duration, m_generationTime, m_bestError);
 } // CompleteStatus
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
@@ -127,7 +127,7 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
             CompleteResults(bestState, newState);
 
             // Update the render status after every pass.
-            CompleteStatus(bestState, newState, newState.m_generation, newState.m_maxResult, newState.m_maxResult);
+            CompleteStatus(bestState, newState);
             result = true;
         }
     }, sync);
@@ -146,18 +146,15 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             FireStarterState newState = job->m_state;
             m_manager->AddFree(job);
 
-            float oldResult = oldState.m_maxResult;
-            float newResult = newState.m_maxResult;
-            if (!newState.m_generation || (newState.m_optimizeValid && (newState.m_maxResult < oldState.m_maxResult))) {
+            // Keep the valid results.
+            if (newState.m_optimizeValid)
                 oldState = newState;
-                oldState.m_evolution++;
-            }
 
             // Update the best state and display the results.
             CompleteResults(bestState, oldState);
 
             // Update the render status after every pass.
-            CompleteStatus(oldState, oldState, newState.m_generation, oldResult, newResult);
+            CompleteStatus(oldState, newState);
             oldState.m_timer.StartDate();
 
             // Has the completion condition been met?
@@ -205,12 +202,10 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
             bool found = false;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
-                float newResult = newState.m_maxResult;
-                float oldResult = newState.m_oldResult;
 
                 // Keep the valid results.
                 if (newState.m_optimizeValid) {
-                    newState.m_id = allStates.size();
+//                  newState.m_id = allStates.size();
                     allStates.push_back(newState);            
                     found = true;
 
@@ -219,11 +214,11 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
                 }
 
                 // Update the current best state.
-                if (newResult < firstState.m_maxResult)
+                if (newState.m_maxResult < firstState.m_maxResult)
                     firstState = newState;
 
                 // Update the render status after every pass.
-                CompleteStatus(firstState, newState, newState.m_generation, oldResult, newResult);
+                CompleteStatus(firstState, newState);
             }
 
             // Sort the states, least maximum result first.
