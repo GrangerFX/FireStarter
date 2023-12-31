@@ -205,6 +205,7 @@ void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned long lon
         OptimizeGenerations(state, v, pass);
 
     // Calculate the state's max result.
+    state.m_optimize_pass = pass;
     state.m_maxResult = state.MaxResult();
     state.m_optimizeValid = true;
 } // OptimizePass

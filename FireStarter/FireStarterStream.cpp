@@ -13,10 +13,12 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     // Convert the most recently evolved state into an optimize mode state.
     FireStarterState startState(evolveState);
     FireStarterSettings& settings = startState.Settings();
-    startState.m_optimizePass = true;
     settings.m_units = 1;
-    if (settings.m_mode != FIRESTARTER_OPTIMIZE)
+    if (settings.m_mode != FIRESTARTER_OPTIMIZE) {
+        startState.m_optimize_pass = 1;
         settings.m_tests = 0;
+    } else
+        startState.m_optimize_pass = 0;
 
     // Switch the settings to optimize mode
     startState.InitResults();
@@ -303,6 +305,8 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 generation++;
             }
 
+
+            // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
                 FireStarterState& bestEvolveState = allStates[0];
@@ -311,13 +315,10 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
-                    FireStarterState bestOptimizeState(bestEvolveState);
-                    bestOptimizeState.m_optimizePass = true;
-                    FireStarterState optimizeState(bestOptimizeState);
+                    FireStarterState optimizeState(bestEvolveState);
 
                     // Generate the optimize code.
                     if (evolve->GenerateOptimize(optimizeState)) {
-
                         // Compile the optimize module.
                         FireStarterExecute* executeOptimize = executionUnits[0];
                         executeOptimize->ExecuteCompile();
@@ -326,23 +327,22 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                         executeOptimize->ExecuteInitPopulation(true);
 
                         // Loop until the the optimize completion condition or the host program is quit.
-                        size_t pass = 0;
+                        unsigned long long pass = 1;
                         while (!WillTerminate()) {
                             // Optimize the current generation.
                             executeOptimize->ExecuteOptimize(optimizeState, pass, false);
 
                             // Update the results in the UI and check for completion.
-                            if (complete->CompleteState(m_streamBestState, bestOptimizeState))
+                            if (complete->CompleteState(m_streamBestState, optimizeState))
                                 break;
 
                             // Increment the generation.
-                            optimizeState.m_generation++;
                             pass++;
                         }
 
                         // Output the optimize results.
                         if (!WillTerminate())
-                            resultText += Format("  Optimize Generation=%u  Optimize Result=%.8f", bestOptimizeState.m_generation, bestOptimizeState.m_maxResult);
+                            resultText += Format("  Optimize Pass=%llu  Optimize Result=%.8f", optimizeState.m_optimize_pass, optimizeState.m_maxResult);
                     }
                 }
 

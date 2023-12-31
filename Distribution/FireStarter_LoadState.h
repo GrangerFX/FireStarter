@@ -239,6 +239,6 @@ inline void LoadState(FireStarterState& state)
     state.m_seed = 5428593580264255846;
     state.m_oldResult = 0.000002f;
     state.m_maxResult = 0.000001f;
-    state.m_optimizePass = false;
+    state.m_optimize_pass = 0;
     state.m_optimizeValid = true;
 } // LoadState

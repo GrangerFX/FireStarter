@@ -24,7 +24,7 @@ void FireStarter::ControlOptimize(const FireStarterSettings& optimizeSettings)
     FireStarterState optimizeState;
     LoadState(optimizeState);
     optimizeState.Settings().CopyModeSettings(optimizeSettings);
-    optimizeState.m_optimizePass = true;
+    optimizeState.m_optimize_pass = 0;
     FireStarterStream::Optimize(m_window, optimizeState, optimizeSettings);
 } // ControlOptimize
 

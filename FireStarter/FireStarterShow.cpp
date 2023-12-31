@@ -205,7 +205,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 spaceString = ">New Result";
             statusString += Format("  Old Result=%.8f %s=%.8f", state.m_oldResult, spaceString.c_str(), state.m_maxResult);
         } else {
-            if ((settings.m_units > 1) && !state.m_optimizePass)
+            if ((settings.m_units > 1) && !state.m_optimize_pass)
                 statusString += Format("  Unit=%u", state.m_index % settings.m_units);
 
             statusString += Format("  Generation=%3u", generation);
@@ -216,7 +216,11 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("Result=%.8f", state.m_maxResult);
         }
 
-        statusString += Format("  Best=%.8f  BestError=%.8f  BestAge=%u", bestResult, bestError, generation - bestState.m_generation);
+        statusString += Format("  Best=%.8f  BestError=%.8f", bestResult, bestError);
+        if (state.m_optimize_pass)
+            statusString += Format("  BestAge=%u", state.m_optimize_pass);
+        else
+            statusString += Format("  BestAge=%u", generation - bestState.m_generation);
 
         // Include the time when not doing tests as it prevents doing diffs to compare the results.
         if (!settings.m_tests)

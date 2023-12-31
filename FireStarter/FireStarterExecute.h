@@ -30,7 +30,7 @@ private:
 public:
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool init, bool sync = false);
-    void ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync = false);
+    void ExecuteOptimize(const FireStarterState& statee, unsigned long long pass, bool sync = false);
     void ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync = false);
     void ExecuteEvolve(bool sync = false);
     void ExecuteRandom(bool sync = false);

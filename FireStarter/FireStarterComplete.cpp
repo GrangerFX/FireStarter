@@ -158,11 +158,12 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             oldState.m_timer.StartDate();
 
             // Has the completion condition been met?
-            unsigned long long age = newState.m_generation - oldState.m_generation;
-            if (newState.m_optimizePass)
-                result = age >= newState.Settings().m_optimize;
-            else
+            if (newState.m_optimize_pass)
+                result = newState.m_optimize_pass > newState.Settings().m_optimize;
+            else {
+                unsigned long long age = newState.m_generation - oldState.m_generation;
                 result = (age >= newState.Settings().m_attempts) || (oldState.m_maxResult <= newState.Settings().m_evolveTarget);
+            }
         }
     }, sync);
     return result;
@@ -244,11 +245,12 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
             }
 
             // Has the evolve target or the maximum number of attempts been reached?
-            unsigned long long age = newStates[0].m_generation - allStates[0].m_generation;
-            if (newStates[0].m_optimizePass)
-                result = age >= allStates[0].Settings().m_optimize;
-            else
+            if (newStates[0].m_optimize_pass)
+                result = newStates[0].m_optimize_pass >= allStates[0].Settings().m_optimize;
+            else {
+                unsigned long long age = newStates[0].m_generation - allStates[0].m_generation;
                 result = (allStates[0].m_maxResult <= newStates[0].Settings().m_evolveTarget) || (age >= newStates[0].Settings().m_attempts);
+            }
         }
     });
     return result;

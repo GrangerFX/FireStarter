@@ -27,9 +27,9 @@ private:
         m_id = other.m_id;
         m_test = other.m_test;
         m_seed = other.m_seed;
+        m_optimize_pass = other.m_optimize_pass;
         m_oldResult = other.m_oldResult;
         m_maxResult = other.m_maxResult;
-        m_optimizePass = other.m_optimizePass;
         m_optimizeValid = other.m_optimizeValid;
     } // swap
 
@@ -48,9 +48,9 @@ public:
     unsigned long long m_id = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
+    unsigned long long m_optimize_pass = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
-    bool m_optimizePass = false;
     bool m_optimizeValid = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
@@ -129,7 +129,7 @@ public:
 
     inline unsigned int PassMode(void) const
     {
-        return m_optimizePass ? FIRESTARTER_OPTIMIZE : m_program.m_settings.m_mode;
+        return m_optimize_pass ? FIRESTARTER_OPTIMIZE : m_program.m_settings.m_mode;
     } // PassMode
 
     inline const char* Mode(void) const
@@ -139,11 +139,11 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
-#if FIRESTARTER_EVOLVE_NEW
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED3(m_test);
-#else
+//#if FIRESTARTER_EVOLVE_NEW
+//      return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED3(m_test);
+//#else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
-#endif
+//#endif
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const
