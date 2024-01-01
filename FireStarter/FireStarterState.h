@@ -139,7 +139,7 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
-#if FIRESTARTER_EVOLVE_NEW
+#if 0
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED3(m_test);
 #else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);

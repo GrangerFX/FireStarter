@@ -99,7 +99,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                 float copyValue = 0.0f;
                 size_t copyIndex = 0;
                 for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
-                    float curValue = (allStates[curIndex].m_children + 1) * allStates[curIndex].m_maxResult;
+                    float curValue = (1.0f + FIRESTARTER_EVOLVE_WEIGHT * allStates[curIndex].m_children) * allStates[curIndex].m_maxResult;
                     if (!curIndex || (curValue < copyValue)) {
                         copyValue = curValue;
                         copyIndex = curIndex;
