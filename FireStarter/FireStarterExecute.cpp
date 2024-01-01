@@ -75,7 +75,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
     return result;
 } // InitPopulation
 
-float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int variation, unsigned long long pass)
+float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -86,7 +86,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     unsigned int firstMember = 0;
     unsigned int lastMember = settings.m_population;
     unsigned long long passes = settings.m_passes;
-    unsigned long long optimization = pass * passes;
+    unsigned long long optimization = state.m_optimize_pass * passes;
 
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
@@ -150,7 +150,19 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     return minResult;
 } // OptimizeGenerations
 
-bool FireStarterExecute::Optimize(FireStarterState& state)
+void FireStarterExecute::OptimizePass(FireStarterState& state)
+{
+    const FireStarterSettings& settings = state.Settings();
+    unsigned int variations = settings.m_variations;
+    for (unsigned int v = 0; v < variations; v++)
+        OptimizeGenerations(state, v);
+
+    // Calculate the state's max result.
+    state.m_maxResult = state.MaxResult();
+    state.m_optimizeValid = true;
+} // OptimizePass
+
+bool FireStarterExecute::OptimizeEvolve(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
     unsigned int variations = settings.m_variations;
@@ -195,20 +207,7 @@ bool FireStarterExecute::Optimize(FireStarterState& state)
     state.m_maxResult = variationMax;
     state.m_optimizeValid = validResult;
     return validResult;
-} // Optimize
-
-void FireStarterExecute::OptimizePass(FireStarterState& state, unsigned long long pass)
-{
-    const FireStarterSettings& settings = state.Settings();
-    unsigned int variations = settings.m_variations;
-    for (unsigned int v = 0; v < variations; v++)
-        OptimizeGenerations(state, v, pass);
-
-    // Calculate the state's max result.
-    state.m_optimize_pass = pass;
-    state.m_maxResult = state.MaxResult();
-    state.m_optimizeValid = true;
-} // OptimizePass
+} // OptimizeEvolve
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
@@ -246,7 +245,7 @@ bool FireStarterExecute::Evolve(void)
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
         InitPopulation(state);
-        Optimize(state);
+        OptimizeEvolve(state);
         m_executeManager->AddComplete(job);
         return true;
     }
@@ -271,14 +270,14 @@ void FireStarterExecute::ExecuteInitPopulation(bool init, bool sync)
     }, sync);
 } // ExecuteInitPopulation
 
-void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, unsigned long long pass, bool sync)
+void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool sync)
 {
-    Dispatch([this, state, pass] {
+    Dispatch([this, state] {
         if (m_executeJob) {
             FireStarterJob* job = m_executeManager->GetFree();
             if (job) {
                 m_executeJob->m_state = state;
-                OptimizePass(m_executeJob->m_state, pass);
+                OptimizePass(m_executeJob->m_state);
                 job->Copy(m_executeJob);
             }
             m_executeManager->AddComplete(job);
@@ -302,23 +301,6 @@ void FireStarterExecute::ExecuteEvolve(bool sync)
         Evolve();
     }, sync);
 } // ExecuteEvolve
-
-void FireStarterExecute::ExecuteRandom(bool sync)
-{
-    Dispatch([this] {
-        static std::atomic<float> g_atomicResult = FIRESTARTER_RANDOM_START_RESULT;
-        FireStarterJob* job = nullptr;
-        while (Compile(job)) {
-            FireStarterState& state = job->m_state;
-            InitPopulation(state);
-            Optimize(state);
-            AtomicMin(g_atomicResult, state.m_maxResult);
-            m_executeManager->AddComplete(job);
-            job = nullptr;
-        }
-        LOG("Execute unit %d complete\n", (unsigned int)m_executeIndex);
-    }, sync);
-} // ExecuteRandom
 
 void FireStarterExecute::ExecuteFinish(bool sync)
 {
@@ -345,26 +327,3 @@ FireStarterExecute::~FireStarterExecute(void)
 {
     ExecuteFinish();
 } // ~FireStarterExecute(void)
-
-FireStarterExecuteRandom::FireStarterExecuteRandom(FireStarterManager* manager, size_t numExecute) : SerialThread("FireStarterExecuteRandom")
-{
-    // Create and start the random execution units.
-    for (size_t i = 0; i < numExecute; i++) {
-        FireStarterExecute* executeUnit = new FireStarterExecute(manager, i);
-        m_executionUnits.push_back(executeUnit);
-        executeUnit->ExecuteRandom();
-    }
-
-    // When the last random execution unit is complete, terminate the complete queue.
-    DispatchAsync([this, manager] {
-        for (FireStarterExecute* executeUnit : m_executionUnits)
-            executeUnit->Synchronize();
-        manager->AddComplete();
-    });
-} // FireStarterExecuteRandom
-
-FireStarterExecuteRandom::~FireStarterExecuteRandom(void)
-{
-    for (FireStarterExecute* executeUnit : m_executionUnits)
-        delete executeUnit;
-} // ~FireStarterExecuteRandom

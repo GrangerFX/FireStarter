@@ -21,28 +21,19 @@ private:
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterState& state, bool init = false);
-	float OptimizeGenerations(FireStarterState& state, unsigned int variation, unsigned long long pass = 0);
-    bool Optimize(FireStarterState& state);
-    void OptimizePass(FireStarterState& state, unsigned long long pass);
+	float OptimizeGenerations(FireStarterState& state, unsigned int variation);
+    void OptimizePass(FireStarterState& state);
+    bool OptimizeEvolve(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
     bool Evolve(void);
 
 public:
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool init, bool sync = false);
-    void ExecuteOptimize(const FireStarterState& statee, unsigned long long pass, bool sync = false);
+    void ExecuteOptimize(const FireStarterState& state, bool sync = false);
     void ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync = false);
     void ExecuteEvolve(bool sync = false);
-    void ExecuteRandom(bool sync = false);
     void ExecuteFinish(bool sync = true);
     FireStarterExecute(FireStarterManager* manager, size_t index = 0);
 	~FireStarterExecute(void);
 }; // class FireStarterExecute
-
-class FireStarterExecuteRandom : public SerialThread {
-private:
-    std::vector<FireStarterExecute*> m_executionUnits;
-public:
-    FireStarterExecuteRandom(FireStarterManager* manager, size_t numExecute = 1);
-    ~FireStarterExecuteRandom(void);
-}; // class FireStarterExecuteRandom

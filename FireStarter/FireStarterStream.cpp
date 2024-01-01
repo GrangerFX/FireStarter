@@ -69,18 +69,17 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
             optimizeState.m_test = test;
 
             // Loop until the the completion condition or the host program is quit.
-            size_t pass = 0;
+            optimizeState.m_optimize_pass = 0;
             while (!WillTerminate()) {
                 // Optimize the current generation.
-                execute->ExecuteOptimize(optimizeState, pass, false);
+               execute->ExecuteOptimize(optimizeState, false);
 
                 // Update the results in the UI.
                 if (complete->CompleteState(bestState, optimizeState))
                     break;
 
-                // Increment the generation.
-                optimizeState.m_generation++;
-                pass++;
+                // Increment the pass.
+                optimizeState.m_optimize_pass++;
             }
         }
     }
@@ -327,17 +326,17 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                         executeOptimize->ExecuteInitPopulation(true);
 
                         // Loop until the the optimize completion condition or the host program is quit.
-                        unsigned long long pass = 1;
+                        optimizeState.m_optimize_pass = 1;
                         while (!WillTerminate()) {
                             // Optimize the current generation.
-                            executeOptimize->ExecuteOptimize(optimizeState, pass, false);
+                            executeOptimize->ExecuteOptimize(optimizeState, false);
 
                             // Update the results in the UI and check for completion.
                             if (complete->CompleteState(m_streamBestState, optimizeState))
                                 break;
 
                             // Increment the generation.
-                            pass++;
+                            optimizeState.m_optimize_pass++;
                         }
 
                         // Output the optimize results.

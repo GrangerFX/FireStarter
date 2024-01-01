@@ -56,17 +56,14 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
 
 bool FireStarterEvolve::RandomStates(unsigned long long test, const FireStarterSettings& evolveSettings, TestedInstructions& testedInstructions, unsigned long long& evolveID, unsigned long long generation)
 {
-    DispatchSync([this, test, &evolveSettings, &testedInstructions, &evolveID] {
+    DispatchSync([this, test, &evolveSettings, &testedInstructions, &evolveID, generation] {
         unsigned long long numStates = evolveSettings.m_states;
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Clone or randomize instructions in the later generations.
                 FireStarterState& curState = job->m_state;
-                curState.InitState(evolveSettings, 0, index, evolveID++, test);
-
-                // Randomize each generation and index.
-                curState.InitGenerationSeed();
+                curState.InitState(evolveSettings, generation, index, evolveID++, test);
 
                 // Keep randomizing instructions until a unique set of instructions is found.
                 do {
@@ -119,9 +116,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Setup the new candidate state.
                     FireStarterState& curState = job->m_state;
                     curState.InitState(evolveSettings, generation, index, evolveID++, test);
-                    curState.m_generation = generation;
-                    curState.m_copy_generation = generation;
-                    curState.InitGenerationSeed();
 
                     // Keep randomizing instructions until a unique set of instructions is found.
                     do {
