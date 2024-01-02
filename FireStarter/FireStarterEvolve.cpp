@@ -106,9 +106,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     }
                 }
 
-                // Increment the copied state's children.
-                allStates[copyIndex].m_children++;
-
                 // If the age is too great, randomize the state.
                 unsigned long long copyAge = (generation - allStates[copyIndex].m_generation) * numStates + index;
                 unsigned long long copyChildren = allStates[copyIndex].m_children;
@@ -128,6 +125,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 
                     // Add the instructions to the set of unique instructions.
                     testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+
+                    // Increment the copied state's children.
+                    allStates[copyIndex].m_children += 1000;
                 } else {
                     // Copy and setup the new candidate state.
                     FireStarterState& curState = job->m_state;
@@ -163,6 +163,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 
                     // Add the instructions to the set of unique instructions.
                     testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+
+                    // Increment the copied state's children.
+                    allStates[copyIndex].m_children++;
                 }
 
                 // Generate the evaluate code
