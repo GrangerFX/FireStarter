@@ -274,12 +274,12 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Loop until the the evolve completion condition or the host program is quit.
-        unsigned long long evolveID = 0;
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             TestedInstructions testedInstructions;
             FireStarterStates allStates;
             unsigned long long test = FIRESTARTER_START_TEST + t;
+            unsigned long long evolveID = 0;
 
             // Evolve the current test.
             unsigned int generation = 0;

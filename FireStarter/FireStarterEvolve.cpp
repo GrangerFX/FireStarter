@@ -107,7 +107,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                 }
 
                 // If the age is too great, randomize the state.
-                unsigned long long copyAge = (generation - allStates[copyIndex].m_generation) * numStates + index;
+                unsigned long long copyAge = generation - allStates[copyIndex].m_generation;
                 unsigned long long copyChildren = allStates[copyIndex].m_children;
                 if ((copyAge > FIRESTARTER_EVOLVE_AGE) && (copyChildren > FIRESTARTER_EVOLVE_CHILDREN)) {
                     // Setup the new candidate state.
