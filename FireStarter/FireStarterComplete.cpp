@@ -206,7 +206,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
 
                 // Keep the valid results.
 #if FIRESTARTER_EVOLVE_NEW
-                if (newState.m_optimizeValid && (newState.m_evolution ? (newState.m_maxResult < oldState.m_maxResult) : (!newState.m_generation || (newState.m_generation > oldState.m_generation)))) {
+                if (newState.m_optimizeValid && (!newState.m_evolution || (newState.m_maxResult < oldState.m_maxResult))) {
                     // Update the best state and display the results.
                     CompleteResults(displayState, newState);
                     newState.m_children = 0;
