@@ -187,7 +187,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
             }
 
             // Sort the completed jobs by index.
-            // Note: Must be by index and not id since allStates and newStates must be in the same order for the code below.
             size_t index = job->m_state.m_index;
             if (!newStates[index].Results())
                 newStates[index] = job->m_state;
@@ -202,29 +201,15 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
             bool found = false;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
-                FireStarterState& oldState = allStates[newState.m_copy_index];
 
                 // Keep the valid results.
-#if FIRESTARTER_EVOLVE_NEW
-                if (newState.m_optimizeValid && (!newState.m_evolution || (newState.m_maxResult < oldState.m_maxResult))) {
-                    // Update the best state and display the results.
-                    CompleteResults(displayState, newState);
-                    newState.m_children = 0;
-                    oldState = newState;
-                    found = true;
-               }
-#else
                 if (newState.m_optimizeValid) {
                     // Update the best state and display the results.
                     CompleteResults(displayState, newState);
                     newState.m_children = 0;
-                    if (newState.m_evolution)
-                        allStates.push_back(newState);
-                    else
-                        oldState = newState;
+                    allStates.push_back(newState);
                     found = true;
                 }
-#endif
 
                 // Update the current best state.
                 if (newState.m_maxResult < bestState.m_maxResult)

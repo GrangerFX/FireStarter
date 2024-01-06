@@ -81,7 +81,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 
                     // Add the state to the list of start and active states.
                     startStates.push_back(curState);
-                    allStates.push_back(curState);
 
                     // Generate the evaluate code
                     GenerateCode(job);
@@ -91,9 +90,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     size_t evolveIndex = 0;
                     for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
                         FireStarterState& curState = allStates[curIndex];
-                        unsigned long long curEvolution = curState.m_evolution;
+                        unsigned long long curEvolution = curState.m_evolution + 1;
                         unsigned long long curChildren = startStates[curState.m_id].m_children;
-                        float curValue = (1.0f + FIRESTARTER_EVOLVE_WEIGHT * (curChildren / (curEvolution + 1))) * curState.m_maxResult;
+                        float curValue = (1.0f + FIRESTARTER_EVOLVE_WEIGHT * (curChildren / curEvolution)) * curState.m_maxResult;
                         if (!curIndex || (curValue < evolveValue)) {
                             evolveValue = curValue;
                             evolveIndex = curIndex;
