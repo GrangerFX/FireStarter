@@ -170,10 +170,10 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 } // CompleteState
 
 // Replace old states with new ones when better and resort the list.
-bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates)
+bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates)
 {
     bool result = false;
-    DispatchSync([this, &bestState, &allStates, numStates, &result] {
+    DispatchSync([this, &displayState, &bestState, &allStates, numStates, &result] {
         // Sort the states as they are received.
         FireStarterStates newStates(numStates);
         bool abort = false;
@@ -199,26 +199,39 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
         }
 
         if (!abort) {
-            FireStarterState firstState = allStates.empty() ? FireStarterState(bestState.Settings()) : allStates[0];
             bool found = false;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
+                FireStarterState& oldState = allStates[newState.m_copy_index];
 
                 // Keep the valid results.
-                if (newState.m_optimizeValid) {
-                    allStates.push_back(newState);            
-                    found = true;
-
+#if FIRESTARTER_EVOLVE_NEW
+                if (newState.m_optimizeValid && (newState.m_evolution ? (newState.m_maxResult < oldState.m_maxResult) : (!newState.m_generation || (newState.m_generation > oldState.m_generation)))) {
                     // Update the best state and display the results.
-                    CompleteResults(bestState, newState);
+                    CompleteResults(displayState, newState);
+                    newState.m_children = 0;
+                    oldState = newState;
+                    found = true;
+               }
+#else
+                if (newState.m_optimizeValid) {
+                    // Update the best state and display the results.
+                    CompleteResults(displayState, newState);
+                    newState.m_children = 0;
+                    if (newState.m_evolution)
+                        allStates.push_back(newState);
+                    else
+                        oldState = newState;
+                    found = true;
                 }
+#endif
 
                 // Update the current best state.
-                if (newState.m_maxResult < firstState.m_maxResult)
-                    firstState = newState;
+                if (newState.m_maxResult < bestState.m_maxResult)
+                    bestState = newState;
 
                 // Update the render status after every pass.
-                CompleteStatus(firstState, newState);
+                CompleteStatus(bestState, newState);
             }
 
             // Sort the states, least maximum result first.
@@ -244,8 +257,8 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
             }
 
             // Has the evolve target or the maximum number of attempts been reached?
-            unsigned long long age = newStates[0].m_generation - allStates[0].m_generation;
-            result = (allStates[0].m_maxResult <= newStates[0].Settings().m_evolveTarget) || (age >= newStates[0].Settings().m_attempts);
+            unsigned long long age = newStates[0].m_generation - bestState.m_generation;
+            result = (bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (age >= bestState.Settings().m_attempts);
         }
     });
     return result;

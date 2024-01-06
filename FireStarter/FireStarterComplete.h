@@ -27,7 +27,7 @@ public:
 	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state);
 	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
 	bool CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
-	bool CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates);
+	bool CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates);
     FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState = true);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

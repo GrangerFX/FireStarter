@@ -194,7 +194,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  Test=%2u", test);
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
             statusString += Format("  Index=%4llu  CopyIndex=%4llu  Id=%4llu", state.m_index, state.m_copy_index, state.m_id);
-            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u", generation, generation - state.m_copy_generation, state.m_evolution);
+            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Children=%2u", generation, generation - state.m_copy_generation, state.m_evolution, state.m_children);
 
             std::string spaceString;
             if (state.m_maxResult >= state.m_oldResult)

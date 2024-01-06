@@ -276,13 +276,19 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            TestedInstructions testedInstructions;
+            // Initialize the states.
             FireStarterStates allStates;
             unsigned long long test = FIRESTARTER_START_TEST + t;
-            unsigned long long evolveID = 0;
+            for (size_t i = 0; i < numStates; i++)
+                allStates.push_back(FireStarterState(evolveSettings, 0, i, 0, test));
+            FireStarterState bestState = allStates[0];
+
+            // Keep track of the tested instructions so they don't get generated again.
+            TestedInstructions testedInstructions;
 
             // Evolve the current test.
-            unsigned int generation = 0;
+            unsigned long long evolveID = 0;
+            unsigned long long generation = 0;
             while (!WillTerminate()) {
                 if (!generation)
                     // Randomize the first generation.
@@ -297,7 +303,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     execute->ExecuteEvolve(evolveCount);
 
                 // Gather and sort the results, update the UI and check for the completion condition.
-                if (complete->CompleteStates(m_streamBestState, allStates, numStates))
+                if (complete->CompleteStates(m_streamBestState, bestState, allStates, numStates))
                     break;
 
                 // Increment the generation.
