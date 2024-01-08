@@ -58,7 +58,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 {
     DispatchSync([this, test, &evolveSettings, &startStates, &allStates, &testedInstructions, generation] {
         unsigned long long numStates = evolveSettings.m_states;
-        unsigned long long randomStates = generation ? numStates / 4 : numStates;
+        unsigned long long randomStates = generation ? FIRESTARTER_EVOLVE_RANDOM : numStates;
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
