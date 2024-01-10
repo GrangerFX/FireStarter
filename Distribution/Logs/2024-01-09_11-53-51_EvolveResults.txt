@@ -1,0 +1,4 @@
+Duration: 3920.2  Evolve Seed=0  Test=3  Generation=0  Evolve Result=0.01799881  Optimize Pass=9  Optimize Result=0.01731563
+Duration: 4678.0  Evolve Seed=0  Test=1  Generation=0  Evolve Result=0.85227418  Optimize Pass=9  Optimize Result=0.85227418
+Duration: 5393.1  Evolve Seed=0  Test=2  Generation=0  Evolve Result=0.00294304  Optimize Pass=9  Optimize Result=0.00184357
+Duration: 6025.0  Evolve Seed=0  Test=0  Generation=0  Evolve Result=0.00206530  Optimize Pass=9  Optimize Result=0.00200534

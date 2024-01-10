@@ -194,16 +194,16 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  Test=%2u", test);
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
             statusString += Format("  Index=%4llu  CopyIndex=%4llu  Id=%4llu", state.m_index, state.m_copy_index, state.m_id);
-            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Children=%2u", generation, generation - state.m_copy_generation, state.m_evolution, state.m_children);
+            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Children=%2u  EvolveWeight=%.8f", generation, generation - state.m_copy_generation, state.m_evolution, state.m_children, state.m_evolveResult);
 
-            std::string spaceString;
+            std::string resultString;
             if (state.m_maxResult >= state.m_oldResult)
-                spaceString = " Bad Result";
+                resultString = " Bad Result";
             else if ((state.m_maxResult == bestResult) && isBestState)
-                spaceString = "*New Result";
+                resultString = "*New Result";
             else
-                spaceString = ">New Result";
-            statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, spaceString.c_str(), state.m_maxResult);
+                resultString = ">New Result";
+            statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.m_maxResult);
         } else {
             if ((settings.m_units > 1) && (state.PassMode() != FIRESTARTER_OPTIMIZE))
                 statusString += Format("  Unit=%u", state.m_index % settings.m_units);

@@ -308,13 +308,13 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
-                FireStarterState& bestEvolveState = allStates[0];
-                std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  ", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed, test);
-                resultText += Format("Generation=%u  Evolve Result=%.8f", bestEvolveState.m_generation, bestEvolveState.m_maxResult);
+                std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  ", streamTimer.Duration(), bestState.Settings().m_evolveSeed, test);
+                resultText += Format("Generation=%u  Evolve Result=%.8f", bestState.m_generation, bestState.m_maxResult);
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
-                    FireStarterState optimizeState(bestEvolveState);
+                    FireStarterState optimizeBestState(bestState);
+                    FireStarterState optimizeState(bestState);
 
                     // Generate the optimize code.
                     if (evolve->GenerateOptimize(optimizeState)) {
@@ -332,7 +332,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                             executeOptimize->ExecuteOptimize(optimizeState, false);
 
                             // Update the results in the UI and check for completion.
-                            if (complete->CompleteState(m_streamBestState, optimizeState))
+                            if (complete->CompleteState(optimizeBestState, optimizeState))
                                 break;
 
                             // Increment the generation.
@@ -345,7 +345,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     }
                 }
 
-                if (bestEvolveState.m_maxResult < 0.000001f)
+                if (bestState.m_maxResult < 0.000001f)
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()), resultText);

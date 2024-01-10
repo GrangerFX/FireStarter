@@ -1,0 +1,4 @@
+Duration: 3829.8  Evolve Seed=0  Test=3  Generation=18  Evolve Result=0.00000030  Optimize Pass=9  Optimize Result=0.00000012 *******
+Duration: 3939.7  Evolve Seed=0  Test=0  Generation=19  Evolve Result=0.00000036  Optimize Pass=9  Optimize Result=0.00000012 *******
+Duration: 4578.5  Evolve Seed=0  Test=1  Generation=25  Evolve Result=0.00000030  Optimize Pass=9  Optimize Result=0.00000012 *******
+Duration: 4902.6  Evolve Seed=0  Test=2  Generation=30  Evolve Result=0.00000069  Optimize Pass=9  Optimize Result=0.00000024 *******

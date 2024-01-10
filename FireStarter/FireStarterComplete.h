@@ -23,7 +23,7 @@ private:
 	bool LoadSolutionTargetCode(void);
 
 public:
-	bool CompleteResults(FireStarterState& bestState, const FireStarterState& stat);
+	bool DisplayResults(FireStarterState& bestState, const FireStarterState& stat);
 	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state);
 	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
 	bool CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
