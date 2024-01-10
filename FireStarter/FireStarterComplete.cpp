@@ -215,7 +215,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     DisplayResults(displayState, newState);
 
                     // If this is a new state or the best state, reset its evolve weight.
-                    if (!newState.m_evolution || (newState.m_maxResult < bestState.m_maxResult)) {
+                    if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult)) {
                         newState.m_children = 0;
                         newState.m_evolveResult = newState.m_maxResult;
                     }
