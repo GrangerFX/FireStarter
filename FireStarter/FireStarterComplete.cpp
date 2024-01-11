@@ -206,22 +206,34 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                 if (newState.m_maxResult < bestState.m_maxResult)
                     bestState = newState;
 
-                // Update the render status after every pass.
-                CompleteStatus(bestState, newState);
-
                 // Keep the valid results.
                 if (newState.m_optimizeValid) {
+#if FIRESTARTER_EVOLVE_NEW
+                    // Reduce the number of children based on how much it improved.
+                    if (newState.m_children && (newState.m_oldResult > bestState.m_maxResult))
+                        newState.m_children = (unsigned long long)(newState.m_children * ((newState.m_maxResult - bestState.m_maxResult) / (newState.m_oldResult - bestState.m_maxResult)));
+#else
+                    // If this is a new state or the best state, reset its evolve weight.
+                    if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult))
+                        newState.m_children = 0;
+#endif
+                    found = true;
+
+                    // Update the render status after every pass.
+                    CompleteStatus(bestState, newState);
+
+                    // Calculate the new wight after the status has been displayed.
+                    newState.m_evolveWeight = newState.EvolveWeight();
+
+                    // Add the state to the list of all successful states.
+                    newState.m_index = allStates.size();
+                    allStates.push_back(newState);
+
                     // Update the best state and display the results.
                     DisplayResults(displayState, newState);
-
-                    // If this is a new state or the best state, reset its evolve weight.
-                    if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult)) {
-                        newState.m_children = 0;
-                        newState.m_evolveResult = newState.m_maxResult;
-                    }
-                    allStates.push_back(newState);
-                    found = true;
-                }
+                } else
+                    // Update the render status after every pass.
+                    CompleteStatus(bestState, newState);
             }
 
             // Sort the states, least maximum result first.

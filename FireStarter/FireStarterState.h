@@ -30,7 +30,7 @@ private:
         m_optimize_pass = other.m_optimize_pass;
         m_oldResult = other.m_oldResult;
         m_maxResult = other.m_maxResult;
-        m_evolveResult = other.m_evolveResult;
+        m_evolveWeight = other.m_evolveWeight;
         m_optimizeValid = other.m_optimizeValid;
     } // swap
 
@@ -52,7 +52,7 @@ public:
     unsigned long long m_optimize_pass = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
-    float m_evolveResult = -1.0f;
+    float m_evolveWeight = -1.0f;
     bool m_optimizeValid = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
@@ -105,6 +105,11 @@ public:
         return maxResult;
     } // MaxResult
 
+    inline float EvolveWeight(void) const
+    {
+        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT * m_children) * m_maxResult;
+    } // EvolveWeight
+
     inline bool ResultsValid(void) const
     {
         const FireStarterResults* results = Results();
@@ -142,7 +147,7 @@ public:
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
 #if 0
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED3(m_test);
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_index) + SEED3(m_test);
 #else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
 #endif
@@ -150,7 +155,7 @@ public:
 
     inline unsigned long long GenerationSeed(void) const
     {
-        return SEED1(m_program.m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_id) + SEED4(m_test);
+        return SEED1(m_program.m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_index) + SEED4(m_test);
     } // GenerationSeed
 
     unsigned long long InitGenerationSeed(void)

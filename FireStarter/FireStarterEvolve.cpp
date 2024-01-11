@@ -58,11 +58,73 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 {
     DispatchSync([this, test, &evolveSettings, &startStates, &allStates, &testedInstructions, generation] {
         unsigned long long numStates = evolveSettings.m_states;
-        unsigned long long randomStates = generation ? FIRESTARTER_EVOLVE_RANDOM : numStates;
+        unsigned long long evolveStates = generation ? numStates - FIRESTARTER_EVOLVE_RANDOM : 0;
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
-                if (index < randomStates) {
+                if (index < evolveStates) {
+                    bool found = false;
+
+                    do {
+                        // Find the best state to evolve based on a weighting algorithm.
+                        float evolveWeight = allStates[0].m_evolveWeight;
+                        size_t evolveIndex = 0;
+                        for (size_t curIndex = 1; curIndex < allStates.size(); curIndex++) {
+                            float curWeight = allStates[curIndex].m_evolveWeight;
+                            if (curWeight < evolveWeight) {
+                                evolveWeight = curWeight;
+                                evolveIndex = curIndex;
+                            }
+                        }
+
+                        // Copy and setup the new candidate state.
+                        FireStarterState& evolveState = allStates[evolveIndex];
+                        FireStarterState& curState = job->m_state;
+                        curState = evolveState;
+                        curState.m_index = index;
+                        curState.m_copy_index = evolveIndex;
+                        curState.m_copy_generation = curState.m_generation;
+                        curState.m_generation = generation;
+                        curState.m_evolution++;
+                        curState.m_oldResult = curState.m_maxResult;
+                        curState.m_evolveWeight = evolveWeight;
+                        curState.InitGenerationSeed();
+                        curState.m_timer.StartDate();
+
+                        // Increment the copied state's children and update its evolve weight.
+                        evolveState.m_children++;
+                        evolveState.m_evolveWeight = evolveState.EvolveWeight();
+
+                        // Keep copying and randomizing instructions until a unique set of instructions is found.
+                        unsigned int count = 0;
+                        do {
+                            // Copy the program and result from the random index.
+                            curState.m_program = allStates[evolveIndex].m_program;
+
+                            // Randomize oneinstruction.
+                             curState.RandomInstruction();
+
+                            // Optimize the program registers.
+                            curState.m_program.OptimizeRegisters();
+
+                            // Check if the optimized instructions are unique.
+                            if (!testedInstructions.count(curState.m_program.OptimizedInstructionsData())) {
+                                // Add the instructions to the set of unique instructions.
+                                testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+
+                                // Generate the evaluate code
+                                GenerateCode(job);
+
+                                // Done evolving the state.
+                                found = true;
+                                break;
+                            }
+
+                            // Try again a number of times.
+                            count++;
+                        } while (count < evolveSettings.m_instructions);
+                    } while (!found);
+                } else {
                     // Randomize the instructions.
                     FireStarterState& curState = job->m_state;
                     curState.InitState(evolveSettings, generation, index, startStates.size(), test);
@@ -81,59 +143,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 
                     // Add the state to the list of start and active states.
                     startStates.push_back(curState);
-
-                    // Generate the evaluate code
-                    GenerateCode(job);
-                } else {
-                    // Find the best state to evolve based on a weighting algorithm.
-                    float evolveResult = allStates[0].m_evolveResult;
-                    size_t evolveIndex = 0;
-                    for (size_t curIndex = 1; curIndex < allStates.size(); curIndex++) {
-                        float curResult = allStates[curIndex].m_evolveResult;
-                        if (curResult < evolveResult) {
-                            evolveResult = curResult;
-                            evolveIndex = curIndex;
-                        }
-                    }
-
-                    // Increment the copied state's children and update its evolve weight.
-                    FireStarterState& evolveState = allStates[evolveIndex];
-                    evolveState.m_children++;
-                    evolveState.m_evolveResult = (1.0f + FIRESTARTER_EVOLVE_WEIGHT * evolveState.m_children) * evolveState.m_maxResult;
-
-                    // Copy and setup the new candidate state.
-                    FireStarterState& curState = job->m_state;
-                    curState = evolveState;
-                    curState.m_index = index;
-                    curState.m_copy_index = evolveIndex;
-                    curState.m_copy_generation = curState.m_generation;
-                    curState.m_generation = generation;
-                    curState.m_evolution++;
-                    curState.m_oldResult = curState.m_maxResult;
-                    curState.m_evolveResult = evolveResult;
-                    curState.InitGenerationSeed();
-                    curState.m_timer.StartDate();
-
-                    // Update the evolved state's evolve weight.
-  
-                    // Keep copying and randomizing instructions until a unique set of instructions is found.
-                    unsigned int count = 0;
-                    do {
-                        // Copy the program and result from the random index.
-                        curState.m_program = allStates[evolveIndex].m_program;
-
-                        // Randomize one additional instruction per 16 attempts.
-                        unsigned long long randomCount = (count / evolveSettings.m_instructions) + 1;
-                        while (randomCount--)
-                            curState.RandomInstruction();
-
-                        // Optimize the program registers.
-                        curState.m_program.OptimizeRegisters();
-                        count++;
-                    } while (testedInstructions.count(curState.m_program.OptimizedInstructionsData()));
-
-                    // Add the instructions to the set of unique instructions.
-                    testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
 
                     // Generate the evaluate code
                     GenerateCode(job);
