@@ -30,7 +30,7 @@ private:
         m_optimize_pass = other.m_optimize_pass;
         m_oldResult = other.m_oldResult;
         m_maxResult = other.m_maxResult;
-        m_evolveResult = other.m_evolveResult;
+        m_evolveWeight = other.m_evolveWeight;
         m_optimizeValid = other.m_optimizeValid;
     } // swap
 
@@ -52,7 +52,7 @@ public:
     unsigned long long m_optimize_pass = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
-    float m_evolveResult = -1.0f;
+    float m_evolveWeight = -1.0f;
     bool m_optimizeValid = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
@@ -105,10 +105,10 @@ public:
         return maxResult;
     } // MaxResult
 
-    inline float EvolveResult(void) const
+    inline float EvolveWeight(void) const
     {
         return (1.0f + FIRESTARTER_EVOLVE_WEIGHT * m_children) * m_maxResult;
-    } // EvolveResult
+    } // EvolveWeight
 
     inline bool ResultsValid(void) const
     {
