@@ -99,7 +99,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Increment the copied state's children and update its evolve weight.
                     FireStarterState& evolveState = allStates[evolveIndex];
                     evolveState.m_children++;
-                    evolveState.m_evolveResult = (1.0f + FIRESTARTER_EVOLVE_WEIGHT * evolveState.m_children) * evolveState.m_maxResult;
+                    evolveState.m_evolveResult = evolveState.EvolveResult();
 
                     // Copy and setup the new candidate state.
                     FireStarterState& curState = job->m_state;

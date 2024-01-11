@@ -105,6 +105,11 @@ public:
         return maxResult;
     } // MaxResult
 
+    inline float EvolveResult(void) const
+    {
+        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT * m_children) * m_maxResult;
+    } // EvolveResult
+
     inline bool ResultsValid(void) const
     {
         const FireStarterResults* results = Results();
