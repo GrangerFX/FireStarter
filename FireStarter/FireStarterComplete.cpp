@@ -217,7 +217,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult))
                         newState.m_children = 0;
 #endif
-                    newState.m_index = allStates.size();
                     found = true;
 
                     // Update the render status after every pass.
@@ -227,6 +226,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     newState.m_evolveWeight = newState.EvolveWeight();
 
                     // Add the state to the list of all successful states.
+                    newState.m_index = allStates.size();
                     allStates.push_back(newState);
 
                     // Update the best state and display the results.

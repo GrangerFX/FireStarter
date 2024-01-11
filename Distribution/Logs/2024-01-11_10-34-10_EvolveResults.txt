@@ -1,0 +1,1 @@
+Duration: 1057.6  Evolve Seed=0  Test=7  Generation=18  Evolve Result=0.00000076  Optimize Pass=8  Optimize Result=0.00000033 *******
