@@ -11,7 +11,8 @@
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008f // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    0          // Output evolve debugging information.
-#define FIRESTARTER_EVOLVE_NEW      1
+#define FIRESTARTER_EVOLVE_SORT     0
+#define FIRESTARTER_EVOLVE_NEW      0
 #define FIRESTARTER_EVOLVE_RANDOM   4
 #define FIRESTARTER_EVOLVE_WEIGHT   0.25f
 
