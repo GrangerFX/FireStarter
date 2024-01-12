@@ -208,26 +208,38 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
 
                 // Keep the valid results.
                 if (newState.m_optimizeValid) {
-#if FIRESTARTER_EVOLVE_NEW
-                    // Reduce the number of children based on how much it improved.
-                    if (newState.m_children && (newState.m_oldResult > bestState.m_maxResult))
-                        newState.m_children = (unsigned long long)(newState.m_children * ((newState.m_maxResult - bestState.m_maxResult) / (newState.m_oldResult - bestState.m_maxResult)));
-#else
                     // If this is a new state or the best state, reset its evolve weight.
-                    if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult))
-                        newState.m_children = 0;
-#endif
                     found = true;
 
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState);
 
-                    // Calculate the new wight after the status has been displayed.
-                    newState.m_evolveWeight = newState.EvolveWeight();
+#if FIRESTARTER_EVOLVE_NEW
+                    if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult)) {
+                        // Reset the children and evolve weight of the best state.
+                        newState.m_children = 0;
+                        newState.m_evolveWeight = newState.EvolveWeight();
+
+                        // Add the state to the list of all successful states.
+                        newState.m_index = allStates.size();
+                        allStates.push_back(newState);
+                    } else {
+                        // Update the copied state with the new state.
+                        newState.m_index = newState.m_copy_index;
+                        if (newState.m_maxResult < allStates[newState.m_index].m_maxResult)
+                            allStates[newState.m_index] = newState;
+                    }
+#else
+                    // Reset the children and evolve weight of the best state.
+                    if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult)) {
+                        newState.m_children = 0;
+                        newState.m_evolveWeight = newState.EvolveWeight();
+                    }
 
                     // Add the state to the list of all successful states.
                     newState.m_index = allStates.size();
                     allStates.push_back(newState);
+#endif
 
                     // Update the best state and display the results.
                     DisplayResults(displayState, newState);
