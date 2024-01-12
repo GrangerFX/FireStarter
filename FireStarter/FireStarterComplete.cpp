@@ -198,24 +198,23 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
         }
 
         if (!abort) {
-            bool found = false;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
 
-                // Update the current best state.
-                if (newState.m_maxResult < bestState.m_maxResult)
-                    bestState = newState;
-
                 // Keep the valid results.
                 if (newState.m_optimizeValid) {
-                    // If this is a new state or the best state, reset its evolve weight.
-                    found = true;
+                    // Update the current best state.
+                    bool isBestState = false;
+                    if (newState.m_maxResult < bestState.m_maxResult) {
+                        bestState = newState;
+                        isBestState = true;
+                    }
 
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState);
 
 #if FIRESTARTER_EVOLVE_NEW
-                    if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult)) {
+                    if (!newState.m_evolution || isBestState) {
                         // Reset the children and evolve weight of the best state.
                         newState.m_children = 0;
                         newState.m_evolveWeight = newState.EvolveWeight();
@@ -226,8 +225,10 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     } else {
                         // Update the copied state with the new state.
                         newState.m_index = newState.m_copy_index;
-                        if (newState.m_maxResult < allStates[newState.m_index].m_maxResult)
+                        if (newState.m_maxResult < allStates[newState.m_index].m_maxResult) {
+                            newState.m_children = allStates[newState.m_index].m_children;
                             allStates[newState.m_index] = newState;
+                        }
                     }
 #else
                     // Reset the children and evolve weight of the best state.
@@ -247,30 +248,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState);
             }
-
-            // Sort the states, least maximum result first.
-#if FIRESTARTER_EVOLVE_SORT
-            if (found) {
-                size_t newNumStates = allStates.size();
-                for (size_t i = 0; i < newNumStates; i++) {
-                    size_t min = i;
-                    float minResult = allStates[i].m_maxResult;
-                    for (size_t j = i + 1; j < newNumStates; j++) {
-                        float currentResult = allStates[j].m_maxResult;
-                        if (currentResult < minResult) {
-                            minResult = currentResult;
-                            min = j;
-                        }
-                    }
-                    if (min != i) {
-                        FireStarterState temp = allStates[i];
-                        allStates[i] = allStates[min];
-                        allStates[min] = temp;
-                    }
-                    allStates[i].m_index = i;
-                }
-            }
-#endif
 
             // Has the evolve target or the maximum number of attempts been reached?
             unsigned long long age = newStates[0].m_generation - bestState.m_generation;
