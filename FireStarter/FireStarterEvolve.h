@@ -19,7 +19,7 @@ private:
 
 public:
 	bool RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync = false);
-	bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& startStates, FireStarterStates& allStates, TestedInstructions& testedInstructions, unsigned long long generation);
+	bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedInstructions& testedInstructions, unsigned long long generation);
 	bool GenerateOptimize(const FireStarterState& initState);
 	FireStarterEvolve(FireStarterManager* manager, size_t index = 0);
 	~FireStarterEvolve(void);

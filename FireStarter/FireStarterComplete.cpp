@@ -210,36 +210,41 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                         isBestState = true;
                     }
 
-                    // Update the render status after every pass.
-                    CompleteStatus(bestState, newState);
-
 #if FIRESTARTER_EVOLVE_NEW
-                    if (!newState.m_evolution || isBestState) {
-                        // Reset the children and evolve weight of the best state.
-                        newState.m_children = 0;
-                        newState.m_evolveWeight = newState.EvolveWeight();
+                    if (newState.m_evolution) {
+                        // Update the render status after every pass.
+                        CompleteStatus(bestState, newState);
 
                         // Add the state to the list of all successful states.
+                        newState.m_children = 0;
+                        newState.m_index = allStates.size();
+                        allStates.push_back(newState);
+                    }
+                    else {
+                        // Set the weight of the new random state.
+                        newState.m_evolveWeight = newState.EvolveWeight();
+                        allStates[newState.m_id] = newState;
+
+                        // Update the render status after every pass.
+                        CompleteStatus(bestState, newState);
+                    }
+#else
+                    if (newState.m_evolution) {
+                        // Update the render status after every pass.
+                        CompleteStatus(bestState, newState);
+
+                        // Add the state to the list of all successful states.
+                        newState.m_children = 0;
                         newState.m_index = allStates.size();
                         allStates.push_back(newState);
                     } else {
-                        // Update the copied state with the new state.
-                        newState.m_index = newState.m_copy_index;
-                        if (newState.m_maxResult < allStates[newState.m_index].m_maxResult) {
-                            newState.m_children = allStates[newState.m_index].m_children;
-                            allStates[newState.m_index] = newState;
-                        }
-                    }
-#else
-                    // Reset the children and evolve weight of the best state.
-                    if (!newState.m_evolution || (newState.m_maxResult == bestState.m_maxResult)) {
-                        newState.m_children = 0;
+                        // Set the weight of the new random state.
                         newState.m_evolveWeight = newState.EvolveWeight();
-                    }
+                        allStates[newState.m_id] = newState;
 
-                    // Add the state to the list of all successful states.
-                    newState.m_index = allStates.size();
-                    allStates.push_back(newState);
+                        // Update the render status after every pass.
+                        CompleteStatus(bestState, newState);
+                    }
 #endif
 
                     // Update the best state and display the results.

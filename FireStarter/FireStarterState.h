@@ -105,9 +105,9 @@ public:
         return maxResult;
     } // MaxResult
 
-    inline float EvolveWeight(void) const
+    inline float EvolveWeight(unsigned long long children = 0) const
     {
-        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT * m_children) * m_maxResult;
+        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * children + FIRESTARTER_EVOLVE_WEIGHT1 * m_children) * m_maxResult;
     } // EvolveWeight
 
     inline bool ResultsValid(void) const
