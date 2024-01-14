@@ -215,12 +215,15 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                         // Update the render status after every pass.
                         CompleteStatus(bestState, newState);
 
+                        // Reset the start state's children if a new best is found.
+                        if (isBestState)
+                            allStates[newState.m_id].m_children = 0;
+
                         // Add the state to the list of all successful states.
                         newState.m_children = 0;
                         newState.m_index = allStates.size();
                         allStates.push_back(newState);
-                    }
-                    else {
+                    } else {
                         // Set the weight of the new random state.
                         newState.m_evolveWeight = newState.EvolveWeight();
                         allStates[newState.m_id] = newState;
