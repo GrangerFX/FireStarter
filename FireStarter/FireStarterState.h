@@ -21,7 +21,8 @@ private:
         m_generation = other.m_generation;
         m_copy_generation = other.m_copy_generation;
         m_evolution = other.m_evolution;
-        m_children = other.m_children;
+        m_children0 = other.m_children0;
+        m_children1 = other.m_children1;
         m_index = other.m_index;
         m_copy_index = other.m_copy_index;
         m_id = other.m_id;
@@ -43,7 +44,8 @@ public:
     unsigned long long m_generation = 0;
     unsigned long long m_copy_generation = 0;
     unsigned long long m_evolution = 0;
-    unsigned long long m_children = 0;
+    unsigned long long m_children0 = 0;
+    unsigned long long m_children1 = 0;
     unsigned long long m_index = 0;
     unsigned long long m_copy_index = 0;
     unsigned long long m_id = 0;
@@ -105,9 +107,9 @@ public:
         return maxResult;
     } // MaxResult
 
-    inline float EvolveWeight(unsigned long long children = 0) const
+    inline float EvolveWeight(void) const
     {
-        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * children + FIRESTARTER_EVOLVE_WEIGHT1 * m_children) * m_maxResult;
+        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * m_maxResult;
     } // EvolveWeight
 
     inline bool ResultsValid(void) const
@@ -146,7 +148,7 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
-#if FIRESTARTER_EVOLVE_NEW
+#if 0 && FIRESTARTER_EVOLVE_NEW
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED3(m_test);
 #else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);

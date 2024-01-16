@@ -11,15 +11,15 @@
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008f // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    0          // Output evolve debugging information.
-#define FIRESTARTER_EVOLVE_NEW      0
+#define FIRESTARTER_EVOLVE_NEW      1
 #define FIRESTARTER_EVOLVE_RANDOM   4
-#define FIRESTARTER_EVOLVE_WEIGHT0  0.02f
-#define FIRESTARTER_EVOLVE_WEIGHT1  0.1f
+#define FIRESTARTER_EVOLVE_WEIGHT0  0.001f
+#define FIRESTARTER_EVOLVE_WEIGHT1  0.01f
 
 #define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
 
-#define FIRESTARTER_START_TEST      0          // The starting test index.
+#define FIRESTARTER_START_TEST      3          // The starting test index.
 
 #define FIRESTARTER_AUTO     0  // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_RANDOM   1
@@ -42,7 +42,7 @@
 #define FIRESTARTER_RANDOM_START_RESULT     10.0f
 #define FIRESTARTER_RANDOM_OPTIMIZE         0
 
-#define FIRESTARTER_EVOLVE_TESTS            16
+#define FIRESTARTER_EVOLVE_TESTS            1
 #define FIRESTARTER_EVOLVE_STATES           64
 #define FIRESTARTER_EVOLVE_UNITS            4
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64

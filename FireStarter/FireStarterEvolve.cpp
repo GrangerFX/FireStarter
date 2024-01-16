@@ -71,9 +71,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         float evolveWeight = 0.0f;
                         size_t evolveIndex = 0;
                         for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
-                            unsigned long long curID = allStates[curIndex].m_id;
-                            unsigned long long curChildren = allStates[curID].m_children;
-                            float curWeight = allStates[curIndex].EvolveWeight(curChildren);
+                            float curWeight = allStates[curIndex].EvolveWeight();
                             if (!curIndex || (curWeight < evolveWeight)) {
                                 evolveWeight = curWeight;
                                 evolveIndex = curIndex;
@@ -83,6 +81,8 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         // Copy and setup the new candidate state.
                         FireStarterState& curState = job->m_state;
                         curState = allStates[evolveIndex];
+                        curState.m_children0 = ++allStates[curState.m_id].m_children0;
+                        curState.m_children1 = ++allStates[evolveIndex].m_children1;
                         curState.m_index = index;
                         curState.m_copy_index = evolveIndex;
                         curState.m_copy_generation = curState.m_generation;
@@ -93,10 +93,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         curState.InitGenerationSeed();
                         curState.m_timer.StartDate();
 
-                        // Increment the children of the evolve state and the start state.
-                        allStates[evolveIndex].m_children++;
-                        allStates[curState.m_id].m_children++;
-
                         // Keep copying and randomizing instructions until a unique set of instructions is found.
                         unsigned int count = 0;
                         do {
@@ -104,7 +100,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             curState.m_program = allStates[evolveIndex].m_program;
 
                             // Randomize oneinstruction.
-                             curState.RandomInstruction();
+                            curState.RandomInstruction();
 
                             // Optimize the program registers.
                             curState.m_program.OptimizeRegisters();
