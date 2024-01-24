@@ -301,14 +301,15 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
                 // Increment the generation.
                 generation++;
+                if (generation == FIRESTARTER_EVOLVE_GENERATIONS)
+                    break;
             }
-
 
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
                 std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  ", streamTimer.Duration(), bestState.Settings().m_evolveSeed, test);
-                resultText += Format("Generation=%u  Evolve Result=%.8f", bestState.m_generation, bestState.m_maxResult);
+                resultText += Format("Generation=%u  Best Generation=%u  Start Result=%.8f  Evolve Result=%.8f", generation, bestState.m_generation, allStates[bestState.m_id].m_maxResult, bestState.m_maxResult);
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {

@@ -162,7 +162,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
                 result = newState.m_optimize_pass >= newState.Settings().m_optimize;
             else {
                 unsigned long long age = newState.m_generation - oldState.m_generation;
-                result = (age >= newState.Settings().m_attempts) || (oldState.m_maxResult <= newState.Settings().m_evolveTarget);
+                result = (age >= newState.Settings().m_attempts) || (bestState.Settings().m_attempts && (oldState.m_maxResult <= newState.Settings().m_evolveTarget));
             }
         }
     }, sync);
@@ -212,18 +212,20 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
 
 #if FIRESTARTER_EVOLVE_NEW
                     // Set the weight of the new state.
+                    FireStarterState& oldState = allStates[newState.m_id];
                     if (isBestState)
                         newState.m_children0 = 0;
+                    else
+                        newState.m_children0 = oldState.m_children0;
                     newState.m_children1 = 0;
                     newState.m_evolveWeight = newState.EvolveWeight();
 
-                    // Set the weight of the new random state.
-                    FireStarterState& oldState = allStates[newState.m_id];
-                    if (newState.m_maxResult < oldState.m_maxResult)
-                        oldState = newState;
-
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState);
+
+                    // Replace the old state with the new state if it improved.
+                    if (newState.m_maxResult < oldState.m_maxResult)
+                        oldState = newState;
 #else
                     // Set the weight of the new random state.
                     newState.m_children1 = 0;
@@ -255,7 +257,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
 
             // Has the evolve target or the maximum number of attempts been reached?
             unsigned long long age = newStates[0].m_generation - bestState.m_generation;
-            result = (bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (age >= bestState.Settings().m_attempts);
+            result = (bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts));
         }
     });
     return result;

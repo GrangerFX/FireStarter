@@ -58,12 +58,35 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 {
     DispatchSync([this, test, &evolveSettings, &allStates, &testedInstructions, generation] {
         unsigned long long numStates = evolveSettings.m_states;
-        unsigned long long evolveStates = generation ? numStates - FIRESTARTER_EVOLVE_RANDOM : 0;
+        unsigned long long randomStates = generation ? FIRESTARTER_EVOLVE_RANDOM : numStates;
+
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Evolved states are generated first so they cannot used the random states created in this generation.
-                if (index < evolveStates) {
+                if (index < randomStates) {
+                    // Randomize the instructions.
+                    FireStarterState& curState = job->m_state;
+                    curState.InitState(evolveSettings, generation, index, allStates.size(), test);
+
+                    // Keep randomizing instructions until a unique set of instructions is found.
+                    do {
+                        // Randomize the program.
+                        curState.RandomProgram();
+
+                        // Optimize the program registers.
+                        curState.m_program.OptimizeRegisters();
+                    } while (testedInstructions.count(curState.m_program.OptimizedInstructionsData()));
+
+                    // Add the instructions to the set of unique instructions.
+                    testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+
+                    // Add the state to the list of active states.
+                    allStates.push_back(curState);
+
+                    // Generate the evaluate code
+                    GenerateCode(job);
+                } else {
                     bool found = false;
 
                     do {
@@ -122,28 +145,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             count++;
                         } while (count < evolveSettings.m_instructions);
                     } while (!found);
-                } else {
-                    // Randomize the instructions.
-                    FireStarterState& curState = job->m_state;
-                    curState.InitState(evolveSettings, generation, index, allStates.size(), test);
-
-                    // Keep randomizing instructions until a unique set of instructions is found.
-                    do {
-                        // Randomize the program.
-                        curState.RandomProgram();
-
-                        // Optimize the program registers.
-                        curState.m_program.OptimizeRegisters();
-                    } while (testedInstructions.count(curState.m_program.OptimizedInstructionsData()));
-
-                    // Add the instructions to the set of unique instructions.
-                    testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
-
-                    // Add the state to the list of active states.
-                    allStates.push_back(curState);
-
-                    // Generate the evaluate code
-                    GenerateCode(job);
                 }
             } else
                 // Pass along the null job to cause the next stage to exit.
