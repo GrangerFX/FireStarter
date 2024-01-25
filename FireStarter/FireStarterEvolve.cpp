@@ -87,6 +87,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Generate the evaluate code
                     GenerateCode(job);
                 } else {
+                    unsigned long long numRandom = 1;
                     bool found = false;
 
                     do {
@@ -131,7 +132,8 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             // Check if the optimized instructions are unique.
                             if (!testedInstructions.count(curState.m_program.OptimizedInstructionsData())) {
                                 // Add the instructions to the set of unique instructions.
-                                testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+                                for (unsigned long long i = 0; i < numRandom; i++)
+                                    testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
 
                                 // Generate the evaluate code
                                 GenerateCode(job);
@@ -144,6 +146,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             // Try again a number of times.
                             count++;
                         } while (count < evolveSettings.m_instructions);
+#if FIRESTARTER_EVOLVE_NEW
+                        numRandom++;
+#endif
                     } while (!found);
                 }
             } else
