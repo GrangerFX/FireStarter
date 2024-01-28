@@ -107,9 +107,18 @@ public:
         return maxResult;
     } // MaxResult
 
+    inline float EvolveWeight(unsigned long long children0) const
+    {
+#if FIRESTARTER_EVOLVE_NEW
+        return FIRESTARTER_EVOLVE_WEIGHT1 * m_children1 / (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * children0);
+#else
+        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * m_maxResult;
+#endif
+    } // EvolveWeight
+
     inline float EvolveWeight(void) const
     {
-        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * m_maxResult;
+        return EvolveWeight(m_children0);
     } // EvolveWeight
 
     inline bool ResultsValid(void) const
@@ -149,7 +158,7 @@ public:
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
 #if 1
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED4(m_test);
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED4(m_index) + SEED4(m_test);
 #else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
 #endif

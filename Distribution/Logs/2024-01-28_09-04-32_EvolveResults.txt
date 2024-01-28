@@ -1,0 +1,1 @@
+Duration: 6828.4  Evolve Seed=0  Test=0  Generation=131  Best Generation=67  Start Result=0.00000117  Evolve Result=0.00000117  Optimize Pass=8  Optimize Result=0.00000036
