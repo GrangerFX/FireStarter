@@ -148,8 +148,8 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
-#if 0
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED3(m_test);
+#if 1
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED4(m_test);
 #else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
 #endif
@@ -157,7 +157,7 @@ public:
 
     inline unsigned long long GenerationSeed(void) const
     {
-        return SEED1(m_program.m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_index) + SEED4(m_test);
+        return SEED1(m_program.m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_id) + SEED4(m_index) + SEED5(m_test);
     } // GenerationSeed
 
     unsigned long long InitGenerationSeed(void)
