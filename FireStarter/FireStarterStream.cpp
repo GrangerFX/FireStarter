@@ -340,12 +340,15 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                         }
 
                         // Output the optimize results.
-                        if (!WillTerminate())
+                        if (!WillTerminate()) {
                             resultText += Format("  Optimize Pass=%llu  Optimize Result=%.8f", optimizeState.m_optimize_pass, optimizeState.m_maxResult);
+                            if ((bestState.m_maxResult > evolveSettings.m_evolveTarget) && (optimizeState.m_maxResult <= evolveSettings.m_evolveTarget))
+                                resultText += " *";
+                        }
                     }
                 }
 
-                if (bestState.m_maxResult < 0.000001f)
+                if (bestState.m_maxResult <= evolveSettings.m_evolveTarget)
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()), resultText);
