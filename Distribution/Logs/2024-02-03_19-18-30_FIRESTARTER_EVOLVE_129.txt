@@ -1,0 +1,106 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 29
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+evolveTarget = 0.000001f
+
+mode = FIRESTARTER_EVOLVE
+evolveSeed = 1
+optimizeSeed = 1
+tests = 256
+streams = 8
+units = 1
+states = 1
+generations = 64
+population = 278528
+iterations = 64
+passes = 500
+precision = 0
+candidates = 16
+attempts = 0
+optimize = 8
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   0  Id=   0  Generation=  0  Age=  0  Evolution= 0  Children0= 0  Children1= 0  EvolveWeight=-1.00000000  Old Result=10.00000000 *New Result=1.09730959  Best=1.09730959  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   0  Id=   0  Generation=  1  Age=  1  Evolution= 1  Children0= 0  Children1= 0  EvolveWeight=1.09730959  Old Result=1.09730959  Bad Result=1.09760022  Best=1.09730959  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   0  Id=   0  Generation=  2  Age=  2  Evolution= 1  Children0= 1  Children1= 1  EvolveWeight=1.22898674  Old Result=1.09730959  Bad Result=1.23950112  Best=1.09730959  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   0  Id=   0  Generation=  3  Age=  3  Evolution= 1  Children0= 2  Children1= 2  EvolveWeight=1.36066389  Old Result=1.09730959 *New Result=0.85227418  Best=0.85227418  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   1  Id=   0  Generation=  4  Age=  1  Evolution= 2  Children0= 3  Children1= 0  EvolveWeight=0.90341055  Old Result=0.85227418  Bad Result=0.85227418  Best=0.85227418  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   1  Id=   0  Generation=  5  Age=  2  Evolution= 2  Children0= 4  Children1= 1  EvolveWeight=1.00568354  Old Result=0.85227418  Bad Result=0.85227418  Best=0.85227418  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   1  Id=   0  Generation=  6  Age=  3  Evolution= 2  Children0= 5  Children1= 2  EvolveWeight=1.10795653  Old Result=0.85227418  Bad Result=0.85227418  Best=0.85227418  BestError=0.00000083  BestAge=3
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   1  Id=   0  Generation=  7  Age=  4  Evolution= 2  Children0= 6  Children1= 3  EvolveWeight=1.21022940  Old Result=0.85227418 *New Result=0.01140600  Best=0.01140600  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   2  Id=   0  Generation=  8  Age=  1  Evolution= 3  Children0= 7  Children1= 0  EvolveWeight=0.01300284  Old Result=0.01140600  Bad Result=0.03809745  Best=0.01140600  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   2  Id=   0  Generation=  9  Age=  2  Evolution= 3  Children0= 8  Children1= 1  EvolveWeight=0.01437157  Old Result=0.01140600  Bad Result=0.02569902  Best=0.01140600  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   2  Id=   0  Generation= 10  Age=  3  Evolution= 3  Children0= 9  Children1= 2  EvolveWeight=0.01574029  Old Result=0.01140600  Bad Result=0.02246351  Best=0.01140600  BestError=0.00000083  BestAge=3
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   2  Id=   0  Generation= 11  Age=  4  Evolution= 3  Children0=10  Children1= 3  EvolveWeight=0.01710901  Old Result=0.01140600 *New Result=0.00701320  Best=0.00701320  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   3  Id=   0  Generation= 12  Age=  1  Evolution= 4  Children0=11  Children1= 0  EvolveWeight=0.00855610  Old Result=0.00701320  Bad Result=0.01140302  Best=0.00701320  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   3  Id=   0  Generation= 13  Age=  2  Evolution= 4  Children0=12  Children1= 1  EvolveWeight=0.00939769  Old Result=0.00701320  Bad Result=0.03155014  Best=0.00701320  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   3  Id=   0  Generation= 14  Age=  3  Evolution= 4  Children0=13  Children1= 2  EvolveWeight=0.01023927  Old Result=0.00701320  Bad Result=0.01988655  Best=0.00701320  BestError=0.00000083  BestAge=3
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   3  Id=   0  Generation= 15  Age=  4  Evolution= 4  Children0=14  Children1= 3  EvolveWeight=0.01108085  Old Result=0.00701320 *New Result=0.00063610  Best=0.00063610  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   4  Id=   0  Generation= 16  Age=  1  Evolution= 5  Children0=15  Children1= 0  EvolveWeight=0.00082693  Old Result=0.00063610 *New Result=0.00039482  Best=0.00039482  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   5  Id=   0  Generation= 17  Age=  1  Evolution= 6  Children0=16  Children1= 0  EvolveWeight=0.00052116  Old Result=0.00039482  Bad Result=0.00088821  Best=0.00039482  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   5  Id=   0  Generation= 18  Age=  2  Evolution= 6  Children0=17  Children1= 1  EvolveWeight=0.00056854  Old Result=0.00039482  Bad Result=0.00048275  Best=0.00039482  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   5  Id=   0  Generation= 19  Age=  3  Evolution= 6  Children0=18  Children1= 2  EvolveWeight=0.00061592  Old Result=0.00039482  Bad Result=0.00101984  Best=0.00039482  BestError=0.00000083  BestAge=3
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   5  Id=   0  Generation= 20  Age=  4  Evolution= 6  Children0=19  Children1= 3  EvolveWeight=0.00066330  Old Result=0.00039482 *New Result=0.00033942  Best=0.00033942  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 21  Age=  1  Evolution= 7  Children0=20  Children1= 0  EvolveWeight=0.00047519  Old Result=0.00033942  Bad Result=0.00081110  Best=0.00033942  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 22  Age=  2  Evolution= 7  Children0=21  Children1= 1  EvolveWeight=0.00051592  Old Result=0.00033942  Bad Result=0.00101537  Best=0.00033942  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 23  Age=  3  Evolution= 7  Children0=22  Children1= 2  EvolveWeight=0.00055665  Old Result=0.00033942 *New Result=0.00031540  Best=0.00031540  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 24  Age=  1  Evolution= 8  Children0=23  Children1= 0  EvolveWeight=0.00046048  Old Result=0.00031540  Bad Result=0.00187594  Best=0.00031540  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 25  Age=  2  Evolution= 8  Children0=24  Children1= 1  EvolveWeight=0.00049833  Old Result=0.00031540  Bad Result=0.00176904  Best=0.00031540  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 26  Age=  3  Evolution= 8  Children0=25  Children1= 2  EvolveWeight=0.00053618  Old Result=0.00031540  Bad Result=0.00034851  Best=0.00031540  BestError=0.00000083  BestAge=3
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 27  Age=  4  Evolution= 8  Children0=26  Children1= 3  EvolveWeight=0.00057402  Old Result=0.00031540  Bad Result=0.00050998  Best=0.00031540  BestError=0.00000083  BestAge=4
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 28  Age=  5  Evolution= 8  Children0=27  Children1= 4  EvolveWeight=0.00061187  Old Result=0.00031540  Bad Result=0.00032005  Best=0.00031540  BestError=0.00000083  BestAge=5
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 29  Age=  9  Evolution= 7  Children0=28  Children1= 3  EvolveWeight=0.00063132  Old Result=0.00033942  Bad Result=0.00039868  Best=0.00031540  BestError=0.00000083  BestAge=6
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 30  Age=  7  Evolution= 8  Children0=29  Children1= 5  EvolveWeight=0.00065603  Old Result=0.00031540  Bad Result=0.00132883  Best=0.00031540  BestError=0.00000083  BestAge=7
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 31  Age= 11  Evolution= 7  Children0=30  Children1= 4  EvolveWeight=0.00067884  Old Result=0.00033942  Bad Result=0.00064081  Best=0.00031540  BestError=0.00000083  BestAge=8
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 32  Age=  9  Evolution= 8  Children0=31  Children1= 6  EvolveWeight=0.00070018  Old Result=0.00031540  Bad Result=0.00181711  Best=0.00031540  BestError=0.00000083  BestAge=9
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 33  Age= 13  Evolution= 7  Children0=32  Children1= 5  EvolveWeight=0.00072636  Old Result=0.00033942  Bad Result=0.00050178  Best=0.00031540  BestError=0.00000083  BestAge=10
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 34  Age= 11  Evolution= 8  Children0=33  Children1= 7  EvolveWeight=0.00074434  Old Result=0.00031540  Bad Result=0.00054920  Best=0.00031540  BestError=0.00000083  BestAge=11
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 35  Age= 15  Evolution= 7  Children0=34  Children1= 6  EvolveWeight=0.00077387  Old Result=0.00033942  Bad Result=0.00035989  Best=0.00031540  BestError=0.00000083  BestAge=12
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 36  Age= 13  Evolution= 8  Children0=35  Children1= 8  EvolveWeight=0.00078849  Old Result=0.00031540  Bad Result=0.00064516  Best=0.00031540  BestError=0.00000083  BestAge=13
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 37  Age= 17  Evolution= 7  Children0=36  Children1= 7  EvolveWeight=0.00082139  Old Result=0.00033942  Bad Result=0.00042033  Best=0.00031540  BestError=0.00000083  BestAge=14
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 38  Age= 15  Evolution= 8  Children0=37  Children1= 9  EvolveWeight=0.00083265  Old Result=0.00031540  Bad Result=0.00033188  Best=0.00031540  BestError=0.00000083  BestAge=15
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   5  Id=   0  Generation= 39  Age= 23  Evolution= 6  Children0=38  Children1= 4  EvolveWeight=0.00085281  Old Result=0.00039482  Bad Result=0.00123979  Best=0.00031540  BestError=0.00000083  BestAge=16
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 40  Age= 20  Evolution= 7  Children0=39  Children1= 8  EvolveWeight=0.00087570  Old Result=0.00033942  Bad Result=0.00062954  Best=0.00031540  BestError=0.00000083  BestAge=17
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 41  Age= 18  Evolution= 8  Children0=40  Children1=10  EvolveWeight=0.00088311  Old Result=0.00031540  Bad Result=0.00046510  Best=0.00031540  BestError=0.00000083  BestAge=18
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   5  Id=   0  Generation= 42  Age= 26  Evolution= 6  Children0=41  Children1= 5  EvolveWeight=0.00091599  Old Result=0.00039482  Bad Result=0.00051869  Best=0.00031540  BestError=0.00000083  BestAge=19
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 43  Age= 20  Evolution= 8  Children0=42  Children1=11  EvolveWeight=0.00092727  Old Result=0.00031540  Bad Result=0.00104165  Best=0.00031540  BestError=0.00000083  BestAge=20
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 44  Age= 24  Evolution= 7  Children0=43  Children1= 9  EvolveWeight=0.00093680  Old Result=0.00033942  Bad Result=0.00303541  Best=0.00031540  BestError=0.00000083  BestAge=21
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 45  Age= 22  Evolution= 8  Children0=44  Children1=12  EvolveWeight=0.00097143  Old Result=0.00031540  Bad Result=0.01321964  Best=0.00031540  BestError=0.00000083  BestAge=22
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 46  Age= 26  Evolution= 7  Children0=45  Children1=10  EvolveWeight=0.00098431  Old Result=0.00033942  Bad Result=0.00039890  Best=0.00031540  BestError=0.00000083  BestAge=23
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   5  Id=   0  Generation= 47  Age= 31  Evolution= 6  Children0=46  Children1= 6  EvolveWeight=0.00099495  Old Result=0.00039482  Bad Result=0.00084264  Best=0.00031540  BestError=0.00000083  BestAge=24
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   7  Id=   0  Generation= 48  Age= 25  Evolution= 8  Children0=47  Children1=13  EvolveWeight=0.00102189  Old Result=0.00031540  Bad Result=0.00089347  Best=0.00031540  BestError=0.00000083  BestAge=25
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   6  Id=   0  Generation= 49  Age= 29  Evolution= 7  Children0=48  Children1=11  EvolveWeight=0.00103862  Old Result=0.00033942 *New Result=0.00016154  Best=0.00016154  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 50  Age=  1  Evolution= 8  Children0=49  Children1= 0  EvolveWeight=0.00031986  Old Result=0.00016154  Bad Result=0.00036585  Best=0.00016154  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 51  Age=  2  Evolution= 8  Children0=50  Children1= 1  EvolveWeight=0.00033924  Old Result=0.00016154  Bad Result=0.00018457  Best=0.00016154  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 52  Age=  3  Evolution= 8  Children0=51  Children1= 2  EvolveWeight=0.00035863  Old Result=0.00016154  Bad Result=0.00060427  Best=0.00016154  BestError=0.00000083  BestAge=3
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 53  Age=  4  Evolution= 8  Children0=52  Children1= 3  EvolveWeight=0.00037801  Old Result=0.00016154  Bad Result=0.00045520  Best=0.00016154  BestError=0.00000083  BestAge=4
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 54  Age=  5  Evolution= 8  Children0=53  Children1= 4  EvolveWeight=0.00039740  Old Result=0.00016154  Bad Result=0.00019336  Best=0.00016154  BestError=0.00000083  BestAge=5
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 55  Age=  6  Evolution= 8  Children0=54  Children1= 5  EvolveWeight=0.00041678  Old Result=0.00016154  Bad Result=0.00038052  Best=0.00016154  BestError=0.00000083  BestAge=6
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 56  Age=  7  Evolution= 8  Children0=55  Children1= 6  EvolveWeight=0.00043617  Old Result=0.00016154  Bad Result=0.00121394  Best=0.00016154  BestError=0.00000083  BestAge=7
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 57  Age=  8  Evolution= 8  Children0=56  Children1= 7  EvolveWeight=0.00045555  Old Result=0.00016154  Bad Result=0.00019725  Best=0.00016154  BestError=0.00000083  BestAge=8
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   8  Id=   0  Generation= 58  Age=  9  Evolution= 8  Children0=57  Children1= 8  EvolveWeight=0.00047494  Old Result=0.00016154 *New Result=0.00009352  Best=0.00009352  BestError=0.00000083  BestAge=0
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   9  Id=   0  Generation= 59  Age=  1  Evolution= 9  Children0=58  Children1= 0  EvolveWeight=0.00020200  Old Result=0.00009352  Bad Result=0.00072110  Best=0.00009352  BestError=0.00000083  BestAge=1
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   9  Id=   0  Generation= 60  Age=  2  Evolution= 9  Children0=59  Children1= 1  EvolveWeight=0.00021322  Old Result=0.00009352  Bad Result=0.00020838  Best=0.00009352  BestError=0.00000083  BestAge=2
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   9  Id=   0  Generation= 61  Age=  3  Evolution= 9  Children0=60  Children1= 2  EvolveWeight=0.00022445  Old Result=0.00009352  Bad Result=0.00011501  Best=0.00009352  BestError=0.00000083  BestAge=3
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   9  Id=   0  Generation= 62  Age=  4  Evolution= 9  Children0=61  Children1= 3  EvolveWeight=0.00023567  Old Result=0.00009352  Bad Result=0.00016749  Best=0.00009352  BestError=0.00000083  BestAge=4
+FIRESTARTER_EVOLVE: Seed=1  Test=129  Index=   0  CopyIndex=   9  Id=   0  Generation= 63  Age=  5  Evolution= 9  Children0=62  Children1= 4  EvolveWeight=0.00024689  Old Result=0.00009352  Bad Result=0.00127518  Best=0.00009352  BestError=0.00000083  BestAge=5
+FIRESTARTER_OPTIMIZE: Seed=1  Test=129  Generation= 58 *Result=0.00008616  Best=0.00008616  BestError=0.00000080  Optimize=1
+FIRESTARTER_OPTIMIZE: Seed=1  Test=129  Generation= 58 *Result=0.00008509  Best=0.00008509  BestError=0.00000098  Optimize=2
+FIRESTARTER_OPTIMIZE: Seed=1  Test=129  Generation= 58 *Result=0.00008449  Best=0.00008449  BestError=0.00000110  Optimize=3
+FIRESTARTER_OPTIMIZE: Seed=1  Test=129  Generation= 58 *Result=0.00008440  Best=0.00008440  BestError=0.00000107  Optimize=4
+FIRESTARTER_OPTIMIZE: Seed=1  Test=129  Generation= 58 *Result=0.00008440  Best=0.00008440  BestError=0.00000107  Optimize=5
+FIRESTARTER_OPTIMIZE: Seed=1  Test=129  Generation= 58 *Result=0.00008434  Best=0.00008434  BestError=0.00000131  Optimize=6
+FIRESTARTER_OPTIMIZE: Seed=1  Test=129  Generation= 58 *Result=0.00008434  Best=0.00008434  BestError=0.00000131  Optimize=7
+FIRESTARTER_OPTIMIZE: Seed=1  Test=129  Generation= 58 *Result=0.00008434  Best=0.00008434  BestError=0.00000131  Optimize=8
