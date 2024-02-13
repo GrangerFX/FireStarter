@@ -175,14 +175,18 @@ typedef struct FireStarterInstructions {
         i[index].reg = (unsigned short)reg;
     } // SetOperation
 
+    inline void SetOpcode(unsigned int index, unsigned int op = 0)
+    {
+        i[index].op = (unsigned short)op;
+    } // SetOpcode
+
     inline void SetOperation(unsigned int index, unsigned int op = 0, unsigned int reg = 0)
     {
         i[index].op = (unsigned short)op;
         i[index].reg = (unsigned short)reg;
     } // SetOperation
 
-    // Current attempt
-    inline void SetRandomReg(unsigned int index, unsigned long long& seed)
+     inline void SetRandomReg(unsigned int index, unsigned long long& seed)
     {
         i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
     } // SetRandomReg
