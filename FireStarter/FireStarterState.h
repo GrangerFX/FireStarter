@@ -196,9 +196,9 @@ public:
         return RANDOMMOD(m_seed, m);
     } // RandomMod
 
-    inline void RandomInstruction(void)
+    inline void RandomInstruction(unsigned long long& seed, unsigned int index)
     {
-        m_program.RandomInstruction(m_seed);
+        m_program.RandomInstruction(seed, index);
     } // RandomInstruction
 
     inline void RandomInstruction(unsigned int index)
@@ -211,10 +211,15 @@ public:
         m_program.RandomInstruction(seed);
     } // RandomInstruction
 
-    inline void RandomInstruction(unsigned long long& seed, unsigned int index)
+    inline void RandomInstruction(void)
     {
-        m_program.RandomInstruction(seed, index);
+        m_program.RandomInstruction(m_seed);
     } // RandomInstruction
+
+    inline void RandomInstruction2(void)
+    {
+        m_program.RandomInstruction2(m_seed);
+    } // RandomInstruction2
 
     inline void CopyInstructions(const FireStarterState& srcState)
     {

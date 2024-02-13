@@ -87,7 +87,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Generate the evaluate code
                     GenerateCode(job);
                 } else {
-                    unsigned long long numRandom = 2; // Note: DEBUG!
                     bool found = false;
 
                     do {
@@ -126,8 +125,13 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             // Copy the program and result from the random index.
                             curState.m_program = allStates[evolveIndex].m_program;
 
-                            // Randomize oneinstruction.
-                            curState.RandomInstruction();
+#if 0
+                            // Randomize one instruction.
+                            curState.RandomInstruction2();
+#else
+                            // Randomize half of one instruction.
+                            curState.RandomInstruction2();
+#endif
 
                             // Optimize the program registers.
                             curState.m_program.OptimizeRegisters();
@@ -135,8 +139,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             // Check if the optimized instructions are unique.
                             if (!testedInstructions.count(curState.m_program.OptimizedInstructionsData())) {
                                 // Add the instructions to the set of unique instructions.
-                                for (unsigned long long i = 0; i < numRandom; i++)
-                                    testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+                                testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
 
                                 // Generate the evaluate code
                                 GenerateCode(job);

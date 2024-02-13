@@ -74,16 +74,25 @@ void FireStarterProgram::RandomProgram(unsigned long long &seed)
     EvolvedInstructions()->Randomize(seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_patternOpcodes);
 } // RandomProgram
 
+void FireStarterProgram::RandomInstruction(unsigned long long& seed, unsigned int index)
+{
+    EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
+} // RandomInstruction
+
 void FireStarterProgram::RandomInstruction(unsigned long long& seed)
 {
     unsigned int index = RANDOMMOD(seed, m_settings.m_instructions);
     EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomInstruction
 
-void FireStarterProgram::RandomInstruction(unsigned long long& seed, unsigned int index)
+void FireStarterProgram::RandomInstruction2(unsigned long long& seed)
 {
-    EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
-} // RandomInstruction
+    unsigned int index = RANDOMMOD(seed, m_settings.m_instructions * 2);
+    if (index >= m_settings.m_instructions)
+        EvolvedInstructions()->SetRandomOp(index - m_settings.m_instructions, seed, m_settings.m_opcodes);
+    else
+        EvolvedInstructions()->SetRandomReg(index, seed, m_settings.m_registers);
+} // RandomInstruction2
 
 bool FireStarterProgram::CopyInstructions(const FireStarterProgram& srcProgram)
 {
