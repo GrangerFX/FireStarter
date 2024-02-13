@@ -87,7 +87,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Generate the evaluate code
                     GenerateCode(job);
                 } else {
-                    unsigned long long numRandom = 1;
+                    unsigned long long numRandom = 2; // Note: DEBUG!
                     bool found = false;
 
                     do {
