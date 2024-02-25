@@ -210,27 +210,20 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                         isBestState = true;
                     }
 
+                    // Update the render status after every pass.
+                    CompleteStatus(bestState, newState);
+
+                    // Clear the children of successful states.
+                    newState.m_children1 = 0;
 #if FIRESTARTER_EVOLVE_NEW
-                    // Set the weight of the new state.
-                    FireStarterState& oldState = allStates[newState.m_id];
-
-                    // Update the render status after every pass.
-                    CompleteStatus(bestState, newState);
-
                     // Replace the old state with the new state if it improved.
-                    if (newState.m_maxResult < oldState.m_maxResult) {
+                    FireStarterState& oldState = allStates[newState.m_id];
+                    if (newState.m_maxResult < oldState.m_maxResult)
                         oldState = newState;
-                        oldState.m_children0++;
-                        oldState.m_children1 = 0;
-                    }
 #else
-                    // Update the render status after every pass.
-                    CompleteStatus(bestState, newState);
-
                     // If this is an evolved state...
                     if (newState.m_evolution) {
                         // Add the evolved state to the list of all successful states.
-                        newState.m_children1 = 0;
                         newState.m_index = allStates.size();
                         allStates.push_back(newState);
                     } else

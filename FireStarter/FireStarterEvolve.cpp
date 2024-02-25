@@ -105,19 +105,8 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         // Copy and setup the new candidate state.
                         FireStarterState& curState = job->m_state;
                         curState = allStates[evolveIndex];
-#if 1
-#if !FIRESTARTER_EVOLVE_NEW
-                        curState.m_children0 = ++allStates[curState.m_id].m_children0;
-#endif
-                        curState.m_children1 = ++allStates[evolveIndex].m_children1;
-#else
-#if FIRESTARTER_EVOLVE_NEW
-                        curState.m_children1++;
-#else
                         curState.m_children0 = ++allStates[curState.m_id].m_children0;
                         curState.m_children1 = ++allStates[evolveIndex].m_children1;
-#endif
-#endif
                         curState.m_index = index;
                         curState.m_copy_index = evolveIndex;
                         curState.m_copy_generation = curState.m_generation;
