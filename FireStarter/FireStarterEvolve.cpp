@@ -130,7 +130,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         do {
                             // Copy the program and result from the random index.
                             curState.m_program = allStates[evolveIndex].m_program;
-#if 0
+#if 1
                             // Randomize half of one instruction.
                             curState.RandomInstruction2();
 #else
