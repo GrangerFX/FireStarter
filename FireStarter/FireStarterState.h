@@ -220,11 +220,6 @@ public:
         m_program.RandomInstruction(m_seed);
     } // RandomInstruction
 
-    inline void RandomInstruction2(void)
-    {
-        m_program.RandomInstruction2(m_seed);
-    } // RandomInstruction2
-
     inline void CopyInstructions(const FireStarterState& srcState)
     {
         m_program.CopyInstructions(srcState.m_program);

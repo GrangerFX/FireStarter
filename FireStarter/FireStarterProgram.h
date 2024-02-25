@@ -92,7 +92,6 @@ public:
     void RandomProgram(unsigned long long& seed);
     void RandomInstruction(unsigned long long& seed, unsigned int index);
     void RandomInstruction(unsigned long long& seed);
-    void RandomInstruction2(unsigned long long& seed);
     bool CopyInstructions(const FireStarterProgram& srcProgram);
     bool LoadInstructions(const FireStarterInstructions* instructions);
     static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "", const std::string& postfix = "");

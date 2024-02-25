@@ -85,15 +85,6 @@ void FireStarterProgram::RandomInstruction(unsigned long long& seed)
     EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomInstruction
 
-void FireStarterProgram::RandomInstruction2(unsigned long long& seed)
-{
-    unsigned int index = RANDOMMOD(seed, m_settings.m_instructions * 2);
-    if (index < m_settings.m_instructions)
-        EvolvedInstructions()->SetOpcode(index, EvolvedInstructions()->Opcode(index) % m_settings.m_opcodes); // Increment the opcode
-    else
-        EvolvedInstructions()->SetRandomReg(index - m_settings.m_instructions, seed, m_settings.m_registers); // Randomize the register
-} // RandomInstruction2
-
 bool FireStarterProgram::CopyInstructions(const FireStarterProgram& srcProgram)
 {
     size_t instructionsSize = InstructionsSize();
