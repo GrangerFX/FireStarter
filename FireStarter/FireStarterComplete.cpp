@@ -224,6 +224,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                         oldState.m_children1 = 0;
                     }
 #else
+#if 0
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState);
 
@@ -236,6 +237,28 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     } else
                         // Update the results for the new random state.
                         allStates[newState.m_id] = newState;
+#else
+                    // Set the weight of the new random state.
+                    newState.m_children1 = 0;
+                    newState.m_evolveWeight = newState.EvolveWeight();
+                    
+                    // Update the render status after every pass.
+                    CompleteStatus(bestState, newState);
+
+                    // If the evolution was successfull...
+                    if (newState.m_evolution) {
+                        // Add the state to the list of all successful states.
+                        newState.m_evolveWeight = newState.EvolveWeight();
+                        newState.m_index = allStates.size();
+                        allStates.push_back(newState);
+                    } else {
+                        // Set the weight of the new random state.
+                        newState.m_children1 = 0;
+                        newState.m_evolveWeight = newState.EvolveWeight();
+                        newState.m_index = newState.m_id;
+                        allStates[newState.m_id] = newState;
+                    }
+#endif
 #endif
 
                     // Update the best state and display the results.
