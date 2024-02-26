@@ -30,7 +30,7 @@
 #endif
 
 #define FIRESTARTER_EVOLVE_SEED     1
-#define FIRESTARTER_OPTIMIZE_SEED   0
+#define FIRESTARTER_OPTIMIZE_SEED   1
 
 #define FIRESTARTER_START_TEST      0          // The starting test index.
 
