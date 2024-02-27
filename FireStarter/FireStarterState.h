@@ -157,7 +157,7 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
-#if 0
+#if 1
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED4(m_test);
 #else
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
