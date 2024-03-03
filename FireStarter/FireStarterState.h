@@ -19,7 +19,7 @@ private:
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
-        m_copy_generation = other.m_copy_generation;
+        m_age = other.m_age;
         m_evolution = other.m_evolution;
         m_children0 = other.m_children0;
         m_children1 = other.m_children1;
@@ -42,7 +42,7 @@ public:
     std::vector<unsigned int> m_variationOrder;
     std::vector<unsigned int> m_variationCount;
     unsigned long long m_generation = 0;
-    unsigned long long m_copy_generation = 0;
+    unsigned long long m_age = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_children0 = 0;
     unsigned long long m_children1 = 0;
@@ -107,18 +107,15 @@ public:
         return maxResult;
     } // MaxResult
 
-    inline float EvolveWeight(unsigned long long children0) const
-    {
-#if FIRESTARTER_EVOLVE_NEW
-        return FIRESTARTER_EVOLVE_WEIGHT1 * m_children1 / (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * children0);
-#else
-        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * m_maxResult;
-#endif
-    } // EvolveWeight
-
     inline float EvolveWeight(void) const
     {
-        return EvolveWeight(m_children0);
+#if FIRESTARTER_EVOLVE_NEW
+        // Note: Not used except for display text in evolve test 1 with a single state.
+        // In evolve test 1, m_children0 == m_generation and m_children1 == m_age.
+        return 1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1;
+#else
+        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * m_maxResult;
+#endif
     } // EvolveWeight
 
     inline bool ResultsValid(void) const

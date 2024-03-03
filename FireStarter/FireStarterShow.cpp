@@ -182,10 +182,9 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     // Update the log file and window status text.
     std::string statusString;
     float bestResult = bestState.m_maxResult;
-    unsigned long long generation = state.m_generation;
-    bool isBestState = (state.m_id == bestState.m_id) && (generation == bestState.m_generation);
+    bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + generation, generation, state.m_maxResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, state.m_generation, state.m_maxResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
     } else {
@@ -194,7 +193,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  Test=%2u", test);
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
             statusString += Format("  Index=%4llu  CopyIndex=%4llu  Id=%4llu", state.m_index, state.m_copy_index, state.m_id);
-            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Children0=%2u  Children1=%2u  EvolveWeight=%.8f", generation, generation - state.m_copy_generation, state.m_evolution, state.m_children0, state.m_children1, state.m_evolveWeight);
+            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Children0=%2u  Children1=%2u  EvolveWeight=%.8f", state.m_generation, state.m_age, state.m_evolution, state.m_children0, state.m_children1, state.m_evolveWeight);
 
             std::string resultString;
             if (state.m_maxResult >= state.m_oldResult)
@@ -208,7 +207,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             if ((settings.m_units > 1) && (state.PassMode() != FIRESTARTER_OPTIMIZE))
                 statusString += Format("  Unit=%u", state.m_index % settings.m_units);
 
-            statusString += Format("  Generation=%3u", generation);
+            statusString += Format("  Generation=%3u", state.m_generation);
             if ((state.m_maxResult == bestResult) && isBestState)
                 statusString += " *";
             else
@@ -220,7 +219,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if (state.PassMode() == FIRESTARTER_OPTIMIZE)
             statusString += Format("  Optimize=%u", state.m_optimize_pass);
         else
-            statusString += Format("  BestAge=%u", generation - bestState.m_generation);
+            statusString += Format("  BestAge=%u", state.m_generation - bestState.m_generation);
 
         // Include the time when not doing tests as it prevents doing diffs to compare the results.
         if (!settings.m_tests)

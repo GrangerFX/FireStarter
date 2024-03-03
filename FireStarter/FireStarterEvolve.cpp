@@ -98,7 +98,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         curState.m_children1 = ++allStates[evolveIndex].m_children1;
                         curState.m_index = index;
                         curState.m_copy_index = evolveIndex;
-                        curState.m_copy_generation = curState.m_generation;
+                        curState.m_age = generation - curState.m_generation;
                         curState.m_generation = generation;
                         curState.m_evolution++;
                         curState.m_oldResult = curState.m_maxResult;
