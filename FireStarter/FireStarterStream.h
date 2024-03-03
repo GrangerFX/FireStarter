@@ -12,11 +12,9 @@ private:
 	size_t m_streamIndex = 0;
 
 	void OptimizeState(const FireStarterState& evolveState);
-	void RandomState(FireStarterState& evolveState);
 
 public:
 	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings);
-	static void Randomize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings);
 	void RandomStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
 	void EvolveStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
 	FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);

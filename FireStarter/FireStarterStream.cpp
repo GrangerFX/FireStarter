@@ -103,70 +103,12 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
     delete manager;
 } // OptimizeState
 
-void FireStarterStream::RandomState(FireStarterState& randomState)
-{
-    FireStarterState bestState(randomState);    // The best state generation is used for the status display and termination condition.
-
-    // Create the compiler manager
-    FireStarterManager* manager = new FireStarterManager();
-
-    // Create the evolution code generator.
-    FireStarterEvolve* evolve = new FireStarterEvolve(manager);
-
-    // Create the multi-process compiler.
-    FireStarterCompile* compile = new FireStarterCompile(manager);
-    compile->AddCompiler();
-
-    // Create the execution unit.
-    FireStarterExecute* execute = new FireStarterExecute(manager);
-
-    // Create the completion unit.
-    FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
-
-    // Evolve a new generation for the state.
-    evolve->RandomState(randomState, bestState, true);
-
-    // Compile the evolved program.
-    compile->CompileJob(true);
-
-    // Execute the state.
-    execute->ExecuteEvolve(true);
-
-    // Complete the state and display the results.
-    complete->CompleteState(bestState, randomState);
-
-    // Cancel any waiting jobs
-    manager->Cancel();
-
-    // Delete the completion unit.
-    delete complete;
-
-    // Finish processing and terminate each unit.
-    delete execute;
-
-    // Delete the multi-process compiler.
-    delete compile;
-
-    // Delete the evolution code generator.
-    delete evolve;
-
-    // Delete the compilier manager and cancel any waiting jobs.
-    delete manager;
-} // RandomState
-
 void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings)
 {
     FireStarterState bestState(evolveState);
     FireStarterStream stream(0, window, bestState, streamSettings); // Provides serial thread WillTerminate() method.
     stream.OptimizeState(evolveState);
 } // Optimize
-
-void FireStarterStream::Randomize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings)
-{
-    FireStarterState bestState(evolveState);
-    FireStarterStream stream(0, window, bestState, streamSettings); // Provides serial thread WillTerminate() method.
-    stream.RandomState(bestState);
-} // Randomize
 
 void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync)
 {
@@ -199,7 +141,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
             FireStarterState evolveState(evolveSettings, m_streamIndex, test % tests);
 
             // Evolve the first generation for the state.
-            evolve->RandomState(evolveState, m_streamBestState, true);
+            evolve->RandomState(evolveState, true);
 
             // Compile the evolved program.
             // Note: This does nothing when using a multiprocess server.
@@ -288,7 +230,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             unsigned long long generation = 0;
             while (!WillTerminate()) {
                 // Evolve a new generation.
-                evolve->EvolveStates(test, evolveSettings, allStates,  testedInstructions, generation);
+                evolve->EvolveStates(test, evolveSettings, allStates, testedInstructions, generation);
 
                 // Execute each state using one of the execution units.
                 std::atomic<long long> evolveCount = numStates;

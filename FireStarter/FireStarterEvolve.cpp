@@ -17,9 +17,9 @@ void FireStarterEvolve::GenerateCode(FireStarterJob* job)
     m_evolveManager->AddCode(job);
 } // GenearateCode
 
-bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireStarterState& bestState, bool sync)
+bool FireStarterEvolve::RandomState(const FireStarterState& state, bool sync)
 {
-    Dispatch([this, state, bestState] {
+    Dispatch([this, state] {
         FireStarterState evolveState(state);
         evolveState.InitGenerationSeed();
         const FireStarterSettings& settings = evolveState.Settings();
@@ -27,20 +27,9 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, const FireSta
         float bestResult = evolveState.m_maxResult;
         FireStarterJob* job = m_evolveManager->GetFree();
         if (job) {
+            // Randomize the program.
             job->m_state = evolveState;
-            if (!evolveState.m_generation) {
-                // Randomize the program.
-                job->m_state.RandomProgram();
-                job->m_state.RandomResults();
-            } else {
-                // 1 or 2 random instructions based on the age of the generation.
-                unsigned long long age = evolveState.m_generation - bestState.m_generation;
-                unsigned long long randomNum = (age >= numInstructions) + 1;
-                while (randomNum--) {
-                    job->m_state.RandomInstruction();
-                    m_evolveCount++;
-                }
-            }
+            job->m_state.RandomProgram();
 
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();

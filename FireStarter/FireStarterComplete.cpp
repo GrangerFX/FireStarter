@@ -240,7 +240,14 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
 
             // Has the evolve target or the maximum number of attempts been reached?
             unsigned long long age = newStates[0].m_generation - bestState.m_generation;
-            result = (bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts));
+            if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
+                result = true;
+
+            // When the quickest solution is desired, stop as soon as the best state among all the streams has reached the evolve target.
+#if !FIRESTARTER_EVOLVE_TEST
+            if (displayState.m_maxResult <= displayState.Settings().m_evolveTarget)
+                result = true;
+#endif
         }
     });
     return result;
