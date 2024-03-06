@@ -26,7 +26,7 @@
 #define FIRESTARTER_EVOLVE_WEIGHT0  0.02f
 #define FIRESTARTER_EVOLVE_WEIGHT1  0.1f
 #endif
-#if FIRESTARTER_EVOLVE_TEST == 2                // Batches of states all evolving a list of previous states.
+#if FIRESTARTER_EVOLVE_TEST == 2              // Batches of states all evolving a list of previous states.
 #define FIRESTARTER_EVOLVE_NEW      0
 #if FIRESTARTER_EVOLVE_NEW
 #define FIRESTARTER_EVOLVE_RANDOM   0
@@ -37,7 +37,7 @@
 #define FIRESTARTER_EVOLVE_WEIGHT0  0.025f
 #define FIRESTARTER_EVOLVE_WEIGHT1  0.25f
 #endif
-#endif
+#endif                                           // Evolve a single solution as quickly as possible.
 
 #define FIRESTARTER_EVOLVE_SEED     2
 #define FIRESTARTER_OPTIMIZE_SEED   0
