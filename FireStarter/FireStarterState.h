@@ -107,17 +107,6 @@ public:
         return maxResult;
     } // MaxResult
 
-    inline float EvolveWeight(void) const
-    {
-#if FIRESTARTER_EVOLVE_NEW
-        // Note: Not used except for display text in evolve test 1 with a single state.
-        // In evolve test 1, m_children0 == m_generation and m_children1 == m_age.
-        return 1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1;
-#else
-        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * m_maxResult;
-#endif
-    } // EvolveWeight
-
     inline bool ResultsValid(void) const
     {
         const FireStarterResults* results = Results();
@@ -151,6 +140,15 @@ public:
     {
         return FireStarterSettings::Mode(PassMode());
     } // Mode(void) const
+
+    inline float EvolveWeight(void) const
+    {
+#if FIRESTARTER_EVOLVE_NEW
+        return 1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_evolution + FIRESTARTER_EVOLVE_WEIGHT1 * m_age + FIRESTARTER_EVOLVE_WEIGHT2 * m_maxResult;
+#else
+        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * ((1.0f - FIRESTARTER_EVOLVE_WEIGHT2) + FIRESTARTER_EVOLVE_WEIGHT2 * m_maxResult);
+#endif
+    } // EvolveWeight
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
