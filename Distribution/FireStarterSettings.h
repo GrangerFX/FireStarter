@@ -39,7 +39,7 @@
 #endif
 #endif
 
-#define FIRESTARTER_EVOLVE_SEED     3
+#define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
 
 #define FIRESTARTER_START_TEST      0           // The starting test index.
@@ -100,9 +100,9 @@
 #define FIRESTARTER_EVOLVE_START_RESULT     10.0f
 #define FIRESTARTER_EVOLVE_OPTIMIZE         8
 #else
-#define FIRESTARTER_EVOLVE_TESTS            0
-#define FIRESTARTER_EVOLVE_STREAMS          1
-#define FIRESTARTER_EVOLVE_UNITS            8
+#define FIRESTARTER_EVOLVE_TESTS            100
+#define FIRESTARTER_EVOLVE_STREAMS          4
+#define FIRESTARTER_EVOLVE_UNITS            4
 #define FIRESTARTER_EVOLVE_STATES           16
 #define FIRESTARTER_EVOLVE_GENERATIONS      0
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
