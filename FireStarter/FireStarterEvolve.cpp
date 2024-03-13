@@ -125,7 +125,8 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             // Randomize two instructions.
                             curState.RandomInstruction();
                             curState.RandomInstruction();
-#if 0 && FIRESTARTER_EVOLVE_NEW
+#if FIRESTARTER_EVOLVE_NEW
+                            if (generation > 32)
                             if (generation & 1)
                                 curState.RandomInstruction();
 #endif
