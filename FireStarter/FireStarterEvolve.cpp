@@ -126,7 +126,6 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             curState.RandomInstruction();
                             curState.RandomInstruction();
 #if FIRESTARTER_EVOLVE_NEW
-                            if (generation > 32)
                             if (generation & 1)
                                 curState.RandomInstruction();
 #endif

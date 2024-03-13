@@ -1,0 +1,12 @@
+Duration: 2233.9  Evolve Seed=0  Test=0  Generation=38  Best Generation=36  Start Result=0.00000069  Evolve Result=0.00000069  Optimize Pass=8  Optimize Result=0.00000048 *******
+Duration: 2738.1  Evolve Seed=0  Test=1  Generation=50  Best Generation=46  Start Result=0.00000024  Evolve Result=0.00000024  Optimize Pass=8  Optimize Result=0.00000012 *******
+Duration: 8301.2  Evolve Seed=0  Test=2  Generation=200  Best Generation=94  Start Result=0.00000226  Evolve Result=0.00000226  Optimize Pass=8  Optimize Result=0.00000143
+Duration: 8516.3  Evolve Seed=0  Test=5  Generation=123  Best Generation=121  Start Result=0.00000060  Evolve Result=0.00000060  Optimize Pass=8  Optimize Result=0.00000036 *******
+Duration: 8603.0  Evolve Seed=0  Test=3  Generation=200  Best Generation=106  Start Result=0.00000083  Evolve Result=0.00000083  Optimize Pass=8  Optimize Result=0.00000036 *
+Duration: 10746.5  Evolve Seed=0  Test=4  Generation=200  Best Generation=105  Start Result=0.00000238  Evolve Result=0.00000238  Optimize Pass=8  Optimize Result=0.00000030 *
+Duration: 16865.1  Evolve Seed=0  Test=7  Generation=200  Best Generation=38  Start Result=0.00000106  Evolve Result=0.00000106  Optimize Pass=8  Optimize Result=0.00000072 *
+Duration: 17134.6  Evolve Seed=0  Test=6  Generation=200  Best Generation=172  Start Result=0.00000346  Evolve Result=0.00000346  Optimize Pass=8  Optimize Result=0.00000267
+Duration: 17239.6  Evolve Seed=0  Test=8  Generation=200  Best Generation=145  Start Result=0.00000364  Evolve Result=0.00000364  Optimize Pass=8  Optimize Result=0.00000155
+Duration: 18946.9  Evolve Seed=0  Test=9  Generation=200  Best Generation=107  Start Result=0.00000089  Evolve Result=0.00000089  Optimize Pass=8  Optimize Result=0.00000012 *
+Duration: 21329.4  Evolve Seed=0  Test=12  Generation=82  Best Generation=81  Start Result=0.00000060  Evolve Result=0.00000060  Optimize Pass=8  Optimize Result=0.00000036 *******
+Duration: 21614.6  Evolve Seed=0  Test=11  Generation=92  Best Generation=89  Start Result=0.00000060  Evolve Result=0.00000060  Optimize Pass=8  Optimize Result=0.00000028 *******
