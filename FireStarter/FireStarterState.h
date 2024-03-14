@@ -144,7 +144,7 @@ public:
     inline float EvolveWeight(void) const
     {
 #if FIRESTARTER_EVOLVE_NEW
-        return 1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_generation + FIRESTARTER_EVOLVE_WEIGHT1 * m_age + FIRESTARTER_EVOLVE_WEIGHT2 * m_maxResult;
+        return FIRESTARTER_EVOLVE_WEIGHT0 * m_generation + FIRESTARTER_EVOLVE_WEIGHT1 * m_age + FIRESTARTER_EVOLVE_WEIGHT2 * m_age * m_maxResult;
 #else
         return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * ((1.0f - FIRESTARTER_EVOLVE_WEIGHT2) + FIRESTARTER_EVOLVE_WEIGHT2 * m_maxResult);
 #endif

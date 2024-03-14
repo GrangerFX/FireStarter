@@ -57,7 +57,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Randomize the instructions.
                     FireStarterState& curState = job->m_state;
 #if FIRESTARTER_EVOLVE_NEW
-                    curState.InitState(evolveSettings, 0, index, allStates.size(), test);
+                    curState.InitState(evolveSettings, 1, index, allStates.size(), test);
 #else
                     curState.InitState(evolveSettings, generation, index, allStates.size(), test);
 #endif
