@@ -1,0 +1,16 @@
+Duration: 968.5  Evolve Seed=2  Test=0  Generation=17  Best Generation=104  Start Result=0.00000077  Evolve Result=0.00000077  Optimize Pass=8  Optimize Result=0.00000012 *******
+Duration: 1063.5  Evolve Seed=2  Test=3  Generation=21  Best Generation=162  Start Result=0.00000030  Evolve Result=0.00000030  Optimize Pass=8  Optimize Result=0.00000024 *******
+Duration: 2374.3  Evolve Seed=2  Test=1  Generation=54  Best Generation=339  Start Result=0.00000058  Evolve Result=0.00000058  Optimize Pass=8  Optimize Result=0.00000024 *******
+Duration: 6322.5  Evolve Seed=2  Test=2  Generation=157  Best Generation=1732  Start Result=0.00000060  Evolve Result=0.00000060  Optimize Pass=8  Optimize Result=0.00000024 *******
+Duration: 7599.2  Evolve Seed=2  Test=6  Generation=133  Best Generation=1503  Start Result=0.00000072  Evolve Result=0.00000072  Optimize Pass=8  Optimize Result=0.00000013 *******
+Duration: 8107.5  Evolve Seed=2  Test=5  Generation=200  Best Generation=2374  Start Result=0.00000083  Evolve Result=0.00000083  Optimize Pass=8  Optimize Result=0.00000077 *
+Duration: 8296.5  Evolve Seed=2  Test=4  Generation=191  Best Generation=1628  Start Result=0.00000066  Evolve Result=0.00000066  Optimize Pass=8  Optimize Result=0.00000036 *******
+Duration: 9148.2  Evolve Seed=2  Test=8  Generation=34  Best Generation=283  Start Result=0.00000072  Evolve Result=0.00000072  Optimize Pass=8  Optimize Result=0.00000018 *******
+Duration: 10024.5  Evolve Seed=2  Test=7  Generation=80  Best Generation=525  Start Result=0.00000060  Evolve Result=0.00000060  Optimize Pass=8  Optimize Result=0.00000027 *******
+Duration: 14737.9  Evolve Seed=2  Test=10  Generation=184  Best Generation=2682  Start Result=0.00000048  Evolve Result=0.00000048  Optimize Pass=8  Optimize Result=0.00000036 *******
+Duration: 15219.3  Evolve Seed=2  Test=12  Generation=131  Best Generation=180  Start Result=0.00000077  Evolve Result=0.00000077  Optimize Pass=8  Optimize Result=0.00000027 *******
+Duration: 15883.8  Evolve Seed=2  Test=9  Generation=198  Best Generation=2075  Start Result=0.00000072  Evolve Result=0.00000072  Optimize Pass=8  Optimize Result=0.00000012 *******
+Duration: 15993.5  Evolve Seed=2  Test=11  Generation=200  Best Generation=910  Start Result=0.00000201  Evolve Result=0.00000201  Optimize Pass=8  Optimize Result=0.00000164
+Duration: 19409.9  Evolve Seed=2  Test=13  Generation=149  Best Generation=423  Start Result=0.00000077  Evolve Result=0.00000077  Optimize Pass=8  Optimize Result=0.00000066 *******
+Duration: 20398.3  Evolve Seed=2  Test=14  Generation=200  Best Generation=397  Start Result=0.00000286  Evolve Result=0.00000286  Optimize Pass=8  Optimize Result=0.00000131
+Duration: 20592.0  Evolve Seed=2  Test=15  Generation=200  Best Generation=326  Start Result=0.00001657  Evolve Result=0.00001657  Optimize Pass=8  Optimize Result=0.00001502
