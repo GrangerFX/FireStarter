@@ -250,8 +250,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
-                std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  ", streamTimer.Duration(), bestState.Settings().m_evolveSeed, test);
-                resultText += Format("Generation=%u  Best Generation=%u  Start Result=%.8f  Evolve Result=%.8f", generation, bestState.m_generation, allStates[bestState.m_id].m_maxResult, bestState.m_maxResult);
+                std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", streamTimer.Duration(), bestState.Settings().m_evolveSeed, test, generation, bestState.m_generation, bestState.m_evolution, bestState.m_maxResult);
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
@@ -283,7 +282,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
                         // Output the optimize results.
                         if (!WillTerminate()) {
-                            resultText += Format("  Optimize Pass=%llu  Optimize Result=%.8f", optimizeState.m_optimize_pass, optimizeState.m_maxResult);
+                            resultText += Format("  Optimize Result=%.8f", optimizeState.m_maxResult);
                             if ((bestState.m_maxResult > evolveSettings.m_evolveTarget) && (optimizeState.m_maxResult <= evolveSettings.m_evolveTarget))
                                 resultText += " *";
                         }
