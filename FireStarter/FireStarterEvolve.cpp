@@ -56,11 +56,8 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                 if (index < randomStates) {
                     // Randomize the instructions.
                     FireStarterState& curState = job->m_state;
-#if FIRESTARTER_EVOLVE_NEW
                     curState.InitState(evolveSettings, 1, index, allStates.size(), test);
-#else
-                    curState.InitState(evolveSettings, generation, index, allStates.size(), test);
-#endif
+
                     // Keep randomizing instructions until a unique set of instructions is found.
                     do {
                         // Randomize the program.
@@ -98,16 +95,10 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         FireStarterState& oldState = allStates[evolveIndex];
                         FireStarterState& curState = job->m_state;
                         curState = oldState;
-#if FIRESTARTER_EVOLVE_NEW
+
                         // Note: The age and generation will increment even if the current instructions are not unique by design.
                         curState.m_age = ++oldState.m_age;
                         curState.m_generation = ++oldState.m_generation;
-#else
-                        curState.m_children0 = ++allStates[curState.m_id].m_children0;
-                        curState.m_children1 = ++oldState.m_children1;
-                        curState.m_age = generation - curState.m_generation;
-                        curState.m_generation = generation;
-#endif
                         curState.m_evolution++;
                         curState.m_index = index;
                         curState.m_copy_index = evolveIndex;
@@ -125,10 +116,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             // Randomize two instructions.
                             curState.RandomInstruction();
                             curState.RandomInstruction();
-#if FIRESTARTER_EVOLVE_NEW
                             if (generation & 1)
                                 curState.RandomInstruction();
-#endif
+
                             // Optimize the program registers.
                             curState.m_program.OptimizeRegisters();
 

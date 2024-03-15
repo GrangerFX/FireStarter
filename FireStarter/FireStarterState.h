@@ -21,8 +21,6 @@ private:
         m_generation = other.m_generation;
         m_age = other.m_age;
         m_evolution = other.m_evolution;
-        m_children0 = other.m_children0;
-        m_children1 = other.m_children1;
         m_index = other.m_index;
         m_copy_index = other.m_copy_index;
         m_id = other.m_id;
@@ -44,8 +42,6 @@ public:
     unsigned long long m_generation = 0;
     unsigned long long m_age = 0;
     unsigned long long m_evolution = 0;
-    unsigned long long m_children0 = 0;
-    unsigned long long m_children1 = 0;
     unsigned long long m_index = 0;
     unsigned long long m_copy_index = 0;
     unsigned long long m_id = 0;
@@ -143,20 +139,12 @@ public:
 
     inline float EvolveWeight(void) const
     {
-#if FIRESTARTER_EVOLVE_NEW
-        return FIRESTARTER_EVOLVE_WEIGHT0 * m_generation + FIRESTARTER_EVOLVE_WEIGHT1 * m_age + FIRESTARTER_EVOLVE_WEIGHT2 * m_age * m_maxResult;
-#else
-        return (1.0f + FIRESTARTER_EVOLVE_WEIGHT0 * m_children0 + FIRESTARTER_EVOLVE_WEIGHT1 * m_children1) * ((1.0f - FIRESTARTER_EVOLVE_WEIGHT2) + FIRESTARTER_EVOLVE_WEIGHT2 * m_maxResult);
-#endif
+        return m_age * m_maxResult;
     } // EvolveWeight
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
-#if FIRESTARTER_EVOLVE_NEW
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED4(m_test);
-#else
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_test);
-#endif
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const

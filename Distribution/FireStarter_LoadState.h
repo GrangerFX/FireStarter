@@ -235,8 +235,6 @@ inline void LoadState(FireStarterState& state)
     LoadProgram(state.m_program);
     state.m_generation = 302;
     state.m_evolution = 15;
-    state.m_children0 = 302;
-    state.m_children1 = 2;
     state.m_index = 14;
     state.m_copy_index = 14;
     state.m_id = 14;

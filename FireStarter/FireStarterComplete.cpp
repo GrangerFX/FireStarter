@@ -213,26 +213,12 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState);
 
-#if FIRESTARTER_EVOLVE_NEW
                     // Replace the old state with the new state if it improved.
                     FireStarterState& oldState = allStates[newState.m_id];
                     if (newState.m_maxResult < oldState.m_maxResult) {
                         newState.m_age = 0;
                         oldState = newState;
                     }
-#else
-                    // Clear the children of successful states.
-                    newState.m_children1 = 0;
-
-                    // If this is an evolved state...
-                    if (newState.m_evolution) {
-                        // Add the evolved state to the list of all successful states.
-                        newState.m_index = allStates.size();
-                        allStates.push_back(newState);
-                    } else
-                        // Update the new random state in the list of all successful states.
-                        allStates[newState.m_id] = newState;
-#endif
 
                     // Update the best state and display the results.
                     DisplayResults(displayState, newState);
