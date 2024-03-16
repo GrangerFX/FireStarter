@@ -90,7 +90,7 @@ bool FireStarterComplete::DisplayResults(FireStarterState& bestState, const Fire
      return update;
 } // DisplayResults
 
-void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state)
+void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation)
 {
     const FireStarterSettings& settings = state.Settings();
     double duration = SimpleTimer::RunDuration();
@@ -109,7 +109,7 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
     m_resultsCount++;
 
     // Update the status text.
-    m_fireShow.ShowStatus(bestState, state, duration, m_generationTime, m_bestError);
+    m_fireShow.ShowStatus(bestState, state, generation, duration, m_generationTime, m_bestError);
 } // CompleteStatus
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
@@ -127,7 +127,7 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
             DisplayResults(bestState, newState);
 
             // Update the render status after every pass.
-            CompleteStatus(bestState, newState);
+            CompleteStatus(bestState, newState, newState.m_generation);
             result = true;
         }
     }, sync);
@@ -170,10 +170,10 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 } // CompleteState
 
 // Replace old states with new ones when better and resort the list.
-bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates)
+bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation)
 {
     bool result = false;
-    DispatchSync([this, &displayState, &bestState, &allStates, numStates, &result] {
+    DispatchSync([this, &displayState, &bestState, &allStates, numStates, generation, &result] {
         // Sort the states as they are received.
         FireStarterStates newStates(numStates);
         bool abort = false;
@@ -207,11 +207,12 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     bool isBestState = false;
                     if (newState.m_maxResult < bestState.m_maxResult) {
                         bestState = newState;
+                        bestState.m_age = 0;
                         isBestState = true;
                     }
 
                     // Update the render status after every pass.
-                    CompleteStatus(bestState, newState);
+                    CompleteStatus(bestState, newState, generation);
 
                     // Replace the old state with the new state if it improved.
                     FireStarterState& oldState = allStates[newState.m_id];
@@ -224,7 +225,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     DisplayResults(displayState, newState);
                 } else
                     // Update the render status after every pass.
-                    CompleteStatus(bestState, newState);
+                    CompleteStatus(bestState, newState, generation);
             }
 
             // Has the evolve target or the maximum number of attempts been reached?

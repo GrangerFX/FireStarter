@@ -139,7 +139,7 @@ public:
 
     inline float EvolveWeight(void) const
     {
-        return m_age * m_maxResult;
+        return m_age * sqrtf(m_maxResult);
     } // EvolveWeight
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const

@@ -125,7 +125,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
     window.DisplayText(statusString);
 } // FireSolution
 
-void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, double runTime, double generationTime, double bestError, bool sync)
+void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double bestError, bool sync)
 {
     // Create the CUDA device text.
     static std::string cudaText;
@@ -184,7 +184,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     float bestResult = bestState.m_maxResult;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, state.m_generation, state.m_maxResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, state.m_maxResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
     } else {
@@ -193,7 +193,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  Test=%2u", test);
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
             statusString += Format("  Index=%4llu  CopyIndex=%4llu  Id=%4llu", state.m_index, state.m_copy_index, state.m_id);
-            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Weight=%.8f", state.m_generation, state.m_age, state.m_evolution, state.m_evolveWeight);
+            statusString += Format("  Generation=%3u  Generations=%3u  Age=%3u  Evolution=%2u  Weight=%.8f", generation, state.m_generation, state.m_age, state.m_evolution, state.m_evolveWeight);
 
             std::string resultString;
             if (state.m_maxResult >= state.m_oldResult)
@@ -207,7 +207,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             if ((settings.m_units > 1) && (state.PassMode() != FIRESTARTER_OPTIMIZE))
                 statusString += Format("  Unit=%u", state.m_index % settings.m_units);
 
-            statusString += Format("  Generation=%3u", state.m_generation);
+            statusString += Format("  Generation=%3u", generation);
             if ((state.m_maxResult == bestResult) && isBestState)
                 statusString += " *";
             else
@@ -219,7 +219,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if (state.PassMode() == FIRESTARTER_OPTIMIZE)
             statusString += Format("  Optimize=%u", state.m_optimize_pass);
         else
-            statusString += Format("  BestAge=%u", state.m_generation - bestState.m_generation);
+            statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Include the time when not doing tests as it prevents doing diffs to compare the results.
         if (!settings.m_tests)

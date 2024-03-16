@@ -238,8 +238,11 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                     execute->ExecuteEvolve(evolveCount);
 
                 // Gather and sort the results, update the UI and check for the completion condition.
-                if (complete->CompleteStates(m_streamBestState, bestState, allStates, numStates))
+                if (complete->CompleteStates(m_streamBestState, bestState, allStates, numStates, generation))
                     break;
+
+                // Age the best state.
+                bestState.m_age++;
 
                 // Increment the generation.
                 generation++;
