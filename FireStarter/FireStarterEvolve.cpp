@@ -114,10 +114,28 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             curState.m_program = allStates[evolveIndex].m_program;
 
                             // Randomize two instructions.
+#if 1
+                            curState.RandomInstruction();
+                            if (generation & 1)
+                                curState.RandomInstruction();
+#endif
+#if 0
+                            // This generated the best results thus far.
                             curState.RandomInstruction();
                             curState.RandomInstruction();
                             if (generation & 1)
                                 curState.RandomInstruction();
+#endif
+#if 0
+                            // New test of changing the optimization seed periodically.
+                            if (generation & 7) {
+                                curState.RandomInstruction();
+                                if (generation & 1)
+                                    curState.RandomInstruction();
+                            } else
+                                // Randomize the optimization seed.
+                                curState.Settings().m_optimizeSeed = RANDOM(curState.Settings().m_optimizeSeed);
+#endif
 
                             // Optimize the program registers.
                             curState.m_program.OptimizeRegisters();
