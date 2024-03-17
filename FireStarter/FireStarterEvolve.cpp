@@ -116,8 +116,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             // Randomize two instructions.
 #if 1
                             curState.RandomInstruction();
-                            if (generation & 1)
-                                curState.RandomInstruction();
+                            curState.RandomInstruction();
 #endif
 #if 0
                             // This generated the best results thus far.
