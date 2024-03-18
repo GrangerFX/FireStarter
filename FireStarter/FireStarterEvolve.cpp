@@ -76,138 +76,87 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Generate the evaluate code
                     GenerateCode(job);
                 } else {
-                    bool found = false;
-
-                    do {
-                        // Find the best state to evolve based on a weighting algorithm.
-                        float evolveWeight = 0.0f;
-                        size_t evolveIndex = 0;
-                        for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
-                            FireStarterState& curState = allStates[curIndex];
-                            float curWeight = curState.EvolveWeight();
-                            if (!curIndex || (curWeight < evolveWeight)) {
-                                evolveWeight = curWeight;
-                                evolveIndex = curIndex;
-                            }
+                    // Find the best state to evolve based on a weighting algorithm.
+                    float evolveWeight = 0.0f;
+                    size_t evolveIndex = 0;
+                    for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
+                        FireStarterState& curState = allStates[curIndex];
+                        float curWeight = curState.EvolveWeight();
+                        if (!curIndex || (curWeight < evolveWeight)) {
+                            evolveWeight = curWeight;
+                            evolveIndex = curIndex;
                         }
+                    }
 
-                        // Copy and setup the new candidate state.
-                        FireStarterState& oldState = allStates[evolveIndex];
-                        FireStarterState& curState = job->m_state;
-                        curState = oldState;
+                    // Copy and setup the new candidate state.
+                    FireStarterState& oldState = allStates[evolveIndex];
+                    FireStarterState& curState = job->m_state;
+                    curState = oldState;
 
-                        // Note: The age and generation will increment even if the current instructions are not unique by design.
-                        curState.m_age = ++oldState.m_age;
-                        curState.m_generation = ++oldState.m_generation;
-                        curState.m_evolution++;
-                        curState.m_index = index;
-                        curState.m_copy_index = evolveIndex;
-                        curState.m_oldResult = curState.m_maxResult;
-                        curState.m_evolveWeight = evolveWeight;
-                        curState.InitGenerationSeed();
-                        curState.m_timer.StartDate();
+                    // Note: The age and generation will increment even if the current instructions are not unique by design.
+                    curState.m_age = ++oldState.m_age;
+                    curState.m_generation = ++oldState.m_generation;
+                    curState.m_evolution++;
+                    curState.m_index = index;
+                    curState.m_copy_index = evolveIndex;
+                    curState.m_oldResult = curState.m_maxResult;
+                    curState.m_evolveWeight = evolveWeight;
+                    curState.InitGenerationSeed();
+                    curState.m_timer.StartDate();
 
-                        // Keep copying and randomizing instructions until a unique set of instructions is found.
-                        unsigned int count = 0;
-                        do {
-                            // Copy the program and result from the random index.
-                            curState.m_program = allStates[evolveIndex].m_program;
+#if 1
+                    // New test of changing the optimization seed periodically.
+                    if (!(generation & 7)) {
+                        // Randomize the optimization seed.
+                        curState.Settings().m_optimizeSeed = RANDOM(curState.Settings().m_optimizeSeed);
+                    } else
+#endif
+                    for (;;) {
+                        // Copy the program and result from the random index.
+                        curState.m_program = allStates[evolveIndex].m_program;
 
 #if 0
-                            // Randomize 2 and 3 instructions alternately.
-                            // This generated the best results thus far.
-                            // For seed 0, it generated 11 good and 2 partials.
-                            // Randomize 1 and 2 instructions generated 8 good.
+                        // Randomize 2 and 3 instructions alternately.
+                        // This generated the best results thus far.
+                        // For seed 0, it generated 11 good and 2 partials.
+                        // Randomize 1 and 2 instructions generated 8 good.
+                        curState.RandomInstruction();
+                        curState.RandomInstruction();
+                        if (generation & 1)
                             curState.RandomInstruction();
-                            curState.RandomInstruction();
-                            if (generation & 1)
-                                curState.RandomInstruction();
 #endif
 #if 0
-                            // Randomize three instructions.
-                            // For seed 0, it generated 10 good and 1 partial.
-                            // Two instructions generated 10 good.
-                            curState.RandomInstruction();
-                            curState.RandomInstruction();
-                            curState.RandomInstruction();
-#endif
-#if 0
-                            switch (curState.RandomMod(4)) {
-                            case 0:
-                                // Randomize the optimization seed.
-                                curState.Settings().m_optimizeSeed = RANDOM(curState.Settings().m_optimizeSeed);
-                                break;
-                            case 1:
-                                curState.RandomInstruction();
-                                break;
-                            case 2:
-                                curState.RandomInstruction();
-                                curState.RandomInstruction();
-                                break;
-                            case 3:
-                                curState.RandomInstruction();
-                                curState.RandomInstruction();
-                                curState.RandomInstruction();
-                                break;
-                            }
+                        // Randomize three instructions.
+                        // For seed 0, it generated 10 good and 1 partial.
+                        // Two instructions generated 10 good.
+                        curState.RandomInstruction();
+                        curState.RandomInstruction();
+                        curState.RandomInstruction();
 #endif
 #if 1
-                            // New test of changing the optimization seed periodically.
-                            if (generation & 7) {
-                                curState.RandomInstruction();
-                                curState.RandomInstruction();
-                                if (generation & 1)
-                                    curState.RandomInstruction();
-
-                                // Optimize the program registers.
-                                curState.m_program.OptimizeRegisters();
-
-                                // Check if the optimized instructions are unique.
-                                if (!testedInstructions.count(curState.m_program.OptimizedInstructionsData())) {
-                                    // Add the instructions to the set of unique instructions.
-                                    testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
-
-                                    // Generate the evaluate code
-                                    GenerateCode(job);
-
-                                    // Done evolving the state.
-                                    found = true;
-                                    break;
-                                }
-                            } else {
-                                // Randomize the optimization seed.
-                                curState.Settings().m_optimizeSeed = RANDOM(curState.Settings().m_optimizeSeed);
-
-                                // Generate the evaluate code
-                                GenerateCode(job);
-
-                                // Done evolving the state.
-                                found = true;
-                                break;
-                            }
-#else
-
-                            // Optimize the program registers.
-                            curState.m_program.OptimizeRegisters();
-
-                            // Check if the optimized instructions are unique.
-                            if (!testedInstructions.count(curState.m_program.OptimizedInstructionsData())) {
-                                // Add the instructions to the set of unique instructions.
-                                testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
-
-                                // Generate the evaluate code
-                                GenerateCode(job);
-
-                                // Done evolving the state.
-                                found = true;
-                                break;
-                            }
+                        // Randomize one two or three instructions.
+                        switch (curState.RandomMod(3)) {
+                        case 2:
+                            curState.RandomInstruction();
+                        case 1:
+                            curState.RandomInstruction();
+                        case 0:
+                            curState.RandomInstruction();
+                        }
 #endif
+                        // Optimize the program registers.
+                        curState.m_program.OptimizeRegisters();
 
-                            // Try again a number of times.
-                            count++;
-                        } while (count < evolveSettings.m_instructions);
-                    } while (!found);
+                        // Check if the optimized instructions are unique.
+                        if (!testedInstructions.count(curState.m_program.OptimizedInstructionsData())) {
+                            // Add the instructions to the set of unique instructions.
+                            testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+                            break;
+                        }
+                    }
+
+                    // Generate the evaluate code
+                    GenerateCode(job);
                 }
             } else
                 // Pass along the null job to cause the next stage to exit.
