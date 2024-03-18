@@ -88,23 +88,24 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         }
                     }
 
-                    // Copy and setup the new candidate state.
-                    FireStarterState& oldState = allStates[evolveIndex];
-                    FireStarterState& curState = job->m_state;
-                    curState = oldState;
-
-                    // Note: The age and generation will increment even if the current instructions are not unique by design.
-                    curState.m_age = ++oldState.m_age;
-                    curState.m_generation = ++oldState.m_generation;
-                    curState.m_evolution++;
-                    curState.m_index = index;
-                    curState.m_copy_index = evolveIndex;
-                    curState.m_oldResult = curState.m_maxResult;
-                    curState.m_evolveWeight = evolveWeight;
-                    curState.InitGenerationSeed();
-                    curState.m_timer.StartDate();
-
+                    // Loop until a unique new state is found.
                     for (;;) {
+                        // Copy and setup the new candidate state.
+                        FireStarterState& oldState = allStates[evolveIndex];
+                        FireStarterState& curState = job->m_state;
+                        curState = oldState;
+
+                        // Note: The age and generation will increment even if the current instructions are not unique by design.
+                        curState.m_age = ++oldState.m_age;
+                        curState.m_generation = ++oldState.m_generation;
+                        curState.m_evolution++;
+                        curState.m_index = index;
+                        curState.m_copy_index = evolveIndex;
+                        curState.m_oldResult = curState.m_maxResult;
+                        curState.m_evolveWeight = evolveWeight;
+                        curState.InitGenerationSeed();
+                        curState.m_timer.StartDate();
+
                         // Copy the program and result from the random index.
                         curState.m_program = allStates[evolveIndex].m_program;
 
