@@ -104,46 +104,16 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     curState.InitGenerationSeed();
                     curState.m_timer.StartDate();
 
-#if 1
-                    // New test of changing the optimization seed periodically.
-                    if (!(generation & 7)) {
-                        // Randomize the optimization seed.
-                        curState.Settings().m_optimizeSeed = RANDOM(curState.Settings().m_optimizeSeed);
-                    } else
-#endif
                     for (;;) {
                         // Copy the program and result from the random index.
                         curState.m_program = allStates[evolveIndex].m_program;
 
-#if 0
                         // Randomize 2 and 3 instructions alternately.
-                        // This generated the best results thus far.
-                        // For seed 0, it generated 11 good and 2 partials.
-                        // Randomize 1 and 2 instructions generated 8 good.
                         curState.RandomInstruction();
                         curState.RandomInstruction();
                         if (generation & 1)
                             curState.RandomInstruction();
-#endif
-#if 0
-                        // Randomize three instructions.
-                        // For seed 0, it generated 10 good and 1 partial.
-                        // Two instructions generated 10 good.
-                        curState.RandomInstruction();
-                        curState.RandomInstruction();
-                        curState.RandomInstruction();
-#endif
-#if 1
-                        // Randomize one two or three instructions.
-                        switch (curState.RandomMod(3)) {
-                        case 2:
-                            curState.RandomInstruction();
-                        case 1:
-                            curState.RandomInstruction();
-                        case 0:
-                            curState.RandomInstruction();
-                        }
-#endif
+
                         // Optimize the program registers.
                         curState.m_program.OptimizeRegisters();
 
