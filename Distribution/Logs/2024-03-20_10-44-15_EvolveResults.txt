@@ -1,0 +1,4 @@
+Duration: 2601.6  Evolve Seed=3  Test=7  Generation=523  Best Generations=527  Evolutions=19  Evolve Result=0.00000077  Optimize Result=0.00000037 *******
+Duration: 2703.3  Evolve Seed=3  Test=1  Generation=510  Best Generations=513  Evolutions=20  Evolve Result=0.00000060  Optimize Result=0.00000060 *******
+Duration: 5683.8  Evolve Seed=3  Test=3  Generation=1304  Best Generations=1316  Evolutions=18  Evolve Result=0.00000078  Optimize Result=0.00000036 *******
+Duration: 5843.4  Evolve Seed=3  Test=8  Generation=674  Best Generations=680  Evolutions=20  Evolve Result=0.00000030  Optimize Result=0.00000012 *******
