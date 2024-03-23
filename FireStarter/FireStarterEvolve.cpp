@@ -53,10 +53,11 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Evolved states are generated first so they cannot used the random states created in this generation.
+                unsigned long long totalStates = allStates.size();
                 if (index < randomStates) {
                     // Randomize the instructions.
                     FireStarterState& curState = job->m_state;
-                    curState.InitState(evolveSettings, 1, index, allStates.size(), test);
+                    curState.InitState(evolveSettings, 1, index, totalStates, test);
 
                     // Keep randomizing instructions until a unique set of instructions is found.
                     do {
@@ -79,7 +80,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Find the best state to evolve based on a weighting algorithm.
                     float evolveWeight = 0.0f;
                     size_t evolveIndex = 0;
-                    for (size_t curIndex = 0; curIndex < allStates.size(); curIndex++) {
+                    for (size_t curIndex = 0; curIndex < totalStates; curIndex++) {
                         FireStarterState& curState = allStates[curIndex];
                         float curWeight = curState.EvolveWeight();
                         if (!curIndex || (curWeight < evolveWeight)) {

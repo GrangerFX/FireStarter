@@ -207,7 +207,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     bool isBestState = false;
                     if (newState.m_maxResult < bestState.m_maxResult) {
                         bestState = newState;
-                        bestState.m_age = 0;
+                        bestState.m_age = 1;
                         isBestState = true;
                     }
 
@@ -217,7 +217,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     // Replace the old state with the new state if it improved.
                     FireStarterState& oldState = allStates[newState.m_id];
                     if (newState.m_maxResult < oldState.m_maxResult) {
-                        newState.m_age = 0;
+                        newState.m_age = 1;
                         oldState = newState;
                     }
 
