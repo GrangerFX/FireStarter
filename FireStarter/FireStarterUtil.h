@@ -86,12 +86,12 @@ private:
     long m_nanosecond;
 public:
 
-    inline void Start(void)
+    inline static void Start(void)
     {
         timespec time;
         timespec_get(&time, TIME_UTC);
-        m_second = time.tv_sec;
-        m_nanosecond = time.tv_nsec;
+        SimpleTimer::s_second = time.tv_sec;
+        SimpleTimer::s_nanosecond = time.tv_nsec;
     } // Start
 
     inline double Duration(void) const

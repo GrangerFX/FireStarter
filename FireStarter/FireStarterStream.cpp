@@ -218,6 +218,10 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
+            // Reset the timer if there is only one stream.
+            if (evolveSettings.m_streams == 1)
+                SimpleTimer::Start();
+
             // Initialize the states.
             FireStarterStates allStates;
             unsigned long long test = FIRESTARTER_START_TEST + t;
