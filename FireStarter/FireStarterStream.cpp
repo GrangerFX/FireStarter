@@ -220,7 +220,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             // Reset the timer if there is only one stream.
             if (evolveSettings.m_streams == 1)
-                SimpleTimer::Start();
+                streamTimer.Start();
 
             // Initialize the states.
             FireStarterStates allStates;
@@ -257,7 +257,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
-                std::string resultText = Format("Duration: %.1f  Evolve Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", streamTimer.Duration(), bestState.Settings().m_evolveSeed, test, generation, bestState.m_generation, bestState.m_evolution, bestState.m_maxResult);
+                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", streamTimer.Duration(), bestState.Settings().m_evolveSeed, test, generation, bestState.m_generation, bestState.m_evolution, bestState.m_maxResult);
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
