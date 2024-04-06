@@ -49,7 +49,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     float oldResult;
     bool evolved = false;
 
-    if (initData) {
+    if (initData == 1) {
         // The first generation is initalized with random numbers.
         for (unsigned int i = 0; i < dataSize; i++)
             data.d[i] = RANDOMFACTOR(seed) * settings.m_startScale;

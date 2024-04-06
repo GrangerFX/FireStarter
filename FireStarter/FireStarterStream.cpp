@@ -52,7 +52,7 @@ void FireStarterStream::OptimizeState(const FireStarterState& evolveState)
         execute->ExecuteCompile();
 
         // Initialize the population data
-        execute->ExecuteInitPopulation(true);
+        execute->ExecuteInitPopulation();
 
         // Test one more more random seeds.
         size_t firstTest = 0;
@@ -271,7 +271,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                         executeOptimize->ExecuteCompile();
 
                         // Initialize the population data
-                        executeOptimize->ExecuteInitPopulation(true);
+                        executeOptimize->ExecuteInitPopulation();
 
                         // Loop until the the optimize completion condition or the host program is quit.
                         optimizeState.m_optimize_pass = 1;

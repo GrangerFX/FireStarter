@@ -57,7 +57,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                 if (index < randomStates) {
                     // Randomize the instructions.
                     FireStarterState& curState = job->m_state;
-                    curState.InitState(evolveSettings, 1, index, totalStates, test);
+                    curState.InitState(evolveSettings, 0, index, totalStates, test);
 
                     // Keep randomizing instructions until a unique set of instructions is found.
                     do {

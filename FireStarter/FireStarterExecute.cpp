@@ -32,7 +32,7 @@ void FireStarterExecute::FinishPopulation(void)
     context->Synchronize();
 } // FinishPopulation
 
-bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init)
+bool FireStarterExecute::InitPopulation(const FireStarterState& state)
 {
     bool result = true;
     FireStarterSettings settings = state.Settings();
@@ -61,11 +61,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
 
     // Initialize the populations.
     if (m_hostPopulation && m_devicePopulation) {
-        if (init)
-            m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, state.Results());
-        else
-            m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, settings.m_startResult);
-
+        m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, state.Results());
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
     } else
@@ -87,6 +83,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     unsigned int lastMember = settings.m_population;
     unsigned long long passes = settings.m_passes;
     unsigned long long optimization = state.m_optimize_pass * passes;
+    int initData = state.m_generation == 0 ? 1 : optimization == 0 ? FIRESTARTER_EVOLVE_INIT : 0;
 
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
@@ -94,7 +91,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long optimizationSeed = state.OptimizationSeed(optimization);
-        int initData = optimization == 0;
+
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),
@@ -118,6 +115,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
         // Synchronize all GPU threads and results.
         context->Synchronize();
+        initData = 0;
         optimization++;
     }
 
@@ -262,11 +260,11 @@ void FireStarterExecute::ExecuteCompile(bool sync)
     }, sync);
 } // ExecuteCompile
 
-void FireStarterExecute::ExecuteInitPopulation(bool init, bool sync)
+void FireStarterExecute::ExecuteInitPopulation(bool sync)
 {
-    Dispatch([this, init] {
+    Dispatch([this] {
         if (m_executeJob)
-            InitPopulation(m_executeJob->m_state, init);
+            InitPopulation(m_executeJob->m_state);
     }, sync);
 } // ExecuteInitPopulation
 

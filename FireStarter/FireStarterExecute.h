@@ -20,7 +20,7 @@ private:
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
-    bool InitPopulation(const FireStarterState& state, bool init = false);
+    bool InitPopulation(const FireStarterState& state);
 	float OptimizeGenerations(FireStarterState& state, unsigned int variation);
     void OptimizePass(FireStarterState& state);
     bool OptimizeEvolve(FireStarterState& state);
@@ -29,7 +29,7 @@ private:
 
 public:
     void ExecuteCompile(bool sync = false);
-    void ExecuteInitPopulation(bool init, bool sync = false);
+    void ExecuteInitPopulation(bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, bool sync = false);
     void ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync = false);
     void ExecuteEvolve(bool sync = false);
