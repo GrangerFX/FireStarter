@@ -217,6 +217,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     // Replace the old state with the new state if it improved.
                     FireStarterState& oldState = allStates[newState.m_id];
                     if (newState.m_maxResult < oldState.m_maxResult) {
+                        newState.m_generation = oldState.m_generation + 1;
                         newState.m_age = 1;
                         oldState = newState;
                     }

@@ -50,7 +50,7 @@ public:
     unsigned long long m_optimize_pass = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
-    float m_evolveWeight = -1.0f;
+    float m_evolveWeight = 0.0f;
     bool m_optimizeValid = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
@@ -139,7 +139,7 @@ public:
 
     inline float EvolveWeight(void) const
     {
-        return m_age * m_maxResult;
+        return m_generation * m_maxResult;
     } // EvolveWeight
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const

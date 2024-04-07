@@ -48,16 +48,16 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
     DispatchSync([this, test, &evolveSettings, &allStates, &testedInstructions, generation] {
         unsigned long long numStates = evolveSettings.m_states;
         unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM;
+        unsigned long long totalStates = allStates.size();
 
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
                 // Evolved states are generated first so they cannot used the random states created in this generation.
-                unsigned long long totalStates = allStates.size();
                 if (index < randomStates) {
                     // Randomize the instructions.
                     FireStarterState& curState = job->m_state;
-                    curState.InitState(evolveSettings, 0, index, totalStates, test);
+                    curState.InitState(evolveSettings, 0, index, allStates.size(), test);
 
                     // Keep randomizing instructions until a unique set of instructions is found.
                     do {

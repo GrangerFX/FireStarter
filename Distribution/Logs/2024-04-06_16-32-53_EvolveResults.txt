@@ -1,0 +1,16 @@
+Duration: 217.4  Seed=0  Test=0  Generation=14  Best Generations=133  Evolutions=9  Evolve Result=0.00000044  Optimize Result=0.00000018 *******
+Duration: 658.3  Seed=0  Test=1  Generation=54  Best Generations=443  Evolutions=13  Evolve Result=0.00000072  Optimize Result=0.00000048 *******
+Duration: 1814.6  Seed=0  Test=2  Generation=148  Best Generations=305  Evolutions=6  Evolve Result=0.00000072  Optimize Result=0.00000030 *******
+Duration: 2065.3  Seed=0  Test=3  Generation=202  Best Generations=900  Evolutions=11  Evolve Result=0.00000066  Optimize Result=0.00000024 *******
+Duration: 590.2  Seed=0  Test=4  Generation=50  Best Generations=555  Evolutions=11  Evolve Result=0.00000057  Optimize Result=0.00000048 *******
+Duration: 643.4  Seed=0  Test=5  Generation=51  Best Generations=109  Evolutions=7  Evolve Result=0.00000066  Optimize Result=0.00000012 *******
+Duration: 2424.9  Seed=0  Test=6  Generation=221  Best Generations=1016  Evolutions=13  Evolve Result=0.00000048  Optimize Result=0.00000012 *******
+Duration: 516.4  Seed=0  Test=7  Generation=46  Best Generations=507  Evolutions=10  Evolve Result=0.00000048  Optimize Result=0.00000015 *******
+Duration: 1669.1  Seed=0  Test=8  Generation=157  Best Generations=353  Evolutions=13  Evolve Result=0.00000070  Optimize Result=0.00000043 *******
+Duration: 2400.7  Seed=0  Test=9  Generation=224  Best Generations=1914  Evolutions=10  Evolve Result=0.00000048  Optimize Result=0.00000024 *******
+Duration: 587.1  Seed=0  Test=10  Generation=53  Best Generations=541  Evolutions=12  Evolve Result=0.00000060  Optimize Result=0.00000023 *******
+Duration: 432.1  Seed=0  Test=11  Generation=40  Best Generations=584  Evolutions=10  Evolve Result=0.00000072  Optimize Result=0.00000060 *******
+Duration: 542.3  Seed=0  Test=12  Generation=41  Best Generations=320  Evolutions=9  Evolve Result=0.00000060  Optimize Result=0.00000012 *******
+Duration: 968.9  Seed=0  Test=13  Generation=88  Best Generations=678  Evolutions=7  Evolve Result=0.00000060  Optimize Result=0.00000012 *******
+Duration: 536.9  Seed=0  Test=14  Generation=46  Best Generations=359  Evolutions=7  Evolve Result=0.00000072  Optimize Result=0.00000033 *******
+Duration: 3485.9  Seed=0  Test=15  Generation=288  Best Generations=764  Evolutions=7  Evolve Result=0.00000024  Optimize Result=0.00000016 *******
