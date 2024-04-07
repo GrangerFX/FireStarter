@@ -32,7 +32,7 @@ void FireStarterExecute::FinishPopulation(void)
     context->Synchronize();
 } // FinishPopulation
 
-bool FireStarterExecute::InitPopulation(const FireStarterState& state)
+bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init)
 {
     bool result = true;
     FireStarterSettings settings = state.Settings();
@@ -61,7 +61,10 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state)
 
     // Initialize the populations.
     if (m_hostPopulation && m_devicePopulation) {
-        m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, state.Results());
+        if (init)
+            m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, settings.m_startResult);
+        else
+            m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, state.Results());
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
     } else
@@ -242,7 +245,7 @@ bool FireStarterExecute::Evolve(void)
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
-        InitPopulation(state);
+        InitPopulation(state, FIRESTARTER_EVOLVE_INIT);
         OptimizeEvolve(state);
         m_executeManager->AddComplete(job);
         return true;
@@ -264,7 +267,7 @@ void FireStarterExecute::ExecuteInitPopulation(bool sync)
 {
     Dispatch([this] {
         if (m_executeJob)
-            InitPopulation(m_executeJob->m_state);
+            InitPopulation(m_executeJob->m_state, false);
     }, sync);
 } // ExecuteInitPopulation
 

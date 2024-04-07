@@ -20,7 +20,7 @@ private:
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
-    bool InitPopulation(const FireStarterState& state);
+    bool InitPopulation(const FireStarterState& state, bool init);
 	float OptimizeGenerations(FireStarterState& state, unsigned int variation);
     void OptimizePass(FireStarterState& state);
     bool OptimizeEvolve(FireStarterState& state);
