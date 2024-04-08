@@ -51,6 +51,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                             reinterpret_cast<void*>(&m_window.m_deviceBase),
                             reinterpret_cast<void*>(&m_window.m_width),
                             reinterpret_cast<void*>(&m_window.m_height),
+                            reinterpret_cast<void*>(&settings.m_registers),
                             reinterpret_cast<void*>(&settings.m_variations) };
 
             checkCUDAErrors(cuLaunchKernel(m_fireShowFunction,

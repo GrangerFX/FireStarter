@@ -62,9 +62,9 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
     // Initialize the populations.
     if (m_hostPopulation && m_devicePopulation) {
         if (init)
-            m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, settings.m_startResult);
+            m_hostPopulation->InitPopulation(settings);
         else
-            m_hostPopulation->InitPopulation(settings.m_population, settings.m_registers, settings.m_variations, state.Results());
+            m_hostPopulation->InitPopulation(settings, state.Results());
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
     } else
@@ -145,7 +145,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     }
 
     FireStarterResult* result = state.Result(variation);
-    memcpy(result->Data(), m_hostPopulation->Data(minIndex, variation), result->DataSize());
+    memcpy(result->Data(), m_hostPopulation->Data(minIndex, variation), FireStarterData::DataSize(settings.m_registers));
     *result->Index() = *m_hostPopulation->Index(minIndex, variation);
     *result->MinResult() = minResult;
     return minResult;

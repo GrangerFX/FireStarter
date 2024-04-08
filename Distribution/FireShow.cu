@@ -4,7 +4,7 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
-GPU_GLOBAL void FireShow(FireStarterResults* bestResults, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int variations)
+GPU_GLOBAL void FireShow(FireStarterResults* bestResults, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int registers, const unsigned int variations)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int xScale = bufferHeight / 8;
@@ -44,7 +44,7 @@ GPU_GLOBAL void FireShow(FireStarterResults* bestResults, FireStarterInstruction
             };
             int i = x / 32;
             FireStarterResult* result = bestResults->Result(v);
-            if (i < result->m_resultSize) {
+            if (i < registers) {
                 FireStarterData* data = result->Data();
                 y = (int)(center + data->d[i] * 10.0f);
                 if ((y >= 0) && (y < bufferHeight)) {
