@@ -34,7 +34,6 @@ void FireStarterExecute::FinishPopulation(void)
 
 bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init)
 {
-    bool result = true;
     FireStarterSettings settings = state.Settings();
 
     CUDAContext* context = Context();
@@ -59,7 +58,9 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
         }
     }
 
-    // Initialize the populations.
+#if 1
+    // Initialize the population data.
+    // Note: Now done by FireOptimizer.
     if (m_hostPopulation && m_devicePopulation) {
         if (init)
             m_hostPopulation->InitPopulation(settings);
@@ -67,11 +68,19 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
             m_hostPopulation->InitPopulation(settings, state.Results());
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
-    } else
-        result = false;
+    }
+#endif
+#if 0
+    // Clear the population data.
+    // Note: Temporary!
+    if (m_devicePopulation)
+        checkCUDAErrors(cudaMemsetAsync(m_devicePopulation, 0, m_populationSize * 2, stream));
+    if (m_hostPopulation)
+        memset(m_hostPopulation, 0, m_populationSize);
+#endif
 
     context->Synchronize();
-    return result;
+    return m_hostPopulation && m_devicePopulation;
 } // InitPopulation
 
 float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int variation)
@@ -82,31 +91,25 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
-    unsigned int firstMember = 0;
-    unsigned int lastMember = settings.m_population;
     unsigned long long passes = settings.m_passes;
-    unsigned long long optimization = state.m_optimize_pass * passes;
-    int initData = state.m_generation == 0 ? 1 : optimization == 0 ? FIRESTARTER_EVOLVE_INIT : 0;
+    unsigned long long optimizationPass = state.m_optimize_pass * passes;
 
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
         unsigned int maxRegisters = state.m_program.m_uniqueRegisters;
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long optimizationSeed = state.OptimizationSeed(optimization);
-
+        unsigned long long optimizationSeed = state.OptimizationSeed(optimizationPass);
 
         void* arr[] = { reinterpret_cast<void*>(&settings),
                         reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
-                        reinterpret_cast<void*>(&firstMember),
-                        reinterpret_cast<void*>(&lastMember),
                         reinterpret_cast<void*>(&maxRegisters),
                         reinterpret_cast<void*>(&optimizationSeed),
-                        reinterpret_cast<void*>(&initData) };
+                        reinterpret_cast<void*>(&optimizationPass) };
 
-        unsigned int blocksPerGrid = ((lastMember - firstMember) + (threadsPerBlock - 1)) / threadsPerBlock;
+        unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
         checkCUDAErrors(cuLaunchKernel(m_optimizeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
@@ -118,8 +121,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
         // Synchronize all GPU threads and results.
         context->Synchronize();
-        initData = 0;
-        optimization++;
+        optimizationPass++;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -245,7 +247,7 @@ bool FireStarterExecute::Evolve(void)
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
-        InitPopulation(state, FIRESTARTER_EVOLVE_INIT);
+        InitPopulation(state, true);
         OptimizeEvolve(state);
         m_executeManager->AddComplete(job);
         return true;

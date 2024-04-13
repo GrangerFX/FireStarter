@@ -274,7 +274,7 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                         executeOptimize->ExecuteInitPopulation();
 
                         // Loop until the the optimize completion condition or the host program is quit.
-                        optimizeState.m_optimize_pass = 1;
+                        optimizeState.m_optimize_pass = 0;
                         while (!WillTerminate()) {
                             // Optimize the current generation.
                             executeOptimize->ExecuteOptimize(optimizeState, false);
