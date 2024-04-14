@@ -102,15 +102,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     }
 
     // If the result was better, save the results.
-    if (!optimizationPass || (result < oldResult)) {
-#if 0
+    if (!optimizationPass || (result < oldResult))
         newResults->InitResult(member, v, 0, FIRESTARTER_REGISTERS, result, data);
-#else
-        *newResults->Data(member, v) = data;
-        *newResults->MinResult(member, v) = result;
-        *newResults->Index(member, v) = 0;
-#endif
-    } else {
+    else {
         // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
         float bestResult = result;
@@ -129,30 +123,16 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         }
 
         // Switch to the selected member's data and results.
-        if (bestCandidate == member) {
+        if (bestCandidate == member)
             // Note: result will be larger than oldResult
-#if 0
             newResults->InitResult(member, v, 1, FIRESTARTER_REGISTERS, result, data);
-#else
-            *newResults->Data(member, v) = data;
-            *newResults->MinResult(member, v) = result;
-            *newResults->Index(member, v) = 1;
-#endif
-        } else {
-#if 0
+        else {
             float oldResult = *oldResults->MinResult(bestCandidate, v);
             unsigned int index = MAX(*oldResults->Index(member, v), 1) + 1;
             const FireStarterData* oldData = oldResults->Data(bestCandidate, v);
             newResults->InitResult(member, v, index, FIRESTARTER_REGISTERS, oldResult, oldData);
-#else
-            *newResults->Data(member, v) = *oldResults->Data(bestCandidate, v);
-            *newResults->MinResult(member, v) = *oldResults->MinResult(bestCandidate, v);
-            *newResults->Index(member, v) = MAX(*oldResults->Index(member, v), 1) + 1;
-#endif
         }
     }
-#if 0
     if (!member && !v)
         newResults->Init(settings);
-#endif
 } // Optimizer
