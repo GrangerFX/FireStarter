@@ -136,9 +136,11 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
+    FireStarterResult* theResult = m_hostPopulation->Result(0, variation);
     float minResult = *m_hostPopulation->MinResult(0, variation);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < settings.m_population; i++) {
+        theResult = m_hostPopulation->Result(0, variation);
         float curResult = *m_hostPopulation->MinResult(i, variation);
         if (curResult <= minResult) {
             minResult = curResult;
