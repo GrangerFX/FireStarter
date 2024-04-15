@@ -194,6 +194,11 @@ typedef struct FireStarterPopulation {
         return (sizeof(FireStarterPopulation) - sizeof(m_memory)) + variations * members * FireStarterResult::ResultSize(registers);
     } // PopulationSize
 
+    inline size_t ResultSize(void) const
+    {
+        return FireStarterResult::ResultSize(m_registers);
+    } // ResultsSize
+
     inline size_t MemorySize(size_t members) const
     {
         return members * FireStarterResult::ResultSize(m_registers);
@@ -238,11 +243,6 @@ typedef struct FireStarterPopulation {
     {
         return (const FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize() + member * ResultSize());
     } // Result
-
-    inline size_t ResultSize(void) const
-    {
-        return FireStarterResult::ResultSize(m_registers);
-    } // ResultsSize
 
     inline FireStarterData* Data(unsigned int member, unsigned int variation)
     {
