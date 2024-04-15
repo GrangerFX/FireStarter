@@ -238,18 +238,4 @@ typedef struct FireStarterPopulation {
     {
         Result(settings, member, variation)->Init(index, settings.m_registers, resultMin, data);
     } // InitMemberResult
-
-    inline void InitPopulation(const FireStarterSettings& settings)
-    {
-        for (unsigned int v = 0; v < settings.m_variations; v++)
-            for (unsigned int i = 0; i < settings.m_population; i++)
-                Result(settings, i, v)->Init(i, settings.m_registers, settings.m_startResult);
-    } // InitPopulation
-
-    inline void InitPopulation(const FireStarterSettings& settings, const FireStarterResults* initResults)
-    {
-        for (unsigned int v = 0; v < settings.m_variations; v++)
-            for (unsigned int i = 0; i < settings.m_population; i++)
-                Result(settings, i, v)->Init(i, settings.m_registers, initResults->Result(v));
-    } // InitPopulation
 } FireStarterPopulation;

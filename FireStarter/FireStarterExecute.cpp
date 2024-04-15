@@ -58,18 +58,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
         }
     }
 
-#if 0
-    // Initialize the population data.
-    // Note: Now done by FireOptimizer.
-    if (m_hostPopulation && m_devicePopulation) {
-        if (init)
-            m_hostPopulation->InitPopulation(settings);
-        else
-            m_hostPopulation->InitPopulation(settings, state.Results());
-        checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation0, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
-        checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
-    }
-#endif
 #if 1
     // Clear the population data.
     // Note: Temporary!
