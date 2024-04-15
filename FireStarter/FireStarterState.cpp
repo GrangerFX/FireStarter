@@ -137,7 +137,7 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
             m_results->InitResults(0, settings.m_registers, settings.m_variations, initResults);
         else
             m_results->InitResults(0, settings.m_registers, settings.m_variations, settings.m_startResult);
-} // InitResult
+} // InitResults
 
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long id, unsigned long long test)
 {

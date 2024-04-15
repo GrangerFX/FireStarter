@@ -44,7 +44,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
     CUstream stream = context->Stream();
 
     // Reallocate the populations if the size has changed.
-    size_t populationSize = FireStarterPopulation::PopulationSize(settings.m_population, settings.m_registers, settings.m_variations);
+    size_t populationSize = FireStarterPopulation::PopulationSize(settings);
     if (m_populationSize != populationSize) {
         FinishPopulation();
         m_populationSize = populationSize;
@@ -58,7 +58,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
         }
     }
 
-#if 1
+#if 0
     // Initialize the population data.
     // Note: Now done by FireOptimizer.
     if (m_hostPopulation && m_devicePopulation) {
@@ -70,7 +70,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
         checkCUDAErrors(cudaMemcpyAsync(m_devicePopulation1, m_hostPopulation, m_populationSize, cudaMemcpyHostToDevice, stream));
     }
 #endif
-#if 0
+#if 1
     // Clear the population data.
     // Note: Temporary!
     if (m_devicePopulation)
@@ -136,12 +136,12 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    FireStarterResult* theResult = m_hostPopulation->Result(0, variation);
-    float minResult = *m_hostPopulation->MinResult(0, variation);
+    FireStarterResult* theResult = m_hostPopulation->Result(settings, 0, variation);
+    float minResult = *m_hostPopulation->MinResult(settings, 0, variation);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < settings.m_population; i++) {
-        theResult = m_hostPopulation->Result(0, variation);
-        float curResult = *m_hostPopulation->MinResult(i, variation);
+        theResult = m_hostPopulation->Result(settings, 0, variation);
+        float curResult = *m_hostPopulation->MinResult(settings, i, variation);
         if (curResult <= minResult) {
             minResult = curResult;
             minIndex = i;
@@ -149,8 +149,8 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     }
 
     FireStarterResult* result = state.Result(variation);
-    memcpy(result->Data(), m_hostPopulation->Data(minIndex, variation), FireStarterData::DataSize(settings.m_registers));
-    *result->Index() = *m_hostPopulation->Index(minIndex, variation);
+    memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex, variation), FireStarterData::DataSize(settings.m_registers));
+    *result->Index() = *m_hostPopulation->Index(settings, minIndex, variation);
     *result->MinResult() = minResult;
     return minResult;
 } // OptimizeGenerations
