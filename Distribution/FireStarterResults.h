@@ -50,41 +50,41 @@ typedef struct FireStarterResult {
         return (const FireStarterData*)m_data;
     } // Data
 
-    inline void Init(unsigned int index, unsigned int registers, float startResult)
+    inline void Init(unsigned int index, size_t registers, float startResult)
     {
         FireStarterData* resultData = Data();
-        for (unsigned int i = 0; i < registers; i++)
+        for (size_t i = 0; i < registers; i++)
             resultData->d[i] = 0.0f;
         m_resultMin = startResult;
         m_resultIndex = index;
     } // Init
 
-    inline void Init(unsigned int index, unsigned int registers, float resultMin, const FireStarterData& data)
+    inline void Init(unsigned int index, size_t registers, float resultMin, const FireStarterData& data)
     {
         FireStarterData* resultData = Data();
-        for (unsigned int i = 0; i < registers; i++)
+        for (size_t i = 0; i < registers; i++)
             resultData->d[i] = data.d[i];
         m_resultMin = resultMin;
         m_resultIndex = index;
     } // Init
 
-    inline void Init(unsigned int index, unsigned int registers, float resultMin, const FireStarterData* data)
+    inline void Init(unsigned int index, size_t registers, float resultMin, const FireStarterData* data)
     {
         FireStarterData* resultData = Data();
-        for (unsigned int i = 0; i < registers; i++)
+        for (size_t i = 0; i < registers; i++)
             resultData->d[i] = data->d[i];
         m_resultMin = resultMin;
         m_resultIndex = index;
     } // Init
 
-    inline void Init(unsigned int index, unsigned int registers, const FireStarterResult* initResult)
+    inline void Init(unsigned int index, size_t registers, const FireStarterResult* initResult)
     {
         m_resultMin = initResult->MinResult();
         m_resultIndex = index;
 
         FireStarterData* resultData = Data();
         const FireStarterData* srcData = initResult->Data();
-        for (unsigned int i = 0; i < registers; i++)
+        for (size_t i = 0; i < registers; i++)
             resultData->d[i] = srcData->d[i];
     } // Init
 } FireStarterResult;
@@ -141,28 +141,28 @@ typedef struct FireStarterResults {
         return Result(variation)->Data();
     } // Data
 
-    inline void InitResults(unsigned int index, unsigned int registers, unsigned int variations, float startResult)
+    inline void InitResults(const FireStarterSettings& settings, unsigned int index)
     {
-        m_registers = registers;
-        m_variations = variations;
-        m_resultSize = FireStarterResult::ResultSize(registers);
-        m_resultsSize = FireStarterResults::ResultsSize(registers, variations);
+        m_registers = settings.m_registers;
+        m_variations = settings.m_variations;
+        m_resultSize = FireStarterResult::ResultSize(m_registers);
+        m_resultsSize = FireStarterResults::ResultsSize(m_registers, m_variations);
         for (unsigned int v = 0; v < m_variations; v++)
-            Result(v)->Init(index, registers, startResult);
+            Result(v)->Init(index, m_registers, settings.m_startResult);
     } // Init
 
-    inline void InitResults(unsigned int index, unsigned int registers, unsigned int variations, const FireStarterResults* initResults)
+    inline void InitResults(const FireStarterSettings& settings, unsigned int index, const FireStarterResults* initResults)
     {
-        m_registers = registers;
-        m_variations = variations;
-        m_resultSize = FireStarterResult::ResultSize(registers);
-        m_resultsSize = FireStarterResults::ResultsSize(registers, variations);
-        if ((registers == initResults->m_registers) && (variations == initResults->m_variations))
+        m_registers = settings.m_registers;
+        m_variations = settings.m_variations;
+        m_resultSize = FireStarterResult::ResultSize(m_registers);
+        m_resultsSize = FireStarterResults::ResultsSize(m_registers, m_variations);
+        if ((m_registers == initResults->m_registers) && (m_variations == initResults->m_variations))
             for (unsigned int v = 0; v < m_variations; v++)
-                Result(v)->Init(index, registers, initResults->Result(v));
+                Result(v)->Init(index, m_registers, initResults->Result(v));
         else // Note: This is a bug!
             for (unsigned int v = 0; v < m_variations; v++)
-                Result(v)->Init(index, registers, 10.0f);
+                Result(v)->Init(index, m_registers, 10.0f);
     } // Init
 } FireStarterResults;
 

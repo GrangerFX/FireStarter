@@ -127,16 +127,16 @@ float FireStarterState::TestResult(void) const
 
 void FireStarterState::InitResults(FireStarterResults* initResults)
 {
-    FireStarterSettings& settings = m_program.m_settings;
+    const FireStarterSettings& settings = m_program.m_settings;
 
     m_resultsData.clear();
     m_resultsData.resize(FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations));
     m_results = Results();
     if (m_results)
         if (initResults)
-            m_results->InitResults(0, settings.m_registers, settings.m_variations, initResults);
+            m_results->InitResults(settings, 0, initResults);
         else
-            m_results->InitResults(0, settings.m_registers, settings.m_variations, settings.m_startResult);
+            m_results->InitResults(settings, 0);
 } // InitResults
 
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long id, unsigned long long test)
