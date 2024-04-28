@@ -134,9 +134,9 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
     m_results = Results();
     if (m_results)
         if (initResults)
-            m_results->InitResults(settings, 0, initResults);
+            m_results->InitResults(settings, initResults);
         else
-            m_results->InitResults(settings, 0);
+            m_results->InitResults(settings);
 } // InitResults
 
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long id, unsigned long long test)

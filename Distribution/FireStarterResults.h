@@ -50,13 +50,13 @@ typedef struct FireStarterResult {
         return (const FireStarterData*)m_data;
     } // Data
 
-    inline void Init(unsigned int index, size_t registers, float startResult)
+    inline void Init(unsigned int age, size_t registers, float startResult)
     {
         FireStarterData* resultData = Data();
         for (size_t i = 0; i < registers; i++)
             resultData->d[i] = 0.0f;
         m_resultMin = startResult;
-        m_resultAge = index;
+        m_resultAge = age;
     } // Init
 
     inline void Init(unsigned int age, size_t registers, float resultMin, const FireStarterData& data)
@@ -141,28 +141,18 @@ typedef struct FireStarterResults {
         return Result(variation)->Data();
     } // Data
 
-    inline void InitResults(const FireStarterSettings& settings, unsigned int index)
+    inline void InitResults(const FireStarterSettings& settings, const FireStarterResults* initResults = nullptr)
     {
         m_registers = settings.m_registers;
         m_variations = settings.m_variations;
         m_resultSize = FireStarterResult::ResultSize(m_registers);
         m_resultsSize = FireStarterResults::ResultsSize(m_registers, m_variations);
-        for (unsigned int v = 0; v < m_variations; v++)
-            Result(v)->Init(index, m_registers, settings.m_startResult);
-    } // Init
-
-    inline void InitResults(const FireStarterSettings& settings, unsigned int index, const FireStarterResults* initResults)
-    {
-        m_registers = settings.m_registers;
-        m_variations = settings.m_variations;
-        m_resultSize = FireStarterResult::ResultSize(m_registers);
-        m_resultsSize = FireStarterResults::ResultsSize(m_registers, m_variations);
-        if ((m_registers == initResults->m_registers) && (m_variations == initResults->m_variations))
+        if (initResults && (m_registers == initResults->m_registers) && (m_variations == initResults->m_variations))
             for (unsigned int v = 0; v < m_variations; v++)
-                Result(v)->Init(index, m_registers, initResults->Result(v));
-        else // Note: This is a bug!
+                Result(v)->Init(0, m_registers, initResults->Result(v));
+        else
             for (unsigned int v = 0; v < m_variations; v++)
-                Result(v)->Init(index, m_registers, 10.0f);
+                Result(v)->Init(0, m_registers, settings.m_startResult);
     } // Init
 } FireStarterResults;
 
@@ -229,13 +219,13 @@ typedef struct FireStarterPopulation {
         return Result(settings, member, variation)->Age();
     } // Age
 
-    inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int index, float resultMin, const FireStarterData& data)
+    inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data)
     {
-        Result(settings, member, variation)->Init(index, settings.m_registers, resultMin, data);
+        Result(settings, member, variation)->Init(age, settings.m_registers, resultMin, data);
     } // InitMemberResult
 
-    inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int index, float resultMin, const FireStarterData* data)
+    inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData* data)
     {
-        Result(settings, member, variation)->Init(index, settings.m_registers, resultMin, data);
+        Result(settings, member, variation)->Init(age, settings.m_registers, resultMin, data);
     } // InitMemberResult
 } FireStarterPopulation;
