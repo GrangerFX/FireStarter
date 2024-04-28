@@ -14,7 +14,7 @@
 
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
 
-#define FIRESTARTER_EVOLVE_SEED     1
+#define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
 
 #define FIRESTARTER_START_TEST      0           // The starting test index.

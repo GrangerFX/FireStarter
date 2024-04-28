@@ -138,7 +138,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
     FireStarterResult* result = state.Result(variation);
     memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex, variation), FireStarterData::DataSize(settings.m_registers));
-    *result->Index() = *m_hostPopulation->Index(settings, minIndex, variation);
+    *result->Age() = *m_hostPopulation->Age(settings, minIndex, variation);
     *result->MinResult() = minResult;
     return minResult;
 } // OptimizeGenerations

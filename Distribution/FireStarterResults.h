@@ -12,7 +12,7 @@ typedef struct FireStarterData {
 
 typedef struct FireStarterResult {
     float m_resultMin;
-    unsigned int m_resultIndex;
+    unsigned int m_resultAge;
     float m_data[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
 
     static inline size_t ResultSize(size_t registers)
@@ -30,15 +30,15 @@ typedef struct FireStarterResult {
         return m_resultMin;
     } // MinResult
 
-    inline unsigned int* Index(void)
+    inline unsigned int* Age(void)
     {
-        return &m_resultIndex;
-    } // Index
+        return &m_resultAge;
+    } // Age
 
-    inline unsigned int Index(void) const
+    inline unsigned int Age(void) const
     {
-        return m_resultIndex;
-    } // Index
+        return m_resultAge;
+    } // Age
 
     inline FireStarterData* Data(void)
     {
@@ -56,31 +56,31 @@ typedef struct FireStarterResult {
         for (size_t i = 0; i < registers; i++)
             resultData->d[i] = 0.0f;
         m_resultMin = startResult;
-        m_resultIndex = index;
+        m_resultAge = index;
     } // Init
 
-    inline void Init(unsigned int index, size_t registers, float resultMin, const FireStarterData& data)
+    inline void Init(unsigned int age, size_t registers, float resultMin, const FireStarterData& data)
     {
         FireStarterData* resultData = Data();
         for (size_t i = 0; i < registers; i++)
             resultData->d[i] = data.d[i];
         m_resultMin = resultMin;
-        m_resultIndex = index;
+        m_resultAge = age;
     } // Init
 
-    inline void Init(unsigned int index, size_t registers, float resultMin, const FireStarterData* data)
+    inline void Init(unsigned int age, size_t registers, float resultMin, const FireStarterData* data)
     {
         FireStarterData* resultData = Data();
         for (size_t i = 0; i < registers; i++)
             resultData->d[i] = data->d[i];
         m_resultMin = resultMin;
-        m_resultIndex = index;
+        m_resultAge = age;
     } // Init
 
-    inline void Init(unsigned int index, size_t registers, const FireStarterResult* initResult)
+    inline void Init(unsigned int age, size_t registers, const FireStarterResult* initResult)
     {
         m_resultMin = initResult->MinResult();
-        m_resultIndex = index;
+        m_resultAge = age;
 
         FireStarterData* resultData = Data();
         const FireStarterData* srcData = initResult->Data();
@@ -121,15 +121,15 @@ typedef struct FireStarterResults {
         return Result(variation)->MinResult();
     } // MinResult
 
-    inline unsigned int* Index(size_t variation)
+    inline unsigned int* Age(size_t variation)
     {
-        return Result(variation)->Index();
-    } // Index
+        return Result(variation)->Age();
+    } // Age
 
-    inline unsigned int Index(size_t variation) const
+    inline unsigned int Age(size_t variation) const
     {
-        return Result(variation)->Index();
-    } // Index
+        return Result(variation)->Age();
+    } // Age
 
     inline FireStarterData* Data(size_t variation)
     {
@@ -219,15 +219,15 @@ typedef struct FireStarterPopulation {
         return Result(settings, member, variation)->MinResult();
     } // MinResult
 
-    inline unsigned int* Index(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
+    inline unsigned int* Age(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
     {
-        return Result(settings, member, variation)->Index();
-    } // SourceMember
+        return Result(settings, member, variation)->Age();
+    } // Age
 
-    inline unsigned int Index(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const
+    inline unsigned int Age(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const
     {
-        return Result(settings, member, variation)->Index();
-    } // SourceMember
+        return Result(settings, member, variation)->Age();
+    } // Age
 
     inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int index, float resultMin, const FireStarterData& data)
     {
