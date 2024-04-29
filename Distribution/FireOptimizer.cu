@@ -164,8 +164,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             data.d[i] = 0.0f;   // Clear the unused data.
         oldResult = settings.m_startResult;
         evolved = true;
-    }
-    else {
+    } else {
         // Later generations randomize a single instruction if they were copied.
         data = *oldResults->Data(settings, member, v);
         oldResult = oldResults->MinResult(settings, member, v);
@@ -197,8 +196,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             result = curResult;
             evolutionScale = settings.m_scale * result;
             evolved = true;
-        }
-        else
+        } else
             data.d[d] = oldData;
     }
 
