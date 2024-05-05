@@ -1,5 +1,6 @@
 #pragma once
 #include "FireStarterSettings.h"
+#include "HashRandom.h"
 
 typedef struct FireStarterData {
     float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
@@ -8,6 +9,32 @@ typedef struct FireStarterData {
     {
         return sizeof(float) * registers;
     } // DataSize
+
+    inline void Copy(const FireStarterData& data, size_t registers)
+    {
+        for (unsigned int i = 0; i < registers; i++)
+            d[i] = data.d[i];
+    } // Copy
+
+    inline void Copy(const FireStarterData* data, size_t registers)
+    {
+        for (unsigned int i = 0; i < registers; i++)
+            d[i] = data->d[i];
+    } // Copy
+
+    inline void Init(size_t registers)
+    {
+        for (unsigned int i = 0; i < registers; i++)
+            d[i] = 0.0f;
+    } // Init
+
+    inline void Init(unsigned long long& seed, size_t registers, size_t maxRegisters, float startScale)
+    {
+        for (size_t i = 0; i < registers; i++)
+            d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
+        for (size_t i = registers; i < maxRegisters; i++)
+            d[i] = 0.0f;                            // Clear the unused registers.
+    } // Init
 } FireStarterData;
 
 typedef struct FireStarterResult {
@@ -50,42 +77,45 @@ typedef struct FireStarterResult {
         return (const FireStarterData*)m_data;
     } // Data
 
-    inline void Init(unsigned int age, size_t registers, float startResult)
+    inline void Init(const FireStarterSettings& settings, unsigned int age = 0)
     {
         FireStarterData* resultData = Data();
-        for (size_t i = 0; i < registers; i++)
-            resultData->d[i] = 0.0f;
-        m_resultMin = startResult;
+        resultData->Init(settings.m_registers);
+        m_resultMin = settings.m_startResult;
         m_resultAge = age;
     } // Init
 
-    inline void Init(unsigned int age, size_t registers, float resultMin, const FireStarterData& data)
+    inline void Init(const FireStarterSettings& settings, unsigned long long& seed, size_t registers, unsigned int age = 0)
     {
         FireStarterData* resultData = Data();
-        for (size_t i = 0; i < registers; i++)
+        resultData->Init(seed, registers, settings.m_registers, settings.m_startScale);
+        m_resultMin = settings.m_startResult;
+        m_resultAge = age;
+    } // Init
+
+    inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData& data, unsigned int age = 0)
+    {
+        FireStarterData* resultData = Data();
+        for (size_t i = 0; i < settings.m_registers; i++)
             resultData->d[i] = data.d[i];
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
 
-    inline void Init(unsigned int age, size_t registers, float resultMin, const FireStarterData* data)
+    inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData* data, unsigned int age = 0)
     {
         FireStarterData* resultData = Data();
-        for (size_t i = 0; i < registers; i++)
-            resultData->d[i] = data->d[i];
+        resultData->Copy(data, settings.m_registers);
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
 
-    inline void Init(unsigned int age, size_t registers, const FireStarterResult* initResult)
+    inline void Init(const FireStarterSettings& settings, const FireStarterResult* initResult, unsigned int age = 0)
     {
+        FireStarterData* resultData = Data();
+        resultData->Copy(initResult->Data(), settings.m_registers);
         m_resultMin = initResult->MinResult();
         m_resultAge = age;
-
-        FireStarterData* resultData = Data();
-        const FireStarterData* srcData = initResult->Data();
-        for (size_t i = 0; i < registers; i++)
-            resultData->d[i] = srcData->d[i];
     } // Init
 } FireStarterResult;
 
@@ -149,10 +179,10 @@ typedef struct FireStarterResults {
         m_resultsSize = FireStarterResults::ResultsSize(m_registers, m_variations);
         if (initResults && (m_registers == initResults->m_registers) && (m_variations == initResults->m_variations))
             for (unsigned int v = 0; v < m_variations; v++)
-                Result(v)->Init(0, m_registers, initResults->Result(v));
+                Result(v)->Init(settings, initResults->Result(v));
         else
             for (unsigned int v = 0; v < m_variations; v++)
-                Result(v)->Init(0, m_registers, settings.m_startResult);
+                Result(v)->Init(settings);
     } // Init
 } FireStarterResults;
 
@@ -221,11 +251,11 @@ typedef struct FireStarterPopulation {
 
     inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data)
     {
-        Result(settings, member, variation)->Init(age, settings.m_registers, resultMin, data);
+        Result(settings, member, variation)->Init(settings, resultMin, data, age);
     } // InitMemberResult
 
     inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData* data)
     {
-        Result(settings, member, variation)->Init(age, settings.m_registers, resultMin, data);
+        Result(settings, member, variation)->Init(settings, resultMin, data, age);
     } // InitMemberResult
 } FireStarterPopulation;

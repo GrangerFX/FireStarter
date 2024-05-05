@@ -175,7 +175,7 @@ bool FireStarterExecute::OptimizeEvolve(FireStarterState& state)
                 validResult = false;
             }
         } else
-            results->Result(variation)->Init(0, settings.m_registers, settings.m_startResult);
+            results->Result(variation)->Init(settings);
     }
 
     // Resort the variation order with the highest invalidation count first.

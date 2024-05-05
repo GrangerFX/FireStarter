@@ -1,6 +1,5 @@
 #pragma once
 
-#include "HashRandom.h"
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
@@ -51,10 +50,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     if (!optimizationPass) {
         // The first generation is initalized with random numbers.
-        for (unsigned int i = 0; i < registers; i++)
-            data.d[i] = RANDOMFACTOR(seed) * settings.m_startScale;
-        for (unsigned int i = registers; i < FIRESTARTER_REGISTERS; i++)
-            data.d[i] = 0.0f;   // Clear the unused data.
+        data.Init(seed, registers, settings.m_registers, settings.m_startScale);
         oldResult = settings.m_startResult;
         evolved = true;
     } else {
