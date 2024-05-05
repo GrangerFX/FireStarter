@@ -7,8 +7,11 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
     std::string bestStateCode;
     bestState.SaveState(bestStateCode);
     std::string saveFile = "FireStarter_LoadState.h";
-    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
-    FireStarterCode::SaveCode(savePath, bestStateCode);
+    FireStarterCode::SaveCode(saveFile, bestStateCode);
+    if (bestState.Settings().m_tests) {
+        std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
+        FireStarterCode::SaveCode(savePath, bestStateCode);
+    }
 } // SaveBestState
 
 void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
@@ -29,8 +32,11 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         std::string bestCode = optimizeCode;
         FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
         std::string saveFile = "FireStarter_BestCode.h";
-        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
-        FireStarterCode::SaveCode(savePath, bestCode);
+        FireStarterCode::SaveCode(saveFile, bestCode);
+        if (bestState.Settings().m_tests) {
+            std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
+            FireStarterCode::SaveCode(savePath, bestCode);
+        }
     }
 } // SaveBestCode
 
