@@ -84,7 +84,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
-        unsigned int maxRegisters = state.m_program.m_uniqueRegisters;
+        unsigned int registers = state.m_program.m_uniqueRegisters;
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long optimizationSeed = state.OptimizationSeed(optimizationPass);
@@ -93,7 +93,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
                         reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
-                        reinterpret_cast<void*>(&maxRegisters),
+                        reinterpret_cast<void*>(&registers),
                         reinterpret_cast<void*>(&optimizationSeed),
                         reinterpret_cast<void*>(&optimizationPass) };
 

@@ -31,7 +31,7 @@ inline float TestPrecision(const FireStarterData& data, unsigned int variation, 
     return result;
 } // TestPrecision
 
-GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int dataSize, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
+GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
 {
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= settings.m_population)
@@ -51,9 +51,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     if (!optimizationPass) {
         // The first generation is initalized with random numbers.
-        for (unsigned int i = 0; i < dataSize; i++)
+        for (unsigned int i = 0; i < registers; i++)
             data.d[i] = RANDOMFACTOR(seed) * settings.m_startScale;
-        for (unsigned int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
+        for (unsigned int i = registers; i < FIRESTARTER_REGISTERS; i++)
             data.d[i] = 0.0f;   // Clear the unused data.
         oldResult = settings.m_startResult;
         evolved = true;
@@ -63,7 +63,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         oldResult = oldResults->MinResult(settings, member, v);
         unsigned int age = oldResults->Age(settings, member, v);
         if (age > 1) {
-            unsigned int d = RANDOMMOD(seed, dataSize);
+            unsigned int d = RANDOMMOD(seed, registers);
             data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale * (age - 1);
             oldResult = settings.m_startResult;
             evolved = true;
@@ -81,7 +81,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     // Iterate to evolve the data.
     for (unsigned int p = 0; p < settings.m_iterations; p++) {
-        unsigned int d = RANDOMMOD(seed, dataSize);
+        unsigned int d = RANDOMMOD(seed, registers);
         float oldData = data.d[d];
         data.d[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
         float curResult = TestEvaluate(data, target, theta);
