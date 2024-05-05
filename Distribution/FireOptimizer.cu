@@ -93,14 +93,6 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             data.d[d] = oldData;
     }
 
-    // Calculate a more accurate estimate of the result.
-    if (settings.m_precision) {
-        if (evolved)
-            result = fmaxf(result, TestPrecision(data, v, settings.m_precision));
-        else
-            result = oldResult;
-    }
-
     // If the result was better, save the results.
     if (!optimizationPass || (result < oldResult))
         newResults->InitMemberResult(settings, member, v, 0, result, data);
