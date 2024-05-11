@@ -49,6 +49,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     // Evolve the program registers for each variation.
     unsigned long long seed = optimizationSeed + SEED10(v) + SEED11(member); // Unique seed for the generation/variation/member
     FireStarterData data;
+    unsigned int oldAge;
     float result, oldResult;
     float evolutionScale;
     bool evolved = false;
@@ -56,24 +57,23 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     // The first generation is initalized with random numbers.
     if (!optimizationPass) {
         data.Init(seed, registers, settings.m_registers, settings.m_startScale);
+        oldAge = 0;
         oldResult = settings.m_startResult;
         evolutionScale = settings.m_startScale;
         evolved = true;
     } else {
         // Later generations randomize a single register if they were copied.
         data = *oldResults->Data(settings, member, v);
-        oldResult = oldResults->MinResult(settings, member, v);
-        unsigned int age = oldResults->Age(settings, member, v);
-        if (age > 1) {
+        oldAge = oldResults->Age(settings, member, v);
+        if (oldAge > 1) {
             // Randomize a single register.
-            // Note: TODO: Test two initial random registers and set the evolutionScale to settings.m_scale * result.
             unsigned int d = RANDOMMOD(seed, registers);
-            data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale * (age - 1);
+            data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale * (oldAge - 1);
             oldResult = settings.m_startResult;
             evolutionScale = settings.m_startScale;
             evolved = true;
         } else {
-            result = oldResult;
+            oldResult = oldResults->MinResult(settings, member, v);
             evolutionScale = settings.m_scale * oldResult;
         }
     }
@@ -81,6 +81,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     // Find the initial result
     if (evolved)
         result = TestEvaluate(data, target, theta);
+    else
+        result = oldResult;
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < settings.m_iterations; p++) {
@@ -109,7 +111,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         for (int i = 0; i < settings.m_candidates; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(seed, settings.m_population);
-            if (oldResults->Age(settings, candidate, v) <= 1) {
+            unsigned int candidateAge = oldResults->Age(settings, candidate, v);
+            if (candidateAge <= 1) {
                 float curResult = oldResults->MinResult(settings, candidate, v);
                 if (curResult <= bestResult) {
                     bestResult = curResult;
@@ -120,13 +123,12 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
         // Switch to the selected member's data and results.
         if (bestCandidate == member)
-            // Note: result will be larger than oldResult when age > 1.
+            // Note: result will be larger than oldResult when oldAge > 1.
             newResults->InitMemberResult(settings, member, v, 1, result, data);
         else {
-            float oldResult = oldResults->MinResult(settings, bestCandidate, v);
-            unsigned int oldAge = oldResults->Age(settings, member, v); // Note: TODO: Test with bestCandidate's age.
-            const FireStarterData* oldData = oldResults->Data(settings, bestCandidate, v);
-            newResults->InitMemberResult(settings, member, v, MAX(oldAge, 1) + 1, oldResult, oldData);
+            // Note: TODO: Test with bestCandidate's age.
+            const FireStarterData* bestData = oldResults->Data(settings, bestCandidate, v);
+            newResults->InitMemberResult(settings, member, v, MAX(oldAge, 1) + 1, bestResult, bestData);
         }
     }
 } // Optimizer
