@@ -209,23 +209,6 @@ public:
         m_program.RandomProgram(m_seed);
     } // RandomProgram
 
-    inline void RandomResults(void)
-    {
-        FireStarterResults* results = Results();
-        const FireStarterSettings& settings = Settings();
-        unsigned long long seed = GenerationSeed();
-
-        for (unsigned int v = 0; v < settings.m_variations; v++) {
-            FireStarterResult* result = results->Result(v);
-            FireStarterData* data = result->Data();
-            unsigned int dataSize = m_program.m_uniqueRegisters;
-            for (unsigned int i = 0; i < dataSize; i++)
-                data->d[i] = RANDOMFACTOR(seed) * settings.m_startScale;
-            for (unsigned int i = dataSize; i < FIRESTARTER_REGISTERS; i++)
-                data->d[i] = 0.0f;   // Clear the unused data.
-        }
-    } // RandomResults
-
     inline void NextGeneration(void)
     {
         m_generation++;

@@ -28,34 +28,33 @@ struct FireStarterInstruction {
     unsigned short op;
     unsigned short reg;
 
-    inline void Execute(FireStarterData& data, float& n) const
+#if FIRESTARTER_INTEGER
+    inline void Execute(FireStarterData& data, int& n) const
     {
-#if FIRESTARTER_PROGRAM_MODE == FIRESTARTER_MULTIPLY_ADD
         if (op == Operation_multiply)
             n = data.d[reg] *= n;
         else
             n = data.d[reg] += n;
+    } // Execute
+
+    inline void Execute(FireStarterData* data, int& n) const
+    {
+        Execute(*data, n);
+    } // Execute
 #else
-        switch (op) {
-            case Operation_multiply:
-                n = data.d[reg] *= n;
-                break;
-
-            case Operation_add:
-                n = data.d[reg] += n;
-                break;
-
-            case Operation_abs:
-                n = fabsf(n);
-                break;
-        }
-#endif
+    inline void Execute(FireStarterData& data, float& n) const
+    {
+        if (op == Operation_multiply)
+            n = data.d[reg] *= n;
+        else
+            n = data.d[reg] += n;
     } // Execute
 
     inline void Execute(FireStarterData* data, float& n) const
     {
         Execute(*data, n);
     } // Execute
+#endif
 
     inline void GenerateTabs(char* buffer, size_t size, size_t& length, unsigned int tabs) const
     {
@@ -83,10 +82,6 @@ struct FireStarterInstruction {
                     anprintf(buffer, size, length, "n += data.d[%u];\r\n", reg);
                 else
                     anprintf(buffer, size, length, "n = data.d[%u] += n;\r\n", reg);
-                break;
-
-            case Operation_abs:
-                anprintf(buffer, size, length, "n = fabsf(n);\r\n");
                 break;
         }
     } // GenerateEvaluate
@@ -122,10 +117,6 @@ struct FireStarterInstruction {
                         anprintf(buffer, size, length, "n += r%u;\r\n", r);
                     else
                         anprintf(buffer, size, length, "n = r%u += n;\r\n", r);
-                break;
-
-            case Operation_abs:
-                anprintf(buffer, size, length, "n = fabsf(n);\r\n");
                 break;
         }
     } // GenerateSolution
@@ -240,6 +231,22 @@ typedef struct FireStarterInstructions {
         }
     } // Randomize
 
+#if FIRESTARTER_INTEGER
+    inline int Execute(FireStarterData data, int n) const
+    {
+        for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) // Constant loop is unrolled by compiler.
+            i[index].Execute(data, n);
+        return n;
+    } // Execute
+
+    inline int Execute(FireStarterData* data, unsigned int instructions, int n) const
+    {
+        size_t dataSize = FireStarterData::DataSize(instructions);
+        for (unsigned int index = 0; index < instructions; index++)
+            Instruction(index).Execute(data, n);
+        return n;
+    } // Execute
+#else
     inline float Execute(FireStarterData data, float n) const
     {
         for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) // Constant loop is unrolled by compiler.
@@ -254,6 +261,7 @@ typedef struct FireStarterInstructions {
             Instruction(index).Execute(data, n);
         return isfinite(n) ? n : 0.0f;
     } // Execute
+#endif
 
     inline void InitInstructions(unsigned int instructions)
     {
@@ -311,7 +319,7 @@ inline void GenerateSolutionCode(char* buffer, size_t size, size_t& length, unsi
         unsigned int reg = instructions->Register(i);
         const FireStarterRegister& dataRegister = registers->Register(reg);
         unsigned int r = dataRegister.registerIndex;
-        float f = data->d[reg];
+        float f = (float)data->d[reg];
         instructions->Instruction(i).GenerateSolution(buffer, size, length, tabs, r, f, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
     }
 } // GenerateSolutionCode

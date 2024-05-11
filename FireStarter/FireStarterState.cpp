@@ -28,11 +28,13 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code) 
     code += "{\r\n";
     code += "    FireStarterData *data = result->Data();\r\n";
     for (unsigned int i = 0; i < m_program.m_settings.m_registers; i++) {
+#if FIRESTARTER_INTEGER
+        int data = Result(variation)->Data()->d[i];
+        code += Format("    data->d[%u] = %d;\r\n", i, data);
+#else
         float data = Result(variation)->Data()->d[i];
-// Fix or find bad data if nans are writen to the saved state variation data.
-//      if (std::isnan(data) || std::isinf(data))
-//          data = 0.0f;
         code += Format("    data->d[%u] = %ff;\r\n", i, data);
+#endif
     }
     code += Format("    *(result->MinResult()) = %ff;\r\n", Result(variation)->MinResult());
     code += Format("} // LoadVariation%u\r\n", variation);
@@ -88,11 +90,14 @@ void FireStarterState::SaveState(std::string& code) const
 float FireStarterState::TestResult(void) const
 {
     // Get an accurate test result for the state.
+#if FIRESTARTER_INTEGER
+    // Punt until an integer target is implemented.
+    float testResult = 0.0f;
+#else
     const FireStarterInstructions* testInstructions = m_program.OptimizedInstructions();
     unsigned int instructions = m_program.m_settings.m_instructions;
     size_t dataSize = FireStarterData::DataSize(m_program.m_settings.m_registers);
     FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
-    unsigned int precision = m_program.m_settings.m_precision;
     float testResult = 0.0f;
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
         const FireStarterData* initData = Results()->Data(v);
@@ -101,27 +106,19 @@ float FireStarterState::TestResult(void) const
             float result = 0.0f;
             float sampleStep = (m_program.m_settings.m_targetMax - m_program.m_settings.m_targetMin) / (m_program.m_settings.m_samples - 1);
             for (unsigned int i = 0; i < m_program.m_settings.m_samples; i++) {
-                float theta = TARGET_MIN + i * sampleStep;
+                float theta = m_program.m_settings.m_targetMin + i * sampleStep;
                 float target = Target(theta, v);
                 memcpy(workData, initData, dataSize);
-                float sampleResult = m_program.OptimizedInstructions()->Execute(workData, instructions, theta);
+                float sampleResult = (float)m_program.OptimizedInstructions()->Execute(workData, instructions, theta);
                 float sampleTarget = Target(theta, v);
                 float difference = fabsf(sampleResult - sampleTarget);
                 result = max(result, difference);
-            }
-            if (precision) {
-                float precisionStep = (TARGET_MAX - TARGET_MIN) / (precision - 1);
-                for (unsigned int i = 0; i < precision; i++) {
-                    float theta = TARGET_MIN + i * precisionStep;
-                    memcpy(workData, initData, dataSize);
-                    float difference = fabsf(m_program.OptimizedInstructions()->Execute(workData, instructions, theta) - Target(theta, v));
-                    result = max(result, difference);
-                }
             }
             testResult = max(testResult, fabsf(result - minResult));
         }
     }
     free(workData);
+#endif
     return testResult;
 } // TestResult
 
