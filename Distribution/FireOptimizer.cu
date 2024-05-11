@@ -56,27 +56,31 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     // The first generation is initalized with random numbers.
     if (!optimizationPass) {
         data.Init(seed, registers, settings.m_registers, settings.m_startScale);
-        result = oldResult = settings.m_startResult;
+        oldResult = settings.m_startResult;
         evolutionScale = settings.m_startScale;
         evolved = true;
     } else {
         // Later generations randomize a single register if they were copied.
         data = *oldResults->Data(settings, member, v);
-        result = oldResult = oldResults->MinResult(settings, member, v);
+        oldResult = oldResults->MinResult(settings, member, v);
         unsigned int age = oldResults->Age(settings, member, v);
         if (age > 1) {
             // Randomize a single register.
+            // Note: TODO: Test two initial random registers and set the evolutionScale to settings.m_scale * result.
             unsigned int d = RANDOMMOD(seed, registers);
             data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale * (age - 1);
             oldResult = settings.m_startResult;
-
-            // Find the initial result
-            result = TestEvaluate(data, target, theta);
             evolutionScale = settings.m_startScale;
             evolved = true;
-        } else
-            evolutionScale = settings.m_scale * result;
+        } else {
+            result = oldResult;
+            evolutionScale = settings.m_scale * oldResult;
+        }
     }
+
+    // Find the initial result
+    if (evolved)
+        result = TestEvaluate(data, target, theta);
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < settings.m_iterations; p++) {
