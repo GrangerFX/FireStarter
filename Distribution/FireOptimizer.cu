@@ -128,10 +128,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             // Note: result will be larger than oldResult when oldAge > 1.
             newResults->InitMemberResult(settings, member, v, 1, result, data);
         else {
-            // Note: TODO: Test with bestCandidate's age.
             const FireStarterData* bestData = oldResults->Data(settings, bestCandidate, v);
-//            newResults->InitMemberResult(settings, member, v, MAX(memberAge, 1) + 1, bestResult, bestData);
-            newResults->InitMemberResult(settings, member, v, MAX(bestAge, 1) + 1, bestResult, bestData);
+            newResults->InitMemberResult(settings, member, v, MAX(memberAge, 1) + 1, bestResult, bestData);
         }
     }
 } // Optimizer
