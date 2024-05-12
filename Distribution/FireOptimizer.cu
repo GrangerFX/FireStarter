@@ -49,32 +49,32 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     // Evolve the program registers for each variation.
     unsigned long long seed = optimizationSeed + SEED10(v) + SEED11(member); // Unique seed for the generation/variation/member
     FireStarterData data;
-    unsigned int oldAge;
-    float result, oldResult;
+    unsigned int memberAge;
+    float result, memberResult;
     float evolutionScale;
     bool evolved = false;
 
     // The first generation is initalized with random numbers.
     if (!optimizationPass) {
         data.Init(seed, registers, settings.m_registers, settings.m_startScale);
-        oldAge = 0;
-        oldResult = settings.m_startResult;
+        memberAge = 0;
+        memberResult = settings.m_startResult;
         evolutionScale = settings.m_startScale;
         evolved = true;
     } else {
         // Later generations randomize a single register if they were copied.
         data = *oldResults->Data(settings, member, v);
-        oldAge = oldResults->Age(settings, member, v);
-        if (oldAge > 1) {
+        memberAge = oldResults->Age(settings, member, v);
+        if (memberAge > 1) {
             // Randomize a single register.
             unsigned int d = RANDOMMOD(seed, registers);
-            data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale * (oldAge - 1);
-            oldResult = settings.m_startResult;
+            data.d[d] += RANDOMFACTOR(seed) * settings.m_startScale * (memberAge - 1);
+            memberResult = settings.m_startResult;
             evolutionScale = settings.m_startScale;
             evolved = true;
         } else {
-            oldResult = oldResults->MinResult(settings, member, v);
-            evolutionScale = settings.m_scale * oldResult;
+            memberResult = oldResults->MinResult(settings, member, v);
+            evolutionScale = settings.m_scale * memberResult;
         }
     }
 
@@ -82,7 +82,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     if (evolved)
         result = TestEvaluate(data, target, theta);
     else
-        result = oldResult;
+        result = memberResult;
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < settings.m_iterations; p++) {
@@ -99,11 +99,12 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     }
 
     // If the result was better, save the results.
-    if (!optimizationPass || (result < oldResult))
+    if (!optimizationPass || (result < memberResult))
         newResults->InitMemberResult(settings, member, v, 0, result, data);
     else {
         // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
+        unsigned int bestAge = memberAge;
         float bestResult = result;
 
         // The genetic part of genetic programming and a major optimization:
@@ -113,10 +114,11 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             unsigned int candidate = RANDOMMOD(seed, settings.m_population);
             unsigned int candidateAge = oldResults->Age(settings, candidate, v);
             if (candidateAge <= 1) {
-                float curResult = oldResults->MinResult(settings, candidate, v);
-                if (curResult <= bestResult) {
-                    bestResult = curResult;
+                float candidateResult = oldResults->MinResult(settings, candidate, v);
+                if (candidateResult <= bestResult) {
                     bestCandidate = candidate;
+                    bestAge = candidateAge;
+                    bestResult = candidateResult;
                 }
             }
         }
@@ -128,7 +130,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         else {
             // Note: TODO: Test with bestCandidate's age.
             const FireStarterData* bestData = oldResults->Data(settings, bestCandidate, v);
-            newResults->InitMemberResult(settings, member, v, MAX(oldAge, 1) + 1, bestResult, bestData);
+//            newResults->InitMemberResult(settings, member, v, MAX(memberAge, 1) + 1, bestResult, bestData);
+            newResults->InitMemberResult(settings, member, v, MAX(bestAge, 1) + 1, bestResult, bestData);
         }
     }
 } // Optimizer
