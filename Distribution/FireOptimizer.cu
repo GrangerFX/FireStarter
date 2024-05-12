@@ -92,7 +92,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         float curResult = TestEvaluate(data, target, theta);
         if (curResult <= result) {
             result = curResult;
-            evolutionScale = settings.m_scale * result;
+//            evolutionScale = settings.m_scale * result;
             evolved = true;
         } else
             data.d[d] = oldData;
