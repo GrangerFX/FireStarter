@@ -2,42 +2,6 @@
 #include "FireStarterSettings.h"
 #include "HashRandom.h"
 
-#if FIRESTARTER_INTEGER
-typedef struct FireStarterData {
-    int d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
-
-    static inline size_t DataSize(size_t registers)
-    {
-        return sizeof(int) * registers;
-    } // DataSize
-
-    inline void Copy(const FireStarterData& data, size_t registers)
-    {
-        for (unsigned int i = 0; i < registers; i++)
-            d[i] = data.d[i];
-    } // Copy
-
-    inline void Copy(const FireStarterData* data, size_t registers)
-    {
-        for (unsigned int i = 0; i < registers; i++)
-            d[i] = data->d[i];
-    } // Copy
-
-    inline void Init(size_t registers)
-    {
-        for (unsigned int i = 0; i < registers; i++)
-            d[i] = 0;
-    } // Init
-
-    inline void Init(unsigned long long& seed, size_t registers, size_t maxRegisters, float startScale)
-    {
-        for (size_t i = 0; i < registers; i++)
-            d[i] = (int)(RANDOMFACTOR(seed) * startScale); // Randomize the active registers.
-        for (size_t i = registers; i < maxRegisters; i++)
-            d[i] = 0;                                      // Clear the unused registers.
-    } // Init
-} FireStarterData;
-#else
 typedef struct FireStarterData {
     float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
 
@@ -72,7 +36,6 @@ typedef struct FireStarterData {
             d[i] = 0.0f;                            // Clear the unused registers.
     } // Init
 } FireStarterData;
-#endif
 
 typedef struct FireStarterResult {
     float m_resultMin;

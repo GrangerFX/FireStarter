@@ -28,20 +28,6 @@ struct FireStarterInstruction {
     unsigned short op;
     unsigned short reg;
 
-#if FIRESTARTER_INTEGER
-    inline void Execute(FireStarterData& data, int& n) const
-    {
-        if (op == Operation_multiply)
-            n = data.d[reg] *= n;
-        else
-            n = data.d[reg] += n;
-    } // Execute
-
-    inline void Execute(FireStarterData* data, int& n) const
-    {
-        Execute(*data, n);
-    } // Execute
-#else
     inline void Execute(FireStarterData& data, float& n) const
     {
         if (op == Operation_multiply)
@@ -54,7 +40,6 @@ struct FireStarterInstruction {
     {
         Execute(*data, n);
     } // Execute
-#endif
 
     inline void GenerateTabs(char* buffer, size_t size, size_t& length, unsigned int tabs) const
     {
@@ -231,22 +216,6 @@ typedef struct FireStarterInstructions {
         }
     } // Randomize
 
-#if FIRESTARTER_INTEGER
-    inline int Execute(FireStarterData data, int n) const
-    {
-        for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) // Constant loop is unrolled by compiler.
-            i[index].Execute(data, n);
-        return n;
-    } // Execute
-
-    inline int Execute(FireStarterData* data, unsigned int instructions, int n) const
-    {
-        size_t dataSize = FireStarterData::DataSize(instructions);
-        for (unsigned int index = 0; index < instructions; index++)
-            Instruction(index).Execute(data, n);
-        return n;
-    } // Execute
-#else
     inline float Execute(FireStarterData data, float n) const
     {
         for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) // Constant loop is unrolled by compiler.
@@ -261,7 +230,6 @@ typedef struct FireStarterInstructions {
             Instruction(index).Execute(data, n);
         return isfinite(n) ? n : 0.0f;
     } // Execute
-#endif
 
     inline void InitInstructions(unsigned int instructions)
     {

@@ -28,13 +28,8 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code) 
     code += "{\r\n";
     code += "    FireStarterData *data = result->Data();\r\n";
     for (unsigned int i = 0; i < m_program.m_settings.m_registers; i++) {
-#if FIRESTARTER_INTEGER
-        int data = Result(variation)->Data()->d[i];
-        code += Format("    data->d[%u] = %d;\r\n", i, data);
-#else
         float data = Result(variation)->Data()->d[i];
         code += Format("    data->d[%u] = %ff;\r\n", i, data);
-#endif
     }
     code += Format("    *(result->MinResult()) = %ff;\r\n", Result(variation)->MinResult());
     code += Format("} // LoadVariation%u\r\n", variation);
@@ -90,10 +85,6 @@ void FireStarterState::SaveState(std::string& code) const
 float FireStarterState::TestResult(void) const
 {
     // Get an accurate test result for the state.
-#if FIRESTARTER_INTEGER
-    // Punt until an integer target is implemented.
-    float testResult = 0.0f;
-#else
     const FireStarterInstructions* testInstructions = m_program.OptimizedInstructions();
     unsigned int instructions = m_program.m_settings.m_instructions;
     size_t dataSize = FireStarterData::DataSize(m_program.m_settings.m_registers);
@@ -118,7 +109,6 @@ float FireStarterState::TestResult(void) const
         }
     }
     free(workData);
-#endif
     return testResult;
 } // TestResult
 

@@ -5,7 +5,6 @@
 #define FIRESTARTER_SAMPLES         15
 #define FIRESTARTER_INSTRUCTIONS    32
 #define FIRESTARTER_REGISTERS       30
-#define FIRESTARTER_INTEGER         0
 #define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_MULTIPROCESS    1           // Use multi-processing to compile each generation.
 
