@@ -69,8 +69,10 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         if (memberAge > 1) {
             // Randomize a single register.
             evolutionScale = settings.m_scale * settings.m_startResult;
-            unsigned int d = RANDOMMOD(seed, registers);
-            data.d[d] += RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
+            unsigned int d1 = RANDOMMOD(seed, registers);
+            data.d[d1] += RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
+            unsigned int d2 = RANDOMMOD(seed, registers);
+            data.d[d2] += RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
             memberResult = settings.m_startResult;
             result = TestEvaluate(data, target, theta);
             evolved = true;
@@ -88,7 +90,6 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         float curResult = TestEvaluate(data, target, theta);
         if (curResult <= result) {
             result = curResult;
-//            evolutionScale = settings.m_scale * result;
             evolved = true;
         } else
             data.d[d] = oldData;

@@ -1,0 +1,1 @@
+Duration: 437.7  Seed=1  Test=0  Generation=33  Best Generations=195  Evolutions=6  Evolve Result=0.00000054  Optimize Result=0.00000054 *******
