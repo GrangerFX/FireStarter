@@ -82,20 +82,15 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < settings.m_iterations; p++) {
-        unsigned int d1 = RANDOMMOD(seed, registers);
-        unsigned int d2 = RANDOMMOD(seed, registers);
-        float oldData1 = data.d[d1];
-        float oldData2 = data.d[d2];
-        data.d[d1] = oldData1 + evolutionScale * RANDOMFACTOR(seed);
-        data.d[d2] = oldData2 + evolutionScale * RANDOMFACTOR(seed);
+        unsigned int d = RANDOMMOD(seed, registers);
+        float oldData = data.d[d];
+        data.d[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
         float curResult = TestEvaluate(data, target, theta);
         if (curResult <= result) {
             result = curResult;
             evolved = true;
-        } else {
-            data.d[d1] = oldData1;
-            data.d[d2] = oldData2;
-        }
+        } else
+            data.d[d] = oldData;
     }
 
     // If the result was better, save the results.
