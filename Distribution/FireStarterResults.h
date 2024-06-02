@@ -88,7 +88,7 @@ typedef struct FireStarterResult {
     inline void Init(const FireStarterSettings& settings, unsigned long long& seed, size_t registers, unsigned int age = 0)
     {
         FireStarterData* resultData = Data();
-        resultData->Init(seed, registers, settings.m_registers, settings.m_startResult * settings.m_scale);
+        resultData->Init(seed, registers, settings.m_registers, settings.m_startScale);
         m_resultMin = settings.m_startResult;
         m_resultAge = age;
     } // Init

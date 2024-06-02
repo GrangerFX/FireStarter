@@ -137,6 +137,7 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("optimize = %u", settings.m_optimize) + postfix + "\r\n";
     code += "\r\n";
     code += prefix + Format("scale = %ff", settings.m_scale) + postfix + "\r\n";
+    code += prefix + Format("startScale = %ff", settings.m_startScale) + postfix + "\r\n";
     code += prefix + Format("startResult = %ff", settings.m_startResult) + postfix + "\r\n";
 } // SettingsText
 
