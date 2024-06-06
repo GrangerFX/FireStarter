@@ -8,6 +8,7 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
+#include "SimpleTimer.h"
 
 // SerialThread by Mark Granger.
 // Contact: grangerfx@gmail.com
@@ -53,6 +54,39 @@
 // });
 
 #define HAS_DISPATCH_AFTER _HAS_CXX20
+
+static void parallel_for(size_t for_start, size_t for_end,
+    std::function<void(size_t start, size_t end)> functor,
+    bool parallel = true)
+{
+    size_t for_elements = for_end - for_start;
+    size_t for_threads = std::thread::hardware_concurrency();
+    for_threads = for_threads ? for_threads : 8;
+    for_threads = for_threads >= for_elements ? for_elements : for_threads;
+
+    if (parallel) {
+        // Multithread execution
+        std::vector<std::thread> my_threads(for_threads);
+        size_t start = for_start;
+        for (size_t i = 0; i < for_threads; ++i) {
+            size_t end = for_start + ((i + 1) * for_elements) / for_threads;
+            my_threads[i] = std::thread(functor, start, end);
+            start = end;
+        }
+
+        // Wait for the threads to finish their tasks
+        std::for_each(my_threads.begin(), my_threads.end(), std::mem_fn(&std::thread::join));
+    }
+    else {
+        // Single thread execution (for easy debugging)
+        size_t start = for_start;
+        for (size_t i = 0; i < for_threads; ++i) {
+            size_t end = for_start + ((i + 1) * for_elements) / for_threads;
+            functor(start, end);
+            start = end;
+        }
+    }
+} // parallel_for
 
 // A semaphore is needed when syncronizing work on a serialized thread.
 // Reference: https://stackoverflow.com/questions/4792449/c0x-has-no-semaphores-how-to-synchronize-threads
@@ -136,6 +170,7 @@ private:
     // Currently the work function has no parameters and no return value.
     typedef std::function<void(void)> SerialThreadWork;
 
+    std::vector<std::thread> m_parallelThreads;
     std::thread m_thread;
     std::mutex m_mutex;
     std::condition_variable m_cv;
@@ -409,6 +444,62 @@ public:
         WillQuit() = true;
     } // QuitThreads
 
+    inline size_t NumParallelThreads(size_t maxThreads = 0)
+    {
+        size_t hardwareThreads = std::thread::hardware_concurrency();
+        if (!hardwareThreads)
+            hardwareThreads = 8;
+        return maxThreads && (hardwareThreads > maxThreads) ? maxThreads : hardwareThreads;
+    } // NumParallelThreads
+
+    inline size_t InitParallelThreads(size_t maxThreads = 0)
+    {
+        if (m_parallelThreads.empty()) 
+             m_parallelThreads.resize(NumParallelThreads());
+        size_t hardwareThreads = m_parallelThreads.size();
+        return maxThreads && (hardwareThreads > maxThreads) ? maxThreads : hardwareThreads;
+    } // InitParalleThreads
+
+    inline void FinishParallelThreads(void)
+    {
+        DispatchSync([this] {
+            // Wait for the threads to finish their tasks
+            if (!m_parallelThreads.empty())
+                std::for_each(m_parallelThreads.begin(), m_parallelThreads.end(), std::mem_fn(&std::thread::join));
+        });
+    } // FinishParallelThreads
+
+    inline void ParallelFor(size_t for_start, size_t for_end,
+        std::function<void(size_t start, size_t end)> functor,
+        bool parallel = true)
+    {
+        if (parallel) {
+            // Multithread execution
+            DispatchSync([this, for_start, for_end, functor] {
+                size_t for_elements = for_end - for_start;
+                size_t for_threads = InitParallelThreads(for_elements);
+                size_t start = for_start;
+                for (size_t i = 0; i < for_threads; ++i) {
+                    size_t end = for_start + ((i + 1) * for_elements) / for_threads;
+                    m_parallelThreads[i] = std::thread(functor, start, end);
+                    start = end;
+                }
+                for (size_t i = 0; i < for_threads; ++i)
+                    m_parallelThreads[i].join();
+            });
+        } else {
+            // Single thread execution (for easy debugging)
+            size_t for_elements = for_end - for_start;
+            size_t for_threads = NumParallelThreads(for_elements);
+            size_t start = for_start;
+            for (size_t i = 0; i < for_threads; ++i) {
+                size_t end = for_start + ((i + 1) * for_elements) / for_threads;
+                functor(start, end);
+                start = end;
+            }
+        }
+    } // ParallelFor
+
     // Note: int is used instead of bool for correct type matching.
     inline SerialThread(const std::string& threadName = "SerialThread", int pollThread = false)
     {
@@ -420,6 +511,7 @@ public:
 
     inline ~SerialThread(void)
     {
+        FinishParallelThreads();
         TerminateThread();
     } // ~SerialThread
 }; // class SerialThread
