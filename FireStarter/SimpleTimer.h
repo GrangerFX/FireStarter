@@ -1,5 +1,6 @@
 #pragma once
 #include <time.h>
+#include <iomanip>
 
 class SimpleTimer {
 private:
@@ -59,7 +60,7 @@ public:
         return s_second;
     } // RunSecond
 
-    inline SimpleTimer(void)
+    inline SimpleTimer(bool start = false)
     {
         // Synchronize the start times of all timers by default.
         if (!s_second && !s_nanosecond) {
@@ -75,5 +76,7 @@ public:
         }
         m_second = s_second;
         m_nanosecond = s_nanosecond;
-    } // Start
+        if (start)
+            Start();
+    } // SimpleTimer
 }; // SimpleTimer
