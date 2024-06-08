@@ -19,17 +19,6 @@ inline float TestEvaluate(const FireStarterData& data, const float target[], con
     return result;
 } // TestEvaluate
 
-inline float TestPrecision(const FireStarterData& data, unsigned int variation, unsigned int precision)
-{
-    float result = 0.0f;
-    float precisionStep = (TARGET_MAX - TARGET_MIN) / (precision - 1);
-    for (int i = 0; i < precision; i++) {
-        float theta = TARGET_MIN + i * precisionStep;
-        result = fmaxf(fabsf(Evaluate(data, theta) - Target(theta, variation)), result);
-    }
-    return result;
-} // TestPrecision
-
 GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
 {
     // Determine the member to be optimized.
