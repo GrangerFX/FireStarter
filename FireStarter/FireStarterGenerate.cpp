@@ -63,11 +63,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     std::string generateCode;
     unsigned int tabs = 1;
 
-#if FIRESTARTER_OPTIMIZE_LEARN
-    code += "inline float Evaluate(FireStarterData& data, float n)\r\n";
-#else
     code += "inline float Evaluate(FireStarterData data, float n)\r\n";
-#endif
     code += "{\r\n";
 
     // Allocate the device memory needed to generate the evaluate code.
