@@ -1,7 +1,7 @@
 #include "FireStarterResults.h"
 #include "FireStarterTarget.h"
 
-#if 0
+#if 1
 // Test code to measure performance of shared memory vs global memory. Also compares performance with the actuall code.
 GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldResults, const unsigned int population, const unsigned int iterations, const unsigned int generation)
 {
@@ -16,15 +16,19 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
         instructions.SetRandom(i, threadSeed);
 
+    float evolveData[PROGRAM_INSTRUCTIONS];
+    GPU_SHARED float data[PROGRAM_INSTRUCTIONS * BLOCK_THREADS];
     unsigned int registers[PROGRAM_INSTRUCTIONS];
     for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-        registers[i] = instructions.Register(i) + thread * PROGRAM_INSTRUCTIONS;
+#if 1
+        registers[i] = instructions.Register(i) * BLOCK_THREADS + thread;
+#else
+        registers[i] = instructions.Register(i) + thread * BLOCK_THREADS;
+#endif
 
     for (unsigned int v = 0; v < PROGRAM_VARIATIONS; v++) {
-        float evolveData[PROGRAM_INSTRUCTIONS];
-        GPU_SHARED float data[PROGRAM_INSTRUCTIONS * BLOCK_THREADS];
         for (int i = 0; i < PROGRAM_INSTRUCTIONS; i++)
-            evolveData[i] = data[i + thread * PROGRAM_INSTRUCTIONS] = RANDOMFACTOR(threadSeed);
+            evolveData[i] = data[registers[i]] = RANDOMFACTOR(threadSeed);
 
         float maxResult = 0.0f;
         float minResult = 10000.0f;
@@ -35,38 +39,10 @@ GPU_GLOBAL void Evolve(FireStarterResults* newResults, FireStarterResults* oldRe
                 data[index++] = evolveData[i];
             for (int s = 0; s < SAMPLE_ITERATIONS; s++) {
                 float n = t;
-                n = data[registers[0]] *= n;
-                n = data[registers[1]] += n;
-                n = data[registers[2]] *= n;
-                n = data[registers[3]] += n;
-                n = data[registers[4]] *= n;
-                n = data[registers[5]] += n;
-                n = data[registers[6]] *= n;
-                n = data[registers[7]] += n;
-                n = data[registers[8]] *= n;
-                n = data[registers[9]] += n;
-                n = data[registers[10]] *= n;
-                n = data[registers[11]] += n;
-                n = data[registers[12]] *= n;
-                n = data[registers[13]] += n;
-                n = data[registers[14]] *= n;
-                n = data[registers[15]] += n;
-                n = data[registers[16]] *= n;
-                n = data[registers[17]] += n;
-                n = data[registers[18]] *= n;
-                n = data[registers[19]] += n;
-                n = data[registers[20]] *= n;
-                n = data[registers[21]] += n;
-                n = data[registers[22]] *= n;
-                n = data[registers[23]] += n;
-                n = data[registers[24]] *= n;
-                n = data[registers[25]] += n;
-                n = data[registers[26]] *= n;
-                n = data[registers[27]] += n;
-                n = data[registers[28]] *= n;
-                n = data[registers[29]] += n;
-                n = data[registers[30]] *= n;
-                n = data[registers[31]] += n;
+                for (int r = 0; r < PROGRAM_INSTRUCTIONS; r+=2) {
+                    n = data[registers[r]] *= n;
+                    n = data[registers[r + 1]] += n;
+                }
                 float result = fabsf(n);
                 minResult = fminf(minResult, result);
                 maxResult = fmaxf(maxResult, result);
