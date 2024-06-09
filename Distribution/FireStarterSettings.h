@@ -8,6 +8,8 @@
 #define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_MULTIPROCESS    1           // Use multi-processing to compile each generation.
 
+#define FIRESTARTER_OPTIMIZE_LEARN  1           // True to test learing optimizer code.
+
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008f  // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    0           // Output evolve debugging information.
 #define FIRESTARTER_EVOLVE_TEST     1           // Test evolution mode.
