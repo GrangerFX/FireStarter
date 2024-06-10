@@ -85,14 +85,45 @@ static void TestRandom(void)
     }
 } // TestRandom
 
+static void TestParallelFor(void)
+{
+    SimpleTimer timer(true);
+    const size_t memorySize = 4llu * 1024llu * 1024llu * 1024llu; // 4 GB
+    unsigned char* memory1 = (unsigned char*)calloc(1, memorySize);
+    unsigned char* memory2 = (unsigned char*)calloc(1, memorySize);
+    printf("Calloc: %lf\n", timer.Start()); // 0.815099
+
+    memcpy(memory2, memory1, memorySize);
+    printf("memcpy 0: %lf\n", timer.Start()); // 0.135675
+
+    parallel_for(0, memorySize, [memory1, memory2](size_t start, size_t end) {
+        memcpy(memory2 + start, memory1 + start, end - start);
+    }, false);
+    printf("memcpy 1: %lf\n", timer.Start()); // 0.140983
+
+    parallel_for(0, memorySize, [memory1, memory2](size_t start, size_t end) {
+        memcpy(memory1 + start, memory2 + start, end - start);
+    }, true);
+    printf("memcpy 2: %lf\n", timer.Start()); // 0.149266
+
+    free(memory1);
+    free(memory2);
+} // TestParalleFor
+
 FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
 {
+#if 0
+    TestRandom();
+#endif
+
+#if 0
+    TestParallelFor();
+#endif
+
+#if 1
 #if FIRESTARTER_MULTIPROCESS
     m_server = new FireStarterServer();
 #endif
-#if 0
-    TestRandom();
-#else
     ControlThread();
 #endif
 } // FireStarter

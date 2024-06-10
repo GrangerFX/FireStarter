@@ -10,12 +10,14 @@ private:
     long m_nanosecond;
 public:
 
-    inline void Start(void)
+    inline double Start(void)
     {
         timespec time;
         timespec_get(&time, TIME_UTC);
+        double duration = (double)(time.tv_sec - m_second) + (double)(time.tv_nsec - m_nanosecond) * 0.000000001;
         m_second = time.tv_sec;
         m_nanosecond = time.tv_nsec;
+        return duration;
     } // Start
 
     inline double Duration(void) const
