@@ -174,23 +174,39 @@ typedef struct FireStarterInstructions {
 
     inline void SetRandomOp(unsigned int index, unsigned long long& seed)
     {
+#if FIRESTARTER_MADD
+        i[index].op = index & 1 ? Operation_multiply : Operation_add;
+#else
         i[index].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
+#endif
     } // SetRandomOp
 
     inline void SetRandomOp(unsigned int index, unsigned long long& seed, unsigned int opcodes)
     {
+#if FIRESTARTER_MADD
+        i[index].op = index & 1 ? Operation_multiply : Operation_add;
+#else
         i[index].op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
+#endif
     } // SetRandomOp
 
     inline void SetRandom(unsigned int index, unsigned long long& seed, unsigned int registers, unsigned int opcodes)
     {
+#if FIRESTARTER_MADD
+        i[index].op = index & 1 ? Operation_multiply : Operation_add;
+#else
         i[index].op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
+#endif
         i[index].reg = RANDOMMOD(seed, registers);
     } // SetRandom
 
     inline void SetRandom(unsigned int index, unsigned long long& seed)
     {
+#if FIRESTARTER_MADD
+        i[index].op = index & 1 ? Operation_multiply : Operation_add;
+#else
         i[index].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
+#endif
         i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
     } // SetRandom
 
@@ -203,7 +219,11 @@ typedef struct FireStarterInstructions {
     inline void Randomize(unsigned long long& seed)
     {
         for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) {
+#if FIRESTARTER_MADD
+            i[index].op = index & 1 ? Operation_multiply : Operation_add;
+#else
             i[index].op = fireStarterPattern[RANDOMMOD(seed, FIRESTARTER_PATTERN_OPCODES)];
+#endif
             i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
         }
     } // Randomize
@@ -211,7 +231,11 @@ typedef struct FireStarterInstructions {
     inline void Randomize(unsigned long long& seed, unsigned int instructions, unsigned int registers, unsigned int opcodes)
     {
         for (unsigned int index = 0; index < instructions; index++) {
+#if FIRESTARTER_MADD
+            i[index].op = index & 1 ? Operation_multiply : Operation_add;
+#else
             i[index].op = fireStarterPattern[RANDOMMOD(seed, opcodes)];
+#endif
             i[index].reg = RANDOMMOD(seed, registers);
         }
     } // Randomize
