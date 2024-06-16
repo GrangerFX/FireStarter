@@ -128,7 +128,7 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
 
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long id, unsigned long long test)
 {
-    m_timer.StartDate();
+    m_timer.Start();
     m_program.InitProgram(settings);
 
     m_variationOrder.resize(settings.m_variations);

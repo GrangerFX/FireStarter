@@ -105,7 +105,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         curState.m_oldResult = curState.m_maxResult;
                         curState.m_evolveWeight = evolveWeight;
                         curState.InitGenerationSeed();
-                        curState.m_timer.StartDate();
+                        curState.m_timer.Start();
 
                         // Copy the program and result from the random index.
                         curState.m_program = allStates[evolveIndex].m_program;

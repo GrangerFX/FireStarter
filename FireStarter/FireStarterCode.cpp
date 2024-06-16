@@ -49,58 +49,20 @@ void FireStarterCode::ReplaceCode(std::string& code, const std::string& search, 
     }
 } // ReplaceCode
 
-bool FireStarterCode::FindCode(const std::string& code, const std::string startString, size_t& start, size_t& length)
-{
-    size_t startPos = code.find(startString);
-    if (startPos == std::string::npos)
-        return false;
-    size_t startStringLength = startString.length();
-    if (code[startPos + startStringLength] == '\r')
-        startStringLength++;
-    if (code[startPos + startStringLength] == '\n')
-        startStringLength++;
-    size_t endPos = code.find(END_CODE, startPos);
-    if (endPos != std::string::npos)
-        startPos += startStringLength;
-    else
-        endPos = startPos + startStringLength;
-    start = startPos;
-    length = endPos - startPos;
-    return true;
-} // FindCode
-
-void FireStarterCode::ExtractProgram(const std::string& code, std::string& extractCode, const std::string& startString)
-{
-    size_t startPos = code.find(startString);
-    if (startPos != std::string::npos) {
-        size_t startStringLength = startString.length();
-        if (code[startPos + startStringLength] == '\r')
-            startStringLength++;
-        if (code[startPos + startStringLength] == '\n')
-            startStringLength++;
-        size_t endPos = code.find(END_CODE, startPos);
-        if (endPos != std::string::npos)
-            startPos += startStringLength;
-        else
-            endPos = startPos + startStringLength;
-        extractCode = code.substr(startPos, endPos - startPos);
-    }
-} // ExtractProgram
-
 void FireStarterCode::UpdateProgram(std::string& code, const std::string& replacementCode, const std::string& startString)
 {
     size_t startPos = code.find(startString);
-    if (startPos != std::string::npos) {
+    while (startPos != std::string::npos) {
+        size_t endPos = code.find(END_CODE, startPos);
+        if (endPos == std::string::npos)
+            break;
         size_t startStringLength = startString.length();
         if (code[startPos + startStringLength] == '\r')
             startStringLength++;
         if (code[startPos + startStringLength] == '\n')
             startStringLength++;
-        size_t endPos = code.find(END_CODE, startPos);
-        if (endPos != std::string::npos)
-            startPos += startStringLength;
-        else
-            endPos = startPos + startStringLength;
+        startPos += startStringLength;
         code.replace(startPos, endPos - startPos, replacementCode);
+        startPos = code.find(startString, endPos);
     }
 } // UpdateProgram

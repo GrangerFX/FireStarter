@@ -3,6 +3,9 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
+// VARIATIONS //
+// END //
+
 #if 1
 typedef struct FireStarterSharedData {
     float d[FIRESTARTER_REGISTERS * WARP_THREADS];
@@ -17,69 +20,23 @@ typedef struct FireStarterSharedData {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
             d[i * WARP_THREADS + threadIdx.x] = data.d[i];
     } // operator=
-
-    inline void operator=(const FireStarterData* data)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i * WARP_THREADS + threadIdx.x] = data->d[i];
-    } // operator=
-
-    inline void Init(unsigned long long& seed, size_t registers, size_t maxRegisters, float startScale)
-    {
-        for (size_t i = 0; i < registers; i++)
-            d[i * WARP_THREADS + threadIdx.x] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
-        for (size_t i = registers; i < maxRegisters; i++)
-            d[i * WARP_THREADS + threadIdx.x] = 0.0f;                            // Clear the unused registers.
-    } // Init
 } FireStarterSharedData;
 
-// SHARED_EVALUATE //
-inline float SharedEvaluate(const FireStarterData& startData, float n)
+inline float Evaluate(const FireStarterData& testData, float n)
 {
     GPU_SHARED FireStarterSharedData data;
-    data = startData;
-    n += data[0];
-    n = data[1] *= n;
-    n *= data[2];
-    n = data[3] *= n;
-    n *= data[4];
-    n = data[5] += n;
-    n = data[6] *= n;
-    n = data[7] += n;
-    n += data[8];
-    n = data[9] *= n;
-    n = data[10] += n;
-    n = data[1] *= n;
-    n *= data[11];
-    n *= data[12];
-    n *= data[13];
-    n = data[14] *= n;
-    n *= data[5];
-    n *= data[15];
-    n += data[16];
-    n = data[6] *= n;
-    n *= data[17];
-    n *= data[9];
-    n *= data[18];
-    n *= data[1];
-    n *= data[14];
-    n *= data[19];
-    n *= data[10];
-    n *= data[3];
-    n *= data[6];
-    n *= data[20];
-    n *= data[7];
-    n += data[21];
+    data = testData; // Set the data for the current thread.
+// EVALUATE //
+// END //
     return isfinite(n) ? n : 0.0f;
 } // SharedEvaluate
-// END //
 
 //inline float TestSharedEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
 inline float TestEvaluate(const FireStarterData& data, const float target[], const float theta[])
 {
     float result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-        result = fmaxf(fabsf(SharedEvaluate(data, theta[i]) - target[i]), result);
+        result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
     return result;
 } // TestEvaluate
 
@@ -184,12 +141,12 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
 #else
 
-// EVALUATE //
 inline float Evaluate(FireStarterData data, float n)
 {
+// EVALUATE //
+// END //
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
-// END //
 
 //inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
 inline float TestEvaluate(const FireStarterData& data, const float target[], const float theta[])

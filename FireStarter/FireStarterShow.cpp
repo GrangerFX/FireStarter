@@ -193,8 +193,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if ((settings.m_tests > 0) || test)
             statusString += Format("  Test=%2u", test);
         if (state.PassMode() == FIRESTARTER_EVOLVE) {
-            statusString += Format("  Index=%4llu  CopyIndex=%4llu  Id=%4llu", state.m_index, state.m_copy_index, state.m_id);
-            statusString += Format("  Generation=%3u  Generations=%3u  Age=%3u  Evolution=%2u  Weight=%.8f", generation, state.m_generation, state.m_age, state.m_evolution, state.m_evolveWeight);
+            statusString += Format("  Index=%4llu  Id=%4llu", state.m_index, state.m_id);
+            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Weight=%.8f", generation, state.m_age, state.m_evolution, state.m_evolveWeight);
 
             std::string resultString;
             if (state.m_maxResult >= state.m_oldResult)
@@ -222,9 +222,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         else
             statusString += Format("  BestAge=%u", bestState.m_age);
 
-        // Include the time when not doing tests as it prevents doing diffs to compare the results.
-//        if (!settings.m_tests)
-            statusString += Format("  Time=%.1f Seconds  Run Time=%.1f Seconds", generationTime, runTime);
+        // Comment out this line when doing diffs to compare the results.
+        statusString += Format("  Time=%.1f Seconds  Run Time=%.1f Seconds", generationTime, runTime);
     }
 
     // Update the log file.

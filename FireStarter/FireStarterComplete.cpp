@@ -21,15 +21,18 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         FireStarterCode::LoadCode("FireOptimizer.cu", optimizeCode);
     if (!optimizeCode.empty()) {
         // Generate the evaluate function
-        std::string evaluateCode;
-        bestState.SaveStats(evaluateCode);
+        std::string variationsCode;
+        bestState.SaveStats(variationsCode);
         unsigned int variations = bestState.Settings().m_variations;
         for (unsigned int i = 0; i < variations; i++)
-            bestState.SaveVariation(i, evaluateCode);
+            bestState.SaveVariation(i, variationsCode);
+
+        std::string evaluateCode;
         m_generate->GenerateEvaluate(bestState, evaluateCode);
 
         // Create the units code by replacing the evaluate and optimize sections of the optimize code.
         std::string bestCode = optimizeCode;
+        FireStarterCode::UpdateProgram(bestCode, variationsCode, VARIATIONS_CODE);
         FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
         std::string saveFile = "FireStarter_BestCode.cu";
         FireStarterCode::SaveCode(saveFile, bestCode);
@@ -110,7 +113,7 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, Fire
         else
             m_generationTime = (m_generationTime * m_resultsCount + (duration - m_resultsTime)) / (m_resultsCount + 1);
     } else
-        m_generationTime = state.m_timer.Start();
+        m_generationTime = state.m_timer.Duration();
     m_resultsTime = duration;
     m_resultsCount++;
 
@@ -161,7 +164,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 
             // Update the render status after every pass.
             CompleteStatus(oldState, newState);
-            oldState.m_timer.StartDate();
+            oldState.m_timer.Start();
 
             // Has the completion condition been met?
             if (newState.PassMode() == FIRESTARTER_OPTIMIZE)

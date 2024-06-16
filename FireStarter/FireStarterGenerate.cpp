@@ -63,9 +63,6 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     std::string generateCode;
     unsigned int tabs = 1;
 
-    code += "inline float Evaluate(FireStarterData data, float n)\r\n";
-    code += "{\r\n";
-
     // Allocate the device memory needed to generate the evaluate code.
     if (generateGPU) {
         // Generate the evaluate function via the GPU (dynamic code generation).
@@ -123,8 +120,6 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     }
 
     code += generateCode;
-    code += "    return isfinite(n) ? n : 0.0f;\r\n";
-    code += "} // Evaluate\r\n";
 } // GenerateEvaluate
 
 void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode)
