@@ -2,8 +2,22 @@
 #include "FireStarterSettings.h"
 #include "HashRandom.h"
 
+#define FIRESTARTER_DATA_OPERATOR 1
+
 typedef struct FireStarterData {
     float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
+
+#if FIRESTARTER_DATA_OPERATOR
+    inline float& operator[](unsigned int i)
+    {
+        return d[i];
+    } // operator[]
+
+    inline float operator[](unsigned int i) const
+    {
+        return d[i];
+    } // operator[]
+#endif
 
     static inline size_t DataSize(size_t registers)
     {
