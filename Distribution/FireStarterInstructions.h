@@ -54,7 +54,6 @@ struct FireStarterInstruction {
         GenerateTabs(buffer, size, length, tabs);
 
         // Convert the instructions.
-#if FIRESTARTER_DATA_OPERATOR
         switch (op) {
         case Operation_multiply:
             if (instructionLast)
@@ -70,23 +69,6 @@ struct FireStarterInstruction {
                 anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
             break;
         }
-#else
-        switch (op) {
-            case Operation_multiply:
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n *= data.d[%u];\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = data.d[%u] *= n;\r\n", reg);
-                break;
-
-            case Operation_add:
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n += data.d[%u];\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = data.d[%u] += n;\r\n", reg);
-                break;
-        }
-#endif
     } // GenerateEvaluate
 
     inline void GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int r, float data, bool instructionFirst, bool instructionLast) const
