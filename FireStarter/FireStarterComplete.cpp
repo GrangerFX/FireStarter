@@ -31,7 +31,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         // Create the units code by replacing the evaluate and optimize sections of the optimize code.
         std::string bestCode = optimizeCode;
         FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
-        std::string saveFile = "FireStarter_BestCode.h";
+        std::string saveFile = "FireStarter_BestCode.cu";
         FireStarterCode::SaveCode(saveFile, bestCode);
         if (bestState.Settings().m_tests) {
             std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
@@ -96,7 +96,7 @@ bool FireStarterComplete::DisplayResults(FireStarterState& bestState, const Fire
      return update;
 } // DisplayResults
 
-void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation)
+void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, FireStarterState& state, unsigned long long generation)
 {
     const FireStarterSettings& settings = state.Settings();
     double duration = SimpleTimer::RunDuration();
@@ -110,7 +110,7 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
         else
             m_generationTime = (m_generationTime * m_resultsCount + (duration - m_resultsTime)) / (m_resultsCount + 1);
     } else
-        m_generationTime = state.m_timer.Duration();
+        m_generationTime = state.m_timer.Start();
     m_resultsTime = duration;
     m_resultsCount++;
 

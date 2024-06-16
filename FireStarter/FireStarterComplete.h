@@ -24,7 +24,7 @@ private:
 
 public:
 	bool DisplayResults(FireStarterState& bestState, const FireStarterState& stat);
-	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation = 0);
+	void CompleteStatus(const FireStarterState& bestState, FireStarterState& state, unsigned long long generation = 0);
 	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
 	bool CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync = true);
 	bool CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);

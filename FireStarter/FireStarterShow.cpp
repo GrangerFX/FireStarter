@@ -223,7 +223,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Include the time when not doing tests as it prevents doing diffs to compare the results.
-        if (!settings.m_tests)
+//        if (!settings.m_tests)
             statusString += Format("  Time=%.1f Seconds  Run Time=%.1f Seconds", generationTime, runTime);
     }
 
