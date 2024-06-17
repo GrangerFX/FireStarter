@@ -15,30 +15,40 @@ typedef struct FireStarterData {
         return d[i];
     } // operator[]
 
-    static inline size_t DataSize(size_t registers)
+    static inline size_t DataSize(size_t registers = FIRESTARTER_REGISTERS)
     {
         return sizeof(float) * registers;
     } // DataSize
 
-    inline void Copy(const FireStarterData& data, size_t registers)
+    inline void Copy(const FireStarterData& data, unsigned int registers = FIRESTARTER_REGISTERS)
     {
         for (unsigned int i = 0; i < registers; i++)
-            d[i] = data.d[i];
+            d[i] = data[i];
     } // Copy
 
-    inline void Copy(const FireStarterData* data, size_t registers)
+    inline void Copy(const FireStarterData* data, unsigned int registers = FIRESTARTER_REGISTERS)
     {
         for (unsigned int i = 0; i < registers; i++)
-            d[i] = data->d[i];
+            d[i] = (*data)[i];
     } // Copy
 
-    inline void Init(size_t registers)
+    inline void operator=(const FireStarterData& data)
+    {
+        Copy(data);
+    } // operator=
+
+    inline void operator=(const FireStarterData* data)
+    {
+        Copy(data);
+    } // operator=
+
+    inline void Init(size_t registers = FIRESTARTER_REGISTERS)
     {
         for (unsigned int i = 0; i < registers; i++)
             d[i] = 0.0f;
     } // Init
 
-    inline void Init(unsigned long long& seed, size_t registers, size_t maxRegisters, float startScale)
+    inline void Init(unsigned long long& seed, float startScale, size_t registers = FIRESTARTER_REGISTERS, size_t maxRegisters = FIRESTARTER_REGISTERS)
     {
         for (size_t i = 0; i < registers; i++)
             d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
@@ -98,7 +108,7 @@ typedef struct FireStarterResult {
     inline void Init(const FireStarterSettings& settings, unsigned long long& seed, size_t registers, unsigned int age = 0)
     {
         FireStarterData* resultData = Data();
-        resultData->Init(seed, registers, settings.m_registers, settings.m_startScale);
+        resultData->Init(seed, settings.m_startScale, registers, settings.m_registers);
         m_resultMin = settings.m_startResult;
         m_resultAge = age;
     } // Init
