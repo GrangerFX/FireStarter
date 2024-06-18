@@ -111,9 +111,22 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
             &arr[0],                                            // arguments
             0));
 
+#if 0
         // Synchronize all GPU threads and results.
         context->Synchronize();
         optimizationPass++;
+#else
+        // Note: DEBUG!
+        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
+        context->Synchronize();
+        for (unsigned int i = 0; i < settings.m_population; i++) {
+            FireStarterResult* theResult = m_hostPopulation->Result(settings, i, variation);
+            if (theResult->m_resultAge > 32) {
+                int foo = 1;
+            }
+        }
+        optimizationPass++;
+#endif
     }
 
     // Single GPUs have their data syncronized with the host here.

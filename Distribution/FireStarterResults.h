@@ -112,41 +112,35 @@ typedef struct FireStarterResult {
 
     inline void Init(const FireStarterSettings& settings, unsigned int age = 0)
     {
-        FireStarterData* resultData = Data();
-        resultData->Init(settings.m_registers);
+        m_data.Init(settings.m_registers);
         m_resultMin = settings.m_startResult;
         m_resultAge = age;
     } // Init
 
     inline void Init(const FireStarterSettings& settings, unsigned long long& seed, size_t registers, unsigned int age = 0)
     {
-        FireStarterData* resultData = Data();
-        resultData->Init(seed, settings.m_startScale, registers, settings.m_registers);
+        m_data.Init(seed, settings.m_startScale, registers, settings.m_registers);
         m_resultMin = settings.m_startResult;
         m_resultAge = age;
     } // Init
 
     inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData& data, unsigned int age = 0)
     {
-        FireStarterData* resultData = Data();
-        for (size_t i = 0; i < settings.m_registers; i++)
-            resultData->d[i] = data.d[i];
+        m_data.Copy(data, settings.m_registers);
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
 
     inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData* data, unsigned int age = 0)
     {
-        FireStarterData* resultData = Data();
-        resultData->Copy(data, settings.m_registers);
+        m_data.Copy(data, settings.m_registers);
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
 
     inline void Init(const FireStarterSettings& settings, const FireStarterResult* initResult, unsigned int age = 0)
     {
-        FireStarterData* resultData = Data();
-        resultData->Copy(initResult->Data(), settings.m_registers);
+        m_data.Copy(initResult->Data(), settings.m_registers);
         m_resultMin = initResult->MinResult();
         m_resultAge = age;
     } // Init
