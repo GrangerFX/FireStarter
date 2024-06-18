@@ -55,6 +55,19 @@ typedef struct FireStarterData {
         for (size_t i = registers; i < maxRegisters; i++)
             d[i] = 0.0f;                            // Clear the unused registers.
     } // Init
+
+#if 0
+    inline FireStarterData(const struct FireStarterData& data)
+    {
+        Copy(data);
+    } // FireStarterData
+#endif
+
+    inline FireStarterData(const struct FireStarterData* data = nullptr)
+    {
+        if (data)
+            Copy(data);
+    } // FireStarterData
 } FireStarterData;
 
 typedef struct FireStarterResult {

@@ -20,9 +20,9 @@ typedef struct FireStarterSharedData {
             d[i * WARP_THREADS + threadIdx.x] = data[i];
     } // operator=
 
-    inline void Copy(const FireStarterData& data, unsigned int registers)
+    inline void Copy(const FireStarterData& data)
     {
-        for (unsigned int i = 0; i < registers; i++)
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
             d[i * WARP_THREADS + threadIdx.x] = data[i];
     } // Copy
 } FireStarterSharedData;
@@ -34,7 +34,7 @@ inline float Evaluate(const FireStarterData& testData, float n)
     GPU_SHARED FireStarterSharedData data;
     data = testData;
 //    FireStarterData data;
-//    data.Copy(testData, FIRESTARTER_REGISTERS); // Set the data for the current thread.
+//    data.Copy(testData); // Set the data for the current thread.
 // EVALUATE //
 // END //
     return isfinite(n) ? n : 0.0f;
@@ -42,17 +42,70 @@ inline float Evaluate(const FireStarterData& testData, float n)
 
 #else
 
+#if 1
 inline float Evaluate(const FireStarterData& testData, float n)
 {
-//    FireStarterData data(testData);
-    FireStarterData data;
-    data.Copy(testData);
+    float n1 = n;
+    float n2 = n;
+    FireStarterData data1;
+    FireStarterData data2;
+    {
+        FireStarterData data;// (testData);
+        data.Copy(testData);
+        n = n1;
 // EVALUATE //
 // END //
+        n1 = n;
+        data1.Copy(data);
+    }
+    {
+        FireStarterData data;
+        data.Copy(testData);
+        n = n2;
+// EVALUATE //
+// END //
+        n2 = n;
+        data2.Copy(data);
+    }
+    if (n1 != n2) {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++) {
+            if (data1[i] != data2[i])
+                return -123456.78;
+        }
+        return 123456.78f;
+    }
+    if (n == 123456.78f)
+        return 123456.0f;
+    if (n == -123456.78f)
+        return -123456.0f;
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 
-#endif
+//inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
+inline float TestEvaluate(const FireStarterData& data, const float target[], const float theta[])
+{
+    float result = 0.0f;
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+        float n = Evaluate(data, theta[i]);
+        if ((n == 123456.78f) || (n == -123456.78f))
+            return n;
+
+        result = fmaxf(fabsf(n - target[i]), result);
+    }
+    return result;
+} // TestEvaluate
+#else
+inline float Evaluate(const FireStarterData& testData, float n)
+{
+    FireStarterData data(testData);
+// EVALUATE //
+// END //
+    if ((n == 123456.78f) || (n == -123456.78f))
+        return 123456.0f;
+    if (n == -123456.78f)
+        return -123456.0f;
+    return isfinite(n) ? n : 0.0f;
+} // Evaluate
 
 //inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
 inline float TestEvaluate(const FireStarterData& data, const float target[], const float theta[])
@@ -62,6 +115,9 @@ inline float TestEvaluate(const FireStarterData& data, const float target[], con
         result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
     return result;
 } // TestEvaluate
+#endif
+
+#endif
 
 GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
 {
@@ -85,7 +141,6 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     unsigned int memberAge;
     float result, memberResult;
     float evolutionScale;
-    bool evolved = false;
 
     // The first generation is initalized with random numbers.
     if (!optimizationPass) {
@@ -94,7 +149,6 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         memberAge = 0;
         memberResult = settings.m_startResult;
         result = TestEvaluate(data, target, theta);
-        evolved = true;
     } else {
         // Later generations randomize a single register if they were copied.
         data = *oldResults->Data(settings, member, v);
@@ -106,28 +160,32 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             data[d] += RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
             memberResult = settings.m_startResult;
             result = TestEvaluate(data, target, theta);
-            evolved = true;
         } else {
             result = memberResult = oldResults->MinResult(settings, member, v);
             evolutionScale = settings.m_scale * memberResult;
+            result = TestEvaluate(data, target, theta);
         }
     }
 
     // Iterate to evolve the registers.
-    for (unsigned int p = 0; p < settings.m_iterations; p++) {
-        unsigned int d = RANDOMMOD(seed, registers);
-        float oldData = data[d];
-        data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
-        float curResult = TestEvaluate(data, target, theta);
-        if (curResult <= result) {
-            result = curResult;
-            evolved = true;
-        } else
-            data[d] = oldData;
-    }
+    if ((result != 123456.78f) && (result != -123456.78f)) // Note: DEBUG!
+        for (unsigned int p = 0; p < settings.m_iterations; p++) {
+            unsigned int d = RANDOMMOD(seed, registers);
+            float oldData = data[d];
+            data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
+            float curResult = TestEvaluate(data, target, theta);
+            if ((curResult == 123456.78f) || (curResult == -123456.78f)) { // Note: DEBUG!
+                result = curResult;
+                break;
+            }
+            if (curResult <= result)
+                result = curResult;
+            else
+                data[d] = oldData;
+        }
 
     // If the result was better, save the results.
-    if (!optimizationPass || (result < memberResult))
+    if (!optimizationPass || (result < memberResult) || (result == 123.45678f) || (result == -123.45678f)) // Note: DEBUG!
         newResults->InitMemberResult(settings, member, v, 0, result, data);
     else {
         // If the result was worse, copy a result from among the previous generation's results.

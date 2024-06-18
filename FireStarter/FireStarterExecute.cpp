@@ -114,6 +114,19 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         // Synchronize all GPU threads and results.
         context->Synchronize();
         optimizationPass++;
+
+        // Note: DEBUG!
+        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
+        context->Synchronize();
+        for (unsigned int i = 0; i < settings.m_population; i++) {
+            FireStarterResult* theResult = m_hostPopulation->Result(settings, i, variation);
+            if (theResult->m_resultMin == 123456.78f) {
+                int foo = 1;
+            }
+            if (theResult->m_resultMin == -123456.78f) {
+                int bar = 1;
+            }
+        }
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -128,11 +141,9 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    FireStarterResult* theResult = m_hostPopulation->Result(settings, 0, variation);
     float minResult = *m_hostPopulation->MinResult(settings, 0, variation);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < settings.m_population; i++) {
-        theResult = m_hostPopulation->Result(settings, 0, variation);
         float curResult = *m_hostPopulation->MinResult(settings, i, variation);
         if (curResult <= minResult) {
             minResult = curResult;
