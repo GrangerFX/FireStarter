@@ -76,11 +76,11 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     // Launch the calculation kernel
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
-//#if FIRESTARTER_OPTIMIZE_SHARED
+#if FIRESTARTER_OPTIMIZE_SHARED
     unsigned int threadsPerBlock = WARP_THREADS;   // Same as the threads per CUDA core half warp.
-//#else
-//    unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
-//#endif
+#else
+    unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
+#endif
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
     unsigned long long passes = settings.m_passes;
@@ -114,19 +114,6 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         // Synchronize all GPU threads and results.
         context->Synchronize();
         optimizationPass++;
-
-        // Note: DEBUG!
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
-        context->Synchronize();
-        for (unsigned int i = 0; i < settings.m_population; i++) {
-            FireStarterResult* theResult = m_hostPopulation->Result(settings, i, variation);
-            if (theResult->m_resultMin == 123456.78f) {
-                int foo = 1;
-            }
-            if (theResult->m_resultMin == -123456.78f) {
-                int bar = 1;
-            }
-        }
     }
 
     // Single GPUs have their data syncronized with the host here.
