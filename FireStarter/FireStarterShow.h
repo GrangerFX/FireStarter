@@ -2,7 +2,6 @@
 
 #include "FireStarterWindow.h"
 #include "FireStarterGenerate.h"
-#include "SerialOutput.h"
 #include "CUDAThread.h"
 
 class FireStarterShow : public CUDAThread {

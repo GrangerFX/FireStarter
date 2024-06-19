@@ -137,6 +137,7 @@
     <ClInclude Include="Distribution\FireStarter_LoadState.h" />
     <ClInclude Include="Distribution\FireStarter_Solution.h" />
     <ClInclude Include="Distribution\cnprintf.h" />
+    <ClInclude Include="FireStarter\Checksum.h" />
     <ClInclude Include="FireStarter\CUDACompile.h" />
     <ClInclude Include="FireStarter\CUDAContext.h" />
     <ClInclude Include="FireStarter\CUDAErrors.h" />

@@ -160,81 +160,34 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
 #else
 
-//inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
-inline bool Experiment(FireStarterData& testData)
-{
-    FireStarterData data, data1;
-    float n;
-    data = testData;
-    n = 1.0f;
-    // EVALUATE //
-    // END //
-    data1.Copy(data);
-
-    data.Copy(testData);
-    n = 1.0f;
-    // EVALUATE //
-    // END //
-
-    bool result = false;
-    for (int i = 0; i < FIRESTARTER_REGISTERS; i++) {
-        if (data1[i] != data[i]) {
-            data1[i] -= data[i];
-            result = true;
-        } else
-            data1[i] = 0.0f;
-    }
-    if (result) {
-        testData.Copy(data1);
-        return true;
-    }
-    return false;
-} // Experiment
-
-inline void Evaluate1(const FireStarterData& testData, float &n)
+#if 1
+// Old way to copy data.
+inline float Evaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data(testData);
     // EVALUATE //
     // END //
-    n = isfinite(n) ? n : 0.0f;
-} // Evaluate1
-
-inline void Evaluate2(const FireStarterData& testData, float& n)
+    return isfinite(n) ? n : 0.0f;
+} // Evaluate
+#else
+// New way to copy data.
+inline float Evaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data;
     data.Copy(testData);
     // EVALUATE //
     // END //
-    n = isfinite(n) ? n : 0.0f;
-} // Evaluate2
-
-inline int TestEvaluate(const FireStarterData& data, const float target[], const float theta[], float &result)
-{
-    FireStarterData data1(data);
-    FireStarterData data2;
-    data2.Copy(data);
-    int found = 0;
-    result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-        float n1 = theta[i];
-        float n2 = theta[i];
-
-//        Evaluate1(data1, n1);
-//        Evaluate2(data2, n2);
-        Evaluate1(data1, n1);
-        Evaluate2(data2, n2);
-        if (n1 != n2)
-            found = i + 1;
-        result = fmaxf(fabsf(n1 - target[i]), result);
-#if 0
-        if (found) {
-            for (int i = 0; i < FIRESTARTER_REGISTERS; i++)
-                data[i] = data2[i] - data1[i];
-            break;
-        }
+    return isfinite(n) ? n : 0.0f;
+} // Evaluate
 #endif
-    }
-    return found;
+
+//inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
+inline float TestEvaluate(const FireStarterData& data, const float target[], const float theta[])
+{
+    float result = 0.0f;
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+        result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
+    return result;
 } // TestEvaluate
 
 GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
@@ -259,15 +212,14 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     unsigned int memberAge;
     float result, memberResult;
     float evolutionScale;
-    int found = 0;
 
     // The first generation is initalized with random numbers.
     if (!optimizationPass) {
         evolutionScale = settings.m_startScale;
         data.Init(seed, evolutionScale, registers, settings.m_registers);
         memberAge = 0;
-        result = memberResult = settings.m_startResult;
-        found = TestEvaluate(data, target, theta, result);
+        memberResult = settings.m_startResult;
+        result = TestEvaluate(data, target, theta);
     } else {
         // Later generations randomize a single register if they were copied.
         data.Copy(oldResults->Data(settings, member, v));
@@ -277,34 +229,30 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             evolutionScale = settings.m_startScale;
             unsigned int d = RANDOMMOD(seed, registers);
             data[d] += RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
-            result = memberResult = settings.m_startResult;
-            found = TestEvaluate(data, target, theta, result);
+            memberResult = settings.m_startResult;
+            result = TestEvaluate(data, target, theta);
         } else {
             result = memberResult = oldResults->MinResult(settings, member, v);
             evolutionScale = settings.m_scale * memberResult;
+            result = TestEvaluate(data, target, theta);
         }
     }
 
     // Iterate to evolve the registers.
-    unsigned int p = 0;
-    while (!found && (p < settings.m_iterations)) {
+    for (unsigned int p = 0; p < settings.m_iterations; p++) {
         unsigned int d = RANDOMMOD(seed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
-        float curResult;
-        found = TestEvaluate(data, target, theta, curResult);
-        if (found)
-            break;
+        float curResult = TestEvaluate(data, target, theta);
         if (curResult <= result)
             result = curResult;
         else
             data[d] = oldData;
-        p++;
     }
 
     // If the result was better, save the results.
-    if (found || !optimizationPass || (result < memberResult))
-        newResults->InitMemberResult(settings, member, v, found ? (unsigned int)(found + 1024) : 0, result, data);
+    if (!optimizationPass || (result < memberResult))
+        newResults->InitMemberResult(settings, member, v, 0, result, data);
     else {
         // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
