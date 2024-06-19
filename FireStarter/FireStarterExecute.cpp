@@ -114,21 +114,19 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
             &arr[0],                                            // arguments
             0));
 
-#if 1
+
         // Synchronize all GPU threads and results.
         context->Synchronize();
         optimizationPass++;
-#else
+#if 1
         // Note: DEBUG!
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
-        context->Synchronize();
-
-        // Note: DEBUG!
-        uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
-        std::string cheksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex++, checksum);
-        FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", cheksumString);
-
-        optimizationPass++;
+        if (checksumIndex == 9) {
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
+            context->Synchronize();
+            uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
+            std::string cheksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
+            FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", cheksumString);
+        }
 #endif
     }
 
