@@ -208,21 +208,21 @@ inline void Evaluate2(const FireStarterData& testData, float& n)
     n = isfinite(n) ? n : 0.0f;
 } // Evaluate2
 
-//inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
-inline int TestEvaluate(FireStarterData& data, const float target[], const float theta[], float &result)
+inline int TestEvaluate(const FireStarterData& data, const float target[], const float theta[], float &result)
 {
+    FireStarterData data1(data);
+    FireStarterData data2;
+    data2.Copy(data);
     int found = 0;
     result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-//        FireStarterData data1(data);
-//        FireStarterData data2(data);
         float n1 = theta[i];
         float n2 = theta[i];
 
 //        Evaluate1(data1, n1);
 //        Evaluate2(data2, n2);
-        Evaluate1(data, n1);
-        Evaluate2(data, n2);
+        Evaluate1(data1, n1);
+        Evaluate2(data2, n2);
         if (n1 != n2)
             found = i + 1;
         result = fmaxf(fabsf(n1 - target[i]), result);
