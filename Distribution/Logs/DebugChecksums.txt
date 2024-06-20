@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: C98820888F
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: D24C60C39EE745E7
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 501F30636B6CD7BD
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: 8F46D66262788227
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED5E7566
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 5D703C440230C40E
     Member:   79  Register:  0  Value: 0.224694
     Member:   79  Register:  1  Value: -1.440178
     Member:   79  Register:  2  Value: 1.531817
@@ -24,7 +24,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:   79  Register: 12  Value: -0.315286
     Member:   79  Register: 13  Value: -0.939661
     Member:   79  Register: 14  Value: -1.241674
-    Member:   79  Register: 15  Value: -0.943389
+    Member:   79  Register: 15  Value: -1.778285
     Member:   79  Register: 16  Value: -1.278995
     Member:   79  Register: 17  Value: 0.484758
     Member:   79  Register: 18  Value: 0.324765
