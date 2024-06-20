@@ -125,17 +125,17 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 #if 1
         // Note: DEBUG!
         if ((checksumIndex == 9) && (p == 0)) {
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, oldResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
             context->Synchronize();
 
             uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
             std::string checksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
 
-            for (unsigned int i = 0; i < 500; i++) {
-                FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
-                for (unsigned int j = 0; j < settings.m_registers; j++)
-                    checksumString += Format("    Member: %4d  Register: %2d  Value: %f\n", i, j, result->Data()->d[j]);
-            }
+            unsigned int i = 79;
+            FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
+            for (unsigned int j = 0; j < settings.m_registers; j++)
+                checksumString += Format("    Member: %4d  Register: %2d  Value: %f\n", i, j, result->Data()->d[j]);
+
             checksumString += state.m_evaluateCode;
             FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", checksumString);
             std::terminate();
