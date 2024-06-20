@@ -78,7 +78,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     // Launch the calculation kernel
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
-#if FIRESTARTER_OPTIMIZE_SHARED
+#if 1 || FIRESTARTER_OPTIMIZE_SHARED
     unsigned int threadsPerBlock = WARP_THREADS;   // Same as the threads per CUDA core half warp.
 #else
     unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
