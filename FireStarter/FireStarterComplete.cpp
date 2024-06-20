@@ -27,13 +27,10 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         for (unsigned int i = 0; i < variations; i++)
             bestState.SaveVariation(i, variationsCode);
 
-        std::string evaluateCode;
-        m_generate->GenerateEvaluate(bestState, evaluateCode);
-
         // Create the units code by replacing the evaluate and optimize sections of the optimize code.
         std::string bestCode = optimizeCode;
         FireStarterCode::UpdateProgram(bestCode, variationsCode, VARIATIONS_CODE);
-        FireStarterCode::UpdateProgram(bestCode, evaluateCode, EVALUATE_CODE);
+        FireStarterCode::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
         std::string saveFile = "FireStarter_BestCode.cu";
         FireStarterCode::SaveCode(saveFile, bestCode);
         if (bestState.Settings().m_tests) {

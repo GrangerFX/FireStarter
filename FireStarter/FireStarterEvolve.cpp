@@ -7,6 +7,7 @@ void FireStarterEvolve::GenerateCode(FireStarterJob* job)
     // Generate the evaluate code
     std::string evaluateCode;
     m_evolveGenerate->GenerateEvaluate(job->m_state, evaluateCode);
+    job->m_state.m_evaluateCode = evaluateCode;
 
     // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     CUDACompile::CompileOptions(job->m_options);

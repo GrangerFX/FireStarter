@@ -35,6 +35,7 @@ private:
 
 public:
     FireStarterProgram m_program;
+    std::string m_evaluateCode;
     FireStarterSettings& m_settings = m_program.m_settings;
     SimpleTimer m_timer;
     std::vector<unsigned int> m_variationOrder;
