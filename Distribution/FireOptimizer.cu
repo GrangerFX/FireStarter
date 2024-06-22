@@ -244,10 +244,9 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
         float curResult = TestEvaluate(data, target, theta);
-        if (curResult <= result) {
+        if (curResult <= result)
             result = curResult;
-//            break; // Note: DEBUG!
-        } else
+        else
             data[d] = oldData;
     }
 

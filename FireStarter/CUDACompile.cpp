@@ -22,7 +22,7 @@ void CUDACompile::CompileOptions(std::vector<std::string>& options)
     options.push_back(Format("-arch=compute_75"));
 #endif
     options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
-#if 0
+#if 1
     // IEEE 754 mode (default)
     options.push_back("-ftz=false");        // Flush denormalized numbers to zero
     options.push_back("-prec-div=true");    // Precise floating point
