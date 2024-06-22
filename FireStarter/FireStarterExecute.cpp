@@ -78,7 +78,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     // Launch the calculation kernel
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
-#if 1 || FIRESTARTER_OPTIMIZE_SHARED
+#if FIRESTARTER_OPTIMIZE_SHARED
     unsigned int threadsPerBlock = WARP_THREADS;   // Same as the threads per CUDA core half warp.
 #else
     unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
@@ -134,7 +134,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
             unsigned int i = 79;
             FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
             for (unsigned int j = 0; j < settings.m_registers; j++)
-                checksumString += Format("    Member: %4d  Register: %2d  Value: %f\n", i, j, result->Data()->d[j]);
+                checksumString += Format("    Member: %4d  Register: %2d  Age: %u  Value: %f\n", i, j, result->m_resultAge, result->Data()->d[j]);
 
             checksumString += state.m_evaluateCode;
             FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", checksumString);
