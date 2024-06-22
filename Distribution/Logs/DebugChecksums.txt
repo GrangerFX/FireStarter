@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: D9B8A7F757
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: 0654598C755F02E1
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 01F500A4B7E7D9FF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: 3173478429ED015C
-Test:    0  ID:    3  Pass:   1  Variation: 0  Result: 341272007151827516653568.000000  Index:    9  Checksum: 69539405D41A1DE8
+Test:    0  ID:    3  Pass:   1  Variation: 0  Result: 341271863036639440797696.000000  Index:    9  Checksum: 20D739C699E5A8CC
     Member:  436  Register:  0  Age: 2  Value: -1.610842
     Member:  436  Register:  1  Age: 2  Value: -0.940965
     Member:  436  Register:  2  Age: 2  Value: 0.974175
