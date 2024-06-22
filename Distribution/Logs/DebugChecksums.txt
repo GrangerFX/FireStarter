@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: C98820888F
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: D24C60C39EE745E7
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 501F30636B6CD7BD
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: 8F46D66262788227
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED5E7566
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 5D703C440230C40E
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
@@ -115,21 +115,21 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:   71  Result: 0.974928
     Member:   72  Result: 0.974928
     Member:   73  Result: 0.974532
-    Member:   74  Result: 1249741863278654992413607843594240.000000
+    Member:   74  Result: 1249741785907402537077340662398976.000000
     Member:   75  Result: 0.974928
     Member:   76  Result: 0.974928
     Member:   77  Result: 0.974928
     Member:   78  Result: 0.974928
-    Member:   79  Result: 61210115889052302442496.000000
+    Member:   79  Result: 61210124896251557183488.000000
     Member:   80  Result: 0.974821
     Member:   81  Result: 0.974929
     Member:   82  Result: 0.972795
     Member:   83  Result: 0.974928
     Member:   84  Result: 0.974928
     Member:   85  Result: 0.974973
-    Member:   86  Result: 72553.492188
+    Member:   86  Result: 72553.515625
     Member:   87  Result: 0.974928
-    Member:   88  Result: 387910074368.000000
+    Member:   88  Result: 387909910528.000000
     Member:   89  Result: 0.964186
     Member:   90  Result: 0.974928
     Member:   91  Result: 0.974929
@@ -274,7 +274,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:  230  Result: 0.974928
     Member:  231  Result: 0.974928
     Member:  232  Result: 0.974928
-    Member:  233  Result: 0.974661
+    Member:  233  Result: 0.974622
     Member:  234  Result: 0.974848
     Member:  235  Result: 0.974928
     Member:  236  Result: 0.974928
@@ -399,7 +399,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:  355  Result: 0.974928
     Member:  356  Result: 0.974928
     Member:  357  Result: 0.975141
-    Member:  358  Result: 4792010.000000
+    Member:  358  Result: 4792021.000000
     Member:  359  Result: 0.974928
     Member:  360  Result: 0.974928
     Member:  361  Result: 2910816846804418560.000000
@@ -448,7 +448,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:  404  Result: 0.974928
     Member:  405  Result: 0.933729
     Member:  406  Result: 0.974928
-    Member:  407  Result: 2425539293872128.000000
+    Member:  407  Result: 2425538757001216.000000
     Member:  408  Result: 0.974928
     Member:  409  Result: 0.974928
     Member:  410  Result: 0.974928
@@ -459,7 +459,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:  415  Result: 0.974928
     Member:  416  Result: 0.974646
     Member:  417  Result: 0.974928
-    Member:  418  Result: 31043391987567698345659142766592.000000
+    Member:  418  Result: 31043384734012780657884094529536.000000
     Member:  419  Result: 0.974928
     Member:  420  Result: 0.931852
     Member:  421  Result: 0.974928
@@ -469,7 +469,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:  425  Result: 0.974928
     Member:  426  Result: 0.974928
     Member:  427  Result: 0.974928
-    Member:  428  Result: 7.902955
+    Member:  428  Result: 7.903006
     Member:  429  Result: 0.974928
     Member:  430  Result: 0.977037
     Member:  431  Result: 0.974928
@@ -477,7 +477,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:  433  Result: 0.909458
     Member:  434  Result: 0.974928
     Member:  435  Result: 0.974886
-    Member:  436  Result: 0.970315
+    Member:  436  Result: 0.973432
     Member:  437  Result: 0.974928
     Member:  438  Result: 0.974928
     Member:  439  Result: 0.974928
@@ -500,7 +500,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: FF03E364ED
     Member:  456  Result: 0.974931
     Member:  457  Result: 0.974928
     Member:  458  Result: 0.974928
-    Member:  459  Result: 64968698976272384.000000
+    Member:  459  Result: 64968690386337792.000000
     Member:  460  Result: 0.974928
     Member:  461  Result: 0.974928
     Member:  462  Result: 0.974872
