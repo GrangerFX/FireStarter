@@ -22,6 +22,18 @@ void CUDACompile::CompileOptions(std::vector<std::string>& options)
     options.push_back(Format("-arch=compute_75"));
 #endif
     options.push_back("-default-device");   // Allows use of inline functions without specifying them as __device__
+#if 1
+    // IEEE 754 mode (default)
+    options.push_back("-ftz=false");        // Flush denormalized numbers to zero
+    options.push_back("-prec-div=true");    // Precise floating point
+    options.push_back("-prec-sqrt=true");   // Precise square root
+#else
+    // Fast floating point
+    options.push_back("-ftz=true");         // Flush denormalized numbers to zero
+    options.push_back("-prec-div=false");   // Precise floating point
+    options.push_back("-prec-sqrt=false");  // Precise square root
+#endif
+
 //  options.push_back("-G");                // Generate debug info
 //  options.push_back("-lineinfo");         // Generate line information
 } // CompileOptions
