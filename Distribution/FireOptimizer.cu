@@ -160,7 +160,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
 #else
 
-#if 0
+#if 1
 // Old way to copy data.
 inline float Evaluate(const FireStarterData& testData, float n)
 {
@@ -239,7 +239,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     }
 
     // Iterate to evolve the registers.
-    for (unsigned int p = 0; p < settings.m_iterations; p++) {
+    unsigned int p;
+    for (p = 0; p < settings.m_iterations; p++) {
         unsigned int d = RANDOMMOD(seed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
@@ -253,7 +254,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
     // If the result was better, save the results.
     if (!optimizationPass || (result < memberResult))
-        newResults->InitMemberResult(settings, member, v, 0, result, data);
+        newResults->InitMemberResult(settings, member, v, p, result, data);
     else {
         // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
