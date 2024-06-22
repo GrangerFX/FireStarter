@@ -1,44 +1,44 @@
 Debug Checksums
-Test:    0  ID:    0  Pass: 500  Variation: 0  Index:    0  Checksum: 503DA62298E04940
-Test:    0  ID:    0  Pass: 500  Variation: 1  Index:    1  Checksum: 2585704168C16FCA
-Test:    0  ID:    0  Pass: 500  Variation: 2  Index:    2  Checksum: 5D28081608336766
-Test:    0  ID:    1  Pass: 500  Variation: 0  Index:    3  Checksum: FE8C292B0B0CAA51
-Test:    0  ID:    1  Pass: 500  Variation: 1  Index:    4  Checksum: 71166131EF248E13
-Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: BB8D75BEC55BE3C6
-Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: 9C9F3E061ED5983C
-Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 34329436EE5C097C
-Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: 58487B211BB6489E
-Test:    0  ID:    3  Pass:   1  Variation: 0  Result: 341271863036639440797696.000000  Index:    9  Checksum: 1C640B976A300321
-    Member:  436  Register:  0  Age: 2  Value: -1.610842
-    Member:  436  Register:  1  Age: 2  Value: -0.940965
-    Member:  436  Register:  2  Age: 2  Value: 0.974175
-    Member:  436  Register:  3  Age: 2  Value: -0.369377
-    Member:  436  Register:  4  Age: 2  Value: 1.223096
-    Member:  436  Register:  5  Age: 2  Value: -0.096494
-    Member:  436  Register:  6  Age: 2  Value: 1.500119
-    Member:  436  Register:  7  Age: 2  Value: 0.939494
-    Member:  436  Register:  8  Age: 2  Value: -0.881798
-    Member:  436  Register:  9  Age: 2  Value: -1.923255
-    Member:  436  Register: 10  Age: 2  Value: 0.258291
-    Member:  436  Register: 11  Age: 2  Value: -0.332316
-    Member:  436  Register: 12  Age: 2  Value: -1.563396
-    Member:  436  Register: 13  Age: 2  Value: -1.381907
-    Member:  436  Register: 14  Age: 2  Value: -0.499686
-    Member:  436  Register: 15  Age: 2  Value: 0.930477
-    Member:  436  Register: 16  Age: 2  Value: 1.965427
-    Member:  436  Register: 17  Age: 2  Value: 0.928942
-    Member:  436  Register: 18  Age: 2  Value: -0.300439
-    Member:  436  Register: 19  Age: 2  Value: -1.297753
-    Member:  436  Register: 20  Age: 2  Value: 0.000000
-    Member:  436  Register: 21  Age: 2  Value: 0.000000
-    Member:  436  Register: 22  Age: 2  Value: 0.000000
-    Member:  436  Register: 23  Age: 2  Value: 0.000000
-    Member:  436  Register: 24  Age: 2  Value: 0.000000
-    Member:  436  Register: 25  Age: 2  Value: 0.000000
-    Member:  436  Register: 26  Age: 2  Value: 0.000000
-    Member:  436  Register: 27  Age: 2  Value: 0.000000
-    Member:  436  Register: 28  Age: 2  Value: 0.000000
-    Member:  436  Register: 29  Age: 2  Value: 0.000000
+Test:    0  ID:    0  Pass: 500  Variation: 0  Index:    0  Checksum: 7946ED349CCCBC8F
+Test:    0  ID:    0  Pass: 500  Variation: 1  Index:    1  Checksum: 5055DAF05D83B9E9
+Test:    0  ID:    0  Pass: 500  Variation: 2  Index:    2  Checksum: DF2167F9FE165349
+Test:    0  ID:    1  Pass: 500  Variation: 0  Index:    3  Checksum: 23A40AEFE2FE863E
+Test:    0  ID:    1  Pass: 500  Variation: 1  Index:    4  Checksum: C12A7BAA5FB2511E
+Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 2CCC8E61BC8966F2
+Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: 3B4A6E7B5A1F2ACF
+Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 683CA39631476467
+Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F4ACED32F1A9FE12
+Test:    0  ID:    3  Pass:   1  Variation: 0  Result: 341271863036639440797696.000000  Index:    9  Checksum: BDE8A4EDC43B9BE7
+    Member:  436  Register:  0  Age: 3  Value: -1.610842
+    Member:  436  Register:  1  Age: 3  Value: -0.940965
+    Member:  436  Register:  2  Age: 3  Value: 0.974175
+    Member:  436  Register:  3  Age: 3  Value: -0.369377
+    Member:  436  Register:  4  Age: 3  Value: 1.223096
+    Member:  436  Register:  5  Age: 3  Value: -0.096494
+    Member:  436  Register:  6  Age: 3  Value: 1.500119
+    Member:  436  Register:  7  Age: 3  Value: 0.939494
+    Member:  436  Register:  8  Age: 3  Value: -0.881798
+    Member:  436  Register:  9  Age: 3  Value: -1.923255
+    Member:  436  Register: 10  Age: 3  Value: 0.258291
+    Member:  436  Register: 11  Age: 3  Value: -0.332316
+    Member:  436  Register: 12  Age: 3  Value: -1.563396
+    Member:  436  Register: 13  Age: 3  Value: -1.381907
+    Member:  436  Register: 14  Age: 3  Value: -0.499686
+    Member:  436  Register: 15  Age: 3  Value: -1.712269
+    Member:  436  Register: 16  Age: 3  Value: 1.965427
+    Member:  436  Register: 17  Age: 3  Value: 0.928942
+    Member:  436  Register: 18  Age: 3  Value: -0.300439
+    Member:  436  Register: 19  Age: 3  Value: -1.297753
+    Member:  436  Register: 20  Age: 3  Value: 0.000000
+    Member:  436  Register: 21  Age: 3  Value: 0.000000
+    Member:  436  Register: 22  Age: 3  Value: 0.000000
+    Member:  436  Register: 23  Age: 3  Value: 0.000000
+    Member:  436  Register: 24  Age: 3  Value: 0.000000
+    Member:  436  Register: 25  Age: 3  Value: 0.000000
+    Member:  436  Register: 26  Age: 3  Value: 0.000000
+    Member:  436  Register: 27  Age: 3  Value: 0.000000
+    Member:  436  Register: 28  Age: 3  Value: 0.000000
+    Member:  436  Register: 29  Age: 3  Value: 0.000000
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
