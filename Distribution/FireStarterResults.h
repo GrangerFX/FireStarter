@@ -57,6 +57,7 @@ typedef struct FireStarterData {
     } // Init
 
 #if 0
+    // This yeilds different results in Optimize than the default structure copy.
     inline FireStarterData(const struct FireStarterData& data)
     {
         Copy(data);

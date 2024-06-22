@@ -6,8 +6,6 @@
 // VARIATIONS //
 // END //
 
-#if 0
-
 #if FIRESTARTER_OPTIMIZE_SHARED
 
 typedef struct FireStarterSharedData {
@@ -31,35 +29,22 @@ typedef struct FireStarterSharedData {
     } // Copy
 } FireStarterSharedData;
 
-inline float Evaluate(const FireStarterData& testData, float n)
+inline float Evaluate(FireStarterSharedData& data, const FireStarterData& testData, float n)
 {
-    GPU_SHARED FireStarterSharedData data;
     data = testData;
 // EVALUATE //
 // END //
     return isfinite(n) ? n : 0.0f;
 } // Evaluate
 
-#else
-
-inline float Evaluate(const FireStarterData& testData, float n)
-{
-    FireStarterData data(testData);
-// EVALUATE //
-// END //
-    return isfinite(n) ? n : 0.0f;
-} // Evaluate
-
 //inline float TestEvaluate(const FireStarterData& data, const float target[FIRESTARTER_SAMPLES], const float theta[FIRESTARTER_SAMPLES])
-inline float TestEvaluate(const FireStarterData& data, const float target[], const float theta[])
+inline float TestEvaluate(FireStarterSharedData& data, const FireStarterData& testData, const float target[], const float theta[])
 {
     float result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-        result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
+        result = fmaxf(fabsf(Evaluate(data, testData, theta[i]) - target[i]), result);
     return result;
 } // TestEvaluate
-
-#endif
 
 GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
 {
@@ -67,6 +52,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= settings.m_population)
         return;
+
+    GPU_SHARED FireStarterSharedData sharedData;
 
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_SAMPLES];
@@ -90,9 +77,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         data.Init(seed, evolutionScale, registers, settings.m_registers);
         memberAge = 0;
         memberResult = settings.m_startResult;
-        result = TestEvaluate(data, target, theta);
-    }
-    else {
+        result = TestEvaluate(sharedData, data, target, theta);
+    } else {
         // Later generations randomize a single register if they were copied.
         data.Copy(oldResults->Data(settings, member, v));
         memberAge = oldResults->Age(settings, member, v);
@@ -102,11 +88,11 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             unsigned int d = RANDOMMOD(seed, registers);
             data[d] += RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
             memberResult = settings.m_startResult;
-            result = TestEvaluate(data, target, theta);
+            result = TestEvaluate(sharedData, data, target, theta);
         } else {
             result = memberResult = oldResults->MinResult(settings, member, v);
             evolutionScale = settings.m_scale * memberResult;
-            result = TestEvaluate(data, target, theta);
+            result = TestEvaluate(sharedData, data, target, theta);
         }
     }
 
@@ -115,7 +101,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         unsigned int d = RANDOMMOD(seed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
-        float curResult = TestEvaluate(data, target, theta);
+        float curResult = TestEvaluate(sharedData, data, target, theta);
         if (curResult <= result)
             result = curResult;
         else
