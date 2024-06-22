@@ -129,15 +129,17 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
             context->Synchronize();
 
             uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
-
-            unsigned int i = 436;
-            FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
-            std::string checksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Result: %f  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, result->m_resultMin, checksumIndex, checksum);
-
-            for (unsigned int j = 0; j < settings.m_registers; j++)
-                checksumString += Format("    Member: %4d  Register: %2d  Age: %u  Value: %f\n", i, j, result->m_resultAge, result->Data()->d[j]);
-
+            std::string checksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
             checksumString += state.m_evaluateCode;
+
+//            unsigned int i = 436;
+            for (unsigned int i = 0; i < 500; i++)
+            {
+                FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
+                checksumString += Format("    Member: %4d  Result: %f\n", i, result->m_resultMin);
+//                for (unsigned int j = 0; j < settings.m_registers; j++)
+//                    checksumString += Format("    Member: %4d  Register: %2d  Result: %f  Value: %f\n", i, j, result->m_resultMin, result->Data()->d[j]);
+            }
             FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", checksumString);
             std::terminate();
         }
