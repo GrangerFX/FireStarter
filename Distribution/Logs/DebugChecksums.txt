@@ -1,44 +1,44 @@
 Debug Checksums
-Test:    0  ID:    0  Pass: 500  Variation: 0  Index:    0  Checksum: AE45886BC8EF1006
-Test:    0  ID:    0  Pass: 500  Variation: 1  Index:    1  Checksum: 1E03EB3078C750B1
-Test:    0  ID:    0  Pass: 500  Variation: 2  Index:    2  Checksum: 627B1499423650B8
-Test:    0  ID:    1  Pass: 500  Variation: 0  Index:    3  Checksum: 3F5161D4F3294377
-Test:    0  ID:    1  Pass: 500  Variation: 1  Index:    4  Checksum: 3913E7A916645724
-Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: CD6195BBBF1DC237
-Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: 0A50A0BA25D7E515
-Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: A7E84C07EF652F78
-Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: 22447B652AA74AFB
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 33300C9FB7A77A0C
-    Member:   79  Register:  0  Age: 2775138034  Value: 0.224694
-    Member:   79  Register:  1  Age: 2775138034  Value: -1.440178
-    Member:   79  Register:  2  Age: 2775138034  Value: 1.531817
-    Member:   79  Register:  3  Age: 2775138034  Value: 1.889200
-    Member:   79  Register:  4  Age: 2775138034  Value: 1.445260
-    Member:   79  Register:  5  Age: 2775138034  Value: -1.440897
-    Member:   79  Register:  6  Age: 2775138034  Value: -1.145919
-    Member:   79  Register:  7  Age: 2775138034  Value: 1.528131
-    Member:   79  Register:  8  Age: 2775138034  Value: 0.508756
-    Member:   79  Register:  9  Age: 2775138034  Value: 1.546125
-    Member:   79  Register: 10  Age: 2775138034  Value: 0.652547
-    Member:   79  Register: 11  Age: 2775138034  Value: 0.262823
-    Member:   79  Register: 12  Age: 2775138034  Value: -0.315286
-    Member:   79  Register: 13  Age: 2775138034  Value: -0.939661
-    Member:   79  Register: 14  Age: 2775138034  Value: -1.241674
-    Member:   79  Register: 15  Age: 2775138034  Value: -1.778285
-    Member:   79  Register: 16  Age: 2775138034  Value: -1.278995
-    Member:   79  Register: 17  Age: 2775138034  Value: 0.484758
-    Member:   79  Register: 18  Age: 2775138034  Value: 0.324765
-    Member:   79  Register: 19  Age: 2775138034  Value: 0.642098
-    Member:   79  Register: 20  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 21  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 22  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 23  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 24  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 25  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 26  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 27  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 28  Age: 2775138034  Value: 0.000000
-    Member:   79  Register: 29  Age: 2775138034  Value: 0.000000
+Test:    0  ID:    0  Pass: 500  Variation: 0  Index:    0  Checksum: 99C407D1CBFA0EF9
+Test:    0  ID:    0  Pass: 500  Variation: 1  Index:    1  Checksum: 3CD2D1362A8C3BF7
+Test:    0  ID:    0  Pass: 500  Variation: 2  Index:    2  Checksum: ACB40DA14A55A1E4
+Test:    0  ID:    1  Pass: 500  Variation: 0  Index:    3  Checksum: D54B329202DA2273
+Test:    0  ID:    1  Pass: 500  Variation: 1  Index:    4  Checksum: D00F4826ED6EA1E1
+Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: E35E37384D1FB0B4
+Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: B78D7DD4DB292C4A
+Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3BD54604B9781B1F
+Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: 3FB97790C7D4575E
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 614851CC1ADA679B
+    Member:   79  Register:  0  Age: 0  Value: 0.311065
+    Member:   79  Register:  1  Age: 0  Value: -1.440178
+    Member:   79  Register:  2  Age: 0  Value: 1.531817
+    Member:   79  Register:  3  Age: 0  Value: 1.889200
+    Member:   79  Register:  4  Age: 0  Value: 1.445260
+    Member:   79  Register:  5  Age: 0  Value: -1.440897
+    Member:   79  Register:  6  Age: 0  Value: -1.145919
+    Member:   79  Register:  7  Age: 0  Value: 1.528131
+    Member:   79  Register:  8  Age: 0  Value: 0.508756
+    Member:   79  Register:  9  Age: 0  Value: 1.546125
+    Member:   79  Register: 10  Age: 0  Value: -0.773443
+    Member:   79  Register: 11  Age: 0  Value: 0.262823
+    Member:   79  Register: 12  Age: 0  Value: -0.315286
+    Member:   79  Register: 13  Age: 0  Value: 0.972804
+    Member:   79  Register: 14  Age: 0  Value: -1.585490
+    Member:   79  Register: 15  Age: 0  Value: -1.290608
+    Member:   79  Register: 16  Age: 0  Value: -1.278995
+    Member:   79  Register: 17  Age: 0  Value: 1.004798
+    Member:   79  Register: 18  Age: 0  Value: -0.553822
+    Member:   79  Register: 19  Age: 0  Value: 0.642098
+    Member:   79  Register: 20  Age: 0  Value: 0.000000
+    Member:   79  Register: 21  Age: 0  Value: 0.000000
+    Member:   79  Register: 22  Age: 0  Value: 0.000000
+    Member:   79  Register: 23  Age: 0  Value: 0.000000
+    Member:   79  Register: 24  Age: 0  Value: 0.000000
+    Member:   79  Register: 25  Age: 0  Value: 0.000000
+    Member:   79  Register: 26  Age: 0  Value: 0.000000
+    Member:   79  Register: 27  Age: 0  Value: 0.000000
+    Member:   79  Register: 28  Age: 0  Value: 0.000000
+    Member:   79  Register: 29  Age: 0  Value: 0.000000
     n = data[0] += n;
     n *= data[1];
     n *= data[2];

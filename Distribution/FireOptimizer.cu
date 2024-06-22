@@ -160,7 +160,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
 #else
 
-#if 0
+#if 1
 // Old way to copy data.
 inline float Evaluate(const FireStarterData& testData, float n)
 {
@@ -246,14 +246,14 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         float curResult = TestEvaluate(data, target, theta);
         if (curResult <= result) {
             result = curResult;
-//            break; // Note: DEBUG!
+            break; // Note: DEBUG!
         } else
             data[d] = oldData;
     }
 
     // If the result was better, save the results.
     if (!optimizationPass || (result < memberResult))
-        newResults->InitMemberResult(settings, member, v, seed, result, data);
+        newResults->InitMemberResult(settings, member, v, 0, result, data);
     else {
         // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
