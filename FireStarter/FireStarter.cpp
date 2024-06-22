@@ -110,6 +110,102 @@ static void TestParallelFor(void)
     free(memory2);
 } // TestParalleFor
 
+static void TestCUDABug(void)
+{
+    /*
+    Member:  436  Register:  0  Age: 2  Value: -1.610842
+    Member:  436  Register:  1  Age: 2  Value: -0.940965
+    Member:  436  Register:  2  Age: 2  Value: 0.974175
+    Member:  436  Register:  3  Age: 2  Value: -0.369377
+    Member:  436  Register:  4  Age: 2  Value: 1.223096
+    Member:  436  Register:  5  Age: 2  Value: -0.096494
+    Member:  436  Register:  6  Age: 2  Value: 1.500119
+    Member:  436  Register:  7  Age: 2  Value: 0.939494
+    Member:  436  Register:  8  Age: 2  Value: -0.881798
+    Member:  436  Register:  9  Age: 2  Value: -1.923255
+    Member:  436  Register: 10  Age: 2  Value: 0.258291
+    Member:  436  Register: 11  Age: 2  Value: -0.332316
+    Member:  436  Register: 12  Age: 2  Value: -1.563396
+    Member:  436  Register: 13  Age: 2  Value: -1.381907
+    Member:  436  Register: 14  Age: 2  Value: -0.499686
+    Member:  436  Register: 15  Age: 2  Value: 0.930477
+    Member:  436  Register: 16  Age: 2  Value: 1.965427
+    Member:  436  Register: 17  Age: 2  Value: 0.928942
+    Member:  436  Register: 18  Age: 2  Value: -0.300439
+    Member:  436  Register: 19  Age: 2  Value: -1.297753
+    */
+
+    float data[30] = {
+        -1.610842f,
+         -0.940965f,
+         0.974175f,
+         -0.369377f,
+         1.223096f,
+         -0.096494f,
+         1.500119f,
+         0.939494f,
+         -0.881798f,
+         -1.923255f,
+         0.258291f,
+         -0.332316f,
+         -1.563396f,
+         -1.381907f,
+         -0.499686f,
+         0.930477f,
+         1.965427f,
+         0.928942f,
+         -0.300439f,
+         -1.297753f,
+         0.0f,
+         0.0f,
+         0.0f,
+         0.0f,
+         0.0f,
+         0.0f,
+         0.0f,
+         0.0f,
+         0.0f,
+         0.0f,
+    };
+
+    float n = 0.5f;
+
+    n = data[0] += n;
+    n *= data[1];
+    n *= data[2];
+    n = data[3] *= n;
+    n = data[4] *= n;
+    n += data[5];
+    n = data[6] *= n;
+    n += data[6];
+    n = data[7] *= n;
+    n = data[7] *= n;
+    n = data[8] *= n;
+    n *= data[7];
+    n += data[9];
+    n *= data[10];
+    n *= data[11];
+    n = data[3] *= n;
+    n *= data[12];
+    n *= data[8];
+    n = data[13] += n;
+    n = data[14] += n;
+    n *= data[0];
+    n = data[14] *= n;
+    n += data[15];
+    n *= data[16];
+    n += data[14];
+    n = data[3] *= n;
+    n *= data[17];
+    n *= data[3];
+    n *= data[18];
+    n *= data[4];
+    n *= data[19];
+    n *= data[13];
+
+    printf("n = %f\n", n);
+} // TestCUDABug
+
 FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
 {
 #if 0
@@ -118,6 +214,10 @@ FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireSt
 
 #if 0
     TestParallelFor();
+#endif
+
+#if 0
+    TestCUDABug();
 #endif
 
 #if 1
