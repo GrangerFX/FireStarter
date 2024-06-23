@@ -145,7 +145,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
 
 #else
 
-#if 1
+#if 0
 // Old way to copy data.
 inline float Evaluate(const FireStarterData& testData, float n)
 {
