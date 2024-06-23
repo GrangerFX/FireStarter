@@ -8,7 +8,7 @@
 #define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_MULTIPROCESS    1           // Use multi-processing to compile each generation.
 #define FIRESTARTER_OPTIMIZE_SHARED 0
-#define FIRESTARTER_OPTIMIZE_LIMIT  1000.0f
+#define FIRESTARTER_OPTIMIZE_LIMIT  1.0e+10f
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008f  // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    0           // Output evolve debugging information.
