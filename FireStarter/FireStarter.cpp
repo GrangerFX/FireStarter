@@ -6,6 +6,7 @@
 #include "FireStarterStream.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
+#include <cmath>
 
 void FireStarter::ControlRandom(const FireStarterSettings& randomSettings)
 {
@@ -168,42 +169,55 @@ static void TestCUDABug(void)
          0.0f,
     };
 
-    float n = 0.5f;
+    float theta[FIRESTARTER_SAMPLES];
+    float target[FIRESTARTER_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+        float t = theta[i] = TARGET_MIN + i * sampleStep;
+        target[i] = Target(t, 0);
+    }
+    float result = 0.0f;
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+        float n = theta[i];
+        n = data[0] += n;
+        n *= data[1];
+        n *= data[2];
+        n = data[3] *= n;
+        n = data[4] *= n;
+        n += data[5];
+        n = data[6] *= n;
+        n += data[6];
+        n = data[7] *= n;
+        n = data[7] *= n;
+        n = data[8] *= n;
+        n *= data[7];
+        n += data[9];
+        n *= data[10];
+        n *= data[11];
+        n = data[3] *= n;
+        n *= data[12];
+        n *= data[8];
+        n = data[13] += n;
+        n = data[14] += n;
+        n *= data[0];
+        n = data[14] *= n;
+        n += data[15];
+        n *= data[16];
+        n += data[14];
+        n = data[3] *= n;
+        n *= data[17];
+        n *= data[3];
+        n *= data[18];
+        n *= data[4];
+        n *= data[19];
+        n *= data[13];
 
-    n = data[0] += n;
-    n *= data[1];
-    n *= data[2];
-    n = data[3] *= n;
-    n = data[4] *= n;
-    n += data[5];
-    n = data[6] *= n;
-    n += data[6];
-    n = data[7] *= n;
-    n = data[7] *= n;
-    n = data[8] *= n;
-    n *= data[7];
-    n += data[9];
-    n *= data[10];
-    n *= data[11];
-    n = data[3] *= n;
-    n *= data[12];
-    n *= data[8];
-    n = data[13] += n;
-    n = data[14] += n;
-    n *= data[0];
-    n = data[14] *= n;
-    n += data[15];
-    n *= data[16];
-    n += data[14];
-    n = data[3] *= n;
-    n *= data[17];
-    n *= data[3];
-    n *= data[18];
-    n *= data[4];
-    n *= data[19];
-    n *= data[13];
+        n = std::isfinite(n) ? n : 0.0f;
+        printf("theta = %f  target= %f  n = %f\n", theta[i], target[i], n);
+        result = fmaxf(fabsf(n - target[i]), result);
+    }
 
-    printf("n = %f\n", n);
+    printf("result = %f\n", result);
 } // TestCUDABug
 
 FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
