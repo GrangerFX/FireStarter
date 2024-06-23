@@ -4,8 +4,8 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 06/23/24 09:43:33 Pacific Daylight Time
-// Run duration = 616.755743 seconds
+// Run date: 06/23/24 10:15:05 Pacific Daylight Time
+// Run duration = 615.878741 seconds
 // Run generation = 313
 // Run evolution = 11
 // Run max result = 0.00000060
@@ -312,8 +312,19 @@ inline float Evaluate(const FireStarterData& testData, float n)
 } // Evaluate
 #endif
 
-#if 0
 inline bool TestEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
+{
+    float maxResult = result;
+    result = 0.0f;
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
+        result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
+    return result <= maxResult;
+} // TestEvaluate
+
+#if 0
+#define TestEvaluate2 TestEvaluate
+#else
+inline bool TestEvaluate2(const FireStarterData& data, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
@@ -324,16 +335,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     for (int i = FIRESTARTER_SAMPLES / 2; i < FIRESTARTER_SAMPLES; i++)
         result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
     return result <= maxResult;
-} // TestEvaluate
-#else
-inline bool TestEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
-{
-    float maxResult = result;
-    result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++)
-        result = fmaxf(fabsf(Evaluate(data, theta[i]) - target[i]), result);
-    return result <= maxResult;
-} // TestEvaluate
+} // TestEvaluate2
 #endif
 
 GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
@@ -389,7 +391,7 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
         float curResult = result;
-        if (TestEvaluate(data, target, theta, curResult))
+        if (TestEvaluate2(data, target, theta, curResult))
             result = curResult;
         else
             data[d] = oldData;
