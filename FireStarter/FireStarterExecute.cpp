@@ -1,5 +1,6 @@
 #include "FireStarterExecute.h"
 #include "CUDACompile.h"
+#include "FireStarterCode.h"
 
 // Not used currently.
 inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
@@ -76,15 +77,22 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     // Launch the calculation kernel
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
-#if FIRESTARTER_OPTIMIZE_SHARED
+//#if FIRESTARTER_OPTIMIZE_SHARED
     unsigned int threadsPerBlock = WARP_THREADS;   // Same as the threads per CUDA core half warp.
-#else
-    unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
-#endif
+//#else
+//    unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
+//#endif
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
     unsigned long long passes = settings.m_passes;
     unsigned long long optimizationPass = state.m_optimize_pass * passes;
+
+#if 0
+    // Note: DEBUG!
+    static unsigned long long checksumIndex = 0;
+    if (!checksumIndex)
+        FireStarterCode::SaveCode("Logs\\DebugChecksums.txt", "Debug Checksums\n");
+#endif
 
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
@@ -115,6 +123,29 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         // Synchronize all GPU threads and results.
         context->Synchronize();
         optimizationPass++;
+
+#if 0
+        // Note: DEBUG!
+        if ((checksumIndex == 9) && (p == 0)) {
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
+            context->Synchronize();
+
+            uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
+            std::string checksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
+            checksumString += state.m_evaluateCode;
+
+//            unsigned int i = 436;
+            for (unsigned int i = 0; i < 500; i++)
+            {
+                FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
+                checksumString += Format("    Member: %4d  Result: %f\n", i, result->m_resultMin);
+//                for (unsigned int j = 0; j < settings.m_registers; j++)
+//                    checksumString += Format("    Member: %4d  Register: %2d  Result: %f  Value: %f\n", i, j, result->m_resultMin, result->Data()->d[j]);
+            }
+            FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", checksumString);
+            std::terminate();
+        }
+#endif
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -125,6 +156,13 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     if (oddPasses)
         checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
+
+#if 0
+    // Note: DEBUG!
+    uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
+    std::string cheksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex++, checksum);
+    FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", cheksumString);
+#endif
 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
