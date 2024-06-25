@@ -229,7 +229,8 @@ GPU_GLOBAL void Optimizer(const FireStarterSettings settings, FireStarterPopulat
             unsigned int d = RANDOMMOD(seed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
-            result = memberResult = settings.m_startResult;
+            memberResult = settings.m_startResult;
+            result = 1.0e+6f;
             if (!TestEvaluate(data, target, theta, result)) {
                 data[d] = oldData;
                 result = memberResult = oldResults->MinResult(settings, member, v);
