@@ -176,7 +176,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float n = fabsf(Evaluate(data, theta[i]) - target[i]);
-        if (!isfinite(n)) {
+        if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
             return false;
         } else
