@@ -61,7 +61,7 @@
 #else                                       // 16 states for unlimited generations. Fastest known reliable results.
 #define FIRESTARTER_EVOLVE_TESTS            0
 #define FIRESTARTER_EVOLVE_STREAMS          1
-#define FIRESTARTER_EVOLVE_UNITS            8
+#define FIRESTARTER_EVOLVE_UNITS            1 // 8
 #define FIRESTARTER_EVOLVE_STATES           16
 #define FIRESTARTER_EVOLVE_GENERATIONS      0
 #define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
