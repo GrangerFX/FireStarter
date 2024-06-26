@@ -8,705 +8,536 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass: 500  Variation: 0  Index:    9  Checksum: 1076E8A6E44A9CD6
-Test:    0  ID:    3  Pass: 500  Variation: 1  Index:   10  Checksum: 70F732CA8BC62608
-Test:    0  ID:    3  Pass: 500  Variation: 2  Index:   11  Checksum: F845140969F61E98
-Test:    0  ID:    4  Pass: 500  Variation: 0  Index:   12  Checksum: 0A704871C2ECA1A6
-Test:    0  ID:    4  Pass: 500  Variation: 1  Index:   13  Checksum: E93F48AD38D7D34A
-Test:    0  ID:    4  Pass: 500  Variation: 2  Index:   14  Checksum: 460F1D434EE7687D
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:   15  Checksum: 2BBDFB7C4A3D014A
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:   16  Checksum: C87128CBF7C0A799
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:   17  Checksum: 73ADABE187C8CDA3
-Test:    0  ID:    6  Pass: 500  Variation: 0  Index:   18  Checksum: 1CDE7B7178EE735D
-Test:    0  ID:    6  Pass: 500  Variation: 1  Index:   19  Checksum: 8F5F0FC88FBBCDCB
-Test:    0  ID:    6  Pass: 500  Variation: 2  Index:   20  Checksum: 08BCA118031196E5
-Test:    0  ID:    7  Pass: 500  Variation: 0  Index:   21  Checksum: 00A8B2B33C68CF86
-Test:    0  ID:    7  Pass: 500  Variation: 1  Index:   22  Checksum: 3962F647D68C9E72
-Test:    0  ID:    7  Pass: 500  Variation: 2  Index:   23  Checksum: 7592D1C457633AB1
-Test:    0  ID:    8  Pass: 500  Variation: 0  Index:   24  Checksum: A9C10981B6A4883D
-Test:    0  ID:    8  Pass: 500  Variation: 1  Index:   25  Checksum: 4F873D3B551A757F
-Test:    0  ID:    8  Pass: 500  Variation: 2  Index:   26  Checksum: 3A52C1EABAC92AD0
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   27  Checksum: 85700599C0670AFE
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   28  Checksum: D1B0C74797CB2EE3
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:   29  Checksum: 3C8615E710BABE6E
-Test:    0  ID:   10  Pass: 500  Variation: 0  Index:   30  Checksum: 4E269F7D6A5CEB41
-Test:    0  ID:   10  Pass: 500  Variation: 1  Index:   31  Checksum: ABE636AAD32AC4E4
-Test:    0  ID:   10  Pass: 500  Variation: 2  Index:   32  Checksum: 26552C183FCA318B
-Test:    0  ID:   11  Pass: 500  Variation: 0  Index:   33  Checksum: A1F53B9430655715
-Test:    0  ID:   11  Pass: 500  Variation: 1  Index:   34  Checksum: 3E8E2D95538E02E1
-Test:    0  ID:   11  Pass: 500  Variation: 2  Index:   35  Checksum: EA77AFBB71E27FA8
-Test:    0  ID:   12  Pass: 500  Variation: 0  Index:   36  Checksum: 0F59B784FE31082D
-Test:    0  ID:   12  Pass: 500  Variation: 1  Index:   37  Checksum: B98FBCF2718CDBB1
-Test:    0  ID:   12  Pass: 500  Variation: 2  Index:   38  Checksum: FA19E14542AF3CE5
-Test:    0  ID:   13  Pass: 500  Variation: 0  Index:   39  Checksum: 74E7B80407C7756E
-Test:    0  ID:   13  Pass: 500  Variation: 1  Index:   40  Checksum: C0B023F95F54C81E
-Test:    0  ID:   13  Pass: 500  Variation: 2  Index:   41  Checksum: CC37B62F9D582A16
-Test:    0  ID:   14  Pass: 500  Variation: 0  Index:   42  Checksum: DD46A63FD91EFEAE
-Test:    0  ID:   14  Pass: 500  Variation: 1  Index:   43  Checksum: C24BBE40B1CF2FAB
-Test:    0  ID:   14  Pass: 500  Variation: 2  Index:   44  Checksum: 4F3B78C615039010
-Test:    0  ID:   15  Pass: 500  Variation: 0  Index:   45  Checksum: C73B8639E046A637
-Test:    0  ID:   15  Pass: 500  Variation: 1  Index:   46  Checksum: 4B827BEBAB23D507
-Test:    0  ID:   15  Pass: 500  Variation: 2  Index:   47  Checksum: 272A90ED7B63D6CC
-Test:    0  ID:   16  Pass: 500  Variation: 0  Index:   48  Checksum: EBDB505AF4FC8E1A
-Test:    0  ID:   16  Pass: 500  Variation: 1  Index:   49  Checksum: 68B8E8C747F17C88
-Test:    0  ID:   16  Pass: 500  Variation: 2  Index:   50  Checksum: 652CBD52E35267B4
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   51  Checksum: B54862F7C21869FA
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   52  Checksum: 6F8FB0536B43BAC5
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:   53  Checksum: DE2B07CBDF145FE3
-Test:    0  ID:    6  Pass: 500  Variation: 0  Index:   54  Checksum: 6DBE097AE0E9A418
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   55  Checksum: BEDE13309E571C31
-Test:    0  ID:    6  Pass: 500  Variation: 0  Index:   56  Checksum: 76109A04CD52697E
-Test:    0  ID:    6  Pass: 500  Variation: 1  Index:   57  Checksum: DCC0258426FFDE6B
-Test:    0  ID:    6  Pass: 500  Variation: 2  Index:   58  Checksum: 1F8FAE39544B64C2
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:   59  Checksum: 0BAAFD8D5F1FF058
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:   60  Checksum: 5C2A65B667DE5222
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:   61  Checksum: 70910C94FB5B3CFF
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   62  Checksum: 55B4804F5ED560C9
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   63  Checksum: BAC15FE92A86CBBA
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:   64  Checksum: ABF5C893442FEC22
-Test:    0  ID:    6  Pass: 500  Variation: 0  Index:   65  Checksum: 84D3A05FE842BE85
-Test:    0  ID:    6  Pass: 500  Variation: 1  Index:   66  Checksum: EF0DEC6639D0A1FE
-Test:    0  ID:    6  Pass: 500  Variation: 2  Index:   67  Checksum: 3CC44A853C47816B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   68  Checksum: 925043B8304D2FAF
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   69  Checksum: 010E49CEA3E225C5
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:   70  Checksum: AF37316BC8A50320
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   71  Checksum: FE06AEF1ADCA830B
-Test:    0  ID:    6  Pass: 500  Variation: 0  Index:   72  Checksum: 937BA2615C929BF6
-Test:    0  ID:    6  Pass: 500  Variation: 1  Index:   73  Checksum: F2D966EF8FBDC491
-Test:    0  ID:    6  Pass: 500  Variation: 2  Index:   74  Checksum: 727FB9805E1DA8DD
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:   75  Checksum: 27167FC1C0475E60
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:   76  Checksum: A9C1E901E5B47D95
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:   77  Checksum: F6E96E25A4D86770
-Test:    0  ID:    2  Pass: 500  Variation: 0  Index:   78  Checksum: 55CCEA49EE27882C
-Test:    0  ID:    2  Pass: 500  Variation: 1  Index:   79  Checksum: 9C20918489ABD7D8
-Test:    0  ID:    2  Pass: 500  Variation: 2  Index:   80  Checksum: C1A76CC57797303B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   81  Checksum: 20A854A6B072B150
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   82  Checksum: DEBDB4DE1E27DC25
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:   83  Checksum: 31E3C6D811BBC7EF
-Test:    0  ID:    6  Pass: 500  Variation: 0  Index:   84  Checksum: B1EA51A3BE3ABCD8
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   85  Checksum: E499265B3C758655
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   86  Checksum: 54611D67B09F0012
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:   87  Checksum: 54EA527244FC3DBF
-Test:    0  ID:   17  Pass: 500  Variation: 0  Index:   88  Checksum: FAD322E089286248
-Test:    0  ID:   17  Pass: 500  Variation: 1  Index:   89  Checksum: CFAD78F795937483
-Test:    0  ID:   17  Pass: 500  Variation: 2  Index:   90  Checksum: 78E305FE06BA350D
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   91  Checksum: A419310ED466AF40
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   92  Checksum: 7738EFF47FBD3EBA
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:   93  Checksum: 43D447D87265099C
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   94  Checksum: 811E093D03A842FF
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   95  Checksum: C77C8570812C6D78
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   96  Checksum: 5F66D1BFABE2BA87
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:   97  Checksum: 8FC72B5DE395E73D
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:   98  Checksum: DF58A5EB6693B028
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:   99  Checksum: C90E15B361991DCF
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  100  Checksum: F6579E2A6888EAEF
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  101  Checksum: 305251E357E68F31
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  102  Checksum: 7E39E4C79F6182E7
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  103  Checksum: 9B8836B01D1D009E
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  104  Checksum: E76E790E6B91B53F
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  105  Checksum: D9A66DE72876C23E
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  106  Checksum: DE292A1326FBC495
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  107  Checksum: 45BE1FB32892AA6A
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  108  Checksum: EFDDBE8AF54F9D58
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  109  Checksum: 1DA19FD121762FE5
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  110  Checksum: 11540041860B4984
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  111  Checksum: A7F5DF0AF6882B96
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:  112  Checksum: 12B74B33C9046B2D
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  113  Checksum: 356C48102FBD0362
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  114  Checksum: 50F2BE83C568F54A
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  115  Checksum: 5CA4C08A909DAB3F
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  116  Checksum: 6CEAC135EA2812AE
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  117  Checksum: 6B42600AEE658B6D
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  118  Checksum: EC0FE57D9C098A35
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  119  Checksum: C82522D313642B30
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  120  Checksum: E43679F77ED0C9FB
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:  121  Checksum: 8AB621D76D01C6D8
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  122  Checksum: D2C3B8C7201109A6
-Test:    0  ID:   18  Pass: 500  Variation: 0  Index:  123  Checksum: 238192BFB1FC1337
-Test:    0  ID:   18  Pass: 500  Variation: 1  Index:  124  Checksum: 888EF42C07FC27A3
-Test:    0  ID:   18  Pass: 500  Variation: 2  Index:  125  Checksum: 01F7A259A39B75CC
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  126  Checksum: 832DC383B94E9013
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  127  Checksum: 4815B9410592E148
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  128  Checksum: 9015B174EF9A8260
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  129  Checksum: E275E84AA3E17CF4
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  130  Checksum: BC0A83117D9E46CF
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  131  Checksum: ADAE0305B9541590
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  132  Checksum: 76742E24647D647B
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  133  Checksum: BB2576639261F639
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  134  Checksum: 5C52E4DF157775CD
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  135  Checksum: F2A2FA9E422CBDF7
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  136  Checksum: D4C3EA8FC8770978
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  137  Checksum: 05B66F529EA3094B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  138  Checksum: 29A3FC18FFAFB1E7
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  139  Checksum: 02246CB6281573FF
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  140  Checksum: 45E7DA8EA3DE44E0
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  141  Checksum: B833B247D80A21B1
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  142  Checksum: 6D07E0CAB759E449
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  143  Checksum: 475ABF9B0BEA0439
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  144  Checksum: 441163B11309CCC8
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  145  Checksum: 4083BA5C66AC2371
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  146  Checksum: 6BEEA5271B4308B4
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  147  Checksum: 8386714BB4867215
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  148  Checksum: 61C338119D440FB5
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  149  Checksum: 49D6BDA44649245D
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  150  Checksum: 231E85558BDF04D7
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:  151  Checksum: 6ED5654EE945F448
-Test:    0  ID:   19  Pass: 500  Variation: 0  Index:  152  Checksum: 7D1F314864AE0FC5
-Test:    0  ID:   19  Pass: 500  Variation: 1  Index:  153  Checksum: AA3556ED00AD8633
-Test:    0  ID:   19  Pass: 500  Variation: 2  Index:  154  Checksum: A67DB7A6AAF4A7DF
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  155  Checksum: EFF70BB1AB2E932E
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  156  Checksum: 5E46A5609BAC1A90
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  157  Checksum: 801CDCC03F394BF9
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  158  Checksum: 172F7756A0102739
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  159  Checksum: F27ADE7145B680CA
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  160  Checksum: 992E86D2CA718D01
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  161  Checksum: B8C0534656EC967D
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  162  Checksum: 0F421572EB034D41
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  163  Checksum: 6736C4A91B509937
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  164  Checksum: 6A94C297DFECE667
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  165  Checksum: 0B701CA7E0261D56
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  166  Checksum: 04F564DA10AD042D
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  167  Checksum: 0D4EDD969F73949E
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  168  Checksum: FBAD72B2070700BB
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  169  Checksum: F32A3D8907E94D0B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  170  Checksum: EF3F3E7D547F4E53
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  171  Checksum: 6C7B64AAA9D4DD5D
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  172  Checksum: 89B846F39F7CE5A2
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  173  Checksum: 656745A93176B3B2
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  174  Checksum: 10341D89574173ED
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  175  Checksum: 037169BB3CE891BD
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  176  Checksum: DC33E1660A13B1F1
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  177  Checksum: FC22F827A30E2638
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  178  Checksum: 690E1F51A5B6FC5B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  179  Checksum: 9AEC3E9A117A36D2
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  180  Checksum: AF0D6A471FE04D46
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  181  Checksum: 8F23E0874099C5FE
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  182  Checksum: 0F5E3EB99488E862
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  183  Checksum: 374EFF0B00AC5A2D
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  184  Checksum: 9FC16451D2094323
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  185  Checksum: D5957EECCC9181F8
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  186  Checksum: 78F007C214C0C956
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  187  Checksum: ADC2C58E4C21F462
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  188  Checksum: CB6AFE68DA9EDE90
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  189  Checksum: 0BF26F93F35062FC
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  190  Checksum: 5277B1ADB132765B
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  191  Checksum: AE42255B863F9D64
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  192  Checksum: 6F34942830E71B6E
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  193  Checksum: 2437F04565B0496B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  194  Checksum: 1A5693C693B0A563
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  195  Checksum: 06680F00737308F7
-Test:    0  ID:   21  Pass: 500  Variation: 0  Index:  196  Checksum: DE344ECB9C4B0379
-Test:    0  ID:   21  Pass: 500  Variation: 1  Index:  197  Checksum: 1C00C898475BEB3F
-Test:    0  ID:   21  Pass: 500  Variation: 2  Index:  198  Checksum: 3E519CA84E73619A
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  199  Checksum: B3E79909E15A40CB
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  200  Checksum: DC81BB1EC6EE3F3E
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  201  Checksum: 1C5435816BB80CF5
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  202  Checksum: CA71215457864359
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  203  Checksum: DBBAEBC0DD864EB7
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  204  Checksum: 4671E904AF5969EF
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  205  Checksum: 32E8CD9DCB0F2930
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  206  Checksum: 12D80067566FD1FE
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  207  Checksum: 50D0DE9BBE668E14
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  208  Checksum: 88131E5084C8532E
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  209  Checksum: F6177289FF265ABA
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  210  Checksum: DE394424DB66B873
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  211  Checksum: 7879DDF86C70AE8B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  212  Checksum: 50CBF2E5248CD35D
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  213  Checksum: AAAE4AB9BED13D5B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  214  Checksum: EBB81444EE2AAB8D
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  215  Checksum: F0DBA21EB145831C
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  216  Checksum: 55015958C2557A31
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  217  Checksum: C65A60C9629E00D8
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  218  Checksum: E57AFB0022E5B951
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  219  Checksum: CFA016D264D746DF
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  220  Checksum: E43C18345921DCBC
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  221  Checksum: E641F817A592B411
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  222  Checksum: 7554CEE32E76C27F
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  223  Checksum: 814AC671A0070ED7
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  224  Checksum: 231D2D308BE9F576
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  225  Checksum: 58F91DDE640B0CA3
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  226  Checksum: BE7AD4017A31F678
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  227  Checksum: 9C67F53CE6057687
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  228  Checksum: 56C7709A6337233B
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  229  Checksum: D152E865F21CFFB5
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  230  Checksum: 54AF23E00E28FF79
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  231  Checksum: A7598B8710C53D4B
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  232  Checksum: E3CF785814E8AE03
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  233  Checksum: 63535063EB48E8D9
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  234  Checksum: 9F00C7710631023B
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  235  Checksum: 1D85A51918308CC8
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  236  Checksum: 67AE8C8B7CE70FA1
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  237  Checksum: 979D36C5F38CDF53
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  238  Checksum: BF7217618D06DFF4
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  239  Checksum: 0DFADAF7A9C4B709
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  240  Checksum: CF37247EEBA7E032
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  241  Checksum: 9A6A660D84073367
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  242  Checksum: 91577801AB5A7744
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  243  Checksum: 543F19DB084BCAF3
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  244  Checksum: 4345C574B9BB1B68
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  245  Checksum: 7CE3AED7ACD44E53
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  246  Checksum: 6DC8644973C7A23D
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  247  Checksum: B4D42DF70C1767BF
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  248  Checksum: B75DFC64BDF937D1
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  249  Checksum: 542DE489A4BF43D2
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  250  Checksum: C67825C3236B1566
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  251  Checksum: 860E84AE69B0ADC9
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  252  Checksum: 025F5A0FDAB78966
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  253  Checksum: 4D85EE90D781B19B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  254  Checksum: 44C880E955857A1E
-Test:    0  ID:   23  Pass: 500  Variation: 0  Index:  255  Checksum: 92F09E696FF26C95
-Test:    0  ID:   23  Pass: 500  Variation: 1  Index:  256  Checksum: 793629CE86B9E0B6
-Test:    0  ID:   23  Pass: 500  Variation: 2  Index:  257  Checksum: 6699631228314CC7
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  258  Checksum: 37FEFB9E1B26017A
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  259  Checksum: C728AC236DD1C7A8
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  260  Checksum: 7A4750FE94F10C0E
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  261  Checksum: 44163B0BA0C019EC
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  262  Checksum: C4B911308D4A5ACB
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  263  Checksum: 569E3E660B980AA0
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  264  Checksum: 952A62BE007E28D0
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  265  Checksum: 74E57185D892FCBD
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  266  Checksum: 35D7E9D23AE80036
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  267  Checksum: 7C75E991C8DB5D91
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  268  Checksum: 188495DD37A56766
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  269  Checksum: 2EC8818A26D588CD
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  270  Checksum: 115EF23A70A9BA3F
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  271  Checksum: 540279CDFBFDB1A0
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  272  Checksum: 62ADB604BD778E36
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  273  Checksum: DA2244B73EA4E349
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  274  Checksum: 11ED0BB20B11CA46
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  275  Checksum: 71C5B4201E0F1673
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  276  Checksum: F92F19523147C10A
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  277  Checksum: 25DF84D0DBB460F8
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  278  Checksum: 3052895E2BFC8908
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  279  Checksum: 4800AA615D6B96D4
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  280  Checksum: EA5EB9652F818DF5
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  281  Checksum: E60C82EDCF8D2CA6
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  282  Checksum: A19C612CCD478EED
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  283  Checksum: A756E5607EB7ADDC
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  284  Checksum: D93F2AF55316AB11
-Test:    0  ID:   24  Pass: 500  Variation: 0  Index:  285  Checksum: CE19E9A82A5EE01D
-Test:    0  ID:   24  Pass: 500  Variation: 1  Index:  286  Checksum: A74DAAAE4DD4D64B
-Test:    0  ID:   24  Pass: 500  Variation: 2  Index:  287  Checksum: B6B9158633F00068
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  288  Checksum: 0BE975B64533F946
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  289  Checksum: AA2D0CC8D6B832C7
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  290  Checksum: 03D999B3028C3896
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  291  Checksum: DE7E09ABA8C9AB06
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  292  Checksum: 9EB711F526A07FCB
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  293  Checksum: A482456B6A8D98F9
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  294  Checksum: A2E572DD57E0875F
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  295  Checksum: C94A80C73CDBE7E5
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  296  Checksum: 89D79F104F8CDBC1
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  297  Checksum: C55A7FAD32CFE656
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  298  Checksum: 302ACA213E1538FE
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  299  Checksum: 4A72AFBD75C7C4B2
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  300  Checksum: 1656069148163665
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  301  Checksum: 91E43F78524151AE
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  302  Checksum: E4CC862169B8A3C5
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  303  Checksum: 25ABCBB03609255A
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  304  Checksum: 1D210F6A54AF82D1
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  305  Checksum: FB4E8FDAA4A8900F
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  306  Checksum: 6B1E9BB4EF89A429
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  307  Checksum: 95DF19A54FF1691A
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  308  Checksum: 1151CBABF6BA8A82
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  309  Checksum: 73CC0A6DE0991AE7
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  310  Checksum: 1135A2633F9F8A7B
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  311  Checksum: 831C480B774ABC35
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  312  Checksum: F3F6949766114034
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  313  Checksum: 63885A49EA5EADA0
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  314  Checksum: 926D668F30CBF9A0
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  315  Checksum: 0C7846E01F70067B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  316  Checksum: AC119542B8F6F8F0
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  317  Checksum: 594634576C18FCB0
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  318  Checksum: 07BE6D8B7921698E
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  319  Checksum: 972850D94C87B17B
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  320  Checksum: A4F0E3D3D2F084C7
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  321  Checksum: 3FCD2915D96109C2
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  322  Checksum: C949ADEE99FF5415
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  323  Checksum: 5FCD945CF3C786C3
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  324  Checksum: 3D114C1AA928ACDE
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  325  Checksum: 4A24D89F83E183F4
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  326  Checksum: 4EF6C85E64CB756F
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  327  Checksum: 3DEBDE2A638DA3E1
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  328  Checksum: BE0EB65873350422
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  329  Checksum: 1C64A40E5D21A2C0
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:  330  Checksum: D8149AE97FF31228
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  331  Checksum: C83C76403BC0D7DE
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  332  Checksum: 1B34438BA70A1DF0
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  333  Checksum: 87E22A370BBB1003
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  334  Checksum: A6FDFC962AE1E104
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  335  Checksum: 0EFFA1BF575D4CCF
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  336  Checksum: 68CC52FE3BEE0628
-Test:    0  ID:   26  Pass: 500  Variation: 0  Index:  337  Checksum: B42472901DD3C440
-Test:    0  ID:   26  Pass: 500  Variation: 1  Index:  338  Checksum: 234D5876D6A83736
-Test:    0  ID:   26  Pass: 500  Variation: 2  Index:  339  Checksum: A39E3EEA953C369F
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  340  Checksum: 6B158956143DDD9F
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  341  Checksum: 74F82355C02E1D48
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  342  Checksum: 9853DEE058C7AB35
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  343  Checksum: 65EFCF3ADB038C2D
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  344  Checksum: EF2436485553BF13
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  345  Checksum: C20C71D08071FF07
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  346  Checksum: 2DCE670182C74228
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  347  Checksum: 4C89DB3BBE7B1FD5
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  348  Checksum: 83E1B1204E44551F
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  349  Checksum: BF9ADBD06978781F
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  350  Checksum: DC41E6401097FCA0
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  351  Checksum: F28145260BC4464C
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  352  Checksum: F195501612BEAC8B
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  353  Checksum: B3A1BC590C3FFF84
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  354  Checksum: 37586B32DED8C32A
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  355  Checksum: 8E0C9EA614C61F80
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  356  Checksum: 94E7AEC42E16DB0B
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  357  Checksum: 6FCA7F323A1FCB0E
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  358  Checksum: 336F6A9D503BB374
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  359  Checksum: EF19F18FD7B41AF9
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  360  Checksum: B1719B91A5A4516D
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  361  Checksum: 34293A86002C1637
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  362  Checksum: 86B83633281A0F62
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  363  Checksum: 6DE64DF9EB8FFAED
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  364  Checksum: 2D22BD56ADA7F62C
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  365  Checksum: 32CA7777D41885AF
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  366  Checksum: 08B7D40A25ABD9B4
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  367  Checksum: AB2C1B478D94E1CF
-Test:    0  ID:   27  Pass: 500  Variation: 0  Index:  368  Checksum: 4AA7D59CDBA70671
-Test:    0  ID:   27  Pass: 500  Variation: 1  Index:  369  Checksum: 5FC2CA79E6EA23DA
-Test:    0  ID:   27  Pass: 500  Variation: 2  Index:  370  Checksum: 170C7013FAC7C40C
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  371  Checksum: 1CA7CA21A5FC0787
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  372  Checksum: 7A8A9AA019958C04
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  373  Checksum: 8500F15CADEA7435
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  374  Checksum: 0160DBF4F4B3FBB2
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  375  Checksum: 33CB4824611175A4
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  376  Checksum: 90C493047A5ACDA1
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  377  Checksum: 0CC82E1F5E38C71F
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  378  Checksum: 03CFE5524FC73D92
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  379  Checksum: A7341EF3908F1C59
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  380  Checksum: 4878D103F371A340
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  381  Checksum: 9BC32B2A1D404DED
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  382  Checksum: D0C00049F93BE8D3
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  383  Checksum: D1DD239BF24699B5
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  384  Checksum: 0E82C0C1F51466B7
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  385  Checksum: DCA3C85AFFAFA7D0
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  386  Checksum: 58032CF8BADEDAD8
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:  387  Checksum: 4F1ED2C365079AC1
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  388  Checksum: 3D7F3D23993F2223
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  389  Checksum: 0CBE0AC1209A309E
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  390  Checksum: BD74E22F8424E7D8
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  391  Checksum: 056B07D9D7231ACA
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  392  Checksum: F0ABB930A7754608
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  393  Checksum: E7C57538C1322C93
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  394  Checksum: 0D88E548FB8BF629
-Test:    0  ID:   28  Pass: 500  Variation: 0  Index:  395  Checksum: 6ACC013D450D7857
-Test:    0  ID:   28  Pass: 500  Variation: 1  Index:  396  Checksum: 03D84C527BDC0D04
-Test:    0  ID:   28  Pass: 500  Variation: 2  Index:  397  Checksum: 9A70431C361F72DA
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  398  Checksum: D68276323FF91D5B
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  399  Checksum: 89FDA72FC70194CF
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  400  Checksum: 97D27A65069DCC3C
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  401  Checksum: A6B028CE692117C5
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  402  Checksum: F5DB89CF982BFB76
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  403  Checksum: 1C588BEE51F164AF
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  404  Checksum: A74C8307B66B6B0C
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  405  Checksum: 685C962320006E0A
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  406  Checksum: 97D30E2745CF96D8
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  407  Checksum: 63266095468195D2
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  408  Checksum: EDC61E0020D78247
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:  409  Checksum: C0A9FE766108F740
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  410  Checksum: C07C3516F212E53B
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  411  Checksum: F8447597F5D71412
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  412  Checksum: 0B5C5F3179C40BAB
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  413  Checksum: 67563CBDC51BA168
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  414  Checksum: 7BCCC2F724478FFC
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  415  Checksum: 7E54DA1EABC237FD
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  416  Checksum: 071466F4A0188460
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  417  Checksum: 914A4CE73AE6130B
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  418  Checksum: 5E3F4068404E282E
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  419  Checksum: 2D76C654E42424D5
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  420  Checksum: 9DC36E1029B7F848
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  421  Checksum: 4DC1BDD0E50245DC
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  422  Checksum: 596E3E74C0F5F3D8
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  423  Checksum: 86A42A257F0E5AB2
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  424  Checksum: 43D39B97779C34A9
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  425  Checksum: C3A52C74A74FF7E1
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  426  Checksum: 8FEA46EC170B503D
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  427  Checksum: 688267311CC6FDF8
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  428  Checksum: 91A541773421F98F
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  429  Checksum: 23F40665F5488CC6
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  430  Checksum: 9C2C6D6639D0A354
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  431  Checksum: ACA1FA30C01F76E2
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  432  Checksum: 55A5FA513AC221BD
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  433  Checksum: 9D66256E6E3CDFC3
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  434  Checksum: 8B81EEB84929F818
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  435  Checksum: 054E8B8757FE3989
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  436  Checksum: EF6679636CBF9A8F
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  437  Checksum: B68D0891C8CAB42C
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  438  Checksum: 20604DC6E9BE30DA
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  439  Checksum: 485AC664B7DAE821
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  440  Checksum: 464ED1908C7868BA
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  441  Checksum: A3461DDF7F8782C2
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  442  Checksum: A574E62AE16E71E1
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  443  Checksum: 6A811F7B06B3AE46
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  444  Checksum: E06908917567CA78
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  445  Checksum: 1A5AAA8847AB5539
-Test:    0  ID:    5  Pass: 500  Variation: 2  Index:  446  Checksum: 736EE54265774070
-Test:    0  ID:   30  Pass: 500  Variation: 0  Index:  447  Checksum: 1AFBB06E25C7371D
-Test:    0  ID:   30  Pass: 500  Variation: 1  Index:  448  Checksum: 031CE3D212B374A1
-Test:    0  ID:   30  Pass: 500  Variation: 2  Index:  449  Checksum: ABF6A193A5AB8DF4
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  450  Checksum: 26EC65ED554F682A
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  451  Checksum: 1EDD576E8FC680E3
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  452  Checksum: 17915AA49B6201BF
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  453  Checksum: 8708258E198E018C
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  454  Checksum: 5600D0FD1140303E
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  455  Checksum: DE67CF59B5AE1699
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  456  Checksum: 7B1CF4E0FC5B5BCC
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  457  Checksum: 1A32454D9E31436A
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  458  Checksum: EC545E206CCF20C1
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  459  Checksum: 51F41F52113F0CF7
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  460  Checksum: 730462E4E2033243
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  461  Checksum: 51BDA0E08019F5AA
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  462  Checksum: E7316415A64EFB6F
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  463  Checksum: B0FED35F44C19C72
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  464  Checksum: 8ECFBEE380DC08B3
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  465  Checksum: 114C52ED9B4A3D2B
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  466  Checksum: 1D17BB8D5168D6B7
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  467  Checksum: B11D945BFBBF002B
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  468  Checksum: FE54FD79839239F9
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  469  Checksum: DEDAB2C732716236
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  470  Checksum: B56C05987156E9D8
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  471  Checksum: F895D98F7ACED348
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  472  Checksum: E7E1ED4C0FA30FB0
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  473  Checksum: 885D59BE27A1C7AD
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  474  Checksum: AAF13618AF359BDC
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  475  Checksum: 4E1B06592F589370
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  476  Checksum: 88E4DE005A4F2C2D
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  477  Checksum: 3DBB64D2D7575F6A
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  478  Checksum: DA89DBD9145BA9ED
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  479  Checksum: 2E188574AE4F2BCE
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  480  Checksum: D38F31BE407CC5B5
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  481  Checksum: 697D68C8DEED7B7A
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  482  Checksum: 48468005CEF72890
-Test:    0  ID:   31  Pass: 500  Variation: 0  Index:  483  Checksum: 7C75413C8A6EAE75
-Test:    0  ID:   31  Pass: 500  Variation: 1  Index:  484  Checksum: 808F903582911102
-Test:    0  ID:   31  Pass: 500  Variation: 2  Index:  485  Checksum: 566162402E5D2D56
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  486  Checksum: 0336EDF7B2827FC4
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  487  Checksum: A3F2248DB41B7807
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  488  Checksum: 2C86246CB72599A0
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  489  Checksum: 551572E0A9589825
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  490  Checksum: 9E591860B1ADA410
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  491  Checksum: E5924D2436B432FB
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  492  Checksum: A675CB94AAA055FB
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  493  Checksum: 00B42829A1890A6A
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  494  Checksum: 156E220AED7EBB20
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  495  Checksum: F342DE588CF01DEF
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  496  Checksum: 6ED1E2E70E57C5FC
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  497  Checksum: F806D60493CC7551
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  498  Checksum: 8AEC5FA8F653B8F6
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  499  Checksum: A9BF12C2AE2274DE
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  500  Checksum: 753EE6A6A3DB76DD
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  501  Checksum: 9D5BDD35E41D9FB6
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  502  Checksum: 6CEFFAC9E454760C
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  503  Checksum: E9A6E45A1E370B49
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  504  Checksum: 681025D0A9F630D7
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  505  Checksum: 1485A3BA6FC929D9
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  506  Checksum: 83147136EEE39F1A
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  507  Checksum: 26AA657998AEE340
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  508  Checksum: 359356D49D7B739A
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  509  Checksum: 810DAF654116905B
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  510  Checksum: 2F0B9C4D579CB6BA
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  511  Checksum: 3B94F8E26ED2F52D
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  512  Checksum: 258F194657D88A15
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  513  Checksum: B81AA30E4DF8AD04
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  514  Checksum: 4E6D368CF5469C93
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  515  Checksum: FEA4BE437A0BCF4C
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  516  Checksum: 608F8AE45C054281
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  517  Checksum: D3D4DB57239A017E
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  518  Checksum: F884789A5446573F
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  519  Checksum: FE065C1A88078D9A
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  520  Checksum: 574624C59B407418
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  521  Checksum: 0B1C05DA14DB8F3E
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  522  Checksum: C9981395DE6984FD
-Test:    0  ID:   32  Pass: 500  Variation: 0  Index:  523  Checksum: A3113897587D62F9
-Test:    0  ID:   32  Pass: 500  Variation: 1  Index:  524  Checksum: E99834ECBFF5AD2F
-Test:    0  ID:   32  Pass: 500  Variation: 2  Index:  525  Checksum: 980F8AB75499A65C
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  526  Checksum: 73E116D6C6E19818
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  527  Checksum: E6DCAB928CF9C0ED
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  528  Checksum: 5D1BD2998DE5F20B
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  529  Checksum: 71211D8FA9CC1FEA
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  530  Checksum: 4D39BA3147AE242B
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  531  Checksum: 40346C73DC9E2CD4
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  532  Checksum: AA4A8C7DD472A21D
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  533  Checksum: 516AC60D5768485B
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  534  Checksum: 4BBB01899E3B0D69
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  535  Checksum: 13F700F5A52580BE
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  536  Checksum: F778B138A5D74EC8
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  537  Checksum: 4F3667EC7DD58076
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  538  Checksum: 45E6F30268D976A2
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  539  Checksum: A332BDFCABE88593
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  540  Checksum: 542F68A00BA166EC
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  541  Checksum: 2CDE31AD5FAFB3D0
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  542  Checksum: C1D7EE62EDA932B7
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  543  Checksum: AD4BA6F98B85A56D
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  544  Checksum: 40A2C0A9F2796B59
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  545  Checksum: CEC0A6BD711BCEA7
-Test:    0  ID:   29  Pass: 500  Variation: 2  Index:  546  Checksum: 56558D6726AAA756
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  547  Checksum: 0F5F92D79420B7B8
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  548  Checksum: DA5A716819AADA24
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  549  Checksum: BDC51C09086D6F6B
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  550  Checksum: 987D4E5628908C7E
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  551  Checksum: 88E5B327E00C8174
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  552  Checksum: 4541E93DBF773F97
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  553  Checksum: 6CA8E36C34A8F9F9
-Test:    0  ID:    9  Pass: 500  Variation: 1  Index:  554  Checksum: CAF89FA7B7C50455
-Test:    0  ID:    9  Pass: 500  Variation: 2  Index:  555  Checksum: 1335EAE5580371AE
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  556  Checksum: 905AB85F2317CE65
-Test:    0  ID:   33  Pass: 500  Variation: 0  Index:  557  Checksum: 7B1B87AF5421D778
-Test:    0  ID:   33  Pass: 500  Variation: 1  Index:  558  Checksum: 686ED4F14633C8AE
-Test:    0  ID:   33  Pass: 500  Variation: 2  Index:  559  Checksum: EC2F6DE8556B4EB6
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  560  Checksum: 57C9E55E93414EF7
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  561  Checksum: 5D4AFBCA6EC381CF
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  562  Checksum: 8AEE462AEA41B335
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  563  Checksum: EA993205E824758F
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  564  Checksum: F81A49672C15898A
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  565  Checksum: 46A23B93599B45BD
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  566  Checksum: 6EFF7A945B529EE9
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  567  Checksum: 932DC52F86F0610E
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  568  Checksum: 2B334D3F376BAA11
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  569  Checksum: 471005EAC9CE77D0
-Test:    0  ID:   20  Pass: 500  Variation: 1  Index:  570  Checksum: 2AE528FB1480BBE7
-Test:    0  ID:   20  Pass: 500  Variation: 2  Index:  571  Checksum: 54200219232B14B5
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  572  Checksum: 36E9B0EDE0DA8B8F
-Test:    0  ID:   29  Pass: 500  Variation: 0  Index:  573  Checksum: F08B14CA7FE9BBE1
-Test:    0  ID:   29  Pass: 500  Variation: 1  Index:  574  Checksum: 06F9F61F064B5D28
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  575  Checksum: 9246D7D829ED5B1A
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  576  Checksum: 9C44E7D9F23ED8C2
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  577  Checksum: 1A6B2CEAEF96C96A
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  578  Checksum: F367B49538BAE457
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  579  Checksum: 507A7D00B7C9D962
-Test:    0  ID:   20  Pass: 500  Variation: 0  Index:  580  Checksum: FF7A557C1C4179A3
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  581  Checksum: 81AF6D43D3B7230E
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  582  Checksum: DE9EABE26AD32CC5
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  583  Checksum: 7136CF5A18F89FDA
-Test:    0  ID:    9  Pass: 500  Variation: 0  Index:  584  Checksum: 36F00CCFF6537263
-Test:    0  ID:    5  Pass: 500  Variation: 0  Index:  585  Checksum: 50E99B96849F46F8
-Test:    0  ID:    5  Pass: 500  Variation: 1  Index:  586  Checksum: 97C9120B33821D5D
-Test:    0  ID:   34  Pass: 500  Variation: 0  Index:  587  Checksum: 8F9DDBD7D4055903
-Test:    0  ID:   34  Pass: 500  Variation: 1  Index:  588  Checksum: 60151753705CFBEC
-Test:    0  ID:   34  Pass: 500  Variation: 2  Index:  589  Checksum: 0F2097103E60BC03
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  590  Checksum: E16CB5B16F3FDD4E
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  591  Checksum: 8A2D39002355B3CE
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  592  Checksum: D8E762DDEFA63A40
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  593  Checksum: 0F91500F31F25F7E
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  594  Checksum: 62EFFE31AD4D73D9
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  595  Checksum: 6DD24B5F1CAE1A55
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  596  Checksum: 56C9B44426B4834D
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  597  Checksum: 088BBD8DD6D4A519
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  598  Checksum: B073A147F5974D2E
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  599  Checksum: 9E1BD732842F91A3
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  600  Checksum: 02ADB9887F48C85B
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  601  Checksum: 4ECAB9D40F40D51B
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  602  Checksum: 71B96AC940B324F8
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  603  Checksum: D74548F9C4975FCA
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  604  Checksum: F464B8A9377CE55B
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  605  Checksum: B23F142CD81551E5
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  606  Checksum: EDD37DBD6987A857
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  607  Checksum: D3C6EC641F3C6983
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  608  Checksum: AFEABC793FAEC583
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  609  Checksum: 9EB4C4289799CAA5
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  610  Checksum: C80BB75F7A21484C
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  611  Checksum: D3FB36827E52893C
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  612  Checksum: A3E0A4F954EBEDD3
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  613  Checksum: 760E17983D8E835C
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  614  Checksum: F5725E03020E96A3
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  615  Checksum: 5CC463EA375F58CC
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  616  Checksum: 6723EEEBE7777C4B
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  617  Checksum: 31A57269EB91C9C4
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  618  Checksum: 0CFB05A63F6587FE
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  619  Checksum: 80FAFAC8606FBFBA
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  620  Checksum: 921A7F7A79F2EB99
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  621  Checksum: DDA4280407B094B1
-Test:    0  ID:   35  Pass: 500  Variation: 0  Index:  622  Checksum: 04E31B922F0FD7D2
-Test:    0  ID:   35  Pass: 500  Variation: 1  Index:  623  Checksum: 92809EF63B6D239F
-Test:    0  ID:   35  Pass: 500  Variation: 2  Index:  624  Checksum: 6FA9F5E8641B1371
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  625  Checksum: 12E03D19BFAE1619
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  626  Checksum: 86B29F4C1B1A1F8D
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  627  Checksum: 5B7E8ADFECC13640
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  628  Checksum: 770690B4F1086549
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  629  Checksum: 8A71F4C94A82E052
-Test:    0  ID:   34  Pass: 500  Variation: 0  Index:  630  Checksum: 67395303DED7A659
-Test:    0  ID:   34  Pass: 500  Variation: 1  Index:  631  Checksum: 73F51123E86FC260
-Test:    0  ID:   34  Pass: 500  Variation: 2  Index:  632  Checksum: C058D662A20B7315
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  633  Checksum: 67DFEC560304736D
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  634  Checksum: 9150528867B59344
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  635  Checksum: D1A489067A714142
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  636  Checksum: 0525F6A82C2D5419
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  638  Checksum: 54C058C6A87C72BA
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  639  Checksum: 27CC96CB1B072B73
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  640  Checksum: 21A0ADC056347EFF
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  641  Checksum: 116E5C59072B2E20
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  642  Checksum: F14AAE2E3508EF19
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  643  Checksum: D72BC2AB0306E706
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  644  Checksum: B2E959C709058976
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  645  Checksum: 486B623387732631
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  646  Checksum: A70676107D9ADEDC
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  647  Checksum: B3E372171F309B71
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  648  Checksum: FB3F5F7F1412AC20
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  649  Checksum: 88EF0578517D78A3
-Test:    0  ID:   36  Pass: 500  Variation: 0  Index:  650  Checksum: CBA22C4CE7648317
-Test:    0  ID:   36  Pass: 500  Variation: 1  Index:  651  Checksum: 87FC1D52CD981F30
-Test:    0  ID:   36  Pass: 500  Variation: 2  Index:  652  Checksum: 7E68C4903DFE192A
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  653  Checksum: B2E918D08B4FA97C
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  654  Checksum: B2AB4003FE5E92BD
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  655  Checksum: D22DC2F9E99DDAF8
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  656  Checksum: 930D41B89E2E5E68
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  657  Checksum: 3D4EEC8E505C9E7F
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  658  Checksum: 8D58E026479A1CC4
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  659  Checksum: C35582643C244F67
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  660  Checksum: F459567801A2423D
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  661  Checksum: A292F31BDD378D58
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  662  Checksum: 00246FFB5AD5C825
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  663  Checksum: 03BF6C7D31D3A19D
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  664  Checksum: E48518592E09147F
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  665  Checksum: 3A06631F2D2A4D09
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  666  Checksum: A26547BEB008C01A
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  667  Checksum: E4B7ED07C5B75ED0
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  668  Checksum: 38ACD72479334287
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  669  Checksum: 7E89EAE6B8A40B52
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  670  Checksum: AAFEC397D9527BA7
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  671  Checksum: 97818C21BB2E4043
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  672  Checksum: 0665F97154D9871A
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  673  Checksum: 8EBB21E9CA72DBA8
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  674  Checksum: D0B8B1523DF7E3EA
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  675  Checksum: CC44F01382F2DD9A
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  676  Checksum: CF60C68626FF643D
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  677  Checksum: 9A91EC9DE090A4EC
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  678  Checksum: DAFCE6C8BE9D9A61
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  679  Checksum: F8F892914B66051B
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  680  Checksum: D427AD742D6DEC74
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  681  Checksum: 18177A58D42758ED
-Test:    0  ID:   37  Pass: 500  Variation: 0  Index:  682  Checksum: C659BBF8DAA579D5
-Test:    0  ID:   37  Pass: 500  Variation: 1  Index:  683  Checksum: BFB9323F3628F046
-Test:    0  ID:   37  Pass: 500  Variation: 2  Index:  684  Checksum: 69E622A72FDFAB51
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  685  Checksum: 6A2135D855EF91E4
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  686  Checksum: BC8BFDDA1D750DB2
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  688  Checksum: 331943F565DABD5E
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  689  Checksum: C235F2C34A48C586
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  690  Checksum: 66C462CD24425680
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  691  Checksum: 11F6CBA2D0DFEB62
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  692  Checksum: D3E8F689DB16F769
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  693  Checksum: 3DF2E4D3711ECA5E
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  694  Checksum: 5BB8E03DC3D5444D
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  695  Checksum: A1C724EFD889500A
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  696  Checksum: CB4F3FAA3CAD04F3
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  697  Checksum: 2FAAE9131AC3BD32
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  698  Checksum: AB9E8D11F72CBA62
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  699  Checksum: DE39271EC77AA0D1
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  700  Checksum: C924CE53C65CD1EB
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  701  Checksum: 1973259FFB8ED985
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  702  Checksum: D2948449ABE9F000
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  703  Checksum: E723D8D03D471327
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  704  Checksum: A0C1A3FCEB7D814F
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  705  Checksum: C42200D406755C64
-Test:    0  ID:   25  Pass: 500  Variation: 1  Index:  706  Checksum: CA804AC5B07CE712
-Test:    0  ID:   25  Pass: 500  Variation: 2  Index:  707  Checksum: 8F0491D8000F7B2E
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  708  Checksum: FD8078FF19E887B2
-Test:    0  ID:   22  Pass: 500  Variation: 1  Index:  709  Checksum: 04E83FC68755C4BE
-Test:    0  ID:   22  Pass: 500  Variation: 2  Index:  710  Checksum: BB1CAD0E0FB8B3FB
-Test:    0  ID:   22  Pass: 500  Variation: 0  Index:  711  Checksum: C1C6B37CEA4F091E
-Test:    0  ID:   25  Pass: 500  Variation: 0  Index:  712  Checksum: E25873710A7BC86F
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 02BC817E271DD10B
+    n = data[0] += n;
+    n *= data[1];
+    n *= data[2];
+    n = data[3] *= n;
+    n = data[4] *= n;
+    n += data[5];
+    n = data[6] *= n;
+    n += data[6];
+    n = data[7] *= n;
+    n = data[7] *= n;
+    n = data[8] *= n;
+    n *= data[7];
+    n += data[9];
+    n *= data[10];
+    n *= data[11];
+    n = data[3] *= n;
+    n *= data[12];
+    n *= data[8];
+    n = data[13] += n;
+    n = data[14] += n;
+    n *= data[0];
+    n = data[14] *= n;
+    n += data[15];
+    n *= data[16];
+    n += data[14];
+    n = data[3] *= n;
+    n *= data[17];
+    n *= data[3];
+    n *= data[18];
+    n *= data[4];
+    n *= data[19];
+    n *= data[13];
+    Member:    0  Result: 0.955860
+    Member:    1  Result: 0.972017
+    Member:    2  Result: 0.973652
+    Member:    3  Result: 10.000000
+    Member:    4  Result: 0.974894
+    Member:    5  Result: 0.974928
+    Member:    6  Result: 0.974922
+    Member:    7  Result: 0.962915
+    Member:    8  Result: 0.974928
+    Member:    9  Result: 0.974928
+    Member:   10  Result: 0.974928
+    Member:   11  Result: 0.974928
+    Member:   12  Result: 0.974923
+    Member:   13  Result: 0.974102
+    Member:   14  Result: 0.974928
+    Member:   15  Result: 0.930863
+    Member:   16  Result: 0.974928
+    Member:   17  Result: 0.967004
+    Member:   18  Result: 0.974928
+    Member:   19  Result: 0.974928
+    Member:   20  Result: 0.974928
+    Member:   21  Result: 0.974928
+    Member:   22  Result: 0.971054
+    Member:   23  Result: 0.974825
+    Member:   24  Result: 0.974928
+    Member:   25  Result: 0.974928
+    Member:   26  Result: 10.000000
+    Member:   27  Result: 10.000000
+    Member:   28  Result: 0.964909
+    Member:   29  Result: 10.000000
+    Member:   30  Result: 0.974928
+    Member:   31  Result: 0.974928
+    Member:   32  Result: 0.974928
+    Member:   33  Result: 0.970866
+    Member:   34  Result: 0.974589
+    Member:   35  Result: 0.974924
+    Member:   36  Result: 0.974928
+    Member:   37  Result: 0.974928
+    Member:   38  Result: 0.974928
+    Member:   39  Result: 0.970983
+    Member:   40  Result: 0.974928
+    Member:   41  Result: 0.974928
+    Member:   42  Result: 0.974928
+    Member:   43  Result: 0.974928
+    Member:   44  Result: 0.974843
+    Member:   45  Result: 0.974757
+    Member:   46  Result: 0.974928
+    Member:   47  Result: 0.974928
+    Member:   48  Result: 1.204877
+    Member:   49  Result: 0.928970
+    Member:   50  Result: 0.974926
+    Member:   51  Result: 0.974928
+    Member:   52  Result: 0.974919
+    Member:   53  Result: 0.974013
+    Member:   54  Result: 0.974928
+    Member:   55  Result: 10.000000
+    Member:   56  Result: 10.000000
+    Member:   57  Result: 0.974928
+    Member:   58  Result: 0.974928
+    Member:   59  Result: 0.943425
+    Member:   60  Result: 0.974928
+    Member:   61  Result: 0.974928
+    Member:   62  Result: 0.974928
+    Member:   63  Result: 0.974325
+    Member:   64  Result: 0.974438
+    Member:   65  Result: 0.974928
+    Member:   66  Result: 0.970361
+    Member:   67  Result: 10.000000
+    Member:   68  Result: 10.000000
+    Member:   69  Result: 0.968267
+    Member:   70  Result: 0.974928
+    Member:   71  Result: 0.974571
+    Member:   72  Result: 0.974320
+    Member:   73  Result: 0.974928
+    Member:   74  Result: 0.974686
+    Member:   75  Result: 10.000000
+    Member:   76  Result: 0.974928
+    Member:   77  Result: 10.000000
+    Member:   78  Result: 0.960940
+    Member:   79  Result: 0.967841
+    Member:   80  Result: 0.974922
+    Member:   81  Result: 0.964683
+    Member:   82  Result: 0.969794
+    Member:   83  Result: 0.974928
+    Member:   84  Result: 0.974928
+    Member:   85  Result: 0.974973
+    Member:   86  Result: 0.974928
+    Member:   87  Result: 0.974901
+    Member:   88  Result: 0.974351
+    Member:   89  Result: 0.974928
+    Member:   90  Result: 0.974928
+    Member:   91  Result: 0.974928
+    Member:   92  Result: 10.000000
+    Member:   93  Result: 10.000000
+    Member:   94  Result: 0.969107
+    Member:   95  Result: 0.964550
+    Member:   96  Result: 0.974928
+    Member:   97  Result: 0.974928
+    Member:   98  Result: 0.974928
+    Member:   99  Result: 0.974928
+    Member:  100  Result: 0.972309
+    Member:  101  Result: 0.974925
+    Member:  102  Result: 0.973198
+    Member:  103  Result: 0.974928
+    Member:  104  Result: 0.974928
+    Member:  105  Result: 0.974928
+    Member:  106  Result: 0.973803
+    Member:  107  Result: 0.974928
+    Member:  108  Result: 0.973262
+    Member:  109  Result: 0.974810
+    Member:  110  Result: 0.974697
+    Member:  111  Result: 0.974928
+    Member:  112  Result: 0.974928
+    Member:  113  Result: 0.922409
+    Member:  114  Result: 0.974928
+    Member:  115  Result: 0.974859
+    Member:  116  Result: 0.974878
+    Member:  117  Result: 0.974923
+    Member:  118  Result: 0.974928
+    Member:  119  Result: 0.974926
+    Member:  120  Result: 0.974928
+    Member:  121  Result: 0.974911
+    Member:  122  Result: 0.965290
+    Member:  123  Result: 0.974928
+    Member:  124  Result: 10.000000
+    Member:  125  Result: 0.974928
+    Member:  126  Result: 0.974928
+    Member:  127  Result: 0.974928
+    Member:  128  Result: 0.974928
+    Member:  129  Result: 0.974928
+    Member:  130  Result: 0.974927
+    Member:  131  Result: 0.974928
+    Member:  132  Result: 0.939630
+    Member:  133  Result: 0.974928
+    Member:  134  Result: 0.964161
+    Member:  135  Result: 10.000000
+    Member:  136  Result: 0.974928
+    Member:  137  Result: 0.974928
+    Member:  138  Result: 0.974928
+    Member:  139  Result: 0.972774
+    Member:  140  Result: 0.968101
+    Member:  141  Result: 0.974928
+    Member:  142  Result: 0.974928
+    Member:  143  Result: 0.974652
+    Member:  144  Result: 0.974928
+    Member:  145  Result: 0.974928
+    Member:  146  Result: 0.974928
+    Member:  147  Result: 0.974928
+    Member:  148  Result: 0.974261
+    Member:  149  Result: 0.974928
+    Member:  150  Result: 0.974928
+    Member:  151  Result: 0.974928
+    Member:  152  Result: 0.974910
+    Member:  153  Result: 0.973111
+    Member:  154  Result: 0.974928
+    Member:  155  Result: 0.974928
+    Member:  156  Result: 0.965243
+    Member:  157  Result: 0.972591
+    Member:  158  Result: 0.974921
+    Member:  159  Result: 0.974928
+    Member:  160  Result: 0.974874
+    Member:  161  Result: 0.972603
+    Member:  162  Result: 0.974856
+    Member:  163  Result: 0.974928
+    Member:  164  Result: 0.974928
+    Member:  165  Result: 0.974928
+    Member:  166  Result: 10.000000
+    Member:  167  Result: 0.974928
+    Member:  168  Result: 0.969566
+    Member:  169  Result: 0.974900
+    Member:  170  Result: 0.966731
+    Member:  171  Result: 0.974925
+    Member:  172  Result: 0.974801
+    Member:  173  Result: 0.974689
+    Member:  174  Result: 0.974928
+    Member:  175  Result: 0.974928
+    Member:  176  Result: 0.974474
+    Member:  177  Result: 0.916916
+    Member:  178  Result: 0.974928
+    Member:  179  Result: 0.974928
+    Member:  180  Result: 0.974928
+    Member:  181  Result: 0.974928
+    Member:  182  Result: 10.000000
+    Member:  183  Result: 0.974928
+    Member:  184  Result: 0.974928
+    Member:  185  Result: 0.974913
+    Member:  186  Result: 0.974928
+    Member:  187  Result: 0.966607
+    Member:  188  Result: 0.974928
+    Member:  189  Result: 0.974917
+    Member:  190  Result: 0.973497
+    Member:  191  Result: 0.974928
+    Member:  192  Result: 0.974928
+    Member:  193  Result: 0.974928
+    Member:  194  Result: 0.974928
+    Member:  195  Result: 0.974928
+    Member:  196  Result: 0.974921
+    Member:  197  Result: 0.974928
+    Member:  198  Result: 0.974928
+    Member:  199  Result: 0.974928
+    Member:  200  Result: 0.974928
+    Member:  201  Result: 0.974928
+    Member:  202  Result: 0.973438
+    Member:  203  Result: 0.974928
+    Member:  204  Result: 0.974928
+    Member:  205  Result: 0.961421
+    Member:  206  Result: 0.974928
+    Member:  207  Result: 10.000000
+    Member:  208  Result: 0.974928
+    Member:  209  Result: 0.974732
+    Member:  210  Result: 0.964866
+    Member:  211  Result: 0.974928
+    Member:  212  Result: 0.974740
+    Member:  213  Result: 0.974928
+    Member:  214  Result: 0.974928
+    Member:  215  Result: 0.974928
+    Member:  216  Result: 0.974928
+    Member:  217  Result: 0.974899
+    Member:  218  Result: 0.942334
+    Member:  219  Result: 0.974928
+    Member:  220  Result: 0.974928
+    Member:  221  Result: 0.947877
+    Member:  222  Result: 0.957758
+    Member:  223  Result: 0.973559
+    Member:  224  Result: 0.974928
+    Member:  225  Result: 0.974928
+    Member:  226  Result: 0.974431
+    Member:  227  Result: 0.974928
+    Member:  228  Result: 10.000000
+    Member:  229  Result: 0.974662
+    Member:  230  Result: 0.974928
+    Member:  231  Result: 0.974928
+    Member:  232  Result: 0.974928
+    Member:  233  Result: 0.972967
+    Member:  234  Result: 0.974848
+    Member:  235  Result: 0.974928
+    Member:  236  Result: 0.974469
+    Member:  237  Result: 0.974928
+    Member:  238  Result: 0.974928
+    Member:  239  Result: 0.974533
+    Member:  240  Result: 10.000000
+    Member:  241  Result: 0.974928
+    Member:  242  Result: 0.974835
+    Member:  243  Result: 0.974485
+    Member:  244  Result: 0.973646
+    Member:  245  Result: 0.974928
+    Member:  246  Result: 0.974853
+    Member:  247  Result: 0.974928
+    Member:  248  Result: 0.974928
+    Member:  249  Result: 0.974928
+    Member:  250  Result: 0.974928
+    Member:  251  Result: 10.000000
+    Member:  252  Result: 10.000000
+    Member:  253  Result: 0.974318
+    Member:  254  Result: 0.974928
+    Member:  255  Result: 0.974928
+    Member:  256  Result: 0.974928
+    Member:  257  Result: 0.950671
+    Member:  258  Result: 10.000000
+    Member:  259  Result: 0.974928
+    Member:  260  Result: 0.903390
+    Member:  261  Result: 0.967445
+    Member:  262  Result: 0.974928
+    Member:  263  Result: 0.974928
+    Member:  264  Result: 0.971155
+    Member:  265  Result: 0.974925
+    Member:  266  Result: 0.974928
+    Member:  267  Result: 0.974928
+    Member:  268  Result: 0.974552
+    Member:  269  Result: 0.974633
+    Member:  270  Result: 0.974928
+    Member:  271  Result: 0.974928
+    Member:  272  Result: 0.974928
+    Member:  273  Result: 0.974928
+    Member:  274  Result: 0.974928
+    Member:  275  Result: 10.000000
+    Member:  276  Result: 0.974928
+    Member:  277  Result: 0.974928
+    Member:  278  Result: 0.974928
+    Member:  279  Result: 0.974928
+    Member:  280  Result: 0.974921
+    Member:  281  Result: 0.974876
+    Member:  282  Result: 0.974928
+    Member:  283  Result: 10.000000
+    Member:  284  Result: 0.974928
+    Member:  285  Result: 0.974928
+    Member:  286  Result: 0.974928
+    Member:  287  Result: 0.974928
+    Member:  288  Result: 0.974928
+    Member:  289  Result: 0.974925
+    Member:  290  Result: 0.974928
+    Member:  291  Result: 0.974928
+    Member:  292  Result: 0.974928
+    Member:  293  Result: 0.974916
+    Member:  294  Result: 0.974928
+    Member:  295  Result: 0.974928
+    Member:  296  Result: 0.974903
+    Member:  297  Result: 0.974066
+    Member:  298  Result: 0.974928
+    Member:  299  Result: 0.974928
+    Member:  300  Result: 0.974928
+    Member:  301  Result: 0.974928
+    Member:  302  Result: 0.974928
+    Member:  303  Result: 0.968454
+    Member:  304  Result: 0.974928
+    Member:  305  Result: 0.974928
+    Member:  306  Result: 10.000000
+    Member:  307  Result: 0.949394
+    Member:  308  Result: 0.951670
+    Member:  309  Result: 0.974928
+    Member:  310  Result: 0.974885
+    Member:  311  Result: 0.974928
+    Member:  312  Result: 0.969185
+    Member:  313  Result: 0.974928
+    Member:  314  Result: 0.974928
+    Member:  315  Result: 0.974929
+    Member:  316  Result: 0.974928
+    Member:  317  Result: 0.972556
+    Member:  318  Result: 0.974926
+    Member:  319  Result: 0.974817
+    Member:  320  Result: 0.974928
+    Member:  321  Result: 0.970877
+    Member:  322  Result: 0.974928
+    Member:  323  Result: 0.974928
+    Member:  324  Result: 0.974928
+    Member:  325  Result: 0.974927
+    Member:  326  Result: 0.954849
+    Member:  327  Result: 0.974927
+    Member:  328  Result: 0.974904
+    Member:  329  Result: 0.974928
+    Member:  330  Result: 0.974928
+    Member:  331  Result: 10.000000
+    Member:  332  Result: 0.974928
+    Member:  333  Result: 0.972405
+    Member:  334  Result: 0.974402
+    Member:  335  Result: 0.970206
+    Member:  336  Result: 0.974928
+    Member:  337  Result: 0.974928
+    Member:  338  Result: 0.971815
+    Member:  339  Result: 0.974688
+    Member:  340  Result: 0.968237
+    Member:  341  Result: 0.974928
+    Member:  342  Result: 0.974928
+    Member:  343  Result: 0.974928
+    Member:  344  Result: 0.969439
+    Member:  345  Result: 0.974816
+    Member:  346  Result: 0.973777
+    Member:  347  Result: 0.949347
+    Member:  348  Result: 0.974920
+    Member:  349  Result: 0.974928
+    Member:  350  Result: 0.974636
+    Member:  351  Result: 0.974928
+    Member:  352  Result: 0.974928
+    Member:  353  Result: 0.974928
+    Member:  354  Result: 0.974928
+    Member:  355  Result: 0.974928
+    Member:  356  Result: 0.974189
+    Member:  357  Result: 0.974928
+    Member:  358  Result: 0.974928
+    Member:  359  Result: 0.974928
+    Member:  360  Result: 10.000000
+    Member:  361  Result: 0.974928
+    Member:  362  Result: 0.974852
+    Member:  363  Result: 0.974928
+    Member:  364  Result: 0.968091
+    Member:  365  Result: 0.974928
+    Member:  366  Result: 0.961834
+    Member:  367  Result: 0.974928
+    Member:  368  Result: 0.974928
+    Member:  369  Result: 0.974928
+    Member:  370  Result: 0.974928
+    Member:  371  Result: 0.966144
+    Member:  372  Result: 0.974928
+    Member:  373  Result: 10.000000
+    Member:  374  Result: 0.947653
+    Member:  375  Result: 0.974928
+    Member:  376  Result: 0.974928
+    Member:  377  Result: 0.974928
+    Member:  378  Result: 0.974928
+    Member:  379  Result: 0.974928
+    Member:  380  Result: 0.974928
+    Member:  381  Result: 0.974928
+    Member:  382  Result: 0.974928
+    Member:  383  Result: 0.624310
+    Member:  384  Result: 0.974928
+    Member:  385  Result: 0.974928
+    Member:  386  Result: 0.974928
+    Member:  387  Result: 10.000000
+    Member:  388  Result: 0.974928
+    Member:  389  Result: 0.974928
+    Member:  390  Result: 0.974928
+    Member:  391  Result: 0.974928
+    Member:  392  Result: 0.847533
+    Member:  393  Result: 0.974928
+    Member:  394  Result: 0.957477
+    Member:  395  Result: 0.974928
+    Member:  396  Result: 0.964489
+    Member:  397  Result: 0.974928
+    Member:  398  Result: 0.974928
+    Member:  399  Result: 0.973916
+    Member:  400  Result: 0.973252
+    Member:  401  Result: 0.974928
+    Member:  402  Result: 0.974553
+    Member:  403  Result: 0.974309
+    Member:  404  Result: 0.974928
+    Member:  405  Result: 0.974928
+    Member:  406  Result: 0.974928
+    Member:  407  Result: 0.974460
+    Member:  408  Result: 0.974928
+    Member:  409  Result: 0.974040
+    Member:  410  Result: 0.974929
+    Member:  411  Result: 0.974928
+    Member:  412  Result: 0.886427
+    Member:  413  Result: 0.974928
+    Member:  414  Result: 0.974928
+    Member:  415  Result: 0.974593
+    Member:  416  Result: 0.974928
+    Member:  417  Result: 0.974918
+    Member:  418  Result: 0.974928
+    Member:  419  Result: 0.974928
+    Member:  420  Result: 0.931852
+    Member:  421  Result: 0.974928
+    Member:  422  Result: 0.974921
+    Member:  423  Result: 0.973940
+    Member:  424  Result: 0.974928
+    Member:  425  Result: 0.962503
+    Member:  426  Result: 0.948936
+    Member:  427  Result: 0.971965
+    Member:  428  Result: 0.974928
+    Member:  429  Result: 0.974928
+    Member:  430  Result: 0.974928
+    Member:  431  Result: 0.974928
+    Member:  432  Result: 0.974485
+    Member:  433  Result: 0.909458
+    Member:  434  Result: 0.974927
+    Member:  435  Result: 0.974886
+    Member:  436  Result: 0.974928
+    Member:  437  Result: 0.974928
+    Member:  438  Result: 0.970726
+    Member:  439  Result: 0.974928
+    Member:  440  Result: 0.974070
+    Member:  441  Result: 0.974928
+    Member:  442  Result: 0.974928
+    Member:  443  Result: 0.974928
+    Member:  444  Result: 0.974928
+    Member:  445  Result: 0.974490
+    Member:  446  Result: 0.974889
+    Member:  447  Result: 10.000000
+    Member:  448  Result: 0.974928
+    Member:  449  Result: 10.000000
+    Member:  450  Result: 0.974928
+    Member:  451  Result: 0.971363
+    Member:  452  Result: 0.974927
+    Member:  453  Result: 0.974930
+    Member:  454  Result: 10.000000
+    Member:  455  Result: 0.985111
+    Member:  456  Result: 0.974928
+    Member:  457  Result: 0.974928
+    Member:  458  Result: 0.974928
+    Member:  459  Result: 0.963650
+    Member:  460  Result: 0.974928
+    Member:  461  Result: 0.974928
+    Member:  462  Result: 0.974022
+    Member:  463  Result: 0.974928
+    Member:  464  Result: 0.974145
+    Member:  465  Result: 0.974928
+    Member:  466  Result: 0.974928
+    Member:  467  Result: 0.974928
+    Member:  468  Result: 0.974928
+    Member:  469  Result: 0.974928
+    Member:  470  Result: 0.974928
+    Member:  471  Result: 0.974928
+    Member:  472  Result: 0.974665
+    Member:  473  Result: 0.974666
+    Member:  474  Result: 0.974928
+    Member:  475  Result: 0.974928
+    Member:  476  Result: 0.974924
+    Member:  477  Result: 0.974928
+    Member:  478  Result: 0.974928
+    Member:  479  Result: 0.974928
+    Member:  480  Result: 0.974928
+    Member:  481  Result: 0.974928
+    Member:  482  Result: 0.973781
+    Member:  483  Result: 0.973938
+    Member:  484  Result: 0.974928
+    Member:  485  Result: 0.974064
+    Member:  486  Result: 0.974928
+    Member:  487  Result: 0.974245
+    Member:  488  Result: 0.974921
+    Member:  489  Result: 0.966486
+    Member:  490  Result: 0.974928
+    Member:  491  Result: 0.937735
+    Member:  492  Result: 0.974928
+    Member:  493  Result: 0.974928
+    Member:  494  Result: 0.974839
+    Member:  495  Result: 0.974928
+    Member:  496  Result: 0.974783
+    Member:  497  Result: 0.974928
+    Member:  498  Result: 0.974928
+    Member:  499  Result: 0.973845

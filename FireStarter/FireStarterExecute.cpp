@@ -124,9 +124,9 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         context->Synchronize();
         optimizationPass++;
 
-#if 0
+#if 1
         // Note: DEBUG!
-        if ((checksumIndex == 0) && (p == 0)) {
+        if ((checksumIndex == 9) && (p == 0)) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
             context->Synchronize();
 
