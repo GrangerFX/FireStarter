@@ -134,13 +134,13 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
             std::string checksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
             checksumString += state.m_evaluateCode;
 
-//            unsigned int i = 436;
-            for (unsigned int i = 0; i < 500; i++)
+            unsigned int i = 464;
+//            for (unsigned int i = 0; i < 500; i++)
             {
                 FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
                 checksumString += Format("    Member: %4d  Result: %f\n", i, result->m_resultMin);
-//                for (unsigned int j = 0; j < settings.m_registers; j++)
-//                    checksumString += Format("    Member: %4d  Register: %2d  Result: %f  Value: %f\n", i, j, result->m_resultMin, result->Data()->d[j]);
+                for (unsigned int j = 0; j < settings.m_registers; j++)
+                    checksumString += Format("    Member: %4d  Register: %2d  Result: %f  Value: %f\n", i, j, result->m_resultMin, result->Data()->d[j]);
             }
             FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", checksumString);
             std::terminate();
