@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 02BC817E271DD10B
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 6405E8EE398E8D9F
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
@@ -89,7 +89,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 02BC817E27
     Member:   45  Result: 0.974757
     Member:   46  Result: 0.974928
     Member:   47  Result: 0.974928
-    Member:   48  Result: 1.204877
+    Member:   48  Result: 1.204876
     Member:   49  Result: 0.928970
     Member:   50  Result: 0.974926
     Member:   51  Result: 0.974928
@@ -505,7 +505,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 02BC817E27
     Member:  461  Result: 0.974928
     Member:  462  Result: 0.974022
     Member:  463  Result: 0.974928
-    Member:  464  Result: 0.974145
+    Member:  464  Result: 0.974149
     Member:  465  Result: 0.974928
     Member:  466  Result: 0.974928
     Member:  467  Result: 0.974928
