@@ -89,8 +89,8 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
 #if 1
     // Note: DEBUG!
-    static unsigned long long checksumIndex = 0;
-    if (!checksumIndex)
+    static std::atomic<unsigned long long> optimizationIndex = 0;
+    if (!optimizationIndex)
         FireStarterCode::SaveCode("Logs\\DebugChecksums.txt", "Debug Checksums\n");
 #endif
 
@@ -107,7 +107,9 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
                         reinterpret_cast<void*>(&optimizationSeed),
-                        reinterpret_cast<void*>(&optimizationPass) };
+                        reinterpret_cast<void*>(&optimizationPass),
+                        reinterpret_cast<void*>(&optimizationIndex)
+                      };
 
         unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
@@ -126,11 +128,12 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
 #if 1
         // Note: DEBUG!
-        if ((checksumIndex == 9) && (p == 0)) {
+        if ((optimizationIndex == 9) && (p == 0)) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
             context->Synchronize();
 
             uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
+            unsigned long long checksumIndex = optimizationIndex;
             std::string checksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
             checksumString += state.m_evaluateCode;
 
@@ -160,7 +163,8 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 #if 1
     // Note: DEBUG!
     uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
-    std::string cheksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex++, checksum);
+    unsigned long long checksumIndex = optimizationIndex++;
+    std::string cheksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
     FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", cheksumString);
 #endif
 
