@@ -28,67 +28,73 @@
 #define FIRESTARTER_SOLUTION        4           // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODE            FIRESTARTER_EVOLVE
 
-#define FIRESTARTER_RANDOM_TESTS            0
-#define FIRESTARTER_RANDOM_STREAMS          8
-#define FIRESTARTER_RANDOM_UNITS            1
-#define FIRESTARTER_RANDOM_STATES           11000
-#define FIRESTARTER_RANDOM_GENERATIONS      0
-#define FIRESTARTER_RANDOM_POPULATION       4352 * 64
-#define FIRESTARTER_RANDOM_ITERATIONS       64
-#define FIRESTARTER_RANDOM_CANDIDATES       16
-#define FIRESTARTER_RANDOM_PASSES           500
-#define FIRESTARTER_RANDOM_ATTEMPTS         0
-#define FIRESTARTER_RANDOM_SCALE            0.1f
-#define FIRESTARTER_RANDOM_START_SCALE      2.0f
-#define FIRESTARTER_RANDOM_START_RESULT     10.0f
-#define FIRESTARTER_RANDOM_OPTIMIZE         0
-
-#if FIRESTARTER_EVOLVE_TEST                 // 16 tests of 16 states for unlimited generations.
-#define FIRESTARTER_EVOLVE_TESTS            16
-#define FIRESTARTER_EVOLVE_STREAMS          1
-#define FIRESTARTER_EVOLVE_UNITS            8
-#define FIRESTARTER_EVOLVE_STATES           16
-#define FIRESTARTER_EVOLVE_GENERATIONS      0
-#define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
-#define FIRESTARTER_EVOLVE_ITERATIONS       64
-#define FIRESTARTER_EVOLVE_CANDIDATES       16
-#define FIRESTARTER_EVOLVE_PASSES           500
-#define FIRESTARTER_EVOLVE_ATTEMPTS         0
-#define FIRESTARTER_EVOLVE_SCALE            0.1f
-#define FIRESTARTER_EVOLVE_START_SCALE      2.0f
-#define FIRESTARTER_EVOLVE_START_RESULT     10.0f
-#define FIRESTARTER_EVOLVE_OPTIMIZE         8
-#else                                       // 16 states for unlimited generations. Fastest known reliable results.
-#define FIRESTARTER_EVOLVE_TESTS            0
-#define FIRESTARTER_EVOLVE_STREAMS          1
-#define FIRESTARTER_EVOLVE_UNITS            1 // 8
-#define FIRESTARTER_EVOLVE_STATES           16
-#define FIRESTARTER_EVOLVE_GENERATIONS      0
-#define FIRESTARTER_EVOLVE_POPULATION       4352 * 64
-#define FIRESTARTER_EVOLVE_ITERATIONS       64
-#define FIRESTARTER_EVOLVE_CANDIDATES       16
-#define FIRESTARTER_EVOLVE_PASSES           500
-#define FIRESTARTER_EVOLVE_ATTEMPTS         0
-#define FIRESTARTER_EVOLVE_SCALE            0.1f
-#define FIRESTARTER_EVOLVE_START_SCALE      2.0f
-#define FIRESTARTER_EVOLVE_START_RESULT     10.0f
-#define FIRESTARTER_EVOLVE_OPTIMIZE         8
+#if FIRESTARTER_MODE == FIRESTARTER_RANDOM
+#define FIRESTARTER_TESTS            0
+#define FIRESTARTER_STREAMS          8
+#define FIRESTARTER_UNITS            1
+#define FIRESTARTER_STATES           11000
+#define FIRESTARTER_GENERATIONS      0
+#define FIRESTARTER_POPULATION       4352 * 64
+#define FIRESTARTER_ITERATIONS       64
+#define FIRESTARTER_CANDIDATES       16
+#define FIRESTARTER_PASSES           500
+#define FIRESTARTER_ATTEMPTS         0
+#define FIRESTARTER_SCALE            0.1f
+#define FIRESTARTER_START_SCALE      2.0f
+#define FIRESTARTER_START_RESULT     10.0f
+#define FIRESTARTER_OPTIMIZE_PASSES  0
 #endif
 
-#define FIRESTARTER_OPTIMIZE_TESTS          0
-#define FIRESTARTER_OPTIMIZE_STREAMS        1
-#define FIRESTARTER_OPTIMIZE_UNITS          1
-#define FIRESTARTER_OPTIMIZE_STATES         1
-#define FIRESTARTER_OPTIMIZE_GENERATIONS    0
-#define FIRESTARTER_OPTIMIZE_POPULATION     4352 * 64
-#define FIRESTARTER_OPTIMIZE_ITERATIONS     64
-#define FIRESTARTER_OPTIMIZE_CANDIDATES     16
-#define FIRESTARTER_OPTIMIZE_PASSES         100
-#define FIRESTARTER_OPTIMIZE_ATTEMPTS       32
-#define FIRESTARTER_OPTIMIZE_SCALE          0.1f
-#define FIRESTARTER_OPTIMIZE_START_SCALE    2.0f
-#define FIRESTARTER_OPTIMIZE_START_RESULT   10.0f
-#define FIRESTARTER_OPTIMIZE_OPTIMIZE       0
+#if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
+#if FIRESTARTER_EVOLVE_TEST                 // 16 tests of 16 states for unlimited generations.
+#define FIRESTARTER_TESTS            16
+#define FIRESTARTER_STREAMS          1
+#define FIRESTARTER_UNITS            8
+#define FIRESTARTER_STATES           16
+#define FIRESTARTER_GENERATIONS      0
+#define FIRESTARTER_POPULATION       4352 * 64
+#define FIRESTARTER_ITERATIONS       64
+#define FIRESTARTER_CANDIDATES       16
+#define FIRESTARTER_PASSES           500
+#define FIRESTARTER_ATTEMPTS         0
+#define FIRESTARTER_SCALE            0.1f
+#define FIRESTARTER_START_SCALE      2.0f
+#define FIRESTARTER_START_RESULT     10.0f
+#define FIRESTARTER_OPTIMIZE_PASSES  8
+#else                                       // 16 states for unlimited generations. Fastest known reliable results.
+#define FIRESTARTER_TESTS            0
+#define FIRESTARTER_STREAMS          1
+#define FIRESTARTER_UNITS            1 // 8
+#define FIRESTARTER_STATES           16
+#define FIRESTARTER_GENERATIONS      0
+#define FIRESTARTER_POPULATION       4352 * 64
+#define FIRESTARTER_ITERATIONS       64
+#define FIRESTARTER_CANDIDATES       16
+#define FIRESTARTER_PASSES           500
+#define FIRESTARTER_ATTEMPTS         0
+#define FIRESTARTER_SCALE            0.1f
+#define FIRESTARTER_START_SCALE      2.0f
+#define FIRESTARTER_START_RESULT     10.0f
+#define FIRESTARTER_OPTIMIZE_PASSES  8
+#endif
+#endif
+
+#if FIRESTARTER_MODE == FIRESTARTER_OPTIMIZE
+#define FIRESTARTER_TESTS          0
+#define FIRESTARTER_STREAMS        1
+#define FIRESTARTER_UNITS          1
+#define FIRESTARTER_STATES         1
+#define FIRESTARTER_GENERATIONS    0
+#define FIRESTARTER_POPULATION     4352 * 64
+#define FIRESTARTER_ITERATIONS     64
+#define FIRESTARTER_CANDIDATES     16
+#define FIRESTARTER_PASSES         100
+#define FIRESTARTER_ATTEMPTS       32
+#define FIRESTARTER_SCALE          0.1f
+#define FIRESTARTER_START_SCALE    2.0f
+#define FIRESTARTER_START_RESULT   10.0f
+#define FIRESTARTER_OPTIMIZE       0
+#endif
 
 #define MIN(a, b) ((a) <= (b) ? (a) : (b))
 #define MAX(a, b) ((a) >= (b) ? (a) : (b))
@@ -207,78 +213,22 @@ public:
         m_startResult = source.m_startResult;
     } // CopyModeSettings
 
-    inline FireStarterSettings(unsigned int evolveMode = 0)
+    inline FireStarterSettings(void)
     {
-        m_mode = evolveMode == FIRESTARTER_AUTO ? FIRESTARTER_MODE : evolveMode;
-        switch (m_mode) {
-            case FIRESTARTER_RANDOM:
-                m_tests =         FIRESTARTER_RANDOM_TESTS;
-                m_streams =       FIRESTARTER_RANDOM_STREAMS;
-                m_states =        FIRESTARTER_RANDOM_STATES;
-                m_units =         FIRESTARTER_RANDOM_UNITS;
-                m_generations =   FIRESTARTER_RANDOM_GENERATIONS;
-                m_population =    FIRESTARTER_RANDOM_POPULATION;
-                m_iterations =    FIRESTARTER_RANDOM_ITERATIONS;
-                m_candidates =    FIRESTARTER_RANDOM_CANDIDATES;
-                m_passes =        FIRESTARTER_RANDOM_PASSES;
-                m_attempts =      FIRESTARTER_RANDOM_ATTEMPTS;
-                m_optimize =      FIRESTARTER_RANDOM_OPTIMIZE;
-                m_scale =         FIRESTARTER_RANDOM_SCALE;
-                m_startScale =    FIRESTARTER_RANDOM_START_SCALE;
-                m_startResult =   FIRESTARTER_RANDOM_START_RESULT;
-                break;
-
-            case FIRESTARTER_EVOLVE:
-                m_tests =         FIRESTARTER_EVOLVE_TESTS;
-                m_streams =       FIRESTARTER_EVOLVE_STREAMS;
-                m_states =        FIRESTARTER_EVOLVE_STATES;
-                m_units =         FIRESTARTER_EVOLVE_UNITS;
-                m_generations =   FIRESTARTER_EVOLVE_GENERATIONS;
-                m_population =    FIRESTARTER_EVOLVE_POPULATION;
-                m_iterations =    FIRESTARTER_EVOLVE_ITERATIONS;
-                m_candidates =    FIRESTARTER_EVOLVE_CANDIDATES;
-                m_passes =        FIRESTARTER_EVOLVE_PASSES;
-                m_attempts =      FIRESTARTER_EVOLVE_ATTEMPTS;
-                m_optimize =      FIRESTARTER_EVOLVE_OPTIMIZE;
-                m_scale =         FIRESTARTER_EVOLVE_SCALE;
-                m_startScale =    FIRESTARTER_EVOLVE_START_SCALE;
-                m_startResult =   FIRESTARTER_EVOLVE_START_RESULT;
-                break;
-
-            case FIRESTARTER_OPTIMIZE:
-                m_tests =         FIRESTARTER_OPTIMIZE_TESTS;
-                m_streams =       FIRESTARTER_OPTIMIZE_STREAMS;
-                m_states =        FIRESTARTER_OPTIMIZE_STATES;
-                m_units =         FIRESTARTER_OPTIMIZE_UNITS;
-                m_generations =   FIRESTARTER_OPTIMIZE_GENERATIONS;
-                m_population =    FIRESTARTER_OPTIMIZE_POPULATION;
-                m_iterations =    FIRESTARTER_OPTIMIZE_ITERATIONS;
-                m_candidates =    FIRESTARTER_OPTIMIZE_CANDIDATES;
-                m_passes =        FIRESTARTER_OPTIMIZE_PASSES;
-                m_attempts =      FIRESTARTER_OPTIMIZE_ATTEMPTS;
-                m_optimize =      FIRESTARTER_OPTIMIZE_OPTIMIZE;
-                m_scale =         FIRESTARTER_OPTIMIZE_SCALE;
-                m_startScale =    FIRESTARTER_OPTIMIZE_START_SCALE;
-                m_startResult =   FIRESTARTER_OPTIMIZE_START_RESULT;
-                break;
-
-            case FIRESTARTER_SOLUTION:
-            default:
-                m_tests = 0;
-                m_streams = 0;
-                m_states = 0;
-                m_units = 0;
-                m_generations = 0;
-                m_population = 0;
-                m_iterations = 0;
-                m_candidates = 0;
-                m_passes = 0;
-                m_attempts = 0;
-                m_optimize = 0;
-                m_scale = 0.0f;
-                m_startScale = 0.0f;
-                m_startResult = 0.0f;
-                break;
-        }
+        m_mode =        FIRESTARTER_MODE;
+        m_tests =       FIRESTARTER_TESTS;
+        m_streams =     FIRESTARTER_STREAMS;
+        m_states =      FIRESTARTER_STATES;
+        m_units =       FIRESTARTER_UNITS;
+        m_generations = FIRESTARTER_GENERATIONS;
+        m_population =  FIRESTARTER_POPULATION;
+        m_iterations =  FIRESTARTER_ITERATIONS;
+        m_candidates =  FIRESTARTER_CANDIDATES;
+        m_passes =      FIRESTARTER_PASSES;
+        m_attempts =    FIRESTARTER_ATTEMPTS;
+        m_optimize =    FIRESTARTER_OPTIMIZE_PASSES;
+        m_scale =       FIRESTARTER_SCALE;
+        m_startScale =  FIRESTARTER_START_SCALE;
+        m_startResult = FIRESTARTER_START_RESULT;
     } // FireStarterSettings
 }; // class FireStarterSettings

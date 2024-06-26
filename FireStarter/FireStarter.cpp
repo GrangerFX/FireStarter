@@ -40,7 +40,7 @@ void FireStarter::ControlThread(void)
         // Load the optimize settings from the compiled CUDA code.
         // This allows the settings to be modified without recompiling the main program.
         FireStarterSettings controlSettings;
-        m_buildSettings.FireSettings(controlSettings, FIRESTARTER_AUTO);
+        m_buildSettings.FireSettings(controlSettings);
         switch (controlSettings.m_mode) {
             case FIRESTARTER_RANDOM:
                 // Random generations.
