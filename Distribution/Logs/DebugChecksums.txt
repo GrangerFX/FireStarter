@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 6405E8EE398E8D9F
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 02BC817E271DD10B
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
@@ -41,34 +41,34 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 6405E8EE39
     n *= data[4];
     n *= data[19];
     n *= data[13];
-    Member:  464  Result: 0.974149
-    Member:  464  Register:  0  Result: 0.974149  Value: -2.099744
-    Member:  464  Register:  1  Result: 0.974149  Value: -1.796687
-    Member:  464  Register:  2  Result: 0.974149  Value: -0.156495
-    Member:  464  Register:  3  Result: 0.974149  Value: 1.611790
-    Member:  464  Register:  4  Result: 0.974149  Value: 1.076965
-    Member:  464  Register:  5  Result: 0.974149  Value: -0.745113
-    Member:  464  Register:  6  Result: 0.974149  Value: 2.483537
-    Member:  464  Register:  7  Result: 0.974149  Value: 0.077431
-    Member:  464  Register:  8  Result: 0.974149  Value: 2.541010
-    Member:  464  Register:  9  Result: 0.974149  Value: 1.392301
-    Member:  464  Register: 10  Result: 0.974149  Value: -0.434441
-    Member:  464  Register: 11  Result: 0.974149  Value: 0.287236
-    Member:  464  Register: 12  Result: 0.974149  Value: -1.500864
-    Member:  464  Register: 13  Result: 0.974149  Value: -2.075081
-    Member:  464  Register: 14  Result: 0.974149  Value: -1.260747
-    Member:  464  Register: 15  Result: 0.974149  Value: -3.005380
-    Member:  464  Register: 16  Result: 0.974149  Value: -1.027009
-    Member:  464  Register: 17  Result: 0.974149  Value: 1.798524
-    Member:  464  Register: 18  Result: 0.974149  Value: 0.480315
-    Member:  464  Register: 19  Result: 0.974149  Value: 0.475842
-    Member:  464  Register: 20  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 21  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 22  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 23  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 24  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 25  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 26  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 27  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 28  Result: 0.974149  Value: 0.000000
-    Member:  464  Register: 29  Result: 0.974149  Value: 0.000000
+    Member:  464  Result: 0.974145
+    Member:  464  Register:  0  Value: -2.099744
+    Member:  464  Register:  1  Value: -1.796687
+    Member:  464  Register:  2  Value: -0.156495
+    Member:  464  Register:  3  Value: 1.611790
+    Member:  464  Register:  4  Value: 1.076965
+    Member:  464  Register:  5  Value: -0.745113
+    Member:  464  Register:  6  Value: 2.483537
+    Member:  464  Register:  7  Value: 0.077431
+    Member:  464  Register:  8  Value: 2.779076
+    Member:  464  Register:  9  Value: 1.392301
+    Member:  464  Register: 10  Value: -0.434441
+    Member:  464  Register: 11  Value: 0.287236
+    Member:  464  Register: 12  Value: -1.500864
+    Member:  464  Register: 13  Value: -2.075081
+    Member:  464  Register: 14  Value: -1.260747
+    Member:  464  Register: 15  Value: -3.005380
+    Member:  464  Register: 16  Value: -1.027009
+    Member:  464  Register: 17  Value: 1.798524
+    Member:  464  Register: 18  Value: 0.480315
+    Member:  464  Register: 19  Value: 0.475842
+    Member:  464  Register: 20  Value: 0.000000
+    Member:  464  Register: 21  Value: 0.000000
+    Member:  464  Register: 22  Value: 0.000000
+    Member:  464  Register: 23  Value: 0.000000
+    Member:  464  Register: 24  Value: 0.000000
+    Member:  464  Register: 25  Value: 0.000000
+    Member:  464  Register: 26  Value: 0.000000
+    Member:  464  Register: 27  Value: 0.000000
+    Member:  464  Register: 28  Value: 0.000000
+    Member:  464  Register: 29  Value: 0.000000
