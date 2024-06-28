@@ -262,6 +262,11 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
             result = curResult;
         else
             data[d] = oldData;
+
+#if 0
+        if ((optimizationIndex == 9) && (p == 60)) // Note: DEBUG!
+            break;
+#endif
     }
 
     // If the result was better, save the results.

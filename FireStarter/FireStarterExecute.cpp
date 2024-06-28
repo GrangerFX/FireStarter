@@ -87,11 +87,13 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     unsigned long long passes = settings.m_passes;
     unsigned long long optimizationPass = state.m_optimize_pass * passes;
 
-#if 1
+#if 0
     // Note: DEBUG!
     static std::atomic<unsigned long long> optimizationIndex = 0;
     if (!optimizationIndex)
         FireStarterCode::SaveCode("Logs\\DebugChecksums.txt", "Debug Checksums\n");
+#else
+    unsigned long long optimizationIndex = 0;
 #endif
 
     for (unsigned int p = 0; p < passes; p++) {
@@ -125,7 +127,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         context->Synchronize();
         optimizationPass++;
 
-#if 1
+#if 0
         // Note: DEBUG!
         if ((optimizationIndex == 9) && (p == 0)) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
@@ -159,7 +161,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
 
-#if 1
+#if 0
     // Note: DEBUG!
     uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
     unsigned long long checksumIndex = optimizationIndex++;
