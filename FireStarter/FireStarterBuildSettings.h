@@ -12,7 +12,7 @@ private:
 	bool LoadFireSettingsCode(void);
 
 public:
-	void FireSettings(FireStarterSettings& settings, unsigned int fireStarterMode = 0);
+	void FireSettings(FireStarterSettings& settings);
 	FireStarterBuildSettings(void);
 	~FireStarterBuildSettings(void);
 };

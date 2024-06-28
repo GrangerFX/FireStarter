@@ -9,9 +9,9 @@ bool FireStarterBuildSettings::LoadFireSettingsCode(void)
     return true;
 } // LoadFireSettingsCode
 
-void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsigned int fireStarterMode)
+void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings)
 {
-    DispatchSync([this, &settings, fireStarterMode] {
+    DispatchSync([this, &settings] {
         if (m_fireSettingsFunction) {
             CUDAContext* context = Context();
             CUstream stream = context->Stream();
@@ -22,10 +22,8 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
 
             FireStarterSettings* fireSettings = nullptr;
             checkCUDAErrors(cudaMallocAsync(&fireSettings, sizeof(FireStarterSettings), stream));
-            unsigned int fireMode = fireStarterMode;
 
-            void* arr[] = { reinterpret_cast<void*>(&fireSettings),
-                            reinterpret_cast<void*>(&fireMode) };
+            void* arr[] = { reinterpret_cast<void*>(&fireSettings) };
 
             checkCUDAErrors(cuLaunchKernel(m_fireSettingsFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
@@ -40,7 +38,7 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings, unsig
             checkCUDAErrors(cudaFreeAsync(fireSettings, stream));
             context->Synchronize();
         } else
-            settings = FireStarterSettings(fireStarterMode);
+            settings = FireStarterSettings();
 
         // If the evolve units is set to zero, use the number of gpus.
         if (settings.m_units == 0)
