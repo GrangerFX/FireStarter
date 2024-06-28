@@ -101,8 +101,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long optimizationSeed = state.OptimizationSeed(optimizationPass);
 
-        void* arr[] = { reinterpret_cast<void*>(&settings),
-                        reinterpret_cast<void*>(&newResults),
+        void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),

@@ -118,10 +118,24 @@ typedef struct FireStarterResult {
         m_resultAge = age;
     } // Init
 
+    inline void Init( unsigned int age = 0)
+    {
+        m_data.Init(FIRESTARTER_REGISTERS);
+        m_resultMin = FIRESTARTER_START_RESULT;
+        m_resultAge = age;
+    } // Init
+
     inline void Init(const FireStarterSettings& settings, unsigned long long& seed, size_t registers, unsigned int age = 0)
     {
         m_data.Init(seed, settings.m_startScale, registers, settings.m_registers);
         m_resultMin = settings.m_startResult;
+        m_resultAge = age;
+    } // Init
+
+    inline void Init(unsigned long long& seed, size_t registers, unsigned int age = 0)
+    {
+        m_data.Init(seed, FIRESTARTER_START_SCALE, registers);
+        m_resultMin = FIRESTARTER_START_RESULT;
         m_resultAge = age;
     } // Init
 
@@ -139,9 +153,30 @@ typedef struct FireStarterResult {
         m_resultAge = age;
     } // Init
 
+    inline void Init( float resultMin, const FireStarterData& data, unsigned int age = 0)
+    {
+        m_data.Copy(data, FIRESTARTER_REGISTERS);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+
+    inline void Init(float resultMin, const FireStarterData* data, unsigned int age = 0)
+    {
+        m_data.Copy(data, FIRESTARTER_REGISTERS);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+
     inline void Init(const FireStarterSettings& settings, const FireStarterResult* initResult, unsigned int age = 0)
     {
         m_data.Copy(initResult->Data(), settings.m_registers);
+        m_resultMin = initResult->MinResult();
+        m_resultAge = age;
+    } // Init
+
+    inline void Init(const FireStarterResult* initResult, unsigned int age = 0)
+    {
+        m_data.Copy(initResult->Data(), FIRESTARTER_REGISTERS);
         m_resultMin = initResult->MinResult();
         m_resultAge = age;
     } // Init
@@ -222,14 +257,29 @@ typedef struct FireStarterPopulation {
         return FireStarterData::DataSize(settings.m_registers);
     } // DataSize
 
+    static inline size_t DataSize(void)
+    {
+        return FireStarterData::DataSize(FIRESTARTER_REGISTERS);
+    } // DataSize
+
     static inline size_t ResultSize(const FireStarterSettings& settings)
     {
         return FireStarterResult::ResultSize(settings.m_registers);
     } // ResultsSize
 
+    static inline size_t ResultSize(void)
+    {
+        return FireStarterResult::ResultSize(FIRESTARTER_REGISTERS);
+    } // ResultsSize
+
     static inline size_t VariationSize(const FireStarterSettings& settings)
     {
         return settings.m_population * ResultSize(settings);
+    } // VariationSize
+
+    static inline size_t VariationSize(void)
+    {
+        return FIRESTARTER_POPULATION * ResultSize();
     } // VariationSize
 
     static inline size_t PopulationSize(const FireStarterSettings& settings)
@@ -244,7 +294,17 @@ typedef struct FireStarterPopulation {
 
     inline const FireStarterResult* Result(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const
     {
-        return (FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize(settings) + member * ResultSize(settings));
+        return (const FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize(settings) + member * ResultSize(settings));
+    } // Result
+
+    inline FireStarterResult* Result(unsigned int member, unsigned int variation)
+    {
+        return (FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize() + member * ResultSize());
+    } // Result
+
+    inline const FireStarterResult* Result(unsigned int member, unsigned int variation) const
+    {
+        return (const FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize() + member * ResultSize());
     } // Result
 
     inline FireStarterData* Data(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
@@ -257,6 +317,11 @@ typedef struct FireStarterPopulation {
         return Result(settings, member, variation)->Data();
     } // Data
 
+    inline const FireStarterData* Data(unsigned int member, unsigned int variation) const
+    {
+        return Result(member, variation)->Data();
+    } // Data
+
     inline float* MinResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
     {
         return Result(settings, member, variation)->MinResult();
@@ -265,6 +330,11 @@ typedef struct FireStarterPopulation {
     inline float MinResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const
     {
         return Result(settings, member, variation)->MinResult();
+    } // MinResult
+
+    inline float MinResult(unsigned int member, unsigned int variation) const
+    {
+        return Result(member, variation)->MinResult();
     } // MinResult
 
     inline unsigned int* Age(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
@@ -277,6 +347,11 @@ typedef struct FireStarterPopulation {
         return Result(settings, member, variation)->Age();
     } // Age
 
+    inline unsigned int Age(unsigned int member, unsigned int variation) const
+    {
+        return Result(member, variation)->Age();
+    } // Age
+
     inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data)
     {
         Result(settings, member, variation)->Init(settings, resultMin, data, age);
@@ -285,5 +360,15 @@ typedef struct FireStarterPopulation {
     inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData* data)
     {
         Result(settings, member, variation)->Init(settings, resultMin, data, age);
+    } // InitMemberResult
+
+    inline void InitMemberResult(unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data)
+    {
+        Result(member, variation)->Init(resultMin, data, age);
+    } // InitMemberResult
+
+    inline void InitMemberResult(unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData* data)
+    {
+        Result(member, variation)->Init(resultMin, data, age);
     } // InitMemberResult
 } FireStarterPopulation;
