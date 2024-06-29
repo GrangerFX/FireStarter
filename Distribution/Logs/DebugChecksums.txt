@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D715636
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: D29F84C4BE29B35E
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
@@ -72,7 +72,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    0  Register: 27  Value: 0.000000
     Member:    0  Register: 28  Value: 0.000000
     Member:    0  Register: 29  Value: 0.000000
-    Member:    1  Result: 1.011429  Age: 0
+    Member:    1  Result: 1.015548  Age: 0
     Member:    1  Register:  0  Value: -2.099744
     Member:    1  Register:  1  Value: -1.302906
     Member:    1  Register:  2  Value: -0.156495
@@ -81,7 +81,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    1  Register:  5  Value: -0.745113
     Member:    1  Register:  6  Value: 1.869984
     Member:    1  Register:  7  Value: 0.077431
-    Member:    1  Register:  8  Value: 0.371247
+    Member:    1  Register:  8  Value: 0.396695
     Member:    1  Register:  9  Value: 1.392301
     Member:    1  Register: 10  Value: -0.434441
     Member:    1  Register: 11  Value: 0.287236
@@ -103,7 +103,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    1  Register: 27  Value: 0.000000
     Member:    1  Register: 28  Value: 0.000000
     Member:    1  Register: 29  Value: 0.000000
-    Member:    2  Result: 1.011429  Age: 8
+    Member:    2  Result: 1.015548  Age: 8
     Member:    2  Register:  0  Value: -2.099744
     Member:    2  Register:  1  Value: -1.302906
     Member:    2  Register:  2  Value: -0.156495
@@ -112,7 +112,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    2  Register:  5  Value: -0.745113
     Member:    2  Register:  6  Value: 1.869984
     Member:    2  Register:  7  Value: 0.077431
-    Member:    2  Register:  8  Value: 0.063265
+    Member:    2  Register:  8  Value: 0.088713
     Member:    2  Register:  9  Value: 1.392301
     Member:    2  Register: 10  Value: -0.434441
     Member:    2  Register: 11  Value: 0.287236
@@ -134,7 +134,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    2  Register: 27  Value: 0.000000
     Member:    2  Register: 28  Value: 0.000000
     Member:    2  Register: 29  Value: 0.000000
-    Member:    3  Result: 0.990577  Age: 19
+    Member:    3  Result: 1.015548  Age: 19
     Member:    3  Register:  0  Value: -2.099744
     Member:    3  Register:  1  Value: -1.302906
     Member:    3  Register:  2  Value: -0.156495
@@ -143,7 +143,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    3  Register:  5  Value: -0.745113
     Member:    3  Register:  6  Value: 1.869984
     Member:    3  Register:  7  Value: 0.077431
-    Member:    3  Register:  8  Value: 0.063265
+    Member:    3  Register:  8  Value: 0.088713
     Member:    3  Register:  9  Value: 1.392301
     Member:    3  Register: 10  Value: -0.434441
     Member:    3  Register: 11  Value: 0.287236
@@ -165,7 +165,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    3  Register: 27  Value: 0.000000
     Member:    3  Register: 28  Value: 0.000000
     Member:    3  Register: 29  Value: 0.000000
-    Member:    4  Result: 0.990577  Age: 10
+    Member:    4  Result: 1.015548  Age: 10
     Member:    4  Register:  0  Value: -2.099744
     Member:    4  Register:  1  Value: -1.302906
     Member:    4  Register:  2  Value: -0.156495
@@ -174,7 +174,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    4  Register:  5  Value: -0.745113
     Member:    4  Register:  6  Value: 1.869984
     Member:    4  Register:  7  Value: 0.077431
-    Member:    4  Register:  8  Value: 0.063265
+    Member:    4  Register:  8  Value: 0.088713
     Member:    4  Register:  9  Value: 1.392301
     Member:    4  Register: 10  Value: -1.652379
     Member:    4  Register: 11  Value: 0.287236
@@ -196,7 +196,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    4  Register: 27  Value: 0.000000
     Member:    4  Register: 28  Value: 0.000000
     Member:    4  Register: 29  Value: 0.000000
-    Member:    5  Result: 0.990577  Age: 8
+    Member:    5  Result: 1.015548  Age: 8
     Member:    5  Register:  0  Value: -2.099744
     Member:    5  Register:  1  Value: -1.302906
     Member:    5  Register:  2  Value: -0.156495
@@ -205,9 +205,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    5  Register:  5  Value: -0.745113
     Member:    5  Register:  6  Value: 1.869984
     Member:    5  Register:  7  Value: 0.077431
-    Member:    5  Register:  8  Value: 0.301331
+    Member:    5  Register:  8  Value: 0.326779
     Member:    5  Register:  9  Value: 1.392301
-    Member:    5  Register: 10  Value: -0.434441
+    Member:    5  Register: 10  Value: -1.652379
     Member:    5  Register: 11  Value: 0.287236
     Member:    5  Register: 12  Value: 0.068900
     Member:    5  Register: 13  Value: -1.945061
@@ -227,7 +227,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    5  Register: 27  Value: 0.000000
     Member:    5  Register: 28  Value: 0.000000
     Member:    5  Register: 29  Value: 0.000000
-    Member:    6  Result: 0.990577  Age: 0
+    Member:    6  Result: 1.015548  Age: 0
     Member:    6  Register:  0  Value: -1.072845
     Member:    6  Register:  1  Value: -1.302906
     Member:    6  Register:  2  Value: -0.156495
@@ -236,9 +236,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    6  Register:  5  Value: -0.745113
     Member:    6  Register:  6  Value: 1.869984
     Member:    6  Register:  7  Value: 0.077431
-    Member:    6  Register:  8  Value: 0.301331
+    Member:    6  Register:  8  Value: 0.326779
     Member:    6  Register:  9  Value: 1.392301
-    Member:    6  Register: 10  Value: -0.434441
+    Member:    6  Register: 10  Value: -1.652379
     Member:    6  Register: 11  Value: 0.287236
     Member:    6  Register: 12  Value: 0.068900
     Member:    6  Register: 13  Value: -1.945061
@@ -258,8 +258,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    6  Register: 27  Value: 0.000000
     Member:    6  Register: 28  Value: 0.000000
     Member:    6  Register: 29  Value: 0.000000
-    Member:    7  Result: 0.990577  Age: 8
-    Member:    7  Register:  0  Value: -2.099744
+    Member:    7  Result: 1.015548  Age: 8
+    Member:    7  Register:  0  Value: -1.072845
     Member:    7  Register:  1  Value: -1.302906
     Member:    7  Register:  2  Value: -0.156495
     Member:    7  Register:  3  Value: 1.611790
@@ -267,9 +267,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    7  Register:  5  Value: -0.745113
     Member:    7  Register:  6  Value: 1.869984
     Member:    7  Register:  7  Value: 0.077431
-    Member:    7  Register:  8  Value: 0.802171
+    Member:    7  Register:  8  Value: 0.827619
     Member:    7  Register:  9  Value: 1.392301
-    Member:    7  Register: 10  Value: -0.434441
+    Member:    7  Register: 10  Value: -1.652379
     Member:    7  Register: 11  Value: 0.287236
     Member:    7  Register: 12  Value: 0.068900
     Member:    7  Register: 13  Value: -1.945061
@@ -289,8 +289,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    7  Register: 27  Value: 0.000000
     Member:    7  Register: 28  Value: 0.000000
     Member:    7  Register: 29  Value: 0.000000
-    Member:    8  Result: 0.974842  Age: 18
-    Member:    8  Register:  0  Value: -2.099744
+    Member:    8  Result: 1.015548  Age: 18
+    Member:    8  Register:  0  Value: -1.072845
     Member:    8  Register:  1  Value: -1.302906
     Member:    8  Register:  2  Value: -0.156495
     Member:    8  Register:  3  Value: 1.611790
@@ -298,9 +298,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    8  Register:  5  Value: -0.745113
     Member:    8  Register:  6  Value: 1.869984
     Member:    8  Register:  7  Value: 0.077431
-    Member:    8  Register:  8  Value: 0.301331
+    Member:    8  Register:  8  Value: 0.827619
     Member:    8  Register:  9  Value: 1.392301
-    Member:    8  Register: 10  Value: -0.434441
+    Member:    8  Register: 10  Value: -1.652379
     Member:    8  Register: 11  Value: 0.287236
     Member:    8  Register: 12  Value: 0.068900
     Member:    8  Register: 13  Value: -1.945061
@@ -320,8 +320,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    8  Register: 27  Value: 0.000000
     Member:    8  Register: 28  Value: 0.000000
     Member:    8  Register: 29  Value: 0.000000
-    Member:    9  Result: 0.974665  Age: 15
-    Member:    9  Register:  0  Value: -2.099744
+    Member:    9  Result: 1.015548  Age: 15
+    Member:    9  Register:  0  Value: -1.072845
     Member:    9  Register:  1  Value: -1.302906
     Member:    9  Register:  2  Value: -0.156495
     Member:    9  Register:  3  Value: 1.611790
@@ -329,9 +329,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    9  Register:  5  Value: -0.745113
     Member:    9  Register:  6  Value: 1.869984
     Member:    9  Register:  7  Value: 0.077431
-    Member:    9  Register:  8  Value: 0.301331
+    Member:    9  Register:  8  Value: 0.827619
     Member:    9  Register:  9  Value: 1.392301
-    Member:    9  Register: 10  Value: -0.434441
+    Member:    9  Register: 10  Value: -1.652379
     Member:    9  Register: 11  Value: 0.287236
     Member:    9  Register: 12  Value: 0.068900
     Member:    9  Register: 13  Value: -1.945061
@@ -351,8 +351,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:    9  Register: 27  Value: 0.000000
     Member:    9  Register: 28  Value: 0.000000
     Member:    9  Register: 29  Value: 0.000000
-    Member:   10  Result: 0.974665  Age: 3
-    Member:   10  Register:  0  Value: -2.099744
+    Member:   10  Result: 1.015548  Age: 3
+    Member:   10  Register:  0  Value: -1.072845
     Member:   10  Register:  1  Value: -1.302906
     Member:   10  Register:  2  Value: -0.156495
     Member:   10  Register:  3  Value: 1.154580
@@ -360,9 +360,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   10  Register:  5  Value: -0.745113
     Member:   10  Register:  6  Value: 1.869984
     Member:   10  Register:  7  Value: 0.077431
-    Member:   10  Register:  8  Value: 0.301331
+    Member:   10  Register:  8  Value: 0.827619
     Member:   10  Register:  9  Value: 1.392301
-    Member:   10  Register: 10  Value: -0.434441
+    Member:   10  Register: 10  Value: -1.652379
     Member:   10  Register: 11  Value: 0.287236
     Member:   10  Register: 12  Value: 0.068900
     Member:   10  Register: 13  Value: -1.945061
@@ -382,18 +382,18 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   10  Register: 27  Value: 0.000000
     Member:   10  Register: 28  Value: 0.000000
     Member:   10  Register: 29  Value: 0.000000
-    Member:   11  Result: 0.974665  Age: 19
-    Member:   11  Register:  0  Value: -2.099744
+    Member:   11  Result: 1.015548  Age: 19
+    Member:   11  Register:  0  Value: -1.072845
     Member:   11  Register:  1  Value: -1.302906
     Member:   11  Register:  2  Value: -0.156495
-    Member:   11  Register:  3  Value: 1.611790
+    Member:   11  Register:  3  Value: 1.154580
     Member:   11  Register:  4  Value: 1.076965
     Member:   11  Register:  5  Value: -0.745113
     Member:   11  Register:  6  Value: 1.869984
     Member:   11  Register:  7  Value: 0.077431
-    Member:   11  Register:  8  Value: 0.301331
+    Member:   11  Register:  8  Value: 0.827619
     Member:   11  Register:  9  Value: 1.392301
-    Member:   11  Register: 10  Value: -0.434441
+    Member:   11  Register: 10  Value: -1.652379
     Member:   11  Register: 11  Value: 0.287236
     Member:   11  Register: 12  Value: 0.068900
     Member:   11  Register: 13  Value: -1.945061
@@ -413,18 +413,18 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   11  Register: 27  Value: 0.000000
     Member:   11  Register: 28  Value: 0.000000
     Member:   11  Register: 29  Value: 0.000000
-    Member:   12  Result: 0.974665  Age: 9
-    Member:   12  Register:  0  Value: -2.099744
+    Member:   12  Result: 1.015548  Age: 9
+    Member:   12  Register:  0  Value: -1.072845
     Member:   12  Register:  1  Value: -1.302906
     Member:   12  Register:  2  Value: -0.156495
-    Member:   12  Register:  3  Value: 1.611790
+    Member:   12  Register:  3  Value: 1.154580
     Member:   12  Register:  4  Value: 1.076965
     Member:   12  Register:  5  Value: -0.745113
     Member:   12  Register:  6  Value: 1.869984
     Member:   12  Register:  7  Value: 0.077431
-    Member:   12  Register:  8  Value: 0.301331
+    Member:   12  Register:  8  Value: 0.827619
     Member:   12  Register:  9  Value: -0.219093
-    Member:   12  Register: 10  Value: -0.434441
+    Member:   12  Register: 10  Value: -1.652379
     Member:   12  Register: 11  Value: 0.287236
     Member:   12  Register: 12  Value: 0.068900
     Member:   12  Register: 13  Value: -1.945061
@@ -433,7 +433,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   12  Register: 16  Value: -1.027009
     Member:   12  Register: 17  Value: 1.798524
     Member:   12  Register: 18  Value: 0.480315
-    Member:   12  Register: 19  Value: 0.475842
+    Member:   12  Register: 19  Value: 1.996728
     Member:   12  Register: 20  Value: 0.000000
     Member:   12  Register: 21  Value: 0.000000
     Member:   12  Register: 22  Value: 0.000000
@@ -444,18 +444,18 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   12  Register: 27  Value: 0.000000
     Member:   12  Register: 28  Value: 0.000000
     Member:   12  Register: 29  Value: 0.000000
-    Member:   13  Result: 0.974665  Age: 12
-    Member:   13  Register:  0  Value: -2.099744
+    Member:   13  Result: 1.015548  Age: 12
+    Member:   13  Register:  0  Value: -1.072845
     Member:   13  Register:  1  Value: -1.302906
     Member:   13  Register:  2  Value: -0.156495
-    Member:   13  Register:  3  Value: 1.611790
+    Member:   13  Register:  3  Value: 1.154580
     Member:   13  Register:  4  Value: 1.076965
     Member:   13  Register:  5  Value: -0.745113
     Member:   13  Register:  6  Value: 1.869984
     Member:   13  Register:  7  Value: 0.077431
-    Member:   13  Register:  8  Value: 0.301331
-    Member:   13  Register:  9  Value: 1.392301
-    Member:   13  Register: 10  Value: -0.434441
+    Member:   13  Register:  8  Value: 0.827619
+    Member:   13  Register:  9  Value: -0.219093
+    Member:   13  Register: 10  Value: -1.652379
     Member:   13  Register: 11  Value: 0.287236
     Member:   13  Register: 12  Value: -1.500864
     Member:   13  Register: 13  Value: -1.945061
@@ -464,7 +464,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   13  Register: 16  Value: -1.027009
     Member:   13  Register: 17  Value: 1.798524
     Member:   13  Register: 18  Value: 0.480315
-    Member:   13  Register: 19  Value: 0.475842
+    Member:   13  Register: 19  Value: 1.996728
     Member:   13  Register: 20  Value: 0.000000
     Member:   13  Register: 21  Value: 0.000000
     Member:   13  Register: 22  Value: 0.000000
@@ -475,18 +475,18 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   13  Register: 27  Value: 0.000000
     Member:   13  Register: 28  Value: 0.000000
     Member:   13  Register: 29  Value: 0.000000
-    Member:   14  Result: 0.974665  Age: 17
-    Member:   14  Register:  0  Value: -2.099744
+    Member:   14  Result: 1.015548  Age: 17
+    Member:   14  Register:  0  Value: -1.072845
     Member:   14  Register:  1  Value: -1.302906
     Member:   14  Register:  2  Value: -0.156495
-    Member:   14  Register:  3  Value: 1.611790
+    Member:   14  Register:  3  Value: 1.154580
     Member:   14  Register:  4  Value: 1.076965
     Member:   14  Register:  5  Value: -0.745113
     Member:   14  Register:  6  Value: 1.869984
     Member:   14  Register:  7  Value: 0.077431
-    Member:   14  Register:  8  Value: 0.301331
-    Member:   14  Register:  9  Value: 1.392301
-    Member:   14  Register: 10  Value: -0.434441
+    Member:   14  Register:  8  Value: 0.827619
+    Member:   14  Register:  9  Value: -0.219093
+    Member:   14  Register: 10  Value: -1.652379
     Member:   14  Register: 11  Value: 0.287236
     Member:   14  Register: 12  Value: -1.500864
     Member:   14  Register: 13  Value: -1.945061
@@ -495,7 +495,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   14  Register: 16  Value: -1.027009
     Member:   14  Register: 17  Value: 0.160542
     Member:   14  Register: 18  Value: 0.480315
-    Member:   14  Register: 19  Value: 0.475842
+    Member:   14  Register: 19  Value: 1.996728
     Member:   14  Register: 20  Value: 0.000000
     Member:   14  Register: 21  Value: 0.000000
     Member:   14  Register: 22  Value: 0.000000
@@ -506,27 +506,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   14  Register: 27  Value: 0.000000
     Member:   14  Register: 28  Value: 0.000000
     Member:   14  Register: 29  Value: 0.000000
-    Member:   15  Result: 0.974665  Age: 7
-    Member:   15  Register:  0  Value: -2.099744
+    Member:   15  Result: 1.015548  Age: 7
+    Member:   15  Register:  0  Value: -1.072845
     Member:   15  Register:  1  Value: -1.302906
     Member:   15  Register:  2  Value: -0.156495
-    Member:   15  Register:  3  Value: 1.611790
+    Member:   15  Register:  3  Value: 1.154580
     Member:   15  Register:  4  Value: 1.076965
     Member:   15  Register:  5  Value: -0.745113
     Member:   15  Register:  6  Value: 1.869984
     Member:   15  Register:  7  Value: -0.539029
-    Member:   15  Register:  8  Value: 0.301331
-    Member:   15  Register:  9  Value: 1.392301
-    Member:   15  Register: 10  Value: -0.434441
+    Member:   15  Register:  8  Value: 0.827619
+    Member:   15  Register:  9  Value: -0.219093
+    Member:   15  Register: 10  Value: -1.652379
     Member:   15  Register: 11  Value: 0.287236
     Member:   15  Register: 12  Value: -1.500864
     Member:   15  Register: 13  Value: -1.945061
     Member:   15  Register: 14  Value: -1.260747
     Member:   15  Register: 15  Value: -3.005380
     Member:   15  Register: 16  Value: -1.027009
-    Member:   15  Register: 17  Value: 1.798524
+    Member:   15  Register: 17  Value: 0.160542
     Member:   15  Register: 18  Value: 0.480315
-    Member:   15  Register: 19  Value: 0.475842
+    Member:   15  Register: 19  Value: 1.996728
     Member:   15  Register: 20  Value: 0.000000
     Member:   15  Register: 21  Value: 0.000000
     Member:   15  Register: 22  Value: 0.000000
@@ -537,27 +537,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   15  Register: 27  Value: 0.000000
     Member:   15  Register: 28  Value: 0.000000
     Member:   15  Register: 29  Value: 0.000000
-    Member:   16  Result: 0.974665  Age: 10
-    Member:   16  Register:  0  Value: -2.099744
+    Member:   16  Result: 1.015548  Age: 10
+    Member:   16  Register:  0  Value: -1.072845
     Member:   16  Register:  1  Value: -1.302906
     Member:   16  Register:  2  Value: -0.156495
-    Member:   16  Register:  3  Value: 1.611790
+    Member:   16  Register:  3  Value: 1.154580
     Member:   16  Register:  4  Value: 1.076965
     Member:   16  Register:  5  Value: -0.745113
     Member:   16  Register:  6  Value: 1.869984
-    Member:   16  Register:  7  Value: 0.077431
-    Member:   16  Register:  8  Value: 0.301331
-    Member:   16  Register:  9  Value: 1.392301
-    Member:   16  Register: 10  Value: 1.114620
+    Member:   16  Register:  7  Value: -0.539029
+    Member:   16  Register:  8  Value: 0.827619
+    Member:   16  Register:  9  Value: -0.219093
+    Member:   16  Register: 10  Value: -0.103318
     Member:   16  Register: 11  Value: 0.287236
     Member:   16  Register: 12  Value: -1.500864
     Member:   16  Register: 13  Value: -1.945061
     Member:   16  Register: 14  Value: -1.260747
     Member:   16  Register: 15  Value: -3.005380
     Member:   16  Register: 16  Value: -1.027009
-    Member:   16  Register: 17  Value: 1.798524
+    Member:   16  Register: 17  Value: 0.160542
     Member:   16  Register: 18  Value: 0.480315
-    Member:   16  Register: 19  Value: 0.475842
+    Member:   16  Register: 19  Value: 1.996728
     Member:   16  Register: 20  Value: 0.000000
     Member:   16  Register: 21  Value: 0.000000
     Member:   16  Register: 22  Value: 0.000000
@@ -568,27 +568,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   16  Register: 27  Value: 0.000000
     Member:   16  Register: 28  Value: 0.000000
     Member:   16  Register: 29  Value: 0.000000
-    Member:   17  Result: 0.974239  Age: 1
-    Member:   17  Register:  0  Value: -2.099744
+    Member:   17  Result: 1.015548  Age: 1
+    Member:   17  Register:  0  Value: -1.072845
     Member:   17  Register:  1  Value: -1.796687
     Member:   17  Register:  2  Value: -0.156495
-    Member:   17  Register:  3  Value: 1.611790
+    Member:   17  Register:  3  Value: 1.154580
     Member:   17  Register:  4  Value: 1.076965
     Member:   17  Register:  5  Value: -0.745113
     Member:   17  Register:  6  Value: 1.869984
-    Member:   17  Register:  7  Value: 0.077431
-    Member:   17  Register:  8  Value: 0.301331
-    Member:   17  Register:  9  Value: 1.392301
-    Member:   17  Register: 10  Value: -0.434441
+    Member:   17  Register:  7  Value: -0.539029
+    Member:   17  Register:  8  Value: 0.827619
+    Member:   17  Register:  9  Value: -0.219093
+    Member:   17  Register: 10  Value: -0.103318
     Member:   17  Register: 11  Value: 0.287236
     Member:   17  Register: 12  Value: -1.500864
     Member:   17  Register: 13  Value: -1.945061
     Member:   17  Register: 14  Value: -1.260747
     Member:   17  Register: 15  Value: -3.005380
     Member:   17  Register: 16  Value: -1.027009
-    Member:   17  Register: 17  Value: 1.798524
+    Member:   17  Register: 17  Value: 0.160542
     Member:   17  Register: 18  Value: 0.480315
-    Member:   17  Register: 19  Value: 0.475842
+    Member:   17  Register: 19  Value: 1.996728
     Member:   17  Register: 20  Value: 0.000000
     Member:   17  Register: 21  Value: 0.000000
     Member:   17  Register: 22  Value: 0.000000
@@ -599,27 +599,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   17  Register: 27  Value: 0.000000
     Member:   17  Register: 28  Value: 0.000000
     Member:   17  Register: 29  Value: 0.000000
-    Member:   18  Result: 0.974239  Age: 16
-    Member:   18  Register:  0  Value: -2.099744
+    Member:   18  Result: 1.015548  Age: 16
+    Member:   18  Register:  0  Value: -1.072845
     Member:   18  Register:  1  Value: -1.796687
     Member:   18  Register:  2  Value: -0.156495
-    Member:   18  Register:  3  Value: 1.611790
+    Member:   18  Register:  3  Value: 1.154580
     Member:   18  Register:  4  Value: 1.076965
     Member:   18  Register:  5  Value: -0.745113
     Member:   18  Register:  6  Value: 1.869984
-    Member:   18  Register:  7  Value: 0.077431
-    Member:   18  Register:  8  Value: 0.301331
-    Member:   18  Register:  9  Value: 1.392301
-    Member:   18  Register: 10  Value: -0.434441
+    Member:   18  Register:  7  Value: -0.539029
+    Member:   18  Register:  8  Value: 0.827619
+    Member:   18  Register:  9  Value: -0.219093
+    Member:   18  Register: 10  Value: -0.103318
     Member:   18  Register: 11  Value: 0.287236
     Member:   18  Register: 12  Value: -1.500864
     Member:   18  Register: 13  Value: -1.945061
     Member:   18  Register: 14  Value: -1.260747
     Member:   18  Register: 15  Value: -3.005380
     Member:   18  Register: 16  Value: -1.396371
-    Member:   18  Register: 17  Value: 1.798524
+    Member:   18  Register: 17  Value: 0.160542
     Member:   18  Register: 18  Value: 0.480315
-    Member:   18  Register: 19  Value: 0.475842
+    Member:   18  Register: 19  Value: 1.996728
     Member:   18  Register: 20  Value: 0.000000
     Member:   18  Register: 21  Value: 0.000000
     Member:   18  Register: 22  Value: 0.000000
@@ -630,27 +630,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   18  Register: 27  Value: 0.000000
     Member:   18  Register: 28  Value: 0.000000
     Member:   18  Register: 29  Value: 0.000000
-    Member:   19  Result: 0.974239  Age: 11
-    Member:   19  Register:  0  Value: -2.099744
+    Member:   19  Result: 1.015548  Age: 11
+    Member:   19  Register:  0  Value: -1.072845
     Member:   19  Register:  1  Value: -1.796687
     Member:   19  Register:  2  Value: -0.156495
-    Member:   19  Register:  3  Value: 1.611790
+    Member:   19  Register:  3  Value: 1.154580
     Member:   19  Register:  4  Value: 1.076965
     Member:   19  Register:  5  Value: -0.745113
     Member:   19  Register:  6  Value: 1.869984
-    Member:   19  Register:  7  Value: 0.077431
-    Member:   19  Register:  8  Value: 0.301331
-    Member:   19  Register:  9  Value: 1.392301
-    Member:   19  Register: 10  Value: -0.434441
+    Member:   19  Register:  7  Value: -0.539029
+    Member:   19  Register:  8  Value: 0.827619
+    Member:   19  Register:  9  Value: -0.219093
+    Member:   19  Register: 10  Value: -0.103318
     Member:   19  Register: 11  Value: 1.856533
     Member:   19  Register: 12  Value: -1.500864
     Member:   19  Register: 13  Value: -1.945061
     Member:   19  Register: 14  Value: -1.260747
     Member:   19  Register: 15  Value: -3.005380
-    Member:   19  Register: 16  Value: -1.027009
-    Member:   19  Register: 17  Value: 1.798524
+    Member:   19  Register: 16  Value: -1.396371
+    Member:   19  Register: 17  Value: 0.160542
     Member:   19  Register: 18  Value: 0.480315
-    Member:   19  Register: 19  Value: 0.475842
+    Member:   19  Register: 19  Value: 1.996728
     Member:   19  Register: 20  Value: 0.000000
     Member:   19  Register: 21  Value: 0.000000
     Member:   19  Register: 22  Value: 0.000000
@@ -661,27 +661,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   19  Register: 27  Value: 0.000000
     Member:   19  Register: 28  Value: 0.000000
     Member:   19  Register: 29  Value: 0.000000
-    Member:   20  Result: 0.974239  Age: 12
-    Member:   20  Register:  0  Value: -2.099744
+    Member:   20  Result: 1.015548  Age: 12
+    Member:   20  Register:  0  Value: -1.072845
     Member:   20  Register:  1  Value: -1.796687
     Member:   20  Register:  2  Value: -0.156495
-    Member:   20  Register:  3  Value: 1.611790
+    Member:   20  Register:  3  Value: 1.154580
     Member:   20  Register:  4  Value: 1.076965
     Member:   20  Register:  5  Value: -0.745113
     Member:   20  Register:  6  Value: 1.869984
-    Member:   20  Register:  7  Value: 0.077431
-    Member:   20  Register:  8  Value: 0.301331
-    Member:   20  Register:  9  Value: 1.392301
-    Member:   20  Register: 10  Value: -0.434441
-    Member:   20  Register: 11  Value: 0.287236
+    Member:   20  Register:  7  Value: -0.539029
+    Member:   20  Register:  8  Value: 0.827619
+    Member:   20  Register:  9  Value: -0.219093
+    Member:   20  Register: 10  Value: -0.103318
+    Member:   20  Register: 11  Value: 1.856533
     Member:   20  Register: 12  Value: 0.061808
     Member:   20  Register: 13  Value: -1.945061
     Member:   20  Register: 14  Value: -1.260747
     Member:   20  Register: 15  Value: -3.005380
-    Member:   20  Register: 16  Value: -1.027009
-    Member:   20  Register: 17  Value: 1.798524
+    Member:   20  Register: 16  Value: -1.396371
+    Member:   20  Register: 17  Value: 0.160542
     Member:   20  Register: 18  Value: 0.480315
-    Member:   20  Register: 19  Value: 0.475842
+    Member:   20  Register: 19  Value: 1.996728
     Member:   20  Register: 20  Value: 0.000000
     Member:   20  Register: 21  Value: 0.000000
     Member:   20  Register: 22  Value: 0.000000
@@ -692,27 +692,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   20  Register: 27  Value: 0.000000
     Member:   20  Register: 28  Value: 0.000000
     Member:   20  Register: 29  Value: 0.000000
-    Member:   21  Result: 0.974239  Age: 10
-    Member:   21  Register:  0  Value: -2.099744
+    Member:   21  Result: 1.015548  Age: 10
+    Member:   21  Register:  0  Value: -1.072845
     Member:   21  Register:  1  Value: -1.796687
     Member:   21  Register:  2  Value: -0.156495
-    Member:   21  Register:  3  Value: 1.611790
+    Member:   21  Register:  3  Value: 1.154580
     Member:   21  Register:  4  Value: 1.076965
     Member:   21  Register:  5  Value: -0.745113
     Member:   21  Register:  6  Value: 1.869984
-    Member:   21  Register:  7  Value: 0.077431
-    Member:   21  Register:  8  Value: 0.301331
-    Member:   21  Register:  9  Value: 1.392301
-    Member:   21  Register: 10  Value: -1.041923
-    Member:   21  Register: 11  Value: 0.287236
-    Member:   21  Register: 12  Value: -1.500864
+    Member:   21  Register:  7  Value: -0.539029
+    Member:   21  Register:  8  Value: 0.827619
+    Member:   21  Register:  9  Value: -0.219093
+    Member:   21  Register: 10  Value: -0.710799
+    Member:   21  Register: 11  Value: 1.856533
+    Member:   21  Register: 12  Value: 0.061808
     Member:   21  Register: 13  Value: -1.945061
     Member:   21  Register: 14  Value: -1.260747
     Member:   21  Register: 15  Value: -3.005380
-    Member:   21  Register: 16  Value: -1.027009
-    Member:   21  Register: 17  Value: 1.798524
+    Member:   21  Register: 16  Value: -1.396371
+    Member:   21  Register: 17  Value: 0.160542
     Member:   21  Register: 18  Value: 0.480315
-    Member:   21  Register: 19  Value: 0.475842
+    Member:   21  Register: 19  Value: 1.996728
     Member:   21  Register: 20  Value: 0.000000
     Member:   21  Register: 21  Value: 0.000000
     Member:   21  Register: 22  Value: 0.000000
@@ -723,27 +723,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   21  Register: 27  Value: 0.000000
     Member:   21  Register: 28  Value: 0.000000
     Member:   21  Register: 29  Value: 0.000000
-    Member:   22  Result: 0.974239  Age: 17
-    Member:   22  Register:  0  Value: -2.099744
+    Member:   22  Result: 1.015548  Age: 17
+    Member:   22  Register:  0  Value: -1.072845
     Member:   22  Register:  1  Value: -1.796687
     Member:   22  Register:  2  Value: -0.156495
-    Member:   22  Register:  3  Value: 1.611790
+    Member:   22  Register:  3  Value: 1.154580
     Member:   22  Register:  4  Value: 1.076965
     Member:   22  Register:  5  Value: -0.745113
     Member:   22  Register:  6  Value: 1.869984
-    Member:   22  Register:  7  Value: 0.077431
-    Member:   22  Register:  8  Value: 0.301331
-    Member:   22  Register:  9  Value: 1.392301
-    Member:   22  Register: 10  Value: -0.434441
-    Member:   22  Register: 11  Value: 0.287236
-    Member:   22  Register: 12  Value: -1.500864
+    Member:   22  Register:  7  Value: -0.539029
+    Member:   22  Register:  8  Value: 0.827619
+    Member:   22  Register:  9  Value: -0.219093
+    Member:   22  Register: 10  Value: -0.710799
+    Member:   22  Register: 11  Value: 1.856533
+    Member:   22  Register: 12  Value: 0.061808
     Member:   22  Register: 13  Value: -1.945061
     Member:   22  Register: 14  Value: -1.260747
     Member:   22  Register: 15  Value: -3.005380
-    Member:   22  Register: 16  Value: -1.027009
-    Member:   22  Register: 17  Value: 3.702423
+    Member:   22  Register: 16  Value: -1.396371
+    Member:   22  Register: 17  Value: 2.064441
     Member:   22  Register: 18  Value: 0.480315
-    Member:   22  Register: 19  Value: 0.475842
+    Member:   22  Register: 19  Value: 1.996728
     Member:   22  Register: 20  Value: 0.000000
     Member:   22  Register: 21  Value: 0.000000
     Member:   22  Register: 22  Value: 0.000000
@@ -754,27 +754,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   22  Register: 27  Value: 0.000000
     Member:   22  Register: 28  Value: 0.000000
     Member:   22  Register: 29  Value: 0.000000
-    Member:   23  Result: 0.974239  Age: 7
-    Member:   23  Register:  0  Value: -2.099744
+    Member:   23  Result: 1.015548  Age: 7
+    Member:   23  Register:  0  Value: -1.072845
     Member:   23  Register:  1  Value: -1.796687
     Member:   23  Register:  2  Value: -0.156495
-    Member:   23  Register:  3  Value: 1.611790
+    Member:   23  Register:  3  Value: 1.154580
     Member:   23  Register:  4  Value: 1.076965
     Member:   23  Register:  5  Value: -0.745113
     Member:   23  Register:  6  Value: 1.869984
-    Member:   23  Register:  7  Value: -1.788921
-    Member:   23  Register:  8  Value: 0.301331
-    Member:   23  Register:  9  Value: 1.392301
-    Member:   23  Register: 10  Value: -0.434441
-    Member:   23  Register: 11  Value: 0.287236
-    Member:   23  Register: 12  Value: -1.500864
+    Member:   23  Register:  7  Value: -2.405381
+    Member:   23  Register:  8  Value: 0.827619
+    Member:   23  Register:  9  Value: -0.219093
+    Member:   23  Register: 10  Value: -0.710799
+    Member:   23  Register: 11  Value: 1.856533
+    Member:   23  Register: 12  Value: 0.061808
     Member:   23  Register: 13  Value: -1.945061
     Member:   23  Register: 14  Value: -1.260747
     Member:   23  Register: 15  Value: -3.005380
-    Member:   23  Register: 16  Value: -1.027009
-    Member:   23  Register: 17  Value: 1.798524
+    Member:   23  Register: 16  Value: -1.396371
+    Member:   23  Register: 17  Value: 2.064441
     Member:   23  Register: 18  Value: 0.480315
-    Member:   23  Register: 19  Value: 0.475842
+    Member:   23  Register: 19  Value: 1.996728
     Member:   23  Register: 20  Value: 0.000000
     Member:   23  Register: 21  Value: 0.000000
     Member:   23  Register: 22  Value: 0.000000
@@ -785,27 +785,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   23  Register: 27  Value: 0.000000
     Member:   23  Register: 28  Value: 0.000000
     Member:   23  Register: 29  Value: 0.000000
-    Member:   24  Result: 0.974239  Age: 19
-    Member:   24  Register:  0  Value: -2.099744
+    Member:   24  Result: 1.015548  Age: 19
+    Member:   24  Register:  0  Value: -1.072845
     Member:   24  Register:  1  Value: -1.796687
     Member:   24  Register:  2  Value: -0.156495
-    Member:   24  Register:  3  Value: 1.611790
+    Member:   24  Register:  3  Value: 1.154580
     Member:   24  Register:  4  Value: 1.076965
     Member:   24  Register:  5  Value: -0.745113
     Member:   24  Register:  6  Value: 1.869984
-    Member:   24  Register:  7  Value: 0.077431
-    Member:   24  Register:  8  Value: 0.301331
-    Member:   24  Register:  9  Value: 1.392301
-    Member:   24  Register: 10  Value: -0.434441
-    Member:   24  Register: 11  Value: 0.287236
-    Member:   24  Register: 12  Value: -1.500864
+    Member:   24  Register:  7  Value: -2.405381
+    Member:   24  Register:  8  Value: 0.827619
+    Member:   24  Register:  9  Value: -0.219093
+    Member:   24  Register: 10  Value: -0.710799
+    Member:   24  Register: 11  Value: 1.856533
+    Member:   24  Register: 12  Value: 0.061808
     Member:   24  Register: 13  Value: -1.945061
     Member:   24  Register: 14  Value: -1.260747
     Member:   24  Register: 15  Value: -3.005380
-    Member:   24  Register: 16  Value: -1.027009
-    Member:   24  Register: 17  Value: 1.798524
+    Member:   24  Register: 16  Value: -1.396371
+    Member:   24  Register: 17  Value: 2.064441
     Member:   24  Register: 18  Value: 0.480315
-    Member:   24  Register: 19  Value: 0.924848
+    Member:   24  Register: 19  Value: 2.445733
     Member:   24  Register: 20  Value: 0.000000
     Member:   24  Register: 21  Value: 0.000000
     Member:   24  Register: 22  Value: 0.000000
@@ -816,27 +816,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   24  Register: 27  Value: 0.000000
     Member:   24  Register: 28  Value: 0.000000
     Member:   24  Register: 29  Value: 0.000000
-    Member:   25  Result: 0.974239  Age: 17
-    Member:   25  Register:  0  Value: -2.099744
+    Member:   25  Result: 1.015548  Age: 17
+    Member:   25  Register:  0  Value: -1.072845
     Member:   25  Register:  1  Value: -1.796687
     Member:   25  Register:  2  Value: -0.156495
-    Member:   25  Register:  3  Value: 1.611790
+    Member:   25  Register:  3  Value: 1.154580
     Member:   25  Register:  4  Value: 1.076965
     Member:   25  Register:  5  Value: -0.745113
     Member:   25  Register:  6  Value: 1.869984
-    Member:   25  Register:  7  Value: 0.077431
-    Member:   25  Register:  8  Value: 0.301331
-    Member:   25  Register:  9  Value: 1.392301
-    Member:   25  Register: 10  Value: -0.434441
-    Member:   25  Register: 11  Value: 0.287236
-    Member:   25  Register: 12  Value: -1.500864
+    Member:   25  Register:  7  Value: -2.405381
+    Member:   25  Register:  8  Value: 0.827619
+    Member:   25  Register:  9  Value: -0.219093
+    Member:   25  Register: 10  Value: -0.710799
+    Member:   25  Register: 11  Value: 1.856533
+    Member:   25  Register: 12  Value: 0.061808
     Member:   25  Register: 13  Value: -1.945061
     Member:   25  Register: 14  Value: -1.260747
     Member:   25  Register: 15  Value: -3.005380
-    Member:   25  Register: 16  Value: -1.027009
-    Member:   25  Register: 17  Value: 3.362276
+    Member:   25  Register: 16  Value: -1.396371
+    Member:   25  Register: 17  Value: 3.628193
     Member:   25  Register: 18  Value: 0.480315
-    Member:   25  Register: 19  Value: 0.475842
+    Member:   25  Register: 19  Value: 2.445733
     Member:   25  Register: 20  Value: 0.000000
     Member:   25  Register: 21  Value: 0.000000
     Member:   25  Register: 22  Value: 0.000000
@@ -847,27 +847,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   25  Register: 27  Value: 0.000000
     Member:   25  Register: 28  Value: 0.000000
     Member:   25  Register: 29  Value: 0.000000
-    Member:   26  Result: 0.974239  Age: 4
-    Member:   26  Register:  0  Value: -2.099744
+    Member:   26  Result: 1.015548  Age: 4
+    Member:   26  Register:  0  Value: -1.072845
     Member:   26  Register:  1  Value: -1.796687
     Member:   26  Register:  2  Value: -0.156495
-    Member:   26  Register:  3  Value: 1.611790
+    Member:   26  Register:  3  Value: 1.154580
     Member:   26  Register:  4  Value: 0.828763
     Member:   26  Register:  5  Value: -0.745113
     Member:   26  Register:  6  Value: 1.869984
-    Member:   26  Register:  7  Value: 0.077431
-    Member:   26  Register:  8  Value: 0.301331
-    Member:   26  Register:  9  Value: 1.392301
-    Member:   26  Register: 10  Value: -0.434441
-    Member:   26  Register: 11  Value: 0.287236
-    Member:   26  Register: 12  Value: -1.500864
+    Member:   26  Register:  7  Value: -2.405381
+    Member:   26  Register:  8  Value: 0.827619
+    Member:   26  Register:  9  Value: -0.219093
+    Member:   26  Register: 10  Value: -0.710799
+    Member:   26  Register: 11  Value: 1.856533
+    Member:   26  Register: 12  Value: 0.061808
     Member:   26  Register: 13  Value: -1.945061
     Member:   26  Register: 14  Value: -1.260747
     Member:   26  Register: 15  Value: -3.005380
-    Member:   26  Register: 16  Value: -1.027009
-    Member:   26  Register: 17  Value: 1.798524
+    Member:   26  Register: 16  Value: -1.396371
+    Member:   26  Register: 17  Value: 3.628193
     Member:   26  Register: 18  Value: 0.480315
-    Member:   26  Register: 19  Value: 0.475842
+    Member:   26  Register: 19  Value: 2.445733
     Member:   26  Register: 20  Value: 0.000000
     Member:   26  Register: 21  Value: 0.000000
     Member:   26  Register: 22  Value: 0.000000
@@ -878,27 +878,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   26  Register: 27  Value: 0.000000
     Member:   26  Register: 28  Value: 0.000000
     Member:   26  Register: 29  Value: 0.000000
-    Member:   27  Result: 0.974239  Age: 9
-    Member:   27  Register:  0  Value: -2.099744
+    Member:   27  Result: 1.015548  Age: 9
+    Member:   27  Register:  0  Value: -1.072845
     Member:   27  Register:  1  Value: -1.796687
     Member:   27  Register:  2  Value: -0.156495
-    Member:   27  Register:  3  Value: 1.611790
-    Member:   27  Register:  4  Value: 1.076965
+    Member:   27  Register:  3  Value: 1.154580
+    Member:   27  Register:  4  Value: 0.828763
     Member:   27  Register:  5  Value: -0.745113
     Member:   27  Register:  6  Value: 1.869984
-    Member:   27  Register:  7  Value: 0.077431
-    Member:   27  Register:  8  Value: 0.301331
-    Member:   27  Register:  9  Value: 2.860267
-    Member:   27  Register: 10  Value: -0.434441
-    Member:   27  Register: 11  Value: 0.287236
-    Member:   27  Register: 12  Value: -1.500864
+    Member:   27  Register:  7  Value: -2.405381
+    Member:   27  Register:  8  Value: 0.827619
+    Member:   27  Register:  9  Value: 1.248873
+    Member:   27  Register: 10  Value: -0.710799
+    Member:   27  Register: 11  Value: 1.856533
+    Member:   27  Register: 12  Value: 0.061808
     Member:   27  Register: 13  Value: -1.945061
     Member:   27  Register: 14  Value: -1.260747
     Member:   27  Register: 15  Value: -3.005380
-    Member:   27  Register: 16  Value: -1.027009
-    Member:   27  Register: 17  Value: 1.798524
+    Member:   27  Register: 16  Value: -1.396371
+    Member:   27  Register: 17  Value: 3.628193
     Member:   27  Register: 18  Value: 0.480315
-    Member:   27  Register: 19  Value: 0.475842
+    Member:   27  Register: 19  Value: 2.445733
     Member:   27  Register: 20  Value: 0.000000
     Member:   27  Register: 21  Value: 0.000000
     Member:   27  Register: 22  Value: 0.000000
@@ -909,27 +909,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   27  Register: 27  Value: 0.000000
     Member:   27  Register: 28  Value: 0.000000
     Member:   27  Register: 29  Value: 0.000000
-    Member:   28  Result: 0.974239  Age: 8
-    Member:   28  Register:  0  Value: -2.099744
+    Member:   28  Result: 1.015548  Age: 8
+    Member:   28  Register:  0  Value: -1.072845
     Member:   28  Register:  1  Value: -1.796687
     Member:   28  Register:  2  Value: -0.156495
-    Member:   28  Register:  3  Value: 1.611790
-    Member:   28  Register:  4  Value: 1.076965
+    Member:   28  Register:  3  Value: 1.154580
+    Member:   28  Register:  4  Value: 0.828763
     Member:   28  Register:  5  Value: -0.745113
     Member:   28  Register:  6  Value: 1.869984
-    Member:   28  Register:  7  Value: 0.077431
-    Member:   28  Register:  8  Value: -0.917737
-    Member:   28  Register:  9  Value: 1.392301
-    Member:   28  Register: 10  Value: -0.434441
-    Member:   28  Register: 11  Value: 0.287236
-    Member:   28  Register: 12  Value: -1.500864
+    Member:   28  Register:  7  Value: -2.405381
+    Member:   28  Register:  8  Value: -0.391448
+    Member:   28  Register:  9  Value: 1.248873
+    Member:   28  Register: 10  Value: -0.710799
+    Member:   28  Register: 11  Value: 1.856533
+    Member:   28  Register: 12  Value: 0.061808
     Member:   28  Register: 13  Value: -1.945061
     Member:   28  Register: 14  Value: -1.260747
     Member:   28  Register: 15  Value: -3.005380
-    Member:   28  Register: 16  Value: -1.027009
-    Member:   28  Register: 17  Value: 1.798524
+    Member:   28  Register: 16  Value: -1.396371
+    Member:   28  Register: 17  Value: 3.628193
     Member:   28  Register: 18  Value: 0.480315
-    Member:   28  Register: 19  Value: 0.475842
+    Member:   28  Register: 19  Value: 2.445733
     Member:   28  Register: 20  Value: 0.000000
     Member:   28  Register: 21  Value: 0.000000
     Member:   28  Register: 22  Value: 0.000000
@@ -940,27 +940,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   28  Register: 27  Value: 0.000000
     Member:   28  Register: 28  Value: 0.000000
     Member:   28  Register: 29  Value: 0.000000
-    Member:   29  Result: 0.974239  Age: 0
-    Member:   29  Register:  0  Value: -0.297022
+    Member:   29  Result: 1.015548  Age: 0
+    Member:   29  Register:  0  Value: 0.729878
     Member:   29  Register:  1  Value: -1.796687
     Member:   29  Register:  2  Value: -0.156495
-    Member:   29  Register:  3  Value: 1.611790
-    Member:   29  Register:  4  Value: 1.076965
+    Member:   29  Register:  3  Value: 1.154580
+    Member:   29  Register:  4  Value: 0.828763
     Member:   29  Register:  5  Value: -0.745113
     Member:   29  Register:  6  Value: 1.869984
-    Member:   29  Register:  7  Value: 0.077431
-    Member:   29  Register:  8  Value: 0.301331
-    Member:   29  Register:  9  Value: 1.392301
-    Member:   29  Register: 10  Value: -0.434441
-    Member:   29  Register: 11  Value: 0.287236
-    Member:   29  Register: 12  Value: -1.500864
+    Member:   29  Register:  7  Value: -2.405381
+    Member:   29  Register:  8  Value: -0.391448
+    Member:   29  Register:  9  Value: 1.248873
+    Member:   29  Register: 10  Value: -0.710799
+    Member:   29  Register: 11  Value: 1.856533
+    Member:   29  Register: 12  Value: 0.061808
     Member:   29  Register: 13  Value: -1.945061
     Member:   29  Register: 14  Value: -1.260747
     Member:   29  Register: 15  Value: -3.005380
-    Member:   29  Register: 16  Value: -1.027009
-    Member:   29  Register: 17  Value: 1.798524
+    Member:   29  Register: 16  Value: -1.396371
+    Member:   29  Register: 17  Value: 3.628193
     Member:   29  Register: 18  Value: 0.480315
-    Member:   29  Register: 19  Value: 0.475842
+    Member:   29  Register: 19  Value: 2.445733
     Member:   29  Register: 20  Value: 0.000000
     Member:   29  Register: 21  Value: 0.000000
     Member:   29  Register: 22  Value: 0.000000
@@ -971,27 +971,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   29  Register: 27  Value: 0.000000
     Member:   29  Register: 28  Value: 0.000000
     Member:   29  Register: 29  Value: 0.000000
-    Member:   30  Result: 0.974239  Age: 11
-    Member:   30  Register:  0  Value: -2.099744
+    Member:   30  Result: 1.015548  Age: 11
+    Member:   30  Register:  0  Value: 0.729878
     Member:   30  Register:  1  Value: -1.796687
     Member:   30  Register:  2  Value: -0.156495
-    Member:   30  Register:  3  Value: 1.611790
-    Member:   30  Register:  4  Value: 1.076965
+    Member:   30  Register:  3  Value: 1.154580
+    Member:   30  Register:  4  Value: 0.828763
     Member:   30  Register:  5  Value: -0.745113
     Member:   30  Register:  6  Value: 1.869984
-    Member:   30  Register:  7  Value: 0.077431
-    Member:   30  Register:  8  Value: 0.301331
-    Member:   30  Register:  9  Value: 1.392301
-    Member:   30  Register: 10  Value: -0.434441
-    Member:   30  Register: 11  Value: 0.848547
-    Member:   30  Register: 12  Value: -1.500864
+    Member:   30  Register:  7  Value: -2.405381
+    Member:   30  Register:  8  Value: -0.391448
+    Member:   30  Register:  9  Value: 1.248873
+    Member:   30  Register: 10  Value: -0.710799
+    Member:   30  Register: 11  Value: 2.417844
+    Member:   30  Register: 12  Value: 0.061808
     Member:   30  Register: 13  Value: -1.945061
     Member:   30  Register: 14  Value: -1.260747
     Member:   30  Register: 15  Value: -3.005380
-    Member:   30  Register: 16  Value: -1.027009
-    Member:   30  Register: 17  Value: 1.798524
+    Member:   30  Register: 16  Value: -1.396371
+    Member:   30  Register: 17  Value: 3.628193
     Member:   30  Register: 18  Value: 0.480315
-    Member:   30  Register: 19  Value: 0.475842
+    Member:   30  Register: 19  Value: 2.445733
     Member:   30  Register: 20  Value: 0.000000
     Member:   30  Register: 21  Value: 0.000000
     Member:   30  Register: 22  Value: 0.000000
@@ -1002,27 +1002,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   30  Register: 27  Value: 0.000000
     Member:   30  Register: 28  Value: 0.000000
     Member:   30  Register: 29  Value: 0.000000
-    Member:   31  Result: 0.974239  Age: 13
-    Member:   31  Register:  0  Value: -2.099744
+    Member:   31  Result: 1.015548  Age: 13
+    Member:   31  Register:  0  Value: 0.729878
     Member:   31  Register:  1  Value: -1.796687
     Member:   31  Register:  2  Value: -0.156495
-    Member:   31  Register:  3  Value: 1.611790
-    Member:   31  Register:  4  Value: 1.076965
+    Member:   31  Register:  3  Value: 1.154580
+    Member:   31  Register:  4  Value: 0.828763
     Member:   31  Register:  5  Value: -0.745113
     Member:   31  Register:  6  Value: 1.869984
-    Member:   31  Register:  7  Value: 0.077431
-    Member:   31  Register:  8  Value: 0.301331
-    Member:   31  Register:  9  Value: 1.392301
-    Member:   31  Register: 10  Value: -0.434441
-    Member:   31  Register: 11  Value: 0.287236
-    Member:   31  Register: 12  Value: -1.500864
+    Member:   31  Register:  7  Value: -2.405381
+    Member:   31  Register:  8  Value: -0.391448
+    Member:   31  Register:  9  Value: 1.248873
+    Member:   31  Register: 10  Value: -0.710799
+    Member:   31  Register: 11  Value: 2.417844
+    Member:   31  Register: 12  Value: 0.061808
     Member:   31  Register: 13  Value: -1.527729
     Member:   31  Register: 14  Value: -1.260747
     Member:   31  Register: 15  Value: -3.005380
-    Member:   31  Register: 16  Value: -1.027009
-    Member:   31  Register: 17  Value: 1.798524
+    Member:   31  Register: 16  Value: -1.396371
+    Member:   31  Register: 17  Value: 3.628193
     Member:   31  Register: 18  Value: 0.480315
-    Member:   31  Register: 19  Value: 0.475842
+    Member:   31  Register: 19  Value: 2.445733
     Member:   31  Register: 20  Value: 0.000000
     Member:   31  Register: 21  Value: 0.000000
     Member:   31  Register: 22  Value: 0.000000
@@ -1033,27 +1033,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   31  Register: 27  Value: 0.000000
     Member:   31  Register: 28  Value: 0.000000
     Member:   31  Register: 29  Value: 0.000000
-    Member:   32  Result: 0.974239  Age: 0
-    Member:   32  Register:  0  Value: -1.021942
+    Member:   32  Result: 1.015548  Age: 0
+    Member:   32  Register:  0  Value: 1.807680
     Member:   32  Register:  1  Value: -1.796687
     Member:   32  Register:  2  Value: -0.156495
-    Member:   32  Register:  3  Value: 1.611790
-    Member:   32  Register:  4  Value: 1.076965
+    Member:   32  Register:  3  Value: 1.154580
+    Member:   32  Register:  4  Value: 0.828763
     Member:   32  Register:  5  Value: -0.745113
     Member:   32  Register:  6  Value: 1.869984
-    Member:   32  Register:  7  Value: 0.077431
-    Member:   32  Register:  8  Value: 0.301331
-    Member:   32  Register:  9  Value: 1.392301
-    Member:   32  Register: 10  Value: -0.434441
-    Member:   32  Register: 11  Value: 0.287236
-    Member:   32  Register: 12  Value: -1.500864
-    Member:   32  Register: 13  Value: -1.945061
+    Member:   32  Register:  7  Value: -2.405381
+    Member:   32  Register:  8  Value: -0.391448
+    Member:   32  Register:  9  Value: 1.248873
+    Member:   32  Register: 10  Value: -0.710799
+    Member:   32  Register: 11  Value: 2.417844
+    Member:   32  Register: 12  Value: 0.061808
+    Member:   32  Register: 13  Value: -1.527729
     Member:   32  Register: 14  Value: -1.260747
     Member:   32  Register: 15  Value: -3.005380
-    Member:   32  Register: 16  Value: -1.027009
-    Member:   32  Register: 17  Value: 1.798524
+    Member:   32  Register: 16  Value: -1.396371
+    Member:   32  Register: 17  Value: 3.628193
     Member:   32  Register: 18  Value: 0.480315
-    Member:   32  Register: 19  Value: 0.475842
+    Member:   32  Register: 19  Value: 2.445733
     Member:   32  Register: 20  Value: 0.000000
     Member:   32  Register: 21  Value: 0.000000
     Member:   32  Register: 22  Value: 0.000000
@@ -1064,27 +1064,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   32  Register: 27  Value: 0.000000
     Member:   32  Register: 28  Value: 0.000000
     Member:   32  Register: 29  Value: 0.000000
-    Member:   33  Result: 0.974239  Age: 9
-    Member:   33  Register:  0  Value: -2.099744
+    Member:   33  Result: 1.015548  Age: 9
+    Member:   33  Register:  0  Value: 1.807680
     Member:   33  Register:  1  Value: -1.796687
     Member:   33  Register:  2  Value: -0.156495
-    Member:   33  Register:  3  Value: 1.611790
-    Member:   33  Register:  4  Value: 1.076965
+    Member:   33  Register:  3  Value: 1.154580
+    Member:   33  Register:  4  Value: 0.828763
     Member:   33  Register:  5  Value: -0.745113
     Member:   33  Register:  6  Value: 1.869984
-    Member:   33  Register:  7  Value: 0.077431
-    Member:   33  Register:  8  Value: 0.301331
-    Member:   33  Register:  9  Value: 2.997227
-    Member:   33  Register: 10  Value: -0.434441
-    Member:   33  Register: 11  Value: 0.287236
-    Member:   33  Register: 12  Value: -1.500864
-    Member:   33  Register: 13  Value: -1.945061
+    Member:   33  Register:  7  Value: -2.405381
+    Member:   33  Register:  8  Value: -0.391448
+    Member:   33  Register:  9  Value: 2.853798
+    Member:   33  Register: 10  Value: -0.710799
+    Member:   33  Register: 11  Value: 2.417844
+    Member:   33  Register: 12  Value: 0.061808
+    Member:   33  Register: 13  Value: -1.527729
     Member:   33  Register: 14  Value: -1.260747
     Member:   33  Register: 15  Value: -3.005380
-    Member:   33  Register: 16  Value: -1.027009
-    Member:   33  Register: 17  Value: 1.798524
+    Member:   33  Register: 16  Value: -1.396371
+    Member:   33  Register: 17  Value: 3.628193
     Member:   33  Register: 18  Value: 0.480315
-    Member:   33  Register: 19  Value: 0.475842
+    Member:   33  Register: 19  Value: 2.445733
     Member:   33  Register: 20  Value: 0.000000
     Member:   33  Register: 21  Value: 0.000000
     Member:   33  Register: 22  Value: 0.000000
@@ -1095,27 +1095,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   33  Register: 27  Value: 0.000000
     Member:   33  Register: 28  Value: 0.000000
     Member:   33  Register: 29  Value: 0.000000
-    Member:   34  Result: 0.974239  Age: 1
-    Member:   34  Register:  0  Value: -2.099744
+    Member:   34  Result: 1.015548  Age: 1
+    Member:   34  Register:  0  Value: 1.807680
     Member:   34  Register:  1  Value: -3.318435
     Member:   34  Register:  2  Value: -0.156495
-    Member:   34  Register:  3  Value: 1.611790
-    Member:   34  Register:  4  Value: 1.076965
+    Member:   34  Register:  3  Value: 1.154580
+    Member:   34  Register:  4  Value: 0.828763
     Member:   34  Register:  5  Value: -0.745113
     Member:   34  Register:  6  Value: 1.869984
-    Member:   34  Register:  7  Value: 0.077431
-    Member:   34  Register:  8  Value: 0.301331
-    Member:   34  Register:  9  Value: 1.392301
-    Member:   34  Register: 10  Value: -0.434441
-    Member:   34  Register: 11  Value: 0.287236
-    Member:   34  Register: 12  Value: -1.500864
-    Member:   34  Register: 13  Value: -1.945061
+    Member:   34  Register:  7  Value: -2.405381
+    Member:   34  Register:  8  Value: -0.391448
+    Member:   34  Register:  9  Value: 2.853798
+    Member:   34  Register: 10  Value: -0.710799
+    Member:   34  Register: 11  Value: 2.417844
+    Member:   34  Register: 12  Value: 0.061808
+    Member:   34  Register: 13  Value: -1.527729
     Member:   34  Register: 14  Value: -1.260747
     Member:   34  Register: 15  Value: -3.005380
-    Member:   34  Register: 16  Value: -1.027009
-    Member:   34  Register: 17  Value: 1.798524
+    Member:   34  Register: 16  Value: -1.396371
+    Member:   34  Register: 17  Value: 3.628193
     Member:   34  Register: 18  Value: 0.480315
-    Member:   34  Register: 19  Value: 0.475842
+    Member:   34  Register: 19  Value: 2.445733
     Member:   34  Register: 20  Value: 0.000000
     Member:   34  Register: 21  Value: 0.000000
     Member:   34  Register: 22  Value: 0.000000
@@ -1126,27 +1126,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   34  Register: 27  Value: 0.000000
     Member:   34  Register: 28  Value: 0.000000
     Member:   34  Register: 29  Value: 0.000000
-    Member:   35  Result: 0.974239  Age: 4
-    Member:   35  Register:  0  Value: -2.099744
-    Member:   35  Register:  1  Value: -1.796687
+    Member:   35  Result: 1.015548  Age: 4
+    Member:   35  Register:  0  Value: 1.807680
+    Member:   35  Register:  1  Value: -3.318435
     Member:   35  Register:  2  Value: -0.156495
-    Member:   35  Register:  3  Value: 1.611790
-    Member:   35  Register:  4  Value: 1.720800
+    Member:   35  Register:  3  Value: 1.154580
+    Member:   35  Register:  4  Value: 1.472599
     Member:   35  Register:  5  Value: -0.745113
     Member:   35  Register:  6  Value: 1.869984
-    Member:   35  Register:  7  Value: 0.077431
-    Member:   35  Register:  8  Value: 0.301331
-    Member:   35  Register:  9  Value: 1.392301
-    Member:   35  Register: 10  Value: -0.434441
-    Member:   35  Register: 11  Value: 0.287236
-    Member:   35  Register: 12  Value: -1.500864
-    Member:   35  Register: 13  Value: -1.945061
+    Member:   35  Register:  7  Value: -2.405381
+    Member:   35  Register:  8  Value: -0.391448
+    Member:   35  Register:  9  Value: 2.853798
+    Member:   35  Register: 10  Value: -0.710799
+    Member:   35  Register: 11  Value: 2.417844
+    Member:   35  Register: 12  Value: 0.061808
+    Member:   35  Register: 13  Value: -1.527729
     Member:   35  Register: 14  Value: -1.260747
     Member:   35  Register: 15  Value: -3.005380
-    Member:   35  Register: 16  Value: -1.027009
-    Member:   35  Register: 17  Value: 1.798524
+    Member:   35  Register: 16  Value: -1.396371
+    Member:   35  Register: 17  Value: 3.628193
     Member:   35  Register: 18  Value: 0.480315
-    Member:   35  Register: 19  Value: 0.475842
+    Member:   35  Register: 19  Value: 2.445733
     Member:   35  Register: 20  Value: 0.000000
     Member:   35  Register: 21  Value: 0.000000
     Member:   35  Register: 22  Value: 0.000000
@@ -1157,27 +1157,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   35  Register: 27  Value: 0.000000
     Member:   35  Register: 28  Value: 0.000000
     Member:   35  Register: 29  Value: 0.000000
-    Member:   36  Result: 0.974239  Age: 12
-    Member:   36  Register:  0  Value: -2.099744
-    Member:   36  Register:  1  Value: -1.796687
+    Member:   36  Result: 1.015548  Age: 12
+    Member:   36  Register:  0  Value: 1.807680
+    Member:   36  Register:  1  Value: -3.318435
     Member:   36  Register:  2  Value: -0.156495
-    Member:   36  Register:  3  Value: 1.611790
-    Member:   36  Register:  4  Value: 1.076965
+    Member:   36  Register:  3  Value: 1.154580
+    Member:   36  Register:  4  Value: 1.472599
     Member:   36  Register:  5  Value: -0.745113
     Member:   36  Register:  6  Value: 1.869984
-    Member:   36  Register:  7  Value: 0.077431
-    Member:   36  Register:  8  Value: 0.301331
-    Member:   36  Register:  9  Value: 1.392301
-    Member:   36  Register: 10  Value: -0.434441
-    Member:   36  Register: 11  Value: 0.287236
-    Member:   36  Register: 12  Value: -0.052567
-    Member:   36  Register: 13  Value: -1.945061
+    Member:   36  Register:  7  Value: -2.405381
+    Member:   36  Register:  8  Value: -0.391448
+    Member:   36  Register:  9  Value: 2.853798
+    Member:   36  Register: 10  Value: -0.710799
+    Member:   36  Register: 11  Value: 2.417844
+    Member:   36  Register: 12  Value: 1.510105
+    Member:   36  Register: 13  Value: -1.527729
     Member:   36  Register: 14  Value: -1.260747
     Member:   36  Register: 15  Value: -3.005380
-    Member:   36  Register: 16  Value: -1.027009
-    Member:   36  Register: 17  Value: 1.798524
+    Member:   36  Register: 16  Value: -1.396371
+    Member:   36  Register: 17  Value: 3.628193
     Member:   36  Register: 18  Value: 0.480315
-    Member:   36  Register: 19  Value: 0.475842
+    Member:   36  Register: 19  Value: 2.445733
     Member:   36  Register: 20  Value: 0.000000
     Member:   36  Register: 21  Value: 0.000000
     Member:   36  Register: 22  Value: 0.000000
@@ -1188,27 +1188,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   36  Register: 27  Value: 0.000000
     Member:   36  Register: 28  Value: 0.000000
     Member:   36  Register: 29  Value: 0.000000
-    Member:   37  Result: 0.974236  Age: 6
-    Member:   37  Register:  0  Value: -2.099744
-    Member:   37  Register:  1  Value: -1.796687
+    Member:   37  Result: 1.015548  Age: 6
+    Member:   37  Register:  0  Value: 1.807680
+    Member:   37  Register:  1  Value: -3.318435
     Member:   37  Register:  2  Value: -0.156495
-    Member:   37  Register:  3  Value: 1.611790
-    Member:   37  Register:  4  Value: 1.076965
+    Member:   37  Register:  3  Value: 1.154580
+    Member:   37  Register:  4  Value: 1.472599
     Member:   37  Register:  5  Value: -0.745113
     Member:   37  Register:  6  Value: 2.483537
-    Member:   37  Register:  7  Value: 0.077431
-    Member:   37  Register:  8  Value: 0.301331
-    Member:   37  Register:  9  Value: 1.392301
-    Member:   37  Register: 10  Value: -0.434441
-    Member:   37  Register: 11  Value: 0.287236
-    Member:   37  Register: 12  Value: -1.500864
-    Member:   37  Register: 13  Value: -1.945061
+    Member:   37  Register:  7  Value: -2.405381
+    Member:   37  Register:  8  Value: -0.391448
+    Member:   37  Register:  9  Value: 2.853798
+    Member:   37  Register: 10  Value: -0.710799
+    Member:   37  Register: 11  Value: 2.417844
+    Member:   37  Register: 12  Value: 1.510105
+    Member:   37  Register: 13  Value: -1.527729
     Member:   37  Register: 14  Value: -1.260747
     Member:   37  Register: 15  Value: -3.005380
-    Member:   37  Register: 16  Value: -1.027009
-    Member:   37  Register: 17  Value: 1.798524
+    Member:   37  Register: 16  Value: -1.396371
+    Member:   37  Register: 17  Value: 3.628193
     Member:   37  Register: 18  Value: 0.480315
-    Member:   37  Register: 19  Value: 0.475842
+    Member:   37  Register: 19  Value: 2.445733
     Member:   37  Register: 20  Value: 0.000000
     Member:   37  Register: 21  Value: 0.000000
     Member:   37  Register: 22  Value: 0.000000
@@ -1219,27 +1219,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   37  Register: 27  Value: 0.000000
     Member:   37  Register: 28  Value: 0.000000
     Member:   37  Register: 29  Value: 0.000000
-    Member:   38  Result: 0.974212  Age: 8
-    Member:   38  Register:  0  Value: -2.099744
-    Member:   38  Register:  1  Value: -1.796687
+    Member:   38  Result: 1.015548  Age: 8
+    Member:   38  Register:  0  Value: 1.807680
+    Member:   38  Register:  1  Value: -3.318435
     Member:   38  Register:  2  Value: -0.156495
-    Member:   38  Register:  3  Value: 1.611790
-    Member:   38  Register:  4  Value: 1.076965
+    Member:   38  Register:  3  Value: 1.154580
+    Member:   38  Register:  4  Value: 1.472599
     Member:   38  Register:  5  Value: -0.745113
     Member:   38  Register:  6  Value: 2.483537
-    Member:   38  Register:  7  Value: 0.077431
-    Member:   38  Register:  8  Value: 1.833430
-    Member:   38  Register:  9  Value: 1.392301
-    Member:   38  Register: 10  Value: -0.434441
-    Member:   38  Register: 11  Value: 0.287236
-    Member:   38  Register: 12  Value: -1.500864
-    Member:   38  Register: 13  Value: -1.945061
+    Member:   38  Register:  7  Value: -2.405381
+    Member:   38  Register:  8  Value: 1.140651
+    Member:   38  Register:  9  Value: 2.853798
+    Member:   38  Register: 10  Value: -0.710799
+    Member:   38  Register: 11  Value: 2.417844
+    Member:   38  Register: 12  Value: 1.510105
+    Member:   38  Register: 13  Value: -1.527729
     Member:   38  Register: 14  Value: -1.260747
     Member:   38  Register: 15  Value: -3.005380
-    Member:   38  Register: 16  Value: -1.027009
-    Member:   38  Register: 17  Value: 1.798524
+    Member:   38  Register: 16  Value: -1.396371
+    Member:   38  Register: 17  Value: 3.628193
     Member:   38  Register: 18  Value: 0.480315
-    Member:   38  Register: 19  Value: 0.475842
+    Member:   38  Register: 19  Value: 2.445733
     Member:   38  Register: 20  Value: 0.000000
     Member:   38  Register: 21  Value: 0.000000
     Member:   38  Register: 22  Value: 0.000000
@@ -1250,27 +1250,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   38  Register: 27  Value: 0.000000
     Member:   38  Register: 28  Value: 0.000000
     Member:   38  Register: 29  Value: 0.000000
-    Member:   39  Result: 0.974205  Age: 8
-    Member:   39  Register:  0  Value: -2.099744
-    Member:   39  Register:  1  Value: -1.796687
+    Member:   39  Result: 1.015548  Age: 8
+    Member:   39  Register:  0  Value: 1.807680
+    Member:   39  Register:  1  Value: -3.318435
     Member:   39  Register:  2  Value: -0.156495
-    Member:   39  Register:  3  Value: 1.611790
-    Member:   39  Register:  4  Value: 1.076965
+    Member:   39  Register:  3  Value: 1.154580
+    Member:   39  Register:  4  Value: 1.472599
     Member:   39  Register:  5  Value: -0.745113
     Member:   39  Register:  6  Value: 2.483537
-    Member:   39  Register:  7  Value: 0.077431
-    Member:   39  Register:  8  Value: 2.276031
-    Member:   39  Register:  9  Value: 1.392301
-    Member:   39  Register: 10  Value: -0.434441
-    Member:   39  Register: 11  Value: 0.287236
-    Member:   39  Register: 12  Value: -1.500864
-    Member:   39  Register: 13  Value: -1.945061
+    Member:   39  Register:  7  Value: -2.405381
+    Member:   39  Register:  8  Value: 1.583252
+    Member:   39  Register:  9  Value: 2.853798
+    Member:   39  Register: 10  Value: -0.710799
+    Member:   39  Register: 11  Value: 2.417844
+    Member:   39  Register: 12  Value: 1.510105
+    Member:   39  Register: 13  Value: -1.527729
     Member:   39  Register: 14  Value: -1.260747
     Member:   39  Register: 15  Value: -3.005380
-    Member:   39  Register: 16  Value: -1.027009
-    Member:   39  Register: 17  Value: 1.798524
+    Member:   39  Register: 16  Value: -1.396371
+    Member:   39  Register: 17  Value: 3.628193
     Member:   39  Register: 18  Value: 0.480315
-    Member:   39  Register: 19  Value: 0.475842
+    Member:   39  Register: 19  Value: 2.445733
     Member:   39  Register: 20  Value: 0.000000
     Member:   39  Register: 21  Value: 0.000000
     Member:   39  Register: 22  Value: 0.000000
@@ -1281,27 +1281,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   39  Register: 27  Value: 0.000000
     Member:   39  Register: 28  Value: 0.000000
     Member:   39  Register: 29  Value: 0.000000
-    Member:   40  Result: 0.974205  Age: 16
-    Member:   40  Register:  0  Value: -2.099744
-    Member:   40  Register:  1  Value: -1.796687
+    Member:   40  Result: 1.015548  Age: 16
+    Member:   40  Register:  0  Value: 1.807680
+    Member:   40  Register:  1  Value: -3.318435
     Member:   40  Register:  2  Value: -0.156495
-    Member:   40  Register:  3  Value: 1.611790
-    Member:   40  Register:  4  Value: 1.076965
+    Member:   40  Register:  3  Value: 1.154580
+    Member:   40  Register:  4  Value: 1.472599
     Member:   40  Register:  5  Value: -0.745113
     Member:   40  Register:  6  Value: 2.483537
-    Member:   40  Register:  7  Value: 0.077431
-    Member:   40  Register:  8  Value: 2.276031
-    Member:   40  Register:  9  Value: 1.392301
-    Member:   40  Register: 10  Value: -0.434441
-    Member:   40  Register: 11  Value: 0.287236
-    Member:   40  Register: 12  Value: -1.500864
-    Member:   40  Register: 13  Value: -1.945061
+    Member:   40  Register:  7  Value: -2.405381
+    Member:   40  Register:  8  Value: 1.583252
+    Member:   40  Register:  9  Value: 2.853798
+    Member:   40  Register: 10  Value: -0.710799
+    Member:   40  Register: 11  Value: 2.417844
+    Member:   40  Register: 12  Value: 1.510105
+    Member:   40  Register: 13  Value: -1.527729
     Member:   40  Register: 14  Value: -1.260747
     Member:   40  Register: 15  Value: -3.005380
-    Member:   40  Register: 16  Value: 0.736347
-    Member:   40  Register: 17  Value: 1.798524
+    Member:   40  Register: 16  Value: 0.366984
+    Member:   40  Register: 17  Value: 3.628193
     Member:   40  Register: 18  Value: 0.480315
-    Member:   40  Register: 19  Value: 0.475842
+    Member:   40  Register: 19  Value: 2.445733
     Member:   40  Register: 20  Value: 0.000000
     Member:   40  Register: 21  Value: 0.000000
     Member:   40  Register: 22  Value: 0.000000
@@ -1312,27 +1312,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   40  Register: 27  Value: 0.000000
     Member:   40  Register: 28  Value: 0.000000
     Member:   40  Register: 29  Value: 0.000000
-    Member:   41  Result: 0.974205  Age: 10
-    Member:   41  Register:  0  Value: -2.099744
-    Member:   41  Register:  1  Value: -1.796687
+    Member:   41  Result: 1.015548  Age: 10
+    Member:   41  Register:  0  Value: 1.807680
+    Member:   41  Register:  1  Value: -3.318435
     Member:   41  Register:  2  Value: -0.156495
-    Member:   41  Register:  3  Value: 1.611790
-    Member:   41  Register:  4  Value: 1.076965
+    Member:   41  Register:  3  Value: 1.154580
+    Member:   41  Register:  4  Value: 1.472599
     Member:   41  Register:  5  Value: -0.745113
     Member:   41  Register:  6  Value: 2.483537
-    Member:   41  Register:  7  Value: 0.077431
-    Member:   41  Register:  8  Value: 2.276031
-    Member:   41  Register:  9  Value: 1.392301
-    Member:   41  Register: 10  Value: 0.542356
-    Member:   41  Register: 11  Value: 0.287236
-    Member:   41  Register: 12  Value: -1.500864
-    Member:   41  Register: 13  Value: -1.945061
+    Member:   41  Register:  7  Value: -2.405381
+    Member:   41  Register:  8  Value: 1.583252
+    Member:   41  Register:  9  Value: 2.853798
+    Member:   41  Register: 10  Value: 0.265998
+    Member:   41  Register: 11  Value: 2.417844
+    Member:   41  Register: 12  Value: 1.510105
+    Member:   41  Register: 13  Value: -1.527729
     Member:   41  Register: 14  Value: -1.260747
     Member:   41  Register: 15  Value: -3.005380
-    Member:   41  Register: 16  Value: -1.027009
-    Member:   41  Register: 17  Value: 1.798524
+    Member:   41  Register: 16  Value: 0.366984
+    Member:   41  Register: 17  Value: 3.628193
     Member:   41  Register: 18  Value: 0.480315
-    Member:   41  Register: 19  Value: 0.475842
+    Member:   41  Register: 19  Value: 2.445733
     Member:   41  Register: 20  Value: 0.000000
     Member:   41  Register: 21  Value: 0.000000
     Member:   41  Register: 22  Value: 0.000000
@@ -1343,27 +1343,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   41  Register: 27  Value: 0.000000
     Member:   41  Register: 28  Value: 0.000000
     Member:   41  Register: 29  Value: 0.000000
-    Member:   42  Result: 0.974205  Age: 13
-    Member:   42  Register:  0  Value: -2.099744
-    Member:   42  Register:  1  Value: -1.796687
+    Member:   42  Result: 1.015548  Age: 13
+    Member:   42  Register:  0  Value: 1.807680
+    Member:   42  Register:  1  Value: -3.318435
     Member:   42  Register:  2  Value: -0.156495
-    Member:   42  Register:  3  Value: 1.611790
-    Member:   42  Register:  4  Value: 1.076965
+    Member:   42  Register:  3  Value: 1.154580
+    Member:   42  Register:  4  Value: 1.472599
     Member:   42  Register:  5  Value: -0.745113
     Member:   42  Register:  6  Value: 2.483537
-    Member:   42  Register:  7  Value: 0.077431
-    Member:   42  Register:  8  Value: 2.276031
-    Member:   42  Register:  9  Value: 1.392301
-    Member:   42  Register: 10  Value: -0.434441
-    Member:   42  Register: 11  Value: 0.287236
-    Member:   42  Register: 12  Value: -1.500864
-    Member:   42  Register: 13  Value: -2.929440
+    Member:   42  Register:  7  Value: -2.405381
+    Member:   42  Register:  8  Value: 1.583252
+    Member:   42  Register:  9  Value: 2.853798
+    Member:   42  Register: 10  Value: 0.265998
+    Member:   42  Register: 11  Value: 2.417844
+    Member:   42  Register: 12  Value: 1.510105
+    Member:   42  Register: 13  Value: -2.512107
     Member:   42  Register: 14  Value: -1.260747
     Member:   42  Register: 15  Value: -3.005380
-    Member:   42  Register: 16  Value: -1.027009
-    Member:   42  Register: 17  Value: 1.798524
+    Member:   42  Register: 16  Value: 0.366984
+    Member:   42  Register: 17  Value: 3.628193
     Member:   42  Register: 18  Value: 0.480315
-    Member:   42  Register: 19  Value: 0.475842
+    Member:   42  Register: 19  Value: 2.445733
     Member:   42  Register: 20  Value: 0.000000
     Member:   42  Register: 21  Value: 0.000000
     Member:   42  Register: 22  Value: 0.000000
@@ -1374,27 +1374,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   42  Register: 27  Value: 0.000000
     Member:   42  Register: 28  Value: 0.000000
     Member:   42  Register: 29  Value: 0.000000
-    Member:   43  Result: 0.974205  Age: 16
-    Member:   43  Register:  0  Value: -2.099744
-    Member:   43  Register:  1  Value: -1.796687
+    Member:   43  Result: 1.015548  Age: 16
+    Member:   43  Register:  0  Value: 1.807680
+    Member:   43  Register:  1  Value: -3.318435
     Member:   43  Register:  2  Value: -0.156495
-    Member:   43  Register:  3  Value: 1.611790
-    Member:   43  Register:  4  Value: 1.076965
+    Member:   43  Register:  3  Value: 1.154580
+    Member:   43  Register:  4  Value: 1.472599
     Member:   43  Register:  5  Value: -0.745113
     Member:   43  Register:  6  Value: 2.483537
-    Member:   43  Register:  7  Value: 0.077431
-    Member:   43  Register:  8  Value: 2.276031
-    Member:   43  Register:  9  Value: 1.392301
-    Member:   43  Register: 10  Value: -0.434441
-    Member:   43  Register: 11  Value: 0.287236
-    Member:   43  Register: 12  Value: -1.500864
-    Member:   43  Register: 13  Value: -1.945061
+    Member:   43  Register:  7  Value: -2.405381
+    Member:   43  Register:  8  Value: 1.583252
+    Member:   43  Register:  9  Value: 2.853798
+    Member:   43  Register: 10  Value: 0.265998
+    Member:   43  Register: 11  Value: 2.417844
+    Member:   43  Register: 12  Value: 1.510105
+    Member:   43  Register: 13  Value: -2.512107
     Member:   43  Register: 14  Value: -1.260747
     Member:   43  Register: 15  Value: -3.005380
-    Member:   43  Register: 16  Value: -2.609356
-    Member:   43  Register: 17  Value: 1.798524
+    Member:   43  Register: 16  Value: -1.215364
+    Member:   43  Register: 17  Value: 3.628193
     Member:   43  Register: 18  Value: 0.480315
-    Member:   43  Register: 19  Value: 0.475842
+    Member:   43  Register: 19  Value: 2.445733
     Member:   43  Register: 20  Value: 0.000000
     Member:   43  Register: 21  Value: 0.000000
     Member:   43  Register: 22  Value: 0.000000
@@ -1405,27 +1405,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   43  Register: 27  Value: 0.000000
     Member:   43  Register: 28  Value: 0.000000
     Member:   43  Register: 29  Value: 0.000000
-    Member:   44  Result: 0.974205  Age: 3
-    Member:   44  Register:  0  Value: -2.099744
-    Member:   44  Register:  1  Value: -1.796687
+    Member:   44  Result: 1.015548  Age: 3
+    Member:   44  Register:  0  Value: 1.807680
+    Member:   44  Register:  1  Value: -3.318435
     Member:   44  Register:  2  Value: -0.156495
-    Member:   44  Register:  3  Value: 1.101980
-    Member:   44  Register:  4  Value: 1.076965
+    Member:   44  Register:  3  Value: 0.644770
+    Member:   44  Register:  4  Value: 1.472599
     Member:   44  Register:  5  Value: -0.745113
     Member:   44  Register:  6  Value: 2.483537
-    Member:   44  Register:  7  Value: 0.077431
-    Member:   44  Register:  8  Value: 2.276031
-    Member:   44  Register:  9  Value: 1.392301
-    Member:   44  Register: 10  Value: -0.434441
-    Member:   44  Register: 11  Value: 0.287236
-    Member:   44  Register: 12  Value: -1.500864
-    Member:   44  Register: 13  Value: -1.945061
+    Member:   44  Register:  7  Value: -2.405381
+    Member:   44  Register:  8  Value: 1.583252
+    Member:   44  Register:  9  Value: 2.853798
+    Member:   44  Register: 10  Value: 0.265998
+    Member:   44  Register: 11  Value: 2.417844
+    Member:   44  Register: 12  Value: 1.510105
+    Member:   44  Register: 13  Value: -2.512107
     Member:   44  Register: 14  Value: -1.260747
     Member:   44  Register: 15  Value: -3.005380
-    Member:   44  Register: 16  Value: -1.027009
-    Member:   44  Register: 17  Value: 1.798524
+    Member:   44  Register: 16  Value: -1.215364
+    Member:   44  Register: 17  Value: 3.628193
     Member:   44  Register: 18  Value: 0.480315
-    Member:   44  Register: 19  Value: 0.475842
+    Member:   44  Register: 19  Value: 2.445733
     Member:   44  Register: 20  Value: 0.000000
     Member:   44  Register: 21  Value: 0.000000
     Member:   44  Register: 22  Value: 0.000000
@@ -1436,27 +1436,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   44  Register: 27  Value: 0.000000
     Member:   44  Register: 28  Value: 0.000000
     Member:   44  Register: 29  Value: 0.000000
-    Member:   45  Result: 0.974205  Age: 4
-    Member:   45  Register:  0  Value: -2.099744
-    Member:   45  Register:  1  Value: -1.796687
+    Member:   45  Result: 1.015548  Age: 4
+    Member:   45  Register:  0  Value: 1.807680
+    Member:   45  Register:  1  Value: -3.318435
     Member:   45  Register:  2  Value: -0.156495
-    Member:   45  Register:  3  Value: 1.611790
-    Member:   45  Register:  4  Value: 2.960375
+    Member:   45  Register:  3  Value: 0.644770
+    Member:   45  Register:  4  Value: 3.356009
     Member:   45  Register:  5  Value: -0.745113
     Member:   45  Register:  6  Value: 2.483537
-    Member:   45  Register:  7  Value: 0.077431
-    Member:   45  Register:  8  Value: 2.276031
-    Member:   45  Register:  9  Value: 1.392301
-    Member:   45  Register: 10  Value: -0.434441
-    Member:   45  Register: 11  Value: 0.287236
-    Member:   45  Register: 12  Value: -1.500864
-    Member:   45  Register: 13  Value: -1.945061
+    Member:   45  Register:  7  Value: -2.405381
+    Member:   45  Register:  8  Value: 1.583252
+    Member:   45  Register:  9  Value: 2.853798
+    Member:   45  Register: 10  Value: 0.265998
+    Member:   45  Register: 11  Value: 2.417844
+    Member:   45  Register: 12  Value: 1.510105
+    Member:   45  Register: 13  Value: -2.512107
     Member:   45  Register: 14  Value: -1.260747
     Member:   45  Register: 15  Value: -3.005380
-    Member:   45  Register: 16  Value: -1.027009
-    Member:   45  Register: 17  Value: 1.798524
+    Member:   45  Register: 16  Value: -1.215364
+    Member:   45  Register: 17  Value: 3.628193
     Member:   45  Register: 18  Value: 0.480315
-    Member:   45  Register: 19  Value: 0.475842
+    Member:   45  Register: 19  Value: 2.445733
     Member:   45  Register: 20  Value: 0.000000
     Member:   45  Register: 21  Value: 0.000000
     Member:   45  Register: 22  Value: 0.000000
@@ -1467,27 +1467,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   45  Register: 27  Value: 0.000000
     Member:   45  Register: 28  Value: 0.000000
     Member:   45  Register: 29  Value: 0.000000
-    Member:   46  Result: 0.974205  Age: 16
-    Member:   46  Register:  0  Value: -2.099744
-    Member:   46  Register:  1  Value: -1.796687
+    Member:   46  Result: 1.015548  Age: 16
+    Member:   46  Register:  0  Value: 1.807680
+    Member:   46  Register:  1  Value: -3.318435
     Member:   46  Register:  2  Value: -0.156495
-    Member:   46  Register:  3  Value: 1.611790
-    Member:   46  Register:  4  Value: 1.076965
+    Member:   46  Register:  3  Value: 0.644770
+    Member:   46  Register:  4  Value: 3.356009
     Member:   46  Register:  5  Value: -0.745113
     Member:   46  Register:  6  Value: 2.483537
-    Member:   46  Register:  7  Value: 0.077431
-    Member:   46  Register:  8  Value: 2.276031
-    Member:   46  Register:  9  Value: 1.392301
-    Member:   46  Register: 10  Value: -0.434441
-    Member:   46  Register: 11  Value: 0.287236
-    Member:   46  Register: 12  Value: -1.500864
-    Member:   46  Register: 13  Value: -1.945061
+    Member:   46  Register:  7  Value: -2.405381
+    Member:   46  Register:  8  Value: 1.583252
+    Member:   46  Register:  9  Value: 2.853798
+    Member:   46  Register: 10  Value: 0.265998
+    Member:   46  Register: 11  Value: 2.417844
+    Member:   46  Register: 12  Value: 1.510105
+    Member:   46  Register: 13  Value: -2.512107
     Member:   46  Register: 14  Value: -1.260747
     Member:   46  Register: 15  Value: -3.005380
-    Member:   46  Register: 16  Value: 0.436220
-    Member:   46  Register: 17  Value: 1.798524
+    Member:   46  Register: 16  Value: 0.247865
+    Member:   46  Register: 17  Value: 3.628193
     Member:   46  Register: 18  Value: 0.480315
-    Member:   46  Register: 19  Value: 0.475842
+    Member:   46  Register: 19  Value: 2.445733
     Member:   46  Register: 20  Value: 0.000000
     Member:   46  Register: 21  Value: 0.000000
     Member:   46  Register: 22  Value: 0.000000
@@ -1498,27 +1498,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   46  Register: 27  Value: 0.000000
     Member:   46  Register: 28  Value: 0.000000
     Member:   46  Register: 29  Value: 0.000000
-    Member:   47  Result: 0.974205  Age: 3
-    Member:   47  Register:  0  Value: -2.099744
-    Member:   47  Register:  1  Value: -1.796687
+    Member:   47  Result: 1.015548  Age: 3
+    Member:   47  Register:  0  Value: 1.807680
+    Member:   47  Register:  1  Value: -3.318435
     Member:   47  Register:  2  Value: -0.156495
-    Member:   47  Register:  3  Value: 1.554772
-    Member:   47  Register:  4  Value: 1.076965
+    Member:   47  Register:  3  Value: 0.587753
+    Member:   47  Register:  4  Value: 3.356009
     Member:   47  Register:  5  Value: -0.745113
     Member:   47  Register:  6  Value: 2.483537
-    Member:   47  Register:  7  Value: 0.077431
-    Member:   47  Register:  8  Value: 2.276031
-    Member:   47  Register:  9  Value: 1.392301
-    Member:   47  Register: 10  Value: -0.434441
-    Member:   47  Register: 11  Value: 0.287236
-    Member:   47  Register: 12  Value: -1.500864
-    Member:   47  Register: 13  Value: -1.945061
+    Member:   47  Register:  7  Value: -2.405381
+    Member:   47  Register:  8  Value: 1.583252
+    Member:   47  Register:  9  Value: 2.853798
+    Member:   47  Register: 10  Value: 0.265998
+    Member:   47  Register: 11  Value: 2.417844
+    Member:   47  Register: 12  Value: 1.510105
+    Member:   47  Register: 13  Value: -2.512107
     Member:   47  Register: 14  Value: -1.260747
     Member:   47  Register: 15  Value: -3.005380
-    Member:   47  Register: 16  Value: -1.027009
-    Member:   47  Register: 17  Value: 1.798524
+    Member:   47  Register: 16  Value: 0.247865
+    Member:   47  Register: 17  Value: 3.628193
     Member:   47  Register: 18  Value: 0.480315
-    Member:   47  Register: 19  Value: 0.475842
+    Member:   47  Register: 19  Value: 2.445733
     Member:   47  Register: 20  Value: 0.000000
     Member:   47  Register: 21  Value: 0.000000
     Member:   47  Register: 22  Value: 0.000000
@@ -1529,27 +1529,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   47  Register: 27  Value: 0.000000
     Member:   47  Register: 28  Value: 0.000000
     Member:   47  Register: 29  Value: 0.000000
-    Member:   48  Result: 0.974154  Age: 13
-    Member:   48  Register:  0  Value: -2.099744
-    Member:   48  Register:  1  Value: -1.796687
+    Member:   48  Result: 1.015548  Age: 13
+    Member:   48  Register:  0  Value: 1.807680
+    Member:   48  Register:  1  Value: -3.318435
     Member:   48  Register:  2  Value: -0.156495
-    Member:   48  Register:  3  Value: 1.611790
-    Member:   48  Register:  4  Value: 1.076965
+    Member:   48  Register:  3  Value: 0.587753
+    Member:   48  Register:  4  Value: 3.356009
     Member:   48  Register:  5  Value: -0.745113
     Member:   48  Register:  6  Value: 2.483537
-    Member:   48  Register:  7  Value: 0.077431
-    Member:   48  Register:  8  Value: 2.276031
-    Member:   48  Register:  9  Value: 1.392301
-    Member:   48  Register: 10  Value: -0.434441
-    Member:   48  Register: 11  Value: 0.287236
-    Member:   48  Register: 12  Value: -1.500864
-    Member:   48  Register: 13  Value: -2.075081
+    Member:   48  Register:  7  Value: -2.405381
+    Member:   48  Register:  8  Value: 1.583252
+    Member:   48  Register:  9  Value: 2.853798
+    Member:   48  Register: 10  Value: 0.265998
+    Member:   48  Register: 11  Value: 2.417844
+    Member:   48  Register: 12  Value: 1.510105
+    Member:   48  Register: 13  Value: -2.642127
     Member:   48  Register: 14  Value: -1.260747
     Member:   48  Register: 15  Value: -3.005380
-    Member:   48  Register: 16  Value: -1.027009
-    Member:   48  Register: 17  Value: 1.798524
+    Member:   48  Register: 16  Value: 0.247865
+    Member:   48  Register: 17  Value: 3.628193
     Member:   48  Register: 18  Value: 0.480315
-    Member:   48  Register: 19  Value: 0.475842
+    Member:   48  Register: 19  Value: 2.445733
     Member:   48  Register: 20  Value: 0.000000
     Member:   48  Register: 21  Value: 0.000000
     Member:   48  Register: 22  Value: 0.000000
@@ -1560,27 +1560,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   48  Register: 27  Value: 0.000000
     Member:   48  Register: 28  Value: 0.000000
     Member:   48  Register: 29  Value: 0.000000
-    Member:   49  Result: 0.974145  Age: 8
-    Member:   49  Register:  0  Value: -2.099744
-    Member:   49  Register:  1  Value: -1.796687
+    Member:   49  Result: 1.015548  Age: 8
+    Member:   49  Register:  0  Value: 1.807680
+    Member:   49  Register:  1  Value: -3.318435
     Member:   49  Register:  2  Value: -0.156495
-    Member:   49  Register:  3  Value: 1.611790
-    Member:   49  Register:  4  Value: 1.076965
+    Member:   49  Register:  3  Value: 0.587753
+    Member:   49  Register:  4  Value: 3.356009
     Member:   49  Register:  5  Value: -0.745113
     Member:   49  Register:  6  Value: 2.483537
-    Member:   49  Register:  7  Value: 0.077431
-    Member:   49  Register:  8  Value: 2.779076
-    Member:   49  Register:  9  Value: 1.392301
-    Member:   49  Register: 10  Value: -0.434441
-    Member:   49  Register: 11  Value: 0.287236
-    Member:   49  Register: 12  Value: -1.500864
-    Member:   49  Register: 13  Value: -2.075081
+    Member:   49  Register:  7  Value: -2.405381
+    Member:   49  Register:  8  Value: 2.086297
+    Member:   49  Register:  9  Value: 2.853798
+    Member:   49  Register: 10  Value: 0.265998
+    Member:   49  Register: 11  Value: 2.417844
+    Member:   49  Register: 12  Value: 1.510105
+    Member:   49  Register: 13  Value: -2.642127
     Member:   49  Register: 14  Value: -1.260747
     Member:   49  Register: 15  Value: -3.005380
-    Member:   49  Register: 16  Value: -1.027009
-    Member:   49  Register: 17  Value: 1.798524
+    Member:   49  Register: 16  Value: 0.247865
+    Member:   49  Register: 17  Value: 3.628193
     Member:   49  Register: 18  Value: 0.480315
-    Member:   49  Register: 19  Value: 0.475842
+    Member:   49  Register: 19  Value: 2.445733
     Member:   49  Register: 20  Value: 0.000000
     Member:   49  Register: 21  Value: 0.000000
     Member:   49  Register: 22  Value: 0.000000
@@ -1591,27 +1591,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   49  Register: 27  Value: 0.000000
     Member:   49  Register: 28  Value: 0.000000
     Member:   49  Register: 29  Value: 0.000000
-    Member:   50  Result: 0.974145  Age: 0
-    Member:   50  Register:  0  Value: -2.970967
-    Member:   50  Register:  1  Value: -1.796687
+    Member:   50  Result: 1.015548  Age: 0
+    Member:   50  Register:  0  Value: 0.936457
+    Member:   50  Register:  1  Value: -3.318435
     Member:   50  Register:  2  Value: -0.156495
-    Member:   50  Register:  3  Value: 1.611790
-    Member:   50  Register:  4  Value: 1.076965
+    Member:   50  Register:  3  Value: 0.587753
+    Member:   50  Register:  4  Value: 3.356009
     Member:   50  Register:  5  Value: -0.745113
     Member:   50  Register:  6  Value: 2.483537
-    Member:   50  Register:  7  Value: 0.077431
-    Member:   50  Register:  8  Value: 2.779076
-    Member:   50  Register:  9  Value: 1.392301
-    Member:   50  Register: 10  Value: -0.434441
-    Member:   50  Register: 11  Value: 0.287236
-    Member:   50  Register: 12  Value: -1.500864
-    Member:   50  Register: 13  Value: -2.075081
+    Member:   50  Register:  7  Value: -2.405381
+    Member:   50  Register:  8  Value: 2.086297
+    Member:   50  Register:  9  Value: 2.853798
+    Member:   50  Register: 10  Value: 0.265998
+    Member:   50  Register: 11  Value: 2.417844
+    Member:   50  Register: 12  Value: 1.510105
+    Member:   50  Register: 13  Value: -2.642127
     Member:   50  Register: 14  Value: -1.260747
     Member:   50  Register: 15  Value: -3.005380
-    Member:   50  Register: 16  Value: -1.027009
-    Member:   50  Register: 17  Value: 1.798524
+    Member:   50  Register: 16  Value: 0.247865
+    Member:   50  Register: 17  Value: 3.628193
     Member:   50  Register: 18  Value: 0.480315
-    Member:   50  Register: 19  Value: 0.475842
+    Member:   50  Register: 19  Value: 2.445733
     Member:   50  Register: 20  Value: 0.000000
     Member:   50  Register: 21  Value: 0.000000
     Member:   50  Register: 22  Value: 0.000000
@@ -1622,27 +1622,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   50  Register: 27  Value: 0.000000
     Member:   50  Register: 28  Value: 0.000000
     Member:   50  Register: 29  Value: 0.000000
-    Member:   51  Result: 0.974145  Age: 15
-    Member:   51  Register:  0  Value: -2.099744
-    Member:   51  Register:  1  Value: -1.796687
+    Member:   51  Result: 1.015548  Age: 15
+    Member:   51  Register:  0  Value: 0.936457
+    Member:   51  Register:  1  Value: -3.318435
     Member:   51  Register:  2  Value: -0.156495
-    Member:   51  Register:  3  Value: 1.611790
-    Member:   51  Register:  4  Value: 1.076965
+    Member:   51  Register:  3  Value: 0.587753
+    Member:   51  Register:  4  Value: 3.356009
     Member:   51  Register:  5  Value: -0.745113
     Member:   51  Register:  6  Value: 2.483537
-    Member:   51  Register:  7  Value: 0.077431
-    Member:   51  Register:  8  Value: 2.779076
-    Member:   51  Register:  9  Value: 1.392301
-    Member:   51  Register: 10  Value: -0.434441
-    Member:   51  Register: 11  Value: 0.287236
-    Member:   51  Register: 12  Value: -1.500864
-    Member:   51  Register: 13  Value: -2.075081
+    Member:   51  Register:  7  Value: -2.405381
+    Member:   51  Register:  8  Value: 2.086297
+    Member:   51  Register:  9  Value: 2.853798
+    Member:   51  Register: 10  Value: 0.265998
+    Member:   51  Register: 11  Value: 2.417844
+    Member:   51  Register: 12  Value: 1.510105
+    Member:   51  Register: 13  Value: -2.642127
     Member:   51  Register: 14  Value: -1.260747
     Member:   51  Register: 15  Value: -3.949930
-    Member:   51  Register: 16  Value: -1.027009
-    Member:   51  Register: 17  Value: 1.798524
+    Member:   51  Register: 16  Value: 0.247865
+    Member:   51  Register: 17  Value: 3.628193
     Member:   51  Register: 18  Value: 0.480315
-    Member:   51  Register: 19  Value: 0.475842
+    Member:   51  Register: 19  Value: 2.445733
     Member:   51  Register: 20  Value: 0.000000
     Member:   51  Register: 21  Value: 0.000000
     Member:   51  Register: 22  Value: 0.000000
@@ -1653,27 +1653,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   51  Register: 27  Value: 0.000000
     Member:   51  Register: 28  Value: 0.000000
     Member:   51  Register: 29  Value: 0.000000
-    Member:   52  Result: 0.974145  Age: 3
-    Member:   52  Register:  0  Value: -2.099744
-    Member:   52  Register:  1  Value: -1.796687
+    Member:   52  Result: 1.015548  Age: 3
+    Member:   52  Register:  0  Value: 0.936457
+    Member:   52  Register:  1  Value: -3.318435
     Member:   52  Register:  2  Value: -0.156495
-    Member:   52  Register:  3  Value: 1.425083
-    Member:   52  Register:  4  Value: 1.076965
+    Member:   52  Register:  3  Value: 0.401046
+    Member:   52  Register:  4  Value: 3.356009
     Member:   52  Register:  5  Value: -0.745113
     Member:   52  Register:  6  Value: 2.483537
-    Member:   52  Register:  7  Value: 0.077431
-    Member:   52  Register:  8  Value: 2.779076
-    Member:   52  Register:  9  Value: 1.392301
-    Member:   52  Register: 10  Value: -0.434441
-    Member:   52  Register: 11  Value: 0.287236
-    Member:   52  Register: 12  Value: -1.500864
-    Member:   52  Register: 13  Value: -2.075081
+    Member:   52  Register:  7  Value: -2.405381
+    Member:   52  Register:  8  Value: 2.086297
+    Member:   52  Register:  9  Value: 2.853798
+    Member:   52  Register: 10  Value: 0.265998
+    Member:   52  Register: 11  Value: 2.417844
+    Member:   52  Register: 12  Value: 1.510105
+    Member:   52  Register: 13  Value: -2.642127
     Member:   52  Register: 14  Value: -1.260747
-    Member:   52  Register: 15  Value: -3.005380
-    Member:   52  Register: 16  Value: -1.027009
-    Member:   52  Register: 17  Value: 1.798524
+    Member:   52  Register: 15  Value: -3.949930
+    Member:   52  Register: 16  Value: 0.247865
+    Member:   52  Register: 17  Value: 3.628193
     Member:   52  Register: 18  Value: 0.480315
-    Member:   52  Register: 19  Value: 0.475842
+    Member:   52  Register: 19  Value: 2.445733
     Member:   52  Register: 20  Value: 0.000000
     Member:   52  Register: 21  Value: 0.000000
     Member:   52  Register: 22  Value: 0.000000
@@ -1684,27 +1684,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   52  Register: 27  Value: 0.000000
     Member:   52  Register: 28  Value: 0.000000
     Member:   52  Register: 29  Value: 0.000000
-    Member:   53  Result: 0.974145  Age: 14
-    Member:   53  Register:  0  Value: -2.099744
-    Member:   53  Register:  1  Value: -1.796687
+    Member:   53  Result: 1.015548  Age: 14
+    Member:   53  Register:  0  Value: 0.936457
+    Member:   53  Register:  1  Value: -3.318435
     Member:   53  Register:  2  Value: -0.156495
-    Member:   53  Register:  3  Value: 1.611790
-    Member:   53  Register:  4  Value: 1.076965
+    Member:   53  Register:  3  Value: 0.401046
+    Member:   53  Register:  4  Value: 3.356009
     Member:   53  Register:  5  Value: -0.745113
     Member:   53  Register:  6  Value: 2.483537
-    Member:   53  Register:  7  Value: 0.077431
-    Member:   53  Register:  8  Value: 2.779076
-    Member:   53  Register:  9  Value: 1.392301
-    Member:   53  Register: 10  Value: -0.434441
-    Member:   53  Register: 11  Value: 0.287236
-    Member:   53  Register: 12  Value: -1.500864
-    Member:   53  Register: 13  Value: -2.075081
+    Member:   53  Register:  7  Value: -2.405381
+    Member:   53  Register:  8  Value: 2.086297
+    Member:   53  Register:  9  Value: 2.853798
+    Member:   53  Register: 10  Value: 0.265998
+    Member:   53  Register: 11  Value: 2.417844
+    Member:   53  Register: 12  Value: 1.510105
+    Member:   53  Register: 13  Value: -2.642127
     Member:   53  Register: 14  Value: -0.127517
-    Member:   53  Register: 15  Value: -3.005380
-    Member:   53  Register: 16  Value: -1.027009
-    Member:   53  Register: 17  Value: 1.798524
+    Member:   53  Register: 15  Value: -3.949930
+    Member:   53  Register: 16  Value: 0.247865
+    Member:   53  Register: 17  Value: 3.628193
     Member:   53  Register: 18  Value: 0.480315
-    Member:   53  Register: 19  Value: 0.475842
+    Member:   53  Register: 19  Value: 2.445733
     Member:   53  Register: 20  Value: 0.000000
     Member:   53  Register: 21  Value: 0.000000
     Member:   53  Register: 22  Value: 0.000000
@@ -1715,27 +1715,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   53  Register: 27  Value: 0.000000
     Member:   53  Register: 28  Value: 0.000000
     Member:   53  Register: 29  Value: 0.000000
-    Member:   54  Result: 0.974145  Age: 4
-    Member:   54  Register:  0  Value: -2.099744
-    Member:   54  Register:  1  Value: -1.796687
+    Member:   54  Result: 1.015548  Age: 4
+    Member:   54  Register:  0  Value: 0.936457
+    Member:   54  Register:  1  Value: -3.318435
     Member:   54  Register:  2  Value: -0.156495
-    Member:   54  Register:  3  Value: 1.611790
-    Member:   54  Register:  4  Value: 2.572148
+    Member:   54  Register:  3  Value: 0.401046
+    Member:   54  Register:  4  Value: 4.851192
     Member:   54  Register:  5  Value: -0.745113
     Member:   54  Register:  6  Value: 2.483537
-    Member:   54  Register:  7  Value: 0.077431
-    Member:   54  Register:  8  Value: 2.779076
-    Member:   54  Register:  9  Value: 1.392301
-    Member:   54  Register: 10  Value: -0.434441
-    Member:   54  Register: 11  Value: 0.287236
-    Member:   54  Register: 12  Value: -1.500864
-    Member:   54  Register: 13  Value: -2.075081
-    Member:   54  Register: 14  Value: -1.260747
-    Member:   54  Register: 15  Value: -3.005380
-    Member:   54  Register: 16  Value: -1.027009
-    Member:   54  Register: 17  Value: 1.798524
+    Member:   54  Register:  7  Value: -2.405381
+    Member:   54  Register:  8  Value: 2.086297
+    Member:   54  Register:  9  Value: 2.853798
+    Member:   54  Register: 10  Value: 0.265998
+    Member:   54  Register: 11  Value: 2.417844
+    Member:   54  Register: 12  Value: 1.510105
+    Member:   54  Register: 13  Value: -2.642127
+    Member:   54  Register: 14  Value: -0.127517
+    Member:   54  Register: 15  Value: -3.949930
+    Member:   54  Register: 16  Value: 0.247865
+    Member:   54  Register: 17  Value: 3.628193
     Member:   54  Register: 18  Value: 0.480315
-    Member:   54  Register: 19  Value: 0.475842
+    Member:   54  Register: 19  Value: 2.445733
     Member:   54  Register: 20  Value: 0.000000
     Member:   54  Register: 21  Value: 0.000000
     Member:   54  Register: 22  Value: 0.000000
@@ -1746,27 +1746,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   54  Register: 27  Value: 0.000000
     Member:   54  Register: 28  Value: 0.000000
     Member:   54  Register: 29  Value: 0.000000
-    Member:   55  Result: 0.974145  Age: 2
-    Member:   55  Register:  0  Value: -2.099744
-    Member:   55  Register:  1  Value: -1.796687
+    Member:   55  Result: 1.015548  Age: 2
+    Member:   55  Register:  0  Value: 0.936457
+    Member:   55  Register:  1  Value: -3.318435
     Member:   55  Register:  2  Value: 0.965459
-    Member:   55  Register:  3  Value: 1.611790
-    Member:   55  Register:  4  Value: 1.076965
+    Member:   55  Register:  3  Value: 0.401046
+    Member:   55  Register:  4  Value: 4.851192
     Member:   55  Register:  5  Value: -0.745113
     Member:   55  Register:  6  Value: 2.483537
-    Member:   55  Register:  7  Value: 0.077431
-    Member:   55  Register:  8  Value: 2.779076
-    Member:   55  Register:  9  Value: 1.392301
-    Member:   55  Register: 10  Value: -0.434441
-    Member:   55  Register: 11  Value: 0.287236
-    Member:   55  Register: 12  Value: -1.500864
-    Member:   55  Register: 13  Value: -2.075081
-    Member:   55  Register: 14  Value: -1.260747
-    Member:   55  Register: 15  Value: -3.005380
-    Member:   55  Register: 16  Value: -1.027009
-    Member:   55  Register: 17  Value: 1.798524
+    Member:   55  Register:  7  Value: -2.405381
+    Member:   55  Register:  8  Value: 2.086297
+    Member:   55  Register:  9  Value: 2.853798
+    Member:   55  Register: 10  Value: 0.265998
+    Member:   55  Register: 11  Value: 2.417844
+    Member:   55  Register: 12  Value: 1.510105
+    Member:   55  Register: 13  Value: -2.642127
+    Member:   55  Register: 14  Value: -0.127517
+    Member:   55  Register: 15  Value: -3.949930
+    Member:   55  Register: 16  Value: 0.247865
+    Member:   55  Register: 17  Value: 3.628193
     Member:   55  Register: 18  Value: 0.480315
-    Member:   55  Register: 19  Value: 0.475842
+    Member:   55  Register: 19  Value: 2.445733
     Member:   55  Register: 20  Value: 0.000000
     Member:   55  Register: 21  Value: 0.000000
     Member:   55  Register: 22  Value: 0.000000
@@ -1777,27 +1777,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   55  Register: 27  Value: 0.000000
     Member:   55  Register: 28  Value: 0.000000
     Member:   55  Register: 29  Value: 0.000000
-    Member:   56  Result: 0.974145  Age: 8
-    Member:   56  Register:  0  Value: -2.099744
-    Member:   56  Register:  1  Value: -1.796687
-    Member:   56  Register:  2  Value: -0.156495
-    Member:   56  Register:  3  Value: 1.611790
-    Member:   56  Register:  4  Value: 1.076965
+    Member:   56  Result: 1.015548  Age: 8
+    Member:   56  Register:  0  Value: 0.936457
+    Member:   56  Register:  1  Value: -3.318435
+    Member:   56  Register:  2  Value: 0.965459
+    Member:   56  Register:  3  Value: 0.401046
+    Member:   56  Register:  4  Value: 4.851192
     Member:   56  Register:  5  Value: -0.745113
     Member:   56  Register:  6  Value: 2.483537
-    Member:   56  Register:  7  Value: 0.077431
-    Member:   56  Register:  8  Value: 0.866297
-    Member:   56  Register:  9  Value: 1.392301
-    Member:   56  Register: 10  Value: -0.434441
-    Member:   56  Register: 11  Value: 0.287236
-    Member:   56  Register: 12  Value: -1.500864
-    Member:   56  Register: 13  Value: -2.075081
-    Member:   56  Register: 14  Value: -1.260747
-    Member:   56  Register: 15  Value: -3.005380
-    Member:   56  Register: 16  Value: -1.027009
-    Member:   56  Register: 17  Value: 1.798524
+    Member:   56  Register:  7  Value: -2.405381
+    Member:   56  Register:  8  Value: 0.173518
+    Member:   56  Register:  9  Value: 2.853798
+    Member:   56  Register: 10  Value: 0.265998
+    Member:   56  Register: 11  Value: 2.417844
+    Member:   56  Register: 12  Value: 1.510105
+    Member:   56  Register: 13  Value: -2.642127
+    Member:   56  Register: 14  Value: -0.127517
+    Member:   56  Register: 15  Value: -3.949930
+    Member:   56  Register: 16  Value: 0.247865
+    Member:   56  Register: 17  Value: 3.628193
     Member:   56  Register: 18  Value: 0.480315
-    Member:   56  Register: 19  Value: 0.475842
+    Member:   56  Register: 19  Value: 2.445733
     Member:   56  Register: 20  Value: 0.000000
     Member:   56  Register: 21  Value: 0.000000
     Member:   56  Register: 22  Value: 0.000000
@@ -1808,27 +1808,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   56  Register: 27  Value: 0.000000
     Member:   56  Register: 28  Value: 0.000000
     Member:   56  Register: 29  Value: 0.000000
-    Member:   57  Result: 0.974145  Age: 2
-    Member:   57  Register:  0  Value: -2.099744
-    Member:   57  Register:  1  Value: -1.796687
-    Member:   57  Register:  2  Value: 1.071075
-    Member:   57  Register:  3  Value: 1.611790
-    Member:   57  Register:  4  Value: 1.076965
+    Member:   57  Result: 1.015548  Age: 2
+    Member:   57  Register:  0  Value: 0.936457
+    Member:   57  Register:  1  Value: -3.318435
+    Member:   57  Register:  2  Value: 2.193028
+    Member:   57  Register:  3  Value: 0.401046
+    Member:   57  Register:  4  Value: 4.851192
     Member:   57  Register:  5  Value: -0.745113
     Member:   57  Register:  6  Value: 2.483537
-    Member:   57  Register:  7  Value: 0.077431
-    Member:   57  Register:  8  Value: 2.779076
-    Member:   57  Register:  9  Value: 1.392301
-    Member:   57  Register: 10  Value: -0.434441
-    Member:   57  Register: 11  Value: 0.287236
-    Member:   57  Register: 12  Value: -1.500864
-    Member:   57  Register: 13  Value: -2.075081
-    Member:   57  Register: 14  Value: -1.260747
-    Member:   57  Register: 15  Value: -3.005380
-    Member:   57  Register: 16  Value: -1.027009
-    Member:   57  Register: 17  Value: 1.798524
+    Member:   57  Register:  7  Value: -2.405381
+    Member:   57  Register:  8  Value: 0.173518
+    Member:   57  Register:  9  Value: 2.853798
+    Member:   57  Register: 10  Value: 0.265998
+    Member:   57  Register: 11  Value: 2.417844
+    Member:   57  Register: 12  Value: 1.510105
+    Member:   57  Register: 13  Value: -2.642127
+    Member:   57  Register: 14  Value: -0.127517
+    Member:   57  Register: 15  Value: -3.949930
+    Member:   57  Register: 16  Value: 0.247865
+    Member:   57  Register: 17  Value: 3.628193
     Member:   57  Register: 18  Value: 0.480315
-    Member:   57  Register: 19  Value: 0.475842
+    Member:   57  Register: 19  Value: 2.445733
     Member:   57  Register: 20  Value: 0.000000
     Member:   57  Register: 21  Value: 0.000000
     Member:   57  Register: 22  Value: 0.000000
@@ -1839,27 +1839,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   57  Register: 27  Value: 0.000000
     Member:   57  Register: 28  Value: 0.000000
     Member:   57  Register: 29  Value: 0.000000
-    Member:   58  Result: 0.974145  Age: 8
-    Member:   58  Register:  0  Value: -2.099744
-    Member:   58  Register:  1  Value: -1.796687
-    Member:   58  Register:  2  Value: -0.156495
-    Member:   58  Register:  3  Value: 1.611790
-    Member:   58  Register:  4  Value: 1.076965
+    Member:   58  Result: 1.015548  Age: 8
+    Member:   58  Register:  0  Value: 0.936457
+    Member:   58  Register:  1  Value: -3.318435
+    Member:   58  Register:  2  Value: 2.193028
+    Member:   58  Register:  3  Value: 0.401046
+    Member:   58  Register:  4  Value: 4.851192
     Member:   58  Register:  5  Value: -0.745113
     Member:   58  Register:  6  Value: 2.483537
-    Member:   58  Register:  7  Value: 0.077431
-    Member:   58  Register:  8  Value: 2.680178
-    Member:   58  Register:  9  Value: 1.392301
-    Member:   58  Register: 10  Value: -0.434441
-    Member:   58  Register: 11  Value: 0.287236
-    Member:   58  Register: 12  Value: -1.500864
-    Member:   58  Register: 13  Value: -2.075081
-    Member:   58  Register: 14  Value: -1.260747
-    Member:   58  Register: 15  Value: -3.005380
-    Member:   58  Register: 16  Value: -1.027009
-    Member:   58  Register: 17  Value: 1.798524
+    Member:   58  Register:  7  Value: -2.405381
+    Member:   58  Register:  8  Value: 0.074620
+    Member:   58  Register:  9  Value: 2.853798
+    Member:   58  Register: 10  Value: 0.265998
+    Member:   58  Register: 11  Value: 2.417844
+    Member:   58  Register: 12  Value: 1.510105
+    Member:   58  Register: 13  Value: -2.642127
+    Member:   58  Register: 14  Value: -0.127517
+    Member:   58  Register: 15  Value: -3.949930
+    Member:   58  Register: 16  Value: 0.247865
+    Member:   58  Register: 17  Value: 3.628193
     Member:   58  Register: 18  Value: 0.480315
-    Member:   58  Register: 19  Value: 0.475842
+    Member:   58  Register: 19  Value: 2.445733
     Member:   58  Register: 20  Value: 0.000000
     Member:   58  Register: 21  Value: 0.000000
     Member:   58  Register: 22  Value: 0.000000
@@ -1870,27 +1870,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   58  Register: 27  Value: 0.000000
     Member:   58  Register: 28  Value: 0.000000
     Member:   58  Register: 29  Value: 0.000000
-    Member:   59  Result: 0.974145  Age: 0
-    Member:   59  Register:  0  Value: -0.671360
-    Member:   59  Register:  1  Value: -1.796687
-    Member:   59  Register:  2  Value: -0.156495
-    Member:   59  Register:  3  Value: 1.611790
-    Member:   59  Register:  4  Value: 1.076965
+    Member:   59  Result: 1.015548  Age: 0
+    Member:   59  Register:  0  Value: 2.364841
+    Member:   59  Register:  1  Value: -3.318435
+    Member:   59  Register:  2  Value: 2.193028
+    Member:   59  Register:  3  Value: 0.401046
+    Member:   59  Register:  4  Value: 4.851192
     Member:   59  Register:  5  Value: -0.745113
     Member:   59  Register:  6  Value: 2.483537
-    Member:   59  Register:  7  Value: 0.077431
-    Member:   59  Register:  8  Value: 2.779076
-    Member:   59  Register:  9  Value: 1.392301
-    Member:   59  Register: 10  Value: -0.434441
-    Member:   59  Register: 11  Value: 0.287236
-    Member:   59  Register: 12  Value: -1.500864
-    Member:   59  Register: 13  Value: -2.075081
-    Member:   59  Register: 14  Value: -1.260747
-    Member:   59  Register: 15  Value: -3.005380
-    Member:   59  Register: 16  Value: -1.027009
-    Member:   59  Register: 17  Value: 1.798524
+    Member:   59  Register:  7  Value: -2.405381
+    Member:   59  Register:  8  Value: 0.074620
+    Member:   59  Register:  9  Value: 2.853798
+    Member:   59  Register: 10  Value: 0.265998
+    Member:   59  Register: 11  Value: 2.417844
+    Member:   59  Register: 12  Value: 1.510105
+    Member:   59  Register: 13  Value: -2.642127
+    Member:   59  Register: 14  Value: -0.127517
+    Member:   59  Register: 15  Value: -3.949930
+    Member:   59  Register: 16  Value: 0.247865
+    Member:   59  Register: 17  Value: 3.628193
     Member:   59  Register: 18  Value: 0.480315
-    Member:   59  Register: 19  Value: 0.475842
+    Member:   59  Register: 19  Value: 2.445733
     Member:   59  Register: 20  Value: 0.000000
     Member:   59  Register: 21  Value: 0.000000
     Member:   59  Register: 22  Value: 0.000000
@@ -1901,27 +1901,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   59  Register: 27  Value: 0.000000
     Member:   59  Register: 28  Value: 0.000000
     Member:   59  Register: 29  Value: 0.000000
-    Member:   60  Result: 0.974145  Age: 1
-    Member:   60  Register:  0  Value: -2.099744
-    Member:   60  Register:  1  Value: -0.831152
-    Member:   60  Register:  2  Value: -0.156495
-    Member:   60  Register:  3  Value: 1.611790
-    Member:   60  Register:  4  Value: 1.076965
+    Member:   60  Result: 1.015548  Age: 1
+    Member:   60  Register:  0  Value: 2.364841
+    Member:   60  Register:  1  Value: -2.352900
+    Member:   60  Register:  2  Value: 2.193028
+    Member:   60  Register:  3  Value: 0.401046
+    Member:   60  Register:  4  Value: 4.851192
     Member:   60  Register:  5  Value: -0.745113
     Member:   60  Register:  6  Value: 2.483537
-    Member:   60  Register:  7  Value: 0.077431
-    Member:   60  Register:  8  Value: 2.779076
-    Member:   60  Register:  9  Value: 1.392301
-    Member:   60  Register: 10  Value: -0.434441
-    Member:   60  Register: 11  Value: 0.287236
-    Member:   60  Register: 12  Value: -1.500864
-    Member:   60  Register: 13  Value: -2.075081
-    Member:   60  Register: 14  Value: -1.260747
-    Member:   60  Register: 15  Value: -3.005380
-    Member:   60  Register: 16  Value: -1.027009
-    Member:   60  Register: 17  Value: 1.798524
+    Member:   60  Register:  7  Value: -2.405381
+    Member:   60  Register:  8  Value: 0.074620
+    Member:   60  Register:  9  Value: 2.853798
+    Member:   60  Register: 10  Value: 0.265998
+    Member:   60  Register: 11  Value: 2.417844
+    Member:   60  Register: 12  Value: 1.510105
+    Member:   60  Register: 13  Value: -2.642127
+    Member:   60  Register: 14  Value: -0.127517
+    Member:   60  Register: 15  Value: -3.949930
+    Member:   60  Register: 16  Value: 0.247865
+    Member:   60  Register: 17  Value: 3.628193
     Member:   60  Register: 18  Value: 0.480315
-    Member:   60  Register: 19  Value: 0.475842
+    Member:   60  Register: 19  Value: 2.445733
     Member:   60  Register: 20  Value: 0.000000
     Member:   60  Register: 21  Value: 0.000000
     Member:   60  Register: 22  Value: 0.000000
@@ -1932,27 +1932,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   60  Register: 27  Value: 0.000000
     Member:   60  Register: 28  Value: 0.000000
     Member:   60  Register: 29  Value: 0.000000
-    Member:   61  Result: 0.974145  Age: 11
-    Member:   61  Register:  0  Value: -2.099744
-    Member:   61  Register:  1  Value: -1.796687
-    Member:   61  Register:  2  Value: -0.156495
-    Member:   61  Register:  3  Value: 1.611790
-    Member:   61  Register:  4  Value: 1.076965
+    Member:   61  Result: 1.015548  Age: 11
+    Member:   61  Register:  0  Value: 2.364841
+    Member:   61  Register:  1  Value: -2.352900
+    Member:   61  Register:  2  Value: 2.193028
+    Member:   61  Register:  3  Value: 0.401046
+    Member:   61  Register:  4  Value: 4.851192
     Member:   61  Register:  5  Value: -0.745113
     Member:   61  Register:  6  Value: 2.483537
-    Member:   61  Register:  7  Value: 0.077431
-    Member:   61  Register:  8  Value: 2.779076
-    Member:   61  Register:  9  Value: 1.392301
-    Member:   61  Register: 10  Value: -0.434441
-    Member:   61  Register: 11  Value: 1.783913
-    Member:   61  Register: 12  Value: -1.500864
-    Member:   61  Register: 13  Value: -2.075081
-    Member:   61  Register: 14  Value: -1.260747
-    Member:   61  Register: 15  Value: -3.005380
-    Member:   61  Register: 16  Value: -1.027009
-    Member:   61  Register: 17  Value: 1.798524
+    Member:   61  Register:  7  Value: -2.405381
+    Member:   61  Register:  8  Value: 0.074620
+    Member:   61  Register:  9  Value: 2.853798
+    Member:   61  Register: 10  Value: 0.265998
+    Member:   61  Register: 11  Value: 3.914521
+    Member:   61  Register: 12  Value: 1.510105
+    Member:   61  Register: 13  Value: -2.642127
+    Member:   61  Register: 14  Value: -0.127517
+    Member:   61  Register: 15  Value: -3.949930
+    Member:   61  Register: 16  Value: 0.247865
+    Member:   61  Register: 17  Value: 3.628193
     Member:   61  Register: 18  Value: 0.480315
-    Member:   61  Register: 19  Value: 0.475842
+    Member:   61  Register: 19  Value: 2.445733
     Member:   61  Register: 20  Value: 0.000000
     Member:   61  Register: 21  Value: 0.000000
     Member:   61  Register: 22  Value: 0.000000
@@ -1963,27 +1963,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   61  Register: 27  Value: 0.000000
     Member:   61  Register: 28  Value: 0.000000
     Member:   61  Register: 29  Value: 0.000000
-    Member:   62  Result: 0.974145  Age: 6
-    Member:   62  Register:  0  Value: -2.099744
-    Member:   62  Register:  1  Value: -1.796687
-    Member:   62  Register:  2  Value: -0.156495
-    Member:   62  Register:  3  Value: 1.611790
-    Member:   62  Register:  4  Value: 1.076965
+    Member:   62  Result: 1.015548  Age: 6
+    Member:   62  Register:  0  Value: 2.364841
+    Member:   62  Register:  1  Value: -2.352900
+    Member:   62  Register:  2  Value: 2.193028
+    Member:   62  Register:  3  Value: 0.401046
+    Member:   62  Register:  4  Value: 4.851192
     Member:   62  Register:  5  Value: -0.745113
     Member:   62  Register:  6  Value: 0.961936
-    Member:   62  Register:  7  Value: 0.077431
-    Member:   62  Register:  8  Value: 2.779076
-    Member:   62  Register:  9  Value: 1.392301
-    Member:   62  Register: 10  Value: -0.434441
-    Member:   62  Register: 11  Value: 0.287236
-    Member:   62  Register: 12  Value: -1.500864
-    Member:   62  Register: 13  Value: -2.075081
-    Member:   62  Register: 14  Value: -1.260747
-    Member:   62  Register: 15  Value: -3.005380
-    Member:   62  Register: 16  Value: -1.027009
-    Member:   62  Register: 17  Value: 1.798524
+    Member:   62  Register:  7  Value: -2.405381
+    Member:   62  Register:  8  Value: 0.074620
+    Member:   62  Register:  9  Value: 2.853798
+    Member:   62  Register: 10  Value: 0.265998
+    Member:   62  Register: 11  Value: 3.914521
+    Member:   62  Register: 12  Value: 1.510105
+    Member:   62  Register: 13  Value: -2.642127
+    Member:   62  Register: 14  Value: -0.127517
+    Member:   62  Register: 15  Value: -3.949930
+    Member:   62  Register: 16  Value: 0.247865
+    Member:   62  Register: 17  Value: 3.628193
     Member:   62  Register: 18  Value: 0.480315
-    Member:   62  Register: 19  Value: 0.475842
+    Member:   62  Register: 19  Value: 2.445733
     Member:   62  Register: 20  Value: 0.000000
     Member:   62  Register: 21  Value: 0.000000
     Member:   62  Register: 22  Value: 0.000000
@@ -1994,27 +1994,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 655E3DA85D
     Member:   62  Register: 27  Value: 0.000000
     Member:   62  Register: 28  Value: 0.000000
     Member:   62  Register: 29  Value: 0.000000
-    Member:   63  Result: 0.974145  Age: 19
-    Member:   63  Register:  0  Value: -2.099744
-    Member:   63  Register:  1  Value: -1.796687
-    Member:   63  Register:  2  Value: -0.156495
-    Member:   63  Register:  3  Value: 1.611790
-    Member:   63  Register:  4  Value: 1.076965
+    Member:   63  Result: 1.015548  Age: 19
+    Member:   63  Register:  0  Value: 2.364841
+    Member:   63  Register:  1  Value: -2.352900
+    Member:   63  Register:  2  Value: 2.193028
+    Member:   63  Register:  3  Value: 0.401046
+    Member:   63  Register:  4  Value: 4.851192
     Member:   63  Register:  5  Value: -0.745113
-    Member:   63  Register:  6  Value: 2.483537
-    Member:   63  Register:  7  Value: 0.077431
-    Member:   63  Register:  8  Value: 2.779076
-    Member:   63  Register:  9  Value: 1.392301
-    Member:   63  Register: 10  Value: -0.434441
-    Member:   63  Register: 11  Value: 0.287236
-    Member:   63  Register: 12  Value: -1.500864
-    Member:   63  Register: 13  Value: -2.075081
-    Member:   63  Register: 14  Value: -1.260747
-    Member:   63  Register: 15  Value: -3.005380
-    Member:   63  Register: 16  Value: -1.027009
-    Member:   63  Register: 17  Value: 1.798524
+    Member:   63  Register:  6  Value: 0.961936
+    Member:   63  Register:  7  Value: -2.405381
+    Member:   63  Register:  8  Value: 0.074620
+    Member:   63  Register:  9  Value: 2.853798
+    Member:   63  Register: 10  Value: 0.265998
+    Member:   63  Register: 11  Value: 3.914521
+    Member:   63  Register: 12  Value: 1.510105
+    Member:   63  Register: 13  Value: -2.642127
+    Member:   63  Register: 14  Value: -0.127517
+    Member:   63  Register: 15  Value: -3.949930
+    Member:   63  Register: 16  Value: 0.247865
+    Member:   63  Register: 17  Value: 3.628193
     Member:   63  Register: 18  Value: 0.480315
-    Member:   63  Register: 19  Value: 1.030881
+    Member:   63  Register: 19  Value: 3.000772
     Member:   63  Register: 20  Value: 0.000000
     Member:   63  Register: 21  Value: 0.000000
     Member:   63  Register: 22  Value: 0.000000

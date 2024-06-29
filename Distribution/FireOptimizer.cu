@@ -296,10 +296,14 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         // Note: DEBUG!
         if ((optimizationIndex == 9) && (member == 464)) {
             FireStarterData test;
+#if 1
+            TestEvaluate2(test, data, target, theta, curResult);
+#else
             if (TestEvaluate2(test, data, target, theta, curResult) && (curResult <= result))
                 result = curResult;
             else
                 data[d] = oldData;
+#endif
             ((FireStarterPopulation*)oldResults)->InitMemberResult(p, v, d, result, test);
         } else
 #endif
