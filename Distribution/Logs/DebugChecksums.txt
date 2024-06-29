@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: D4FBBE5864FFA3B5
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 02BC817E271DD10B
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
@@ -41,7 +41,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: D4FBBE5864
     n *= data[4];
     n *= data[19];
     n *= data[13];
-    Member:  464  Result: 0.974149
+    Member:  464  Result: 0.974145
     Member:  464  Register:  0  Value: -2.099744
     Member:  464  Register:  1  Value: -1.796687
     Member:  464  Register:  2  Value: -0.156495
@@ -50,7 +50,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: D4FBBE5864
     Member:  464  Register:  5  Value: -0.745113
     Member:  464  Register:  6  Value: 2.483537
     Member:  464  Register:  7  Value: 0.077431
-    Member:  464  Register:  8  Value: 2.541010
+    Member:  464  Register:  8  Value: 2.779076
     Member:  464  Register:  9  Value: 1.392301
     Member:  464  Register: 10  Value: -0.434441
     Member:  464  Register: 11  Value: 0.287236

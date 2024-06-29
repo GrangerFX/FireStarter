@@ -12,7 +12,7 @@
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008f  // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    0           // Output evolve debugging information.
-#define FIRESTARTER_EVOLVE_TEST     1           // Test evolution mode.
+#define FIRESTARTER_EVOLVE_TEST     0           // Test evolution mode.
 
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
 
