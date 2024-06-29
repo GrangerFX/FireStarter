@@ -160,7 +160,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
 #else
 
-#if 0
+#if 1
 // Old way to copy data.
 inline float Evaluate(const FireStarterData& testData, float n)
 {
@@ -293,30 +293,25 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < FIRESTARTER_ITERATIONS; p++) {
-        unsigned int d = RANDOMMOD(seed, registers);
-        float oldData = data[d];
-        data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
-        float curResult = result;
 #if 1
         // Note: DEBUG!
         if ((optimizationIndex == 9) && (member == 464) && (v == 0)) {
             FireStarterData test;
-#if 1
+            float curResult = 0.0f;
             TestEvaluate2(test, data, target, theta, curResult);
-            ((FireStarterPopulation*)oldResults)->InitMemberResult(p, v, d, curResult, data);
-#else
-            if (TestEvaluate2(test, data, target, theta, curResult) && (curResult <= result))
+            ((FireStarterPopulation*)oldResults)->InitMemberResult(p, v, 0, curResult, data);
+        } else
+#endif
+        {
+            unsigned int d = RANDOMMOD(seed, registers);
+            float oldData = data[d];
+            data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
+            float curResult = result;
+            if (TestEvaluate(data, target, theta, curResult) && (curResult <= result))
                 result = curResult;
             else
                 data[d] = oldData;
-            ((FireStarterPopulation*)oldResults)->InitMemberResult(p, v, d, result, test);
-#endif
-        } else
-#endif
-        if (TestEvaluate(data, target, theta, curResult) && (curResult <= result))
-            result = curResult;
-        else
-            data[d] = oldData;
+        }
     }
 
     // If the result was better, save the results.
