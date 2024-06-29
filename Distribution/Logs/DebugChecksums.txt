@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F9739A8
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 6F5D8EF93C4042ED
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
@@ -72,7 +72,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F
     Member:    0  Register: 27  Value: 0.000000
     Member:    0  Register: 28  Value: 0.000000
     Member:    0  Register: 29  Value: 0.000000
-    Member:    1  Result: 1.015548  Age: 0
+    Member:    1  Result: 1.011429  Age: 0
     Member:    1  Register:  0  Value: -2.099744
     Member:    1  Register:  1  Value: -1.302906
     Member:    1  Register:  2  Value: -0.156495
@@ -103,7 +103,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F
     Member:    1  Register: 27  Value: 0.000000
     Member:    1  Register: 28  Value: 0.000000
     Member:    1  Register: 29  Value: 0.000000
-    Member:    2  Result: 1.015548  Age: 8
+    Member:    2  Result: 1.011429  Age: 8
     Member:    2  Register:  0  Value: -2.099744
     Member:    2  Register:  1  Value: -1.302906
     Member:    2  Register:  2  Value: -0.156495
@@ -134,7 +134,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F
     Member:    2  Register: 27  Value: 0.000000
     Member:    2  Register: 28  Value: 0.000000
     Member:    2  Register: 29  Value: 0.000000
-    Member:    3  Result: 1.015548  Age: 19
+    Member:    3  Result: 0.990577  Age: 19
     Member:    3  Register:  0  Value: -2.099744
     Member:    3  Register:  1  Value: -1.302906
     Member:    3  Register:  2  Value: -0.156495
@@ -289,7 +289,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F
     Member:    7  Register: 27  Value: 0.000000
     Member:    7  Register: 28  Value: 0.000000
     Member:    7  Register: 29  Value: 0.000000
-    Member:    8  Result: 1.015548  Age: 18
+    Member:    8  Result: 0.986750  Age: 18
     Member:    8  Register:  0  Value: -1.072845
     Member:    8  Register:  1  Value: -1.302906
     Member:    8  Register:  2  Value: -0.156495
@@ -413,7 +413,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F
     Member:   11  Register: 27  Value: 0.000000
     Member:   11  Register: 28  Value: 0.000000
     Member:   11  Register: 29  Value: 0.000000
-    Member:   12  Result: 1.015548  Age: 9
+    Member:   12  Result: 0.976520  Age: 9
     Member:   12  Register:  0  Value: -1.072845
     Member:   12  Register:  1  Value: -1.302906
     Member:   12  Register:  2  Value: -0.156495
@@ -444,7 +444,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F
     Member:   12  Register: 27  Value: 0.000000
     Member:   12  Register: 28  Value: 0.000000
     Member:   12  Register: 29  Value: 0.000000
-    Member:   13  Result: 1.015548  Age: 12
+    Member:   13  Result: 0.976520  Age: 12
     Member:   13  Register:  0  Value: -1.072845
     Member:   13  Register:  1  Value: -1.302906
     Member:   13  Register:  2  Value: -0.156495
@@ -475,7 +475,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F
     Member:   13  Register: 27  Value: 0.000000
     Member:   13  Register: 28  Value: 0.000000
     Member:   13  Register: 29  Value: 0.000000
-    Member:   14  Result: 1.015548  Age: 17
+    Member:   14  Result: 0.975070  Age: 17
     Member:   14  Register:  0  Value: -1.072845
     Member:   14  Register:  1  Value: -1.302906
     Member:   14  Register:  2  Value: -0.156495
@@ -537,7 +537,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 68964CED6F
     Member:   15  Register: 27  Value: 0.000000
     Member:   15  Register: 28  Value: 0.000000
     Member:   15  Register: 29  Value: 0.000000
-    Member:   16  Result: 1.015548  Age: 10
+    Member:   16  Result: 0.974943  Age: 10
     Member:   16  Register:  0  Value: -1.072845
     Member:   16  Register:  1  Value: -1.302906
     Member:   16  Register:  2  Value: -0.156495
