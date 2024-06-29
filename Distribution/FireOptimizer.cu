@@ -160,7 +160,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
 #else
 
-#if 0
+#if 1
 // Old way to copy data.
 inline float Evaluate(const FireStarterData& testData, float n)
 {
@@ -173,9 +173,9 @@ inline float Evaluate(const FireStarterData& testData, float n)
 inline float Evaluate2(FireStarterData& test, const FireStarterData& testData, float n)
 {
     FireStarterData data(testData);
-    test = testData;
     // EVALUATE //
     // END //
+    test = data;
     return n;
 } // Evaluate2
 #else
@@ -193,9 +193,9 @@ inline float Evaluate2(FireStarterData& test, const FireStarterData& testData, f
 {
     FireStarterData data;
     data.Copy(testData);
-    test.Copy(testData);
     // EVALUATE //
     // END //
+    test.Copy(data);
     return n;
 } // Evaluate2
 #endif
@@ -219,14 +219,15 @@ inline bool TestEvaluate2(FireStarterData& test, const FireStarterData& data, co
 {
     float maxResult = result;
     result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    int i = 0;
+//    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float n = fabsf(Evaluate2(test, data, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
             return false;
         } else
             result = fmaxf(n, result);
-    }
+//    }
     return true;
 } // TestEvaluate2
 
