@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 53B3AB55254E98CD
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 1F9D0397BF909BD8
     n = data[0] += n;
     n *= data[1];
     n *= data[2];

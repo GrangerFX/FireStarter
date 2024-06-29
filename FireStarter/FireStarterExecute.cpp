@@ -156,12 +156,13 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
             checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, oldResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
             context->Synchronize();
 
-            uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
+            uint64_t checksum = Checksum(m_hostPopulation, settings.m_iterations * m_hostPopulation->DataSize(settings));
+//            uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
             unsigned long long checksumIndex = optimizationIndex;
             std::string checksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
             checksumString += state.m_evaluateCode;
 
-            for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
+            for (unsigned int i = 0; i < settings.m_iterations; i++) {
                 FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
                 checksumString += Format("    Member: %4d  Result: %f  Age: %d\n", i, result->m_resultMin, result->m_resultAge);
                 for (unsigned int j = 0; j < settings.m_registers; j++)
