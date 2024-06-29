@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B71FFB64
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: D1ED2271F8512C77
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
@@ -41,7 +41,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     n *= data[4];
     n *= data[19];
     n *= data[13];
-    Member:    0  Age: 0  Hex: 375F8B5A  Result: 0.000013
+    Member:    0  Age: 0  Hex: 375F9121  Result: 0.000013
     Member:    0  Register:  0  Hex: BE08A0B3  Value: -0.133426
     Member:    0  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    0  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -50,7 +50,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    0  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    0  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    0  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    0  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    0  Register:  8  Hex: 3ECB1BA3  Value: 0.396695
     Member:    0  Register:  9  Hex: 3FB236EB  Value: 1.392301
     Member:    0  Register: 10  Hex: BEDE6F17  Value: -0.434441
     Member:    0  Register: 11  Hex: 3E93109A  Value: 0.287236
@@ -72,8 +72,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    0  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    0  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    0  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    1  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    1  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    1  Age: 0  Hex: 3DB947EE  Result: 0.090469
+    Member:    1  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    1  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    1  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    1  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -81,7 +81,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    1  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    1  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    1  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    1  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    1  Register:  8  Hex: 3ECB1BA3  Value: 0.396695
     Member:    1  Register:  9  Hex: 3FB236EB  Value: 1.392301
     Member:    1  Register: 10  Hex: BEDE6F17  Value: -0.434441
     Member:    1  Register: 11  Hex: 3E93109A  Value: 0.287236
@@ -103,8 +103,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    1  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    1  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    1  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    2  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    2  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    2  Age: 0  Hex: 3DB6901C  Result: 0.089142
+    Member:    2  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    2  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    2  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    2  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -112,7 +112,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    2  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    2  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    2  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    2  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    2  Register:  8  Hex: 3DB5AF08  Value: 0.088713
     Member:    2  Register:  9  Hex: 3FB236EB  Value: 1.392301
     Member:    2  Register: 10  Hex: BEDE6F17  Value: -0.434441
     Member:    2  Register: 11  Hex: 3E93109A  Value: 0.287236
@@ -134,8 +134,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    2  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    2  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    2  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    3  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    3  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    3  Age: 0  Hex: 3D1C8A28  Result: 0.038218
+    Member:    3  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    3  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    3  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    3  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -143,7 +143,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    3  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    3  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    3  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    3  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    3  Register:  8  Hex: 3DB5AF08  Value: 0.088713
     Member:    3  Register:  9  Hex: 3FB236EB  Value: 1.392301
     Member:    3  Register: 10  Hex: BEDE6F17  Value: -0.434441
     Member:    3  Register: 11  Hex: 3E93109A  Value: 0.287236
@@ -154,7 +154,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    3  Register: 16  Hex: BF837504  Value: -1.027009
     Member:    3  Register: 17  Hex: 3FE63609  Value: 1.798524
     Member:    3  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:    3  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:    3  Register: 19  Hex: 3EF3A19E  Value: 0.475842
     Member:    3  Register: 20  Hex: 00000000  Value: 0.000000
     Member:    3  Register: 21  Hex: 00000000  Value: 0.000000
     Member:    3  Register: 22  Hex: 00000000  Value: 0.000000
@@ -165,8 +165,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    3  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    3  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    3  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    4  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    4  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    4  Age: 0  Hex: 3F0D7D56  Result: 0.552694
+    Member:    4  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    4  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    4  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    4  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -174,9 +174,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    4  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    4  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    4  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    4  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    4  Register:  8  Hex: 3DB5AF08  Value: 0.088713
     Member:    4  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:    4  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:    4  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:    4  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:    4  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:    4  Register: 13  Hex: BFF8F7C6  Value: -1.945061
@@ -185,7 +185,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    4  Register: 16  Hex: BF837504  Value: -1.027009
     Member:    4  Register: 17  Hex: 3FE63609  Value: 1.798524
     Member:    4  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:    4  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:    4  Register: 19  Hex: 3EF3A19E  Value: 0.475842
     Member:    4  Register: 20  Hex: 00000000  Value: 0.000000
     Member:    4  Register: 21  Hex: 00000000  Value: 0.000000
     Member:    4  Register: 22  Hex: 00000000  Value: 0.000000
@@ -196,8 +196,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    4  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    4  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    4  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    5  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    5  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    5  Age: 0  Hex: 3F0EFE7B  Result: 0.558571
+    Member:    5  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    5  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    5  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    5  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -205,9 +205,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    5  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    5  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    5  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    5  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    5  Register:  8  Hex: 3EA74F92  Value: 0.326779
     Member:    5  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:    5  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:    5  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:    5  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:    5  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:    5  Register: 13  Hex: BFF8F7C6  Value: -1.945061
@@ -216,7 +216,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    5  Register: 16  Hex: BF837504  Value: -1.027009
     Member:    5  Register: 17  Hex: 3FE63609  Value: 1.798524
     Member:    5  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:    5  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:    5  Register: 19  Hex: 3EF3A19E  Value: 0.475842
     Member:    5  Register: 20  Hex: 00000000  Value: 0.000000
     Member:    5  Register: 21  Hex: 00000000  Value: 0.000000
     Member:    5  Register: 22  Hex: 00000000  Value: 0.000000
@@ -227,8 +227,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    5  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    5  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    5  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    6  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    6  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    6  Age: 0  Hex: 3D686C92  Result: 0.056744
+    Member:    6  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:    6  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    6  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    6  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -236,9 +236,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    6  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    6  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    6  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    6  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    6  Register:  8  Hex: 3EA74F92  Value: 0.326779
     Member:    6  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:    6  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:    6  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:    6  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:    6  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:    6  Register: 13  Hex: BFF8F7C6  Value: -1.945061
@@ -247,7 +247,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    6  Register: 16  Hex: BF837504  Value: -1.027009
     Member:    6  Register: 17  Hex: 3FE63609  Value: 1.798524
     Member:    6  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:    6  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:    6  Register: 19  Hex: 3EF3A19E  Value: 0.475842
     Member:    6  Register: 20  Hex: 00000000  Value: 0.000000
     Member:    6  Register: 21  Hex: 00000000  Value: 0.000000
     Member:    6  Register: 22  Hex: 00000000  Value: 0.000000
@@ -258,8 +258,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    6  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    6  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    6  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    7  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    7  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    7  Age: 0  Hex: 3D6A2A3B  Result: 0.057169
+    Member:    7  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:    7  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    7  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    7  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -267,9 +267,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    7  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    7  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    7  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    7  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    7  Register:  8  Hex: 3F53DEDF  Value: 0.827619
     Member:    7  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:    7  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:    7  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:    7  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:    7  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:    7  Register: 13  Hex: BFF8F7C6  Value: -1.945061
@@ -278,7 +278,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    7  Register: 16  Hex: BF837504  Value: -1.027009
     Member:    7  Register: 17  Hex: 3FE63609  Value: 1.798524
     Member:    7  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:    7  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:    7  Register: 19  Hex: 3EF3A19E  Value: 0.475842
     Member:    7  Register: 20  Hex: 00000000  Value: 0.000000
     Member:    7  Register: 21  Hex: 00000000  Value: 0.000000
     Member:    7  Register: 22  Hex: 00000000  Value: 0.000000
@@ -289,8 +289,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    7  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    7  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    7  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    8  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    8  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    8  Age: 0  Hex: 3D8CF1D6  Result: 0.068821
+    Member:    8  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:    8  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    8  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    8  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -298,9 +298,9 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    8  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    8  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    8  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    8  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    8  Register:  8  Hex: 3F53DEDF  Value: 0.827619
     Member:    8  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:    8  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:    8  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:    8  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:    8  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:    8  Register: 13  Hex: BFF8F7C6  Value: -1.945061
@@ -308,8 +308,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    8  Register: 15  Hex: BFD800FD  Value: -1.687530
     Member:    8  Register: 16  Hex: BF837504  Value: -1.027009
     Member:    8  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:    8  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:    8  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:    8  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:    8  Register: 19  Hex: 3EF3A19E  Value: 0.475842
     Member:    8  Register: 20  Hex: 00000000  Value: 0.000000
     Member:    8  Register: 21  Hex: 00000000  Value: 0.000000
     Member:    8  Register: 22  Hex: 00000000  Value: 0.000000
@@ -320,8 +320,8 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    8  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    8  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    8  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    9  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:    9  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:    9  Age: 0  Hex: 3E43B859  Result: 0.191133
+    Member:    9  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:    9  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    9  Register:  2  Hex: BE20401F  Value: -0.156495
     Member:    9  Register:  3  Hex: 3FCE4F21  Value: 1.611790
@@ -329,18 +329,18 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    9  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:    9  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:    9  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:    9  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:    9  Register:  8  Hex: 3F53DEDF  Value: 0.827619
     Member:    9  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:    9  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:    9  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:    9  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:    9  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:    9  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:    9  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:    9  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:    9  Register: 15  Hex: C0405826  Value: -3.005380
     Member:    9  Register: 16  Hex: BF837504  Value: -1.027009
     Member:    9  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:    9  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:    9  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:    9  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:    9  Register: 19  Hex: 3EF3A19E  Value: 0.475842
     Member:    9  Register: 20  Hex: 00000000  Value: 0.000000
     Member:    9  Register: 21  Hex: 00000000  Value: 0.000000
     Member:    9  Register: 22  Hex: 00000000  Value: 0.000000
@@ -351,27 +351,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:    9  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    9  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    9  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   10  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   10  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:   10  Age: 0  Hex: 3D8F4DA8  Result: 0.069972
+    Member:   10  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   10  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   10  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   10  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   10  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   10  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   10  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   10  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:   10  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   10  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:   10  Register:  8  Hex: 3F53DEDF  Value: 0.827619
     Member:   10  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   10  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   10  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:   10  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:   10  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:   10  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   10  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   10  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:   10  Register: 15  Hex: C0405826  Value: -3.005380
     Member:   10  Register: 16  Hex: BF837504  Value: -1.027009
     Member:   10  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   10  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   10  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   10  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   10  Register: 19  Hex: 3EF3A19E  Value: 0.475842
     Member:   10  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   10  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   10  Register: 22  Hex: 00000000  Value: 0.000000
@@ -382,27 +382,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   10  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   10  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   10  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   11  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   11  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:   11  Age: 0  Hex: 3E96550C  Result: 0.293618
+    Member:   11  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   11  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   11  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   11  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   11  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   11  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   11  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   11  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:   11  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   11  Register:  8  Hex: 3EBE141A  Value: 0.371247
+    Member:   11  Register:  8  Hex: 3F53DEDF  Value: 0.827619
     Member:   11  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   11  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   11  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:   11  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:   11  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:   11  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   11  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   11  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:   11  Register: 15  Hex: C0405826  Value: -3.005380
     Member:   11  Register: 16  Hex: BF837504  Value: -1.027009
     Member:   11  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   11  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   11  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   11  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   11  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   11  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   11  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   11  Register: 22  Hex: 00000000  Value: 0.000000
@@ -413,27 +413,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   11  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   11  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   11  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   12  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   12  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:   12  Age: 0  Hex: 3BDF061E  Result: 0.006806
+    Member:   12  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   12  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   12  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   12  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   12  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   12  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   12  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   12  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:   12  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   12  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   12  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   12  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   12  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   12  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   12  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:   12  Register: 11  Hex: 3E93109A  Value: 0.287236
     Member:   12  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
     Member:   12  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   12  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   12  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:   12  Register: 15  Hex: C0405826  Value: -3.005380
     Member:   12  Register: 16  Hex: BF837504  Value: -1.027009
     Member:   12  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   12  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   12  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   12  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   12  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   12  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   12  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   12  Register: 22  Hex: 00000000  Value: 0.000000
@@ -444,27 +444,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   12  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   12  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   12  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   13  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   13  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:   13  Age: 0  Hex: 3BDE9FBA  Result: 0.006794
+    Member:   13  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   13  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   13  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   13  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   13  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   13  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   13  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   13  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:   13  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   13  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   13  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   13  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   13  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   13  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   13  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:   13  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   13  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   13  Register: 12  Hex: BFC01C4F  Value: -1.500864
     Member:   13  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   13  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   13  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:   13  Register: 15  Hex: C0405826  Value: -3.005380
     Member:   13  Register: 16  Hex: BF837504  Value: -1.027009
     Member:   13  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   13  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   13  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   13  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   13  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   13  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   13  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   13  Register: 22  Hex: 00000000  Value: 0.000000
@@ -475,27 +475,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   13  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   13  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   13  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   14  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   14  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:   14  Age: 0  Hex: 3A1EFA34  Result: 0.000606
+    Member:   14  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   14  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   14  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   14  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   14  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   14  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   14  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   14  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
     Member:   14  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   14  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   14  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   14  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   14  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   14  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   14  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:   14  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   14  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   14  Register: 12  Hex: BFC01C4F  Value: -1.500864
     Member:   14  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   14  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   14  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:   14  Register: 15  Hex: C0405826  Value: -3.005380
     Member:   14  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   14  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   14  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   14  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   14  Register: 17  Hex: 3E246538  Value: 0.160542
+    Member:   14  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   14  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   14  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   14  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   14  Register: 22  Hex: 00000000  Value: 0.000000
@@ -506,27 +506,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   14  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   14  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   14  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   15  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   15  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:   15  Age: 0  Hex: 4296DA7C  Result: 75.426727
+    Member:   15  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   15  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   15  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   15  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   15  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   15  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   15  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   15  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   15  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   15  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   15  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   15  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   15  Register:  7  Hex: BF09FDCB  Value: -0.539029
+    Member:   15  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   15  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   15  Register: 10  Hex: BFD3812A  Value: -1.652379
     Member:   15  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   15  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   15  Register: 12  Hex: BFC01C4F  Value: -1.500864
     Member:   15  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   15  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   15  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:   15  Register: 15  Hex: C0405826  Value: -3.005380
     Member:   15  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   15  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   15  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   15  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   15  Register: 17  Hex: 3E246538  Value: 0.160542
+    Member:   15  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   15  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   15  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   15  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   15  Register: 22  Hex: 00000000  Value: 0.000000
@@ -537,27 +537,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   15  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   15  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   15  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   16  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   16  Register:  0  Hex: BE08A0B3  Value: -0.133426
+    Member:   16  Age: 0  Hex: 3C75D26E  Result: 0.015004
+    Member:   16  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   16  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   16  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   16  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   16  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   16  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   16  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   16  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   16  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   16  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   16  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   16  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   16  Register:  7  Hex: BF09FDCB  Value: -0.539029
+    Member:   16  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   16  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   16  Register: 10  Hex: BDD39870  Value: -0.103318
     Member:   16  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   16  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   16  Register: 12  Hex: BFC01C4F  Value: -1.500864
     Member:   16  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   16  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   16  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:   16  Register: 15  Hex: C0405826  Value: -3.005380
     Member:   16  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   16  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   16  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   16  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   16  Register: 17  Hex: 3E246538  Value: 0.160542
+    Member:   16  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   16  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   16  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   16  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   16  Register: 22  Hex: 00000000  Value: 0.000000
@@ -568,27 +568,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   16  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   16  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   16  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   17  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   17  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   17  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   17  Age: 0  Hex: 3E031F44  Result: 0.128049
+    Member:   17  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   17  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   17  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   17  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   17  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   17  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   17  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   17  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   17  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   17  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   17  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   17  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   17  Register:  7  Hex: BF09FDCB  Value: -0.539029
+    Member:   17  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   17  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   17  Register: 10  Hex: BDD39870  Value: -0.103318
     Member:   17  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   17  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   17  Register: 12  Hex: BFC01C4F  Value: -1.500864
     Member:   17  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   17  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   17  Register: 15  Hex: BFD800FD  Value: -1.687530
+    Member:   17  Register: 15  Hex: C0405826  Value: -3.005380
     Member:   17  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   17  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   17  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   17  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   17  Register: 17  Hex: 3E246538  Value: 0.160542
+    Member:   17  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   17  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   17  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   17  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   17  Register: 22  Hex: 00000000  Value: 0.000000
@@ -599,27 +599,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   17  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   17  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   17  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   18  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   18  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   18  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   18  Age: 0  Hex: 3FD08D4F  Result: 1.629312
+    Member:   18  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   18  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   18  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   18  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   18  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   18  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   18  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   18  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   18  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   18  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   18  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   18  Register: 10  Hex: BEDE6F17  Value: -0.434441
+    Member:   18  Register:  7  Hex: BF09FDCB  Value: -0.539029
+    Member:   18  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   18  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   18  Register: 10  Hex: BDD39870  Value: -0.103318
     Member:   18  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   18  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   18  Register: 12  Hex: BFC01C4F  Value: -1.500864
     Member:   18  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   18  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   18  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   18  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   18  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   18  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   18  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   18  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   18  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   18  Register: 17  Hex: 3E246538  Value: 0.160542
+    Member:   18  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   18  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   18  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   18  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   18  Register: 22  Hex: 00000000  Value: 0.000000
@@ -630,27 +630,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   18  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   18  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   18  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   19  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   19  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   19  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   19  Age: 0  Hex: 45B7C9A7  Result: 5881.206543
+    Member:   19  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   19  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   19  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   19  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   19  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   19  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   19  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   19  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   19  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   19  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   19  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   19  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   19  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   19  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   19  Register:  7  Hex: BF09FDCB  Value: -0.539029
+    Member:   19  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   19  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   19  Register: 10  Hex: BDD39870  Value: -0.103318
+    Member:   19  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   19  Register: 12  Hex: BFC01C4F  Value: -1.500864
     Member:   19  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   19  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   19  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   19  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   19  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   19  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   19  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   19  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   19  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   19  Register: 17  Hex: 3E246538  Value: 0.160542
+    Member:   19  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   19  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   19  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   19  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   19  Register: 22  Hex: 00000000  Value: 0.000000
@@ -661,27 +661,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   19  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   19  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   19  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   20  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   20  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   20  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   20  Age: 0  Hex: 412AC0F1  Result: 10.672105
+    Member:   20  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   20  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   20  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   20  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   20  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   20  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   20  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   20  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   20  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   20  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   20  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   20  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   20  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   20  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   20  Register:  7  Hex: BF09FDCB  Value: -0.539029
+    Member:   20  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   20  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   20  Register: 10  Hex: BDD39870  Value: -0.103318
+    Member:   20  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   20  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   20  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   20  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   20  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   20  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   20  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   20  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   20  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   20  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   20  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   20  Register: 17  Hex: 3E246538  Value: 0.160542
+    Member:   20  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   20  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   20  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   20  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   20  Register: 22  Hex: 00000000  Value: 0.000000
@@ -692,27 +692,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   20  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   20  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   20  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   21  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   21  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   21  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   21  Age: 0  Hex: 42814E2E  Result: 64.652695
+    Member:   21  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   21  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   21  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   21  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   21  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   21  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   21  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   21  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   21  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   21  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   21  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   21  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   21  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   21  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   21  Register:  7  Hex: BF09FDCB  Value: -0.539029
+    Member:   21  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   21  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   21  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   21  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   21  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   21  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   21  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   21  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   21  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   21  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   21  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   21  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   21  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   21  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   21  Register: 17  Hex: 3E246538  Value: 0.160542
+    Member:   21  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   21  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   21  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   21  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   21  Register: 22  Hex: 00000000  Value: 0.000000
@@ -723,27 +723,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   21  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   21  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   21  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   22  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   22  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   22  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   22  Age: 0  Hex: 444FD84D  Result: 831.379700
+    Member:   22  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   22  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   22  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   22  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   22  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   22  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   22  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   22  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   22  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   22  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   22  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   22  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   22  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   22  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   22  Register:  7  Hex: BF09FDCB  Value: -0.539029
+    Member:   22  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   22  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   22  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   22  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   22  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   22  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   22  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   22  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   22  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   22  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   22  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   22  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   22  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   22  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   22  Register: 17  Hex: 40041FCD  Value: 2.064441
+    Member:   22  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   22  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   22  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   22  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   22  Register: 22  Hex: 00000000  Value: 0.000000
@@ -754,27 +754,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   22  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   22  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   22  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   23  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   23  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   23  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   23  Age: 0  Hex: 6DBB9691  Result: 7256965056584217290786996224.000000
+    Member:   23  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   23  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   23  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   23  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   23  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   23  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   23  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   23  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   23  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   23  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   23  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   23  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   23  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   23  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   23  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   23  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   23  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   23  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   23  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   23  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   23  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   23  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   23  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   23  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   23  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   23  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   23  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   23  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   23  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   23  Register: 17  Hex: 40041FCD  Value: 2.064441
+    Member:   23  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   23  Register: 19  Hex: 3FFF94C8  Value: 1.996728
     Member:   23  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   23  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   23  Register: 22  Hex: 00000000  Value: 0.000000
@@ -785,27 +785,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   23  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   23  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   23  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   24  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   24  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   24  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   24  Age: 0  Hex: 6DE5C56C  Result: 8888841956391531575884382208.000000
+    Member:   24  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   24  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   24  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   24  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   24  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   24  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   24  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   24  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   24  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   24  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   24  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   24  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   24  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   24  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   24  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   24  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   24  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   24  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   24  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   24  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   24  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   24  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   24  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   24  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   24  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   24  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   24  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   24  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   24  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   24  Register: 17  Hex: 40041FCD  Value: 2.064441
+    Member:   24  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   24  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   24  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   24  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   24  Register: 22  Hex: 00000000  Value: 0.000000
@@ -816,27 +816,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   24  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   24  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   24  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   25  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   25  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   25  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   25  Age: 0  Hex: 6E49E872  Result: 15621874028504999980441796608.000000
+    Member:   25  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   25  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   25  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   25  Register:  3  Hex: 3FCE4F21  Value: 1.611790
+    Member:   25  Register:  3  Hex: 3F93C948  Value: 1.154580
     Member:   25  Register:  4  Hex: 3F89D9FC  Value: 1.076965
     Member:   25  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   25  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   25  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   25  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   25  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   25  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   25  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   25  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   25  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   25  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   25  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   25  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   25  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   25  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   25  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   25  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   25  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   25  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   25  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   25  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   25  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   25  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   25  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   25  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   25  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   25  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   25  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   25  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   25  Register: 22  Hex: 00000000  Value: 0.000000
@@ -847,27 +847,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   25  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   25  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   25  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   26  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   26  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   26  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   26  Age: 0  Hex: 6BEAF0E9  Result: 568052615674162232116117504.000000
+    Member:   26  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   26  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   26  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   26  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   26  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   26  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   26  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   26  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   26  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   26  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   26  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   26  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   26  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   26  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   26  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   26  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   26  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   26  Register:  9  Hex: BE605A08  Value: -0.219093
+    Member:   26  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   26  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   26  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   26  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   26  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   26  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   26  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   26  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   26  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   26  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   26  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   26  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   26  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   26  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   26  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   26  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   26  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   26  Register: 22  Hex: 00000000  Value: 0.000000
@@ -878,27 +878,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   26  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   26  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   26  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   27  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   27  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   27  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   27  Age: 0  Hex: 6BEB54D9  Result: 568996498674925802453204992.000000
+    Member:   27  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   27  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   27  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   27  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   27  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   27  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   27  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   27  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   27  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   27  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   27  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   27  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   27  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   27  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   27  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   27  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   27  Register:  8  Hex: 3F53DEDF  Value: 0.827619
+    Member:   27  Register:  9  Hex: 3F9FDB0E  Value: 1.248873
+    Member:   27  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   27  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   27  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   27  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   27  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   27  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   27  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   27  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   27  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   27  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   27  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   27  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   27  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   27  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   27  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   27  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   27  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   27  Register: 22  Hex: 00000000  Value: 0.000000
@@ -909,27 +909,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   27  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   27  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   27  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   28  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   28  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   28  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   28  Age: 0  Hex: 656F9D7A  Result: 70721907453243139555328.000000
+    Member:   28  Register:  0  Hex: BF8952FB  Value: -1.072845
+    Member:   28  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   28  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   28  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   28  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   28  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   28  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   28  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   28  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   28  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   28  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   28  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   28  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   28  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   28  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   28  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   28  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   28  Register:  9  Hex: 3F9FDB0E  Value: 1.248873
+    Member:   28  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   28  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   28  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   28  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   28  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   28  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   28  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   28  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   28  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   28  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   28  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   28  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   28  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   28  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   28  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   28  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   28  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   28  Register: 22  Hex: 00000000  Value: 0.000000
@@ -940,27 +940,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   28  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   28  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   28  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   29  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   29  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   29  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   29  Age: 0  Hex: 518442BF  Result: 71006937088.000000
+    Member:   29  Register:  0  Hex: 3F3AD944  Value: 0.729878
+    Member:   29  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   29  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   29  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   29  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   29  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   29  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   29  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   29  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   29  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   29  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   29  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   29  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   29  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   29  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   29  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   29  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   29  Register:  9  Hex: 3F9FDB0E  Value: 1.248873
+    Member:   29  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   29  Register: 11  Hex: 3FEDA2DC  Value: 1.856533
+    Member:   29  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   29  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   29  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   29  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   29  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   29  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   29  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   29  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   29  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   29  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   29  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   29  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   29  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   29  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   29  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   29  Register: 22  Hex: 00000000  Value: 0.000000
@@ -971,27 +971,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   29  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   29  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   29  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   30  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   30  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   30  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   30  Age: 0  Hex: 52C3DC02  Result: 420604870656.000000
+    Member:   30  Register:  0  Hex: 3F3AD944  Value: 0.729878
+    Member:   30  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   30  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   30  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   30  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   30  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   30  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   30  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   30  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   30  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   30  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   30  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   30  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   30  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   30  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
+    Member:   30  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   30  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   30  Register:  9  Hex: 3F9FDB0E  Value: 1.248873
+    Member:   30  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   30  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   30  Register: 12  Hex: 3D7D2A60  Value: 0.061808
     Member:   30  Register: 13  Hex: BFF8F7C6  Value: -1.945061
     Member:   30  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   30  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   30  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   30  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   30  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   30  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   30  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   30  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   30  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   30  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   30  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   30  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   30  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   30  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1002,27 +1002,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   30  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   30  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   30  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   31  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   31  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   31  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   31  Age: 0  Hex: 52BCF1E7  Result: 405756149760.000000
+    Member:   31  Register:  0  Hex: 3F3AD944  Value: 0.729878
+    Member:   31  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   31  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   31  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   31  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   31  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   31  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   31  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   31  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   31  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   31  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   31  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   31  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   31  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   31  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   31  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   31  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   31  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   31  Register:  9  Hex: 3F9FDB0E  Value: 1.248873
+    Member:   31  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   31  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   31  Register: 12  Hex: 3D7D2A60  Value: 0.061808
+    Member:   31  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   31  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   31  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   31  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   31  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   31  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   31  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   31  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   31  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   31  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   31  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   31  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   31  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   31  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   31  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1033,27 +1033,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   31  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   31  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   31  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   32  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   32  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   32  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   32  Age: 0  Hex: 4723A55B  Result: 41893.355469
+    Member:   32  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   32  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   32  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   32  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   32  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   32  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   32  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   32  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   32  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   32  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   32  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   32  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   32  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   32  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   32  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   32  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   32  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   32  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   32  Register:  9  Hex: 3F9FDB0E  Value: 1.248873
+    Member:   32  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   32  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   32  Register: 12  Hex: 3D7D2A60  Value: 0.061808
+    Member:   32  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   32  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   32  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   32  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   32  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   32  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   32  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   32  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   32  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   32  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   32  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   32  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   32  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   32  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   32  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1064,27 +1064,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   32  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   32  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   32  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   33  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   33  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   33  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   33  Age: 0  Hex: 469B40D5  Result: 19872.416016
+    Member:   33  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   33  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   33  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   33  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   33  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   33  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   33  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   33  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   33  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   33  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   33  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   33  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   33  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   33  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   33  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   33  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   33  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   33  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   33  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   33  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   33  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   33  Register: 12  Hex: 3D7D2A60  Value: 0.061808
+    Member:   33  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   33  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   33  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   33  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   33  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   33  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   33  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   33  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   33  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   33  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   33  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   33  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   33  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   33  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   33  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1095,27 +1095,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   33  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   33  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   33  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   34  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   34  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   34  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   34  Age: 0  Hex: 41F762CC  Result: 30.923241
+    Member:   34  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   34  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   34  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   34  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   34  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   34  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   34  Register:  4  Hex: 3F5429D8  Value: 0.828763
     Member:   34  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   34  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   34  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   34  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   34  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   34  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   34  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   34  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   34  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   34  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   34  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   34  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   34  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   34  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   34  Register: 12  Hex: 3D7D2A60  Value: 0.061808
+    Member:   34  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   34  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   34  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   34  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   34  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   34  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   34  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   34  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   34  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   34  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   34  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   34  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   34  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   34  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   34  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1126,27 +1126,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   34  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   34  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   34  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   35  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   35  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   35  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   35  Age: 0  Hex: 6922052F  Result: 12241903850434733679837184.000000
+    Member:   35  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   35  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   35  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   35  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   35  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   35  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   35  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   35  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   35  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   35  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   35  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   35  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   35  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   35  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   35  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   35  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   35  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   35  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   35  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   35  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   35  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   35  Register: 12  Hex: 3D7D2A60  Value: 0.061808
+    Member:   35  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   35  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   35  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   35  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   35  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   35  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   35  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   35  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   35  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   35  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   35  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   35  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   35  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   35  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   35  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1157,27 +1157,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   35  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   35  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   35  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   36  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   36  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   36  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   36  Age: 0  Hex: 74A79281  Result: 106211551221974328362553558695936.000000
+    Member:   36  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   36  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   36  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   36  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   36  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   36  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   36  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   36  Register:  5  Hex: BF3EBFB2  Value: -0.745113
     Member:   36  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   36  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   36  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   36  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   36  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   36  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   36  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   36  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   36  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   36  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   36  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   36  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   36  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   36  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   36  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   36  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   36  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   36  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   36  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   36  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   36  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   36  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   36  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   36  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   36  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   36  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   36  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   36  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   36  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1188,27 +1188,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   36  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   36  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   36  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   37  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   37  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   37  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   37  Age: 0  Hex: 7C78D833  Result: 5168298648109256960673411866663321600.000000
+    Member:   37  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   37  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   37  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   37  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   37  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   37  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   37  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   37  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   37  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   37  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   37  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   37  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   37  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   37  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   37  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   37  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   37  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   37  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   37  Register:  8  Hex: BEC86BEA  Value: -0.391448
+    Member:   37  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   37  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   37  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   37  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   37  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   37  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   37  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   37  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   37  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   37  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   37  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   37  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   37  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   37  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   37  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   37  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   37  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   37  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   37  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1219,27 +1219,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   37  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   37  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   37  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   38  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   38  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   38  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   38  Age: 0  Hex: 7F800000  Result: inf
+    Member:   38  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   38  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   38  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   38  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   38  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   38  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   38  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   38  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   38  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   38  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   38  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   38  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   38  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   38  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   38  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   38  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   38  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   38  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   38  Register:  8  Hex: 3F9200D6  Value: 1.140651
+    Member:   38  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   38  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   38  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   38  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   38  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   38  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   38  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   38  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   38  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   38  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   38  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   38  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   38  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   38  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   38  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   38  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   38  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   38  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   38  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1250,27 +1250,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   38  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   38  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   38  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   39  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   39  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   39  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   39  Age: 0  Hex: 7F800000  Result: inf
+    Member:   39  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   39  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   39  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   39  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   39  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   39  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   39  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   39  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   39  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   39  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   39  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   39  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   39  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   39  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   39  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   39  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   39  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   39  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   39  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   39  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   39  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   39  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   39  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   39  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   39  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   39  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   39  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   39  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   39  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   39  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   39  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   39  Register: 16  Hex: BFB2BC4C  Value: -1.396371
+    Member:   39  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   39  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   39  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   39  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   39  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   39  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1281,27 +1281,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   39  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   39  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   39  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   40  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   40  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   40  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   40  Age: 0  Hex: 7F800000  Result: inf
+    Member:   40  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   40  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   40  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   40  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   40  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   40  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   40  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   40  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   40  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   40  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   40  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   40  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   40  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   40  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   40  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   40  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   40  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   40  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   40  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   40  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   40  Register: 10  Hex: BF35F6F2  Value: -0.710799
+    Member:   40  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   40  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   40  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   40  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   40  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   40  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   40  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   40  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   40  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   40  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   40  Register: 16  Hex: 3EBBE560  Value: 0.366984
+    Member:   40  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   40  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   40  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   40  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   40  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   40  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1312,27 +1312,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   40  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   40  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   40  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   41  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   41  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   41  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   41  Age: 0  Hex: 7F800000  Result: inf
+    Member:   41  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   41  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   41  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   41  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   41  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   41  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   41  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   41  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   41  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   41  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   41  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   41  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   41  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   41  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   41  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   41  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   41  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   41  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   41  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   41  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   41  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   41  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   41  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   41  Register: 13  Hex: BFC38C9F  Value: -1.527729
     Member:   41  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   41  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   41  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   41  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   41  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   41  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   41  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   41  Register: 16  Hex: 3EBBE560  Value: 0.366984
+    Member:   41  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   41  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   41  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   41  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   41  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   41  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1343,27 +1343,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   41  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   41  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   41  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   42  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   42  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   42  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   42  Age: 0  Hex: 7F800000  Result: inf
+    Member:   42  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   42  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   42  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   42  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   42  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   42  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   42  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   42  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   42  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   42  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   42  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   42  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   42  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   42  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   42  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   42  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   42  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   42  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   42  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   42  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   42  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   42  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   42  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   42  Register: 13  Hex: C020C65D  Value: -2.512107
     Member:   42  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   42  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   42  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   42  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   42  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   42  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   42  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   42  Register: 16  Hex: 3EBBE560  Value: 0.366984
+    Member:   42  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   42  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   42  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   42  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   42  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   42  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1374,27 +1374,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   42  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   42  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   42  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   43  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   43  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   43  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   43  Age: 0  Hex: 7F800000  Result: inf
+    Member:   43  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   43  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   43  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   43  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   43  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   43  Register:  3  Hex: 3F93C948  Value: 1.154580
+    Member:   43  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   43  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   43  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   43  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   43  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   43  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   43  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   43  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   43  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   43  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   43  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   43  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   43  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   43  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   43  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   43  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   43  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   43  Register: 13  Hex: C020C65D  Value: -2.512107
     Member:   43  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   43  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   43  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   43  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   43  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   43  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   43  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   43  Register: 16  Hex: BF9B9108  Value: -1.215364
+    Member:   43  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   43  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   43  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   43  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   43  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   43  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1405,27 +1405,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   43  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   43  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   43  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   44  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   44  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   44  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   44  Age: 0  Hex: 4FAD7155  Result: 5819771392.000000
+    Member:   44  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   44  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   44  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   44  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   44  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   44  Register:  3  Hex: 3F250FA8  Value: 0.644770
+    Member:   44  Register:  4  Hex: 3FBC7E1C  Value: 1.472599
     Member:   44  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   44  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   44  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   44  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   44  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   44  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   44  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   44  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   44  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   44  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   44  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   44  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   44  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   44  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   44  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   44  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   44  Register: 13  Hex: C020C65D  Value: -2.512107
     Member:   44  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   44  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   44  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   44  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   44  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   44  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   44  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   44  Register: 16  Hex: BF9B9108  Value: -1.215364
+    Member:   44  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   44  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   44  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   44  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   44  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   44  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1436,27 +1436,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   44  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   44  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   44  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   45  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   45  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   45  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   45  Age: 0  Hex: 7F800000  Result: inf
+    Member:   45  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   45  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   45  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   45  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   45  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   45  Register:  3  Hex: 3F250FA8  Value: 0.644770
+    Member:   45  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   45  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   45  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   45  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   45  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   45  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   45  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   45  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   45  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   45  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   45  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   45  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   45  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   45  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   45  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   45  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   45  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   45  Register: 13  Hex: C020C65D  Value: -2.512107
     Member:   45  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   45  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   45  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   45  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   45  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   45  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   45  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   45  Register: 16  Hex: BF9B9108  Value: -1.215364
+    Member:   45  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   45  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   45  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   45  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   45  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   45  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1467,27 +1467,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   45  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   45  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   45  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   46  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   46  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   46  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   46  Age: 0  Hex: 7F800000  Result: inf
+    Member:   46  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   46  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   46  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   46  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   46  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   46  Register:  3  Hex: 3F250FA8  Value: 0.644770
+    Member:   46  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   46  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   46  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   46  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   46  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   46  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   46  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   46  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   46  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   46  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   46  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   46  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   46  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   46  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   46  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   46  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   46  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   46  Register: 13  Hex: C020C65D  Value: -2.512107
     Member:   46  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   46  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   46  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   46  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   46  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   46  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   46  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   46  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   46  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   46  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   46  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   46  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   46  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   46  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1498,27 +1498,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   46  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   46  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   46  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   47  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   47  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   47  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   47  Age: 0  Hex: 7F800000  Result: inf
+    Member:   47  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   47  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   47  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   47  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   47  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   47  Register:  3  Hex: 3F1676F6  Value: 0.587753
+    Member:   47  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   47  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   47  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   47  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   47  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   47  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   47  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   47  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   47  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   47  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   47  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   47  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   47  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   47  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   47  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   47  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   47  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   47  Register: 13  Hex: C020C65D  Value: -2.512107
     Member:   47  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   47  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   47  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   47  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   47  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   47  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   47  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   47  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   47  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   47  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   47  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   47  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   47  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   47  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1529,27 +1529,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   47  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   47  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   47  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   48  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   48  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   48  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   48  Age: 0  Hex: 7F800000  Result: inf
+    Member:   48  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   48  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   48  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   48  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   48  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   48  Register:  3  Hex: 3F1676F6  Value: 0.587753
+    Member:   48  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   48  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   48  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   48  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   48  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   48  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   48  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   48  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   48  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   48  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   48  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   48  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   48  Register:  8  Hex: 3FCAA802  Value: 1.583252
+    Member:   48  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   48  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   48  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   48  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   48  Register: 13  Hex: C029189C  Value: -2.642127
     Member:   48  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   48  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   48  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   48  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   48  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   48  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   48  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   48  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   48  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   48  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   48  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   48  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   48  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   48  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1560,27 +1560,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   48  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   48  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   48  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   49  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   49  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   49  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   49  Age: 0  Hex: 7F800000  Result: inf
+    Member:   49  Register:  0  Hex: 3FE7620E  Value: 1.807680
+    Member:   49  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   49  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   49  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   49  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   49  Register:  3  Hex: 3F1676F6  Value: 0.587753
+    Member:   49  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   49  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   49  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   49  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   49  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   49  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   49  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   49  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   49  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   49  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   49  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   49  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   49  Register:  8  Hex: 400585E4  Value: 2.086297
+    Member:   49  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   49  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   49  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   49  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   49  Register: 13  Hex: C029189C  Value: -2.642127
     Member:   49  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   49  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   49  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   49  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   49  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   49  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   49  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   49  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   49  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   49  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   49  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   49  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   49  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   49  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1591,27 +1591,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   49  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   49  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   49  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   50  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   50  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   50  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   50  Age: 0  Hex: 59E2FBA2  Result: 7986252242485248.000000
+    Member:   50  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   50  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   50  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   50  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   50  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   50  Register:  3  Hex: 3F1676F6  Value: 0.587753
+    Member:   50  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   50  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   50  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   50  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   50  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   50  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   50  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   50  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   50  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   50  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   50  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   50  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   50  Register:  8  Hex: 400585E4  Value: 2.086297
+    Member:   50  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   50  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   50  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   50  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   50  Register: 13  Hex: C029189C  Value: -2.642127
     Member:   50  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   50  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   50  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   50  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   50  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   50  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   50  Register: 15  Hex: C0405826  Value: -3.005380
+    Member:   50  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   50  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   50  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   50  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   50  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   50  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   50  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1622,27 +1622,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   50  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   50  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   50  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   51  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   51  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   51  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   51  Age: 0  Hex: 59E2FB73  Result: 7986227009552384.000000
+    Member:   51  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   51  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   51  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   51  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   51  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   51  Register:  3  Hex: 3F1676F6  Value: 0.587753
+    Member:   51  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   51  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   51  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   51  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   51  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   51  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   51  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   51  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   51  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   51  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   51  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   51  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   51  Register:  8  Hex: 400585E4  Value: 2.086297
+    Member:   51  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   51  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   51  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   51  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   51  Register: 13  Hex: C029189C  Value: -2.642127
     Member:   51  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   51  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   51  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   51  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   51  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   51  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   51  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   51  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   51  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   51  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   51  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   51  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   51  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   51  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1653,27 +1653,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   51  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   51  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   51  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   52  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   52  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   52  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   52  Age: 0  Hex: 3B21180B  Result: 0.002458
+    Member:   52  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   52  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   52  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   52  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   52  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   52  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   52  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   52  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   52  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   52  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   52  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   52  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   52  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   52  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   52  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   52  Register: 13  Hex: BFF8F7C6  Value: -1.945061
+    Member:   52  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   52  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   52  Register:  8  Hex: 400585E4  Value: 2.086297
+    Member:   52  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   52  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   52  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   52  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   52  Register: 13  Hex: C029189C  Value: -2.642127
     Member:   52  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   52  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   52  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   52  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   52  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   52  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   52  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   52  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   52  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   52  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   52  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   52  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   52  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   52  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1684,27 +1684,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   52  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   52  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   52  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   53  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   53  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   53  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   53  Age: 0  Hex: 3B43A905  Result: 0.002986
+    Member:   53  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   53  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   53  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   53  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   53  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   53  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   53  Register:  4  Hex: 4056C8DA  Value: 3.356009
     Member:   53  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   53  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   53  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   53  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   53  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   53  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   53  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   53  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   53  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   53  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   53  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   53  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   53  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   53  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   53  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   53  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   53  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   53  Register:  8  Hex: 400585E4  Value: 2.086297
+    Member:   53  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   53  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   53  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   53  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   53  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   53  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   53  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   53  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   53  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   53  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   53  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   53  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   53  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   53  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1715,27 +1715,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   53  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   53  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   53  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   54  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   54  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   54  Register:  1  Hex: BFA6C5A1  Value: -1.302906
+    Member:   54  Age: 0  Hex: 56388399  Result: 50718836785152.000000
+    Member:   54  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   54  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   54  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   54  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   54  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   54  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   54  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   54  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   54  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   54  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   54  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   54  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   54  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   54  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   54  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   54  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   54  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   54  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   54  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   54  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   54  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   54  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   54  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   54  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   54  Register:  8  Hex: 400585E4  Value: 2.086297
+    Member:   54  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   54  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   54  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   54  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   54  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   54  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   54  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   54  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   54  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   54  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   54  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   54  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   54  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   54  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1746,27 +1746,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   54  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   54  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   54  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   55  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   55  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   55  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   55  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   55  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   55  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   55  Age: 0  Hex: 7F800000  Result: inf
+    Member:   55  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   55  Register:  1  Hex: C054613C  Value: -3.318435
+    Member:   55  Register:  2  Hex: 3F77284C  Value: 0.965459
+    Member:   55  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   55  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   55  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   55  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   55  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   55  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   55  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   55  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   55  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   55  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   55  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   55  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   55  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   55  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   55  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   55  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   55  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   55  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   55  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   55  Register:  8  Hex: 400585E4  Value: 2.086297
+    Member:   55  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   55  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   55  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   55  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   55  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   55  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   55  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   55  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   55  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   55  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   55  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   55  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   55  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   55  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1777,27 +1777,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   55  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   55  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   55  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   56  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   56  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   56  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   56  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   56  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   56  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   56  Age: 0  Hex: 7F800000  Result: inf
+    Member:   56  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   56  Register:  1  Hex: C054613C  Value: -3.318435
+    Member:   56  Register:  2  Hex: 3F77284C  Value: 0.965459
+    Member:   56  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   56  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   56  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   56  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   56  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   56  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   56  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   56  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   56  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   56  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   56  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   56  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   56  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   56  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   56  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   56  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   56  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   56  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   56  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   56  Register:  8  Hex: 3E31AEC0  Value: 0.173518
+    Member:   56  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   56  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   56  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   56  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   56  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   56  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   56  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   56  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   56  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   56  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   56  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   56  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   56  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   56  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1808,27 +1808,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   56  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   56  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   56  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   57  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   57  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   57  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   57  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   57  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   57  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   57  Age: 0  Hex: 7F800000  Result: inf
+    Member:   57  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   57  Register:  1  Hex: C054613C  Value: -3.318435
+    Member:   57  Register:  2  Hex: 400C5A92  Value: 2.193028
+    Member:   57  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   57  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   57  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   57  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   57  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   57  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   57  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   57  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   57  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   57  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   57  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   57  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   57  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   57  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   57  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   57  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   57  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   57  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   57  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   57  Register:  8  Hex: 3E31AEC0  Value: 0.173518
+    Member:   57  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   57  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   57  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   57  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   57  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   57  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   57  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   57  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   57  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   57  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   57  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   57  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   57  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   57  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1839,27 +1839,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   57  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   57  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   57  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   58  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   58  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   58  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   58  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   58  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   58  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   58  Age: 0  Hex: 7F800000  Result: inf
+    Member:   58  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
+    Member:   58  Register:  1  Hex: C054613C  Value: -3.318435
+    Member:   58  Register:  2  Hex: 400C5A92  Value: 2.193028
+    Member:   58  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   58  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   58  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   58  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   58  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   58  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   58  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   58  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   58  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   58  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   58  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   58  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   58  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   58  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   58  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   58  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   58  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   58  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   58  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   58  Register:  8  Hex: 3D98D247  Value: 0.074620
+    Member:   58  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   58  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   58  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   58  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   58  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   58  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   58  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   58  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   58  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   58  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   58  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   58  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   58  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   58  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1870,27 +1870,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   58  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   58  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   58  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   59  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   59  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   59  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   59  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   59  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   59  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   59  Age: 0  Hex: 7F800000  Result: inf
+    Member:   59  Register:  0  Hex: 4017598E  Value: 2.364841
+    Member:   59  Register:  1  Hex: C054613C  Value: -3.318435
+    Member:   59  Register:  2  Hex: 400C5A92  Value: 2.193028
+    Member:   59  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   59  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   59  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   59  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   59  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   59  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   59  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   59  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   59  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   59  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   59  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   59  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   59  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   59  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   59  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   59  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   59  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   59  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   59  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   59  Register:  8  Hex: 3D98D247  Value: 0.074620
+    Member:   59  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   59  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   59  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   59  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   59  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   59  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   59  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   59  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   59  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   59  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   59  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   59  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   59  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   59  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1901,27 +1901,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   59  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   59  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   59  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   60  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   60  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   60  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   60  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   60  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   60  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   60  Age: 0  Hex: 7F800000  Result: inf
+    Member:   60  Register:  0  Hex: 4017598E  Value: 2.364841
+    Member:   60  Register:  1  Hex: C01695E8  Value: -2.352900
+    Member:   60  Register:  2  Hex: 400C5A92  Value: 2.193028
+    Member:   60  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   60  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   60  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   60  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   60  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   60  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   60  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   60  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   60  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   60  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   60  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   60  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   60  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   60  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   60  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   60  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   60  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   60  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   60  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   60  Register:  8  Hex: 3D98D247  Value: 0.074620
+    Member:   60  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   60  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   60  Register: 11  Hex: 401ABDF3  Value: 2.417844
+    Member:   60  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   60  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   60  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   60  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   60  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   60  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   60  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   60  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   60  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   60  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   60  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1932,27 +1932,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   60  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   60  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   60  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   61  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   61  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   61  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   61  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   61  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   61  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   61  Age: 0  Hex: 7F800000  Result: inf
+    Member:   61  Register:  0  Hex: 4017598E  Value: 2.364841
+    Member:   61  Register:  1  Hex: C01695E8  Value: -2.352900
+    Member:   61  Register:  2  Hex: 400C5A92  Value: 2.193028
+    Member:   61  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   61  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   61  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   61  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   61  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   61  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   61  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   61  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   61  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   61  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   61  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   61  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   61  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   61  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   61  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   61  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   61  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   61  Register:  6  Hex: 401EF244  Value: 2.483537
+    Member:   61  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   61  Register:  8  Hex: 3D98D247  Value: 0.074620
+    Member:   61  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   61  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   61  Register: 11  Hex: 407A8782  Value: 3.914521
+    Member:   61  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   61  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   61  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   61  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   61  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   61  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   61  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   61  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   61  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   61  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   61  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1963,27 +1963,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   61  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   61  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   61  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   62  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   62  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   62  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   62  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   62  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   62  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   62  Age: 0  Hex: 7F800000  Result: inf
+    Member:   62  Register:  0  Hex: 4017598E  Value: 2.364841
+    Member:   62  Register:  1  Hex: C01695E8  Value: -2.352900
+    Member:   62  Register:  2  Hex: 400C5A92  Value: 2.193028
+    Member:   62  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   62  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   62  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   62  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   62  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   62  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   62  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   62  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   62  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   62  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   62  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   62  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   62  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   62  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   62  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   62  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   62  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   62  Register:  6  Hex: 3F764172  Value: 0.961936
+    Member:   62  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   62  Register:  8  Hex: 3D98D247  Value: 0.074620
+    Member:   62  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   62  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   62  Register: 11  Hex: 407A8782  Value: 3.914521
+    Member:   62  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   62  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   62  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   62  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   62  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   62  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   62  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   62  Register: 19  Hex: 401C86E4  Value: 2.445733
     Member:   62  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   62  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   62  Register: 22  Hex: 00000000  Value: 0.000000
@@ -1994,27 +1994,27 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 479A3D21B7
     Member:   62  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   62  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   62  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   63  Age: 0  Hex: 375F8B5A  Result: 0.000013
-    Member:   63  Register:  0  Hex: BE08A0B3  Value: -0.133426
-    Member:   63  Register:  1  Hex: BFA6C5A1  Value: -1.302906
-    Member:   63  Register:  2  Hex: BE20401F  Value: -0.156495
-    Member:   63  Register:  3  Hex: 3FCE4F21  Value: 1.611790
-    Member:   63  Register:  4  Hex: 3F89D9FC  Value: 1.076965
+    Member:   63  Age: 0  Hex: 7F800000  Result: inf
+    Member:   63  Register:  0  Hex: 4017598E  Value: 2.364841
+    Member:   63  Register:  1  Hex: C01695E8  Value: -2.352900
+    Member:   63  Register:  2  Hex: 400C5A92  Value: 2.193028
+    Member:   63  Register:  3  Hex: 3ECD55D8  Value: 0.401046
+    Member:   63  Register:  4  Hex: 409B3CF7  Value: 4.851192
     Member:   63  Register:  5  Hex: BF3EBFB2  Value: -0.745113
-    Member:   63  Register:  6  Hex: 3FEF5BA2  Value: 1.869984
-    Member:   63  Register:  7  Hex: 3D9E9453  Value: 0.077431
-    Member:   63  Register:  8  Hex: 3EBE141A  Value: 0.371247
-    Member:   63  Register:  9  Hex: 3FB236EB  Value: 1.392301
-    Member:   63  Register: 10  Hex: BEDE6F17  Value: -0.434441
-    Member:   63  Register: 11  Hex: 3E93109A  Value: 0.287236
-    Member:   63  Register: 12  Hex: 3D8D1B3F  Value: 0.068900
-    Member:   63  Register: 13  Hex: BFF8F7C6  Value: -1.945061
-    Member:   63  Register: 14  Hex: BFA1602C  Value: -1.260747
-    Member:   63  Register: 15  Hex: BFD800FD  Value: -1.687530
-    Member:   63  Register: 16  Hex: BF837504  Value: -1.027009
-    Member:   63  Register: 17  Hex: 3FE63609  Value: 1.798524
-    Member:   63  Register: 18  Hex: BECC4957  Value: -0.398997
-    Member:   63  Register: 19  Hex: 3F8E10FE  Value: 1.109894
+    Member:   63  Register:  6  Hex: 3F764172  Value: 0.961936
+    Member:   63  Register:  7  Hex: C019F1C3  Value: -2.405381
+    Member:   63  Register:  8  Hex: 3D98D247  Value: 0.074620
+    Member:   63  Register:  9  Hex: 4036A4A2  Value: 2.853798
+    Member:   63  Register: 10  Hex: 3E8830F0  Value: 0.265998
+    Member:   63  Register: 11  Hex: 407A8782  Value: 3.914521
+    Member:   63  Register: 12  Hex: 3FC14B1E  Value: 1.510105
+    Member:   63  Register: 13  Hex: C029189C  Value: -2.642127
+    Member:   63  Register: 14  Hex: BE0293D8  Value: -0.127517
+    Member:   63  Register: 15  Hex: C07CCBA7  Value: -3.949930
+    Member:   63  Register: 16  Hex: 3E7DD070  Value: 0.247865
+    Member:   63  Register: 17  Hex: 40683451  Value: 3.628193
+    Member:   63  Register: 18  Hex: 3EF5EBE1  Value: 0.480315
+    Member:   63  Register: 19  Hex: 40400CA4  Value: 3.000772
     Member:   63  Register: 20  Hex: 00000000  Value: 0.000000
     Member:   63  Register: 21  Hex: 00000000  Value: 0.000000
     Member:   63  Register: 22  Hex: 00000000  Value: 0.000000
