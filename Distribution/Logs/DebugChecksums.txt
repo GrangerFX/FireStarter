@@ -8,7 +8,7 @@ Test:    0  ID:    1  Pass: 500  Variation: 2  Index:    5  Checksum: 7B3714A2DF
 Test:    0  ID:    2  Pass: 500  Variation: 0  Index:    6  Checksum: E5C1C2F6A9FB7B29
 Test:    0  ID:    2  Pass: 500  Variation: 1  Index:    7  Checksum: 3FAD4E7ABDFC7EFF
 Test:    0  ID:    2  Pass: 500  Variation: 2  Index:    8  Checksum: F3C41F8709997C68
-Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F469EE5
+Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 2BE1438121B91351
     n = data[0] += n;
     n *= data[1];
     n *= data[2];
@@ -41,7 +41,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     n *= data[4];
     n *= data[19];
     n *= data[13];
-    Member:    0  Age: 0  Hex: 375F9126  Result: 0.000013
+    Member:    0  Age: 0  Hex: B75F9121  Result: -0.000013
     Member:    0  Register:  0  Hex: BE08A0B3  Value: -0.133426
     Member:    0  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    0  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -72,7 +72,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    0  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    0  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    0  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    1  Age: 0  Hex: 3DB947F4  Result: 0.090469
+    Member:    1  Age: 0  Hex: BDB947EE  Result: -0.090469
     Member:    1  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    1  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    1  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -103,7 +103,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    1  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    1  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    1  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    2  Age: 0  Hex: 3DB69028  Result: 0.089142
+    Member:    2  Age: 0  Hex: BDB6901C  Result: -0.089142
     Member:    2  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    2  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    2  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -134,7 +134,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    2  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    2  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    2  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    3  Age: 0  Hex: 3D1C8A32  Result: 0.038218
+    Member:    3  Age: 0  Hex: BD1C8A28  Result: -0.038218
     Member:    3  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    3  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    3  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -165,7 +165,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    3  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    3  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    3  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    4  Age: 0  Hex: 3F0D7D5A  Result: 0.552694
+    Member:    4  Age: 0  Hex: BF0D7D56  Result: -0.552694
     Member:    4  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    4  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    4  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -196,7 +196,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    4  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    4  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    4  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    5  Age: 0  Hex: 3F0EFE7C  Result: 0.558571
+    Member:    5  Age: 0  Hex: BF0EFE7B  Result: -0.558571
     Member:    5  Register:  0  Hex: C0066236  Value: -2.099744
     Member:    5  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    5  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -227,7 +227,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    5  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    5  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    5  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    6  Age: 0  Hex: 3D686C97  Result: 0.056744
+    Member:    6  Age: 0  Hex: BD686C92  Result: -0.056744
     Member:    6  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:    6  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    6  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -258,7 +258,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    6  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    6  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    6  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    7  Age: 0  Hex: 3D6A2A40  Result: 0.057169
+    Member:    7  Age: 0  Hex: BD6A2A3B  Result: -0.057169
     Member:    7  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:    7  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    7  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -289,7 +289,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    7  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    7  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    7  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    8  Age: 0  Hex: 3D8CF1D8  Result: 0.068821
+    Member:    8  Age: 0  Hex: 3D8CF1D6  Result: 0.068821
     Member:    8  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:    8  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    8  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -320,7 +320,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    8  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    8  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    8  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:    9  Age: 0  Hex: 3E43B854  Result: 0.191133
+    Member:    9  Age: 0  Hex: 3E43B859  Result: 0.191133
     Member:    9  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:    9  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:    9  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -351,7 +351,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:    9  Register: 27  Hex: 00000000  Value: 0.000000
     Member:    9  Register: 28  Hex: 00000000  Value: 0.000000
     Member:    9  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   10  Age: 0  Hex: 3D8F4DA5  Result: 0.069972
+    Member:   10  Age: 0  Hex: 3D8F4DA8  Result: 0.069972
     Member:   10  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   10  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   10  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -382,7 +382,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   10  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   10  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   10  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   11  Age: 0  Hex: 3E965509  Result: 0.293618
+    Member:   11  Age: 0  Hex: 3E96550C  Result: 0.293618
     Member:   11  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   11  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   11  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -413,7 +413,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   11  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   11  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   11  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   12  Age: 0  Hex: 3BDF0623  Result: 0.006806
+    Member:   12  Age: 0  Hex: 3BDF061E  Result: 0.006806
     Member:   12  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   12  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   12  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -506,7 +506,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   14  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   14  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   14  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   15  Age: 0  Hex: 4296DA8A  Result: 75.426834
+    Member:   15  Age: 0  Hex: 4296DA7C  Result: 75.426727
     Member:   15  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   15  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   15  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -537,7 +537,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   15  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   15  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   15  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   16  Age: 0  Hex: 3C75D26F  Result: 0.015004
+    Member:   16  Age: 0  Hex: 3C75D26E  Result: 0.015004
     Member:   16  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   16  Register:  1  Hex: BFA6C5A1  Value: -1.302906
     Member:   16  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -630,7 +630,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   18  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   18  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   18  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   19  Age: 0  Hex: 45B7C9B0  Result: 5881.210938
+    Member:   19  Age: 0  Hex: 45B7C9A7  Result: 5881.206543
     Member:   19  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   19  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   19  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -661,7 +661,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   19  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   19  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   19  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   20  Age: 0  Hex: 412AC0F0  Result: 10.672104
+    Member:   20  Age: 0  Hex: 412AC0F1  Result: 10.672105
     Member:   20  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   20  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   20  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -692,7 +692,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   20  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   20  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   20  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   21  Age: 0  Hex: 42814E2E  Result: 64.652695
+    Member:   21  Age: 0  Hex: C2814E2E  Result: -64.652695
     Member:   21  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   21  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   21  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -723,7 +723,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   21  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   21  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   21  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   22  Age: 0  Hex: 444FD84D  Result: 831.379700
+    Member:   22  Age: 0  Hex: C44FD84D  Result: -831.379700
     Member:   22  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   22  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   22  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -754,7 +754,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   22  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   22  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   22  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   23  Age: 0  Hex: 6DBB968E  Result: 7256963285696786214670041088.000000
+    Member:   23  Age: 0  Hex: EDBB9691  Result: -7256965056584217290786996224.000000
     Member:   23  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   23  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   23  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -785,7 +785,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   23  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   23  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   23  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   24  Age: 0  Hex: 6DE5C56A  Result: 8888840775799910858473078784.000000
+    Member:   24  Age: 0  Hex: EDE5C56C  Result: -8888841956391531575884382208.000000
     Member:   24  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   24  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   24  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -816,7 +816,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   24  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   24  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   24  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   25  Age: 0  Hex: 6E49E86E  Result: 15621869306138517110796582912.000000
+    Member:   25  Age: 0  Hex: EE49E872  Result: -15621874028504999980441796608.000000
     Member:   25  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   25  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   25  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -847,7 +847,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   25  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   25  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   25  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   26  Age: 0  Hex: 6BEAF0E9  Result: 568052615674162232116117504.000000
+    Member:   26  Age: 0  Hex: EBEAF0E9  Result: -568052615674162232116117504.000000
     Member:   26  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   26  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   26  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -878,7 +878,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   26  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   26  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   26  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   27  Age: 0  Hex: 6BEB54D4  Result: 568996314207485065357688832.000000
+    Member:   27  Age: 0  Hex: EBEB54D9  Result: -568996498674925802453204992.000000
     Member:   27  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   27  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   27  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -909,7 +909,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   27  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   27  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   27  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   28  Age: 0  Hex: 656F9D77  Result: 70721893942444257443840.000000
+    Member:   28  Age: 0  Hex: E56F9D7A  Result: -70721907453243139555328.000000
     Member:   28  Register:  0  Hex: BF8952FB  Value: -1.072845
     Member:   28  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   28  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -940,7 +940,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   28  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   28  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   28  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   29  Age: 0  Hex: 518442C0  Result: 71006945280.000000
+    Member:   29  Age: 0  Hex: D18442BF  Result: -71006937088.000000
     Member:   29  Register:  0  Hex: 3F3AD944  Value: 0.729878
     Member:   29  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   29  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -971,7 +971,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   29  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   29  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   29  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   30  Age: 0  Hex: 52C3DC02  Result: 420604870656.000000
+    Member:   30  Age: 0  Hex: D2C3DC02  Result: -420604870656.000000
     Member:   30  Register:  0  Hex: 3F3AD944  Value: 0.729878
     Member:   30  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   30  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1002,7 +1002,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   30  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   30  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   30  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   31  Age: 0  Hex: 52BCF1E5  Result: 405756084224.000000
+    Member:   31  Age: 0  Hex: D2BCF1E7  Result: -405756149760.000000
     Member:   31  Register:  0  Hex: 3F3AD944  Value: 0.729878
     Member:   31  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   31  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1033,7 +1033,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   31  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   31  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   31  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   32  Age: 0  Hex: 4723A55E  Result: 41893.367188
+    Member:   32  Age: 0  Hex: C723A55B  Result: -41893.355469
     Member:   32  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   32  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   32  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1064,7 +1064,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   32  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   32  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   32  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   33  Age: 0  Hex: 469B40D6  Result: 19872.417969
+    Member:   33  Age: 0  Hex: C69B40D5  Result: -19872.416016
     Member:   33  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   33  Register:  1  Hex: BFE5F9D6  Value: -1.796687
     Member:   33  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1095,7 +1095,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   33  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   33  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   33  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   34  Age: 0  Hex: 41F762E4  Result: 30.923286
+    Member:   34  Age: 0  Hex: C1F762CC  Result: -30.923241
     Member:   34  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   34  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   34  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1126,7 +1126,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   34  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   34  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   34  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   35  Age: 0  Hex: 6922052D  Result: 12241901544591724466143232.000000
+    Member:   35  Age: 0  Hex: E922052F  Result: -12241903850434733679837184.000000
     Member:   35  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   35  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   35  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1157,7 +1157,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   35  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   35  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   35  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   36  Age: 0  Hex: 74A79288  Result: 106211618921820226781787342241792.000000
+    Member:   36  Age: 0  Hex: F4A79281  Result: -106211551221974328362553558695936.000000
     Member:   36  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   36  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   36  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1188,7 +1188,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   36  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   36  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   36  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   37  Age: 0  Hex: 7C78D833  Result: 5168298648109256960673411866663321600.000000
+    Member:   37  Age: 0  Hex: FC78D833  Result: -5168298648109256960673411866663321600.000000
     Member:   37  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   37  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   37  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1219,7 +1219,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   37  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   37  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   37  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   38  Age: 0  Hex: 7F800000  Result: inf
+    Member:   38  Age: 0  Hex: FF800000  Result: -inf
     Member:   38  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   38  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   38  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1250,7 +1250,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   38  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   38  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   38  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   39  Age: 0  Hex: 7F800000  Result: inf
+    Member:   39  Age: 0  Hex: FF800000  Result: -inf
     Member:   39  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   39  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   39  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1281,7 +1281,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   39  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   39  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   39  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   40  Age: 0  Hex: 7F800000  Result: inf
+    Member:   40  Age: 0  Hex: FF800000  Result: -inf
     Member:   40  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   40  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   40  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1405,7 +1405,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   43  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   43  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   43  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   44  Age: 0  Hex: 4FAD7159  Result: 5819773440.000000
+    Member:   44  Age: 0  Hex: 4FAD7155  Result: 5819771392.000000
     Member:   44  Register:  0  Hex: 3FE7620E  Value: 1.807680
     Member:   44  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   44  Register:  2  Hex: BE20401F  Value: -0.156495
@@ -1715,7 +1715,7 @@ Test:    0  ID:    3  Pass:   1  Variation: 0  Index:    9  Checksum: 196EF52B2F
     Member:   53  Register: 27  Hex: 00000000  Value: 0.000000
     Member:   53  Register: 28  Hex: 00000000  Value: 0.000000
     Member:   53  Register: 29  Hex: 00000000  Value: 0.000000
-    Member:   54  Age: 0  Hex: 56388396  Result: 50718824202240.000000
+    Member:   54  Age: 0  Hex: 56388399  Result: 50718836785152.000000
     Member:   54  Register:  0  Hex: 3F6FBBA7  Value: 0.936457
     Member:   54  Register:  1  Hex: C054613C  Value: -3.318435
     Member:   54  Register:  2  Hex: BE20401F  Value: -0.156495
