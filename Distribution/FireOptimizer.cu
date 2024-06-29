@@ -160,7 +160,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
 #else
 
-#if 0
+#if 1
 // Old way to copy data.
 inline float Evaluate(const FireStarterData& testData, float n)
 {
@@ -173,7 +173,7 @@ inline float Evaluate(const FireStarterData& testData, float n)
 inline float Evaluate2(FireStarterData& test, const FireStarterData& testData, float n)
 {
     FireStarterData data(testData);
-    test.Copy(data);
+    test = data;
     // EVALUATE //
     // END //
     return n;

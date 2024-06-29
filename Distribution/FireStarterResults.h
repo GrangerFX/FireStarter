@@ -49,6 +49,7 @@ typedef struct FireStarterData {
             d[i] = (*data)[i];
     } // Copy
 
+#if 0
     inline void operator=(const FireStarterData& data)
     {
         Copy(data);
@@ -58,6 +59,7 @@ typedef struct FireStarterData {
     {
         Copy(data);
     } // operator=
+#endif
 
     inline void Init()
     {
