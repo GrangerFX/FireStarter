@@ -127,7 +127,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
         context->Synchronize();
         optimizationPass++;
 
-#if 1
+#if 0
         // Note: DEBUG!
         if ((optimizationIndex == 9) && (p == 0)) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
@@ -141,6 +141,27 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
             unsigned int i = 464;
 //            for (unsigned int i = 0; i < 500; i++)
             {
+                FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
+                checksumString += Format("    Member: %4d  Result: %f\n", i, result->m_resultMin);
+                for (unsigned int j = 0; j < settings.m_registers; j++)
+                    checksumString += Format("    Member: %4d  Register: %2d  Value: %f\n", i, j, result->Data()->d[j]);
+            }
+            FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", checksumString);
+            std::terminate();
+        }
+#endif
+#if 1
+        // Note: DEBUG!
+        if ((optimizationIndex == 9) && (p == 0)) {
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, oldResults, m_populationSize, cudaMemcpyDeviceToHost, stream));
+            context->Synchronize();
+
+            uint64_t checksum = Checksum(m_hostPopulation, m_hostPopulation->PopulationSize(settings));
+            unsigned long long checksumIndex = optimizationIndex;
+            std::string checksumString = Format("Test: %4d  ID: %4d  Pass:%4d  Variation: %d  Index: %4d  Checksum: %.16llX\n", state.m_test, state.m_id, optimizationPass, variation, checksumIndex, checksum);
+            checksumString += state.m_evaluateCode;
+
+            for (unsigned int i = 0; i < FIRESTARTER_ITERATIONS; i++) {
                 FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
                 checksumString += Format("    Member: %4d  Result: %f\n", i, result->m_resultMin);
                 for (unsigned int j = 0; j < settings.m_registers; j++)
