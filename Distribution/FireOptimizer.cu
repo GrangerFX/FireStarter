@@ -171,7 +171,7 @@ inline float Evaluate(float n, const FireStarterData& testData)
 } // Evaluate
 #else
 // New way to copy data.
-inline float Evaluate(const FireStarterData& testData, float n)
+inline float Evaluate(float n, const FireStarterData& testData)
 {
     FireStarterData data;
     data.Copy(testData);
@@ -186,7 +186,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     float maxResult = result;
     result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-        float n = fabsf(Evaluate(data, theta[i]) - target[i]);
+        float n = fabsf(Evaluate(theta[i], data) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
             return false;
