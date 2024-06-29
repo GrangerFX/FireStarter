@@ -166,7 +166,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
                 FireStarterResult* result = m_hostPopulation->Result(settings, i, variation);
                 checksumString += Format("    Member: %4d  Age: %d  Hex: %.8X  Result: %f\n", i, result->m_resultAge, *(unsigned int*)&result->m_resultMin, result->m_resultMin);
                 for (unsigned int j = 0; j < settings.m_registers; j++)
-                    checksumString += Format("    Member: %4d  Register: %2d  Hex: %.8X\n", i, j, *(unsigned int*)&result->Data()->d[j]);
+                    checksumString += Format("    Member: %4d  Register: %2d  Hex: %.8X  Value: %f\n", i, j, *(unsigned int*)&result->Data()->d[j], result->Data()->d[j]);
             }
             FireStarterCode::AppendCode("Logs\\DebugChecksums.txt", checksumString);
             std::terminate();
