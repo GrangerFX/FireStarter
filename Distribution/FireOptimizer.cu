@@ -397,9 +397,7 @@ inline float TestMath(TestData& data, float n)
 GPU_GLOBAL void BugTest1(const TestData* inputData, float* result)
 {
     if (!threadIdx.x) {
-        TestData localData;
-        localData.Copy(inputData);
-        TestData testData(localData);
+        TestData testData(*inputData);
         *result = TestMath(testData, 0.0f);
     }
 } // BugTest1
@@ -407,10 +405,8 @@ GPU_GLOBAL void BugTest1(const TestData* inputData, float* result)
 GPU_GLOBAL void BugTest2(const TestData* inputData, float* result)
 {
     if (!threadIdx.x) {
-        TestData localData;
-        localData.Copy(inputData);
         TestData testData;
-        testData.Copy(localData);
+        testData.Copy(*inputData);
         *result = TestMath(testData, 0.0f);
     }
 } // BugTest2
