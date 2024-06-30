@@ -394,33 +394,23 @@ inline float TestMath(TestData& data, float n)
     return n;
 } // TestMath
 
-inline float Test1(const TestData& testData, float n)
-{
-    TestData data(testData);
-    return TestMath(data, n);
-} // Test1
-
-inline float Test2(const TestData& testData, float n)
-{
-    TestData data;
-    data.Copy(testData);
-    return TestMath(data, n);
-} // Test2
-
-GPU_GLOBAL void BugTest1(const TestData* data, float* result)
+GPU_GLOBAL void BugTest1(const TestData* inputData, float* result)
 {
     if (!threadIdx.x) {
-        TestData testData;
-        testData.Copy(data);
-        *result = Test1(testData, 0.0f);
+        TestData localData;
+        localData.Copy(inputData);
+        TestData testData(localData);
+        *result = TestMath(testData, 0.0f);
     }
 } // BugTest1
 
-GPU_GLOBAL void BugTest2(const TestData* data, float* result)
+GPU_GLOBAL void BugTest2(const TestData* inputData, float* result)
 {
     if (!threadIdx.x) {
+        TestData localData;
+        localData.Copy(inputData);
         TestData testData;
-        testData.Copy(data);
-        *result = Test2(testData, 0.0f);
+        testData.Copy(localData);
+        *result = TestMath(testData, 0.0f);
     }
 } // BugTest2
