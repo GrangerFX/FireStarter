@@ -30,20 +30,4 @@ inline float __int_as_float(int x) { union int_float { int i; float f; } u; u.i 
 inline int __float_as_int(float x) { union int_float { int i; float f; } u; u.f = x; return u.i; }
 inline float __uint_as_float(unsigned int x) { union int_float { unsigned int i; float f; } u; u.i = x; return u.f; }
 inline unsigned int __float_as_uint(float x) { union int_float { unsigned int i; float f; } u; u.f = x; return u.i; }
-// Note: Not thead safe! Code is to simply allow the cuda code to compile on the host.
-inline int atomicMin(int* addr, int x) { int old = *addr; if (x < old) *addr = old; return old; }
-inline int atomicMax(int* addr, int x) { int old = *addr; if (x > old) *addr = old; return old; }
-inline unsigned int atomicMin(unsigned int* addr, unsigned int x) { unsigned int old = *addr; if (x < old) *addr = old; return old; }
-inline unsigned int atomicMax(unsigned int* addr, unsigned int x) { unsigned int old = *addr; if (x > old) *addr = old; return old; }
 #endif
-
-// Reference: https://stackoverflow.com/questions/17399119/how-do-i-use-atomicmax-on-floating-point-values-in-cuda
-inline float atomicMin(float* addr, float value)
-{
-    return (value >= 0) ? __int_as_float(atomicMin((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMax((unsigned int*)addr, __float_as_uint(value)));
-} // atomicMin
-
-inline float atomicMax(float* addr, float value)
-{
-    return (value >= 0) ? __int_as_float(atomicMax((int*)addr, __float_as_int(value))) : __uint_as_float(atomicMin((unsigned int*)addr, __float_as_uint(value)));
-} // atomicMax

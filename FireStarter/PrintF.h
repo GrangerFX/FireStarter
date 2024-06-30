@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <windows.h>
 #include <iostream>
+#include <vector>
 
 #define printf printf2
 
