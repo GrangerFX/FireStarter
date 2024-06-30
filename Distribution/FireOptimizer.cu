@@ -376,9 +376,9 @@ typedef struct TestData {
     } // Copy
 } TestData;
 
-inline float TestMath(TestData& data, float n)
+inline float TestMath(TestData& data)
 {
-    n = data[0] += n;
+    float n = data[0];
     n += data[1];
     n = data[2] *= n;
     n = data[2] *= n;
@@ -398,7 +398,7 @@ GPU_GLOBAL void BugTest1(const TestData* inputData, float* result)
 {
     if (!threadIdx.x) {
         TestData testData(*inputData);
-        *result = TestMath(testData, 0.0f);
+        *result = TestMath(testData);
     }
 } // BugTest1
 
@@ -407,6 +407,6 @@ GPU_GLOBAL void BugTest2(const TestData* inputData, float* result)
     if (!threadIdx.x) {
         TestData testData;
         testData.Copy(*inputData);
-        *result = TestMath(testData, 0.0f);
+        *result = TestMath(testData);
     }
 } // BugTest2
