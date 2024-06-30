@@ -351,7 +351,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 #endif
 
 typedef struct TestData {
-    float d[20];
+    float d[10];
 
     inline float& operator[](unsigned int i)
     {
@@ -365,13 +365,13 @@ typedef struct TestData {
 
     inline void Copy(const TestData& data)
     {
-        for (unsigned int i = 0; i < 20; i++)
+        for (unsigned int i = 0; i < 10; i++)
             d[i] = data[i];
     } // Copy
 
     inline void Copy(const TestData* data)
     {
-        for (unsigned int i = 0; i < 20; i++)
+        for (unsigned int i = 0; i < 10; i++)
             d[i] = (*data)[i];
     } // Copy
 } TestData;
@@ -379,18 +379,18 @@ typedef struct TestData {
 inline float TestMath(TestData& data, float n)
 {
     n = data[0] += n;
-    n += data[6];
+    n += data[1];
+    n = data[2] *= n;
+    n = data[2] *= n;
+    n += data[4];
+    n *= data[5];
+    n *= data[3];
+    n = data[6] += n;
+    n = data[7] += n;
     n = data[7] *= n;
-    n = data[7] *= n;
-    n += data[9];
-    n *= data[10];
-    n *= data[8];
-    n = data[13] += n;
-    n = data[14] += n;
-    n = data[14] *= n;
-    n += data[15];
-    n *= data[16];
-    n += data[14];
+    n += data[8];
+    n *= data[9];
+    n += data[7];
     return n;
 } // TestMath
 
@@ -407,24 +407,12 @@ inline float Test2(const TestData& testData, float n)
     return TestMath(data, n);
 } // Test2
 
-inline void TestEvaluate1(const TestData& testData, float& result)
-{
-    result = Test1(testData, 0.0f);
-} // Test2
-
-inline void TestEvaluate2(const TestData& testData, float& result)
-{
-    result = Test2(testData, 0.0f);
-} // TestEvaluate2
-
 GPU_GLOBAL void BugTest1(const TestData* data, float* result)
 {
     if (!threadIdx.x) {
         TestData testData;
         testData.Copy(data);
-        float test1 = 0;
-        TestEvaluate1(testData, test1);
-        *result = test1;
+        *result = Test1(testData, 0.0f);
     }
 } // BugTest1
 
@@ -433,8 +421,6 @@ GPU_GLOBAL void BugTest2(const TestData* data, float* result)
     if (!threadIdx.x) {
         TestData testData;
         testData.Copy(data);
-        float test2 = 0;
-        TestEvaluate2(testData, test2);
-        *result = test2;
+        *result = Test2(testData, 0.0f);
     }
 } // BugTest2
