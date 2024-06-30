@@ -1,6 +1,5 @@
 #include "CUDACompile.h"
 #include "CUDAErrors.h"
-#include "FireStarterUtil.h"
 #include <vector>
 
 #define COMPILE_TIME 0

@@ -1,6 +1,5 @@
 #pragma once
 #include "CUDADefines.h"
-#include "FireStarterProcess.h"
 #include <string>
 #include <vector>
 
