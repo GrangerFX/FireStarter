@@ -16,7 +16,6 @@ public:
 	std::vector<std::string> m_options;
 	std::string m_program;
 	std::string m_programName;
-	std::string m_programFunction;
 	std::string m_ptx;
 	std::string m_log;
 	class FireStarterJob* m_next = nullptr;	// Linked list pointer
@@ -34,7 +33,6 @@ public:
 		packet.Packetize(m_options);
 		packet.Packetize(m_program);
 		packet.Packetize(m_programName);
-		packet.Packetize(m_programFunction);
 		packet.Packetize(m_ptx);
 		packet.Packetize(m_log);
 	} // Packetize

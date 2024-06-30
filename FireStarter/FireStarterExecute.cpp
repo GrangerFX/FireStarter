@@ -72,13 +72,110 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
     return m_hostPopulation && m_devicePopulation;
 } // InitPopulation
 
+void FireStarterExecute::BugTest(void)
+{
+    // Launch the calculation kernel
+    CUDAContext* context = Context();
+    CUstream stream = context->Stream();
+    unsigned int threadsPerBlock = WARP_THREADS;   // Same as the threads per CUDA core half warp.
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(1, 1, 1);
+
+    float testData[30] = {
+             1.072845f,
+            -1.302906f,
+            -0.156495f,
+             1.154580f,
+             1.076965f,
+            -0.745113f,
+             1.869984f,
+            -0.539029f,
+             0.827619f,
+             0.219093f,
+            -1.652379f,
+             0.287236f,
+            -1.500864f,
+            -1.945061f,
+            -1.260747f,
+            -3.005380f,
+            -1.027009f,
+             0.160542f,
+             0.480315f,
+             1.996728f,
+             0.000000f,
+             0.000000f,
+             0.000000f,
+             0.000000f,
+             0.000000f,
+             0.000000f,
+             0.000000f,
+             0.000000f,
+             0.000000f,
+             0.000000f
+    };
+    void* testData_device = nullptr;
+    checkCUDAErrors(cudaMallocAsync(&testData_device, sizeof(testData), stream));
+    checkCUDAErrors(cudaMemcpyAsync(testData_device, testData, sizeof(testData), cudaMemcpyHostToDevice, stream));
+
+#if 1
+    float result = 0.0f;
+    void* result_device = nullptr;
+    checkCUDAErrors(cudaMallocAsync(&result_device, sizeof(float), stream));
+ 
+    void* arr[] = { reinterpret_cast<void*>(&testData_device),
+                    reinterpret_cast<void*>(&result_device) };
+
+    checkCUDAErrors(cuLaunchKernel(m_bugTestFunction,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+        0,                                                  // shared mem
+        stream,                                             // stream
+        &arr[0],                                            // arguments
+        0));
+
+    checkCUDAErrors(cudaMemcpyAsync(&result, result_device, sizeof(float), cudaMemcpyDeviceToHost, stream));
+
+    // Synchronize all GPU threads and results.
+    context->Synchronize();
+
+    printf("BugTest: result= %f\n", result);
+#else
+    float result1 = 0.0f;
+    float result2 = 0.0f;
+    void* result1_device = nullptr;
+    void* result2_device = nullptr;
+    checkCUDAErrors(cudaMallocAsync(&result1_device, sizeof(float), stream));
+    checkCUDAErrors(cudaMallocAsync(&result2_device, sizeof(float), stream));
+
+    void* arr[] = { reinterpret_cast<void*>(&testData_device),
+                    reinterpret_cast<void*>(&result1_device),
+                    reinterpret_cast<void*>(&result2_device) };
+
+    checkCUDAErrors(cuLaunchKernel(m_bugTestFunction,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+        0,                                                  // shared mem
+        stream,                                             // stream
+        &arr[0],                                            // arguments
+        0));
+
+    checkCUDAErrors(cudaMemcpyAsync(&result1, result1_device, sizeof(float), cudaMemcpyDeviceToHost, stream));
+    checkCUDAErrors(cudaMemcpyAsync(&result2, result2_device, sizeof(float), cudaMemcpyDeviceToHost, stream));
+
+    // Synchronize all GPU threads and results.
+    context->Synchronize();
+
+    printf("BugTest: result1= %f  result2= %f\n", result1, result2);
+#endif
+} // BugTest
+
 float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
     CUstream stream = context->Stream();
 //#if FIRESTARTER_OPTIMIZE_SHARED
-    unsigned int threadsPerBlock = WARP_THREADS;   // Same as the threads per CUDA core half warp.
+    unsigned int threadsPerBlock = WARP_THREADS;   // Same as the threads per CUDA core warp.
 //#else
 //    unsigned int threadsPerBlock = HALF_WARP_THREADS;   // Same as the threads per CUDA core half warp.
 //#endif
@@ -92,6 +189,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     static std::atomic<unsigned long long> optimizationIndex = 0;
     if (!optimizationIndex)
         FireStarterCode::SaveCode("Logs\\DebugChecksums.txt", "Debug Checksums\n");
+    BugTest();
 #else
     unsigned long long optimizationIndex = 0;
 #endif
@@ -288,7 +386,8 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     // Initialize the results and compile the CUDA module.
     if (!job->m_ptx.empty())
         if (CUDACompile::CompileModule(m_optimizeModule, job->m_ptx)) {
-            m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, job->m_programFunction);
+            m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
+            m_bugTestFunction = CUDACompile::GetFunction(m_optimizeModule, "BugTest");
             if (m_optimizeFunction)
                 return true;
             CUDACompile::ReleaseModule(m_optimizeModule);

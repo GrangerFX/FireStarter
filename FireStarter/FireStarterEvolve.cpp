@@ -12,7 +12,6 @@ void FireStarterEvolve::GenerateCode(FireStarterJob* job)
     // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     CUDACompile::CompileOptions(job->m_options);
     job->m_programName = "FireOptimizer.cu";
-    job->m_programFunction = "Optimizer";
     job->m_program = m_evolveOptimizeCode;
     FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
     m_evolveManager->AddCode(job);

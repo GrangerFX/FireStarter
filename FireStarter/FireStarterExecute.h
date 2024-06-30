@@ -15,12 +15,14 @@ private:
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_evolveFunction = nullptr;
     CUfunction m_optimizeFunction = nullptr;
+    CUfunction m_bugTestFunction = nullptr;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterState& state, bool init);
+    void BugTest(void);
 	float OptimizeGenerations(FireStarterState& state, unsigned int variation);
     void OptimizePass(FireStarterState& state);
     bool OptimizeEvolve(FireStarterState& state);
