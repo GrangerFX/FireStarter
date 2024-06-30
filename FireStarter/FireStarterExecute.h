@@ -15,7 +15,8 @@ private:
     CUmodule m_optimizeModule = nullptr;
     CUfunction m_evolveFunction = nullptr;
     CUfunction m_optimizeFunction = nullptr;
-    CUfunction m_bugTestFunction = nullptr;
+    CUfunction m_bugTest1Function = nullptr;
+    CUfunction m_bugTest2Function = nullptr;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_executeIndex = 0;

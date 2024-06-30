@@ -350,9 +350,8 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 } // Optimizer
 #endif
 
-#if 1
 typedef struct TestData {
-    float d[30];
+    float d[20];
 
     inline float& operator[](unsigned int i)
     {
@@ -366,13 +365,13 @@ typedef struct TestData {
 
     inline void Copy(const TestData& data)
     {
-        for (unsigned int i = 0; i < 30; i++)
+        for (unsigned int i = 0; i < 20; i++)
             d[i] = data[i];
     } // Copy
 
     inline void Copy(const TestData* data)
     {
-        for (unsigned int i = 0; i < 30; i++)
+        for (unsigned int i = 0; i < 20; i++)
             d[i] = (*data)[i];
     } // Copy
 } TestData;
@@ -414,172 +413,47 @@ inline float TestMath(TestData& data, float n)
     return n;
 } // TestMath
 
-#if 0
-inline float Test(const TestData& testData, float n)
+inline float Test1(const TestData& testData, float n)
 {
     TestData data(testData);
-
     return TestMath(data, n);
-} // Test
-#else
-inline float Test(const TestData& testData, float n)
-{
-    TestData data;
-    data.Copy(testData);
-
-    return TestMath(data, n);
-} // Test
-#endif
-
-inline void TestEvaluate(const TestData& testData, float& result)
-{
-    result = Test(testData, 0.0f);
-} // TestEvaluate
-
-GPU_GLOBAL void BugTest(const TestData* data, float* result)
-{
-    if (!threadIdx.x) {
-        TestData testData;
-        testData.Copy(data);
-        float test = 0;
-        TestEvaluate(testData, test);
-        *result = test;
-    }
-} // BugTest
-#else
-typedef struct TestData {
-    float d[30];
-
-    inline float& operator[](unsigned int i)
-    {
-        return d[i];
-    } // operator[]
-
-    inline float operator[](unsigned int i) const
-    {
-        return d[i];
-    } // operator[]
-
-    inline void Copy(const TestData& data)
-    {
-        for (unsigned int i = 0; i < 30; i++)
-            d[i] = data[i];
-    } // Copy
-
-    inline void Copy(const TestData* data)
-    {
-        for (unsigned int i = 0; i < 30; i++)
-            d[i] = (*data)[i];
-    } // Copy
-} TestData;
-
-inline float Test1(const TestData &testData, float n)
-{
-    TestData data(testData);
-
-    n = data[0] += n;
-    n *= data[1];
-    n *= data[2];
-    n = data[3] *= n;
-    n = data[4] *= n;
-    n += data[5];
-    n = data[6] *= n;
-    n += data[6];
-    n = data[7] *= n;
-    n = data[7] *= n;
-    n = data[8] *= n;
-    n *= data[7];
-    n += data[9];
-    n *= data[10];
-    n *= data[11];
-    n = data[3] *= n;
-    n *= data[12];
-    n *= data[8];
-    n = data[13] += n;
-    n = data[14] += n;
-    n *= data[0];
-    n = data[14] *= n;
-    n += data[15];
-    n *= data[16];
-    n += data[14];
-    n = data[3] *= n;
-    n *= data[17];
-    n *= data[3];
-    n *= data[18];
-    n *= data[4];
-    n *= data[19];
-    n *= data[13];
-
-    return n;
 } // Test1
 
 inline float Test2(const TestData& testData, float n)
 {
     TestData data;
     data.Copy(testData);
-
-    n = data[0] += n;
-    n *= data[1];
-    n *= data[2];
-    n = data[3] *= n;
-    n = data[4] *= n;
-    n += data[5];
-    n = data[6] *= n;
-    n += data[6];
-    n = data[7] *= n;
-    n = data[7] *= n;
-    n = data[8] *= n;
-    n *= data[7];
-    n += data[9];
-    n *= data[10];
-    n *= data[11];
-    n = data[3] *= n;
-    n *= data[12];
-    n *= data[8];
-    n = data[13] += n;
-    n = data[14] += n;
-    n *= data[0];
-    n = data[14] *= n;
-    n += data[15];
-    n *= data[16];
-    n += data[14];
-    n = data[3] *= n;
-    n *= data[17];
-    n *= data[3];
-    n *= data[18];
-    n *= data[4];
-    n *= data[19];
-    n *= data[13];
-
-    return n;
+    return TestMath(data, n);
 } // Test2
 
 inline void TestEvaluate1(const TestData& testData, float& result)
 {
     result = Test1(testData, 0.0f);
-} // TestEvaluate1
+} // Test2
 
 inline void TestEvaluate2(const TestData& testData, float& result)
 {
     result = Test2(testData, 0.0f);
 } // TestEvaluate2
 
-GPU_GLOBAL void BugTest(const TestData *data, float* result1, float* result2)
+GPU_GLOBAL void BugTest1(const TestData* data, float* result)
 {
     if (!threadIdx.x) {
-#if 1
         TestData testData;
         testData.Copy(data);
         float test1 = 0;
-        float test2 = 0;
         TestEvaluate1(testData, test1);
-        TestEvaluate2(testData, test2);
-        *result1 = test1;
-        *result2 = test2;
-#else
-        *result1 = 1;
-        *result2 = 2;
-#endif
+        *result = test1;
     }
-} // BugTest
-#endif
+} // BugTest1
+
+GPU_GLOBAL void BugTest2(const TestData* data, float* result)
+{
+    if (!threadIdx.x) {
+        TestData testData;
+        testData.Copy(data);
+        float test2 = 0;
+        TestEvaluate2(testData, test2);
+        *result = test2;
+    }
+} // BugTest2

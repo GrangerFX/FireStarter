@@ -81,7 +81,7 @@ void FireStarterExecute::BugTest(void)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(1, 1, 1);
 
-    float testData[30] = {
+    float testData[20] = {
              1.072845f,
             -1.302906f,
             -0.156495f,
@@ -101,45 +101,11 @@ void FireStarterExecute::BugTest(void)
             -1.027009f,
              0.160542f,
              0.480315f,
-             1.996728f,
-             0.000000f,
-             0.000000f,
-             0.000000f,
-             0.000000f,
-             0.000000f,
-             0.000000f,
-             0.000000f,
-             0.000000f,
-             0.000000f,
-             0.000000f
-    };
+             1.996728f };
     void* testData_device = nullptr;
     checkCUDAErrors(cudaMallocAsync(&testData_device, sizeof(testData), stream));
     checkCUDAErrors(cudaMemcpyAsync(testData_device, testData, sizeof(testData), cudaMemcpyHostToDevice, stream));
 
-#if 1
-    float result = 0.0f;
-    void* result_device = nullptr;
-    checkCUDAErrors(cudaMallocAsync(&result_device, sizeof(float), stream));
- 
-    void* arr[] = { reinterpret_cast<void*>(&testData_device),
-                    reinterpret_cast<void*>(&result_device) };
-
-    checkCUDAErrors(cuLaunchKernel(m_bugTestFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-        0,                                                  // shared mem
-        stream,                                             // stream
-        &arr[0],                                            // arguments
-        0));
-
-    checkCUDAErrors(cudaMemcpyAsync(&result, result_device, sizeof(float), cudaMemcpyDeviceToHost, stream));
-
-    // Synchronize all GPU threads and results.
-    context->Synchronize();
-
-    printf("BugTest: result= %f\n", result);
-#else
     float result1 = 0.0f;
     float result2 = 0.0f;
     void* result1_device = nullptr;
@@ -147,16 +113,26 @@ void FireStarterExecute::BugTest(void)
     checkCUDAErrors(cudaMallocAsync(&result1_device, sizeof(float), stream));
     checkCUDAErrors(cudaMallocAsync(&result2_device, sizeof(float), stream));
 
-    void* arr[] = { reinterpret_cast<void*>(&testData_device),
-                    reinterpret_cast<void*>(&result1_device),
+    void* arr1[] = { reinterpret_cast<void*>(&testData_device),
+                    reinterpret_cast<void*>(&result1_device) };
+
+    void* arr2[] = { reinterpret_cast<void*>(&testData_device),
                     reinterpret_cast<void*>(&result2_device) };
 
-    checkCUDAErrors(cuLaunchKernel(m_bugTestFunction,
+    checkCUDAErrors(cuLaunchKernel(m_bugTest1Function,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
         0,                                                  // shared mem
         stream,                                             // stream
-        &arr[0],                                            // arguments
+        &arr1[0],                                            // arguments
+        0));
+
+    checkCUDAErrors(cuLaunchKernel(m_bugTest2Function,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+        0,                                                  // shared mem
+        stream,                                             // stream
+        &arr2[0],                                            // arguments
         0));
 
     checkCUDAErrors(cudaMemcpyAsync(&result1, result1_device, sizeof(float), cudaMemcpyDeviceToHost, stream));
@@ -166,7 +142,6 @@ void FireStarterExecute::BugTest(void)
     context->Synchronize();
 
     printf("BugTest: result1= %f  result2= %f\n", result1, result2);
-#endif
 } // BugTest
 
 float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int variation)
@@ -387,7 +362,8 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     if (!job->m_ptx.empty())
         if (CUDACompile::CompileModule(m_optimizeModule, job->m_ptx)) {
             m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
-            m_bugTestFunction = CUDACompile::GetFunction(m_optimizeModule, "BugTest");
+            m_bugTest1Function = CUDACompile::GetFunction(m_optimizeModule, "BugTest1");
+            m_bugTest2Function = CUDACompile::GetFunction(m_optimizeModule, "BugTest2");
             if (m_optimizeFunction)
                 return true;
             CUDACompile::ReleaseModule(m_optimizeModule);
