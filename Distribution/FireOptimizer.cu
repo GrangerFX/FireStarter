@@ -358,21 +358,10 @@ typedef struct TestData {
         return d[i];
     } // operator[]
 
-    inline float operator[](unsigned int i) const
-    {
-        return d[i];
-    } // operator[]
-
-    inline void Copy(const TestData& data)
-    {
-        for (unsigned int i = 0; i < 10; i++)
-            d[i] = data[i];
-    } // Copy
-
     inline void Copy(const TestData* data)
     {
         for (unsigned int i = 0; i < 10; i++)
-            d[i] = (*data)[i];
+            d[i] = data->d[i];
     } // Copy
 } TestData;
 
@@ -406,7 +395,7 @@ GPU_GLOBAL void BugTest2(const TestData* inputData, float* result)
 {
     if (!threadIdx.x) {
         TestData testData;
-        testData.Copy(*inputData);
+        testData.Copy(inputData);
         *result = TestMath(testData);
     }
 } // BugTest2

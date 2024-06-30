@@ -81,17 +81,17 @@ void FireStarterExecute::BugTest(void)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(1, 1, 1);
 
-    float testData[10];
-    testData[0] =  1.072845f;
-    testData[1] =  1.869984f;
-    testData[2] = -0.539029f;
-    testData[3] =  0.827619f;
-    testData[4] =  0.219093f;
-    testData[5] = -1.652379f;
-    testData[6] = -1.945061f;
-    testData[7] = -1.260747f;
-    testData[8] = -3.005380f;
-    testData[9] = -1.027009f;
+    float testData[10] = {
+         1.072845f,
+         1.869984f,
+        -0.539029f,
+         0.827619f,
+         0.219093f,
+        -1.652379f,
+        -1.945061f,
+        -1.260747f,
+        -3.005380f,
+        -1.027009f };
 
     void* testData_device = nullptr;
     checkCUDAErrors(cudaMallocAsync(&testData_device, sizeof(testData), stream));
