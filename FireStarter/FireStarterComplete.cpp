@@ -241,7 +241,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                 result = true;
 
             // When the quickest solution is desired, stop as soon as the best state among all the streams has reached the evolve target.
-#if !FIRESTARTER_EVOLVE_TEST && !FIRESTARTER_EVOLVE_TESTS
+#if !FIRESTARTER_EVOLVE_TEST
             if (displayState.m_maxResult <= displayState.Settings().m_evolveTarget)
                 result = true;
 #endif

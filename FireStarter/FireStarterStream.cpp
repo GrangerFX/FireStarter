@@ -261,8 +261,9 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
-                    FireStarterState optimizeBestState(bestState);
                     FireStarterState optimizeState(bestState);
+                    optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE;
+                    FireStarterState optimizeBestState(optimizeState);
 
                     // Generate the optimize code.
                     if (evolve->GenerateOptimize(optimizeState)) {
