@@ -12,7 +12,7 @@
 
 #define FIRESTARTER_EVOLVE_TARGET   0.0000008f  // Stop evolution when this target is reached.
 #define FIRESTARTER_EVOLVE_DEBUG    0           // Output evolve debugging information.
-#define FIRESTARTER_EVOLVE_TEST     0           // Test evolution mode.
+#define FIRESTARTER_EVOLVE_TEST     1           // Test evolution mode.
 
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
 
@@ -46,8 +46,8 @@
 #endif
 
 #if FIRESTARTER_MODE == FIRESTARTER_EVOLVE
-#if FIRESTARTER_EVOLVE_TEST                 // 16 tests of 16 states for unlimited generations.
-#define FIRESTARTER_TESTS            16
+#if FIRESTARTER_EVOLVE_TEST                      // 16 tests of 16 states for unlimited generations.
+#define FIRESTARTER_TESTS            16          
 #define FIRESTARTER_STREAMS          1
 #define FIRESTARTER_UNITS            8
 #define FIRESTARTER_STATES           16
@@ -61,10 +61,10 @@
 #define FIRESTARTER_START_SCALE      2.0f
 #define FIRESTARTER_START_RESULT     10.0f
 #define FIRESTARTER_OPTIMIZE_PASSES  8
-#else                                       // 16 states for unlimited generations. Fastest known reliable results.
+#else                                             // 16 states for unlimited generations. Fastest known reliable results.
 #define FIRESTARTER_TESTS            0
 #define FIRESTARTER_STREAMS          1
-#define FIRESTARTER_UNITS            1 // 8
+#define FIRESTARTER_UNITS            8
 #define FIRESTARTER_STATES           16
 #define FIRESTARTER_GENERATIONS      0
 #define FIRESTARTER_POPULATION       4352 * 64

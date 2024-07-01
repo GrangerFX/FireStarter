@@ -158,45 +158,13 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
 #else
 
-#if 1
-// Old way to copy data.
 inline float Evaluate(const FireStarterData& testData, float n)
 {
-    FireStarterData data(testData);
+    FireStarterData data = testData;
     // EVALUATE //
     // END //
     return n;
 } // Evaluate
-
-inline float Evaluate2(FireStarterData& test, const FireStarterData& testData, float n)
-{
-    FireStarterData data(testData);
-    // EVALUATE //
-    // END //
-    test = data;
-    return n;
-} // Evaluate2
-#else
-// New way to copy data.
-inline float Evaluate(const FireStarterData& testData, float n)
-{
-    FireStarterData data;
-    data.Copy(testData);
-    // EVALUATE //
-    // END //
-    return n;
-} // Evaluate
-
-inline float Evaluate2(FireStarterData& test, const FireStarterData& testData, float n)
-{
-    FireStarterData data;
-    data.Copy(testData);
-    // EVALUATE //
-    // END //
-    test.Copy(data);
-    return n;
-} // Evaluate2
-#endif
 
 inline bool TestEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
 {
@@ -213,28 +181,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     return true;
 } // TestEvaluate
 
-inline bool TestEvaluate2(FireStarterData& test, const FireStarterData& data, const float target[], const float theta[], float& result)
-{
-#if 1
-    result = Evaluate2(test, data, 0.0f);
-//    result = fabsf(Evaluate2(test, data, theta[0]) - target[0]);
-#else
-    float maxResult = result;
-    result = 0.0f;
-    int i = 0;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-        float n = fabsf(Evaluate2(test, data, theta[i]) - target[i]);
-        if (!isfinite(n) || (n > maxResult)) {
-            result = maxResult;
-            return false;
-        } else
-            result = fmaxf(n, result);
-    }
-#endif
-    return true;
-} // TestEvaluate2
-
-GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass, const unsigned long long optimizationIndex)
+GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int v, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -292,27 +239,14 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < FIRESTARTER_ITERATIONS; p++) {
-#if 1
-        // Note: DEBUG!
-        if ((optimizationIndex == 9) && (member == 464) && (v == 0)) {
-            FireStarterData test;
-            unsigned int d = RANDOMMOD(seed, registers);
-            data[d] += evolutionScale * RANDOMFACTOR(seed);
-            float curResult = 0.0f;
-            TestEvaluate2(test, data, target, theta, curResult);
-            ((FireStarterPopulation*)oldResults)->InitMemberResult(p, v, 0, curResult, data);
-        } else
-#endif
-        {
-            unsigned int d = RANDOMMOD(seed, registers);
-            float oldData = data[d];
-            data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
-            float curResult = result;
-            if (TestEvaluate(data, target, theta, curResult) && (curResult <= result))
-                result = curResult;
-            else
-                data[d] = oldData;
-        }
+        unsigned int d = RANDOMMOD(seed, registers);
+        float oldData = data[d];
+        data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
+        float curResult = result;
+        if (TestEvaluate(data, target, theta, curResult) && (curResult <= result))
+            result = curResult;
+        else
+            data[d] = oldData;
     }
 
     // If the result was better, save the results.
@@ -349,53 +283,3 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 } // Optimizer
 #endif
-
-typedef struct TestData {
-    float d[10];
-
-    inline float& operator[](unsigned int i)
-    {
-        return d[i];
-    } // operator[]
-
-    inline void Copy(const TestData* data)
-    {
-        for (unsigned int i = 0; i < 10; i++)
-            d[i] = data->d[i];
-    } // Copy
-} TestData;
-
-inline float TestMath(TestData& data)
-{
-    float n = data[0];
-    n += data[1];
-    n = data[2] *= n;
-    n = data[2] *= n;
-    n += data[4];
-    n *= data[5];
-    n *= data[3];
-    n = data[6] += n;
-    n = data[7] += n;
-    n = data[7] *= n;
-    n += data[8];
-    n *= data[9];
-    n += data[7];
-    return n;
-} // TestMath
-
-GPU_GLOBAL void BugTest1(const TestData* inputData, float* result)
-{
-    if (!threadIdx.x) {
-        TestData testData(*inputData);
-        *result = TestMath(testData);
-    }
-} // BugTest1
-
-GPU_GLOBAL void BugTest2(const TestData* inputData, float* result)
-{
-    if (!threadIdx.x) {
-        TestData testData;
-        testData.Copy(inputData);
-        *result = TestMath(testData);
-    }
-} // BugTest2

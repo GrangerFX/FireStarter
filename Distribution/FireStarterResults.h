@@ -49,7 +49,6 @@ typedef struct FireStarterData {
             d[i] = (*data)[i];
     } // Copy
 
-#if 0
     inline void operator=(const FireStarterData& data)
     {
         Copy(data);
@@ -59,7 +58,6 @@ typedef struct FireStarterData {
     {
         Copy(data);
     } // operator=
-#endif
 
     inline void Init()
     {
@@ -95,18 +93,18 @@ typedef struct FireStarterData {
             d[i] = 0.0f;                            // Clear the unused registers.
     } // Init
 
-#if 0
-    // This yeilds different results in Optimize than the default structure copy.
     inline FireStarterData(const struct FireStarterData& data)
     {
         Copy(data);
     } // FireStarterData
-#endif
 
-    inline FireStarterData(const struct FireStarterData* data = nullptr)
+    inline FireStarterData(const struct FireStarterData* data)
     {
-        if (data)
-            Copy(data);
+        Copy(data);
+    } // FireStarterData
+
+    inline FireStarterData(void)
+    {
     } // FireStarterData
 } FireStarterData;
 
