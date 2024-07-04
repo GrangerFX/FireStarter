@@ -3,7 +3,7 @@
 #include "FireStarterCompile.h"
 #include "FireStarterExecute.h"
 #include "FireStarterComplete.h"
-#include "FireStarterCode.h"
+#include "FireStarterSource.h"
 #include "FireStarter_LoadState.h"
 
 #define FIRESTARTER_STREAM_EVOLUTIONS 100
@@ -161,7 +161,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
                 resultText += Format("Test=%u  ", evolveState.m_test);
             resultText += Format("Random Result=%.8f\n", evolveState.m_maxResult);
             if (!m_streamDate.empty())
-                FireStarterCode::AppendCode(Format("Logs\\%s_RandomResults.txt", m_streamDate.c_str()), resultText);
+                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_RandomResults.txt", m_streamDate.c_str()));
         }
 
         // Cancel any waiting jobs
@@ -300,14 +300,14 @@ void FireStarterStream::EvolveStream(FireStarterServer* server, std::atomic<unsi
                 if (bestState.m_maxResult <= evolveSettings.m_evolveTarget)
                     resultText += " *******";
                 resultText += "\n";
-                FireStarterCode::AppendCode(Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()), resultText);
+                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
             }
 
 #if FIRESTARTER_EVOLVE_DEBUG
             for (FireStarterState& curState : allStates)
                 resultText += Format("%2llu: copy_index=%2llu  id:%2llu  evolution: %2llu  age: %3llu  maxResult: %.8f\n", curState.m_index, curState.m_copy_index, curState.m_id, curState.m_evolution, generation - curState.m_generation, curState.m_maxResult);
             resultText += "\n";
-            FireStarterCode::AppendCode(Format("Logs\\%s_EvolveDebug.txt", streamDate.c_str()), resultText);
+            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveDebug.txt", streamDate.c_str()));
 #endif
         }
 

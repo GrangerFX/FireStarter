@@ -1,5 +1,5 @@
 #include "FireStarterGenerate.h"
-#include "FireStarterCode.h"
+#include "FireStarterSource.h"
 #include "CUDACompile.h"
 
 bool FireStarterGenerate::InitGenerateGPU(const FireStarterSettings& settings)
@@ -55,10 +55,10 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the evaluate function.
-    unsigned long long numInstructions = state.m_program.m_settings.m_instructions;
+    unsigned int numInstructions = state.m_program.m_settings.m_instructions;
     const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
     std::vector<FireStarterRegister> registers;
-    unsigned long long numRegisters = state.m_program.GenerateRegisters(registers);
+    unsigned int numRegisters = state.m_program.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
     std::string generateCode;
     unsigned int tabs = 1;
@@ -128,10 +128,10 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the solution function.
-    unsigned long long numInstructions = state.m_program.m_settings.m_instructions;
+    unsigned int numInstructions = state.m_program.m_settings.m_instructions;
     const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
     std::vector<FireStarterRegister> registers;
-    unsigned long long numRegisters = state.m_program.GenerateRegisters(registers);
+    unsigned int numRegisters = state.m_program.GenerateRegisters(registers);
     FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
     std::string generateCode;
 
@@ -238,7 +238,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
 FireStarterGenerate::FireStarterGenerate(CUDAContext* context)
 {
     m_CUDAContext = context;
-    FireStarterCode::LoadCode("FireGenerate.cu", m_generateCode);
+    FireStarterSource::LoadSource(m_generateCode, "FireGenerate.cu");
 } // FireStarterGenerate
 
 FireStarterGenerate::~FireStarterGenerate(void)

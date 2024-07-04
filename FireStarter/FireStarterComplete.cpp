@@ -1,16 +1,16 @@
 #include "FireStarterComplete.h"
 #include "FireStarterState.h"
-#include "FireStarterCode.h"
+#include "FireStarterSource.h"
 
 void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 {
     std::string bestStateCode;
     bestState.SaveState(bestStateCode);
     std::string saveFile = "FireStarter_LoadState.h";
-    FireStarterCode::SaveCode(saveFile, bestStateCode);
+    FireStarterSource::SaveSource(bestStateCode, saveFile);
     if (bestState.Settings().m_tests) {
         std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
-        FireStarterCode::SaveCode(savePath, bestStateCode);
+        FireStarterSource::SaveSource(bestStateCode, savePath);
     }
 } // SaveBestState
 
@@ -18,7 +18,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 {
     static std::string executeCode;
     if (executeCode.empty())
-        FireStarterCode::LoadCode(EVOLVE_PROGRAM_NAME, executeCode);
+        FireStarterSource::LoadSource(executeCode, EVOLVE_PROGRAM_NAME);
     if (!executeCode.empty()) {
         // Generate the evaluate function
         std::string variationsCode;
@@ -29,32 +29,32 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 
         // Create the units code by replacing the evaluate and optimize sections of the optimize code.
         std::string bestCode = executeCode;
-        FireStarterCode::UpdateProgram(bestCode, variationsCode, VARIATIONS_CODE);
-        FireStarterCode::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
+        FireStarterSource::UpdateProgram(bestCode, variationsCode, VARIATIONS_CODE);
+        FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
         std::string saveFile = "FireStarter_BestCode.cu";
-        FireStarterCode::SaveCode(saveFile, bestCode);
+        FireStarterSource::SaveSource(bestCode, saveFile);
         if (bestState.Settings().m_tests) {
             std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
-            FireStarterCode::SaveCode(savePath, bestCode);
+            FireStarterSource::SaveSource(bestCode, savePath);
         }
     }
 } // SaveBestCode
 
 void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
 {
-    std::string solutionCode;
-    m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
+    std::string solutionSource;
+    m_generate->GenerateSolution(bestState, solutionSource, m_solutionTargetCode);
     std::string saveFile = "FireStarter_Solution.h";
     std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
-    FireStarterCode::SaveCode(savePath, solutionCode);
+    FireStarterSource::SaveSource(solutionSource, savePath);
 } // SaveSolution
 
 bool FireStarterComplete::LoadSolutionTargetCode(void)
 {
-    if (!FireStarterCode::LoadCode("FireStarterTarget.h", m_solutionTargetCode))
+    if (!FireStarterSource::LoadSource(m_solutionTargetCode, "FireStarterTarget.h"))
         return false;
-    FireStarterCode::ReplaceCode(m_solutionTargetCode, "Target", "SolutionTarget");
-    FireStarterCode::ReplaceCode(m_solutionTargetCode, "TARGET_", "SOLUTION_");
+    FireStarterSource::ReplaceSource(m_solutionTargetCode, "Target", "SolutionTarget");
+    FireStarterSource::ReplaceSource(m_solutionTargetCode, "TARGET_", "SOLUTION_");
     return true;
 } // LoadSolutionTargetCode
 

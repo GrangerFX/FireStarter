@@ -1,5 +1,5 @@
 #include "FireStarterEvolve.h"
-#include "FireStarterCode.h"
+#include "FireStarterSource.h"
 #include "CUDACompile.h"
 
 void FireStarterEvolve::GenerateCode(FireStarterJob* job)
@@ -13,7 +13,7 @@ void FireStarterEvolve::GenerateCode(FireStarterJob* job)
     CUDACompile::CompileOptions(job->m_options);
     job->m_programName = EVOLVE_PROGRAM_NAME;
     job->m_program = m_executeCode;
-    FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
+    FireStarterSource::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
     m_evolveManager->AddCode(job);
 } // GenearateCode
 
@@ -162,7 +162,7 @@ FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) 
 {
     m_evolveManager = manager;
     m_evolveIndex = index;
-    FireStarterCode::LoadCode(EVOLVE_PROGRAM_NAME, m_executeCode);
+    FireStarterSource::LoadSource(m_executeCode, EVOLVE_PROGRAM_NAME);
     if (m_executeCode.empty()) {
         printf(EVOLVE_PROGRAM_NAME" could not be loaded!\n");
         std::terminate();

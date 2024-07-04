@@ -1,5 +1,4 @@
 #include "FireStarterState.h"
-#include "FireStarterCode.h"
 
 bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
@@ -117,7 +116,7 @@ void FireStarterState::InitResults(FireStarterResults* initResults)
     const FireStarterSettings& settings = m_program.m_settings;
 
     m_resultsData.clear();
-    m_resultsData.resize(FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations));
+    m_resultsData.resize(FireStarterResults::ResultsSize(settings.m_registers, settings.m_instructions, settings.m_variations));
     m_results = Results();
     if (m_results)
         if (initResults)

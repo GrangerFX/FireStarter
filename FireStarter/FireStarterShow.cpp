@@ -1,11 +1,11 @@
 #include "FireStarterShow.h"
-#include "FireStarterCode.h"
+#include "FireStarterSource.h"
 #include "FireStarter_Solution.h"
 #include "CUDACompile.h"
 
 bool FireStarterShow::LoadFireShowCode(void)
 {
-    if (!FireStarterCode::LoadCode("FireShow.cu", m_fireShowCode))
+    if (!FireStarterSource::LoadSource(m_fireShowCode, "FireShow.cu"))
         return false;
     return true;
 } // LoadFireShowCode
@@ -24,7 +24,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
         if (m_fireShowFunction) {
             // Allocate the results and instructions.
             if (!m_fireShowResults) {
-                checkCUDAErrors(cudaMallocAsync(&m_fireShowResults, FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations), stream));
+                checkCUDAErrors(cudaMallocAsync(&m_fireShowResults, FireStarterResults::ResultsSize(settings.m_registers, settings.m_instructions, settings.m_variations), stream));
                 context->Synchronize();
             }
             if (!m_fireShowInstructions) {
@@ -32,7 +32,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                 context->Synchronize();
             }
 
-            size_t resultsSize = FireStarterResults::ResultsSize(settings.m_registers, settings.m_variations);
+            size_t resultsSize = FireStarterResults::ResultsSize(settings.m_registers, settings.m_instructions, settings.m_variations);
             checkCUDAErrors(cudaMemcpyAsync(m_fireShowResults, state.Results(), resultsSize, cudaMemcpyHostToDevice, stream));
             size_t instructionsSize = FireStarterInstructions::InstructionsSize(settings.m_instructions);
             checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.OptimizedInstructions(), instructionsSize, cudaMemcpyHostToDevice, stream));
@@ -149,8 +149,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         const std::string settingsFileName = "FireStarterSettings.h";
         settingsPath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), settingsFileName.c_str());
         std::string settingsCode;
-        if (FireStarterCode::LoadCode(settingsFileName, settingsCode))
-            FireStarterCode::SaveCode(settingsPath, settingsCode);
+        if (FireStarterSource::LoadSource(settingsCode, settingsFileName))
+            FireStarterSource::SaveSource(settingsCode, settingsPath);
     }
 
     // Create the log file.
@@ -163,8 +163,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if (logFilePaths[test].empty()) {
             logFilePaths[test] = Format("Logs\\%s_%s_%d.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
             Dispatch([test] {
-                FireStarterCode::AppendCode(logFilePaths[test], cudaText);
-                FireStarterCode::AppendCode(logFilePaths[test], settingsText);
+                FireStarterSource::AppendSource(cudaText, logFilePaths[test]);
+                FireStarterSource::AppendSource(settingsText, logFilePaths[test]);
             }, sync);
         }
         logPath = logFilePaths[test];
@@ -173,8 +173,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if (logFilePath.empty()) {
             logFilePath = Format("Logs\\%s_%s.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode());
             Dispatch([] {
-                FireStarterCode::AppendCode(logFilePath, cudaText);
-                FireStarterCode::AppendCode(logFilePath, settingsText);
+                FireStarterSource::AppendSource(cudaText, logFilePath);
+                FireStarterSource::AppendSource(settingsText, logFilePath);
             }, sync);
         }
         logPath = logFilePath;
@@ -227,7 +227,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     }
 
     // Update the log file.
-    Dispatch([logPath, statusString] { FireStarterCode::AppendCode(logPath, statusString + "\r\n"); }, sync);
+    Dispatch([logPath, statusString] { FireStarterSource::AppendSource(statusString + "\r\n", logPath); }, sync);
 
     // Update the window status.
     m_window.DisplayText(statusString, sync);

@@ -62,7 +62,7 @@ public:
 
     inline size_t ResultsSize(void) const
     {
-        return FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_variations);
+        return FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_instructions, m_program.m_settings.m_variations);
     } // ResultSize
 
     inline const FireStarterResults* Results(void) const
@@ -77,20 +77,20 @@ public:
 
     inline size_t ResultSize(void) const
     {
-        return FireStarterResult::ResultSize(m_program.m_settings.m_registers);
+        return FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_instructions);
     } // ResultSize
 
-    inline FireStarterResult* Result(size_t variation)
+    inline FireStarterResult* Result(unsigned int variation)
     {
         return m_resultsData.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
-    inline const FireStarterResult* Result(size_t variation) const
+    inline const FireStarterResult* Result(unsigned int variation) const
     {
         return m_resultsData.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
-    inline float MinResult(size_t variation) const
+    inline float MinResult(unsigned int variation) const
     {
         return m_resultsData.empty() ? Settings().m_startResult : Results()->MinResult(variation);
     } // MinResult
@@ -98,8 +98,8 @@ public:
     inline float MaxResult(void) const
     {
         float maxResult = 0.0f;
-        size_t variations = Settings().m_variations;
-        for (size_t v = 0; v < variations; v++)
+        unsigned int variations = Settings().m_variations;
+        for (unsigned int v = 0; v < variations; v++)
             maxResult = MAX(maxResult, MinResult(v));
         return maxResult;
     } // MaxResult

@@ -114,7 +114,7 @@
     <ClCompile Include="FireStarter\CUDACompile.cpp" />
     <ClCompile Include="FireStarter\FireStarter.cpp" />
     <ClCompile Include="FireStarter\FireStarterBuildSettings.cpp" />
-    <ClCompile Include="FireStarter\FireStarterCode.cpp" />
+    <ClCompile Include="FireStarter\FireStarterSource.cpp" />
     <ClCompile Include="FireStarter\FireStarterCompile.cpp" />
     <ClCompile Include="FireStarter\FireStarterComplete.cpp" />
     <ClCompile Include="FireStarter\FireStarterEvolve.cpp" />
@@ -143,7 +143,7 @@
     <ClInclude Include="FireStarter\CUDAThread.h" />
     <ClInclude Include="FireStarter\FireStarter.h" />
     <ClInclude Include="FireStarter\FireStarterBuildSettings.h" />
-    <ClInclude Include="FireStarter\FireStarterCode.h" />
+    <ClInclude Include="FireStarter\FireStarterSource.h" />
     <ClInclude Include="FireStarter\FireStarterCompile.h" />
     <ClInclude Include="FireStarter\FireStarterComplete.h" />
     <ClInclude Include="FireStarter\FireStarterEvolve.h" />

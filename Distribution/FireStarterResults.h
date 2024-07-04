@@ -1,6 +1,7 @@
 #pragma once
 #include "FireStarterSettings.h"
 #include "HashRandom.h"
+#include "CUDADefines.h"
 
 typedef struct FireStarterData {
     float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
@@ -20,7 +21,7 @@ typedef struct FireStarterData {
         return sizeof(float) * FIRESTARTER_REGISTERS;
     } // DataSize
 
-    static inline size_t DataSize(size_t registers)
+    static inline size_t DataSize(unsigned int registers)
     {
         return sizeof(float) * registers;
     } // DataSize
@@ -65,7 +66,7 @@ typedef struct FireStarterData {
             d[i] = 0.0f;
     } // Init
 
-    inline void Init(size_t registers)
+    inline void Init(unsigned int registers)
     {
         for (unsigned int i = 0; i < registers; i++)
             d[i] = 0.0f;
@@ -73,23 +74,23 @@ typedef struct FireStarterData {
 
     inline void Init(unsigned long long& seed, float startScale)
     {
-        for (size_t i = 0; i < FIRESTARTER_REGISTERS; i++)
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
             d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
     } // Init
 
-    inline void Init(unsigned long long& seed, float startScale, size_t registers)
+    inline void Init(unsigned long long& seed, float startScale, unsigned int registers)
     {
-        for (size_t i = 0; i < registers; i++)
+        for (unsigned int i = 0; i < registers; i++)
             d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
-        for (size_t i = registers; i < FIRESTARTER_REGISTERS; i++)
+        for (unsigned int i = registers; i < FIRESTARTER_REGISTERS; i++)
             d[i] = 0.0f;                            // Clear the unused registers.
     } // Init
 
-    inline void Init(unsigned long long& seed, float startScale, size_t registers, size_t maxRegisters)
+    inline void Init(unsigned long long& seed, float startScale, unsigned int registers, unsigned int maxRegisters)
     {
-        for (size_t i = 0; i < registers; i++)
+        for (unsigned int i = 0; i < registers; i++)
             d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
-        for (size_t i = registers; i < maxRegisters; i++)
+        for (unsigned int i = registers; i < maxRegisters; i++)
             d[i] = 0.0f;                            // Clear the unused registers.
     } // Init
 
@@ -108,19 +109,149 @@ typedef struct FireStarterData {
     } // FireStarterData
 } FireStarterData;
 
+typedef struct FireStarterSharedData {
+    float d[FIRESTARTER_REGISTERS * WARP_THREADS];
+
+    inline float& operator[](unsigned int i)
+    {
+        return d[i * WARP_THREADS + threadIdx.x];
+    } // operator[]
+
+    inline void operator=(const FireStarterData& data)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            d[i * WARP_THREADS + threadIdx.x] = data[i];
+    } // operator=
+
+    inline void Copy(const FireStarterData& data)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            d[i * WARP_THREADS + threadIdx.x] = data[i];
+    } // Copy
+} FireStarterSharedData;
+
+typedef struct FireStarterCode {
+    unsigned int c[FIRESTARTER_INSTRUCTIONS]; // Note: Dynamically allocated!
+
+    inline unsigned int& operator[](unsigned int i)
+    {
+        return c[i];
+    } // operator[]
+
+    inline unsigned int operator[](unsigned int i) const
+    {
+        return c[i];
+    } // operator[]
+
+    static inline size_t CodeSize(void)
+    {
+        return sizeof(int) * FIRESTARTER_INSTRUCTIONS;
+    } // CodeSize
+
+    static inline size_t CodeSize(unsigned int instructions)
+    {
+        return sizeof(int) * instructions;
+    } // CodeSize
+
+    inline void Copy(const FireStarterCode& code)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            c[i] = code[i];
+    } // Copy
+
+    inline void Copy(const FireStarterCode& code, unsigned int instructions)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            c[i] = code[i];
+    } // Copy
+
+    inline void Copy(const FireStarterCode* code)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            c[i] = (*code)[i];
+    } // Copy
+
+    inline void Copy(const FireStarterCode* code, unsigned int instructions)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            c[i] = (*code)[i];
+    } // Copy
+
+    inline void operator=(const FireStarterCode& code)
+    {
+        Copy(code);
+    } // operator=
+
+    inline void operator=(const FireStarterCode* code)
+    {
+        Copy(code);
+    } // operator=
+
+    inline void Init()
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            c[i] = 0;
+    } // Init
+
+    inline void Init(unsigned int registers)
+    {
+        for (unsigned int i = 0; i < registers; i++)
+            c[i] = 0;
+    } // Init
+
+    inline void Init(unsigned long long& seed)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            c[i] = (int)RANDOMMOD(seed, FIRESTARTER_REGISTERS * 2); // Randomize the active registers.
+    } // Init
+
+    inline float Execute(FireStarterSharedData& data, float& n, unsigned int i)
+    {
+        if (c[i] < FIRESTARTER_REGISTERS)
+            n = data[c[i]] *= n;
+        else
+            n = data[c[i] - FIRESTARTER_REGISTERS] += n;
+    } // Execute
+
+    inline FireStarterCode(const struct FireStarterCode& code)
+    {
+        Copy(code);
+    } // FireStarterData
+
+    inline FireStarterCode(const struct FireStarterCode* code)
+    {
+        Copy(code);
+    } // FireStarterCode
+
+    inline FireStarterCode(void)
+    {
+    } // FireStarterCode
+} FireStarterCode;
+
 typedef struct FireStarterResult {
     float m_resultMin;
     unsigned int m_resultAge;
     FireStarterData m_data; // Note: Dynamically allocated!
+#if FIRESTARTER_EVOLVE_GPU
+    FireStarterCode m_code; // Note: Dynamically allocated!
+#endif
 
     static inline size_t ResultSize(void)
     {
-        return (sizeof(FireStarterResult) - sizeof(m_data)) + FIRESTARTER_REGISTERS * sizeof(float);
+#if FIRESTARTER_EVOLVE_GPU
+        return (sizeof(FireStarterResult) - (sizeof(m_data) + sizeof(m_code))) + FireStarterData::DataSize() + FireStarterCode::CodeSize();
+#else
+        return (sizeof(FireStarterResult) - sizeof(m_data)) + FireStarterData::DataSize();
+#endif
     } // ResultSize
 
-    static inline size_t ResultSize(size_t registers)
+    static inline size_t ResultSize(unsigned int registers, unsigned int instructions)
     {
-        return (sizeof(FireStarterResult) - sizeof(m_data)) + registers * sizeof(float);
+#if FIRESTARTER_EVOLVE_GPU
+        return (sizeof(FireStarterResult) - (sizeof(m_data) + sizeof(m_code))) + FireStarterData::DataSize(registers) + FireStarterCode::CodeSize(instructions);
+#else
+        return (sizeof(FireStarterResult) - sizeof(m_data)) + FireStarterData::DataSize(registers);
+#endif
     } // ResultSize
 
     inline float* MinResult(void)
@@ -153,9 +284,24 @@ typedef struct FireStarterResult {
         return &m_data;
     } // Data
 
+#if FIRESTARTER_EVOLVE_GPU
+    inline FireStarterCode* Code(void)
+    {
+        return &m_code;
+    } // Code
+
+    inline const FireStarterCode* Code(void) const
+    {
+        return &m_code;
+    } // Code
+#endif
+
     inline void Init(unsigned int age = 0)
     {
         m_data.Init();
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Init();
+#endif
         m_resultMin = FIRESTARTER_START_RESULT;
         m_resultAge = age;
     } // Init
@@ -163,20 +309,29 @@ typedef struct FireStarterResult {
     inline void Init(const FireStarterSettings& settings, unsigned int age = 0)
     {
         m_data.Init(settings.m_registers);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Init(settings.m_instructions);
+#endif
         m_resultMin = settings.m_startResult;
         m_resultAge = age;
     } // Init
 
-    inline void Init(unsigned long long& seed, size_t registers, unsigned int age = 0)
+    inline void Init(unsigned long long& seed, unsigned int registers, unsigned int age = 0)
     {
         m_data.Init(seed, FIRESTARTER_START_SCALE, registers);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Init();
+#endif
         m_resultMin = FIRESTARTER_START_RESULT;
         m_resultAge = age;
     } // Init
 
-    inline void Init(const FireStarterSettings& settings, unsigned long long& seed, size_t registers, unsigned int age = 0)
+    inline void Init(const FireStarterSettings& settings, unsigned long long& seed, unsigned int registers, unsigned int age = 0)
     {
         m_data.Init(seed, settings.m_startScale, registers, settings.m_registers);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Init(settings.m_instructions);
+#endif
         m_resultMin = settings.m_startResult;
         m_resultAge = age;
     } // Init
@@ -184,6 +339,9 @@ typedef struct FireStarterResult {
     inline void Init(float resultMin, const FireStarterData& data, unsigned int age = 0)
     {
         m_data.Copy(data);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Init();
+#endif
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
@@ -191,6 +349,9 @@ typedef struct FireStarterResult {
     inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData& data, unsigned int age = 0)
     {
         m_data.Copy(data, settings.m_registers);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Init(settings.m_instructions);
+#endif
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
@@ -198,6 +359,9 @@ typedef struct FireStarterResult {
     inline void Init(float resultMin, const FireStarterData* data, unsigned int age = 0)
     {
         m_data.Copy(data);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Init();
+#endif
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
@@ -205,13 +369,45 @@ typedef struct FireStarterResult {
     inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData* data, unsigned int age = 0)
     {
         m_data.Copy(data, settings.m_registers);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Init(settings.m_instructions);
+#endif
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
 
+#if FIRESTARTER_EVOLVE_GPU
+    inline void Init(float resultMin, const FireStarterData& data, const FireStarterCode& code, unsigned int age = 0)
+    {
+        m_data.Copy(data);
+        m_code.Copy(code);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+
+    inline void Init(float resultMin, const FireStarterData* data, const FireStarterCode* code, unsigned int age = 0)
+    {
+        m_data.Copy(data);
+        m_code.Copy(code);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+
+    inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData* data, const FireStarterCode* code, unsigned int age = 0)
+    {
+        m_data.Copy(data, settings.m_registers);
+        m_code.Copy(code, settings.m_instructions);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+#endif
+
     inline void Init(const FireStarterSettings& settings, const FireStarterResult* initResult, unsigned int age = 0)
     {
         m_data.Copy(initResult->Data(), settings.m_registers);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Copy(initResult->Code(), settings.m_instructions);
+#endif
         m_resultMin = initResult->MinResult();
         m_resultAge = age;
     } // Init
@@ -219,16 +415,19 @@ typedef struct FireStarterResult {
     inline void Init(const FireStarterResult* initResult, unsigned int age = 0)
     {
         m_data.Copy(initResult->Data());
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Copy(initResult->Code());
+#endif
         m_resultMin = initResult->MinResult();
         m_resultAge = age;
     } // Init
 } FireStarterResult;
 
 typedef struct FireStarterResults {
-    size_t m_registers;
-    size_t m_variations;
-    size_t m_resultSize;
-    size_t m_resultsSize;
+    unsigned int m_registers;
+    unsigned int m_instructions;
+    unsigned int m_variations;
+    unsigned int m_resultSize;
     FireStarterResult m_memory[FIRESTARTER_VARIATIONS]; // Note: Dynamically allocated!
 
     static inline size_t ResultsSize(void)
@@ -236,47 +435,47 @@ typedef struct FireStarterResults {
         return (sizeof(FireStarterResults) - sizeof(m_memory)) + FireStarterResult::ResultSize() * FIRESTARTER_VARIATIONS;
     } // ResultSize
 
-    static inline size_t ResultsSize(size_t registers, size_t variations)
+    static inline size_t ResultsSize(unsigned int registers, unsigned int instructions, unsigned int variations)
     {
-        return (sizeof(FireStarterResults) - sizeof(m_memory)) + FireStarterResult::ResultSize(registers) * variations;
+        return (sizeof(FireStarterResults) - sizeof(m_memory)) + FireStarterResult::ResultSize(registers, instructions) * variations;
     } // ResultSize
 
-    inline FireStarterResult* Result(size_t variation)
+    inline FireStarterResult* Result(unsigned int variation)
     {
         return (FireStarterResult*)((unsigned char*)m_memory + variation * m_resultSize);
     } // Result
 
-    inline const FireStarterResult* Result(size_t variation) const
+    inline const FireStarterResult* Result(unsigned int variation) const
     {
         return (const FireStarterResult*)((unsigned char*)m_memory + variation * m_resultSize);
     } // Result
 
-    inline float* MinResult(size_t variation)
+    inline float* MinResult(unsigned int variation)
     {
         return Result(variation)->MinResult();
     } // MinResult
 
-    inline float MinResult(size_t variation) const
+    inline float MinResult(unsigned int variation) const
     {
         return Result(variation)->MinResult();
     } // MinResult
 
-    inline unsigned int* Age(size_t variation)
+    inline unsigned int* Age(unsigned int variation)
     {
         return Result(variation)->Age();
     } // Age
 
-    inline unsigned int Age(size_t variation) const
+    inline unsigned int Age(unsigned int variation) const
     {
         return Result(variation)->Age();
     } // Age
 
-    inline FireStarterData* Data(size_t variation)
+    inline FireStarterData* Data(unsigned int variation)
     {
         return Result(variation)->Data();
     } // Data
 
-    inline const FireStarterData* Data(size_t variation) const
+    inline const FireStarterData* Data(unsigned int variation) const
     {
         return Result(variation)->Data();
     } // Data
@@ -284,9 +483,9 @@ typedef struct FireStarterResults {
     inline void InitResults(const FireStarterSettings& settings, const FireStarterResults* initResults = nullptr)
     {
         m_registers = settings.m_registers;
+        m_instructions = settings.m_instructions;
         m_variations = settings.m_variations;
-        m_resultSize = FireStarterResult::ResultSize(m_registers);
-        m_resultsSize = FireStarterResults::ResultsSize(m_registers, m_variations);
+        m_resultSize = (unsigned int)FireStarterResult::ResultSize(m_registers, m_instructions);
         if (initResults && (m_registers == initResults->m_registers) && (m_variations == initResults->m_variations))
             for (unsigned int v = 0; v < m_variations; v++)
                 Result(v)->Init(settings, initResults->Result(v));
@@ -316,7 +515,7 @@ typedef struct FireStarterPopulation {
 
     static inline size_t ResultSize(const FireStarterSettings& settings)
     {
-        return FireStarterResult::ResultSize(settings.m_registers);
+        return FireStarterResult::ResultSize(settings.m_registers, settings.m_instructions);
     } // ResultsSize
 
     static inline size_t VariationSize(const FireStarterSettings& settings)

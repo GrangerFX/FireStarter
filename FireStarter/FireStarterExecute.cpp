@@ -1,6 +1,5 @@
 #include "FireStarterExecute.h"
 #include "CUDACompile.h"
-#include "FireStarterCode.h"
 
 // Not used currently.
 inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)

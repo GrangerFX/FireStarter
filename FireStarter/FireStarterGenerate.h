@@ -14,8 +14,8 @@ private:
 	FireStarterRegisters* m_deviceRegisters = nullptr;
 	FireStarterData* m_deviceData = nullptr;
 	unsigned char* m_deviceString = nullptr;
-	unsigned long long m_numInstructions = 0;
-	unsigned long long m_numRegisters = 0;
+	unsigned int m_numInstructions = 0;
+	unsigned int m_numRegisters = 0;
 	size_t m_stringSize = 0;
 
 public:

@@ -1,10 +1,10 @@
 #include "FireStarterBuildSettings.h"
-#include "FireStarterCode.h"
+#include "FireStarterSource.h"
 #include "CUDACompile.h"
 
 bool FireStarterBuildSettings::LoadFireSettingsCode(void)
 {
-    if (!FireStarterCode::LoadCode("FireSettings.cu", m_fireSettingsCode))
+    if (!FireStarterSource::LoadSource(m_fireSettingsCode, "FireSettings.cu"))
         return false;
     return true;
 } // LoadFireSettingsCode
