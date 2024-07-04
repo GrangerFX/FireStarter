@@ -11,7 +11,7 @@ class FireStarterEvolve : public CUDAThread {
 private:
 	FireStarterManager* m_evolveManager = nullptr;
 	FireStarterGenerate* m_evolveGenerate = nullptr;
-	std::string m_evolveOptimizeCode;
+	std::string m_executeCode;
 	size_t m_evolveIndex = 0;
 	unsigned long long m_evolveCount = 0;
 

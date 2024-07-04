@@ -10,20 +10,17 @@ private:
     FireStarterPopulation* m_devicePopulation1 = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
-    CUmodule m_generateModule = nullptr;
-    CUmodule m_evolveModule = nullptr;
-    CUmodule m_optimizeModule = nullptr;
-    CUfunction m_evolveFunction = nullptr;
-    CUfunction m_optimizeFunction = nullptr;
+    CUmodule m_executeModule = nullptr;
+    CUfunction m_executeFunction = nullptr;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterState& state, bool init);
- 	float OptimizeGenerations(FireStarterState& state, unsigned int variation);
-    void OptimizePass(FireStarterState& state);
-    bool OptimizeEvolve(FireStarterState& state);
+ 	float ExecuteGenerations(FireStarterState& state, unsigned int variation);
+    void ExecutePass(FireStarterState& state);
+    void ExecuteSmartPass(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
     bool Evolve(void);
 

@@ -11,8 +11,8 @@ void FireStarterEvolve::GenerateCode(FireStarterJob* job)
 
     // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     CUDACompile::CompileOptions(job->m_options);
-    job->m_programName = "FireOptimizer.cu";
-    job->m_program = m_evolveOptimizeCode;
+    job->m_programName = EVOLVE_PROGRAM_NAME;
+    job->m_program = m_executeCode;
     FireStarterCode::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
     m_evolveManager->AddCode(job);
 } // GenearateCode
@@ -162,9 +162,9 @@ FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) 
 {
     m_evolveManager = manager;
     m_evolveIndex = index;
-    FireStarterCode::LoadCode("FireOptimizer.cu", m_evolveOptimizeCode);
-    if (m_evolveOptimizeCode.empty()) {
-        printf("FireOptimize.cu could not be loaded!\n");
+    FireStarterCode::LoadCode(EVOLVE_PROGRAM_NAME, m_executeCode);
+    if (m_executeCode.empty()) {
+        printf(EVOLVE_PROGRAM_NAME" could not be loaded!\n");
         std::terminate();
     } else
         DispatchAsync([this] {

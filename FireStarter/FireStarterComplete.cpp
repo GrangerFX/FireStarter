@@ -16,10 +16,10 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 
 void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 {
-    static std::string optimizeCode;
-    if (optimizeCode.empty())
-        FireStarterCode::LoadCode("FireOptimizer.cu", optimizeCode);
-    if (!optimizeCode.empty()) {
+    static std::string executeCode;
+    if (executeCode.empty())
+        FireStarterCode::LoadCode(EVOLVE_PROGRAM_NAME, executeCode);
+    if (!executeCode.empty()) {
         // Generate the evaluate function
         std::string variationsCode;
         bestState.SaveStats(variationsCode);
@@ -28,7 +28,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
             bestState.SaveVariation(i, variationsCode);
 
         // Create the units code by replacing the evaluate and optimize sections of the optimize code.
-        std::string bestCode = optimizeCode;
+        std::string bestCode = executeCode;
         FireStarterCode::UpdateProgram(bestCode, variationsCode, VARIATIONS_CODE);
         FireStarterCode::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
         std::string saveFile = "FireStarter_BestCode.cu";

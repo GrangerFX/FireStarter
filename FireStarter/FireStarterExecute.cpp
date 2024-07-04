@@ -72,7 +72,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
     return m_hostPopulation && m_devicePopulation;
 } // InitPopulation
 
-float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned int variation)
+float FireStarterExecute::ExecuteGenerations(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
     CUDAContext* context = Context();
@@ -100,7 +100,7 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
 
         unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
         dim3 cudaGridSize(blocksPerGrid, 1, 1);
-        checkCUDAErrors(cuLaunchKernel(m_optimizeFunction,
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
             0,                                                  // shared mem
@@ -141,21 +141,21 @@ float FireStarterExecute::OptimizeGenerations(FireStarterState& state, unsigned 
     *result->Age() = *m_hostPopulation->Age(settings, minIndex, variation);
     *result->MinResult() = minResult;
     return minResult;
-} // OptimizeGenerations
+} // ExecuteGenerations
 
-void FireStarterExecute::OptimizePass(FireStarterState& state)
+void FireStarterExecute::ExecutePass(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
     unsigned int variations = settings.m_variations;
     for (unsigned int v = 0; v < variations; v++)
-        OptimizeGenerations(state, v);
+        ExecuteGenerations(state, v);
 
     // Calculate the state's max result.
     state.m_maxResult = state.MaxResult();
     state.m_optimizeValid = true;
-} // OptimizePass
+} // ExecutePass
 
-bool FireStarterExecute::OptimizeEvolve(FireStarterState& state)
+void FireStarterExecute::ExecuteSmartPass(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
     unsigned int variations = settings.m_variations;
@@ -167,7 +167,7 @@ bool FireStarterExecute::OptimizeEvolve(FireStarterState& state)
         unsigned int variation = state.m_variationOrder[v];
         if (validResult) {
             // If the variation result is worse, skip the rest of the variations.
-            float variationResult = OptimizeGenerations(state, variation);
+            float variationResult = ExecuteGenerations(state, variation);
             variationMax = MAX(variationMax, variationResult);
             if (state.m_evolution && (variationMax >= oldResult)) {
                 // Count the variation that caused an invalid result.
@@ -199,8 +199,7 @@ bool FireStarterExecute::OptimizeEvolve(FireStarterState& state)
     // Set the state's max result.
     state.m_maxResult = variationMax;
     state.m_optimizeValid = validResult;
-    return validResult;
-} // OptimizeEvolve
+} // ExecuteSmartPass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
@@ -219,11 +218,15 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
 
     // Initialize the results and compile the CUDA module.
     if (!job->m_ptx.empty())
-        if (CUDACompile::CompileModule(m_optimizeModule, job->m_ptx)) {
-            m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
-            if (m_optimizeFunction)
+        if (CUDACompile::CompileModule(m_executeModule, job->m_ptx)) {
+#if FIRESTARTER_EVOLVE_GPU
+            m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Evolver");
+#else
+            m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
+#endif
+            if (m_executeFunction)
                 return true;
-            CUDACompile::ReleaseModule(m_optimizeModule);
+            CUDACompile::ReleaseModule(m_executeModule);
         }
 
     // Something went wrong so free the job.
@@ -238,7 +241,7 @@ bool FireStarterExecute::Evolve(void)
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
         InitPopulation(state, true);
-        OptimizeEvolve(state);
+        ExecuteSmartPass(state);
         m_executeManager->AddComplete(job);
         return true;
     }
@@ -270,7 +273,7 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool syn
             FireStarterJob* job = m_executeManager->GetFree();
             if (job) {
                 m_executeJob->m_state = state;
-                OptimizePass(m_executeJob->m_state);
+                ExecutePass(m_executeJob->m_state);
                 job->Copy(m_executeJob);
             }
             m_executeManager->AddComplete(job);
@@ -306,7 +309,7 @@ void FireStarterExecute::ExecuteFinish(bool sync)
             m_executeJob = nullptr;
         }
         FinishPopulation();
-        CUDACompile::ReleaseModule(m_optimizeModule);
+        CUDACompile::ReleaseModule(m_executeModule);
     });
 } // ExecuteFinish
 
