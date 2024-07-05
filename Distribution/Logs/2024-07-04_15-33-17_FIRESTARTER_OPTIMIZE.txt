@@ -1,0 +1,42 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 3
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+evolveTarget = 0.000001f
+
+mode = FIRESTARTER_EVOLVE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 16
+streams = 1
+units = 8
+states = 16
+generations = 0
+population = 278528
+iterations = 64
+passes = 500
+candidates = 16
+attempts = 0
+optimize = 8
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000051  Best=0.00000051  BestError=0.00000094  Optimize=0  Time=16.7 Seconds  Run Time=1828.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000036  Best=0.00000036  BestError=0.00000072  Optimize=1  Time=2.0 Seconds  Run Time=1830.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000036  Best=0.00000036  BestError=0.00000072  Optimize=2  Time=1.9 Seconds  Run Time=1831.9 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000036  Best=0.00000036  BestError=0.00000072  Optimize=3  Time=1.9 Seconds  Run Time=1833.9 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000036  Best=0.00000036  BestError=0.00000072  Optimize=4  Time=1.9 Seconds  Run Time=1835.8 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000036  Best=0.00000036  BestError=0.00000072  Optimize=5  Time=1.9 Seconds  Run Time=1837.7 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000036  Best=0.00000036  BestError=0.00000072  Optimize=6  Time=1.9 Seconds  Run Time=1839.7 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000036  Best=0.00000036  BestError=0.00000072  Optimize=7  Time=1.9 Seconds  Run Time=1841.6 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 0  Generation=  0 *Result=0.00000036  Best=0.00000036  BestError=0.00000072  Optimize=8  Time=1.9 Seconds  Run Time=1843.6 Seconds
