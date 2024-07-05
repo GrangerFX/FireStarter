@@ -6,6 +6,35 @@
 // VARIATIONS //
 // END //
 
+typedef struct FireStarterSharedData {
+    float d[FIRESTARTER_REGISTERS * WARP_THREADS];
+
+    inline float& operator[](unsigned int i)
+    {
+        return d[i * WARP_THREADS + threadIdx.x];
+    } // operator[]
+
+    inline void operator=(const FireStarterData& data)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            d[i * WARP_THREADS + threadIdx.x] = data[i];
+    } // operator=
+
+    inline void Copy(const FireStarterData& data)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            d[i * WARP_THREADS + threadIdx.x] = data[i];
+    } // Copy
+} FireStarterShared;
+
+inline float Execute(FireStarterShared& data, float& n, unsigned int instruction)
+{
+    if (instruction < FIRESTARTER_REGISTERS)
+        n = data[instruction] *= n;
+    else
+        n = data[instruction - FIRESTARTER_REGISTERS] += n;
+} // Execute
+
 inline float Evaluate(FireStarterSharedData& data, const FireStarterData& testData, float n)
 {
     data = testData;
@@ -61,7 +90,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
         memberAge = 0;
         memberResult = FIRESTARTER_START_RESULT;
         for (int i = 0; i < 10; i++) {
-            data.Init(seed, evolutionScale, registers);
+            data.Init(seed, evolutionScale);
             result = memberResult;
             if (TestEvaluate(sharedData, data, target, theta, result))
                 break;

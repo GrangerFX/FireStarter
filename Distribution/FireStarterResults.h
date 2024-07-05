@@ -109,27 +109,6 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 #if FIRESTARTER_EVOLVE_GPU
-typedef struct FireStarterShared {
-    float d[FIRESTARTER_REGISTERS * WARP_THREADS];
-
-    inline float& operator[](unsigned int i)
-    {
-        return d[i * WARP_THREADS + threadIdx.x];
-    } // operator[]
-
-    inline void operator=(const FireStarterData& data)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i * WARP_THREADS + threadIdx.x] = data[i];
-    } // operator=
-
-    inline void Copy(const FireStarterData& data)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i * WARP_THREADS + threadIdx.x] = data[i];
-    } // Copy
-} FireStarterShared;
-
 typedef struct FireStarterCode {
     unsigned int c[FIRESTARTER_INSTRUCTIONS]; // Note: Dynamically allocated!
 
@@ -204,14 +183,6 @@ typedef struct FireStarterCode {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             c[i] = (int)RANDOMMOD(seed, FIRESTARTER_REGISTERS * 2); // Randomize the active registers.
     } // Init
-
-    inline float Execute(FireStarterShared& data, float& n, unsigned int i)
-    {
-        if (c[i] < FIRESTARTER_REGISTERS)
-            n = data[c[i]] *= n;
-        else
-            n = data[c[i] - FIRESTARTER_REGISTERS] += n;
-    } // Execute
 
     inline FireStarterCode(const struct FireStarterCode& code)
     {
