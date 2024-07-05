@@ -46,8 +46,7 @@ inline bool TestEvaluate(FireStarterSharedData& data, const FireStarterData& tes
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
             return false;
-        }
-        else
+        } else
             result = fmaxf(n, result);
     }
     return true;
@@ -90,8 +89,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
             if (TestEvaluate(sharedData, data, target, theta, result))
                 break;
         }
-    }
-    else {
+    } else {
         // Later generations randomize a single register if they were copied.
         data.Copy(oldResults->Data(member, v));
         memberAge = oldResults->Age(member, v);
@@ -107,9 +105,8 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
                 data[d] = oldData;
                 result = memberResult = oldResults->MinResult(member, v);
             }
-        }
-        else {
-            result = memberResult = oldResults->MinResult(member, v);
+        } else {
+            result = memberResult = oldResults->MinResult( member, v);
             evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
@@ -161,6 +158,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 } // Optimizer
 
 #else
+
 inline float Evaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data = testData;
@@ -285,5 +283,4 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         }
     }
 } // Optimizer
-
 #endif

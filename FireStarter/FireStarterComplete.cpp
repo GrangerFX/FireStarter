@@ -42,11 +42,11 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 
 void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
 {
-    std::string solutionSource;
-    m_generate->GenerateSolution(bestState, solutionSource, m_solutionTargetCode);
+    std::string solutionCode;
+    m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
     std::string saveFile = "FireStarter_Solution.h";
     std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
-    FireStarterSource::SaveSource(solutionSource, savePath);
+    FireStarterSource::SaveSource(solutionCode, savePath);
 } // SaveSolution
 
 bool FireStarterComplete::LoadSolutionTargetCode(void)
