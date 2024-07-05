@@ -1,7 +1,6 @@
 #pragma once
 #include "FireStarterSettings.h"
 #include "HashRandom.h"
-#include "CUDADefines.h"
 
 typedef struct FireStarterData {
     float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
@@ -597,7 +596,7 @@ typedef struct FireStarterPopulation {
 
     inline unsigned int* Age(unsigned int member, unsigned int variation)
     {
-        return Result( member, variation)->Age();
+        return Result(member, variation)->Age();
     } // Age
 
     inline unsigned int* Age(const FireStarterSettings& settings, unsigned int member, unsigned int variation)

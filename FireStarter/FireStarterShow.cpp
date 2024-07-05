@@ -171,7 +171,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     } else {
         static std::string logFilePath;
         if (logFilePath.empty()) {
-            logFilePath = Format("Logs\\%s_%s.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode());
+            logFilePath = Format("Logs\\%s_%s_%d.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
             Dispatch([] {
                 FireStarterSource::AppendSource(cudaText, logFilePath);
                 FireStarterSource::AppendSource(settingsText, logFilePath);
@@ -205,10 +205,12 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.m_maxResult);
         } else {
-            if ((settings.m_units > 1) && (state.PassMode() != FIRESTARTER_OPTIMIZE))
-                statusString += Format("  Unit=%u", state.m_index % settings.m_units);
-
-            statusString += Format("  Generation=%3u", generation);
+            if (state.PassMode() != FIRESTARTER_OPTIMIZE) {
+                if ((settings.m_units > 1) && (state.PassMode() != FIRESTARTER_OPTIMIZE))
+                    statusString += Format("  Unit=%u", state.m_index % settings.m_units);
+                statusString += Format("  Generation=%3u", generation);
+            } else
+                statusString += Format("  Optimize=%u", state.m_optimize_pass);
             if ((state.m_maxResult == bestResult) && isBestState)
                 statusString += " *";
             else
@@ -217,9 +219,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         }
 
         statusString += Format("  Best=%.8f  BestError=%.8f", bestResult, bestError);
-        if (state.PassMode() == FIRESTARTER_OPTIMIZE)
-            statusString += Format("  Optimize=%u", state.m_optimize_pass);
-        else
+        if (state.PassMode() != FIRESTARTER_OPTIMIZE)
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.

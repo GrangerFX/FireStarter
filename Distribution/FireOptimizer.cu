@@ -32,8 +32,8 @@ typedef struct FireStarterSharedData {
 inline float Evaluate(FireStarterSharedData& data, const FireStarterData& testData, float n)
 {
     data = testData;
-    // EVALUATE //
-    // END //
+// EVALUATE //
+// END //
     return n;
 } // Evaluate
 
@@ -84,7 +84,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         memberAge = 0;
         memberResult = FIRESTARTER_START_RESULT;
         for (int i = 0; i < 10; i++) {
-            data.Init(seed, evolutionScale, registers);
+            data.Init(seed, evolutionScale);
             result = memberResult;
             if (TestEvaluate(sharedData, data, target, theta, result))
                 break;
@@ -162,8 +162,8 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 inline float Evaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data = testData;
-    // EVALUATE //
-    // END //
+// EVALUATE //
+// END //
     return n;
 } // Evaluate
 
@@ -211,7 +211,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         memberAge = 0;
         memberResult = FIRESTARTER_START_RESULT;
         for (int i = 0; i < 10; i++) {
-            data.Init(seed, evolutionScale, registers);
+            data.Init(seed, evolutionScale);
             result = memberResult;
             if (TestEvaluate(data, target, theta, result))
                 break;

@@ -15,6 +15,7 @@ private:
         m_resultsData = other.m_resultsData;
         m_results = Results();
         m_program = other.m_program;
+        m_evaluateCode = other.m_evaluateCode;
         m_timer = other.m_timer;
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
