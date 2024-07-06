@@ -17,7 +17,7 @@ typedef struct FireStarterData {
 
     static inline size_t DataSize(void)
     {
-        return sizeof(float) * FIRESTARTER_REGISTERS;
+        return sizeof(FireStarterData);
     } // DataSize
 
     static inline size_t DataSize(unsigned int registers)
@@ -124,7 +124,7 @@ typedef struct FireStarterCode {
 
     static inline size_t CodeSize(void)
     {
-        return sizeof(int) * FIRESTARTER_INSTRUCTIONS;
+        return sizeof(FireStarterCode);
     } // CodeSize
 
     static inline size_t CodeSize(unsigned int instructions)
@@ -210,11 +210,7 @@ typedef struct FireStarterResult {
 
     static inline size_t ResultSize(void)
     {
-#if FIRESTARTER_EVOLVE_GPU
-        return (sizeof(FireStarterResult) - (sizeof(m_data) + sizeof(m_code))) + FireStarterData::DataSize() + FireStarterCode::CodeSize();
-#else
-        return (sizeof(FireStarterResult) - sizeof(m_data)) + FireStarterData::DataSize();
-#endif
+        return sizeof(FireStarterResult);
     } // ResultSize
 
     static inline size_t ResultSize(unsigned int registers, unsigned int instructions)
@@ -404,7 +400,7 @@ typedef struct FireStarterResults {
 
     static inline size_t ResultsSize(void)
     {
-        return (sizeof(FireStarterResults) - sizeof(m_memory)) + FireStarterResult::ResultSize() * FIRESTARTER_VARIATIONS;
+        return sizeof(FireStarterResults);
     } // ResultSize
 
     static inline size_t ResultsSize(unsigned int registers, unsigned int instructions, unsigned int variations)
@@ -468,7 +464,7 @@ typedef struct FireStarterResults {
 } FireStarterResults;
 
 typedef struct FireStarterPopulation {
-    FireStarterResult m_memory[64]; // Note: Dynamically allocated.
+    FireStarterResult m_memory[FIRESTARTER_POPULATION * FIRESTARTER_VARIATIONS]; // Note: Dynamically allocated.
 
     static inline size_t DataSize(void)
     {
@@ -490,30 +486,25 @@ typedef struct FireStarterPopulation {
         return FireStarterResult::ResultSize(settings.m_registers, settings.m_instructions);
     } // ResultsSize
 
-    static inline size_t VariationSize(const FireStarterSettings& settings)
-    {
-        return settings.m_population * ResultSize(settings);
-    } // VariationSize
-
     static inline size_t VariationSize(void)
     {
         return FIRESTARTER_POPULATION * ResultSize();
     } // VariationSize
 
+    static inline size_t VariationSize(const FireStarterSettings& settings)
+    {
+        return settings.m_population * ResultSize(settings);
+    } // VariationSize
+
+    static inline size_t PopulationSize(void)
+    {
+        return sizeof(FireStarterPopulation);
+    } // PopulationSize
+
     static inline size_t PopulationSize(const FireStarterSettings& settings)
     {
         return settings.m_variations * VariationSize(settings);
     } // PopulationSize
-
-    inline FireStarterResult* Result(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
-    {
-        return (FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize(settings) + member * ResultSize(settings));
-    } // Result
-
-    inline const FireStarterResult* Result(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const
-    {
-        return (const FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize(settings) + member * ResultSize(settings));
-    } // Result
 
     inline FireStarterResult* Result(unsigned int member, unsigned int variation)
     {
@@ -525,7 +516,22 @@ typedef struct FireStarterPopulation {
         return (const FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize() + member * ResultSize());
     } // Result
 
+    inline FireStarterResult* Result(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
+    {
+        return (FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize(settings) + member * ResultSize(settings));
+    } // Result
+
+    inline const FireStarterResult* Result(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const
+    {
+        return (const FireStarterResult*)((unsigned char*)m_memory + variation * VariationSize(settings) + member * ResultSize(settings));
+    } // Result
+
     inline FireStarterData* Data(unsigned int member, unsigned int variation)
+    {
+        return Result(member, variation)->Data();
+    } // Data
+
+    inline const FireStarterData* Data(unsigned int member, unsigned int variation) const
     {
         return Result(member, variation)->Data();
     } // Data
@@ -533,11 +539,6 @@ typedef struct FireStarterPopulation {
     inline FireStarterData* Data(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
     {
         return Result(settings, member, variation)->Data();
-    } // Data
-
-    inline const FireStarterData* Data(unsigned int member, unsigned int variation) const
-    {
-        return Result(member, variation)->Data();
     } // Data
 
     inline const FireStarterData* Data(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const

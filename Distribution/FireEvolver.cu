@@ -25,9 +25,9 @@ typedef struct FireStarterSharedData {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
             d[i * WARP_THREADS + threadIdx.x] = data[i];
     } // Copy
-} FireStarterShared;
+} FireStarterSharedData;
 
-inline float Execute(FireStarterShared& data, float& n, unsigned int instruction)
+inline float Execute(FireStarterSharedData& data, float& n, unsigned int instruction)
 {
     if (instruction < FIRESTARTER_REGISTERS)
         n = data[instruction] *= n;
@@ -129,13 +129,14 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             data[d] = oldData;
     }
 
-    // If the result was better, save the results.
-    if (!optimizationPass || (result < memberResult))
-        newResults->InitMemberResult(member, v, 0, result, data);
-    else {
+    // Save the results if they improved or switch to another member's old results.
+    unsigned int age;
+    if (!optimizationPass || (result < memberResult)) {
+        // If the result was better, save the results.
+        age = 0;
+    } else {
         // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
-        float bestResult = result;
 
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
@@ -145,20 +146,19 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             unsigned int candidateAge = oldResults->Age(candidate, v);
             if (candidateAge <= 1) {
                 float candidateResult = oldResults->MinResult(candidate, v);
-                if (candidateResult <= bestResult) {
+                if (candidateResult <= result) {
                     bestCandidate = candidate;
-                    bestResult = candidateResult;
+                    result = candidateResult;
                 }
             }
         }
 
         // Switch to the selected member's data and results.
-        if (bestCandidate == member)
-            // Note: result will be larger than oldResult when oldAge > 1.
-            newResults->InitMemberResult(member, v, 1, result, data);
-        else {
-            const FireStarterData* bestData = oldResults->Data(bestCandidate, v);
-            newResults->InitMemberResult(member, v, MAX(memberAge, 1) + 1, bestResult, bestData);
+        age = 1;
+        if (bestCandidate != member) {
+            age += MAX(memberAge, 1);
+            data = *oldResults->Data(bestCandidate, v);
         }
     }
+    newResults->InitMemberResult(member, v, age, result, data);
 } // Evolver
