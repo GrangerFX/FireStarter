@@ -181,7 +181,7 @@ typedef struct FireStarterCode {
     inline void Init(unsigned long long& seed)
     {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            c[i] = (int)RANDOMMOD(seed, FIRESTARTER_REGISTERS * 2); // Randomize the active registers.
+            c[i] = RANDOMMOD(seed, FIRESTARTER_REGISTERS * 2); // Randomize the active registers.
     } // Init
 
     inline FireStarterCode(const struct FireStarterCode& code)
@@ -304,48 +304,9 @@ typedef struct FireStarterResult {
         m_resultAge = age;
     } // Init
 
-    inline void Init(float resultMin, const FireStarterData& data, unsigned int age = 0)
-    {
-        m_data.Copy(data);
-#if FIRESTARTER_EVOLVE_GPU
-        m_code.Init();
-#endif
-        m_resultMin = resultMin;
-        m_resultAge = age;
-    } // Init
-
-    inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData& data, unsigned int age = 0)
-    {
-        m_data.Copy(data, settings.m_registers);
-#if FIRESTARTER_EVOLVE_GPU
-        m_code.Init(settings.m_instructions);
-#endif
-        m_resultMin = resultMin;
-        m_resultAge = age;
-    } // Init
-
-    inline void Init(float resultMin, const FireStarterData* data, unsigned int age = 0)
-    {
-        m_data.Copy(data);
-#if FIRESTARTER_EVOLVE_GPU
-        m_code.Init();
-#endif
-        m_resultMin = resultMin;
-        m_resultAge = age;
-    } // Init
-
-    inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData* data, unsigned int age = 0)
-    {
-        m_data.Copy(data, settings.m_registers);
-#if FIRESTARTER_EVOLVE_GPU
-        m_code.Init(settings.m_instructions);
-#endif
-        m_resultMin = resultMin;
-        m_resultAge = age;
-    } // Init
 
 #if FIRESTARTER_EVOLVE_GPU
-    inline void Init(float resultMin, const FireStarterData& data, const FireStarterCode& code, unsigned int age = 0)
+    inline void Init(unsigned int age, float resultMin, const FireStarterData& data, const FireStarterCode& code)
     {
         m_data.Copy(data);
         m_code.Copy(code);
@@ -353,7 +314,7 @@ typedef struct FireStarterResult {
         m_resultAge = age;
     } // Init
 
-    inline void Init(float resultMin, const FireStarterData* data, const FireStarterCode* code, unsigned int age = 0)
+    inline void Init(unsigned int age, float resultMin, const FireStarterData* data, const FireStarterCode* code)
     {
         m_data.Copy(data);
         m_code.Copy(code);
@@ -361,33 +322,69 @@ typedef struct FireStarterResult {
         m_resultAge = age;
     } // Init
 
-    inline void Init(const FireStarterSettings& settings, float resultMin, const FireStarterData* data, const FireStarterCode* code, unsigned int age = 0)
+    inline void Init(const FireStarterSettings& settings, unsigned int age, float resultMin, const FireStarterData& data, const FireStarterCode& code)
     {
         m_data.Copy(data, settings.m_registers);
         m_code.Copy(code, settings.m_instructions);
         m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
-#endif
 
-    inline void Init(const FireStarterSettings& settings, const FireStarterResult* initResult, unsigned int age = 0)
+    inline void Init(const FireStarterSettings& settings, unsigned int age, float resultMin, const FireStarterData* data, const FireStarterCode* code)
     {
-        m_data.Copy(initResult->Data(), settings.m_registers);
-#if FIRESTARTER_EVOLVE_GPU
-        m_code.Copy(initResult->Code(), settings.m_instructions);
-#endif
-        m_resultMin = initResult->MinResult();
+        m_data.Copy(data, settings.m_registers);
+        m_code.Copy(code, settings.m_instructions);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+#else
+    inline void Init(unsigned int age, float resultMin, const FireStarterData& data)
+    {
+        m_data.Copy(data);
+        m_resultMin = resultMin;
         m_resultAge = age;
     } // Init
 
-    inline void Init(const FireStarterResult* initResult, unsigned int age = 0)
+    inline void Init(unsigned int age, float resultMin, const FireStarterData* data)
+    {
+        m_data.Copy(data);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+
+    inline void Init(const FireStarterSettings& settings, unsigned int age, float resultMin, const FireStarterData& data)
+    {
+        m_data.Copy(data, settings.m_registers);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+
+    inline void Init(const FireStarterSettings& settings, unsigned int age, float resultMin, const FireStarterData* data)
+    {
+        m_data.Copy(data, settings.m_registers);
+        m_resultMin = resultMin;
+        m_resultAge = age;
+    } // Init
+#endif
+
+    inline void Init(const FireStarterResult* initResult)
     {
         m_data.Copy(initResult->Data());
 #if FIRESTARTER_EVOLVE_GPU
         m_code.Copy(initResult->Code());
 #endif
         m_resultMin = initResult->MinResult();
-        m_resultAge = age;
+        m_resultAge = initResult->Age();
+    } // Init
+
+    inline void Init(const FireStarterSettings& settings, const FireStarterResult* initResult)
+    {
+        m_data.Copy(initResult->Data(), settings.m_registers);
+#if FIRESTARTER_EVOLVE_GPU
+        m_code.Copy(initResult->Code(), settings.m_instructions);
+#endif
+        m_resultMin = initResult->MinResult();
+        m_resultAge = initResult->Age();
     } // Init
 } FireStarterResult;
 
@@ -448,18 +445,26 @@ typedef struct FireStarterResults {
         return Result(variation)->Data();
     } // Data
 
-    inline void InitResults(const FireStarterSettings& settings, const FireStarterResults* initResults = nullptr)
+#if FIRESTARTER_EVOLVE_GPU
+    inline FireStarterCode* Code(unsigned int variation)
+    {
+        return Result(variation)->Code();
+    } // Code
+
+    inline const FireStarterCode* Code(unsigned int variation) const
+    {
+        return Result(variation)->Code();
+    } // Code
+#endif
+
+    inline void InitResults(const FireStarterSettings& settings)
     {
         m_registers = settings.m_registers;
         m_instructions = settings.m_instructions;
         m_variations = settings.m_variations;
         m_resultSize = (unsigned int)FireStarterResult::ResultSize(m_registers, m_instructions);
-        if (initResults && (m_registers == initResults->m_registers) && (m_variations == initResults->m_variations))
-            for (unsigned int v = 0; v < m_variations; v++)
-                Result(v)->Init(settings, initResults->Result(v));
-        else
-            for (unsigned int v = 0; v < m_variations; v++)
-                Result(v)->Init(settings);
+        for (unsigned int v = 0; v < m_variations; v++)
+            Result(v)->Init(settings);
     } // Init
 } FireStarterResults;
 
@@ -546,6 +551,28 @@ typedef struct FireStarterPopulation {
         return Result(settings, member, variation)->Data();
     } // Data
 
+#if FIRESTARTER_EVOLVE_GPU
+    inline FireStarterCode* Code(unsigned int member, unsigned int variation)
+    {
+        return Result(member, variation)->Code();
+    } // Code
+
+    inline const FireStarterCode* Code(unsigned int member, unsigned int variation) const
+    {
+        return Result(member, variation)->Code();
+    } // Code
+
+    inline FireStarterCode* Code(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
+    {
+        return Result(settings, member, variation)->Code();
+    } // Code
+
+    inline const FireStarterCode* Code(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const
+    {
+        return Result(settings, member, variation)->Code();
+    } // Code
+#endif
+
     inline float* MinResult(unsigned int member, unsigned int variation)
     {
         return Result(member, variation)->MinResult();
@@ -586,23 +613,45 @@ typedef struct FireStarterPopulation {
         return Result(settings, member, variation)->Age();
     } // Age
 
-    inline void InitMemberResult(unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data)
+#if FIRESTARTER_EVOLVE_GPU
+    inline void InitMemberResult(unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data, const FireStarterCode& code)
     {
-        Result(member, variation)->Init(resultMin, data, age);
+        Result(member, variation)->Init(age, resultMin, data, code);
     } // InitMemberResult
 
-    inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data)
+    inline void InitMemberResult(unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData* data, const FireStarterCode* code)
     {
-        Result(settings, member, variation)->Init(settings, resultMin, data, age);
+        Result(member, variation)->Init(age, resultMin, data, code);
+    } // InitMemberResult
+
+    inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data, const FireStarterCode& code)
+    {
+        Result(settings, member, variation)->Init(settings, age, resultMin, data, code);
+    } // InitMemberResult
+
+    inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData* data, const FireStarterCode* code)
+    {
+        Result(settings, member, variation)->Init(settings, age, resultMin, data, code);
+    } // InitMemberResult
+#else
+    inline void InitMemberResult(unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data)
+    {
+        Result(member, variation)->Init(age, resultMin, data);
     } // InitMemberResult
 
     inline void InitMemberResult(unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData* data)
     {
-        Result(member, variation)->Init(resultMin, data, age);
+        Result(member, variation)->Init(age, resultMin, data);
+    } // InitMemberResult
+
+    inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData& data)
+    {
+        Result(settings, member, variation)->Init(settings, age, resultMin, data);
     } // InitMemberResult
 
     inline void InitMemberResult(const FireStarterSettings& settings, unsigned int member, unsigned int variation, unsigned int age, float resultMin, const FireStarterData* data)
     {
-        Result(settings, member, variation)->Init(settings, resultMin, data, age);
+        Result(settings, member, variation)->Init(settings, age, resultMin, data);
     } // InitMemberResult
+#endif
 } FireStarterPopulation;

@@ -223,7 +223,7 @@ public:
     void SaveResult(std::string& code) const;
     void SaveState(std::string& code) const;
     float TestResult(void) const;
-    void InitResults(FireStarterResults* initResult = nullptr);
+    void InitResults(void);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
