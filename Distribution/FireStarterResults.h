@@ -170,8 +170,8 @@ typedef struct FireStarterSharedData {
 } FireStarterSharedData;
 
 typedef struct FireStarterCodeInstruction {
-    unsigned char reg = 0;
-    unsigned char op = 0;
+    unsigned int reg = 0;
+    unsigned int op = 0;
 } FireStarterCodeInstruction;
 
 typedef struct FireStarterCode {
