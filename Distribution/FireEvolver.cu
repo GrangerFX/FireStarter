@@ -74,8 +74,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             data[d] = oldData + RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
 
             unsigned int c = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
-            unsigned int oldCode = code[c];
-            code[c] = RANDOMMOD(seed, FIRESTARTER_REGISTERS * 2);
+            FireStarterCodeInstruction oldCode = code[c];
+            code.RandomInstruction(seed, c);
 
             memberResult = FIRESTARTER_START_RESULT;
             result = 1.0e+6f;
@@ -97,8 +97,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
         data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
 
         unsigned int c = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
-        unsigned int oldCode = code[c];
-        code[c] = RANDOMMOD(seed, FIRESTARTER_REGISTERS * 2);
+        FireStarterCodeInstruction oldCode = code[c];
+        code.RandomInstruction(seed, c);
 
         float curResult = result;
         if (TestEvaluate(sharedData, data, code, target, theta, curResult))

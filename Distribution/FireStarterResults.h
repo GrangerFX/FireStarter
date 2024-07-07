@@ -169,15 +169,20 @@ typedef struct FireStarterSharedData {
     } // FireStarterSharedData
 } FireStarterSharedData;
 
-typedef struct FireStarterCode {
-    unsigned int c[FIRESTARTER_INSTRUCTIONS]; // Note: Dynamically allocated!
+typedef struct FireStarterCodeInstruction {
+    unsigned short reg = 0;
+    unsigned short op = 0;
+} FireStarterCodeInstruction;
 
-    inline unsigned int& operator[](unsigned int i)
+typedef struct FireStarterCode {
+    FireStarterCodeInstruction c[FIRESTARTER_INSTRUCTIONS]; // Note: Dynamically allocated!
+
+    inline FireStarterCodeInstruction& operator[](unsigned int i)
     {
         return c[i];
     } // operator[]
 
-    inline unsigned int operator[](unsigned int i) const
+    inline FireStarterCodeInstruction operator[](unsigned int i) const
     {
         return c[i];
     } // operator[]
@@ -189,7 +194,7 @@ typedef struct FireStarterCode {
 
     static inline size_t CodeSize(unsigned int instructions)
     {
-        return sizeof(unsigned int) * instructions;
+        return sizeof(FireStarterCodeInstruction) * instructions;
     } // CodeSize
 
     inline void Copy(const FireStarterCode& code)
@@ -229,31 +234,39 @@ typedef struct FireStarterCode {
     inline float Evaluate(FireStarterSharedData& sharedData, float n) const
     {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
-            unsigned int instruction = c[i];
-            if (instruction < FIRESTARTER_REGISTERS)
-                n = sharedData[instruction] *= n;
+            const FireStarterCodeInstruction instruction = c[i];
+            float d = sharedData[instruction.reg];
+            if (instruction.op)
+                n += d;
             else
-                n = sharedData[instruction - FIRESTARTER_REGISTERS] += n;
+                n *= d;
+            sharedData[instruction.reg] = n;
         }
         return n;
     } // Evaluate
 
+    inline void RandomInstruction(unsigned long long& seed, unsigned int i)
+    {
+        c[i].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+        c[i].op = RANDOMMOD(seed, 2);
+    } // RandomInstruction
+
     inline void Init()
     {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            c[i] = 0;
+            c[i] = FireStarterCodeInstruction();
     } // Init
 
     inline void Init(unsigned int registers)
     {
         for (unsigned int i = 0; i < registers; i++)
-            c[i] = 0;
+            c[i] = FireStarterCodeInstruction();
     } // Init
 
     inline void Init(unsigned long long& seed)
     {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            c[i] = RANDOMMOD(seed, FIRESTARTER_REGISTERS * 2); // Randomize the active registers.
+            RandomInstruction(seed, i);
     } // Init
 
     inline FireStarterCode(const struct FireStarterCode& code)
