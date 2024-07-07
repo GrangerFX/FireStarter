@@ -181,7 +181,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
     window.DisplayText(statusString);
 } // FireSolution
 
-void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double runTime, double generationTime, double bestError, bool sync)
+void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, double bestError, bool sync)
 {
     // Create the CUDA device text.
     static std::string cudaText;

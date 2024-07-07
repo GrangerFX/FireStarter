@@ -115,7 +115,7 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, Fire
     m_resultsCount++;
 
     // Update the status text.
-    m_fireShow.ShowStatus(bestState, state, generation, duration, m_generationTime, m_bestError);
+    m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration, m_bestError);
 } // CompleteStatus
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)

@@ -375,6 +375,7 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool syn
 void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& state, bool sync)
 {
     Dispatch([this, &state] {
+        state.m_timer.Start();
         InitPopulation(state);
         ExecuteEvolvePass(state);
     }, sync);
