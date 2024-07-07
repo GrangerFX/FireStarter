@@ -4,8 +4,8 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 07/07/24 15:08:17 Pacific Daylight Time
-// Run duration = 20.641845 seconds
+// Run date: 07/07/24 15:10:44 Pacific Daylight Time
+// Run duration = 20.385544 seconds
 // Run generation = 1
 // Run evolution = 0
 // Run max result = 0.00068551
