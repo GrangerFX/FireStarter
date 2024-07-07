@@ -234,20 +234,16 @@ typedef struct FireStarterCode {
     inline float Evaluate(FireStarterSharedData& sharedData, float n) const
     {
 #if 0
+        // Fixed multiply/add is faster to execute but likely is more difficult to evolve.
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
             n = sharedData[c[i].reg] += n;
             n = sharedData[c[i + 1].reg] *= n;
         }
 #endif
-#if 0
+#if 1
+        // Per instruction opcodes are slower to execute but more general.
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             n = c[i].op ? sharedData[c[i].reg] += n : sharedData[c[i].reg] *= n;
-#endif
-#if 1
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
-            float& reg = sharedData[c[i].reg];
-            n = c[i].op ? reg += n : reg *= n;
-        }
 #endif
         return n;
     } // Evaluate
