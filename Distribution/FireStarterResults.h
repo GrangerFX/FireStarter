@@ -233,7 +233,11 @@ typedef struct FireStarterCode {
 
     inline float Evaluate(FireStarterSharedData& sharedData, float n) const
     {
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+#if 1
+            n = sharedData[c[i].reg] += n;
+            n = sharedData[c[i + 1].reg] *= n;
+#else
             const FireStarterCodeInstruction instruction = c[i];
             float d = sharedData[instruction.reg];
             if (instruction.op)
@@ -241,6 +245,7 @@ typedef struct FireStarterCode {
             else
                 n *= d;
             sharedData[instruction.reg] = n;
+#endif
         }
         return n;
     } // Evaluate
