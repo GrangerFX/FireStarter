@@ -17,19 +17,22 @@ private:
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
-    bool InitPopulation(const FireStarterState& state, bool init);
- 	float ExecuteGenerations(FireStarterState& state, unsigned int variation);
+    bool InitPopulation(const FireStarterState& state, bool init = false);
+    void ExecuteEvolvePass(FireStarterState& state);
+    float ExecuteOptimizePass(FireStarterState& state, unsigned int variation);
     void ExecutePass(FireStarterState& state);
     void ExecuteSmartPass(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
-    bool Evolve(void);
+    bool ExecuteJob(void);
 
 public:
+    void ExecuteCompileEvolver(bool sync = false);
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, bool sync = false);
-    void ExecuteEvolve(std::atomic<long long>& evolveCount, bool sync = false);
-    void ExecuteEvolve(bool sync = false);
+    void ExecuteEvolveGPU(FireStarterState& state, bool sync = false);
+    void ExecuteEvolveCPU(std::atomic<long long>& evolveCount, bool sync = false);
+    void ExecuteEvolveCPU(bool sync = false);
     void ExecuteFinish(bool sync = true);
     FireStarterExecute(FireStarterManager* manager, size_t index = 0);
 	~FireStarterExecute(void);

@@ -18,7 +18,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 {
     static std::string executeCode;
     if (executeCode.empty())
-        FireStarterSource::LoadSource(executeCode, EVOLVE_PROGRAM_NAME);
+        FireStarterSource::LoadSource(executeCode, bestState.Settings().m_mode == FIRESTARTER_EVOLVE_GPU ? EVOLVE_PROGRAM_NAME : OPTIMIZE_PROGRAM_NAME);
     if (!executeCode.empty()) {
         // Generate the evaluate function
         std::string variationsCode;
@@ -140,6 +140,28 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
     return result;
 } // CompleteRandom
 
+bool FireStarterComplete::CompleteEvolveGPU(FireStarterState& bestState, FireStarterState& state, bool sync)
+{
+    bool result = false;
+    Dispatch([this, &bestState, &state, &result] {
+        // Update the best state and display the results.
+        DisplayResults(bestState, state);
+
+        // Update the render status after every pass.
+        CompleteStatus(bestState, state, state.m_generation);
+
+        // Has the completion condition been met?
+        if (state.PassMode() == FIRESTARTER_OPTIMIZE)
+            result = state.m_optimize_pass >= state.Settings().m_optimize;
+        else {
+            unsigned long long age = state.m_generation - bestState.m_generation;
+            if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
+                result = true;
+        }
+    }, sync);
+    return result;
+} // CompleteEvolveGPU
+
 bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync)
 {
     bool result = true;
@@ -168,7 +190,8 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
                 result = newState.m_optimize_pass >= newState.Settings().m_optimize;
             else {
                 unsigned long long age = newState.m_generation - oldState.m_generation;
-                result = (age >= newState.Settings().m_attempts) || (bestState.Settings().m_attempts && (oldState.m_maxResult <= newState.Settings().m_evolveTarget));
+                if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
+                    result = true;
             }
         }
     }, sync);

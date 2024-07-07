@@ -5,11 +5,8 @@
 #include <vector>
 #include <string>
 
-#if FIRESTARTER_EVOLVE_GPU
-#define EVOLVE_PROGRAM_NAME "FireEvolver.cu"
-#else
-#define EVOLVE_PROGRAM_NAME "FireOptimizer.cu"
-#endif
+#define EVOLVE_PROGRAM_NAME   "FireEvolver.cu"
+#define OPTIMIZE_PROGRAM_NAME "FireOptimizer.cu"
 
 class FireStarterProgram {
 private:
