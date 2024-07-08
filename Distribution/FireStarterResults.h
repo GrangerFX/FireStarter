@@ -231,19 +231,53 @@ typedef struct FireStarterCode {
         Copy(code);
     } // operator=
 
-    inline float Evaluate(FireStarterSharedData& sharedData, float n) const
+    inline float Evaluate(FireStarterSharedData& data, float n) const
     {
 #if 0
         // Fixed multiply/add is faster to execute but likely is more difficult to evolve.
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
-            n = sharedData[c[i].reg] += n;
-            n = sharedData[c[i + 1].reg] *= n;
+            n = data[c[i].reg] += n;
+            n = data[c[i + 1].reg] *= n;
         }
 #endif
-#if 1
+#if 0
         // Per instruction opcodes are slower to execute but more general.
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            n = c[i].op ? sharedData[c[i].reg] += n : sharedData[c[i].reg] *= n;
+            n = c[i].op ? data[c[i].reg] += n : data[c[i].reg] *= n;
+#endif
+#if 1
+        n = data[0] += n;
+        n = data[1] *= n;
+        n = data[1] += n;
+        n *= data[2];
+        n = data[1] *= n;
+        n *= data[3];
+        n += data[4];
+        n = data[5] *= n;
+        n *= data[6];
+        n = data[7] *= n;
+        n += data[8];
+        n = data[7] *= n;
+        n *= data[9];
+        n = data[10] *= n;
+        n += data[11];
+        n *= data[5];
+        n = data[12] += n;
+        n *= data[12];
+        n *= data[1];
+        n += data[13];
+        n += data[10];
+        n *= data[14];
+        n *= data[15];
+        n = data[16] *= n;
+        n += data[7];
+        n += data[17];
+        n *= data[18];
+        n *= data[16];
+        n *= data[0];
+        n += data[19];
+        n *= data[20];
+        n += data[21];
 #endif
         return n;
     } // Evaluate
