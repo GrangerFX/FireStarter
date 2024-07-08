@@ -240,12 +240,12 @@ typedef struct FireStarterCode {
             n = data[c[i + 1].reg] *= n;
         }
 #endif
-#if 0
+#if 1
         // Per instruction opcodes are slower to execute but more general.
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             n = c[i].op ? data[c[i].reg] += n : data[c[i].reg] *= n;
 #endif
-#if 1
+#if 0
         n = data[0] += n;
         n = data[1] *= n;
         n = data[1] += n;

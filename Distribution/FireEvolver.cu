@@ -42,7 +42,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long seed = evolutionSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/member
+    unsigned long long seed = evolutionSeed + SEED10(variation) + SEED11(member / 32); // Unique seed for the generation/variation/member
     FireStarterData data;
     FireStarterCode code;
     unsigned int memberAge;
