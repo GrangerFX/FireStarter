@@ -4,7 +4,7 @@
 
 bool FireStarterSource::LoadSource(std::string& source, const std::string& filePath)
 {
-    std::ifstream file(filePath.c_str(), std::ios::ate | std::ios::binary);
+    std::ifstream file(filePath, std::ios::ate | std::ios::binary);
     if (file.is_open()) {
         // Found usable source file
         file.seekg(0, std::ios::end);
@@ -19,7 +19,7 @@ bool FireStarterSource::LoadSource(std::string& source, const std::string& fileP
 
 void FireStarterSource::SaveSource(const std::string& source, const std::string& filePath)
 {
-    std::ofstream file(filePath.c_str(), std::ios::out | std::ios::binary);
+    std::ofstream file(filePath, std::ios::out | std::ios::binary);
     if (file.is_open()) {
         file << source;
         file.close();
@@ -28,7 +28,7 @@ void FireStarterSource::SaveSource(const std::string& source, const std::string&
 
 void FireStarterSource::AppendSource(const std::string& source, const std::string& filePath)
 {
-    std::ofstream file(filePath.c_str(), std::ios::out | std::ios::app | std::ios::binary);
+    std::ofstream file(filePath, std::ios::out | std::ios::app | std::ios::binary);
     if (file.is_open()) {
         file << source;
         file.close();

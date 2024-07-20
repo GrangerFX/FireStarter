@@ -143,7 +143,8 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         FireStarterResult* result = state.Result(variation);
         memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex, variation), FireStarterData::DataSize(settings.m_registers));
         memcpy(result->Code(), m_hostPopulation->Code(settings, minIndex, variation), FireStarterCode::CodeSize(settings.m_instructions));
-        *result->Age() = *m_hostPopulation->Age(settings, minIndex, variation);
+        *result->DataAge() = *m_hostPopulation->DataAge(settings, minIndex, variation);
+        *result->CodeAge() = *m_hostPopulation->CodeAge(settings, minIndex, variation);
         *result->MinResult() = minResult;
     }
 
@@ -219,7 +220,7 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
 
     FireStarterResult* result = state.Result(variation);
     memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex, variation), FireStarterData::DataSize(settings.m_registers));
-    *result->Age() = *m_hostPopulation->Age(settings, minIndex, variation);
+    *result->DataAge() = *m_hostPopulation->DataAge(settings, minIndex, variation);
     *result->MinResult() = minResult;
     return minResult;
 } // ExecuteOptimizePass

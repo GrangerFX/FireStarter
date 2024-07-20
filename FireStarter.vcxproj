@@ -161,6 +161,7 @@
     <ClInclude Include="FireStarter\SerialOutput.h" />
     <ClInclude Include="FireStarter\SerialThread.h" />
     <ClInclude Include="FireStarter\FireStarterWindow.h" />
+    <ClInclude Include="FireStarter\SimpleOutput.h" />
     <ClInclude Include="FireStarter\SimpleTimer.h" />
   </ItemGroup>
   <ItemGroup>

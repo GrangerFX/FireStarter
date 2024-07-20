@@ -48,14 +48,14 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     // Evolve the program registers for each variation.
     unsigned long long seed = optimizationSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/member
     FireStarterData data;
-    unsigned int memberAge;
+    unsigned short dataAge;
     float result, memberResult;
     float evolutionScale;
 
     // The first generation is initalized with random numbers.
     if (!optimizationPass) {
         evolutionScale = FIRESTARTER_START_SCALE;
-        memberAge = 0;
+        dataAge = 0;
         memberResult = FIRESTARTER_START_RESULT;
         for (int i = 0; i < 10; i++) {
             data.Init(seed, evolutionScale);
@@ -66,13 +66,13 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     } else {
         // Later generations randomize a single register if they were copied.
         data.Copy(oldResults->Data(member, variation));
-        memberAge = oldResults->Age(member, variation);
-        if (memberAge > 1) {
+        dataAge = oldResults->DataAge(member, variation);
+        if (dataAge > 1) {
             // Randomize a single register.
             evolutionScale = FIRESTARTER_START_SCALE;
             unsigned int d = RANDOMMOD(seed, registers);
             float oldData = data[d];
-            data[d] = oldData + RANDOMFACTOR(seed) * evolutionScale * (memberAge - 1);
+            data[d] = oldData + RANDOMFACTOR(seed) * evolutionScale * (dataAge - 1);
             memberResult = FIRESTARTER_START_RESULT;
             result = 1.0e+6f;
             if (!TestEvaluate(data, target, theta, result)) {
@@ -98,7 +98,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Save the results if they improved or switch to another member's old results.
-    unsigned int age;
+    unsigned short age;
     if (!optimizationPass || (result < memberResult)) {
         // If the result was better, save the results.
         age = 0;
@@ -111,7 +111,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(seed, FIRESTARTER_POPULATION);
-            unsigned int candidateAge = oldResults->Age(candidate, variation);
+            unsigned short candidateAge = oldResults->DataAge(candidate, variation);
             if (candidateAge <= 1) {
                 float candidateResult = oldResults->MinResult(candidate, variation);
                 if (candidateResult <= result) {
@@ -124,10 +124,10 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         // Switch to the selected member's data and results.
         age = 1;
         if (bestCandidate != member) {
-            age += MAX(memberAge, 1);
+            age += MAX(dataAge, 1);
             data = *oldResults->Data(bestCandidate, variation);
         }
     }
-    newResults->InitMemberResult(member, variation, age, result, data);
+    newResults->InitMemberResult(data, member, variation, result, age);
 } // Optimizer
 
