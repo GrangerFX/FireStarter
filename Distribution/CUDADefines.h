@@ -18,7 +18,7 @@
 #include <cmath>
 #include <atomic>
 #define GPU_FUNCTION static inline
-#define GPU_GLOBAL extern "C"
+#define GPU_GLOBAL inline
 #define GPU_ENTRY(grid, block)
 #define GPU_THREADFENCE()
 #define GPU_SYNCTHREADS()
