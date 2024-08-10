@@ -27,9 +27,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
 {
     // Determine the member to be optimized.
     unsigned int tid = threadIdx.x;
-    unsigned int codeMember = blockDim.x * blockIdx.x;
-    unsigned int dataMember = blockDim.x * blockIdx.x + tid;
-    if (dataMember >= FIRESTARTER_POPULATION)
+    unsigned int member = blockDim.x * blockIdx.x;
+    if (member >= FIRESTARTER_POPULATION)
         return;
 
     // The shared data for the threads in the warp.
@@ -45,12 +44,12 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataMember); // Unique seed for the generation/variation/member
-    unsigned long long codeSeed = evolutionSeed + SEED10(variation) + SEED11(codeMember); // Unique seed for the generation/variation/thread block
-    FireStarterData data;
+    unsigned long long codeSeed = evolutionSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/thread block
+    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(member * WARP_THREADS + tid); // Unique seed for the generation/variation/member
     FireStarterCode code;
-    unsigned short dataAge = oldResults->DataAge(dataMember, variation);
-    unsigned short codeAge = oldResults->CodeAge(codeMember, variation);
+    FireStarterData data;
+    unsigned short codeAge;
+    unsigned short dataAge;
     float result, memberResult;
     float evolutionScale;
 
@@ -68,8 +67,12 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
                 break;
         }
     } else {
-        data.Copy(oldResults->Data(dataMember, variation));
-        code.Copy(oldResults->Code(codeMember, variation));
+        code.Copy(oldResults->Code(member, variation));
+        data.Copy(oldResults->Data(member, variation));
+        codeAge = oldResults->CodeAge(member, variation);
+        dataAge = oldResults->DataAge(member, variation);
+        float oldResult = oldResults->MinResult(member, variation);
+
         if (dataAge > 10) {
             // Randomize a single instruction.
             unsigned int c = RANDOMMOD(codeSeed, FIRESTARTER_INSTRUCTIONS);
@@ -93,11 +96,11 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
             result = memberResult = FIRESTARTER_START_RESULT;
             if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
                 data[d] = oldData;
-                result = memberResult = oldResults->MinResult(dataMember, variation);
+                result = memberResult = oldResult;
             }
             dataAge++;
         } else {
-            result = memberResult = oldResults->MinResult(dataMember, variation);
+            result = memberResult = oldResult;
             evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
@@ -155,13 +158,9 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         }
     }
 
-    result = results[0];        // Get the best result in the warp.
-    unsigned int id = minid[0]; // Get the best warp thread id.
-    sharedData = data;          // Load the shared data with the best data from each warp thread.
-    sharedData.Get(data, id);   // Get the best thread's data. Each warp thread will be the same.
-
-    // Store the best code and data in each member's global data.
-    newResults->InitMemberResult(data, code, dataMember, variation, result, dataAge, codeAge);
+    // Store the best code and data in the member's global data.
+    if (tid == minid[0])
+        newResults->InitMemberResult(data, code, member, variation, result, dataAge, codeAge);
 } // Evolver
 #else
 GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)

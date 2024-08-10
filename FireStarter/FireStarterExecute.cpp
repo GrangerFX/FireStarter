@@ -99,8 +99,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
                             reinterpret_cast<void*>(&evolutionPass)
             };
 
-            unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
-            dim3 cudaGridSize(blocksPerGrid, 1, 1);
+            dim3 cudaGridSize(settings.m_population, 1, 1);
             checkCUDAErrors(cuLaunchKernel(m_executeFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
                 cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
@@ -124,19 +123,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     if (oddPasses)
         checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
-
-    // Test that each thread in a warp has the same data.
-    for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
-        for (unsigned int i = 0; i < settings.m_population; i += WARP_THREADS) {
-            FireStarterData warpData = m_hostPopulation->Data(settings, i, variation);
-            for (unsigned int j = 1; j < WARP_THREADS; j++) {
-                FireStarterData threadData = m_hostPopulation->Data(settings, i + j, variation);
-                if (threadData != warpData) {
-                    printf("Warp thread data inconsistant: Warp: %d  Thread: %d\n", i, j);
-                }
-            }
-        }
-    }
 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
