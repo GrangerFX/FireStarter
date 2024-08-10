@@ -125,6 +125,19 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, stream));
     context->Synchronize();
 
+    // Test that each thread in a warp has the same data.
+    for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
+        for (unsigned int i = 0; i < settings.m_population; i += WARP_THREADS) {
+            FireStarterData warpData = m_hostPopulation->Data(settings, i, variation);
+            for (unsigned int j = 1; j < WARP_THREADS; j++) {
+                FireStarterData threadData = m_hostPopulation->Data(settings, i + j, variation);
+                if (threadData != warpData) {
+                    printf("Warp thread data inconsistant: Warp: %d  Thread: %d\n", i, j);
+                }
+            }
+        }
+    }
+
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.

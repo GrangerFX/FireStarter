@@ -26,12 +26,9 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPopulation * oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
 {
     // Determine the member to be optimized.
-#if 0
+    unsigned int tid = threadIdx.x;
     unsigned int codeMember = blockDim.x * blockIdx.x;
-#else
-    unsigned int codeMember = blockDim.x * blockIdx.x + threadIdx.x;
-#endif
-    unsigned int dataMember = blockDim.x * blockIdx.x + threadIdx.x;
+    unsigned int dataMember = blockDim.x * blockIdx.x + tid;
     if (dataMember >= FIRESTARTER_POPULATION)
         return;
 
@@ -117,15 +114,53 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
             data[d] = oldData;
     }
 
-    // Save the results if they improved or switch to another member's old results.
-    if (!evolutionPass || (result < memberResult)) {
-        // If the result was better, save the results.
-        dataAge = 0;
-        codeAge = 0;
-    } else {
-//        data.Copy(oldResults->Data(dataMember, variation));
-//        code.Copy(oldResults->Code(codeMember, variation));
+    // Reduction to find the minimum result among the 32 block threads.
+    GPU_SHARED float results[WARP_THREADS];
+    GPU_SHARED unsigned int minid[WARP_THREADS];
+    results[tid] = result;
+    minid[tid] = tid;
+    if (tid < 16) {
+        unsigned int otherid = tid + 16;
+        if (results[tid] > results[otherid]) {
+            results[tid] = results[otherid];
+            minid[tid] = minid[otherid];
+        }
     }
+    if (tid < 8) {
+        unsigned int otherid = tid + 8;
+        if (results[tid] > results[otherid]) {
+            results[tid] = results[otherid];
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 4) {
+        unsigned int otherid = tid + 4;
+        if (results[tid] > results[otherid]) {
+            results[tid] = results[otherid];
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 2) {
+        unsigned int otherid = tid + 2;
+        if (results[tid] > results[otherid]) {
+            results[tid] = results[otherid];
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 1) {
+        unsigned int otherid = tid + 1;
+        if (results[tid] > results[otherid]) {
+            results[tid] = results[otherid];
+            minid[tid] = minid[otherid];
+        }
+    }
+
+    result = results[0];        // Get the best result in the warp.
+    unsigned int id = minid[0]; // Get the best warp thread id.
+    sharedData = data;          // Load the shared data with the best data from each warp thread.
+    sharedData.Get(data, id);   // Get the best thread's data. Each warp thread will be the same.
+
+    // Store the best code and data in each member's global data.
     newResults->InitMemberResult(data, code, dataMember, variation, result, dataAge, codeAge);
 } // Evolver
 #else
