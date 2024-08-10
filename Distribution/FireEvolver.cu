@@ -27,7 +27,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
 {
     // Determine the member to be optimized.
     unsigned int tid = threadIdx.x;
-    unsigned int member = blockDim.x * blockIdx.x;
+    unsigned int member = blockIdx.x;
     if (member >= FIRESTARTER_POPULATION)
         return;
 
@@ -48,13 +48,13 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(member * WARP_THREADS + tid); // Unique seed for the generation/variation/member
     FireStarterCode code;
     FireStarterData data;
-    unsigned short codeAge;
-    unsigned short dataAge;
+    unsigned short codeAge = oldResults->CodeAge(member, variation);
+    unsigned short dataAge = oldResults->DataAge(member, variation) & 0xFF;
     float result, memberResult;
     float evolutionScale;
 
     // The first generation is initalized with random numbers.
-    if (!evolutionPass || (codeAge > 10) || 1) {
+    if (!evolutionPass || (codeAge > 10)) {
         codeAge = 0;
         dataAge = 0;
         evolutionScale = FIRESTARTER_START_SCALE;
@@ -69,8 +69,6 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     } else {
         code.Copy(oldResults->Code(member, variation));
         data.Copy(oldResults->Data(member, variation));
-        codeAge = oldResults->CodeAge(member, variation);
-        dataAge = oldResults->DataAge(member, variation);
         float oldResult = oldResults->MinResult(member, variation);
 
         if (dataAge > 10) {
@@ -124,43 +122,49 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     minid[tid] = tid;
     if (tid < 16) {
         unsigned int otherid = tid + 16;
-        if (results[tid] > results[otherid]) {
-            results[tid] = results[otherid];
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            result = results[tid] = otherResults;
             minid[tid] = minid[otherid];
         }
     }
     if (tid < 8) {
         unsigned int otherid = tid + 8;
-        if (results[tid] > results[otherid]) {
-            results[tid] = results[otherid];
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            result = results[tid] = otherResults;
             minid[tid] = minid[otherid];
         }
     }
     if (tid < 4) {
         unsigned int otherid = tid + 4;
-        if (results[tid] > results[otherid]) {
-            results[tid] = results[otherid];
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            result = results[tid] = otherResults;
             minid[tid] = minid[otherid];
         }
     }
     if (tid < 2) {
         unsigned int otherid = tid + 2;
-        if (results[tid] > results[otherid]) {
-            results[tid] = results[otherid];
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            result = results[tid] = otherResults;
             minid[tid] = minid[otherid];
         }
     }
     if (tid < 1) {
         unsigned int otherid = tid + 1;
-        if (results[tid] > results[otherid]) {
-            results[tid] = results[otherid];
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            result = results[tid] = otherResults;
             minid[tid] = minid[otherid];
         }
     }
 
     // Store the best code and data in the member's global data.
-    if (tid == minid[0])
-        newResults->InitMemberResult(data, code, member, variation, result, dataAge, codeAge);
+    unsigned int id = minid[0];
+    if (tid == id)
+        newResults->InitMemberResult(data, code, member, variation, result, dataAge | (id << 8), codeAge);
 } // Evolver
 #else
 GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
