@@ -50,7 +50,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     FireStarterCode code;
     FireStarterData data;
     unsigned short codeAge = oldResults->CodeAge(member, variation);
-    unsigned short dataAge = oldResults->DataAge(member, variation) & 0xFF;
+    unsigned short dataAge = oldResults->DataAge(member, variation);
     float result, memberResult;
     float evolutionScale;
 
@@ -72,6 +72,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         data.Copy(oldResults->Data(member, variation));
         float oldResult = oldResults->MinResult(member, variation);
 
+#if 0
         if (dataAge > 10) {
             // Randomize a single instruction.
             evolutionScale = FIRESTARTER_START_SCALE;
@@ -87,7 +88,9 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
             }
             dataAge = 0;
             codeAge++;
-        } else if (dataAge > 1) {
+        } else
+#endif
+        if (dataAge > 1) {
             evolutionScale = FIRESTARTER_START_SCALE;
             memberResult = FIRESTARTER_START_RESULT;
             unsigned int d = RANDOMMOD(dataSeed, registers);
@@ -98,6 +101,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
             if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
                 data[d] = oldData;
                 result = memberResult = oldResult;
+                evolutionScale = FIRESTARTER_SCALE * memberResult;
             }
             dataAge++;
         } else {
@@ -117,7 +121,6 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         else
             data[d] = oldData;
     }
-    result += 1.0e-10f * RANDOMFACTOR(dataSeed);
 
     // Reduction to find the minimum result among the 32 block threads.
     GPU_SHARED float results[WARP_THREADS];
@@ -168,7 +171,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     // Store the best code and data in the member's global data.
     unsigned int id = minid[0];
     if (tid == id)
-        newResults->InitMemberResult(data, code, member, variation, result, dataAge | (id << 8), codeAge);
+        newResults->InitMemberResult(data, code, member, variation, result, dataAge, codeAge);
 } // Evolver
 #else
 GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)

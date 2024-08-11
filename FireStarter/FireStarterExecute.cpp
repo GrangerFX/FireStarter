@@ -127,7 +127,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    unsigned int warpThreadCount[WARP_THREADS] = {0};
     float variationMax = 0.0f;
     bool validResult = false;
     for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
@@ -139,13 +138,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
                 minResult = curResult;
                 minIndex = i;
             }
-            unsigned short dataAge = *m_hostPopulation->DataAge(i, variation);
-            unsigned short warpThread = dataAge >> 8;
-            if (warpThread < WARP_THREADS)
-                warpThreadCount[warpThread]++;
-            else {
-                int foo = 1;
-            }
         }
         FireStarterResult* result = state.Result(variation);
         memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex, variation), FireStarterData::DataSize(settings.m_registers));
@@ -154,8 +146,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         *result->CodeAge() = *m_hostPopulation->CodeAge(settings, minIndex, variation);
         *result->MinResult() = minResult;
     }
-    for (int i = 0; i < WARP_THREADS; i++)
-        printf("Warp thread: %d  Count: %d\n", i, warpThreadCount[i]);
 
     // Set the state's max result.
     state.m_maxResult = state.MaxResult();
