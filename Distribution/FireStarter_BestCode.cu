@@ -4,8 +4,8 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 08/10/24 16:19:40 Pacific Daylight Time
-// Run duration = 19.309566 seconds
+// Run date: 08/11/24 10:28:09 Pacific Daylight Time
+// Run duration = 150.254578 seconds
 // Run generation = 0
 // Run evolution = 0
 // Run max result = 0.24318017
@@ -220,10 +220,11 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
 
         if (dataAge > 10) {
             // Randomize a single instruction.
+            evolutionScale = FIRESTARTER_START_SCALE;
+            memberResult = FIRESTARTER_START_RESULT;
             unsigned int c = RANDOMMOD(codeSeed, FIRESTARTER_INSTRUCTIONS);
             FireStarterCodeInstruction oldCode = code[c];
             code.RandomInstruction(codeSeed, c);
-            memberResult = FIRESTARTER_START_RESULT;
             for (int i = 0; i < 10; i++) {
                 data.Init(dataSeed, evolutionScale);
                 result = memberResult;
@@ -234,11 +235,12 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
             codeAge++;
         } else if (dataAge > 1) {
             evolutionScale = FIRESTARTER_START_SCALE;
+            memberResult = FIRESTARTER_START_RESULT;
             unsigned int d = RANDOMMOD(dataSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
 
-            result = memberResult = FIRESTARTER_START_RESULT;
+            result = memberResult;
             if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
                 data[d] = oldData;
                 result = memberResult = oldResult;
