@@ -28,6 +28,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     // Determine the member to be optimized.
     unsigned int tid = threadIdx.x;
     unsigned int member = blockIdx.x;
+    unsigned int dataIndex = member * blockDim.x + tid;
     if (member >= FIRESTARTER_POPULATION)
         return;
 
@@ -44,8 +45,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long codeSeed = evolutionSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/thread block
-    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(member * WARP_THREADS + tid); // Unique seed for the generation/variation/member
+    unsigned long long codeSeed = evolutionSeed + SEED0(variation) + SEED1(member);      // Unique seed for the generation/variation/member
+    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
     FireStarterCode code;
     FireStarterData data;
     unsigned short codeAge = oldResults->CodeAge(member, variation);
@@ -124,7 +125,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         unsigned int otherid = tid + 16;
         float otherResults = results[otherid];
         if (result > otherResults) {
-            result = results[tid] = otherResults;
+            results[tid] = result = otherResults;
             minid[tid] = minid[otherid];
         }
     }
@@ -132,7 +133,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         unsigned int otherid = tid + 8;
         float otherResults = results[otherid];
         if (result > otherResults) {
-            result = results[tid] = otherResults;
+            results[tid] = result = otherResults;
             minid[tid] = minid[otherid];
         }
     }
@@ -140,7 +141,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         unsigned int otherid = tid + 4;
         float otherResults = results[otherid];
         if (result > otherResults) {
-            result = results[tid] = otherResults;
+            results[tid] = result = otherResults;
             minid[tid] = minid[otherid];
         }
     }
@@ -148,7 +149,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         unsigned int otherid = tid + 2;
         float otherResults = results[otherid];
         if (result > otherResults) {
-            result = results[tid] = otherResults;
+            results[tid] = result = otherResults;
             minid[tid] = minid[otherid];
         }
     }
@@ -156,7 +157,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         unsigned int otherid = tid + 1;
         float otherResults = results[otherid];
         if (result > otherResults) {
-            result = results[tid] = otherResults;
+            results[tid] = result = otherResults;
             minid[tid] = minid[otherid];
         }
     }

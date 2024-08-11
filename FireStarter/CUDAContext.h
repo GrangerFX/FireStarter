@@ -81,7 +81,7 @@ public:
         checkCUDAErrors(cuCtxPopCurrent(&oldContext));
     } // PopContext
 
-    inline CUDAContext(size_t device = 0)
+    inline CUDAContext(int device = 0)
     {
         // Initialize CUDA only once per process.
         Initialize();
@@ -91,9 +91,28 @@ public:
         checkCUDAErrors(cuDeviceGetCount(&count));
         if (count > 0)
             device %= count;
-        checkCUDAErrors(cuDeviceGet(&m_device, (int)device));
+
+        // Create a context and stream on the device.
+        checkCUDAErrors(cuDeviceGet(&m_device, device));
         checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_AUTO, m_device));
         checkCUDAErrors(cudaStreamCreate(&m_stream));
+
+#if 0
+        // Get some information about the device.
+        // A block is the kernal threads that run together the size as specified when the kernal is launched.
+        // Note: My original idea was to find out how many kernel threads or warps I should send to the GPU in order to keep it fully loaded.
+        // This actually makes no sense since the number of active threads being executed per SM is based on the registers and shared memory
+        // they use up to the maximum per multiprocessor and/or block. These are then executed until they are all complete but not necessarilly
+        // at the same time. Use the CUDA occupancy API to determine the number of kernel threads can run on a SM.
+        cudaDeviceProp deviceProperties;
+        checkCUDAErrors(cudaGetDeviceProperties(&deviceProperties, m_device));
+        int multiProcessorCount = deviceProperties.multiProcessorCount;                   // Number of multiprocessors on device: 128 (matches online documentation for the RTX 4090)
+        int maxBlocksPerMultiProcessor = deviceProperties.maxBlocksPerMultiProcessor;     // Maximum number of resident blocks per multiprocessor: 24
+        int maxThreadsPerMultiProcessor = deviceProperties.maxThreadsPerMultiProcessor;   // Maximum resident threads per multiprocessor: 1536
+        int maxThreadsPerBlock = deviceProperties.maxThreadsPerBlock;                     // Maximum number of threads per block: 1024
+        int warpSize = deviceProperties.warpSize;                                         // Warp size in threads: 32
+        // Missing: Warps per SM: 64 for all current CUDA GPUs accourding to online documentation.
+#endif
     } // CUDAContext
 
     inline ~CUDAContext(void)
