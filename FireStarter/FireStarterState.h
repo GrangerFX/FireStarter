@@ -165,7 +165,7 @@ public:
         return m_seed;
     } // InitGenerationSeed
 
-    unsigned long long RootSeed(unsigned long long seed)
+    unsigned long long RootSeed(unsigned int seed)
     {
         m_program.m_settings.m_evolveSeed = seed;
         return InitGenerationSeed();

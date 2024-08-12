@@ -145,6 +145,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         *result->DataAge() = *m_hostPopulation->DataAge(settings, minIndex, variation);
         *result->CodeAge() = *m_hostPopulation->CodeAge(settings, minIndex, variation);
         *result->MinResult() = minResult;
+        printf("minResult: %f  minIndex: %d  dataAge: %d  dataSeed: %d\n", minResult, minIndex, *result->DataAge(), *result->CodeAge());
     }
 
     // Set the state's max result.
@@ -381,7 +382,7 @@ void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& state, bool sync)
     }, sync);
 } // ExecuteEvolveGPU
 
-void FireStarterExecute::ExecuteEvolveCPU(std::atomic<long long>& evolveCount, bool sync)
+void FireStarterExecute::ExecuteEvolveCPU(std::atomic<unsigned int>& evolveCount, bool sync)
 {
     Dispatch([this, &evolveCount] {
         while (evolveCount-- > 0) {

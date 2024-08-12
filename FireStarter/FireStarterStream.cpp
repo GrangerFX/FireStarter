@@ -110,7 +110,7 @@ void FireStarterStream::Optimize(const FireStarterWindow& window, const FireStar
     stream.OptimizeState(evolveState);
 } // Optimize
 
-void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync)
+void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
         FireStarterSettings randomSettings(m_streamSettings);
@@ -132,9 +132,9 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Loop until the the completion condition or the host program is quit.
-        size_t tests = MAX(randomSettings.m_tests, 1);
-        size_t randomTests = randomSettings.m_states * tests;
-        for (unsigned long long test = testCount++; (test < randomTests) && !WillTerminate(); test = testCount++) {
+        unsigned int tests = MAX(randomSettings.m_tests, 1);
+        unsigned int randomTests = randomSettings.m_states * tests;
+        for (unsigned int test = testCount++; (test < randomTests) && !WillTerminate(); test = testCount++) {
             // Setup the intial state
             FireStarterSettings evolveSettings(randomSettings);
             evolveSettings.m_evolveSeed = randomSettings.m_evolveSeed + test / tests;
@@ -184,7 +184,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
     }, sync);
 } // RandomStream
 
-void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync)
+void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
@@ -332,7 +332,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
     }, sync);
 } // EvolveCPUStream
 
-void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync)
+void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
@@ -354,8 +354,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Loop until the the evolve completion condition or the host program is quit.
-        unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
-        for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
+        unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
+        for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             // Reset the timer if there is only one stream.
             if (evolveSettings.m_streams == 1)
                 streamTimer.Start();

@@ -31,7 +31,7 @@ public:
     void ExecuteInitPopulation(bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, bool sync = false);
     void ExecuteEvolveGPU(FireStarterState& state, bool sync = false);
-    void ExecuteEvolveCPU(std::atomic<long long>& evolveCount, bool sync = false);
+    void ExecuteEvolveCPU(std::atomic<unsigned int>& evolveCount, bool sync = false);
     void ExecuteEvolveCPU(bool sync = false);
     void ExecuteFinish(bool sync = true);
     FireStarterExecute(FireStarterManager* manager, size_t index = 0);

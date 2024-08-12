@@ -56,10 +56,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
 
     // The first generation is initalized with random numbers.
     if (!evolutionPass || (codeAge > 10)) {
-        codeAge = 0;
-        dataAge = 0;
-        evolutionScale = FIRESTARTER_START_SCALE;
         memberResult = FIRESTARTER_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
             code.Init(codeSeed);
             data.Init(dataSeed, evolutionScale);
@@ -67,46 +65,45 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
             if (TestEvaluate(sharedData, data, code, target, theta, result))
                 break;
         }
+        memberResult = result;
+        codeAge = 0;
+        dataAge = 0;
     } else {
         code.Copy(oldResults->Code(member, variation));
         data.Copy(oldResults->Data(member, variation));
-        float oldResult = oldResults->MinResult(member, variation);
+        memberResult = oldResults->MinResult(member, variation);
+        evolutionScale = FIRESTARTER_SCALE * memberResult;
+        result = memberResult;
 
-#if 0
-        if (dataAge > 10) {
+        if (dataAge > 2) {
             // Randomize a single instruction.
-            evolutionScale = FIRESTARTER_START_SCALE;
-            memberResult = FIRESTARTER_START_RESULT;
             unsigned int c = RANDOMMOD(codeSeed, FIRESTARTER_INSTRUCTIONS);
             FireStarterCodeInstruction oldCode = code[c];
             code.RandomInstruction(codeSeed, c);
-            for (int i = 0; i < 10; i++) {
-                data.Init(dataSeed, evolutionScale);
-                result = memberResult;
-                if (TestEvaluate(sharedData, data, code, target, theta, result))
-                    break;
-            }
-            dataAge = 0;
-            codeAge++;
-        } else
-#endif
-        if (dataAge > 1) {
-            evolutionScale = FIRESTARTER_START_SCALE;
-            memberResult = FIRESTARTER_START_RESULT;
             unsigned int d = RANDOMMOD(dataSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
-
+            for (int i = 0; i < 10; i++) {
+                data.Init(dataSeed, evolutionScale);
+                result = memberResult;
+                if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
+                    code[c] = oldCode;
+                    data[d] = oldData;
+                    result = memberResult;
+                } else {
+                    dataAge = 0;
+                    break;
+                }
+            }
+        } else if (dataAge > 0) {
+            unsigned int d = RANDOMMOD(dataSeed, registers);
+            float oldData = data[d];
+            data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
             result = memberResult;
             if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
                 data[d] = oldData;
-                result = memberResult = oldResult;
-                evolutionScale = FIRESTARTER_SCALE * memberResult;
+                result = memberResult;
             }
-            dataAge++;
-        } else {
-            result = memberResult = oldResult;
-            evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
 
@@ -170,8 +167,16 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
 
     // Store the best code and data in the member's global data.
     unsigned int id = minid[0];
-    if (tid == id)
+    if (tid == id) {
+        if (result > memberResult) {
+            code.Copy(oldResults->Code(member, variation));
+            data.Copy(oldResults->Data(member, variation));
+            result = memberResult;
+        }
+        dataAge++;
+        codeAge++;
         newResults->InitMemberResult(data, code, member, variation, result, dataAge, codeAge);
+    }
 } // Evolver
 #else
 GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)

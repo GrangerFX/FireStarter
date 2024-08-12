@@ -15,9 +15,9 @@ private:
 
 public:
 	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings);
-	void RandomStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
-	void EvolveCPUStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
-	void EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned long long>& testCount, bool sync = false);
+	void RandomStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
+	void EvolveCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
+	void EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
 	FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
 	~FireStarterStream(void);
 }; // class FireStarterStream
@@ -28,7 +28,7 @@ private:
 	FireStarterSettings m_streamSettings;
 	FireStarterSettings m_optimizeSettings;
 	FireStarterServer* m_server;
-	std::atomic<unsigned long long> m_testCount;
+	std::atomic<unsigned int> m_testCount;
 
 public:
 	bool SynchronizeStreams(std::vector<FireStarterStream*>& streams);

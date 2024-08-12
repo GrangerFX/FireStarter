@@ -122,8 +122,8 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("evolveTarget = %ff", settings.m_evolveTarget) + postfix + "\r\n";
     code += "\r\n";
     code += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
-    code += prefix + Format("evolveSeed = %llu", settings.m_evolveSeed) + postfix + "\r\n";
-    code += prefix + Format("optimizeSeed = %llu", settings.m_optimizeSeed) + postfix + "\r\n";
+    code += prefix + Format("evolveSeed = %u", settings.m_evolveSeed) + postfix + "\r\n";
+    code += prefix + Format("optimizeSeed = %u", settings.m_optimizeSeed) + postfix + "\r\n";
     code += prefix + Format("tests = %u", settings.m_tests) + postfix + "\r\n";
     code += prefix + Format("streams = %u", settings.m_streams) + postfix + "\r\n";
     code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";

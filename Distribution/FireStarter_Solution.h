@@ -1,9 +1,9 @@
-// Run date: 08/11/24 10:28:09 Pacific Daylight Time
-// Run duration = 151.365898 seconds
-// Run generation = 0
+// Run date: 08/11/24 15:41:52 Pacific Daylight Time
+// Run duration = 128.609999 seconds
+// Run generation = 73
 // Run evolution = 0
-// Run max result = 0.24318017
-// Run variations = 3
+// Run max result = 0.05148169
+// Run variations = 1
 // Run samples = 15
 // Run instructions = 32
 // Run registers = 30
@@ -22,7 +22,7 @@
 // Run units = 1
 // Run states = 1
 // Run generations = 0
-// Run population = 16384
+// Run population = 8704
 // Run iterations = 64
 // Run passes = 500
 // Run candidates = 16
@@ -33,7 +33,7 @@
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-#define SOLUTION_VARIATIONS 3
+#define SOLUTION_VARIATIONS 1
 
 #ifndef __CUDACC__
 #include <cmath>
@@ -58,12 +58,11 @@ inline float SolutionTarget(float n, unsigned int variation)
     }
 } // SolutionTarget
 
-// Solution0 result = 0.14785540
-inline float Solution0(float n)
+inline float Solution(float n)
 {
     float r0;
 
-    r0 = n *= 2.64110970f;
+    r0 = n *= -0.85264409f;
     n = r0 *= n;
     n = r0 *= n;
     n = r0 *= n;
@@ -96,97 +95,4 @@ inline float Solution0(float n)
     n = r0 *= n;
     n *= r0;
     return n;
-} // Solution0
-
-// Solution1 result = 0.14815712
-inline float Solution1(float n)
-{
-    float r0;
-
-    r0 = n *= 2.73543954f;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n *= r0;
-    return n;
-} // Solution1
-
-// Solution2 result = 0.24318017
-inline float Solution2(float n)
-{
-    float r0;
-
-    r0 = n *= -37.67422485f;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n *= r0;
-    return n;
-} // Solution2
-
-inline float Solution(float n, unsigned int variation)
-{
-    switch (variation) {
-    case 0:
-        return Solution0(n);
-    case 1:
-        return Solution1(n);
-    case 2:
-        return Solution2(n);
-    }
-    return 0.0f;
 } // Solution
