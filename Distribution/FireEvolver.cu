@@ -23,7 +23,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 } // TestEvaluate
 
 #if 1
-GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPopulation * oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
+GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPopulation * oldResults, const unsigned int variation, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
 {
     // Determine the member to be optimized.
     unsigned int tid = threadIdx.x;
@@ -77,36 +77,15 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
         evolutionScale = FIRESTARTER_SCALE * memberResult;
         result = memberResult;
 
-        if (dataAge > 2) {
-            // Randomize a single instruction.
-            unsigned int c = RANDOMMOD(codeSeed, FIRESTARTER_INSTRUCTIONS);
-            FireStarterCodeInstruction oldCode = code[c];
-            code.RandomInstruction(codeSeed, c);
-            unsigned int d = RANDOMMOD(dataSeed, registers);
-            float oldData = data[d];
-            data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
-            result = memberResult;
-            if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
-                code[c] = oldCode;
-                data[d] = oldData;
-                result = memberResult;
-            } else
-                dataAge = 0;
-        } else if (dataAge > 1) {
-            unsigned int d = RANDOMMOD(dataSeed, registers);
-            float oldData = data[d];
-            data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
-            result = 1.0e+6f;
-            if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
-                data[d] = oldData;
-                result = memberResult;
-            }
-        }
+        if (dataAge > 2)
+            code.RandomInstruction(codeSeed);
+        if (dataAge > 1)
+            data.RandomData(dataSeed, evolutionScale);
     }
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < FIRESTARTER_ITERATIONS; p++) {
-        unsigned int d = RANDOMMOD(dataSeed, registers);
+        unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(dataSeed);
         float curResult = result;
@@ -173,19 +152,19 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
             // If the result was worse, copy a result from among the previous generation's results.
             unsigned int bestCandidate = member;
 
-#if 0
-            // The genetic part of genetic programming and a major optimization:
-            // Copy the best data from among a random set of candidates.
-            for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
-                // Select evolving members with results better than the current result.
-                unsigned int candidate = RANDOMMOD(codeSeed, FIRESTARTER_POPULATION);
-                float candidateResult = oldResults->MinResult(candidate, variation);
-                if (candidateResult < result) {
-                    bestCandidate = candidate;
-                    result = candidateResult;
+            if (dataAge > 100) {
+                // The genetic part of genetic programming and a major optimization:
+                // Copy the best data from among a random set of candidates.
+                for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
+                    // Select evolving members with results better than the current result.
+                    unsigned int candidate = RANDOMMOD(codeSeed, FIRESTARTER_POPULATION);
+                    float candidateResult = oldResults->MinResult(candidate, variation);
+                    if (candidateResult < result) {
+                        bestCandidate = candidate;
+                        result = candidateResult;
+                    }
                 }
             }
-#endif
 
             // Switch to the selected member's data and results.
             code = *oldResults->Code(bestCandidate, variation);
@@ -199,7 +178,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     }
 } // Evolver
 #else
-GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
+GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
 {
     // Determine the member to be optimized.
     unsigned int tid = threadIdx.x;
@@ -256,7 +235,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             unsigned int c = RANDOMMOD(codeSeed, FIRESTARTER_INSTRUCTIONS);
             FireStarterCodeInstruction oldCode = code[c];
             code.RandomInstruction(codeSeed, c);
-            unsigned int d = RANDOMMOD(dataSeed, registers);
+            unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
             for (int i = 0; i < 10; i++) {
@@ -271,7 +250,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
                 }
             }
         } else if (dataAge > 0) {
-            unsigned int d = RANDOMMOD(dataSeed, registers);
+            unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
             result = memberResult;
@@ -284,7 +263,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < FIRESTARTER_ITERATIONS; p++) {
-        unsigned int d = RANDOMMOD(dataSeed, registers);
+        unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(dataSeed);
         float curResult = result;

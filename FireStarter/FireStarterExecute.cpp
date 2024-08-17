@@ -85,7 +85,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
 
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
-        unsigned int registers = state.m_program.m_uniqueRegisters;
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long evolutionSeed = state.EvolutionSeed(evolutionPass);
@@ -94,7 +93,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
             void* arr[] = { reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
                             reinterpret_cast<void*>(&variation),
-                            reinterpret_cast<void*>(&registers),
                             reinterpret_cast<void*>(&evolutionSeed),
                             reinterpret_cast<void*>(&evolutionPass)
             };
