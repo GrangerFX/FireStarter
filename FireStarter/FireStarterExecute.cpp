@@ -319,7 +319,7 @@ bool FireStarterExecute::ExecuteJob(void)
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
-        InitPopulation(state, true);
+        InitPopulation(state);
         ExecuteSmartPass(state);
         m_executeManager->AddComplete(job);
         return true;
@@ -343,6 +343,20 @@ void FireStarterExecute::ExecuteCompileEvolver(bool sync)
         }
      }, sync);
 } // ExecuteCompileEvolver
+
+void FireStarterExecute::ExecuteCompileOptimizer(bool sync)
+{
+    Dispatch([this] {
+        std::string program;
+        if (FireStarterSource::LoadSource(program, "FireEvolver.cu")) {
+            if (CUDACompile::CompileProgram(m_executeModule, program, "FireEvolver")) {
+                m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
+                if (!m_executeFunction)
+                    CUDACompile::ReleaseModule(m_executeModule);
+            }
+        }
+    }, sync);
+} // ExecuteCompileOptimizer
 
 void FireStarterExecute::ExecuteCompile(bool sync)
 {

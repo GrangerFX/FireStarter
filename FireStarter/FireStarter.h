@@ -11,8 +11,7 @@ private:
     FireStarterServer* m_server = nullptr;
 
     void ControlRandom(const FireStarterSettings& randomSettings);
-    void ControlEvolveCPU(const FireStarterSettings& evolveSettings);
-    void ControlEvolveGPU(const FireStarterSettings& evolveSettings);
+    void ControlEvolve(const FireStarterSettings& evolveSettings);
     void ControlOptimize(const FireStarterSettings& optimizeSettings);
     void ControlSolution(void);
     void ControlThread(void);

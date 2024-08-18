@@ -33,8 +33,7 @@ private:
 public:
 	bool SynchronizeStreams(std::vector<FireStarterStream*>& streams);
 	void RandomStreams(void);
-	void EvolveCPUStreams(void);
-	void EvolveGPUStreams(void);
+	void EvolveStreams(void);
 	FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings);
 	~FireStarterStreams(void);
 }; // class FireStarterStreams

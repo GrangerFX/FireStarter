@@ -237,7 +237,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                 evolve->EvolveStates(test, evolveSettings, allStates, testedInstructions, generation);
 
                 // Execute each state using one of the execution units.
-                std::atomic<long long> evolveCount = numStates;
+                std::atomic<unsigned int> evolveCount = numStates;
                 for (FireStarterExecute* execute : executionUnits)
                     execute->ExecuteEvolveCPU(evolveCount);
 
@@ -344,11 +344,17 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
 
-        // Create the execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager);
+        // Create the evolve execution unit.
+        FireStarterExecute* evolveExecute = new FireStarterExecute(manager);
+
+        // Create the evolve execution unit.
+        FireStarterExecute* evolveOptimize = new FireStarterExecute(manager);
 
         // Compile the evolve module.
-        execute->ExecuteCompileEvolver();
+        evolveExecute->ExecuteCompileEvolver();
+
+        // Compile the optimize module.
+        evolveOptimize->ExecuteCompileOptimizer();
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
@@ -371,7 +377,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             // Evolve the current test.
             while (!WillTerminate()) {
                 // Execute each state using one of the execution units.
-                execute->ExecuteEvolveGPU(evolveState, true);
+                evolveExecute->ExecuteEvolveGPU(evolveState);
 
                 // Gather and sort the results, update the UI and check for the completion condition.
                 if (complete->CompleteEvolveGPU(bestState, evolveState, true))
@@ -380,9 +386,12 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Age the best state.
                 bestState.m_age++;
                 m_streamBestState = bestState;
+                evolveState.m_generation++;
 
-                // Increment the generation.
-                if (++evolveState.m_generation == evolveSettings.m_generations)
+                if (!evolveSettings.m_generations) {
+                    if (evolveState.m_generation % 10 == 0) {
+                    }
+                } else if (evolveState.m_generation == evolveSettings.m_generations) // Increment the generation.
                     break;
             }
 
@@ -404,7 +413,10 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         delete complete;
 
         // Finish processing and terminate each unit.
-        delete execute;
+        delete evolveExecute;
+
+        // Finish processing and terminate each unit.
+        delete evolveOptimize;
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
@@ -465,7 +477,7 @@ void FireStarterStreams::RandomStreams(void)
     });
 } // RandomStreams
 
-void FireStarterStreams::EvolveCPUStreams(void)
+void FireStarterStreams::EvolveStreams(void)
 {
     // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
     // Initialize the streams.
@@ -482,7 +494,10 @@ void FireStarterStreams::EvolveCPUStreams(void)
         m_testCount = 0;
         FireStarterServer* server = MAX(numStreams, m_streamSettings.m_units) > 1 ? m_server : nullptr;
         for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream]->EvolveCPUStream(server, m_testCount);
+            if (m_streamSettings.m_mode == FIRESTARTER_EVOLVE_CPU)
+                streams[stream]->EvolveCPUStream(server, m_testCount);
+            else
+                streams[stream]->EvolveGPUStream(server, m_testCount);
 
         // Wait for all the streams to complete.
         bool streamsComplete;
@@ -500,44 +515,7 @@ void FireStarterStreams::EvolveCPUStreams(void)
         for (FireStarterStream* stream : streams)
             delete stream;
     });
-} // EvolveCPUStreams
-
-void FireStarterStreams::EvolveGPUStreams(void)
-{
-    // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
-    // Initialize the streams.
-    DispatchSync([this] {
-        size_t numStreams = MAX(MIN(m_streamSettings.m_streams, m_streamSettings.m_tests), 1);
-        FireStarterState bestState(m_streamSettings);
-
-        // Create the streams.
-        std::vector<FireStarterStream*> streams(numStreams, nullptr);
-        for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream] = new FireStarterStream(stream, m_window, bestState, m_streamSettings);
-
-        // Evolve the streams.
-        m_testCount = 0;
-        FireStarterServer* server = MAX(numStreams, m_streamSettings.m_units) > 1 ? m_server : nullptr;
-        for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream]->EvolveGPUStream(server, m_testCount);
-
-        // Wait for all the streams to complete.
-        bool streamsComplete;
-        do {
-            streamsComplete = true;
-            for (FireStarterStream* stream : streams)
-                if (stream->IsRunning()) {
-                    streamsComplete = false;
-                    break;
-                }
-            SleepFor(0.1);
-        } while (!(WillTerminate() || streamsComplete));
-
-        // Terminate and delete each stream unit.
-        for (FireStarterStream* stream : streams)
-            delete stream;
-        });
-} // EvolveGPUStreams
+} // EvolveStreams
 
 FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings) : m_window(window), m_server(server), m_streamSettings(streamSettings), m_testCount(0)
 {

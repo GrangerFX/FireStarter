@@ -27,10 +27,12 @@ private:
 
 public:
     void ExecuteCompileEvolver(bool sync = false);
+    void ExecuteCompileOptimizer(bool sync = false);
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, bool sync = false);
     void ExecuteEvolveGPU(FireStarterState& state, bool sync = false);
+    void ExecuteOptimizeGPU(FireStarterState& state, bool sync = false);
     void ExecuteEvolveCPU(std::atomic<unsigned int>& evolveCount, bool sync = false);
     void ExecuteEvolveCPU(bool sync = false);
     void ExecuteFinish(bool sync = true);

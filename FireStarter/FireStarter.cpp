@@ -14,17 +14,11 @@ void FireStarter::ControlRandom(const FireStarterSettings& randomSettings)
     streams.RandomStreams();
 } // ControlRandom
 
-void FireStarter::ControlEvolveCPU(const FireStarterSettings& evolveSettings)
+void FireStarter::ControlEvolve(const FireStarterSettings& evolveSettings)
 {
     FireStarterStreams streams(m_window, m_server, evolveSettings);
-    streams.EvolveCPUStreams();
-} // ControlEvolveCPU
-
-void FireStarter::ControlEvolveGPU(const FireStarterSettings& evolveSettings)
-{
-    FireStarterStreams streams(m_window, m_server, evolveSettings);
-    streams.EvolveGPUStreams();
-} // ControlEvolveGPU
+    streams.EvolveStreams();
+} // ControlEvolve
 
 void FireStarter::ControlOptimize(const FireStarterSettings& optimizeSettings)
 {
@@ -53,12 +47,8 @@ void FireStarter::ControlThread(void)
                 ControlRandom(controlSettings);
                 break;
             case FIRESTARTER_EVOLVE_CPU:
-                // CPU evolve generations.
-                ControlEvolveCPU(controlSettings);
-                break;
             case FIRESTARTER_EVOLVE_GPU:
-                // GPU evolve generations.
-                ControlEvolveGPU(controlSettings);
+                ControlEvolve(controlSettings);
                 break;
             case FIRESTARTER_OPTIMIZE:
                 ControlOptimize(controlSettings);
