@@ -129,8 +129,11 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     bool validResult = false;
     for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
         float minResult = settings.m_startResult;
+        unsigned int maxAge = 0;
         unsigned int minIndex = 0;
         for (unsigned int i = 0; i < settings.m_population; i++) {
+            unsigned int curAge = *m_hostPopulation->DataAge(settings, i, variation);
+            maxAge = MAX(curAge, maxAge);
             float curResult = *m_hostPopulation->MinResult(settings, i, variation);
             if (curResult <= minResult) {
                 minResult = curResult;
@@ -143,7 +146,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         *result->DataAge() = *m_hostPopulation->DataAge(settings, minIndex, variation);
         *result->CodeAge() = *m_hostPopulation->CodeAge(settings, minIndex, variation);
         *result->MinResult() = minResult;
-        printf("minResult: %f  minIndex: %d  dataAge: %d  dataSeed: %d\n", minResult, minIndex, *result->DataAge(), *result->CodeAge());
+        printf("minResult: %f  minIndex: %d  dataAge: %d  codeAge: %d  maxAge: %u\n", minResult, minIndex, *result->DataAge(), *result->CodeAge(), maxAge);
     }
 
     // Set the state's max result.

@@ -49,13 +49,13 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
     FireStarterCode code;
     FireStarterData data;
-    unsigned short codeAge;
-    unsigned short dataAge;
+    unsigned short codeAge = evolutionPass ? oldResults->CodeAge(member, variation) : 0;
+    unsigned short dataAge = evolutionPass ? oldResults->DataAge(member, variation) : 0;
     float result, memberResult;
     float evolutionScale;
 
     // The first generation is initalized with random numbers.
-    if (!evolutionPass) {
+    if (!evolutionPass || (dataAge >= 1000)) {
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
@@ -71,15 +71,13 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
     } else {
         code.Copy(oldResults->Code(member, variation));
         data.Copy(oldResults->Data(member, variation));
-        codeAge = oldResults->CodeAge(member, variation);
-        dataAge = oldResults->DataAge(member, variation);
         memberResult = oldResults->MinResult(member, variation);
         evolutionScale = FIRESTARTER_SCALE * memberResult;
         result = memberResult;
-
-        if (dataAge > 2)
+        
+        if (dataAge > 8)
             code.RandomInstruction(codeSeed);
-        if (dataAge > 1)
+        if (dataAge > 0)
             data.RandomData(dataSeed, evolutionScale);
     }
 
@@ -152,6 +150,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
             // If the result was worse, copy a result from among the previous generation's results.
             unsigned int bestCandidate = member;
 
+#if 0
             if (dataAge > 100) {
                 // The genetic part of genetic programming and a major optimization:
                 // Copy the best data from among a random set of candidates.
@@ -165,6 +164,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation * newResults, const FireStarterPop
                     }
                 }
             }
+#endif
 
             // Switch to the selected member's data and results.
             code = *oldResults->Code(bestCandidate, variation);
