@@ -4,12 +4,12 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 08/18/24 14:23:27 Pacific Daylight Time
-// Run duration = 185.282526 seconds
-// Run generation = 23
-// Run evolution = 2
-// Run max result = 0.00013721
-// Run variations = 3
+// Run date: 08/18/24 15:30:35 Pacific Daylight Time
+// Run duration = 25.157060 seconds
+// Run generation = 9
+// Run evolution = 0
+// Run max result = 0.00014800
+// Run variations = 1
 // Run samples = 15
 // Run instructions = 32
 // Run registers = 30
@@ -20,15 +20,15 @@
 // Run targetMax = 6.283185f
 // Run evolveTarget = 0.000001f
 
-// Run mode = FIRESTARTER_EVOLVE_CPU
+// Run mode = FIRESTARTER_EVOLVE_GPU
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
 // Run tests = 0
 // Run streams = 1
-// Run units = 8
-// Run states = 16
+// Run units = 1
+// Run states = 1
 // Run generations = 0
-// Run population = 278528
+// Run population = 8704
 // Run iterations = 64
 // Run passes = 500
 // Run candidates = 16
@@ -39,165 +39,52 @@
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-// Variation: 0  result = 0.00012368
+// Variation: 0  result = 0.00014800
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -1.587208f;
-    data->d[1] = 0.959151f;
-    data->d[2] = -1.397658f;
-    data->d[3] = -0.527249f;
-    data->d[4] = 0.061311f;
-    data->d[5] = 3.285598f;
-    data->d[6] = 0.079792f;
-    data->d[7] = -0.528583f;
-    data->d[8] = -1.850002f;
-    data->d[9] = 0.992064f;
-    data->d[10] = 1.573103f;
-    data->d[11] = -0.435247f;
-    data->d[12] = -0.302260f;
-    data->d[13] = -2.054968f;
-    data->d[14] = -0.770543f;
-    data->d[15] = -3.889101f;
-    data->d[16] = -2.501133f;
-    data->d[17] = 1.940964f;
-    data->d[18] = -0.293516f;
-    data->d[19] = 0.980549f;
-    data->d[20] = 1.895974f;
-    data->d[21] = 0.409362f;
-    data->d[22] = 1.083789f;
-    data->d[23] = -0.361300f;
-    data->d[24] = 0.013490f;
-    data->d[25] = -1.091742f;
-    data->d[26] = 0.362847f;
-    data->d[27] = -0.129600f;
-    data->d[28] = -1.239005f;
-    data->d[29] = -1.948304f;
-    *(result->MinResult()) = 0.000124f;
+    data->d[0] = 0.337040f;
+    data->d[1] = 0.472527f;
+    data->d[2] = 1.119441f;
+    data->d[3] = -4.697212f;
+    data->d[4] = 1.207235f;
+    data->d[5] = -0.252717f;
+    data->d[6] = -1.275947f;
+    data->d[7] = -1.634838f;
+    data->d[8] = -0.231349f;
+    data->d[9] = 4.882760f;
+    data->d[10] = -2.608283f;
+    data->d[11] = -1.236819f;
+    data->d[12] = -1.282930f;
+    data->d[13] = 3.593806f;
+    data->d[14] = 0.710142f;
+    data->d[15] = -0.566604f;
+    data->d[16] = -1.468724f;
+    data->d[17] = -1.614138f;
+    data->d[18] = 0.747893f;
+    data->d[19] = 0.232667f;
+    data->d[20] = 1.225822f;
+    data->d[21] = 0.829399f;
+    data->d[22] = 0.744272f;
+    data->d[23] = -2.119268f;
+    data->d[24] = 0.570485f;
+    data->d[25] = -0.754734f;
+    data->d[26] = 0.036160f;
+    data->d[27] = -2.584810f;
+    data->d[28] = -0.874803f;
+    data->d[29] = 0.219512f;
+    *(result->MinResult()) = 0.000148f;
 } // LoadVariation0
 
-// Variation: 1  result = 0.00013721
-inline void LoadVariation1(FireStarterResult* result)
-{
-    FireStarterData *data = result->Data();
-    data->d[0] = 1.830689f;
-    data->d[1] = 1.466241f;
-    data->d[2] = 0.736789f;
-    data->d[3] = 1.254193f;
-    data->d[4] = -0.007369f;
-    data->d[5] = -0.904294f;
-    data->d[6] = 0.966612f;
-    data->d[7] = 1.243192f;
-    data->d[8] = 0.272121f;
-    data->d[9] = -0.923096f;
-    data->d[10] = -0.237722f;
-    data->d[11] = 1.384040f;
-    data->d[12] = -0.368652f;
-    data->d[13] = -1.940892f;
-    data->d[14] = -0.358989f;
-    data->d[15] = 2.055519f;
-    data->d[16] = 1.785768f;
-    data->d[17] = -0.893322f;
-    data->d[18] = 0.520370f;
-    data->d[19] = 0.230443f;
-    data->d[20] = -0.608199f;
-    data->d[21] = 1.215314f;
-    data->d[22] = 0.316579f;
-    data->d[23] = -0.621942f;
-    data->d[24] = -0.093548f;
-    data->d[25] = -1.845713f;
-    data->d[26] = 1.017520f;
-    data->d[27] = -0.325811f;
-    data->d[28] = 1.018253f;
-    data->d[29] = 0.484387f;
-    *(result->MinResult()) = 0.000137f;
-} // LoadVariation1
-
-// Variation: 2  result = 0.00008881
-inline void LoadVariation2(FireStarterResult* result)
-{
-    FireStarterData *data = result->Data();
-    data->d[0] = -1.444683f;
-    data->d[1] = -1.045798f;
-    data->d[2] = 1.042027f;
-    data->d[3] = -1.485755f;
-    data->d[4] = -0.085410f;
-    data->d[5] = -0.353994f;
-    data->d[6] = 0.191721f;
-    data->d[7] = 1.868685f;
-    data->d[8] = -1.502195f;
-    data->d[9] = -1.429589f;
-    data->d[10] = -0.785912f;
-    data->d[11] = -0.707527f;
-    data->d[12] = -1.714065f;
-    data->d[13] = -0.830970f;
-    data->d[14] = 0.208852f;
-    data->d[15] = 6.286856f;
-    data->d[16] = 1.049752f;
-    data->d[17] = -0.195408f;
-    data->d[18] = 1.645019f;
-    data->d[19] = 1.327171f;
-    data->d[20] = 1.980988f;
-    data->d[21] = 0.792027f;
-    data->d[22] = 0.866539f;
-    data->d[23] = 0.829305f;
-    data->d[24] = -0.362458f;
-    data->d[25] = -0.985325f;
-    data->d[26] = -0.055143f;
-    data->d[27] = 0.158290f;
-    data->d[28] = 0.165456f;
-    data->d[29] = 1.345012f;
-    *(result->MinResult()) = 0.000089f;
-} // LoadVariation2
-
 // END //
 
-inline float Evaluate(const FireStarterData& testData, float n)
-{
-    FireStarterData data = testData;
-// EVALUATE //
-    n += data[0];
-    n = data[1] *= n;
-    n *= data[2];
-    n = data[3] *= n;
-    n = data[4] *= n;
-    n = data[5] += n;
-    n = data[6] *= n;
-    n = data[7] += n;
-    n = data[8] += n;
-    n = data[9] *= n;
-    n = data[10] += n;
-    n = data[1] *= n;
-    n *= data[4];
-    n *= data[11];
-    n = data[12] += n;
-    n = data[13] *= n;
-    n *= data[5];
-    n *= data[14];
-    n += data[15];
-    n *= data[6];
-    n *= data[12];
-    n *= data[9];
-    n = data[10] += n;
-    n *= data[1];
-    n *= data[13];
-    n *= data[8];
-    n *= data[10];
-    n *= data[3];
-    n += data[16];
-    n *= data[17];
-    n *= data[7];
-    n += data[18];
-// END //
-    return n;
-} // Evaluate
-
-inline bool TestEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
+inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-        float n = fabsf(Evaluate(data, theta[i]) - target[i]);
+        sharedData = data;
+        float n = fabsf(code.Evaluate(sharedData,theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
             return false;
@@ -207,12 +94,17 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     return true;
 } // TestEvaluate
 
-GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long optimizationSeed, const unsigned long long optimizationPass)
+GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int codeMember, const unsigned long long optimizeSeed, const unsigned long long optimizePass)
 {
     // Determine the member to be optimized.
-    unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
+    unsigned int tid = threadIdx.x;
+    unsigned int member = blockIdx.x;
+    unsigned int dataIndex = blockIdx.x * blockDim.x + threadIdx.x;
     if (member >= FIRESTARTER_POPULATION)
         return;
+
+    // The shared data for the threads in the warp.
+    GPU_SHARED FireStarterSharedData sharedData;
 
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_SAMPLES];
@@ -224,88 +116,440 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long seed = optimizationSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/member
+    unsigned long long dataSeed = optimizeSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
+    FireStarterCode code;
     FireStarterData data;
-    unsigned short dataAge;
+    unsigned short dataAge = optimizePass ? oldResults->DataAge(member, variation) : 0;
     float result, memberResult;
     float evolutionScale;
 
     // The first generation is initalized with random numbers.
-    if (!optimizationPass) {
-        evolutionScale = FIRESTARTER_START_SCALE;
-        dataAge = 0;
+    if (!optimizePass || (dataAge >= 1000)) {
         memberResult = FIRESTARTER_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
-            data.Init(seed, evolutionScale);
-            result = memberResult;
-            if (TestEvaluate(data, target, theta, result))
+            data.Init(dataSeed, evolutionScale);
+            result = FIRESTARTER_START_RESULT;
+            if (TestEvaluate(sharedData, data, code, target, theta, result))
                 break;
         }
+        memberResult = result;
+        dataAge = 0;
     } else {
-        // Later generations randomize a single register if they were copied.
+        code.Copy(oldResults->Code(codeMember, variation));
         data.Copy(oldResults->Data(member, variation));
-        dataAge = oldResults->DataAge(member, variation);
-        if (dataAge > 1) {
-            // Randomize a single register.
-            evolutionScale = FIRESTARTER_START_SCALE;
-            unsigned int d = RANDOMMOD(seed, registers);
-            float oldData = data[d];
-            data[d] = oldData + RANDOMFACTOR(seed) * evolutionScale * (dataAge - 1);
-            memberResult = FIRESTARTER_START_RESULT;
-            result = 1.0e+6f;
-            if (!TestEvaluate(data, target, theta, result)) {
-                data[d] = oldData;
-                result = memberResult = oldResults->MinResult(member, variation);
-            }
-        } else {
-            result = memberResult = oldResults->MinResult(member, variation);
-            evolutionScale = FIRESTARTER_SCALE * memberResult;
-        }
+        memberResult = oldResults->MinResult(member, variation);
+        evolutionScale = FIRESTARTER_SCALE * memberResult;
+        result = memberResult;
+
+        if (dataAge > 0)
+            data.RandomData(dataSeed, evolutionScale);
     }
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < FIRESTARTER_ITERATIONS; p++) {
-        unsigned int d = RANDOMMOD(seed, registers);
+        unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
         float oldData = data[d];
-        data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
-        float curResult = result * 0.99f;
-        if (TestEvaluate(data, target, theta, curResult) && (curResult <= result))
+        data[d] = oldData + evolutionScale * RANDOMFACTOR(dataSeed);
+        float curResult = result;
+        if (TestEvaluate(sharedData, data, code, target, theta, curResult))
             result = curResult;
         else
             data[d] = oldData;
     }
 
-    // Save the results if they improved or switch to another member's old results.
-    unsigned short age;
-    if (!optimizationPass || (result < memberResult)) {
-        // If the result was better, save the results.
-        age = 0;
-    } else {
-        // If the result was worse, copy a result from among the previous generation's results.
-        unsigned int bestCandidate = member;
-
-        // The genetic part of genetic programming and a major optimization:
-        // Copy the best data from among a random set of candidates.
-        for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
-            // Select evolving members with results better than the current result.
-            unsigned int candidate = RANDOMMOD(seed, FIRESTARTER_POPULATION);
-            unsigned short candidateAge = oldResults->DataAge(candidate, variation);
-            if (candidateAge <= 1) {
-                float candidateResult = oldResults->MinResult(candidate, variation);
-                if (candidateResult <= result) {
-                    bestCandidate = candidate;
-                    result = candidateResult;
-                }
-            }
-        }
-
-        // Switch to the selected member's data and results.
-        age = 1;
-        if (bestCandidate != member) {
-            age += MAX(dataAge, 1);
-            data = *oldResults->Data(bestCandidate, variation);
+    // Reduction to find the minimum result among the 32 block threads.
+    GPU_SHARED float results[WARP_THREADS];
+    GPU_SHARED unsigned int minid[WARP_THREADS];
+    results[tid] = result;
+    minid[tid] = tid;
+    if (tid < 16) {
+        unsigned int otherid = tid + 16;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
         }
     }
-    newResults->InitMemberResult(data, member, variation, result, age);
+    if (tid < 8) {
+        unsigned int otherid = tid + 8;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 4) {
+        unsigned int otherid = tid + 4;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 2) {
+        unsigned int otherid = tid + 2;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 1) {
+        unsigned int otherid = tid + 1;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+
+    // Store the best code and data in the member's global data.
+    unsigned int id = minid[0];
+    if (tid == id) {
+        // Save the results if they improved or switch to another member's old results.
+        if (!optimizePass || (result < memberResult)) {
+            // If the result was better, save the results.
+            dataAge = 0;
+        }
+        else {
+            // If the result was worse, copy a result from among the previous generation's results.
+            unsigned int bestCandidate = member;
+
+#if 1
+            if (dataAge > 500) {
+                // The genetic part of genetic programming and a major optimization:
+                // Copy the best data from among a random set of candidates.
+                float bestResult = result;
+                for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
+                    // Select evolving members with results better than the current result.
+                    unsigned int candidate = RANDOMMOD(dataSeed, FIRESTARTER_POPULATION);
+                    float candidateResult = oldResults->MinResult(candidate, variation);
+                    if (candidateResult < bestResult) {
+                        bestCandidate = candidate;
+                        bestResult = candidateResult;
+                    }
+                }
+                result = bestResult;
+            }
+#endif
+
+            // Switch to the selected member's data and results.
+            data = *oldResults->Data(bestCandidate, variation);
+            dataAge++;
+        }
+        newResults->InitMemberResult(data, code, member, variation, result, dataAge, 0);
+    }
 } // Optimizer
 
+#if 1
+GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
+{
+    // Determine the member to be optimized.
+    unsigned int tid = threadIdx.x;
+    unsigned int member = blockIdx.x;
+    unsigned int dataIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    if (member >= FIRESTARTER_POPULATION)
+        return;
+
+    // The shared data for the threads in the warp.
+    GPU_SHARED FireStarterSharedData sharedData;
+
+    // Precalculate the target theta values and target samples.
+    float theta[FIRESTARTER_SAMPLES];
+    float target[FIRESTARTER_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+        float t = theta[i] = TARGET_MIN + i * sampleStep;
+        target[i] = Target(t, variation);
+    }
+
+    // Evolve the program registers for each variation.
+    unsigned long long codeSeed = evolutionSeed + SEED0(variation) + SEED1(member);      // Unique seed for the generation/variation/member
+    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
+    FireStarterCode code;
+    FireStarterData data;
+    unsigned short codeAge = evolutionPass ? oldResults->CodeAge(member, variation) : 0;
+    unsigned short dataAge = evolutionPass ? oldResults->DataAge(member, variation) : 0;
+    float result, memberResult;
+    float evolutionScale;
+
+    // The first generation is initalized with random numbers.
+    if (!evolutionPass || (dataAge >= 1000)) {
+        memberResult = FIRESTARTER_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
+        for (int i = 0; i < 10; i++) {
+            code.Init(codeSeed);
+            data.Init(dataSeed, evolutionScale);
+            result = FIRESTARTER_START_RESULT;
+            if (TestEvaluate(sharedData, data, code, target, theta, result))
+                break;
+        }
+        memberResult = result;
+        codeAge = 0;
+        dataAge = 0;
+    } else {
+        code.Copy(oldResults->Code(member, variation));
+        data.Copy(oldResults->Data(member, variation));
+        memberResult = oldResults->MinResult(member, variation);
+        evolutionScale = FIRESTARTER_SCALE * memberResult;
+        result = memberResult;
+        
+        if (dataAge > 8)
+            code.RandomInstruction(codeSeed);
+        if (dataAge > 0)
+            data.RandomData(dataSeed, evolutionScale);
+    }
+
+    // Iterate to evolve the registers.
+    for (unsigned int p = 0; p < FIRESTARTER_ITERATIONS; p++) {
+        unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
+        float oldData = data[d];
+        data[d] = oldData + evolutionScale * RANDOMFACTOR(dataSeed);
+        float curResult = result;
+        if (TestEvaluate(sharedData, data, code, target, theta, curResult))
+            result = curResult;
+        else
+            data[d] = oldData;
+    }
+
+    // Reduction to find the minimum result among the 32 block threads.
+    GPU_SHARED float results[WARP_THREADS];
+    GPU_SHARED unsigned int minid[WARP_THREADS];
+    results[tid] = result;
+    minid[tid] = tid;
+    if (tid < 16) {
+        unsigned int otherid = tid + 16;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 8) {
+        unsigned int otherid = tid + 8;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 4) {
+        unsigned int otherid = tid + 4;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 2) {
+        unsigned int otherid = tid + 2;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 1) {
+        unsigned int otherid = tid + 1;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+
+    // Store the best code and data in the member's global data.
+    unsigned int id = minid[0];
+    if (tid == id) {
+        // Save the results if they improved or switch to another member's old results.
+        if (!evolutionPass || (result < memberResult)) {
+            // If the result was better, save the results.
+            dataAge = 0;
+        } else {
+            // If the result was worse, copy a result from among the previous generation's results.
+            unsigned int bestCandidate = member;
+
+#if 1
+            if (dataAge > 500) {
+                // The genetic part of genetic programming and a major optimization:
+                // Copy the best data from among a random set of candidates.
+                float bestResult = result;
+                for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
+                    // Select evolving members with results better than the current result.
+                    unsigned int candidate = RANDOMMOD(dataSeed, FIRESTARTER_POPULATION);
+                    float candidateResult = oldResults->MinResult(candidate, variation);
+                    if (candidateResult < bestResult) {
+                        bestCandidate = candidate;
+                        bestResult = candidateResult;
+                    }
+                }
+                result = bestResult;
+            }
+#endif
+
+            // Switch to the selected member's data and results.
+            code = *oldResults->Code(bestCandidate, variation);
+            data = *oldResults->Data(bestCandidate, variation);
+            codeAge++;
+            dataAge++;
+        }
+        newResults->InitMemberResult(data, code, member, variation, result, dataAge, codeAge);
+    }
+} // Evolver
+#else
+GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
+{
+    // Determine the member to be optimized.
+    unsigned int tid = threadIdx.x;
+    unsigned int member = blockIdx.x;
+    unsigned int dataIndex = blockIdx.x * blockDim.x + threadIdx.x;
+    if (member >= FIRESTARTER_POPULATION)
+        return;
+
+    // The shared data for the threads in the warp.
+    GPU_SHARED FireStarterSharedData sharedData;
+
+    // Precalculate the target theta values and target samples.
+    float theta[FIRESTARTER_SAMPLES];
+    float target[FIRESTARTER_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+        float t = theta[i] = TARGET_MIN + i * sampleStep;
+        target[i] = Target(t, variation);
+    }
+
+    // Evolve the program registers for each variation.
+    unsigned long long codeSeed = evolutionSeed + SEED0(variation) + SEED1(member);      // Unique seed for the generation/variation/member
+    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
+    FireStarterCode code;
+    FireStarterData data;
+    unsigned short codeAge = oldResults->CodeAge(member, variation);
+    unsigned short dataAge = oldResults->DataAge(member, variation);
+    float result, memberResult;
+    float evolutionScale;
+
+    // The first generation is initalized with random numbers.
+    if (!evolutionPass) {
+        memberResult = FIRESTARTER_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
+        for (int i = 0; i < 10; i++) {
+            code.Init(codeSeed);
+            data.Init(dataSeed, evolutionScale);
+            result = memberResult;
+            if (TestEvaluate(sharedData, data, code, target, theta, result))
+                break;
+        }
+        memberResult = result;
+        codeAge = 0;
+        dataAge = 0;
+    } else {
+        code.Copy(oldResults->Code(member, variation));
+        data.Copy(oldResults->Data(member, variation));
+        memberResult = oldResults->MinResult(member, variation);
+        evolutionScale = FIRESTARTER_SCALE * memberResult;
+        result = memberResult;
+
+        if (dataAge > 2) {
+            // Randomize a single instruction.
+            unsigned int c = RANDOMMOD(codeSeed, FIRESTARTER_INSTRUCTIONS);
+            FireStarterCodeInstruction oldCode = code[c];
+            code.RandomInstruction(codeSeed, c);
+            unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
+            float oldData = data[d];
+            data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
+            for (int i = 0; i < 10; i++) {
+                result = memberResult;
+                if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
+                    code[c] = oldCode;
+                    data[d] = oldData;
+                    result = memberResult;
+                } else {
+                    dataAge = 0;
+                    break;
+                }
+            }
+        } else if (dataAge > 0) {
+            unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
+            float oldData = data[d];
+            data[d] = oldData + RANDOMFACTOR(dataSeed) * evolutionScale * (dataAge - 1);
+            result = memberResult;
+            if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
+                data[d] = oldData;
+                result = memberResult;
+            }
+        }
+    }
+
+    // Iterate to evolve the registers.
+    for (unsigned int p = 0; p < FIRESTARTER_ITERATIONS; p++) {
+        unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
+        float oldData = data[d];
+        data[d] = oldData + evolutionScale * RANDOMFACTOR(dataSeed);
+        float curResult = result;
+        if (TestEvaluate(sharedData, data, code, target, theta, curResult))
+            result = curResult;
+        else
+            data[d] = oldData;
+    }
+
+    // Reduction to find the minimum result among the 32 block threads.
+    GPU_SHARED float results[WARP_THREADS];
+    GPU_SHARED unsigned int minid[WARP_THREADS];
+    results[tid] = result;
+    minid[tid] = tid;
+    if (tid < 16) {
+        unsigned int otherid = tid + 16;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 8) {
+        unsigned int otherid = tid + 8;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 4) {
+        unsigned int otherid = tid + 4;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 2) {
+        unsigned int otherid = tid + 2;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+    if (tid < 1) {
+        unsigned int otherid = tid + 1;
+        float otherResults = results[otherid];
+        if (result > otherResults) {
+            results[tid] = result = otherResults;
+            minid[tid] = minid[otherid];
+        }
+    }
+
+    // Store the best code and data in the member's global data.
+    unsigned int id = minid[0];
+    if (tid == id) {
+        if (result > memberResult) {
+            code.Copy(oldResults->Code(member, variation));
+            data.Copy(oldResults->Data(member, variation));
+            result = memberResult;
+        }
+        dataAge++;
+        codeAge++;
+        newResults->InitMemberResult(data, code, member, variation, result, dataAge, codeAge);
+    }
+} // Evolver
+#endif

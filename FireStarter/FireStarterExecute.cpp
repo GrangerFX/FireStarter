@@ -60,12 +60,17 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
     }
 
     if (init) {
-        // Clear the population data.
-        // Note: Temporary!
-        if (m_devicePopulation)
-            checkCUDAErrors(cudaMemsetAsync(m_devicePopulation, 0, m_populationSize * 2, stream));
-        if (m_hostPopulation)
-            memset(m_hostPopulation, 0, m_populationSize);
+        // Copy the state result to each member on the device.
+        if (m_hostPopulation && m_devicePopulation) {
+            for (unsigned int member = 0; member < settings.m_population; member++) {
+                for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
+                    const FireStarterResult* result = state.Result(variation);
+                    memcpy(m_hostPopulation->Result(member, variation), state.Result(variation), state.ResultSize());
+                }
+            }
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToDevice, stream));
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation1, m_populationSize, cudaMemcpyHostToDevice, stream)); // Note: Temporary! This can be deleted once the code is tested.
+        }
     }
 
     context->Synchronize();
@@ -387,6 +392,15 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool syn
         }
     }, sync);
 } // ExecuteOptimize
+
+void FireStarterExecute::ExecuteOptimizeGPU(FireStarterState& state, bool sync)
+{
+    Dispatch([this, &state] {
+        state.m_timer.Start();
+        InitPopulation(state, true);
+        ExecuteEvolvePass(state);
+    }, sync);
+} // ExecuteOptimizeGPU
 
 void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& state, bool sync)
 {

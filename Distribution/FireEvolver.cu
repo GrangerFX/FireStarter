@@ -166,7 +166,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
             data = *oldResults->Data(bestCandidate, variation);
             dataAge++;
         }
-        newResults->InitMemberResult(data, code, member, variation, result, dataAge, codeAge);
+        newResults->InitMemberResult(data, code, member, variation, result, dataAge, 0);
     }
 } // Optimizer
 

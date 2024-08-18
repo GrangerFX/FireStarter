@@ -376,8 +376,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Evolve the current test.
             while (!WillTerminate()) {
-                // Execute each state using one of the execution units.
-                evolveExecute->ExecuteEvolveGPU(evolveState);
+                // Execute the GPU evolve using a single execution unit.
+                evolveExecute->ExecuteEvolveGPU(evolveState, true);
 
                 // Gather and sort the results, update the UI and check for the completion condition.
                 if (complete->CompleteEvolveGPU(bestState, evolveState, true))
@@ -386,13 +386,25 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Age the best state.
                 bestState.m_age++;
                 m_streamBestState = bestState;
+
+                // Increment the generation.
                 evolveState.m_generation++;
 
                 if (!evolveSettings.m_generations) {
                     if (evolveState.m_generation % 10 == 0) {
+                        FireStarterState optimizeState = evolveState;
+                        optimizeState.m_generation = 0;
+
+                        // Execute the GPU optimize using a single execution unit.
+                        for (int i = 0; i < 4; i++)
+                            evolveOptimize->ExecuteOptimizeGPU(optimizeState);
+
+                        // Gather and sort the results, update the UI and check for the completion condition.
+                        if (complete->CompleteEvolveGPU(bestState, optimizeState, true))
+                            break;
                     }
-                } else if (evolveState.m_generation == evolveSettings.m_generations) // Increment the generation.
-                    break;
+                } else if (evolveState.m_generation == evolveSettings.m_generations)
+                    break; // Exit after a set number of generations.
             }
 
             // Optimize the best state.
