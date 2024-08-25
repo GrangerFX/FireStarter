@@ -403,7 +403,7 @@ typedef struct FireStarterResult {
     unsigned short m_dataAge;
     unsigned short m_codeAge;
     FireStarterData m_data; // Note: Dynamically allocated!
-    FireStarterCode m_code; // Note: Dynamically allocated!
+    FireStarterCode m_code; // Note: Dynamically allocated! TODO: m_data and m_code should be backed by a byte data array.
 
     static inline size_t ResultSize(void)
     {

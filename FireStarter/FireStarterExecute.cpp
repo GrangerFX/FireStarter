@@ -11,6 +11,46 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
     return curFloat;
 } // AtomicMin
 
+void FireStarterExecute::FinishResult(void)
+{
+    CUDAContext* context = Context();
+    if (!context) {
+        printf("CUDA context destroyed before FinishPopulation() called!\n");
+        std::terminate();
+    }
+    CUstream stream = context->Stream();
+
+    if (m_deviceResult) {
+        checkCUDAErrors(cudaFreeAsync(m_deviceResult, stream));
+        m_deviceResult = nullptr;
+    }
+    context->Synchronize();
+} // FinishResult
+
+bool FireStarterExecute::InitResult(const FireStarterSettings& settings)
+{
+    CUDAContext* context = Context();
+    if (!context) {
+        printf("CUDA context destroyed before InitPopulation() called!\n");
+        std::terminate();
+    }
+    CUstream stream = context->Stream();
+
+    // Reallocate the initial result if the size has changed.
+    size_t resultSize = FireStarterPopulation::ResultSize(settings);
+    if (m_resultSize != resultSize) {
+        if (m_deviceResult) {
+            checkCUDAErrors(cudaFreeAsync(m_deviceResult, stream));
+            m_deviceResult = nullptr;
+        }
+        m_resultSize = resultSize;
+        checkCUDAErrors(cudaMallocAsync(&m_deviceResult, m_resultSize, stream));
+    }
+
+    context->Synchronize();
+    return m_deviceResult != nullptr;
+} // InitResult
+
 void FireStarterExecute::FinishPopulation(void)
 {
     CUDAContext* context = Context();
@@ -33,10 +73,8 @@ void FireStarterExecute::FinishPopulation(void)
     context->Synchronize();
 } // FinishPopulation
 
-bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init)
+bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 {
-    FireStarterSettings settings = state.Settings();
-
     CUDAContext* context = Context();
     if (!context) {
         printf("CUDA context destroyed before InitPopulation() called!\n");
@@ -58,21 +96,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterState& state, bool init
             }
         }
     }
-
-    if (init) {
-        // Copy the state result to each member on the device.
-        if (m_hostPopulation && m_devicePopulation) {
-            for (unsigned int member = 0; member < settings.m_population; member++) {
-                for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
-                    const FireStarterResult* result = state.Result(variation);
-                    memcpy(m_hostPopulation->Result(member, variation), state.Result(variation), state.ResultSize());
-                }
-            }
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToDevice, stream));
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation1, m_populationSize, cudaMemcpyHostToDevice, stream)); // Note: Temporary! This can be deleted once the code is tested.
-        }
-    }
-
     context->Synchronize();
     return m_hostPopulation && m_devicePopulation;
 } // InitPopulation
@@ -88,15 +111,18 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     unsigned long long passes = settings.m_passes;
     unsigned long long evolutionPass = state.m_generation * passes;
 
-    for (unsigned int p = 0; p < passes; p++) {
-        // Run all the evolve states in parallel.
-        FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
-        FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long evolutionSeed = state.EvolutionSeed(evolutionPass);
+    for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
+        if (m_deviceResult)
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceResult, state.Result(variation), m_resultSize, cudaMemcpyHostToDevice, stream));
+        for (unsigned int p = 0; p < passes; p++) {
+            // Run all the evolve states in parallel.
+            FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
+            FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
+            unsigned long long evolutionSeed = state.EvolutionSeed(evolutionPass);
 
-        for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
             void* arr[] = { reinterpret_cast<void*>(&newResults),
                             reinterpret_cast<void*>(&oldResults),
+                            reinterpret_cast<void*>(&m_deviceResult),
                             reinterpret_cast<void*>(&variation),
                             reinterpret_cast<void*>(&evolutionSeed),
                             reinterpret_cast<void*>(&evolutionPass)
@@ -110,12 +136,12 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
                 stream,                                             // stream
                 &arr[0],                                            // arguments
                 0));
-        }
 
-        // Synchronize all GPU threads and results.
-        // Note: TODO: Syncronize to the completion of the previous variation if possible.
-        context->Synchronize();
-        evolutionPass++;
+            // Synchronize all GPU threads and results.
+            // Note: TODO: Syncronize to the completion of the previous variation if possible.
+            context->Synchronize();
+            evolutionPass++;
+        }
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -324,7 +350,7 @@ bool FireStarterExecute::ExecuteJob(void)
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
-        InitPopulation(state);
+        InitPopulation(state.Settings());
         ExecuteSmartPass(state);
         m_executeManager->AddComplete(job);
         return true;
@@ -374,7 +400,7 @@ void FireStarterExecute::ExecuteInitPopulation(bool sync)
 {
     Dispatch([this] {
         if (m_executeJob)
-            InitPopulation(m_executeJob->m_state);
+            InitPopulation(m_executeJob->m_state.Settings());
     }, sync);
 } // ExecuteInitPopulation
 
@@ -393,11 +419,12 @@ void FireStarterExecute::ExecuteOptimize(const FireStarterState& state, bool syn
     }, sync);
 } // ExecuteOptimize
 
-void FireStarterExecute::ExecuteOptimizeGPU(FireStarterState& state, bool sync)
+void FireStarterExecute::ExecuteOptimizeGPU(FireStarterState& state, bool init, bool sync)
 {
-    Dispatch([this, &state] {
+    Dispatch([this, &state, init] {
         state.m_timer.Start();
-        InitPopulation(state, true);
+        InitResult(state.Settings());
+        InitPopulation(state.Settings());
         ExecuteEvolvePass(state);
     }, sync);
 } // ExecuteOptimizeGPU
@@ -406,7 +433,7 @@ void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& state, bool sync)
 {
     Dispatch([this, &state] {
         state.m_timer.Start();
-        InitPopulation(state);
+        InitPopulation(state.Settings());
         ExecuteEvolvePass(state);
     }, sync);
 } // ExecuteEvolveGPU

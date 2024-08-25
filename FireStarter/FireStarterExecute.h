@@ -8,16 +8,20 @@ private:
     FireStarterPopulation* m_devicePopulation = nullptr;
     FireStarterPopulation* m_devicePopulation0 = nullptr;
     FireStarterPopulation* m_devicePopulation1 = nullptr;
+    FireStarterResult* m_deviceResult = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
+    size_t m_resultSize = 0;
     size_t m_executeIndex = 0;
 
+    void FinishResult(void);
+    bool InitResult(const FireStarterSettings& settings);
     void FinishPopulation(void);
-    bool InitPopulation(const FireStarterState& state, bool init = false);
+    bool InitPopulation(const FireStarterSettings& settings);
     void ExecuteEvolvePass(FireStarterState& state);
     float ExecuteOptimizePass(FireStarterState& state, unsigned int variation);
     void ExecutePass(FireStarterState& state);
@@ -31,7 +35,7 @@ public:
     void ExecuteCompile(bool sync = false);
     void ExecuteInitPopulation(bool sync = false);
     void ExecuteOptimize(const FireStarterState& state, bool sync = false);
-    void ExecuteOptimizeGPU(FireStarterState& state, bool sync = false);
+    void ExecuteOptimizeGPU(FireStarterState& state, bool init, bool sync = false);
     void ExecuteEvolveGPU(FireStarterState& state, bool sync = false);
     void ExecuteEvolveCPU(std::atomic<unsigned int>& evolveCount, bool sync = false);
     void ExecuteEvolveCPU(bool sync = false);

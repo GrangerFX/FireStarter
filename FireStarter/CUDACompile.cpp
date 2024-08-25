@@ -108,7 +108,7 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
     }
 
     // Create the code module.
-    CompileModule(cuda_module, ptx);
+    bool result =  CompileModule(cuda_module, ptx);
 
     // Optionaly output the compile time.
 #if COMPILE_TIME
@@ -116,7 +116,7 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
 #endif
 
     // Note: Currently the program is forced to terminate if there were any compile errors.
-    return true; 
+    return result;
 } // CompileProgram
 
 CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& functionName)

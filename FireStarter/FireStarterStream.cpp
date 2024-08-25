@@ -386,6 +386,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Age the best state.
                 bestState.m_age++;
                 m_streamBestState = bestState;
+                float bestResult = bestState.MaxResult();
 
                 // Increment the generation.
                 evolveState.m_generation++;
@@ -396,8 +397,12 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                         optimizeState.m_generation = 0;
 
                         // Execute the GPU optimize using a single execution unit.
-                        for (int i = 0; i < 4; i++)
-                            evolveOptimize->ExecuteOptimizeGPU(optimizeState);
+                        for (int i = 0; i < 4; i++) {
+                            evolveOptimize->ExecuteOptimizeGPU(optimizeState, i == 0, true);
+                            complete->CompleteEvolveGPU(bestState, optimizeState, true);
+                            float newResult = bestState.MaxResult();
+                            int foo = 1;
+                        }
 
                         // Gather and sort the results, update the UI and check for the completion condition.
                         if (complete->CompleteEvolveGPU(bestState, optimizeState, true))
