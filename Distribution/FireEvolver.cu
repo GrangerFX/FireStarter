@@ -42,8 +42,8 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = optimizeSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/member
-    unsigned long long dataSeed = optimizeSeed + SEED8(variation) + SEED9(dataIndex); // Unique seed for the generation/variation/dataIndex
+    unsigned long long memberSeed = optimizeSeed + SEED0(variation) + SEED1(member);    // Unique seed for the generation/variation/member
+    unsigned long long dataSeed = optimizeSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
     FireStarterCode code;
     FireStarterData data;
     unsigned short dataAge;
@@ -207,8 +207,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long codeSeed = evolutionSeed + SEED10(variation) + SEED11(member);      // Unique seed for the generation/variation/member
-    unsigned long long dataSeed = evolutionSeed + SEED8(variation) + SEED9(dataIndex); // Unique seed for the generation/variation/dataIndex
+    unsigned long long codeSeed = evolutionSeed + SEED0(variation) + SEED1(member);      // Unique seed for the generation/variation/member
+    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
     FireStarterCode code;
     FireStarterData data;
     unsigned short codeAge = evolutionPass ? oldResults->CodeAge(member, variation) : 0;
@@ -227,6 +227,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             if (TestEvaluate(sharedData, data, code, target, theta, result))
                 break;
         }
+        memberResult = result;
         codeAge = 0;
         dataAge = 0;
     } else {
@@ -301,7 +302,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 
     // If this thread ID has the best results...
-    if (tid == minid[0]) {
+    unsigned int id = minid[0];
+    if (tid == id) {
         // Save the results if they improved or switch to another member's old results.
         if (!evolutionPass || (result < memberResult)) {
             // If the result was better, save the results.

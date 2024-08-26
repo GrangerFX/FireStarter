@@ -4,11 +4,11 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 08/25/24 17:16:53 Pacific Daylight Time
-// Run duration = 5.033543 seconds
+// Run date: 08/26/24 09:53:20 Pacific Daylight Time
+// Run duration = 4.968479 seconds
 // Run generation = 2
 // Run evolution = 0
-// Run max result = 0.00353712
+// Run max result = 0.00118017
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -39,41 +39,41 @@
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-// Variation: 0  result = 0.00353712
+// Variation: 0  result = 0.00118017
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = 0.923315f;
-    data->d[1] = 0.164716f;
-    data->d[2] = 4.557857f;
-    data->d[3] = -0.111280f;
-    data->d[4] = -0.833803f;
-    data->d[5] = 0.235323f;
-    data->d[6] = 0.357915f;
-    data->d[7] = 0.431041f;
-    data->d[8] = 0.187203f;
-    data->d[9] = -0.885193f;
-    data->d[10] = 2.415911f;
-    data->d[11] = -0.424235f;
-    data->d[12] = 1.382379f;
-    data->d[13] = -1.689744f;
-    data->d[14] = -0.512247f;
-    data->d[15] = -2.242517f;
-    data->d[16] = 0.183747f;
-    data->d[17] = 1.183599f;
-    data->d[18] = 0.539882f;
-    data->d[19] = -0.389524f;
-    data->d[20] = -0.599746f;
-    data->d[21] = 1.397535f;
-    data->d[22] = 1.081948f;
-    data->d[23] = -0.125986f;
-    data->d[24] = 0.646812f;
-    data->d[25] = -1.850946f;
-    data->d[26] = -2.599542f;
-    data->d[27] = -2.430289f;
-    data->d[28] = -2.473832f;
-    data->d[29] = 0.652385f;
-    *(result->MinResult()) = 0.003537f;
+    data->d[0] = -1.006417f;
+    data->d[1] = 1.294399f;
+    data->d[2] = -0.230571f;
+    data->d[3] = 0.480832f;
+    data->d[4] = -0.403738f;
+    data->d[5] = -2.092418f;
+    data->d[6] = -1.343280f;
+    data->d[7] = -0.855727f;
+    data->d[8] = 2.654303f;
+    data->d[9] = -0.314577f;
+    data->d[10] = -1.904683f;
+    data->d[11] = -0.797865f;
+    data->d[12] = 0.139185f;
+    data->d[13] = -0.306927f;
+    data->d[14] = 3.709716f;
+    data->d[15] = -2.242030f;
+    data->d[16] = -0.601197f;
+    data->d[17] = 0.388892f;
+    data->d[18] = -0.491359f;
+    data->d[19] = -0.094912f;
+    data->d[20] = -2.647484f;
+    data->d[21] = 1.098802f;
+    data->d[22] = -1.471439f;
+    data->d[23] = -2.361440f;
+    data->d[24] = 1.946753f;
+    data->d[25] = 0.570976f;
+    data->d[26] = 0.792417f;
+    data->d[27] = 0.572000f;
+    data->d[28] = 1.231875f;
+    data->d[29] = 1.153218f;
+    *(result->MinResult()) = 0.001180f;
 } // LoadVariation0
 
 // END //
@@ -114,8 +114,8 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = optimizeSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/member
-    unsigned long long dataSeed = optimizeSeed + SEED8(variation) + SEED9(dataIndex); // Unique seed for the generation/variation/dataIndex
+    unsigned long long memberSeed = optimizeSeed + SEED0(variation) + SEED1(member);    // Unique seed for the generation/variation/member
+    unsigned long long dataSeed = optimizeSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
     FireStarterCode code;
     FireStarterData data;
     unsigned short dataAge;
@@ -279,8 +279,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long codeSeed = evolutionSeed + SEED10(variation) + SEED11(member);      // Unique seed for the generation/variation/member
-    unsigned long long dataSeed = evolutionSeed + SEED8(variation) + SEED9(dataIndex); // Unique seed for the generation/variation/dataIndex
+    unsigned long long codeSeed = evolutionSeed + SEED0(variation) + SEED1(member);      // Unique seed for the generation/variation/member
+    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
     FireStarterCode code;
     FireStarterData data;
     unsigned short codeAge = evolutionPass ? oldResults->CodeAge(member, variation) : 0;
@@ -299,6 +299,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             if (TestEvaluate(sharedData, data, code, target, theta, result))
                 break;
         }
+        memberResult = result;
         codeAge = 0;
         dataAge = 0;
     } else {
@@ -373,7 +374,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 
     // If this thread ID has the best results...
-    if (tid == minid[0]) {
+    unsigned int id = minid[0];
+    if (tid == id) {
         // Save the results if they improved or switch to another member's old results.
         if (!evolutionPass || (result < memberResult)) {
             // If the result was better, save the results.
