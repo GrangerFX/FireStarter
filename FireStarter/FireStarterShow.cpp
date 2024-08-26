@@ -78,7 +78,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
             if (m_fireShowFunction) {
                 // Allocate the results and instructions.
                 if (!m_fireShowResults) {
-                    checkCUDAErrors(cudaMallocAsync(&m_fireShowResults, FireStarterResults::ResultsSize(settings.m_registers, settings.m_instructions, settings.m_variations), stream));
+                    checkCUDAErrors(cudaMallocAsync(&m_fireShowResults, FireStarterResults::ResultsSize(settings), stream));
                     context->Synchronize();
                 }
                 if (!m_fireShowInstructions) {
@@ -86,7 +86,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                     context->Synchronize();
                 }
 
-                size_t resultsSize = FireStarterResults::ResultsSize(settings.m_registers, settings.m_instructions, settings.m_variations);
+                size_t resultsSize = FireStarterResults::ResultsSize(settings);
                 checkCUDAErrors(cudaMemcpyAsync(m_fireShowResults, state.Results(), resultsSize, cudaMemcpyHostToDevice, stream));
                 size_t instructionsSize = FireStarterInstructions::InstructionsSize(settings.m_instructions);
                 checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.OptimizedInstructions(), instructionsSize, cudaMemcpyHostToDevice, stream));

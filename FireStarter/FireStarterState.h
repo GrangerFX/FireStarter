@@ -63,7 +63,7 @@ public:
 
     inline size_t ResultsSize(void) const
     {
-        return FireStarterResults::ResultsSize(m_program.m_settings.m_registers, m_program.m_settings.m_instructions, m_program.m_settings.m_variations);
+        return FireStarterResults::ResultsSize(m_program.m_settings);
     } // ResultSize
 
     inline const FireStarterResults* Results(void) const
@@ -78,7 +78,7 @@ public:
 
     inline size_t ResultSize(void) const
     {
-        return FireStarterResult::ResultSize(m_program.m_settings.m_registers, m_program.m_settings.m_instructions);
+        return FireStarterResult::ResultSize(m_program.m_settings);
     } // ResultSize
 
     inline FireStarterResult* Result(unsigned int variation)

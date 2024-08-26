@@ -116,7 +116,7 @@ void FireStarterState::InitResults(void)
     const FireStarterSettings& settings = m_program.m_settings;
 
     m_resultsData.clear();
-    m_resultsData.resize(FireStarterResults::ResultsSize(settings.m_registers, settings.m_instructions, settings.m_variations));
+    m_resultsData.resize(FireStarterResults::ResultsSize(settings));
     m_results = Results();
     if (m_results)
         m_results->InitResults(settings);

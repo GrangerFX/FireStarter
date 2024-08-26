@@ -410,9 +410,9 @@ typedef struct FireStarterResult {
         return sizeof(FireStarterResult);
     } // ResultSize
 
-    static inline size_t ResultSize(unsigned int registers, unsigned int instructions)
+    static inline size_t ResultSize(const FireStarterSettings& settings)
     {
-        return (sizeof(FireStarterResult) - (sizeof(m_data) + sizeof(m_code))) + FireStarterData::DataSize(registers) + FireStarterCode::CodeSize(instructions);
+        return (sizeof(FireStarterResult) - (sizeof(m_data) + sizeof(m_code))) + FireStarterData::DataSize(settings.m_registers) + FireStarterCode::CodeSize(settings.m_instructions);
     } // ResultSize
 
     inline float* MinResult(void)
@@ -463,6 +463,16 @@ typedef struct FireStarterResult {
     inline const FireStarterCode* Code(void) const
     {
         return &m_code;
+    } // Code
+
+    inline FireStarterCode* Code(unsigned int registers)
+    {
+        return (FireStarterCode*)((char*)&m_data + FireStarterData::DataSize(registers));
+    } // Code
+
+    inline const FireStarterCode* Code(unsigned int registers) const
+    {
+        return (const FireStarterCode*)((const char*)&m_data + FireStarterData::DataSize(registers));
     } // Code
 
     inline void Init(unsigned short dataAge = 0, unsigned short codeAge = 0)
@@ -604,7 +614,7 @@ typedef struct FireStarterResult {
     inline void Init(const FireStarterResult* initResult, const FireStarterSettings& settings)
     {
         m_data.Copy(initResult->Data(), settings.m_registers);
-        m_code.Copy(initResult->Code(), settings.m_instructions);
+        m_code.Copy(initResult->Code(settings.m_registers), settings.m_instructions);
         m_resultMin = initResult->MinResult();
         m_dataAge = initResult->DataAge();
         m_codeAge = initResult->CodeAge();
@@ -623,9 +633,9 @@ typedef struct FireStarterResults {
         return sizeof(FireStarterResults);
     } // ResultSize
 
-    static inline size_t ResultsSize(unsigned int registers, unsigned int instructions, unsigned int variations)
+    static inline size_t ResultsSize(const FireStarterSettings &settings)
     {
-        return (sizeof(FireStarterResults) - sizeof(m_results)) + FireStarterResult::ResultSize(registers, instructions) * variations;
+        return (sizeof(FireStarterResults) - sizeof(m_results)) + FireStarterResult::ResultSize(settings) * settings.m_variations;
     } // ResultSize
 
     inline FireStarterResult* Result(unsigned int variation)
@@ -670,12 +680,12 @@ typedef struct FireStarterResults {
 
     inline FireStarterCode* Code(unsigned int variation)
     {
-        return Result(variation)->Code();
+        return Result(variation)->Code(m_registers);
     } // Code
 
     inline const FireStarterCode* Code(unsigned int variation) const
     {
-        return Result(variation)->Code();
+        return Result(variation)->Code(m_registers);
     } // Code
 
     inline void InitResults(const FireStarterSettings& settings)
@@ -683,7 +693,7 @@ typedef struct FireStarterResults {
         m_registers = settings.m_registers;
         m_instructions = settings.m_instructions;
         m_variations = settings.m_variations;
-        m_resultSize = (unsigned int)FireStarterResult::ResultSize(m_registers, m_instructions);
+        m_resultSize = (unsigned int)FireStarterResult::ResultSize(settings);
         for (unsigned int v = 0; v < m_variations; v++)
             Result(v)->Init(settings);
     } // Init
@@ -709,7 +719,7 @@ typedef struct FireStarterPopulation {
 
     static inline size_t ResultSize(const FireStarterSettings& settings)
     {
-        return FireStarterResult::ResultSize(settings.m_registers, settings.m_instructions);
+        return FireStarterResult::ResultSize(settings);
     } // ResultsSize
 
     static inline size_t VariationSize(void)
@@ -784,12 +794,12 @@ typedef struct FireStarterPopulation {
 
     inline FireStarterCode* Code(const FireStarterSettings& settings, unsigned int member, unsigned int variation)
     {
-        return Result(settings, member, variation)->Code();
+        return Result(settings, member, variation)->Code(settings.m_registers);
     } // Code
 
     inline const FireStarterCode* Code(const FireStarterSettings& settings, unsigned int member, unsigned int variation) const
     {
-        return Result(settings, member, variation)->Code();
+        return Result(settings, member, variation)->Code(settings.m_registers);
     } // Code
 #
     inline float* MinResult(unsigned int member, unsigned int variation)
