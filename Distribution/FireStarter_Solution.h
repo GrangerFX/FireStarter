@@ -1,8 +1,8 @@
-// Run date: 08/26/24 09:53:20 Pacific Daylight Time
-// Run duration = 4.968926 seconds
-// Run generation = 2
+// Run date: 08/31/24 10:02:52 Pacific Daylight Time
+// Run duration = 14.752738 seconds
+// Run generation = 0
 // Run evolution = 0
-// Run max result = 0.00118017
+// Run max result = 0.00013506
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -62,7 +62,7 @@ inline float Solution(float n)
 {
     float r0;
 
-    r0 = n *= -1.00641692f;
+    r0 = n *= -1.95152879f;
     n = r0 *= n;
     n = r0 *= n;
     n = r0 *= n;
