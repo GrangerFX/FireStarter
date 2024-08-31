@@ -392,6 +392,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 evolveState.m_generation++;
 
                 if (!evolveSettings.m_generations) {
+#if 1
                     if (evolveState.m_generation % 10 == 0) {
                         FireStarterState optimizeState = evolveState;
                         optimizeState.m_generation = 0;
@@ -408,6 +409,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                         if (complete->CompleteEvolveGPU(bestState, optimizeState, true))
                             break;
                     }
+#endif
                 } else if (evolveState.m_generation == evolveSettings.m_generations)
                     break; // Exit after a set number of generations.
             }
