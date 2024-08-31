@@ -304,35 +304,14 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     // If this thread ID has the best results...
     unsigned int id = minid[0];
     if (tid == id) {
-        // Save the results if they improved or switch to another member's old results.
+        // Did the results improve?
         if (!evolutionPass || (result < memberResult)) {
             // If the result was better, save the results.
             dataAge = 0;
         } else {
-            // If the result was worse, copy a result from among the previous generation's results.
-            unsigned int bestCandidate = member;
-
-#if 0
-            if (dataAge > 500) {
-                // The genetic part of genetic programming and a major optimization:
-                // Copy the best data from among a random set of candidates.
-                float bestResult = result;
-                for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
-                    // Select evolving members with results better than the current result.
-                    unsigned int candidate = RANDOMMOD(dataSeed, FIRESTARTER_POPULATION);
-                    float candidateResult = oldResults->MinResult(candidate, variation);
-                    if (candidateResult < bestResult) {
-                        bestCandidate = candidate;
-                        bestResult = candidateResult;
-                    }
-                }
-                result = bestResult;
-            }
-#endif
-
-            // Switch to the selected member's data and results.
-            code = *oldResults->Code(bestCandidate, variation);
-            data = *oldResults->Data(bestCandidate, variation);
+            // Revert to the original code and data.
+            code = *oldResults->Code(member, variation);
+            data = *oldResults->Data(member, variation);
             codeAge++;
             dataAge++;
         }
