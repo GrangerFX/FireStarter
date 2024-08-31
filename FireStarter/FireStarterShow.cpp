@@ -273,7 +273,11 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("Result=%.8f", state.m_maxResult);
         }
 
-        statusString += Format("  Best=%.8f  BestError=%.8f", bestResult, bestError);
+        statusString += Format("  Best=%.8f ", bestResult);
+        if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
+            statusString += Format("BestError=%.8f", bestResult, bestError);
+        else if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
+            statusString += Format("  CodeAge=%u  DataAge=%u", (unsigned int)bestState.Result(0)->CodeAge(), (unsigned int)bestState.Result(0)->DataAge());
         if (state.PassMode() != FIRESTARTER_OPTIMIZE)
             statusString += Format("  BestAge=%u", bestState.m_age);
 

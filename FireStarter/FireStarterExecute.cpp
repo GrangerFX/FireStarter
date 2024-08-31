@@ -436,6 +436,7 @@ void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& state, bool sync)
 {
     Dispatch([this, &state] {
         state.m_timer.Start();
+        InitResult(state.Settings());
         InitPopulation(state.Settings());
         ExecuteEvolvePass(state);
     }, sync);
