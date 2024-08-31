@@ -23,7 +23,8 @@ private:
 	bool LoadSolutionTargetCode(void);
 
 public:
-	bool DisplayResults(FireStarterState& bestState, const FireStarterState& stat);
+	bool UpdateBestState(FireStarterState& bestState, const FireStarterState& state);
+	void DisplayResults(const FireStarterState& bestState);
 	void CompleteStatus(const FireStarterState& bestState, FireStarterState& state, unsigned long long generation = 0);
 	bool CompleteRandom(FireStarterState& bestState, bool sync = true);
 	bool CompleteEvolveGPU(FireStarterState& bestState, FireStarterState& state, bool sync = true);

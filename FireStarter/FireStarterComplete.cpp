@@ -58,42 +58,41 @@ bool FireStarterComplete::LoadSolutionTargetCode(void)
     return true;
 } // LoadSolutionTargetCode
 
-bool FireStarterComplete::DisplayResults(FireStarterState& bestState, const FireStarterState& state)
+bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const FireStarterState& state)
 {
     // Get the result.
-    static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
-    bestStateMutex.lock();
-    bool update = state.m_optimizeValid && (state.m_maxResult < bestState.m_maxResult);
-    if (update)
-        // Update the best state.
-        bestState = state;
-
-    // Update the display state.
-    FireStarterState displayState = bestState;
-    bestStateMutex.unlock();
-
-    // If the best state was updated, save the stat and draw the results.
-    if (update) {
-        // Test the current state.
-        m_bestError = displayState.TestResult();
-
-        // Save the new best state.
-        if (m_saveBestState) {
+    if (state.m_optimizeValid) {
+        static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
+        bestStateMutex.lock();
+        bool update = state.m_optimizeValid && (state.m_maxResult < bestState.m_maxResult);
+        if (update)
             // Update the best state.
-            SaveBestState(displayState);
+            bestState = state;
+        bestStateMutex.unlock();
+        return update;
+    }
+    return false;
+} // UpdateBestState
 
-            // Update the best code on disk.
-            SaveBestCode(displayState);
+void FireStarterComplete::DisplayResults(const FireStarterState& bestState)
+{
+    // Test the current state.
+    m_bestError = bestState.TestResult();
 
-            // Update the solution code on disk.
-            SaveSolution(displayState);
-        }
+    // Save the new best state.
+    if (m_saveBestState) {
+        // Update the best state.
+        SaveBestState(bestState);
 
-        // Draw the graphs for both variations.
-        m_fireShow.FireShow(displayState);
+        // Update the best code on disk.
+        SaveBestCode(bestState);
+
+        // Update the solution code on disk.
+        SaveSolution(bestState);
     }
 
-     return update;
+    // Draw the graphs for both variations.
+    m_fireShow.FireShow(bestState);
 } // DisplayResults
 
 void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, FireStarterState& state, unsigned long long generation)
@@ -126,14 +125,15 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
         // Note: The jobs may be received out of order.
         FireStarterJob* job = m_manager->GetComplete();
         if (job) {
-            FireStarterState newState = job->m_state;
+            FireStarterState state = job->m_state;
             m_manager->AddFree(job);
 
             // Update the best state and display the results.
-            DisplayResults(bestState, newState);
+            if (UpdateBestState(bestState, state))
+                DisplayResults(bestState);
 
             // Update the render status after every pass.
-            CompleteStatus(bestState, newState, newState.m_generation);
+            CompleteStatus(bestState, state, state.m_generation);
             result = true;
         }
     }, sync);
@@ -145,7 +145,8 @@ bool FireStarterComplete::CompleteEvolveGPU(FireStarterState& bestState, FireSta
     bool result = false;
     Dispatch([this, &bestState, &state, &result] {
         // Update the best state and display the results.
-        DisplayResults(bestState, state);
+        if (UpdateBestState(bestState, state))
+            DisplayResults(bestState);
 
         // Update the render status after every pass.
         CompleteStatus(bestState, state, state.m_generation);
@@ -179,7 +180,8 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
                 oldState = newState;
 
             // Update the best state and display the results.
-            DisplayResults(bestState, oldState);
+            if (UpdateBestState(bestState, newState))
+                DisplayResults(bestState);
 
             // Update the render status after every pass.
             CompleteStatus(oldState, newState);
@@ -233,12 +235,9 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                 // Keep the valid results.
                 if (newState.m_optimizeValid) {
                     // Update the current best state.
-                    bool isBestState = false;
-                    if (newState.m_maxResult < bestState.m_maxResult) {
-                        bestState = newState;
+                    bool isBestState = UpdateBestState(bestState, newState);
+                    if (isBestState)
                         bestState.m_age = 1;
-                        isBestState = true;
-                    }
 
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState, generation);
@@ -252,7 +251,8 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     }
 
                     // Update the best state and display the results.
-                    DisplayResults(displayState, newState);
+                    if (isBestState)
+                        DisplayResults(bestState);
                 } else
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState, generation);
