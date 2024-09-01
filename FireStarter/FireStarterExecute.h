@@ -1,4 +1,5 @@
 #pragma once
+#include "FireStarterGenerate.h"
 #include "FireStarterManager.h"
 #include "CUDAThread.h"
 
@@ -9,10 +10,12 @@ private:
     FireStarterPopulation* m_devicePopulation0 = nullptr;
     FireStarterPopulation* m_devicePopulation1 = nullptr;
     FireStarterResult* m_deviceResult = nullptr;
+    FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
+    std::string m_executeCode;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_resultSize = 0;
@@ -26,10 +29,12 @@ private:
     float ExecuteOptimizePass(FireStarterState& state, unsigned int variation);
     void ExecutePass(FireStarterState& state);
     void ExecuteSmartPass(FireStarterState& state);
+    void GenerateCode(FireStarterJob* job);
     bool Compile(FireStarterJob* &job);
     bool ExecuteJob(void);
 
 public:
+    bool ExecuteGenerate(const FireStarterState& initState);
     void ExecuteCompileEvolver(bool sync = false);
     void ExecuteCompileOptimizer(bool sync = false);
     void ExecuteCompile(bool sync = false);

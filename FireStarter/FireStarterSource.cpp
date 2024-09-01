@@ -10,9 +10,9 @@ bool FireStarterSource::LoadSource(std::string& source, const std::string& fileP
         file.seekg(0, std::ios::end);
         source.reserve(source.length() + file.tellg());
         file.seekg(0, std::ios::beg);
-        source.append((std::istreambuf_iterator< char >(file)), std::istreambuf_iterator< char >());
+        source.append((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
         file.close();
-        return source.length() > 0;
+        return !source.empty();
     }
     return false;
 } // LoadSource

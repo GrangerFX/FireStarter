@@ -266,9 +266,9 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                     FireStarterState optimizeBestState(optimizeState);
 
                     // Generate the optimize code.
-                    if (evolve->GenerateOptimize(optimizeState)) {
+                    FireStarterExecute* executeOptimize = executionUnits[0];
+                    if (executeOptimize->ExecuteGenerate(optimizeState)) {
                         // Compile the optimize module.
-                        FireStarterExecute* executeOptimize = executionUnits[0];
                         executeOptimize->ExecuteCompile();
 
                         // Initialize the population data

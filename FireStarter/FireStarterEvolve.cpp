@@ -160,21 +160,17 @@ bool FireStarterEvolve::GenerateOptimize(const FireStarterState& initState)
 
 FireStarterEvolve::FireStarterEvolve(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterEvolve%zu", index))
 {
-    m_evolveManager = manager;
-    m_evolveIndex = index;
-    FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME);
-    if (m_executeCode.empty()) {
+    if (!FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME)) {
         printf(OPTIMIZE_PROGRAM_NAME" could not be loaded!\n");
         std::terminate();
-    } else
-        DispatchAsync([this] {
-            m_evolveGenerate = new FireStarterGenerate(Context());
-        });
+    }
+    m_evolveManager = manager;
+    m_evolveIndex = index;
+    m_evolveGenerate = new FireStarterGenerate(Context());
 } // FireStarterEvolve
 
 FireStarterEvolve::~FireStarterEvolve(void)
 {
-    DispatchSync([this] {
-        delete m_evolveGenerate;
-    });
+    Synchronize();
+    delete m_evolveGenerate;
 } // ~FireStarterEvolve

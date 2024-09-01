@@ -318,6 +318,21 @@ void FireStarterExecute::ExecuteSmartPass(FireStarterState& state)
     state.m_optimizeValid = validResult;
 } // ExecuteSmartPass
 
+void FireStarterExecute::GenerateCode(FireStarterJob* job)
+{
+    // Generate the evaluate code
+    std::string evaluateCode;
+    m_executeGenerate->GenerateEvaluate(job->m_state, evaluateCode);
+    job->m_state.m_evaluateCode = evaluateCode;
+
+    // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+    CUDACompile::CompileOptions(job->m_options);
+    job->m_programName = OPTIMIZE_PROGRAM_NAME;
+    job->m_program = m_executeCode;
+    FireStarterSource::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
+    m_executeManager->AddCode(job);
+} // GenerateCode
+
 bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
     // Release the current job.
@@ -363,6 +378,26 @@ bool FireStarterExecute::ExecuteJob(void)
     m_executeManager->AddComplete(nullptr);
     return false;
 } // ExecuteJob
+
+bool FireStarterExecute::ExecuteGenerate(const FireStarterState& initState)
+{
+    bool result = false;
+
+    // Must copy the intitState pointer in case it becomes invalid when the code below is called.
+    FireStarterState state(initState);
+    DispatchSync([this, state, &result] {
+        FireStarterJob* job = m_executeManager->GetFree();
+        if (job) {
+            // The state already contains the evolved and optimized code.
+            job->m_state = state;
+
+            // Generate the evaluate code
+            GenerateCode(job);
+            result = true;
+        }
+    });
+    return result;
+} // ExecuteGenerate
 
 void FireStarterExecute::ExecuteCompileEvolver(bool sync)
 {
@@ -476,11 +511,17 @@ void FireStarterExecute::ExecuteFinish(bool sync)
 
 FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterExecute%zu", index))
 {
+    if (!FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME)) {
+        printf(OPTIMIZE_PROGRAM_NAME" could not be loaded!\n");
+        std::terminate();
+    }
     m_executeManager = manager;
     m_executeIndex = index;
+    m_executeGenerate = new FireStarterGenerate(Context());
 } // FireStaterExecute
 
 FireStarterExecute::~FireStarterExecute(void)
 {
     ExecuteFinish();
+    delete m_executeGenerate;
 } // ~FireStarterExecute(void)
