@@ -297,8 +297,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 evolveState.m_generation++;
                 if (bestResult < lastBestResult) {
                     lastBestResult = bestResult;
-//                  if (bestResult < 0.00001f)
-                    {
+                    if (bestResult < 0.00001f) {
                         FireStarterState optimizeState = bestState;
                         optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE;
                         optimizeState.m_optimize_pass = 0;
