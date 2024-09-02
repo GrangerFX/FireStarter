@@ -61,9 +61,19 @@ public:
         return *this;
     } // operator =
 
+    inline FireStarterSettings& Settings(void)
+    {
+        return m_program.m_settings;
+    } // Settings
+
+    inline const FireStarterSettings& Settings(void) const
+    {
+        return m_program.m_settings;
+    } // Settings
+
     inline size_t ResultsSize(void) const
     {
-        return FireStarterResults::ResultsSize(m_program.m_settings);
+        return FireStarterResults::ResultsSize(Settings());
     } // ResultSize
 
     inline const FireStarterResults* Results(void) const
@@ -78,23 +88,28 @@ public:
 
     inline size_t ResultSize(void) const
     {
-        return FireStarterResult::ResultSize(m_program.m_settings);
+        return FireStarterResult::ResultSize(Settings());
     } // ResultSize
 
-    inline FireStarterResult* Result(unsigned int variation)
+    inline FireStarterResult* Result(unsigned int variation = 0)
     {
         return m_resultsData.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
-    inline const FireStarterResult* Result(unsigned int variation) const
+    inline const FireStarterResult* Result(unsigned int variation = 0) const
     {
         return m_resultsData.empty() ? nullptr : Results()->Result(variation);
     } // Result
 
-    inline float MinResult(unsigned int variation) const
+    inline float MinResult(unsigned int variation = 0) const
     {
         return m_resultsData.empty() ? Settings().m_startResult : Results()->MinResult(variation);
     } // MinResult
+
+    inline FireStarterCode* Code(void)
+    {
+        return Results()->Code(Settings());
+    } // Code
 
     inline float MaxResult(void) const
     {
@@ -118,16 +133,6 @@ public:
     {
         return !m_resultsData.empty();
     } // Initialized
-
-    inline FireStarterSettings& Settings(void)
-    {
-        return m_program.m_settings;
-    } // Settings
-
-    inline const FireStarterSettings& Settings(void) const
-    {
-        return m_program.m_settings;
-    } // Settings
 
     inline unsigned int PassMode(void) const
     {
@@ -215,7 +220,7 @@ public:
     {
         unsigned int numInstructions = Settings().m_instructions;
         FireStarterInstructions* instructions = m_program.EvolvedInstructions();
-        FireStarterCode* code = Result(0)->Code();
+        FireStarterCode* code = Code();
         for (unsigned int i = 0; i < numInstructions; i++) {
             FireStarterInstruction& instruction = instructions->Instruction(i);
             FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
@@ -229,14 +234,12 @@ public:
     {
         unsigned int numInstructions = Settings().m_instructions;
         FireStarterInstructions* instructions = m_program.EvolvedInstructions();
-        for (unsigned int v = 0; v < Settings().m_variations; v++) {
-            FireStarterCode* code = Result(v)->Code();
-            for (unsigned int i = 0; i < numInstructions; i++) {
-                FireStarterInstruction& instruction = instructions->Instruction(i);
-                FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
-                codeInstruction.op = instruction.op;
-                codeInstruction.reg =  instruction.reg;
-            }
+        FireStarterCode* code = Code();
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            FireStarterInstruction& instruction = instructions->Instruction(i);
+            FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
+            codeInstruction.op = instruction.op;
+            codeInstruction.reg =  instruction.reg;
         }
     } // LoadCodeFromProgram
 

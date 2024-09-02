@@ -1,5 +1,5 @@
-// Run date: 09/02/24 10:07:48 Pacific Daylight Time
-// Run duration = 24.373645 seconds
+// Run date: 09/02/24 15:18:49 Pacific Daylight Time
+// Run duration = 24.634519 seconds
 // Run generation = 13
 // Run evolution = 0
 // Run max result = 0.00000026
@@ -43,7 +43,7 @@
 #define SOLUTION_MIN 0.0f
 #define SOLUTION_MAX (2.0f * 3.14159265f)
 
-inline float SolutionTarget(float n, unsigned int variation)
+inline float SolutionTarget(float n, unsigned int variation = 0)
 {
     switch (variation) {
     default:

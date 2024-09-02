@@ -6,7 +6,7 @@
 #define TARGET_MIN 0.0f
 #define TARGET_MAX (2.0f * 3.14159265f)
 
-inline float Target(float n, unsigned int variation)
+inline float Target(float n, unsigned int variation = 0)
 {
     switch (variation) {
     default:

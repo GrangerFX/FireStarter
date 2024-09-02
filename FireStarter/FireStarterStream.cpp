@@ -339,7 +339,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             if (!WillTerminate()) {
                 // Output the evolve results.
                 FireStarterResult* bestResult = bestState.Result(0);
-                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f  Evolve Age=%u", streamTimer.Duration(), bestState.Settings().m_evolveSeed, test, evolveState.m_generation, bestState.m_generation, bestState.m_evolution, bestState.m_maxResult, (unsigned int)*bestResult->CodeAge());
+                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", streamTimer.Duration(), bestState.Settings().m_evolveSeed, test, evolveState.m_generation, bestState.m_generation, bestState.m_evolution, bestState.m_maxResult);
                 if (bestState.m_maxResult <= evolveSettings.m_evolveTarget)
                     resultText += " *******";
                 resultText += "\n";

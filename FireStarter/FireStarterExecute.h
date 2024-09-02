@@ -9,7 +9,7 @@ private:
     FireStarterPopulation* m_devicePopulation = nullptr;
     FireStarterPopulation* m_devicePopulation0 = nullptr;
     FireStarterPopulation* m_devicePopulation1 = nullptr;
-    FireStarterResult* m_deviceResult = nullptr;
+    FireStarterCode* m_deviceInitCode = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -18,7 +18,7 @@ private:
     std::string m_executeCode;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
-    size_t m_resultSize = 0;
+    size_t m_initCodeSize = 0;
     size_t m_executeIndex = 0;
 
     void FinishResult(void);

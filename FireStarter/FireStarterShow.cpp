@@ -25,7 +25,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
             float maxError = 0.0f;
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                 const FireStarterData* data = results->Data(v);
-                const FireStarterCode* code(results->Code(v));
+                const FireStarterCode* code = results->Code(settings);
                 int xScale = height / 8;
                 int yScale = height / 16;
                 for (unsigned int y = 0; y < height; y++) {
@@ -277,7 +277,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
             statusString += Format("BestError=%.8f", bestResult, bestError);
         else if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
-            statusString += Format("  CodeAge=%u  DataAge=%u", (unsigned int)bestState.Result(0)->CodeAge(), (unsigned int)bestState.Result(0)->DataAge());
+            statusString += Format("  EvolveAge1=%u  EvolveAge2=%u", (unsigned int)bestState.Result(0)->EvolveAge1(), (unsigned int)bestState.Result(0)->EvolveAge2());
         if (state.PassMode() != FIRESTARTER_OPTIMIZE)
             statusString += Format("  BestAge=%u", bestState.m_age);
 

@@ -20,9 +20,9 @@ void FireStarterExecute::FinishResult(void)
     }
     CUstream stream = context->Stream();
 
-    if (m_deviceResult) {
-        checkCUDAErrors(cudaFreeAsync(m_deviceResult, stream));
-        m_deviceResult = nullptr;
+    if (m_deviceInitCode) {
+        checkCUDAErrors(cudaFreeAsync(m_deviceInitCode, stream));
+        m_deviceInitCode = nullptr;
     }
     context->Synchronize();
 } // FinishResult
@@ -37,18 +37,18 @@ bool FireStarterExecute::InitResult(const FireStarterSettings& settings)
     CUstream stream = context->Stream();
 
     // Reallocate the initial result if the size has changed.
-    size_t resultSize = FireStarterPopulation::ResultSize(settings);
-    if (m_resultSize != resultSize) {
-        if (m_deviceResult) {
-            checkCUDAErrors(cudaFreeAsync(m_deviceResult, stream));
-            m_deviceResult = nullptr;
+    size_t initCodeSize = FireStarterPopulation::CodeSize(settings);
+    if (m_initCodeSize != initCodeSize) {
+        if (m_deviceInitCode) {
+            checkCUDAErrors(cudaFreeAsync(m_deviceInitCode, stream));
+            m_deviceInitCode = nullptr;
         }
-        m_resultSize = resultSize;
-        checkCUDAErrors(cudaMallocAsync(&m_deviceResult, m_resultSize, stream));
+        m_initCodeSize = initCodeSize;
+        checkCUDAErrors(cudaMallocAsync(&m_deviceInitCode, m_initCodeSize, stream));
     }
 
     context->Synchronize();
-    return m_deviceResult != nullptr;
+    return m_deviceInitCode != nullptr;
 } // InitResult
 
 void FireStarterExecute::FinishPopulation(void)
@@ -114,37 +114,34 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     unsigned long long passes = settings.m_passes;
     unsigned long long evolutionPass = state.m_generation * passes;
 
-    for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
-        if (m_deviceResult)
-            checkCUDAErrors(cudaMemcpyAsync(m_deviceResult, state.Result(variation), m_resultSize, cudaMemcpyHostToDevice, stream));
-        for (unsigned int p = 0; p < passes; p++) {
-            // Run all the evolve states in parallel.
-            FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
-            FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-            unsigned long long evolutionSeed = state.EvolutionSeed(evolutionPass);
+    if (m_deviceInitCode)
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceInitCode, state.Code(), m_initCodeSize, cudaMemcpyHostToDevice, stream));
+    for (unsigned int p = 0; p < passes; p++) {
+        // Run all the evolve states in parallel.
+        FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
+        FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
+        unsigned long long evolutionSeed = state.EvolutionSeed(evolutionPass);
 
-            void* arr[] = { reinterpret_cast<void*>(&newResults),
-                            reinterpret_cast<void*>(&oldResults),
-                            reinterpret_cast<void*>(&m_deviceResult),
-                            reinterpret_cast<void*>(&variation),
-                            reinterpret_cast<void*>(&evolutionSeed),
-                            reinterpret_cast<void*>(&evolutionPass)
-            };
+        void* arr[] = { reinterpret_cast<void*>(&newResults),
+                        reinterpret_cast<void*>(&oldResults),
+                        reinterpret_cast<void*>(&m_deviceInitCode),
+                        reinterpret_cast<void*>(&evolutionSeed),
+                        reinterpret_cast<void*>(&evolutionPass)
+        };
 
-            dim3 cudaGridSize(settings.m_population, 1, 1);
-            checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-                0,                                                  // shared mem
-                stream,                                             // stream
-                &arr[0],                                            // arguments
-                0));
+        dim3 cudaGridSize(settings.m_population, 1, 1);
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            stream,                                             // stream
+            &arr[0],                                            // arguments
+            0));
 
-            // Synchronize all GPU threads and results.
-            // Note: TODO: Syncronize to the completion of the previous variation if possible.
-            context->Synchronize();
-            evolutionPass++;
-        }
+        // Synchronize all GPU threads and results.
+        // Note: TODO: Syncronize to the completion of the previous variation if possible.
+        context->Synchronize();
+        evolutionPass++;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -159,29 +156,29 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float variationMax = 0.0f;
     bool validResult = false;
-    for (unsigned int variation = 0; variation < settings.m_variations; variation++) {
-        float minResult = settings.m_startResult;
-        unsigned int maxAge = 0;
-        unsigned int minIndex = 0;
-        for (unsigned int i = 0; i < settings.m_population; i++) {
-            unsigned int curAge = *m_hostPopulation->DataAge(settings, i, variation);
-            maxAge = MAX(curAge, maxAge);
-            float curResult = *m_hostPopulation->MinResult(settings, i, variation);
-            if (curResult <= minResult) {
-                minResult = curResult;
-                minIndex = i;
-            }
+    float minResult = settings.m_startResult;
+    unsigned int maxAge1 = 0;
+    unsigned int maxAge2 = 0;
+    unsigned int minIndex = 0;
+    for (unsigned int i = 0; i < settings.m_population; i++) {
+        unsigned int curAge1 = *m_hostPopulation->EvolveAge1(settings, i);
+        unsigned int curAge2 = *m_hostPopulation->EvolveAge2(settings, i);
+        maxAge1 = MAX(curAge1, maxAge1);
+        maxAge2 = MAX(curAge1, maxAge2);
+        float curResult = *m_hostPopulation->MinResult(settings, i);
+        if (curResult <= minResult) {
+            minResult = curResult;
+            minIndex = i;
         }
-        FireStarterResult* result = state.Result(variation);
-        memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex, variation), FireStarterData::DataSize(settings.m_registers));
-        memcpy(result->Code(settings.m_registers), m_hostPopulation->Code(settings, minIndex, variation), FireStarterCode::CodeSize(settings.m_instructions));
-        *result->DataAge() = *m_hostPopulation->DataAge(settings, minIndex, variation);
-        *result->CodeAge() = *m_hostPopulation->CodeAge(settings, minIndex, variation);
-        *result->MinResult() = minResult;
-        printf("minResult: %f  minIndex: %d  dataAge: %d  codeAge: %d  maxAge: %u\n", minResult, minIndex, *result->DataAge(), *result->CodeAge(), maxAge);
     }
+    FireStarterResult* result = state.Result();
+    memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
+    memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex), FireStarterData::DataSize(settings.m_registers));
+    *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex);
+    *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex);
+    *result->MinResult() = minResult;
+//  printf("minResult: %f  minIndex: %d  dataAge1: %d  dataAge2: %d  maxEvolveAge1: %u  maxEvolveAge2: %u\n", minResult, minIndex, *result->EvolveAge1(), *result->EvolveAge2(), maxAge1, maxAge2);
 
     // Set the state's max result.
     state.m_maxResult = state.MaxResult();
@@ -258,7 +255,8 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
 
     FireStarterResult* result = state.Result(variation);
     memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex, variation), FireStarterData::DataSize(settings.m_registers));
-    *result->DataAge() = *m_hostPopulation->DataAge(settings, minIndex, variation);
+    *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex, variation);
+    *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex, variation);
     *result->MinResult() = minResult;
     return minResult;
 } // ExecuteOptimizePass
