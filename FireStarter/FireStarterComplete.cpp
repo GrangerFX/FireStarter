@@ -129,12 +129,16 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
         CompleteStatus(bestState, state, state.m_generation);
 
         // Has the completion condition been met?
-        if (state.PassMode() == FIRESTARTER_OPTIMIZE)
-            result = state.m_optimize_pass >= state.Settings().m_optimize;
+        if ((state.PassMode() == FIRESTARTER_OPTIMIZE) && state.Settings().m_optimize)
+            result = state.m_optimize_pass + 1 >= state.Settings().m_optimize;
         else {
-            unsigned long long age = state.m_generation - bestState.m_generation;
-            if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
+            if (bestState.m_maxResult <= bestState.Settings().m_evolveTarget)
                 result = true;
+            else {
+                unsigned long long age = state.m_generation - bestState.m_generation;
+                if (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts))
+                    result = true;
+            }
         }
     });
     return result;

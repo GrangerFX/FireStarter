@@ -1,8 +1,8 @@
-// Run date: 09/02/24 09:19:58 Pacific Daylight Time
-// Run duration = 22.644504 seconds
+// Run date: 09/02/24 10:07:48 Pacific Daylight Time
+// Run duration = 24.373645 seconds
 // Run generation = 13
 // Run evolution = 0
-// Run max result = 0.00000024
+// Run max result = 0.00000026
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -66,30 +66,30 @@ inline float Solution(float n)
     r0 = n += 0.68066907f;
     n += r0;
     r0 = n += -3.78877926f;
-    r1 = n *= 1.08980846f;
+    r1 = n *= 1.08981001f;
     n = r0 *= n;
-    r2 = n += -1.95747674f;
-    n *= -0.13192727f;
-    r3 = n *= 1.78440452f;
+    r2 = n += -1.95747876f;
+    n *= -0.13192600f;
+    r3 = n *= 1.78440428f;
     n *= 3.31409740f;
-    r4 = n *= 2.36964083f;
-    n *= -1.01467872f;
-    n += -0.97236890f;
-    n += 0.01850904f;
+    r4 = n *= 2.36963773f;
+    n *= -1.01467741f;
+    n += -0.97237301f;
+    n += 0.01850716f;
     n = r4 += n;
-    n *= -0.21718286f;
+    n *= -0.21718095f;
     n *= r3;
     r3 = n += 1.71164215f;
     n *= 1.27057672f;
-    r5 = n *= -1.28255725f;
+    r5 = n *= -1.28255796f;
     r6 = n += 2.47955012f;
     n += r5;
-    n += -2.33234501f;
+    n += -2.33541536f;
     n += r2;
     n += r0;
-    n *= -0.00530390f;
+    n *= -0.00530201f;
     n += r4;
-    n += 0.57507569f;
+    n += 0.57507408f;
     n *= r1;
     n *= -3.53600311f;
     n *= r3;

@@ -288,14 +288,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 if (complete->CompleteState(bestState, evolveState))
                     break;
  
-                // Age the best state.
-                bestState.m_age++;
-                m_streamBestState = bestState;
+                // Try optimizing the best state if the new result is better and the evolution has been stuck for a few generations.
                 float bestResult = bestState.MaxResult();
-
-                // Increment the generation.
-                evolveState.m_generation++;
-                if (bestResult < lastBestResult) {
+                if ((bestState.m_age++ > 2) && (bestResult < lastBestResult)) {
                     FireStarterState optimizeState = bestState;
                     FireStarterState optimizeBestState = bestState;
                     optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE;
@@ -318,17 +313,26 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                             evolveOptimize->ExecuteOptimize(optimizeState, init);
 
                             // Update the results in the UI and check for completion.
-//                          if (complete->CompleteState(optimizeBestState, optimizeState))
-                            if (complete->CompleteState(bestState, optimizeState))
-                                break;
+                            if (complete->CompleteState(optimizeBestState, optimizeState))
+                                 break;
 
                             // Increment the generation.
                             optimizeState.m_optimize_pass++;
                         }
+
+                        // If the optimize pass result was better than the evolve target, accept it and stop evolving.
+                        if (optimizeBestState.m_maxResult <= bestState.Settings().m_evolveTarget) {
+                            bestState = optimizeBestState;
+                            break;
+                        }
+
                     }
 #endif
-                } else if (evolveState.m_generation == evolveSettings.m_generations)
-                    break; // Exit after a set number of generations.
+                }
+
+                // Exit after a set number of generations.
+                if (++evolveState.m_generation == evolveSettings.m_generations)
+                    break;
             }
 
             // Optimize the best state.
