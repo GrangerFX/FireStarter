@@ -296,38 +296,43 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Increment the generation.
                 evolveState.m_generation++;
                 if (bestResult < lastBestResult) {
+                    FireStarterState optimizeState = bestState;
+                    FireStarterState optimizeBestState = bestState;
+                    optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE;
+                    optimizeState.m_optimize_pass = 0;
                     lastBestResult = bestResult;
-                    if (bestResult < 0.00001f) {
-                        FireStarterState optimizeState = bestState;
-                        optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE;
-                        optimizeState.m_optimize_pass = 0;
+                    float optimizedLastBestResult = bestResult;
 #if 0
-                        // Execute the GPU optimize using a single execution unit.
-                        for (int i = 0; i < 4; i++) {
-                            evolveOptimize->ExecuteOptimizeGPU(optimizeState, i == 0);
-                            complete->CompleteState(bestState, optimizeState);
-                            float newResult = optimizeState.MaxResult();
-                            int foo = 1;
-                        }
-#else
-                        if (evolveOptimize->ExecuteGenerateOptimize(optimizeState)) {
-                            // Loop until the the optimize completion condition or the host program is quit.
-                            bool init = true;
-                            while (!WillTerminate()) {
-                                // Optimize the current generation.
-                                evolveOptimize->ExecuteOptimize(optimizeState, init);
-                                printf("optimizeState.MaxResult() = %f\n", optimizeState.MaxResult());
-
-                                // Update the results in the UI and check for completion.
-                                if (complete->CompleteState(bestState, optimizeState))
-                                    break;
-
-                                // Increment the generation.
-                                optimizeState.m_optimize_pass++;
-                            }
-                        }
-#endif
+                    // Execute the GPU optimize using a single execution unit.
+                    for (int i = 0; i < 4; i++) {
+                        evolveOptimize->ExecuteOptimizeGPU(optimizeState, i == 0);
+                        complete->CompleteState(bestState, optimizeState);
+                        float newResult = optimizeState.MaxResult();
+                        int foo = 1;
                     }
+#else
+                    if (evolveOptimize->ExecuteGenerateOptimize(optimizeState)) {
+                        // Loop until the the optimize completion condition or the host program is quit.
+                        bool init = true;
+                        while (!WillTerminate()) {
+                            // Optimize the current generation.
+                            evolveOptimize->ExecuteOptimize(optimizeState, init);
+
+                            // Update the results in the UI and check for completion.
+                            if (complete->CompleteState(optimizeBestState, optimizeState))
+                                break;
+
+                            // Stop if the result does not improve (handles most cases).
+                            float optimizedBestResult = optimizeBestState.MaxResult();
+                            if (optimizedBestResult == optimizedLastBestResult)
+                                break;
+                            optimizedLastBestResult = optimizedBestResult;
+
+                            // Increment the generation.
+                            optimizeState.m_optimize_pass++;
+                        }
+                    }
+#endif
                 } else if (evolveState.m_generation == evolveSettings.m_generations)
                     break; // Exit after a set number of generations.
             }
