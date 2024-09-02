@@ -301,7 +301,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE;
                     optimizeState.m_optimize_pass = 0;
                     lastBestResult = bestResult;
-                    float optimizedLastBestResult = bestResult;
 #if 0
                     // Execute the GPU optimize using a single execution unit.
                     for (int i = 0; i < 4; i++) {
@@ -319,14 +318,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                             evolveOptimize->ExecuteOptimize(optimizeState, init);
 
                             // Update the results in the UI and check for completion.
-                            if (complete->CompleteState(optimizeBestState, optimizeState))
+//                          if (complete->CompleteState(optimizeBestState, optimizeState))
+                            if (complete->CompleteState(bestState, optimizeState))
                                 break;
-
-                            // Stop if the result does not improve (handles most cases).
-                            float optimizedBestResult = optimizeBestState.MaxResult();
-                            if (optimizedBestResult == optimizedLastBestResult)
-                                break;
-                            optimizedLastBestResult = optimizedBestResult;
 
                             // Increment the generation.
                             optimizeState.m_optimize_pass++;
