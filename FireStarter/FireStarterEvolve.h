@@ -18,7 +18,7 @@ private:
 	void GenerateCode(FireStarterJob* job);
 
 public:
-	bool RandomState(const FireStarterState& state, bool sync = false);
+	bool RandomState(const FireStarterState& state);
 	bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedInstructions& testedInstructions, unsigned long long generation);
 	bool GenerateOptimize(const FireStarterState& initState);
 	FireStarterEvolve(FireStarterManager* manager, size_t index = 0);

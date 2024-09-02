@@ -20,14 +20,6 @@ void FireStarter::ControlEvolve(const FireStarterSettings& evolveSettings)
     streams.EvolveStreams();
 } // ControlEvolve
 
-void FireStarter::ControlOptimize(const FireStarterSettings& optimizeSettings)
-{
-    FireStarterState optimizeState;
-    LoadState(optimizeState);
-    optimizeState.Settings().CopyModeSettings(optimizeSettings);
-    FireStarterStream::Optimize(m_window, optimizeState, optimizeSettings);
-} // ControlOptimize
-
 void FireStarter::ControlSolution(void)
 {
     // Draw the solution in the window.
@@ -49,9 +41,6 @@ void FireStarter::ControlThread(void)
             case FIRESTARTER_EVOLVE_CPU:
             case FIRESTARTER_EVOLVE_GPU:
                 ControlEvolve(controlSettings);
-                break;
-            case FIRESTARTER_OPTIMIZE:
-                ControlOptimize(controlSettings);
                 break;
             case FIRESTARTER_SOLUTION:
                 // Run the most recent solution.

@@ -12,7 +12,6 @@ private:
 
     void ControlRandom(const FireStarterSettings& randomSettings);
     void ControlEvolve(const FireStarterSettings& evolveSettings);
-    void ControlOptimize(const FireStarterSettings& optimizeSettings);
     void ControlSolution(void);
     void ControlThread(void);
 

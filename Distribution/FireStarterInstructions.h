@@ -24,9 +24,7 @@ typedef struct FireStarterRegisters {
     } // Register
 } FireStarterRegisters; // FireStarterRegisters
 
-struct FireStarterInstruction {
-    unsigned short op;
-    unsigned short reg;
+struct FireStarterInstruction : public FireStarterCodeInstruction {
 
     inline void Execute(FireStarterData& data, float& n) const
     {

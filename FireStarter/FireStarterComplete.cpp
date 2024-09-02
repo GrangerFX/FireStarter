@@ -117,33 +117,10 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, Fire
     m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration, m_bestError);
 } // CompleteStatus
 
-bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, bool sync)
+bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& state)
 {
     bool result = false;
-    Dispatch([this, &bestState, &result] {
-        // Get the completed job.
-        // Note: The jobs may be received out of order.
-        FireStarterJob* job = m_manager->GetComplete();
-        if (job) {
-            FireStarterState state = job->m_state;
-            m_manager->AddFree(job);
-
-            // Update the best state and display the results.
-            if (UpdateBestState(bestState, state))
-                DisplayResults(bestState);
-
-            // Update the render status after every pass.
-            CompleteStatus(bestState, state, state.m_generation);
-            result = true;
-        }
-    }, sync);
-    return result;
-} // CompleteRandom
-
-bool FireStarterComplete::CompleteEvolveGPU(FireStarterState& bestState, FireStarterState& state, bool sync)
-{
-    bool result = false;
-    Dispatch([this, &bestState, &state, &result] {
+    DispatchSync([this, &bestState, &state, &result] {
         // Update the best state and display the results.
         if (UpdateBestState(bestState, state))
             DisplayResults(bestState);
@@ -159,14 +136,14 @@ bool FireStarterComplete::CompleteEvolveGPU(FireStarterState& bestState, FireSta
             if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
                 result = true;
         }
-    }, sync);
+    });
     return result;
-} // CompleteEvolveGPU
+} // CompleteState
 
-bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& oldState, bool sync)
+bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarterState& state)
 {
     bool result = true;
-    Dispatch([this, &bestState, &oldState, &result] {
+    DispatchSync([this, &bestState, &state, &result] {
         // Get the next job in the order they are completed.
         FireStarterJob* job = m_manager->GetComplete();
         if (!job)
@@ -177,28 +154,28 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 
             // Keep the valid results.
             if (newState.m_optimizeValid)
-                oldState = newState;
+                state = newState;
 
             // Update the best state and display the results.
             if (UpdateBestState(bestState, newState))
                 DisplayResults(bestState);
 
             // Update the render status after every pass.
-            CompleteStatus(oldState, newState);
-            oldState.m_timer.Start();
+            CompleteStatus(state, newState);
+            state.m_timer.Start();
 
             // Has the completion condition been met?
             if (newState.PassMode() == FIRESTARTER_OPTIMIZE)
                 result = newState.m_optimize_pass >= newState.Settings().m_optimize;
             else {
-                unsigned long long age = newState.m_generation - oldState.m_generation;
+                unsigned long long age = newState.m_generation - state.m_generation;
                 if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
                     result = true;
             }
         }
-    }, sync);
+    });
     return result;
-} // CompleteState
+} // CompleteRandom
 
 // Replace old states with new ones when better and resort the list.
 bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation)

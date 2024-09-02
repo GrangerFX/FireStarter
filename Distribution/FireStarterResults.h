@@ -207,8 +207,8 @@ typedef struct FireStarterSharedData {
 } FireStarterSharedData;
 
 typedef struct FireStarterCodeInstruction {
-    unsigned short reg = 0;
     unsigned short op = 0;
+    unsigned short reg = 0;
 } FireStarterCodeInstruction;
 
 typedef struct FireStarterCode {
@@ -223,6 +223,16 @@ typedef struct FireStarterCode {
     {
         return c[i];
     } // operator[]
+
+    inline FireStarterCodeInstruction& Instruction(unsigned int index)
+    {
+        return c[index];
+    } // Instruction
+
+    inline const FireStarterCodeInstruction& Instruction(unsigned int index) const
+    {
+        return c[index];
+    } // Instruction
 
     static inline size_t CodeSize(void)
     {

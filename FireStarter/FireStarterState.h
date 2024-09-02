@@ -211,6 +211,35 @@ public:
         m_program.CopyInstructions(srcState.m_program);
     } // CopyInstructions
 
+    inline void LoadProgramFromCode(void)
+    {
+        unsigned int numInstructions = Settings().m_instructions;
+        FireStarterInstructions* instructions = m_program.EvolvedInstructions();
+        FireStarterCode* code = Result(0)->Code();
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            FireStarterInstruction& instruction = instructions->Instruction(i);
+            FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
+            instruction.op = codeInstruction.op;
+            instruction.reg = codeInstruction.reg;
+        }
+        m_program.OptimizeRegisters();
+    } // LoadProgramFromCode
+
+    inline void LoadCodeFromProgram(void)
+    {
+        unsigned int numInstructions = Settings().m_instructions;
+        FireStarterInstructions* instructions = m_program.EvolvedInstructions();
+        for (unsigned int v = 0; v < Settings().m_variations; v++) {
+            FireStarterCode* code = Result(v)->Code();
+            for (unsigned int i = 0; i < numInstructions; i++) {
+                FireStarterInstruction& instruction = instructions->Instruction(i);
+                FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
+                codeInstruction.op = instruction.op;
+                codeInstruction.reg =  instruction.reg;
+            }
+        }
+    } // LoadCodeFromProgram
+
     inline void RandomProgram(void)
     {
         m_program.RandomProgram(m_seed);

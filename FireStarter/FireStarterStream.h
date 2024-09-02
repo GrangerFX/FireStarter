@@ -11,10 +11,7 @@ private:
 	std::string m_streamDate;
 	size_t m_streamIndex = 0;
 
-	void OptimizeState(const FireStarterState& evolveState);
-
 public:
-	static void Optimize(const FireStarterWindow& window, const FireStarterState& evolveState, const FireStarterSettings& streamSettings);
 	void RandomStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
 	void EvolveCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
 	void EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);

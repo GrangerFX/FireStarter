@@ -29,22 +29,20 @@ private:
     float ExecuteOptimizePass(FireStarterState& state, unsigned int variation);
     void ExecutePass(FireStarterState& state);
     void ExecuteSmartPass(FireStarterState& state);
-    void GenerateCode(FireStarterJob* job);
     bool Compile(FireStarterJob* &job);
     bool ExecuteJob(void);
 
 public:
-    bool ExecuteGenerate(const FireStarterState& initState);
-    void ExecuteCompileEvolver(bool sync = false);
-    void ExecuteCompileOptimizer(bool sync = false);
-    void ExecuteCompile(bool sync = false);
-    void ExecuteInitPopulation(bool sync = false);
-    void ExecuteOptimize(const FireStarterState& state, bool sync = false);
-    void ExecuteOptimizeGPU(FireStarterState& state, bool init, bool sync = false);
-    void ExecuteEvolveGPU(FireStarterState& state, bool sync = false);
-    void ExecuteEvolveCPU(std::atomic<unsigned int>& evolveCount, bool sync = false);
-    void ExecuteEvolveCPU(bool sync = false);
-    void ExecuteFinish(bool sync = true);
-    FireStarterExecute(FireStarterManager* manager, size_t index = 0);
+    void ExecuteCompileEvolver(void);
+    void ExecuteCompileOptimizer(void);
+    bool ExecuteGenerateOptimize(const FireStarterState& initState);
+    void ExecuteInitPopulation(const FireStarterState& state);
+    void ExecuteOptimize(FireStarterState& state, bool& init);
+    void ExecuteOptimizeGPU(FireStarterState& state, bool init);
+    void ExecuteEvolveGPU(FireStarterState& state);
+    void ExecuteEvolveCPU(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
+    void ExecuteRandom(void);
+    void ExecuteFinish(void);
+    FireStarterExecute(FireStarterManager* manager = nullptr, size_t index = 0);
 	~FireStarterExecute(void);
 }; // class FireStarterExecute

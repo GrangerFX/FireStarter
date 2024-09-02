@@ -17,9 +17,9 @@ void FireStarterEvolve::GenerateCode(FireStarterJob* job)
     m_evolveManager->AddCode(job);
 } // GenearateCode
 
-bool FireStarterEvolve::RandomState(const FireStarterState& state, bool sync)
+bool FireStarterEvolve::RandomState(const FireStarterState& state)
 {
-    Dispatch([this, state] {
+    DispatchSync([this, state] {
         FireStarterState evolveState(state);
         evolveState.InitGenerationSeed();
         const FireStarterSettings& settings = evolveState.Settings();
@@ -34,12 +34,15 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state, bool sync)
             // Optimize the program registers.
             job->m_state.m_program.OptimizeRegisters();
 
+            // Copy the program code to the results code (variation 0 for consistency).
+            job->m_state.LoadCodeFromProgram();
+
             // Generate the evaluate code
             GenerateCode(job);
         } else
             // Pass along the null job to cause the next stage to exit.
             m_evolveManager->AddCode();
-    }, sync);
+    });
     return true;
 } // RandomState
 
@@ -70,6 +73,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 
                     // Add the instructions to the set of unique instructions.
                     testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+
+                    // Copy the program code to the results code (variation 0 for consistency).
+                    curState.LoadCodeFromProgram();
 
                     // Add the state to the list of active states.
                     allStates.push_back(curState);
@@ -118,6 +124,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 
                         // Optimize the program registers.
                         curState.m_program.OptimizeRegisters();
+
+                        // Copy the program code to the results code (variation 0 for consistency).
+                        curState.LoadCodeFromProgram();
 
                         // Check if the optimized instructions are unique.
                         if (!testedInstructions.count(curState.m_program.OptimizedInstructionsData())) {

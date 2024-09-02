@@ -1,0 +1,1 @@
+Duration: 52.4  Seed=0  Test=0  Generation=14  Best Generations=13  Evolutions=0  Evolve Result=0.00000024  Evolve Age=132 *******
