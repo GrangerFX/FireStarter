@@ -13,6 +13,16 @@ public:
         return m_CUDAContext;
     } // Context
 
+    inline const CUstream Stream(void)
+    {
+        CUDAContext* context = Context();
+        if (!context) {
+            printf("Attempted to access a destroyed context!\n");
+            std::terminate();
+        }
+        return context->Stream();
+    } // Stream
+  
     inline bool TerminateThread(void) final
     {
         return DispatchSync([this] {

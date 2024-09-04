@@ -143,7 +143,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
                 std::atomic<unsigned int> evolveCount = numStates;
                 for (FireStarterExecute* execute : executionUnits)
-                    execute->ExecuteEvolveCPU(evolveCount);
+                    execute->ExecuteOptimizePasses(evolveCount);
 
                 // Gather and sort the results, update the UI and check for the completion condition.
                 // Note: This syncronizes the execution units.
@@ -174,10 +174,9 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                     // Generate the optimize code.
                     if (executeOptimize->ExecuteGenerateOptimize(optimizeState)) {
                         // Loop until the the optimize completion condition or the host program is quit.
-                        bool init = true;
                         while (!WillTerminate()) {
                             // Optimize the current generation.
-                            executeOptimize->ExecuteOptimize(optimizeState, init);
+                            executeOptimize->ExecuteOptimize(optimizeState);
 
                             // Update the results in the UI and check for completion.
                             if (complete->CompleteState(optimizeBestState, optimizeState))
@@ -255,11 +254,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Compile the evolve module.
         evolveExecute->ExecuteCompileEvolver();
 
-        // Compile the optimize module.
-#if 0
-        evolveOptimize->ExecuteCompileOptimizer();
-#endif
-
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
@@ -282,7 +276,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             float lastBestResult = evolveSettings.m_startResult;
             while (!WillTerminate()) {
                 // Execute the GPU evolve using a single execution unit.
-                evolveExecute->ExecuteEvolveGPU(evolveState);
+                evolveExecute->ExecuteEvolve(evolveState);
 
                 // Gather and sort the results, update the UI and check for the completion condition.
                 if (complete->CompleteState(bestState, evolveState))
@@ -296,21 +290,15 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE;
                     optimizeState.m_optimize_pass = 0;
                     lastBestResult = bestResult;
-#if 0
-                    // Execute the GPU optimize using a single execution unit.
-                    for (int i = 0; i < 4; i++) {
-                        evolveOptimize->ExecuteOptimizeGPU(optimizeState, i == 0);
-                        complete->CompleteState(bestState, optimizeState);
-                        float newResult = optimizeState.MaxResult();
-                        int foo = 1;
-                    }
-#else
                     if (evolveOptimize->ExecuteGenerateOptimize(optimizeState)) {
                         // Loop until the the optimize completion condition or the host program is quit.
-                        bool init = true;
                         while (!WillTerminate()) {
                             // Optimize the current generation.
-                            evolveOptimize->ExecuteOptimize(optimizeState, init);
+#if 0
+                            evolveExecute->ExecuteEvolve(optimizeState);
+#else
+                            evolveOptimize->ExecuteOptimize(optimizeState);
+#endif
 
                             // Update the results in the UI and check for completion.
                             if (complete->CompleteState(optimizeBestState, optimizeState))
@@ -327,7 +315,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                         }
 
                     }
-#endif
                 }
 
                 // Exit after a set number of generations.
