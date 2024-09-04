@@ -1,8 +1,8 @@
-// Run date: 09/04/24 10:28:13 Pacific Daylight Time
-// Run duration = 24.644186 seconds
-// Run generation = 13
+// Run date: 09/04/24 10:29:07 Pacific Daylight Time
+// Run duration = 37.835643 seconds
+// Run generation = 23
 // Run evolution = 0
-// Run max result = 0.00000026
+// Run max result = 0.00001556
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -14,7 +14,7 @@
 // Run targetMax = 6.283185f
 // Run evolveTarget = 0.000001f
 
-// Run mode = FIRESTARTER_OPTIMIZE
+// Run mode = FIRESTARTER_EVOLVE_GPU
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
 // Run tests = 0
@@ -62,36 +62,36 @@ inline float Solution(float n)
 {
     float r0, r1, r2, r3, r4, r5, r6;
 
-    n *= 0.38633925f;
-    r0 = n += 0.68066907f;
+    n *= -2.98791838f;
+    r0 = n += -0.83454609f;
     n += r0;
-    r0 = n += -3.78877926f;
-    r1 = n *= 1.08981001f;
+    r0 = n += 3.07023716f;
+    r1 = n *= -0.89722002f;
     n = r0 *= n;
-    r2 = n += -1.95747876f;
-    n *= -0.13192600f;
-    r3 = n *= 1.78440428f;
-    n *= 3.31409740f;
-    r4 = n *= 2.36963773f;
-    n *= -1.01467741f;
-    n += -0.97237301f;
-    n += 0.01850716f;
-    n = r4 += n;
-    n *= -0.21718095f;
+    r2 = n += 0.55201113f;
+    n *= 0.83650887f;
+    r3 = n *= -0.38808641f;
+    n *= -0.39738756f;
+    r4 = n *= -0.33035731f;
+    n *= -0.68828571f;
+    n += -2.00382566f;
+    n += -1.98547471f;
+    r5 = n += -0.21888597f;
+    n *= 0.50254357f;
     n *= r3;
-    r3 = n += 1.71164215f;
-    n *= 1.27057672f;
-    r5 = n *= -1.28255796f;
-    r6 = n += 2.47955012f;
-    n += r5;
-    n += -2.33541536f;
+    r3 = n += -2.64990711f;
+    n *= r4;
+    r4 = n *= 6.48732376f;
+    r6 = n += -2.39520264f;
+    n += r4;
+    r4 = n += -0.34097618f;
     n += r2;
     n += r0;
-    n *= -0.00530201f;
     n += r4;
-    n += 0.57507408f;
+    n += r5;
+    n += -1.41798294f;
     n *= r1;
-    n *= -3.53600311f;
+    n *= 0.01238819f;
     n *= r3;
     n *= r6;
     return n;
