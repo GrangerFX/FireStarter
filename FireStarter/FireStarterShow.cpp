@@ -16,7 +16,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
         // Setup the data
         FireStarterSettings settings = state.Settings();
         
-        if (settings.m_mode == FIRESTARTER_EVOLVE_GPU) {
+        if ((settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE_GPU)) {
             const FireStarterResults* results = state.Results();
             m_window.Erase();
             uchar4* pixels = (uchar4*)m_window.GetPixels();
@@ -24,8 +24,6 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
             unsigned int height = m_window.m_height;
             float maxError = 0.0f;
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-                const FireStarterData* data = results->Data(v);
-                const FireStarterCode* code = results->Code(settings);
                 int xScale = height / 8;
                 int yScale = height / 16;
                 for (unsigned int y = 0; y < height; y++) {
@@ -44,12 +42,14 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                         pixel.z = 64;
                     };
                 }
+
+                const FireStarterCode* code = results->Code(settings);
                 for (unsigned int x = 0; x < width; x++) {
-                    FireStarterSharedData sharedData(data);
+                    FireStarterData data = results->Data(v);
                     float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
                     float center = height * 0.66f;
                     float target = Target(theta, v);
-                    float result = code->Evaluate(sharedData, theta);
+                    float result = code->Evaluate(data, theta);
 
                     if ((theta >= TARGET_MIN) && (theta <= TARGET_MAX)) {
                         float error = fabsf(result - target);
@@ -260,12 +260,13 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.m_maxResult);
         } else {
-            if (state.PassMode() != FIRESTARTER_OPTIMIZE) {
-                if ((settings.m_units > 1) && (state.PassMode() != FIRESTARTER_OPTIMIZE))
+            if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU)) {
+                statusString += Format("  Optimize=%u", state.m_optimize_pass);
+            } else {
+                if (settings.m_units > 1)
                     statusString += Format("  Unit=%u", state.m_index % settings.m_units);
                 statusString += Format("  Generation=%3u", generation);
-            } else
-                statusString += Format("  Optimize=%u", state.m_optimize_pass);
+            }
             if ((state.m_maxResult == bestResult) && isBestState)
                 statusString += " *";
             else
@@ -278,7 +279,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("BestError=%.8f", bestResult, bestError);
         else if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
             statusString += Format("  EvolveAge1=%u  EvolveAge2=%u", (unsigned int)bestState.Result(0)->EvolveAge1(), (unsigned int)bestState.Result(0)->EvolveAge2());
-        if (state.PassMode() != FIRESTARTER_OPTIMIZE)
+        if ((state.PassMode() != FIRESTARTER_OPTIMIZE_CPU) && (state.PassMode() != FIRESTARTER_OPTIMIZE_GPU))
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.

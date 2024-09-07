@@ -288,88 +288,17 @@ typedef struct FireStarterCode {
         Copy(code);
     } // operator=
 
-    inline float Evaluate(FireStarterSharedData& data, float n) const
+    inline float Evaluate(FireStarterData& data, float n) const
     {
-#if 1 // 4.6 then 3.3 seconds
-        // Per instruction opcodes are slower to execute but more general.
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             n = c[i].op ? data[c[i].reg] += n : data[c[i].reg] *= n;
-#endif
-#if 0 // 3.7 then 2.5 seconds
-        // Fixed multiply/add is faster to execute but likely is more difficult to evolve.
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
-            n = data[c[i].reg] += n;
-            n = data[c[i + 1].reg] *= n;
-        }
-#endif
-#if 0 // 4.1 then 2.5 seconds
-        n = data[c[0].reg] += n;
-        n = data[c[1].reg] *= n;
-        n = data[c[2].reg] += n;
-        n = data[c[3].reg] *= n;
-        n = data[c[4].reg] *= n;
-        n = data[c[5].reg] *= n;
-        n = data[c[6].reg] += n;
-        n = data[c[7].reg] *= n;
-        n = data[c[8].reg] *= n;
-        n = data[c[9].reg] *= n;
-        n = data[c[10].reg] += n;
-        n = data[c[11].reg] *= n;
-        n = data[c[12].reg] *= n;
-        n = data[c[13].reg] *= n;
-        n = data[c[14].reg] += n;
-        n = data[c[15].reg] *= n;
-        n = data[c[16].reg] += n;
-        n = data[c[17].reg] *= n;
-        n = data[c[18].reg] *= n;
-        n = data[c[19].reg] += n;
-        n = data[c[20].reg] += n;
-        n = data[c[21].reg] *= n;
-        n = data[c[22].reg] *= n;
-        n = data[c[23].reg] *= n;
-        n = data[c[24].reg] += n;
-        n = data[c[25].reg] += n;
-        n = data[c[26].reg] *= n;
-        n = data[c[27].reg] *= n;
-        n = data[c[28].reg] *= n;
-        n = data[c[29].reg] += n;
-        n = data[c[30].reg] *= n;
-        n = data[c[31].reg] += n;
-#endif
-#if 0 // 2.3 then 1.6 seconds
-        n = data[0] += n;
-        n = data[1] *= n;
-        n = data[1] += n;
-        n *= data[2];
-        n = data[1] *= n;
-        n *= data[3];
-        n += data[4];
-        n = data[5] *= n;
-        n *= data[6];
-        n = data[7] *= n;
-        n += data[8];
-        n = data[7] *= n;
-        n *= data[9];
-        n = data[10] *= n;
-        n += data[11];
-        n *= data[5];
-        n = data[12] += n;
-        n *= data[12];
-        n *= data[1];
-        n += data[13];
-        n += data[10];
-        n *= data[14];
-        n *= data[15];
-        n = data[16] *= n;
-        n += data[7];
-        n += data[17];
-        n *= data[18];
-        n *= data[16];
-        n *= data[0];
-        n += data[19];
-        n *= data[20];
-        n += data[21];
-#endif
+        return n;
+    } // Evaluate
+
+    inline float Evaluate(FireStarterSharedData& data, float n) const
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            n = c[i].op ? data[c[i].reg] += n : data[c[i].reg] *= n;
         return n;
     } // Evaluate
 

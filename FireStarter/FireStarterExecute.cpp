@@ -84,12 +84,15 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
 {
     // Launch the calculation kernel
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
+    unsigned int population = settings.m_population;
+    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int blocksPerGrid = settings.m_mode == FIRESTARTER_OPTIMIZE_GPU ? (population + (threadsPerBlock - 1)) / threadsPerBlock : population;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long passes = settings.m_passes;
     unsigned long long evolutionPass = state.m_generation * passes;
-    CUfunction executeFunction = settings.m_mode == FIRESTARTER_OPTIMIZE ? m_executeOptimizeFunction : m_executeEvolveFunction;
+    CUfunction executeFunction = settings.m_mode == FIRESTARTER_OPTIMIZE_GPU ? m_executeOptimizeFunction : m_executeEvolveFunction;
 
     if (m_deviceInitCode)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInitCode, state.Code(), m_initCodeSize, cudaMemcpyHostToDevice, Stream()));
@@ -103,10 +106,10 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&m_deviceInitCode),
                         reinterpret_cast<void*>(&evolutionSeed),
-                        reinterpret_cast<void*>(&evolutionPass)
+                        reinterpret_cast<void*>(&evolutionPass),
+                        reinterpret_cast<void*>(&population)
         };
 
-        dim3 cudaGridSize(settings.m_population, 1, 1);
         checkCUDAErrors(cuLaunchKernel(executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
@@ -138,19 +141,21 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     unsigned int maxAge1 = 0;
     unsigned int maxAge2 = 0;
     unsigned int minIndex = 0;
-    for (unsigned int i = 0; i < settings.m_population; i++) {
+    for (unsigned int i = 0; i < population; i++) {
         unsigned int curAge1 = *m_hostPopulation->EvolveAge1(settings, i);
         unsigned int curAge2 = *m_hostPopulation->EvolveAge2(settings, i);
         maxAge1 = MAX(curAge1, maxAge1);
         maxAge2 = MAX(curAge1, maxAge2);
+        FireStarterData* testData = m_hostPopulation->Data(settings, i);
         float curResult = *m_hostPopulation->MinResult(settings, i);
-        if (curResult <= minResult) {
+        if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
         }
     }
     FireStarterResult* result = state.Result();
-    memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
+    if (settings.m_mode != FIRESTARTER_OPTIMIZE_GPU)
+        memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
     memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex), FireStarterData::DataSize(settings.m_registers));
     *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex);
     *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex);
@@ -167,9 +172,12 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
 float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     FireStarterSettings settings = state.Settings();
+    unsigned int population = settings.m_population;
+    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int blocksPerGrid = (population + (threadsPerBlock - 1)) / threadsPerBlock;
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long passes = settings.m_passes;
     unsigned long long optimizationPass = state.m_optimize_pass * passes;
 
@@ -188,8 +196,6 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
                         reinterpret_cast<void*>(&optimizationPass)
                       };
 
-        unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
-        dim3 cudaGridSize(blocksPerGrid, 1, 1);
         checkCUDAErrors(cuLaunchKernel(m_executeOptimizeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
@@ -219,7 +225,7 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
     // This allows for better diversity among members when they struggle to evolve and yields better results.
     float minResult = *m_hostPopulation->MinResult(settings, 0, variation);
     unsigned int minIndex = 0;
-    for (unsigned int i = 1; i < settings.m_population; i++) {
+    for (unsigned int i = 1; i < population; i++) {
         float curResult = *m_hostPopulation->MinResult(settings, i, variation);
         if (curResult <= minResult) {
             minResult = curResult;
@@ -401,7 +407,7 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
         InitResult(state.Settings());
         InitPopulation(state.Settings());
         ExecuteEvolvePass(state);
-        });
+    });
 } // ExecuteEvolve
 
 void FireStarterExecute::ExecuteOptimize(FireStarterState& state)

@@ -136,7 +136,7 @@ public:
 
     inline unsigned int PassMode(void) const
     {
-        return m_optimize_pass ? FIRESTARTER_OPTIMIZE : m_program.m_settings.m_mode;
+        return m_program.m_settings.m_mode;
     } // PassMode
 
     inline const char* Mode(void) const
