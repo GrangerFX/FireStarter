@@ -1,8 +1,8 @@
-// Run date: 09/06/24 20:41:20 Pacific Daylight Time
-// Run duration = 32.159208 seconds
-// Run generation = 21
+// Run date: 09/07/24 10:26:23 Pacific Daylight Time
+// Run duration = 132.748360 seconds
+// Run generation = 0
 // Run evolution = 0
-// Run max result = 0.00000131
+// Run max result = 0.00000069
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -14,7 +14,7 @@
 // Run targetMax = 6.283185f
 // Run evolveTarget = 0.000001f
 
-// Run mode = FIRESTARTER_EVOLVE_GPU
+// Run mode = FIRESTARTER_OPTIMIZE_GPU
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
 // Run tests = 0
@@ -22,9 +22,9 @@
 // Run units = 1
 // Run states = 1
 // Run generations = 0
-// Run population = 8704
+// Run population = 278528
 // Run iterations = 64
-// Run passes = 500
+// Run passes = 100
 // Run candidates = 16
 // Run attempts = 0
 // Run optimize = 4
@@ -62,36 +62,36 @@ inline float Solution(float n)
 {
     float r0, r1, r2, r3, r4, r5, r6;
 
-    n *= 1.55173838f;
-    n += 0.98606586f;
-    n += -0.78775525f;
-    r0 = n += -3.49683380f;
-    r1 = n *= -0.41085607f;
+    n *= 3.02345181f;
+    r0 = n += -0.37046576f;
+    n += r0;
+    r0 = n += -2.63117909f;
+    r1 = n *= 0.71248287f;
     n = r0 *= n;
-    r2 = n += 2.39582229f;
-    r3 = n *= 0.53284705f;
-    r4 = n *= -0.14333804f;
-    n = r2 += n;
-    r5 = n *= 1.62943017f;
-    n *= -1.99743760f;
-    n += 0.09440180f;
-    n += -2.95305991f;
+    r2 = n += 0.93054801f;
+    r3 = n *= -0.70234370f;
+    r4 = n *= -0.42904937f;
+    n *= 0.07383004f;
+    r5 = n *= 1.21796215f;
+    n *= 1.13742542f;
+    n += -1.10015094f;
+    n += 2.75326467f;
     n = r5 += n;
-    n *= 0.49418128f;
+    n *= -0.95369458f;
     n *= r4;
-    r4 = n += -1.58131933f;
-    n *= -0.77357292f;
-    n *= 1.64371967f;
-    r6 = n += -1.14548135f;
+    r4 = n += 1.89850163f;
+    n *= 2.06328630f;
+    n *= -2.20583844f;
+    r6 = n += -2.87068486f;
     n *= r3;
     n += r0;
     n += r2;
-    n += 4.52304411f;
-    n *= -0.01286147f;
+    n += -1.26849675f;
+    n *= -1.72311544f;
     n += r5;
-    n += -2.80525875f;
+    n += 0.11285971f;
     n *= r1;
-    n *= -0.04179747f;
+    n *= 0.08948325f;
     n *= r4;
     n *= r6;
     return n;

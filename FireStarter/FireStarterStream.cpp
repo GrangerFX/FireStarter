@@ -288,7 +288,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     FireStarterState optimizeState = bestState;
                     optimizeState.m_generation = 0;
                     optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE_GPU;
-                    optimizeState.Settings().m_passes = 2;
+                    optimizeState.Settings().m_passes = 100;
 #if 1
                     optimizeState.Settings().m_population *= 32;
 #endif
