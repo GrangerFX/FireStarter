@@ -85,14 +85,15 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
+    bool optimizePass = settings.m_mode == FIRESTARTER_OPTIMIZE_GPU;
     unsigned int population = settings.m_population;
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = settings.m_mode == FIRESTARTER_OPTIMIZE_GPU ? (population + (threadsPerBlock - 1)) / threadsPerBlock : population;
+    unsigned int blocksPerGrid = optimizePass ? (population + (threadsPerBlock - 1)) / threadsPerBlock : population;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long passes = settings.m_passes;
-    unsigned long long evolutionPass = state.m_generation * passes;
-    CUfunction executeFunction = settings.m_mode == FIRESTARTER_OPTIMIZE_GPU ? m_executeOptimizeFunction : m_executeEvolveFunction;
+    unsigned long long evolutionPass = optimizePass ? state.m_optimize_pass * passes : state.m_generation * passes;
+    CUfunction executeFunction = optimizePass ? m_executeOptimizeFunction : m_executeEvolveFunction;
 
     if (m_deviceInitCode)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInitCode, state.Code(), m_initCodeSize, cudaMemcpyHostToDevice, Stream()));
@@ -154,7 +155,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         }
     }
     FireStarterResult* result = state.Result();
-    if (settings.m_mode != FIRESTARTER_OPTIMIZE_GPU)
+    if (!optimizePass)
         memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
     memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex), FireStarterData::DataSize(settings.m_registers));
     *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex);

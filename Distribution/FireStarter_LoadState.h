@@ -1,11 +1,11 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 09/07/24 10:26:23 Pacific Daylight Time
-// Run duration = 132.747168 seconds
+// Run date: 09/07/24 10:50:48 Pacific Daylight Time
+// Run duration = 26.403007 seconds
 // Run generation = 0
 // Run evolution = 0
-// Run max result = 0.00000069
+// Run max result = 0.00000054
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -69,40 +69,40 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_startResult = 10.000000f;
 } // LoadSettings
 
-// Variation: 0  result = 0.00000069
+// Variation: 0  result = 0.00000054
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = 3.023452f;
-    data->d[1] = -0.370466f;
-    data->d[2] = -2.631179f;
-    data->d[3] = 0.712483f;
-    data->d[4] = 0.930548f;
-    data->d[5] = -0.702344f;
-    data->d[6] = -0.429049f;
-    data->d[7] = 0.073830f;
-    data->d[8] = 1.217962f;
-    data->d[9] = 1.137425f;
-    data->d[10] = -1.100151f;
-    data->d[11] = 2.753265f;
-    data->d[12] = -0.953695f;
-    data->d[13] = 1.898502f;
-    data->d[14] = 2.063286f;
-    data->d[15] = -2.205838f;
-    data->d[16] = -2.870685f;
-    data->d[17] = -1.268497f;
-    data->d[18] = -1.723115f;
-    data->d[19] = 0.112860f;
-    data->d[20] = 0.089483f;
-    data->d[21] = -1.101207f;
-    data->d[22] = 0.496185f;
-    data->d[23] = 1.977145f;
-    data->d[24] = 1.444148f;
-    data->d[25] = 1.748192f;
-    data->d[26] = -0.457299f;
-    data->d[27] = 1.797716f;
-    data->d[28] = -2.828236f;
-    data->d[29] = 0.017998f;
+    data->d[0] = -2.670062f;
+    data->d[1] = 2.099474f;
+    data->d[2] = -0.028912f;
+    data->d[3] = -4.488172f;
+    data->d[4] = 1.670723f;
+    data->d[5] = -0.068759f;
+    data->d[6] = 0.623806f;
+    data->d[7] = 0.539345f;
+    data->d[8] = -1.917220f;
+    data->d[9] = 1.838574f;
+    data->d[10] = 0.317704f;
+    data->d[11] = 3.307078f;
+    data->d[12] = 0.076076f;
+    data->d[13] = -1.255273f;
+    data->d[14] = -1.672420f;
+    data->d[15] = 0.422351f;
+    data->d[16] = -1.075246f;
+    data->d[17] = -1.317134f;
+    data->d[18] = 0.889275f;
+    data->d[19] = 1.160866f;
+    data->d[20] = -0.194259f;
+    data->d[21] = -1.408946f;
+    data->d[22] = 4.597544f;
+    data->d[23] = 1.028703f;
+    data->d[24] = -1.883289f;
+    data->d[25] = -1.057983f;
+    data->d[26] = 0.328050f;
+    data->d[27] = -1.107251f;
+    data->d[28] = 1.584742f;
+    data->d[29] = 1.723000f;
     *(result->MinResult()) = 0.000001f;
 } // LoadVariation0
 
@@ -136,10 +136,10 @@ inline void LoadProgram(FireStarterProgram& program)
     instructions->SetOperation(18, 0, 19);
     instructions->SetOperation(19, 0, 12);
     instructions->SetOperation(20, 1, 17);
-    instructions->SetOperation(21, 0, 23);
-    instructions->SetOperation(22, 1, 21);
+    instructions->SetOperation(21, 1, 12);
+    instructions->SetOperation(22, 1, 10);
     instructions->SetOperation(23, 1, 8);
-    instructions->SetOperation(24, 1, 10);
+    instructions->SetOperation(24, 1, 21);
     instructions->SetOperation(25, 0, 2);
     instructions->SetOperation(26, 1, 28);
     instructions->SetOperation(27, 1, 5);
@@ -165,7 +165,7 @@ inline void LoadState(FireStarterState& state)
     state.m_id = 0;
     state.m_test = 0;
     state.m_seed = 0;
-    state.m_optimize_pass =0;
+    state.m_optimize_pass =2;
     state.m_oldResult = 10.000000f;
     state.m_maxResult = 0.000001f;
     state.m_evolveWeight = 0.000000f;

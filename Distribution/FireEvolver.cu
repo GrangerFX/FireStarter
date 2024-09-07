@@ -40,7 +40,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = optimizeSeed + SEED12(member); // Unique seed for the generation/variation/member
+    unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation/variation/member
     FireStarterCode code;
     FireStarterData data;
     unsigned short evolveAge1;
