@@ -288,35 +288,18 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     FireStarterState optimizeState = bestState;
                     optimizeState.m_generation = 0;
                     optimizeState.Settings().m_passes = 100;
-#if 0
-                    optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE_CPU;
-                    optimizeState.Settings().m_population *= 32;
-#endif
-#if 0
                     optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE_GPU;
                     optimizeState.Settings().m_population *= 32;
-#endif
-#if 1
-                    optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE_GPU;
-#endif
                     optimizeState.m_optimize_pass = 0;
                     FireStarterState optimizeBestState = optimizeState;
                     lastBestResult = bestResult;
 
-#if 1
                     bool compiled = evolveOptimize->ExecuteCompileEvolver();
-#else
-                    bool compiled = evolveOptimize->ExecuteGenerateOptimize(optimizeState);
-#endif
                     if (compiled) {
                         // Loop until the the optimize completion condition or the host program is quit.
                         while (!WillTerminate()) {
                             // Optimize the current generation.
-#if 1
                             evolveOptimize->ExecuteEvolve(optimizeState);
-#else
-                            evolveOptimize->ExecuteOptimize(optimizeState);
-#endif
 
                             // Update the results in the UI and check for completion.
                             if (complete->CompleteState(optimizeBestState, optimizeState))
