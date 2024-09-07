@@ -104,7 +104,7 @@
 #define FIRESTARTER_UNITS           1
 #define FIRESTARTER_STATES          1
 #define FIRESTARTER_GENERATIONS     0
-#define FIRESTARTER_POPULATION      4352 * 2    // Each member has 32 threads for GPU evolution.
+#define FIRESTARTER_POPULATION      16384 // 4352 * 2    // Each member has 32 threads for GPU evolution.
 #define FIRESTARTER_ITERATIONS      64
 #define FIRESTARTER_CANDIDATES      16
 #define FIRESTARTER_PASSES          500
