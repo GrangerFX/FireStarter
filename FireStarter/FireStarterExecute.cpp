@@ -105,7 +105,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         // Run all the evolve states in parallel.
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long evolutionSeed = state.EvolutionSeed(evolutionPass);
+        unsigned long long evolutionSeed = optimizePass ? state.EvolutionSeed(evolutionPass + SEED2(state.m_generation)) : state.EvolutionSeed(evolutionPass);
 
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),

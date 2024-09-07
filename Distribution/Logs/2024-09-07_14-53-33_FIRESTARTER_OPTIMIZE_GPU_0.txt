@@ -1,0 +1,983 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+evolveTarget = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_GPU
+evolveSeed = 0
+optimizeSeed = 0
+tests = 16
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 8704
+iterations = 64
+passes = 500
+candidates = 16
+attempts = 0
+optimize = 4
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 0  Optimize=0  Generation= 11 *Result=0.00000250  Best=0.00000250   Time=0.5 Seconds  Run Time=18.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 0  Optimize=1  Generation= 11 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=18.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 0  Optimize=2  Generation= 11 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=19.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 0  Optimize=3  Generation= 11 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=19.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 0  Optimize=0  Generation= 15 *Result=0.00000089  Best=0.00000089   Time=0.5 Seconds  Run Time=25.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 0  Optimize=1  Generation= 15 *Result=0.00000021  Best=0.00000021   Time=0.5 Seconds  Run Time=26.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 0  Optimize=2  Generation= 15 *Result=0.00000018  Best=0.00000018   Time=0.5 Seconds  Run Time=26.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 0  Optimize=3  Generation= 15 *Result=0.00000018  Best=0.00000018   Time=0.5 Seconds  Run Time=27.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation=  5  Result=0.00091422  Best=0.00072383   Time=0.5 Seconds  Run Time=35.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation=  5  Result=0.00089407  Best=0.00072383   Time=0.5 Seconds  Run Time=35.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation=  5  Result=0.00089133  Best=0.00072383   Time=0.5 Seconds  Run Time=36.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation=  5  Result=0.00089109  Best=0.00072383   Time=0.5 Seconds  Run Time=36.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation=  8  Result=0.00056306  Best=0.00031883   Time=0.5 Seconds  Run Time=40.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation=  8 *Result=0.00001198  Best=0.00001198   Time=0.5 Seconds  Run Time=41.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation=  8 *Result=0.00001180  Best=0.00001180   Time=0.5 Seconds  Run Time=41.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation=  8 *Result=0.00001180  Best=0.00001180   Time=0.5 Seconds  Run Time=42.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 10 *Result=0.00025162  Best=0.00025162   Time=0.5 Seconds  Run Time=45.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 10 *Result=0.00025123  Best=0.00025123   Time=0.5 Seconds  Run Time=45.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 10 *Result=0.00025091  Best=0.00025091   Time=0.5 Seconds  Run Time=46.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 10 *Result=0.00025088  Best=0.00025088   Time=0.5 Seconds  Run Time=46.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 11 *Result=0.00002282  Best=0.00002282   Time=0.5 Seconds  Run Time=48.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 11 *Result=0.00002226  Best=0.00002226   Time=0.5 Seconds  Run Time=49.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 11 *Result=0.00002211  Best=0.00002211   Time=0.5 Seconds  Run Time=49.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 11 *Result=0.00002211  Best=0.00002211   Time=0.5 Seconds  Run Time=50.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 13 *Result=0.00013718  Best=0.00013718   Time=0.5 Seconds  Run Time=53.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 13 *Result=0.00011984  Best=0.00011984   Time=0.5 Seconds  Run Time=53.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 13 *Result=0.00011784  Best=0.00011784   Time=0.5 Seconds  Run Time=54.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 13 *Result=0.00011680  Best=0.00011680   Time=0.5 Seconds  Run Time=54.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 20  Result=0.00004739  Best=0.00001496   Time=0.5 Seconds  Run Time=63.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 20  Result=0.00004619  Best=0.00001496   Time=0.5 Seconds  Run Time=63.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 20  Result=0.00004619  Best=0.00001496   Time=0.5 Seconds  Run Time=64.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 20  Result=0.00004619  Best=0.00001496   Time=0.5 Seconds  Run Time=65.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 23 *Result=0.00000665  Best=0.00000665   Time=0.5 Seconds  Run Time=69.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 23 *Result=0.00000495  Best=0.00000495   Time=0.5 Seconds  Run Time=69.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 23 *Result=0.00000486  Best=0.00000486   Time=0.5 Seconds  Run Time=70.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 23 *Result=0.00000486  Best=0.00000486   Time=0.5 Seconds  Run Time=70.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 25 *Result=0.00000393  Best=0.00000393   Time=0.5 Seconds  Run Time=73.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 25 *Result=0.00000131  Best=0.00000131   Time=0.5 Seconds  Run Time=74.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 25 *Result=0.00000131  Best=0.00000131   Time=0.5 Seconds  Run Time=74.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 25 *Result=0.00000128  Best=0.00000128   Time=0.5 Seconds  Run Time=75.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 26 *Result=0.00001794  Best=0.00001794   Time=0.5 Seconds  Run Time=76.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 26 *Result=0.00001752  Best=0.00001752   Time=0.5 Seconds  Run Time=77.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 26 *Result=0.00001752  Best=0.00001752   Time=0.5 Seconds  Run Time=77.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 26 *Result=0.00001749  Best=0.00001749   Time=0.5 Seconds  Run Time=78.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 27 *Result=0.00000435  Best=0.00000435   Time=0.5 Seconds  Run Time=80.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 27 *Result=0.00000426  Best=0.00000426   Time=0.5 Seconds  Run Time=80.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 27 *Result=0.00000426  Best=0.00000426   Time=0.5 Seconds  Run Time=81.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 27 *Result=0.00000417  Best=0.00000417   Time=0.5 Seconds  Run Time=81.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 29 *Result=0.00001377  Best=0.00001377   Time=0.5 Seconds  Run Time=84.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 29 *Result=0.00000173  Best=0.00000173   Time=0.5 Seconds  Run Time=85.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 29 *Result=0.00000161  Best=0.00000161   Time=0.5 Seconds  Run Time=85.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 29 *Result=0.00000155  Best=0.00000155   Time=0.5 Seconds  Run Time=86.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 31 *Result=0.00000572  Best=0.00000572   Time=0.5 Seconds  Run Time=88.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 31 *Result=0.00000405  Best=0.00000405   Time=0.5 Seconds  Run Time=89.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 31 *Result=0.00000396  Best=0.00000396   Time=0.5 Seconds  Run Time=90.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 31 *Result=0.00000396  Best=0.00000396   Time=0.5 Seconds  Run Time=90.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 33 *Result=0.00002640  Best=0.00002640   Time=0.5 Seconds  Run Time=93.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 33 *Result=0.00001639  Best=0.00001639   Time=0.5 Seconds  Run Time=93.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 33 *Result=0.00001019  Best=0.00001019   Time=0.5 Seconds  Run Time=94.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 33 *Result=0.00000358  Best=0.00000358   Time=0.5 Seconds  Run Time=95.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 34 *Result=0.00005400  Best=0.00005400   Time=0.5 Seconds  Run Time=96.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 34 *Result=0.00003266  Best=0.00003266   Time=0.5 Seconds  Run Time=97.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 34 *Result=0.00002819  Best=0.00002819   Time=0.5 Seconds  Run Time=97.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 34 *Result=0.00002789  Best=0.00002789   Time=0.5 Seconds  Run Time=98.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=0  Generation= 35 *Result=0.00000912  Best=0.00000912   Time=0.5 Seconds  Run Time=100.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=1  Generation= 35 *Result=0.00000060  Best=0.00000060   Time=0.5 Seconds  Run Time=100.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=2  Generation= 35 *Result=0.00000042  Best=0.00000042   Time=0.5 Seconds  Run Time=101.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 1  Optimize=3  Generation= 35 *Result=0.00000042  Best=0.00000042   Time=0.5 Seconds  Run Time=101.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 2  Optimize=0  Generation=  2 *Result=0.00045970  Best=0.00045970   Time=0.5 Seconds  Run Time=106.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 2  Optimize=1  Generation=  2 *Result=0.00043988  Best=0.00043988   Time=0.5 Seconds  Run Time=106.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 2  Optimize=2  Generation=  2 *Result=0.00043538  Best=0.00043538   Time=0.5 Seconds  Run Time=107.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 2  Optimize=3  Generation=  2 *Result=0.00042230  Best=0.00042230   Time=0.5 Seconds  Run Time=107.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 2  Optimize=0  Generation=  6 *Result=0.00000334  Best=0.00000334   Time=0.5 Seconds  Run Time=113.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 2  Optimize=1  Generation=  6 *Result=0.00000066  Best=0.00000066   Time=0.5 Seconds  Run Time=113.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 2  Optimize=2  Generation=  6 *Result=0.00000060  Best=0.00000060   Time=0.5 Seconds  Run Time=114.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 2  Optimize=3  Generation=  6 *Result=0.00000060  Best=0.00000060   Time=0.5 Seconds  Run Time=114.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 3  Optimize=0  Generation=  5 *Result=0.00000209  Best=0.00000209   Time=0.5 Seconds  Run Time=122.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 3  Optimize=1  Generation=  5 *Result=0.00000196  Best=0.00000196   Time=0.5 Seconds  Run Time=123.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 3  Optimize=2  Generation=  5 *Result=0.00000194  Best=0.00000194   Time=0.5 Seconds  Run Time=123.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 3  Optimize=3  Generation=  5 *Result=0.00000107  Best=0.00000107   Time=0.5 Seconds  Run Time=124.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 3  Optimize=0  Generation= 11 *Result=0.00000066  Best=0.00000066   Time=0.5 Seconds  Run Time=133.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 3  Optimize=1  Generation= 11 *Result=0.00000030  Best=0.00000030   Time=0.5 Seconds  Run Time=133.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 3  Optimize=2  Generation= 11 *Result=0.00000030  Best=0.00000030   Time=0.5 Seconds  Run Time=134.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 3  Optimize=3  Generation= 11 *Result=0.00000030  Best=0.00000030   Time=0.5 Seconds  Run Time=134.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=0  Generation=  6 *Result=0.00000247  Best=0.00000247   Time=0.5 Seconds  Run Time=144.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=1  Generation=  6 *Result=0.00000077  Best=0.00000077   Time=0.5 Seconds  Run Time=144.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=2  Generation=  6 *Result=0.00000077  Best=0.00000077   Time=0.5 Seconds  Run Time=145.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=3  Generation=  6 *Result=0.00000076  Best=0.00000076   Time=0.5 Seconds  Run Time=145.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=0  Generation=  3 *Result=0.00000620  Best=0.00000620   Time=0.5 Seconds  Run Time=151.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=1  Generation=  3 *Result=0.00000232  Best=0.00000232   Time=0.5 Seconds  Run Time=152.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=2  Generation=  3 *Result=0.00000232  Best=0.00000232   Time=0.5 Seconds  Run Time=152.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=3  Generation=  3 *Result=0.00000226  Best=0.00000226   Time=0.5 Seconds  Run Time=153.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=0  Generation=  4 *Result=0.00018263  Best=0.00018263   Time=0.5 Seconds  Run Time=155.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=2  Generation=  4 *Result=0.00018257  Best=0.00018257   Time=0.5 Seconds  Run Time=156.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=3  Generation=  4 *Result=0.00018239  Best=0.00018239   Time=0.5 Seconds  Run Time=156.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=0  Generation=  6 *Result=0.00004846  Best=0.00004846   Time=0.5 Seconds  Run Time=160.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=1  Generation=  6 *Result=0.00000347  Best=0.00000347   Time=0.5 Seconds  Run Time=160.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=2  Generation=  6 *Result=0.00000238  Best=0.00000238   Time=0.5 Seconds  Run Time=161.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=3  Generation=  6 *Result=0.00000232  Best=0.00000232   Time=0.5 Seconds  Run Time=161.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=0  Generation=  8 *Result=0.00001022  Best=0.00001022   Time=0.5 Seconds  Run Time=164.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=1  Generation=  8 *Result=0.00000733  Best=0.00000733   Time=0.5 Seconds  Run Time=165.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=2  Generation=  8 *Result=0.00000691  Best=0.00000691   Time=0.5 Seconds  Run Time=165.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=3  Generation=  8 *Result=0.00000688  Best=0.00000688   Time=0.5 Seconds  Run Time=166.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=0  Generation=  9 *Result=0.00005323  Best=0.00005323   Time=0.5 Seconds  Run Time=168.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=1  Generation=  9 *Result=0.00005275  Best=0.00005275   Time=0.5 Seconds  Run Time=168.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=2  Generation=  9 *Result=0.00000644  Best=0.00000644   Time=0.5 Seconds  Run Time=169.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=3  Generation=  9 *Result=0.00000340  Best=0.00000340   Time=0.5 Seconds  Run Time=169.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=0  Generation= 11 *Result=0.00018293  Best=0.00018293   Time=0.5 Seconds  Run Time=173.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=1  Generation= 11 *Result=0.00018230  Best=0.00018230   Time=0.5 Seconds  Run Time=173.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=2  Generation= 11 *Result=0.00018218  Best=0.00018218   Time=0.5 Seconds  Run Time=174.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=3  Generation= 11 *Result=0.00018218  Best=0.00018218   Time=0.5 Seconds  Run Time=174.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=0  Generation= 13 *Result=0.00001425  Best=0.00001425   Time=0.5 Seconds  Run Time=177.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=1  Generation= 13 *Result=0.00000361  Best=0.00000361   Time=0.5 Seconds  Run Time=178.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=2  Generation= 13 *Result=0.00000066  Best=0.00000066   Time=0.5 Seconds  Run Time=178.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 5  Optimize=3  Generation= 13 *Result=0.00000027  Best=0.00000027   Time=0.5 Seconds  Run Time=179.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=0  Generation=  8 *Result=0.00000668  Best=0.00000668   Time=0.5 Seconds  Run Time=191.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=1  Generation=  8 *Result=0.00000662  Best=0.00000662   Time=0.5 Seconds  Run Time=191.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=2  Generation=  8 *Result=0.00000644  Best=0.00000644   Time=0.5 Seconds  Run Time=192.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=3  Generation=  8 *Result=0.00000635  Best=0.00000635   Time=0.5 Seconds  Run Time=192.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=0  Generation=  9 *Result=0.00001931  Best=0.00001931   Time=0.5 Seconds  Run Time=194.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=1  Generation=  9 *Result=0.00001925  Best=0.00001925   Time=0.5 Seconds  Run Time=194.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=2  Generation=  9 *Result=0.00001919  Best=0.00001919   Time=0.5 Seconds  Run Time=195.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=3  Generation=  9 *Result=0.00000134  Best=0.00000134   Time=0.5 Seconds  Run Time=195.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=0  Generation= 10 *Result=0.00001958  Best=0.00001958   Time=0.5 Seconds  Run Time=197.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=1  Generation= 10 *Result=0.00000912  Best=0.00000912   Time=0.5 Seconds  Run Time=198.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=2  Generation= 10 *Result=0.00000098  Best=0.00000098   Time=0.5 Seconds  Run Time=198.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=3  Generation= 10 *Result=0.00000089  Best=0.00000089   Time=0.5 Seconds  Run Time=199.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=0  Generation= 15 *Result=0.00000322  Best=0.00000322   Time=0.5 Seconds  Run Time=206.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=1  Generation= 15 *Result=0.00000322  Best=0.00000322   Time=0.5 Seconds  Run Time=206.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=2  Generation= 15 *Result=0.00000262  Best=0.00000262   Time=0.5 Seconds  Run Time=207.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=3  Generation= 15 *Result=0.00000250  Best=0.00000250   Time=0.5 Seconds  Run Time=207.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=0  Generation= 16 *Result=0.00000727  Best=0.00000727   Time=0.5 Seconds  Run Time=209.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=1  Generation= 16 *Result=0.00000647  Best=0.00000647   Time=0.5 Seconds  Run Time=210.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=2  Generation= 16 *Result=0.00000358  Best=0.00000358   Time=0.5 Seconds  Run Time=210.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=3  Generation= 16 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=211.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=0  Generation= 17 *Result=0.00000519  Best=0.00000519   Time=0.5 Seconds  Run Time=212.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=1  Generation= 17 *Result=0.00000387  Best=0.00000387   Time=0.5 Seconds  Run Time=213.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=2  Generation= 17 *Result=0.00000247  Best=0.00000247   Time=0.5 Seconds  Run Time=213.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=3  Generation= 17 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=214.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=0  Generation= 18 *Result=0.00000167  Best=0.00000167   Time=0.5 Seconds  Run Time=216.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=1  Generation= 18 *Result=0.00000155  Best=0.00000155   Time=0.5 Seconds  Run Time=216.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=2  Generation= 18 *Result=0.00000113  Best=0.00000113   Time=0.5 Seconds  Run Time=217.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=3  Generation= 18 *Result=0.00000113  Best=0.00000113   Time=0.5 Seconds  Run Time=217.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=0  Generation= 19 *Result=0.00000051  Best=0.00000051   Time=0.5 Seconds  Run Time=219.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=1  Generation= 19 *Result=0.00000044  Best=0.00000044   Time=0.5 Seconds  Run Time=220.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=2  Generation= 19 *Result=0.00000044  Best=0.00000044   Time=0.5 Seconds  Run Time=220.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 6  Optimize=3  Generation= 19 *Result=0.00000044  Best=0.00000044   Time=0.5 Seconds  Run Time=221.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=0  Generation=  5 *Result=0.00009775  Best=0.00009775   Time=0.5 Seconds  Run Time=229.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=1  Generation=  5 *Result=0.00009662  Best=0.00009662   Time=0.5 Seconds  Run Time=229.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=2  Generation=  5 *Result=0.00009638  Best=0.00009638   Time=0.5 Seconds  Run Time=230.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=3  Generation=  5 *Result=0.00009632  Best=0.00009632   Time=0.5 Seconds  Run Time=230.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=0  Generation=  6 *Result=0.00000185  Best=0.00000185   Time=0.5 Seconds  Run Time=232.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=1  Generation=  6 *Result=0.00000167  Best=0.00000167   Time=0.5 Seconds  Run Time=232.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=2  Generation=  6 *Result=0.00000161  Best=0.00000161   Time=0.5 Seconds  Run Time=233.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=3  Generation=  6 *Result=0.00000161  Best=0.00000161   Time=0.5 Seconds  Run Time=234.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=0  Generation=  8 *Result=0.00018781  Best=0.00018781   Time=0.5 Seconds  Run Time=236.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=1  Generation=  8 *Result=0.00018716  Best=0.00018716   Time=0.5 Seconds  Run Time=237.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=2  Generation=  8 *Result=0.00018680  Best=0.00018680   Time=0.5 Seconds  Run Time=238.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=3  Generation=  8 *Result=0.00017852  Best=0.00017852   Time=0.5 Seconds  Run Time=238.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=0  Generation=  9 *Result=0.00001496  Best=0.00001496   Time=0.5 Seconds  Run Time=240.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=1  Generation=  9 *Result=0.00001371  Best=0.00001371   Time=0.5 Seconds  Run Time=240.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=2  Generation=  9 *Result=0.00001353  Best=0.00001353   Time=0.5 Seconds  Run Time=241.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=3  Generation=  9 *Result=0.00001350  Best=0.00001350   Time=0.5 Seconds  Run Time=241.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=0  Generation= 11 *Result=0.00004029  Best=0.00004029   Time=0.5 Seconds  Run Time=244.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=1  Generation= 11 *Result=0.00002953  Best=0.00002953   Time=0.5 Seconds  Run Time=245.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=2  Generation= 11 *Result=0.00002947  Best=0.00002947   Time=0.5 Seconds  Run Time=245.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=3  Generation= 11 *Result=0.00002182  Best=0.00002182   Time=0.5 Seconds  Run Time=246.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=0  Generation= 12 *Result=0.00001591  Best=0.00001591   Time=0.5 Seconds  Run Time=248.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=1  Generation= 12 *Result=0.00001001  Best=0.00001001   Time=0.5 Seconds  Run Time=248.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=2  Generation= 12 *Result=0.00000989  Best=0.00000989   Time=0.5 Seconds  Run Time=249.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=3  Generation= 12 *Result=0.00000978  Best=0.00000978   Time=0.5 Seconds  Run Time=249.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=0  Generation= 13 *Result=0.00003600  Best=0.00003600   Time=0.5 Seconds  Run Time=251.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=1  Generation= 13 *Result=0.00002778  Best=0.00002778   Time=0.5 Seconds  Run Time=251.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=2  Generation= 13 *Result=0.00001711  Best=0.00001711   Time=0.5 Seconds  Run Time=252.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=3  Generation= 13 *Result=0.00001496  Best=0.00001496   Time=0.5 Seconds  Run Time=252.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=0  Generation= 15 *Result=0.00002190  Best=0.00002190   Time=0.5 Seconds  Run Time=255.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=1  Generation= 15 *Result=0.00000384  Best=0.00000384   Time=0.5 Seconds  Run Time=256.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=2  Generation= 15 *Result=0.00000018  Best=0.00000018   Time=0.5 Seconds  Run Time=256.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 7  Optimize=3  Generation= 15 *Result=0.00000012  Best=0.00000012   Time=0.5 Seconds  Run Time=257.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 8  Optimize=0  Generation=  7 *Result=0.00002533  Best=0.00002533   Time=0.5 Seconds  Run Time=267.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 8  Optimize=1  Generation=  7 *Result=0.00002122  Best=0.00002122   Time=0.5 Seconds  Run Time=268.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 8  Optimize=2  Generation=  7 *Result=0.00002098  Best=0.00002098   Time=0.5 Seconds  Run Time=268.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 8  Optimize=3  Generation=  7 *Result=0.00002098  Best=0.00002098   Time=0.5 Seconds  Run Time=269.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 8  Optimize=0  Generation= 10 *Result=0.00000522  Best=0.00000522   Time=0.5 Seconds  Run Time=273.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 8  Optimize=1  Generation= 10 *Result=0.00000125  Best=0.00000125   Time=0.5 Seconds  Run Time=273.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 8  Optimize=2  Generation= 10 *Result=0.00000012  Best=0.00000012   Time=0.5 Seconds  Run Time=274.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 8  Optimize=3  Generation= 10 *Result=0.00000012  Best=0.00000012   Time=0.5 Seconds  Run Time=274.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 9  Optimize=0  Generation=  6 *Result=0.00018257  Best=0.00018257   Time=0.5 Seconds  Run Time=283.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 9  Optimize=1  Generation=  6 *Result=0.00018227  Best=0.00018227   Time=0.5 Seconds  Run Time=284.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 9  Optimize=2  Generation=  6 *Result=0.00018224  Best=0.00018224   Time=0.5 Seconds  Run Time=284.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 9  Optimize=3  Generation=  6 *Result=0.00018224  Best=0.00018224   Time=0.5 Seconds  Run Time=285.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 9  Optimize=0  Generation=  7 *Result=0.00000539  Best=0.00000539   Time=0.5 Seconds  Run Time=287.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 9  Optimize=1  Generation=  7 *Result=0.00000039  Best=0.00000039   Time=0.5 Seconds  Run Time=287.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 9  Optimize=2  Generation=  7 *Result=0.00000039  Best=0.00000039   Time=0.5 Seconds  Run Time=288.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 9  Optimize=3  Generation=  7 *Result=0.00000036  Best=0.00000036   Time=0.5 Seconds  Run Time=288.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=10  Optimize=0  Generation=  6 *Result=0.00000402  Best=0.00000402   Time=0.5 Seconds  Run Time=297.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=10  Optimize=1  Generation=  6 *Result=0.00000304  Best=0.00000304   Time=0.5 Seconds  Run Time=298.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=10  Optimize=2  Generation=  6 *Result=0.00000304  Best=0.00000304   Time=0.5 Seconds  Run Time=298.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=10  Optimize=3  Generation=  6 *Result=0.00000304  Best=0.00000304   Time=0.5 Seconds  Run Time=299.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=10  Optimize=0  Generation= 16 *Result=0.00000182  Best=0.00000182   Time=0.5 Seconds  Run Time=312.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=10  Optimize=1  Generation= 16 *Result=0.00000089  Best=0.00000089   Time=0.5 Seconds  Run Time=313.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=10  Optimize=2  Generation= 16 *Result=0.00000077  Best=0.00000077   Time=0.5 Seconds  Run Time=313.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=10  Optimize=3  Generation= 16 *Result=0.00000072  Best=0.00000072   Time=0.5 Seconds  Run Time=314.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=  4 *Result=0.00008789  Best=0.00008789   Time=0.5 Seconds  Run Time=320.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=  4 *Result=0.00008774  Best=0.00008774   Time=0.5 Seconds  Run Time=321.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=  4 *Result=0.00001717  Best=0.00001717   Time=0.5 Seconds  Run Time=321.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=  4 *Result=0.00000906  Best=0.00000906   Time=0.6 Seconds  Run Time=322.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 12 *Result=0.00002021  Best=0.00002021   Time=0.5 Seconds  Run Time=332.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 12 *Result=0.00000620  Best=0.00000620   Time=0.5 Seconds  Run Time=332.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 12 *Result=0.00000620  Best=0.00000620   Time=0.5 Seconds  Run Time=333.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 12 *Result=0.00000620  Best=0.00000620   Time=0.5 Seconds  Run Time=333.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 13 *Result=0.00002933  Best=0.00002933   Time=0.5 Seconds  Run Time=335.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 13 *Result=0.00001448  Best=0.00001448   Time=0.5 Seconds  Run Time=336.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 13 *Result=0.00001374  Best=0.00001374   Time=0.5 Seconds  Run Time=337.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 14 *Result=0.00001925  Best=0.00001925   Time=0.5 Seconds  Run Time=338.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 14 *Result=0.00001717  Best=0.00001717   Time=0.5 Seconds  Run Time=339.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 14 *Result=0.00001696  Best=0.00001696   Time=0.5 Seconds  Run Time=339.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 14 *Result=0.00001693  Best=0.00001693   Time=0.5 Seconds  Run Time=340.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 18 *Result=0.00004423  Best=0.00004423   Time=0.5 Seconds  Run Time=345.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 18 *Result=0.00003570  Best=0.00003570   Time=0.5 Seconds  Run Time=346.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 18 *Result=0.00003487  Best=0.00003487   Time=0.5 Seconds  Run Time=346.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 18 *Result=0.00003228  Best=0.00003228   Time=0.5 Seconds  Run Time=347.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 22 *Result=0.00006583  Best=0.00006583   Time=0.5 Seconds  Run Time=352.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 22 *Result=0.00006577  Best=0.00006577   Time=0.5 Seconds  Run Time=352.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 22 *Result=0.00006571  Best=0.00006571   Time=0.5 Seconds  Run Time=353.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 22 *Result=0.00005949  Best=0.00005949   Time=0.5 Seconds  Run Time=353.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 23 *Result=0.00011575  Best=0.00011575   Time=0.5 Seconds  Run Time=355.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 23 *Result=0.00011438  Best=0.00011438   Time=0.5 Seconds  Run Time=355.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 23 *Result=0.00008887  Best=0.00008887   Time=0.5 Seconds  Run Time=356.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 23 *Result=0.00008779  Best=0.00008779   Time=0.5 Seconds  Run Time=356.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 25 *Result=0.00015914  Best=0.00015914   Time=0.5 Seconds  Run Time=359.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 25 *Result=0.00013900  Best=0.00013900   Time=0.5 Seconds  Run Time=360.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 25 *Result=0.00012970  Best=0.00012970   Time=0.5 Seconds  Run Time=360.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 25 *Result=0.00012946  Best=0.00012946   Time=0.6 Seconds  Run Time=361.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 30 *Result=0.00001326  Best=0.00001326   Time=0.5 Seconds  Run Time=367.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 30 *Result=0.00001287  Best=0.00001287   Time=0.5 Seconds  Run Time=368.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 30 *Result=0.00001273  Best=0.00001273   Time=0.5 Seconds  Run Time=368.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 30 *Result=0.00001273  Best=0.00001273   Time=0.5 Seconds  Run Time=369.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 32 *Result=0.00003520  Best=0.00003520   Time=0.5 Seconds  Run Time=372.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 32 *Result=0.00003463  Best=0.00003463   Time=0.5 Seconds  Run Time=372.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 32 *Result=0.00003445  Best=0.00003445   Time=0.5 Seconds  Run Time=373.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 32 *Result=0.00003445  Best=0.00003445   Time=0.5 Seconds  Run Time=373.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 34 *Result=0.00003600  Best=0.00003600   Time=0.5 Seconds  Run Time=376.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 34 *Result=0.00003415  Best=0.00003415   Time=0.5 Seconds  Run Time=377.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 34 *Result=0.00003383  Best=0.00003383   Time=0.5 Seconds  Run Time=377.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 34 *Result=0.00003377  Best=0.00003377   Time=0.6 Seconds  Run Time=378.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 35 *Result=0.00003511  Best=0.00003511   Time=0.5 Seconds  Run Time=379.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 35 *Result=0.00003383  Best=0.00003383   Time=0.5 Seconds  Run Time=380.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 35 *Result=0.00003373  Best=0.00003373   Time=0.6 Seconds  Run Time=381.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 36 *Result=0.00012535  Best=0.00012535   Time=0.5 Seconds  Run Time=383.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 36 *Result=0.00011602  Best=0.00011602   Time=0.6 Seconds  Run Time=383.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 36 *Result=0.00011560  Best=0.00011560   Time=0.5 Seconds  Run Time=384.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 36 *Result=0.00011560  Best=0.00011560   Time=0.5 Seconds  Run Time=384.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 37 *Result=0.00004095  Best=0.00004095   Time=0.5 Seconds  Run Time=386.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 37 *Result=0.00003219  Best=0.00003219   Time=0.5 Seconds  Run Time=386.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 37 *Result=0.00003123  Best=0.00003123   Time=0.5 Seconds  Run Time=387.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 37 *Result=0.00002199  Best=0.00002199   Time=0.5 Seconds  Run Time=387.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 38 *Result=0.00002003  Best=0.00002003   Time=0.5 Seconds  Run Time=389.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 38 *Result=0.00001991  Best=0.00001991   Time=0.5 Seconds  Run Time=390.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 38 *Result=0.00001943  Best=0.00001943   Time=0.5 Seconds  Run Time=390.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 38 *Result=0.00001943  Best=0.00001943   Time=0.5 Seconds  Run Time=391.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 39 *Result=0.00001636  Best=0.00001636   Time=0.5 Seconds  Run Time=392.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 39 *Result=0.00001141  Best=0.00001141   Time=0.5 Seconds  Run Time=393.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 39 *Result=0.00000948  Best=0.00000948   Time=0.5 Seconds  Run Time=393.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 39 *Result=0.00000948  Best=0.00000948   Time=0.5 Seconds  Run Time=394.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 40 *Result=0.00004971  Best=0.00004971   Time=0.5 Seconds  Run Time=396.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 40 *Result=0.00004900  Best=0.00004900   Time=0.5 Seconds  Run Time=396.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 40 *Result=0.00004888  Best=0.00004888   Time=0.5 Seconds  Run Time=397.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 40 *Result=0.00004870  Best=0.00004870   Time=0.5 Seconds  Run Time=397.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 42 *Result=0.00002393  Best=0.00002393   Time=0.5 Seconds  Run Time=400.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 42 *Result=0.00001377  Best=0.00001377   Time=0.5 Seconds  Run Time=400.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 42 *Result=0.00001359  Best=0.00001359   Time=0.5 Seconds  Run Time=401.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 42 *Result=0.00001359  Best=0.00001359   Time=0.5 Seconds  Run Time=401.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 43 *Result=0.00016657  Best=0.00016657   Time=0.5 Seconds  Run Time=403.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 43 *Result=0.00006130  Best=0.00006130   Time=0.5 Seconds  Run Time=404.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 43 *Result=0.00005803  Best=0.00005803   Time=0.5 Seconds  Run Time=404.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 43 *Result=0.00005797  Best=0.00005797   Time=0.5 Seconds  Run Time=405.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 45 *Result=0.00000804  Best=0.00000804   Time=0.5 Seconds  Run Time=407.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 45 *Result=0.00000203  Best=0.00000203   Time=0.5 Seconds  Run Time=408.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 45 *Result=0.00000197  Best=0.00000197   Time=0.5 Seconds  Run Time=408.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 45 *Result=0.00000191  Best=0.00000191   Time=0.5 Seconds  Run Time=409.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 52 *Result=0.00012374  Best=0.00012374   Time=0.5 Seconds  Run Time=417.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 52 *Result=0.00012329  Best=0.00012329   Time=0.5 Seconds  Run Time=418.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 52 *Result=0.00012317  Best=0.00012317   Time=0.5 Seconds  Run Time=418.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 52 *Result=0.00012317  Best=0.00012317   Time=0.5 Seconds  Run Time=419.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 53 *Result=0.00004292  Best=0.00004292   Time=0.5 Seconds  Run Time=421.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 53 *Result=0.00004148  Best=0.00004148   Time=0.5 Seconds  Run Time=421.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 53 *Result=0.00004137  Best=0.00004137   Time=0.5 Seconds  Run Time=422.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 53 *Result=0.00004137  Best=0.00004137   Time=0.5 Seconds  Run Time=422.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 55 *Result=0.00009888  Best=0.00009888   Time=0.5 Seconds  Run Time=425.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 55 *Result=0.00004482  Best=0.00004482   Time=0.5 Seconds  Run Time=426.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 55 *Result=0.00001329  Best=0.00001329   Time=0.5 Seconds  Run Time=426.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 55 *Result=0.00001305  Best=0.00001305   Time=0.5 Seconds  Run Time=427.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 56 *Result=0.00033432  Best=0.00033432   Time=0.5 Seconds  Run Time=428.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 56 *Result=0.00032514  Best=0.00032514   Time=0.5 Seconds  Run Time=429.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 56 *Result=0.00032407  Best=0.00032407   Time=0.5 Seconds  Run Time=429.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 56 *Result=0.00030041  Best=0.00030041   Time=0.5 Seconds  Run Time=430.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 57 *Result=0.00023609  Best=0.00023609   Time=0.5 Seconds  Run Time=431.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 57 *Result=0.00023395  Best=0.00023395   Time=0.6 Seconds  Run Time=432.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 57 *Result=0.00016541  Best=0.00016541   Time=0.5 Seconds  Run Time=433.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 57 *Result=0.00016536  Best=0.00016536   Time=0.6 Seconds  Run Time=433.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 59 *Result=0.00009711  Best=0.00009711   Time=0.5 Seconds  Run Time=436.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 59 *Result=0.00008775  Best=0.00008775   Time=0.5 Seconds  Run Time=436.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 59 *Result=0.00006115  Best=0.00006115   Time=0.5 Seconds  Run Time=437.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 59 *Result=0.00006101  Best=0.00006101   Time=0.6 Seconds  Run Time=438.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 60 *Result=0.00001276  Best=0.00001276   Time=0.5 Seconds  Run Time=439.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 60 *Result=0.00001204  Best=0.00001204   Time=0.6 Seconds  Run Time=440.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 60 *Result=0.00001186  Best=0.00001186   Time=0.5 Seconds  Run Time=440.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 60 *Result=0.00001186  Best=0.00001186   Time=0.5 Seconds  Run Time=441.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 61 *Result=0.00012237  Best=0.00012237   Time=0.5 Seconds  Run Time=443.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 61 *Result=0.00011432  Best=0.00011432   Time=0.5 Seconds  Run Time=443.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 61 *Result=0.00011426  Best=0.00011426   Time=0.5 Seconds  Run Time=444.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 61 *Result=0.00001425  Best=0.00001425   Time=0.5 Seconds  Run Time=444.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 62 *Result=0.00009537  Best=0.00009537   Time=0.5 Seconds  Run Time=446.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 62 *Result=0.00008887  Best=0.00008887   Time=0.5 Seconds  Run Time=446.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 62 *Result=0.00008887  Best=0.00008887   Time=0.5 Seconds  Run Time=447.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 62 *Result=0.00008887  Best=0.00008887   Time=0.5 Seconds  Run Time=447.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 64 *Result=0.00010023  Best=0.00010023   Time=0.5 Seconds  Run Time=450.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 64 *Result=0.00009954  Best=0.00009954   Time=0.5 Seconds  Run Time=451.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 64 *Result=0.00009951  Best=0.00009951   Time=0.5 Seconds  Run Time=451.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 64 *Result=0.00009948  Best=0.00009948   Time=0.5 Seconds  Run Time=452.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 65 *Result=0.00007433  Best=0.00007433   Time=0.5 Seconds  Run Time=454.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 65 *Result=0.00007129  Best=0.00007129   Time=0.5 Seconds  Run Time=454.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 65 *Result=0.00007045  Best=0.00007045   Time=0.5 Seconds  Run Time=455.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 65 *Result=0.00005915  Best=0.00005915   Time=0.5 Seconds  Run Time=455.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 69  Result=0.00016654  Best=0.00016650   Time=0.5 Seconds  Run Time=460.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 69 *Result=0.00016411  Best=0.00016411   Time=0.5 Seconds  Run Time=461.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 69 *Result=0.00016362  Best=0.00016362   Time=0.5 Seconds  Run Time=461.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 69 *Result=0.00016362  Best=0.00016362   Time=0.5 Seconds  Run Time=462.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 71 *Result=0.00002056  Best=0.00002056   Time=0.5 Seconds  Run Time=465.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 71 *Result=0.00001359  Best=0.00001359   Time=0.5 Seconds  Run Time=465.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 71 *Result=0.00001347  Best=0.00001347   Time=0.5 Seconds  Run Time=466.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 71 *Result=0.00001323  Best=0.00001323   Time=0.5 Seconds  Run Time=466.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 73 *Result=0.00005341  Best=0.00005341   Time=0.5 Seconds  Run Time=469.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 73 *Result=0.00001454  Best=0.00001454   Time=0.5 Seconds  Run Time=469.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 73 *Result=0.00001341  Best=0.00001341   Time=0.5 Seconds  Run Time=470.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 73 *Result=0.00001326  Best=0.00001326   Time=0.5 Seconds  Run Time=470.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 75 *Result=0.00005376  Best=0.00005376   Time=0.5 Seconds  Run Time=473.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 75 *Result=0.00003469  Best=0.00003469   Time=0.5 Seconds  Run Time=474.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 75 *Result=0.00003353  Best=0.00003353   Time=0.5 Seconds  Run Time=474.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 75 *Result=0.00003341  Best=0.00003341   Time=0.5 Seconds  Run Time=475.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 79 *Result=0.00019559  Best=0.00019559   Time=0.5 Seconds  Run Time=480.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 79 *Result=0.00018960  Best=0.00018960   Time=0.5 Seconds  Run Time=480.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 79 *Result=0.00018924  Best=0.00018924   Time=0.5 Seconds  Run Time=481.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 79 *Result=0.00018921  Best=0.00018921   Time=0.5 Seconds  Run Time=481.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 81 *Result=0.00007015  Best=0.00007015   Time=0.5 Seconds  Run Time=484.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 81 *Result=0.00004837  Best=0.00004837   Time=0.5 Seconds  Run Time=484.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 81 *Result=0.00004619  Best=0.00004619   Time=0.5 Seconds  Run Time=485.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 81 *Result=0.00002491  Best=0.00002491   Time=0.5 Seconds  Run Time=486.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 83 *Result=0.00010678  Best=0.00010678   Time=0.5 Seconds  Run Time=488.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 83 *Result=0.00010258  Best=0.00010258   Time=0.5 Seconds  Run Time=489.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 83 *Result=0.00008398  Best=0.00008398   Time=0.5 Seconds  Run Time=489.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 83 *Result=0.00007078  Best=0.00007078   Time=0.5 Seconds  Run Time=490.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 85 *Result=0.00005156  Best=0.00005156   Time=0.5 Seconds  Run Time=493.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 85 *Result=0.00002122  Best=0.00002122   Time=0.6 Seconds  Run Time=493.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 85 *Result=0.00002096  Best=0.00002096   Time=0.5 Seconds  Run Time=494.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 85 *Result=0.00002094  Best=0.00002094   Time=0.6 Seconds  Run Time=494.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 86 *Result=0.00004995  Best=0.00004995   Time=0.5 Seconds  Run Time=496.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 86 *Result=0.00004977  Best=0.00004977   Time=0.6 Seconds  Run Time=497.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 86 *Result=0.00004971  Best=0.00004971   Time=0.5 Seconds  Run Time=497.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 86 *Result=0.00004971  Best=0.00004971   Time=0.5 Seconds  Run Time=498.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 87 *Result=0.00001913  Best=0.00001913   Time=0.5 Seconds  Run Time=499.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 87 *Result=0.00001621  Best=0.00001621   Time=0.5 Seconds  Run Time=500.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 87 *Result=0.00001591  Best=0.00001591   Time=0.5 Seconds  Run Time=500.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 87 *Result=0.00001514  Best=0.00001514   Time=0.5 Seconds  Run Time=501.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 89 *Result=0.00003958  Best=0.00003958   Time=0.5 Seconds  Run Time=504.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 89 *Result=0.00003660  Best=0.00003660   Time=0.5 Seconds  Run Time=504.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 89 *Result=0.00002205  Best=0.00002205   Time=0.5 Seconds  Run Time=505.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 89 *Result=0.00002080  Best=0.00002080   Time=0.5 Seconds  Run Time=505.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 90 *Result=0.00005305  Best=0.00005305   Time=0.5 Seconds  Run Time=507.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 90 *Result=0.00004959  Best=0.00004959   Time=0.5 Seconds  Run Time=507.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 90 *Result=0.00004840  Best=0.00004840   Time=0.5 Seconds  Run Time=508.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 92 *Result=0.00010478  Best=0.00010478   Time=0.5 Seconds  Run Time=511.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 92 *Result=0.00010258  Best=0.00010258   Time=0.5 Seconds  Run Time=512.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 92 *Result=0.00010139  Best=0.00010139   Time=0.5 Seconds  Run Time=512.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 92 *Result=0.00010133  Best=0.00010133   Time=0.5 Seconds  Run Time=513.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 93 *Result=0.00003558  Best=0.00003558   Time=0.6 Seconds  Run Time=514.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 93 *Result=0.00001290  Best=0.00001290   Time=0.5 Seconds  Run Time=515.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 93 *Result=0.00001276  Best=0.00001276   Time=0.5 Seconds  Run Time=515.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 93 *Result=0.00001222  Best=0.00001222   Time=0.5 Seconds  Run Time=516.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation= 95  Result=0.00023490  Best=0.00021744   Time=0.5 Seconds  Run Time=519.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation= 95  Result=0.00023086  Best=0.00021744   Time=0.5 Seconds  Run Time=519.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation= 95  Result=0.00023079  Best=0.00021744   Time=0.5 Seconds  Run Time=520.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation= 95  Result=0.00023055  Best=0.00021744   Time=0.5 Seconds  Run Time=520.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=100 *Result=0.00003648  Best=0.00003648   Time=0.6 Seconds  Run Time=527.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=100 *Result=0.00003552  Best=0.00003552   Time=0.5 Seconds  Run Time=527.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=100 *Result=0.00002384  Best=0.00002384   Time=0.6 Seconds  Run Time=528.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=100 *Result=0.00002277  Best=0.00002277   Time=0.5 Seconds  Run Time=528.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=102 *Result=0.00011802  Best=0.00011802   Time=0.5 Seconds  Run Time=531.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=102 *Result=0.00011720  Best=0.00011720   Time=0.5 Seconds  Run Time=532.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=102 *Result=0.00011241  Best=0.00011241   Time=0.5 Seconds  Run Time=532.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=102 *Result=0.00011221  Best=0.00011221   Time=0.5 Seconds  Run Time=533.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=103 *Result=0.00003502  Best=0.00003502   Time=0.6 Seconds  Run Time=534.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=103 *Result=0.00002138  Best=0.00002138   Time=0.5 Seconds  Run Time=535.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=103 *Result=0.00000611  Best=0.00000611   Time=0.6 Seconds  Run Time=535.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=103 *Result=0.00000605  Best=0.00000605   Time=0.5 Seconds  Run Time=536.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=105 *Result=0.00005682  Best=0.00005682   Time=0.5 Seconds  Run Time=539.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=105 *Result=0.00005633  Best=0.00005633   Time=0.5 Seconds  Run Time=539.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=105 *Result=0.00005633  Best=0.00005633   Time=0.5 Seconds  Run Time=540.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=105 *Result=0.00005633  Best=0.00005633   Time=0.5 Seconds  Run Time=540.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=107 *Result=0.00004211  Best=0.00004211   Time=0.5 Seconds  Run Time=543.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=107 *Result=0.00001553  Best=0.00001553   Time=0.5 Seconds  Run Time=544.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=107 *Result=0.00001431  Best=0.00001431   Time=0.5 Seconds  Run Time=544.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=107 *Result=0.00001383  Best=0.00001383   Time=0.5 Seconds  Run Time=545.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=110 *Result=0.00003144  Best=0.00003144   Time=0.5 Seconds  Run Time=549.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=110 *Result=0.00002962  Best=0.00002962   Time=0.5 Seconds  Run Time=549.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=110 *Result=0.00002807  Best=0.00002807   Time=0.5 Seconds  Run Time=550.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=110 *Result=0.00002807  Best=0.00002807   Time=0.5 Seconds  Run Time=551.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=112 *Result=0.00002533  Best=0.00002533   Time=0.5 Seconds  Run Time=553.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=112 *Result=0.00002319  Best=0.00002319   Time=0.5 Seconds  Run Time=554.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=112 *Result=0.00001693  Best=0.00001693   Time=0.5 Seconds  Run Time=554.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=112 *Result=0.00001594  Best=0.00001594   Time=0.5 Seconds  Run Time=555.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=119 *Result=0.00004303  Best=0.00004303   Time=0.5 Seconds  Run Time=563.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=119 *Result=0.00001067  Best=0.00001067   Time=0.5 Seconds  Run Time=564.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=119 *Result=0.00000638  Best=0.00000638   Time=0.5 Seconds  Run Time=564.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=119 *Result=0.00000525  Best=0.00000525   Time=0.5 Seconds  Run Time=565.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=121 *Result=0.00004783  Best=0.00004783   Time=0.5 Seconds  Run Time=568.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=121 *Result=0.00004604  Best=0.00004604   Time=0.5 Seconds  Run Time=568.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=121 *Result=0.00002420  Best=0.00002420   Time=0.6 Seconds  Run Time=569.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=121 *Result=0.00002354  Best=0.00002354   Time=0.5 Seconds  Run Time=569.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=144 *Result=0.00009984  Best=0.00009984   Time=0.5 Seconds  Run Time=596.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=144 *Result=0.00009984  Best=0.00009984   Time=0.5 Seconds  Run Time=597.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=144 *Result=0.00009972  Best=0.00009972   Time=0.5 Seconds  Run Time=597.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=144 *Result=0.00009914  Best=0.00009914   Time=0.5 Seconds  Run Time=598.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=146 *Result=0.00007027  Best=0.00007027   Time=0.5 Seconds  Run Time=601.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=146 *Result=0.00006968  Best=0.00006968   Time=0.5 Seconds  Run Time=601.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=146 *Result=0.00006938  Best=0.00006938   Time=0.5 Seconds  Run Time=602.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=146 *Result=0.00006926  Best=0.00006926   Time=0.5 Seconds  Run Time=602.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=157 *Result=0.00001472  Best=0.00001472   Time=0.5 Seconds  Run Time=616.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=157 *Result=0.00000870  Best=0.00000870   Time=0.5 Seconds  Run Time=616.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=157 *Result=0.00000647  Best=0.00000647   Time=0.5 Seconds  Run Time=617.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=157 *Result=0.00000632  Best=0.00000632   Time=0.5 Seconds  Run Time=617.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=158 *Result=0.00004011  Best=0.00004011   Time=0.5 Seconds  Run Time=619.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=158 *Result=0.00002456  Best=0.00002456   Time=0.5 Seconds  Run Time=619.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=158 *Result=0.00002250  Best=0.00002250   Time=0.5 Seconds  Run Time=620.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=158 *Result=0.00002235  Best=0.00002235   Time=0.5 Seconds  Run Time=620.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=159 *Result=0.00006777  Best=0.00006777   Time=0.5 Seconds  Run Time=622.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=159 *Result=0.00002962  Best=0.00002962   Time=0.5 Seconds  Run Time=623.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=159 *Result=0.00001353  Best=0.00001353   Time=0.5 Seconds  Run Time=623.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=159 *Result=0.00000945  Best=0.00000945   Time=0.5 Seconds  Run Time=624.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=160 *Result=0.00003672  Best=0.00003672   Time=0.5 Seconds  Run Time=625.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=160 *Result=0.00001484  Best=0.00001484   Time=0.5 Seconds  Run Time=626.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=160 *Result=0.00001302  Best=0.00001302   Time=0.5 Seconds  Run Time=627.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=160 *Result=0.00000936  Best=0.00000936   Time=0.5 Seconds  Run Time=627.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=161 *Result=0.00010544  Best=0.00010544   Time=0.5 Seconds  Run Time=629.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=161 *Result=0.00007451  Best=0.00007451   Time=0.5 Seconds  Run Time=629.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=161 *Result=0.00006562  Best=0.00006562   Time=0.5 Seconds  Run Time=630.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=161 *Result=0.00003079  Best=0.00003079   Time=0.5 Seconds  Run Time=630.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=164 *Result=0.00003248  Best=0.00003248   Time=0.5 Seconds  Run Time=635.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=164 *Result=0.00003237  Best=0.00003237   Time=0.5 Seconds  Run Time=635.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=164 *Result=0.00003231  Best=0.00003231   Time=0.5 Seconds  Run Time=636.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=164 *Result=0.00003231  Best=0.00003231   Time=0.5 Seconds  Run Time=636.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=165 *Result=0.00000861  Best=0.00000861   Time=0.5 Seconds  Run Time=638.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=165 *Result=0.00000405  Best=0.00000405   Time=0.5 Seconds  Run Time=638.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=165 *Result=0.00000341  Best=0.00000341   Time=0.5 Seconds  Run Time=639.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=167 *Result=0.00004733  Best=0.00004733   Time=0.5 Seconds  Run Time=642.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=167 *Result=0.00004029  Best=0.00004029   Time=0.5 Seconds  Run Time=643.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=167 *Result=0.00004023  Best=0.00004023   Time=0.5 Seconds  Run Time=644.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=167 *Result=0.00004015  Best=0.00004015   Time=0.5 Seconds  Run Time=644.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=169 *Result=0.00005764  Best=0.00005764   Time=0.5 Seconds  Run Time=647.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=169 *Result=0.00005704  Best=0.00005704   Time=0.5 Seconds  Run Time=648.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=169 *Result=0.00005677  Best=0.00005677   Time=0.5 Seconds  Run Time=648.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=169 *Result=0.00005668  Best=0.00005668   Time=0.5 Seconds  Run Time=649.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=172 *Result=0.00000685  Best=0.00000685   Time=0.5 Seconds  Run Time=653.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=172 *Result=0.00000516  Best=0.00000516   Time=0.5 Seconds  Run Time=653.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=172 *Result=0.00000516  Best=0.00000516   Time=0.5 Seconds  Run Time=654.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=172 *Result=0.00000516  Best=0.00000516   Time=0.5 Seconds  Run Time=654.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=176 *Result=0.00001254  Best=0.00001254   Time=0.5 Seconds  Run Time=660.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=176 *Result=0.00000405  Best=0.00000405   Time=0.5 Seconds  Run Time=660.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=176 *Result=0.00000393  Best=0.00000393   Time=0.5 Seconds  Run Time=661.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=176 *Result=0.00000393  Best=0.00000393   Time=0.5 Seconds  Run Time=661.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=177 *Result=0.00001246  Best=0.00001246   Time=0.5 Seconds  Run Time=663.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=177 *Result=0.00000942  Best=0.00000942   Time=0.5 Seconds  Run Time=664.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=177 *Result=0.00000858  Best=0.00000858   Time=0.5 Seconds  Run Time=664.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=177 *Result=0.00000858  Best=0.00000858   Time=0.5 Seconds  Run Time=665.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=178 *Result=0.00001770  Best=0.00001770   Time=0.5 Seconds  Run Time=667.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=178 *Result=0.00001413  Best=0.00001413   Time=0.5 Seconds  Run Time=667.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=178 *Result=0.00001413  Best=0.00001413   Time=0.5 Seconds  Run Time=668.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=178 *Result=0.00001413  Best=0.00001413   Time=0.5 Seconds  Run Time=668.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=179  Result=0.00030363  Best=0.00007987   Time=0.5 Seconds  Run Time=670.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=179  Result=0.00030357  Best=0.00007987   Time=0.5 Seconds  Run Time=671.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=179  Result=0.00030321  Best=0.00007987   Time=0.5 Seconds  Run Time=671.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=179  Result=0.00030321  Best=0.00007987   Time=0.5 Seconds  Run Time=672.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=181 *Result=0.00006843  Best=0.00006843   Time=0.5 Seconds  Run Time=675.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=181 *Result=0.00006088  Best=0.00006088   Time=0.5 Seconds  Run Time=675.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=181 *Result=0.00006050  Best=0.00006050   Time=0.5 Seconds  Run Time=676.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=181 *Result=0.00006044  Best=0.00006044   Time=0.5 Seconds  Run Time=676.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=182 *Result=0.00000712  Best=0.00000712   Time=0.5 Seconds  Run Time=678.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=182 *Result=0.00000378  Best=0.00000378   Time=0.5 Seconds  Run Time=679.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=182 *Result=0.00000346  Best=0.00000346   Time=0.5 Seconds  Run Time=679.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=182 *Result=0.00000346  Best=0.00000346   Time=0.5 Seconds  Run Time=680.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=183  Result=0.00013080  Best=0.00004453   Time=0.5 Seconds  Run Time=681.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=183  Result=0.00013041  Best=0.00004453   Time=0.5 Seconds  Run Time=682.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=183  Result=0.00013039  Best=0.00004453   Time=0.5 Seconds  Run Time=683.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=183  Result=0.00013024  Best=0.00004453   Time=0.5 Seconds  Run Time=683.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=190  Result=0.00004327  Best=0.00002885   Time=0.5 Seconds  Run Time=693.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=190  Result=0.00004286  Best=0.00002885   Time=0.5 Seconds  Run Time=693.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=190  Result=0.00004220  Best=0.00002885   Time=0.5 Seconds  Run Time=694.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=190  Result=0.00004220  Best=0.00002885   Time=0.5 Seconds  Run Time=694.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=206  Result=0.00005630  Best=0.00003268   Time=0.5 Seconds  Run Time=715.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=206  Result=0.00005561  Best=0.00003268   Time=0.5 Seconds  Run Time=715.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=206  Result=0.00005551  Best=0.00003268   Time=0.5 Seconds  Run Time=716.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=206  Result=0.00005430  Best=0.00003268   Time=0.5 Seconds  Run Time=716.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=207  Result=0.00005513  Best=0.00003188   Time=0.5 Seconds  Run Time=718.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=207 *Result=0.00001606  Best=0.00001606   Time=0.5 Seconds  Run Time=718.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=207 *Result=0.00001606  Best=0.00001606   Time=0.5 Seconds  Run Time=719.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=207 *Result=0.00001606  Best=0.00001606   Time=0.5 Seconds  Run Time=719.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=208  Result=0.00005567  Best=0.00003132   Time=0.5 Seconds  Run Time=721.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=208  Result=0.00005460  Best=0.00003132   Time=0.5 Seconds  Run Time=722.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=208  Result=0.00005460  Best=0.00003132   Time=0.5 Seconds  Run Time=723.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=209  Result=0.00011629  Best=0.00003075   Time=0.5 Seconds  Run Time=725.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=209  Result=0.00011545  Best=0.00003075   Time=0.5 Seconds  Run Time=725.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=209  Result=0.00011545  Best=0.00003075   Time=0.5 Seconds  Run Time=726.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=210  Result=0.00003135  Best=0.00003015   Time=0.5 Seconds  Run Time=728.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=210 *Result=0.00002974  Best=0.00002974   Time=0.5 Seconds  Run Time=729.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=210 *Result=0.00002902  Best=0.00002902   Time=0.5 Seconds  Run Time=729.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=210 *Result=0.00002902  Best=0.00002902   Time=0.5 Seconds  Run Time=730.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=211  Result=0.00007084  Best=0.00002971   Time=0.5 Seconds  Run Time=731.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=211  Result=0.00006843  Best=0.00002971   Time=0.5 Seconds  Run Time=732.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=211  Result=0.00006828  Best=0.00002971   Time=0.5 Seconds  Run Time=733.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=211  Result=0.00004488  Best=0.00002971   Time=0.5 Seconds  Run Time=733.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=212 *Result=0.00001943  Best=0.00001943   Time=0.5 Seconds  Run Time=735.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=212 *Result=0.00001889  Best=0.00001889   Time=0.5 Seconds  Run Time=736.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=212 *Result=0.00001884  Best=0.00001884   Time=0.5 Seconds  Run Time=737.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=213 *Result=0.00002646  Best=0.00002646   Time=0.5 Seconds  Run Time=738.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=213 *Result=0.00002590  Best=0.00002590   Time=0.5 Seconds  Run Time=739.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=213 *Result=0.00002551  Best=0.00002551   Time=0.5 Seconds  Run Time=739.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=213 *Result=0.00001740  Best=0.00001740   Time=0.5 Seconds  Run Time=740.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=214 *Result=0.00001937  Best=0.00001937   Time=0.5 Seconds  Run Time=742.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=214 *Result=0.00001934  Best=0.00001934   Time=0.5 Seconds  Run Time=742.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=214 *Result=0.00001934  Best=0.00001934   Time=0.5 Seconds  Run Time=743.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=214 *Result=0.00001934  Best=0.00001934   Time=0.5 Seconds  Run Time=743.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=216  Result=0.00009730  Best=0.00005431   Time=0.5 Seconds  Run Time=746.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=216  Result=0.00007820  Best=0.00005431   Time=0.5 Seconds  Run Time=747.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=216  Result=0.00006229  Best=0.00005431   Time=0.5 Seconds  Run Time=748.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=217 *Result=0.00001192  Best=0.00001192   Time=0.5 Seconds  Run Time=750.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=217 *Result=0.00000811  Best=0.00000811   Time=0.5 Seconds  Run Time=750.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=217 *Result=0.00000793  Best=0.00000793   Time=0.5 Seconds  Run Time=751.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=217 *Result=0.00000793  Best=0.00000793   Time=0.5 Seconds  Run Time=751.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=218 *Result=0.00001884  Best=0.00001884   Time=0.5 Seconds  Run Time=753.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=218 *Result=0.00001872  Best=0.00001872   Time=0.5 Seconds  Run Time=754.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=218 *Result=0.00001872  Best=0.00001872   Time=0.5 Seconds  Run Time=754.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=218 *Result=0.00001872  Best=0.00001872   Time=0.5 Seconds  Run Time=755.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=219 *Result=0.00002873  Best=0.00002873   Time=0.5 Seconds  Run Time=757.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=219 *Result=0.00002873  Best=0.00002873   Time=0.5 Seconds  Run Time=757.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=219 *Result=0.00002861  Best=0.00002861   Time=0.5 Seconds  Run Time=758.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=219 *Result=0.00002861  Best=0.00002861   Time=0.5 Seconds  Run Time=758.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=220 *Result=0.00004309  Best=0.00004309   Time=0.5 Seconds  Run Time=760.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=220 *Result=0.00004204  Best=0.00004204   Time=0.5 Seconds  Run Time=760.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=220 *Result=0.00004180  Best=0.00004180   Time=0.5 Seconds  Run Time=761.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=220 *Result=0.00004180  Best=0.00004180   Time=0.5 Seconds  Run Time=762.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=222 *Result=0.00001174  Best=0.00001174   Time=0.5 Seconds  Run Time=765.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=222 *Result=0.00001156  Best=0.00001156   Time=0.5 Seconds  Run Time=765.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=222 *Result=0.00001156  Best=0.00001156   Time=0.5 Seconds  Run Time=766.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=222 *Result=0.00001156  Best=0.00001156   Time=0.5 Seconds  Run Time=766.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=223 *Result=0.00001413  Best=0.00001413   Time=0.5 Seconds  Run Time=768.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=223 *Result=0.00000852  Best=0.00000852   Time=0.5 Seconds  Run Time=769.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=223 *Result=0.00000840  Best=0.00000840   Time=0.5 Seconds  Run Time=769.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=223 *Result=0.00000840  Best=0.00000840   Time=0.5 Seconds  Run Time=770.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=224  Result=0.00009835  Best=0.00002257   Time=0.5 Seconds  Run Time=771.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=224  Result=0.00008979  Best=0.00002257   Time=0.5 Seconds  Run Time=772.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=224  Result=0.00008866  Best=0.00002257   Time=0.5 Seconds  Run Time=772.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=224  Result=0.00008863  Best=0.00002257   Time=0.5 Seconds  Run Time=773.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=225 *Result=0.00001060  Best=0.00001060   Time=0.5 Seconds  Run Time=775.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=225 *Result=0.00000852  Best=0.00000852   Time=0.5 Seconds  Run Time=775.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=225 *Result=0.00000727  Best=0.00000727   Time=0.5 Seconds  Run Time=776.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=225 *Result=0.00000721  Best=0.00000721   Time=0.5 Seconds  Run Time=776.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=227  Result=0.00007668  Best=0.00001923   Time=0.5 Seconds  Run Time=779.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=227  Result=0.00007653  Best=0.00001923   Time=0.5 Seconds  Run Time=780.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=227  Result=0.00007647  Best=0.00001923   Time=0.5 Seconds  Run Time=781.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=227  Result=0.00007629  Best=0.00001923   Time=0.5 Seconds  Run Time=781.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=229 *Result=0.00003341  Best=0.00003341   Time=0.5 Seconds  Run Time=784.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=229 *Result=0.00003278  Best=0.00003278   Time=0.5 Seconds  Run Time=785.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=229 *Result=0.00003207  Best=0.00003207   Time=0.5 Seconds  Run Time=785.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=229 *Result=0.00003207  Best=0.00003207   Time=0.5 Seconds  Run Time=786.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=230  Result=0.00011519  Best=0.00007394   Time=0.5 Seconds  Run Time=788.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=230  Result=0.00011489  Best=0.00007394   Time=0.5 Seconds  Run Time=788.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=230  Result=0.00011486  Best=0.00007394   Time=0.5 Seconds  Run Time=789.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=230  Result=0.00011483  Best=0.00007394   Time=0.5 Seconds  Run Time=789.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=231  Result=0.00012249  Best=0.00007278   Time=0.5 Seconds  Run Time=791.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=231  Result=0.00012204  Best=0.00007278   Time=0.5 Seconds  Run Time=791.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=231  Result=0.00012159  Best=0.00007278   Time=0.5 Seconds  Run Time=792.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=231  Result=0.00012124  Best=0.00007278   Time=0.5 Seconds  Run Time=792.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=232  Result=0.00012565  Best=0.00007154   Time=0.5 Seconds  Run Time=794.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=232  Result=0.00012535  Best=0.00007154   Time=0.5 Seconds  Run Time=795.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=232  Result=0.00012535  Best=0.00007154   Time=0.5 Seconds  Run Time=795.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=232  Result=0.00012535  Best=0.00007154   Time=0.5 Seconds  Run Time=796.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=233  Result=0.00011283  Best=0.00007100   Time=0.5 Seconds  Run Time=798.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=233  Result=0.00011125  Best=0.00007100   Time=0.5 Seconds  Run Time=798.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=233  Result=0.00011107  Best=0.00007100   Time=0.5 Seconds  Run Time=799.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=233  Result=0.00011101  Best=0.00007100   Time=0.5 Seconds  Run Time=799.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=234  Result=0.00009835  Best=0.00005129   Time=0.5 Seconds  Run Time=801.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=234  Result=0.00009781  Best=0.00005129   Time=0.5 Seconds  Run Time=802.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=234  Result=0.00009781  Best=0.00005129   Time=0.5 Seconds  Run Time=803.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=236  Result=0.00011861  Best=0.00006135   Time=0.5 Seconds  Run Time=806.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=236 *Result=0.00004274  Best=0.00004274   Time=0.5 Seconds  Run Time=806.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=236 *Result=0.00003517  Best=0.00003517   Time=0.5 Seconds  Run Time=807.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=236 *Result=0.00003517  Best=0.00003517   Time=0.5 Seconds  Run Time=807.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=237 *Result=0.00001264  Best=0.00001264   Time=0.5 Seconds  Run Time=809.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=237 *Result=0.00001013  Best=0.00001013   Time=0.5 Seconds  Run Time=810.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=237 *Result=0.00000998  Best=0.00000998   Time=0.5 Seconds  Run Time=810.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=237 *Result=0.00000998  Best=0.00000998   Time=0.5 Seconds  Run Time=811.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=238 *Result=0.00002968  Best=0.00002968   Time=0.5 Seconds  Run Time=812.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=238 *Result=0.00002348  Best=0.00002348   Time=0.5 Seconds  Run Time=813.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=238 *Result=0.00002345  Best=0.00002345   Time=0.5 Seconds  Run Time=813.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=238 *Result=0.00002345  Best=0.00002345   Time=0.5 Seconds  Run Time=814.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=239  Result=0.00008929  Best=0.00002932   Time=0.5 Seconds  Run Time=816.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=239  Result=0.00008893  Best=0.00002932   Time=0.5 Seconds  Run Time=816.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=239  Result=0.00008845  Best=0.00002932   Time=0.5 Seconds  Run Time=817.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=239  Result=0.00006932  Best=0.00002932   Time=0.5 Seconds  Run Time=817.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=240  Result=0.00003883  Best=0.00002372   Time=0.5 Seconds  Run Time=819.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=240 *Result=0.00000238  Best=0.00000238   Time=0.5 Seconds  Run Time=820.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=240 *Result=0.00000191  Best=0.00000191   Time=0.5 Seconds  Run Time=820.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=240 *Result=0.00000143  Best=0.00000143   Time=0.5 Seconds  Run Time=821.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=241  Result=0.00003952  Best=0.00002054   Time=0.5 Seconds  Run Time=823.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=241  Result=0.00003493  Best=0.00002054   Time=0.5 Seconds  Run Time=823.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=241  Result=0.00003493  Best=0.00002054   Time=0.5 Seconds  Run Time=824.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=241  Result=0.00003315  Best=0.00002054   Time=0.5 Seconds  Run Time=824.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=242 *Result=0.00001198  Best=0.00001198   Time=0.5 Seconds  Run Time=826.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=242 *Result=0.00001177  Best=0.00001177   Time=0.5 Seconds  Run Time=826.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=242 *Result=0.00001174  Best=0.00001174   Time=0.5 Seconds  Run Time=827.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=242 *Result=0.00001174  Best=0.00001174   Time=0.5 Seconds  Run Time=827.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=243 *Result=0.00001189  Best=0.00001189   Time=0.5 Seconds  Run Time=829.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=243 *Result=0.00000894  Best=0.00000894   Time=0.5 Seconds  Run Time=830.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=243 *Result=0.00000706  Best=0.00000706   Time=0.5 Seconds  Run Time=830.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=243 *Result=0.00000703  Best=0.00000703   Time=0.5 Seconds  Run Time=831.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=244  Result=0.00002739  Best=0.00001577   Time=0.5 Seconds  Run Time=833.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=244  Result=0.00002712  Best=0.00001577   Time=0.5 Seconds  Run Time=833.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=244  Result=0.00002205  Best=0.00001577   Time=0.5 Seconds  Run Time=834.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=244  Result=0.00002196  Best=0.00001577   Time=0.5 Seconds  Run Time=834.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=246 *Result=0.00001395  Best=0.00001395   Time=0.5 Seconds  Run Time=837.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=246 *Result=0.00001395  Best=0.00001395   Time=0.5 Seconds  Run Time=838.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=246 *Result=0.00001395  Best=0.00001395   Time=0.5 Seconds  Run Time=838.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=246 *Result=0.00001344  Best=0.00001344   Time=0.5 Seconds  Run Time=839.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=247 *Result=0.00001085  Best=0.00001085   Time=0.5 Seconds  Run Time=841.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=247 *Result=0.00001013  Best=0.00001013   Time=0.5 Seconds  Run Time=841.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=247 *Result=0.00000611  Best=0.00000611   Time=0.5 Seconds  Run Time=842.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=247 *Result=0.00000596  Best=0.00000596   Time=0.5 Seconds  Run Time=842.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=248  Result=0.00003445  Best=0.00003214   Time=0.5 Seconds  Run Time=844.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=248  Result=0.00003374  Best=0.00003214   Time=0.5 Seconds  Run Time=845.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=248  Result=0.00003374  Best=0.00003214   Time=0.5 Seconds  Run Time=845.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=248  Result=0.00003374  Best=0.00003214   Time=0.5 Seconds  Run Time=846.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=249  Result=0.00014794  Best=0.00002964   Time=0.5 Seconds  Run Time=847.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=249  Result=0.00014767  Best=0.00002964   Time=0.5 Seconds  Run Time=848.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=249  Result=0.00014758  Best=0.00002964   Time=0.5 Seconds  Run Time=848.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=249  Result=0.00014758  Best=0.00002964   Time=0.5 Seconds  Run Time=849.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=250 *Result=0.00001287  Best=0.00001287   Time=0.5 Seconds  Run Time=851.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=250 *Result=0.00001109  Best=0.00001109   Time=0.5 Seconds  Run Time=851.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=250 *Result=0.00001079  Best=0.00001079   Time=0.5 Seconds  Run Time=852.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=251  Result=0.00004002  Best=0.00002549   Time=0.5 Seconds  Run Time=854.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=251  Result=0.00003958  Best=0.00002549   Time=0.5 Seconds  Run Time=855.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=251  Result=0.00003952  Best=0.00002549   Time=0.5 Seconds  Run Time=855.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=251  Result=0.00003946  Best=0.00002549   Time=0.5 Seconds  Run Time=856.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=252  Result=0.00007725  Best=0.00002403   Time=0.5 Seconds  Run Time=858.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=252  Result=0.00007719  Best=0.00002403   Time=0.5 Seconds  Run Time=858.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=252  Result=0.00007719  Best=0.00002403   Time=0.5 Seconds  Run Time=859.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=252  Result=0.00007719  Best=0.00002403   Time=0.5 Seconds  Run Time=859.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=253  Result=0.00009197  Best=0.00002357   Time=0.5 Seconds  Run Time=861.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=253  Result=0.00009170  Best=0.00002357   Time=0.5 Seconds  Run Time=861.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=253  Result=0.00009170  Best=0.00002357   Time=0.5 Seconds  Run Time=862.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=253  Result=0.00009170  Best=0.00002357   Time=0.5 Seconds  Run Time=862.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=254  Result=0.00003338  Best=0.00002339   Time=0.5 Seconds  Run Time=864.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=254  Result=0.00003296  Best=0.00002339   Time=0.5 Seconds  Run Time=865.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=254  Result=0.00003296  Best=0.00002339   Time=0.5 Seconds  Run Time=865.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=254  Result=0.00003296  Best=0.00002339   Time=0.5 Seconds  Run Time=866.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=256 *Result=0.00001472  Best=0.00001472   Time=0.5 Seconds  Run Time=869.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=256 *Result=0.00000978  Best=0.00000978   Time=0.5 Seconds  Run Time=869.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=256 *Result=0.00000930  Best=0.00000930   Time=0.5 Seconds  Run Time=870.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=256 *Result=0.00000921  Best=0.00000921   Time=0.5 Seconds  Run Time=871.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=257 *Result=0.00002515  Best=0.00002515   Time=0.5 Seconds  Run Time=872.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=257 *Result=0.00001645  Best=0.00001645   Time=0.5 Seconds  Run Time=873.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=257 *Result=0.00001639  Best=0.00001639   Time=0.5 Seconds  Run Time=873.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=257 *Result=0.00001639  Best=0.00001639   Time=0.5 Seconds  Run Time=874.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=258 *Result=0.00000507  Best=0.00000507   Time=0.5 Seconds  Run Time=876.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=258 *Result=0.00000226  Best=0.00000226   Time=0.5 Seconds  Run Time=876.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=258 *Result=0.00000226  Best=0.00000226   Time=0.5 Seconds  Run Time=877.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=258 *Result=0.00000226  Best=0.00000226   Time=0.5 Seconds  Run Time=877.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=259 *Result=0.00001901  Best=0.00001901   Time=0.5 Seconds  Run Time=879.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=259 *Result=0.00001806  Best=0.00001806   Time=0.5 Seconds  Run Time=880.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=259 *Result=0.00001806  Best=0.00001806   Time=0.5 Seconds  Run Time=880.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=259 *Result=0.00001478  Best=0.00001478   Time=0.5 Seconds  Run Time=881.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=260 *Result=0.00000161  Best=0.00000161   Time=0.5 Seconds  Run Time=883.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=260 *Result=0.00000155  Best=0.00000155   Time=0.5 Seconds  Run Time=883.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=260 *Result=0.00000155  Best=0.00000155   Time=0.5 Seconds  Run Time=884.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=260 *Result=0.00000155  Best=0.00000155   Time=0.5 Seconds  Run Time=884.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=261  Result=0.00002244  Best=0.00002093   Time=0.5 Seconds  Run Time=886.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=261  Result=0.00002196  Best=0.00002093   Time=0.5 Seconds  Run Time=887.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=261  Result=0.00002193  Best=0.00002093   Time=0.5 Seconds  Run Time=887.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=261  Result=0.00002176  Best=0.00002093   Time=0.5 Seconds  Run Time=888.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=262  Result=0.00002664  Best=0.00001991   Time=0.5 Seconds  Run Time=889.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=262  Result=0.00002652  Best=0.00001991   Time=0.5 Seconds  Run Time=890.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=262  Result=0.00002652  Best=0.00001991   Time=0.5 Seconds  Run Time=890.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=262  Result=0.00002652  Best=0.00001991   Time=0.5 Seconds  Run Time=891.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=263  Result=0.00006217  Best=0.00001991   Time=0.5 Seconds  Run Time=893.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=263  Result=0.00003442  Best=0.00001991   Time=0.5 Seconds  Run Time=893.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=263  Result=0.00003415  Best=0.00001991   Time=0.5 Seconds  Run Time=894.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=263  Result=0.00003406  Best=0.00001991   Time=0.5 Seconds  Run Time=894.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=265  Result=0.00003922  Best=0.00003765   Time=0.5 Seconds  Run Time=898.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=265 *Result=0.00003365  Best=0.00003365   Time=0.5 Seconds  Run Time=898.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=265 *Result=0.00003335  Best=0.00003335   Time=0.5 Seconds  Run Time=899.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=265 *Result=0.00003335  Best=0.00003335   Time=0.5 Seconds  Run Time=899.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=266 *Result=0.00001955  Best=0.00001955   Time=0.5 Seconds  Run Time=901.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=266 *Result=0.00001392  Best=0.00001392   Time=0.5 Seconds  Run Time=901.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=266 *Result=0.00001386  Best=0.00001386   Time=0.5 Seconds  Run Time=902.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=266 *Result=0.00001384  Best=0.00001384   Time=0.5 Seconds  Run Time=903.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=267 *Result=0.00000653  Best=0.00000653   Time=0.5 Seconds  Run Time=904.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=267 *Result=0.00000441  Best=0.00000441   Time=0.5 Seconds  Run Time=905.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=267 *Result=0.00000441  Best=0.00000441   Time=0.5 Seconds  Run Time=905.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=267 *Result=0.00000441  Best=0.00000441   Time=0.5 Seconds  Run Time=906.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=269  Result=0.00008506  Best=0.00003939   Time=0.5 Seconds  Run Time=909.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=269  Result=0.00008458  Best=0.00003939   Time=0.5 Seconds  Run Time=910.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=269  Result=0.00008458  Best=0.00003939   Time=0.5 Seconds  Run Time=910.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=269  Result=0.00008458  Best=0.00003939   Time=0.5 Seconds  Run Time=911.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=271 *Result=0.00000718  Best=0.00000718   Time=0.5 Seconds  Run Time=914.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=271 *Result=0.00000653  Best=0.00000653   Time=0.5 Seconds  Run Time=914.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=271 *Result=0.00000653  Best=0.00000653   Time=0.5 Seconds  Run Time=915.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=271 *Result=0.00000653  Best=0.00000653   Time=0.5 Seconds  Run Time=915.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=272  Result=0.00004318  Best=0.00004160   Time=0.5 Seconds  Run Time=917.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=272  Result=0.00004187  Best=0.00004160   Time=0.5 Seconds  Run Time=918.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=272  Result=0.00004187  Best=0.00004160   Time=0.5 Seconds  Run Time=919.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=273 *Result=0.00000691  Best=0.00000691   Time=0.5 Seconds  Run Time=921.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=273 *Result=0.00000376  Best=0.00000376   Time=0.5 Seconds  Run Time=921.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=273 *Result=0.00000361  Best=0.00000361   Time=0.5 Seconds  Run Time=922.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=273 *Result=0.00000361  Best=0.00000361   Time=0.5 Seconds  Run Time=922.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=274 *Result=0.00001472  Best=0.00001472   Time=0.5 Seconds  Run Time=924.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=274 *Result=0.00001448  Best=0.00001448   Time=0.5 Seconds  Run Time=924.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=274 *Result=0.00001448  Best=0.00001448   Time=0.5 Seconds  Run Time=925.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=275  Result=0.00002697  Best=0.00002654   Time=0.5 Seconds  Run Time=927.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=275 *Result=0.00002545  Best=0.00002545   Time=0.5 Seconds  Run Time=928.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=275 *Result=0.00002009  Best=0.00002009   Time=0.5 Seconds  Run Time=928.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=275 *Result=0.00002009  Best=0.00002009   Time=0.5 Seconds  Run Time=929.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=276 *Result=0.00000995  Best=0.00000995   Time=0.5 Seconds  Run Time=931.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=276 *Result=0.00000983  Best=0.00000983   Time=0.5 Seconds  Run Time=931.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=276 *Result=0.00000983  Best=0.00000983   Time=0.5 Seconds  Run Time=932.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=276 *Result=0.00000983  Best=0.00000983   Time=0.5 Seconds  Run Time=932.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=277 *Result=0.00002104  Best=0.00002104   Time=0.5 Seconds  Run Time=934.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=277 *Result=0.00001639  Best=0.00001639   Time=0.5 Seconds  Run Time=935.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=277 *Result=0.00001571  Best=0.00001571   Time=0.5 Seconds  Run Time=935.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=277 *Result=0.00001556  Best=0.00001556   Time=0.5 Seconds  Run Time=936.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=278 *Result=0.00002050  Best=0.00002050   Time=0.5 Seconds  Run Time=938.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=278 *Result=0.00001985  Best=0.00001985   Time=0.5 Seconds  Run Time=938.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=278 *Result=0.00001985  Best=0.00001985   Time=0.5 Seconds  Run Time=939.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=278 *Result=0.00001985  Best=0.00001985   Time=0.5 Seconds  Run Time=939.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=279  Result=0.00002583  Best=0.00002046   Time=0.5 Seconds  Run Time=941.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=279  Result=0.00002274  Best=0.00002046   Time=0.5 Seconds  Run Time=942.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=279  Result=0.00002274  Best=0.00002046   Time=0.5 Seconds  Run Time=942.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=279  Result=0.00002274  Best=0.00002046   Time=0.5 Seconds  Run Time=943.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=280  Result=0.00004369  Best=0.00001908   Time=0.5 Seconds  Run Time=944.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=280  Result=0.00004166  Best=0.00001908   Time=0.5 Seconds  Run Time=945.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=280  Result=0.00004151  Best=0.00001908   Time=0.5 Seconds  Run Time=945.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=280  Result=0.00004148  Best=0.00001908   Time=0.5 Seconds  Run Time=946.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=281 *Result=0.00001576  Best=0.00001576   Time=0.5 Seconds  Run Time=948.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=281 *Result=0.00001401  Best=0.00001401   Time=0.5 Seconds  Run Time=948.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=281 *Result=0.00001379  Best=0.00001379   Time=0.5 Seconds  Run Time=949.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=281 *Result=0.00000864  Best=0.00000864   Time=0.5 Seconds  Run Time=949.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=282 *Result=0.00001079  Best=0.00001079   Time=0.5 Seconds  Run Time=951.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=282 *Result=0.00001073  Best=0.00001073   Time=0.5 Seconds  Run Time=952.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=282 *Result=0.00001067  Best=0.00001067   Time=0.5 Seconds  Run Time=952.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=282 *Result=0.00001067  Best=0.00001067   Time=0.5 Seconds  Run Time=953.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=283  Result=0.00006198  Best=0.00001697   Time=0.5 Seconds  Run Time=955.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=283  Result=0.00005895  Best=0.00001697   Time=0.5 Seconds  Run Time=955.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=283  Result=0.00004631  Best=0.00001697   Time=0.5 Seconds  Run Time=956.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=283  Result=0.00004435  Best=0.00001697   Time=0.5 Seconds  Run Time=956.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=284  Result=0.00007015  Best=0.00001448   Time=0.5 Seconds  Run Time=958.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=284  Result=0.00006670  Best=0.00001448   Time=0.5 Seconds  Run Time=959.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=284  Result=0.00006655  Best=0.00001448   Time=0.5 Seconds  Run Time=959.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=284  Result=0.00006655  Best=0.00001448   Time=0.5 Seconds  Run Time=960.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=285  Result=0.00001729  Best=0.00001246   Time=0.5 Seconds  Run Time=961.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=285  Result=0.00001708  Best=0.00001246   Time=0.5 Seconds  Run Time=962.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=285  Result=0.00001693  Best=0.00001246   Time=0.5 Seconds  Run Time=962.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=285  Result=0.00001693  Best=0.00001246   Time=0.5 Seconds  Run Time=963.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=289  Result=0.00002388  Best=0.00001665   Time=0.5 Seconds  Run Time=969.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=289  Result=0.00002223  Best=0.00001665   Time=0.5 Seconds  Run Time=969.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=289  Result=0.00002219  Best=0.00001665   Time=0.5 Seconds  Run Time=970.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=289  Result=0.00002218  Best=0.00001665   Time=0.5 Seconds  Run Time=970.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=290 *Result=0.00001237  Best=0.00001237   Time=0.5 Seconds  Run Time=972.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=290 *Result=0.00001222  Best=0.00001222   Time=0.5 Seconds  Run Time=973.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=290 *Result=0.00001195  Best=0.00001195   Time=0.5 Seconds  Run Time=973.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=290 *Result=0.00001186  Best=0.00001186   Time=0.5 Seconds  Run Time=974.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=291  Result=0.00002718  Best=0.00001260   Time=0.5 Seconds  Run Time=975.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=291  Result=0.00002709  Best=0.00001260   Time=0.5 Seconds  Run Time=976.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=291  Result=0.00002709  Best=0.00001260   Time=0.5 Seconds  Run Time=976.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=291  Result=0.00002709  Best=0.00001260   Time=0.5 Seconds  Run Time=977.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=292  Result=0.00001830  Best=0.00001112   Time=0.5 Seconds  Run Time=979.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=292  Result=0.00001651  Best=0.00001112   Time=0.5 Seconds  Run Time=979.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=292  Result=0.00001562  Best=0.00001112   Time=0.5 Seconds  Run Time=980.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=292  Result=0.00001541  Best=0.00001112   Time=0.5 Seconds  Run Time=980.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=297 *Result=0.00001055  Best=0.00001055   Time=0.5 Seconds  Run Time=987.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=297 *Result=0.00000560  Best=0.00000560   Time=0.5 Seconds  Run Time=988.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=297 *Result=0.00000560  Best=0.00000560   Time=0.5 Seconds  Run Time=989.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=298 *Result=0.00001574  Best=0.00001574   Time=0.5 Seconds  Run Time=991.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=298 *Result=0.00000930  Best=0.00000930   Time=0.5 Seconds  Run Time=991.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=298 *Result=0.00000834  Best=0.00000834   Time=0.5 Seconds  Run Time=992.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=298 *Result=0.00000823  Best=0.00000823   Time=0.5 Seconds  Run Time=992.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=299  Result=0.00007114  Best=0.00002597   Time=0.5 Seconds  Run Time=994.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=299 *Result=0.00001526  Best=0.00001526   Time=0.5 Seconds  Run Time=995.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=299 *Result=0.00001496  Best=0.00001496   Time=0.5 Seconds  Run Time=995.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=299 *Result=0.00001454  Best=0.00001454   Time=0.5 Seconds  Run Time=996.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=300 *Result=0.00000474  Best=0.00000474   Time=0.5 Seconds  Run Time=998.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=300 *Result=0.00000349  Best=0.00000349   Time=0.5 Seconds  Run Time=998.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=300 *Result=0.00000348  Best=0.00000348   Time=0.5 Seconds  Run Time=999.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=300 *Result=0.00000346  Best=0.00000346   Time=0.5 Seconds  Run Time=999.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=301  Result=0.00004274  Best=0.00002522   Time=0.5 Seconds  Run Time=1001.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=301  Result=0.00002998  Best=0.00002522   Time=0.5 Seconds  Run Time=1001.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=301  Result=0.00002986  Best=0.00002522   Time=0.5 Seconds  Run Time=1002.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=301  Result=0.00002983  Best=0.00002522   Time=0.5 Seconds  Run Time=1002.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=302 *Result=0.00001667  Best=0.00001667   Time=0.5 Seconds  Run Time=1004.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=302 *Result=0.00001633  Best=0.00001633   Time=0.5 Seconds  Run Time=1005.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=302 *Result=0.00001541  Best=0.00001541   Time=0.5 Seconds  Run Time=1005.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=302 *Result=0.00001514  Best=0.00001514   Time=0.5 Seconds  Run Time=1006.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=303 *Result=0.00001538  Best=0.00001538   Time=0.5 Seconds  Run Time=1008.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=303 *Result=0.00001234  Best=0.00001234   Time=0.5 Seconds  Run Time=1008.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=303 *Result=0.00001234  Best=0.00001234   Time=0.5 Seconds  Run Time=1009.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=303 *Result=0.00001228  Best=0.00001228   Time=0.5 Seconds  Run Time=1009.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=304  Result=0.00007224  Best=0.00002324   Time=0.5 Seconds  Run Time=1011.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=304  Result=0.00006732  Best=0.00002324   Time=0.5 Seconds  Run Time=1012.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=304  Result=0.00006628  Best=0.00002324   Time=0.5 Seconds  Run Time=1012.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=304  Result=0.00006610  Best=0.00002324   Time=0.5 Seconds  Run Time=1013.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=305 *Result=0.00000737  Best=0.00000737   Time=0.5 Seconds  Run Time=1014.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=305 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=1015.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=305 *Result=0.00000221  Best=0.00000221   Time=0.5 Seconds  Run Time=1015.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=305 *Result=0.00000209  Best=0.00000209   Time=0.5 Seconds  Run Time=1016.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=306  Result=0.00002545  Best=0.00001988   Time=0.5 Seconds  Run Time=1018.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=306 *Result=0.00001162  Best=0.00001162   Time=0.5 Seconds  Run Time=1018.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=306 *Result=0.00000846  Best=0.00000846   Time=0.5 Seconds  Run Time=1019.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=306 *Result=0.00000829  Best=0.00000829   Time=0.5 Seconds  Run Time=1019.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=307 *Result=0.00000584  Best=0.00000584   Time=0.5 Seconds  Run Time=1021.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=307 *Result=0.00000453  Best=0.00000453   Time=0.5 Seconds  Run Time=1022.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=307 *Result=0.00000444  Best=0.00000444   Time=0.5 Seconds  Run Time=1022.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=307 *Result=0.00000444  Best=0.00000444   Time=0.5 Seconds  Run Time=1023.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=308  Result=0.00002718  Best=0.00001724   Time=0.5 Seconds  Run Time=1024.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=308  Result=0.00002688  Best=0.00001724   Time=0.5 Seconds  Run Time=1025.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=308  Result=0.00002688  Best=0.00001724   Time=0.5 Seconds  Run Time=1026.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=308  Result=0.00002521  Best=0.00001724   Time=0.5 Seconds  Run Time=1026.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=309 *Result=0.00001496  Best=0.00001496   Time=0.5 Seconds  Run Time=1028.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=309 *Result=0.00000406  Best=0.00000406   Time=0.5 Seconds  Run Time=1028.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=309 *Result=0.00000340  Best=0.00000340   Time=0.5 Seconds  Run Time=1029.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=309 *Result=0.00000334  Best=0.00000334   Time=0.5 Seconds  Run Time=1029.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=310 *Result=0.00000823  Best=0.00000823   Time=0.5 Seconds  Run Time=1031.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=310 *Result=0.00000821  Best=0.00000821   Time=0.5 Seconds  Run Time=1032.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=310 *Result=0.00000817  Best=0.00000817   Time=0.5 Seconds  Run Time=1032.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=310 *Result=0.00000817  Best=0.00000817   Time=0.5 Seconds  Run Time=1033.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=311  Result=0.00005668  Best=0.00001422   Time=0.5 Seconds  Run Time=1035.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=311  Result=0.00005412  Best=0.00001422   Time=0.5 Seconds  Run Time=1035.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=311  Result=0.00005358  Best=0.00001422   Time=0.5 Seconds  Run Time=1036.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=311  Result=0.00005341  Best=0.00001422   Time=0.5 Seconds  Run Time=1036.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=0  Generation=312 *Result=0.00000310  Best=0.00000310   Time=0.5 Seconds  Run Time=1038.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=1  Generation=312 *Result=0.00000092  Best=0.00000092   Time=0.6 Seconds  Run Time=1039.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=2  Generation=312 *Result=0.00000080  Best=0.00000080   Time=0.6 Seconds  Run Time=1039.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=11  Optimize=3  Generation=312 *Result=0.00000075  Best=0.00000075   Time=0.6 Seconds  Run Time=1040.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation=  8 *Result=0.00006068  Best=0.00006068   Time=0.5 Seconds  Run Time=1051.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation=  8 *Result=0.00006068  Best=0.00006068   Time=0.5 Seconds  Run Time=1051.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation=  8 *Result=0.00006047  Best=0.00006047   Time=0.5 Seconds  Run Time=1052.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation=  8 *Result=0.00006044  Best=0.00006044   Time=0.5 Seconds  Run Time=1052.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation=  9 *Result=0.00055559  Best=0.00055559   Time=0.5 Seconds  Run Time=1054.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation=  9 *Result=0.00049764  Best=0.00049764   Time=0.5 Seconds  Run Time=1055.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation=  9 *Result=0.00044694  Best=0.00044694   Time=0.5 Seconds  Run Time=1055.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation=  9 *Result=0.00044680  Best=0.00044680   Time=0.5 Seconds  Run Time=1056.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 11 *Result=0.00002551  Best=0.00002551   Time=0.5 Seconds  Run Time=1058.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 11 *Result=0.00000534  Best=0.00000534   Time=0.5 Seconds  Run Time=1059.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 11 *Result=0.00000256  Best=0.00000256   Time=0.5 Seconds  Run Time=1059.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 11 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=1060.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 23 *Result=0.00002563  Best=0.00002563   Time=0.5 Seconds  Run Time=1074.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 23 *Result=0.00000250  Best=0.00000250   Time=0.5 Seconds  Run Time=1075.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 23 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=1075.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 23 *Result=0.00000238  Best=0.00000238   Time=0.5 Seconds  Run Time=1076.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 24 *Result=0.00006253  Best=0.00006253   Time=0.5 Seconds  Run Time=1077.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 24 *Result=0.00006208  Best=0.00006208   Time=0.5 Seconds  Run Time=1078.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 24 *Result=0.00006205  Best=0.00006205   Time=0.5 Seconds  Run Time=1079.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 26 *Result=0.00001383  Best=0.00001383   Time=0.5 Seconds  Run Time=1082.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 26 *Result=0.00000554  Best=0.00000554   Time=0.5 Seconds  Run Time=1082.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 26 *Result=0.00000399  Best=0.00000399   Time=0.5 Seconds  Run Time=1083.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 26 *Result=0.00000292  Best=0.00000292   Time=0.5 Seconds  Run Time=1083.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 28 *Result=0.00006226  Best=0.00006226   Time=0.5 Seconds  Run Time=1086.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 28 *Result=0.00006217  Best=0.00006217   Time=0.5 Seconds  Run Time=1087.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 28 *Result=0.00006217  Best=0.00006217   Time=0.5 Seconds  Run Time=1087.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 28 *Result=0.00006217  Best=0.00006217   Time=0.5 Seconds  Run Time=1088.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 29 *Result=0.00000471  Best=0.00000471   Time=0.5 Seconds  Run Time=1089.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 29 *Result=0.00000246  Best=0.00000246   Time=0.5 Seconds  Run Time=1090.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 29 *Result=0.00000241  Best=0.00000241   Time=0.5 Seconds  Run Time=1090.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 29 *Result=0.00000241  Best=0.00000241   Time=0.5 Seconds  Run Time=1091.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 30 *Result=0.00000677  Best=0.00000677   Time=0.5 Seconds  Run Time=1093.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 30 *Result=0.00000370  Best=0.00000370   Time=0.6 Seconds  Run Time=1093.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 30 *Result=0.00000286  Best=0.00000286   Time=0.5 Seconds  Run Time=1094.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 30 *Result=0.00000271  Best=0.00000271   Time=0.6 Seconds  Run Time=1094.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 33 *Result=0.00002873  Best=0.00002873   Time=0.5 Seconds  Run Time=1098.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 33 *Result=0.00002801  Best=0.00002801   Time=0.5 Seconds  Run Time=1099.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 33 *Result=0.00002795  Best=0.00002795   Time=0.5 Seconds  Run Time=1099.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 33 *Result=0.00002789  Best=0.00002789   Time=0.5 Seconds  Run Time=1100.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 34 *Result=0.00000778  Best=0.00000778   Time=0.5 Seconds  Run Time=1102.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 34 *Result=0.00000411  Best=0.00000411   Time=0.5 Seconds  Run Time=1102.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 34 *Result=0.00000393  Best=0.00000393   Time=0.5 Seconds  Run Time=1103.0 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 34 *Result=0.00000393  Best=0.00000393   Time=0.5 Seconds  Run Time=1103.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 36 *Result=0.00000294  Best=0.00000294   Time=0.5 Seconds  Run Time=1106.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 36 *Result=0.00000262  Best=0.00000262   Time=0.5 Seconds  Run Time=1106.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 36 *Result=0.00000256  Best=0.00000256   Time=0.5 Seconds  Run Time=1107.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 36 *Result=0.00000256  Best=0.00000256   Time=0.5 Seconds  Run Time=1107.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 37 *Result=0.00000632  Best=0.00000632   Time=0.5 Seconds  Run Time=1109.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 37 *Result=0.00000435  Best=0.00000435   Time=0.5 Seconds  Run Time=1110.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 37 *Result=0.00000423  Best=0.00000423   Time=0.5 Seconds  Run Time=1111.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 39 *Result=0.00000530  Best=0.00000530   Time=0.5 Seconds  Run Time=1114.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 39 *Result=0.00000441  Best=0.00000441   Time=0.6 Seconds  Run Time=1114.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 39 *Result=0.00000396  Best=0.00000396   Time=0.5 Seconds  Run Time=1115.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 39 *Result=0.00000298  Best=0.00000298   Time=0.5 Seconds  Run Time=1115.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 40 *Result=0.00000960  Best=0.00000960   Time=0.5 Seconds  Run Time=1117.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 40 *Result=0.00000381  Best=0.00000381   Time=0.5 Seconds  Run Time=1118.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 40 *Result=0.00000381  Best=0.00000381   Time=0.5 Seconds  Run Time=1118.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 41 *Result=0.00000224  Best=0.00000224   Time=0.5 Seconds  Run Time=1120.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 41 *Result=0.00000212  Best=0.00000212   Time=0.5 Seconds  Run Time=1121.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 41 *Result=0.00000203  Best=0.00000203   Time=0.5 Seconds  Run Time=1121.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 41 *Result=0.00000203  Best=0.00000203   Time=0.5 Seconds  Run Time=1122.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 43 *Result=0.00001079  Best=0.00001079   Time=0.5 Seconds  Run Time=1125.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 43 *Result=0.00000477  Best=0.00000477   Time=0.5 Seconds  Run Time=1125.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 43 *Result=0.00000459  Best=0.00000459   Time=0.5 Seconds  Run Time=1126.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 43 *Result=0.00000453  Best=0.00000453   Time=0.5 Seconds  Run Time=1126.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=0  Generation= 45 *Result=0.00000218  Best=0.00000218   Time=0.5 Seconds  Run Time=1129.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=1  Generation= 45 *Result=0.00000033  Best=0.00000033   Time=0.5 Seconds  Run Time=1130.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=2  Generation= 45 *Result=0.00000027  Best=0.00000027   Time=0.5 Seconds  Run Time=1130.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=12  Optimize=3  Generation= 45 *Result=0.00000024  Best=0.00000024   Time=0.5 Seconds  Run Time=1131.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=13  Optimize=0  Generation=  5 *Result=0.00003988  Best=0.00003988   Time=0.5 Seconds  Run Time=1139.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=13  Optimize=1  Generation=  5 *Result=0.00003970  Best=0.00003970   Time=0.5 Seconds  Run Time=1140.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=13  Optimize=2  Generation=  5 *Result=0.00003967  Best=0.00003967   Time=0.5 Seconds  Run Time=1140.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=13  Optimize=3  Generation=  5 *Result=0.00003964  Best=0.00003964   Time=0.5 Seconds  Run Time=1141.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=13  Optimize=0  Generation=  6 *Result=0.00000180  Best=0.00000180   Time=0.5 Seconds  Run Time=1143.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=13  Optimize=1  Generation=  6 *Result=0.00000042  Best=0.00000042   Time=0.5 Seconds  Run Time=1143.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=13  Optimize=2  Generation=  6 *Result=0.00000039  Best=0.00000039   Time=0.5 Seconds  Run Time=1144.3 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=13  Optimize=3  Generation=  6 *Result=0.00000039  Best=0.00000039   Time=0.5 Seconds  Run Time=1144.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=14  Optimize=0  Generation= 11 *Result=0.00000229  Best=0.00000229   Time=0.5 Seconds  Run Time=1161.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=14  Optimize=1  Generation= 11 *Result=0.00000152  Best=0.00000152   Time=0.5 Seconds  Run Time=1162.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=14  Optimize=2  Generation= 11 *Result=0.00000095  Best=0.00000095   Time=0.5 Seconds  Run Time=1162.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=14  Optimize=3  Generation= 11 *Result=0.00000083  Best=0.00000083   Time=0.5 Seconds  Run Time=1163.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=14  Optimize=0  Generation= 16 *Result=0.00000167  Best=0.00000167   Time=0.5 Seconds  Run Time=1170.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=14  Optimize=1  Generation= 16 *Result=0.00000155  Best=0.00000155   Time=0.5 Seconds  Run Time=1171.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=14  Optimize=2  Generation= 16 *Result=0.00000095  Best=0.00000095   Time=0.5 Seconds  Run Time=1171.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=14  Optimize=3  Generation= 16 *Result=0.00000072  Best=0.00000072   Time=0.5 Seconds  Run Time=1172.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=0  Generation=  7 *Result=0.00000387  Best=0.00000387   Time=0.5 Seconds  Run Time=1183.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=1  Generation=  7 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=1184.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=2  Generation=  7 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=1184.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=3  Generation=  7 *Result=0.00000238  Best=0.00000238   Time=0.5 Seconds  Run Time=1185.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=0  Generation=  8 *Result=0.00000256  Best=0.00000256   Time=0.5 Seconds  Run Time=1186.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=1  Generation=  8 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=1187.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=2  Generation=  8 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=1187.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=3  Generation=  8 *Result=0.00000244  Best=0.00000244   Time=0.5 Seconds  Run Time=1188.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=0  Generation= 12 *Result=0.00002265  Best=0.00002265   Time=0.5 Seconds  Run Time=1194.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=1  Generation= 12 *Result=0.00001097  Best=0.00001097   Time=0.5 Seconds  Run Time=1194.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=2  Generation= 12 *Result=0.00001085  Best=0.00001085   Time=0.5 Seconds  Run Time=1195.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=3  Generation= 12 *Result=0.00000376  Best=0.00000376   Time=0.5 Seconds  Run Time=1195.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=0  Generation= 14 *Result=0.00000042  Best=0.00000042   Time=0.5 Seconds  Run Time=1198.7 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=1  Generation= 14 *Result=0.00000042  Best=0.00000042   Time=0.5 Seconds  Run Time=1199.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test=15  Optimize=2  Generation= 14 *Result=0.00000039  Best=0.00000039   Time=0.5 Seconds  Run Time=1199.7 Seconds

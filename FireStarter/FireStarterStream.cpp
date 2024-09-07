@@ -273,7 +273,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             TestedInstructions testedInstructions;
 
             // Evolve the current test.
-            float lastBestResult = evolveSettings.m_startResult;
+            float lastEvolveResult = evolveSettings.m_startResult;
             while (!WillTerminate()) {
                 // Execute the GPU evolve using a single execution unit.
                 evolveExecute->ExecuteEvolve(evolveState);
@@ -283,16 +283,15 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     break;
  
                 // Try optimizing the best state if the new result is better and the evolution has been stuck for a few generations.
-                float bestResult = bestState.MaxResult();
-                if ((bestState.m_age++ > 2) && (bestResult < lastBestResult)) {
-                    FireStarterState optimizeState = bestState;
-                    optimizeState.m_generation = 0;
+                float evolveResult = evolveState.MaxResult();
+                if ((bestState.m_age++ > 2) && (evolveResult != lastEvolveResult)) {
+                    FireStarterState optimizeState = evolveState;
                     optimizeState.Settings().m_passes = 100;
                     optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE_GPU;
                     optimizeState.Settings().m_population *= 32;
                     optimizeState.m_optimize_pass = 0;
                     FireStarterState optimizeBestState = optimizeState;
-                    lastBestResult = bestResult;
+                    lastEvolveResult = evolveResult;
 
                     bool compiled = evolveOptimize->ExecuteCompileEvolver();
                     if (compiled) {
@@ -310,9 +309,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                         }
 
                         // If the optimize pass result was better than the evolve target, accept it and stop evolving.
-                        if (optimizeBestState.m_maxResult <= bestState.Settings().m_evolveTarget) {
+                        if (optimizeBestState.m_maxResult <= optimizeBestState.Settings().m_evolveTarget) {
                             bestState = optimizeBestState;
-                            bestState.m_generation = evolveState.m_generation;
                             break;
                         }
 

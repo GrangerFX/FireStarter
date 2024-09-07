@@ -265,8 +265,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             } else {
                 if (settings.m_units > 1)
                     statusString += Format("  Unit=%u", state.m_index % settings.m_units);
-                statusString += Format("  Generation=%3u", generation);
             }
+            statusString += Format("  Generation=%3u", generation);
             if ((state.m_maxResult == bestResult) && isBestState)
                 statusString += " *";
             else
