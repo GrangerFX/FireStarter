@@ -39,7 +39,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation/variation/member
+    unsigned long long memberSeed = optimizeSeed + SEED12(member); // Unique seed for the generation/variation/member
     FireStarterCode code;
     FireStarterData data;
     unsigned short evolveAge1;
@@ -122,11 +122,11 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         }
 
         // Switch to the selected member's data and results.
-        age = 1;
         if (bestCandidate != member) {
-            age += MAX(evolveAge1, 1);
+            age = MAX(evolveAge1, 1) + 1;
             data = *oldResults->Data(bestCandidate);
-        }
+        } else
+            age = 1;
     }
     newResults->InitMemberResult(data, member, result, age);
 } // Optimizer
@@ -164,6 +164,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
 
     // The first generation is initalized with random numbers.
     if (!evolutionPass) {
+        evolveAge1 = 0;
+        evolveAge2 = 0;
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
@@ -174,17 +176,15 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
                 break;
         }
         memberResult = result;
-        evolveAge2 = 0;
-        evolveAge1 = 0;
     } else if (evolveAge1 >= MAX(evolveAge2, 1000)) {
+        evolveAge1 = 0;
+        evolveAge2 = 0;
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         code = *initCode;
         code.RandomInstruction(codeSeed);
         data.Init(dataSeed, evolutionScale);
         result = memberResult;
-        evolveAge2 = 0;
-        evolveAge1 = 0;
     } else {
         code = oldResults->Code(member);
         data = oldResults->Data(member);

@@ -4,11 +4,11 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 09/07/24 11:57:58 Pacific Daylight Time
-// Run duration = 26.764052 seconds
+// Run date: 09/07/24 13:15:21 Pacific Daylight Time
+// Run duration = 18.913674 seconds
 // Run generation = 0
 // Run evolution = 0
-// Run max result = 0.00000054
+// Run max result = 0.00000024
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -39,41 +39,41 @@
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-// Variation: 0  result = 0.00000054
+// Variation: 0  result = 0.00000024
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -2.670062f;
-    data->d[1] = 2.099474f;
-    data->d[2] = -0.028912f;
-    data->d[3] = -4.488172f;
-    data->d[4] = 1.670723f;
-    data->d[5] = -0.068759f;
-    data->d[6] = 0.623806f;
-    data->d[7] = 0.539345f;
-    data->d[8] = -1.917220f;
-    data->d[9] = 1.838574f;
-    data->d[10] = 0.317704f;
-    data->d[11] = 3.307078f;
-    data->d[12] = 0.076076f;
-    data->d[13] = -1.255273f;
-    data->d[14] = -1.672420f;
-    data->d[15] = 0.422351f;
-    data->d[16] = -1.075246f;
-    data->d[17] = -1.317134f;
-    data->d[18] = 0.889275f;
-    data->d[19] = 1.160866f;
-    data->d[20] = -0.194259f;
-    data->d[21] = -1.408946f;
-    data->d[22] = 4.597544f;
-    data->d[23] = 1.028703f;
-    data->d[24] = -1.883289f;
-    data->d[25] = -1.057983f;
-    data->d[26] = 0.328050f;
-    data->d[27] = -1.107251f;
-    data->d[28] = 1.584742f;
-    data->d[29] = 1.723000f;
-    *(result->MinResult()) = 0.000001f;
+    data->d[0] = -1.395611f;
+    data->d[1] = -2.418495f;
+    data->d[2] = -1.148567f;
+    data->d[3] = 0.560599f;
+    data->d[4] = -1.534899f;
+    data->d[5] = 1.842242f;
+    data->d[6] = 0.272840f;
+    data->d[7] = 1.517890f;
+    data->d[8] = -0.933218f;
+    data->d[9] = -8.755818f;
+    data->d[10] = -0.959543f;
+    data->d[11] = -0.490750f;
+    data->d[12] = 0.039680f;
+    data->d[13] = -0.476351f;
+    data->d[14] = -1.270785f;
+    data->d[15] = -1.426834f;
+    data->d[16] = -3.095858f;
+    data->d[17] = -1.535326f;
+    data->d[18] = -0.957116f;
+    data->d[19] = -2.994206f;
+    data->d[20] = -0.276659f;
+    data->d[21] = -0.761603f;
+    data->d[22] = -4.300557f;
+    data->d[23] = -0.523264f;
+    data->d[24] = 0.777127f;
+    data->d[25] = 0.973371f;
+    data->d[26] = 0.184509f;
+    data->d[27] = -2.804483f;
+    data->d[28] = 0.566631f;
+    data->d[29] = -1.083012f;
+    *(result->MinResult()) = 0.000000f;
 } // LoadVariation0
 
 // END //
@@ -111,7 +111,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation/variation/member
+    unsigned long long memberSeed = optimizeSeed + SEED12(member); // Unique seed for the generation/variation/member
     FireStarterCode code;
     FireStarterData data;
     unsigned short evolveAge1;
@@ -194,11 +194,11 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         }
 
         // Switch to the selected member's data and results.
-        age = 1;
         if (bestCandidate != member) {
-            age += MAX(evolveAge1, 1);
+            age = MAX(evolveAge1, 1) + 1;
             data = *oldResults->Data(bestCandidate);
-        }
+        } else
+            age = 1;
     }
     newResults->InitMemberResult(data, member, result, age);
 } // Optimizer
@@ -236,6 +236,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
 
     // The first generation is initalized with random numbers.
     if (!evolutionPass) {
+        evolveAge1 = 0;
+        evolveAge2 = 0;
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
@@ -246,17 +248,15 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
                 break;
         }
         memberResult = result;
-        evolveAge2 = 0;
-        evolveAge1 = 0;
     } else if (evolveAge1 >= MAX(evolveAge2, 1000)) {
+        evolveAge1 = 0;
+        evolveAge2 = 0;
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         code = *initCode;
         code.RandomInstruction(codeSeed);
         data.Init(dataSeed, evolutionScale);
         result = memberResult;
-        evolveAge2 = 0;
-        evolveAge1 = 0;
     } else {
         code = oldResults->Code(member);
         data = oldResults->Data(member);
