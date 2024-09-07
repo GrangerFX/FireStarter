@@ -88,7 +88,11 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     bool optimizePass = settings.m_mode == FIRESTARTER_OPTIMIZE_GPU;
     unsigned int population = settings.m_population;
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+#if 1
+    unsigned int blocksPerGrid = population;
+#else
     unsigned int blocksPerGrid = optimizePass ? (population + (threadsPerBlock - 1)) / threadsPerBlock : population;
+#endif
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long passes = settings.m_passes;

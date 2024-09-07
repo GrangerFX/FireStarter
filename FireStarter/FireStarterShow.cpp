@@ -279,7 +279,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("BestError=%.8f", bestResult, bestError);
         else if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
             statusString += Format("  EvolveAge1=%u  EvolveAge2=%u", (unsigned int)bestState.Result(0)->EvolveAge1(), (unsigned int)bestState.Result(0)->EvolveAge2());
-        if ((state.PassMode() != FIRESTARTER_OPTIMIZE_CPU) && (state.PassMode() != FIRESTARTER_OPTIMIZE_GPU))
+        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU)))
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.
