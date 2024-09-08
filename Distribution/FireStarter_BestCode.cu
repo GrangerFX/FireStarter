@@ -4,11 +4,11 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 09/08/24 10:13:18 Pacific Daylight Time
-// Run duration = 26.194971 seconds
-// Run generation = 9
+// Run date: 09/08/24 10:15:11 Pacific Daylight Time
+// Run duration = 39.796431 seconds
+// Run generation = 16
 // Run evolution = 0
-// Run max result = 0.00000024
+// Run max result = 0.00000042
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -39,40 +39,40 @@
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-// Variation: 0  result = 0.00000024
+// Variation: 0  result = 0.00000042
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -2.109463f;
-    data->d[1] = -3.069641f;
-    data->d[2] = 1.321161f;
-    data->d[3] = -2.013192f;
-    data->d[4] = 0.367069f;
-    data->d[5] = 1.570413f;
-    data->d[6] = -0.179443f;
-    data->d[7] = 4.650072f;
-    data->d[8] = -0.258354f;
-    data->d[9] = 4.279398f;
-    data->d[10] = 1.838010f;
-    data->d[11] = 4.295312f;
-    data->d[12] = 4.509479f;
-    data->d[13] = 0.721830f;
-    data->d[14] = -0.985456f;
-    data->d[15] = 0.303002f;
-    data->d[16] = -7.688034f;
-    data->d[17] = 0.862936f;
-    data->d[18] = -0.758373f;
-    data->d[19] = 2.124223f;
-    data->d[20] = 0.708733f;
-    data->d[21] = -0.316187f;
-    data->d[22] = -2.007163f;
-    data->d[23] = -0.863719f;
-    data->d[24] = 1.982201f;
-    data->d[25] = -0.991665f;
-    data->d[26] = 0.450878f;
-    data->d[27] = -0.572652f;
-    data->d[28] = -6.546131f;
-    data->d[29] = 0.681398f;
+    data->d[0] = -1.062728f;
+    data->d[1] = -4.070436f;
+    data->d[2] = -0.374876f;
+    data->d[3] = 5.471408f;
+    data->d[4] = 1.023859f;
+    data->d[5] = 2.829650f;
+    data->d[6] = 2.380178f;
+    data->d[7] = -0.698233f;
+    data->d[8] = 0.012966f;
+    data->d[9] = 1.167088f;
+    data->d[10] = -0.394368f;
+    data->d[11] = -2.016583f;
+    data->d[12] = 2.493966f;
+    data->d[13] = -1.747737f;
+    data->d[14] = 0.931235f;
+    data->d[15] = 4.349581f;
+    data->d[16] = 1.190856f;
+    data->d[17] = -1.303352f;
+    data->d[18] = -1.016968f;
+    data->d[19] = 4.040561f;
+    data->d[20] = 0.932981f;
+    data->d[21] = -3.431263f;
+    data->d[22] = -0.615760f;
+    data->d[23] = -0.132999f;
+    data->d[24] = -0.221648f;
+    data->d[25] = 0.115474f;
+    data->d[26] = 1.943064f;
+    data->d[27] = 1.420568f;
+    data->d[28] = 0.696328f;
+    data->d[29] = -0.982345f;
     *(result->MinResult()) = 0.000000f;
 } // LoadVariation0
 
