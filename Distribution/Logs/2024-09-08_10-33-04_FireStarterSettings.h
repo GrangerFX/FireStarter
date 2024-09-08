@@ -17,7 +17,7 @@
 #define FIRESTARTER_EVOLVE_SEED     0
 #define FIRESTARTER_OPTIMIZE_SEED   0
 
-#define FIRESTARTER_START_TEST      0          // The starting test index.
+#define FIRESTARTER_START_TEST      11          // The starting test index.
 #define FIRESTARTER_TESTS           0
 
 #define FIRESTARTER_AUTO            0           // Used to automatically set the mode using CUDA.
