@@ -69,7 +69,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     } else {
         evolveAge1 = oldResults->EvolveAge1(member);
         evolveAge2 = oldResults->EvolveAge2(member);
-        if (evolveAge1 >= MAX(evolveAge2, 128)) {
+//      if (evolveAge1 >= MAX(evolveAge2, 128)) {
+        if (evolveAge1 >= 128) {
             evolveAge1 = 0;
             evolveAge2 = 0;
             memberResult = FIRESTARTER_START_RESULT;
