@@ -4,11 +4,11 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 09/08/24 10:01:27 Pacific Daylight Time
-// Run duration = 247.301610 seconds
-// Run generation = 106
+// Run date: 09/08/24 10:07:01 Pacific Daylight Time
+// Run duration = 79.796901 seconds
+// Run generation = 23
 // Run evolution = 0
-// Run max result = 0.00000028
+// Run max result = 0.00000066
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -39,41 +39,41 @@
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-// Variation: 0  result = 0.00000028
+// Variation: 0  result = 0.00000066
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -3.648210f;
-    data->d[1] = 1.000845f;
-    data->d[2] = -6.396148f;
-    data->d[3] = 0.143208f;
-    data->d[4] = 0.467039f;
-    data->d[5] = 3.666865f;
-    data->d[6] = 2.035313f;
-    data->d[7] = 0.847303f;
-    data->d[8] = -0.202504f;
-    data->d[9] = -1.499659f;
-    data->d[10] = -1.663708f;
-    data->d[11] = -1.311154f;
-    data->d[12] = 5.272488f;
-    data->d[13] = 1.994571f;
-    data->d[14] = 1.060487f;
-    data->d[15] = -0.000000f;
-    data->d[16] = 0.660202f;
-    data->d[17] = -2.417838f;
-    data->d[18] = 8.078904f;
-    data->d[19] = 1.022895f;
-    data->d[20] = 1.882225f;
-    data->d[21] = -1.042831f;
-    data->d[22] = -0.597422f;
-    data->d[23] = 0.068957f;
-    data->d[24] = -1.467246f;
-    data->d[25] = -9.534505f;
-    data->d[26] = 5.654233f;
-    data->d[27] = -0.449277f;
-    data->d[28] = -0.698033f;
-    data->d[29] = -0.994023f;
-    *(result->MinResult()) = 0.000000f;
+    data->d[0] = 3.422163f;
+    data->d[1] = 0.621994f;
+    data->d[2] = -2.794816f;
+    data->d[3] = 0.720356f;
+    data->d[4] = 2.604196f;
+    data->d[5] = -1.749790f;
+    data->d[6] = -2.322306f;
+    data->d[7] = 6.197389f;
+    data->d[8] = -1.859352f;
+    data->d[9] = -0.000001f;
+    data->d[10] = 3.241668f;
+    data->d[11] = 0.308767f;
+    data->d[12] = -0.792221f;
+    data->d[13] = 2.287123f;
+    data->d[14] = -0.546677f;
+    data->d[15] = 0.805248f;
+    data->d[16] = -0.789616f;
+    data->d[17] = -1.356411f;
+    data->d[18] = -0.644759f;
+    data->d[19] = 0.333759f;
+    data->d[20] = 0.164186f;
+    data->d[21] = -0.233181f;
+    data->d[22] = -1.571535f;
+    data->d[23] = 2.057868f;
+    data->d[24] = 1.881187f;
+    data->d[25] = 0.868931f;
+    data->d[26] = 0.439422f;
+    data->d[27] = -2.128500f;
+    data->d[28] = -0.858835f;
+    data->d[29] = -1.380485f;
+    *(result->MinResult()) = 0.000001f;
 } // LoadVariation0
 
 // END //
@@ -141,7 +141,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     } else {
         evolveAge1 = oldResults->EvolveAge1(member);
         evolveAge2 = oldResults->EvolveAge2(member);
-        if (evolveAge1 >= MAX(evolveAge2, 1000)) {
+        if (evolveAge1 >= MAX(evolveAge2, 128)) {
             evolveAge1 = 0;
             evolveAge2 = 0;
             memberResult = FIRESTARTER_START_RESULT;
@@ -157,7 +157,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             evolutionScale = FIRESTARTER_SCALE * memberResult;
             result = memberResult;
         
-            if (evolveAge1 > 100) {
+            if (evolveAge1 > 64) {
                 code.RandomInstruction(codeSeed);
                 data.RandomData(dataSeed, evolutionScale);
             }
