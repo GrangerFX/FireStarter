@@ -191,7 +191,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     }
 
     // Create the settings text.
-    const FireStarterSettings& settings = state.Settings();
+    // Note: Must get the settings from bestState because state can be in optimize mode.
+    const FireStarterSettings& settings = bestState.Settings();
     static std::string settingsText;
     if (settingsText.empty()) {
         FireStarterProgram::SettingsText(settings, settingsText);
@@ -211,7 +212,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     // Create the log file.
     unsigned int test = (unsigned int)state.m_test;
     std::string logPath;
-    if (((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU)) && (settings.m_tests > 0)) {
+    if (settings.m_tests > 0) {
         static std::vector<std::string> logFilePaths;
         if (logFilePaths.empty())
             logFilePaths.resize(FIRESTARTER_START_TEST + settings.m_tests);

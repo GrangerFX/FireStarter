@@ -284,12 +284,12 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
  
                 // Try optimizing the best state if the new result is better and the evolution has been stuck for a few generations.
                 float evolveResult = evolveState.MaxResult();
-                if ((bestState.m_age++ > 2) && (evolveResult < lastEvolveResult)) {
+                float bestResult = bestState.MaxResult();
+                bestState.m_age++;
+                if (((bestState.m_age > 2) && (evolveResult < lastEvolveResult)) || ((bestState.m_age > 8) && (evolveResult != lastEvolveResult))) {
                     FireStarterState optimizeState = evolveState;
-                    optimizeState.Settings().m_passes = 100;
                     optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE_GPU;
                     optimizeState.Settings().m_population *= 32;
-                    optimizeState.m_optimize_pass = 0;
                     FireStarterState optimizeBestState = optimizeState;
                     lastEvolveResult = evolveResult;
 
