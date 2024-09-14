@@ -223,38 +223,95 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 
 class FireStarterSetting {
 public:
-    unsigned int m_variations = FIRESTARTER_VARIATIONS;
-    unsigned int m_samples = FIRESTARTER_SAMPLES;
-    unsigned int m_instructions = FIRESTARTER_INSTRUCTIONS;
-    unsigned int m_registers = FIRESTARTER_REGISTERS;
-    unsigned int m_opcodes = FIRESTARTER_OPCODES;
+    unsigned int m_variations =     FIRESTARTER_VARIATIONS;
+    unsigned int m_samples =        FIRESTARTER_SAMPLES;
+    unsigned int m_instructions =   FIRESTARTER_INSTRUCTIONS;
+    unsigned int m_registers =      FIRESTARTER_REGISTERS;
+    unsigned int m_opcodes =        FIRESTARTER_OPCODES;
     unsigned int m_patternOpcodes = FIRESTARTER_PATTERN_OPCODES;
 
-    float m_targetMin = TARGET_MIN;
-    float m_targetMax = TARGET_MAX;
-    float m_evolveTarget = FIRESTARTER_EVOLVE_TARGET;
+    float m_targetMin =             TARGET_MIN;
+    float m_targetMax =             TARGET_MAX;
+    float m_evolveTarget =          FIRESTARTER_EVOLVE_TARGET;
 
-    float m_scale = FIRESTARTER_SCALE;
-    float m_startScale = FIRESTARTER_START_SCALE;
-    float m_startResult = FIRESTARTER_START_RESULT;
+    float m_scale =                 FIRESTARTER_SCALE;
+    float m_startScale =            FIRESTARTER_START_SCALE;
+    float m_startResult =           FIRESTARTER_START_RESULT;
 
-    unsigned int m_evolveSeed = FIRESTARTER_EVOLVE_SEED;
-    unsigned int m_optimizeSeed = FIRESTARTER_OPTIMIZE_SEED;
+    unsigned int m_evolveSeed =     FIRESTARTER_EVOLVE_SEED;
+    unsigned int m_optimizeSeed =   FIRESTARTER_OPTIMIZE_SEED;
 
-    unsigned int m_tests = FIRESTARTER_TESTS;
+    unsigned int m_tests =          FIRESTARTER_TESTS;
 
-    unsigned int m_mode = FIRESTARTER_MODE;
-    unsigned int m_streams = FIRESTARTER_STREAMS;
-    unsigned int m_units = FIRESTARTER_UNITS;
-    unsigned int m_states = FIRESTARTER_STATES;
-    unsigned int m_generations = FIRESTARTER_GENERATIONS;
-    unsigned int m_population = FIRESTARTER_POPULATION;
-    unsigned int m_iterations = FIRESTARTER_ITERATIONS;
-    unsigned int m_candidates = FIRESTARTER_CANDIDATES;
-    unsigned int m_passes = FIRESTARTER_PASSES;
-    unsigned int m_attempts = FIRESTARTER_ATTEMPTS;
-    unsigned int m_optimize = FIRESTARTER_OPTIMIZE;
-    
+    unsigned int m_mode =           FIRESTARTER_MODE;
+    unsigned int m_streams =        FIRESTARTER_STREAMS;
+    unsigned int m_units =          FIRESTARTER_UNITS;
+    unsigned int m_states =         FIRESTARTER_STATES;
+    unsigned int m_generations =    FIRESTARTER_GENERATIONS;
+    unsigned int m_population =     FIRESTARTER_POPULATION;
+    unsigned int m_iterations =     FIRESTARTER_ITERATIONS;
+    unsigned int m_candidates =     FIRESTARTER_CANDIDATES;
+    unsigned int m_passes =         FIRESTARTER_PASSES;
+    unsigned int m_attempts =       FIRESTARTER_ATTEMPTS;
+    unsigned int m_optimize =       FIRESTARTER_OPTIMIZE;
+
+    static inline const char* Mode(unsigned int mode)
+    {
+        switch (mode) {
+        case FIRESTARTER_RANDOM:
+            return "FIRESTARTER_RANDOM";
+        case FIRESTARTER_EVOLVE_CPU:
+            return "FIRESTARTER_EVOLVE_CPU";
+        case FIRESTARTER_OPTIMIZE_CPU:
+            return "FIRESTARTER_OPTIMIZE_CPU";
+        case FIRESTARTER_EVOLVE_GPU:
+            return "FIRESTARTER_EVOLVE_GPU";
+        case FIRESTARTER_OPTIMIZE_GPU:
+            return "FIRESTARTER_OPTIMIZE_GPU";
+        case FIRESTARTER_SOLUTION:
+            return "FIRESTARTER_SOLUTION";
+        default:
+            return "0";
+        }
+    } // Mode
+
+    inline const char* Mode(void) const
+    {
+        return Mode(m_mode);
+    } // Mode
+
+    inline void CopyCodeSettings(FireStarterSetting& source)
+    {
+        m_variations = source.m_variations;
+        m_samples = source.m_samples;
+        m_instructions = source.m_instructions;
+        m_registers = source.m_registers;
+        m_opcodes = source.m_opcodes;
+        m_patternOpcodes = source.m_patternOpcodes;
+        m_targetMin = source.m_targetMin;
+        m_targetMax = source.m_targetMax;
+    } // CopyCodeSettings
+
+    inline void CopyModeSettings(const FireStarterSetting& source)
+    {
+        m_evolveSeed = source.m_evolveSeed;
+        m_optimizeSeed = source.m_optimizeSeed;
+        m_mode = source.m_mode;
+        m_tests = source.m_tests;
+        m_states = source.m_states;
+        m_units = source.m_units;
+        m_generations = source.m_generations;
+        m_population = source.m_population;
+        m_iterations = source.m_iterations;
+        m_candidates = source.m_candidates;
+        m_passes = source.m_passes;
+        m_attempts = source.m_attempts;
+        m_scale = source.m_scale;
+        m_startScale = source.m_startScale;
+        m_startResult = source.m_startResult;
+        m_optimize = source.m_optimize;
+    } // CopyModeSettings
+
     inline FireStarterSetting(unsigned int mode = FIRESTARTER_AUTO) 
     {
         if (mode == FIRESTARTER_AUTO)
@@ -359,63 +416,6 @@ public:
         FireStarterSetting(FIRESTARTER_OPTIMIZE_CPU),
         FireStarterSetting(FIRESTARTER_EVOLVE_GPU),
         FireStarterSetting(FIRESTARTER_OPTIMIZE_GPU) };
-
-    static inline const char* Mode(unsigned int mode)
-    {
-        switch (mode) {
-            case FIRESTARTER_RANDOM:
-                return "FIRESTARTER_RANDOM";
-            case FIRESTARTER_EVOLVE_CPU:
-                return "FIRESTARTER_EVOLVE_CPU";
-            case FIRESTARTER_OPTIMIZE_CPU:
-                return "FIRESTARTER_OPTIMIZE_CPU";
-            case FIRESTARTER_EVOLVE_GPU:
-                return "FIRESTARTER_EVOLVE_GPU";
-            case FIRESTARTER_OPTIMIZE_GPU:
-                return "FIRESTARTER_OPTIMIZE_GPU";
-            case FIRESTARTER_SOLUTION:
-                return "FIRESTARTER_SOLUTION";
-            default:
-                return "0";
-        }
-    } // Mode
-
-    inline const char* Mode(void) const
-    {
-        return Mode(m_mode);
-    } // Mode
-
-    inline void CopyCodeSettings(FireStarterSettings& source)
-    {
-        m_variations = source.m_variations;
-        m_samples = source.m_samples;
-        m_instructions = source.m_instructions;
-        m_registers = source.m_registers;
-        m_opcodes = source.m_opcodes;
-        m_patternOpcodes = source.m_patternOpcodes;
-        m_targetMin = source.m_targetMin;
-        m_targetMax = source.m_targetMax;
-    } // CopyCodeSettings
-
-    inline void CopyModeSettings(const FireStarterSettings& source)
-    {
-        m_evolveSeed = source.m_evolveSeed;
-        m_optimizeSeed = source.m_optimizeSeed;
-        m_mode = source.m_mode;
-        m_tests = source.m_tests;
-        m_states = source.m_states;
-        m_units = source.m_units;
-        m_generations = source.m_generations;
-        m_population = source.m_population;
-        m_iterations = source.m_iterations;
-        m_candidates = source.m_candidates;
-        m_passes = source.m_passes;
-        m_attempts = source.m_attempts;
-        m_scale = source.m_scale;
-        m_startScale = source.m_startScale;
-        m_startResult = source.m_startResult;
-        m_optimize = source.m_optimize;
-    } // CopyModeSettings
 
     inline const FireStarterSetting& GetSettings(unsigned int mode = FIRESTARTER_AUTO)
     {
