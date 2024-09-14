@@ -4,8 +4,8 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 09/09/24 15:25:29 Pacific Daylight Time
-// Run duration = 12.899566 seconds
+// Run date: 09/14/24 14:51:55 Pacific Daylight Time
+// Run duration = 12.851158 seconds
 // Run generation = 4
 // Run evolution = 0
 // Run max result = 0.00140667
@@ -245,7 +245,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 } // Evolver
 
-GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const FireStarterCode* initCode, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const FireStarterResults* initResults, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -270,7 +270,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     float evolutionScale;
 
     // For the GPU evolve optimize pass, the code is copied from the initial result.
-    code = initCode;
+    code = initResults->Code();
 
     // The shared data for the threads in the warp.
     GPU_SHARED FireStarterSharedData sharedData;

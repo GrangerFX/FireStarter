@@ -173,7 +173,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 } // Evolver
 
-GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const FireStarterCode* initCode, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const FireStarterResults* initResults, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -198,7 +198,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     float evolutionScale;
 
     // For the GPU evolve optimize pass, the code is copied from the initial result.
-    code = initCode;
+    code = initResults->Code();
 
     // The shared data for the threads in the warp.
     GPU_SHARED FireStarterSharedData sharedData;
