@@ -161,8 +161,11 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex);
     *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex);
     *result->MinResult() = minResult;
+    state.m_minIndex = minIndex;
 
     // Set the state's max result.
+    if (!optimizePass)
+        state.m_oldResult = state.m_maxResult;
     state.m_maxResult = state.MaxResult();
     state.m_optimizeValid = true;
 

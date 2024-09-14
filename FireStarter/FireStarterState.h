@@ -50,6 +50,7 @@ public:
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
     unsigned long long m_optimize_pass = 0;
+    unsigned int m_minIndex = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
@@ -105,6 +106,16 @@ public:
     {
         return m_resultsData.empty() ? Settings().m_startResult : Results()->MinResult(variation);
     } // MinResult
+
+    inline unsigned short EvolveAge1(unsigned int variation = 0) const
+    {
+        return m_resultsData.empty() ? 0 : Results()->EvolveAge1(variation);
+    } // EvolveAge1
+
+    inline unsigned short EvolveAge2(unsigned int variation = 0) const
+    {
+        return m_resultsData.empty() ? 0 : Results()->EvolveAge2(variation);
+    } // EvolveAge2
 
     inline FireStarterCode* Code(void)
     {

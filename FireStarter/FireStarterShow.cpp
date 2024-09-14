@@ -249,7 +249,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if ((settings.m_tests > 0) || test)
             statusString += Format("  Test=%2u", test);
         if ((state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU)) {
-            statusString += Format("  Index=%4llu  Id=%4llu", state.m_index, state.m_id);
+            if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
+                statusString += Format("  Index=%4llu  Id=%4llu", state.m_index, state.m_id);
             statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Weight=%.8f", generation, state.m_age, state.m_evolution, state.m_evolveWeight);
 
             std::string resultString;
@@ -260,6 +261,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             else
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.m_maxResult);
+            if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
+                statusString += Format("  Index=%u  EvolveAge1=%u  EvolveAge2=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1(), (unsigned int)state.Result(0)->EvolveAge2());
         } else {
             if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU)) {
                 statusString += Format("  Optimize=%u", state.m_optimize_pass);
@@ -278,8 +281,6 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
             statusString += Format("BestError=%.8f", bestResult, bestError);
-        else if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
-            statusString += Format("  EvolveAge1=%u  EvolveAge2=%u", (unsigned int)bestState.Result(0)->EvolveAge1(), (unsigned int)bestState.Result(0)->EvolveAge2());
         if (!((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU)))
             statusString += Format("  BestAge=%u", bestState.m_age);
 

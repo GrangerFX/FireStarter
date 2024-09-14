@@ -294,13 +294,20 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     lastBestResult = bestResult;
                     optimizeState = bestState;
                     optimize = true;
-                } else if ((evolveState.m_age > 8) && (evolveResult != lastEvolveResult)) {
+                } else if (evolveResult == lastEvolveResult) {
+                    evolveState.m_age++;
+                } else {
+                    if (evolveState.m_age >= 8) {
+                        optimizeState = evolveState;
+                        optimize = true;
+                    }
                     lastEvolveResult = evolveResult;
-                    optimizeState = evolveState;
-                    optimize = true;
+                    evolveState.m_age = 1;
                 }
+
                 if (optimize) {
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_GPU);
+                    optimizeState.m_oldResult = optimizeState.m_maxResult;
                     FireStarterState optimizeBestState = optimizeState;
 
                     bool compiled = evolveOptimize->ExecuteCompileEvolver();
