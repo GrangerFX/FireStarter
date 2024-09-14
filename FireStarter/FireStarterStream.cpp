@@ -274,6 +274,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Evolve the current test.
             float lastEvolveResult = evolveSettings.m_startResult;
+            float lastBestResult = evolveSettings.m_startResult;
             while (!WillTerminate()) {
                 // Execute the GPU evolve using a single execution unit.
                 evolveExecute->ExecuteEvolve(evolveState);
@@ -286,12 +287,23 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 float evolveResult = evolveState.MaxResult();
                 float bestResult = bestState.MaxResult();
                 bestState.m_age++;
-                if (((bestState.m_age > 2) && (evolveResult < lastEvolveResult)) || ((bestState.m_age > 8) && (evolveResult != lastEvolveResult))) {
-                    FireStarterState optimizeState = evolveState;
+
+                bool optimize = false;
+                FireStarterState optimizeState = evolveState;
+                if ((bestState.m_age > 2) && (bestResult < lastBestResult)) {
+                    lastBestResult = bestResult;
+                    bestState = evolveState;
+                    optimize = true;
+                } 
+                if ((evolveState.m_age > 8) && (evolveResult != lastEvolveResult)) {
+                    lastEvolveResult = evolveResult;
+                    optimizeState = evolveState;
+                    optimize = true;
+                }
+                if (optimize) {
                     optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE_GPU;
                     optimizeState.Settings().m_population *= 32;
                     FireStarterState optimizeBestState = optimizeState;
-                    lastEvolveResult = evolveResult;
 
                     bool compiled = evolveOptimize->ExecuteCompileEvolver();
                     if (compiled) {
@@ -313,7 +325,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                             bestState = optimizeBestState;
                             break;
                         }
-
                     }
                 }
 
