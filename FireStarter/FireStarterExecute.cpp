@@ -149,7 +149,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         maxAge2 = MAX(curAge1, maxAge2);
         FireStarterData* testData = m_hostPopulation->Data(settings, i);
         float curResult = *m_hostPopulation->MinResult(settings, i);
-        if (curResult < minResult) {
+        if (curResult <= minResult) {
             minResult = curResult;
             minIndex = i;
         }
