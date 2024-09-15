@@ -50,11 +50,12 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     FireStarterData data;
     float result, memberResult;
     float evolutionScale;
-    unsigned short evolveAge = evolutionPass ? oldResults->EvolveAge1(member) : 0;
+    unsigned short evolveAge1, evolveAge2;
 
     // The first generation is initalized with random numbers.
-    if (!evolutionPass || (evolveAge >= 256)) {
-        evolveAge = 0;
+    if (!evolutionPass) {
+        evolveAge1 = 0;
+        evolveAge2 = 0;
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
@@ -66,37 +67,36 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
         }
         memberResult = result;
     } else {
-#if 0
-        if (evolveAge > 128) {
-#if 1
-            memberResult = initResults->MinResult();
-            evolutionScale = FIRESTARTER_SCALE * memberResult;
-            code = initResults->Code();
-            data = initResults->Data();
-            result = memberResult;
-#else
-            evolveAge = 0;
+        evolveAge1 = oldResults->EvolveAge1(member);
+        evolveAge2 = oldResults->EvolveAge2(member) ;
+        if (evolveAge1 >= MAX(evolveAge2, 1000)) {
+            evolveAge1 = 0;
+            evolveAge2 = 0;
             memberResult = FIRESTARTER_START_RESULT;
             evolutionScale = FIRESTARTER_START_SCALE;
-            code = initResults->Code();
-            code.RandomInstruction(codeSeed);
-            data.Init(dataSeed, evolutionScale);
+            if (!RANDOMMOD(codeSeed, 2)) {
+                code = initResults->Code();
+                code.RandomInstruction(codeSeed);
+                data.Init(dataSeed, evolutionScale);
+            } else {
+                code.Init(codeSeed);
+                data.Init(dataSeed, evolutionScale);
+            }
             result = memberResult;
-#endif
-        } else
-#endif
-        {
+        } else {
             code = oldResults->Code(member);
             data = oldResults->Data(member);
             memberResult = oldResults->MinResult(member);
             evolutionScale = FIRESTARTER_SCALE * memberResult;
             result = memberResult;
-        
-//            if (evolveAge > 128)
-//                code.RandomInstruction(codeSeed);
-//            if (evolveAge > 64)
-//                data.RandomData(dataSeed, evolutionScale);
-            if (evolveAge > 1)
+
+            if (evolveAge1 > 100) {
+                code.RandomInstruction(codeSeed);
+                data.RandomData(dataSeed, evolutionScale);
+            }
+            if (evolveAge1 > 8)
+                code.RandomInstruction(codeSeed);
+            if (evolveAge1 > 0)
                 data.RandomData(dataSeed, evolutionScale);
         }
     }
@@ -165,14 +165,15 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
         // Did the results improve?
         if (!evolutionPass || (result < memberResult)) {
             // If the result was better, save the results.
-            evolveAge = 0;
+            evolveAge2 += evolveAge1;
+            evolveAge1 = 0;
         } else {
             // Revert to the original code and data.
             code = oldResults->Code(member);
             data = oldResults->Data(member);
-            evolveAge++;
+            evolveAge1++;
         }
-        newResults->InitMemberResult(data, member, result, evolveAge);
+        newResults->InitMemberResult(data, member, result, evolveAge1, evolveAge2);
         newResults->Code(member)->Copy(code);
     }
 } // Evolver
