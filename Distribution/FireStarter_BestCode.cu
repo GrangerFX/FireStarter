@@ -4,11 +4,11 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
-// Run date: 09/14/24 17:00:28 Pacific Daylight Time
-// Run duration = 29.188440 seconds
-// Run generation = 13
+// Run date: 09/14/24 17:27:15 Pacific Daylight Time
+// Run duration = 115.735459 seconds
+// Run generation = 44
 // Run evolution = 0
-// Run max result = 0.00000048
+// Run max result = 0.00000036
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -30,49 +30,49 @@
 // Run generations = 0
 // Run population = 262144
 // Run iterations = 64
-// Run passes = 100
+// Run passes = 500
 // Run candidates = 16
 // Run attempts = 0
-// Run optimize = 4
+// Run optimize = 1
 
 // Run scale = 0.100000f
 // Run startScale = 2.000000f
 // Run startResult = 10.000000f
 
-// Variation: 0  result = 0.00000048
+// Variation: 0  result = 0.00000036
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
-    data->d[0] = -1.299608f;
-    data->d[1] = -0.344947f;
-    data->d[2] = -0.029310f;
-    data->d[3] = 1.128029f;
-    data->d[4] = -0.573873f;
-    data->d[5] = 0.638319f;
-    data->d[6] = -6.884687f;
-    data->d[7] = 3.532414f;
-    data->d[8] = -2.355918f;
-    data->d[9] = 3.769679f;
-    data->d[10] = -0.886502f;
-    data->d[11] = 4.730804f;
-    data->d[12] = -1.343559f;
-    data->d[13] = -0.698258f;
-    data->d[14] = 1.131547f;
-    data->d[15] = 1.628068f;
-    data->d[16] = -0.971980f;
-    data->d[17] = -1.798034f;
-    data->d[18] = 1.235010f;
-    data->d[19] = 1.370268f;
-    data->d[20] = 0.014573f;
-    data->d[21] = 0.509765f;
-    data->d[22] = -2.671748f;
-    data->d[23] = 2.293135f;
-    data->d[24] = 0.690641f;
-    data->d[25] = 1.295149f;
-    data->d[26] = 1.040760f;
-    data->d[27] = 0.986899f;
-    data->d[28] = -0.295423f;
-    data->d[29] = 5.013033f;
+    data->d[0] = -1.582670f;
+    data->d[1] = -0.143202f;
+    data->d[2] = -2.788076f;
+    data->d[3] = -1.561993f;
+    data->d[4] = 0.284268f;
+    data->d[5] = 0.296545f;
+    data->d[6] = -0.046080f;
+    data->d[7] = 1.470345f;
+    data->d[8] = 1.086024f;
+    data->d[9] = 2.084625f;
+    data->d[10] = -0.123412f;
+    data->d[11] = 1.986529f;
+    data->d[12] = -0.779397f;
+    data->d[13] = -3.903330f;
+    data->d[14] = 1.960267f;
+    data->d[15] = -13.415194f;
+    data->d[16] = -3.331401f;
+    data->d[17] = 0.974239f;
+    data->d[18] = 0.497198f;
+    data->d[19] = 4.360209f;
+    data->d[20] = -0.868141f;
+    data->d[21] = 3.174277f;
+    data->d[22] = -7.572651f;
+    data->d[23] = -6.936521f;
+    data->d[24] = 2.451987f;
+    data->d[25] = -2.673296f;
+    data->d[26] = 1.135774f;
+    data->d[27] = -0.052392f;
+    data->d[28] = 1.010468f;
+    data->d[29] = -12.248649f;
     *(result->MinResult()) = 0.000000f;
 } // LoadVariation0
 
@@ -125,7 +125,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     unsigned short evolveAge = evolutionPass ? oldResults->EvolveAge1(member) : 0;
 
     // The first generation is initalized with random numbers.
-    if (!evolutionPass || (evolveAge >= 1024)) {
+    if (!evolutionPass || (evolveAge >= 128)) {
         evolveAge = 0;
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
@@ -138,13 +138,14 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
         }
         memberResult = result;
     } else {
+#if 0
         if (evolveAge >= 128) {
 #if 1
-            memberResult = result = initResults->MinResult();
+            memberResult = initResults->MinResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
             code = initResults->Code();
-            code.RandomInstruction(codeSeed);
             data = initResults->Data();
+            result = memberResult;
 #else
             evolveAge = 0;
             memberResult = FIRESTARTER_START_RESULT;
@@ -154,7 +155,9 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             data.Init(dataSeed, evolutionScale);
             result = memberResult;
 #endif
-        } else {
+        } else
+#endif
+        {
             code = oldResults->Code(member);
             data = oldResults->Data(member);
             memberResult = oldResults->MinResult(member);

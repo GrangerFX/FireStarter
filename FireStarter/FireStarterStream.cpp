@@ -296,11 +296,11 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     optimize = true;
                 } else if (evolveResult == lastEvolveResult) {
                     evolveState.m_age++;
-                } else {
-                    if (evolveState.m_age >= 8) {
+                    if (evolveState.m_age == 4) {
                         optimizeState = evolveState;
                         optimize = true;
                     }
+                } else {
                     lastEvolveResult = evolveResult;
                     evolveState.m_age = 1;
                 }
