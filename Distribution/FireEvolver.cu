@@ -69,7 +69,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     } else {
         evolveAge1 = oldResults->EvolveAge1(member);
         evolveAge2 = oldResults->EvolveAge2(member) ;
-        if (evolveAge1 >= MAX(evolveAge2, 1024) / 2) {
+        if (evolveAge1 >= MAX(evolveAge2, 256)) {
             evolveAge1 = 0;
             evolveAge2 = 0;
             memberResult = FIRESTARTER_START_RESULT;
@@ -92,8 +92,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
 
             if (evolveAge1 > 128)
                 code.RandomInstruction(codeSeed);
-            if (evolveAge1 > 16)
-                data.RandomData(dataSeed, evolutionScale);
+//            if (evolveAge1 > 16)
+//                data.RandomData(dataSeed, evolutionScale);
             if (evolveAge1 > 0)
                 data.RandomData(dataSeed, evolutionScale);
         }
