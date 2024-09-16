@@ -4,7 +4,6 @@
 #include "FireStarterExecute.h"
 #include "FireStarterComplete.h"
 #include "FireStarterSource.h"
-#include "FireStarter_LoadState.h"
 
 #define FIRESTARTER_STREAM_EVOLUTIONS 100
 
