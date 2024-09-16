@@ -4,6 +4,78 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
+// Run date: 09/15/24 12:03:55 Pacific Daylight Time
+// Run duration = 22327.562585 seconds
+// Run generation = 1068
+// Run evolution = 0
+// Run max result = 0.00002331
+// Run variations = 1
+// Run samples = 15
+// Run instructions = 32
+// Run registers = 30
+// Run opcodes = 2
+// Run patternOpcodes = 4
+
+// Run targetMin = 0.000000f
+// Run targetMax = 6.283185f
+// Run evolveTarget = 0.000001f
+
+// Run mode = FIRESTARTER_OPTIMIZE_GPU
+// Run evolveSeed = 0
+// Run optimizeSeed = 0
+// Run tests = 16
+// Run streams = 1
+// Run units = 1
+// Run states = 1
+// Run generations = 0
+// Run population = 262144
+// Run iterations = 64
+// Run passes = 500
+// Run candidates = 16
+// Run attempts = 0
+// Run optimize = 1
+
+// Run scale = 0.100000f
+// Run startScale = 2.000000f
+// Run startResult = 10.000000f
+
+// Variation: 0  result = 0.00002331
+inline void LoadVariation0(FireStarterResult* result)
+{
+    FireStarterData *data = result->Data();
+    data->d[0] = -1.468599f;
+    data->d[1] = 3.237647f;
+    data->d[2] = -5.362187f;
+    data->d[3] = 0.545915f;
+    data->d[4] = -4.093145f;
+    data->d[5] = -0.983429f;
+    data->d[6] = -10.016095f;
+    data->d[7] = 0.876182f;
+    data->d[8] = 6.457962f;
+    data->d[9] = 0.448035f;
+    data->d[10] = 0.947480f;
+    data->d[11] = 1.098643f;
+    data->d[12] = -1.036964f;
+    data->d[13] = -1.507615f;
+    data->d[14] = 0.239172f;
+    data->d[15] = -11.847713f;
+    data->d[16] = 0.035075f;
+    data->d[17] = -1.108337f;
+    data->d[18] = 0.236782f;
+    data->d[19] = 0.801687f;
+    data->d[20] = 0.114788f;
+    data->d[21] = 1.166387f;
+    data->d[22] = -1.641688f;
+    data->d[23] = 0.178961f;
+    data->d[24] = -1.869283f;
+    data->d[25] = 0.085973f;
+    data->d[26] = 8.773445f;
+    data->d[27] = 0.833249f;
+    data->d[28] = 0.840172f;
+    data->d[29] = -13.443428f;
+    *(result->MinResult()) = 0.000023f;
+} // LoadVariation0
+
 // END //
 
 inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
@@ -69,7 +141,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     } else {
         evolveAge1 = oldResults->EvolveAge1(member);
         evolveAge2 = oldResults->EvolveAge2(member) ;
-        if (evolveAge1 >= MAX(evolveAge2, 500)) {
+        if (evolveAge1 >= MAX(evolveAge2, 1000)) {
             evolveAge1 = 0;
             evolveAge2 = 0;
             memberResult = FIRESTARTER_START_RESULT;

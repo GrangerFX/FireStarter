@@ -4,6 +4,78 @@
 #include "CUDADefines.h"
 
 // VARIATIONS //
+// Run date: 09/15/24 12:52:56 Pacific Daylight Time
+// Run duration = 7171.145549 seconds
+// Run generation = 225
+// Run evolution = 0
+// Run max result = 0.00001442
+// Run variations = 1
+// Run samples = 15
+// Run instructions = 32
+// Run registers = 30
+// Run opcodes = 2
+// Run patternOpcodes = 4
+
+// Run targetMin = 0.000000f
+// Run targetMax = 6.283185f
+// Run evolveTarget = 0.000001f
+
+// Run mode = FIRESTARTER_OPTIMIZE_GPU
+// Run evolveSeed = 0
+// Run optimizeSeed = 0
+// Run tests = 16
+// Run streams = 1
+// Run units = 1
+// Run states = 1
+// Run generations = 0
+// Run population = 262144
+// Run iterations = 64
+// Run passes = 500
+// Run candidates = 16
+// Run attempts = 0
+// Run optimize = 1
+
+// Run scale = 0.100000f
+// Run startScale = 2.000000f
+// Run startResult = 10.000000f
+
+// Variation: 0  result = 0.00001442
+inline void LoadVariation0(FireStarterResult* result)
+{
+    FireStarterData *data = result->Data();
+    data->d[0] = 0.852895f;
+    data->d[1] = -1.240992f;
+    data->d[2] = -0.765834f;
+    data->d[3] = 1.610524f;
+    data->d[4] = 1.124990f;
+    data->d[5] = 0.434932f;
+    data->d[6] = -1.493550f;
+    data->d[7] = 3.124370f;
+    data->d[8] = -0.076111f;
+    data->d[9] = -1.454415f;
+    data->d[10] = -1.556722f;
+    data->d[11] = -4.714209f;
+    data->d[12] = 1.365557f;
+    data->d[13] = -6.665489f;
+    data->d[14] = 0.507835f;
+    data->d[15] = -0.013529f;
+    data->d[16] = 0.646615f;
+    data->d[17] = -3.680477f;
+    data->d[18] = 5.553678f;
+    data->d[19] = 0.911888f;
+    data->d[20] = -0.330515f;
+    data->d[21] = -0.192825f;
+    data->d[22] = -8.391491f;
+    data->d[23] = -7.652752f;
+    data->d[24] = -0.507993f;
+    data->d[25] = 1.467180f;
+    data->d[26] = 0.530877f;
+    data->d[27] = -0.641155f;
+    data->d[28] = 1.494339f;
+    data->d[29] = 2.605983f;
+    *(result->MinResult()) = 0.000014f;
+} // LoadVariation0
+
 // END //
 
 inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
