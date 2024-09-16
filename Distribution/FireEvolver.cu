@@ -74,7 +74,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             evolveAge2 = 0;
             memberResult = FIRESTARTER_START_RESULT;
             evolutionScale = FIRESTARTER_START_SCALE;
-            if (0 && !RANDOMMOD(codeSeed, 2)) {
+            if (1) { // !RANDOMMOD(codeSeed, 2)
                 code = initResults->Code();
                 code.RandomInstruction(codeSeed);
                 data.Init(dataSeed, evolutionScale);
@@ -94,8 +94,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
                 code.RandomInstruction(codeSeed);
                 data.RandomData(dataSeed, evolutionScale);
             }
-            if (evolveAge1 > 8)
-                code.RandomInstruction(codeSeed);
+//            if (evolveAge1 > 8)
+//                code.RandomInstruction(codeSeed);
             if (evolveAge1 > 0)
                 data.RandomData(dataSeed, evolutionScale);
         }
