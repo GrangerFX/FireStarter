@@ -1,0 +1,1 @@
+Test: 0  Generation=17  Evolve Result=0.00075388  Optimize Result=0.00000018  Duration: 47.9 *******

@@ -287,24 +287,13 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 float bestResult = bestState.MaxResult();
                 bestState.m_age++;
 
-                bool optimize = false;
-                FireStarterState optimizeState;
-                if ((bestState.m_age > 2) && (bestResult < lastBestResult)) {
-                    lastBestResult = bestResult;
-                    optimizeState = bestState;
-                    optimize = true;
-                } else if (evolveResult == lastEvolveResult) {
-                    evolveState.m_age++;
-                    if (evolveState.m_age == 4) {
-                        optimizeState = evolveState;
-                        optimize = true;
-                    }
-                } else {
-                    lastEvolveResult = evolveResult;
-                    evolveState.m_age = 1;
-                }
+                // Only optimize unique states.
+                if (!testedInstructions.count(evolveState.m_program.OptimizedInstructionsData())) {
+                    // Add the instructions to the set of unique instructions.
+                    testedInstructions.insert(evolveState.m_program.OptimizedInstructionsData());
 
-                if (optimize) {
+                    // Switch to Optimize mode.
+                    FireStarterState optimizeState = evolveState;
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_GPU);
                     optimizeState.m_oldResult = optimizeState.m_maxResult;
                     FireStarterState optimizeBestState = optimizeState;

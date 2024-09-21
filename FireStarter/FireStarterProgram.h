@@ -4,9 +4,12 @@
 #include "FireStarterUtil.h"
 #include <vector>
 #include <string>
+#include <set>
 
 #define EVOLVE_PROGRAM_NAME   "FireEvolver.cu"
 #define OPTIMIZE_PROGRAM_NAME "FireOptimizer.cu"
+
+typedef std::set<std::vector<unsigned char>> TestedInstructions;
 
 class FireStarterProgram {
 private:
