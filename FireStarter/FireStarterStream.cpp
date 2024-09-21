@@ -267,7 +267,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             unsigned long long test = FIRESTARTER_START_TEST + t;
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
             FireStarterState bestState = evolveState;
- 
+            FireStarterState optimizeState = evolveState;
+
             // Keep track of the tested instructions so they don't get generated again.
             TestedInstructions testedInstructions;
 
@@ -293,7 +294,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     testedInstructions.insert(evolveState.m_program.OptimizedInstructionsData());
 
                     // Switch to Optimize mode.
-                    FireStarterState optimizeState = evolveState;
+                    optimizeState = evolveState;
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_GPU);
                     optimizeState.m_oldResult = optimizeState.m_maxResult;
                     FireStarterState optimizeBestState = optimizeState;
@@ -330,7 +331,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             if (!WillTerminate()) {
                 // Output the evolve results.
                 FireStarterResult* bestResult = bestState.Result(0);
-                std::string resultText = Format("Test: %u  Generation=%u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, streamTimer.Duration());
+                std::string resultText = Format("Test: %u  Generation=%u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, evolveState.m_generation, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
                 if (bestState.m_maxResult <= evolveSettings.m_evolveTarget)
                     resultText += " *******";
                 resultText += "\n";
