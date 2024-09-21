@@ -8,6 +8,7 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
         std::string bestStateCode;
         bestState.SaveState(bestStateCode);
         std::string saveFile = "FireStarter_LoadState.h";
+        FireStarterSource::SaveSource(bestStateCode, saveFile);
         std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
         FireStarterSource::SaveSource(bestStateCode, savePath);
     }
