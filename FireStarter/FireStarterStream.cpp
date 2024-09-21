@@ -289,9 +289,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 bestState.m_age++;
 
                 // Only optimize unique states.
-                if (!testedInstructions.count(evolveState.m_program.OptimizedInstructionsData())) {
+                if (1 || !testedInstructions.count(evolveState.m_program.OptimizedInstructionsData())) {
                     // Add the instructions to the set of unique instructions.
-                    testedInstructions.insert(evolveState.m_program.OptimizedInstructionsData());
+//                    testedInstructions.insert(evolveState.m_program.OptimizedInstructionsData());
 
                     // Switch to Optimize mode.
                     optimizeState = evolveState;
