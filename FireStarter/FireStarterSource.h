@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 
-#define VARIATIONS_CODE     "// VARIATIONS //"
 #define EVALUATE_CODE       "// EVALUATE //"
 #define END_CODE            "// END //"
 

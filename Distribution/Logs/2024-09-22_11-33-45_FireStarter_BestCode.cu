@@ -7,6 +7,38 @@ inline float Evaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data = testData;
 // EVALUATE //
+    n = data[0] *= n;
+    n += data[1];
+    n *= data[2];
+    n *= data[3];
+    n = data[0] *= n;
+    n = data[4] += n;
+    n = data[5] *= n;
+    n += data[6];
+    n = data[7] *= n;
+    n += data[5];
+    n *= data[8];
+    n = data[9] *= n;
+    n *= data[10];
+    n = data[11] *= n;
+    n = data[12] += n;
+    n *= data[4];
+    n *= data[13];
+    n += data[14];
+    n = data[15] *= n;
+    n = data[16] += n;
+    n *= data[11];
+    n *= data[12];
+    n = data[16] *= n;
+    n *= data[17];
+    n *= data[0];
+    n += data[16];
+    n = data[18] *= n;
+    n += data[7];
+    n *= data[19];
+    n *= data[15];
+    n *= data[18];
+    n += data[9];
 // END //
     return n;
 } // Evaluate

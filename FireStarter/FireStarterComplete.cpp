@@ -30,7 +30,6 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 
             // Create the units code by replacing the evaluate and optimize sections of the optimize code.
             std::string bestCode = executeCode;
-            FireStarterSource::UpdateProgram(bestCode, variationsCode, VARIATIONS_CODE);
             FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
             std::string saveFile = "FireStarter_BestCode.cu";
             std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());

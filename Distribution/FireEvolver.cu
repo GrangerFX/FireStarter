@@ -3,9 +3,6 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
-// VARIATIONS //
-// END //
-
 inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;

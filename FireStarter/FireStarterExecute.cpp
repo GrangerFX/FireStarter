@@ -231,7 +231,7 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < population; i++) {
         float curResult = *m_hostPopulation->MinResult(settings, i, variation);
-        if (curResult <= minResult) {
+        if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
         }
@@ -259,48 +259,55 @@ void FireStarterExecute::ExecutePass(FireStarterState& state)
 
 void FireStarterExecute::ExecuteSmartPass(FireStarterState& state)
 {
-    const FireStarterSettings& settings = state.Settings();
-    unsigned int variations = settings.m_variations;
-    FireStarterResults* results = state.Results();
-    float oldResult = state.m_maxResult;
-    bool validResult = true;
-    float variationMax = 0.0f;
-    for (unsigned int v = 0; v < variations; v++) {
-        unsigned int variation = state.m_variationOrder[v];
-        if (validResult) {
-            // If the variation result is worse, skip the rest of the variations.
-            float variationResult = ExecuteOptimizePass(state, variation);
-            variationMax = MAX(variationMax, variationResult);
-            if (state.m_evolution && (variationMax >= oldResult)) {
-                // Count the variation that caused an invalid result.
-                state.m_variationCount[variation]++;
-                validResult = false;
-            }
-        } else
-            results->Result(variation)->Init(settings);
-    }
-
-    // Resort the variation order with the highest invalidation count first.
-    if (validResult) {
-        for (unsigned int v = 0; v < variations - 1; v++) {
+    unsigned int variations = state.Settings().m_variations;
+    if (variations > 1) {
+        FireStarterResults* results = state.Results();
+        float oldResult = state.m_maxResult;
+        bool validResult = true;
+        float variationMax = 0.0f;
+        for (unsigned int v = 0; v < variations; v++) {
             unsigned int variation = state.m_variationOrder[v];
-            unsigned int count = state.m_variationCount[variation];
-            for (unsigned int i = v + 1; i < variations; i++) {
-                unsigned int curVariation = state.m_variationOrder[i];
-                unsigned int curCount = state.m_variationCount[curVariation];
-                if (curCount > count) {
-                    state.m_variationOrder[v] = curVariation;
-                    state.m_variationOrder[i] = variation;
-                    variation = curVariation;
-                    count = curCount;
+            if (validResult) {
+                // If the variation result is worse, skip the rest of the variations.
+                float variationResult = ExecuteOptimizePass(state, variation);
+                variationMax = MAX(variationMax, variationResult);
+                if (state.m_evolution && (variationMax >= oldResult)) {
+                    // Count the variation that caused an invalid result.
+                    state.m_variationCount[variation]++;
+                    validResult = false;
+                }
+            } else
+                results->Result(variation)->Init(state.Settings());
+        }
+
+        // Resort the variation order with the highest invalidation count first.
+        if (validResult) {
+            for (unsigned int v = 0; v < variations - 1; v++) {
+                unsigned int variation = state.m_variationOrder[v];
+                unsigned int count = state.m_variationCount[variation];
+                for (unsigned int i = v + 1; i < variations; i++) {
+                    unsigned int curVariation = state.m_variationOrder[i];
+                    unsigned int curCount = state.m_variationCount[curVariation];
+                    if (curCount > count) {
+                        state.m_variationOrder[v] = curVariation;
+                        state.m_variationOrder[i] = variation;
+                        variation = curVariation;
+                        count = curCount;
+                    }
                 }
             }
         }
-    }
 
-    // Set the state's max result.
-    state.m_maxResult = variationMax;
-    state.m_optimizeValid = validResult;
+        // Set the state's max result.
+        state.m_maxResult = variationMax;
+        state.m_optimizeValid = validResult;
+    } else {
+        ExecuteOptimizePass(state, 0);
+
+        // Set the state's max result.
+        state.m_maxResult = state.MaxResult();
+        state.m_optimizeValid = true;
+    }
 } // ExecuteSmartPass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
