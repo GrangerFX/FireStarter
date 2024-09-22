@@ -126,7 +126,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     }
 
     // Single GPUs have their data syncronized with the host here.
-    bool oddPasses = settings.m_passes & 1;
+    bool oddPasses = passes & 1;
     FireStarterPopulation* newPopulation = oddPasses ? m_devicePopulation1 : m_devicePopulation0;
     FireStarterPopulation* oldPopulation = oddPasses ? m_devicePopulation0 : m_devicePopulation1;
     checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
@@ -184,7 +184,6 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long passes = settings.m_passes;
     unsigned long long optimizationPass = state.m_optimize_pass * passes;
-
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
         unsigned int registers = state.m_program.m_uniqueRegisters;
@@ -216,7 +215,7 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
 
     // Single GPUs have their data syncronized with the host here.
     // Note: TODO: Only the current variation results should be copied to save time.
-    bool oddPasses = settings.m_passes & 1;
+    bool oddPasses = passes & 1;
     FireStarterPopulation* newPopulation = oddPasses ? m_devicePopulation1 : m_devicePopulation0;
     FireStarterPopulation* oldPopulation = oddPasses ? m_devicePopulation0 : m_devicePopulation1;
     checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
