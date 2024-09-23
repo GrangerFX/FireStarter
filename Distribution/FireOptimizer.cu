@@ -26,11 +26,11 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     return true;
 } // TestEvaluate
 
-GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass)
+GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
-    if (member >= FIRESTARTER_POPULATION)
+    if (member >= population)
         return;
 
     // Precalculate the target theta values and target samples.
@@ -102,12 +102,12 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     } else {
         // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
-
+#if 1
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
         for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
-            unsigned int candidate = RANDOMMOD(memberSeed, FIRESTARTER_POPULATION);
+            unsigned int candidate = RANDOMMOD(memberSeed, population);
             unsigned short candidateAge = oldResults->EvolveAge1(candidate, variation);
             if (candidateAge <= 1) {
                 float candidateResult = oldResults->MinResult(candidate, variation);
@@ -117,7 +117,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
                 }
             }
         }
-
+#endif
         // Switch to the selected member's data and results.
         age = 1;
         if (bestCandidate != member) {

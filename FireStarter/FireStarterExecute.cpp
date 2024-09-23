@@ -183,6 +183,7 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long passes = settings.m_passes;
+    passes = 1; // Note: DEBUG!
     unsigned long long optimizationPass = state.m_optimize_pass * passes;
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
@@ -196,8 +197,9 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
                         reinterpret_cast<void*>(&optimizationSeed),
-                        reinterpret_cast<void*>(&optimizationPass)
-                      };
+                        reinterpret_cast<void*>(&optimizationPass),
+                        reinterpret_cast<void*>(&population)
+        };
 
         checkCUDAErrors(cuLaunchKernel(m_executeOptimizeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim

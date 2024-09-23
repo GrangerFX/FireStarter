@@ -387,11 +387,10 @@ void FireStarterStream::OptimizeCPUStream(FireStarterServer* server, std::atomic
                 unsigned long long test = FIRESTARTER_START_TEST + t;
 
                 // Optimize the evolved state.
-                FireStarterState optimizeState(evolveState);
+                FireStarterState optimizeState(optimizeSettings);
+                optimizeState.CopyInstructions(evolveState);
+                optimizeState.LoadCodeFromProgram();
                 optimizeState.m_test = test;
-                optimizeState.m_optimize_pass = 0;
-                optimizeState.m_oldResult = optimizeSettings.m_startResult;
-                optimizeState.m_maxResult = optimizeSettings.m_startResult;
                 FireStarterState bestState(optimizeState);
 
                 // Loop until the the optimize completion condition or the host program is quit.
@@ -467,11 +466,10 @@ void FireStarterStream::OptimizeGPUStream(FireStarterServer* server, std::atomic
                 unsigned long long test = FIRESTARTER_START_TEST + t;
 
                 // Optimize the evolved state.
-                FireStarterState optimizeState(evolveState);
+                FireStarterState optimizeState(optimizeSettings);
+                optimizeState.CopyInstructions(evolveState);
+                optimizeState.LoadCodeFromProgram();
                 optimizeState.m_test = test;
-                optimizeState.m_optimize_pass = 0;
-                optimizeState.m_oldResult = optimizeSettings.m_startResult;
-                optimizeState.m_maxResult = optimizeSettings.m_startResult;
                 FireStarterState bestState(optimizeState);
 
                 // Loop until the the optimize completion condition or the host program is quit.
