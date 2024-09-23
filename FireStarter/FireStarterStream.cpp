@@ -394,7 +394,6 @@ void FireStarterStream::OptimizeCPUStream(FireStarterServer* server, std::atomic
                 FireStarterState bestState(optimizeState);
 
                 // Loop until the the optimize completion condition or the host program is quit.
-                unsigned long long targetPass = 0;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
                     executeOptimize->ExecuteOptimize(optimizeState);
@@ -405,15 +404,13 @@ void FireStarterStream::OptimizeCPUStream(FireStarterServer* server, std::atomic
 
                     // Increment the generation.
                     optimizeState.m_optimize_pass++;
-                    if (!targetPass && (bestState.m_maxResult < FIRESTARTER_EVOLVE_TARGET))
-                        targetPass = optimizeState.m_optimize_pass;
                 }
 
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
                     FireStarterResult* bestResult = bestState.Result(0);
-                    std::string resultText = Format("Test: %llu  Pass=%llu  Target Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, targetPass, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
+                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
                     if (bestState.m_maxResult <= optimizeSettings.m_evolveTarget)
                         resultText += " *******";
                     resultText += "\n";
@@ -476,7 +473,6 @@ void FireStarterStream::OptimizeGPUStream(FireStarterServer* server, std::atomic
                 FireStarterState bestState(optimizeState);
 
                 // Loop until the the optimize completion condition or the host program is quit.
-                unsigned long long targetPass = 0;
                 while (!WillTerminate()) {
                     // Optimize the current generation.
                     executeOptimize->ExecuteEvolve(optimizeState);
@@ -487,15 +483,13 @@ void FireStarterStream::OptimizeGPUStream(FireStarterServer* server, std::atomic
 
                     // Increment the generation.
                     optimizeState.m_optimize_pass++;
-                    if (!targetPass && (bestState.m_maxResult < FIRESTARTER_EVOLVE_TARGET))
-                        targetPass = optimizeState.m_optimize_pass;
                 }
 
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
                     FireStarterResult* bestResult = bestState.Result(0);
-                    std::string resultText = Format("Test: %llu  Pass=%llu  Target Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, targetPass, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
+                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
                     if (bestState.m_maxResult <= optimizeSettings.m_evolveTarget)
                         resultText += " *******";
                     resultText += "\n";
