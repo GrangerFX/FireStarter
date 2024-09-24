@@ -92,7 +92,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long passes = settings.m_passes;
-    unsigned long long evolutionPass = optimizePass ? state.m_optimize_pass * passes : state.m_generation * passes;
+    unsigned long long pass = optimizePass ? state.m_optimize_pass * passes : state.m_generation * passes;
     CUfunction executeFunction = optimizePass ? m_executeOptimizeFunction : m_executeEvolveFunction;
 
     if (m_deviceInitResults)
@@ -101,14 +101,14 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         // Run all the evolve states in parallel.
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long evolutionSeed = optimizePass ? state.EvolutionSeed(evolutionPass + SEED2(state.m_generation)) : state.EvolutionSeed(evolutionPass);
+        unsigned long long seed = optimizePass ? state.OptimizationSeed(pass) : state.EvolutionSeed(pass);
 
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&m_deviceInitResults),
-                        reinterpret_cast<void*>(&evolutionSeed),
-                        reinterpret_cast<void*>(&evolutionPass),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&pass),
                         reinterpret_cast<void*>(&population)
         };
 
@@ -123,7 +123,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         // Synchronize all GPU threads and results.
         // Note: TODO: Syncronize to the completion of the previous variation if possible.
         Context()->Synchronize();
-        evolutionPass++;
+        pass++;
     }
 
     // Single GPUs have their data syncronized with the host here.
@@ -184,20 +184,20 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long passes = settings.m_passes;
-    unsigned long long optimizationPass = state.m_optimize_pass * passes;
+    unsigned long long pass = state.m_optimize_pass * passes;
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
         unsigned int registers = state.m_program.m_uniqueRegisters;
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long optimizationSeed = state.OptimizationSeed(optimizationPass);
+        unsigned long long seed = state.OptimizationSeed(pass);
 
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
-                        reinterpret_cast<void*>(&optimizationSeed),
-                        reinterpret_cast<void*>(&optimizationPass),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&pass),
                         reinterpret_cast<void*>(&population)
         };
 
@@ -212,7 +212,7 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
 
         // Synchronize all GPU threads and results.
         Context()->Synchronize();
-        optimizationPass++;
+        pass++;
     }
 
     // Single GPUs have their data syncronized with the host here.
