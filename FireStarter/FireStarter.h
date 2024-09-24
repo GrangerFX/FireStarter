@@ -16,6 +16,7 @@ private:
     void ControlThread(void);
 
 public:
+    bool ShouldQuit(void);
     FireStarter(const FireStarterWindow &window);
     ~FireStarter(void);
 }; // class FireStarter

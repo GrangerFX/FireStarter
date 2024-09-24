@@ -90,8 +90,10 @@ HRESULT Initialize(HINSTANCE hInstance)
 						break;
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
-				} else if (!mainSerialThread.PollThread())
-					Sleep(100);
+				} else if (fireStarter->ShouldQuit())
+                    break;
+                else if (!mainSerialThread.PollThread())
+                    Sleep(100);
 			} while (1);
 
 			SetWindowText(hwnd, "Quitting");

@@ -33,17 +33,17 @@ void FireStarter::ControlThread(void)
         FireStarterSettings controlSettings(FIRESTARTER_SOLUTION); // This will set all the settings to zero.
         m_buildSettings.FireSettings(controlSettings);  // This will set the default mode.
         switch (controlSettings.m_mode) {
-            case FIRESTARTER_SOLUTION:
-                // Run the most recent solution on the CPU.
-                ControlSolution();
-                break;
-            case FIRESTARTER_RANDOM:
-                // Random generations.
-                ControlRandom(controlSettings);
-                break;
-            default:
-                ControlStreams(controlSettings);
-                break;
+        case FIRESTARTER_SOLUTION:
+            // Run the most recent solution on the CPU.
+            ControlSolution();
+            break;
+        case FIRESTARTER_RANDOM:
+            // Random generations.
+            ControlRandom(controlSettings);
+            break;
+        default:
+            ControlStreams(controlSettings);
+            break;
         }
     });
 } // ControlThread
@@ -206,6 +206,15 @@ static void TestCUDABug(void)
 
     printf("result = %f\n", result);
 } // TestCUDABug
+
+bool FireStarter::ShouldQuit(void)
+{
+#if FIRESTARTER_AUTO_QUIT
+    return IsFinished();
+#else
+    return false;
+#endif
+} // ShouldQuit
 
 FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireStarter"), m_window(window)
 {

@@ -599,11 +599,11 @@ void FireStarterStreams::ExecuteStreams(void)
             }
 
         // Wait for all the streams to complete.
-        bool streamsComplete;
+        bool streamsComplete = false;
         do {
             streamsComplete = true;
             for (FireStarterStream* stream : streams)
-                if (stream->IsRunning()) {
+                if (!stream->IsFinished()) {
                     streamsComplete = false;
                     break;
                 }
