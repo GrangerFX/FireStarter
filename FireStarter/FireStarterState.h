@@ -244,7 +244,7 @@ public:
     inline void LoadCodeFromProgram(void)
     {
         unsigned int numInstructions = Settings().m_instructions;
-        FireStarterInstructions* instructions = m_program.EvolvedInstructions();
+        FireStarterInstructions* instructions = m_program.OptimizedInstructions();
         FireStarterCode* code = Code();
         for (unsigned int i = 0; i < numInstructions; i++) {
             FireStarterInstruction& instruction = instructions->Instruction(i);

@@ -335,7 +335,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
 } // Evolver
 #endif
 
-GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const FireStarterResults* initResults, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const FireStarterResults* initResults, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -384,7 +384,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         if (evolveAge1 > 1) {
             // Randomize a single register.
             evolutionScale = FIRESTARTER_OPTIMIZE_GPU_START_SCALE;
-            unsigned int d = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
+            unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * evolutionScale * (evolveAge1 - 1);
             memberResult = FIRESTARTER_OPTIMIZE_GPU_START_RESULT;
@@ -401,7 +401,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
     // Iterate to evolve the registers.
     for (unsigned int p = 0; p < FIRESTARTER_OPTIMIZE_GPU_ITERATIONS; p++) {
-        unsigned int d = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
+        unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
         float curResult = result * 0.99f;

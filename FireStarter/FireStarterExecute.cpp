@@ -99,6 +99,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInitResults, state.Results(), m_initResultsSize, cudaMemcpyHostToDevice, Stream()));
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
+        unsigned int registers = optimizePass ? state.m_program.m_uniqueRegisters : settings.m_registers;
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long seed = optimizePass ? state.OptimizationSeed(pass) : state.EvolutionSeed(pass);
@@ -106,6 +107,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
+                        reinterpret_cast<void*>(&registers),
                         reinterpret_cast<void*>(&m_deviceInitResults),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&pass),
