@@ -1,0 +1,53 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+evolveTarget = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE_GPU
+evolveSeed = 0
+optimizeSeed = 0
+tests = 16
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 262144
+iterations = 64
+passes = 500
+candidates = 16
+attempts = 0
+optimize = 20
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=0  Generation=  0 *Result=0.00000116  Best=0.00000116   Time=2.3 Seconds  Run Time=12.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=1  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=14.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=2  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=17.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=3  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=19.6 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=4  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=21.9 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=5  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=24.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=6  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=26.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=7  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=28.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=8  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=31.2 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=9  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=33.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=10  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=35.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=11  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=38.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=12  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=40.4 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=13  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=42.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=14  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=45.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=15  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=47.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=16  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=49.8 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=17  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=52.1 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=18  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=54.5 Seconds
+FIRESTARTER_OPTIMIZE_GPU: Seed=0  Test= 4  Optimize=19  Generation=  0 *Result=0.00000083  Best=0.00000083   Time=2.3 Seconds  Run Time=56.8 Seconds

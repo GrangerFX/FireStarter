@@ -26,8 +26,8 @@ private:
     bool InitResults(const FireStarterSettings& settings);
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
-    void ExecuteEvolvePass(FireStarterState& state);
-    float ExecuteOptimizePass(FireStarterState& state, unsigned int variation);
+    void ExecuteEvolvePass(FireStarterState& state, unsigned int variation = 0);
+    float ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecutePass(FireStarterState& state);
     void ExecuteSmartPass(FireStarterState& state);
     bool Compile(FireStarterJob* &job);

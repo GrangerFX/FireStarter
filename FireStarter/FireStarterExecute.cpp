@@ -81,7 +81,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     return m_hostPopulation && m_devicePopulation;
 } // InitPopulation
 
-void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
+void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -105,6 +105,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
 
         void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
+                        reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&m_deviceInitResults),
                         reinterpret_cast<void*>(&evolutionSeed),
                         reinterpret_cast<void*>(&evolutionPass),
