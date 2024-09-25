@@ -167,8 +167,8 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
                     FireStarterState optimizeState(bestState);
-                    optimizeState.Settings().m_mode = FIRESTARTER_OPTIMIZE_CPU;
-                    optimizeState.m_optimize_pass = 0;
+                    optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_CPU);
+                    optimizeState.Settings().m_optimize = bestState.Settings().m_optimize;
                     FireStarterState optimizeBestState(optimizeState);
 
                     // Generate the optimize code.
@@ -295,6 +295,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     // Switch to Optimize mode.
                     optimizeState = evolveState;
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_GPU);
+                    optimizeState.Settings().m_optimize = evolveState.Settings().m_optimize;
                     optimizeState.m_oldResult = optimizeState.m_maxResult;
                     FireStarterState optimizeBestState = optimizeState;
 

@@ -104,11 +104,11 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long seed = optimizePass ? state.OptimizationSeed(pass) : state.EvolutionSeed(pass);
 
-        void* arr[] = { reinterpret_cast<void*>(&newResults),
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceInitResults),
+                        reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
-                        reinterpret_cast<void*>(&m_deviceInitResults),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&pass),
                         reinterpret_cast<void*>(&population)
