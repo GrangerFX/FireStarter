@@ -4,25 +4,25 @@
 #include "CUDADefines.h"
 #include "cnprintf.h"
 
-struct FireStarterRegister {
+struct FireStarterRegisterInfo {
     unsigned int registerIndex;
     unsigned int instructionFirst;
     unsigned int instructionLast;
-}; // struct FireStarterRegister
+}; // struct FireStarterRegisterInfo
 
-typedef struct FireStarterRegisters {
-    FireStarterRegister r[FIRESTARTER_REGISTERS];
+typedef struct FireStarterRegisterUsage {
+    FireStarterRegisterInfo r[FIRESTARTER_REGISTERS];
 
     static inline size_t RegistersSize(unsigned int registers)
     {
-        return sizeof(FireStarterRegister) * registers;
-    } // FireStarterRegistersSize
+        return sizeof(FireStarterRegisterInfo) * registers;
+    } // FireStarterRegisterUsage
 
-    inline const FireStarterRegister& Register(unsigned int index) const
+    inline const FireStarterRegisterInfo& Register(unsigned int index) const
     {
         return r[index];
     } // Register
-} FireStarterRegisters; // FireStarterRegisters
+} FireStarterRegisterUsage; // FireStarterRegisterUsage
 
 struct FireStarterInstruction : public FireStarterCodeInstruction {
 
@@ -271,24 +271,24 @@ inline void GenerateDataCode(char* buffer, size_t size, size_t& length, unsigned
     anprintf(buffer, size, length, "};\r\n");
 } // GenerateDataCode
 
-inline void GenerateEvaluateCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, unsigned int numInstructions, const FireStarterRegisters* registers, unsigned int numRegisters)
+inline void GenerateEvaluateCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, unsigned int numInstructions, const FireStarterRegisterUsage* registerUsage, unsigned int numRegisters)
 {
     // Generate the evaluate function code.
-    bool optimize = registers && numRegisters;
+    bool optimize = registerUsage && numRegisters;
     for (unsigned int i = 0; i < numInstructions; i++) {
         unsigned int reg = instructions->Register(i);
-        const FireStarterRegister& dataRegister = registers->Register(reg);
+        const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
         instructions->Instruction(i).GenerateEvaluate(buffer, size, length, tabs, optimize && (i == dataRegister.instructionLast));
     }
 } // GenerateEvaluateCode
 
-inline void GenerateSolutionCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, unsigned int numInstructions, const FireStarterRegisters* registers, unsigned int numRegisters, const FireStarterData* data)
+inline void GenerateSolutionCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, unsigned int numInstructions, const FireStarterRegisterUsage* registerUsage, unsigned int numRegisters, const FireStarterData* data)
 {
     // Find the maximum code register.
     unsigned int maxRegister = 0;
     for (unsigned int i = 0; i < numInstructions; i++) {
         unsigned int reg = instructions->Register(i);
-        const FireStarterRegister& dataRegister = registers->Register(reg);
+        const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
         if ((i != dataRegister.instructionFirst) || (i != dataRegister.instructionLast)) {
             unsigned int r = dataRegister.registerIndex;
             if (r > maxRegister)
@@ -306,7 +306,7 @@ inline void GenerateSolutionCode(char* buffer, size_t size, size_t& length, unsi
 
     for (unsigned int i = 0; i < numInstructions; i++) {
         unsigned int reg = instructions->Register(i);
-        const FireStarterRegister& dataRegister = registers->Register(reg);
+        const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
         unsigned int r = dataRegister.registerIndex;
         float f = (float)data->d[reg];
         instructions->Instruction(i).GenerateSolution(buffer, size, length, tabs, r, f, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
