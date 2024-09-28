@@ -5,11 +5,12 @@
 
 inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, float n)
 {
-#if 0
+#if 1
+    // Generated program code
     // EVALUATE //
     // END //
 #endif
-#if 1
+#if 0
     // Optimized program code
     n = data.d[0] += n;
     n *= data.d[1];
