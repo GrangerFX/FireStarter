@@ -160,6 +160,11 @@ typedef struct FireStarterSharedData {
         return d[index(i)];
     } // operator[]
 
+    inline float operator[](unsigned int i) const
+    {
+        return d[index(i)];
+    } // operator[]
+
     inline void operator=(const FireStarterData& data)
     {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)

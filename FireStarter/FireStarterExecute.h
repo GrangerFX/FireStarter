@@ -16,6 +16,7 @@ private:
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeEvolveFunction = nullptr;
     CUfunction m_executeOptimizeFunction = nullptr;
+    std::string m_executeProgramName;
     std::string m_executeCode;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
@@ -36,12 +37,14 @@ private:
 public:
     bool ExecuteCompileEvolver(void);
     bool ExecuteGenerateOptimize(const FireStarterState& initState);
+    bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
     void ExecuteFinish(void);
-    FireStarterExecute(FireStarterManager* manager = nullptr, size_t index = 0);
-	~FireStarterExecute(void);
+    FireStarterExecute(FireStarterManager* manager, const std::string& programName, size_t index = 0);
+    FireStarterExecute(FireStarterManager* manager, size_t index = 0);
+    ~FireStarterExecute(void);
 }; // class FireStarterExecute

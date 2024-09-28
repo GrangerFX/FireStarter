@@ -17,7 +17,8 @@ public:
 	void EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
 	void OptimizeCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
 	void OptimizeGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
-	FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
+    void SpeedTestStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
+    FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
 	~FireStarterStream(void);
 }; // class FireStarterStream
 

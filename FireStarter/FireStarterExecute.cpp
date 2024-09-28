@@ -85,7 +85,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
-    bool optimizePass = settings.m_mode == FIRESTARTER_OPTIMIZE_GPU;
+    bool optimizePass = settings.m_mode != FIRESTARTER_EVOLVE_GPU;
     unsigned int population = settings.m_population;
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
     unsigned int blocksPerGrid = optimizePass ? (population + (threadsPerBlock - 1)) / threadsPerBlock : population;
@@ -364,7 +364,7 @@ bool FireStarterExecute::ExecuteCompileEvolver(void)
     if (!m_executeEvolveFunction)
         DispatchSync([this] {
             std::string program;
-            if (FireStarterSource::LoadSource(program, "FireEvolver.cu")) {
+            if (FireStarterSource::LoadSource(program, m_executeProgramName)) {
                 if (CUDACompile::CompileProgram(m_executeModule, program, "FireEvolver")) {
                     m_executeEvolveFunction = CUDACompile::GetFunction(m_executeModule, "Evolver");
                     m_executeOptimizeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
@@ -392,7 +392,7 @@ bool FireStarterExecute::ExecuteGenerateOptimize(const FireStarterState& initSta
         // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
         std::vector<std::string> options;
         CUDACompile::CompileOptions(options);
-        std::string programName = OPTIMIZE_PROGRAM_NAME;
+        std::string programName = m_executeProgramName;
         std::string program = m_executeCode;
         FireStarterSource::UpdateProgram(program, evaluateCode, EVALUATE_CODE);
 
@@ -404,6 +404,37 @@ bool FireStarterExecute::ExecuteGenerateOptimize(const FireStarterState& initSta
                 CUDACompile::ReleaseModule(m_executeModule);
         }
         });
+    return result;
+} // ExecuteGenerateOptimize
+
+bool FireStarterExecute::ExecuteGenerateSpeedTest(const FireStarterState& initState)
+{
+    bool result = false;
+
+    // Must copy the intitState pointer in case it becomes invalid when the code below is called.
+    DispatchSync([this, initState, &result] {
+        FireStarterState state(initState);
+
+        // Generate the evaluate code
+        std::string evaluateCode;
+        m_executeGenerate->GenerateEvaluate(state, evaluateCode);
+        state.m_evaluateCode = evaluateCode;
+
+        // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+        std::vector<std::string> options;
+        CUDACompile::CompileOptions(options);
+        std::string programName = SPEEDTEST_PROGRAM_NAME;
+        std::string program = m_executeCode;
+        FireStarterSource::UpdateProgram(program, evaluateCode, EVALUATE_CODE);
+
+        if (CUDACompile::CompileProgram(m_executeModule, program, programName)) {
+            m_executeOptimizeFunction = CUDACompile::GetFunction(m_executeModule, "SpeedTest");
+            if (m_executeOptimizeFunction)
+                result = true;
+            else
+                CUDACompile::ReleaseModule(m_executeModule);
+        }
+    });
     return result;
 } // ExecuteGenerateOptimize
 
@@ -465,10 +496,23 @@ void FireStarterExecute::ExecuteFinish(void)
     });
 } // ExecuteFinish
 
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::string& programName, size_t index) : CUDAThread(Format("FireStarterExecute%zu", index))
+{
+    m_executeProgramName = programName;
+    if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
+        printf("%s could not be loaded!\n", programName.c_str());
+        std::terminate();
+    }
+    m_executeManager = manager;
+    m_executeIndex = index;
+    m_executeGenerate = new FireStarterGenerate(Context());
+} // FireStaterExecute
+
 FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterExecute%zu", index))
 {
+    m_executeProgramName = OPTIMIZE_PROGRAM_NAME;
     if (!FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME)) {
-        printf(OPTIMIZE_PROGRAM_NAME" could not be loaded!\n");
+        printf("%s could not be loaded!\n", m_executeProgramName.c_str());
         std::terminate();
     }
     m_executeManager = manager;

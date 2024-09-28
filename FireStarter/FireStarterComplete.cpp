@@ -127,9 +127,9 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
         CompleteStatus(bestState, state, state.m_generation);
 
         // Has the completion condition been met?
-        if (bestState.m_maxResult <= bestState.Settings().m_evolveTarget)
+        if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) && (state.PassMode() != FIRESTARTER_SPEED_TEST))
             result = true;
-        else if (((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU)) && state.Settings().m_optimize)
+        else if (((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) && state.Settings().m_optimize)
             result = state.m_optimize_pass + 1 >= state.Settings().m_optimize;
         else {
             unsigned long long age = state.m_generation - bestState.m_generation;

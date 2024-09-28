@@ -8,6 +8,7 @@
 
 #define EVOLVE_PROGRAM_NAME   "FireEvolver.cu"
 #define OPTIMIZE_PROGRAM_NAME "FireOptimizer.cu"
+#define SPEEDTEST_PROGRAM_NAME "FireSpeedTest.cu"
 
 typedef std::set<std::vector<unsigned char>> TestedInstructions;
 
