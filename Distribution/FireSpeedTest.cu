@@ -130,7 +130,11 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
     result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         sharedData = data;
+#if 1
+        float n = fabsf(Evaluate(sharedData, code, theta[i]) - target[i]);
+#else
         float n = fabsf(code.Evaluate(sharedData, theta[i]) - target[i]);
+#endif
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
             return false;
