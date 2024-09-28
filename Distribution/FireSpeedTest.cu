@@ -9,7 +9,7 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     // EVALUATE //
     // END //
 #endif
-#if 0
+#if 1
     // Optimized program code
     n = data.d[0] += n;
     n *= data.d[1];
@@ -44,7 +44,7 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n += data.d[18];
     n *= data.d[19];
 #endif
-#if 1
+#if 0
     // Multiply-add unrolled constant indices
     n = data[0] += n;
     n = data[1] *= n;
