@@ -10,6 +10,7 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     // END //
 #endif
 #if 0
+    // Optimized program code
     n = data.d[0] += n;
     n *= data.d[1];
     n = data.d[2] *= n;
@@ -43,7 +44,8 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n += data.d[18];
     n *= data.d[19];
 #endif
-#if 0
+#if 1
+    // Multiply-add unrolled constant indices
     n = data[0] += n;
     n = data[1] *= n;
     n = data[2] += n;
@@ -77,7 +79,8 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n = data[30] += n;
     n = data[31] *= n;
 #endif
-#if 1
+#if 0
+    // Multiply-add unrolled
     n = data[code.c[0].reg] += n;
     n = data[code.c[1].reg] *= n;
     n = data[code.c[2].reg] += n;
@@ -112,6 +115,7 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n = data[code.c[31].reg] *= n;
 #endif
 #if 0
+    // Multiply-add loop
     for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
         n = data[code.c[i].reg] += n;
         n = data[code.c[i + 1].reg] *= n;
