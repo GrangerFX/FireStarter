@@ -168,7 +168,11 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
     }
 
     // The shared data for the threads in the warp.
+#if 1
     GPU_SHARED FireStarterSharedData sharedData;
+#else
+    FireStarterSharedData sharedData;
+#endif
 
     // For the GPU evolve optimize pass, the code is copied from the initial result.
     FireStarterCode code;
