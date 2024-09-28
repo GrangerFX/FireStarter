@@ -3,6 +3,7 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
+#if 1
 inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, float n)
 {
 #if 0
@@ -129,44 +130,6 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     return n;
 } // Evaluate
 
-inline float Evaluate2(FireStarterSharedData& data, const FireStarterRegisters& registers, float n)
-{
-    // Multiply-add unrolled
-    n = data[registers[0]] += n;
-    n = data[registers[1]] *= n;
-    n = data[registers[2]] += n;
-    n = data[registers[3]] *= n;
-    n = data[registers[4]] += n;
-    n = data[registers[5]] *= n;
-    n = data[registers[6]] += n;
-    n = data[registers[7]] *= n;
-    n = data[registers[8]] += n;
-    n = data[registers[9]] *= n;
-    n = data[registers[10]] += n;
-    n = data[registers[11]] *= n;
-    n = data[registers[12]] += n;
-    n = data[registers[13]] *= n;
-    n = data[registers[14]] += n;
-    n = data[registers[15]] *= n;
-    n = data[registers[16]] += n;
-    n = data[registers[17]] *= n;
-    n = data[registers[18]] += n;
-    n = data[registers[19]] *= n;
-    n = data[registers[20]] += n;
-    n = data[registers[21]] *= n;
-    n = data[registers[22]] += n;
-    n = data[registers[23]] *= n;
-    n = data[registers[24]] += n;
-    n = data[registers[25]] *= n;
-    n = data[registers[26]] += n;
-    n = data[registers[27]] *= n;
-    n = data[registers[28]] += n;
-    n = data[registers[29]] *= n;
-    n = data[registers[30]] += n;
-    n = data[registers[31]] *= n;
-    return n;
-} // Evaluate2
-
 inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
@@ -188,24 +151,6 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
     return true;
 } // TestEvaluate
 
-inline bool TestEvaluate2(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterRegisters& registers, const float target[], const float theta[], float& result)
-{
-    float maxResult = result;
-    result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-        sharedData = data;
-        float n = fabsf(Evaluate2(sharedData, registers, theta[i]) - target[i]);
-        if (!isfinite(n) || (n > maxResult)) {
-            result = maxResult;
-            return false;
-        }
-        else
-            result = fmaxf(n, result);
-    }
-    return true;
-} // TestEvaluate2
-
-#if 0
 GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
@@ -248,8 +193,7 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
                 break;
         }
         evolveAge1 = 0;
-    }
-    else {
+    } else {
         // Later generations randomize a single register if they were copied.
         data = oldResults->Data(member, variation);
         evolveAge1 = oldResults->EvolveAge1(member, variation);
@@ -265,8 +209,7 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
                 data[d] = oldData;
                 result = memberResult = oldResults->MinResult(member, variation);
             }
-        }
-        else {
+        } else {
             result = memberResult = oldResults->MinResult(member, variation);
             evolutionScale = FIRESTARTER_OPTIMIZE_GPU_SCALE * memberResult;
         }
@@ -289,8 +232,7 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
     if (!optimizePass || (result < memberResult)) {
         // If the result was better, save the results.
         age = 0;
-    }
-    else {
+    } else {
         // If the result was worse, copy a result from among the previous generation's results.
         unsigned int bestCandidate = member;
 
@@ -320,7 +262,61 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
 } // SpeedTest
 #endif
 
-#if 1
+#if 0
+inline float Evaluate2(FireStarterSharedData& data, const FireStarterRegisters& registers, float n)
+{
+    // Multiply-add unrolled
+    n = data[registers[0]] += n;
+    n = data[registers[1]] *= n;
+    n = data[registers[2]] += n;
+    n = data[registers[3]] *= n;
+    n = data[registers[4]] += n;
+    n = data[registers[5]] *= n;
+    n = data[registers[6]] += n;
+    n = data[registers[7]] *= n;
+    n = data[registers[8]] += n;
+    n = data[registers[9]] *= n;
+    n = data[registers[10]] += n;
+    n = data[registers[11]] *= n;
+    n = data[registers[12]] += n;
+    n = data[registers[13]] *= n;
+    n = data[registers[14]] += n;
+    n = data[registers[15]] *= n;
+    n = data[registers[16]] += n;
+    n = data[registers[17]] *= n;
+    n = data[registers[18]] += n;
+    n = data[registers[19]] *= n;
+    n = data[registers[20]] += n;
+    n = data[registers[21]] *= n;
+    n = data[registers[22]] += n;
+    n = data[registers[23]] *= n;
+    n = data[registers[24]] += n;
+    n = data[registers[25]] *= n;
+    n = data[registers[26]] += n;
+    n = data[registers[27]] *= n;
+    n = data[registers[28]] += n;
+    n = data[registers[29]] *= n;
+    n = data[registers[30]] += n;
+    n = data[registers[31]] *= n;
+    return n;
+} // Evaluate2
+
+inline bool TestEvaluate2(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterRegisters& registers, const float target[], const float theta[], float& result)
+{
+    float maxResult = result;
+    result = 0.0f;
+    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+        sharedData = data;
+        float n = fabsf(Evaluate2(sharedData, registers, theta[i]) - target[i]);
+        if (!isfinite(n) || (n > maxResult)) {
+            result = maxResult;
+            return false;
+        } else
+            result = fmaxf(n, result);
+    }
+    return true;
+} // TestEvaluate2
+
 GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int numRegisters, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
@@ -366,8 +362,7 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
                 break;
         }
         evolveAge1 = 0;
-    }
-    else {
+    } else {
         // Later generations randomize a single register if they were copied.
         data = oldResults->Data(member, variation);
         evolveAge1 = oldResults->EvolveAge1(member, variation);
