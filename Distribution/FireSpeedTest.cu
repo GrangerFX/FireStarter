@@ -77,7 +77,7 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n = data[30] += n;
     n = data[31] *= n;
 #endif
-#if 0
+#if 1
     n = data[code.c[0].reg] += n;
     n = data[code.c[1].reg] *= n;
     n = data[code.c[2].reg] += n;
@@ -111,7 +111,7 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n = data[code.c[30].reg] += n;
     n = data[code.c[31].reg] *= n;
 #endif
-#if 1
+#if 0
     for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
         n = data[code.c[i].reg] += n;
         n = data[code.c[i + 1].reg] *= n;
