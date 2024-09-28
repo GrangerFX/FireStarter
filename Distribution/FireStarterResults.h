@@ -136,24 +136,21 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterSharedData {
+#ifdef __CUDACC__
     float d[FIRESTARTER_REGISTERS * FIRESTARTER_WARP_THREADS];
 
-#ifdef __CUDACC__
     inline unsigned int index(unsigned int i) const
     {
         return i * FIRESTARTER_WARP_THREADS + threadIdx.x;
     } // index
 #else
+    float d[FIRESTARTER_REGISTERS];
+
     inline unsigned int index(unsigned int i) const
     {
-        return i * FIRESTARTER_WARP_THREADS;
+        return i;
     } // index
 #endif
-
-    inline unsigned int index(unsigned int i, unsigned int t) const
-    {
-        return i * FIRESTARTER_WARP_THREADS + t;
-    } // index
 
     inline float& operator[](unsigned int i)
     {
@@ -188,18 +185,6 @@ typedef struct FireStarterSharedData {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
             d[index(i)] = (*data)[i];
     } // Copy
-
-    inline void Get(FireStarterData& data, unsigned int t)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            data[i] = d[index(i, t)];
-    } // Get
-
-    inline void Get(FireStarterData* data, unsigned int t)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            (*data)[i] = d[index(i, t)];
-    } // Get
 
     inline FireStarterSharedData(const FireStarterData& data)
     {
@@ -352,6 +337,7 @@ typedef struct FireStarterCode {
     } // FireStarterCode
 } FireStarterCode;
 
+// Only used by alternate SpeedTest code.
 typedef struct FireStarterRegisters {
     unsigned int r[FIRESTARTER_INSTRUCTIONS]; // Note: Dynamically allocated!
 

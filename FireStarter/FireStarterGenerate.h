@@ -11,7 +11,7 @@ private:
 	CUfunction m_evaluateFunction = nullptr;
 	CUfunction m_solutionFunction = nullptr;
 	FireStarterInstructions* m_deviceInstructions = nullptr;
-	FireStarterRegisters* m_deviceRegisters = nullptr;
+	FireStarterRegisterUsage* m_deviceRegisters = nullptr;
 	FireStarterData* m_deviceData = nullptr;
 	unsigned char* m_deviceString = nullptr;
 	unsigned int m_numInstructions = 0;

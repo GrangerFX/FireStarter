@@ -7,12 +7,12 @@
 inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, float n)
 {
 #if 0
-    // Generated program code
+    // Generated program code 0.8f
     // EVALUATE //
     // END //
 #endif
 #if 0
-    // Optimized program code
+    // Optimized program code: 0.7f
     n = data.d[0] += n;
     n *= data.d[1];
     n = data.d[2] *= n;
@@ -47,7 +47,7 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n *= data.d[19];
 #endif
 #if 0
-    // Multiply-add unrolled constant indices
+    // Multiply-add unrolled constant indices: 0.6f
     n = data[0] += n;
     n = data[1] *= n;
     n = data[2] += n;
@@ -81,8 +81,8 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n = data[30] += n;
     n = data[31] *= n;
 #endif
-#if 1
-    // Multiply-add unrolled
+#if 0
+    // Multiply-add unrolled: 2.5s
     n = data[code.c[0].reg] += n;
     n = data[code.c[1].reg] *= n;
     n = data[code.c[2].reg] += n;
@@ -117,13 +117,14 @@ inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, 
     n = data[code.c[31].reg] *= n;
 #endif
 #if 0
-    // Multiply-add loop
+    // Multiply-add loop: 2.5s
     for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
         n = data[code.c[i].reg] += n;
         n = data[code.c[i + 1].reg] *= n;
     }
 #endif
-#if 0
+#if 1
+    // Regular code loop: 2.5s
     for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
         n = code.c[i].op ? data[code.c[i].reg] += n : data[code.c[i].reg] *= n;
 #endif
@@ -136,10 +137,11 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
     result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         sharedData = data;
-#if 1
-        float n = fabsf(Evaluate(sharedData, code, theta[i]) - target[i]);
-#endif
 #if 0
+        // Various speed tests.
+        float n = fabsf(Evaluate(sharedData, code, theta[i]) - target[i]);
+#else
+        // Regular code loop: 2.5s
         float n = fabsf(code.Evaluate(sharedData, theta[i]) - target[i]);
 #endif
         if (!isfinite(n) || (n > maxResult)) {
