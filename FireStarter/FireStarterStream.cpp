@@ -285,8 +285,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Try optimizing the best state if the new result is better and the evolution has been stuck for a few generations.
                 float evolveResult = evolveState.MaxResult();
                 float bestResult = bestState.MaxResult();
-                bestState.m_age++;
 
+                // Test when the best state does not improve.
+                if (bestState.m_age > 1)
                 // Only optimize unique states.
 //                if (!testedInstructions.count(evolveState.m_program.OptimizedInstructionsData()))
                 {
@@ -325,6 +326,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
                     break;
+
+                // Increment the best state's age.
+                bestState.m_age++;
             }
 
             // Output the test results.
