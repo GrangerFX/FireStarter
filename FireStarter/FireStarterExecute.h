@@ -1,5 +1,6 @@
 #pragma once
 #include "FireStarterGenerate.h"
+#include "FireStarterComplete.h"
 #include "FireStarterManager.h"
 #include "CUDAThread.h"
 
@@ -41,6 +42,7 @@ public:
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state);
     void ExecuteOptimize(FireStarterState& state);
+    void ExecuteOptimizeJob(FireStarterComplete* complete, FireStarterState& bestOptimizeState);
     void ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
     void ExecuteFinish(void);

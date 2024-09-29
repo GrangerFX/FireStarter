@@ -353,8 +353,8 @@ bool FireStarterExecute::ExecuteJob(void)
         m_executeManager->AddComplete(job);
         return true;
     }
-
-    m_executeManager->AddFree(job);
+    if (job)
+        m_executeManager->AddFree(job);
     m_executeManager->AddComplete(nullptr);
     return false;
 } // ExecuteJob
@@ -462,6 +462,23 @@ void FireStarterExecute::ExecuteOptimize(FireStarterState& state)
         ExecutePass(state);
     });
 } // ExecuteOptimize
+
+void FireStarterExecute::ExecuteOptimizeJob(FireStarterComplete* complete, FireStarterState& bestOptimizeState)
+{
+    DispatchAsync([this, complete, &bestOptimizeState] {
+        for (;;) {
+            FireStarterJob* job = nullptr;
+            if (Compile(job)) {
+                FireStarterState& state = job->m_state;
+                InitPopulation(state.Settings());
+                ExecuteSmartPass(state);
+                complete->CompleteState(bestOptimizeState, state);
+                return true;
+            }
+            return false;
+        }
+    });
+} // ExecuteOptimizeJob
 
 void FireStarterExecute::ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount)
 {

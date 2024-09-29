@@ -32,6 +32,7 @@ private:
         m_maxResult = other.m_maxResult;
         m_evolveWeight = other.m_evolveWeight;
         m_optimizeValid = other.m_optimizeValid;
+        m_evolveComplete = other.m_evolveComplete;
     } // swap
 
 public:
@@ -55,6 +56,7 @@ public:
     float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
     bool m_optimizeValid = false;
+    bool m_evolveComplete = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {
