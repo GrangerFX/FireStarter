@@ -176,7 +176,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     state.LoadProgramFromCode();
 } // ExecuteEvolvePass
 
-float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
+void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -245,7 +245,6 @@ float FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned 
     *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex, variation);
     *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex, variation);
     *result->MinResult() = minResult;
-    return minResult;
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecutePass(FireStarterState& state)
@@ -272,7 +271,8 @@ void FireStarterExecute::ExecuteSmartPass(FireStarterState& state)
             unsigned int variation = state.m_variationOrder[v];
             if (validResult) {
                 // If the variation result is worse, skip the rest of the variations.
-                float variationResult = ExecuteOptimizePass(state, variation);
+                ExecuteOptimizePass(state, variation);
+                float variationResult = state.MinResult(variation);
                 variationMax = MAX(variationMax, variationResult);
                 if (state.m_evolution && (variationMax >= oldResult)) {
                     // Count the variation that caused an invalid result.

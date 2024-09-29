@@ -249,11 +249,11 @@ GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopula
                 result = memberResult;
             }
 #endif
-#if 1
+#if 0
             if (evolveAge1 > 16)
                 data.RandomData(dataSeed, evolutionScale);
 #endif
-#if 0
+#if 1
             if (evolveAge1 > 128)
                 code.RandomInstruction(memberSeed);
             if (evolveAge1 > 16)
