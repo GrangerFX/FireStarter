@@ -4,9 +4,13 @@
 #include "FireStarterUtil.h"
 #include <vector>
 #include <string>
+#include <set>
 
 #define EVOLVE_PROGRAM_NAME   "FireEvolver.cu"
 #define OPTIMIZE_PROGRAM_NAME "FireOptimizer.cu"
+#define SPEEDTEST_PROGRAM_NAME "FireSpeedTest.cu"
+
+typedef std::set<std::vector<unsigned char>> TestedInstructions;
 
 class FireStarterProgram {
 private:
@@ -91,7 +95,7 @@ public:
 
     bool Packetize(FireStarterPacket& packet);
     void OptimizeRegisters(void);
-    unsigned int GenerateRegisters(std::vector<FireStarterRegister>& registers) const;
+    unsigned int GenerateRegisters(std::vector<FireStarterRegisterInfo>& registers) const;
     void RandomProgram(unsigned long long& seed);
     void RandomInstruction(unsigned long long& seed, unsigned int index);
     void RandomInstruction(unsigned long long& seed);

@@ -32,6 +32,7 @@ private:
         m_maxResult = other.m_maxResult;
         m_evolveWeight = other.m_evolveWeight;
         m_optimizeValid = other.m_optimizeValid;
+        m_evolveComplete = other.m_evolveComplete;
     } // swap
 
 public:
@@ -55,6 +56,7 @@ public:
     float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
     bool m_optimizeValid = false;
+    bool m_evolveComplete = false;
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {
@@ -167,7 +169,7 @@ public:
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization) const
     {
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_id) + SEED4(m_test);
+        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_generation) + SEED4(m_id) + SEED5(m_test);
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const
@@ -244,7 +246,7 @@ public:
     inline void LoadCodeFromProgram(void)
     {
         unsigned int numInstructions = Settings().m_instructions;
-        FireStarterInstructions* instructions = m_program.EvolvedInstructions();
+        FireStarterInstructions* instructions = m_program.OptimizedInstructions();
         FireStarterCode* code = Code();
         for (unsigned int i = 0; i < numInstructions; i++) {
             FireStarterInstruction& instruction = instructions->Instruction(i);

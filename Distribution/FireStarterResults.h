@@ -136,26 +136,28 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterSharedData {
+#ifdef __CUDACC__
     float d[FIRESTARTER_REGISTERS * FIRESTARTER_WARP_THREADS];
 
-#ifdef __CUDACC__
     inline unsigned int index(unsigned int i) const
     {
         return i * FIRESTARTER_WARP_THREADS + threadIdx.x;
     } // index
 #else
+    float d[FIRESTARTER_REGISTERS];
+
     inline unsigned int index(unsigned int i) const
     {
-        return i * FIRESTARTER_WARP_THREADS;
+        return i;
     } // index
 #endif
 
-    inline unsigned int index(unsigned int i, unsigned int t) const
-    {
-        return i * FIRESTARTER_WARP_THREADS + t;
-    } // index
-
     inline float& operator[](unsigned int i)
+    {
+        return d[index(i)];
+    } // operator[]
+
+    inline float operator[](unsigned int i) const
     {
         return d[index(i)];
     } // operator[]
@@ -183,18 +185,6 @@ typedef struct FireStarterSharedData {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
             d[index(i)] = (*data)[i];
     } // Copy
-
-    inline void Get(FireStarterData& data, unsigned int t)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            data[i] = d[index(i, t)];
-    } // Get
-
-    inline void Get(FireStarterData* data, unsigned int t)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            (*data)[i] = d[index(i, t)];
-    } // Get
 
     inline FireStarterSharedData(const FireStarterData& data)
     {
@@ -346,6 +336,174 @@ typedef struct FireStarterCode {
     {
     } // FireStarterCode
 } FireStarterCode;
+
+// Only used by alternate SpeedTest code.
+typedef struct FireStarterRegisters {
+    unsigned int r[FIRESTARTER_INSTRUCTIONS]; // Note: Dynamically allocated!
+
+    inline unsigned int& operator[](unsigned int i)
+    {
+        return r[i];
+    } // operator[]
+
+    inline unsigned int operator[](unsigned int i) const
+    {
+        return r[i];
+    } // operator[]
+
+    inline bool operator==(const FireStarterRegisters& other) const
+    {
+        for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            if (r[i] != other[i])
+                return false;
+        return true;
+    } // operator==
+
+    inline bool operator!=(const FireStarterRegisters& other) const
+    {
+        for (int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            if (r[i] != other[i])
+                return true;
+        return false;
+    } // operator!=
+
+    static inline size_t RegistersSize(void)
+    {
+        return sizeof(FireStarterRegisters);
+    } // RegistersSize
+
+    static inline size_t RegistersSize(unsigned int registers)
+    {
+        return sizeof(unsigned int) * registers;
+    } // RegistersSize
+
+    static inline size_t RegistersSize(const FireStarterSettings& settings)
+    {
+        return sizeof(unsigned int) * settings.m_registers;
+    } // RegistersSize
+
+    inline void RandomRegisters(unsigned long long& seed, float scale)
+    {
+        unsigned int i = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
+        r[i] = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+    } // RandomRegisters
+
+    inline void Copy(const FireStarterRegisters& registers)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            r[i] = registers[i];
+    } // Copy
+
+    inline void Copy(const FireStarterRegisters& registers, unsigned int instructions)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            r[i] = registers[i];
+    } // Copy
+
+    inline void Copy(const FireStarterRegisters* registers)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            r[i] = (*registers)[i];
+    } // Copy
+
+    inline void Copy(const FireStarterRegisters* registers, unsigned int instructions)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            r[i] = (*registers)[i];
+    } // Copy
+
+    inline void Copy(const FireStarterCode& code)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            r[i] = code.c[i].reg;
+    } // Copy
+
+    inline void Copy(const FireStarterCode& code, unsigned int instructions)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            r[i] = code.c[i].reg;
+    } // Copy
+
+    inline void Copy(const FireStarterCode* code)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            r[i] = code->c[i].reg;
+    } // Copy
+
+    inline void Copy(const FireStarterCode* code, unsigned int instructions)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            r[i] = code->c[i].reg;
+    } // Copy
+
+    inline void operator=(const FireStarterRegisters& registers)
+    {
+        Copy(registers);
+    } // operator=
+
+    inline void operator=(const FireStarterRegisters* registers)
+    {
+        Copy(registers);
+    } // operator=
+
+    inline void operator=(const FireStarterCode& code)
+    {
+        Copy(code);
+    } // operator=
+
+    inline void operator=(const FireStarterCode* code)
+    {
+        Copy(code);
+    } // operator=
+
+    inline void Init()
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            r[i] = 0;
+    } // Init
+
+    inline void Init(unsigned int instructions)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            r[i] = 0;
+    } // Init
+
+    inline void Init(unsigned long long& seed)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            r[i] = RANDOMMOD(seed, FIRESTARTER_REGISTERS); // Randomize the registers.
+    } // Init
+
+    inline void Init(unsigned long long& seed, unsigned int instructions)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            r[i] = RANDOMMOD(seed, FIRESTARTER_REGISTERS); // Randomize the registers.
+    } // Init
+
+    inline FireStarterRegisters(const struct FireStarterRegisters& registers)
+    {
+        Copy(registers);
+    } // FireStarterRegisters
+
+    inline FireStarterRegisters(const struct FireStarterRegisters* registers)
+    {
+        Copy(registers);
+    } // FireStarterRegisters
+
+    inline FireStarterRegisters(const struct FireStarterCode& code)
+    {
+        Copy(code);
+    } // FireStarterRegisters
+
+    inline FireStarterRegisters(const struct FireStarterCode* code)
+    {
+        Copy(code);
+    } // FireStarterRegisters
+
+    inline FireStarterRegisters(void)
+    {
+    } // FireStarterRegisters
+} FireStarterRegisters;
 
 typedef struct FireStarterResult {
     float m_resultMin;

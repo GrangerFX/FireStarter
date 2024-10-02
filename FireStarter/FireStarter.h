@@ -10,12 +10,13 @@ private:
     FireStarterWindow m_window;
     FireStarterServer* m_server = nullptr;
 
-    void ControlRandom(const FireStarterSettings& randomSettings);
-    void ControlEvolve(const FireStarterSettings& evolveSettings);
     void ControlSolution(void);
+    void ControlRandom(const FireStarterSettings& randomSettings);
+    void ControlStreams(const FireStarterSettings& evolveSettings);
     void ControlThread(void);
 
 public:
+    bool ShouldQuit(void);
     FireStarter(const FireStarterWindow &window);
     ~FireStarter(void);
 }; // class FireStarter

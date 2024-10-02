@@ -264,7 +264,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
                 statusString += Format("  Index=%u  EvolveAge1=%u  EvolveAge2=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1(), (unsigned int)state.Result(0)->EvolveAge2());
         } else {
-            if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU)) {
+            if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
                 statusString += Format("  Optimize=%u", state.m_optimize_pass);
             } else {
                 if (settings.m_units > 1)
@@ -281,7 +281,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
             statusString += Format("BestError=%.8f", bestResult, bestError);
-        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU)))
+        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)))
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.

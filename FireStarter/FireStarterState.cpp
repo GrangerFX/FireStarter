@@ -28,9 +28,9 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code) 
     code += "    FireStarterData *data = result->Data();\r\n";
     for (unsigned int i = 0; i < m_program.m_settings.m_registers; i++) {
         float data = Result(variation)->Data()->d[i];
-        code += Format("    data->d[%u] = %ff;\r\n", i, data);
+        code += Format("    data->d[%u] = %.8ff;\r\n", i, data);
     }
-    code += Format("    *(result->MinResult()) = %ff;\r\n", Result(variation)->MinResult());
+    code += Format("    *(result->MinResult()) = %.8ff;\r\n", Result(variation)->MinResult());
     code += Format("} // LoadVariation%u\r\n", variation);
     code += "\r\n";
 } // SaveVariation
@@ -43,7 +43,7 @@ void FireStarterState::SaveResult(std::string& code) const
     code += "{\r\n";
     for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
         code += Format("    LoadVariation%u(state.Result(%u));\r\n", v, v);
-    code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
+    code += Format("    state.m_maxResult = %.8ff;\r\n", m_maxResult);
     code += "} // LoadResult\r\n";
     code += "\r\n";
 } // SaveResult
@@ -66,6 +66,7 @@ void FireStarterState::SaveState(std::string& code) const
     code += "    state.InitState(settings);\r\n";
     code += "    LoadResult(state);\r\n";
     code += "    LoadProgram(state.m_program);\r\n";
+    code += "    state.LoadCodeFromProgram();\r\n";
     code += Format("    state.m_generation = %llu;\r\n", m_generation);
     code += Format("    state.m_evolution = %llu;\r\n", m_evolution);
     code += Format("    state.m_index = %llu;\r\n", m_index);
@@ -73,9 +74,9 @@ void FireStarterState::SaveState(std::string& code) const
     code += Format("    state.m_id = %llu;\r\n", m_id);
     code += Format("    state.m_test = %llu;\r\n", m_test);
     code += Format("    state.m_seed = %llu;\r\n", m_seed);
-    code += Format("    state.m_optimize_pass =%llu;\r\n", m_optimize_pass);
-    code += Format("    state.m_oldResult = %ff;\r\n", m_oldResult);
-    code += Format("    state.m_maxResult = %ff;\r\n", m_maxResult);
+    code += Format("    state.m_optimize_pass = %llu;\r\n", m_optimize_pass);
+    code += Format("    state.m_oldResult = %.8ff;\r\n", m_oldResult);
+    code += Format("    state.m_maxResult = %.8ff;\r\n", m_maxResult);
     code += Format("    state.m_evolveWeight = %ff;\r\n", m_evolveWeight);
     code += Format("    state.m_optimizeValid = %s;\r\n", m_optimizeValid ? "true" : "false");
     code += "} // LoadState\r\n";

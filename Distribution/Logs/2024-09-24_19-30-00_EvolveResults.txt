@@ -1,0 +1,5 @@
+Test: 0  Generation=44  Evolve Result=0.00007726  Optimize Result=0.00000012  Duration: 92.4 *******
+Test: 1  Generation=40  Evolve Result=0.00015962  Optimize Result=0.00000072  Duration: 95.4 *******
+Test: 2  Generation=1  Evolve Result=0.00074899  Optimize Result=0.00000013  Duration: 9.3 *******
+Test: 3  Generation=312  Evolve Result=0.00000519  Optimize Result=0.00000042  Duration: 522.3 *******
+Test: 4  Generation=11  Evolve Result=0.00031585  Optimize Result=0.00000048  Duration: 31.9 *******

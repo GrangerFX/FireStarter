@@ -15,7 +15,10 @@ public:
 	void RandomStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
 	void EvolveCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
 	void EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
-	FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
+	void OptimizeCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
+	void OptimizeGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
+    void SpeedTestStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
+    FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
 	~FireStarterStream(void);
 }; // class FireStarterStream
 
@@ -30,7 +33,7 @@ private:
 public:
 	bool SynchronizeStreams(std::vector<FireStarterStream*>& streams);
 	void RandomStreams(void);
-	void EvolveStreams(void);
+	void ExecuteStreams(void);
 	FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings);
 	~FireStarterStreams(void);
 }; // class FireStarterStreams

@@ -177,7 +177,9 @@ private:
     std::queue<SerialThreadWork> m_workQueue;
     std::string m_threadName; // For debugging
     bool m_pollThread = false;
-    bool m_willTerminate = false;
+    volatile bool m_willTerminate = false;
+    volatile bool m_waiting = false;
+    volatile bool m_working = false;
     volatile bool m_terminate = false;
 
 #if HAS_DISPATCH_AFTER
@@ -250,21 +252,31 @@ private:
         return g_mainThread;
     } // MainThread
 
-    inline void Wait(SerialThreadWork& work)
+    inline bool Wait(SerialThreadWork& work)
     {
+        m_waiting = true;
         std::unique_lock<std::mutex> lock(m_mutex);
         while (m_workQueue.empty())
             m_cv.wait(lock);
-        work = m_workQueue.front();
-        m_workQueue.pop();
+        if (!m_workQueue.empty()) {
+            work = m_workQueue.front();
+            m_workQueue.pop();
+            m_working = true;
+            m_waiting = false;
+            return true;
+        }
+        return false;
     } // Wait
 
     inline bool TryWait(SerialThreadWork& work)
     {
+        m_waiting = true;
         std::unique_lock<std::mutex> lock(m_mutex);
         if (!m_workQueue.empty()) {
             work = m_workQueue.front();
             m_workQueue.pop();
+            m_working = true;
+            m_waiting = false;
             return true;
         }
         return false;
@@ -278,8 +290,11 @@ private:
         SerialThreadWork work;
         m_terminate = false;
         while (!m_terminate) {
-            Wait(work);
-            work();
+            if (Wait(work)) {
+                work();
+                m_working = false;
+            } else
+                m_terminate = true;
         }
     } // Thread
 
@@ -298,6 +313,7 @@ public:
         SerialThreadWork work;
         while (TryWait(work)) {
             work();
+            m_working = false;
             result = true;
         }
         return result;
@@ -318,6 +334,14 @@ public:
     {
         return m_pollThread || m_thread.joinable();
     } // IsRunning
+
+    inline bool IsFinished(void)
+    {
+        std::unique_lock<std::mutex> lock(m_mutex);
+        if (m_waiting && !m_working && m_workQueue.empty())
+            return true;
+        return false;
+    } // IsFinished
 
     inline void SleepFor(double duration)
     {
@@ -427,13 +451,15 @@ public:
                 PollThread();
                 std::unique_lock<std::mutex> lock(m_mutex);
                 Terminate();
+                std::queue<SerialThreadWork> empty;
+                std::swap(m_workQueue, empty);  // Clear the work queue.
             } else {
                 DispatchSync([this] { Terminate(); });
                 std::unique_lock<std::mutex> lock(m_mutex);
                 m_thread.join();
+                std::queue<SerialThreadWork> empty;
+                std::swap(m_workQueue, empty);  // Clear the work queue.
             }
-            std::queue<SerialThreadWork> empty;
-            std::swap(m_workQueue, empty);  // Clear the work queue.
             return true;
         }
         return false;

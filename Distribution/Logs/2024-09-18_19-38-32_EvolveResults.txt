@@ -1,0 +1,16 @@
+Duration: 51.1  Seed=0  Test=0  Generation=25  Best Generations=25  Evolutions=0  Evolve Result=0.00000015 *******
+Duration: 73.0  Seed=0  Test=1  Generation=31  Best Generations=31  Evolutions=0  Evolve Result=0.00000072 *******
+Duration: 27.1  Seed=0  Test=2  Generation=11  Best Generations=10  Evolutions=0  Evolve Result=0.00000042 *******
+Duration: 77.3  Seed=0  Test=3  Generation=37  Best Generations=36  Evolutions=0  Evolve Result=0.00000027 *******
+Duration: 8.4  Seed=0  Test=4  Generation=2  Best Generations=1  Evolutions=0  Evolve Result=0.00000048 *******
+Duration: 121.7  Seed=0  Test=5  Generation=67  Best Generations=67  Evolutions=0  Evolve Result=0.00000072 *******
+Duration: 140.7  Seed=0  Test=6  Generation=69  Best Generations=69  Evolutions=0  Evolve Result=0.00000024 *******
+Duration: 132.9  Seed=0  Test=7  Generation=74  Best Generations=73  Evolutions=0  Evolve Result=0.00000030 *******
+Duration: 171.5  Seed=0  Test=8  Generation=87  Best Generations=87  Evolutions=0  Evolve Result=0.00000024 *******
+Duration: 163.7  Seed=0  Test=9  Generation=98  Best Generations=98  Evolutions=0  Evolve Result=0.00000030 *******
+Duration: 173.8  Seed=0  Test=10  Generation=99  Best Generations=99  Evolutions=0  Evolve Result=0.00000060 *******
+Duration: 641.2  Seed=0  Test=11  Generation=483  Best Generations=483  Evolutions=0  Evolve Result=0.00000012 *******
+Duration: 82.6  Seed=0  Test=12  Generation=39  Best Generations=39  Evolutions=0  Evolve Result=0.00000069 *******
+Duration: 47.5  Seed=0  Test=13  Generation=22  Best Generations=21  Evolutions=0  Evolve Result=0.00000018 *******
+Duration: 65.1  Seed=0  Test=14  Generation=32  Best Generations=31  Evolutions=0  Evolve Result=0.00000020 *******
+Duration: 23.6  Seed=0  Test=15  Generation=9  Best Generations=8  Evolutions=0  Evolve Result=0.00000017 *******

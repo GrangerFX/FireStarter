@@ -3,9 +3,6 @@
 #include "FireStarterGenerate.h"
 #include "FireStarterManager.h"
 #include "CUDAThread.h"
-#include <set>
-
-typedef std::set<std::vector<unsigned char>> TestedInstructions;
 
 class FireStarterEvolve : public CUDAThread {
 private:

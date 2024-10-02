@@ -36,7 +36,7 @@ bool FireStarterGenerate::InitGenerateGPU(const FireStarterSettings& settings)
             checkCUDAErrors(cudaFreeAsync(m_deviceData, stream));
             m_deviceData = nullptr;
         }
-        checkCUDAErrors(cudaMallocAsync(&m_deviceRegisters, FireStarterRegisters::RegistersSize(m_numRegisters), stream));
+        checkCUDAErrors(cudaMallocAsync(&m_deviceRegisters, FireStarterRegisterUsage::RegistersSize(m_numRegisters), stream));
         checkCUDAErrors(cudaMallocAsync(&m_deviceData, FireStarterData::DataSize(m_numRegisters), stream));
     }
 
@@ -57,9 +57,9 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     // Generate the evaluate function.
     unsigned int numInstructions = state.m_program.m_settings.m_instructions;
     const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
-    std::vector<FireStarterRegister> registers;
+    std::vector<FireStarterRegisterInfo> registers;
     unsigned int numRegisters = state.m_program.GenerateRegisters(registers);
-    FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
+    FireStarterRegisterUsage* registersData = (FireStarterRegisterUsage*)registers.data();
     std::string generateCode;
     unsigned int tabs = 1;
 
@@ -71,7 +71,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
         dim3 cudaGridSize(1, 1, 1);
         CUstream stream = m_CUDAContext->Stream();
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registersData, FireStarterRegisters::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registersData, FireStarterRegisterUsage::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
 
         size_t stringSize = 0;
         void* arr[] = { reinterpret_cast<void*>(&m_deviceString),
@@ -130,9 +130,9 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     // Generate the solution function.
     unsigned int numInstructions = state.m_program.m_settings.m_instructions;
     const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
-    std::vector<FireStarterRegister> registers;
+    std::vector<FireStarterRegisterInfo> registers;
     unsigned int numRegisters = state.m_program.GenerateRegisters(registers);
-    FireStarterRegisters* registersData = (FireStarterRegisters*)registers.data();
+    FireStarterRegisterUsage* registersData = (FireStarterRegisterUsage*)registers.data();
     std::string generateCode;
 
     const FireStarterSettings& settings = state.Settings();
@@ -164,7 +164,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
             dim3 cudaGridSize(1, 1, 1);
             CUstream stream = m_CUDAContext->Stream();
             checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
-            checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registersData, FireStarterRegisters::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registersData, FireStarterRegisterUsage::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
             checkCUDAErrors(cudaMemcpyAsync(m_deviceData, data, FireStarterData::DataSize(numRegisters), cudaMemcpyHostToDevice, stream));
 
             size_t stringSize = 0;
