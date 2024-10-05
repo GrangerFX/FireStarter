@@ -279,10 +279,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Execute the GPU evolve using a single execution unit.
                 evolveExecute->ExecuteEvolve(evolveState);
 
-#if 0
                 // Gather the results, update the UI and check for the completion condition.
                 complete->CompleteState(bestState, evolveState);
-#else
+
                 // Only optimize unique states.
                 if (!bestState.m_evolveComplete && !testedInstructions.count(evolveState.m_program.OptimizedInstructionsData())) {
                     // Add the instructions to the set of unique instructions.
@@ -295,7 +294,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     optimizeState.Settings().m_optimize = optimizePasses;
                     optimizationUnit->ExecuteOptimizeComplete(complete, bestState, optimizeState);
                 }
-#endif
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
