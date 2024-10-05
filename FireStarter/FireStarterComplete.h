@@ -16,11 +16,13 @@ private:
 	double m_generationTime = 0.0;
 	float m_bestError = 0.0f;
 	bool m_saveBestState = true;
+    bool m_complete = false;
 
 	void SaveBestState(const FireStarterState& bestState);
 	void SaveBestCode(const FireStarterState& bestState);
 	void SaveSolution(const FireStarterState& bestState);
 	bool LoadSolutionTargetCode(void);
+    bool CheckComplete(const FireStarterState& bestState);
 
 public:
 	bool UpdateBestState(FireStarterState& bestState, const FireStarterState& state);
@@ -29,6 +31,7 @@ public:
 	bool CompleteState(FireStarterState& bestState, FireStarterState& state);
 	bool CompleteRandom(FireStarterState& bestState, FireStarterState& oldState);
 	bool CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
+    bool Complete(void);
     FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState = false);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

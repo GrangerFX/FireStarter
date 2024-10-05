@@ -32,6 +32,7 @@ private:
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecutePass(FireStarterState& state);
     void ExecuteSmartPass(FireStarterState& state);
+    bool GenerateOptimize(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
     bool ExecuteJob(void);
 
@@ -42,7 +43,7 @@ public:
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state);
     void ExecuteOptimize(FireStarterState& state);
-    void ExecuteOptimizeJob(FireStarterComplete* complete, FireStarterState& bestOptimizeState);
+    void ExecuteOptimizeComplete(FireStarterComplete* complete, FireStarterState& bestState, const FireStarterState& state);
     void ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
     void ExecuteFinish(void);

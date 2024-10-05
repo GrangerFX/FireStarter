@@ -1,0 +1,16 @@
+Test: 0  Generation=3  Evolve Result=0.00073324  Optimize Result=0.00003147  Duration: 22.5
+Test: 1  Generation=3  Evolve Result=0.00236097  Optimize Result=0.00012391  Duration: 7.3
+Test: 2  Generation=3  Evolve Result=0.00283300  Optimize Result=0.00034062  Duration: 7.3
+Test: 3  Generation=3  Evolve Result=0.00182399  Optimize Result=0.00221587  Duration: 7.3
+Test: 4  Generation=3  Evolve Result=0.00212403  Optimize Result=0.00000176  Duration: 7.3
+Test: 5  Generation=3  Evolve Result=0.00155067  Optimize Result=0.00000240  Duration: 7.3
+Test: 6  Generation=3  Evolve Result=0.00276682  Optimize Result=0.00139118  Duration: 7.3
+Test: 7  Generation=3  Evolve Result=0.00020003  Optimize Result=0.00000139  Duration: 7.3
+Test: 8  Generation=3  Evolve Result=0.00232619  Optimize Result=0.00029564  Duration: 7.3
+Test: 9  Generation=3  Evolve Result=0.00314617  Optimize Result=0.00008261  Duration: 7.3
+Test: 10  Generation=3  Evolve Result=0.00056237  Optimize Result=0.00081328  Duration: 7.3
+Test: 11  Generation=3  Evolve Result=0.00221378  Optimize Result=0.00103334  Duration: 7.3
+Test: 12  Generation=3  Evolve Result=0.00313050  Optimize Result=0.00005448  Duration: 7.3
+Test: 13  Generation=3  Evolve Result=0.00109237  Optimize Result=0.00288561  Duration: 7.3
+Test: 14  Generation=3  Evolve Result=0.00536489  Optimize Result=0.00006607  Duration: 7.2
+Test: 15  Generation=3  Evolve Result=0.00219222  Optimize Result=0.00000067  Duration: 7.3 *******

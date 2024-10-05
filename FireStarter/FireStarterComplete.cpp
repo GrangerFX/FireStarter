@@ -118,22 +118,25 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, Fire
 bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& state)
 {
     DispatchSync([this, &bestState, &state] {
-        // Update the best state and display the results.
-        if (UpdateBestState(bestState, state))
-            DisplayResults(bestState);
+        // Skip if the best state was already completed.
+        if (!bestState.m_evolveComplete) {
+            // Update the best state and display the results.
+            if (UpdateBestState(bestState, state))
+                DisplayResults(bestState);
 
-        // Update the render status after every pass.
-        CompleteStatus(bestState, state, state.m_generation);
+            // Update the render status after every pass.
+            CompleteStatus(bestState, state, state.m_generation);
 
-        // Has the completion condition been met?
-        if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) && (state.PassMode() != FIRESTARTER_SPEED_TEST))
-            bestState.m_evolveComplete = true;
-        else if (((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) && state.Settings().m_optimize)
-            bestState.m_evolveComplete = state.m_optimize_pass + 1 >= state.Settings().m_optimize;
-        else {
-            unsigned long long age = state.m_generation - bestState.m_generation;
-            if (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts))
+            // Has the completion condition been met?
+            if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) && (state.PassMode() != FIRESTARTER_SPEED_TEST))
                 bestState.m_evolveComplete = true;
+            else if (((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) && state.Settings().m_optimize)
+                bestState.m_evolveComplete = state.m_optimize_pass + 1 >= state.Settings().m_optimize;
+            else {
+                unsigned long long age = state.m_generation - bestState.m_generation;
+                if (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts))
+                    bestState.m_evolveComplete = true;
+            }
         }
     });
     return bestState.m_evolveComplete;
@@ -141,8 +144,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarterState& state)
 {
-    bool result = true;
-    DispatchSync([this, &bestState, &state, &result] {
+    DispatchSync([this, &bestState, &state] {
         // Get the next job in the order they are completed.
         FireStarterJob* job = m_manager->GetComplete();
         if (!job)
@@ -165,15 +167,15 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarte
 
             // Has the completion condition been met?
             if ((newState.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (newState.PassMode() == FIRESTARTER_OPTIMIZE_GPU))
-                result = newState.m_optimize_pass >= newState.Settings().m_optimize;
+                bestState.m_evolveComplete = newState.m_optimize_pass >= newState.Settings().m_optimize;
             else {
                 unsigned long long age = newState.m_generation - state.m_generation;
                 if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
-                    result = bestState.m_evolveComplete = true;
+                    bestState.m_evolveComplete = true;
             }
         }
     });
-    return result;
+    return bestState.m_evolveComplete;
 } // CompleteRandom
 
 // Replace old states with new ones when better and resort the list.
