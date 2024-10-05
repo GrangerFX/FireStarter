@@ -119,7 +119,7 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += "\r\n";
     code += prefix + Format("targetMin = %ff", settings.m_targetMin) + postfix + "\r\n";
     code += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
-    code += prefix + Format("evolveTarget = %ff", settings.m_target) + postfix + "\r\n";
+    code += prefix + Format("target = %ff", settings.m_target) + postfix + "\r\n";
     code += "\r\n";
     code += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
     code += prefix + Format("evolveSeed = %u", settings.m_evolveSeed) + postfix + "\r\n";

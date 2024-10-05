@@ -189,8 +189,8 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
 
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
-        evolutionScale = FIRESTARTER_OPTIMIZE_GPU_START_SCALE;
-        memberResult = FIRESTARTER_OPTIMIZE_GPU_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
+        memberResult = FIRESTARTER_START_RESULT;
         result = memberResult;
         for (int i = 0; i < 10; i++) {
             data.Init(memberSeed, evolutionScale);
@@ -205,11 +205,11 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
         evolveAge1 = oldResults->EvolveAge1(member, variation);
         if (evolveAge1 > 1) {
             // Randomize a single register.
-            evolutionScale = FIRESTARTER_OPTIMIZE_GPU_START_SCALE;
+            evolutionScale = FIRESTARTER_START_SCALE;
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * evolutionScale * (evolveAge1 - 1);
-            memberResult = FIRESTARTER_OPTIMIZE_GPU_START_RESULT;
+            memberResult = FIRESTARTER_START_RESULT;
             result = 1.0e+6f;
             if (!TestEvaluate(sharedData, data, code, target, theta, result)) {
                 data[d] = oldData;
@@ -217,12 +217,12 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
             }
         } else {
             result = memberResult = oldResults->MinResult(member, variation);
-            evolutionScale = FIRESTARTER_OPTIMIZE_GPU_SCALE * memberResult;
+            evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
 
     // Iterate to evolve the registers.
-    for (unsigned int p = 0; p < FIRESTARTER_OPTIMIZE_GPU_ITERATIONS; p++) {
+    for (unsigned int p = 0; p < FIRESTARTER_SPEED_TEST_ITERATIONS; p++) {
         unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
@@ -244,7 +244,7 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
 
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
-        for (int i = 0; i < FIRESTARTER_OPTIMIZE_GPU_CANDIDATES; i++) {
+        for (int i = 0; i < FIRESTARTER_SPEED_TEST_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, population);
             unsigned short candidateAge = oldResults->EvolveAge1(candidate, variation);
@@ -358,8 +358,8 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
 
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
-        evolutionScale = FIRESTARTER_OPTIMIZE_GPU_START_SCALE;
-        memberResult = FIRESTARTER_OPTIMIZE_GPU_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
+        memberResult = FIRESTARTER_TART_RESULT;
         result = memberResult;
         for (int i = 0; i < 10; i++) {
             data.Init(memberSeed, evolutionScale);
@@ -374,11 +374,11 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
         evolveAge1 = oldResults->EvolveAge1(member, variation);
         if (evolveAge1 > 1) {
             // Randomize a single register.
-            evolutionScale = FIRESTARTER_OPTIMIZE_GPU_START_SCALE;
+            evolutionScale = FIRESTARTER_START_SCALE;
             unsigned int d = RANDOMMOD(memberSeed, numRegisters);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * evolutionScale * (evolveAge1 - 1);
-            memberResult = FIRESTARTER_OPTIMIZE_GPU_START_RESULT;
+            memberResult = FIRESTARTER_START_RESULT;
             result = 1.0e+6f;
             if (!TestEvaluate2(sharedData, data, registers, target, theta, result)) {
                 data[d] = oldData;
@@ -386,12 +386,12 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
             }
         } else {
             result = memberResult = oldResults->MinResult(member, variation);
-            evolutionScale = FIRESTARTER_OPTIMIZE_GPU_SCALE * memberResult;
+            evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
 
     // Iterate to evolve the registers.
-    for (unsigned int p = 0; p < FIRESTARTER_OPTIMIZE_GPU_ITERATIONS; p++) {
+    for (unsigned int p = 0; p < FIRESTARTER_SPEED_TEST_ITERATIONS; p++) {
         unsigned int d = RANDOMMOD(memberSeed, numRegisters);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
@@ -413,7 +413,7 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
 
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
-        for (int i = 0; i < FIRESTARTER_OPTIMIZE_GPU_CANDIDATES; i++) {
+        for (int i = 0; i < FIRESTARTER_SPEED_TEST_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, population);
             unsigned short candidateAge = oldResults->EvolveAge1(candidate, variation);

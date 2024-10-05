@@ -142,15 +142,15 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     // This allows for better diversity among members when they struggle to evolve and yields better results.
     bool validResult = false;
     float minResult = settings.m_startResult;
-    unsigned int maxAge1 = 0;
-    unsigned int maxAge2 = 0;
+//  unsigned int maxAge1 = 0;
+//  unsigned int maxAge2 = 0;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < population; i++) {
-        unsigned int curAge1 = *m_hostPopulation->EvolveAge1(settings, i);
-        unsigned int curAge2 = *m_hostPopulation->EvolveAge2(settings, i);
-        maxAge1 = MAX(curAge1, maxAge1);
-        maxAge2 = MAX(curAge1, maxAge2);
-        FireStarterData* testData = m_hostPopulation->Data(settings, i);
+//      unsigned int curAge1 = *m_hostPopulation->EvolveAge1(settings, i);
+//      unsigned int curAge2 = *m_hostPopulation->EvolveAge2(settings, i);
+//      maxAge1 = MAX(curAge1, maxAge1);
+//      maxAge2 = MAX(curAge1, maxAge2);
+//      FireStarterData* testData = m_hostPopulation->Data(settings, i);
         float curResult = *m_hostPopulation->MinResult(settings, i);
         if (curResult < minResult) {
             minResult = curResult;
@@ -348,9 +348,11 @@ bool FireStarterExecute::ExecuteJob(void)
     FireStarterJob* job = nullptr;
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
-        InitPopulation(state.Settings());
-        ExecuteSmartPass(state);
-        m_executeManager->AddComplete(job);
+        if (InitPopulation(state.Settings())) {
+            ExecuteSmartPass(state);
+            m_executeManager->AddComplete(job);
+        } else
+            m_executeManager->AddComplete(nullptr);
         return true;
     }
     if (job)
@@ -452,17 +454,16 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
 {
     DispatchSync([this, &state] {
         state.m_timer.Start();
-        InitResults(state.Settings());
-        InitPopulation(state.Settings());
-        ExecuteEvolvePass(state);
+        if (InitResults(state.Settings()) && InitPopulation(state.Settings()))
+            ExecuteEvolvePass(state);
     });
 } // ExecuteEvolve
 
 void FireStarterExecute::ExecuteOptimize(FireStarterState& state)
 {
     DispatchSync([this, &state] {
-        InitPopulation(state.Settings());
-        ExecutePass(state);
+        if (InitPopulation(state.Settings()))
+            ExecutePass(state);
     });
 } // ExecuteOptimize
 
@@ -478,18 +479,18 @@ void FireStarterExecute::ExecuteOptimizeComplete(FireStarterComplete* complete, 
             GenerateOptimize(optimizeState);
 
             // Create the population for the optimization state.
-            InitPopulation(optimizeState.Settings());
+            if (InitPopulation(optimizeState.Settings())) {
+                // Execute the optimization passes.
+                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                    ExecutePass(optimizeState);
 
-            // Execute the optimization passes.
-            while (!WillTerminate() && (state.m_optimize_pass < state.Settings().m_optimize)) {
-                ExecutePass(optimizeState);
+                    // Update the results in the UI and check for completion.
+                    if (complete->CompleteState(bestState, optimizeState))
+                        break;
 
-                // Update the results in the UI and check for completion.
-                if (complete->CompleteState(bestState, optimizeState))
-                    break;
-
-                // Increment the generation.
-                optimizeState.m_optimize_pass++;
+                    // Increment the generation.
+                    optimizeState.m_optimize_pass++;
+                }
             }
         }
     });

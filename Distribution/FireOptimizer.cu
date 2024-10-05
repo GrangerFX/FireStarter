@@ -51,8 +51,8 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
-        memberResult = FIRESTARTER_OPTIMIZE_CPU_START_RESULT;
-        evolutionScale = FIRESTARTER_OPTIMIZE_CPU_START_SCALE;
+        memberResult = FIRESTARTER_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
             data.Init(memberSeed, evolutionScale);
             result = memberResult;
@@ -66,11 +66,11 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
         evolveAge1 = oldResults->EvolveAge1(member, variation);
         if (evolveAge1 > 1) {
             // Randomize a single register.
-            evolutionScale = FIRESTARTER_OPTIMIZE_CPU_START_SCALE;
+            evolutionScale = FIRESTARTER_START_SCALE;
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * evolutionScale * (evolveAge1 - 1);
-            memberResult = FIRESTARTER_OPTIMIZE_CPU_START_RESULT;
+            memberResult = FIRESTARTER_START_RESULT;
             result = 1.0e+6f;
             if (!TestEvaluate(data, target, theta, result)) {
                 data[d] = oldData;
@@ -78,7 +78,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
             }
         } else {
             result = memberResult = oldResults->MinResult(member, variation);
-            evolutionScale = FIRESTARTER_OPTIMIZE_CPU_SCALE * memberResult;
+            evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
 
