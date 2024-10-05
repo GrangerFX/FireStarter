@@ -128,13 +128,11 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarter
             CompleteStatus(bestState, state, state.m_generation);
 
             // Has the completion condition been met?
-            if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) && (state.PassMode() != FIRESTARTER_SPEED_TEST))
+            if (bestState.m_maxResult < bestState.Settings().m_target)
                 bestState.m_evolveComplete = true;
-            else if (((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) && state.Settings().m_optimize)
-                bestState.m_evolveComplete = state.m_optimize_pass + 1 >= state.Settings().m_optimize;
-            else {
-                unsigned long long age = state.m_generation - bestState.m_generation;
-                if (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts))
+            else if (bestState.Settings().m_attempts) {
+                unsigned long long bestAge = state.m_generation - bestState.m_generation;
+                if (bestAge >= bestState.Settings().m_attempts)
                     bestState.m_evolveComplete = true;
             }
         }
@@ -166,11 +164,11 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarte
             state.m_timer.Start();
 
             // Has the completion condition been met?
-            if ((newState.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (newState.PassMode() == FIRESTARTER_OPTIMIZE_GPU))
-                bestState.m_evolveComplete = newState.m_optimize_pass >= newState.Settings().m_optimize;
-            else {
-                unsigned long long age = newState.m_generation - state.m_generation;
-                if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
+            if (bestState.m_maxResult < bestState.Settings().m_target)
+                bestState.m_evolveComplete = true;
+            else if (bestState.Settings().m_attempts) {
+                unsigned long long bestAge = newState.m_generation - state.m_generation;
+                if (bestAge >= bestState.Settings().m_attempts)
                     bestState.m_evolveComplete = true;
             }
         }
@@ -235,14 +233,19 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     CompleteStatus(bestState, newState, generation);
             }
 
+
             // Has the evolve target or the maximum number of attempts been reached?
-            unsigned long long age = newStates[0].m_generation - bestState.m_generation;
-            if ((bestState.m_maxResult <= bestState.Settings().m_evolveTarget) || (bestState.Settings().m_attempts && (age >= bestState.Settings().m_attempts)))
+            if (bestState.m_maxResult < bestState.Settings().m_target)
                 bestState.m_evolveComplete = true;
+            else if (bestState.Settings().m_attempts) {
+                unsigned long long bestAge = newStates[0].m_generation - bestState.m_generation;
+                if (bestAge >= bestState.Settings().m_attempts)
+                    bestState.m_evolveComplete = true;
+            }
 
             // When the quickest solution is desired, stop as soon as the best state among all the streams has reached the evolve target.
 #if !FIRESTARTER_EVOLVE_TEST
-            if (displayState.m_maxResult <= displayState.Settings().m_evolveTarget)
+            if (displayState.m_maxResult <= displayState.Settings().m_target)
                 bestState.m_evolveComplete = true;
 #endif
         }

@@ -47,7 +47,7 @@ inline void LoadSettings(FireStarterSettings& settings)
 
     settings.m_targetMin = 0.000000f;
     settings.m_targetMax = 6.283185f;
-    settings.m_evolveTarget = 0.000001f;
+    settings.m_target = 0.000001f;
 
     settings.m_mode = FIRESTARTER_OPTIMIZE_CPU;
     settings.m_evolveSeed = 0;

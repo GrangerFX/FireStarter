@@ -481,7 +481,7 @@ void FireStarterExecute::ExecuteOptimizeComplete(FireStarterComplete* complete, 
             InitPopulation(optimizeState.Settings());
 
             // Execute the optimization passes.
-            while (!WillTerminate()) {
+            while (!WillTerminate() && (state.m_optimize_pass < state.Settings().m_optimize)) {
                 ExecutePass(optimizeState);
 
                 // Update the results in the UI and check for completion.
