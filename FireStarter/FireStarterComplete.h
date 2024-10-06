@@ -27,11 +27,10 @@ private:
 public:
 	bool UpdateBestState(FireStarterState& bestState, const FireStarterState& state);
 	void DisplayResults(const FireStarterState& bestState);
-	void CompleteStatus(const FireStarterState& bestState, FireStarterState& state, unsigned long long generation = 0);
-	bool CompleteState(FireStarterState& bestState, FireStarterState& state);
+	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation = 0);
+	bool CompleteState(FireStarterState& bestState, const FireStarterState& state);
 	bool CompleteRandom(FireStarterState& bestState, FireStarterState& oldState);
 	bool CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
-    bool Complete(void);
     FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState = false);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

@@ -63,9 +63,11 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
         static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
         bestStateMutex.lock();
         bool update = state.m_optimizeValid && (state.m_maxResult < bestState.m_maxResult);
-        if (update)
+        if (update) {
             // Update the best state.
             bestState = state;
+            bestState.m_age = 0;
+        }
         bestStateMutex.unlock();
         return update;
     }
@@ -93,7 +95,7 @@ void FireStarterComplete::DisplayResults(const FireStarterState& bestState)
     m_fireShow.FireShow(bestState);
 } // DisplayResults
 
-void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, FireStarterState& state, unsigned long long generation)
+void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation)
 {
     const FireStarterSettings& settings = state.Settings();
     double duration = SimpleTimer::RunDuration();
@@ -115,7 +117,7 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, Fire
     m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration, m_bestError);
 } // CompleteStatus
 
-bool FireStarterComplete::CompleteState(FireStarterState& bestState, FireStarterState& state)
+bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireStarterState& state)
 {
     DispatchSync([this, &bestState, &state] {
         // Skip if the best state was already completed.
