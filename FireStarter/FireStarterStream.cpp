@@ -150,9 +150,6 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                 if (complete->CompleteStates(m_streamBestState, bestState, allStates, numStates, generation))
                     break;
 
-                // Age the best state.
-                bestState.m_age++;
-
                 // Increment the generation.
                 generation++;
                 if (generation == evolveSettings.m_generations)
@@ -298,9 +295,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
                     break;
-
-                // Increment the best state's age.
-                bestState.m_age++;
             }
 
             // Wait for all the optimizations to complete.
@@ -415,9 +409,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
                     break;
-
-                // Increment the best state's age.
-                bestState.m_age++;
             }
 
             // Output the test results.

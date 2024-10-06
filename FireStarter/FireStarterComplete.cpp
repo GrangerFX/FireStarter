@@ -67,7 +67,8 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
             // Update the best state.
             bestState = state;
             bestState.m_age = 0;
-        }
+        } else
+            bestState.m_age++;
         bestStateMutex.unlock();
         return update;
     }
@@ -213,8 +214,6 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                 if (newState.m_optimizeValid) {
                     // Update the current best state.
                     bool isBestState = UpdateBestState(bestState, newState);
-                    if (isBestState)
-                        bestState.m_age = 1;
 
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState, generation);
