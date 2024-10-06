@@ -142,15 +142,8 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     // This allows for better diversity among members when they struggle to evolve and yields better results.
     bool validResult = false;
     float minResult = settings.m_startResult;
-//  unsigned int maxAge1 = 0;
-//  unsigned int maxAge2 = 0;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < population; i++) {
-//      unsigned int curAge1 = *m_hostPopulation->EvolveAge1(settings, i);
-//      unsigned int curAge2 = *m_hostPopulation->EvolveAge2(settings, i);
-//      maxAge1 = MAX(curAge1, maxAge1);
-//      maxAge2 = MAX(curAge1, maxAge2);
-//      FireStarterData* testData = m_hostPopulation->Data(settings, i);
         float curResult = *m_hostPopulation->MinResult(settings, i);
         if (curResult < minResult) {
             minResult = curResult;
