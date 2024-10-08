@@ -49,12 +49,11 @@ GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopula
     FireStarterData data;
     float result, memberResult;
     float evolutionScale;
-    unsigned short evolveAge1, evolveAge2;
+    unsigned short evolveAge;
 
     // The first generation is initalized with random numbers.
     if (!evolutionPass) {
-        evolveAge1 = 0;
-        evolveAge2 = 0;
+        evolveAge = 0;
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
@@ -66,11 +65,9 @@ GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopula
         }
         memberResult = result;
     } else {
-        evolveAge1 = oldResults->EvolveAge1(member, variation);
-        evolveAge2 = oldResults->EvolveAge2(member, variation);
-        if ((evolveAge1 >= 1) || (memberResult >= FIRESTARTER_START_RESULT)) {
-            evolveAge1 = 0;
-            evolveAge2 = 0;
+        evolveAge = oldResults->EvolveAge1(member, variation);
+        if ((evolveAge >= 16) || (memberResult >= FIRESTARTER_START_RESULT)) {
+            evolveAge = 0;
             memberResult = FIRESTARTER_START_RESULT;
             evolutionScale = FIRESTARTER_START_SCALE;
             code.Init(memberSeed);
@@ -82,7 +79,7 @@ GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopula
             memberResult = oldResults->MinResult(member, variation);
             evolutionScale = FIRESTARTER_SCALE * memberResult;
             result = memberResult;
-            if (evolveAge1 > 0)
+            if (evolveAge > 0)
                 data.RandomData(dataSeed, evolutionScale);
         }
     }
@@ -151,15 +148,14 @@ GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopula
         // Did the results improve?
         if (!evolutionPass || (result < memberResult)) {
             // If the result was better, save the results.
-            evolveAge2 += evolveAge1;
-            evolveAge1 = 0;
+            evolveAge = 0;
         } else {
             // Revert to the original code and data.
             code = oldResults->Code(member);
             data = oldResults->Data(member, variation);
-            evolveAge1++;
+            evolveAge++;
         }
-        newResults->InitMemberResult(data, member, variation, result, evolveAge1, evolveAge2);
+        newResults->InitMemberResult(data, member, variation, result, evolveAge);
         newResults->Code(member)->Copy(code);
     }
 } // Evolver
