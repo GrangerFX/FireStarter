@@ -1,0 +1,128 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_GPU
+evolveSeed = 0
+optimizeSeed = 0
+tests = 16
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 8192
+iterations = 128
+passes = 100
+candidates = 16
+attempts = 0
+optimize = 1
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 *New Result=0.00450581  Index=2284  EvolveAge1=2  EvolveAge2=27  Best=0.00450581   BestAge=0  Time=0.9 Seconds  Run Time=439.8 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  1  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00450581  Bad Result=0.00629139  Index=7857  EvolveAge1=1  EvolveAge2=7  Best=0.00450581   BestAge=1  Time=1.1 Seconds  Run Time=440.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  2  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00629139 >New Result=0.00572696  Index=7857  EvolveAge1=0  EvolveAge2=43  Best=0.00450581   BestAge=2  Time=1.1 Seconds  Run Time=442.0 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  3  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00572696 *New Result=0.00110525  Index=3817  EvolveAge1=0  EvolveAge2=6  Best=0.00110525   BestAge=0  Time=1.1 Seconds  Run Time=443.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  4  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00110525  Bad Result=0.00405908  Index=7739  EvolveAge1=13  EvolveAge2=149  Best=0.00110525   BestAge=1  Time=1.1 Seconds  Run Time=444.2 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  5  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00405908 >New Result=0.00325008  Index=2491  EvolveAge1=0  EvolveAge2=54  Best=0.00110525   BestAge=2  Time=1.1 Seconds  Run Time=445.3 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation=  0 *Result=0.00005493  Best=0.00005493   Time=6.7 Seconds  Run Time=445.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  6  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00325008 >New Result=0.00172567  Index=2491  EvolveAge1=1  EvolveAge2=80  Best=0.00005493   BestAge=1  Time=1.0 Seconds  Run Time=446.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  7  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00172567  Bad Result=0.00267041  Index=4701  EvolveAge1=0  EvolveAge2=35  Best=0.00005493   BestAge=2  Time=1.1 Seconds  Run Time=447.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  8  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00267041 >New Result=0.00244064  Index=4701  EvolveAge1=4  EvolveAge2=55  Best=0.00005493   BestAge=3  Time=1.1 Seconds  Run Time=448.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation=  9  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00244064  Bad Result=0.00299603  Index=1830  EvolveAge1=0  EvolveAge2=188  Best=0.00005493   BestAge=4  Time=1.1 Seconds  Run Time=449.7 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 10  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00299603  Bad Result=0.00311428  Index=321  EvolveAge1=0  EvolveAge2=82  Best=0.00005493   BestAge=5  Time=1.1 Seconds  Run Time=450.8 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation=  1 *Result=0.00000203  Best=0.00000203   Time=11.6 Seconds  Run Time=451.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 11  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00311428  Bad Result=0.00485319  Index=6907  EvolveAge1=0  EvolveAge2=144  Best=0.00000203   BestAge=1  Time=1.0 Seconds  Run Time=451.8 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 12  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00485319 >New Result=0.00330389  Index=2675  EvolveAge1=7  EvolveAge2=71  Best=0.00000203   BestAge=2  Time=1.1 Seconds  Run Time=452.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 13  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00330389 >New Result=0.00115338  Index=2675  EvolveAge1=2  EvolveAge2=103  Best=0.00000203   BestAge=3  Time=1.1 Seconds  Run Time=454.0 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 14  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00115338  Bad Result=0.00205383  Index=5767  EvolveAge1=0  EvolveAge2=25  Best=0.00000203   BestAge=4  Time=1.1 Seconds  Run Time=455.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 15  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00205383  Bad Result=0.00215003  Index=6907  EvolveAge1=0  EvolveAge2=255  Best=0.00000203   BestAge=5  Time=1.1 Seconds  Run Time=456.2 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation=  3  Result=0.00000256  Best=0.00000203   Time=15.2 Seconds  Run Time=457.2 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 16  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00215003  Bad Result=0.00344396  Index=1074  EvolveAge1=1  EvolveAge2=213  Best=0.00000203   BestAge=7  Time=1.1 Seconds  Run Time=457.3 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 17  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00344396 >New Result=0.00305307  Index=1074  EvolveAge1=1  EvolveAge2=227  Best=0.00000203   BestAge=8  Time=1.1 Seconds  Run Time=458.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 18  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00305307 >New Result=0.00285161  Index=1074  EvolveAge1=0  EvolveAge2=253  Best=0.00000203   BestAge=9  Time=1.1 Seconds  Run Time=459.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 19  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00285161 >New Result=0.00272620  Index=1074  EvolveAge1=0  EvolveAge2=293  Best=0.00000203   BestAge=10  Time=1.1 Seconds  Run Time=460.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 20  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00272620  Bad Result=0.00309974  Index=7876  EvolveAge1=1  EvolveAge2=259  Best=0.00000203   BestAge=11  Time=1.1 Seconds  Run Time=461.7 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 21  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00309974 >New Result=0.00242865  Index=7876  EvolveAge1=0  EvolveAge2=292  Best=0.00000203   BestAge=12  Time=1.1 Seconds  Run Time=462.8 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation=  4  Result=0.00000815  Best=0.00000203   Time=19.8 Seconds  Run Time=462.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 22  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00242865 >New Result=0.00184292  Index=7876  EvolveAge1=0  EvolveAge2=312  Best=0.00000203   BestAge=14  Time=1.0 Seconds  Run Time=463.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 23  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00184292  Bad Result=0.00289577  Index=417  EvolveAge1=0  EvolveAge2=165  Best=0.00000203   BestAge=15  Time=1.1 Seconds  Run Time=465.0 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 24  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00289577  Bad Result=0.00304788  Index=6311  EvolveAge1=0  EvolveAge2=101  Best=0.00000203   BestAge=16  Time=1.1 Seconds  Run Time=466.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 25  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00304788 >New Result=0.00277245  Index=6311  EvolveAge1=13  EvolveAge2=132  Best=0.00000203   BestAge=17  Time=1.1 Seconds  Run Time=467.2 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 26  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00277245  Bad Result=0.00370866  Index=7987  EvolveAge1=0  EvolveAge2=6  Best=0.00000203   BestAge=18  Time=1.1 Seconds  Run Time=468.3 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation=  5  Result=0.00001389  Best=0.00000203   Time=24.5 Seconds  Run Time=468.8 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 27  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00370866 >New Result=0.00311488  Index=7987  EvolveAge1=6  EvolveAge2=6  Best=0.00000203   BestAge=20  Time=1.0 Seconds  Run Time=469.3 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 28  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00311488 >New Result=0.00308969  Index=5471  EvolveAge1=0  EvolveAge2=474  Best=0.00000203   BestAge=21  Time=1.1 Seconds  Run Time=470.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 29  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00308969 >New Result=0.00280577  Index=6127  EvolveAge1=0  EvolveAge2=756  Best=0.00000203   BestAge=22  Time=1.1 Seconds  Run Time=471.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 30  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00280577 >New Result=0.00256962  Index=6127  EvolveAge1=0  EvolveAge2=788  Best=0.00000203   BestAge=23  Time=1.1 Seconds  Run Time=472.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 31  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00256962 >New Result=0.00227237  Index=6127  EvolveAge1=0  EvolveAge2=814  Best=0.00000203   BestAge=24  Time=1.1 Seconds  Run Time=473.7 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation=  7  Result=0.00002521  Best=0.00000203   Time=28.2 Seconds  Run Time=474.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 32  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00227237 >New Result=0.00104297  Index=1973  EvolveAge1=0  EvolveAge2=16  Best=0.00000203   BestAge=26  Time=1.1 Seconds  Run Time=474.8 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 33  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00104297 >New Result=0.00069052  Index=8140  EvolveAge1=0  EvolveAge2=0  Best=0.00000203   BestAge=27  Time=1.1 Seconds  Run Time=475.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 34  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00069052 >New Result=0.00055945  Index=8140  EvolveAge1=5  EvolveAge2=20  Best=0.00000203   BestAge=28  Time=1.1 Seconds  Run Time=477.0 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 35  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00055945 >New Result=0.00048700  Index=8140  EvolveAge1=0  EvolveAge2=52  Best=0.00000203   BestAge=29  Time=1.1 Seconds  Run Time=478.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 36  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00048700 >New Result=0.00040501  Index=8140  EvolveAge1=1  EvolveAge2=89  Best=0.00000203   BestAge=30  Time=1.1 Seconds  Run Time=479.2 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 37  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00040501 >New Result=0.00037211  Index=8140  EvolveAge1=0  EvolveAge2=126  Best=0.00000203   BestAge=31  Time=1.1 Seconds  Run Time=480.3 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation=  9  Result=0.00143304  Best=0.00000203   Time=31.9 Seconds  Run Time=480.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 38  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00037211  Bad Result=0.00125217  Index=6127  EvolveAge1=0  EvolveAge2=1079  Best=0.00000203   BestAge=33  Time=1.0 Seconds  Run Time=481.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 39  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00125217 >New Result=0.00122082  Index=6127  EvolveAge1=0  EvolveAge2=1143  Best=0.00000203   BestAge=34  Time=1.1 Seconds  Run Time=482.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 40  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00122082  Bad Result=0.00138650  Index=1240  EvolveAge1=0  EvolveAge2=263  Best=0.00000203   BestAge=35  Time=1.1 Seconds  Run Time=483.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 41  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00138650 >New Result=0.00109622  Index=1240  EvolveAge1=0  EvolveAge2=284  Best=0.00000203   BestAge=36  Time=1.1 Seconds  Run Time=484.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 42  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00109622 >New Result=0.00086343  Index=1240  EvolveAge1=0  EvolveAge2=308  Best=0.00000203   BestAge=37  Time=1.1 Seconds  Run Time=485.7 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation= 10  Result=0.00006367  Best=0.00000203   Time=36.6 Seconds  Run Time=486.3 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 43  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00086343 >New Result=0.00066315  Index=1240  EvolveAge1=0  EvolveAge2=331  Best=0.00000203   BestAge=39  Time=1.0 Seconds  Run Time=486.8 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 44  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00066315 >New Result=0.00053567  Index=1240  EvolveAge1=0  EvolveAge2=355  Best=0.00000203   BestAge=40  Time=1.1 Seconds  Run Time=487.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 45  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00053567 >New Result=0.00042687  Index=1240  EvolveAge1=1  EvolveAge2=380  Best=0.00000203   BestAge=41  Time=1.1 Seconds  Run Time=489.0 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 46  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00042687 >New Result=0.00033957  Index=1240  EvolveAge1=2  EvolveAge2=411  Best=0.00000203   BestAge=42  Time=1.1 Seconds  Run Time=490.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 47  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00033957 >New Result=0.00029276  Index=1240  EvolveAge1=0  EvolveAge2=446  Best=0.00000203   BestAge=43  Time=1.1 Seconds  Run Time=491.2 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation= 11  Result=0.00007408  Best=0.00000203   Time=41.3 Seconds  Run Time=492.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 48  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00029276 >New Result=0.00025401  Index=1240  EvolveAge1=0  EvolveAge2=476  Best=0.00000203   BestAge=45  Time=1.1 Seconds  Run Time=492.3 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 49  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00025401 >New Result=0.00022018  Index=1240  EvolveAge1=12  EvolveAge2=501  Best=0.00000203   BestAge=46  Time=1.1 Seconds  Run Time=493.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 50  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00022018  Bad Result=0.00221509  Index=1616  EvolveAge1=0  EvolveAge2=244  Best=0.00000203   BestAge=47  Time=1.1 Seconds  Run Time=494.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 51  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00221509  Bad Result=0.00322204  Index=1104  EvolveAge1=0  EvolveAge2=166  Best=0.00000203   BestAge=48  Time=1.1 Seconds  Run Time=495.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 52  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00322204 >New Result=0.00193781  Index=1104  EvolveAge1=0  EvolveAge2=174  Best=0.00000203   BestAge=49  Time=1.1 Seconds  Run Time=496.7 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 53  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00193781 >New Result=0.00104622  Index=1104  EvolveAge1=0  EvolveAge2=182  Best=0.00000203   BestAge=50  Time=1.1 Seconds  Run Time=497.8 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation= 12  Result=0.00007263  Best=0.00000203   Time=46.1 Seconds  Run Time=497.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 54  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00104622 >New Result=0.00049393  Index=1104  EvolveAge1=0  EvolveAge2=189  Best=0.00000203   BestAge=52  Time=1.0 Seconds  Run Time=498.8 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 55  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00049393 >New Result=0.00031654  Index=1104  EvolveAge1=0  EvolveAge2=201  Best=0.00000203   BestAge=53  Time=1.1 Seconds  Run Time=499.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 56  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00031654  Bad Result=0.00261474  Index=7661  EvolveAge1=0  EvolveAge2=989  Best=0.00000203   BestAge=54  Time=1.1 Seconds  Run Time=501.0 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 57  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00261474 >New Result=0.00241496  Index=7661  EvolveAge1=0  EvolveAge2=1008  Best=0.00000203   BestAge=55  Time=1.1 Seconds  Run Time=502.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 58  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00241496 >New Result=0.00218540  Index=7661  EvolveAge1=0  EvolveAge2=1028  Best=0.00000203   BestAge=56  Time=1.1 Seconds  Run Time=503.2 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation= 14  Result=0.00011595  Best=0.00000203   Time=49.7 Seconds  Run Time=503.7 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 59  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00218540 >New Result=0.00193408  Index=7661  EvolveAge1=0  EvolveAge2=1045  Best=0.00000203   BestAge=58  Time=1.0 Seconds  Run Time=504.3 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 60  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00193408 >New Result=0.00157570  Index=1077  EvolveAge1=0  EvolveAge2=53  Best=0.00000203   BestAge=59  Time=1.1 Seconds  Run Time=505.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 61  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00157570 >New Result=0.00131351  Index=1077  EvolveAge1=1  EvolveAge2=76  Best=0.00000203   BestAge=60  Time=1.1 Seconds  Run Time=506.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 62  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00131351 >New Result=0.00019631  Index=364  EvolveAge1=0  EvolveAge2=269  Best=0.00000203   BestAge=61  Time=1.1 Seconds  Run Time=507.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 63  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00019631 >New Result=0.00013518  Index=364  EvolveAge1=3  EvolveAge2=280  Best=0.00000203   BestAge=62  Time=1.1 Seconds  Run Time=508.7 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation= 16  Result=0.00009990  Best=0.00000203   Time=53.3 Seconds  Run Time=509.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 64  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00013518  Bad Result=0.00199065  Index=471  EvolveAge1=2  EvolveAge2=188  Best=0.00000203   BestAge=64  Time=1.1 Seconds  Run Time=509.7 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 65  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00199065  Bad Result=0.00306366  Index=1083  EvolveAge1=4  EvolveAge2=60  Best=0.00000203   BestAge=65  Time=1.1 Seconds  Run Time=510.8 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 66  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00306366  Bad Result=0.00329858  Index=7567  EvolveAge1=1  EvolveAge2=2446  Best=0.00000203   BestAge=66  Time=1.1 Seconds  Run Time=511.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 67  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00329858 >New Result=0.00320011  Index=7567  EvolveAge1=0  EvolveAge2=2483  Best=0.00000203   BestAge=67  Time=1.1 Seconds  Run Time=513.0 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 68  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00320011 >New Result=0.00311190  Index=7567  EvolveAge1=1  EvolveAge2=2514  Best=0.00000203   BestAge=68  Time=1.1 Seconds  Run Time=514.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 69  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00311190 >New Result=0.00302714  Index=7567  EvolveAge1=0  EvolveAge2=2546  Best=0.00000203   BestAge=69  Time=1.1 Seconds  Run Time=515.3 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation= 20  Result=0.00005215  Best=0.00000203   Time=54.8 Seconds  Run Time=515.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 70  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00302714 >New Result=0.00294822  Index=7567  EvolveAge1=0  EvolveAge2=2589  Best=0.00000203   BestAge=71  Time=1.0 Seconds  Run Time=516.3 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 71  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00294822 >New Result=0.00288981  Index=7567  EvolveAge1=3  EvolveAge2=2631  Best=0.00000203   BestAge=72  Time=1.1 Seconds  Run Time=517.4 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 72  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00288981 >New Result=0.00284731  Index=7567  EvolveAge1=3  EvolveAge2=2683  Best=0.00000203   BestAge=73  Time=1.1 Seconds  Run Time=518.5 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 73  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00284731 >New Result=0.00280476  Index=7567  EvolveAge1=1  EvolveAge2=2733  Best=0.00000203   BestAge=74  Time=1.1 Seconds  Run Time=519.6 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 74  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00280476 >New Result=0.00220150  Index=6280  EvolveAge1=0  EvolveAge2=40  Best=0.00000203   BestAge=75  Time=1.1 Seconds  Run Time=520.7 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation= 23  Result=0.00034347  Best=0.00000203   Time=57.3 Seconds  Run Time=521.2 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 75  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00220150  Bad Result=0.00255427  Index=5829  EvolveAge1=0  EvolveAge2=117  Best=0.00000203   BestAge=77  Time=1.0 Seconds  Run Time=521.7 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 76  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00255427 >New Result=0.00179078  Index=5829  EvolveAge1=0  EvolveAge2=128  Best=0.00000203   BestAge=78  Time=1.1 Seconds  Run Time=522.8 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 77  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00179078 >New Result=0.00169372  Index=5829  EvolveAge1=0  EvolveAge2=151  Best=0.00000203   BestAge=79  Time=1.1 Seconds  Run Time=523.9 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 78  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00169372 >New Result=0.00160527  Index=5829  EvolveAge1=0  EvolveAge2=171  Best=0.00000203   BestAge=80  Time=1.1 Seconds  Run Time=525.0 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=12  Generation= 79  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00160527  Bad Result=0.00255376  Index=7567  EvolveAge1=1  EvolveAge2=3024  Best=0.00000203   BestAge=81  Time=1.1 Seconds  Run Time=526.1 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test=12  Optimize=0  Generation= 24 *Result=0.00000017  Best=0.00000017   Time=62.1 Seconds  Run Time=527.1 Seconds
