@@ -280,22 +280,40 @@ typedef struct FireStarterCode {
 
     inline float Evaluate(FireStarterData& data, float n) const
     {
+#if FIRESTARTER_MADD
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+            n = data[c[i].reg] *= n;
+            n = data[c[i + 1].reg] += n;
+        }
+#else
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             n = c[i].op ? data[c[i].reg] += n : data[c[i].reg] *= n;
+#endif
         return n;
     } // Evaluate
 
     inline float Evaluate(FireStarterSharedData& data, float n) const
     {
+#if FIRESTARTER_MADD
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+            n = data[c[i].reg] *= n;
+            n = data[c[i + 1].reg] += n;
+        }
+#else
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
             n = c[i].op ? data[c[i].reg] += n : data[c[i].reg] *= n;
+#endif
         return n;
     } // Evaluate
 
     inline void RandomInstruction(unsigned long long& seed, unsigned int i)
     {
         c[i].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+#if FIRESTARTER_MADD
+        c[i].op = i & 1 ? Operation_multiply : Operation_add;
+#else
         c[i].op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
+#endif
     } // RandomInstruction
 
     inline void RandomInstruction(unsigned long long& seed)
