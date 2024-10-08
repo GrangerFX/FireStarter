@@ -19,7 +19,6 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
     return true;
 } // TestEvaluate
 
-#if FIRESTARTER_REDUCTION
 #if 1
 // This is the best current version. It relies on simplicity.
 GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass, unsigned int population)
@@ -324,100 +323,6 @@ GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopula
         newResults->Code(member)->Copy(code);
     }
 } // Evolver
-#endif
-#else
-// Experimental version without warp synchronization using MADD.
-GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass, unsigned int population)
-{
-    // Determine the member to be optimized.
-    unsigned int tid = threadIdx.x;
-    unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
-    if (member >= population)
-        return;
-
-    // The shared data for the threads in the warp.
-    GPU_SHARED FireStarterSharedData sharedData;
-
-    // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_SAMPLES];
-    float target[FIRESTARTER_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-        float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, variation);
-    }
-
-    // Evolve the program registers for each variation.
-    unsigned long long seed = evolutionSeed + SEED10(variation) + SEED11(member);   // Unique seed for the generation/member
-    FireStarterCode code;
-    FireStarterData data;
-    float result, memberResult;
-    float evolutionScale;
-    unsigned short evolveAge1, evolveAge2;
-
-    // The first generation is initalized with random numbers.
-    if (!evolutionPass) {
-        evolveAge1 = 0;
-        evolveAge2 = 0;
-        memberResult = FIRESTARTER_START_RESULT;
-        evolutionScale = FIRESTARTER_START_SCALE;
-        for (int i = 0; i < 10; i++) {
-            code.Init(seed);
-            data.Init(seed, evolutionScale);
-            result = memberResult;
-            if (TestEvaluate(sharedData, data, code, target, theta, result))
-                break;
-        }
-        memberResult = result;
-    } else {
-        evolveAge1 = oldResults->EvolveAge1(member, variation);
-        evolveAge2 = oldResults->EvolveAge2(member, variation);
-        if ((evolveAge1 >= 16) || (memberResult >= FIRESTARTER_START_RESULT)) {
-            evolveAge1 = 0;
-            evolveAge2 = 0;
-            memberResult = FIRESTARTER_START_RESULT;
-            evolutionScale = FIRESTARTER_START_SCALE;
-            code.Init(seed);
-            data.Init(seed, evolutionScale);
-            result = memberResult;
-        } else {
-            code = oldResults->Code(member);
-            data = oldResults->Data(member, variation);
-            memberResult = oldResults->MinResult(member, variation);
-            evolutionScale = FIRESTARTER_SCALE * memberResult;
-            result = memberResult;
-            if (evolveAge1 > 0)
-                data.RandomData(seed, evolutionScale);
-        }
-    }
-
-    // Iterate to evolve the data.
-    for (unsigned int p = 0; p < FIRESTARTER_EVOLVE_GPU_ITERATIONS; p++) {
-        unsigned int d = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
-        float oldData = data[d];
-        data[d] = oldData + evolutionScale * RANDOMFACTOR(seed);
-        float curResult = result;
-        if (TestEvaluate(sharedData, data, code, target, theta, curResult))
-            result = curResult;
-        else
-            data[d] = oldData;
-    }
-
-    // Did the results improve?
-    if (!evolutionPass || (result < memberResult)) {
-        // If the result was better, save the results.
-        evolveAge2 += evolveAge1;
-        evolveAge1 = 0;
-    } else {
-        // Revert to the original code and data.
-        code = oldResults->Code(member);
-        data = oldResults->Data(member, variation);
-        evolveAge1++;
-    }
-    newResults->InitMemberResult(data, member, variation, result, evolveAge1, evolveAge2);
-    newResults->Code(member)->Copy(code);
-} // Evolver
-#endif
 
 GPU_GLOBAL void Optimizer(const FireStarterResults* initResults, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {

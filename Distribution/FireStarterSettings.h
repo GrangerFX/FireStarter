@@ -19,8 +19,7 @@
 #define FIRESTARTER_EVOLVE_TEST     0           // Test evolution mode.
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
 
-#define FIRESTARTER_MADD            1           // Use only non-random multiply-add instructions.
-#define FIRESTARTER_REDUCTION       0           // Keep the instructions consistent for the whole warp block.
+#define FIRESTARTER_MADD            0           // Use only non-random multiply-add instructions.
 
 #define FIRESTARTER_POPULATION      8192 * FIRESTARTER_WARP_THREADS  // For debugging display of the population contents only.
 
@@ -75,11 +74,7 @@
 #define FIRESTARTER_EVOLVE_GPU_UNITS            1
 #define FIRESTARTER_EVOLVE_GPU_STATES           1
 #define FIRESTARTER_EVOLVE_GPU_GENERATIONS      0
-#if FIRESTARTER_REDUCTION
 #define FIRESTARTER_EVOLVE_GPU_POPULATION       8192    // One member per warp for GPU evolution
-#else
-#define FIRESTARTER_EVOLVE_GPU_POPULATION       FIRESTARTER_POPULATION
-#endif
 #define FIRESTARTER_EVOLVE_GPU_ITERATIONS       64
 #define FIRESTARTER_EVOLVE_GPU_CANDIDATES       16
 #define FIRESTARTER_EVOLVE_GPU_PASSES           100
