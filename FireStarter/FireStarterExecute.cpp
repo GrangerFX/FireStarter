@@ -522,7 +522,7 @@ void FireStarterExecute::ExecuteFinish(void)
     });
 } // ExecuteFinish
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::string& programName, size_t index) : CUDAThread(Format("FireStarterExecute%zu", index))
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::string& programName, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", index), 0, priority)
 {
     m_executeProgramName = programName;
     if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
@@ -534,7 +534,7 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::s
     m_executeGenerate = new FireStarterGenerate(Context());
 } // FireStaterExecute
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterExecute%zu", index))
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", index), 0, priority)
 {
     m_executeProgramName = OPTIMIZE_PROGRAM_NAME;
     if (!FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME)) {

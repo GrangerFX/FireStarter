@@ -247,10 +247,10 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_LOADSTATE);
 
         // Create the evolve execution unit.
-        FireStarterExecute* evolveExecute = new FireStarterExecute(manager, EVOLVE_PROGRAM_NAME);
+        FireStarterExecute* evolveExecute = new FireStarterExecute(manager, EVOLVE_PROGRAM_NAME, 1, 1);
 
         // Create the optimization execution units.
-        FireStarterExecute* optimizationUnit = new FireStarterExecute(manager);
+        FireStarterExecute* optimizationUnit = new FireStarterExecute(manager, 0, 0);
 
         // Compile the evolve module.
         evolveExecute->ExecuteCompileEvolver();

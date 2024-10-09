@@ -47,7 +47,7 @@ public:
     void ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
     void ExecuteFinish(void);
-    FireStarterExecute(FireStarterManager* manager, const std::string& programName, size_t index = 0);
-    FireStarterExecute(FireStarterManager* manager, size_t index = 0);
+    FireStarterExecute(FireStarterManager* manager, const std::string& programName, size_t index = 0, int priorty = 0);
+    FireStarterExecute(FireStarterManager* manager, size_t index = 0, int priority = 0);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute

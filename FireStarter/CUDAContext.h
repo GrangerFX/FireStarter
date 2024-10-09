@@ -81,7 +81,7 @@ public:
         checkCUDAErrors(cuCtxPopCurrent(&oldContext));
     } // PopContext
 
-    inline CUDAContext(int device = 0)
+    inline CUDAContext(int device = 0, int priority = 0)
     {
         // Initialize CUDA only once per process.
         Initialize();
@@ -94,8 +94,14 @@ public:
 
         // Create a context and stream on the device.
         checkCUDAErrors(cuDeviceGet(&m_device, device));
+        
+        // More latency but better thread utilization.
         checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_AUTO, m_device));
-        checkCUDAErrors(cudaStreamCreate(&m_stream));
+
+        // Less latency but worse thread utilization.
+//      checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_SPIN, m_device));
+
+        checkCUDAErrors(cudaStreamCreateWithPriority(&m_stream, cudaStreamDefault, priority));
 
 #if 0
         // Get some information about the device.
