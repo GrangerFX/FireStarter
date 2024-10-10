@@ -239,6 +239,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         FireStarterSettings evolveSettings(m_streamSettings);
         SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
+        double totalDuration = 0.0;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
@@ -304,7 +305,10 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             if (!WillTerminate()) {
                 // Output the evolve results.
                 FireStarterResult* bestResult = bestState.Result(0);
-                std::string resultText = Format("Test: %u  Generation=%u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, streamTimer.Duration());
+                double duration = streamTimer.Duration();
+                totalDuration += duration;
+
+                std::string resultText = Format("Test: %u  Generation=%u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f  Total: %.1f  Average: %.1f", test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, totalDuration, totalDuration / testCount);
                 if (bestState.m_maxResult <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
