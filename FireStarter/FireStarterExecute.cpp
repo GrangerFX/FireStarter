@@ -80,7 +80,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long passes = settings.m_passes;
     unsigned long long pass = optimizePass ? state.m_optimize_pass * passes : state.m_generation * passes;
-    CUfunction executeFunction = optimizePass ? m_executeOptimizeFunction : m_executeEvolveFunction;
+    CUfunction executeFunction = optimizePass ? m_evolveOptimizeFunction : m_evolveFunction;
 
     if (m_deviceInitResults)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInitResults, state.Results(), m_initResultsSize, cudaMemcpyHostToDevice, Stream()));
@@ -183,7 +183,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                         reinterpret_cast<void*>(&population)
         };
 
-        checkCUDAErrors(cuLaunchKernel(m_executeOptimizeFunction,
+        checkCUDAErrors(cuLaunchKernel(m_optimizeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
             0,                                                  // shared mem
@@ -310,11 +310,11 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
 
     // Initialize the results and compile the CUDA module.
     if (!job->m_ptx.empty())
-        if (CUDACompile::CompileModule(m_executeModule, job->m_ptx)) {
-            m_executeOptimizeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-            if (m_executeOptimizeFunction)
+        if (CUDACompile::CompileModule(m_optimizeModule, job->m_ptx)) {
+            m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
+            if (m_optimizeFunction)
                 return true;
-            CUDACompile::ReleaseModule(m_executeModule);
+            CUDACompile::ReleaseModule(m_optimizeModule);
         }
 
     // Something went wrong so free the job.
@@ -341,45 +341,94 @@ bool FireStarterExecute::ExecuteJob(void)
     return false;
 } // ExecuteJob
 
-bool FireStarterExecute::ExecuteCompileEvolver(void)
+bool FireStarterExecute::GenerateEvolver(void)
 {
-    if (!m_executeEvolveFunction)
-        DispatchSync([this] {
-            std::string program;
-            if (FireStarterSource::LoadSource(program, m_executeProgramName)) {
-                if (CUDACompile::CompileProgram(m_executeModule, program, "FireEvolver")) {
-                    m_executeEvolveFunction = CUDACompile::GetFunction(m_executeModule, "Evolver");
-                    m_executeOptimizeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-                    if (!m_executeEvolveFunction && m_executeOptimizeFunction)
-                        CUDACompile::ReleaseModule(m_executeModule);
-                }
-            }
-         });
-    return m_executeEvolveFunction != nullptr;
-} // ExecuteCompileEvolver
+    if (m_evolveFunction && m_evolveOptimizeFunction)
+        return true;
+    if (m_evolveCode.empty()) {
+        if (!FireStarterSource::LoadSource(m_evolveCode, EVOLVE_PROGRAM_NAME)) {
+            printf("%s could not be loaded!\n", EVOLVE_PROGRAM_NAME);
+            std::terminate();
+        }
+    }
+    if (CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, EVOLVE_PROGRAM_NAME)) {
+        m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolver");
+        m_evolveOptimizeFunction = CUDACompile::GetFunction(m_evolveModule, "Optimizer");
+        if (m_evolveFunction && m_evolveOptimizeFunction)
+            return true;
+        CUDACompile::ReleaseModule(m_evolveModule);
+        m_evolveFunction = nullptr;
+        m_evolveOptimizeFunction = nullptr;
+    }
+    return false;
+} // GenerateEvolver
 
 bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
 {
+    if (m_optimizeCode.empty()) {
+        if (!FireStarterSource::LoadSource(m_optimizeCode, OPTIMIZE_PROGRAM_NAME)) {
+            printf("%s could not be loaded!\n", OPTIMIZE_PROGRAM_NAME);
+            std::terminate();
+        }
+    }
+
     // Generate the evaluate code
     m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
 
     // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
     std::vector<std::string> options;
     CUDACompile::CompileOptions(options);
-    std::string programName = m_executeProgramName;
-    std::string program = m_executeCode;
+    std::string program = m_optimizeCode;
     FireStarterSource::UpdateProgram(program, state.m_evaluateCode, EVALUATE_CODE);
 
-    bool result = false;
-    if (CUDACompile::CompileProgram(m_executeModule, program, programName)) {
-        m_executeOptimizeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-        if (m_executeOptimizeFunction)
-            result = true;
-        else
-            CUDACompile::ReleaseModule(m_executeModule);
+    if (CUDACompile::CompileProgram(m_optimizeModule, program, OPTIMIZE_PROGRAM_NAME)) {
+        m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
+        if (m_optimizeFunction)
+            return true;
+        CUDACompile::ReleaseModule(m_optimizeModule);
     }
-    return result;
+    return false;
 } // GenerateOptimize
+
+bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
+{
+    if (m_speedTestCode.empty()) {
+        if (!FireStarterSource::LoadSource(m_speedTestCode, SPEEDTEST_PROGRAM_NAME)) {
+            printf("%s could not be loaded!\n", SPEEDTEST_PROGRAM_NAME);
+            std::terminate();
+        }
+    }
+
+    // Generate the evaluate code
+    std::string evaluateCode;
+    m_executeGenerate->GenerateEvaluate(state, evaluateCode);
+    state.m_evaluateCode = evaluateCode;
+
+    // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+    std::vector<std::string> options;
+    CUDACompile::CompileOptions(options);
+    std::string program = m_speedTestCode;
+    FireStarterSource::UpdateProgram(program, evaluateCode, EVALUATE_CODE);
+
+    if (CUDACompile::CompileProgram(m_speedTestModule, program, SPEEDTEST_PROGRAM_NAME)) {
+        m_speedTestFunction = CUDACompile::GetFunction(m_speedTestModule, "SpeedTest");
+        if (m_speedTestFunction)
+            return true;
+        else
+            CUDACompile::ReleaseModule(m_speedTestModule);
+    }
+    return false;
+} // GenerateSpeedTest
+
+bool FireStarterExecute::ExecuteGenerateEvolver(void)
+{
+    bool result = false;
+    if (!m_evolveFunction)
+        DispatchSync([this, &result] {
+            result = GenerateEvolver();
+        });
+    return result;
+} // ExecuteGenerateEvolver
 
 bool FireStarterExecute::ExecuteGenerateOptimize(const FireStarterState& initState)
 {
@@ -399,29 +448,10 @@ bool FireStarterExecute::ExecuteGenerateSpeedTest(const FireStarterState& initSt
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
     DispatchSync([this, initState, &result] {
         FireStarterState state(initState);
-
-        // Generate the evaluate code
-        std::string evaluateCode;
-        m_executeGenerate->GenerateEvaluate(state, evaluateCode);
-        state.m_evaluateCode = evaluateCode;
-
-        // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
-        std::vector<std::string> options;
-        CUDACompile::CompileOptions(options);
-        std::string programName = SPEEDTEST_PROGRAM_NAME;
-        std::string program = m_executeCode;
-        FireStarterSource::UpdateProgram(program, evaluateCode, EVALUATE_CODE);
-
-        if (CUDACompile::CompileProgram(m_executeModule, program, programName)) {
-            m_executeOptimizeFunction = CUDACompile::GetFunction(m_executeModule, "SpeedTest");
-            if (m_executeOptimizeFunction)
-                result = true;
-            else
-                CUDACompile::ReleaseModule(m_executeModule);
-        }
+        result = GenerateSpeedTest(state);
     });
     return result;
-} // ExecuteGenerateOptimize
+} // ExecuteGenerateSpeedTest
 
 void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
 {
@@ -504,29 +534,18 @@ void FireStarterExecute::ExecuteFinish(void)
             m_executeJob = nullptr;
         }
         FinishPopulation();
-        CUDACompile::ReleaseModule(m_executeModule);
+        CUDACompile::ReleaseModule(m_optimizeModule);
+        CUDACompile::ReleaseModule(m_evolveModule);
+        CUDACompile::ReleaseModule(m_speedTestModule);
+        m_optimizeFunction = nullptr;
+        m_evolveFunction = nullptr;
+        m_evolveOptimizeFunction = nullptr;
+        m_speedTestFunction = nullptr;
     });
 } // ExecuteFinish
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::string& programName, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", index), 0, priority)
-{
-    m_executeProgramName = programName;
-    if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-        printf("%s could not be loaded!\n", programName.c_str());
-        std::terminate();
-    }
-    m_executeManager = manager;
-    m_executeIndex = index;
-    m_executeGenerate = new FireStarterGenerate(Context());
-} // FireStaterExecute
-
 FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", index), 0, priority)
 {
-    m_executeProgramName = OPTIMIZE_PROGRAM_NAME;
-    if (!FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME)) {
-        printf("%s could not be loaded!\n", m_executeProgramName.c_str());
-        std::terminate();
-    }
     m_executeManager = manager;
     m_executeIndex = index;
     m_executeGenerate = new FireStarterGenerate(Context());

@@ -111,9 +111,9 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
         }
 
         // Create the optimization execution unit.
-        FireStarterExecute* executeOptimize = nullptr;
+        FireStarterExecute* execute = nullptr;
         if (evolveSettings.m_optimize)
-            executeOptimize = new FireStarterExecute(manager, evolveSettings.m_units);
+            execute = new FireStarterExecute(manager, evolveSettings.m_units);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_LOADSTATE);
@@ -170,11 +170,11 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                     FireStarterState optimizeBestState(optimizeState);
 
                     // Generate the optimize code.
-                    if (executeOptimize->ExecuteGenerateOptimize(optimizeState)) {
+                    if (execute->ExecuteGenerateOptimize(optimizeState)) {
                         // Loop until the the optimize completion condition or the host program is quit.
                         while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                             // Optimize the current generation.
-                            executeOptimize->ExecuteOptimize(optimizeState);
+                            execute->ExecuteOptimize(optimizeState);
 
                             // Update the results in the UI and check for completion.
                             if (complete->CompleteState(optimizeBestState, optimizeState))
@@ -214,7 +214,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
         delete complete;
 
         // Delete the optimizate execution unit.
-        delete executeOptimize;
+        delete execute;
 
         // Finish processing and terminate each evolution execution unit.
         for (FireStarterExecute* evolutionUnit : evolutionUnits)
@@ -248,13 +248,13 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_LOADSTATE);
 
         // Create the evolve execution unit.
-        FireStarterExecute* evolveExecute = new FireStarterExecute(manager, EVOLVE_PROGRAM_NAME, 1, 1);
+        FireStarterExecute* evolveExecute = new FireStarterExecute(manager, 1, 1);
 
         // Create the optimization execution units.
         FireStarterExecute* optimizationUnit = new FireStarterExecute(manager, 0, 0);
 
-        // Compile the evolve module.
-        evolveExecute->ExecuteCompileEvolver();
+        // Generate the evolve module.
+        evolveExecute->ExecuteGenerateEvolver();
 
         // Loop until the the evolve completion condition or the host program is quit.
         FireStarterState bestState; // Used asynchronously by ExecuteOptimizeComplete()
@@ -459,13 +459,13 @@ void FireStarterStream::OptimizeCPUStream(FireStarterServer* server, std::atomic
         FireStarterManager* manager = new FireStarterManager();
 
         // Create the optimization execution unit.
-        FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
+        FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Generate the optimize code.
-        if (executeOptimize->ExecuteGenerateOptimize(evolveState)) {
+        if (execute->ExecuteGenerateOptimize(evolveState)) {
             // Loop until the the evolve completion condition or the host program is quit.
             unsigned long long evolveTests = MAX(optimizeSettings.m_tests, 1);
             for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
@@ -487,7 +487,7 @@ void FireStarterStream::OptimizeCPUStream(FireStarterServer* server, std::atomic
                 // Loop until the the optimize completion condition or the host program is quit.
                 while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Optimize the current generation.
-                    executeOptimize->ExecuteOptimize(optimizeState);
+                    execute->ExecuteOptimize(optimizeState);
 
                     // Update the results in the UI and check for completion.
                     if (complete->CompleteState(bestState, optimizeState))
@@ -517,7 +517,7 @@ void FireStarterStream::OptimizeCPUStream(FireStarterServer* server, std::atomic
         delete complete;
 
         // Delete the optimizate execution unit.
-        delete executeOptimize;
+        delete execute;
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
@@ -538,13 +538,13 @@ void FireStarterStream::OptimizeGPUStream(FireStarterServer* server, std::atomic
         FireStarterManager* manager = new FireStarterManager();
 
         // Create the optimization execution unit.
-        FireStarterExecute* executeOptimize = new FireStarterExecute(manager, EVOLVE_PROGRAM_NAME);
+        FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Compile the evolve module.
-        if (executeOptimize->ExecuteCompileEvolver()) {
+        if (execute->ExecuteGenerateEvolver()) {
             // Loop until the the evolve completion condition or the host program is quit.
             unsigned long long evolveTests = MAX(optimizeSettings.m_tests, 1);
             for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
@@ -566,7 +566,7 @@ void FireStarterStream::OptimizeGPUStream(FireStarterServer* server, std::atomic
                 // Loop until the the optimize completion condition or the host program is quit.
                 while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Optimize the current generation.
-                    executeOptimize->ExecuteEvolve(optimizeState);
+                    execute->ExecuteEvolve(optimizeState);
 
                     // Update the results in the UI and check for completion.
                     if (complete->CompleteState(bestState, optimizeState))
@@ -596,7 +596,7 @@ void FireStarterStream::OptimizeGPUStream(FireStarterServer* server, std::atomic
         delete complete;
 
         // Delete the optimizate execution unit.
-        delete executeOptimize;
+        delete execute;
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
@@ -617,13 +617,13 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
         FireStarterManager* manager = new FireStarterManager();
 
         // Create the optimization execution unit.
-        FireStarterExecute* executeOptimize = new FireStarterExecute(manager, SPEEDTEST_PROGRAM_NAME);
+        FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Generate the optimize code.
-        if (executeOptimize->ExecuteGenerateSpeedTest(evolveState)) {
+        if (execute->ExecuteGenerateSpeedTest(evolveState)) {
             // Loop until the the evolve completion condition or the host program is quit.
             unsigned long long evolveTests = MAX(optimizeSettings.m_tests, 1);
             for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
@@ -645,7 +645,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 // Loop until the the optimize completion condition or the host program is quit.
                 while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Optimize the current generation.
-                    executeOptimize->ExecuteEvolve(optimizeState);
+                    execute->ExecuteEvolve(optimizeState);
 
                     // Update the results in the UI and check for completion.
                     if (complete->CompleteState(bestState, optimizeState))
@@ -675,7 +675,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
         delete complete;
 
         // Delete the optimizate execution unit.
-        delete executeOptimize;
+        delete execute;
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
