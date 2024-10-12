@@ -1,7 +1,6 @@
 #pragma once
 #include "FireStarterResults.h"
 #include "HashRandom.h"
-#include "CUDADefines.h"
 #include "cnprintf.h"
 
 struct FireStarterRegisterInfo {

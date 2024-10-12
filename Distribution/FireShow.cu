@@ -2,7 +2,6 @@
 
 #include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
-#include "CUDADefines.h"
 
 GPU_GLOBAL void FireShow(FireStarterResults* bestResults, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int registers, const unsigned int variations)
 {

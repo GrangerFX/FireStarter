@@ -244,17 +244,20 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
 
+        // A serial thread for compiling the optimize pass.
+        SerialThread compiler;
+
         // Create the evolution completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_LOADSTATE);
 
-        // Create the evolve execution unit.
-        FireStarterExecute* evolveExecute = new FireStarterExecute(manager, 1, 1);
+        // Create the execution unit.
+        FireStarterExecute* execute = new FireStarterExecute(manager, 1, 1);
 
-        // Create the optimization execution units.
-        FireStarterExecute* optimizationUnit = new FireStarterExecute(manager, 0, 0);
+        // Create the execution unit used to generate the optimize code.
+        FireStarterExecute* executeOptimize = new FireStarterExecute(manager, 0, 0);
 
         // Generate the evolve module.
-        evolveExecute->ExecuteGenerateEvolver();
+        execute->ExecuteGenerateEvolver();
 
         // Loop until the the evolve completion condition or the host program is quit.
         FireStarterState bestState; // Used asynchronously by ExecuteOptimizeComplete()
@@ -275,7 +278,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             // Evolve the current test.
             while (!WillTerminate() && !bestState.m_evolveComplete) {
                 // Execute the GPU evolve using a single execution unit.
-                evolveExecute->ExecuteEvolve(evolveState);
+                execute->ExecuteEvolve(evolveState);
 
                 // Gather the results, update the UI and check for the completion condition.
                 complete->CompleteState(bestState, evolveState);
@@ -290,7 +293,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     unsigned int optimizePasses = evolveState.Settings().m_optimize;
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_CPU);
                     optimizeState.Settings().m_optimize = optimizePasses;
-                    optimizationUnit->ExecuteOptimizeComplete(complete, bestState, optimizeState);
+                    executeOptimize->ExecuteOptimizeComplete(complete, bestState, optimizeState);
                 }
 
                 // Exit after a set number of generations.
@@ -299,7 +302,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             }
 
             // Wait for all the optimizations to complete.
-            optimizationUnit->Synchronize();
+            executeOptimize->Synchronize();
 
             // Output the test results.
             if (!WillTerminate()) {
@@ -323,10 +326,10 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         delete complete;
 
         // Finish processing and terminate the evolution execution unit.
-        delete evolveExecute;
+        delete execute;
 
         // Finish processing and terminate the optimization execution unit.
-        delete optimizationUnit;
+        delete executeOptimize;
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
@@ -392,7 +395,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                         // Loop until the the optimize completion condition or the host program is quit.
                         while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                             // Optimize the current generation.
-                            evolveOptimize->ExecuteEvolve(optimizeState);
+                            evolveOptimize->ExecuteEvolveOptimize(optimizeState);
 
                             // Update the results in the UI and check for completion.
                             if (complete->CompleteState(optimizeBestState, optimizeState))

@@ -74,6 +74,31 @@ bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string&
     return ptxSize > 0;
 } // Compile
 
+bool CUDACompile::CompilePTX(std::string& ptx, const std::string& program, const std::string& programName)
+{
+#if COMPILE_TIME
+    SimpleTimer compileTimer;
+#endif
+
+    std::vector<std::string> options;
+    CompileOptions(options);
+
+    std::string log;
+    if (!Compile(ptx, log, program, programName, options)) {
+        printf("compilation log ---\n%s\nend log---\n", log);
+        std::terminate();
+        return false;
+    }
+
+    // Optionaly output the compile time.
+#if COMPILE_TIME
+    printf("%s compile ptx time = %f\n", programName.c_str(), compileTimer.Duration());
+#endif
+
+    // Note: Currently the program is forced to terminate if there were any compile errors.
+    return true;
+} // CompilePTX
+
 void CUDACompile::ReleaseModule(CUmodule& cuda_module)
 {
     if (cuda_module) {
@@ -108,11 +133,11 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
     }
 
     // Create the code module.
-    bool result =  CompileModule(cuda_module, ptx);
+    bool result = CompileModule(cuda_module, ptx);
 
     // Optionaly output the compile time.
 #if COMPILE_TIME
-    printf("%s compile time = %f\n", programName.c_str(), compileTimer.Duration());
+    printf("%s compile program time = %f\n", programName.c_str(), compileTimer.Duration());
 #endif
 
     // Note: Currently the program is forced to terminate if there were any compile errors.

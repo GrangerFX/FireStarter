@@ -1,7 +1,6 @@
 #pragma once
 
 #include "FireStarterResults.h"
-#include "CUDADefines.h"
 
 #if 1
 inline float Evaluate(FireStarterSharedData& data, const FireStarterCode& code, float n)

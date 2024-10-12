@@ -1,7 +1,6 @@
 #pragma once
 
 #include "FireStarterResults.h"
-#include "CUDADefines.h"
 
 inline float Evaluate(const FireStarterData& testData, float n)
 {

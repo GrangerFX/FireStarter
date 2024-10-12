@@ -1,4 +1,5 @@
 #pragma once
+#include "CUDADefines.h"
 #include "FireStarterSettings.h"
 #include "HashRandom.h"
 
@@ -136,21 +137,12 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterSharedData {
-#ifdef __CUDACC__
     float d[FIRESTARTER_REGISTERS * FIRESTARTER_WARP_THREADS];
 
-    inline unsigned int index(unsigned int i) const
+    inline unsigned int index(unsigned int i, unsigned int t = threadIdx.x) const
     {
-        return i * FIRESTARTER_WARP_THREADS + threadIdx.x;
+        return i * FIRESTARTER_WARP_THREADS + t;
     } // index
-#else
-    float d[FIRESTARTER_REGISTERS];
-
-    inline unsigned int index(unsigned int i) const
-    {
-        return i;
-    } // index
-#endif
 
     inline float& operator[](unsigned int i)
     {
@@ -173,6 +165,18 @@ typedef struct FireStarterSharedData {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
             d[index(i)] = (*data)[i];
     } // operator=
+
+    inline void Data(FireStarterData& data, unsigned int t = threadIdx.x)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            d[index(i)] = data[i];
+    } // Copy
+
+    inline void Data(FireStarterData* data, unsigned int t = threadIdx.x)
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            (*data)[i] = d[index(i, t)];
+    } // Copy
 
     inline void Copy(const FireStarterData& data)
     {
