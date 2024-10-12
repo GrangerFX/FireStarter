@@ -24,8 +24,6 @@ private:
     size_t m_initResultsSize = 0;
     size_t m_executeIndex = 0;
 
-    void FinishResults(void);
-    bool InitResults(const FireStarterSettings& settings);
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
     void ExecuteEvolvePass(FireStarterState& state, unsigned int variation = 0);

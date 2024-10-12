@@ -11,74 +11,61 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
     return curFloat;
 } // AtomicMin
 
-void FireStarterExecute::FinishResults(void)
+void FireStarterExecute::FinishPopulation(void)
 {
-    CUDAContext* context = Context();
-    if (!context) {
-        printf("CUDA context destroyed before FinishPopulation() called!\n");
-        std::terminate();
-    }
-    CUstream stream = context->Stream();
-
-    if (m_deviceInitResults) {
-        checkCUDAErrors(cudaFreeAsync(m_deviceInitResults, stream));
-        m_deviceInitResults = nullptr;
-    }
-    context->Synchronize();
-} // FinishResults
-
-bool FireStarterExecute::InitResults(const FireStarterSettings& settings)
-{
-    // Reallocate the initial result if the size has changed.
-    size_t initResultsSize = FireStarterPopulation::ResultsSize(settings);
-    if (m_initResultsSize != initResultsSize) {
+    if (m_devicePopulation || m_deviceInitResults) {
+        if (m_devicePopulation) {
+            checkCUDAErrors(cudaFreeAsync(m_devicePopulation, Stream()));
+            m_devicePopulation = nullptr;
+            m_devicePopulation0 = nullptr;
+            m_devicePopulation1 = nullptr;
+        }
         if (m_deviceInitResults) {
             checkCUDAErrors(cudaFreeAsync(m_deviceInitResults, Stream()));
             m_deviceInitResults = nullptr;
         }
-        m_initResultsSize = initResultsSize;
-        checkCUDAErrors(cudaMallocAsync(&m_deviceInitResults, m_initResultsSize, Stream()));
-    }
-    Context()->Synchronize();
-    return m_deviceInitResults != nullptr;
-} // InitResults
-
-void FireStarterExecute::FinishPopulation(void)
-{
-    if (m_devicePopulation) {
-        checkCUDAErrors(cudaFreeAsync(m_devicePopulation, Stream()));
-        m_devicePopulation = nullptr;
-        m_devicePopulation0 = nullptr;
-        m_devicePopulation1 = nullptr;
+        Context()->Synchronize();
     }
     if (m_hostPopulation) {
         checkCUDAErrors(cudaFreeHost(m_hostPopulation));
         m_hostPopulation = nullptr;
     }
-    Context()->Synchronize();
 } // FinishPopulation
 
 bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 {
     // Reallocate the populations if the size has changed.
     size_t populationSize = FireStarterPopulation::PopulationSize(settings);
-    if (m_populationSize != populationSize) {
-        FinishPopulation();
-        m_populationSize = populationSize;
-        if (m_populationSize) {
-            checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
-            if (m_hostPopulation)
-                memset(m_hostPopulation, 0, m_populationSize);
-            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, Stream()));
-            if (m_devicePopulation) {
-                checkCUDAErrors(cudaMemsetAsync(m_devicePopulation, 0, m_populationSize * 2, Stream()));
-                m_devicePopulation0 = m_devicePopulation;
-                m_devicePopulation1 = (FireStarterPopulation*)((char*)m_devicePopulation + m_populationSize);
+    size_t initResultsSize = FireStarterPopulation::ResultsSize(settings);
+    bool result = true;
+    if ((m_populationSize != populationSize) || (m_initResultsSize != initResultsSize)) {
+        if (m_populationSize != populationSize) {
+            FinishPopulation();
+            m_populationSize = populationSize;
+            if (m_populationSize) {
+                checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
+                if (m_hostPopulation)
+                    memset(m_hostPopulation, 0, m_populationSize);
+                checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, Stream()));
+                if (m_devicePopulation) {
+                    checkCUDAErrors(cudaMemsetAsync(m_devicePopulation, 0, m_populationSize * 2, Stream()));
+                    m_devicePopulation0 = m_devicePopulation;
+                    m_devicePopulation1 = (FireStarterPopulation*)((char*)m_devicePopulation + m_populationSize);
+                }
             }
         }
+        if (m_initResultsSize != initResultsSize) {
+            if (m_deviceInitResults) {
+                checkCUDAErrors(cudaFreeAsync(m_deviceInitResults, Stream()));
+                m_deviceInitResults = nullptr;
+            }
+            m_initResultsSize = initResultsSize;
+            checkCUDAErrors(cudaMallocAsync(&m_deviceInitResults, m_initResultsSize, Stream()));
+        }
         Context()->Synchronize();
+        result = (!m_populationSize || (m_hostPopulation && m_devicePopulation)) && (!m_initResultsSize || m_deviceInitResults);
     }
-    return m_hostPopulation && m_devicePopulation;
+    return result;
 } // InitPopulation
 
 void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int variation)
@@ -447,7 +434,7 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
 {
     DispatchSync([this, &state] {
         state.m_timer.Start();
-        if (InitResults(state.Settings()) && InitPopulation(state.Settings()))
+        if (InitPopulation(state.Settings()))
             ExecuteEvolvePass(state);
     });
 } // ExecuteEvolve
@@ -517,7 +504,6 @@ void FireStarterExecute::ExecuteFinish(void)
             m_executeJob = nullptr;
         }
         FinishPopulation();
-        FinishResults();
         CUDACompile::ReleaseModule(m_executeModule);
     });
 } // ExecuteFinish
