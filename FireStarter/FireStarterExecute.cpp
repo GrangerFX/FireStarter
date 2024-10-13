@@ -706,7 +706,6 @@ void FireStarterExecute::ExecuteOptimizeComplete(FireStarterComplete* complete, 
 
             // Generate the evaluate code
             GenerateOptimize(optimizeState);
-#if 1
             CompileOptimize();
             if (InitPopulation(optimizeState.Settings())) {
                 // Execute the optimization passes.
@@ -721,24 +720,6 @@ void FireStarterExecute::ExecuteOptimizeComplete(FireStarterComplete* complete, 
                     optimizeState.m_optimize_pass++;
                 }
             }
-#else
-            CompileOptimize([this, complete, &optimizeState, &bestState] {
-                // Create the population for the optimization state.
-                if (InitPopulation(optimizeState.Settings())) {
-                    // Execute the optimization passes.
-                    while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
-                        ExecutePass(optimizeState);
-
-                        // Update the results in the UI and check for completion.
-                        if (complete->CompleteState(bestState, optimizeState))
-                            break;
-
-                        // Increment the generation.
-                        optimizeState.m_optimize_pass++;
-                    }
-                }
-            });
-#endif
         }
     });
 } // ExecuteOptimizeComplete
