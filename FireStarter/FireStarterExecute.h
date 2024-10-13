@@ -39,9 +39,7 @@ private:
     void ExecutePass(FireStarterState& state);
     void ExecuteSmartPass(FireStarterState& state);
     bool GenerateEvolver(void);
-    void GenerateOptimize(FireStarterState& state);
-    bool CompileOptimize(void);
-    void CompileOptimize(const SerialThreadWork& work);
+    bool GenerateOptimize(FireStarterState& state);
     bool GenerateSpeedTest(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
     bool ExecuteJob(void);
@@ -54,7 +52,6 @@ public:
     void ExecuteEvolve(FireStarterState& state);
     void ExecuteEvolveOptimize(FireStarterState& state);
     void ExecuteOptimize(FireStarterState& state);
-    void ExecuteOptimizeGenerate(FireStarterExecute* execute, FireStarterComplete* complete, FireStarterState& bestState, const FireStarterState& state);
     void ExecuteOptimizeComplete(FireStarterComplete* complete, FireStarterState& bestState, const FireStarterState& state);
     void ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
