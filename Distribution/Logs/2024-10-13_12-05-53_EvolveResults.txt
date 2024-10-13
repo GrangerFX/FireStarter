@@ -1,0 +1,16 @@
+Test: 0  Generation=41  Evolve Result=0.00252262  Optimize Result=0.00000077  Duration: 39.1  Total: 39.1  Average: 39.1 *******
+Test: 1  Generation=6  Evolve Result=0.00357932  Optimize Result=0.00000048  Duration: 9.8  Total: 48.9  Average: 24.4 *******
+Test: 2  Generation=25  Evolve Result=0.00315514  Optimize Result=0.00000066  Duration: 39.6  Total: 88.5  Average: 29.5 *******
+Test: 3  Generation=12  Evolve Result=0.00333196  Optimize Result=0.00000039  Duration: 28.9  Total: 117.4  Average: 29.3 *******
+Test: 4  Generation=40  Evolve Result=0.00163633  Optimize Result=0.00000020  Duration: 53.4  Total: 170.8  Average: 34.2 *******
+Test: 5  Generation=69  Evolve Result=0.00322241  Optimize Result=0.00000024  Duration: 94.9  Total: 265.8  Average: 44.3 *******
+Test: 6  Generation=124  Evolve Result=0.00133085  Optimize Result=0.00000036  Duration: 129.7  Total: 395.5  Average: 56.5 *******
+Test: 7  Generation=294  Evolve Result=0.00180477  Optimize Result=0.00000018  Duration: 362.6  Total: 758.1  Average: 94.8 *******
+Test: 8  Generation=49  Evolve Result=0.00236198  Optimize Result=0.00000089  Duration: 53.0  Total: 811.1  Average: 90.1 *******
+Test: 9  Generation=86  Evolve Result=0.00171357  Optimize Result=0.00000012  Duration: 89.0  Total: 900.2  Average: 90.0 *******
+Test: 10  Generation=58  Evolve Result=0.00175470  Optimize Result=0.00000095  Duration: 68.9  Total: 969.0  Average: 88.1 *******
+Test: 11  Generation=91  Evolve Result=0.00051059  Optimize Result=0.00000030  Duration: 98.4  Total: 1067.4  Average: 88.9 *******
+Test: 12  Generation=36  Evolve Result=0.00220066  Optimize Result=0.00000057  Duration: 56.6  Total: 1124.0  Average: 86.5 *******
+Test: 13  Generation=20  Evolve Result=0.00265312  Optimize Result=0.00000057  Duration: 21.0  Total: 1144.9  Average: 81.8 *******
+Test: 14  Generation=239  Evolve Result=0.00163871  Optimize Result=0.00000024  Duration: 267.8  Total: 1412.7  Average: 94.2 *******
+Test: 15  Generation=59  Evolve Result=0.00400388  Optimize Result=0.00000012  Duration: 57.5  Total: 1470.3  Average: 91.9 *******
