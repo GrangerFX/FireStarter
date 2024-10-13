@@ -528,7 +528,7 @@ bool FireStarterExecute::GenerateEvolver(void)
     return false;
 } // GenerateEvolver
 
-bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
+void FireStarterExecute::GenerateOptimize(FireStarterState& state)
 {
     // Load the base Optimize code into memory.
     if (m_optimizeCode.empty()) {
@@ -542,18 +542,35 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
 
     // Create the Optimize code by replacing the evaluate code block.
-    std::string program = m_optimizeCode;
-    FireStarterSource::UpdateProgram(program, state.m_evaluateCode, EVALUATE_CODE);
+    m_optimizeProgram = m_optimizeCode;
+    FireStarterSource::UpdateProgram(m_optimizeProgram, state.m_evaluateCode, EVALUATE_CODE);
+} // GenerateOptimize
 
+bool FireStarterExecute::CompileOptimize(void)
+{
     // Compile the code and get the Optimizer function from the module.
-    if (CUDACompile::CompileProgram(m_optimizeModule, program, OPTIMIZE_PROGRAM_NAME)) {
+    if (CUDACompile::CompileProgram(m_optimizeModule, m_optimizeProgram, OPTIMIZE_PROGRAM_NAME)) {
         m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
         if (m_optimizeFunction)
             return true;
         CUDACompile::ReleaseModule(m_optimizeModule);
     }
     return false;
-} // GenerateOptimize
+} // CompileOptimize
+
+void FireStarterExecute::CompileOptimize(const SerialThreadWork& work)
+{
+    m_compilerThread.DispatchAsync([this, &work] {
+        // Compile the code and get the Optimizer function from the module.
+        if (CUDACompile::CompileProgram(m_optimizeModule, m_optimizeProgram, OPTIMIZE_PROGRAM_NAME)) {
+            m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
+            if (m_optimizeFunction) {
+                DispatchSync(work);
+            } else
+                CUDACompile::ReleaseModule(m_optimizeModule);
+        }
+    });
+} // CompileOptimize
 
 bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
 {
@@ -598,7 +615,8 @@ bool FireStarterExecute::ExecuteGenerateOptimize(const FireStarterState& initSta
     bool result = false;
     DispatchSync([this, initState, &result] {
         FireStarterState state(initState);
-        result = GenerateOptimize(state);
+        GenerateOptimize(state);
+        result = CompileOptimize();
     });
     return result;
 } // ExecuteGenerateOptimize
@@ -658,6 +676,7 @@ void FireStarterExecute::ExecuteOptimizeGenerate(FireStarterExecute* execute, Fi
 
             // Generate the evaluate code
             GenerateOptimize(optimizeState);
+            CompileOptimize();
 
             // Create the population for the optimization state.
             if (InitPopulation(optimizeState.Settings())) {
@@ -679,7 +698,7 @@ void FireStarterExecute::ExecuteOptimizeGenerate(FireStarterExecute* execute, Fi
 
 void FireStarterExecute::ExecuteOptimizeComplete(FireStarterComplete* complete, FireStarterState& bestState, const FireStarterState& state)
 {
-    DispatchAsync([this, complete, &bestState, state] {
+    DispatchSync([this, complete, &bestState, state] {
         if (!bestState.m_evolveComplete) {
             // Switch to Optimize mode.
             FireStarterState optimizeState = state;
@@ -687,8 +706,8 @@ void FireStarterExecute::ExecuteOptimizeComplete(FireStarterComplete* complete, 
 
             // Generate the evaluate code
             GenerateOptimize(optimizeState);
-
-            // Create the population for the optimization state.
+#if 1
+            CompileOptimize();
             if (InitPopulation(optimizeState.Settings())) {
                 // Execute the optimization passes.
                 while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
@@ -702,8 +721,26 @@ void FireStarterExecute::ExecuteOptimizeComplete(FireStarterComplete* complete, 
                     optimizeState.m_optimize_pass++;
                 }
             }
+#else
+            CompileOptimize([this, complete, &optimizeState, &bestState] {
+                // Create the population for the optimization state.
+                if (InitPopulation(optimizeState.Settings())) {
+                    // Execute the optimization passes.
+                    while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                        ExecutePass(optimizeState);
+
+                        // Update the results in the UI and check for completion.
+                        if (complete->CompleteState(bestState, optimizeState))
+                            break;
+
+                        // Increment the generation.
+                        optimizeState.m_optimize_pass++;
+                    }
+                }
+            });
+#endif
         }
-        });
+    });
 } // ExecuteOptimizeComplete
 
 void FireStarterExecute::ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount)
@@ -753,6 +790,7 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index
 
 FireStarterExecute::~FireStarterExecute(void)
 {
+    m_compilerThread.TerminateThread();
     ExecuteFinish();
     delete m_executeGenerate;
 } // ~FireStarterExecute(void)

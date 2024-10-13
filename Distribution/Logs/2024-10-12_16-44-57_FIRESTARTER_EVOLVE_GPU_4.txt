@@ -1,0 +1,41 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_GPU
+evolveSeed = 0
+optimizeSeed = 0
+tests = 16
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 8192
+iterations = 64
+passes = 100
+candidates = 16
+attempts = 0
+optimize = 1
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test= 4  Generation=  0  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=10.00000000 *New Result=0.00337529  Index=3058  EvolveAge1=0  EvolveAge2=0  Best=0.00337529   BestAge=0  Time=0.5 Seconds  Run Time=72.9 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test= 4  Optimize=0  Generation=  0 *Result=0.00005930  Best=0.00005930   Time=1.6 Seconds  Run Time=74.1 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test= 4  Generation=  1  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00337529  Bad Result=0.01038262  Index=4118  EvolveAge1=1  EvolveAge2=0  Best=0.00005930   BestAge=1  Time=0.5 Seconds  Run Time=74.6 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test= 4  Optimize=0  Generation=  1  Result=0.00006613  Best=0.00005930   Time=1.6 Seconds  Run Time=75.7 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test= 4  Generation=  2  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.01038262 >New Result=0.00238028  Index=5089  EvolveAge1=0  EvolveAge2=0  Best=0.00005930   BestAge=3  Time=0.5 Seconds  Run Time=76.1 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test= 4  Optimize=0  Generation=  2 *Result=0.00000198  Best=0.00000198   Time=1.6 Seconds  Run Time=77.2 Seconds
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test= 4  Generation=  3  Age=  1  Evolution= 0  Weight=0.00000000  Old Result=0.00238028  Bad Result=0.00650251  Index=2843  EvolveAge1=0  EvolveAge2=0  Best=0.00000198   BestAge=1  Time=0.5 Seconds  Run Time=77.7 Seconds
+FIRESTARTER_OPTIMIZE_CPU: Seed=0  Test= 4  Optimize=0  Generation=  3 *Result=0.00000041  Best=0.00000041   Time=1.6 Seconds  Run Time=78.8 Seconds

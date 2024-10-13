@@ -14,6 +14,7 @@ private:
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
+    SerialThread m_compilerThread;
     CUmodule m_optimizeModule = nullptr;
     CUmodule m_evolveModule = nullptr;
     CUmodule m_speedTestModule = nullptr;
@@ -22,6 +23,7 @@ private:
     CUfunction m_evolveOptimizeFunction = nullptr;
     CUfunction m_speedTestFunction = nullptr;
     std::string m_optimizeCode;
+    std::string m_optimizeProgram;
     std::string m_evolveCode;
     std::string m_speedTestCode;
     size_t m_populationSize = 0;
@@ -37,7 +39,9 @@ private:
     void ExecutePass(FireStarterState& state);
     void ExecuteSmartPass(FireStarterState& state);
     bool GenerateEvolver(void);
-    bool GenerateOptimize(FireStarterState& state);
+    void GenerateOptimize(FireStarterState& state);
+    bool CompileOptimize(void);
+    void CompileOptimize(const SerialThreadWork& work);
     bool GenerateSpeedTest(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
     bool ExecuteJob(void);

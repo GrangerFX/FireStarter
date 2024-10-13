@@ -165,11 +165,11 @@ public:
     } // terminate
 }; // class SerialThreadSemaphore
 
+// Currently the work function has no parameters and no return value.
+typedef std::function<void(void)> SerialThreadWork;
+
 class SerialThread {
 private:
-    // Currently the work function has no parameters and no return value.
-    typedef std::function<void(void)> SerialThreadWork;
-
     std::vector<std::thread> m_parallelThreads;
     std::thread m_thread;
     std::mutex m_mutex;
