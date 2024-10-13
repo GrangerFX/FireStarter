@@ -35,9 +35,10 @@ private:
     bool InitPopulation(const FireStarterSettings& settings);
     void ExecuteEvolvePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteEvolveOptimizePass(FireStarterState& state, unsigned int variation = 0);
+    void ExecuteEvolveOptimizePasses(FireStarterState& state);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
-    void ExecutePass(FireStarterState& state);
-    void ExecuteSmartPass(FireStarterState& state);
+    void ExecuteOptimizePasses(FireStarterState& state);
+    void ExecuteSmartOptimizePasses(FireStarterState& state);
     bool GenerateEvolver(void);
     bool GenerateOptimize(FireStarterState& state);
     bool GenerateSpeedTest(FireStarterState& state);
@@ -50,10 +51,10 @@ public:
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state);
-    void ExecuteEvolveOptimize(FireStarterState& state);
+    void ExecuteEvolveOptimizeGPU(FireStarterState& state);
+    void ExecuteEvolveOptimizeCPU(FireStarterState& state);
     void ExecuteOptimize(FireStarterState& state);
-    void ExecuteOptimizeComplete(FireStarterComplete* complete, FireStarterState& bestState, const FireStarterState& state);
-    void ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
+    void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
     void ExecuteFinish(void);
     FireStarterExecute(FireStarterManager* manager, size_t index = 0, int priority = 0);

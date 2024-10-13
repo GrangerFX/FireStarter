@@ -143,7 +143,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
                 std::atomic<unsigned int> evolveCount = numStates;
                 for (FireStarterExecute* evolutionUnit : evolutionUnits)
-                    evolutionUnit->ExecuteOptimizePasses(evolveCount);
+                    evolutionUnit->ExecuteOptimizeCount(evolveCount);
 
                 // Gather and sort the results, update the UI and check for the completion condition.
                 // Note: This syncronizes the execution units.
@@ -231,7 +231,6 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
     }, sync);
 } // EvolveCPUStream
 
-#if 1
 void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
@@ -293,7 +292,36 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     unsigned int optimizePasses = evolveState.Settings().m_optimize;
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_CPU);
                     optimizeState.Settings().m_optimize = optimizePasses;
-                    executeOptimize->ExecuteOptimizeComplete(complete, bestState, optimizeState);
+
+#if 1
+                    if (executeOptimize->ExecuteGenerateOptimize(optimizeState))
+                        while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                            executeOptimize->ExecuteEvolveOptimizeCPU(optimizeState);
+
+                            // Update the results in the UI and check for completion.
+                            if (complete->CompleteState(bestState, optimizeState))
+                                break;
+
+                            // Increment the generation.
+                            optimizeState.m_optimize_pass++;
+                        }
+#else
+                    while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                        executeOptimize->ExecuteEvolveOptimizeGPU(optimizeState);
+
+                        // Update the results in the UI and check for completion.
+                        if (complete->CompleteState(bestState, optimizeState))
+                            break;
+
+                        // Increment the generation.
+                        optimizeState.m_optimize_pass++;
+                    }
+#endif
+
+
+                    // Update the results in the UI and check for completion.
+                    if (complete->CompleteState(bestState, optimizeState))
+                        break;
                 }
 
                 // Exit after a set number of generations.
@@ -335,118 +363,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         delete manager;
     }, sync);
 } // EvolveGPUStream
-#else
-void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
-{
-    Dispatch([this, server, &testCount] {
-        // Evolve a number of states equal to the evolveSettings.m_seeds.
-        FireStarterSettings evolveSettings(m_streamSettings);
-        evolveSettings.m_units = 1;
-        SimpleTimer streamTimer;
-        std::string streamDate = m_streamDate;
-
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
-
-        // Create the evolve execution unit.
-        FireStarterExecute* evolveExecute = new FireStarterExecute(manager, EVOLVE_PROGRAM_NAME);
-
-        // Create the evolve execution unit.
-        FireStarterExecute* evolveOptimize = new FireStarterExecute(manager, EVOLVE_PROGRAM_NAME);
-
-        // Compile the evolve module.
-        evolveExecute->ExecuteCompileEvolver();
-
-        // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_LOADSTATE);
-
-        // Loop until the the evolve completion condition or the host program is quit.
-        unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
-        for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            // Reset the timer if there is only one stream.
-            if (evolveSettings.m_streams == 1)
-                streamTimer.Start();
-
-            // Initialize the states.
-            unsigned long long test = FIRESTARTER_START_TEST + t;
-            FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
-            FireStarterState bestState = evolveState;
-            FireStarterState optimizeState = evolveState;
-
-            // Evolve the current test.
-            while (!WillTerminate()) {
-                // Execute the GPU evolve using a single execution unit.
-                evolveExecute->ExecuteEvolve(evolveState);
-
-                // Gather the results, update the UI and check for the completion condition.
-                if (complete->CompleteState(bestState, evolveState))
-                    break;
-
-                // Test when the best state does not improve.
-                if (bestState.m_age > 1) {
-                    // Switch to Optimize mode.
-                    optimizeState = evolveState;
-                    optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_GPU);
-                    optimizeState.Settings().m_optimize = evolveState.Settings().m_optimize;
-                    optimizeState.m_oldResult = optimizeState.m_maxResult;
-                    FireStarterState optimizeBestState = optimizeState;
-
-                    if (evolveOptimize->ExecuteCompileEvolver()) {
-                        // Loop until the the optimize completion condition or the host program is quit.
-                        while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
-                            // Optimize the current generation.
-                            evolveOptimize->ExecuteEvolveOptimize(optimizeState);
-
-                            // Update the results in the UI and check for completion.
-                            if (complete->CompleteState(optimizeBestState, optimizeState))
-                                break;
-
-                            // Increment the generation.
-                            optimizeState.m_optimize_pass++;
-                        }
-
-                        // If the optimize pass result was better than the evolve target, accept it and stop evolving.
-                        if (optimizeBestState.m_maxResult <= optimizeBestState.Settings().m_target) {
-                            bestState = optimizeBestState;
-                            break;
-                        }
-                    }
-                }
-
-                // Exit after a set number of generations.
-                if (++evolveState.m_generation == evolveSettings.m_generations)
-                    break;
-            }
-
-            // Output the test results.
-            if (!WillTerminate()) {
-                // Output the evolve results.
-                FireStarterResult* bestResult = bestState.Result(0);
-                std::string resultText = Format("Test: %u  Generation=%u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, evolveState.m_generation, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
-                if (bestState.m_maxResult <= evolveSettings.m_target)
-                    resultText += " *******";
-                resultText += "\n";
-                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
-            }
-        }
-
-        // Cancel any waiting jobs
-        manager->Cancel();
-
-        // Delete the completion unit.
-        delete complete;
-
-        // Finish processing and terminate each unit.
-        delete evolveExecute;
-
-        // Finish processing and terminate each unit.
-        delete evolveOptimize;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
-    }, sync);
-} // EvolveGPUStream
-#endif
 
 void FireStarterStream::OptimizeCPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {

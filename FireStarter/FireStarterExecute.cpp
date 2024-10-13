@@ -73,24 +73,23 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
-    bool optimizePass = settings.m_mode != FIRESTARTER_EVOLVE_GPU;
     unsigned int population = settings.m_population;
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = optimizePass ? (population + (threadsPerBlock - 1)) / threadsPerBlock : population;
+    unsigned int blocksPerGrid = population;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long passes = settings.m_passes;
-    unsigned long long pass = optimizePass ? state.m_optimize_pass * passes : state.m_generation * passes;
-    CUfunction executeFunction = optimizePass ? m_evolveOptimizeFunction : m_evolveFunction;
+    unsigned long long pass = state.m_generation * passes;
+    CUfunction executeFunction = m_evolveFunction;
 
     if (m_deviceInitResults)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInitResults, state.Results(), m_initResultsSize, cudaMemcpyHostToDevice, Stream()));
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
-        unsigned int registers = optimizePass ? state.m_program.m_uniqueRegisters : settings.m_registers;
+        unsigned int registers = settings.m_registers;
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long seed = optimizePass ? state.OptimizationSeed(pass) : state.EvolutionSeed(pass);
+        unsigned long long seed = state.EvolutionSeed(pass);
 
         void* arr[] = { reinterpret_cast<void*>(&m_deviceInitResults),
                         reinterpret_cast<void*>(&newResults),
@@ -140,8 +139,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         }
     }
     FireStarterResult* result = state.Result();
-    if (!optimizePass)
-        memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
+    memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
     memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex), FireStarterData::DataSize(settings.m_registers));
     *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex);
     *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex);
@@ -149,8 +147,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     state.m_minIndex = minIndex;
 
     // Set the state's max result.
-    if (!optimizePass)
-        state.m_oldResult = state.m_maxResult;
+    state.m_oldResult = state.m_maxResult;
     state.m_maxResult = state.MaxResult();
     state.m_optimizeValid = true;
 
@@ -316,6 +313,18 @@ void FireStarterExecute::ExecuteEvolveOptimizePass(FireStarterState& state, unsi
     state.LoadProgramFromCode();
 } // ExecuteEvolveOptimizePass
 
+void FireStarterExecute::ExecuteEvolveOptimizePasses(FireStarterState& state)
+{
+    const FireStarterSettings& settings = state.Settings();
+    unsigned int variations = settings.m_variations;
+    for (unsigned int v = 0; v < variations; v++)
+        ExecuteEvolveOptimizePass(state, v);
+
+    // Calculate the state's max result.
+    state.m_maxResult = state.MaxResult();
+    state.m_optimizeValid = true;
+} // ExecuteEvolveOptimizePasses
+
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
@@ -387,7 +396,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     *result->MinResult() = minResult;
 } // ExecuteOptimizePass
 
-void FireStarterExecute::ExecutePass(FireStarterState& state)
+void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
 {
     const FireStarterSettings& settings = state.Settings();
     unsigned int variations = settings.m_variations;
@@ -397,9 +406,9 @@ void FireStarterExecute::ExecutePass(FireStarterState& state)
     // Calculate the state's max result.
     state.m_maxResult = state.MaxResult();
     state.m_optimizeValid = true;
-} // ExecutePass
+} // ExecuteOptimizePasses
 
-void FireStarterExecute::ExecuteSmartPass(FireStarterState& state)
+void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
 {
     unsigned int variations = state.Settings().m_variations;
     if (variations > 1) {
@@ -451,7 +460,7 @@ void FireStarterExecute::ExecuteSmartPass(FireStarterState& state)
         state.m_maxResult = state.MaxResult();
         state.m_optimizeValid = true;
     }
-} // ExecuteSmartPass
+} // ExecuteSmartOptimizePass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
@@ -489,7 +498,7 @@ bool FireStarterExecute::ExecuteJob(void)
     if (Compile(job)) {
         FireStarterState& state = job->m_state;
         if (InitPopulation(state.Settings())) {
-            ExecuteSmartPass(state);
+            ExecuteSmartOptimizePasses(state);
             m_executeManager->AddComplete(job);
         } else
             m_executeManager->AddComplete(nullptr);
@@ -631,50 +640,35 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
     });
 } // ExecuteEvolve
 
-void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state)
+void FireStarterExecute::ExecuteEvolveOptimizeGPU(FireStarterState& state)
 {
     DispatchSync([this, &state] {
         state.m_timer.Start();
         if (InitPopulation(state.Settings()))
-            ExecuteEvolveOptimizePass(state);
-        });
-} // ExecuteEvolveOptimize
+            // Execute the optimization passes.
+            ExecuteEvolveOptimizePasses(state);
+    });
+} // ExecuteEvolveOptimizeCPU
+
+void FireStarterExecute::ExecuteEvolveOptimizeCPU(FireStarterState& state)
+{
+    DispatchSync([this, &state] {
+        state.m_timer.Start();
+        if (InitPopulation(state.Settings()))
+            // Execute the optimization passes.
+            ExecuteOptimizePasses(state);
+    });
+} // ExecuteEvolveOptimizeCPU
 
 void FireStarterExecute::ExecuteOptimize(FireStarterState& state)
 {
     DispatchSync([this, &state] {
         if (InitPopulation(state.Settings()))
-            ExecutePass(state);
+            ExecuteOptimizePasses(state);
     });
 } // ExecuteOptimize
 
-void FireStarterExecute::ExecuteOptimizeComplete(FireStarterComplete* complete, FireStarterState& bestState, const FireStarterState& state)
-{
-    DispatchSync([this, complete, &bestState, state] {
-        if (!bestState.m_evolveComplete) {
-            // Switch to Optimize mode.
-            FireStarterState optimizeState = state;
-            optimizeState.m_oldResult = optimizeState.m_maxResult;
-
-            // Generate the evaluate code and create the population for the optimization state.
-            if (GenerateOptimize(optimizeState) && InitPopulation(optimizeState.Settings())) {
-                // Execute the optimization passes.
-                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
-                    ExecutePass(optimizeState);
-
-                    // Update the results in the UI and check for completion.
-                    if (complete->CompleteState(bestState, optimizeState))
-                        break;
-
-                    // Increment the generation.
-                    optimizeState.m_optimize_pass++;
-                }
-            }
-        }
-    });
-} // ExecuteOptimizeComplete
-
-void FireStarterExecute::ExecuteOptimizePasses(std::atomic<unsigned int>& evolveCount)
+void FireStarterExecute::ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount)
 {
     DispatchAsync([this, &evolveCount] {
         while (evolveCount-- > 0) {
@@ -682,7 +676,7 @@ void FireStarterExecute::ExecuteOptimizePasses(std::atomic<unsigned int>& evolve
                 break;
         }
     });
-} // ExecuteOptimizePasses
+} // ExecuteOptimizeCount
 
 void FireStarterExecute::ExecuteRandom(void)
 {

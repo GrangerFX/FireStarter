@@ -1,0 +1,16 @@
+Test: 0  Generation=40  Evolve Result=0.00252262  Optimize Result=0.00000038  Duration: 29.9  Total: 29.9  Average: 29.9 *******
+Test: 1  Generation=5  Evolve Result=0.00357932  Optimize Result=0.00000032  Duration: 6.1  Total: 35.9  Average: 18.0 *******
+Test: 2  Generation=18  Evolve Result=0.00378519  Optimize Result=0.00000052  Duration: 18.6  Total: 54.5  Average: 18.2 *******
+Test: 3  Generation=11  Evolve Result=0.00333196  Optimize Result=0.00000059  Duration: 16.5  Total: 71.1  Average: 17.8 *******
+Test: 4  Generation=3  Evolve Result=0.00650251  Optimize Result=0.00000041  Duration: 6.2  Total: 77.3  Average: 15.5 *******
+Test: 5  Generation=37  Evolve Result=0.00284511  Optimize Result=0.00000006  Duration: 34.0  Total: 111.4  Average: 18.6 *******
+Test: 6  Generation=21  Evolve Result=0.00314158  Optimize Result=0.00000013  Duration: 21.2  Total: 132.6  Average: 18.9 *******
+Test: 7  Generation=0  Evolve Result=0.00374919  Optimize Result=0.00000075  Duration: 1.6  Total: 134.2  Average: 16.8 *******
+Test: 8  Generation=6  Evolve Result=0.00367868  Optimize Result=0.00000045  Duration: 10.9  Total: 145.1  Average: 16.1 *******
+Test: 9  Generation=4  Evolve Result=0.00232643  Optimize Result=0.00000081  Duration: 6.7  Total: 151.8  Average: 15.2 *******
+Test: 10  Generation=3  Evolve Result=0.00507939  Optimize Result=0.00000068  Duration: 4.1  Total: 155.9  Average: 14.2 *******
+Test: 11  Generation=12  Evolve Result=0.00359094  Optimize Result=0.00000066  Duration: 16.0  Total: 171.9  Average: 14.3 *******
+Test: 12  Generation=13  Evolve Result=0.00492829  Optimize Result=0.00000047  Duration: 18.6  Total: 190.5  Average: 14.7 *******
+Test: 13  Generation=19  Evolve Result=0.00265312  Optimize Result=0.00000023  Duration: 14.8  Total: 205.3  Average: 14.7 *******
+Test: 14  Generation=9  Evolve Result=0.00128895  Optimize Result=0.00000048  Duration: 12.3  Total: 217.6  Average: 14.5 *******
+Test: 15  Generation=49  Evolve Result=0.00237054  Optimize Result=0.00000007  Duration: 32.0  Total: 249.6  Average: 15.6 *******
