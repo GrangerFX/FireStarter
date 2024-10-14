@@ -18,8 +18,6 @@ public:
 	std::string m_programName;
 	std::string m_ptx;
 	std::string m_log;
-    CUmodule m_module = nullptr;
-    CUfunction m_function = nullptr;
     class FireStarterJob* m_next = nullptr;	// Linked list pointer
 
 	inline void Copy(FireStarterJob* job)

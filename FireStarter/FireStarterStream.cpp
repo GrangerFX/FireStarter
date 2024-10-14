@@ -253,6 +253,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         FireStarterExecute* execute = new FireStarterExecute(manager, 1, 1);
 
         // Create the execution unit used to generate the optimize code.
+        FireStarterExecute* executeCompile = new FireStarterExecute(manager, 0, 0);
+
+        // Create the execution unit used to generate the optimize code.
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager, 0, 0);
 
         // Loop until the the evolve completion condition or the host program is quit.
@@ -291,7 +294,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 #if 1
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_CPU);
                     optimizeState.Settings().m_optimize = optimizePasses;
-                    executeOptimize->ExecuteCompileOptimize(optimizeState);
+                    executeCompile->ExecuteCompileOptimize(optimizeState);
 #endif
 #if 0
                     FireStarterState optimizeState = evolveState;
