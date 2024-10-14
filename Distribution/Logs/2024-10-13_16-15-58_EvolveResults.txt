@@ -1,0 +1,16 @@
+Test: 0  Generation=57  Evolve Result=0.00478023  Optimize Result=0.00000024  Duration: 101.7  Total: 101.7  Average: 101.7 *******
+Test: 1  Generation=6  Evolve Result=0.00357932  Optimize Result=0.00000038  Duration: 16.6  Total: 118.2  Average: 59.1 *******
+Test: 2  Generation=86  Evolve Result=0.00243503  Optimize Result=0.00000018  Duration: 122.6  Total: 240.8  Average: 80.3 *******
+Test: 3  Generation=12  Evolve Result=0.00333196  Optimize Result=0.00000054  Duration: 51.6  Total: 292.4  Average: 73.1 *******
+Test: 4  Generation=4  Evolve Result=0.00650251  Optimize Result=0.00000066  Duration: 20.2  Total: 312.6  Average: 62.5 *******
+Test: 5  Generation=38  Evolve Result=0.00284511  Optimize Result=0.00000018  Duration: 86.9  Total: 399.5  Average: 66.6 *******
+Test: 6  Generation=44  Evolve Result=0.00304788  Optimize Result=0.00000012  Duration: 108.0  Total: 507.4  Average: 72.5 *******
+Test: 7  Generation=17  Evolve Result=0.00290134  Optimize Result=0.00000012  Duration: 54.1  Total: 561.6  Average: 70.2 *******
+Test: 8  Generation=49  Evolve Result=0.00236198  Optimize Result=0.00000075  Duration: 82.6  Total: 644.1  Average: 71.6 *******
+Test: 9  Generation=86  Evolve Result=0.00171357  Optimize Result=0.00000018  Duration: 136.8  Total: 781.0  Average: 78.1 *******
+Test: 10  Generation=65  Evolve Result=0.00299209  Optimize Result=0.00000086  Duration: 126.4  Total: 907.3  Average: 82.5 *******
+Test: 11  Generation=13  Evolve Result=0.00359094  Optimize Result=0.00000024  Duration: 47.6  Total: 954.9  Average: 79.6 *******
+Test: 12  Generation=36  Evolve Result=0.00220066  Optimize Result=0.00000027  Duration: 95.2  Total: 1050.1  Average: 80.8 *******
+Test: 13  Generation=20  Evolve Result=0.00265312  Optimize Result=0.00000018  Duration: 32.4  Total: 1082.5  Average: 77.3 *******
+Test: 14  Generation=201  Evolve Result=0.00008515  Optimize Result=0.00000066  Duration: 379.5  Total: 1461.9  Average: 97.5 *******
+Test: 15  Generation=50  Evolve Result=0.00237054  Optimize Result=0.00000024  Duration: 59.9  Total: 1521.8  Average: 95.1 *******

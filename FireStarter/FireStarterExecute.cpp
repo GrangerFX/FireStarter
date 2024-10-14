@@ -630,19 +630,23 @@ void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
 void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
 {
     DispatchSync([this, &state] {
-        state.m_timer.Start();
-        if (InitPopulation(state.Settings()))
-            ExecuteEvolvePass(state);
+        if (GenerateEvolver()) {
+            state.m_timer.Start();
+            if (InitPopulation(state.Settings()))
+                ExecuteEvolvePass(state);
+        }
     });
 } // ExecuteEvolve
 
 void FireStarterExecute::ExecuteEvolveOptimizeGPU(FireStarterState& state)
 {
     DispatchSync([this, &state] {
-        state.m_timer.Start();
-        if (InitPopulation(state.Settings()))
-            // Execute the optimization passes.
-            ExecuteEvolveOptimizePasses(state);
+        if (GenerateEvolver()) {
+            state.m_timer.Start();
+            if (InitPopulation(state.Settings()))
+                // Execute the optimization passes.
+                ExecuteEvolveOptimizePasses(state);
+        }
     });
 } // ExecuteEvolveOptimizeCPU
 
