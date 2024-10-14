@@ -290,51 +290,13 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     // Optimize the evolved state.
                     FireStarterState optimizeState = evolveState;
                     unsigned int optimizePasses = evolveState.Settings().m_optimize;
-
-#if 1
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_CPU);
                     optimizeState.Settings().m_optimize = optimizePasses;
                     executeCompile->ExecuteCompileOptimize(optimizeState);
-#endif
-#if 0
-                    FireStarterState optimizeState = evolveState;
-                    unsigned int optimizePasses = evolveState.Settings().m_optimize;
-                    optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_CPU);
-                    optimizeState.Settings().m_optimize = optimizePasses;
-                    if (executeOptimize->ExecuteGenerateOptimize(optimizeState))
-                        while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
-                            executeOptimize->ExecuteEvolveOptimizeCPU(optimizeState);
-
-                            // Update the results in the UI and check for completion.
-                            if (complete->CompleteState(bestState, optimizeState))
-                                break;
-
-                            // Increment the generation.
-                            optimizeState.m_optimize_pass++;
-                        }
-#endif
-#if 0
-                    FireStarterState optimizeState = evolveState;
-                    unsigned int optimizePasses = evolveState.Settings().m_optimize;
-                    optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_GPU);
-                    optimizeState.Settings().m_optimize = optimizePasses;
-                    optimizeState.LoadCodeFromProgram();    // Get the optimized code.
-                    while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
-                        executeOptimize->ExecuteEvolveOptimizeGPU(optimizeState);
-
-                        // Update the results in the UI and check for completion.
-                        if (complete->CompleteState(bestState, optimizeState))
-                            break;
-
-                        // Increment the generation.
-                        optimizeState.m_optimize_pass++;
-                    }
-#endif
                 }
-#if 1
+
                 // Execute optimize for any completed compile jobs.
                 executeOptimize->ExecuteEvolveOptimizeComplete(complete, bestState);
-#endif
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)

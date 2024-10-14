@@ -192,7 +192,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 
     // Create the settings text.
     // Note: Must get the settings from bestState because state can be in optimize mode.
-    const FireStarterSettings& settings = bestState.Settings();
+    const FireStarterSettings& settings = state.Settings();
     static std::string settingsText;
     if (settingsText.empty()) {
         FireStarterProgram::SettingsText(settings, settingsText);
@@ -251,7 +251,9 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         if ((state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU)) {
             if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
                 statusString += Format("  Index=%4llu  Id=%4llu", state.m_index, state.m_id);
-            statusString += Format("  Generation=%3u  Age=%3u  Evolution=%2u  Weight=%.8f", generation, state.m_age, state.m_evolution, state.m_evolveWeight);
+            statusString += Format("  Generation=%3u", generation);
+            if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
+                statusString += Format("  Age=%3u  Evolution=%2u  Weight=%.8f", state.m_age, state.m_evolution, state.m_evolveWeight);
 
             std::string resultString;
             if (state.m_maxResult >= state.m_oldResult)
@@ -262,15 +264,16 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.m_maxResult);
             if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
-                statusString += Format("  Index=%u  EvolveAge1=%u  EvolveAge2=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1(), (unsigned int)state.Result(0)->EvolveAge2());
+                statusString += Format("  Index=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1());
         } else {
+            statusString += Format("  Generation=%3u", generation);
             if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
-                statusString += Format("  Optimize=%u", state.m_optimize_pass);
+                if (settings.m_optimize > 1)
+                    statusString += Format("  Optimize=%u", state.m_optimize_pass);
             } else {
                 if (settings.m_units > 1)
                     statusString += Format("  Unit=%u", state.m_index % settings.m_units);
             }
-            statusString += Format("  Generation=%3u", generation);
             if ((state.m_maxResult == bestResult) && isBestState)
                 statusString += " *";
             else
