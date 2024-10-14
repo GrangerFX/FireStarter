@@ -18,7 +18,9 @@ public:
 	std::string m_programName;
 	std::string m_ptx;
 	std::string m_log;
-	class FireStarterJob* m_next = nullptr;	// Linked list pointer
+    CUmodule m_module = nullptr;
+    CUfunction m_function = nullptr;
+    class FireStarterJob* m_next = nullptr;	// Linked list pointer
 
 	inline void Copy(FireStarterJob* job)
 	{
@@ -58,7 +60,7 @@ private:
 	size_t m_totalJobs = 0;
 public:
 	void Add(FireStarterJob* job);
-	FireStarterJob* Get(void);
+	FireStarterJob* Get(bool wait = true);
 	double WaitTime(void);
 	size_t Size(void);
 	void Restart(void);
@@ -78,22 +80,22 @@ private:
 
 public:
 	void AddFree(FireStarterJob* job = nullptr);
-	FireStarterJob* GetFree(void);
+	FireStarterJob* GetFree(bool wait = true);
 	double TimeFree(void);
 	size_t SizeFree(void);
 
 	void AddCode(FireStarterJob* job = nullptr);
-	FireStarterJob* GetCode(void);
+	FireStarterJob* GetCode(bool wait = true);
 	double TimeCode(void);
 	size_t SizeCode(void);
 
 	void AddCompile(FireStarterJob* job = nullptr);
-	FireStarterJob* GetCompile(void);
+	FireStarterJob* GetCompile(bool wait = true);
 	double TimeCompile(void);
 	size_t SizeCompile(void);
 
 	void AddComplete(FireStarterJob* job = nullptr);
-	FireStarterJob* GetComplete(void);
+	FireStarterJob* GetComplete(bool wait = true);
 	double TimeComplete(void);
 	size_t SizeComplete(void);
 

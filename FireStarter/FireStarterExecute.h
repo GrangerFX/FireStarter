@@ -23,7 +23,6 @@ private:
     CUfunction m_evolveOptimizeFunction = nullptr;
     CUfunction m_speedTestFunction = nullptr;
     std::string m_optimizeCode;
-    std::string m_optimizeProgram;
     std::string m_evolveCode;
     std::string m_speedTestCode;
     size_t m_populationSize = 0;
@@ -46,6 +45,7 @@ private:
     bool ExecuteJob(void);
 
 public:
+    void ExecuteCompileOptimize(const FireStarterState& initState);
     bool ExecuteGenerateEvolver(void);
     bool ExecuteGenerateOptimize(const FireStarterState& initState);
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
@@ -53,6 +53,7 @@ public:
     void ExecuteEvolve(FireStarterState& state);
     void ExecuteEvolveOptimizeGPU(FireStarterState& state);
     void ExecuteEvolveOptimizeCPU(FireStarterState& state);
+    void ExecuteEvolveOptimizeComplete(FireStarterComplete* complete, FireStarterState& bestState);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);

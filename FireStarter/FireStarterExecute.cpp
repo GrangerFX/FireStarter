@@ -545,11 +545,11 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
 
     // Create the Optimize code by replacing the evaluate code block.
-    m_optimizeProgram = m_optimizeCode;
-    FireStarterSource::UpdateProgram(m_optimizeProgram, state.m_evaluateCode, EVALUATE_CODE);
+    std::string optimizeProgram = m_optimizeCode;
+    FireStarterSource::UpdateProgram(optimizeProgram, state.m_evaluateCode, EVALUATE_CODE);
 
     // Compile the code and get the Optimizer function from the module.
-    if (CUDACompile::CompileProgram(m_optimizeModule, m_optimizeProgram, OPTIMIZE_PROGRAM_NAME)) {
+    if (CUDACompile::CompileProgram(m_optimizeModule, optimizeProgram, OPTIMIZE_PROGRAM_NAME)) {
         m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
         if (m_optimizeFunction)
             return true;
@@ -584,6 +584,45 @@ bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
     }
     return false;
 } // GenerateSpeedTest
+
+void FireStarterExecute::ExecuteCompileOptimize(const FireStarterState& initState)
+{
+    DispatchAsync([this, initState] {
+        // Load the base Optimize code into memory.
+        if (m_optimizeCode.empty()) {
+            if (!FireStarterSource::LoadSource(m_optimizeCode, OPTIMIZE_PROGRAM_NAME)) {
+                printf("%s could not be loaded!\n", OPTIMIZE_PROGRAM_NAME);
+                std::terminate();
+            }
+        }
+
+        // Get a new job for compiling the optimization code.
+        FireStarterJob* compileJob = m_executeManager->GetFree();
+        if (compileJob) {
+            // Copy the initial state.
+            compileJob->m_state = initState;
+            FireStarterState& state = compileJob->m_state;
+
+            // Generate the evaluate code
+            m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
+
+            // Create the Optimize code by replacing the evaluate code block.
+            compileJob->m_program = m_optimizeCode;
+            FireStarterSource::UpdateProgram(compileJob->m_program, state.m_evaluateCode, EVALUATE_CODE);
+
+            // Compile the code and get the Optimizer function from the module.
+            if (CUDACompile::CompilePTX(compileJob->m_ptx, compileJob->m_program, OPTIMIZE_PROGRAM_NAME) && CUDACompile::CompileModule(compileJob->m_module, compileJob->m_ptx)) {
+                compileJob->m_function = CUDACompile::GetFunction(compileJob->m_module, "Optimizer");
+                if (compileJob->m_function) {
+                    m_executeManager->AddCompile(compileJob);
+                } else {
+                    CUDACompile::ReleaseModule(compileJob->m_module);
+                    m_executeManager->AddFree(compileJob);
+                }
+            }
+        }
+    });
+} // ExecuteCompileOptimize
 
 bool FireStarterExecute::ExecuteGenerateEvolver(void)
 {
@@ -658,6 +697,38 @@ void FireStarterExecute::ExecuteEvolveOptimizeCPU(FireStarterState& state)
             ExecuteOptimizePasses(state);
     });
 } // ExecuteEvolveOptimizeCPU
+
+void FireStarterExecute::ExecuteEvolveOptimizeComplete(FireStarterComplete* complete, FireStarterState& bestState)
+{
+    FireStarterJob* compileJob = nullptr;
+    while ((compileJob = m_executeManager->GetCompile(false)) != nullptr) {
+        DispatchSync([this, compileJob, complete, &bestState] {
+            // Swap the optimize module with the compile job's module.
+            CUDACompile::ReleaseModule(m_optimizeModule);
+            m_optimizeModule = compileJob->m_module;
+            m_optimizeFunction = compileJob->m_function;
+
+            FireStarterState& state = compileJob->m_state;
+            if (InitPopulation(state.Settings())) {
+                while (!WillTerminate() && (state.m_optimize_pass < state.Settings().m_optimize)) {
+                    // Execute the optimization passes.
+                    state.m_timer.Start();
+                    ExecuteOptimizePasses(state);
+
+                    // Update the results in the UI and check for completion.
+                    if (complete->CompleteState(bestState, state))
+                        break;
+
+                    // Increment the generation.
+                    state.m_optimize_pass++;
+                }
+            }
+            CUDACompile::ReleaseModule(m_optimizeModule);
+            m_optimizeFunction = nullptr;
+        });
+        m_executeManager->AddFree(compileJob);
+    }
+} // ExecuteEvolveOptimizeComplete
 
 void FireStarterExecute::ExecuteOptimize(FireStarterState& state)
 {

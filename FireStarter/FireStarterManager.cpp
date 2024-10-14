@@ -21,7 +21,7 @@ void FireStarterJobQueue::Add(FireStarterJob* job)
     });
 } // Add
 
-FireStarterJob* FireStarterJobQueue::Get(void)
+FireStarterJob* FireStarterJobQueue::Get(bool wait)
 {
     if (!IsRunning() || WillTerminate())
         return nullptr;
@@ -29,7 +29,7 @@ FireStarterJob* FireStarterJobQueue::Get(void)
     // Wait for a job to be added to the queue.
     FireStarterJob* job = nullptr;
     double waitTime = SimpleTimer::RunDuration();
-    if (m_semaphore.wait())
+    if (wait ? m_semaphore.wait() : m_semaphore.trywait())
         DispatchSync([this, &job, waitTime] {
             // Remove the job from the queue.
             if (m_firstJob) {
@@ -96,9 +96,9 @@ void FireStarterManager::AddFree(FireStarterJob* job)
         m_freeQueue.Add(new FireStarterJob());
 } // AddFree
 
-FireStarterJob* FireStarterManager::GetFree(void)
+FireStarterJob* FireStarterManager::GetFree(bool wait)
 {
-    return m_freeQueue.Get();
+    return m_freeQueue.Get(wait);
 } // GetFree
 
 double FireStarterManager::TimeFree(void)
@@ -121,9 +121,9 @@ void FireStarterManager::AddCode(FireStarterJob* job)
     m_codeQueue.Add(job);
 } // AddCode
 
-FireStarterJob* FireStarterManager::GetCode(void)
+FireStarterJob* FireStarterManager::GetCode(bool wait)
 {
-    return m_codeQueue.Get();
+    return m_codeQueue.Get(wait);
 } // GetCode
 
 double FireStarterManager::TimeCode(void)
@@ -146,9 +146,9 @@ void FireStarterManager::AddCompile(FireStarterJob* job)
     m_compileQueue.Add(job);
 } // AddCompile
 
-FireStarterJob* FireStarterManager::GetCompile(void)
+FireStarterJob* FireStarterManager::GetCompile(bool wait)
 {
-    return m_compileQueue.Get();
+    return m_compileQueue.Get(wait);
 } // GetCompile
 
 double FireStarterManager::TimeCompile(void)
@@ -171,9 +171,9 @@ void FireStarterManager::AddComplete(FireStarterJob* job)
     m_completeQueue.Add(job);
 } // AddComplete
 
-FireStarterJob* FireStarterManager::GetComplete(void)
+FireStarterJob* FireStarterManager::GetComplete(bool wait)
 {
-    return m_completeQueue.Get();
+    return m_completeQueue.Get(wait);
 } // GetComplete
 
 double FireStarterManager::TimeComplete(void)

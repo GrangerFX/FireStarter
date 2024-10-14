@@ -288,7 +288,14 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     FireStarterState optimizeState = evolveState;
                     unsigned int optimizePasses = evolveState.Settings().m_optimize;
 
+#if 1
+                    optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_CPU);
+                    optimizeState.Settings().m_optimize = optimizePasses;
+                    executeOptimize->ExecuteCompileOptimize(optimizeState);
+#endif
 #if 0
+                    FireStarterState optimizeState = evolveState;
+                    unsigned int optimizePasses = evolveState.Settings().m_optimize;
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_CPU);
                     optimizeState.Settings().m_optimize = optimizePasses;
                     if (executeOptimize->ExecuteGenerateOptimize(optimizeState))
@@ -302,7 +309,10 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                             // Increment the generation.
                             optimizeState.m_optimize_pass++;
                         }
-#else
+#endif
+#if 0
+                    FireStarterState optimizeState = evolveState;
+                    unsigned int optimizePasses = evolveState.Settings().m_optimize;
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_GPU);
                     optimizeState.Settings().m_optimize = optimizePasses;
                     optimizeState.LoadCodeFromProgram();    // Get the optimized code.
@@ -318,6 +328,10 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     }
 #endif
                 }
+#if 1
+                // Execute optimize for any completed compile jobs.
+                executeOptimize->ExecuteEvolveOptimizeComplete(complete, bestState);
+#endif
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
