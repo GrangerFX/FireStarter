@@ -264,7 +264,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.m_maxResult);
             if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
-                statusString += Format("  Index=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1());
+                statusString += Format("  MinIndex=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1());
         } else {
             statusString += Format("  Generation=%3u", generation);
             if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
