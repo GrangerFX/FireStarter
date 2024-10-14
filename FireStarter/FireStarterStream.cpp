@@ -305,6 +305,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 #else
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE_GPU);
                     optimizeState.Settings().m_optimize = optimizePasses;
+                    optimizeState.LoadCodeFromProgram();    // Get the optimized code.
                     while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                         executeOptimize->ExecuteEvolveOptimizeGPU(optimizeState);
 

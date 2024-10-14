@@ -241,8 +241,7 @@ void FireStarterExecute::ExecuteEvolveOptimizePass(FireStarterState& state, unsi
     unsigned long long passes = settings.m_passes;
     unsigned long long pass = state.m_optimize_pass * passes;
 
-    if (m_deviceInitResults)
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceInitResults, state.Results(), m_initResultsSize, cudaMemcpyHostToDevice, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_deviceInitResults, state.Results(), m_initResultsSize, cudaMemcpyHostToDevice, Stream()));
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
         unsigned int registers = state.m_program.m_uniqueRegisters;
