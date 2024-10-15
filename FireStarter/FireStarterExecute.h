@@ -20,7 +20,6 @@ private:
     CUmodule m_speedTestModule = nullptr;
     CUfunction m_optimizeFunction = nullptr;
     CUfunction m_evolveFunction = nullptr;
-    CUfunction m_evolveOptimizeFunction = nullptr;
     CUfunction m_speedTestFunction = nullptr;
     std::string m_optimizeCode;
     std::string m_evolveCode;
@@ -33,8 +32,6 @@ private:
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
     void ExecuteEvolvePass(FireStarterState& state, unsigned int variation = 0);
-    void ExecuteEvolveOptimizePass(FireStarterState& state, unsigned int variation = 0);
-    void ExecuteEvolveOptimizePasses(FireStarterState& state);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
@@ -51,9 +48,7 @@ public:
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state);
-    void ExecuteEvolveOptimizeGPU(FireStarterState& state);
-    void ExecuteEvolveOptimizeCPU(FireStarterState& state);
-    void ExecuteEvolveOptimizeComplete(FireStarterComplete* complete, FireStarterState& bestState);
+    void ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& bestState);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
