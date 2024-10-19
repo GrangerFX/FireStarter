@@ -22,15 +22,16 @@ private:
 	void SaveBestCode(const FireStarterState& bestState);
 	void SaveSolution(const FireStarterState& bestState);
 	bool LoadSolutionTargetCode(void);
-    bool CheckComplete(const FireStarterState& bestState);
 
 public:
 	bool UpdateBestState(FireStarterState& bestState, const FireStarterState& state);
 	void DisplayResults(const FireStarterState& bestState);
+    void SaveResults(const FireStarterState& bestState);
 	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation = 0);
 	bool CompleteState(FireStarterState& bestState, const FireStarterState& state);
 	bool CompleteRandom(FireStarterState& bestState, FireStarterState& oldState);
 	bool CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
+    void CompleteBestState(const FireStarterState& bestState);
     FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState = false);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

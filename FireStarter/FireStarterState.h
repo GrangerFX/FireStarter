@@ -28,6 +28,7 @@ private:
         m_test = other.m_test;
         m_seed = other.m_seed;
         m_optimize_pass = other.m_optimize_pass;
+        m_minIndex = other.m_minIndex;
         m_oldResult = other.m_oldResult;
         m_maxResult = other.m_maxResult;
         m_evolveWeight = other.m_evolveWeight;

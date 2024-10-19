@@ -190,8 +190,13 @@ void FireStarterExecute::ExecuteEvolve2Pass(FireStarterState& state, unsigned in
             minIndex = i;
         }
     }
-    FireStarterResult* result = state.Result();
+
+    // Get the best code and convert it to an optimized program.
     memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
+    state.LoadProgramFromCode();
+
+    // Get the best result.
+    FireStarterResult* result = state.Result();
     memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex), FireStarterData::DataSize(settings.m_registers));
     *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex);
     *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex);
@@ -202,9 +207,6 @@ void FireStarterExecute::ExecuteEvolve2Pass(FireStarterState& state, unsigned in
     state.m_oldResult = state.m_maxResult;
     state.m_maxResult = state.MaxResult();
     state.m_optimizeValid = true;
-
-    // Load the state's program from the GPU evolved code (variation 0).
-    state.LoadProgramFromCode();
 } // ExecuteEvolve2Pass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)

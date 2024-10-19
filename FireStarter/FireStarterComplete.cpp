@@ -75,22 +75,26 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
     return false;
 } // UpdateBestState
 
+void FireStarterComplete::SaveResults(const FireStarterState& bestState)
+{
+    // Update the best state.
+    SaveBestState(bestState);
+
+    // Update the best code on disk.
+    SaveBestCode(bestState);
+
+    // Update the solution code on disk.
+    SaveSolution(bestState);
+} // SaveResults
+
 void FireStarterComplete::DisplayResults(const FireStarterState& bestState)
 {
     // Test the current state.
     m_bestError = bestState.TestResult();
 
     // Save the new best state.
-    if (m_saveBestState) {
-        // Update the best state.
-        SaveBestState(bestState);
-
-        // Update the best code on disk.
-        SaveBestCode(bestState);
-
-        // Update the solution code on disk.
-        SaveSolution(bestState);
-    }
+    if (m_saveBestState)
+        SaveResults(bestState);
 
     // Draw the graphs for both variations.
     m_fireShow.FireShow(bestState);
@@ -253,6 +257,13 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
     });
     return bestState.m_evolveComplete;
 } // CompleteStates
+
+void FireStarterComplete::CompleteBestState(const FireStarterState& bestState)
+{
+    DispatchAsync([this, bestState] {
+        SaveResults(bestState);
+    });
+} // CompleteBestState
 
 FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState) : CUDAThread("FireStarterComplete"), m_manager(manager), m_window(window), m_saveBestState(saveBestState), m_fireShow(window)
 {

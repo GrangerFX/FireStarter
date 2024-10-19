@@ -33,6 +33,10 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     // The shared data for the threads in the warp.
     GPU_SHARED FireStarterSharedData sharedData;
 
+    // The evolution code and data.
+    FireStarterCode code;
+    FireStarterData data;
+
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_SAMPLES];
     float target[FIRESTARTER_SAMPLES];
@@ -53,8 +57,6 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     unsigned long long passSeed = SEED2(evolutionPass);
     unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
     unsigned long long dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
-    FireStarterCode code;
-    FireStarterData data;
 
     // The first generation is initalized with random numbers.
     if (!evolutionPass) {
@@ -179,6 +181,10 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     // The shared data for the threads in the warp.
     GPU_SHARED FireStarterSharedData sharedData;
 
+    // The evolution code and data.
+    FireStarterCode code;
+    FireStarterData data;
+
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_SAMPLES];
     float target[FIRESTARTER_SAMPLES];
@@ -189,10 +195,12 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = evolutionSeed + SEED10(variation) + SEED1(member);   // Unique seed for the generation/variation/member
-    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/variation/dataIndex
-    FireStarterCode code;
-    FireStarterData data;
+    unsigned long long memberBaseSeed = evolutionSeed + SEED10(variation) + SEED1(member);   // Unique seed for the generation/member
+    unsigned long long dataBaseSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/dataIndex
+    unsigned long long passSeed = SEED2(evolutionPass);
+    unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
+    unsigned long long dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
+
     float result, memberResult;
     float evolutionScale;
     unsigned short evolveAge1 = 0;
@@ -339,6 +347,10 @@ GPU_GLOBAL void Evolver2(FireStarterPopulation* newResults, const FireStarterPop
     // The shared data for the threads in the warp.
     GPU_SHARED FireStarterSharedData sharedData;
 
+    // The evolution code and data.
+    FireStarterCode code;
+    FireStarterData data;
+
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_SAMPLES];
     float target[FIRESTARTER_SAMPLES];
@@ -356,12 +368,10 @@ GPU_GLOBAL void Evolver2(FireStarterPopulation* newResults, const FireStarterPop
     // The first generation is initalized with random numbers.
     unsigned long long memberBaseSeed = evolutionSeed + SEED10(variation) + SEED1(member);   // Unique seed for the generation/member
     unsigned long long dataBaseSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/dataIndex
-    unsigned long long passSeed = SEED2(evolutionPass);
-    unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
-    unsigned long long dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
-    FireStarterCode code;
-    FireStarterData data;
     if (!evolutionPass) {
+        unsigned long long passSeed = SEED2(evolutionPass);
+        unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
+        unsigned long long dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
@@ -383,9 +393,9 @@ GPU_GLOBAL void Evolver2(FireStarterPopulation* newResults, const FireStarterPop
     for (unsigned int pass = evolutionPass; pass < evolutionPass + evolutionPasses; pass++) {
         FireStarterCode oldCode = code;
         FireStarterData oldData = data;
-        passSeed = SEED2(pass);
-        memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
-        dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
+        unsigned long long passSeed = SEED2(pass);
+        unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
+        unsigned long long dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
 
         // The first generation is initalized with random numbers.
         if (pass) {

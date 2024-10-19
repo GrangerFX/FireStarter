@@ -318,6 +318,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+
+                // Save the best state and best solution.
+                complete->CompleteBestState(bestState);
             }
         }
 
