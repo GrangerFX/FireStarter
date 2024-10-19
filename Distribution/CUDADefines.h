@@ -9,6 +9,7 @@
 #define GPU_ENTRY(grid, block) <<<grid, block>>>
 #define GPU_THREADFENCE() __threadfence()
 #define GPU_SYNCTHREADS() __syncthreads()
+#define GPU_SYNCWARP() __syncwarp()
 #define GPU_SHARED __shared__
 #define nullptr 0
 #else
@@ -22,6 +23,7 @@
 #define GPU_ENTRY(grid, block)
 #define GPU_THREADFENCE()
 #define GPU_SYNCTHREADS()
+#define GPU_SYNCWARP()
 #define GPU_SHARED
 const uint3 blockIdx = { 0, 0, 0 };
 const dim3 blockDim = { 1, 1, 1 };

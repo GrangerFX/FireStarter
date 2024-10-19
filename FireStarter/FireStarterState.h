@@ -162,12 +162,12 @@ public:
         return m_generation * m_maxResult;
     } // EvolveWeight
 
-    inline unsigned long long EvolutionSeed(unsigned long long evolution) const
+    inline unsigned long long EvolutionSeed(unsigned long long evolution = 0) const
     {
         return SEED1(m_program.m_settings.m_evolveSeed) + SEED2(evolution) + SEED3(m_id) + SEED4(m_test);
     } // EvolutionSeed
 
-    inline unsigned long long OptimizationSeed(unsigned long long optimization) const
+    inline unsigned long long OptimizationSeed(unsigned long long optimization = 0) const
     {
         return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_generation) + SEED4(m_id) + SEED5(m_test);
     } // OptimizationSeed

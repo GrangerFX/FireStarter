@@ -1,0 +1,1 @@
+Test: 0  Generation=42  Evolve Result=0.00228459  Optimize Result=0.00000038  Duration: 29.1  Total: 29.1  Average: 29.1 *******

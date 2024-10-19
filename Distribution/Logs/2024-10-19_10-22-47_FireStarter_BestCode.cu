@@ -43,18 +43,13 @@ GPU_GLOBAL void Evolver(const FireStarterResults* initResults, FireStarterPopula
     }
 
     // Evolve the program registers for each variation.
-    float result, memberResult;
-    float evolutionScale;
-    unsigned short evolveAge = 0;
-
-    // Evolve the program registers for each variation.
-    unsigned long long memberBaseSeed = evolutionSeed + SEED10(variation) + SEED1(member);   // Unique seed for the generation/member
-    unsigned long long dataBaseSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/dataIndex
-    unsigned long long passSeed = SEED2(evolutionPass);
-    unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
-    unsigned long long dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
+    unsigned long long memberSeed = evolutionSeed + SEED10(variation) + SEED1(member);   // Unique seed for the generation/member
+    unsigned long long dataSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/dataIndex
     FireStarterCode code;
     FireStarterData data;
+    float result, memberResult;
+    float evolutionScale;
+    unsigned short evolveAge;
 
     // The first generation is initalized with random numbers.
     if (!evolutionPass) {
@@ -351,46 +346,42 @@ GPU_GLOBAL void Evolver2(const FireStarterResults* initResults, FireStarterPopul
     // Evolve the program registers for each variation.
     float result, memberResult;
     float evolutionScale;
-    unsigned short evolveAge;
+    unsigned short evolveAge = 0;
 
     // The first generation is initalized with random numbers.
     unsigned long long memberBaseSeed = evolutionSeed + SEED10(variation) + SEED1(member);   // Unique seed for the generation/member
     unsigned long long dataBaseSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/dataIndex
-    unsigned long long passSeed = SEED2(evolutionPass);
-    unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
-    unsigned long long dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
     FireStarterCode code;
     FireStarterData data;
     if (!evolutionPass) {
         memberResult = FIRESTARTER_START_RESULT;
         evolutionScale = FIRESTARTER_START_SCALE;
         for (int i = 0; i < 10; i++) {
-            code.Init(memberSeed);
-            data.Init(dataSeed, evolutionScale);
+            code.Init(memberBaseSeed);
+            data.Init(dataBaseSeed, evolutionScale);
             result = memberResult;
             if (TestEvaluate(sharedData, data, code, target, theta, result))
                 break;
         }
         memberResult = result;
-        evolveAge = 0;
-    } else {
+    }
+    else {
         code = oldResults->Code(member);
         data = oldResults->Data(member, variation);
-        memberResult = oldResults->MinResult(member, variation);
-        evolveAge = oldResults->EvolveAge1(member, variation);
     }
 
     for (unsigned int pass = evolutionPass; pass < evolutionPass + evolutionPasses; pass++) {
         FireStarterCode oldCode = code;
         FireStarterData oldData = data;
-        passSeed = SEED2(pass);
-        memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
-        dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
+        unsigned long long passSeed = SEED2(pass);
+        unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
+        unsigned long long dataSeed = dataBaseSeed + passSeed;      // Unique seed for the generation/dataIndex
 
         // The first generation is initalized with random numbers.
-        if (pass) {
+        if (evolutionPass) {
             oldCode = code;
             oldData = data;
+            evolveAge = oldResults->EvolveAge1(member, variation);
             if ((evolveAge >= 16) || (memberResult >= FIRESTARTER_START_RESULT)) {
                 evolveAge = 0;
                 memberResult = FIRESTARTER_START_RESULT;
@@ -398,7 +389,9 @@ GPU_GLOBAL void Evolver2(const FireStarterResults* initResults, FireStarterPopul
                 code.Init(memberSeed);
                 data.Init(dataSeed, evolutionScale);
                 result = memberResult;
-            } else {
+            }
+            else {
+                memberResult = oldResults->MinResult(member, variation);
                 evolutionScale = FIRESTARTER_SCALE * memberResult;
                 result = memberResult;
                 if (evolveAge > 0)
@@ -476,18 +469,18 @@ GPU_GLOBAL void Evolver2(const FireStarterResults* initResults, FireStarterPopul
                 bestData = data;
             data = bestData;
 
-            // If the result was better, keep it.
-            memberResult = result;
+            // If the result was better, save the results.
             evolveAge = 0;
-        } else {
-            // If the result was the same or worse, revert to the original code and data.
+        }
+        else {
+            // Revert to the original code and data.
             code = oldCode;
             data = oldData;
             evolveAge++;
         }
     }
     if (tid == 0) {
-        newResults->InitMemberResult(data, member, variation, memberResult, evolveAge);
+        newResults->InitMemberResult(data, member, variation, result, evolveAge);
         newResults->Code(member)->Copy(code);
     }
 } // Evolver2

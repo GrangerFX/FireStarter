@@ -68,7 +68,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     return result;
 } // InitPopulation
 
-#if 1
 void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
@@ -78,6 +77,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     unsigned int blocksPerGrid = population;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long seed = state.EvolutionSeed();
     unsigned long long passes = settings.m_passes;
     unsigned long long pass = state.m_generation * passes;
 
@@ -88,7 +88,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         unsigned int registers = settings.m_registers;
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long seed = state.EvolutionSeed(pass);
 
         void* arr[] = { reinterpret_cast<void*>(&m_deviceInitResults),
                         reinterpret_cast<void*>(&newResults),
@@ -153,8 +152,8 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     // Load the state's program from the GPU evolved code (variation 0).
     state.LoadProgramFromCode();
 } // ExecuteEvolvePass
-#else
-void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int variation)
+
+void FireStarterExecute::ExecuteEvolve2Pass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -163,21 +162,20 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     unsigned int blocksPerGrid = population;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long seed = state.EvolutionSeed(); // The seed for the pass is applied in Evolve.
     unsigned long long passes = settings.m_passes;
-    unsigned long long pass = state.m_generation;
+    unsigned long long pass = state.m_generation * passes;
 
     if (m_deviceInitResults)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceInitResults, state.Results(), m_initResultsSize, cudaMemcpyHostToDevice, Stream()));
 
     // Run all the evolve states in parallel.
     unsigned int registers = settings.m_registers;
-    FireStarterPopulation* newResults = pass & 1 ? m_devicePopulation0 : m_devicePopulation1;
-    FireStarterPopulation* oldResults = pass & 1 ? m_devicePopulation1 : m_devicePopulation0;
-    unsigned long long seed = state.EvolutionSeed(pass);
+    FireStarterPopulation* results = m_devicePopulation0;
 
     void* arr[] = { reinterpret_cast<void*>(&m_deviceInitResults),
-                    reinterpret_cast<void*>(&newResults),
-                    reinterpret_cast<void*>(&oldResults),
+                    reinterpret_cast<void*>(&results),
+                    reinterpret_cast<void*>(&results),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&registers),
                     reinterpret_cast<void*>(&seed),
@@ -186,7 +184,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
                     reinterpret_cast<void*>(&population)
     };
 
-    checkCUDAErrors(cuLaunchKernel(m_evolveFunction,
+    checkCUDAErrors(cuLaunchKernel(m_evolve2Function,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
         0,                                                  // shared mem
@@ -194,7 +192,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         &arr[0],                                            // arguments
         0));
 
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newResults, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, results, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
 
     Context()->Synchronize();
 
@@ -227,7 +225,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     // Load the state's program from the GPU evolved code (variation 0).
     state.LoadProgramFromCode();
 } // ExecuteEvolvePass
-#endif
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {
@@ -431,10 +428,12 @@ bool FireStarterExecute::GenerateEvolver(void)
     // Compile the code and get the Evolver and Optimizer functions from the module.
     if (CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, EVOLVE_PROGRAM_NAME)) {
         m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolver");
+        m_evolve2Function = CUDACompile::GetFunction(m_evolveModule, "Evolver2");
         if (m_evolveFunction)
             return true;
         CUDACompile::ReleaseModule(m_evolveModule);
         m_evolveFunction = nullptr;
+        m_evolve2Function = nullptr;
     }
     return false;
 } // GenerateEvolver
@@ -579,6 +578,17 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
     });
 } // ExecuteEvolve
 
+void FireStarterExecute::ExecuteEvolve2(FireStarterState& state)
+{
+    DispatchSync([this, &state] {
+        if (GenerateEvolver()) {
+            state.m_timer.Start();
+            if (InitPopulation(state.Settings()))
+                ExecuteEvolve2Pass(state);
+        }
+    });
+} // ExecuteEvolve2
+
 void FireStarterExecute::ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& bestState)
 {
     FireStarterJob* compileJob = nullptr;
@@ -653,6 +663,7 @@ void FireStarterExecute::ExecuteFinish(void)
         CUDACompile::ReleaseModule(m_speedTestModule);
         m_optimizeFunction = nullptr;
         m_evolveFunction = nullptr;
+        m_evolve2Function = nullptr;
         m_speedTestFunction = nullptr;
     });
 } // ExecuteFinish

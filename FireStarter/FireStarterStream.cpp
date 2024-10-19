@@ -277,7 +277,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             // Evolve the current test.
             while (!WillTerminate() && !bestState.m_evolveComplete) {
                 // Execute the GPU evolve using a single execution unit.
-                execute->ExecuteEvolve(evolveState);
+                execute->ExecuteEvolve2(evolveState);
 
                 // Gather the results, update the UI and check for the completion condition.
                 complete->CompleteState(bestState, evolveState);
