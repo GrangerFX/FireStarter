@@ -10,7 +10,6 @@ private:
     FireStarterPopulation* m_devicePopulation = nullptr;
     FireStarterPopulation* m_devicePopulation0 = nullptr;
     FireStarterPopulation* m_devicePopulation1 = nullptr;
-    FireStarterResults* m_deviceInitResults = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -21,7 +20,6 @@ private:
     CUfunction m_optimizeFunction = nullptr;
     CUfunction m_evolveFunction = nullptr;
     CUfunction m_evolve2Function = nullptr;
-    CUfunction m_speedTestFunction = nullptr;
     std::string m_optimizeCode;
     std::string m_evolveCode;
     std::string m_speedTestCode;

@@ -13,16 +13,12 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
 
 void FireStarterExecute::FinishPopulation(void)
 {
-    if (m_devicePopulation || m_deviceInitResults) {
+    if (m_devicePopulation) {
         if (m_devicePopulation) {
             checkCUDAErrors(cudaFreeAsync(m_devicePopulation, Stream()));
             m_devicePopulation = nullptr;
             m_devicePopulation0 = nullptr;
             m_devicePopulation1 = nullptr;
-        }
-        if (m_deviceInitResults) {
-            checkCUDAErrors(cudaFreeAsync(m_deviceInitResults, Stream()));
-            m_deviceInitResults = nullptr;
         }
         Context()->Synchronize();
     }
@@ -54,16 +50,8 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
                 }
             }
         }
-        if (m_initResultsSize != initResultsSize) {
-            if (m_deviceInitResults) {
-                checkCUDAErrors(cudaFreeAsync(m_deviceInitResults, Stream()));
-                m_deviceInitResults = nullptr;
-            }
-            m_initResultsSize = initResultsSize;
-            checkCUDAErrors(cudaMallocAsync(&m_deviceInitResults, m_initResultsSize, Stream()));
-        }
         Context()->Synchronize();
-        result = (!m_populationSize || (m_hostPopulation && m_devicePopulation)) && (!m_initResultsSize || m_deviceInitResults);
+        result = !m_populationSize || (m_hostPopulation && m_devicePopulation);
     }
     return result;
 } // InitPopulation
@@ -81,16 +69,13 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     unsigned long long passes = settings.m_passes;
     unsigned long long pass = state.m_generation * passes;
 
-    if (m_deviceInitResults)
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceInitResults, state.Results(), m_initResultsSize, cudaMemcpyHostToDevice, Stream()));
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
         unsigned int registers = settings.m_registers;
         FireStarterPopulation* newResults = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         FireStarterPopulation* oldResults = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
 
-        void* arr[] = { reinterpret_cast<void*>(&m_deviceInitResults),
-                        reinterpret_cast<void*>(&newResults),
+        void* arr[] = { reinterpret_cast<void*>(&newResults),
                         reinterpret_cast<void*>(&oldResults),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
@@ -166,15 +151,11 @@ void FireStarterExecute::ExecuteEvolve2Pass(FireStarterState& state, unsigned in
     unsigned long long passes = settings.m_passes;
     unsigned long long pass = state.m_generation * passes;
 
-    if (m_deviceInitResults)
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceInitResults, state.Results(), m_initResultsSize, cudaMemcpyHostToDevice, Stream()));
-
     // Run all the evolve states in parallel.
     unsigned int registers = settings.m_registers;
     FireStarterPopulation* results = m_devicePopulation0;
 
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceInitResults),
-                    reinterpret_cast<void*>(&results),
+    void* arr[] = { reinterpret_cast<void*>(&results),
                     reinterpret_cast<void*>(&results),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&registers),
@@ -224,7 +205,7 @@ void FireStarterExecute::ExecuteEvolve2Pass(FireStarterState& state, unsigned in
 
     // Load the state's program from the GPU evolved code (variation 0).
     state.LoadProgramFromCode();
-} // ExecuteEvolvePass
+} // ExecuteEvolve2Pass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {
@@ -484,8 +465,8 @@ bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
 
     // Compile the code and get the SpeedTest function from the module.
     if (CUDACompile::CompileProgram(m_speedTestModule, program, SPEEDTEST_PROGRAM_NAME)) {
-        m_speedTestFunction = CUDACompile::GetFunction(m_speedTestModule, "SpeedTest");
-        if (m_speedTestFunction)
+        m_evolveFunction = CUDACompile::GetFunction(m_speedTestModule, "SpeedTest");
+        if (m_evolveFunction)
             return true;
         CUDACompile::ReleaseModule(m_speedTestModule);
     }
@@ -664,7 +645,6 @@ void FireStarterExecute::ExecuteFinish(void)
         m_optimizeFunction = nullptr;
         m_evolveFunction = nullptr;
         m_evolve2Function = nullptr;
-        m_speedTestFunction = nullptr;
     });
 } // ExecuteFinish
 
