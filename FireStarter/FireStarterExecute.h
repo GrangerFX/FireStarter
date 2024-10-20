@@ -19,7 +19,6 @@ private:
     CUmodule m_speedTestModule = nullptr;
     CUfunction m_optimizeFunction = nullptr;
     CUfunction m_evolveFunction = nullptr;
-    CUfunction m_evolve2Function = nullptr;
     std::string m_optimizeCode;
     std::string m_evolveCode;
     std::string m_speedTestCode;
@@ -31,7 +30,6 @@ private:
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
     void ExecuteEvolvePass(FireStarterState& state, unsigned int variation = 0);
-    void ExecuteEvolve2Pass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
@@ -48,7 +46,6 @@ public:
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state);
-    void ExecuteEvolve2(FireStarterState& state);
     void ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& bestState);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
