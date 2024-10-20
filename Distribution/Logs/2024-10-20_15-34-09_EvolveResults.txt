@@ -1,0 +1,16 @@
+Test: 0  Generation=6  Evolve Result=0.00313566  Optimize Result=0.00000011  Duration: 7.9  Total: 7.9  Average: 7.9 *******
+Test: 1  Generation=22  Evolve Result=0.01132721  Optimize Result=0.00000079  Duration: 27.4  Total: 35.4  Average: 17.7 *******
+Test: 2  Generation=20  Evolve Result=0.00384009  Optimize Result=0.00000021  Duration: 25.2  Total: 60.6  Average: 20.2 *******
+Test: 3  Generation=18  Evolve Result=0.00365543  Optimize Result=0.00000017  Duration: 22.1  Total: 82.7  Average: 20.7 *******
+Test: 4  Generation=6  Evolve Result=0.00851887  Optimize Result=0.00000039  Duration: 7.3  Total: 90.0  Average: 18.0 *******
+Test: 5  Generation=2  Evolve Result=0.00270098  Optimize Result=0.00000015  Duration: 2.5  Total: 92.5  Average: 15.4 *******
+Test: 6  Generation=46  Evolve Result=0.00249410  Optimize Result=0.00000016  Duration: 56.3  Total: 148.8  Average: 21.3 *******
+Test: 7  Generation=36  Evolve Result=0.00470138  Optimize Result=0.00000029  Duration: 45.1  Total: 193.9  Average: 24.2 *******
+Test: 8  Generation=6  Evolve Result=0.00355789  Optimize Result=0.00000089  Duration: 7.4  Total: 201.3  Average: 22.4 *******
+Test: 9  Generation=6  Evolve Result=0.00294521  Optimize Result=0.00000081  Duration: 7.3  Total: 208.6  Average: 20.9 *******
+Test: 10  Generation=20  Evolve Result=0.00616634  Optimize Result=0.00000059  Duration: 25.3  Total: 233.9  Average: 21.3 *******
+Test: 11  Generation=8  Evolve Result=0.00502392  Optimize Result=0.00000070  Duration: 9.8  Total: 243.7  Average: 20.3 *******
+Test: 12  Generation=10  Evolve Result=0.00790936  Optimize Result=0.00000055  Duration: 12.3  Total: 256.0  Average: 19.7 *******
+Test: 13  Generation=4  Evolve Result=0.00755018  Optimize Result=0.00000007  Duration: 4.9  Total: 260.9  Average: 18.6 *******
+Test: 14  Generation=38  Evolve Result=0.00429153  Optimize Result=0.00000063  Duration: 46.7  Total: 307.6  Average: 20.5 *******
+Test: 15  Generation=16  Evolve Result=0.00754642  Optimize Result=0.00000012  Duration: 19.5  Total: 327.1  Average: 20.4 *******
