@@ -1,0 +1,16 @@
+Test: 0  Generation=16  Evolve Result=0.00701746  Optimize Result=0.00000030  Duration: 21.5  Total: 21.5  Average: 21.5 *******
+Test: 1  Generation=10  Evolve Result=0.00690764  Optimize Result=0.00000013  Duration: 13.4  Total: 34.9  Average: 17.5 *******
+Test: 2  Generation=10  Evolve Result=0.00199080  Optimize Result=0.00000012  Duration: 12.7  Total: 47.6  Average: 15.9 *******
+Test: 3  Generation=34  Evolve Result=0.00836742  Optimize Result=0.00000036  Duration: 43.5  Total: 91.1  Average: 22.8 *******
+Test: 4  Generation=30  Evolve Result=0.01061130  Optimize Result=0.00000095  Duration: 38.8  Total: 129.9  Average: 26.0 *******
+Test: 5  Generation=20  Evolve Result=0.00355643  Optimize Result=0.00000068  Duration: 26.0  Total: 155.9  Average: 26.0 *******
+Test: 6  Generation=32  Evolve Result=0.01330930  Optimize Result=0.00000070  Duration: 41.1  Total: 197.0  Average: 28.1 *******
+Test: 7  Generation=52  Evolve Result=0.00851750  Optimize Result=0.00000074  Duration: 67.4  Total: 264.4  Average: 33.0 *******
+Test: 8  Generation=10  Evolve Result=0.00834417  Optimize Result=0.00000021  Duration: 12.8  Total: 277.1  Average: 30.8 *******
+Test: 9  Generation=4  Evolve Result=0.01212290  Optimize Result=0.00000026  Duration: 5.1  Total: 282.2  Average: 28.2 *******
+Test: 10  Generation=4  Evolve Result=0.00853318  Optimize Result=0.00000012  Duration: 5.1  Total: 287.3  Average: 26.1 *******
+Test: 11  Generation=28  Evolve Result=0.00140789  Optimize Result=0.00000010  Duration: 35.8  Total: 323.2  Average: 26.9 *******
+Test: 12  Generation=10  Evolve Result=0.00610960  Optimize Result=0.00000072  Duration: 12.5  Total: 335.7  Average: 25.8 *******
+Test: 13  Generation=74  Evolve Result=0.00651456  Optimize Result=0.00000006  Duration: 95.8  Total: 431.5  Average: 30.8 *******
+Test: 14  Generation=28  Evolve Result=0.00771374  Optimize Result=0.00000034  Duration: 35.7  Total: 467.2  Average: 31.1 *******
+Test: 15  Generation=22  Evolve Result=0.01029369  Optimize Result=0.00000086  Duration: 28.3  Total: 495.4  Average: 31.0 *******
