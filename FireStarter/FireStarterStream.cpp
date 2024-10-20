@@ -116,7 +116,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             execute = new FireStarterExecute(manager, evolveSettings.m_units);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_LOADSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_BESTSTATE);
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
@@ -247,7 +247,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         SerialThread compiler;
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_LOADSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
 
         // Create the execution unit.
         FireStarterExecute* execute = new FireStarterExecute(manager, 1, 1);
@@ -320,7 +320,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
 
                 // Save the best state and best solution.
+#if FIRESTARTER_SAVE_BESTSTATE
                 complete->CompleteBestState(bestState);
+#endif
             }
         }
 
