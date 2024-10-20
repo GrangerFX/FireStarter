@@ -77,9 +77,9 @@
 #define FIRESTARTER_EVOLVE_GPU_STATES           1
 #define FIRESTARTER_EVOLVE_GPU_GENERATIONS      0
 #if FIRESTARTER_EXPERIMENTAL
-#define FIRESTARTER_EVOLVE_GPU_POPULATION       16384   // One member per warp thread experimental GPU evolution
+#define FIRESTARTER_EVOLVE_GPU_POPULATION       65536    // One member per warp for GPU evolution
 #else
-#define FIRESTARTER_EVOLVE_GPU_POPULATION       8192    // One member per warp for GPU evolution
+#define FIRESTARTER_EVOLVE_GPU_POPULATION       8192    // Experimental GPU evolution
 #endif
 #define FIRESTARTER_EVOLVE_GPU_ITERATIONS       64
 #define FIRESTARTER_EVOLVE_GPU_CANDIDATES       16

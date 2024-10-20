@@ -33,8 +33,8 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     GPU_SHARED FireStarterSharedData sharedData;
 
     // The evolution code and data.
-    FireStarterCode code;
-    FireStarterData data;
+    FireStarterCode code, bestCode;
+    FireStarterData data, bestData;
 
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_SAMPLES];
@@ -46,72 +46,79 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 
     // Evolve the program registers for each variation.
-    float result, memberResult;
-    float evolutionScale;
-    unsigned short evolveAge;
-
-    // Evolve the program registers for each variation.
-    unsigned long long memberBaseSeed = evolutionSeed + SEED10(variation) + SEED1(member);   // Unique seed for the generation/member
-    unsigned long long passSeed = SEED2(evolutionPass);
-    unsigned long long memberSeed = memberBaseSeed + passSeed;  // Unique seed for the generation/member
+    unsigned long long memberSeed = evolutionSeed + SEED10(variation) + SEED2(evolutionPass);   // Unique seed for the generation/member
+    unsigned short evolveAge = 0;
+    unsigned short bestAge = 0;
 
     // The first generation is initalized with random numbers.
-    if (!evolutionPass) {
-        memberResult = FIRESTARTER_START_RESULT;
-        evolutionScale = FIRESTARTER_START_SCALE;
-        for (int i = 0; i < 10; i++) {
-            code.Init(memberSeed);
-            data.Init(memberSeed, evolutionScale);
-            result = memberResult;
-            if (TestEvaluate(sharedData, data, code, target, theta, result))
-                break;
+    float result = FIRESTARTER_START_RESULT;
+    float evolutionScale = FIRESTARTER_START_SCALE;
+    for (int i = 1; i <= 10; i++) {
+        code.Init(memberSeed);
+        data.Init(memberSeed, evolutionScale);
+        if (TestEvaluate(sharedData, data, code, target, theta, result))
+            break;
+        result = FIRESTARTER_START_RESULT;
+    }
+    FireStarterCode bestCode = code;
+    FireStarterData bestData = data;
+    FireStarterCode oldCode = code;
+    FireStarterData oldData = data;
+    float bestResult = result;
+    float memberResult = result;
+    evolutionScale = FIRESTARTER_SCALE * result;
+
+    // Evolve the program registers for each variation.
+    for (unsigned int pass = 0; pass < evolutionPasses; pass++) {
+        if (evolveAge) {
+            if ((evolveAge >= 16) || (memberResult >= FIRESTARTER_START_RESULT)) {
+                evolveAge = 0;
+                memberResult = FIRESTARTER_START_RESULT;
+                evolutionScale = FIRESTARTER_START_SCALE;
+                code.Init(memberSeed);
+                data.Init(memberSeed, evolutionScale);
+                result = memberResult;
+            } else {
+                evolutionScale = FIRESTARTER_SCALE * memberResult;
+                result = memberResult;
+                if (evolveAge > 0)
+                    data.RandomData(memberSeed, evolutionScale);
+            }
         }
-        memberResult = result;
-        evolveAge = 0;
-    } else {
-        evolveAge = oldResults->EvolveAge1(member, variation);
-        if ((evolveAge >= 16) || (memberResult >= FIRESTARTER_START_RESULT)) {
+
+        // Iterate to evolve the data.
+        for (unsigned int p = 0; p < FIRESTARTER_EVOLVE_GPU_ITERATIONS; p++) {
+            unsigned int d = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
+            float oldData = data[d];
+            data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
+            float curResult = result;
+            if (TestEvaluate(sharedData, data, code, target, theta, curResult))
+                result = curResult;
+            else
+                data[d] = oldData;
+        }
+
+        // Did the results improve?
+        if (!evolutionPass || (result < memberResult)) {
+            // If the result was better, save the results.
+            if (result < bestResult) {
+                bestResult = result;
+                bestCode = code;
+                bestData = data;
+                bestAge = evolveAge;
+            }
+            oldCode = code;
+            oldData = data;
             evolveAge = 0;
-            memberResult = FIRESTARTER_START_RESULT;
-            evolutionScale = FIRESTARTER_START_SCALE;
-            code.Init(memberSeed);
-            data.Init(memberSeed, evolutionScale);
-            result = memberResult;
         } else {
-            code = oldResults->Code(member);
-            data = oldResults->Data(member, variation);
-            memberResult = oldResults->MinResult(member, variation);
-            evolutionScale = FIRESTARTER_SCALE * memberResult;
-            result = memberResult;
-            if (evolveAge > 0)
-                data.RandomData(memberSeed, evolutionScale);
+            // Revert to the original code and data.
+            code = oldCode;
+            data = oldData;
+            evolveAge++;
         }
     }
-
-    // Iterate to evolve the data.
-    for (unsigned int p = 0; p < FIRESTARTER_EVOLVE_GPU_ITERATIONS; p++) {
-        unsigned int d = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
-        float oldData = data[d];
-        data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
-        float curResult = result;
-        if (TestEvaluate(sharedData, data, code, target, theta, curResult))
-            result = curResult;
-        else
-            data[d] = oldData;
-    }
-
-    // Did the results improve?
-    if (!evolutionPass || (result < memberResult)) {
-        // If the result was better, save the results.
-        evolveAge = 0;
-    } else {
-        // Revert to the original code and data.
-        code = oldResults->Code(member);
-        data = oldResults->Data(member, variation);
-        evolveAge++;
-    }
-    newResults->InitMemberResult(data, member, variation, result, evolveAge);
-    newResults->Code(member)->Copy(code);
+    newResults->InitMemberResult(bestData, member, variation, bestResult, bestAge);
+    newResults->Code(member)->Copy(bestCode);
 } // Evolver
 #else
 // This is the best current version. It relies on simplicity.

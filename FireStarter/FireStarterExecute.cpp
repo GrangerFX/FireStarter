@@ -56,6 +56,85 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     return result;
 } // InitPopulation
 
+#if FIRESTARTER_EXPERIMENTAL
+void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int variation)
+{
+    // Launch the calculation kernel
+    FireStarterSettings settings = state.Settings();
+    unsigned int population = settings.m_population;
+    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int blocksPerGrid = population;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long seed = state.EvolutionSeed();
+    unsigned long long passes = settings.m_passes;
+    unsigned long long pass = state.m_generation * passes;
+
+    // Run all the evolve states in parallel.
+    unsigned int registers = settings.m_registers;
+    FireStarterPopulation* newResults = m_devicePopulation1;
+    FireStarterPopulation* oldResults = m_devicePopulation0;
+
+    void* arr[] = { reinterpret_cast<void*>(&newResults),
+                    reinterpret_cast<void*>(&oldResults),
+                    reinterpret_cast<void*>(&variation),
+                    reinterpret_cast<void*>(&registers),
+                    reinterpret_cast<void*>(&seed),
+                    reinterpret_cast<void*>(&pass),
+                    reinterpret_cast<void*>(&passes),
+                    reinterpret_cast<void*>(&population)
+    };
+        
+    checkCUDAErrors(cuLaunchKernel(m_evolveFunction,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+        0,                                                  // shared mem
+        Stream(),                                           // stream
+        &arr[0],                                            // arguments
+        0));
+
+    // Synchronize all GPU threads and results.
+    // Note: TODO: Syncronize to the completion of the previous variation if possible.
+    Context()->Synchronize();
+
+    // Single GPUs have their data syncronized with the host here.
+    bool oddPasses = passes & 1;
+    FireStarterPopulation* newPopulation = oddPasses ? m_devicePopulation1 : m_devicePopulation0;
+    FireStarterPopulation* oldPopulation = oddPasses ? m_devicePopulation0 : m_devicePopulation1;
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
+    Context()->Synchronize();
+
+    // Get the best variation results.
+    // Note: The best result may get worse generation to generation before it improves.
+    // This allows for better diversity among members when they struggle to evolve and yields better results.
+    bool validResult = false;
+    float minResult = settings.m_startResult;
+    unsigned int minIndex = 0;
+    for (unsigned int i = 0; i < population; i++) {
+        float curResult = *m_hostPopulation->MinResult(settings, i);
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
+        }
+    }
+    FireStarterResult* result = state.Result();
+    memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
+    memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex), FireStarterData::DataSize(settings.m_registers));
+    *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex);
+    *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex);
+    *result->MinResult() = minResult;
+    state.m_minIndex = minIndex;
+
+    // Set the state's max result.
+    state.m_oldResult = state.m_maxResult;
+    state.m_maxResult = state.MaxResult();
+    state.m_optimizeValid = true;
+
+    // Load the state's program from the GPU evolved code (variation 0).
+    state.LoadProgramFromCode();
+} // ExecuteEvolvePass
+#else
 void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
@@ -137,6 +216,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     // Load the state's program from the GPU evolved code (variation 0).
     state.LoadProgramFromCode();
 } // ExecuteEvolvePass
+#endif
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {

@@ -1,0 +1,16 @@
+Test: 0  Generation=13  Evolve Result=0.00277543  Optimize Result=0.00000010  Duration: 11.5  Total: 11.5  Average: 11.5 *******
+Test: 1  Generation=40  Evolve Result=0.00346291  Optimize Result=0.00000026  Duration: 33.8  Total: 45.2  Average: 22.6 *******
+Test: 2  Generation=3  Evolve Result=0.00290185  Optimize Result=0.00000010  Duration: 2.2  Total: 47.5  Average: 15.8 *******
+Test: 3  Generation=23  Evolve Result=0.00398070  Optimize Result=0.00000030  Duration: 21.1  Total: 68.6  Average: 17.2 *******
+Test: 4  Generation=80  Evolve Result=0.00513658  Optimize Result=0.00000011  Duration: 71.1  Total: 139.7  Average: 27.9 *******
+Test: 5  Generation=3  Evolve Result=0.00207990  Optimize Result=0.00000039  Duration: 2.3  Total: 142.0  Average: 23.7 *******
+Test: 6  Generation=6  Evolve Result=0.00153217  Optimize Result=0.00000038  Duration: 6.5  Total: 148.5  Average: 21.2 *******
+Test: 7  Generation=6  Evolve Result=0.00789261  Optimize Result=0.00000089  Duration: 6.0  Total: 154.6  Average: 19.3 *******
+Test: 8  Generation=8  Evolve Result=0.00078475  Optimize Result=0.00000047  Duration: 8.8  Total: 163.4  Average: 18.2 *******
+Test: 9  Generation=8  Evolve Result=0.00527498  Optimize Result=0.00000063  Duration: 10.1  Total: 173.5  Average: 17.3 *******
+Test: 10  Generation=3  Evolve Result=0.00404692  Optimize Result=0.00000036  Duration: 3.6  Total: 177.1  Average: 16.1 *******
+Test: 11  Generation=9  Evolve Result=0.00166106  Optimize Result=0.00000030  Duration: 9.0  Total: 186.0  Average: 15.5 *******
+Test: 12  Generation=6  Evolve Result=0.00704175  Optimize Result=0.00000043  Duration: 6.4  Total: 192.4  Average: 14.8 *******
+Test: 13  Generation=11  Evolve Result=0.00272653  Optimize Result=0.00000017  Duration: 11.5  Total: 203.9  Average: 14.6 *******
+Test: 14  Generation=22  Evolve Result=0.00424683  Optimize Result=0.00000042  Duration: 21.5  Total: 225.4  Average: 15.0 *******
+Test: 15  Generation=65  Evolve Result=0.00684842  Optimize Result=0.00000018  Duration: 58.5  Total: 284.0  Average: 17.7 *******
