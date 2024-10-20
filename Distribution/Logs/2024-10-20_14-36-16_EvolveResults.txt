@@ -1,0 +1,16 @@
+Test: 0  Generation=51  Evolve Result=0.00238764  Optimize Result=0.00000055  Duration: 43.7  Total: 43.7  Average: 43.7 *******
+Test: 1  Generation=6  Evolve Result=0.00268278  Optimize Result=0.00000042  Duration: 6.3  Total: 50.0  Average: 25.0 *******
+Test: 2  Generation=62  Evolve Result=0.00030130  Optimize Result=0.00000013  Duration: 45.5  Total: 95.6  Average: 31.9 *******
+Test: 3  Generation=216  Evolve Result=0.00178105  Optimize Result=0.00000039  Duration: 157.1  Total: 252.7  Average: 63.2 *******
+Test: 4  Generation=38  Evolve Result=0.00124872  Optimize Result=0.00000008  Duration: 33.5  Total: 286.2  Average: 57.2 *******
+Test: 5  Generation=9  Evolve Result=0.00230044  Optimize Result=0.00000013  Duration: 11.2  Total: 297.4  Average: 49.6 *******
+Test: 6  Generation=7  Evolve Result=0.00343084  Optimize Result=0.00000017  Duration: 8.8  Total: 306.2  Average: 43.7 *******
+Test: 7  Generation=2  Evolve Result=0.00623500  Optimize Result=0.00000005  Duration: 2.5  Total: 308.7  Average: 38.6 *******
+Test: 8  Generation=24  Evolve Result=0.00355476  Optimize Result=0.00000091  Duration: 29.7  Total: 338.3  Average: 37.6 *******
+Test: 9  Generation=9  Evolve Result=0.00716799  Optimize Result=0.00000059  Duration: 11.2  Total: 349.5  Average: 35.0 *******
+Test: 10  Generation=46  Evolve Result=0.00311935  Optimize Result=0.00000012  Duration: 51.5  Total: 401.0  Average: 36.5 *******
+Test: 11  Generation=4  Evolve Result=0.00214653  Optimize Result=0.00000034  Duration: 6.4  Total: 407.4  Average: 34.0 *******
+Test: 12  Generation=5  Evolve Result=0.00176156  Optimize Result=0.00000009  Duration: 6.7  Total: 414.1  Average: 31.9 *******
+Test: 13  Generation=18  Evolve Result=0.00071460  Optimize Result=0.00000014  Duration: 22.8  Total: 436.8  Average: 31.2 *******
+Test: 14  Generation=21  Evolve Result=0.00212492  Optimize Result=0.00000012  Duration: 31.7  Total: 468.5  Average: 31.2 *******
+Test: 15  Generation=17  Evolve Result=0.00233813  Optimize Result=0.00000068  Duration: 25.6  Total: 494.1  Average: 30.9 *******
