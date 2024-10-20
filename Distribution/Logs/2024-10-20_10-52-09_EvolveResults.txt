@@ -1,0 +1,16 @@
+Test: 0  Generation=23  Evolve Result=0.01020467  Optimize Result=0.00000035  Duration: 8.0  Total: 8.0  Average: 8.0 *******
+Test: 1  Generation=42  Evolve Result=0.01381451  Optimize Result=0.00000026  Duration: 32.8  Total: 40.8  Average: 20.4 *******
+Test: 2  Generation=5  Evolve Result=0.01633545  Optimize Result=0.00000010  Duration: 4.2  Total: 45.0  Average: 15.0 *******
+Test: 3  Generation=27  Evolve Result=0.00137484  Optimize Result=0.00000026  Duration: 17.3  Total: 62.2  Average: 15.6 *******
+Test: 4  Generation=80  Evolve Result=0.00513658  Optimize Result=0.00000021  Duration: 62.1  Total: 124.4  Average: 24.9 *******
+Test: 5  Generation=32  Evolve Result=0.00235938  Optimize Result=0.00000012  Duration: 22.6  Total: 146.9  Average: 24.5 *******
+Test: 6  Generation=35  Evolve Result=0.00357053  Optimize Result=0.00000026  Duration: 28.6  Total: 175.5  Average: 25.1 *******
+Test: 7  Generation=82  Evolve Result=0.01644218  Optimize Result=0.00000017  Duration: 63.7  Total: 239.3  Average: 29.9 *******
+Test: 8  Generation=21  Evolve Result=0.01700005  Optimize Result=0.00000013  Duration: 14.9  Total: 254.1  Average: 28.2 *******
+Test: 9  Generation=51  Evolve Result=0.01001948  Optimize Result=0.00000024  Duration: 40.7  Total: 294.8  Average: 29.5 *******
+Test: 10  Generation=10  Evolve Result=0.00903820  Optimize Result=0.00000060  Duration: 7.5  Total: 302.2  Average: 27.5 *******
+Test: 11  Generation=27  Evolve Result=0.01224441  Optimize Result=0.00000062  Duration: 20.5  Total: 322.7  Average: 26.9 *******
+Test: 12  Generation=5  Evolve Result=0.01273304  Optimize Result=0.00000065  Duration: 3.3  Total: 326.0  Average: 25.1 *******
+Test: 13  Generation=105  Evolve Result=0.01523936  Optimize Result=0.00000078  Duration: 75.9  Total: 401.9  Average: 28.7 *******
+Test: 14  Generation=52  Evolve Result=0.01317799  Optimize Result=0.00000042  Duration: 41.2  Total: 443.1  Average: 29.5 *******
+Test: 15  Generation=107  Evolve Result=0.00147110  Optimize Result=0.00000025  Duration: 73.9  Total: 517.0  Average: 32.3 *******
