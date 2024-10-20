@@ -72,11 +72,9 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
 
     // Run all the evolve states in parallel.
     unsigned int registers = settings.m_registers;
-    FireStarterPopulation* newResults = m_devicePopulation1;
-    FireStarterPopulation* oldResults = m_devicePopulation0;
 
-    void* arr[] = { reinterpret_cast<void*>(&newResults),
-                    reinterpret_cast<void*>(&oldResults),
+    void* arr[] = { reinterpret_cast<void*>(&m_devicePopulation0),
+                    reinterpret_cast<void*>(&m_devicePopulation0),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&registers),
                     reinterpret_cast<void*>(&seed),
@@ -98,11 +96,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
     Context()->Synchronize();
 
     // Single GPUs have their data syncronized with the host here.
-    bool oddPasses = passes & 1;
-    FireStarterPopulation* newPopulation = oddPasses ? m_devicePopulation1 : m_devicePopulation0;
-    FireStarterPopulation* oldPopulation = oddPasses ? m_devicePopulation0 : m_devicePopulation1;
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
 
     // Get the best variation results.
