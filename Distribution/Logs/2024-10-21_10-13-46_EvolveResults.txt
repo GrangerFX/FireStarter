@@ -1,0 +1,16 @@
+Test: 0  Generation=6  Evolve Result=0.00060254  Optimize Result=0.00000083  Duration: 4.6  Total: 4.6  Average: 4.6 *******
+Test: 1  Generation=6  Evolve Result=0.00421250  Optimize Result=0.00000038  Duration: 4.5  Total: 9.1  Average: 4.6 *******
+Test: 2  Generation=62  Evolve Result=0.00305164  Optimize Result=0.00000024  Duration: 38.8  Total: 47.9  Average: 16.0 *******
+Test: 3  Generation=14  Evolve Result=0.00824891  Optimize Result=0.00000094  Duration: 8.6  Total: 56.5  Average: 14.1 *******
+Test: 4  Generation=28  Evolve Result=0.00413632  Optimize Result=0.00000024  Duration: 17.4  Total: 73.9  Average: 14.8 *******
+Test: 5  Generation=4  Evolve Result=0.00347404  Optimize Result=0.00000038  Duration: 2.5  Total: 76.4  Average: 12.7 *******
+Test: 6  Generation=2  Evolve Result=0.00623471  Optimize Result=0.00000051  Duration: 1.2  Total: 77.6  Average: 11.1 *******
+Test: 7  Generation=24  Evolve Result=0.00625199  Optimize Result=0.00000095  Duration: 15.1  Total: 92.6  Average: 11.6 *******
+Test: 8  Generation=66  Evolve Result=0.00340191  Optimize Result=0.00000013  Duration: 41.4  Total: 134.0  Average: 14.9 *******
+Test: 9  Generation=12  Evolve Result=0.00615883  Optimize Result=0.00000015  Duration: 7.5  Total: 141.5  Average: 14.2 *******
+Test: 10  Generation=36  Evolve Result=0.00384414  Optimize Result=0.00000034  Duration: 22.7  Total: 164.2  Average: 14.9 *******
+Test: 11  Generation=30  Evolve Result=0.00037414  Optimize Result=0.00000072  Duration: 18.8  Total: 183.0  Average: 15.3 *******
+Test: 12  Generation=14  Evolve Result=0.00344223  Optimize Result=0.00000054  Duration: 8.8  Total: 191.8  Average: 14.8 *******
+Test: 13  Generation=34  Evolve Result=0.00808227  Optimize Result=0.00000043  Duration: 21.4  Total: 213.2  Average: 15.2 *******
+Test: 14  Generation=18  Evolve Result=0.00665903  Optimize Result=0.00000015  Duration: 11.2  Total: 224.4  Average: 15.0 *******
+Test: 15  Generation=6  Evolve Result=0.00264794  Optimize Result=0.00000017  Duration: 3.7  Total: 228.1  Average: 14.3 *******
