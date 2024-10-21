@@ -1,0 +1,16 @@
+Test: 0  Generation=6  Evolve Result=0.00601450  Optimize Result=0.00000014  Duration: 3.8  Total: 3.8  Average: 3.8 *******
+Test: 1  Generation=24  Evolve Result=0.00259426  Optimize Result=0.00000015  Duration: 15.0  Total: 18.8  Average: 9.4 *******
+Test: 2  Generation=2  Evolve Result=0.00476599  Optimize Result=0.00000033  Duration: 1.1  Total: 19.9  Average: 6.6 *******
+Test: 3  Generation=20  Evolve Result=0.00564131  Optimize Result=0.00000034  Duration: 11.2  Total: 31.1  Average: 7.8 *******
+Test: 4  Generation=10  Evolve Result=0.00413418  Optimize Result=0.00000063  Duration: 5.6  Total: 36.6  Average: 7.3 *******
+Test: 5  Generation=24  Evolve Result=0.00450778  Optimize Result=0.00000059  Duration: 14.2  Total: 50.9  Average: 8.5 *******
+Test: 6  Generation=10  Evolve Result=0.00647289  Optimize Result=0.00000076  Duration: 5.6  Total: 56.4  Average: 8.1 *******
+Test: 7  Generation=6  Evolve Result=0.00468725  Optimize Result=0.00000035  Duration: 3.3  Total: 59.8  Average: 7.5 *******
+Test: 8  Generation=18  Evolve Result=0.00742692  Optimize Result=0.00000017  Duration: 10.9  Total: 70.7  Average: 7.9 *******
+Test: 9  Generation=40  Evolve Result=0.00537055  Optimize Result=0.00000027  Duration: 23.7  Total: 94.3  Average: 9.4 *******
+Test: 10  Generation=10  Evolve Result=0.00206141  Optimize Result=0.00000034  Duration: 5.5  Total: 99.9  Average: 9.1 *******
+Test: 11  Generation=6  Evolve Result=0.00803895  Optimize Result=0.00000075  Duration: 3.3  Total: 103.2  Average: 8.6 *******
+Test: 12  Generation=20  Evolve Result=0.00871027  Optimize Result=0.00000024  Duration: 12.0  Total: 115.2  Average: 8.9 *******
+Test: 13  Generation=40  Evolve Result=0.00233269  Optimize Result=0.00000011  Duration: 23.4  Total: 138.6  Average: 9.9 *******
+Test: 14  Generation=12  Evolve Result=0.00425392  Optimize Result=0.00000015  Duration: 6.7  Total: 145.3  Average: 9.7 *******
+Test: 15  Generation=26  Evolve Result=0.00131017  Optimize Result=0.00000032  Duration: 15.8  Total: 161.1  Average: 10.1 *******
