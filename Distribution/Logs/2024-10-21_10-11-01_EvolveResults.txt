@@ -1,0 +1,16 @@
+Test: 0  Generation=6  Evolve Result=0.00601450  Optimize Result=0.00000033  Duration: 4.5  Total: 4.5  Average: 4.5 *******
+Test: 1  Generation=10  Evolve Result=0.00226301  Optimize Result=0.00000027  Duration: 7.0  Total: 11.5  Average: 5.8 *******
+Test: 2  Generation=2  Evolve Result=0.00476599  Optimize Result=0.00000056  Duration: 1.2  Total: 12.7  Average: 4.2 *******
+Test: 3  Generation=19  Evolve Result=0.00274757  Optimize Result=0.00000099  Duration: 11.7  Total: 24.4  Average: 6.1 *******
+Test: 4  Generation=10  Evolve Result=0.00413418  Optimize Result=0.00000054  Duration: 6.2  Total: 30.6  Average: 6.1 *******
+Test: 5  Generation=10  Evolve Result=0.00385904  Optimize Result=0.00000042  Duration: 6.1  Total: 36.7  Average: 6.1 *******
+Test: 6  Generation=10  Evolve Result=0.00647289  Optimize Result=0.00000073  Duration: 6.0  Total: 42.7  Average: 6.1 *******
+Test: 7  Generation=16  Evolve Result=0.00804323  Optimize Result=0.00000045  Duration: 10.0  Total: 52.7  Average: 6.6 *******
+Test: 8  Generation=4  Evolve Result=0.00443316  Optimize Result=0.00000054  Duration: 2.5  Total: 55.2  Average: 6.1 *******
+Test: 9  Generation=20  Evolve Result=0.00499216  Optimize Result=0.00000079  Duration: 12.4  Total: 67.6  Average: 6.8 *******
+Test: 10  Generation=22  Evolve Result=0.00314891  Optimize Result=0.00000046  Duration: 13.7  Total: 81.3  Average: 7.4 *******
+Test: 11  Generation=6  Evolve Result=0.00803895  Optimize Result=0.00000068  Duration: 3.7  Total: 85.1  Average: 7.1 *******
+Test: 12  Generation=7  Evolve Result=0.00561586  Optimize Result=0.00000048  Duration: 4.4  Total: 89.5  Average: 6.9 *******
+Test: 13  Generation=28  Evolve Result=0.01022094  Optimize Result=0.00000026  Duration: 17.9  Total: 107.4  Average: 7.7 *******
+Test: 14  Generation=12  Evolve Result=0.00425392  Optimize Result=0.00000017  Duration: 7.4  Total: 114.8  Average: 7.7 *******
+Test: 15  Generation=8  Evolve Result=0.00175629  Optimize Result=0.00000038  Duration: 4.8  Total: 119.6  Average: 7.5 *******
