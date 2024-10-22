@@ -14,9 +14,8 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
 {
     Dispatch([this, state] {
         // Setup the data
-        FireStarterSettings settings = state.Settings();
-        
-        if ((settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE_GPU)) {
+        FireStarterSettings settings = state.Settings();        
+        if (settings.m_mode == FIRESTARTER_EVOLVE_GPU) {
             const FireStarterResults* results = state.Results();
             m_window.Erase();
             uchar4* pixels = (uchar4*)m_window.GetPixels();
@@ -267,7 +266,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 statusString += Format("  MinIndex=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1());
         } else {
             statusString += Format("  Generation=%3u", generation);
-            if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
+            if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
                 if (settings.m_optimize > 1)
                     statusString += Format("  Optimize=%u", state.m_optimize_pass);
             } else {
@@ -284,7 +283,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
             statusString += Format("BestError=%.8f", bestResult, bestError);
-        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_OPTIMIZE_GPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)))
+        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) ||(state.PassMode() == FIRESTARTER_SPEED_TEST)))
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.

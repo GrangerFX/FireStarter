@@ -4,37 +4,34 @@
 
 void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 {
-    if (bestState.Settings().m_tests) {
-        std::string bestStateCode;
-        bestState.SaveState(bestStateCode);
-        std::string saveFile = "FireStarter_LoadState.h";
-        FireStarterSource::SaveSource(bestStateCode, saveFile);
-        std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
-        FireStarterSource::SaveSource(bestStateCode, savePath);
-    }
+    std::string bestStateCode;
+    bestState.SaveState(bestStateCode);
+    std::string saveFile = "FireStarter_LoadState.h";
+    FireStarterSource::SaveSource(bestStateCode, saveFile);
+    std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
+    FireStarterSource::SaveSource(bestStateCode, savePath);
 } // SaveBestState
 
 void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 {
-    if (bestState.Settings().m_tests) {
-        static std::string executeCode;
-        if (executeCode.empty())
-            FireStarterSource::LoadSource(executeCode, bestState.Settings().m_mode == FIRESTARTER_EVOLVE_GPU ? EVOLVE_PROGRAM_NAME : OPTIMIZE_PROGRAM_NAME);
-        if (!executeCode.empty()) {
-            // Generate the evaluate function
-            std::string variationsCode;
-            bestState.SaveStats(variationsCode);
-            unsigned int variations = bestState.Settings().m_variations;
-            for (unsigned int i = 0; i < variations; i++)
-                bestState.SaveVariation(i, variationsCode);
+    static std::string executeCode;
+    if (executeCode.empty())
+        FireStarterSource::LoadSource(executeCode, bestState.Settings().m_mode == FIRESTARTER_EVOLVE_GPU ? EVOLVE_PROGRAM_NAME : OPTIMIZE_PROGRAM_NAME);
+    if (!executeCode.empty()) {
+        // Generate the evaluate function
+        std::string variationsCode;
+        bestState.SaveStats(variationsCode);
+        unsigned int variations = bestState.Settings().m_variations;
+        for (unsigned int i = 0; i < variations; i++)
+            bestState.SaveVariation(i, variationsCode);
 
-            // Create the units code by replacing the evaluate and optimize sections of the optimize code.
-            std::string bestCode = executeCode;
-            FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
-            std::string saveFile = "FireStarter_BestCode.cu";
-            std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
-            FireStarterSource::SaveSource(bestCode, savePath);
-        }
+        // Create the units code by replacing the evaluate and optimize sections of the optimize code.
+        std::string bestCode = executeCode;
+        FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
+        std::string saveFile = "FireStarter_BestCode.cu";
+        FireStarterSource::SaveSource(bestCode, saveFile);
+        std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
+        FireStarterSource::SaveSource(bestCode, savePath);
     }
 } // SaveBestCode
 
@@ -43,6 +40,7 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
     std::string solutionCode;
     m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
     std::string saveFile = "FireStarter_Solution.h";
+    FireStarterSource::SaveSource(solutionCode, saveFile);
     std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
     FireStarterSource::SaveSource(solutionCode, savePath);
 } // SaveSolution
