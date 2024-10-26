@@ -719,16 +719,6 @@ typedef struct FireStarterResults {
         return (const FireStarterCode*)((const char*)&m_results + FireStarterResult::ResultSize(settings) * settings.m_variations);
     } // Code
 
-    inline float* MinResult(unsigned int variation = 0)
-    {
-        return Result(variation)->MinResult();
-    } // MinResult
-
-    inline float MinResult(unsigned int variation = 0) const
-    {
-        return Result(variation)->MinResult();
-    } // MinResult
-
     inline unsigned short* EvolveAge1(unsigned int variation = 0)
     {
         return Result(variation)->EvolveAge1();
@@ -748,6 +738,24 @@ typedef struct FireStarterResults {
     {
         return Result(variation)->EvolveAge2();
     } // EvolveAge2
+
+    inline float* MinResult(unsigned int variation = 0)
+    {
+        return Result(variation)->MinResult();
+    } // MinResult
+
+    inline float MinResult(unsigned int variation = 0) const
+    {
+        return Result(variation)->MinResult();
+    } // MinResult
+
+    inline float MaxResult(unsigned int variations = FIRESTARTER_VARIATIONS) const
+    {
+        float maxResult = 0.0f;
+        for (unsigned int v = 0; v < variations; v++)
+            maxResult = MAX(maxResult, MinResult(v));
+        return maxResult;
+    } // MaxResult
 
     inline FireStarterData* Data(unsigned int variation = 0, unsigned int registers = FIRESTARTER_REGISTERS)
     {
@@ -775,6 +783,11 @@ typedef struct FireStarterResults {
             Result(v, settings.m_registers)->Init(settings);
         m_code.Init();
     } // Init
+
+    inline void CopyResults(FireStarterSettings& settings, const FireStarterResults* results)
+    {
+        memcpy(this, results, ResultsSize(settings));
+    } // CopyResults
 } FireStarterResults;
 
 typedef struct FireStarterPopulation {
