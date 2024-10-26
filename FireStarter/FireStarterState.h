@@ -276,10 +276,16 @@ public:
     float TestResult(void) const;
     void InitResults(void);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
+    void InitState(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index);
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
         InitState(settings, generation, index, id, test);
+    } // FireStarterState
+
+    inline FireStarterState(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index)
+    {
+        InitState(settings, population, index);
     } // FireStarterState
 
     inline FireStarterState(const FireStarterState& other)

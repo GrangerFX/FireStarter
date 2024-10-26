@@ -1,0 +1,16 @@
+Test: 0  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 4.1  Total: 4.1  Average: 4.1 *******
+Test: 1  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.5  Total: 6.6  Average: 3.3 *******
+Test: 2  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 9.0  Average: 3.0 *******
+Test: 3  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 11.4  Average: 2.8 *******
+Test: 4  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 13.8  Average: 2.8 *******
+Test: 5  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 16.1  Average: 2.7 *******
+Test: 6  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 18.5  Average: 2.6 *******
+Test: 7  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 20.9  Average: 2.6 *******
+Test: 8  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 23.3  Average: 2.6 *******
+Test: 9  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 25.7  Average: 2.6 *******
+Test: 10  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 28.1  Average: 2.6 *******
+Test: 11  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 30.5  Average: 2.5 *******
+Test: 12  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 3.0  Total: 33.4  Average: 2.6 *******
+Test: 13  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 35.8  Average: 2.6 *******
+Test: 14  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 38.2  Average: 2.5 *******
+Test: 15  Generation=1  Evolve Result=0.00321522  Optimize Result=0.00000042  Duration: 2.4  Total: 40.6  Average: 2.5 *******

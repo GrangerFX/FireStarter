@@ -56,7 +56,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     return result;
 } // InitPopulation
 
-void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int variation)
+void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterBestStates& bestStates, unsigned int variation)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -110,22 +110,15 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
             minResult = curResult;
             minIndex = i;
         }
+        if (curResult < bestStates.WorstResult()) {
+            FireStarterState newState(settings, m_hostPopulation, i);
+            bestStates.AddState(newState);
+        }
     }
-    FireStarterResult* result = state.Result();
-    memcpy(state.Code(), m_hostPopulation->Code(settings, minIndex), FireStarterCode::CodeSize(settings.m_instructions));
-    memcpy(result->Data(), m_hostPopulation->Data(settings, minIndex), FireStarterData::DataSize(settings.m_registers));
-    *result->EvolveAge1() = *m_hostPopulation->EvolveAge1(settings, minIndex);
-    *result->EvolveAge2() = *m_hostPopulation->EvolveAge2(settings, minIndex);
-    *result->MinResult() = minResult;
-    state.m_minIndex = minIndex;
 
-    // Set the state's max result.
-    state.m_oldResult = state.m_maxResult;
-    state.m_maxResult = state.MaxResult();
-    state.m_optimizeValid = true;
-
-    // Load the state's program from the GPU evolved code (variation 0).
-    state.LoadProgramFromCode();
+    float oldResult = state.m_maxResult;
+    state.InitState(settings, m_hostPopulation, minIndex);
+    state.m_oldResult = oldResult;
 } // ExecuteEvolvePass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
@@ -467,13 +460,13 @@ void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
     });
 } // ExecuteInitPopulation
 
-void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
+void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestStates& bestStates)
 {
-    DispatchSync([this, &state] {
+    DispatchSync([this, &state, &bestStates] {
         if (GenerateEvolver()) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
-                ExecuteEvolvePass(state);
+                ExecuteEvolvePass(state, bestStates);
         }
     });
 } // ExecuteEvolve

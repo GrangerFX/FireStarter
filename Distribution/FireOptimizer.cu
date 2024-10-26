@@ -82,7 +82,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Iterate to evolve the registers.
-    for (unsigned int p = 0; p < FIRESTARTER_OPTIMIZE_CPU_ITERATIONS; p++) {
+    for (unsigned int p = 0; p < FIRESTARTER_OPTIMIZE_ITERATIONS; p++) {
         unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
@@ -104,7 +104,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
 
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
-        for (int i = 0; i < FIRESTARTER_OPTIMIZE_CPU_CANDIDATES; i++) {
+        for (int i = 0; i < FIRESTARTER_OPTIMIZE_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, population);
             unsigned short candidateAge = oldResults->EvolveAge1(candidate, variation);

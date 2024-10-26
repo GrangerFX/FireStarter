@@ -266,7 +266,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 statusString += Format("  MinIndex=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1());
         } else {
             statusString += Format("  Generation=%3u", generation);
-            if ((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
+            if ((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
                 if (settings.m_optimize > 1)
                     statusString += Format("  Optimize=%u", state.m_optimize_pass);
             } else {
@@ -283,7 +283,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
             statusString += Format("BestError=%.8f", bestResult, bestError);
-        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE_CPU) ||(state.PassMode() == FIRESTARTER_SPEED_TEST)))
+        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE) ||(state.PassMode() == FIRESTARTER_SPEED_TEST)))
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.

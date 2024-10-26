@@ -4,89 +4,80 @@
 #include "FireStarterManager.h"
 #include "CUDAThread.h"
 
-class FireStarterBestResults {
+class FireStarterBestStates {
 private:
-    std::vector<FireStarterResults*> m_allResults;
-    std::vector<FireStarterResults*> m_bestResults;
+    TestedInstructions m_testedInstructions;
+    FireStarterStates m_allStates;
+    std::vector<FireStarterState*> m_bestStates;
     FireStarterSettings m_settings;
-    size_t m_resultsSize;
-    size_t m_maxResults;
-    size_t m_numResults;
-    float m_startResult;
+    size_t m_maxStates;
+    size_t m_numStates;
     float m_worstResult;
 
 public:
-    inline const FireStarterResults* GetBestResult(void)
+    inline bool GetBestState(FireStarterState& state)
     {
-        if (!m_numResults)
-            return nullptr;
-        FireStarterResults* bestResults = m_bestResults[0];
-        m_numResults--;
-        if (m_numResults)
-            for (size_t i = 0; i < m_numResults; i++)
-                m_bestResults[i] = m_bestResults[i + 1];
-        else
-            m_worstResult = m_settings.m_startResult;
-        m_bestResults[m_numResults] = bestResults;
-        return bestResults;
-    } // GetBestResult
+        if (!m_numStates)
+            return false;
+        FireStarterState* bestState = m_bestStates[0];
+        m_numStates--;
+        if (m_numStates)
+            for (size_t i = 0; i < m_numStates; i++)
+                m_bestStates[i] = m_bestStates[i + 1];
+        m_worstResult = m_settings.m_startResult;
+        m_bestStates[m_numStates] = bestState;
+        state = *bestState;
+        return true;
+    } // GetBestState
 
-    inline void AddResult(const FireStarterResults* results)
+    inline void AddState(const FireStarterState& state)
     {
-        float newResult = results->MaxResult(m_settings.m_variations);
-        if (!m_numResults || (newResult >= m_worstResult)) {
-            if (m_numResults < m_maxResults) {
-                m_bestResults[m_numResults++]->CopyResults(m_settings, results);
-                m_worstResult = newResult;
-            }
+        // Skip bad results entirely.
+        float newResult = state.MaxResult();
+        if (newResult >= m_worstResult)
             return;
-        }
 
-        FireStarterResults* newResults = (m_numResults < m_maxResults) ? m_bestResults[m_numResults] : m_bestResults[--m_numResults];
-        newResults->CopyResults(m_settings, results);
+        // Only add states with a unique instruction set.
+        if (m_testedInstructions.count(state.m_program.OptimizedInstructionsData()))
+            return;
+        m_testedInstructions.insert(state.m_program.OptimizedInstructionsData());
 
-        for (size_t i = 0; i < m_numResults; i++) {
-            FireStarterResults* curResults = m_bestResults[i];
-            float curResult = curResults->MaxResult(m_settings.m_variations);
+        FireStarterState* newState = (m_numStates < m_maxStates) ? m_bestStates[m_numStates] : m_bestStates[--m_numStates];
+        *newState = state;
+
+        for (size_t i = 0; i < m_numStates; i++) {
+            FireStarterState* curState = m_bestStates[i];
+            float curResult = curState->MaxResult();
             if (curResult > newResult) {
-                for (size_t j = i; j < m_numResults; j++) {
-                    curResults = m_bestResults[i];
-                    m_bestResults[i] = newResults;
-                    newResults = curResults;
+                for (size_t j = i; j < m_numStates; j++) {
+                    curState = m_bestStates[j];
+                    m_bestStates[j] = newState;
+                    newState = curState;
                 }
-                m_bestResults[m_numResults++] = newResults;
-                return;
+                break;
             }
         }
-    } // AddResult
+        m_bestStates[m_numStates++] = newState;
+    } // AddState
 
     inline float WorstResult(void)
     {
         return m_worstResult;
     } // WorstResult
 
-    inline FireStarterBestResults(const FireStarterSettings& settings, size_t maxResults = FIRESTARTER_BESTRESULTS) : m_settings(settings)
+    inline FireStarterBestStates(const FireStarterSettings& settings, size_t maxStates = FIRESTARTER_BESTSTATES) : m_settings(settings)
     {
-        m_resultsSize = FireStarterResults::ResultsSize(m_settings);
-        m_maxResults = maxResults;
-        m_numResults = 0;
-        m_startResult = m_settings.m_startResult;
-        m_worstResult = m_startResult;
-        m_allResults.resize(m_maxResults);
-        m_bestResults.resize(m_maxResults);
-        for (size_t i = 0; i < m_maxResults; i++) {
-            m_allResults[i] = (FireStarterResults*) ::operator new(m_resultsSize);
-            m_allResults[i]->InitResults(m_settings);
-            m_bestResults[i] = m_allResults[i];
+        m_maxStates = maxStates;
+        m_numStates = 0;
+        m_worstResult = m_settings.m_startResult;
+        m_allStates.resize(m_maxStates);
+        m_bestStates.resize(m_maxStates);
+        for (size_t i = 0; i < m_maxStates; i++) {
+            m_allStates[i].InitState(settings);
+            m_bestStates[i] = &m_allStates[i];
         }
-    } // FireStarterBestResults
-
-    inline ~FireStarterBestResults(void)
-    {
-        for (FireStarterResults* results : m_allResults)
-            delete results;
-    } // ~FireStarterBestResults
-}; // FireStarterBestResults
+    } // FireStarterBestStates
+}; // FireStarterBestStates
 
 class FireStarterExecute : public CUDAThread {
 private:
@@ -113,7 +104,7 @@ private:
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
-    void ExecuteEvolvePass(FireStarterState& state, unsigned int variation = 0);
+    void ExecuteEvolvePass(FireStarterState& state, FireStarterBestStates& bestStates, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
@@ -129,7 +120,7 @@ public:
     bool ExecuteGenerateOptimize(const FireStarterState& initState);
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
     void ExecuteInitPopulation(const FireStarterState& state);
-    void ExecuteEvolve(FireStarterState& state);
+    void ExecuteEvolve(FireStarterState& state, FireStarterBestStates &bestStates);
     void ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& bestState);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.

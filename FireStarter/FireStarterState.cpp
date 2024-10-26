@@ -151,3 +151,20 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitGenerationSeed();
     InitResults();
 } // InitState
+
+void FireStarterState::InitState(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index)
+{
+    InitState(settings);
+    FireStarterResult* result = Result();
+    memcpy(Code(), population->Code(settings, index), FireStarterCode::CodeSize(settings.m_instructions));
+    memcpy(result->Data(), population->Data(settings, index), FireStarterData::DataSize(settings.m_registers));
+    *result->EvolveAge1() = population->EvolveAge1(settings, index);
+    *result->EvolveAge2() = population->EvolveAge2(settings, index);
+    *result->MinResult() = population->MinResult(settings, index);
+    m_minIndex = index;
+    m_maxResult = MaxResult();
+    m_optimizeValid = true;
+
+    // Load the state's program from the GPU evolved code (variation 0).
+    LoadProgramFromCode();
+} // InitState
