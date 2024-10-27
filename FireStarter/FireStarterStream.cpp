@@ -267,7 +267,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
-            unsigned long long optimize = 0;
+            unsigned long long optimizeGeneration = 0;
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
             FireStarterState evolveBestState = evolveState;
             FireStarterState bestState = evolveState; // Used asynchronously by ExecuteOptimizeComplete()
@@ -275,23 +275,22 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Evolve the current test.
             while (!WillTerminate() && !bestState.m_evolveComplete) {
-                // Execute the GPU evolve using a single execution unit.
-                execute->ExecuteEvolve(evolveState, bestStates);
-
-                // Gather the results, update the UI and check for the completion condition.
-//                complete->CompleteState(bestState, evolveBestState);
-
-                // Optimize the evolved state.
+                // Get the best evolve state to optimize.
                 FireStarterState optimizeState;
                 if (bestStates.GetBestState(optimizeState)) {
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE);
                     optimizeState.m_test = test;
-                    optimizeState.m_generation = ++optimize;
+                    optimizeState.m_generation = ++optimizeGeneration;
                     executeCompile->ExecuteCompileOptimize(optimizeState);
+
+                    // Execute the next GPU evolve while the optimize code is compiling.
+                    execute->ExecuteEvolve(evolveState, bestStates);
 
                     // Execute optimize for any completed compile jobs.
                     executeOptimize->ExecuteEvolveOptimize(complete, bestState);
-                }
+                } else
+                    // Execute the initial GPU evolve.
+                    execute->ExecuteEvolve(evolveState, bestStates);
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)

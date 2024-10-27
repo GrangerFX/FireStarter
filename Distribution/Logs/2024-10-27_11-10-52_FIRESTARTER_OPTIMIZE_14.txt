@@ -1,0 +1,40 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 16
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 131072
+iterations = 64
+passes = 500
+candidates = 16
+attempts = 0
+optimize = 1
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=14  Generation=  1 *Result=0.00013892  Best=0.00013892   Time=0.2 Seconds  Run Time=143.7 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=14  Generation=  2  Result=0.00153750  Best=0.00013892   Time=0.2 Seconds  Run Time=144.3 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=14  Generation=  3  Result=0.00015686  Best=0.00013892   Time=0.2 Seconds  Run Time=144.8 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=14  Generation=  4  Result=0.00020892  Best=0.00013892   Time=0.2 Seconds  Run Time=145.4 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=14  Generation=  5  Result=0.00028381  Best=0.00013892   Time=0.2 Seconds  Run Time=146.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=14  Generation=  6 *Result=0.00000852  Best=0.00000852   Time=0.2 Seconds  Run Time=146.6 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=14  Generation=  7 *Result=0.00000019  Best=0.00000019   Time=0.2 Seconds  Run Time=147.2 Seconds
