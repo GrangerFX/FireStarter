@@ -29,7 +29,7 @@
 #define FIRESTARTER_START_RESULT    10.0f
 
 #define FIRESTARTER_EVOLVE_SEED     123
-#define FIRESTARTER_OPTIMIZE_SEED   123
+#define FIRESTARTER_OPTIMIZE_SEED   0
 
 // First 16 tests of 16 states for unlimited generations is the standard evolve test.
 #define FIRESTARTER_START_TEST      0           // The starting test index.
@@ -46,6 +46,7 @@
 #define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_GPU
 
 #define FIRESTARTER_RANDOM_TARGET               FIRESTARTER_TARGET
+#define FIRESTARTER_RANDOM_VARIATIONS           1
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1
 #define FIRESTARTER_RANDOM_STATES               11000
@@ -58,6 +59,7 @@
 #define FIRESTARTER_RANDOM_OPTIMIZE             0
 
 #define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
+#define FIRESTARTER_EVOLVE_CPU_VARIATIONS       1
 #define FIRESTARTER_EVOLVE_CPU_STREAMS          1
 #define FIRESTARTER_EVOLVE_CPU_UNITS            8
 #define FIRESTARTER_EVOLVE_CPU_STATES           16
@@ -70,6 +72,7 @@
 #define FIRESTARTER_EVOLVE_CPU_OPTIMIZE         1
 
 #define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
+#define FIRESTARTER_EVOLVE_GPU_VARIATIONS       1
 #define FIRESTARTER_EVOLVE_GPU_STREAMS          1
 #define FIRESTARTER_EVOLVE_GPU_UNITS            1
 #define FIRESTARTER_EVOLVE_GPU_STATES           1
@@ -82,18 +85,20 @@
 #define FIRESTARTER_EVOLVE_GPU_OPTIMIZE         1
 
 #define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
+#define FIRESTARTER_OPTIMIZE_VARIATIONS         1
 #define FIRESTARTER_OPTIMIZE_STREAMS            1
 #define FIRESTARTER_OPTIMIZE_UNITS              1
 #define FIRESTARTER_OPTIMIZE_STATES             1
 #define FIRESTARTER_OPTIMIZE_GENERATIONS        0
-#define FIRESTARTER_OPTIMIZE_POPULATION         16384
+#define FIRESTARTER_OPTIMIZE_POPULATION         32768
 #define FIRESTARTER_OPTIMIZE_ITERATIONS         64
 #define FIRESTARTER_OPTIMIZE_CANDIDATES         16
-#define FIRESTARTER_OPTIMIZE_PASSES             1000
+#define FIRESTARTER_OPTIMIZE_PASSES             500
 #define FIRESTARTER_OPTIMIZE_ATTEMPTS           0
 #define FIRESTARTER_OPTIMIZE_OPTIMIZE           1
 
 #define FIRESTARTER_SPEED_TEST_TARGET           0.0f
+#define FIRESTARTER_SPEED_TEST_VARIATIONS       1
 #define FIRESTARTER_SPEED_TEST_STREAMS          1
 #define FIRESTARTER_SPEED_TEST_UNITS            1
 #define FIRESTARTER_SPEED_TEST_STATES           1
@@ -133,7 +138,7 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 
 class FireStarterSetting {
 public:
-    unsigned int m_variations =     FIRESTARTER_VARIATIONS;
+    unsigned int m_variations =     1;
     unsigned int m_samples =        FIRESTARTER_SAMPLES;
     unsigned int m_instructions =   FIRESTARTER_INSTRUCTIONS;
     unsigned int m_registers =      FIRESTARTER_REGISTERS;
@@ -231,6 +236,7 @@ public:
         switch (m_mode) {
         case FIRESTARTER_RANDOM:
             m_target =      FIRESTARTER_RANDOM_TARGET;
+            m_variations =  FIRESTARTER_RANDOM_VARIATIONS;
             m_streams =     FIRESTARTER_RANDOM_STREAMS;
             m_units =       FIRESTARTER_RANDOM_UNITS;
             m_states =      FIRESTARTER_RANDOM_STATES;
@@ -244,6 +250,7 @@ public:
             break;
         case FIRESTARTER_EVOLVE_CPU:
             m_target =      FIRESTARTER_EVOLVE_CPU_TARGET;
+            m_variations =  FIRESTARTER_EVOLVE_CPU_VARIATIONS;
             m_streams =     FIRESTARTER_EVOLVE_CPU_STREAMS;
             m_units =       FIRESTARTER_EVOLVE_CPU_UNITS;
             m_states =      FIRESTARTER_EVOLVE_CPU_STATES;
@@ -257,6 +264,7 @@ public:
             break;
         case FIRESTARTER_OPTIMIZE:
             m_target =      FIRESTARTER_OPTIMIZE_TARGET;
+            m_variations =  FIRESTARTER_OPTIMIZE_VARIATIONS;
             m_streams =     FIRESTARTER_OPTIMIZE_STREAMS;
             m_units =       FIRESTARTER_OPTIMIZE_UNITS;
             m_states =      FIRESTARTER_OPTIMIZE_STATES;
@@ -270,6 +278,7 @@ public:
             break;
         case FIRESTARTER_EVOLVE_GPU:
             m_target =      FIRESTARTER_EVOLVE_GPU_TARGET;
+            m_variations =  FIRESTARTER_EVOLVE_GPU_VARIATIONS;
             m_streams =     FIRESTARTER_EVOLVE_GPU_STREAMS;
             m_units =       FIRESTARTER_EVOLVE_GPU_UNITS;
             m_states =      FIRESTARTER_EVOLVE_GPU_STATES;
@@ -283,6 +292,7 @@ public:
             break;
         case FIRESTARTER_SPEED_TEST:
             m_target =      FIRESTARTER_SPEED_TEST_TARGET;
+            m_variations =  FIRESTARTER_SPEED_TEST_VARIATIONS;
             m_streams =     FIRESTARTER_SPEED_TEST_STREAMS;
             m_units =       FIRESTARTER_SPEED_TEST_UNITS;
             m_states =      FIRESTARTER_SPEED_TEST_STATES;
@@ -296,6 +306,7 @@ public:
             break;
         default:
             m_target =      0;
+            m_variations =  0;
             m_streams =     0;
             m_units =       0;
             m_states =      0;
