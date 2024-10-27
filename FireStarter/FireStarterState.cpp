@@ -152,9 +152,8 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitResults();
 } // InitState
 
-void FireStarterState::InitState(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index)
 {
-    InitState(settings);
     FireStarterResult* result = Result();
     memcpy(Code(), population->Code(settings, index), FireStarterCode::CodeSize(settings.m_instructions));
     memcpy(result->Data(), population->Data(settings, index), FireStarterData::DataSize(settings.m_registers));
@@ -167,4 +166,4 @@ void FireStarterState::InitState(const FireStarterSettings& settings, const Fire
 
     // Load the state's program from the GPU evolved code (variation 0).
     LoadProgramFromCode();
-} // InitState
+} // InitResults

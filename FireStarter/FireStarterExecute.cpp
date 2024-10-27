@@ -11,6 +11,91 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
     return curFloat;
 } // AtomicMin
 
+bool FireStarterBestStates::CheckStates(void)
+{
+#if 0
+    // Validate that the states have not become corrupted (bug detection).
+    std::vector<size_t> stateCount(m_maxStates, 0);
+    for (size_t i = 0; i < m_maxStates; i++) {
+        FireStarterState* curState = m_bestStates[i];
+        for (size_t j = 0; j < m_maxStates; j++) 
+            if (curState == &m_allStates[j]) {
+                stateCount[j]++;
+                break;
+            }
+    }
+    for (size_t i = 0; i < m_maxStates; i++)
+        if (stateCount[i] != 1)
+            return false;
+#endif
+    return true;
+} // CheckStates
+
+bool FireStarterBestStates::GetBestState(FireStarterState& state)
+{
+    if (!m_numStates)
+        return false;
+    FireStarterState* bestState = m_bestStates[0];
+    for (size_t i = 1; i < m_maxStates; i++)
+        m_bestStates[i - 1] = m_bestStates[i];
+    m_bestStates[m_maxStates - 1] = bestState;
+    m_numStates--;
+    m_worstResult = m_settings.m_startResult;
+    state = *bestState;
+    return CheckStates();
+} // GetBestState
+
+bool FireStarterBestStates::AddState(const FireStarterState& state)
+{
+    // Skip bad results entirely.
+    float newResult = state.MaxResult();
+    if (newResult >= m_worstResult)
+        return false;
+
+    // Only add states with a unique instruction set.
+    if (m_testedInstructions.count(state.m_program.OptimizedInstructionsData()))
+        return false;
+    m_testedInstructions.insert(state.m_program.OptimizedInstructionsData());
+
+    FireStarterState* newState = (m_numStates < m_maxStates) ? m_bestStates[m_numStates] : m_bestStates[--m_numStates];
+    *newState = state;
+
+    for (size_t i = 0; i < m_numStates; i++) {
+        FireStarterState* curState = m_bestStates[i];
+        float curResult = curState->MaxResult();
+        if (curResult > newResult) {
+            for (size_t j = i; j < m_numStates; j++) {
+                curState = m_bestStates[j];
+                m_bestStates[j] = newState;
+                newState = curState;
+            }
+            break;
+        }
+    }
+    m_bestStates[m_numStates++] = newState;
+    return CheckStates();
+} // AddState
+
+float FireStarterBestStates::WorstResult(void)
+{
+    CheckStates();
+    return m_worstResult;
+} // WorstResult
+
+FireStarterBestStates::FireStarterBestStates(const FireStarterSettings& settings, size_t maxStates) : m_settings(settings)
+{
+    m_maxStates = maxStates;
+    m_numStates = 0;
+    m_worstResult = m_settings.m_startResult;
+    m_allStates.resize(m_maxStates);
+    m_bestStates.resize(m_maxStates);
+    for (size_t i = 0; i < m_maxStates; i++) {
+        m_allStates[i].InitState(settings);
+        m_bestStates[i] = &m_allStates[i];
+    }
+    CheckStates();
+} // FireStarterBestStates
+
 void FireStarterExecute::FinishPopulation(void)
 {
     if (m_devicePopulation) {
@@ -60,24 +145,23 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
-    unsigned int population = settings.m_population;
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = population;
+    unsigned int blocksPerGrid = settings.m_population;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
-    unsigned long long passes = settings.m_passes;
-    unsigned long long pass = state.m_generation * passes;
+    unsigned long long generation = state.m_generation;
+    unsigned int passes = settings.m_passes;
+    unsigned int population = settings.m_population;
 
     // Run all the evolve states in parallel.
     unsigned int registers = settings.m_registers;
 
     void* arr[] = { reinterpret_cast<void*>(&m_devicePopulation0),
-                    reinterpret_cast<void*>(&m_devicePopulation0),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&registers),
                     reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&pass),
+                    reinterpret_cast<void*>(&generation),
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&population)
     };
@@ -117,7 +201,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     }
 
     float oldResult = state.m_maxResult;
-    state.InitState(settings, m_hostPopulation, minIndex);
+    state.InitResults(settings, m_hostPopulation, minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteEvolvePass
 

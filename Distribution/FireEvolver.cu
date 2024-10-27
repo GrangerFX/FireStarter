@@ -20,11 +20,11 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 } // TestEvaluate
 
 // Current best version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass, const unsigned long long evolutionPasses, unsigned int population)
+GPU_GLOBAL void Evolver(FireStarterPopulation* population, const unsigned int variation, const unsigned int registers, const unsigned long long seed, const unsigned long long generation, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
-    if (member >= population)
+    if (member >= populationSize)
         return;
 
     // The shared data for the threads in the warp.
@@ -44,7 +44,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = evolutionSeed + SEED10(variation) + SEED1(member) + SEED2(evolutionPass);   // Unique seed for the generation/member
+    unsigned long long memberSeed = seed + SEED10(variation) + SEED1(member) + SEED2(generation);   // Unique seed for the generation/member
     unsigned short evolveAge = 0;
     unsigned short bestAge = 0;
 
@@ -62,23 +62,23 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
     FireStarterData bestData = data;
     FireStarterCode oldCode = code;
     FireStarterData oldData = data;
+    float memberResult = result;
     float bestResult = result;
-    float curResult = result;
     evolutionScale = FIRESTARTER_SCALE * result;
 
     // Perform all the passes on the GPU.
-    for (unsigned int pass = 0; pass < evolutionPasses; pass++) {
+    for (unsigned int pass = 0; pass < passes; pass++) {
         // Evolve the code and data.
-        if ((evolveAge >= 8) || (curResult >= FIRESTARTER_START_RESULT)) {
+        if ((evolveAge >= 8) || (memberResult >= FIRESTARTER_START_RESULT)) {
             evolveAge = 0;
-            curResult = FIRESTARTER_START_RESULT;
+            memberResult = FIRESTARTER_START_RESULT;
             evolutionScale = FIRESTARTER_START_SCALE;
             code.Init(memberSeed);
             data.Init(memberSeed, evolutionScale);
-            result = curResult;
+            result = memberResult;
         } else {
-            evolutionScale = FIRESTARTER_SCALE * curResult;
-            result = curResult;
+            evolutionScale = FIRESTARTER_SCALE * memberResult;
+            result = memberResult;
             if (evolveAge > 0)
                 data.RandomData(memberSeed, evolutionScale);
         }
@@ -96,7 +96,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
         }
 
         // Did the results improve?
-        if (!evolutionPass || (result < curResult)) {
+        if (!pass || (result < memberResult)) {
             // If the result was better, save the results.
             if (result < bestResult) {
                 bestCode = code;
@@ -106,7 +106,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             }
             oldCode = code;
             oldData = data;
-            curResult = result;
+            memberResult = result;
             evolveAge = 0;
         } else {
             // Revert to the original code and data.
@@ -115,6 +115,6 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* newResults, const FireStarterPopu
             evolveAge++;
         }
     }
-    newResults->InitMemberResult(bestData, member, variation, bestResult, bestAge);
-    newResults->Code(member)->Copy(bestCode);
+    population->InitMemberResult(bestData, member, variation, bestResult, bestAge);
+    population->Code(member)->Copy(bestCode);
 } // Evolver
