@@ -279,9 +279,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 execute->ExecuteEvolve(evolveState, bestStates);
 
                 // Gather the results, update the UI and check for the completion condition.
-                complete->CompleteState(bestState, evolveBestState);
+//                complete->CompleteState(bestState, evolveBestState);
 
-#if 1
                 // Optimize the evolved state.
                 FireStarterState optimizeState;
                 if (bestStates.GetBestState(optimizeState)) {
@@ -293,7 +292,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     // Execute optimize for any completed compile jobs.
                     executeOptimize->ExecuteEvolveOptimize(complete, bestState);
                 }
-#endif
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
