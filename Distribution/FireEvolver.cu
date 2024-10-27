@@ -69,7 +69,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* population, const unsigned int va
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Evolve the code and data.
-        if ((evolveAge >= 16) || (memberResult >= FIRESTARTER_START_RESULT)) {
+        if ((evolveAge >= 8) || (memberResult >= FIRESTARTER_START_RESULT)) {
             evolveAge = 0;
             memberResult = FIRESTARTER_START_RESULT;
             evolutionScale = FIRESTARTER_START_SCALE;
