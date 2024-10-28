@@ -252,11 +252,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0);
 
-        // Create the execution unit used to generate and compile the optimize code.
-        FireStarterExecute* executeCompile = new FireStarterExecute(manager, 1);
-
         // Create the execution unit used to optimize the best states.
-        FireStarterExecute* executeOptimize = new FireStarterExecute(manager, 2);
+        FireStarterExecute* executeOptimize = new FireStarterExecute(manager, 1);
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
@@ -280,13 +277,13 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE);
                     optimizeState.m_test = test;
                     optimizeState.m_generation = ++optimizeGeneration;
-                    executeCompile->ExecuteCompileOptimize(optimizeState);
+                    executeOptimize->ExecuteCompileOptimize(optimizeState);
 
                     // Execute the next GPU evolve while the optimize code is compiling.
                     executeEvolve->ExecuteEvolve(evolveState, bestStates);
 
                     // Execute optimize for any completed compile jobs.
-                    executeOptimize->ExecuteEvolveOptimize(complete, bestState);
+                    executeOptimize->ExecuteEvolveOptimize(complete, optimizeState, bestState);
                 } else
                     // Execute the initial GPU evolve.
                     executeEvolve->ExecuteEvolve(evolveState, bestStates);
@@ -295,9 +292,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 if (++evolveState.m_generation == evolveSettings.m_generations)
                     break;
             }
-
-            // Wait for all the optimizations to complete.
-            executeCompile->Synchronize();
 
             // Output the test results.
             if (!WillTerminate()) {
@@ -328,7 +322,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
         // Finish processing and terminate the evolution execution units.
         delete executeEvolve;
-        delete executeCompile;
         delete executeOptimize;
 
         // Delete the compilier manager and cancel any waiting jobs.

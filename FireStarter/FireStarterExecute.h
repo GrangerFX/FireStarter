@@ -64,7 +64,7 @@ public:
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state, FireStarterBestStates &bestStates);
-    void ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& bestState);
+    void ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& state, FireStarterState& bestState);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
