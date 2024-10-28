@@ -1,0 +1,16 @@
+Test: 0  Generation=11  Evolve Result=0.00721925  Optimize Result=0.00000059  Duration: 5.7  Total: 5.7  Average: 5.7 *******
+Test: 1  Generation=6  Evolve Result=0.00502640  Optimize Result=0.00000015  Duration: 2.6  Total: 8.3  Average: 4.1 *******
+Test: 2  Generation=3  Evolve Result=0.00388369  Optimize Result=0.00000052  Duration: 1.0  Total: 9.3  Average: 3.1 *******
+Test: 3  Generation=22  Evolve Result=0.00685990  Optimize Result=0.00000091  Duration: 8.5  Total: 17.8  Average: 4.4 *******
+Test: 4  Generation=33  Evolve Result=0.00695014  Optimize Result=0.00000012  Duration: 13.6  Total: 31.4  Average: 6.3 *******
+Test: 5  Generation=24  Evolve Result=0.00672121  Optimize Result=0.00000019  Duration: 9.4  Total: 40.8  Average: 6.8 *******
+Test: 6  Generation=18  Evolve Result=0.00365621  Optimize Result=0.00000032  Duration: 7.0  Total: 47.7  Average: 6.8 *******
+Test: 7  Generation=10  Evolve Result=0.00743729  Optimize Result=0.00000052  Duration: 3.9  Total: 51.7  Average: 6.5 *******
+Test: 8  Generation=4  Evolve Result=0.00112176  Optimize Result=0.00000044  Duration: 1.4  Total: 53.0  Average: 5.9 *******
+Test: 9  Generation=7  Evolve Result=0.00640744  Optimize Result=0.00000086  Duration: 2.5  Total: 55.5  Average: 5.6 *******
+Test: 10  Generation=7  Evolve Result=0.00560170  Optimize Result=0.00000050  Duration: 2.6  Total: 58.1  Average: 5.3 *******
+Test: 11  Generation=10  Evolve Result=0.00684324  Optimize Result=0.00000057  Duration: 3.7  Total: 61.8  Average: 5.2 *******
+Test: 12  Generation=15  Evolve Result=0.00712794  Optimize Result=0.00000025  Duration: 5.7  Total: 67.5  Average: 5.2 *******
+Test: 13  Generation=59  Evolve Result=0.00609291  Optimize Result=0.00000024  Duration: 24.5  Total: 92.1  Average: 6.6 *******
+Test: 14  Generation=8  Evolve Result=0.00415611  Optimize Result=0.00000008  Duration: 2.8  Total: 94.9  Average: 6.3 *******
+Test: 15  Generation=6  Evolve Result=0.00098318  Optimize Result=0.00000066  Duration: 2.1  Total: 97.0  Average: 6.1 *******
