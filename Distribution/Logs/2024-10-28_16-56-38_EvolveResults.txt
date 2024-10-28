@@ -1,0 +1,16 @@
+Test: 0  Generation=11  Evolve Result=0.00721925  Optimize Result=0.00000044  Duration: 5.9  Total: 5.9  Average: 5.9 *******
+Test: 1  Generation=2  Evolve Result=0.00128365  Optimize Result=0.00000024  Duration: 1.0  Total: 7.0  Average: 3.5 *******
+Test: 2  Generation=3  Evolve Result=0.00388369  Optimize Result=0.00000035  Duration: 1.0  Total: 8.0  Average: 2.7 *******
+Test: 3  Generation=22  Evolve Result=0.00685990  Optimize Result=0.00000018  Duration: 8.9  Total: 16.9  Average: 4.2 *******
+Test: 4  Generation=9  Evolve Result=0.00691676  Optimize Result=0.00000019  Duration: 3.5  Total: 20.3  Average: 4.1 *******
+Test: 5  Generation=20  Evolve Result=0.00847750  Optimize Result=0.00000030  Duration: 8.1  Total: 28.4  Average: 4.7 *******
+Test: 6  Generation=18  Evolve Result=0.00365621  Optimize Result=0.00000009  Duration: 7.1  Total: 35.5  Average: 5.1 *******
+Test: 7  Generation=4  Evolve Result=0.00182331  Optimize Result=0.00000018  Duration: 1.5  Total: 37.0  Average: 4.6 *******
+Test: 8  Generation=4  Evolve Result=0.00112176  Optimize Result=0.00000018  Duration: 1.4  Total: 38.5  Average: 4.3 *******
+Test: 9  Generation=7  Evolve Result=0.00640744  Optimize Result=0.00000020  Duration: 2.7  Total: 41.1  Average: 4.1 *******
+Test: 10  Generation=24  Evolve Result=0.00500894  Optimize Result=0.00000077  Duration: 9.9  Total: 51.0  Average: 4.6 *******
+Test: 11  Generation=10  Evolve Result=0.00684324  Optimize Result=0.00000018  Duration: 3.9  Total: 54.9  Average: 4.6 *******
+Test: 12  Generation=15  Evolve Result=0.00712794  Optimize Result=0.00000077  Duration: 6.0  Total: 60.9  Average: 4.7 *******
+Test: 13  Generation=37  Evolve Result=0.00932842  Optimize Result=0.00000038  Duration: 15.2  Total: 76.1  Average: 5.4 *******
+Test: 14  Generation=8  Evolve Result=0.00415611  Optimize Result=0.00000010  Duration: 3.1  Total: 79.2  Average: 5.3 *******
+Test: 15  Generation=6  Evolve Result=0.00098318  Optimize Result=0.00000039  Duration: 2.2  Total: 81.4  Average: 5.1 *******
