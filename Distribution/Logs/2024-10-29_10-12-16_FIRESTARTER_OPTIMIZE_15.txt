@@ -1,0 +1,45 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 16
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+iterations = 64
+passes = 500
+candidates = 32
+attempts = 0
+optimize = 1
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  1 *Result=0.00020462  Best=0.00020462   Time=0.1 Seconds  Run Time=91.6 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  2 *Result=0.00011188  Best=0.00011188   Time=0.1 Seconds  Run Time=92.1 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  3  Result=0.00019962  Best=0.00011188   Time=0.1 Seconds  Run Time=92.6 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  4  Result=0.00088082  Best=0.00011188   Time=0.1 Seconds  Run Time=93.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  5 *Result=0.00000966  Best=0.00000966   Time=0.1 Seconds  Run Time=93.5 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  6  Result=0.00008706  Best=0.00000966   Time=0.1 Seconds  Run Time=94.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  7 *Result=0.00000238  Best=0.00000238   Time=0.1 Seconds  Run Time=94.5 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  8  Result=0.00000411  Best=0.00000238   Time=0.1 Seconds  Run Time=95.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation=  9  Result=0.00018264  Best=0.00000238   Time=0.1 Seconds  Run Time=95.5 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation= 10  Result=0.00015635  Best=0.00000238   Time=0.1 Seconds  Run Time=95.9 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation= 11  Result=0.00036488  Best=0.00000238   Time=0.1 Seconds  Run Time=96.4 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=15  Generation= 12 *Result=0.00000048  Best=0.00000048   Time=0.1 Seconds  Run Time=96.9 Seconds
