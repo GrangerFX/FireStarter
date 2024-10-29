@@ -300,7 +300,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 double duration = streamTimer.Duration();
                 totalDuration += duration;
 
-                std::string resultText = Format("Test: %u  Generation=%u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f  Total: %.1f  Average: %.1f", test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, totalDuration, totalDuration / testCount);
+                std::string resultText = Format("Seed: %u  Test: %u  Generation=%u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, totalDuration, totalDuration / testCount);
                 if (bestState.m_maxResult <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
