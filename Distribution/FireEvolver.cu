@@ -84,7 +84,7 @@ GPU_GLOBAL void Evolver(FireStarterPopulation* population, const unsigned int va
         }
 
         // Iterate to evolve the data.
-        for (unsigned int p = 0; p < FIRESTARTER_EVOLVE_GPU_ITERATIONS; p++) {
+        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
             unsigned int d = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
             float oldData = data[d];
             data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);

@@ -221,7 +221,7 @@ GPU_GLOBAL void SpeedTest(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Iterate to evolve the data.
-    for (unsigned int p = 0; p < FIRESTARTER_EVOLVE_GPU_ITERATIONS; p++) {
+    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
         unsigned int d = RANDOMMOD(dataSeed, FIRESTARTER_REGISTERS);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(dataSeed);
@@ -420,7 +420,7 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
     }
 
     // Iterate to evolve the registers.
-    for (unsigned int p = 0; p < FIRESTARTER_SPEED_TEST_ITERATIONS; p++) {
+    for (unsigned int i = 0; i < FIRESTARTER_SPEED_TEST_ITERATIONS; i++) {
         unsigned int d = RANDOMMOD(memberSeed, numRegisters);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);

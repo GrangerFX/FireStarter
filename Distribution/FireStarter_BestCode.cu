@@ -82,7 +82,7 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
     }
 
     // Iterate to evolve the registers.
-    for (unsigned int p = 0; p < FIRESTARTER_OPTIMIZE_ITERATIONS; p++) {
+    for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_ITERATIONS; i++) {
         unsigned int d = RANDOMMOD(memberSeed, registers);
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
