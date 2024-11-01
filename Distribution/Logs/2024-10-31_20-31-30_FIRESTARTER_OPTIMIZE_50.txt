@@ -1,0 +1,45 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+iterations = 64
+passes = 500
+candidates = 16
+attempts = 0
+optimize = 1
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  1 *Result=0.00613900  Best=0.00613900   Time=0.1 Seconds  Run Time=519.2 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  2 *Result=0.00008727  Best=0.00008727   Time=0.1 Seconds  Run Time=519.6 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  3  Result=0.00136513  Best=0.00008727   Time=0.1 Seconds  Run Time=520.1 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  4 *Result=0.00002614  Best=0.00002614   Time=0.1 Seconds  Run Time=520.5 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  5 *Result=0.00001311  Best=0.00001311   Time=0.1 Seconds  Run Time=521.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  6  Result=0.00001967  Best=0.00001311   Time=0.1 Seconds  Run Time=521.5 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  7  Result=0.00005418  Best=0.00001311   Time=0.1 Seconds  Run Time=521.9 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  8  Result=0.00614949  Best=0.00001311   Time=0.1 Seconds  Run Time=522.3 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation=  9 *Result=0.00000191  Best=0.00000191   Time=0.1 Seconds  Run Time=522.8 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation= 10  Result=0.00030159  Best=0.00000191   Time=0.1 Seconds  Run Time=523.3 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation= 11  Result=0.00013576  Best=0.00000191   Time=0.1 Seconds  Run Time=523.7 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=50  Generation= 12 *Result=0.00000050  Best=0.00000050   Time=0.1 Seconds  Run Time=524.2 Seconds
