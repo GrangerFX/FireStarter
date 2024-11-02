@@ -225,11 +225,6 @@ public:
         m_program.RandomInstruction(m_seed);
     } // RandomInstruction
 
-    inline void CopyInstructions(const FireStarterState& srcState)
-    {
-        m_program.CopyInstructions(srcState.m_program);
-    } // CopyInstructions
-
     inline void LoadProgramFromCode(void)
     {
         unsigned int numInstructions = Settings().m_instructions;
@@ -256,6 +251,12 @@ public:
             codeInstruction.reg =  instruction.reg;
         }
     } // LoadCodeFromProgram
+
+    inline void CopyInstructions(const FireStarterState& srcState)
+    {
+        m_program.CopyInstructions(srcState.m_program);
+        LoadCodeFromProgram();
+    } // CopyInstructions
 
     inline void RandomProgram(void)
     {

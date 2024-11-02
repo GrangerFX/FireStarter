@@ -45,10 +45,10 @@ bool FireStarterBestStates::GetBestState(FireStarterState& state)
     return CheckStates();
 } // GetBestState
 
-bool FireStarterBestStates::AddState(const FireStarterState& state)
+bool FireStarterBestStates::AddState(const FireStarterState& state, float maxResult)
 {
     // Skip bad results entirely.
-    float newResult = state.MaxResult();
+    float newResult = maxResult ? maxResult : state.MaxResult();
     if (newResult >= m_worstResult)
         return false;
 
@@ -117,22 +117,19 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 {
     // Reallocate the populations if the size has changed.
     size_t populationSize = FireStarterPopulation::PopulationSize(settings);
-    size_t initResultsSize = FireStarterPopulation::ResultsSize(settings);
     bool result = true;
-    if ((m_populationSize != populationSize) || (m_initResultsSize != initResultsSize)) {
-        if (m_populationSize != populationSize) {
-            FinishPopulation();
-            m_populationSize = populationSize;
-            if (m_populationSize) {
-                checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
-                if (m_hostPopulation)
-                    memset(m_hostPopulation, 0, m_populationSize);
-                checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, Stream()));
-                if (m_devicePopulation) {
-                    checkCUDAErrors(cudaMemsetAsync(m_devicePopulation, 0, m_populationSize * 2, Stream()));
-                    m_devicePopulation0 = m_devicePopulation;
-                    m_devicePopulation1 = (FireStarterPopulation*)((char*)m_devicePopulation + m_populationSize);
-                }
+    if (m_populationSize != populationSize) {
+        FinishPopulation();
+        m_populationSize = populationSize;
+        if (m_populationSize) {
+            checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
+            if (m_hostPopulation)
+                memset(m_hostPopulation, 0, m_populationSize);
+            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation, m_populationSize * 2, Stream()));
+            if (m_devicePopulation) {
+                checkCUDAErrors(cudaMemsetAsync(m_devicePopulation, 0, m_populationSize * 2, Stream()));
+                m_devicePopulation0 = m_devicePopulation;
+                m_devicePopulation1 = (FireStarterPopulation*)((char*)m_devicePopulation + m_populationSize);
             }
         }
         Context()->Synchronize();
@@ -196,7 +193,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         }
         if (curResult < bestStates.WorstResult()) {
             FireStarterState newState(settings, m_hostPopulation, i);
-            bestStates.AddState(newState);
+            bestStates.AddState(newState, curResult);
         }
     }
 

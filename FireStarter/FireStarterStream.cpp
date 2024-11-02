@@ -236,6 +236,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
+        FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
         SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
@@ -264,19 +265,19 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
-            unsigned long long optimizeGeneration = 0;
-            FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
-            FireStarterState bestState = evolveState; // Used asynchronously by ExecuteOptimizeComplete()
             FireStarterBestStates bestStates(evolveSettings);
+            FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
+            FireStarterState bestState = FireStarterState(optimizeSettings, 0, 0, 0, test); // Used asynchronously by ExecuteOptimizeComplete()
+            FireStarterState optimizeState = FireStarterState(optimizeSettings, 0, 0, 0, test);
 
             // Evolve the current test.
             while (!WillTerminate() && !bestState.m_evolveComplete) {
                 // Get the best evolve state to optimize.
-                FireStarterState optimizeState;
-                if (bestStates.GetBestState(optimizeState)) {
-                    optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE);
-                    optimizeState.m_test = test;
-                    optimizeState.m_generation = ++optimizeGeneration;
+                FireStarterState bestEvolveState;
+                if (bestStates.GetBestState(bestEvolveState)) {
+                    optimizeState.InitState(optimizeSettings, evolveState.m_generation, 0, 0, test);
+                    optimizeState.CopyInstructions(bestEvolveState);
+                    optimizeState.m_generation++;
                     executeOptimize->ExecuteCompileOptimize(optimizeState);
 
                     // Execute the next GPU evolve while the optimize code is compiling.
@@ -362,10 +363,8 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
                 unsigned long long test = FIRESTARTER_START_TEST + t;
 
                 // Optimize the evolved state.
-                FireStarterState optimizeState(optimizeSettings);
+                FireStarterState optimizeState(optimizeSettings, 0, 0, 0, test);
                 optimizeState.CopyInstructions(evolveState);
-                optimizeState.LoadCodeFromProgram();
-                optimizeState.m_test = test;
                 FireStarterState bestState(optimizeState);
 
                 // Loop until the the optimize completion condition or the host program is quit.
@@ -443,7 +442,6 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 // Optimize the evolved state.
                 FireStarterState optimizeState(optimizeSettings);
                 optimizeState.CopyInstructions(evolveState);
-                optimizeState.LoadCodeFromProgram();
                 optimizeState.m_test = test;
                 FireStarterBestStates bestStates(optimizeSettings);
                 FireStarterState bestState(optimizeState);

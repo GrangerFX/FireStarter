@@ -682,12 +682,12 @@ typedef struct FireStarterResults {
     static inline size_t ResultsSize(void)
     {
         return sizeof(FireStarterResults);
-    } // ResultSize
+    } // ResultsSize
 
     static inline size_t ResultsSize(const FireStarterSettings &settings)
     {
         return (sizeof(FireStarterResults) - (sizeof(m_results) + sizeof(m_code))) + FireStarterResult::ResultSize(settings) * settings.m_variations + FireStarterCode::CodeSize(settings.m_instructions);
-    } // ResultSize
+    } // ResultsSize
 
     inline FireStarterResult* Result(unsigned int variation = 0, unsigned int registers = FIRESTARTER_REGISTERS)
     {

@@ -17,7 +17,7 @@ private:
     bool CheckStates(void);
 public:
     bool GetBestState(FireStarterState& state);
-    bool AddState(const FireStarterState& state);
+    bool AddState(const FireStarterState& state, float maxResult = 0.0f);
     float WorstResult(void);
     FireStarterBestStates(const FireStarterSettings& settings, size_t maxStates = FIRESTARTER_BESTSTATES);
 }; // FireStarterBestStates
@@ -42,7 +42,6 @@ private:
     std::string m_speedTestCode;
     size_t m_populationSize = 0;
     size_t m_evolutionsSize = 0;
-    size_t m_initResultsSize = 0;
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
