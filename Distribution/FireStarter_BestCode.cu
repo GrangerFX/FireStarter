@@ -70,14 +70,13 @@ GPU_GLOBAL void Optimizer(FireStarterPopulation* newResults, const FireStarterPo
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * evolutionScale * (evolveAge1 - 1);
             memberResult = FIRESTARTER_START_RESULT;
-#if 1
-            result = memberResult;
-#else
             result = 1.0e+6f;
             if (!TestEvaluate(data, target, theta, result)) {
                 data[d] = oldData;
                 result = memberResult = oldResults->MinResult(member, variation);
             }
+#if 1
+            evolutionScale = 4.0f * FIRESTARTER_SCALE * memberResult;
 #endif
         } else {
             result = memberResult = oldResults->MinResult(member, variation);

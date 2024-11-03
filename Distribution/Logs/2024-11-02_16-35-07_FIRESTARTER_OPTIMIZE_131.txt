@@ -1,0 +1,45 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+iterations = 64
+passes = 500
+candidates = 16
+attempts = 0
+optimize = 1
+
+scale = 0.100000f
+startScale = 2.000000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation=  2 *Result=0.00027227  Best=0.00027227   Time=0.1 Seconds  Run Time=1138.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation=  3 *Result=0.00010492  Best=0.00010492   Time=0.1 Seconds  Run Time=1138.5 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation=  4  Result=0.00059322  Best=0.00010492   Time=0.1 Seconds  Run Time=1138.9 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation=  5  Result=0.00085420  Best=0.00010492   Time=0.1 Seconds  Run Time=1139.3 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation=  6  Result=0.00032706  Best=0.00010492   Time=0.1 Seconds  Run Time=1139.8 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation=  7 *Result=0.00005257  Best=0.00005257   Time=0.1 Seconds  Run Time=1140.3 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation=  8 *Result=0.00000895  Best=0.00000895   Time=0.1 Seconds  Run Time=1140.7 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation=  9  Result=0.00008830  Best=0.00000895   Time=0.1 Seconds  Run Time=1141.1 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation= 10  Result=0.00005432  Best=0.00000895   Time=0.1 Seconds  Run Time=1141.6 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation= 11 *Result=0.00000155  Best=0.00000155   Time=0.1 Seconds  Run Time=1142.0 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation= 12  Result=0.00004586  Best=0.00000155   Time=0.1 Seconds  Run Time=1142.5 Seconds
+FIRESTARTER_OPTIMIZE: Seed=0  Test=131  Generation= 13 *Result=0.00000089  Best=0.00000089   Time=0.1 Seconds  Run Time=1142.9 Seconds
