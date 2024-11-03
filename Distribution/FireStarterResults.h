@@ -675,18 +675,113 @@ typedef struct FireStarterResult {
     } // Init
 } FireStarterResult;
 
-typedef struct FireStarterResults {
-    FireStarterResult m_results[FIRESTARTER_VARIATIONS]; // Note: Dynamically allocated!
+typedef struct FireStarterEvolveResults {
+    FireStarterResult m_result; // Note: Dynamically allocated!
     FireStarterCode m_code; // Note: Dynamically allocated!
 
     static inline size_t ResultsSize(void)
     {
-        return sizeof(FireStarterResults);
+        return sizeof(FireStarterEvolveResults);
+    } // ResultsSize
+
+    static inline size_t ResultsSize(const FireStarterSettings& settings)
+    {
+        return (sizeof(FireStarterEvolveResults) - (sizeof(m_result) + sizeof(m_code))) + FireStarterResult::ResultSize(settings) + FireStarterCode::CodeSize(settings.m_instructions);
+    } // ResultsSize
+
+    inline FireStarterResult* Result(void)
+    {
+        return &m_result;
+    } // Result
+
+    inline const FireStarterResult* Result(void) const
+    {
+        return &m_result;
+    } // Result
+
+    inline FireStarterCode* Code(unsigned int registers = FIRESTARTER_REGISTERS)
+    {
+        return (FireStarterCode*)((char*)&m_result + FireStarterResult::ResultSize(registers));
+    } // Code
+
+    inline const FireStarterCode* Code(unsigned int registers = FIRESTARTER_REGISTERS) const
+    {
+        return (const FireStarterCode*)((const char*)&m_result + FireStarterResult::ResultSize(registers));
+    } // Code
+
+    inline FireStarterCode* Code(const FireStarterSettings& settings)
+    {
+        return (FireStarterCode*)((char*)&m_result + FireStarterResult::ResultSize(settings));
+    } // Code
+
+    inline const FireStarterCode* Code(const FireStarterSettings& settings) const
+    {
+        return (const FireStarterCode*)((const char*)&m_result + FireStarterResult::ResultSize(settings));
+    } // Code
+
+    inline unsigned short* EvolveAge1(void)
+    {
+        return Result()->EvolveAge1();
+    } // EvolveAge1
+
+    inline unsigned short EvolveAge1(void) const
+    {
+        return Result()->EvolveAge1();
+    } // EvolveAge1
+
+    inline unsigned short* EvolveAge2(void)
+    {
+        return Result()->EvolveAge2();
+    } // EvolveAge2
+
+    inline unsigned short EvolveAge2(void) const
+    {
+        return Result()->EvolveAge2();
+    } // EvolveAge2
+
+    inline float* MinResult(void)
+    {
+        return Result()->MinResult();
+    } // MinResult
+
+    inline float MinResult(void) const
+    {
+        return Result()->MinResult();
+    } // MinResult
+
+    inline FireStarterData* Data(void)
+    {
+        return Result()->Data();
+    } // Data
+
+    inline const FireStarterData* Data(void) const
+    {
+        return Result()->Data();
+    } // Data
+
+    inline void InitResults(const FireStarterSettings& settings)
+    {
+        Result()->Init(settings);
+        Code(settings)->Init();
+    } // Init
+
+    inline void CopyResults(FireStarterSettings& settings, const FireStarterEvolveResults* results)
+    {
+        memcpy(this, results, ResultsSize(settings));
+    } // CopyResults
+} FireStarterEvolveResults;
+
+typedef struct FireStarterOptimizeResults {
+    FireStarterResult m_results[FIRESTARTER_OPTIMIZE_VARIATIONS]; // Note: Dynamically allocated!
+
+    static inline size_t ResultsSize(void)
+    {
+        return sizeof(FireStarterOptimizeResults);
     } // ResultsSize
 
     static inline size_t ResultsSize(const FireStarterSettings &settings)
     {
-        return (sizeof(FireStarterResults) - (sizeof(m_results) + sizeof(m_code))) + FireStarterResult::ResultSize(settings) * settings.m_variations + FireStarterCode::CodeSize(settings.m_instructions);
+        return (sizeof(FireStarterOptimizeResults) - sizeof(m_results)) + FireStarterResult::ResultSize(settings) * settings.m_variations;
     } // ResultsSize
 
     inline FireStarterResult* Result(unsigned int variation = 0, unsigned int registers = FIRESTARTER_REGISTERS)
@@ -698,26 +793,6 @@ typedef struct FireStarterResults {
     {
         return (const FireStarterResult*)((unsigned char*)m_results + variation * FireStarterResult::ResultSize(registers));
     } // Result
-
-    inline FireStarterCode* Code(unsigned int variations = FIRESTARTER_VARIATIONS, unsigned int registers = FIRESTARTER_REGISTERS)
-    {
-        return (FireStarterCode*)((char*)&m_results + FireStarterResult::ResultSize(registers) * variations);
-    } // Code
-
-    inline const FireStarterCode* Code(unsigned int variations = FIRESTARTER_VARIATIONS, unsigned int registers = FIRESTARTER_REGISTERS) const
-    {
-        return (const FireStarterCode*)((const char*)&m_results + FireStarterResult::ResultSize(registers) * variations);
-    } // Code
-
-    inline FireStarterCode* Code(const FireStarterSettings& settings)
-    {
-        return (FireStarterCode*)((char*)&m_results + FireStarterResult::ResultSize(settings) * settings.m_variations);
-    } // Code
-
-    inline const FireStarterCode* Code(const FireStarterSettings& settings) const
-    {
-        return (const FireStarterCode*)((const char*)&m_results + FireStarterResult::ResultSize(settings) * settings.m_variations);
-    } // Code
 
     inline unsigned short* EvolveAge1(unsigned int variation = 0)
     {
@@ -781,17 +856,16 @@ typedef struct FireStarterResults {
     {
         for (unsigned int v = 0; v < settings.m_variations; v++)
             Result(v, settings.m_registers)->Init(settings);
-        m_code.Init();
     } // Init
 
-    inline void CopyResults(FireStarterSettings& settings, const FireStarterResults* results)
+    inline void CopyResults(FireStarterSettings& settings, const FireStarterOptimizeResults* results)
     {
         memcpy(this, results, ResultsSize(settings));
     } // CopyResults
-} FireStarterResults;
+} FireStarterOptimizeResults;
 
-typedef struct FireStarterPopulation {
-    FireStarterResults m_population[FIRESTARTER_POPULATION]; // Note: Dynamically allocated.
+typedef struct FireStarterEvolvePopulation {
+    FireStarterEvolveResults m_population[FIRESTARTER_POPULATION]; // Note: Dynamically allocated.
 
     static inline size_t DataSize(void)
     {
@@ -825,17 +899,17 @@ typedef struct FireStarterPopulation {
 
     static inline size_t ResultsSize(void)
     {
-        return FireStarterResults::ResultsSize();
+        return FireStarterEvolveResults::ResultsSize();
     } // ResultSize
 
     static inline size_t ResultsSize(const FireStarterSettings& settings)
     {
-        return FireStarterResults::ResultsSize(settings);
+        return FireStarterEvolveResults::ResultsSize(settings);
     } // ResultsSize
 
     static inline size_t PopulationSize(void)
     {
-        return sizeof(FireStarterPopulation);
+        return sizeof(FireStarterEvolvePopulation);
     } // PopulationSize
 
     static inline size_t PopulationSize(const FireStarterSettings& settings)
@@ -843,24 +917,238 @@ typedef struct FireStarterPopulation {
         return settings.m_population * ResultsSize(settings);
     } // PopulationSize
 
-    inline FireStarterResults* Results(unsigned int member)
+    inline FireStarterEvolveResults* Results(unsigned int member)
     {
-        return (FireStarterResults*)((unsigned char*)m_population + member * ResultsSize());
+        return (FireStarterEvolveResults*)((unsigned char*)m_population + member * ResultsSize());
     } // Results
 
-    inline const FireStarterResults* Results(unsigned int member) const
+    inline const FireStarterEvolveResults* Results(unsigned int member) const
     {
-        return (const FireStarterResults*)((unsigned char*)m_population + member * ResultsSize());
+        return (const FireStarterEvolveResults*)((unsigned char*)m_population + member * ResultsSize());
     } // Results
 
-    inline FireStarterResults* Results(const FireStarterSettings& settings, unsigned int member)
+    inline FireStarterEvolveResults* Results(const FireStarterSettings& settings, unsigned int member)
     {
-        return (FireStarterResults*)((unsigned char*)m_population + member * ResultsSize(settings));
+        return (FireStarterEvolveResults*)((unsigned char*)m_population + member * ResultsSize(settings));
     } // Results
 
-    inline const FireStarterResults* Results(const FireStarterSettings& settings, unsigned int member) const
+    inline const FireStarterEvolveResults* Results(const FireStarterSettings& settings, unsigned int member) const
     {
-        return (const FireStarterResults*)((unsigned char*)m_population + member * ResultsSize(settings));
+        return (const FireStarterEvolveResults*)((unsigned char*)m_population + member * ResultsSize(settings));
+    } // Results
+
+    inline FireStarterResult* Result(unsigned int member)
+    {
+        return Results(member)->Result();
+    } // Result
+
+    inline const FireStarterResult* Result(unsigned int member) const
+    {
+        return Results(member)->Result();
+    } // Result
+
+    inline FireStarterResult* Result(const FireStarterSettings& settings, unsigned int member)
+    {
+        return Results(settings, member)->Result();
+    } // Result
+
+    inline const FireStarterResult* Result(const FireStarterSettings& settings, unsigned int member) const
+    {
+        return Results(settings, member)->Result();
+    } // Result
+
+    inline FireStarterData* Data(unsigned int member)
+    {
+        return Result(member)->Data();
+    } // Data
+
+    inline const FireStarterData* Data(unsigned int member) const
+    {
+        return Result(member)->Data();
+    } // Data
+
+    inline FireStarterData* Data(const FireStarterSettings& settings, unsigned int member)
+    {
+        return Result(settings, member)->Data();
+    } // Data
+
+    inline const FireStarterData* Data(const FireStarterSettings& settings, unsigned int member) const
+    {
+        return Result(settings, member)->Data();
+    } // Data
+
+    inline FireStarterCode* Code(unsigned int member)
+    {
+        return Results(member)->Code();
+    } // Code
+
+    inline const FireStarterCode* Code(unsigned int member) const
+    {
+        return Results(member)->Code();
+    } // Code
+
+    inline FireStarterCode* Code(const FireStarterSettings& settings, unsigned int member)
+    {
+        return Results(settings, member)->Code(settings.m_registers);
+    } // Code
+
+    inline const FireStarterCode* Code(const FireStarterSettings& settings, unsigned int member) const
+    {
+        return Results(settings, member)->Code(settings.m_registers);
+    } // Code
+
+    inline float* MinResult(unsigned int member)
+    {
+        return Result(member)->MinResult();
+    } // MinResult
+
+    inline float MinResult(unsigned int member) const
+    {
+        return Result(member)->MinResult();
+    } // MinResult
+
+    inline float* MinResult(const FireStarterSettings& settings, unsigned int member)
+    {
+        return Result(settings, member)->MinResult();
+    } // MinResult
+
+    inline float MinResult(const FireStarterSettings& settings, unsigned int member) const
+    {
+        return Result(settings, member)->MinResult();
+    } // MinResult
+
+    inline unsigned short* EvolveAge1(unsigned int member)
+    {
+        return Result(member)->EvolveAge1();
+    } // EvolveAge1
+
+    inline unsigned short EvolveAge1(unsigned int member) const
+    {
+        return Result(member)->EvolveAge1();
+    } // EvolveAge1
+
+    inline unsigned short* EvolveAge1(const FireStarterSettings& settings, unsigned int member)
+    {
+        return Result(settings, member)->EvolveAge1();
+    } // EvolveAge1
+
+    inline unsigned short EvolveAge1(const FireStarterSettings& settings, unsigned int member) const
+    {
+        return Result(settings, member)->EvolveAge1();
+    } // EvolveAge1
+
+    inline unsigned short* EvolveAge2(unsigned int member)
+    {
+        return Result(member)->EvolveAge2();
+    } // EvolveAge2
+
+    inline unsigned short EvolveAge2(unsigned int member) const
+    {
+        return Result(member)->EvolveAge2();
+    } // EvolveAge2
+
+    inline unsigned short* EvolveAge2(const FireStarterSettings& settings, unsigned int member)
+    {
+        return Result(settings, member)->EvolveAge2();
+    } // EvolveAge2
+
+    inline unsigned short EvolveAge2(const FireStarterSettings& settings, unsigned int member) const
+    {
+        return Result(settings, member)->EvolveAge2();
+    } // EvolveAge2
+
+    inline void InitMemberResult(const FireStarterData& data, unsigned int member, float resultMin, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    {
+        Result(member)->Init(&data, resultMin, evolveAge1, evolveAge2);
+    } // InitMemberResult
+
+    inline void InitMemberResult(const FireStarterData* data, unsigned int member, float resultMin, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    {
+        Result(member)->Init(data, resultMin, evolveAge1, evolveAge2);
+    } // InitMemberResult
+
+    inline void InitMemberResult(const FireStarterData& data, const FireStarterSettings& settings, unsigned int member, float resultMin, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    {
+        Result(settings, member)->Init(&data, settings, resultMin, evolveAge1, evolveAge2);
+    } // InitMemberResult
+
+    inline void InitMemberResult(const FireStarterData* data, const FireStarterSettings& settings, unsigned int member, float resultMin, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    {
+        Result(settings, member)->Init(data, settings, resultMin, evolveAge1, evolveAge2);
+    } // InitMemberResult
+
+    inline void InitMemberResult(const FireStarterData& data, unsigned int member, unsigned int variation, float resultMin, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    {
+        Result(member, variation)->Init(&data, resultMin, evolveAge1, evolveAge2);
+    } // InitMemberResult
+
+    inline void InitMemberResult(const FireStarterData* data, unsigned int member, unsigned int variation, float resultMin, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    {
+        Result(member, variation)->Init(data, resultMin, evolveAge1, evolveAge2);
+    } // InitMemberResult
+} FireStarterEvolvePopulation;
+
+typedef struct FireStarterOptimizePopulation {
+    FireStarterOptimizeResults m_population[FIRESTARTER_POPULATION]; // Note: Dynamically allocated.
+
+    static inline size_t DataSize(void)
+    {
+        return FireStarterData::DataSize();
+    } // DataSize
+
+    static inline size_t DataSize(const FireStarterSettings& settings)
+    {
+        return FireStarterData::DataSize(settings.m_registers);
+    } // DataSize
+
+    static inline size_t ResultSize(void)
+    {
+        return FireStarterResult::ResultSize();
+    } // ResultSize
+
+    static inline size_t ResultSize(const FireStarterSettings& settings)
+    {
+        return FireStarterResult::ResultSize(settings);
+    } // ResultSize
+
+    static inline size_t ResultsSize(void)
+    {
+        return FireStarterOptimizeResults::ResultsSize();
+    } // ResultSize
+
+    static inline size_t ResultsSize(const FireStarterSettings& settings)
+    {
+        return FireStarterOptimizeResults::ResultsSize(settings);
+    } // ResultsSize
+
+    static inline size_t PopulationSize(void)
+    {
+        return sizeof(FireStarterOptimizePopulation);
+    } // PopulationSize
+
+    static inline size_t PopulationSize(const FireStarterSettings& settings)
+    {
+        return settings.m_population * ResultsSize(settings);
+    } // PopulationSize
+
+    inline FireStarterOptimizeResults* Results(unsigned int member)
+    {
+        return (FireStarterOptimizeResults*)((unsigned char*)m_population + member * ResultsSize());
+    } // Results
+
+    inline const FireStarterOptimizeResults* Results(unsigned int member) const
+    {
+        return (const FireStarterOptimizeResults*)((unsigned char*)m_population + member * ResultsSize());
+    } // Results
+
+    inline FireStarterOptimizeResults* Results(const FireStarterSettings& settings, unsigned int member)
+    {
+        return (FireStarterOptimizeResults*)((unsigned char*)m_population + member * ResultsSize(settings));
+    } // Results
+
+    inline const FireStarterOptimizeResults* Results(const FireStarterSettings& settings, unsigned int member) const
+    {
+        return (const FireStarterOptimizeResults*)((unsigned char*)m_population + member * ResultsSize(settings));
     } // Results
 
     inline FireStarterResult* Result(unsigned int member, unsigned int variation = 0)
@@ -902,26 +1190,6 @@ typedef struct FireStarterPopulation {
     {
         return Result(settings, member, variation)->Data();
     } // Data
-
-    inline FireStarterCode* Code(unsigned int member)
-    {
-        return Results(member)->Code();
-    } // Code
-
-    inline const FireStarterCode* Code(unsigned int member) const
-    {
-        return Results(member)->Code();
-    } // Code
-
-    inline FireStarterCode* Code(const FireStarterSettings& settings, unsigned int member)
-    {
-        return Results(settings, member)->Code(settings.m_variations, settings.m_registers);
-    } // Code
-
-    inline const FireStarterCode* Code(const FireStarterSettings& settings, unsigned int member) const
-    {
-        return Results(settings, member)->Code(settings.m_variations, settings.m_registers);
-    } // Code
 
     inline float* MinResult(unsigned int member, unsigned int variation = 0)
     {
@@ -1022,4 +1290,5 @@ typedef struct FireStarterPopulation {
     {
         Result(settings, member, variation)->Init(data, settings, resultMin, evolveAge1, evolveAge2);
     } // InitMemberResult
-} FireStarterPopulation;
+} FireStarterOptimizePopulation;
+

@@ -3,7 +3,7 @@
 #include "FireStarterInstructions.h"
 #include "FireStarterResults.h"
 
-GPU_GLOBAL void FireShow(FireStarterResults* bestResults, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int registers, const unsigned int variations)
+GPU_GLOBAL void FireShow(FireStarterOptimizeResults* bestResults, FireStarterInstructions* bestInstructions, uchar4* bufferPixels, unsigned int bufferWidth, unsigned int bufferHeight, const unsigned int registers, const unsigned int variations)
 {
     int x = blockDim.x * blockIdx.x + threadIdx.x;
     int xScale = bufferHeight / 8;

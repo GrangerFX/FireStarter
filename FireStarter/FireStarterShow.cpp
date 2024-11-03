@@ -16,7 +16,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
         // Setup the data
         FireStarterSettings settings = state.Settings();        
         if (settings.m_mode == FIRESTARTER_EVOLVE_GPU) {
-            const FireStarterResults* results = state.Results();
+            const FireStarterOptimizeResults* results = state.OptimizeResults();
             m_window.Erase();
             uchar4* pixels = (uchar4*)m_window.GetPixels();
             unsigned int width = m_window.m_width;
@@ -42,7 +42,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                     };
                 }
 
-                const FireStarterCode* code = results->Code(settings);
+                const FireStarterCode* code = state.Code();
                 for (unsigned int x = 0; x < width; x++) {
                     FireStarterData data = results->Data(v);
                     float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
@@ -77,7 +77,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
             if (m_fireShowFunction) {
                 // Allocate the results and instructions.
                 if (!m_fireShowResults) {
-                    checkCUDAErrors(cudaMallocAsync(&m_fireShowResults, FireStarterResults::ResultsSize(settings), stream));
+                    checkCUDAErrors(cudaMallocAsync(&m_fireShowResults, FireStarterOptimizeResults::ResultsSize(settings), stream));
                     context->Synchronize();
                 }
                 if (!m_fireShowInstructions) {
@@ -85,8 +85,8 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                     context->Synchronize();
                 }
 
-                size_t resultsSize = FireStarterResults::ResultsSize(settings);
-                checkCUDAErrors(cudaMemcpyAsync(m_fireShowResults, state.Results(), resultsSize, cudaMemcpyHostToDevice, stream));
+                size_t resultsSize = FireStarterOptimizeResults::ResultsSize(settings);
+                checkCUDAErrors(cudaMemcpyAsync(m_fireShowResults, state.OptimizeResults(), resultsSize, cudaMemcpyHostToDevice, stream));
                 size_t instructionsSize = FireStarterInstructions::InstructionsSize(settings.m_instructions);
                 checkCUDAErrors(cudaMemcpyAsync(m_fireShowInstructions, state.m_program.OptimizedInstructions(), instructionsSize, cudaMemcpyHostToDevice, stream));
 
@@ -242,7 +242,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     if (state.PassMode() == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, state.m_maxResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
         for (unsigned int v = 0; v < settings.m_variations; v++)
-            statusString += Format("  V:%d=%.8f", v, state.Results()->MinResult(v));
+            statusString += Format("  V:%d=%.8f", v, state.OptimizeResults()->MinResult(v));
     } else {
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
@@ -263,7 +263,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.m_maxResult);
             if (state.PassMode() == FIRESTARTER_EVOLVE_GPU)
-                statusString += Format("  MinIndex=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)state.Result(0)->EvolveAge1());
+                statusString += Format("  MinIndex=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)state.OptimizeResult(0)->EvolveAge1());
         } else {
             statusString += Format("  Generation=%3u", generation);
             if ((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {

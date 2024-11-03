@@ -7,13 +7,21 @@ typedef std::vector<class FireStarterState> FireStarterStates;
 
 class FireStarterState {
 private:
-    std::vector<unsigned char> m_resultsData;
-    FireStarterResults* m_results = nullptr;    // Used for debugging. null pointer when uninitialized.
- 
+    std::vector<unsigned char> m_evolveResultsData;
+    std::vector<unsigned char> m_optimizeResultsData;
+    std::vector<unsigned char> m_codeData;
+    FireStarterEvolveResults* m_evolveResults = nullptr;     // Used for debugging. null pointer when uninitialized.
+    FireStarterOptimizeResults* m_optimizeResults = nullptr; // Used for debugging. null pointer when uninitialized.
+    FireStarterCode* m_code = nullptr;                       // Used for debugging. null pointer when uninitialized.
+
     inline void swap(const FireStarterState& other)
     {
-        m_resultsData = other.m_resultsData;
-        m_results = Results();
+        m_evolveResultsData = other.m_evolveResultsData;
+        m_optimizeResultsData = other.m_optimizeResultsData;
+        m_codeData = other.m_codeData;
+        m_evolveResults = EvolveResults();
+        m_optimizeResults = OptimizeResults();
+        m_code = Code();
         m_program = other.m_program;
         m_evaluateCode = other.m_evaluateCode;
         m_timer = other.m_timer;
@@ -75,77 +83,135 @@ public:
         return m_program.m_settings;
     } // Settings
 
-    inline size_t ResultsSize(void) const
+    inline size_t EvolveResultsSize(void) const
     {
-        return FireStarterResults::ResultsSize(Settings());
-    } // ResultSize
+        return FireStarterEvolveResults::ResultsSize(Settings());
+    } // EvolveResultSize
 
-    inline const FireStarterResults* Results(void) const
+    inline size_t OptimizeResultsSize(void) const
     {
-        return m_resultsData.empty() ? nullptr : (const FireStarterResults*)m_resultsData.data();
-    } // Results
+        return FireStarterOptimizeResults::ResultsSize(Settings());
+    } // OptimizeResultsSize
 
-    inline FireStarterResults* Results(void)
+    inline const FireStarterEvolveResults* EvolveResults(void) const
     {
-        return m_resultsData.empty() ? nullptr : (FireStarterResults*)m_resultsData.data();
-    } // Result
+        return m_evolveResultsData.empty() ? nullptr : (const FireStarterEvolveResults*)m_evolveResultsData.data();
+    } // EvolveResults
+
+    inline FireStarterEvolveResults* EvolveResults(void)
+    {
+        return m_evolveResultsData.empty() ? nullptr : (FireStarterEvolveResults*)m_evolveResultsData.data();
+    } // EvolveResults
+
+    inline const FireStarterOptimizeResults* OptimizeResults(void) const
+    {
+        return m_optimizeResultsData.empty() ? nullptr : (const FireStarterOptimizeResults*)m_optimizeResultsData.data();
+    } // OptimizeResults
+
+    inline FireStarterOptimizeResults* OptimizeResults(void)
+    {
+        return m_optimizeResultsData.empty() ? nullptr : (FireStarterOptimizeResults*)m_optimizeResultsData.data();
+    } // OptimizeResults
 
     inline size_t ResultSize(void) const
     {
         return FireStarterResult::ResultSize(Settings());
     } // ResultSize
 
-    inline FireStarterResult* Result(unsigned int variation = 0)
+    inline FireStarterResult* EvolveResult(void)
     {
-        return m_resultsData.empty() ? nullptr : Results()->Result(variation);
+        return m_evolveResultsData.empty() ? nullptr : EvolveResults()->Result();
     } // Result
 
-    inline const FireStarterResult* Result(unsigned int variation = 0) const
+    inline const FireStarterResult* EvolveResult(void) const
     {
-        return m_resultsData.empty() ? nullptr : Results()->Result(variation);
+        return m_evolveResultsData.empty() ? nullptr : EvolveResults()->Result();
     } // Result
 
-    inline float MinResult(unsigned int variation = 0) const
+    inline FireStarterResult* OptimizeResult(unsigned int variation = 0)
     {
-        return m_resultsData.empty() ? Settings().m_startResult : Results()->MinResult(variation);
+        return m_optimizeResultsData.empty() ? nullptr : OptimizeResults()->Result(variation);
+    } // Result
+
+    inline const FireStarterResult* OptimizeResult(unsigned int variation = 0) const
+    {
+        return m_optimizeResultsData.empty() ? nullptr : OptimizeResults()->Result(variation);
+    } // Result
+
+    inline float EvolveMinResult(void) const
+    {
+        return m_evolveResultsData.empty() ? Settings().m_startResult : EvolveResults()->MinResult();
     } // MinResult
 
-    inline unsigned short EvolveAge1(unsigned int variation = 0) const
+    inline float OptimizeMinResult(unsigned int variation = 0) const
     {
-        return m_resultsData.empty() ? 0 : Results()->EvolveAge1(variation);
+        return m_optimizeResultsData.empty() ? Settings().m_startResult : OptimizeResults()->MinResult(variation);
+    } // MinResult
+
+    inline unsigned short EvolveAge1(void) const
+    {
+        return m_evolveResultsData.empty() ? 0 : EvolveResults()->EvolveAge1();
     } // EvolveAge1
 
-    inline unsigned short EvolveAge2(unsigned int variation = 0) const
+    inline unsigned short EvolveAge2(void) const
     {
-        return m_resultsData.empty() ? 0 : Results()->EvolveAge2(variation);
+        return m_evolveResultsData.empty() ? 0 : EvolveResults()->EvolveAge2();
     } // EvolveAge2
+
+    inline unsigned short OptimizeAge1(unsigned int variation = 0) const
+    {
+        return m_optimizeResultsData.empty() ? 0 : OptimizeResults()->EvolveAge1(variation);
+    } // OptimizeAge1
+
+    inline unsigned short OptimizeAge2(unsigned int variation = 0) const
+    {
+        return m_optimizeResultsData.empty() ? 0 : OptimizeResults()->EvolveAge2(variation);
+    } // OptimizeAge2
 
     inline FireStarterCode* Code(void)
     {
-        return Results()->Code(Settings());
+        return m_codeData.empty() ? nullptr : (FireStarterCode*)m_codeData.data();
     } // Code
 
-    inline float MaxResult(void) const
+    inline const FireStarterCode* Code(void) const
+    {
+        return m_codeData.empty() ? nullptr : (const FireStarterCode*)m_codeData.data();
+    } // Code
+
+    inline float EvolveMaxResult(void) const
+    {
+        return EvolveMinResult();
+    } // MaxResult
+
+    inline float OptimizeMaxResult(void) const
     {
         float maxResult = 0.0f;
         unsigned int variations = Settings().m_variations;
         for (unsigned int v = 0; v < variations; v++)
-            maxResult = MAX(maxResult, MinResult(v));
+            maxResult = MAX(maxResult, OptimizeMinResult(v));
         return maxResult;
     } // MaxResult
 
-    inline bool ResultsValid(void) const
+    inline bool EvolveResultsValid(void) const
     {
-        const FireStarterResults* results = Results();
+        const FireStarterEvolveResults* results = EvolveResults();
+        if (results->Result()->MinResult() == m_program.m_settings.m_startResult)
+            return false;
+        return true;
+    } // EvolveResultsValid
+
+    inline bool OptimizeResultsValid(void) const
+    {
+        const FireStarterOptimizeResults* results = OptimizeResults();
         for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
             if (results->Result(v)->MinResult() == m_program.m_settings.m_startResult)
                 return false;
         return true;
-    } // ResultsValid
+    } // OptimizeResultsValid
 
     inline bool Initialized(void) const
     {
-        return !m_resultsData.empty();
+        return !m_evolveResultsData.empty() && !m_optimizeResultsData.empty();
     } // Initialized
 
     inline unsigned int PassMode(void) const
@@ -276,15 +342,23 @@ public:
     void SaveState(std::string& code) const;
     float TestResult(void) const;
     void InitResults(void);
+    void InitCode(void);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
-    void InitResults(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index);
+    void InitResults(const FireStarterSettings& settings, const FireStarterEvolvePopulation* population, unsigned int index);
+    void InitResults(const FireStarterSettings& settings, const FireStarterOptimizePopulation* population, unsigned int index);
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
         InitState(settings, generation, index, id, test);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterSettings& settings, const FireStarterPopulation* population, unsigned int index)
+    inline FireStarterState(const FireStarterSettings& settings, const FireStarterEvolvePopulation* population, unsigned int index)
+    {
+        InitState(settings);
+        InitResults(settings, population, index);
+    } // FireStarterState
+
+    inline FireStarterState(const FireStarterSettings& settings, const FireStarterOptimizePopulation* population, unsigned int index)
     {
         InitState(settings);
         InitResults(settings, population, index);

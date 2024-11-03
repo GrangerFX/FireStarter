@@ -152,7 +152,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
     return true;
 } // TestEvaluate
 
-GPU_GLOBAL void SpeedTest(FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass, const unsigned long long evolutionPasses, unsigned int population)
+GPU_GLOBAL void SpeedTest(FireStarterEvolvePopulation* newResults, const FireStarterEvolvePopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass, const unsigned long long evolutionPasses, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int tid = threadIdx.x;
@@ -201,7 +201,7 @@ GPU_GLOBAL void SpeedTest(FireStarterPopulation* newResults, const FireStarterPo
         }
         memberResult = result;
     } else {
-        evolveAge = oldResults->EvolveAge1(member, variation);
+        evolveAge = oldResults->EvolveAge1(member);
         if ((evolveAge >= 16) || (memberResult >= FIRESTARTER_START_RESULT)) {
             evolveAge = 0;
             memberResult = FIRESTARTER_START_RESULT;
@@ -211,8 +211,8 @@ GPU_GLOBAL void SpeedTest(FireStarterPopulation* newResults, const FireStarterPo
             result = memberResult;
         } else {
             code = oldResults->Code(member);
-            data = oldResults->Data(member, variation);
-            memberResult = oldResults->MinResult(member, variation);
+            data = oldResults->Data(member);
+            memberResult = oldResults->MinResult(member);
             evolutionScale = FIRESTARTER_SCALE * memberResult;
             result = memberResult;
             if (evolveAge > 0)
@@ -288,10 +288,10 @@ GPU_GLOBAL void SpeedTest(FireStarterPopulation* newResults, const FireStarterPo
         } else {
             // Revert to the original code and data.
             code = oldResults->Code(member);
-            data = oldResults->Data(member, variation);
+            data = oldResults->Data(member);
             evolveAge++;
         }
-        newResults->InitMemberResult(data, member, variation, result, evolveAge);
+        newResults->InitMemberResult(data, member, result, evolveAge);
         newResults->Code(member)->Copy(code);
     }
 } // SpeedTest

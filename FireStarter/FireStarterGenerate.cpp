@@ -136,7 +136,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     std::string generateCode;
 
     const FireStarterSettings& settings = state.Settings();
-    const FireStarterResults* results = state.Results();
+    const FireStarterOptimizeResults* results = state.OptimizeResults();
     unsigned int tabs = 1;
     std::string solutionCode;
     solutionCode += "#pragma once\r\n";

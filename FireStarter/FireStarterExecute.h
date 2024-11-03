@@ -24,10 +24,11 @@ public:
 
 class FireStarterExecute : public CUDAThread {
 private:
-    FireStarterPopulation* m_hostPopulation = nullptr;
-    FireStarterPopulation* m_devicePopulation = nullptr;
-    FireStarterPopulation* m_devicePopulation0 = nullptr;
-    FireStarterPopulation* m_devicePopulation1 = nullptr;
+    FireStarterEvolvePopulation* m_hostEvolvePopulation = nullptr;
+    FireStarterEvolvePopulation* m_deviceEvolvePopulation = nullptr;
+    FireStarterOptimizePopulation* m_hostOptimizePopulation = nullptr;
+    FireStarterOptimizePopulation* m_deviceOptimizePopulation0 = nullptr;
+    FireStarterOptimizePopulation* m_deviceOptimizePopulation1 = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -40,7 +41,8 @@ private:
     std::string m_optimizeCode;
     std::string m_evolveCode;
     std::string m_speedTestCode;
-    size_t m_populationSize = 0;
+    size_t m_evolvePopulationSize = 0;
+    size_t m_optimizePopulationSize = 0;
     size_t m_evolutionsSize = 0;
     size_t m_executeIndex = 0;
 
