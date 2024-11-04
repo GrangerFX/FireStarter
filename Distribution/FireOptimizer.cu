@@ -25,7 +25,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     return true;
 } // TestEvaluate
 
-GPU_GLOBAL void Optimizer(FireStarterOptimizePopulation* newResults, const FireStarterOptimizePopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+GPU_GLOBAL void Optimizer(FireStarterResult* newResults, const FireStarterResult* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -42,6 +42,7 @@ GPU_GLOBAL void Optimizer(FireStarterOptimizePopulation* newResults, const FireS
     }
 
     // Evolve the program registers for each variation.
+    const FireStarterResult& oldResult = oldResults[member];
     FireStarterData data;
     unsigned short evolveAge1;
     float result, memberResult;
@@ -61,8 +62,8 @@ GPU_GLOBAL void Optimizer(FireStarterOptimizePopulation* newResults, const FireS
         evolveAge1 = 0;
     } else {
         // Later generations randomize a single register if they were copied.
-        data.Copy(oldResults->Data(member, variation));
-        evolveAge1 = oldResults->EvolveAge1(member, variation);
+        data.Copy(oldResult.Data());
+        evolveAge1 = oldResult.EvolveAge1();
         if (evolveAge1 > 1) {
             // Randomize a single register.
             unsigned int d = RANDOMMOD(memberSeed, registers);
@@ -72,11 +73,11 @@ GPU_GLOBAL void Optimizer(FireStarterOptimizePopulation* newResults, const FireS
             result = 1.0e+6f;
             if (!TestEvaluate(data, target, theta, result)) {
                 data[d] = oldData;
-                result = memberResult = oldResults->MinResult(member, variation);
+                result = memberResult = oldResult.MinResult();
             }
             evolutionScale = 6.0f * FIRESTARTER_SCALE * memberResult;
         } else {
-            result = memberResult = oldResults->MinResult(member, variation);
+            result = memberResult = oldResult.MinResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
@@ -107,9 +108,9 @@ GPU_GLOBAL void Optimizer(FireStarterOptimizePopulation* newResults, const FireS
         for (int i = 0; i < FIRESTARTER_OPTIMIZE_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, population);
-            unsigned short candidateAge = oldResults->EvolveAge1(candidate, variation);
+            unsigned short candidateAge = oldResults[candidate].EvolveAge1();
             if (candidateAge <= 1) {
-                float candidateResult = oldResults->MinResult(candidate, variation);
+                float candidateResult = oldResults[candidate].MinResult();
                 if (candidateResult <= result) {
                     bestCandidate = candidate;
                     result = candidateResult;
@@ -121,9 +122,9 @@ GPU_GLOBAL void Optimizer(FireStarterOptimizePopulation* newResults, const FireS
         age = 1;
         if (bestCandidate != member) {
             age += MAX(evolveAge1, 1);
-            data = *oldResults->Data(bestCandidate, variation);
+            data = oldResults[bestCandidate].Data();
         }
     }
-    newResults->InitMemberResult(data, member, variation, result, age);
+    newResults[member].Init(data, member, variation, result, age);
 } // Optimizer
 

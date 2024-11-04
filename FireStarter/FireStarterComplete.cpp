@@ -199,7 +199,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
 
             // Sort the completed jobs by index.
             size_t index = job->m_state.m_index;
-            if (!newStates[index].OptimizeResults())
+            if (!newStates[index].Initialized())
                 newStates[index] = job->m_state;
             else {
                 printf("Error: Completed state index already received: %llu\n", index);

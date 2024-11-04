@@ -136,7 +136,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     std::string generateCode;
 
     const FireStarterSettings& settings = state.Settings();
-    const FireStarterOptimizeResults* results = state.OptimizeResults();
+    const std::vector<FireStarterResult*> results = state.Results();
     unsigned int tabs = 1;
     std::string solutionCode;
     solutionCode += "#pragma once\r\n";
@@ -148,11 +148,11 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     code += targetCode;
 
     for (unsigned int v = 0; v < settings.m_variations; v++) {
-        const FireStarterData* data = results->Data(v);
+        const FireStarterData* data = results[v]->Data();
 
         code += "\r\n";
         if (settings.m_variations > 1) {
-            code += Format("// Solution%d result = %.8f\r\n", v, results->MinResult(v));
+            code += Format("// Solution%d result = %.8f\r\n", v, results[v]->MinResult());
             code += Format("inline float Solution%d(float n)\r\n", v);
         } else
             code += "inline float Solution(float n)\r\n";

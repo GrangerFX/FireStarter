@@ -548,6 +548,16 @@ typedef struct FireStarterResult {
         return (sizeof(FireStarterResult) - sizeof(m_data)) + FireStarterData::DataSize(settings.m_registers);
     } // ResultSize
 
+    static inline size_t ResultsSize(unsigned int registers, unsigned int variations)
+    {
+        return ResultSize(registers) * variations;
+    } // ResultSize
+
+    static inline size_t ResultsSize(const FireStarterSettings& settings)
+    {
+        return ResultSize(settings) * settings.m_variations;
+    } // ResultsSize
+
     inline float* MinResult(void)
     {
         return &m_resultMin;
@@ -675,6 +685,7 @@ typedef struct FireStarterResult {
     } // Init
 } FireStarterResult;
 
+#if 0
 typedef struct FireStarterEvolveResults {
     FireStarterResult m_result; // Note: Dynamically allocated!
     FireStarterCode m_code; // Note: Dynamically allocated!
@@ -1291,4 +1302,5 @@ typedef struct FireStarterOptimizePopulation {
         Result(settings, member, variation)->Init(data, settings, resultMin, evolveAge1, evolveAge2);
     } // InitMemberResult
 } FireStarterOptimizePopulation;
+#endif
 

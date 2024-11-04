@@ -10,7 +10,6 @@ private:
 	std::string m_fireShowCode;
 	CUfunction m_fireShowFunction = nullptr;
 	CUmodule m_fireShowModule = nullptr;
-	FireStarterOptimizeResults* m_fireShowResults = nullptr;
 	FireStarterInstructions* m_fireShowInstructions = nullptr;
 
 	bool LoadFireShowCode(void);

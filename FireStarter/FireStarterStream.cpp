@@ -297,7 +297,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             // Output the test results.
             if (!WillTerminate()) {
                 // Output the evolve results.
-                FireStarterResult* bestResult = bestState.OptimizeResult();
                 double duration = streamTimer.Duration();
                 totalDuration += duration;
 
@@ -383,7 +382,6 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
-                    FireStarterResult* bestResult = bestState.OptimizeResult();
                     std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
                     if (bestState.m_maxResult <= optimizeSettings.m_target)
                         resultText += " *******";
@@ -462,7 +460,6 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
-                    FireStarterResult* bestResult = bestState.OptimizeResult();
                     std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
                     if (bestState.m_maxResult <= optimizeSettings.m_target)
                         resultText += " *******";

@@ -152,7 +152,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
     return true;
 } // TestEvaluate
 
-GPU_GLOBAL void SpeedTest(FireStarterEvolvePopulation* newResults, const FireStarterEvolvePopulation* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass, const unsigned long long evolutionPasses, unsigned int population)
+GPU_GLOBAL void SpeedTest(FireStarterResult* newResults, FireStarterCode* newCode, const FireStarterResult* oldResults, const FireStarterCode* oldCode, const unsigned int variation, const unsigned int registers, const unsigned long long evolutionSeed, const unsigned long long evolutionPass, const unsigned long long evolutionPasses, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int tid = threadIdx.x;
@@ -179,6 +179,8 @@ GPU_GLOBAL void SpeedTest(FireStarterEvolvePopulation* newResults, const FireSta
     unsigned short evolveAge = 0;
 
     // Evolve the program registers for each variation.
+    const FireStarterResult& oldResult = oldResults[member];
+    const FireStarterCode& oldCode = oldCode[member];
     unsigned long long memberBaseSeed = evolutionSeed + SEED10(variation) + SEED1(member);   // Unique seed for the generation/member
     unsigned long long dataBaseSeed = evolutionSeed + SEED10(variation) + SEED11(dataIndex); // Unique seed for the generation/dataIndex
     unsigned long long passSeed = SEED2(evolutionPass);
@@ -201,7 +203,7 @@ GPU_GLOBAL void SpeedTest(FireStarterEvolvePopulation* newResults, const FireSta
         }
         memberResult = result;
     } else {
-        evolveAge = oldResults->EvolveAge1(member);
+        evolveAge = oldResult.EvolveAge1();
         if ((evolveAge >= 16) || (memberResult >= FIRESTARTER_START_RESULT)) {
             evolveAge = 0;
             memberResult = FIRESTARTER_START_RESULT;
@@ -210,9 +212,9 @@ GPU_GLOBAL void SpeedTest(FireStarterEvolvePopulation* newResults, const FireSta
             data.Init(dataSeed, evolutionScale);
             result = memberResult;
         } else {
-            code = oldResults->Code(member);
-            data = oldResults->Data(member);
-            memberResult = oldResults->MinResult(member);
+            code = oldCode;
+            data = oldResult.Data();
+            memberResult = oldResult.MinResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
             result = memberResult;
             if (evolveAge > 0)
@@ -287,12 +289,12 @@ GPU_GLOBAL void SpeedTest(FireStarterEvolvePopulation* newResults, const FireSta
             evolveAge = 0;
         } else {
             // Revert to the original code and data.
-            code = oldResults->Code(member);
-            data = oldResults->Data(member);
+            code = oldCode;
+            data = oldResult.Data();
             evolveAge++;
         }
-        newResults->InitMemberResult(data, member, result, evolveAge);
-        newResults->Code(member)->Copy(code);
+        newResults[member].Init(data, result, evolveAge);
+        newCode[member].Copy(code);
     }
 } // SpeedTest
 #endif
@@ -352,7 +354,7 @@ inline bool TestEvaluate2(FireStarterSharedData& sharedData, const FireStarterDa
     return true;
 } // TestEvaluate2
 
-GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopulation* newResults, const FireStarterPopulation* oldResults, const unsigned int variation, const unsigned int numRegisters, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+GPU_GLOBAL void SpeedTest(const FireStarterResult* initResult, const FireStarterCode *initCode, FireStarterResult* newResults, FireStarterCode* newCode, const FireStarterResult* oldResults, const FireStarterCode* oldCode, const unsigned int variation, const unsigned int numRegisters, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -372,13 +374,13 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
     GPU_SHARED FireStarterSharedData sharedData;
 
     // For the GPU evolve optimize pass, the code is copied from the initial result.
-    FireStarterCode code;
-    code = initResults->Code();
+    FireStarterCode code = *initCode;
 
     // Initialize the registers array.
     FireStarterRegisters registers(code);
 
     // Evolve the program registers for each variation.
+    const FireStarterResult& oldResult = oldResults[member];
     FireStarterData data;
     unsigned short evolveAge1;
     float result, memberResult;
@@ -388,7 +390,7 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
         evolutionScale = FIRESTARTER_START_SCALE;
-        memberResult = FIRESTARTER_TART_RESULT;
+        memberResult = FIRESTARTER_START_RESULT;
         result = memberResult;
         for (int i = 0; i < 10; i++) {
             data.Init(memberSeed, evolutionScale);
@@ -399,8 +401,8 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
         evolveAge1 = 0;
     } else {
         // Later generations randomize a single register if they were copied.
-        data = oldResults->Data(member, variation);
-        evolveAge1 = oldResults->EvolveAge1(member, variation);
+        data = oldResult.Data();
+        evolveAge1 = oldResult.EvolveAge1();
         if (evolveAge1 > 1) {
             // Randomize a single register.
             evolutionScale = FIRESTARTER_START_SCALE;
@@ -411,10 +413,10 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
             result = 1.0e+6f;
             if (!TestEvaluate2(sharedData, data, registers, target, theta, result)) {
                 data[d] = oldData;
-                result = memberResult = oldResults->MinResult(member, variation);
+                result = memberResult = oldResult.MinResult();
             }
         } else {
-            result = memberResult = oldResults->MinResult(member, variation);
+            result = memberResult = oldResult.MinResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
@@ -445,9 +447,10 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
         for (int i = 0; i < FIRESTARTER_SPEED_TEST_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, population);
-            unsigned short candidateAge = oldResults->EvolveAge1(candidate, variation);
+            const FireStarterResult& curResult = oldResults[candidate];
+            unsigned short candidateAge = curResult.EvolveAge1();
             if (candidateAge <= 1) {
-                float candidateResult = oldResults->MinResult(candidate, variation);
+                float candidateResult = curResult.MinResult();
                 if (candidateResult <= result) {
                     bestCandidate = candidate;
                     result = candidateResult;
@@ -459,9 +462,9 @@ GPU_GLOBAL void SpeedTest(const FireStarterResults* initResults, FireStarterPopu
         age = 1;
         if (bestCandidate != member) {
             age += MAX(evolveAge1, 1);
-            data = *oldResults->Data(bestCandidate, variation);
+            data = *oldResults[bestCandidate].Data();
         }
     }
-    newResults->InitMemberResult(data, member, variation, result, age);
+    newResults[member].Init(data, result, age);
 } // SpeedTest
 #endif

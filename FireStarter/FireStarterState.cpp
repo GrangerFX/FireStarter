@@ -4,8 +4,7 @@ bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
     result = result && m_program.Packetize(packet);
-    result = result && packet.Packetize(m_evolveResultsData);
-    result = result && packet.Packetize(m_optimizeResultsData);
+    result = result && packet.Packetize(m_resultsData);
     result = result && packet.Packetize(&m_generation, sizeof(m_generation));
     return result;
 } // Packetize
@@ -17,33 +16,33 @@ void FireStarterState::SaveStats(std::string& code) const
     code += Format("// Run generation = %llu\r\n", m_generation);
     code += Format("// Run evolution = %llu\r\n", m_evolution);
     code += Format("// Run max result = %.8f\r\n", m_maxResult);
-    FireStarterProgram::SettingsText(Settings(), code, "// Run ");
+    FireStarterProgram::SettingsText(m_settings, code, "// Run ");
     code += "\r\n";
 } // SaveStats
 
 void FireStarterState::SaveVariation(unsigned int variation, std::string& code) const
 {
-    code += Format("// Variation: %d  result = %.8f\r\n", variation, OptimizeResults()->MinResult(variation));
+    code += Format("// Variation: %d  result = %.8f\r\n", variation, MinResult(variation));
     code += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     code += "{\r\n";
     code += "    FireStarterData *data = result->Data();\r\n";
-    for (unsigned int i = 0; i < m_program.m_settings.m_registers; i++) {
-        float data = OptimizeResult(variation)->Data()->d[i];
+    for (unsigned int i = 0; i < m_settings.m_registers; i++) {
+        float data = Result(variation)->Data()->d[i];
         code += Format("    data->d[%u] = %.8ff;\r\n", i, data);
     }
-    code += Format("    *(result->MinResult()) = %.8ff;\r\n", OptimizeResult(variation)->MinResult());
+    code += Format("    *(result->MinResult()) = %.8ff;\r\n", MinResult(variation));
     code += Format("} // LoadVariation%u\r\n", variation);
     code += "\r\n";
 } // SaveVariation
 
 void FireStarterState::SaveResult(std::string& code) const
 {
-    for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
+    for (unsigned int v = 0; v < m_settings.m_variations; v++)
         SaveVariation(v, code);
     code += "inline void LoadResult(FireStarterState& state)\r\n";
     code += "{\r\n";
-    for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
-        code += Format("    LoadVariation%u(state.OptimizeResult(%u));\r\n", v, v);
+    for (unsigned int v = 0; v < m_settings.m_variations; v++)
+        code += Format("    LoadVariation%u(state.Result(%u));\r\n", v, v);
     code += Format("    state.m_maxResult = %.8ff;\r\n", m_maxResult);
     code += "} // LoadResult\r\n";
     code += "\r\n";
@@ -87,18 +86,18 @@ float FireStarterState::TestResult(void) const
 {
     // Get an accurate test result for the state.
     const FireStarterInstructions* testInstructions = m_program.OptimizedInstructions();
-    unsigned int instructions = m_program.m_settings.m_instructions;
-    size_t dataSize = FireStarterData::DataSize(m_program.m_settings.m_registers);
+    unsigned int instructions = m_settings.m_instructions;
+    size_t dataSize = FireStarterData::DataSize(m_settings.m_registers);
     FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
     float testResult = 0.0f;
-    for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++) {
-        const FireStarterData* initData = OptimizeResults()->Data(v);
-        float minResult = OptimizeResults()->MinResult(v);
-        if (minResult < m_program.m_settings.m_startResult) {
+    for (unsigned int v = 0; v < m_settings.m_variations; v++) {
+        const FireStarterData* initData = Result(v)->Data();
+        float minResult = MinResult(v);
+        if (minResult < m_settings.m_startResult) {
             float result = 0.0f;
-            float sampleStep = (m_program.m_settings.m_targetMax - m_program.m_settings.m_targetMin) / (m_program.m_settings.m_samples - 1);
-            for (unsigned int i = 0; i < m_program.m_settings.m_samples; i++) {
-                float theta = m_program.m_settings.m_targetMin + i * sampleStep;
+            float sampleStep = (m_settings.m_targetMax - m_settings.m_targetMin) / (m_settings.m_samples - 1);
+            for (unsigned int i = 0; i < m_settings.m_samples; i++) {
+                float theta = m_settings.m_targetMin + i * sampleStep;
                 float target = Target(theta, v);
                 memcpy(workData, initData, dataSize);
                 float sampleResult = (float)m_program.OptimizedInstructions()->Execute(workData, instructions, theta);
@@ -115,24 +114,15 @@ float FireStarterState::TestResult(void) const
 
 void FireStarterState::InitResults(void)
 {
-    const FireStarterSettings& settings = m_program.m_settings;
-
-    if ((settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
-        m_evolveResultsData.resize(FireStarterEvolveResults::ResultsSize(settings));
-        m_evolveResults = EvolveResults();
-        if (m_evolveResults)
-            m_evolveResults->InitResults(settings);
-    } else {
-        m_optimizeResultsData.resize(FireStarterOptimizeResults::ResultsSize(settings));
-        m_optimizeResults = OptimizeResults();
-        if (m_optimizeResults)
-            m_optimizeResults->InitResults(settings);
-    }
+    m_resultsData.resize(ResultsSize());
+    m_results = Results();
+    for (unsigned int v = 0; v < m_settings.m_variations; v++)
+        Result(v)->Init(m_settings);
 } // InitResults
 
 void FireStarterState::InitCode(void)
 {
-    m_codeData.resize(FireStarterCode::CodeSize(Settings()));
+    m_codeData.resize(CodeSize());
     m_code = Code();
 } // InitCode
 
@@ -171,32 +161,24 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitCode();
 } // InitState
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterEvolvePopulation* population, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int index)
 {
-    FireStarterResult* result = EvolveResult();
-    memcpy(Code(), population->Code(settings, index), FireStarterCode::CodeSize(settings.m_instructions));
-    memcpy(result->Data(), population->Data(settings, index), FireStarterData::DataSize(settings.m_registers));
-    *result->EvolveAge1() = population->EvolveAge1(settings, index);
-    *result->EvolveAge2() = population->EvolveAge2(settings, index);
-    *result->MinResult() = population->MinResult(settings, index);
-    m_maxResult = EvolveMaxResult();
+    memcpy(Result(), result, ResultSize());
+    m_maxResult = MaxResult();
     m_minIndex = index;
     m_optimizeValid = true;
 
     // Load the state's program from the GPU evolved code.
+    memcpy(Code(), code, CodeSize());
     LoadProgramFromCode();
 } // InitResults
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterOptimizePopulation* population, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<const FireStarterResult*> results, unsigned int index)
 {
-    for (unsigned int v = 0; v < settings.m_variations; v++) {
-        FireStarterResult* result = OptimizeResult(v);
-        memcpy(result->Data(), population->Data(settings, index, v), FireStarterData::DataSize(settings.m_registers));
-        *result->EvolveAge1() = population->EvolveAge1(settings, index, v);
-        *result->EvolveAge2() = population->EvolveAge2(settings, index, v);
-        *result->MinResult() = population->MinResult(settings, index, v);
-    }
-    m_maxResult = OptimizeMaxResult();
+    size_t resultSize = ResultSize();
+    for (unsigned int v = 0; v < settings.m_variations; v++)
+        memcpy(Result(v), results[v], resultSize);
+    m_maxResult = MaxResult();
     m_minIndex = index;
     m_optimizeValid = true;
 } // InitResults
