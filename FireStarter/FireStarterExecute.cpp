@@ -139,7 +139,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 
                 FireStarterCode* deviceCode = nullptr;
                 checkCUDAErrors(cudaMallocAsync(&deviceCode, evolveCodeSize, Stream()));
-                m_devicePopulationCode.push_back(hostCode);
+                m_devicePopulationCode.push_back(deviceCode);
 
                 FireStarterResult* hostPopulation = nullptr;
                 checkCUDAErrors(cudaMallocHost(&hostPopulation, m_evolvePopulationSize));
