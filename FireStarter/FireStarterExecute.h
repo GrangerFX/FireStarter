@@ -43,6 +43,7 @@ private:
     std::string m_optimizeCode;
     std::string m_evolveCode;
     std::string m_speedTestCode;
+    size_t m_evolveCodeSize = 0;
     size_t m_evolvePopulationSize = 0;
     size_t m_optimizePopulationSize = 0;
     size_t m_evolutionsSize = 0;

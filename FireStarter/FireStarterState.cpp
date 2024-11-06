@@ -161,23 +161,23 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitCode();
 } // InitState
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, const std::vector<FireStarterCode*>& code, unsigned int index)
 {
-    memcpy(Result(), result, ResultSize());
+    memcpy(Result(), results[0] + index, ResultSize());
     m_maxResult = MaxResult();
     m_minIndex = index;
     m_optimizeValid = true;
 
     // Load the state's program from the GPU evolved code.
-    memcpy(Code(), code, CodeSize());
+    memcpy(Code(), code[0] + index, CodeSize());
     LoadProgramFromCode();
 } // InitResults
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<const FireStarterResult*> results, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, unsigned int index)
 {
     size_t resultSize = ResultSize();
     for (unsigned int v = 0; v < settings.m_variations; v++)
-        memcpy(Result(v), results[v], resultSize);
+        memcpy(Result(v), results[v] + index, resultSize);
     m_maxResult = MaxResult();
     m_minIndex = index;
     m_optimizeValid = true;

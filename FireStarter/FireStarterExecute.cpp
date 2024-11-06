@@ -127,10 +127,11 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     bool result = true;
     if ((settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
         // Reallocate the populations if the size has changed.
-        size_t evolvePopulationSize = settings.m_population * FireStarterResult::ResultSize(settings);
         size_t evolveCodeSize = settings.m_population * FireStarterCode::CodeSize(settings);
-        if (m_evolvePopulationSize != evolvePopulationSize) {
+        size_t evolvePopulationSize = settings.m_population * FireStarterResult::ResultSize(settings);
+        if ((evolveCodeSize != m_evolveCodeSize) || (m_evolvePopulationSize != evolvePopulationSize)) {
             FinishPopulation();
+            m_evolveCodeSize = evolveCodeSize;
             m_evolvePopulationSize = evolvePopulationSize;
             if (m_evolvePopulationSize) {
                 FireStarterCode* hostCode = nullptr;
@@ -195,13 +196,9 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     unsigned int passes = settings.m_passes;
     unsigned int population = settings.m_population;
 
-    // Run all the evolve states in parallel.
-    unsigned int registers = settings.m_registers;
-
     void* arr[] = { reinterpret_cast<void*>(&m_deviceEvolvePopulation[0]),
                     reinterpret_cast<void*>(&m_devicePopulationCode[0]),
                     reinterpret_cast<void*>(&variation),
-                    reinterpret_cast<void*>(&registers),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&generation),
                     reinterpret_cast<void*>(&passes),
@@ -221,6 +218,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     Context()->Synchronize();
 
     // Single GPUs have their data syncronized with the host here.
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulationCode[0], m_devicePopulationCode[0], m_evolveCodeSize, cudaMemcpyDeviceToHost, Stream()));
     checkCUDAErrors(cudaMemcpyAsync(m_hostEvolvePopulation[0], m_deviceEvolvePopulation[0], m_evolvePopulationSize, cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
 
@@ -237,13 +235,13 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
             minIndex = i;
         }
         if (curResult < bestStates.WorstResult()) {
-            FireStarterState newState(settings, &m_hostEvolvePopulation[0][i], &m_hostPopulationCode[0][i], i);
+            FireStarterState newState(settings, m_hostEvolvePopulation, m_hostPopulationCode, i);
             bestStates.AddState(newState, curResult);
         }
     }
 
     float oldResult = state.m_maxResult;
-    state.InitResults(settings, m_hostEvolvePopulation[minIndex], m_hostPopulationCode[minIndex], minIndex);
+    state.InitResults(settings, m_hostEvolvePopulation, m_hostPopulationCode, minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteEvolvePass
 
@@ -312,10 +310,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     }
 
     FireStarterResult* result = state.Result(variation);
-    memcpy(result->Data(), m_hostOptimizePopulation[variation][minIndex].Data(), FireStarterData::DataSize(settings.m_registers));
-    *result->EvolveAge1() = *m_hostOptimizePopulation[variation][minIndex].EvolveAge1();
-    *result->EvolveAge2() = *m_hostOptimizePopulation[variation][minIndex].EvolveAge2();
-    *result->MinResult() = minResult;
+    state.InitResults(settings, m_hostOptimizePopulation, minIndex);
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)

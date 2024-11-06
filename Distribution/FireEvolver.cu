@@ -20,7 +20,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 } // TestEvaluate
 
 // Current best version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void Evolver(FireStarterResult* results, FireStarterCode* codes, const unsigned int variation, const unsigned int registers, const unsigned long long seed, const unsigned long long generation, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void Evolver(FireStarterResult* results, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned long long generation, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -115,6 +115,6 @@ GPU_GLOBAL void Evolver(FireStarterResult* results, FireStarterCode* codes, cons
             evolveAge++;
         }
     }
-    results[member].Init(bestData, member, variation, bestResult, bestAge);
+    results[member].Init(bestData, bestResult, bestAge);
     codes[member].Copy(bestCode);
 } // Evolver

@@ -125,6 +125,6 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newResults, const FireStarterResult
             data = oldResults[bestCandidate].Data();
         }
     }
-    newResults[member].Init(data, member, variation, result, age);
+    newResults[member].Init(data, result, age);
 } // Optimizer
 

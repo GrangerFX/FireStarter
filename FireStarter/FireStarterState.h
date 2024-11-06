@@ -313,21 +313,21 @@ public:
     void InitResults(void);
     void InitCode(void);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
-    void InitResults(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int index);
-    void InitResults(const FireStarterSettings& settings, const std::vector<const FireStarterResult*> results, unsigned int index);
+    void InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, const std::vector<FireStarterCode*>& code, unsigned int index);
+    void InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, unsigned int index);
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
         InitState(settings, generation, index, id, test);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int index)
+    inline FireStarterState(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, const std::vector<FireStarterCode*>& code, unsigned int index)
     {
         InitState(settings);
-        InitResults(settings, result, code, index);
+        InitResults(settings, results, code, index);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterSettings& settings, const std::vector<const FireStarterResult*> results, unsigned int index)
+    inline FireStarterState(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, unsigned int index)
     {
         InitState(settings);
         InitResults(settings, results, index);
