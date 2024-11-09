@@ -198,13 +198,6 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
             }
-
-#if FIRESTARTER_EVOLVE_DEBUG
-            for (FireStarterState& curState : allStates)
-                resultText += Format("%2llu: copy_index=%2llu  id:%2llu  evolution: %2llu  age: %3llu  maxResult: %.8f\n", curState.m_index, curState.m_copy_index, curState.m_id, curState.m_evolution, generation - curState.m_generation, curState.m_maxResult);
-            resultText += "\n";
-            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveDebug.txt", streamDate.c_str()));
-#endif
         }
 
         // Cancel any waiting jobs

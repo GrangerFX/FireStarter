@@ -237,7 +237,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     float minResult = settings.m_startResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < population; i++) {
-        float curResult = *m_hostPopulation[0][i].MinResult();
+        float curResult = *m_hostPopulation[i].MinResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -335,16 +335,16 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 
 #if FIRESTARTER_EVOLVE_DEBUG
     // Get the population data.
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation[variation], newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float minResult = *m_hostPopulation[variation][0].MinResult();
+    float minResult = *m_hostPopulation[0].MinResult();
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < population; i++) {
-        float curResult = *m_hostPopulation[variation][i].MinResult();
+        float curResult = *m_hostPopulation[i].MinResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -352,7 +352,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     }
 
     FireStarterResult* result = state.Result(variation);
-    state.InitResults(settings, m_hostPopulation, minIndex);
+    state.InitResults(settings, m_hostPopulation, variation, minIndex);
 #else
     // Get the results.
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));

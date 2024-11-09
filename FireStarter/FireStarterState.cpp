@@ -190,13 +190,13 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
     m_optimizeValid = true;
 } // InitResult
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, const std::vector<FireStarterCode*>& code, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* results, const FireStarterCode* code, unsigned int index)
 {
-    InitResult(settings, results[0] + index, code[0] + index, 0, index);
+    InitResult(settings, results->Member(settings, index), code->Member(settings, index), 0, index);
 } // InitResults
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, unsigned int index)
+void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* results, unsigned int variation, unsigned int index)
 {
     for (unsigned int v = 0; v < settings.m_variations; v++)
-        InitResult(settings, results[v] + index, nullptr, v, index);
+        InitResult(settings, results + index, nullptr, v, index);
 } // InitResults
