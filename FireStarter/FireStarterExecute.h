@@ -24,13 +24,13 @@ public:
 
 class FireStarterExecute : public CUDAThread {
 private:
-    std::vector<float*> m_hostResults;
-    std::vector<float*> m_deviceResults;
-    std::vector<FireStarterResult*> m_hostPopulation;
+    float* m_hostResults = nullptr;
+    float* m_deviceResults = nullptr;
+    FireStarterResult* m_hostPopulation = nullptr;
     std::vector<FireStarterResult*> m_devicePopulation0;
     std::vector<FireStarterResult*> m_devicePopulation1;
-    std::vector<FireStarterCode*> m_hostCode;
-    std::vector<FireStarterCode*> m_deviceCode;
+    FireStarterCode* m_hostCode = nullptr;
+    FireStarterCode* m_deviceCode = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -38,6 +38,7 @@ private:
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
     std::string m_executeCode;
+    size_t m_resultSize = 0;
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
     size_t m_codeSize = 0;

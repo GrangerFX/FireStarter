@@ -313,6 +313,8 @@ public:
     void InitResults(void);
     void InitCode(void);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
+    void InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index);
     void InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, const std::vector<FireStarterCode*>& code, unsigned int index);
     void InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, unsigned int index);
 

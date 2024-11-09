@@ -161,24 +161,42 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitCode();
 } // InitState
 
-void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, const std::vector<FireStarterCode*>& code, unsigned int index)
+void FireStarterState::InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index)
 {
-    memcpy(Result(), results[0] + index, ResultSize());
+    // Load the state's program from the GPU evolved code.
+    if (code) {
+        memcpy(Code(), code, CodeSize());
+        LoadProgramFromCode();
+    }
+
+    // Load the state's data from the population data.
+    m_maxResult = result;
+    m_minIndex = index;
+    m_optimizeValid = true;
+} // InitResult
+
+void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index)
+{
+    // Load the state's program from the GPU evolved code.
+    if (code) {
+        memcpy(Code(), code, CodeSize());
+        LoadProgramFromCode();
+    }
+
+    // Load the state's data from the population data.
+    memcpy(Result(variation), result, ResultSize());
     m_maxResult = MaxResult();
     m_minIndex = index;
     m_optimizeValid = true;
+} // InitResult
 
-    // Load the state's program from the GPU evolved code.
-    memcpy(Code(), code[0] + index, CodeSize());
-    LoadProgramFromCode();
+void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, const std::vector<FireStarterCode*>& code, unsigned int index)
+{
+    InitResult(settings, results[0] + index, code[0] + index, 0, index);
 } // InitResults
 
 void FireStarterState::InitResults(const FireStarterSettings& settings, const std::vector<FireStarterResult*>& results, unsigned int index)
 {
-    size_t resultSize = ResultSize();
     for (unsigned int v = 0; v < settings.m_variations; v++)
-        memcpy(Result(v), results[v] + index, resultSize);
-    m_maxResult = MaxResult();
-    m_minIndex = index;
-    m_optimizeValid = true;
+        InitResult(settings, results[v] + index, nullptr, v, index);
 } // InitResults

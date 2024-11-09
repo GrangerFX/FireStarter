@@ -125,7 +125,9 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
             data = oldPopulation[bestCandidate].Data();
         }
     }
-    results[member] = result;
-    newPopulation[member].Init(data, result, age);
+    if (results)
+        results[member] = result;
+    if (newPopulation)
+        newPopulation[member].Init(data, result, age);
 } // Optimizer
 
