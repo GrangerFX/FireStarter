@@ -98,27 +98,30 @@ FireStarterBestStates::FireStarterBestStates(const FireStarterSettings& settings
 
 void FireStarterExecute::FinishPopulation(void)
 {
-    for (FireStarterCode* code : m_hostPopulationCode)
+    for (float* results : m_hostResults)
+        checkCUDAErrors(cudaFreeHost(results));
+    m_hostResults.clear();
+    for (float* results : m_deviceResults)
+        checkCUDAErrors(cudaFreeAsync(results, Stream()));
+    m_deviceResults.clear();
+
+    for (FireStarterResult* result : m_hostPopulation)
+        checkCUDAErrors(cudaFreeHost(result));
+    m_hostPopulation.clear();
+    for (FireStarterResult* result : m_devicePopulation0)
+        checkCUDAErrors(cudaFreeAsync(result, Stream()));
+    m_devicePopulation0.clear();
+    for (FireStarterResult* result : m_devicePopulation1)
+        checkCUDAErrors(cudaFreeAsync(result, Stream()));
+    m_devicePopulation1.clear();
+
+    for (FireStarterCode* code : m_hostCode)
         checkCUDAErrors(cudaFreeHost(code));
-    m_hostPopulationCode.clear();
-    for (FireStarterResult* result : m_hostEvolvePopulation)
-        checkCUDAErrors(cudaFreeHost(result));
-    m_hostEvolvePopulation.clear();
-    for (FireStarterResult* result : m_hostOptimizePopulation)
-        checkCUDAErrors(cudaFreeHost(result));
-    m_hostOptimizePopulation.clear();
-    for (FireStarterCode* code : m_devicePopulationCode)
+    m_hostCode.clear();
+    for (FireStarterCode* code : m_deviceCode)
         checkCUDAErrors(cudaFreeAsync(code, Stream()));
-    m_devicePopulationCode.clear();
-    for (FireStarterResult* result : m_deviceEvolvePopulation)
-        checkCUDAErrors(cudaFreeAsync(result, Stream()));
-    m_deviceEvolvePopulation.clear();
-    for (FireStarterResult* result : m_deviceOptimizePopulation0)
-        checkCUDAErrors(cudaFreeAsync(result, Stream()));
-    m_deviceOptimizePopulation0.clear();
-    for (FireStarterResult* result : m_deviceOptimizePopulation1)
-        checkCUDAErrors(cudaFreeAsync(result, Stream()));
-    m_deviceOptimizePopulation1.clear();
+    m_deviceCode.clear();
+
     Context()->Synchronize();
 } // FinishPopulation
 
@@ -127,56 +130,73 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     bool result = true;
     if ((settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
         // Reallocate the populations if the size has changed.
-        size_t evolveCodeSize = settings.m_population * FireStarterCode::CodeSize(settings);
-        size_t evolvePopulationSize = settings.m_population * FireStarterResult::ResultSize(settings);
-        if ((evolveCodeSize != m_evolveCodeSize) || (m_evolvePopulationSize != evolvePopulationSize)) {
+        size_t resultsSize = settings.m_population * sizeof(float);
+        size_t populationSize = settings.m_population * FireStarterResult::ResultSize(settings);
+        size_t codeSize = settings.m_population * FireStarterCode::CodeSize(settings);
+        if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codeSize != m_codeSize)) {
             FinishPopulation();
-            m_evolveCodeSize = evolveCodeSize;
-            m_evolvePopulationSize = evolvePopulationSize;
-            if (m_evolvePopulationSize) {
-                FireStarterCode* hostCode = nullptr;
-                checkCUDAErrors(cudaMallocHost(&hostCode, evolveCodeSize));
-                m_hostPopulationCode.push_back(hostCode);
+            m_resultsSize = resultsSize;
+            m_populationSize = populationSize;
+            m_codeSize = codeSize;
 
-                FireStarterCode* deviceCode = nullptr;
-                checkCUDAErrors(cudaMallocAsync(&deviceCode, evolveCodeSize, Stream()));
-                m_devicePopulationCode.push_back(deviceCode);
+            float* hostResults = nullptr;
+            checkCUDAErrors(cudaMallocHost(&hostResults, resultsSize));
+            m_hostResults.push_back(hostResults);
 
-                FireStarterResult* hostPopulation = nullptr;
-                checkCUDAErrors(cudaMallocHost(&hostPopulation, m_evolvePopulationSize));
-                m_hostEvolvePopulation.push_back(hostPopulation);
+            float* deviceResults = nullptr;
+            checkCUDAErrors(cudaMallocAsync(&deviceResults, resultsSize, Stream()));
+            m_deviceResults.push_back(deviceResults);
 
-                FireStarterResult* devicePopulation = nullptr;
-                checkCUDAErrors(cudaMallocAsync(&devicePopulation, m_evolvePopulationSize, Stream()));
-                m_deviceEvolvePopulation.push_back(devicePopulation);
+            FireStarterCode* hostCode = nullptr;
+            checkCUDAErrors(cudaMallocHost(&hostCode, codeSize));
+            m_hostCode.push_back(hostCode);
 
-                Context()->Synchronize();
-                result = hostCode && deviceCode && hostPopulation && devicePopulation;
-            }
+            FireStarterCode* deviceCode = nullptr;
+            checkCUDAErrors(cudaMallocAsync(&deviceCode, codeSize, Stream()));
+            m_deviceCode.push_back(deviceCode);
+
+            FireStarterResult* hostPopulation = nullptr;
+            checkCUDAErrors(cudaMallocHost(&hostPopulation, m_populationSize));
+            m_hostPopulation.push_back(hostPopulation);
+
+            FireStarterResult* devicePopulation = nullptr;
+            checkCUDAErrors(cudaMallocAsync(&devicePopulation, m_populationSize, Stream()));
+            m_devicePopulation0.push_back(devicePopulation);
+
+            Context()->Synchronize();
+            result = hostCode && deviceCode && hostPopulation && devicePopulation;
         }
     } else {
         // Reallocate the populations if the size has changed.
-        size_t optimizePopulationSize = settings.m_population * FireStarterResult::ResultSize(settings);
-        if (m_optimizePopulationSize != optimizePopulationSize) {
+        size_t resultsSize = settings.m_population * sizeof(float);
+        size_t populationSize = settings.m_population * FireStarterResult::ResultSize(settings);
+        if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize)) {
             FinishPopulation();
-            m_optimizePopulationSize = optimizePopulationSize;
-            if (m_optimizePopulationSize) {
-                for (unsigned int v = 0; v < settings.m_variations; v++) {
-                    FireStarterResult* hostPopulation = nullptr;
-                    checkCUDAErrors(cudaMallocHost(&hostPopulation, m_optimizePopulationSize));
-                    m_hostOptimizePopulation.push_back(hostPopulation);
+            m_resultsSize = resultsSize;
+            m_populationSize = populationSize;
+            for (unsigned int v = 0; v < settings.m_variations; v++) {
+                float* hostResults = nullptr;
+                checkCUDAErrors(cudaMallocHost(&hostResults, resultsSize));
+                m_hostResults.push_back(hostResults);
 
-                    FireStarterResult* devicePopulation0 = nullptr;
-                    checkCUDAErrors(cudaMallocAsync(&devicePopulation0, m_optimizePopulationSize, Stream()));
-                    m_deviceOptimizePopulation0.push_back(devicePopulation0);
+                float* deviceResults = nullptr;
+                checkCUDAErrors(cudaMallocAsync(&deviceResults, resultsSize, Stream()));
+                m_deviceResults.push_back(deviceResults);
 
-                    FireStarterResult* devicePopulation1 = nullptr;
-                    checkCUDAErrors(cudaMallocAsync(&devicePopulation1, m_optimizePopulationSize, Stream()));
-                    m_deviceOptimizePopulation1.push_back(devicePopulation1);
+                FireStarterResult* hostPopulation = nullptr;
+                checkCUDAErrors(cudaMallocHost(&hostPopulation, m_populationSize));
+                m_hostPopulation.push_back(hostPopulation);
 
-                    Context()->Synchronize();
-                    result = result && hostPopulation && devicePopulation0 && devicePopulation1;
-                }
+                FireStarterResult* devicePopulation0 = nullptr;
+                checkCUDAErrors(cudaMallocAsync(&devicePopulation0, m_populationSize, Stream()));
+                m_devicePopulation0.push_back(devicePopulation0);
+
+                FireStarterResult* devicePopulation1 = nullptr;
+                checkCUDAErrors(cudaMallocAsync(&devicePopulation1, m_populationSize, Stream()));
+                m_devicePopulation1.push_back(devicePopulation1);
+
+                Context()->Synchronize();
+                result = result && hostPopulation && devicePopulation0 && devicePopulation1;
             }
         }
     }
@@ -196,8 +216,9 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     unsigned int passes = settings.m_passes;
     unsigned int population = settings.m_population;
 
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceEvolvePopulation[0]),
-                    reinterpret_cast<void*>(&m_devicePopulationCode[0]),
+    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults[0]),
+                    reinterpret_cast<void*>(&m_devicePopulation0[0]),
+                    reinterpret_cast<void*>(&m_deviceCode[0]),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&generation),
@@ -205,7 +226,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
                     reinterpret_cast<void*>(&population)
     };
         
-    checkCUDAErrors(cuLaunchKernel(m_evolveFunction,
+    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
         cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
         0,                                                  // shared mem
@@ -218,8 +239,9 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     Context()->Synchronize();
 
     // Single GPUs have their data syncronized with the host here.
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulationCode[0], m_devicePopulationCode[0], m_evolveCodeSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostEvolvePopulation[0], m_deviceEvolvePopulation[0], m_evolvePopulationSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults[0], m_deviceResults[0], m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation[0], m_devicePopulation0[0], m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostCode[0], m_deviceCode[0], m_codeSize, cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
 
     // Get the best variation results.
@@ -229,19 +251,19 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     float minResult = settings.m_startResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < population; i++) {
-        float curResult = *m_hostEvolvePopulation[0][i].MinResult();
+        float curResult = *m_hostPopulation[0][i].MinResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
         }
         if (curResult < bestStates.WorstResult()) {
-            FireStarterState newState(settings, m_hostEvolvePopulation, m_hostPopulationCode, i);
+            FireStarterState newState(settings, m_hostPopulation, m_hostCode, i);
             bestStates.AddState(newState, curResult);
         }
     }
 
     float oldResult = state.m_maxResult;
-    state.InitResults(settings, m_hostEvolvePopulation, m_hostPopulationCode, minIndex);
+    state.InitResults(settings, m_hostPopulation, m_hostCode, minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteEvolvePass
 
@@ -256,15 +278,18 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long passes = settings.m_passes;
     unsigned long long pass = state.m_optimize_pass * passes;
+    FireStarterResult* newPopulation = nullptr;
+    FireStarterResult* oldPopulation = nullptr;
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
         unsigned int registers = state.m_program.m_uniqueRegisters;
-        FireStarterResult* newResults = p & 1 ? m_deviceOptimizePopulation0[variation] : m_deviceOptimizePopulation1[variation];
-        FireStarterResult* oldResults = p & 1 ? m_deviceOptimizePopulation1[variation] : m_deviceOptimizePopulation0[variation];
+        newPopulation = p & 1 ? m_devicePopulation0[variation] : m_devicePopulation1[variation];
+        oldPopulation = p & 1 ? m_devicePopulation1[variation] : m_devicePopulation0[variation];
         unsigned long long seed = state.OptimizationSeed(pass);
 
-        void* arr[] = { reinterpret_cast<void*>(&newResults),
-                        reinterpret_cast<void*>(&oldResults),
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceResults[variation]),
+                        reinterpret_cast<void*>(&newPopulation),
+                        reinterpret_cast<void*>(&oldPopulation),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
                         reinterpret_cast<void*>(&seed),
@@ -272,7 +297,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                         reinterpret_cast<void*>(&population)
         };
 
-        checkCUDAErrors(cuLaunchKernel(m_optimizeFunction,
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
             0,                                                  // shared mem
@@ -286,23 +311,23 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         pass++;
     }
 
-    // Single GPUs have their data syncronized with the host here.
-    // Note: TODO: Only the current variation results should be copied to save time.
+    // Get the results.
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults[variation], m_deviceResults[variation], m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
+
+    // Get the population data.
     bool oddPasses = passes & 1;
-    FireStarterResult* newPopulation = oddPasses ? m_deviceOptimizePopulation1[variation] : m_deviceOptimizePopulation0[variation];
-    FireStarterResult* oldPopulation = oddPasses ? m_deviceOptimizePopulation0[variation] : m_deviceOptimizePopulation1[variation];
-    checkCUDAErrors(cudaMemcpyAsync(m_hostOptimizePopulation[variation], newPopulation, m_optimizePopulationSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation[variation], newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
     if (oddPasses)
-        checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_optimizePopulationSize, cudaMemcpyDeviceToDevice, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
     Context()->Synchronize();
 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float minResult = *m_hostOptimizePopulation[variation][0].MinResult();
+    float minResult = *m_hostPopulation[variation][0].MinResult();
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < population; i++) {
-        float curResult = *m_hostOptimizePopulation[variation][i].MinResult();
+        float curResult = *m_hostPopulation[variation][i].MinResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -310,7 +335,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     }
 
     FireStarterResult* result = state.Result(variation);
-    state.InitResults(settings, m_hostOptimizePopulation, minIndex);
+    state.InitResults(settings, m_hostPopulation, minIndex);
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
@@ -396,11 +421,11 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
 
     // Initialize the results and compile the CUDA module.
     if (!job->m_ptx.empty())
-        if (CUDACompile::CompileModule(m_optimizeModule, job->m_ptx)) {
-            m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
-            if (m_optimizeFunction)
+        if (CUDACompile::CompileModule(m_executeModule, job->m_ptx)) {
+            m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
+            if (m_executeFunction)
                 return true;
-            CUDACompile::ReleaseModule(m_optimizeModule);
+            CUDACompile::ReleaseModule(m_executeModule);
         }
 
     // Something went wrong so free the job.
@@ -430,24 +455,24 @@ bool FireStarterExecute::ExecuteJob(void)
 bool FireStarterExecute::GenerateEvolver(void)
 {
     // Return immediately if the Evolver code has already been compiled.
-    if (m_evolveFunction)
+    if (m_executeFunction)
         return true;
 
     // Load the base Evolver code into memory.
-    if (m_evolveCode.empty()) {
-        if (!FireStarterSource::LoadSource(m_evolveCode, EVOLVE_PROGRAM_NAME)) {
+    if (m_executeCode.empty()) {
+        if (!FireStarterSource::LoadSource(m_executeCode, EVOLVE_PROGRAM_NAME)) {
             printf("%s could not be loaded!\n", EVOLVE_PROGRAM_NAME);
             std::terminate();
         }
     }
 
     // Compile the code and get the Evolver and Optimizer functions from the module.
-    if (CUDACompile::CompileProgram(m_evolveModule, m_evolveCode, EVOLVE_PROGRAM_NAME)) {
-        m_evolveFunction = CUDACompile::GetFunction(m_evolveModule, "Evolver");
-        if (m_evolveFunction)
+    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, EVOLVE_PROGRAM_NAME)) {
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Evolver");
+        if (m_executeFunction)
             return true;
-        CUDACompile::ReleaseModule(m_evolveModule);
-        m_evolveFunction = nullptr;
+        CUDACompile::ReleaseModule(m_executeModule);
+        m_executeFunction = nullptr;
     }
     return false;
 } // GenerateEvolver
@@ -455,8 +480,8 @@ bool FireStarterExecute::GenerateEvolver(void)
 bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
 {
     // Load the base Optimize code into memory.
-    if (m_optimizeCode.empty()) {
-        if (!FireStarterSource::LoadSource(m_optimizeCode, OPTIMIZE_PROGRAM_NAME)) {
+    if (m_executeCode.empty()) {
+        if (!FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME)) {
             printf("%s could not be loaded!\n", OPTIMIZE_PROGRAM_NAME);
             std::terminate();
         }
@@ -466,15 +491,15 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
 
     // Create the Optimize code by replacing the evaluate code block.
-    std::string optimizeProgram = m_optimizeCode;
-    FireStarterSource::UpdateProgram(optimizeProgram, state.m_evaluateCode, EVALUATE_CODE);
+    std::string program = m_executeCode;
+    FireStarterSource::UpdateProgram(program, state.m_evaluateCode, EVALUATE_CODE);
 
     // Compile the code and get the Optimizer function from the module.
-    if (CUDACompile::CompileProgram(m_optimizeModule, optimizeProgram, OPTIMIZE_PROGRAM_NAME)) {
-        m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
-        if (m_optimizeFunction)
+    if (CUDACompile::CompileProgram(m_executeModule, program, OPTIMIZE_PROGRAM_NAME)) {
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
+        if (m_executeFunction)
             return true;
-        CUDACompile::ReleaseModule(m_optimizeModule);
+        CUDACompile::ReleaseModule(m_executeModule);
     }
     return false;
 } // GenerateOptimize
@@ -482,8 +507,8 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
 bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
 {
     // Load the base SpeedTest code into memory.
-    if (m_speedTestCode.empty()) {
-        if (!FireStarterSource::LoadSource(m_speedTestCode, SPEEDTEST_PROGRAM_NAME)) {
+    if (m_executeCode.empty()) {
+        if (!FireStarterSource::LoadSource(m_executeCode, SPEEDTEST_PROGRAM_NAME)) {
             printf("%s could not be loaded!\n", SPEEDTEST_PROGRAM_NAME);
             std::terminate();
         }
@@ -493,15 +518,15 @@ bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
     m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
 
     // Create the SpeedTest code by replacing the evaluate code block.
-    std::string program = m_speedTestCode;
+    std::string program = m_executeCode;
     FireStarterSource::UpdateProgram(program, state.m_evaluateCode, EVALUATE_CODE);
 
     // Compile the code and get the SpeedTest function from the module.
-    if (CUDACompile::CompileProgram(m_speedTestModule, program, SPEEDTEST_PROGRAM_NAME)) {
-        m_evolveFunction = CUDACompile::GetFunction(m_speedTestModule, "SpeedTest");
-        if (m_evolveFunction)
+    if (CUDACompile::CompileProgram(m_executeModule, program, SPEEDTEST_PROGRAM_NAME)) {
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "SpeedTest");
+        if (m_executeFunction)
             return true;
-        CUDACompile::ReleaseModule(m_speedTestModule);
+        CUDACompile::ReleaseModule(m_executeModule);
     }
     return false;
 } // GenerateSpeedTest
@@ -510,35 +535,35 @@ void FireStarterExecute::ExecuteCompileOptimize(const FireStarterState& initStat
 {
     DispatchAsync([this, initState] {
         // Load the base Optimize code into memory.
-        if (m_optimizeCode.empty()) {
-            if (!FireStarterSource::LoadSource(m_optimizeCode, OPTIMIZE_PROGRAM_NAME)) {
+        if (m_executeCode.empty()) {
+            if (!FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME)) {
                 printf("%s could not be loaded!\n", OPTIMIZE_PROGRAM_NAME);
                 std::terminate();
             }
         }
 
         // Release the previous optimize module.
-        CUDACompile::ReleaseModule(m_optimizeModule);
-        m_optimizeFunction = nullptr;
+        CUDACompile::ReleaseModule(m_executeModule);
+        m_executeFunction = nullptr;
 
         // Generate the evaluate code
         std::string evaluateCode;
         m_executeGenerate->GenerateEvaluate(initState, evaluateCode);
 
         // Create the Optimize code by replacing the evaluate code block.
-        FireStarterSource::UpdateProgram(m_optimizeCode, evaluateCode, EVALUATE_CODE);
+        FireStarterSource::UpdateProgram(m_executeCode, evaluateCode, EVALUATE_CODE);
 
         // Compile the code and get the Optimizer function from the module.
         std::string ptxCode;
-        if (CUDACompile::CompilePTX(ptxCode, m_optimizeCode, OPTIMIZE_PROGRAM_NAME))
-            if (CUDACompile::CompileModule(m_optimizeModule, ptxCode))
-                m_optimizeFunction = CUDACompile::GetFunction(m_optimizeModule, "Optimizer");
+        if (CUDACompile::CompilePTX(ptxCode, m_executeCode, OPTIMIZE_PROGRAM_NAME))
+            if (CUDACompile::CompileModule(m_executeModule, ptxCode))
+                m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
     });
 } // ExecuteCompileOptimize
 
 bool FireStarterExecute::ExecuteGenerateEvolver(void)
 {
-    if (m_evolveFunction)
+    if (m_executeFunction)
         return true;
     bool result = false;
     DispatchSync([this, &result] {
@@ -591,7 +616,7 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestS
 void FireStarterExecute::ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& state, FireStarterState& bestState)
 {
     DispatchSync([this, complete, &state, &bestState] {
-        if (m_optimizeFunction) {
+        if (m_executeFunction) {
             if (InitPopulation(state.Settings())) {
                 while (!WillTerminate() && (state.m_optimize_pass < state.Settings().m_optimize)) {
                     // Execute the optimization passes.
@@ -646,11 +671,8 @@ void FireStarterExecute::ExecuteFinish(void)
             m_executeJob = nullptr;
         }
         FinishPopulation();
-        CUDACompile::ReleaseModule(m_optimizeModule);
-        CUDACompile::ReleaseModule(m_evolveModule);
-        CUDACompile::ReleaseModule(m_speedTestModule);
-        m_optimizeFunction = nullptr;
-        m_evolveFunction = nullptr;
+        CUDACompile::ReleaseModule(m_executeModule);
+        m_executeFunction = nullptr;
     });
 } // ExecuteFinish
 

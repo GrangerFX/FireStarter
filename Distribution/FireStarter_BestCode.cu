@@ -25,7 +25,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     return true;
 } // TestEvaluate
 
-GPU_GLOBAL void Optimizer(FireStarterResult* newResults, const FireStarterResult* oldResults, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -42,7 +42,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newResults, const FireStarterResult
     }
 
     // Evolve the program registers for each variation.
-    const FireStarterResult& oldResult = oldResults[member];
+    const FireStarterResult& oldResult = oldPopulation[member];
     FireStarterData data;
     unsigned short evolveAge1;
     float result, memberResult;
@@ -108,9 +108,9 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newResults, const FireStarterResult
         for (int i = 0; i < FIRESTARTER_OPTIMIZE_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, population);
-            unsigned short candidateAge = oldResults[candidate].EvolveAge1();
+            unsigned short candidateAge = oldPopulation[candidate].EvolveAge1();
             if (candidateAge <= 1) {
-                float candidateResult = oldResults[candidate].MinResult();
+                float candidateResult = oldPopulation[candidate].MinResult();
                 if (candidateResult <= result) {
                     bestCandidate = candidate;
                     result = candidateResult;
@@ -122,9 +122,10 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newResults, const FireStarterResult
         age = 1;
         if (bestCandidate != member) {
             age += MAX(evolveAge1, 1);
-            data = oldResults[bestCandidate].Data();
+            data = oldPopulation[bestCandidate].Data();
         }
     }
-    newResults[member].Init(data, result, age);
+    results[member] = result;
+    newPopulation[member].Init(data, result, age);
 } // Optimizer
 

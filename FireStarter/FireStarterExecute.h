@@ -24,29 +24,23 @@ public:
 
 class FireStarterExecute : public CUDAThread {
 private:
-    std::vector<FireStarterCode*> m_hostPopulationCode;
-    std::vector<FireStarterCode*> m_devicePopulationCode;
-    std::vector<FireStarterResult*> m_hostEvolvePopulation;
-    std::vector<FireStarterResult*> m_deviceEvolvePopulation;
-    std::vector<FireStarterResult*> m_hostOptimizePopulation;
-    std::vector<FireStarterResult*> m_deviceOptimizePopulation0;
-    std::vector<FireStarterResult*> m_deviceOptimizePopulation1;
+    std::vector<float*> m_hostResults;
+    std::vector<float*> m_deviceResults;
+    std::vector<FireStarterResult*> m_hostPopulation;
+    std::vector<FireStarterResult*> m_devicePopulation0;
+    std::vector<FireStarterResult*> m_devicePopulation1;
+    std::vector<FireStarterCode*> m_hostCode;
+    std::vector<FireStarterCode*> m_deviceCode;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
     SerialThread m_compilerThread;
-    CUmodule m_optimizeModule = nullptr;
-    CUmodule m_evolveModule = nullptr;
-    CUmodule m_speedTestModule = nullptr;
-    CUfunction m_optimizeFunction = nullptr;
-    CUfunction m_evolveFunction = nullptr;
-    std::string m_optimizeCode;
-    std::string m_evolveCode;
-    std::string m_speedTestCode;
-    size_t m_evolveCodeSize = 0;
-    size_t m_evolvePopulationSize = 0;
-    size_t m_optimizePopulationSize = 0;
-    size_t m_evolutionsSize = 0;
+    CUmodule m_executeModule = nullptr;
+    CUfunction m_executeFunction = nullptr;
+    std::string m_executeCode;
+    size_t m_resultsSize = 0;
+    size_t m_populationSize = 0;
+    size_t m_codeSize = 0;
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
