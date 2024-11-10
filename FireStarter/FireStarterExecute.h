@@ -4,24 +4,6 @@
 #include "FireStarterManager.h"
 #include "CUDAThread.h"
 
-class FireStarterBestStates {
-private:
-    TestedInstructions m_testedInstructions;
-    FireStarterStates m_allStates;
-    std::vector<FireStarterState*> m_bestStates;
-    FireStarterSettings m_settings;
-    size_t m_maxStates;
-    size_t m_numStates;
-    float m_worstResult;
-
-    bool CheckStates(void);
-public:
-    bool GetBestState(FireStarterState& state);
-    bool AddState(const FireStarterState& state, float maxResult = 0.0f);
-    float WorstResult(void);
-    FireStarterBestStates(const FireStarterSettings& settings, size_t maxStates = FIRESTARTER_NUM_BEST);
-}; // FireStarterBestStates
-
 class FireStarterBestCodes {
 private:
     TestedInstructions m_testedInstructions;
@@ -65,7 +47,7 @@ private:
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
-    void ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, FireStarterBestStates& bestStates, unsigned int variation = 0);
+    void ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
@@ -81,7 +63,7 @@ public:
     bool ExecuteGenerateOptimize(const FireStarterState& initState);
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
     void ExecuteInitPopulation(const FireStarterState& state);
-    void ExecuteEvolve(FireStarterState& state, FireStarterBestCodes &bestCodes, FireStarterBestStates &bestStates);
+    void ExecuteEvolve(FireStarterState& state, FireStarterBestCodes &bestCodes);
     void ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& state, FireStarterState& bestState);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.

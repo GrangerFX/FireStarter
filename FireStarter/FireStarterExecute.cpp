@@ -10,90 +10,6 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
         curFloat = minFloat;
     return curFloat;
 } // AtomicMin
-bool FireStarterBestStates::CheckStates(void)
-{
-#if 0
-    // Validate that the states have not become corrupted (bug detection).
-    std::vector<size_t> stateCount(m_maxStates, 0);
-    for (size_t i = 0; i < m_maxStates; i++) {
-        FireStarterState* curState = m_bestStates[i];
-        for (size_t j = 0; j < m_maxStates; j++)
-            if (curState == &m_allStates[j]) {
-                stateCount[j]++;
-                break;
-            }
-    }
-    for (size_t i = 0; i < m_maxStates; i++)
-        if (stateCount[i] != 1)
-            return false;
-#endif
-    return true;
-} // CheckStates
-
-bool FireStarterBestStates::GetBestState(FireStarterState& state)
-{
-    if (!m_numStates)
-        return false;
-    FireStarterState* bestState = m_bestStates[0];
-    for (size_t i = 1; i < m_maxStates; i++)
-        m_bestStates[i - 1] = m_bestStates[i];
-    m_bestStates[m_maxStates - 1] = bestState;
-    m_numStates--;
-    m_worstResult = m_settings.m_startResult;
-    state = *bestState;
-    return CheckStates();
-} // GetBestState
-
-bool FireStarterBestStates::AddState(const FireStarterState& state, float maxResult)
-{
-    // Skip bad results entirely.
-    float newResult = maxResult ? maxResult : state.MaxResult();
-    if (newResult >= m_worstResult)
-        return false;
-
-    // Only add states with a unique instruction set.
-    if (m_testedInstructions.count(state.m_program.OptimizedInstructionsData()))
-        return false;
-    m_testedInstructions.insert(state.m_program.OptimizedInstructionsData());
-
-    FireStarterState* newState = (m_numStates < m_maxStates) ? m_bestStates[m_numStates] : m_bestStates[--m_numStates];
-    *newState = state;
-
-    for (size_t i = 0; i < m_numStates; i++) {
-        FireStarterState* curState = m_bestStates[i];
-        float curResult = curState->MaxResult();
-        if (curResult > newResult) {
-            for (size_t j = i; j < m_numStates; j++) {
-                curState = m_bestStates[j];
-                m_bestStates[j] = newState;
-                newState = curState;
-            }
-            break;
-        }
-    }
-    m_bestStates[m_numStates++] = newState;
-    return CheckStates();
-} // AddState
-
-float FireStarterBestStates::WorstResult(void)
-{
-    CheckStates();
-    return m_worstResult;
-} // WorstResult
-
-FireStarterBestStates::FireStarterBestStates(const FireStarterSettings& settings, size_t maxStates) : m_settings(settings)
-{
-    m_maxStates = maxStates;
-    m_numStates = 0;
-    m_worstResult = m_settings.m_startResult;
-    m_allStates.resize(m_maxStates);
-    m_bestStates.resize(m_maxStates);
-    for (size_t i = 0; i < m_maxStates; i++) {
-        m_allStates[i].InitState(settings);
-        m_bestStates[i] = &m_allStates[i];
-    }
-    CheckStates();
-} // FireStarterBestStates
 
 FireStarterCode* FireStarterBestCodes::GetBestCode(void)
 {
@@ -276,7 +192,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     return result;
 } // InitPopulation
 
-void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, FireStarterBestStates& bestStates, unsigned int variation)
+void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -325,10 +241,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         if (curResult < bestCodes.WorstResult()) {
             FireStarterState newState(settings, m_hostPopulation, m_hostCode, i);
             bestCodes.AddCode(newState.Code(), newState.m_program.OptimizedInstructionsData(), curResult);
-        }
-        if (curResult < bestStates.WorstResult()) {
-            FireStarterState newState(settings, m_hostPopulation, m_hostCode, i);
-            bestStates.AddState(newState, curResult);
         }
     }
 
@@ -726,13 +638,13 @@ void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
     });
 } // ExecuteInitPopulation
 
-void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestCodes& bestCodes, FireStarterBestStates& bestStates)
+void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestCodes& bestCodes)
 {
-    DispatchSync([this, &state, &bestCodes, &bestStates] {
+    DispatchSync([this, &state, &bestCodes] {
         if (GenerateEvolver()) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
-                ExecuteEvolvePass(state, bestCodes, bestStates);
+                ExecuteEvolvePass(state, bestCodes);
         }
     });
 } // ExecuteEvolve
