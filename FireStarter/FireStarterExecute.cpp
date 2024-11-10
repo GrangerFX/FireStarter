@@ -264,7 +264,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         if (curResult < bestCodes.WorstResult()) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostCode, FireStarterCode::Member(m_deviceCode, settings, i), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
             Context()->Synchronize();
-            bestCodes.AddCode(newState.Code(), curResult);
+            bestCodes.AddCode(m_hostCode, curResult);
         }
     }
 

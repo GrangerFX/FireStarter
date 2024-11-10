@@ -1,0 +1,16 @@
+Seed: 0  Test: 0  Generation=11  Evolve Result=0.00721925  Optimize Result=0.00000047  Duration: 12.9  Total: 12.9  Average: 12.9 *******
+Seed: 0  Test: 1  Generation=2  Evolve Result=0.00128365  Optimize Result=0.00000013  Duration: 2.1  Total: 15.1  Average: 7.5 *******
+Seed: 0  Test: 2  Generation=3  Evolve Result=0.00388369  Optimize Result=0.00000044  Duration: 3.2  Total: 18.3  Average: 6.1 *******
+Seed: 0  Test: 3  Generation=22  Evolve Result=0.00685990  Optimize Result=0.00000017  Duration: 24.4  Total: 42.7  Average: 10.7 *******
+Seed: 0  Test: 4  Generation=7  Evolve Result=0.00309658  Optimize Result=0.00000070  Duration: 7.6  Total: 50.3  Average: 10.1 *******
+Seed: 0  Test: 5  Generation=14  Evolve Result=0.00301930  Optimize Result=0.00000072  Duration: 15.4  Total: 65.7  Average: 10.9 *******
+Seed: 0  Test: 6  Generation=18  Evolve Result=0.00365621  Optimize Result=0.00000015  Duration: 19.7  Total: 85.4  Average: 12.2 *******
+Seed: 0  Test: 7  Generation=10  Evolve Result=0.00743729  Optimize Result=0.00000032  Duration: 10.9  Total: 96.4  Average: 12.0 *******
+Seed: 0  Test: 8  Generation=22  Evolve Result=0.00782192  Optimize Result=0.00000040  Duration: 24.2  Total: 120.6  Average: 13.4 *******
+Seed: 0  Test: 9  Generation=7  Evolve Result=0.00640744  Optimize Result=0.00000015  Duration: 7.6  Total: 128.2  Average: 12.8 *******
+Seed: 0  Test: 10  Generation=7  Evolve Result=0.00560170  Optimize Result=0.00000039  Duration: 7.6  Total: 135.8  Average: 12.3 *******
+Seed: 0  Test: 11  Generation=10  Evolve Result=0.00684324  Optimize Result=0.00000013  Duration: 10.9  Total: 146.7  Average: 12.2 *******
+Seed: 0  Test: 12  Generation=15  Evolve Result=0.00712794  Optimize Result=0.00000048  Duration: 16.4  Total: 163.1  Average: 12.5 *******
+Seed: 0  Test: 13  Generation=37  Evolve Result=0.00932842  Optimize Result=0.00000035  Duration: 41.4  Total: 204.5  Average: 14.6 *******
+Seed: 0  Test: 14  Generation=8  Evolve Result=0.00415611  Optimize Result=0.00000008  Duration: 8.8  Total: 213.4  Average: 14.2 *******
+Seed: 0  Test: 15  Generation=69  Evolve Result=0.00998652  Optimize Result=0.00000092  Duration: 78.5  Total: 291.8  Average: 18.2 *******
