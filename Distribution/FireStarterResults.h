@@ -233,6 +233,26 @@ typedef struct FireStarterCode {
         return c[index];
     } // Instruction
 
+    inline unsigned short& Operation(unsigned int index)
+    {
+        return c[index].op;
+    } // Operation
+
+    inline unsigned short Operation(unsigned int index) const
+    {
+        return c[index].op;
+    } // Operation
+
+    inline unsigned short& Register(unsigned int index)
+    {
+        return c[index].reg;
+    } // Register
+
+    inline unsigned short Register(unsigned int index) const
+    {
+        return c[index].reg;
+    } // Register
+
     static inline size_t CodeSize(void)
     {
         return sizeof(FireStarterCode);
@@ -345,6 +365,26 @@ typedef struct FireStarterCode {
     {
         return Member(this, settings, index);
     } // Member
+
+    inline unsigned int Optimize(unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS)
+    {
+        // Sort and count the used registers.
+        unsigned int regCount[FIRESTARTER_REGISTERS] = {};
+        unsigned short uniqueRegisters = 0;
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
+            unsigned int r = c[i].reg;
+            int index = regCount[r];
+            if (index == 0)
+                index = regCount[r] = ++uniqueRegisters;
+            c[i].reg = index - 1;
+        }
+        return uniqueRegisters;
+    } // Optimize
+
+    inline unsigned int Optimize(const FireStarterSettings& settings)
+    {
+        Optimize(settings.m_instructions, settings.m_registers);
+    } // Optimize
 
     inline void Init()
     {

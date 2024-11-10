@@ -115,9 +115,14 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             evolveAge++;
         }
     }
+
+    // Return the optimized best code.
+    bestCode.Optimize();
+    codes[member].Copy(bestCode);
+
+    // Return the array of results or the entire population data.
     if (results)
         results[member] = bestResult;
     if (population)
         population[member].Init(bestData, bestResult, bestAge);
-    codes[member].Copy(bestCode);
 } // Evolver

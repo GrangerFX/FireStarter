@@ -28,16 +28,18 @@ FireStarterCode* FireStarterBestCodes::GetBestCode(void)
     return bestCode;
 } // GetBestCode
 
-bool FireStarterBestCodes::AddCode(const FireStarterCode* code, const std::vector<unsigned char>& instructions, float result)
+bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
 {
     // Skip bad results entirely.
     if (result >= m_worstResult)
         return false;
 
     // Only add states with a unique instruction set.
-    if (m_testedInstructions.count(instructions))
+    std::vector<unsigned char> codeInstructions(m_codeSize);
+    memcpy(codeInstructions.data(), code, m_codeSize);
+    if (m_testedCodes.count(codeInstructions))
         return false;
-    m_testedInstructions.insert(instructions);
+    m_testedCodes.insert(codeInstructions);
 
     // Insert the new code and result at the end of the list.
     float newResult = result;
@@ -238,10 +240,8 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
             minResult = curResult;
             minIndex = i;
         }
-        if (curResult < bestCodes.WorstResult()) {
-            FireStarterState newState(settings, m_hostPopulation, m_hostCode, i);
-            bestCodes.AddCode(newState.Code(), newState.m_program.OptimizedInstructionsData(), curResult);
-        }
+        if (curResult < bestCodes.WorstResult())
+            bestCodes.AddCode(&m_hostCode[i], curResult);
     }
 
     float oldResult = state.m_maxResult;
@@ -264,10 +264,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         if (curResult < bestCodes.WorstResult()) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostCode, FireStarterCode::Member(m_deviceCode, settings, i), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
             Context()->Synchronize();
-
-            FireStarterState newState(settings);
-            newState.InitResult(settings, curResult, m_hostCode, i);
-            bestCodes.AddCode(newState.Code(), newState.m_program.OptimizedInstructionsData(), curResult);
+            bestCodes.AddCode(newState.Code(), curResult);
         }
     }
 

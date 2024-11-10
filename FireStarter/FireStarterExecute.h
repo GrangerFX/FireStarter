@@ -6,7 +6,7 @@
 
 class FireStarterBestCodes {
 private:
-    TestedInstructions m_testedInstructions;
+    std::set<std::vector<unsigned char>> m_testedCodes;
     std::vector<FireStarterCode*> m_bestCodes;
     std::vector<float> m_bestResults;
     FireStarterSettings m_settings;
@@ -17,7 +17,7 @@ private:
 
 public:
     FireStarterCode* GetBestCode(void);
-    bool AddCode(const FireStarterCode* code, const std::vector<unsigned char>& instructions, float result);
+    bool AddCode(const FireStarterCode* code, float result);
     float WorstResult(void);
     FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     ~FireStarterBestCodes(void);
