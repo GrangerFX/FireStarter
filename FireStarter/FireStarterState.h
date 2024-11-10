@@ -293,6 +293,12 @@ public:
         LoadCodeFromProgram();
     } // CopyInstructions
 
+    inline void CopyCode(const FireStarterCode& srcCode)
+    {
+        memcpy(Code(), &srcCode, FireStarterCode::CodeSize(m_settings));
+        LoadProgramFromCode();
+    } // CopyInstructions
+
     inline void RandomProgram(void)
     {
         m_program.RandomProgram(m_seed);

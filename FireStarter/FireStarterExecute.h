@@ -19,8 +19,27 @@ public:
     bool GetBestState(FireStarterState& state);
     bool AddState(const FireStarterState& state, float maxResult = 0.0f);
     float WorstResult(void);
-    FireStarterBestStates(const FireStarterSettings& settings, size_t maxStates = FIRESTARTER_BESTSTATES);
+    FireStarterBestStates(const FireStarterSettings& settings, size_t maxStates = FIRESTARTER_NUM_BEST);
 }; // FireStarterBestStates
+
+class FireStarterBestCodes {
+private:
+    TestedInstructions m_testedInstructions;
+    std::vector<FireStarterCode*> m_bestCodes;
+    std::vector<float> m_bestResults;
+    FireStarterSettings m_settings;
+    size_t m_codeSize;
+    size_t m_maxCodes;
+    size_t m_numCodes;
+    float m_worstResult;
+
+public:
+    FireStarterCode* GetBestCode(void);
+    bool AddCode(const FireStarterCode* code, const std::vector<unsigned char>& instructions, float result);
+    float WorstResult(void);
+    FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
+    ~FireStarterBestCodes(void);
+}; // FireStarterBestCodes
 
 class FireStarterExecute : public CUDAThread {
 private:
@@ -46,7 +65,7 @@ private:
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
-    void ExecuteEvolvePass(FireStarterState& state, FireStarterBestStates& bestStates, unsigned int variation = 0);
+    void ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, FireStarterBestStates& bestStates, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
@@ -62,7 +81,7 @@ public:
     bool ExecuteGenerateOptimize(const FireStarterState& initState);
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
     void ExecuteInitPopulation(const FireStarterState& state);
-    void ExecuteEvolve(FireStarterState& state, FireStarterBestStates &bestStates);
+    void ExecuteEvolve(FireStarterState& state, FireStarterBestCodes &bestCodes, FireStarterBestStates &bestStates);
     void ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& state, FireStarterState& bestState);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.

@@ -22,7 +22,7 @@
 #define FIRESTARTER_MADD            0           // Use only non-random multiply-add instructions.
 
 #define FIRESTARTER_POPULATION      8192 * FIRESTARTER_WARP_THREADS  // For debugging display of the population contents only.
-#define FIRESTARTER_BESTSTATES      16          // The number of best evolved states for optimization
+#define FIRESTARTER_NUM_BEST        16          // The number of best evolved codes for optimization
 
 #define FIRESTARTER_SCALE           0.1f
 #define FIRESTARTER_START_SCALE     2.0f

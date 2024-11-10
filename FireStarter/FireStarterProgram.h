@@ -105,6 +105,7 @@ public:
     void SaveSettings(std::string& code) const;
     void SaveProgram(std::string& code) const;
     void InitProgram(const FireStarterSettings& settings);
+    inline FireStarterProgram(const FireStarterSettings& settings) { InitProgram(settings);  }
     inline FireStarterProgram(const FireStarterProgram& other) { swap(other); }
     inline FireStarterProgram(void) {}
 }; // class FireStarterProgram

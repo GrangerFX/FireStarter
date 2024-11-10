@@ -10,7 +10,6 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
         curFloat = minFloat;
     return curFloat;
 } // AtomicMin
-
 bool FireStarterBestStates::CheckStates(void)
 {
 #if 0
@@ -18,7 +17,7 @@ bool FireStarterBestStates::CheckStates(void)
     std::vector<size_t> stateCount(m_maxStates, 0);
     for (size_t i = 0; i < m_maxStates; i++) {
         FireStarterState* curState = m_bestStates[i];
-        for (size_t j = 0; j < m_maxStates; j++) 
+        for (size_t j = 0; j < m_maxStates; j++)
             if (curState == &m_allStates[j]) {
                 stateCount[j]++;
                 break;
@@ -95,6 +94,87 @@ FireStarterBestStates::FireStarterBestStates(const FireStarterSettings& settings
     }
     CheckStates();
 } // FireStarterBestStates
+
+FireStarterCode* FireStarterBestCodes::GetBestCode(void)
+{
+    if (!m_numCodes)
+        return nullptr;
+    FireStarterCode* bestCode = m_bestCodes[0];
+    float bestResult = m_bestResults[0];
+    for (size_t i = 1; i < m_maxCodes; i++) {
+        m_bestCodes[i - 1] = m_bestCodes[i];
+        m_bestResults[i - 1] = m_bestResults[i];
+    }
+    m_bestCodes[m_maxCodes - 1] = bestCode;
+    m_bestResults[m_maxCodes - 1] = bestResult;
+    m_numCodes--;
+    m_worstResult = m_settings.m_startResult;
+    return bestCode;
+} // GetBestCode
+
+bool FireStarterBestCodes::AddCode(const FireStarterCode* code, const std::vector<unsigned char>& instructions, float result)
+{
+    // Skip bad results entirely.
+    if (result >= m_worstResult)
+        return false;
+
+    // Only add states with a unique instruction set.
+    if (m_testedInstructions.count(instructions))
+        return false;
+    m_testedInstructions.insert(instructions);
+
+    // Insert the new code and result at the end of the list.
+    float newResult = result;
+    size_t newIndex = (m_numCodes < m_maxCodes) ? m_numCodes : --m_numCodes;
+    m_bestResults[newIndex] = newResult;
+    FireStarterCode* newCode = m_bestCodes[newIndex];
+    memcpy(newCode, code, m_codeSize);
+
+    for (size_t i = 0; i < m_numCodes; i++) {
+        FireStarterCode* curCode = m_bestCodes[i];
+        float curResult = m_bestResults[i];
+        if (curResult > newResult) {
+            for (size_t j = i; j < m_numCodes; j++) {
+                curCode = m_bestCodes[j];
+                curResult = m_bestResults[j];
+                m_bestCodes[j] = newCode;
+                m_bestResults[j] = newResult;
+                newCode = curCode;
+                newResult = curResult;
+            }
+            break;
+        }
+    }
+    m_bestCodes[m_numCodes] = newCode;
+    m_bestResults[m_numCodes] = newResult;
+    m_numCodes++;
+    return true;
+} // AddCode
+
+float FireStarterBestCodes::WorstResult(void)
+{
+    return m_worstResult;
+} // WorstResult
+
+FireStarterBestCodes::FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes) : m_settings(settings)
+{
+    m_codeSize = FireStarterCode::CodeSize(m_settings);
+    m_maxCodes = maxCodes;
+    m_numCodes = 0;
+    m_worstResult = m_settings.m_startResult;
+    m_bestCodes.resize(m_maxCodes);
+    m_bestResults.resize(m_maxCodes);
+    for (size_t i = 0; i < m_maxCodes; i++) {
+        m_bestCodes[i] = (FireStarterCode*)calloc(m_codeSize, 1);
+        m_bestResults[i] = m_settings.m_startResult;
+    }
+} // FireStarterBestCodes
+
+FireStarterBestCodes::~FireStarterBestCodes(void)
+{
+    for (size_t i = 0; i < m_maxCodes; i++)
+        free(m_bestCodes[i]);
+} // ~FireStarterBestCodes
 
 void FireStarterExecute::FinishPopulation(void)
 {
@@ -196,7 +276,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     return result;
 } // InitPopulation
 
-void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterBestStates& bestStates, unsigned int variation)
+void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, FireStarterBestStates& bestStates, unsigned int variation)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -242,6 +322,10 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
             minResult = curResult;
             minIndex = i;
         }
+        if (curResult < bestCodes.WorstResult()) {
+            FireStarterState newState(settings, m_hostPopulation, m_hostCode, i);
+            bestCodes.AddCode(newState.Code(), newState.m_program.OptimizedInstructionsData(), curResult);
+        }
         if (curResult < bestStates.WorstResult()) {
             FireStarterState newState(settings, m_hostPopulation, m_hostCode, i);
             bestStates.AddState(newState, curResult);
@@ -265,13 +349,13 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
             minResult = curResult;
             minIndex = i;
         }
-        if (curResult < bestStates.WorstResult()) {
+        if (curResult < bestCodes.WorstResult()) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostCode, FireStarterCode::Member(m_deviceCode, settings, i), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
             Context()->Synchronize();
 
             FireStarterState newState(settings);
             newState.InitResult(settings, curResult, m_hostCode, i);
-            bestStates.AddState(newState, curResult);
+            bestCodes.AddCode(newState.Code(), newState.m_program.OptimizedInstructionsData(), curResult);
         }
     }
 
@@ -642,13 +726,13 @@ void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
     });
 } // ExecuteInitPopulation
 
-void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestStates& bestStates)
+void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestCodes& bestCodes, FireStarterBestStates& bestStates)
 {
-    DispatchSync([this, &state, &bestStates] {
+    DispatchSync([this, &state, &bestCodes, &bestStates] {
         if (GenerateEvolver()) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
-                ExecuteEvolvePass(state, bestStates);
+                ExecuteEvolvePass(state, bestCodes, bestStates);
         }
     });
 } // ExecuteEvolve

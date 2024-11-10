@@ -15,13 +15,13 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
     Dispatch([this, state] {
         // Setup the data
         FireStarterSettings settings = state.Settings();        
-        const std::vector<FireStarterResult*> results = state.Results();
         m_window.Erase();
         uchar4* pixels = (uchar4*)m_window.GetPixels();
         unsigned int width = m_window.m_width;
         unsigned int height = m_window.m_height;
         float maxError = 0.0f;
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+            const FireStarterResult* result = state.Result(v);
             int xScale = height / 8;
             int yScale = height / 16;
             for (unsigned int y = 0; y < height; y++) {
@@ -43,7 +43,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
 
             const FireStarterCode* code = state.Code();
             for (unsigned int x = 0; x < width; x++) {
-                FireStarterData data = results[v]->Data();
+                FireStarterData data = result->Data();
                 float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
                 float center = height * 0.66f;
                 float target = Target(theta, v);
