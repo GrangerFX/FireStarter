@@ -236,7 +236,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.
-        statusString += Format("  Time=%.1f Seconds  Run Time=%.1f Seconds", generationTime, runTime);
+        statusString += Format("  Time=%.1f  Run Time=%.1f", generationTime, runTime);
     }
 
     // Update the log file.
