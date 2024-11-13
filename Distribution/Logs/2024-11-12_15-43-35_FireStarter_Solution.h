@@ -1,8 +1,8 @@
-// Run date: 11/12/24 23:48:25 Pacific Standard Time
-// Run duration = 2303.722132 seconds
-// Run generation = 8
+// Run date: 11/12/24 15:43:35 Pacific Standard Time
+// Run duration = 82.367649 seconds
+// Run generation = 74
 // Run evolution = 0
-// Run max result = 0.00000035
+// Run max result = 0.00000015
 // Run variations = 1
 // Run samples = 15
 // Run instructions = 32
@@ -25,7 +25,7 @@
 // Run population = 65536
 // Run iterations = 64
 // Run passes = 512
-// Run candidates = 16
+// Run candidates = 32
 // Run attempts = 0
 // Run optimize = 1
 
@@ -60,39 +60,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6, r7;
+    float r0, r1, r2, r3, r4, r5;
 
-    r0 = n *= 0.19954753f;
-    n += -0.62689704f;
-    n = r0 *= n;
-    r1 = n *= 1.17044163f;
-    n *= 0.99452418f;
-    n += -0.14356366f;
-    n *= -0.57330191f;
-    r2 = n *= 0.05137445f;
-    r3 = n += -0.78228247f;
-    n += 1.13551462f;
-    n *= 0.90440452f;
-    n = r0 *= n;
-    r4 = n += -1.84056962f;
-    r5 = n *= 1.04398131f;
-    r6 = n += -0.61014909f;
-    r7 = n += -3.52671504f;
-    n *= 9.82150841f;
-    n *= r2;
-    n = r7 += n;
-    n = r3 *= n;
-    n += 0.46471521f;
-    r2 = n += -1.39211833f;
-    n += r7;
-    n += r5;
+    n += -1.01681888f;
+    n += -1.02346754f;
+    r0 = n += -1.10130620f;
+    n *= -0.05748029f;
+    r1 = n *= -1.88054740f;
     n *= r0;
-    n *= 0.85784680f;
-    n *= r6;
-    n += r4;
-    n *= r1;
-    n *= r2;
+    r0 = n *= 1.51760423f;
+    n *= -0.99113458f;
+    n += -0.68346173f;
+    n += 3.61545777f;
+    r2 = n += 3.21208405f;
+    n *= -0.46117082f;
+    n = r0 += n;
+    r3 = n *= 0.00465970f;
+    r4 = n *= -6.07801580f;
+    n *= 4.67689705f;
+    n += 2.62680268f;
+    n *= r0;
+    r0 = n += 1.27589488f;
+    n *= 0.01074349f;
+    r5 = n += -0.24943709f;
+    n *= -11.54700089f;
     n *= r3;
-    n *= 0.18980345f;
+    n *= r4;
+    n = r5 += n;
+    n *= -0.59224993f;
+    n += r5;
+    n *= r2;
+    n *= r1;
+    n *= -2.39592862f;
+    n *= r0;
+    n *= 0.64374983f;
     return n;
 } // Solution

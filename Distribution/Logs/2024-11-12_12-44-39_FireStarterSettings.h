@@ -34,7 +34,7 @@
 
 // First 16 tests of 16 states for unlimited generations is the standard evolve test.
 #define FIRESTARTER_START_TEST      0           // The starting test index.
-#define FIRESTARTER_TESTS           256
+#define FIRESTARTER_TESTS           16
 
 #define FIRESTARTER_AUTO            0           // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_RANDOM          1           // First result of states random instructions and data.
@@ -91,10 +91,10 @@
 #define FIRESTARTER_OPTIMIZE_UNITS              1
 #define FIRESTARTER_OPTIMIZE_STATES             1
 #define FIRESTARTER_OPTIMIZE_GENERATIONS        0
-#define FIRESTARTER_OPTIMIZE_POPULATION         65536
+#define FIRESTARTER_OPTIMIZE_POPULATION         32768 + 16384
 #define FIRESTARTER_OPTIMIZE_ITERATIONS         64
 #define FIRESTARTER_OPTIMIZE_CANDIDATES         16
-#define FIRESTARTER_OPTIMIZE_PASSES             512
+#define FIRESTARTER_OPTIMIZE_PASSES             256 + 128
 #define FIRESTARTER_OPTIMIZE_ATTEMPTS           0
 #define FIRESTARTER_OPTIMIZE_OPTIMIZE           1
 
