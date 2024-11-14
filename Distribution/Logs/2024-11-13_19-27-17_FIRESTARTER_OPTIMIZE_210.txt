@@ -1,0 +1,46 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+iterations = 64
+passes = 512
+candidates = 16
+attempts = 0
+optimize = 1
+
+scale = 0.200000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation=  2 *Result=0.00554605  Best=0.00554605   Time=0.1  Run Time=922.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation=  3  Result=0.00615293  Best=0.00554605   Time=0.1  Run Time=922.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation=  4 *Result=0.00001383  Best=0.00001383   Time=0.1  Run Time=923.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation=  5  Result=0.00003920  Best=0.00001383   Time=0.1  Run Time=923.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation=  6  Result=0.00052523  Best=0.00001383   Time=0.1  Run Time=924.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation=  7  Result=0.00030230  Best=0.00001383   Time=0.1  Run Time=924.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation=  8  Result=0.00005764  Best=0.00001383   Time=0.1  Run Time=924.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation=  9  Result=0.00028187  Best=0.00001383   Time=0.1  Run Time=925.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation= 10  Result=0.00323600  Best=0.00001383   Time=0.1  Run Time=925.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation= 11  Result=0.00060028  Best=0.00001383   Time=0.1  Run Time=926.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation= 12 *Result=0.00000313  Best=0.00000313   Time=0.1  Run Time=926.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation= 13  Result=0.00012150  Best=0.00000313   Time=0.1  Run Time=927.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=210  Generation= 14 *Result=0.00000009  Best=0.00000009   Time=0.1  Run Time=927.6
