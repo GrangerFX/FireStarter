@@ -74,7 +74,7 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
                 data[d] = oldData;
                 result = memberResult = oldResult.MinResult();
             }
-            evolutionScale = 6.0f * FIRESTARTER_SCALE * memberResult;
+            evolutionScale = 0.6f * memberResult;
         } else {
             result = memberResult = oldResult.MinResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
