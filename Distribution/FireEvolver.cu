@@ -38,7 +38,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     float theta[FIRESTARTER_SAMPLES];
     float target[FIRESTARTER_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, variation);
     }
@@ -49,20 +49,20 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     unsigned short bestAge = 0;
 
     // The first generation is initalized with random numbers.
-    float result = FIRESTARTER_START_RESULT;
+    float memberResult = FIRESTARTER_START_RESULT;
     float evolutionScale = FIRESTARTER_START_SCALE;
-    for (int i = 1; i <= 10; i++) {
+    float result;
+    for (unsigned int i = 0; i < 10; i++) {
         code.Init(memberSeed);
         data.Init(memberSeed, evolutionScale);
+        result = memberResult;
         if (TestEvaluate(sharedData, data, code, target, theta, result))
             break;
-        result = FIRESTARTER_START_RESULT;
     }
     FireStarterCode bestCode = code;
     FireStarterData bestData = data;
     FireStarterCode oldCode = code;
     FireStarterData oldData = data;
-    float memberResult = result;
     float bestResult = result;
     evolutionScale = FIRESTARTER_SCALE * result;
 
@@ -88,7 +88,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             unsigned int d = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
             float oldData = data[d];
             data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
-            float curResult = result;
+            float curResult = result * 0.99f;
             if (TestEvaluate(sharedData, data, code, target, theta, curResult))
                 result = curResult;
             else

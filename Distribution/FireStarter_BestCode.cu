@@ -36,7 +36,7 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     float theta[FIRESTARTER_SAMPLES];
     float target[FIRESTARTER_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, variation);
     }
@@ -46,14 +46,13 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     FireStarterData data;
     unsigned short evolveAge1;
     float result, memberResult;
-    float evolutionScale;
+    float evolutionScale = FIRESTARTER_START_SCALE;
     unsigned long long memberSeed = optimizeSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/member
 
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
         memberResult = FIRESTARTER_START_RESULT;
-        evolutionScale = FIRESTARTER_START_SCALE;
-        for (int i = 0; i < 10; i++) {
+        for (unsigned int i = 0; i < 10; i++) {
             data.Init(memberSeed, evolutionScale);
             result = memberResult;
             if (TestEvaluate(data, target, theta, result))
