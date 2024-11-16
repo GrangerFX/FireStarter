@@ -5,6 +5,7 @@
 #define FIRESTARTER_INSTRUCTIONS    32
 #define FIRESTARTER_REGISTERS       30
 #define FIRESTARTER_VARIATIONS      1
+#define FIRESTARTER_MAX_VARIATIONS  3
 
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
@@ -86,7 +87,7 @@
 #define FIRESTARTER_EVOLVE_GPU_OPTIMIZE         1
 
 #define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
-#define FIRESTARTER_OPTIMIZE_VARIATIONS         FIRESTARTER_VARIATIONS
+#define FIRESTARTER_OPTIMIZE_VARIATIONS         FIRESTARTER_MAX_VARIATIONS
 #define FIRESTARTER_OPTIMIZE_STREAMS            1
 #define FIRESTARTER_OPTIMIZE_UNITS              1
 #define FIRESTARTER_OPTIMIZE_STATES             1
@@ -140,7 +141,6 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 class FireStarterSetting {
 public:
     unsigned int m_variations =     1;
-    unsigned int m_samples =        FIRESTARTER_SAMPLES;
     unsigned int m_instructions =   FIRESTARTER_INSTRUCTIONS;
     unsigned int m_registers =      FIRESTARTER_REGISTERS;
     unsigned int m_opcodes =        FIRESTARTER_OPCODES;
@@ -165,8 +165,6 @@ public:
     unsigned int m_states =         0;
     unsigned int m_generations =    0;
     unsigned int m_population =     0;
-    unsigned int m_iterations =     0;
-    unsigned int m_candidates =     0;
     unsigned int m_passes =         0;
     unsigned int m_attempts =       0;
     unsigned int m_optimize =       0;
@@ -199,7 +197,6 @@ public:
     inline void CopyCodeSettings(FireStarterSetting& source)
     {
         m_variations = source.m_variations;
-        m_samples = source.m_samples;
         m_instructions = source.m_instructions;
         m_registers = source.m_registers;
         m_opcodes = source.m_opcodes;
@@ -218,8 +215,6 @@ public:
         m_units = source.m_units;
         m_generations = source.m_generations;
         m_population = source.m_population;
-        m_iterations = source.m_iterations;
-        m_candidates = source.m_candidates;
         m_passes = source.m_passes;
         m_attempts = source.m_attempts;
         m_scale = source.m_scale;
@@ -243,8 +238,6 @@ public:
             m_states =      FIRESTARTER_RANDOM_STATES;
             m_generations = FIRESTARTER_RANDOM_GENERATIONS;
             m_population =  FIRESTARTER_RANDOM_POPULATION;
-            m_iterations =  FIRESTARTER_RANDOM_ITERATIONS;
-            m_candidates =  FIRESTARTER_RANDOM_CANDIDATES;
             m_passes =      FIRESTARTER_RANDOM_PASSES;
             m_attempts =    FIRESTARTER_RANDOM_ATTEMPTS;
             m_optimize =    FIRESTARTER_RANDOM_OPTIMIZE;
@@ -257,8 +250,6 @@ public:
             m_states =      FIRESTARTER_EVOLVE_CPU_STATES;
             m_generations = FIRESTARTER_EVOLVE_CPU_GENERATIONS;
             m_population =  FIRESTARTER_EVOLVE_CPU_POPULATION;
-            m_iterations =  FIRESTARTER_EVOLVE_CPU_ITERATIONS;
-            m_candidates =  FIRESTARTER_EVOLVE_CPU_CANDIDATES;
             m_passes =      FIRESTARTER_EVOLVE_CPU_PASSES;
             m_attempts =    FIRESTARTER_EVOLVE_CPU_ATTEMPTS;
             m_optimize =    FIRESTARTER_EVOLVE_CPU_OPTIMIZE;
@@ -271,8 +262,6 @@ public:
             m_states =      FIRESTARTER_OPTIMIZE_STATES;
             m_generations = FIRESTARTER_OPTIMIZE_GENERATIONS;
             m_population =  FIRESTARTER_OPTIMIZE_POPULATION;
-            m_iterations =  FIRESTARTER_OPTIMIZE_ITERATIONS;
-            m_candidates =  FIRESTARTER_OPTIMIZE_CANDIDATES;
             m_passes =      FIRESTARTER_OPTIMIZE_PASSES;
             m_attempts =    FIRESTARTER_OPTIMIZE_ATTEMPTS;
             m_optimize =    FIRESTARTER_OPTIMIZE_OPTIMIZE;
@@ -285,8 +274,6 @@ public:
             m_states =      FIRESTARTER_EVOLVE_GPU_STATES;
             m_generations = FIRESTARTER_EVOLVE_GPU_GENERATIONS;
             m_population =  FIRESTARTER_EVOLVE_GPU_POPULATION;
-            m_iterations =  FIRESTARTER_EVOLVE_GPU_ITERATIONS;
-            m_candidates =  FIRESTARTER_EVOLVE_GPU_CANDIDATES;
             m_passes =      FIRESTARTER_EVOLVE_GPU_PASSES;
             m_attempts =    FIRESTARTER_EVOLVE_GPU_ATTEMPTS;
             m_optimize =    FIRESTARTER_EVOLVE_GPU_OPTIMIZE;
@@ -299,8 +286,6 @@ public:
             m_states =      FIRESTARTER_SPEED_TEST_STATES;
             m_generations = FIRESTARTER_SPEED_TEST_GENERATIONS;
             m_population =  FIRESTARTER_SPEED_TEST_POPULATION;
-            m_iterations =  FIRESTARTER_SPEED_TEST_ITERATIONS;
-            m_candidates =  FIRESTARTER_SPEED_TEST_CANDIDATES;
             m_passes =      FIRESTARTER_SPEED_TEST_PASSES;
             m_attempts =    FIRESTARTER_SPEED_TEST_ATTEMPTS;
             m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
@@ -313,8 +298,6 @@ public:
             m_states =      0;
             m_generations = 0;
             m_population =  0;
-            m_iterations =  0;
-            m_candidates =  0;
             m_passes =      0;
             m_attempts =    0;
             m_optimize =    0;

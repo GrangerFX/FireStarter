@@ -111,7 +111,6 @@ bool FireStarterProgram::LoadInstructions(const FireStarterInstructions* instruc
 void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::string& code, const std::string &prefix, const std::string& postfix)
 {
     code += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";
-    code += prefix + Format("samples = %u", settings.m_samples) + postfix + "\r\n";
     code += prefix + Format("instructions = %u", settings.m_instructions) + postfix + "\r\n";
     code += prefix + Format("registers = %u", settings.m_registers) + postfix + "\r\n";
     code += prefix + Format("opcodes = %u", settings.m_opcodes) + postfix + "\r\n";
@@ -130,9 +129,7 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("states = %u", settings.m_states) + postfix + "\r\n";
     code += prefix + Format("generations = %u", settings.m_generations) + postfix + "\r\n";
     code += prefix + Format("population = %u", settings.m_population) + postfix + "\r\n";
-    code += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";
     code += prefix + Format("passes = %u", settings.m_passes) + postfix + "\r\n";
-    code += prefix + Format("candidates = %u", settings.m_candidates) + postfix + "\r\n";
     code += prefix + Format("attempts = %u", settings.m_attempts) + postfix + "\r\n";
     code += prefix + Format("optimize = %u", settings.m_optimize) + postfix + "\r\n";
     code += "\r\n";

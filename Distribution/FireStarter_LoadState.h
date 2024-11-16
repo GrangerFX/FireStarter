@@ -39,7 +39,6 @@
 inline void LoadSettings(FireStarterSettings& settings)
 {
     settings.m_variations = 1;
-    settings.m_samples = 15;
     settings.m_instructions = 30;
     settings.m_registers = 30;
     settings.m_opcodes = 2;
@@ -58,9 +57,7 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_states = 1;
     settings.m_generations = 0;
     settings.m_population = 65536;
-    settings.m_iterations = 64;
     settings.m_passes = 512;
-    settings.m_candidates = 16;
     settings.m_attempts = 0;
     settings.m_optimize = 1;
 
