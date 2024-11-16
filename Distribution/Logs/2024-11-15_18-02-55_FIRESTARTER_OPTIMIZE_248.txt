@@ -1,0 +1,63 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+iterations = 64
+passes = 512
+candidates = 16
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation=  2 *Result=0.00000275  Best=0.00000275   Time=0.1  Run Time=723.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation=  3  Result=0.00036121  Best=0.00000275   Time=0.1  Run Time=723.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation=  4  Result=0.00004503  Best=0.00000275   Time=0.1  Run Time=723.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation=  5  Result=0.00001818  Best=0.00000275   Time=0.1  Run Time=724.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation=  6  Result=0.00000280  Best=0.00000275   Time=0.1  Run Time=724.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation=  7  Result=0.00614423  Best=0.00000275   Time=0.1  Run Time=724.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation=  8  Result=0.00018823  Best=0.00000275   Time=0.1  Run Time=725.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation=  9  Result=0.00006216  Best=0.00000275   Time=0.1  Run Time=725.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 10  Result=0.00005743  Best=0.00000275   Time=0.1  Run Time=726.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 11  Result=0.00040862  Best=0.00000275   Time=0.1  Run Time=726.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 12  Result=0.00143480  Best=0.00000275   Time=0.1  Run Time=726.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 13  Result=0.00012115  Best=0.00000275   Time=0.1  Run Time=727.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 14  Result=0.00001931  Best=0.00000275   Time=0.1  Run Time=727.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 15  Result=0.00614595  Best=0.00000275   Time=0.1  Run Time=727.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 16  Result=0.00001106  Best=0.00000275   Time=0.1  Run Time=728.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 17  Result=0.00028059  Best=0.00000275   Time=0.1  Run Time=728.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 18  Result=0.00003815  Best=0.00000275   Time=0.1  Run Time=728.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 19  Result=0.00020750  Best=0.00000275   Time=0.1  Run Time=729.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 20 *Result=0.00000224  Best=0.00000224   Time=0.1  Run Time=729.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 21  Result=0.00015325  Best=0.00000224   Time=0.1  Run Time=730.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 22  Result=0.00000565  Best=0.00000224   Time=0.1  Run Time=730.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 23  Result=0.00011823  Best=0.00000224   Time=0.1  Run Time=730.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 24  Result=0.00060436  Best=0.00000224   Time=0.1  Run Time=731.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 25  Result=0.00018307  Best=0.00000224   Time=0.1  Run Time=731.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 26  Result=0.00005343  Best=0.00000224   Time=0.1  Run Time=732.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 27  Result=0.00023437  Best=0.00000224   Time=0.1  Run Time=732.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 28  Result=0.00018716  Best=0.00000224   Time=0.1  Run Time=732.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 29  Result=0.00026257  Best=0.00000224   Time=0.1  Run Time=733.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 30  Result=0.00058956  Best=0.00000224   Time=0.1  Run Time=733.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=248  Generation= 31 *Result=0.00000027  Best=0.00000027   Time=0.1  Run Time=733.9
