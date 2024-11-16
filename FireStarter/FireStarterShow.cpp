@@ -20,7 +20,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
         unsigned int width = m_window.m_width;
         unsigned int height = m_window.m_height;
         float maxError = 0.0f;
-        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+        for (unsigned int v = 0; v < settings.m_variations; v++) {
             const FireStarterResult* result = state.Result(v);
             int xScale = height / 8;
             int yScale = height / 16;
@@ -49,7 +49,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                 float target = Target(theta, v);
                 float result = code->Evaluate(data, theta);
 
-                if ((theta >= TARGET_MIN) && (theta <= TARGET_MAX)) {
+                if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
                     float error = fabsf(result - target);
                     maxError = max(maxError, error);
                 }
