@@ -363,7 +363,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     // Get the best population member result for the variation.
     checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, FireStarterResult::Member(m_devicePopulation0[variation], settings, minIndex), FireStarterResult::ResultSize(settings), cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
-    state.InitResult(settings, m_hostPopulation, nullptr, 0, minIndex);
+    state.InitResult(settings, m_hostPopulation, nullptr, variation, minIndex);
 #endif
 } // ExecuteOptimizePass
 
