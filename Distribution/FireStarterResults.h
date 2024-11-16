@@ -53,6 +53,12 @@ typedef struct FireStarterData {
         d[i] += RANDOMFACTOR(seed) * scale;
     } // RandomData
 
+    inline void RandomData(unsigned long long& seed, float scale, unsigned int registers)
+    {
+        unsigned int i = RANDOMMOD(seed, registers);
+        d[i] += RANDOMFACTOR(seed) * scale;
+    } // RandomData
+
     inline void Copy(const FireStarterData& data)
     {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)

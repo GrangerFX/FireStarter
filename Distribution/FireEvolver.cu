@@ -59,6 +59,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         if (TestEvaluate(sharedData, data, code, target, theta, result))
             break;
     }
+    unsigned int registers = code.Optimize();
     FireStarterCode bestCode = code;
     FireStarterData bestData = data;
     FireStarterCode oldCode = code;
@@ -74,18 +75,19 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             memberResult = FIRESTARTER_START_RESULT;
             evolutionScale = FIRESTARTER_START_SCALE;
             code.Init(memberSeed);
-            data.Init(memberSeed, evolutionScale);
+            registers = code.Optimize();
+            data.Init(memberSeed, evolutionScale, registers);
             result = memberResult;
         } else {
             evolutionScale = FIRESTARTER_SCALE * memberResult;
             result = memberResult;
             if (evolveAge > 0)
-                data.RandomData(memberSeed, evolutionScale);
+                data.RandomData(memberSeed, evolutionScale, registers);
         }
 
         // Iterate to evolve the data.
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
-            unsigned int d = RANDOMMOD(memberSeed, FIRESTARTER_REGISTERS);
+            unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = result * 0.99f;
@@ -117,7 +119,6 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     }
 
     // Return the optimized best code.
-    bestCode.Optimize();
     codes[member].Copy(bestCode);
 
     // Return the array of results or the entire population data.

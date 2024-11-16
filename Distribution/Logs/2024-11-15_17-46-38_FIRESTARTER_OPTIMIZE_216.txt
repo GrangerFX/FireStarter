@@ -1,0 +1,51 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+samples = 15
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 123
+optimizeSeed = 123
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+iterations = 64
+passes = 512
+candidates = 16
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation=  2 *Result=0.00000177  Best=0.00000177   Time=0.1  Run Time=654.0
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation=  3  Result=0.00107566  Best=0.00000177   Time=0.1  Run Time=654.4
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation=  4  Result=0.00005317  Best=0.00000177   Time=0.1  Run Time=654.8
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation=  5  Result=0.00143427  Best=0.00000177   Time=0.1  Run Time=655.3
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation=  6  Result=0.00001267  Best=0.00000177   Time=0.1  Run Time=655.7
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation=  7 *Result=0.00000138  Best=0.00000138   Time=0.1  Run Time=656.1
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation=  8  Result=0.00019515  Best=0.00000138   Time=0.1  Run Time=656.6
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation=  9  Result=0.00043109  Best=0.00000138   Time=0.1  Run Time=657.0
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 10  Result=0.00000456  Best=0.00000138   Time=0.1  Run Time=657.4
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 11  Result=0.00005790  Best=0.00000138   Time=0.1  Run Time=657.9
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 12  Result=0.00005713  Best=0.00000138   Time=0.1  Run Time=658.3
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 13  Result=0.00020587  Best=0.00000138   Time=0.1  Run Time=658.7
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 14  Result=0.00002647  Best=0.00000138   Time=0.1  Run Time=659.2
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 15  Result=0.00032145  Best=0.00000138   Time=0.1  Run Time=659.6
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 16  Result=0.00060939  Best=0.00000138   Time=0.1  Run Time=660.1
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 17  Result=0.00028292  Best=0.00000138   Time=0.1  Run Time=660.6
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 18  Result=0.00028614  Best=0.00000138   Time=0.1  Run Time=661.0
+FIRESTARTER_OPTIMIZE: Seed=123  Test=216  Generation= 19 *Result=0.00000009  Best=0.00000009   Time=0.1  Run Time=661.5
