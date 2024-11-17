@@ -201,7 +201,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
-    unsigned long long generation = state.m_generation;
     unsigned int passes = settings.m_passes;
     unsigned int population = settings.m_population;
 
@@ -210,7 +209,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
                     reinterpret_cast<void*>(&m_deviceCode),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&generation),
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&population)
     };
@@ -285,6 +283,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     unsigned long long pass = state.m_optimize_pass * passes;
     FireStarterResult* newPopulation = nullptr;
     FireStarterResult* oldPopulation = nullptr;
+
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
         unsigned int registers = state.m_program.m_uniqueRegisters;
