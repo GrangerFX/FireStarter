@@ -1,0 +1,44 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 1
+optimizeSeed = 1
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+passes = 512
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation=  2 *Result=0.00004529  Best=0.00004529   Time=0.1  Run Time=807.8
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation=  3  Result=0.00239052  Best=0.00004529   Time=0.1  Run Time=808.2
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation=  4  Result=0.00019413  Best=0.00004529   Time=0.1  Run Time=808.5
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation=  5  Result=0.00006899  Best=0.00004529   Time=0.1  Run Time=808.9
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation=  6 *Result=0.00002591  Best=0.00002591   Time=0.1  Run Time=809.3
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation=  7 *Result=0.00000245  Best=0.00000245   Time=0.1  Run Time=809.7
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation=  8  Result=0.00093431  Best=0.00000245   Time=0.1  Run Time=810.1
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation=  9  Result=0.00018218  Best=0.00000245   Time=0.1  Run Time=810.5
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation= 10  Result=0.00035328  Best=0.00000245   Time=0.1  Run Time=810.8
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation= 11  Result=0.00059110  Best=0.00000245   Time=0.1  Run Time=811.2
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation= 12  Result=0.00018236  Best=0.00000245   Time=0.1  Run Time=811.6
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation= 13  Result=0.00093401  Best=0.00000245   Time=0.1  Run Time=812.0
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation= 14  Result=0.00013751  Best=0.00000245   Time=0.1  Run Time=812.4
+FIRESTARTER_OPTIMIZE: Seed=1  Test=251  Generation= 15 *Result=0.00000013  Best=0.00000013   Time=0.1  Run Time=812.7
