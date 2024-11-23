@@ -55,7 +55,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     for (unsigned int i = 0; i < 10; i++) {
         code.Init(memberSeed);
         registers = code.Optimize();
-        data.Init(memberSeed, FIRESTARTER_START_SCALE);
+        data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
         if (TestEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
