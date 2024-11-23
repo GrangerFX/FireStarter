@@ -389,7 +389,7 @@ typedef struct FireStarterCode {
 
     inline unsigned int Optimize(const FireStarterSettings& settings)
     {
-        Optimize(settings.m_instructions, settings.m_registers);
+        return Optimize(settings.m_instructions, settings.m_registers);
     } // Optimize
 
     inline void Init()
