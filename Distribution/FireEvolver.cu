@@ -156,103 +156,74 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
 
     // Evolve the program registers for each variation.
     unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
-    unsigned short evolveAge = 0;
-    unsigned short bestAge = 0;
 
     // The first generation is initalized with random numbers.
-    float result[FIRESTARTER_EVOLVE_GPU_VARIATIONS];
-    FireStarterCode bestCode;
-    FireStarterCode oldCode;
-    FireStarterData bestData[FIRESTARTER_EVOLVE_GPU_VARIATIONS];
+    float initResults[FIRESTARTER_EVOLVE_GPU_VARIATIONS];
     FireStarterData oldData[FIRESTARTER_EVOLVE_GPU_VARIATIONS];
-    float bestResult = FIRESTARTER_START_RESULT;
     float memberResult = FIRESTARTER_START_RESULT;
     unsigned int registers = 0;
 
-    // Perform all the passes on the GPU.
-    for (unsigned int pass = 0; pass < passes; pass++) {
-        float evolutionScale;
-
-        // Evolve the code and data.
-        if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
-            evolveAge = 0;
-            evolutionScale = FIRESTARTER_START_SCALE;
-            for (unsigned int i = 0; i < 10; i++) {
-                bool valid = true;
-                code.Init(memberSeed);
-                registers = code.Optimize();
-                for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++) {
-                    data[v].Init(memberSeed, FIRESTARTER_START_SCALE);
-                    result[v] = FIRESTARTER_START_RESULT;
-                    valid = valid && TestEvaluate(sharedData, data[v], code, target[v], theta, result[v]);
-                }
-                if (valid)
-                    break;
-            }
-            bestCode = code;
-            oldCode = code;
-            memberResult = 0;
-            for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++) {
-                bestData[v] = data[v];
-                oldData[v] = data[v];
-                memberResult = MAX(memberResult, result[v]);
-            }
-        } else {
-            evolutionScale = FIRESTARTER_SCALE * memberResult;
-            if (evolveAge > 0)
-                for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++)
-                    data[v].RandomData(memberSeed, evolutionScale, registers);
-        }
-
-        // Iterate to evolve the data.
+    for (unsigned int i = 0; i < 10; i++) {
+        bool valid = true;
+        code.Init(memberSeed);
+        registers = code.Optimize();
         for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++) {
+            data[v].Init(memberSeed, FIRESTARTER_START_SCALE);
+            initResults[v] = FIRESTARTER_START_RESULT;
+            valid = valid && TestEvaluate(sharedData, data[v], code, target[v], theta, initResults[v]);
+        }
+        if (valid)
+            break;
+    }
+
+    // Perform all the passes on the GPU.
+    float maxResult = 0.0f;
+    for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++) {
+        float result = initResults[v];
+        float bestResult = result;
+        unsigned short evolveAge = 0;
+        for (unsigned int pass = 0; pass < passes; pass++) {
+            float evolutionScale = FIRESTARTER_SCALE * result;
+            if (evolveAge > 0)
+                data[v].RandomData(memberSeed, evolutionScale, registers);
+
+            // Iterate to evolve the data.
             for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
                 unsigned int d = RANDOMMOD(memberSeed, registers);
                 float oldData = data[v][d];
                 data[v][d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
-                float curResult = result[v] * 0.99f;
+                float curResult = result * 0.99f;
                 if (TestEvaluate(sharedData, data[v], code, target[v], theta, curResult))
-                    result[v] = curResult;
+                    result = curResult;
                 else
                     data[v][d] = oldData;
             }
-        }
-        float maxResult = result[0];
-        for (unsigned int v = 1; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++)
-            maxResult = MAX(maxResult, result[v]);
+            float maxResult = result;
 
-        // Did the results improve?
-        if (!pass || (maxResult < memberResult)) {
-            // If the result was better, save the results.
-            if (maxResult < bestResult) {
-                bestCode = code;
-                for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++)
-                    bestData[v] = data;
-                bestResult = maxResult;
-                bestAge = evolveAge;
-            }
-            oldCode = code;
-            for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++)
+            // Did the results improve?
+            if (!pass || (maxResult < bestResult)) {
                 oldData[v] = data[v];
-            memberResult = maxResult;
-            evolveAge = 0;
-        } else {
-            // Revert to the original code and data.
-            code = oldCode;
-            for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++)
-                data[v] = oldData[v];
-            evolveAge++;
+                bestResult = maxResult;
+                evolveAge = 0;
+            } else {
+                // Revert to the original data.
+                for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++)
+                    data[v] = oldData[v];
+                evolveAge++;
+            }
         }
+        maxResult = MAX(maxResult, result);
     }
 
+
     // Return the optimized best code.
-    codes[member].Copy(bestCode);
+    codes[member].Copy(code);
 
     // Return the array of results or the entire population data.
-    results[member] = bestResult;
+    results[member] = maxResult;
 
     // Return the variation data for debugging.
     if (population)
-        population[member].Init(bestData[variation], bestResult, bestAge);
+        population[member].Init(data[variation], maxResult);
 } // Evolver
 #endif
