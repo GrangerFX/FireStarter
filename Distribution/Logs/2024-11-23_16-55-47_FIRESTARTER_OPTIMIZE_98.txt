@@ -1,0 +1,44 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 49152
+passes = 512
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation=  2 *Result=0.00010979  Best=0.00010979   Time=0.1  Run Time=254.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation=  3  Result=0.00037640  Best=0.00010979   Time=0.1  Run Time=254.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation=  4  Result=0.00018225  Best=0.00010979   Time=0.1  Run Time=254.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation=  5  Result=0.00472743  Best=0.00010979   Time=0.1  Run Time=255.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation=  6  Result=0.00051136  Best=0.00010979   Time=0.1  Run Time=255.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation=  7  Result=0.00171238  Best=0.00010979   Time=0.1  Run Time=255.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation=  8  Result=0.00089535  Best=0.00010979   Time=0.1  Run Time=256.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation=  9  Result=0.00017971  Best=0.00010979   Time=0.1  Run Time=256.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation= 10 *Result=0.00000226  Best=0.00000226   Time=0.1  Run Time=256.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation= 11  Result=0.00002128  Best=0.00000226   Time=0.1  Run Time=257.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation= 12  Result=0.00011543  Best=0.00000226   Time=0.1  Run Time=257.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation= 13  Result=0.00012260  Best=0.00000226   Time=0.1  Run Time=257.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation= 14  Result=0.00137476  Best=0.00000226   Time=0.1  Run Time=258.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=98  Generation= 15 *Result=0.00000017  Best=0.00000017   Time=0.1  Run Time=258.5
