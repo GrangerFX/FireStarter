@@ -41,7 +41,6 @@ GPU_GLOBAL void Tester(float* target, float* test, size_t testSize, float thetaS
 } // Tester
 
 #if FIRESTARTER_EVOLVE_GPU_VARIATIONS == 1
-#if 0
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
 GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
@@ -150,105 +149,6 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     if (population)
         population[member].Init(bestData, bestResult, bestAge);
 } // Evolver
-#else
-// Experimental version.
-GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
-{
-    // Determine the member to be optimized.
-    unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
-    if (member >= populationSize)
-        return;
-
-    // The shared data for the threads in the warp.
-    GPU_SHARED FireStarterSharedData sharedData;
-
-    // The best evolution code and data.
-    FireStarterCode bestCode;
-    FireStarterData bestData;
-
-    // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_SAMPLES];
-    float target[FIRESTARTER_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-        float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, variation);
-    }
-
-    // Evolve the program registers for each variation.
-    float bestResult = FIRESTARTER_START_RESULT;
-    unsigned long long memberSeed = seed + SEED1(member) + SEED10(variation);   // Unique seed for the member
-    unsigned short bestAge = 0;
-
-    // Perform all the passes on the GPU.
-    for (unsigned int candidate = 0; candidate < FIRESTARTER_EVOLVE_GPU_CANDIDATES; candidate++) {
-        FireStarterCode code;
-        FireStarterData data;
-        code.Init(memberSeed);
-        unsigned int registers = code.Optimize();
-        data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
-        FireStarterCode oldCode = code;
-        FireStarterData oldData = data;
-        if (candidate == 0) {
-            bestCode = code;
-            bestData = data;
-        }
-        float result = FIRESTARTER_START_RESULT;
-        float memberResult = FIRESTARTER_START_RESULT;
-        unsigned short evolveAge = 0;
-
-        for (unsigned int pass = 0; pass < passes; pass++) {
-            float evolutionScale = FIRESTARTER_SCALE * result;
-            if (evolveAge > 0)
-                data.RandomData(memberSeed, evolutionScale, registers);
-
-            // Iterate to evolve the data.
-            for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
-                unsigned int d = RANDOMMOD(memberSeed, registers);
-                float oldData = data[d];
-                data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
-                float curResult = result * 0.99f;
-                if (TestEvaluate(sharedData, data, code, target, theta, curResult))
-                    result = curResult;
-                else
-                    data[d] = oldData;
-            }
-
-            // Did the results improve?
-            if (!pass || (result < memberResult)) {
-                oldCode = code;
-                oldData = data;
-                memberResult = result;
-                evolveAge = 0;
-            } else {
-                // Revert to the original code and data.
-                code = oldCode;
-                data = oldData;
-                result = memberResult;
-                evolveAge++;
-            }
-        }
-
-        // If the result was better, save the results.
-        if (result < bestResult) {
-            bestCode = code;
-            bestData = data;
-            bestResult = result;
-            bestAge = evolveAge;
-        }
-    }
-
-    // Return the optimized best code.
-    codes[member].Copy(bestCode);
-
-    // Return the array of results or the entire population data.
-    results[member] = bestResult;
-
-    // Return the variation data for debugging.
-    if (population)
-        population[member].Init(bestData, bestResult, bestAge);
-} // Evolver
-#endif
 #else
 // Multi-variation version.
 GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
