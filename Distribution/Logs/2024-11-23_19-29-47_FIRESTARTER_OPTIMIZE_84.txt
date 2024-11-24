@@ -1,0 +1,61 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 49152
+passes = 256
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation=  2 *Result=0.00109202  Best=0.00109202   Time=0.1  Run Time=225.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation=  3 *Result=0.00017622  Best=0.00017622   Time=0.1  Run Time=225.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation=  4 *Result=0.00000549  Best=0.00000549   Time=0.1  Run Time=226.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation=  5  Result=0.00000933  Best=0.00000549   Time=0.1  Run Time=226.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation=  6  Result=0.00031203  Best=0.00000549   Time=0.1  Run Time=226.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation=  7  Result=0.00026607  Best=0.00000549   Time=0.1  Run Time=226.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation=  8  Result=0.00001547  Best=0.00000549   Time=0.1  Run Time=227.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation=  9  Result=0.00004282  Best=0.00000549   Time=0.1  Run Time=227.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 10  Result=0.00005186  Best=0.00000549   Time=0.1  Run Time=227.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 11  Result=0.00015330  Best=0.00000549   Time=0.1  Run Time=228.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 12  Result=0.00003473  Best=0.00000549   Time=0.1  Run Time=228.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 13  Result=0.00017652  Best=0.00000549   Time=0.1  Run Time=228.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 14 *Result=0.00000501  Best=0.00000501   Time=0.1  Run Time=229.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 15  Result=0.00011383  Best=0.00000501   Time=0.1  Run Time=229.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 16 *Result=0.00000393  Best=0.00000393   Time=0.1  Run Time=229.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 17  Result=0.00016862  Best=0.00000393   Time=0.1  Run Time=230.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 18  Result=0.00004242  Best=0.00000393   Time=0.1  Run Time=230.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 19 *Result=0.00000277  Best=0.00000277   Time=0.1  Run Time=230.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 20  Result=0.00033310  Best=0.00000277   Time=0.1  Run Time=230.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 21  Result=0.00107753  Best=0.00000277   Time=0.1  Run Time=231.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 22  Result=0.00010405  Best=0.00000277   Time=0.1  Run Time=231.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 23  Result=0.00000554  Best=0.00000277   Time=0.1  Run Time=231.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 24  Result=0.00168696  Best=0.00000277   Time=0.1  Run Time=232.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 25  Result=0.00107575  Best=0.00000277   Time=0.1  Run Time=232.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 26  Result=0.00001602  Best=0.00000277   Time=0.1  Run Time=232.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 27  Result=0.00000881  Best=0.00000277   Time=0.1  Run Time=233.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 28  Result=0.00246019  Best=0.00000277   Time=0.0  Run Time=233.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 29  Result=0.00017333  Best=0.00000277   Time=0.1  Run Time=233.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 30  Result=0.00000453  Best=0.00000277   Time=0.1  Run Time=234.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 31  Result=0.00001639  Best=0.00000277   Time=0.1  Run Time=234.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=84  Generation= 32 *Result=0.00000070  Best=0.00000070   Time=0.1  Run Time=234.7
