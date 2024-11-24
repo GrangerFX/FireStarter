@@ -504,7 +504,8 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     if (!job->m_ptx.empty())
         if (CUDACompile::CompileModule(m_executeModule, job->m_ptx)) {
             m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-            if (m_executeFunction)
+            m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
+            if (m_executeFunction && m_testerFunction)
                 return true;
             CUDACompile::ReleaseModule(m_executeModule);
         }
@@ -550,7 +551,8 @@ bool FireStarterExecute::GenerateEvolver(void)
     // Compile the code and get the Evolver and Optimizer functions from the module.
     if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, EVOLVE_PROGRAM_NAME)) {
         m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Evolver");
-        if (m_executeFunction)
+        m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
+        if (m_executeFunction && m_testerFunction)
             return true;
         CUDACompile::ReleaseModule(m_executeModule);
         m_executeFunction = nullptr;
@@ -578,7 +580,8 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     // Compile the code and get the Optimizer function from the module.
     if (CUDACompile::CompileProgram(m_executeModule, program, OPTIMIZE_PROGRAM_NAME)) {
         m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-        if (m_executeFunction)
+        m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
+        if (m_executeFunction && m_testerFunction)
             return true;
         CUDACompile::ReleaseModule(m_executeModule);
     }
@@ -605,7 +608,8 @@ bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
     // Compile the code and get the SpeedTest function from the module.
     if (CUDACompile::CompileProgram(m_executeModule, program, SPEEDTEST_PROGRAM_NAME)) {
         m_executeFunction = CUDACompile::GetFunction(m_executeModule, "SpeedTest");
-        if (m_executeFunction)
+        m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
+        if (m_executeFunction && m_testerFunction)
             return true;
         CUDACompile::ReleaseModule(m_executeModule);
     }
@@ -637,8 +641,10 @@ void FireStarterExecute::ExecuteCompileOptimize(const FireStarterState& initStat
         // Compile the code and get the Optimizer function from the module.
         std::string ptxCode;
         if (CUDACompile::CompilePTX(ptxCode, m_executeCode, OPTIMIZE_PROGRAM_NAME))
-            if (CUDACompile::CompileModule(m_executeModule, ptxCode))
+            if (CUDACompile::CompileModule(m_executeModule, ptxCode)) {
                 m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
+                m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
+            }
     });
 } // ExecuteCompileOptimize
 

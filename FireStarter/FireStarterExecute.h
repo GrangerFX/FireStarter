@@ -38,6 +38,7 @@ private:
     SerialThread m_compilerThread;
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
+    CUfunction m_testerFunction = nullptr;
     std::string m_executeCode;
     size_t m_resultSize = 0;
     size_t m_resultsSize = 0;

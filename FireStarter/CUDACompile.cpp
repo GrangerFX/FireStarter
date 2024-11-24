@@ -144,6 +144,13 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
     return result;
 } // CompileProgram
 
+bool CUDACompile::HasFunction(CUmodule& cuda_module, const std::string& functionName)
+{
+    CUfunction function = nullptr;
+    CUresult result = cuModuleGetFunction(&function, cuda_module, functionName.c_str());
+    return (result == 0) && (function != nullptr);
+} // HasFunction
+
 CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& functionName)
 {
     CUfunction function = nullptr;

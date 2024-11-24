@@ -19,6 +19,27 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
     return true;
 } // TestEvaluate
 
+GPU_GLOBAL void Tester(float* target, float* test, size_t testSize, float thetaStart, float thetaEnd, FireStarterResult* result, FireStarterCode* code, unsigned int variation)
+{
+    // Determine the member to be optimized.
+    unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= testSize)
+        return;
+
+    // Generate the target data.
+    float theta = thetaStart + index * (thetaEnd - thetaStart) / testSize;
+    if (target)
+        target[index] = Target(theta, variation);
+
+    // Generate the test data.
+    if (result && code) {
+        GPU_SHARED FireStarterSharedData sharedData;
+        sharedData = result->Data();
+        FireStarterCode localCode(code);
+        test[index] = localCode.Evaluate(sharedData, theta);
+    }
+} // Tester
+
 #if FIRESTARTER_EVOLVE_GPU_VARIATIONS == 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
 GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)

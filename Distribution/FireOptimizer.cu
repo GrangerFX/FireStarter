@@ -25,6 +25,30 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     return true;
 } // TestEvaluate
 
+GPU_GLOBAL void Tester(float* target, float* test, size_t testSize, float thetaStart, float thetaEnd, FireStarterResult* result, FireStarterCode* code, unsigned int variation)
+{
+    // Determine the member to be optimized.
+    unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= testSize)
+        return;
+
+    // Generate the target data.
+    float theta = thetaStart + index * (thetaEnd - thetaStart) / testSize;
+    if (target)
+        target[index] = Target(theta, variation);
+
+    // Generate the test data.
+    if (result) {
+        if (code) {
+            GPU_SHARED FireStarterSharedData sharedData;
+            sharedData = result->Data();
+            FireStarterCode localCode(code);
+            test[index] = localCode.Evaluate(sharedData, theta);
+        } else
+            test[index] = Evaluate(*result->Data(), theta);
+    }
+} // Tester
+
 GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
