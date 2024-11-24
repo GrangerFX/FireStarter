@@ -1,0 +1,54 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 32768
+passes = 512
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation=  2 *Result=0.00041171  Best=0.00041171   Time=0.1  Run Time=29.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation=  3  Result=0.00143147  Best=0.00041171   Time=0.1  Run Time=29.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation=  4 *Result=0.00009147  Best=0.00009147   Time=0.1  Run Time=30.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation=  5  Result=0.00076370  Best=0.00009147   Time=0.1  Run Time=30.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation=  6 *Result=0.00002317  Best=0.00002317   Time=0.1  Run Time=30.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation=  7  Result=0.00018949  Best=0.00002317   Time=0.1  Run Time=31.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation=  8  Result=0.00010855  Best=0.00002317   Time=0.1  Run Time=31.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation=  9  Result=0.00022912  Best=0.00002317   Time=0.1  Run Time=31.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 10  Result=0.00011355  Best=0.00002317   Time=0.1  Run Time=32.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 11 *Result=0.00001309  Best=0.00001309   Time=0.1  Run Time=32.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 12  Result=0.00018252  Best=0.00001309   Time=0.1  Run Time=32.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 13 *Result=0.00000560  Best=0.00000560   Time=0.1  Run Time=33.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 14  Result=0.00003612  Best=0.00000560   Time=0.1  Run Time=33.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 15  Result=0.00034440  Best=0.00000560   Time=0.1  Run Time=33.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 16  Result=0.00009494  Best=0.00000560   Time=0.1  Run Time=34.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 17  Result=0.00018238  Best=0.00000560   Time=0.1  Run Time=34.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 18  Result=0.00270459  Best=0.00000560   Time=0.1  Run Time=34.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 19  Result=0.00002355  Best=0.00000560   Time=0.1  Run Time=35.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 20 *Result=0.00000404  Best=0.00000404   Time=0.1  Run Time=35.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 21  Result=0.00011358  Best=0.00000404   Time=0.1  Run Time=35.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 22  Result=0.00014874  Best=0.00000404   Time=0.1  Run Time=36.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 23  Result=0.00009810  Best=0.00000404   Time=0.1  Run Time=36.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 24  Result=0.00064903  Best=0.00000404   Time=0.1  Run Time=37.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test=13  Generation= 25 *Result=0.00000083  Best=0.00000083   Time=0.1  Run Time=37.3
