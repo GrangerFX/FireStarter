@@ -7,12 +7,11 @@
 class FireStarterShow : public CUDAThread {
 private:
 	FireStarterWindow m_window;
-	std::string m_fireShowCode;
-	CUfunction m_fireShowFunction = nullptr;
-	CUmodule m_fireShowModule = nullptr;
-	FireStarterInstructions* m_fireShowInstructions = nullptr;
+	std::string m_fireEvaluateCode;
+	CUfunction m_fireEvaluateFunction = nullptr;
+	CUmodule m_fireEvaluateModule = nullptr;
 
-	bool LoadFireShowCode(void);
+	void LoadFireEvaluator(void);
 
 public:
 	static void FireSolution(FireStarterWindow& window);

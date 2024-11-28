@@ -196,7 +196,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = settings.m_population;
+    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
@@ -274,7 +274,7 @@ void FireStarterExecute::ExecuteEvolveVariationsPass(FireStarterState& state, Fi
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = settings.m_population;
+    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
@@ -504,8 +504,7 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     if (!job->m_ptx.empty())
         if (CUDACompile::CompileModule(m_executeModule, job->m_ptx)) {
             m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-            m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
-            if (m_executeFunction && m_testerFunction)
+            if (m_executeFunction)
                 return true;
             CUDACompile::ReleaseModule(m_executeModule);
         }
@@ -551,12 +550,11 @@ bool FireStarterExecute::GenerateEvolver(void)
     // Compile the code and get the Evolver and Optimizer functions from the module.
     if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, EVOLVE_PROGRAM_NAME)) {
         m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Evolver");
-        m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
-        if (m_executeFunction && m_testerFunction)
+        if (m_executeFunction)
             return true;
-        CUDACompile::ReleaseModule(m_executeModule);
-        m_executeFunction = nullptr;
     }
+    CUDACompile::ReleaseModule(m_executeModule);
+    m_executeFunction = nullptr;
     return false;
 } // GenerateEvolver
 
@@ -574,17 +572,16 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
 
     // Create the Optimize code by replacing the evaluate code block.
-    std::string program = m_executeCode;
-    FireStarterSource::UpdateProgram(program, state.m_evaluateCode, EVALUATE_CODE);
+    FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
 
     // Compile the code and get the Optimizer function from the module.
-    if (CUDACompile::CompileProgram(m_executeModule, program, OPTIMIZE_PROGRAM_NAME)) {
+    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, OPTIMIZE_PROGRAM_NAME)) {
         m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-        m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
-        if (m_executeFunction && m_testerFunction)
+        if (m_executeFunction)
             return true;
-        CUDACompile::ReleaseModule(m_executeModule);
     }
+    CUDACompile::ReleaseModule(m_executeModule);
+    m_executeFunction = nullptr;
     return false;
 } // GenerateOptimize
 
@@ -602,83 +599,49 @@ bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
     m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
 
     // Create the SpeedTest code by replacing the evaluate code block.
-    std::string program = m_executeCode;
-    FireStarterSource::UpdateProgram(program, state.m_evaluateCode, EVALUATE_CODE);
+    FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
 
     // Compile the code and get the SpeedTest function from the module.
-    if (CUDACompile::CompileProgram(m_executeModule, program, SPEEDTEST_PROGRAM_NAME)) {
+    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, SPEEDTEST_PROGRAM_NAME)) {
         m_executeFunction = CUDACompile::GetFunction(m_executeModule, "SpeedTest");
-        m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
-        if (m_executeFunction && m_testerFunction)
+        if (m_executeFunction)
             return true;
-        CUDACompile::ReleaseModule(m_executeModule);
     }
+    CUDACompile::ReleaseModule(m_executeModule);
+    m_executeFunction = nullptr;
     return false;
 } // GenerateSpeedTest
 
-void FireStarterExecute::ExecuteCompileOptimize(const FireStarterState& initState)
-{
-    DispatchAsync([this, initState] {
-        // Load the base Optimize code into memory.
-        if (m_executeCode.empty()) {
-            if (!FireStarterSource::LoadSource(m_executeCode, OPTIMIZE_PROGRAM_NAME)) {
-                printf("%s could not be loaded!\n", OPTIMIZE_PROGRAM_NAME);
-                std::terminate();
-            }
-        }
-
-        // Release the previous optimize module.
-        CUDACompile::ReleaseModule(m_executeModule);
-        m_executeFunction = nullptr;
-
-        // Generate the evaluate code
-        std::string evaluateCode;
-        m_executeGenerate->GenerateEvaluate(initState, evaluateCode);
-
-        // Create the Optimize code by replacing the evaluate code block.
-        FireStarterSource::UpdateProgram(m_executeCode, evaluateCode, EVALUATE_CODE);
-
-        // Compile the code and get the Optimizer function from the module.
-        std::string ptxCode;
-        if (CUDACompile::CompilePTX(ptxCode, m_executeCode, OPTIMIZE_PROGRAM_NAME))
-            if (CUDACompile::CompileModule(m_executeModule, ptxCode)) {
-                m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-                m_testerFunction = CUDACompile::GetFunction(m_executeModule, "Tester");
-            }
-    });
-} // ExecuteCompileOptimize
-
-bool FireStarterExecute::ExecuteGenerateEvolver(void)
+bool FireStarterExecute::ExecuteGenerateEvolver(bool sync)
 {
     if (m_executeFunction)
         return true;
     bool result = false;
-    DispatchSync([this, &result] {
+    Dispatch([this, &result] {
         result = GenerateEvolver();
-    });
+    }, sync);
     return result;
 } // ExecuteGenerateEvolver
 
-bool FireStarterExecute::ExecuteGenerateOptimize(const FireStarterState& initState)
+bool FireStarterExecute::ExecuteGenerateOptimize(const FireStarterState& initState, bool sync)
 {
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
     bool result = false;
-    DispatchSync([this, initState, &result] {
+    Dispatch([this, initState, &result] {
         FireStarterState state(initState);
         result = GenerateOptimize(state);
-    });
+    }, sync);
     return result;
 } // ExecuteGenerateOptimize
 
-bool FireStarterExecute::ExecuteGenerateSpeedTest(const FireStarterState& initState)
+bool FireStarterExecute::ExecuteGenerateSpeedTest(const FireStarterState& initState, bool sync)
 {
-    bool result = false;
-
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
-    DispatchSync([this, initState, &result] {
+    bool result = false;
+    Dispatch([this, initState, &result] {
         FireStarterState state(initState);
         result = GenerateSpeedTest(state);
-    });
+    }, sync);
     return result;
 } // ExecuteGenerateSpeedTest
 
@@ -695,7 +658,7 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestC
         if (GenerateEvolver()) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
-                if (0 && state.Settings().m_variations == 1)
+                if (state.Settings().m_variations == 1)
                     ExecuteEvolvePass(state, bestCodes);
                 else
                     ExecuteEvolveVariationsPass(state, bestCodes);
@@ -703,7 +666,7 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestC
     });
 } // ExecuteEvolve
 
-void FireStarterExecute::ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& state, FireStarterState& bestState)
+void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete)
 {
     DispatchSync([this, complete, &state, &bestState] {
         if (m_executeFunction) {
@@ -714,7 +677,7 @@ void FireStarterExecute::ExecuteEvolveOptimize(FireStarterComplete* complete, Fi
                     ExecuteOptimizePasses(state);
 
                     // Update the results in the UI and check for completion.
-                    if (complete->CompleteState(bestState, state))
+                    if (complete && complete->CompleteState(bestState, state))
                         break;
 
                     // Increment the generation.

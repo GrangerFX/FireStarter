@@ -38,7 +38,6 @@ private:
     SerialThread m_compilerThread;
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
-    CUfunction m_testerFunction = nullptr;
     std::string m_executeCode;
     size_t m_resultSize = 0;
     size_t m_resultsSize = 0;
@@ -60,13 +59,12 @@ private:
     bool ExecuteJob(void);
 
 public:
-    void ExecuteCompileOptimize(const FireStarterState& initState);
-    bool ExecuteGenerateEvolver(void);
-    bool ExecuteGenerateOptimize(const FireStarterState& initState);
-    bool ExecuteGenerateSpeedTest(const FireStarterState& initState);
+    bool ExecuteGenerateEvolver(bool sync = true);
+    bool ExecuteGenerateOptimize(const FireStarterState& initState, bool sync = true);
+    bool ExecuteGenerateSpeedTest(const FireStarterState& initState, bool sync = true);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state, FireStarterBestCodes &bestCodes);
-    void ExecuteEvolveOptimize(FireStarterComplete* complete, FireStarterState& state, FireStarterState& bestState);
+    void ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);

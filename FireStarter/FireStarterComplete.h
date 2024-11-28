@@ -24,7 +24,7 @@ private:
 	bool LoadSolutionTargetCode(void);
 
 public:
-	bool UpdateBestState(FireStarterState& bestState, const FireStarterState& state);
+    bool UpdateBestState(FireStarterState& bestState, const FireStarterState& state);
 	void DisplayResults(const FireStarterState& bestState);
     void SaveResults(const FireStarterState& bestState);
 	void CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation = 0);
