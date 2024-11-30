@@ -365,7 +365,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
-            FireStarterBestCodes bestCodes(evolveSettings);
+            FireStarterBestCodes bestCodes(evolveSettings, 64);
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
             FireStarterState optimizeState1 = FireStarterState(optimizeSettings, 0, 0, 0, test);
             FireStarterState optimizeState2 = FireStarterState(optimizeSettings, 0, 0, 0, test);
