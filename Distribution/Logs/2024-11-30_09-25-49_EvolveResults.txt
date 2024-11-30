@@ -1,0 +1,14 @@
+Seed: 0  Test:   0  Generation= 10  Evolve Result=0.00724477  Optimize Result=0.00000077  Duration: 4.8  GenTime: 0.5  Total: 4.8  Average: 4.8 *******
+Seed: 0  Test:   1  Generation= 19  Evolve Result=0.00160869  Optimize Result=0.00000024  Duration: 7.5  GenTime: 0.4  Total: 12.3  Average: 6.1 *******
+Seed: 0  Test:   2  Generation=  7  Evolve Result=0.00211474  Optimize Result=0.00000019  Duration: 2.2  GenTime: 0.3  Total: 14.5  Average: 4.8 *******
+Seed: 0  Test:   3  Generation=  3  Evolve Result=0.00445855  Optimize Result=0.00000042  Duration: 0.8  GenTime: 0.3  Total: 15.3  Average: 3.8 *******
+Seed: 0  Test:   4  Generation= 19  Evolve Result=0.00196863  Optimize Result=0.00000082  Duration: 6.6  GenTime: 0.3  Total: 21.9  Average: 4.4 *******
+Seed: 0  Test:   5  Generation= 28  Evolve Result=0.00174075  Optimize Result=0.00000009  Duration: 10.4  GenTime: 0.4  Total: 32.3  Average: 5.4 *******
+Seed: 0  Test:   6  Generation= 13  Evolve Result=0.00690269  Optimize Result=0.00000040  Duration: 4.7  GenTime: 0.4  Total: 37.0  Average: 5.3 *******
+Seed: 0  Test:   7  Generation= 37  Evolve Result=0.00052151  Optimize Result=0.00000025  Duration: 13.4  GenTime: 0.4  Total: 50.5  Average: 6.3 *******
+Seed: 0  Test:   8  Generation=  2  Evolve Result=0.00291973  Optimize Result=0.00000023  Duration: 0.5  GenTime: 0.2  Total: 50.9  Average: 5.7 *******
+Seed: 0  Test:   9  Generation= 21  Evolve Result=0.00331521  Optimize Result=0.00000012  Duration: 7.5  GenTime: 0.4  Total: 58.4  Average: 5.8 *******
+Seed: 0  Test:  10  Generation=  7  Evolve Result=0.00191885  Optimize Result=0.00000010  Duration: 2.4  GenTime: 0.3  Total: 60.8  Average: 5.5 *******
+Seed: 0  Test:  11  Generation=  2  Evolve Result=0.00254339  Optimize Result=0.00000043  Duration: 0.5  GenTime: 0.2  Total: 61.3  Average: 5.1 *******
+Seed: 0  Test:  12  Generation= 71  Evolve Result=0.00273862  Optimize Result=0.00000033  Duration: 26.0  GenTime: 0.4  Total: 87.3  Average: 6.7 *******
+Seed: 0  Test:  13  Generation= 33  Evolve Result=0.00626883  Optimize Result=0.00000017  Duration: 12.0  GenTime: 0.4  Total: 99.3  Average: 7.1 *******
