@@ -260,14 +260,17 @@ public:
         m_program.RandomInstruction(m_seed);
     } // RandomInstruction
 
-    inline void LoadProgramFromCode(void)
+    inline void LoadProgramFromCode(const FireStarterCode* code = nullptr)
     {
         unsigned int numInstructions = Settings().m_instructions;
         FireStarterInstructions* instructions = m_program.EvolvedInstructions();
-        FireStarterCode* code = Code();
+        if (code)
+            *Code() = code;
+        else
+            code = Code();
         for (unsigned int i = 0; i < numInstructions; i++) {
             FireStarterInstruction& instruction = instructions->Instruction(i);
-            FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
+            const FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
             instruction.op = codeInstruction.op;
             instruction.reg = codeInstruction.reg;
         }
