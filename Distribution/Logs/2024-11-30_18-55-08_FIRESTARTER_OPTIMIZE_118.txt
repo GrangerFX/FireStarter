@@ -1,0 +1,38 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 2080 Ti
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+passes = 384
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=118  Generation=  2 *Result=0.00235317  Best=0.00235317   Time=0.3  Run Time=812.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=118  Generation=  3 *Result=0.00021020  Best=0.00021020   Time=0.3  Run Time=813.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=118  Generation=  4 *Result=0.00001936  Best=0.00001936   Time=0.3  Run Time=814.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=118  Generation=  5  Result=0.00005287  Best=0.00001936   Time=0.2  Run Time=815.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=118  Generation=  6  Result=0.00016594  Best=0.00001936   Time=0.2  Run Time=816.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=118  Generation=  7  Result=0.00004536  Best=0.00001936   Time=0.3  Run Time=817.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=118  Generation=  8  Result=0.00009072  Best=0.00001936   Time=0.2  Run Time=818.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test=118  Generation=  9 *Result=0.00000012  Best=0.00000012   Time=0.3  Run Time=819.0
