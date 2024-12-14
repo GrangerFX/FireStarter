@@ -1,0 +1,13 @@
+Seed: 0  Test:   0  Generation=  8  Evolve Result=0.00309372  Optimize Result=0.00000025  Duration: 4.1  GenTime: 0.5  Total: 4.1  Average: 4.1 *******
+Seed: 0  Test:   1  Generation=  9  Evolve Result=0.00701955  Optimize Result=0.00000012  Duration: 4.0  GenTime: 0.4  Total: 8.1  Average: 4.1 *******
+Seed: 0  Test:   2  Generation= 48  Evolve Result=0.00730792  Optimize Result=0.00000070  Duration: 23.9  GenTime: 0.5  Total: 32.1  Average: 10.7 *******
+Seed: 0  Test:   3  Generation=  4  Evolve Result=0.01136905  Optimize Result=0.00000011  Duration: 1.6  GenTime: 0.4  Total: 33.6  Average: 8.4 *******
+Seed: 0  Test:   4  Generation= 41  Evolve Result=0.01101601  Optimize Result=0.00000026  Duration: 20.1  GenTime: 0.5  Total: 53.7  Average: 10.7 *******
+Seed: 0  Test:   5  Generation=  3  Evolve Result=0.01043672  Optimize Result=0.00000012  Duration: 1.0  GenTime: 0.3  Total: 54.7  Average: 9.1 *******
+Seed: 0  Test:   6  Generation=  4  Evolve Result=0.00626099  Optimize Result=0.00000014  Duration: 1.4  GenTime: 0.4  Total: 56.1  Average: 8.0 *******
+Seed: 0  Test:   7  Generation= 18  Evolve Result=0.00549686  Optimize Result=0.00000010  Duration: 8.2  GenTime: 0.5  Total: 64.4  Average: 8.0 *******
+Seed: 0  Test:   8  Generation= 20  Evolve Result=0.00835982  Optimize Result=0.00000060  Duration: 9.3  GenTime: 0.5  Total: 73.6  Average: 8.2 *******
+Seed: 0  Test:   9  Generation=  4  Evolve Result=0.00766343  Optimize Result=0.00000079  Duration: 1.5  GenTime: 0.4  Total: 75.1  Average: 7.5 *******
+Seed: 0  Test:  10  Generation=  7  Evolve Result=0.01252544  Optimize Result=0.00000059  Duration: 2.8  GenTime: 0.4  Total: 77.9  Average: 7.1 *******
+Seed: 0  Test:  11  Generation= 17  Evolve Result=0.00423723  Optimize Result=0.00000007  Duration: 7.6  GenTime: 0.4  Total: 85.6  Average: 7.1 *******
+Seed: 0  Test:  12  Generation= 28  Evolve Result=0.00437164  Optimize Result=0.00000058  Duration: 13.4  GenTime: 0.5  Total: 98.9  Average: 7.6 *******

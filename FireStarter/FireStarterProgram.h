@@ -6,7 +6,7 @@
 #include <string>
 #include <set>
 
-#if 1
+#if 0
 #define EVOLVE_PROGRAM_NAME   "FireEvolver2.cu"
 #else
 #define EVOLVE_PROGRAM_NAME   "FireEvolver.cu"
