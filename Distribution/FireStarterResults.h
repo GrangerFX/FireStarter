@@ -196,6 +196,18 @@ typedef struct FireStarterSharedData {
             d[index(i)] = (*data)[i];
     } // Copy
 
+    inline void GetData(FireStarterData& data) const
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            data[i] = d[index(i)];
+    } // GetData
+
+    inline void GetData(FireStarterData* data) const
+    {
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            (*data)[i] = d[index(i)];
+    } // GetData
+
     inline FireStarterSharedData(const FireStarterData& data)
     {
         Copy(data);

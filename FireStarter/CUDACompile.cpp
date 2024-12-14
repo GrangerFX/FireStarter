@@ -127,7 +127,7 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
 
     std::string ptx, log;
     if (!Compile(ptx, log, program, programName, options)) {
-        printf("compilation log ---\n%s\nend log---\n", log);
+        printf("compilation log ---\n%s\nend log---\n", log.c_str());
         std::terminate();
         return false;
     }
