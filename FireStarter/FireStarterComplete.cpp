@@ -15,8 +15,28 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 {
     static std::string executeCode;
-    if (executeCode.empty())
-        FireStarterSource::LoadSource(executeCode, bestState.Settings().m_mode == FIRESTARTER_EVOLVE_GPU ? EVOLVE_PROGRAM_NAME : OPTIMIZE_PROGRAM_NAME);
+    if (executeCode.empty()) {
+        std::string programName;
+        switch (bestState.Settings().m_mode) {
+            case FIRESTARTER_EVOLVE_GPU:
+                programName = EVOLVE_PROGRAM_NAME;
+                break;
+            case FIRESTARTER_EVOLVE_NEW_GPU:
+                programName = EVOLVE_NEW_PROGRAM_NAME;
+                break;
+            case FIRESTARTER_RANDOM:
+            case FIRESTARTER_EVOLVE_CPU:
+            case FIRESTARTER_OPTIMIZE:
+                programName = OPTIMIZE_PROGRAM_NAME;
+                break;
+            case FIRESTARTER_SPEED_TEST:
+                programName = SPEEDTEST_PROGRAM_NAME;
+                break;
+            default:
+                break;
+        }
+        FireStarterSource::LoadSource(executeCode, programName);
+    }
     if (!executeCode.empty()) {
         // Generate the evaluate function
         std::string variationsCode;

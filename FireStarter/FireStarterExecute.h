@@ -38,6 +38,7 @@ private:
     SerialThread m_compilerThread;
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
+    std::string m_executeProgramName;
     std::string m_executeCode;
     size_t m_resultSize = 0;
     size_t m_resultsSize = 0;
@@ -48,22 +49,26 @@ private:
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
     void ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation = 0);
+    void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteEvolveVariationsPass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
-    bool GenerateEvolver(void);
+    bool GenerateEvolve(void);
+    bool GenerateEvolveNew(void);
     bool GenerateOptimize(FireStarterState& state);
     bool GenerateSpeedTest(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
     bool ExecuteJob(void);
 
 public:
-    bool ExecuteGenerateEvolver(bool sync = true);
+    bool ExecuteGenerateEvolve(bool sync = true);
+    bool ExecuteGenerateEvolveNew(bool sync = true);
     bool ExecuteGenerateOptimize(const FireStarterState& initState, bool sync = true);
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState, bool sync = true);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state, FireStarterBestCodes &bestCodes);
+    void ExecuteEvolveNew(FireStarterState& state);
     void ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.

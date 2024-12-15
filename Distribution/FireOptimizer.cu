@@ -2,20 +2,20 @@
 
 #include "FireStarterResults.h"
 
-inline float Evaluate(const FireStarterData& testData, float n)
+inline float OptimizeEvaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data = testData;
 // EVALUATE //
 // END //
     return n;
-} // Evaluate
+} // OptimizeEvaluate
 
 inline bool TestEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
     for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
-        float n = fabsf(Evaluate(data, theta[i]) - target[i]);
+        float n = fabsf(OptimizeEvaluate(data, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
             return false;

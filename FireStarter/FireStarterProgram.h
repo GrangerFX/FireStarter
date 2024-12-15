@@ -6,13 +6,10 @@
 #include <string>
 #include <set>
 
-#if 0
-#define EVOLVE_PROGRAM_NAME   "FireEvolver2.cu"
-#else
-#define EVOLVE_PROGRAM_NAME   "FireEvolver.cu"
-#endif
-#define OPTIMIZE_PROGRAM_NAME "FireOptimizer.cu"
-#define SPEEDTEST_PROGRAM_NAME "FireSpeedTest.cu"
+#define EVOLVE_NEW_PROGRAM_NAME "FireEvolverNew.cu"
+#define EVOLVE_PROGRAM_NAME     "FireEvolver.cu"
+#define OPTIMIZE_PROGRAM_NAME   "FireOptimizer.cu"
+#define SPEEDTEST_PROGRAM_NAME  "FireSpeedTest.cu"
 
 typedef std::set<std::vector<unsigned char>> TestedInstructions;
 

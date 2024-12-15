@@ -3,6 +3,14 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
+inline float OptimizeEvaluate(const FireStarterData& testData, float n)
+{
+    FireStarterData data = testData;
+// EVALUATE //
+// END //
+    return n;
+} // OptimizeEvaluate
+
 inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
