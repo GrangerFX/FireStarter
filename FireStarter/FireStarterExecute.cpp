@@ -306,7 +306,8 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     float minResult = settings.m_startResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
-        float curResult = *m_hostPopulation[i].MinResult();
+        FireStarterResult& member = m_hostPopulation[i];
+        float curResult = *member.MinResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;

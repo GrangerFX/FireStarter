@@ -1,7 +1,6 @@
 #pragma once
 #include "FireStarterTarget.h"
 
-#define FIRESTARTER_SAMPLES         15
 #define FIRESTARTER_INSTRUCTIONS    32
 #define FIRESTARTER_REGISTERS       30
 #define FIRESTARTER_VARIATIONS      1
@@ -11,7 +10,6 @@
 
 #define FIRESTARTER_WARP_THREADS    32
 #define FIRESTARTER_MULTIPROCESS    1           // Use multi-processing to compile each generation.
-#define FIRESTARTER_OPTIMIZE_LIMIT  1.0e+10f
 #define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
 #define FIRESTARTER_AUTO_QUIT       1           // Automatically exit the app after completing the work.
@@ -23,6 +21,11 @@
 #define FIRESTARTER_MADD            0           // Use only non-random multiply-add instructions.
 
 #define FIRESTARTER_POPULATION      8192 * FIRESTARTER_WARP_THREADS  // For debugging display of the population contents only.
+#define FIRESTARTER_PASSES          512
+#define FIRESTARTER_ITERATIONS      64
+#define FIRESTARTER_SAMPLES         15
+#define FIRESTARTER_CANDIDATES      16
+
 #define FIRESTARTER_NUM_BEST        16          // The number of best evolved codes for optimization
 
 #define FIRESTARTER_SCALE           0.3f
@@ -48,111 +51,120 @@
 #define FIRESTARTER_MODES           8
 #define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_NEW_GPU
 
-#define FIRESTARTER_RANDOM_TARGET               FIRESTARTER_TARGET
 #define FIRESTARTER_RANDOM_VARIATIONS           FIRESTARTER_VARIATIONS
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1
 #define FIRESTARTER_RANDOM_STATES               11000
 #define FIRESTARTER_RANDOM_GENERATIONS          0
 #define FIRESTARTER_RANDOM_POPULATION           FIRESTARTER_POPULATION
-#define FIRESTARTER_RANDOM_ITERATIONS           64
-#define FIRESTARTER_RANDOM_CANDIDATES           16
-#define FIRESTARTER_RANDOM_PASSES               500
+#define FIRESTARTER_RANDOM_PASSES               FIRESTARTER_PASSES
+#define FIRESTARTER_RANDOM_ITERATIONS           FIRESTARTER_ITERATIONS
+#define FIRESTARTER_RANDOM_SAMPLES              FIRESTARTER_SAMPLES
+#define FIRESTARTER_RANDOM_CANDIDATES           FIRESTARTER_CANDIDATES
 #define FIRESTARTER_RANDOM_ATTEMPTS             0
 #define FIRESTARTER_RANDOM_OPTIMIZE             0
+#define FIRESTARTER_RANDOM_TARGET               FIRESTARTER_TARGET
 
-#define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
 #define FIRESTARTER_EVOLVE_CPU_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_CPU_STREAMS          1
 #define FIRESTARTER_EVOLVE_CPU_UNITS            8
 #define FIRESTARTER_EVOLVE_CPU_STATES           16
 #define FIRESTARTER_EVOLVE_CPU_GENERATIONS      0
 #define FIRESTARTER_EVOLVE_CPU_POPULATION       FIRESTARTER_POPULATION
-#define FIRESTARTER_EVOLVE_CPU_ITERATIONS       64
-#define FIRESTARTER_EVOLVE_CPU_CANDIDATES       16
-#define FIRESTARTER_EVOLVE_CPU_PASSES           500
+#define FIRESTARTER_EVOLVE_CPU_PASSES           FIRESTARTER_PASSES
+#define FIRESTARTER_EVOLVE_CPU_ITERATIONS       FIRESTARTER_ITERATIONS
+#define FIRESTARTER_EVOLVE_CPU_SAMPLES          FIRESTARTER_SAMPLES
+#define FIRESTARTER_EVOLVE_CPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_CPU_ATTEMPTS         0
 #define FIRESTARTER_EVOLVE_CPU_OPTIMIZE         1
+#define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
 
 #if FIRESTARTER_VARIATIONS == 1
-#define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
 #define FIRESTARTER_EVOLVE_GPU_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_GPU_STREAMS          1
 #define FIRESTARTER_EVOLVE_GPU_UNITS            1
 #define FIRESTARTER_EVOLVE_GPU_STATES           1
 #define FIRESTARTER_EVOLVE_GPU_GENERATIONS      0
 #define FIRESTARTER_EVOLVE_GPU_POPULATION       32768
-#define FIRESTARTER_EVOLVE_GPU_ITERATIONS       64
-#define FIRESTARTER_EVOLVE_GPU_CANDIDATES       16
 #define FIRESTARTER_EVOLVE_GPU_PASSES           256
+#define FIRESTARTER_EVOLVE_GPU_ITERATIONS       FIRESTARTER_ITERATIONS
+#define FIRESTARTER_EVOLVE_GPU_SAMPLES          FIRESTARTER_SAMPLES
+#define FIRESTARTER_EVOLVE_GPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_GPU_ATTEMPTS         0
 #define FIRESTARTER_EVOLVE_GPU_OPTIMIZE         1
+#define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
 
-#define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
 #define FIRESTARTER_OPTIMIZE_VARIATIONS         FIRESTARTER_VARIATIONS
 #define FIRESTARTER_OPTIMIZE_STREAMS            1
 #define FIRESTARTER_OPTIMIZE_UNITS              1
 #define FIRESTARTER_OPTIMIZE_STATES             1
 #define FIRESTARTER_OPTIMIZE_GENERATIONS        0
 #define FIRESTARTER_OPTIMIZE_POPULATION         65536
-#define FIRESTARTER_OPTIMIZE_ITERATIONS         64
-#define FIRESTARTER_OPTIMIZE_CANDIDATES         16
 #define FIRESTARTER_OPTIMIZE_PASSES             384
+#define FIRESTARTER_OPTIMIZE_ITERATIONS         FIRESTARTER_ITERATIONS
+#define FIRESTARTER_OPTIMIZE_SAMPLES            FIRESTARTER_SAMPLES
+#define FIRESTARTER_OPTIMIZE_CANDIDATES         FIRESTARTER_CANDIDATES
 #define FIRESTARTER_OPTIMIZE_ATTEMPTS           0
 #define FIRESTARTER_OPTIMIZE_OPTIMIZE           1
+#define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
 #else
-#define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
 #define FIRESTARTER_EVOLVE_GPU_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_GPU_STREAMS          1
 #define FIRESTARTER_EVOLVE_GPU_UNITS            1
 #define FIRESTARTER_EVOLVE_GPU_STATES           1
 #define FIRESTARTER_EVOLVE_GPU_GENERATIONS      0
 #define FIRESTARTER_EVOLVE_GPU_POPULATION       65536
-#define FIRESTARTER_EVOLVE_GPU_ITERATIONS       64
-#define FIRESTARTER_EVOLVE_GPU_CANDIDATES       16
-#define FIRESTARTER_EVOLVE_GPU_PASSES           512
+#define FIRESTARTER_EVOLVE_GPU_PASSES           FIRESTARTER_PASSES
+#define FIRESTARTER_EVOLVE_GPU_ITERATIONS       FIRESTARTER_ITERATIONS
+#define FIRESTARTER_OEVOLVE_GPU_SAMPLES         FIRESTARTER_SAMPLES
+#define FIRESTARTER_EVOLVE_GPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_GPU_ATTEMPTS         0
 #define FIRESTARTER_EVOLVE_GPU_OPTIMIZE         1
+#define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
 
-#define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
 #define FIRESTARTER_OPTIMIZE_VARIATIONS         FIRESTARTER_VARIATIONS
 #define FIRESTARTER_OPTIMIZE_STREAMS            1
 #define FIRESTARTER_OPTIMIZE_UNITS              1
 #define FIRESTARTER_OPTIMIZE_STATES             1
 #define FIRESTARTER_OPTIMIZE_GENERATIONS        0
 #define FIRESTARTER_OPTIMIZE_POPULATION         FIRESTARTER_POPULATION
-#define FIRESTARTER_OPTIMIZE_ITERATIONS         64
-#define FIRESTARTER_OPTIMIZE_CANDIDATES         16
-#define FIRESTARTER_OPTIMIZE_PASSES             512
+#define FIRESTARTER_OPTIMIZE_PASSES             FIRESTARTER_PASSES
+#define FIRESTARTER_OPTIMIZE_ITERATIONS         FIRESTARTER_ITERATIONS
+#define FIRESTARTER_OPTIMIZE_SAMPLES            FIRESTARTER_SAMPLES
+#define FIRESTARTER_OPTIMIZE_CANDIDATES         FIRESTARTER_CANDIDATES
 #define FIRESTARTER_OPTIMIZE_ATTEMPTS           0
 #define FIRESTARTER_OPTIMIZE_OPTIMIZE           1
+#define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
 #endif
 
-#define FIRESTARTER_EVOLVE_NEW_GPU_TARGET       FIRESTARTER_TARGET
 #define FIRESTARTER_EVOLVE_NEW_GPU_VARIATIONS   FIRESTARTER_VARIATIONS
 #define FIRESTARTER_EVOLVE_NEW_GPU_STREAMS      1
 #define FIRESTARTER_EVOLVE_NEW_GPU_UNITS        1
 #define FIRESTARTER_EVOLVE_NEW_GPU_STATES       1
 #define FIRESTARTER_EVOLVE_NEW_GPU_GENERATIONS  0
 #define FIRESTARTER_EVOLVE_NEW_GPU_POPULATION   65536 * 4
-#define FIRESTARTER_EVOLVE_NEW_GPU_ITERATIONS   64
-#define FIRESTARTER_EVOLVE_NEW_GPU_CANDIDATES   16
+#define FIRESTARTER_EVOLVE_NEW_GPU_PASSES       256
+#define FIRESTARTER_EVOLVE_NEW_GPU_ITERATIONS   FIRESTARTER_ITERATIONS
+#define FIRESTARTER_EVOLVE_NEW_GPU_SAMPLES      FIRESTARTER_SAMPLES
+#define FIRESTARTER_EVOLVE_NEW_GPU_CANDIDATES   FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_NEW_GPU_PASSES       256
 #define FIRESTARTER_EVOLVE_NEW_GPU_ATTEMPTS     0
 #define FIRESTARTER_EVOLVE_NEW_GPU_OPTIMIZE     1
+#define FIRESTARTER_EVOLVE_NEW_GPU_TARGET       FIRESTARTER_TARGET
 
-#define FIRESTARTER_SPEED_TEST_TARGET           0.0f
 #define FIRESTARTER_SPEED_TEST_VARIATIONS       FIRESTARTER_VARIATIONS
 #define FIRESTARTER_SPEED_TEST_STREAMS          1
 #define FIRESTARTER_SPEED_TEST_UNITS            1
 #define FIRESTARTER_SPEED_TEST_STATES           1
 #define FIRESTARTER_SPEED_TEST_GENERATIONS      0
 #define FIRESTARTER_SPEED_TEST_POPULATION       FIRESTARTER_POPULATION
-#define FIRESTARTER_SPEED_TEST_ITERATIONS       64
-#define FIRESTARTER_SPEED_TEST_CANDIDATES       16
-#define FIRESTARTER_SPEED_TEST_PASSES           500
+#define FIRESTARTER_SPEED_TEST_PASSES           FIRESTARTER_PASSES
+#define FIRESTARTER_SPEED_TEST_ITERATIONS       FIRESTARTER_ITERATIONS
+#define FIRESTARTER_SPEED_TEST_SAMPLES          FIRESTARTER_SAMPLES
+#define FIRESTARTER_SPEED_TEST_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_SPEED_TEST_ATTEMPTS         0
 #define FIRESTARTER_SPEED_TEST_OPTIMIZE         5
+#define FIRESTARTER_SPEED_TEST_TARGET           0.0f
 
 typedef enum {
     Operation_multiply = 0,
@@ -182,7 +194,6 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 
 class FireStarterSetting {
 public:
-    unsigned int m_variations =     1;
     unsigned int m_instructions =   FIRESTARTER_INSTRUCTIONS;
     unsigned int m_registers =      FIRESTARTER_REGISTERS;
     unsigned int m_opcodes =        FIRESTARTER_OPCODES;
@@ -190,7 +201,6 @@ public:
 
     float m_targetMin =             TARGET_MIN;
     float m_targetMax =             TARGET_MAX;
-    float m_target =                0;
 
     float m_scale =                 FIRESTARTER_SCALE;
     float m_startScale =            FIRESTARTER_START_SCALE;
@@ -202,14 +212,19 @@ public:
     unsigned int m_tests =          FIRESTARTER_TESTS;
 
     unsigned int m_mode =           FIRESTARTER_MODE;
+    unsigned int m_variations =     1;
     unsigned int m_streams =        0;
     unsigned int m_units =          0;
     unsigned int m_states =         0;
     unsigned int m_generations =    0;
     unsigned int m_population =     0;
     unsigned int m_passes =         0;
+    unsigned int m_iterations =     0;
+    unsigned int m_samples =        0;
+    unsigned int m_candidates =     0;
     unsigned int m_attempts =       0;
     unsigned int m_optimize =       0;
+    float m_target =                0.0f;
 
     static inline const char* Mode(unsigned int mode)
     {
@@ -253,18 +268,24 @@ public:
     {
         m_evolveSeed = source.m_evolveSeed;
         m_optimizeSeed = source.m_optimizeSeed;
-        m_mode = source.m_mode;
         m_tests = source.m_tests;
-        m_states = source.m_states;
+        m_mode = source.m_mode;
+        m_variations = source.m_variations;
+        m_streams = source.m_streams;
         m_units = source.m_units;
+        m_states = source.m_states;
         m_generations = source.m_generations;
         m_population = source.m_population;
         m_passes = source.m_passes;
+        m_iterations = source.m_iterations;
+        m_samples = source.m_samples;
+        m_candidates = source.m_candidates;
         m_attempts = source.m_attempts;
+        m_optimize = source.m_optimize;
+        m_target = source.m_target;
         m_scale = source.m_scale;
         m_startScale = source.m_startScale;
         m_startResult = source.m_startResult;
-        m_optimize = source.m_optimize;
     } // CopyModeSettings
 
     inline FireStarterSetting(unsigned int mode = FIRESTARTER_AUTO) 
@@ -275,7 +296,6 @@ public:
             m_mode = mode;
         switch (m_mode) {
         case FIRESTARTER_RANDOM:
-            m_target =      FIRESTARTER_RANDOM_TARGET;
             m_variations =  FIRESTARTER_RANDOM_VARIATIONS;
             m_streams =     FIRESTARTER_RANDOM_STREAMS;
             m_units =       FIRESTARTER_RANDOM_UNITS;
@@ -283,11 +303,13 @@ public:
             m_generations = FIRESTARTER_RANDOM_GENERATIONS;
             m_population =  FIRESTARTER_RANDOM_POPULATION;
             m_passes =      FIRESTARTER_RANDOM_PASSES;
+            m_iterations =  FIRESTARTER_RANDOM_ITERATIONS;
+            m_samples =     FIRESTARTER_RANDOM_SAMPLES;
             m_attempts =    FIRESTARTER_RANDOM_ATTEMPTS;
             m_optimize =    FIRESTARTER_RANDOM_OPTIMIZE;
+            m_target =      FIRESTARTER_RANDOM_TARGET;
             break;
         case FIRESTARTER_EVOLVE_CPU:
-            m_target =      FIRESTARTER_EVOLVE_CPU_TARGET;
             m_variations =  FIRESTARTER_EVOLVE_CPU_VARIATIONS;
             m_streams =     FIRESTARTER_EVOLVE_CPU_STREAMS;
             m_units =       FIRESTARTER_EVOLVE_CPU_UNITS;
@@ -295,11 +317,13 @@ public:
             m_generations = FIRESTARTER_EVOLVE_CPU_GENERATIONS;
             m_population =  FIRESTARTER_EVOLVE_CPU_POPULATION;
             m_passes =      FIRESTARTER_EVOLVE_CPU_PASSES;
+            m_iterations =  FIRESTARTER_EVOLVE_CPU_ITERATIONS;
+            m_samples =     FIRESTARTER_EVOLVE_CPU_SAMPLES;
             m_attempts =    FIRESTARTER_EVOLVE_CPU_ATTEMPTS;
             m_optimize =    FIRESTARTER_EVOLVE_CPU_OPTIMIZE;
+            m_target =      FIRESTARTER_EVOLVE_CPU_TARGET;
             break;
         case FIRESTARTER_OPTIMIZE:
-            m_target =      FIRESTARTER_OPTIMIZE_TARGET;
             m_variations =  FIRESTARTER_OPTIMIZE_VARIATIONS;
             m_streams =     FIRESTARTER_OPTIMIZE_STREAMS;
             m_units =       FIRESTARTER_OPTIMIZE_UNITS;
@@ -307,11 +331,13 @@ public:
             m_generations = FIRESTARTER_OPTIMIZE_GENERATIONS;
             m_population =  FIRESTARTER_OPTIMIZE_POPULATION;
             m_passes =      FIRESTARTER_OPTIMIZE_PASSES;
+            m_iterations =  FIRESTARTER_OPTIMIZE_ITERATIONS;
+            m_samples =     FIRESTARTER_OPTIMIZE_SAMPLES;
             m_attempts =    FIRESTARTER_OPTIMIZE_ATTEMPTS;
             m_optimize =    FIRESTARTER_OPTIMIZE_OPTIMIZE;
+            m_target =      FIRESTARTER_OPTIMIZE_TARGET;
             break;
         case FIRESTARTER_EVOLVE_GPU:
-            m_target =      FIRESTARTER_EVOLVE_GPU_TARGET;
             m_variations =  FIRESTARTER_EVOLVE_GPU_VARIATIONS;
             m_streams =     FIRESTARTER_EVOLVE_GPU_STREAMS;
             m_units =       FIRESTARTER_EVOLVE_GPU_UNITS;
@@ -319,11 +345,13 @@ public:
             m_generations = FIRESTARTER_EVOLVE_GPU_GENERATIONS;
             m_population =  FIRESTARTER_EVOLVE_GPU_POPULATION;
             m_passes =      FIRESTARTER_EVOLVE_GPU_PASSES;
+            m_iterations =  FIRESTARTER_EVOLVE_GPU_ITERATIONS;
+            m_samples =     FIRESTARTER_EVOLVE_GPU_SAMPLES;
             m_attempts =    FIRESTARTER_EVOLVE_GPU_ATTEMPTS;
             m_optimize =    FIRESTARTER_EVOLVE_GPU_OPTIMIZE;
+            m_target =      FIRESTARTER_EVOLVE_GPU_TARGET;
             break;
         case FIRESTARTER_EVOLVE_NEW_GPU:
-            m_target =      FIRESTARTER_EVOLVE_NEW_GPU_TARGET;
             m_variations =  FIRESTARTER_EVOLVE_NEW_GPU_VARIATIONS;
             m_streams =     FIRESTARTER_EVOLVE_NEW_GPU_STREAMS;
             m_units =       FIRESTARTER_EVOLVE_NEW_GPU_UNITS;
@@ -331,11 +359,13 @@ public:
             m_generations = FIRESTARTER_EVOLVE_NEW_GPU_GENERATIONS;
             m_population =  FIRESTARTER_EVOLVE_NEW_GPU_POPULATION;
             m_passes =      FIRESTARTER_EVOLVE_NEW_GPU_PASSES;
+            m_iterations =  FIRESTARTER_EVOLVE_NEW_GPU_ITERATIONS;
+            m_samples =     FIRESTARTER_EVOLVE_NEW_GPU_SAMPLES;
             m_attempts =    FIRESTARTER_EVOLVE_NEW_GPU_ATTEMPTS;
             m_optimize =    FIRESTARTER_EVOLVE_NEW_GPU_OPTIMIZE;
+            m_target =      FIRESTARTER_EVOLVE_NEW_GPU_TARGET;
             break;
         case FIRESTARTER_SPEED_TEST:
-            m_target =      FIRESTARTER_SPEED_TEST_TARGET;
             m_variations =  FIRESTARTER_SPEED_TEST_VARIATIONS;
             m_streams =     FIRESTARTER_SPEED_TEST_STREAMS;
             m_units =       FIRESTARTER_SPEED_TEST_UNITS;
@@ -343,11 +373,13 @@ public:
             m_generations = FIRESTARTER_SPEED_TEST_GENERATIONS;
             m_population =  FIRESTARTER_SPEED_TEST_POPULATION;
             m_passes =      FIRESTARTER_SPEED_TEST_PASSES;
+            m_iterations =  FIRESTARTER_SPEED_TEST_ITERATIONS;
+            m_samples =     FIRESTARTER_SPEED_TEST_SAMPLES;
             m_attempts =    FIRESTARTER_SPEED_TEST_ATTEMPTS;
             m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
+            m_target =      FIRESTARTER_SPEED_TEST_TARGET;
             break;
         default:
-            m_target =      0;
             m_variations =  0;
             m_streams =     0;
             m_units =       0;
@@ -355,8 +387,11 @@ public:
             m_generations = 0;
             m_population =  0;
             m_passes =      0;
+            m_iterations =  0;
+            m_samples =     0;
             m_attempts =    0;
             m_optimize =    0;
+            m_target =      0.0f;
             break;
         }
     } // FireStarterSetting
