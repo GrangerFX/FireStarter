@@ -1,6 +1,7 @@
 #pragma once
 #include "CUDADefines.h"
 #include "FireStarterSettings.h"
+#include "HashRandom.h"
 
 #define NEURON_COUNT    4
 #define EVOLVE_WIEGHT   0.75f

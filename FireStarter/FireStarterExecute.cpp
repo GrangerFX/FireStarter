@@ -404,14 +404,14 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
     unsigned int passes = settings.m_passes;
-    unsigned int networksSize = settings.m_population;
+    unsigned int populationSize = settings.m_population;
 
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                    reinterpret_cast<void*>(&m_devicePopulation0[0]),
+                    reinterpret_cast<void*>(&m_deviceNetworks),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&networksSize)
+                    reinterpret_cast<void*>(&populationSize)
     };
 
     checkCUDAErrors(cuLaunchKernel(m_executeFunction,
@@ -431,7 +431,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     float minResult = settings.m_startResult;
     FireStarterNetwork minNetwork;
     unsigned int minIndex = 0;
-    for (unsigned int i = 0; i < networksSize; i++) {
+    for (unsigned int i = 0; i < populationSize; i++) {
         FireStarterNetwork& network = m_hostNetworks[i];
         float curResult = m_hostResults[i];
         if (curResult < minResult) {

@@ -5,7 +5,7 @@
 GPU_FUNCTION void TestNeuron(FireStarterNetwork& network, const unsigned int index)
 {
     // Process a single nuron by adding the weighted connections.
-    Neuron& theNeuron = network.neuron[index];
+    FireStarterNeuron& theNeuron = network.neuron[index];
     float value = theNeuron.addValue;
     for (unsigned int i = 0; i < NEURON_COUNT; i++)
         value += theNeuron.connection[i] * network.neuron[i].oldValue;
@@ -51,48 +51,41 @@ GPU_FUNCTION void EvolveNetwork(FireStarterNetwork& network, float grade, unsign
     }
 } // EvolveNetwork
 
-GPU_GLOBAL void SinSim(float* results, FireStarterNetwork* population, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void SinSim(float* results, FireStarterNetwork* networks, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
     if (member >= populationSize)
         return;
 
-    // The shared data for the threads in the warp.
-    GPU_SHARED FireStarterSharedData sharedData;
-
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member) + SEED10(variation);   // Unique seed for the member
-    unsigned int registers = 0;
+    unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
 
     // The first generation is initalized with random numbers.
-    Network network;
+    FireStarterNetwork network;
     InitNetwork(network);
-    Network bestNetwork = network;
+    FireStarterNetwork bestNetwork = network;
     float bestGrade = BAD_VALUE;
-    float registers = 16;
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
-        float evolutionScale;
-
         // Iterate to evolve the data.
         float oldGrade = BAD_VALUE;
         float grade = BAD_VALUE;
-        float ts = (TARGET_MAX - TARGET_MIN) / FIRESTARTER_SAMPLES;
+        float ts = (TARGET_MAX - TARGET_MIN) / FIRESTARTER_SINSIM_SAMPLES;
         InitNetwork(network);
-        Network oldNetwork = network;
+        FireStarterNetwork oldNetwork = network;
 
-        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_SINSIM_ITERATIONS; i++) {
             EvolveNetwork(network, grade, memberSeed);
             grade = 0.0f;
 
             float t = TARGET_MIN;
-            for (unsigned int s = 0; s < FIRESTARTER_SAMPLES; i++) {
+            for (unsigned int s = 0; s < FIRESTARTER_SINSIM_SAMPLES; i++) {
                 float sample = TestNetwork(network, t);
                 float target = Target(t, variation);
                 float difference = sample - target;
-                grade += fabsf(sample - target) * (1.0f / FIRESTARTER_SAMPLES);
+                grade += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_SAMPLES);
                 t += ts;
             }
 
@@ -114,8 +107,8 @@ GPU_GLOBAL void SinSim(float* results, FireStarterNetwork* population, const uns
     }
 
     // Return the optimized best code.
-//    if (networks)
-//        networks[member] = bestNetwork;
+    if (networks)
+        networks[member] = bestNetwork;
 
     // Return the array of results or the entire population data.
     results[member] = bestGrade;

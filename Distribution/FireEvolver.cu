@@ -1,5 +1,4 @@
 #pragma once
-
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 

@@ -409,6 +409,84 @@ void FireStarterStream::EvolveNewGPUStream(FireStarterServer* server, std::atomi
     }, sync);
 } // EvolveNewGPUStream
 
+void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
+{
+    Dispatch([this, server, &testCount] {
+        // Evolve a number of states equal to the evolveSettings.m_seeds.
+        FireStarterSettings speedTestSettings(m_streamSettings);
+        SimpleTimer streamTimer;
+        std::string streamDate = m_streamDate;
+
+        // Create the compiler manager
+        FireStarterManager* manager = new FireStarterManager();
+
+        // Create the optimization execution unit.
+        FireStarterExecute* execute = new FireStarterExecute(manager);
+
+        // Create the completion unit.
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
+
+        // Generate the optimize code.
+        FireStarterState evolveState = FireStarterState(speedTestSettings);
+        if (execute->ExecuteGenerateSpeedTest(evolveState)) {
+            // Loop until the the evolve completion condition or the host program is quit.
+            unsigned long long evolveTests = MAX(speedTestSettings.m_tests, 1);
+            for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
+
+                // Reset the timer if there is only one stream.
+                if (speedTestSettings.m_streams == 1)
+                    streamTimer.Start();
+
+                // Initialize the states.
+                FireStarterStates allStates;
+                unsigned long long test = FIRESTARTER_START_TEST + t;
+
+                // Optimize the evolved state.
+                FireStarterState optimizeState(speedTestSettings);
+                optimizeState.CopyInstructions(evolveState);
+                optimizeState.m_test = test;
+                FireStarterBestCodes bestCodes(speedTestSettings);
+                FireStarterState bestState(optimizeState);
+
+                // Loop until the the optimize completion condition or the host program is quit.
+                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                    // Optimize the current generation.
+                    execute->ExecuteEvolve(optimizeState, bestCodes);
+
+                    // Update the results in the UI and check for completion.
+                    if (complete->CompleteState(bestState, optimizeState))
+                        break;
+
+                    // Increment the generation.
+                    optimizeState.m_optimize_pass++;
+                }
+
+                // Output the test results.
+                if (!WillTerminate()) {
+                    // Output the evolve results.
+                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
+                    if (bestState.m_maxResult <= speedTestSettings.m_target)
+                        resultText += " *******";
+                    resultText += "\n";
+                    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_OptimizeResults.txt", streamDate.c_str()));
+                }
+            }
+        }
+
+        // Cancel any waiting jobs
+        manager->Cancel();
+
+        // Delete the completion unit.
+        delete complete;
+
+        // Delete the optimizate execution unit.
+        delete execute;
+
+        // Delete the compilier manager and cancel any waiting jobs.
+        delete manager;
+        }, sync);
+} // SpeedTestStream
+
 void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
@@ -488,7 +566,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
-        }, sync);
+    }, sync);
 } // SinSimStream
 
 void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
@@ -566,84 +644,6 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
         delete manager;
     }, sync);
 } // OptimizeStream
-
-void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
-{
-    Dispatch([this, server, &testCount] {
-        // Evolve a number of states equal to the evolveSettings.m_seeds.
-        FireStarterSettings speedTestSettings(m_streamSettings);
-        SimpleTimer streamTimer;
-        std::string streamDate = m_streamDate;
-
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
-
-        // Create the optimization execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager);
-
-        // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
-
-        // Generate the optimize code.
-        FireStarterState evolveState = FireStarterState(speedTestSettings);
-        if (execute->ExecuteGenerateSpeedTest(evolveState)) {
-            // Loop until the the evolve completion condition or the host program is quit.
-            unsigned long long evolveTests = MAX(speedTestSettings.m_tests, 1);
-            for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-
-                // Reset the timer if there is only one stream.
-                if (speedTestSettings.m_streams == 1)
-                    streamTimer.Start();
-
-                // Initialize the states.
-                FireStarterStates allStates;
-                unsigned long long test = FIRESTARTER_START_TEST + t;
-
-                // Optimize the evolved state.
-                FireStarterState optimizeState(speedTestSettings);
-                optimizeState.CopyInstructions(evolveState);
-                optimizeState.m_test = test;
-                FireStarterBestCodes bestCodes(speedTestSettings);
-                FireStarterState bestState(optimizeState);
-
-                // Loop until the the optimize completion condition or the host program is quit.
-                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
-                    // Optimize the current generation.
-                    execute->ExecuteEvolve(optimizeState, bestCodes);
-
-                    // Update the results in the UI and check for completion.
-                    if (complete->CompleteState(bestState, optimizeState))
-                        break;
-
-                    // Increment the generation.
-                    optimizeState.m_optimize_pass++;
-                }
-
-                // Output the test results.
-                if (!WillTerminate()) {
-                    // Output the evolve results.
-                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.m_maxResult, optimizeState.m_maxResult, streamTimer.Duration());
-                    if (bestState.m_maxResult <= speedTestSettings.m_target)
-                        resultText += " *******";
-                    resultText += "\n";
-                    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_OptimizeResults.txt", streamDate.c_str()));
-                }
-            }
-        }
-
-        // Cancel any waiting jobs
-        manager->Cancel();
-
-        // Delete the completion unit.
-        delete complete;
-
-        // Delete the optimizate execution unit.
-        delete execute;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
-    }, sync);
-} // SpeedTestStream
 
 FireStarterStream::FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings) : SerialThread(Format("FireStarterStream%zu", index)),
     m_streamIndex(index),
@@ -726,14 +726,14 @@ void FireStarterStreams::ExecuteStreams(void)
                 case FIRESTARTER_EVOLVE_NEW_GPU:
                     streams[stream]->EvolveNewGPUStream(server, m_testCount);
                     break;
+                case FIRESTARTER_SPEED_TEST:
+                    streams[stream]->SpeedTestStream(server, m_testCount);
+                    break;
                 case FIRESTARTER_SINSIM:
                     streams[stream]->SinSimStream(server, m_testCount);
                     break;
                 case FIRESTARTER_OPTIMIZE:
                     streams[stream]->OptimizeStream(server, m_testCount);
-                    break;
-                case FIRESTARTER_SPEED_TEST:
-                    streams[stream]->SpeedTestStream(server, m_testCount);
                     break;
             }
 
