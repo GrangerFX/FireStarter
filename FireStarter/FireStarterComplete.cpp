@@ -24,6 +24,9 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
             case FIRESTARTER_EVOLVE_NEW_GPU:
                 programName = EVOLVE_NEW_PROGRAM_NAME;
                 break;
+            case FIRESTARTER_SINSIM:
+                programName = SINSIM_PROGRAM_NAME;
+                break;
             case FIRESTARTER_RANDOM:
             case FIRESTARTER_EVOLVE_CPU:
             case FIRESTARTER_OPTIMIZE:

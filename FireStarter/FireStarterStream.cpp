@@ -348,9 +348,6 @@ void FireStarterStream::EvolveNewGPUStream(FireStarterServer* server, std::atomi
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0);
 
-        // Create the execution unit used to optimize the best states.
-        FireStarterExecute* executeOptimize = new FireStarterExecute(manager, 1);
-
         // Generate and compile the evolve code.
         executeEvolve->ExecuteGenerateEvolveNew();
 
@@ -364,7 +361,7 @@ void FireStarterStream::EvolveNewGPUStream(FireStarterServer* server, std::atomi
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
-            FireStarterState bestState = FireStarterState(optimizeSettings, 0, 0, 0, test);
+            FireStarterState bestState = FireStarterState(evolveSettings, 0, 0, 0, test);
 
             // Evolve the current test.
             while (!WillTerminate() && !bestState.m_evolveComplete) {
@@ -384,7 +381,7 @@ void FireStarterStream::EvolveNewGPUStream(FireStarterServer* server, std::atomi
                 double duration = streamTimer.Duration();
                 totalDuration += duration;
 
-                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
                 if (bestState.m_maxResult <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
@@ -406,12 +403,93 @@ void FireStarterStream::EvolveNewGPUStream(FireStarterServer* server, std::atomi
 
         // Finish processing and terminate the evolution execution units.
         delete executeEvolve;
-        delete executeOptimize;
+
+        // Delete the compilier manager and cancel any waiting jobs.
+        delete manager;
+    }, sync);
+} // EvolveNewGPUStream
+
+void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
+{
+    Dispatch([this, server, &testCount] {
+        // Evolve a number of states equal to the evolveSettings.m_seeds.
+        FireStarterSettings evolveSettings(m_streamSettings);
+        SimpleTimer streamTimer;
+        std::string streamDate = m_streamDate;
+        double totalDuration = 0.0;
+
+        // Create the compiler manager
+        FireStarterManager* manager = new FireStarterManager();
+
+        // A serial thread for compiling the optimize pass.
+        SerialThread compiler;
+
+        // Create the evolution completion unit.
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
+
+        // Create the execution unit used to evolve the best states.
+        FireStarterExecute* executeSinSim = new FireStarterExecute(manager, 0);
+
+        // Generate and compile the evolve code.
+        executeSinSim->ExecuteGenerateSinSim();
+
+        // Loop until the the evolve completion condition or the host program is quit.
+        unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
+        for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
+            // Reset the timer if there is only one stream.
+            if (evolveSettings.m_streams == 1)
+                streamTimer.Start();
+
+            // Initialize the states.
+            unsigned long long test = FIRESTARTER_START_TEST + t;
+            FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
+            FireStarterState bestState = FireStarterState(evolveSettings, 0, 0, 0, test);
+
+            // Evolve the current test.
+            while (!WillTerminate() && !bestState.m_evolveComplete) {
+                // Execute the initial GPU evolve.
+                executeSinSim->ExecuteSinSim(evolveState);
+                if (complete->CompleteState(bestState, evolveState))
+                    break;
+
+                // Exit after a set number of generations.
+                if (++evolveState.m_generation == evolveSettings.m_generations)
+                    break;
+            }
+
+            // Output the test results.
+            if (!WillTerminate()) {
+                // Output the evolve results.
+                double duration = streamTimer.Duration();
+                totalDuration += duration;
+
+                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+                if (bestState.m_maxResult <= evolveSettings.m_target)
+                    resultText += " *******";
+                resultText += "\n";
+                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+
+                // Save the best state and best solution.
+#if FIRESTARTER_SAVE_BESTSTATE
+                complete->CompleteBestState(bestState);
+#endif
+            }
+        }
+
+        // Cancel any waiting jobs
+        manager->Cancel();
+
+        // Delete the completion unit.
+        complete->Synchronize();
+        delete complete;
+
+        // Finish processing and terminate the evolution execution units.
+        delete executeSinSim;
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
         }, sync);
-} // EvolveNewGPUStream
+} // SinSimStream
 
 void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
@@ -647,6 +725,9 @@ void FireStarterStreams::ExecuteStreams(void)
                     break;
                 case FIRESTARTER_EVOLVE_NEW_GPU:
                     streams[stream]->EvolveNewGPUStream(server, m_testCount);
+                    break;
+                case FIRESTARTER_SINSIM:
+                    streams[stream]->SinSimStream(server, m_testCount);
                     break;
                 case FIRESTARTER_OPTIMIZE:
                     streams[stream]->OptimizeStream(server, m_testCount);

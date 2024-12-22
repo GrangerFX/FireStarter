@@ -110,6 +110,9 @@ void FireStarterExecute::FinishPopulation(void)
         checkCUDAErrors(cudaFreeAsync(result, Stream()));
     m_devicePopulation1.clear();
 
+    checkCUDAErrors(cudaFreeHost(m_hostNetworks));
+    checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
+
     checkCUDAErrors(cudaFreeHost(m_hostCode));
     m_hostCode = nullptr;
     checkCUDAErrors(cudaFreeAsync(m_deviceCode, Stream()));
@@ -153,7 +156,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             if (populationSize)
                 result = result && m_hostPopulation && devicePopulation;
         }
-    } else {
+    } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
         // Reallocate the populations if the size has changed.
         size_t resultsSize = settings.m_population * sizeof(float);
         size_t populationSize = settings.m_population * FireStarterResult::ResultSize(settings);
@@ -185,6 +188,24 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 
                 result = result && devicePopulation0 && devicePopulation1;
             }
+        }
+    } else if (settings.m_mode == FIRESTARTER_SINSIM) {
+        // Reallocate the populations if the size has changed.
+        size_t resultsSize = settings.m_population * sizeof(float);
+        size_t networksSize = settings.m_population * sizeof(FireStarterNetwork);
+        if ((m_resultsSize != resultsSize) || (m_networksSize != networksSize)) {
+            FinishPopulation();
+            m_resultsSize = resultsSize;
+            m_networksSize = networksSize;
+
+            checkCUDAErrors(cudaMallocHost(&m_hostResults, resultsSize));
+            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, resultsSize, Stream()));
+            checkCUDAErrors(cudaMallocHost(&m_hostNetworks, m_networksSize));
+            checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
+            Context()->Synchronize();
+
+            result = m_hostResults && m_deviceResults && m_hostCode && m_deviceCode;
+            result = result && m_hostPopulation && m_deviceNetworks;
         }
     }
     return result;
@@ -372,6 +393,58 @@ void FireStarterExecute::ExecuteEvolveVariationsPass(FireStarterState& state, Fi
     state.InitResult(settings, minResult, m_hostCode->Member(settings, minIndex), minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteEvolveVariationsPass
+
+void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int variation)
+{
+    // Launch the calculation kernel
+    FireStarterSettings settings = state.Settings();
+    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long seed = state.EvolutionSeed();
+    unsigned int passes = settings.m_passes;
+    unsigned int networksSize = settings.m_population;
+
+    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
+                    reinterpret_cast<void*>(&m_devicePopulation0[0]),
+                    reinterpret_cast<void*>(&variation),
+                    reinterpret_cast<void*>(&seed),
+                    reinterpret_cast<void*>(&passes),
+                    reinterpret_cast<void*>(&networksSize)
+    };
+
+    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+        0,                                                  // shared mem
+        Stream(),                                           // stream
+        &arr[0],                                            // arguments
+        0));
+
+    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostNetworks, m_deviceNetworks, m_networksSize, cudaMemcpyDeviceToHost, Stream()));
+    Context()->Synchronize();
+
+    // Get the best variation results.
+    bool validResult = false;
+    float minResult = settings.m_startResult;
+    FireStarterNetwork minNetwork;
+    unsigned int minIndex = 0;
+    for (unsigned int i = 0; i < networksSize; i++) {
+        FireStarterNetwork& network = m_hostNetworks[i];
+        float curResult = m_hostResults[i];
+        if (curResult < minResult) {
+            minResult = curResult;
+            minNetwork = m_hostNetworks[i];
+            minIndex = i;
+        }
+    }
+
+    float oldResult = state.m_maxResult;
+    state.InitNetwork(settings, minNetwork, minResult, minIndex);
+    state.m_oldResult = oldResult;
+} // ExecuteSinSimPass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {
@@ -616,7 +689,7 @@ bool FireStarterExecute::GenerateEvolveNew(void)
     m_executeProgramName = EVOLVE_NEW_PROGRAM_NAME;
     if (m_executeCode.empty()) {
         if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", EVOLVE_PROGRAM_NAME);
+            printf("%s could not be loaded!\n", EVOLVE_NEW_PROGRAM_NAME);
             std::terminate();
         }
     }
@@ -627,7 +700,7 @@ bool FireStarterExecute::GenerateEvolveNew(void)
 
     // Compile the code and get the Evolver and Optimizer functions from the module.
     if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Evolver");
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "EvolverNew");
         if (m_executeFunction)
             return true;
     }
@@ -635,6 +708,32 @@ bool FireStarterExecute::GenerateEvolveNew(void)
     m_executeFunction = nullptr;
     return false;
 } // GenerateEvolveNew
+
+bool FireStarterExecute::GenerateSinSim(void)
+{
+    // Load the base Evolver code into memory.
+    m_executeProgramName = SINSIM_PROGRAM_NAME;
+    if (m_executeCode.empty()) {
+        if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
+            printf("%s could not be loaded!\n", SINSIM_PROGRAM_NAME);
+            std::terminate();
+        }
+    }
+
+    // Return immediately if the Evolver code has already been compiled.
+    if (m_executeFunction)
+        return true;
+
+    // Compile the code and get the Evolver and Optimizer functions from the module.
+    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "SinSim");
+        if (m_executeFunction)
+            return true;
+    }
+    CUDACompile::ReleaseModule(m_executeModule);
+    m_executeFunction = nullptr;
+    return false;
+} // GenerateSinSim
 
 bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
 {
@@ -714,6 +813,17 @@ bool FireStarterExecute::ExecuteGenerateEvolveNew(bool sync)
     return result;
 } // ExecuteGenerateEvolveNew
 
+bool FireStarterExecute::ExecuteGenerateSinSim(bool sync)
+{
+    if (m_executeFunction)
+        return true;
+    bool result = false;
+    Dispatch([this, &result] {
+        result = GenerateSinSim();
+    }, sync);
+    return result;
+} // ExecuteGenerateSinSim
+
 bool FireStarterExecute::ExecuteGenerateOptimize(const FireStarterState& initState, bool sync)
 {
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
@@ -767,6 +877,17 @@ void FireStarterExecute::ExecuteEvolveNew(FireStarterState& state)
         }
     });
 } // ExecuteEvolveNew
+
+void FireStarterExecute::ExecuteSinSim(FireStarterState& state)
+{
+    DispatchSync([this, &state] {
+        if (GenerateSinSim()) {
+            state.m_timer.Start();
+            if (InitPopulation(state.Settings()))
+                ExecuteSinSimPass(state);
+        }
+    });
+} // ExecuteSinSim
 
 void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete)
 {

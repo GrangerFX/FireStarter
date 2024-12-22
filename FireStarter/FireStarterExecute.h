@@ -2,6 +2,7 @@
 #include "FireStarterGenerate.h"
 #include "FireStarterComplete.h"
 #include "FireStarterManager.h"
+#include "FireSinSim.h"
 #include "CUDAThread.h"
 
 class FireStarterBestCodes {
@@ -32,6 +33,8 @@ private:
     std::vector<FireStarterResult*> m_devicePopulation1;
     FireStarterCode* m_hostCode = nullptr;
     FireStarterCode* m_deviceCode = nullptr;
+    FireStarterNetwork* m_hostNetworks = nullptr;
+    FireStarterNetwork* m_deviceNetworks = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -43,6 +46,7 @@ private:
     size_t m_resultSize = 0;
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
+    size_t m_networksSize = 0;
     size_t m_codeSize = 0;
     size_t m_executeIndex = 0;
 
@@ -51,11 +55,13 @@ private:
     void ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation = 0);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteEvolveVariationsPass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation = 0);
+    void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
     bool GenerateEvolve(void);
     bool GenerateEvolveNew(void);
+    bool GenerateSinSim(void);
     bool GenerateOptimize(FireStarterState& state);
     bool GenerateSpeedTest(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
@@ -64,11 +70,13 @@ private:
 public:
     bool ExecuteGenerateEvolve(bool sync = true);
     bool ExecuteGenerateEvolveNew(bool sync = true);
+    bool ExecuteGenerateSinSim(bool sync = true);
     bool ExecuteGenerateOptimize(const FireStarterState& initState, bool sync = true);
     bool ExecuteGenerateSpeedTest(const FireStarterState& initState, bool sync = true);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state, FireStarterBestCodes &bestCodes);
     void ExecuteEvolveNew(FireStarterState& state);
+    void ExecuteSinSim(FireStarterState& state);
     void ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.

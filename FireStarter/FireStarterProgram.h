@@ -6,8 +6,9 @@
 #include <string>
 #include <set>
 
-#define EVOLVE_NEW_PROGRAM_NAME "FireEvolverNew.cu"
 #define EVOLVE_PROGRAM_NAME     "FireEvolver.cu"
+#define EVOLVE_NEW_PROGRAM_NAME "FireEvolverNew.cu"
+#define SINSIM_PROGRAM_NAME     "FireSinSim.cu"
 #define OPTIMIZE_PROGRAM_NAME   "FireOptimizer.cu"
 #define SPEEDTEST_PROGRAM_NAME  "FireSpeedTest.cu"
 

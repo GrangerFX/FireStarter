@@ -1,6 +1,7 @@
 #pragma once
 #include "FireStarterProgram.h"
 #include "FireStarterResults.h"
+#include "FireSinSim.h"
 #include <vector>
 
 typedef std::vector<class FireStarterState> FireStarterStates;
@@ -11,6 +12,7 @@ private:
     std::vector<unsigned char> m_codeData;     // Backing data for the code.
     std::vector<FireStarterResult*> m_results;
     FireStarterCode* m_code = nullptr;
+    FireStarterNetwork m_network;
 
     inline void swap(const FireStarterState& other)
     {
@@ -326,6 +328,14 @@ public:
     void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index);
     void InitResults(const FireStarterSettings& settings, const FireStarterResult* results, const FireStarterCode* code, unsigned int index);
     void InitResults(const FireStarterSettings& settings, const FireStarterResult* results, unsigned int variation, unsigned int index);
+
+    inline void InitNetwork(const FireStarterSettings& settings, const FireStarterNetwork& network, float result, unsigned int index)
+    {
+        m_network = network;
+        m_maxResult = result;
+        m_minIndex = index;
+        m_optimizeValid = false;
+    } // InitNetwork
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
