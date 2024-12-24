@@ -402,6 +402,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long generation = state.m_generation;
     unsigned long long seed = state.EvolutionSeed();
     unsigned int passes = settings.m_passes;
     unsigned int populationSize = settings.m_population;
@@ -409,6 +410,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
                     reinterpret_cast<void*>(&m_deviceNetworks),
                     reinterpret_cast<void*>(&variation),
+                    reinterpret_cast<void*>(&generation),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&populationSize)

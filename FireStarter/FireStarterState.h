@@ -334,7 +334,7 @@ public:
         m_network = network;
         m_maxResult = result;
         m_minIndex = index;
-        m_optimizeValid = false;
+        m_optimizeValid = true;
     } // InitNetwork
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)

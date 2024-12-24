@@ -6,6 +6,7 @@
 #define NEURON_COUNT    4
 #define EVOLVE_WIEGHT   0.75f
 #define BAD_VALUE       10.0f
+#define DATA_FREQUENCY  111.2f
 
 typedef struct {
     float connection[NEURON_COUNT];
