@@ -1,8 +1,8 @@
-// Run date: 12/14/24 15:39:14 Pacific Standard Time
-// Run duration = 647.608176 seconds
-// Run generation = 9
+// Run date: 12/24/24 11:22:14 Pacific Standard Time
+// Run duration = 3.856681 seconds
+// Run generation = 0
 // Run evolution = 0
-// Run max result = 0.00000012
+// Run max result = 0.00000000
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
@@ -13,7 +13,7 @@
 // Run targetMax = 6.283185f
 // Run target = 0.000001f
 
-// Run mode = FIRESTARTER_OPTIMIZE
+// Run mode = FIRESTARTER_SINSIM
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
 // Run tests = 256
@@ -22,7 +22,7 @@
 // Run states = 1
 // Run generations = 0
 // Run population = 65536
-// Run passes = 384
+// Run passes = 1
 // Run attempts = 0
 // Run optimize = 1
 
@@ -57,39 +57,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3;
+    float r0;
 
-    n *= 0.71097541f;
-    r0 = n += -2.23359513f;
-    r1 = n *= -0.09747152f;
+    r0 = n *= 0.00000000f;
     n = r0 *= n;
-    r2 = n *= 0.50599343f;
-    r3 = n += 3.69643283f;
-    n += r3;
-    n += -2.41769123f;
     n = r0 *= n;
-    r3 = n += 1.52785039f;
-    n *= -0.95583546f;
-    n += r2;
-    n *= 2.52733088f;
-    n = r3 += n;
-    r2 = n *= 2.42304659f;
-    n += -0.87296855f;
-    n = r2 += n;
-    n *= -0.53346765f;
-    n += -12.85604286f;
-    n *= 0.07518666f;
-    n += 6.42436457f;
-    n *= r3;
     n = r0 *= n;
-    n = r2 += n;
-    n += r2;
-    n *= -1.28646421f;
-    n *= -0.27686363f;
-    n *= -4.94578981f;
-    n *= 0.33976513f;
-    n += r0;
-    n *= 1.06162274f;
-    n *= r1;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n *= r0;
     return n;
 } // Solution

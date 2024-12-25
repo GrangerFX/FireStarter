@@ -1,0 +1,1205 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_SINSIM
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 0
+population = 65536
+passes = 1
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  0  Best=10.00000000   BestAge=1  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  1  Best=0.39956608   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  2  Best=0.16916317   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  3  Best=0.03779170   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  4  Best=0.02059615   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  5  Best=0.01459437   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  6  Best=0.01459437   BestAge=1  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  7  Best=0.01332105   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  8  Best=0.00889873   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  9  Best=0.00889873   BestAge=1  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 10  Best=0.00889873   BestAge=2  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 11  Best=0.00889873   BestAge=3  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 12  Best=0.00889873   BestAge=4  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 13  Best=0.00889873   BestAge=5  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 14  Best=0.00603924   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 15  Best=0.00603924   BestAge=1  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 16  Best=0.00603924   BestAge=2  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 17  Best=0.00603924   BestAge=3  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 18  Best=0.00603924   BestAge=4  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 19  Best=0.00603924   BestAge=5  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 20  Best=0.00603924   BestAge=6  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 21  Best=0.00603924   BestAge=7  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 22  Best=0.00603924   BestAge=8  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 23  Best=0.00603924   BestAge=9  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 24  Best=0.00603924   BestAge=10  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 25  Best=0.00603924   BestAge=11  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 26  Best=0.00603924   BestAge=12  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 27  Best=0.00603924   BestAge=13  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 28  Best=0.00603924   BestAge=14  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 29  Best=0.00603924   BestAge=15  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 30  Best=0.00603924   BestAge=16  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 31  Best=0.00603924   BestAge=17  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 32  Best=0.00603924   BestAge=18  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 33  Best=0.00603924   BestAge=19  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 34  Best=0.00603924   BestAge=20  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 35  Best=0.00603924   BestAge=21  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 36  Best=0.00603924   BestAge=22  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 37  Best=0.00603924   BestAge=23  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 38  Best=0.00603924   BestAge=24  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 39  Best=0.00603924   BestAge=25  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 40  Best=0.00603924   BestAge=26  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 41  Best=0.00603924   BestAge=27  Time=0.0  Run Time=0.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 42  Best=0.00603924   BestAge=28  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 43  Best=0.00603924   BestAge=29  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 44  Best=0.00603924   BestAge=30  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 45  Best=0.00603924   BestAge=31  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 46  Best=0.00603924   BestAge=32  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 47  Best=0.00603924   BestAge=33  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 48  Best=0.00603924   BestAge=34  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 49  Best=0.00603924   BestAge=35  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 50  Best=0.00603924   BestAge=36  Time=0.0  Run Time=0.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 51  Best=0.00603924   BestAge=37  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 52  Best=0.00603924   BestAge=38  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 53  Best=0.00603924   BestAge=39  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 54  Best=0.00603924   BestAge=40  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 55  Best=0.00603924   BestAge=41  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 56  Best=0.00603924   BestAge=42  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 57  Best=0.00603924   BestAge=43  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 58  Best=0.00603924   BestAge=44  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 59  Best=0.00603924   BestAge=45  Time=0.0  Run Time=1.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 60  Best=0.00603924   BestAge=46  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 61  Best=0.00603924   BestAge=47  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 62  Best=0.00603924   BestAge=48  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 63  Best=0.00603924   BestAge=49  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 64  Best=0.00603924   BestAge=50  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 65  Best=0.00603924   BestAge=51  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 66  Best=0.00603924   BestAge=52  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 67  Best=0.00603924   BestAge=53  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 68  Best=0.00603924   BestAge=54  Time=0.0  Run Time=1.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 69  Best=0.00603924   BestAge=55  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 70  Best=0.00603924   BestAge=56  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 71  Best=0.00603924   BestAge=57  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 72  Best=0.00603924   BestAge=58  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 73  Best=0.00603924   BestAge=59  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 74  Best=0.00603924   BestAge=60  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 75  Best=0.00603924   BestAge=61  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 76  Best=0.00603924   BestAge=62  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 77  Best=0.00603924   BestAge=63  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 78  Best=0.00603924   BestAge=64  Time=0.0  Run Time=1.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 79  Best=0.00603924   BestAge=65  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 80  Best=0.00603924   BestAge=66  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 81  Best=0.00603924   BestAge=67  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 82  Best=0.00603924   BestAge=68  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 83  Best=0.00603924   BestAge=69  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 84  Best=0.00603924   BestAge=70  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 85  Best=0.00603924   BestAge=71  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 86  Best=0.00603924   BestAge=72  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 87  Best=0.00603924   BestAge=73  Time=0.0  Run Time=1.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 88  Best=0.00603924   BestAge=74  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 89  Best=0.00603924   BestAge=75  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 90  Best=0.00603924   BestAge=76  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 91  Best=0.00603924   BestAge=77  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 92  Best=0.00603924   BestAge=78  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 93  Best=0.00603924   BestAge=79  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 94  Best=0.00603924   BestAge=80  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 95  Best=0.00603924   BestAge=81  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 96  Best=0.00603924   BestAge=82  Time=0.0  Run Time=1.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 97  Best=0.00603924   BestAge=83  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 98  Best=0.00603924   BestAge=84  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 99  Best=0.00603924   BestAge=85  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=100  Best=0.00603924   BestAge=86  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=101  Best=0.00603924   BestAge=87  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=102  Best=0.00603924   BestAge=88  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=103  Best=0.00603924   BestAge=89  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=104  Best=0.00603924   BestAge=90  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=105  Best=0.00603924   BestAge=91  Time=0.0  Run Time=1.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=106  Best=0.00603924   BestAge=92  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=107  Best=0.00603924   BestAge=93  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=108  Best=0.00603924   BestAge=94  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=109  Best=0.00603924   BestAge=95  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=110  Best=0.00603924   BestAge=96  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=111  Best=0.00603924   BestAge=97  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=112  Best=0.00603924   BestAge=98  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=113  Best=0.00603924   BestAge=99  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=114  Best=0.00603924   BestAge=100  Time=0.0  Run Time=1.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=115  Best=0.00603924   BestAge=101  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=116  Best=0.00603924   BestAge=102  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=117  Best=0.00603924   BestAge=103  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=118  Best=0.00603924   BestAge=104  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=119  Best=0.00603924   BestAge=105  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=120  Best=0.00603924   BestAge=106  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=121  Best=0.00603924   BestAge=107  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=122  Best=0.00603924   BestAge=108  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=123  Best=0.00603924   BestAge=109  Time=0.0  Run Time=1.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=124  Best=0.00603924   BestAge=110  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=125  Best=0.00603924   BestAge=111  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=126  Best=0.00603924   BestAge=112  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=127  Best=0.00603924   BestAge=113  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=128  Best=0.00603924   BestAge=114  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=129  Best=0.00603924   BestAge=115  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=130  Best=0.00603924   BestAge=116  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=131  Best=0.00603924   BestAge=117  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=132  Best=0.00603924   BestAge=118  Time=0.0  Run Time=1.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=133  Best=0.00603924   BestAge=119  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=134  Best=0.00603924   BestAge=120  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=135  Best=0.00603924   BestAge=121  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=136  Best=0.00603924   BestAge=122  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=137  Best=0.00603924   BestAge=123  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=138  Best=0.00603924   BestAge=124  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=139  Best=0.00603924   BestAge=125  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=140  Best=0.00603924   BestAge=126  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=141  Best=0.00603924   BestAge=127  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=142  Best=0.00603924   BestAge=128  Time=0.0  Run Time=1.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=143  Best=0.00603924   BestAge=129  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=144  Best=0.00603924   BestAge=130  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=145  Best=0.00603924   BestAge=131  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=146  Best=0.00603924   BestAge=132  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=147  Best=0.00603924   BestAge=133  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=148  Best=0.00603924   BestAge=134  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=149  Best=0.00603924   BestAge=135  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=150  Best=0.00603924   BestAge=136  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=151  Best=0.00603924   BestAge=137  Time=0.0  Run Time=2.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=152  Best=0.00598102   BestAge=0  Time=0.0  Run Time=2.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=153  Best=0.00598102   BestAge=1  Time=0.0  Run Time=2.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=154  Best=0.00598102   BestAge=2  Time=0.0  Run Time=2.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=155  Best=0.00481758   BestAge=0  Time=0.0  Run Time=2.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=156  Best=0.00481758   BestAge=1  Time=0.0  Run Time=2.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=157  Best=0.00481758   BestAge=2  Time=0.0  Run Time=2.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=158  Best=0.00481758   BestAge=3  Time=0.0  Run Time=2.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=159  Best=0.00481758   BestAge=4  Time=0.0  Run Time=2.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=160  Best=0.00481758   BestAge=5  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=161  Best=0.00481758   BestAge=6  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=162  Best=0.00481758   BestAge=7  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=163  Best=0.00481758   BestAge=8  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=164  Best=0.00481758   BestAge=9  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=165  Best=0.00481758   BestAge=10  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=166  Best=0.00481758   BestAge=11  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=167  Best=0.00481758   BestAge=12  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=168  Best=0.00481758   BestAge=13  Time=0.0  Run Time=2.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=169  Best=0.00481758   BestAge=14  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=170  Best=0.00481758   BestAge=15  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=171  Best=0.00481758   BestAge=16  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=172  Best=0.00481758   BestAge=17  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=173  Best=0.00481758   BestAge=18  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=174  Best=0.00481758   BestAge=19  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=175  Best=0.00481758   BestAge=20  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=176  Best=0.00481758   BestAge=21  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=177  Best=0.00481758   BestAge=22  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=178  Best=0.00481758   BestAge=23  Time=0.0  Run Time=2.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=179  Best=0.00481758   BestAge=24  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=180  Best=0.00481758   BestAge=25  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=181  Best=0.00481758   BestAge=26  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=182  Best=0.00481758   BestAge=27  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=183  Best=0.00481758   BestAge=28  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=184  Best=0.00481758   BestAge=29  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=185  Best=0.00481758   BestAge=30  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=186  Best=0.00481758   BestAge=31  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=187  Best=0.00481758   BestAge=32  Time=0.0  Run Time=2.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=188  Best=0.00481758   BestAge=33  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=189  Best=0.00481758   BestAge=34  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=190  Best=0.00481758   BestAge=35  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=191  Best=0.00481758   BestAge=36  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=192  Best=0.00481758   BestAge=37  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=193  Best=0.00481758   BestAge=38  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=194  Best=0.00481758   BestAge=39  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=195  Best=0.00481758   BestAge=40  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=196  Best=0.00481758   BestAge=41  Time=0.0  Run Time=2.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=197  Best=0.00481758   BestAge=42  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=198  Best=0.00481758   BestAge=43  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=199  Best=0.00481758   BestAge=44  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=200  Best=0.00481758   BestAge=45  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=201  Best=0.00481758   BestAge=46  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=202  Best=0.00481758   BestAge=47  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=203  Best=0.00481758   BestAge=48  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=204  Best=0.00481758   BestAge=49  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=205  Best=0.00481758   BestAge=50  Time=0.0  Run Time=2.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=206  Best=0.00481758   BestAge=51  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=207  Best=0.00481758   BestAge=52  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=208  Best=0.00481758   BestAge=53  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=209  Best=0.00481758   BestAge=54  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=210  Best=0.00481758   BestAge=55  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=211  Best=0.00481758   BestAge=56  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=212  Best=0.00481758   BestAge=57  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=213  Best=0.00481758   BestAge=58  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=214  Best=0.00481758   BestAge=59  Time=0.0  Run Time=2.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=215  Best=0.00481758   BestAge=60  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=216  Best=0.00481758   BestAge=61  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=217  Best=0.00481758   BestAge=62  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=218  Best=0.00481758   BestAge=63  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=219  Best=0.00481758   BestAge=64  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=220  Best=0.00481758   BestAge=65  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=221  Best=0.00481758   BestAge=66  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=222  Best=0.00481758   BestAge=67  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=223  Best=0.00481758   BestAge=68  Time=0.0  Run Time=2.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=224  Best=0.00481758   BestAge=69  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=225  Best=0.00481758   BestAge=70  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=226  Best=0.00481758   BestAge=71  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=227  Best=0.00481758   BestAge=72  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=228  Best=0.00481758   BestAge=73  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=229  Best=0.00481758   BestAge=74  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=230  Best=0.00481758   BestAge=75  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=231  Best=0.00481758   BestAge=76  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=232  Best=0.00481758   BestAge=77  Time=0.0  Run Time=2.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=233  Best=0.00481758   BestAge=78  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=234  Best=0.00481758   BestAge=79  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=235  Best=0.00481758   BestAge=80  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=236  Best=0.00481758   BestAge=81  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=237  Best=0.00481758   BestAge=82  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=238  Best=0.00481758   BestAge=83  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=239  Best=0.00481758   BestAge=84  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=240  Best=0.00481758   BestAge=85  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=241  Best=0.00481758   BestAge=86  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=242  Best=0.00481758   BestAge=87  Time=0.0  Run Time=3.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=243  Best=0.00481758   BestAge=88  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=244  Best=0.00481758   BestAge=89  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=245  Best=0.00481758   BestAge=90  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=246  Best=0.00481758   BestAge=91  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=247  Best=0.00481758   BestAge=92  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=248  Best=0.00481758   BestAge=93  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=249  Best=0.00481758   BestAge=94  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=250  Best=0.00481758   BestAge=95  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=251  Best=0.00481758   BestAge=96  Time=0.0  Run Time=3.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=252  Best=0.00481758   BestAge=97  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=253  Best=0.00481758   BestAge=98  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=254  Best=0.00481758   BestAge=99  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=255  Best=0.00481758   BestAge=100  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=256  Best=0.00481758   BestAge=101  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=257  Best=0.00481758   BestAge=102  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=258  Best=0.00481758   BestAge=103  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=259  Best=0.00481758   BestAge=104  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=260  Best=0.00481758   BestAge=105  Time=0.0  Run Time=3.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=261  Best=0.00481758   BestAge=106  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=262  Best=0.00481758   BestAge=107  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=263  Best=0.00481758   BestAge=108  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=264  Best=0.00481758   BestAge=109  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=265  Best=0.00481758   BestAge=110  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=266  Best=0.00481758   BestAge=111  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=267  Best=0.00481758   BestAge=112  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=268  Best=0.00481758   BestAge=113  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=269  Best=0.00481758   BestAge=114  Time=0.0  Run Time=3.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=270  Best=0.00481758   BestAge=115  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=271  Best=0.00481758   BestAge=116  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=272  Best=0.00481758   BestAge=117  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=273  Best=0.00481758   BestAge=118  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=274  Best=0.00481758   BestAge=119  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=275  Best=0.00481758   BestAge=120  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=276  Best=0.00481758   BestAge=121  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=277  Best=0.00481758   BestAge=122  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=278  Best=0.00481758   BestAge=123  Time=0.0  Run Time=3.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=279  Best=0.00481758   BestAge=124  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=280  Best=0.00481758   BestAge=125  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=281  Best=0.00481758   BestAge=126  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=282  Best=0.00481758   BestAge=127  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=283  Best=0.00481758   BestAge=128  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=284  Best=0.00481758   BestAge=129  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=285  Best=0.00481758   BestAge=130  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=286  Best=0.00481758   BestAge=131  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=287  Best=0.00481758   BestAge=132  Time=0.0  Run Time=3.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=288  Best=0.00481758   BestAge=133  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=289  Best=0.00481758   BestAge=134  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=290  Best=0.00481758   BestAge=135  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=291  Best=0.00481758   BestAge=136  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=292  Best=0.00481758   BestAge=137  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=293  Best=0.00481758   BestAge=138  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=294  Best=0.00481758   BestAge=139  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=295  Best=0.00481758   BestAge=140  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=296  Best=0.00481758   BestAge=141  Time=0.0  Run Time=3.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=297  Best=0.00481758   BestAge=142  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=298  Best=0.00481758   BestAge=143  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=299  Best=0.00481758   BestAge=144  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=300  Best=0.00481758   BestAge=145  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=301  Best=0.00481758   BestAge=146  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=302  Best=0.00481758   BestAge=147  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=303  Best=0.00481758   BestAge=148  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=304  Best=0.00481758   BestAge=149  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=305  Best=0.00481758   BestAge=150  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=306  Best=0.00481758   BestAge=151  Time=0.0  Run Time=3.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=307  Best=0.00481758   BestAge=152  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=308  Best=0.00481758   BestAge=153  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=309  Best=0.00481758   BestAge=154  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=310  Best=0.00481758   BestAge=155  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=311  Best=0.00481758   BestAge=156  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=312  Best=0.00481758   BestAge=157  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=313  Best=0.00481758   BestAge=158  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=314  Best=0.00481758   BestAge=159  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=315  Best=0.00481758   BestAge=160  Time=0.0  Run Time=3.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=316  Best=0.00481758   BestAge=161  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=317  Best=0.00481758   BestAge=162  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=318  Best=0.00481758   BestAge=163  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=319  Best=0.00481758   BestAge=164  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=320  Best=0.00481758   BestAge=165  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=321  Best=0.00481758   BestAge=166  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=322  Best=0.00481758   BestAge=167  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=323  Best=0.00481758   BestAge=168  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=324  Best=0.00481758   BestAge=169  Time=0.0  Run Time=3.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=325  Best=0.00481758   BestAge=170  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=326  Best=0.00481758   BestAge=171  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=327  Best=0.00481758   BestAge=172  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=328  Best=0.00481758   BestAge=173  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=329  Best=0.00481758   BestAge=174  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=330  Best=0.00481758   BestAge=175  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=331  Best=0.00481758   BestAge=176  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=332  Best=0.00481758   BestAge=177  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=333  Best=0.00481758   BestAge=178  Time=0.0  Run Time=4.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=334  Best=0.00481758   BestAge=179  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=335  Best=0.00481758   BestAge=180  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=336  Best=0.00481758   BestAge=181  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=337  Best=0.00481758   BestAge=182  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=338  Best=0.00481758   BestAge=183  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=339  Best=0.00481758   BestAge=184  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=340  Best=0.00481758   BestAge=185  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=341  Best=0.00481758   BestAge=186  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=342  Best=0.00481758   BestAge=187  Time=0.0  Run Time=4.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=343  Best=0.00481758   BestAge=188  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=344  Best=0.00481758   BestAge=189  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=345  Best=0.00481758   BestAge=190  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=346  Best=0.00481758   BestAge=191  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=347  Best=0.00481758   BestAge=192  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=348  Best=0.00481758   BestAge=193  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=349  Best=0.00481758   BestAge=194  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=350  Best=0.00481758   BestAge=195  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=351  Best=0.00481758   BestAge=196  Time=0.0  Run Time=4.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=352  Best=0.00481758   BestAge=197  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=353  Best=0.00481758   BestAge=198  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=354  Best=0.00481758   BestAge=199  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=355  Best=0.00481758   BestAge=200  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=356  Best=0.00481758   BestAge=201  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=357  Best=0.00481758   BestAge=202  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=358  Best=0.00481758   BestAge=203  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=359  Best=0.00481758   BestAge=204  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=360  Best=0.00481758   BestAge=205  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=361  Best=0.00481758   BestAge=206  Time=0.0  Run Time=4.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=362  Best=0.00481758   BestAge=207  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=363  Best=0.00481758   BestAge=208  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=364  Best=0.00481758   BestAge=209  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=365  Best=0.00481758   BestAge=210  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=366  Best=0.00481758   BestAge=211  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=367  Best=0.00481758   BestAge=212  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=368  Best=0.00481758   BestAge=213  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=369  Best=0.00481758   BestAge=214  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=370  Best=0.00481758   BestAge=215  Time=0.0  Run Time=4.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=371  Best=0.00481758   BestAge=216  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=372  Best=0.00481758   BestAge=217  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=373  Best=0.00481758   BestAge=218  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=374  Best=0.00481758   BestAge=219  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=375  Best=0.00481758   BestAge=220  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=376  Best=0.00481758   BestAge=221  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=377  Best=0.00481758   BestAge=222  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=378  Best=0.00481758   BestAge=223  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=379  Best=0.00481758   BestAge=224  Time=0.0  Run Time=4.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=380  Best=0.00481758   BestAge=225  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=381  Best=0.00481758   BestAge=226  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=382  Best=0.00481758   BestAge=227  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=383  Best=0.00481758   BestAge=228  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=384  Best=0.00481758   BestAge=229  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=385  Best=0.00481758   BestAge=230  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=386  Best=0.00481758   BestAge=231  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=387  Best=0.00481758   BestAge=232  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=388  Best=0.00481758   BestAge=233  Time=0.0  Run Time=4.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=389  Best=0.00481758   BestAge=234  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=390  Best=0.00481758   BestAge=235  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=391  Best=0.00481758   BestAge=236  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=392  Best=0.00481758   BestAge=237  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=393  Best=0.00481758   BestAge=238  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=394  Best=0.00481758   BestAge=239  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=395  Best=0.00481758   BestAge=240  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=396  Best=0.00481758   BestAge=241  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=397  Best=0.00481758   BestAge=242  Time=0.0  Run Time=4.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=398  Best=0.00481758   BestAge=243  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=399  Best=0.00481758   BestAge=244  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=400  Best=0.00481758   BestAge=245  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=401  Best=0.00481758   BestAge=246  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=402  Best=0.00481758   BestAge=247  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=403  Best=0.00481758   BestAge=248  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=404  Best=0.00481758   BestAge=249  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=405  Best=0.00481758   BestAge=250  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=406  Best=0.00481758   BestAge=251  Time=0.0  Run Time=4.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=407  Best=0.00481758   BestAge=252  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=408  Best=0.00481758   BestAge=253  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=409  Best=0.00481758   BestAge=254  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=410  Best=0.00481758   BestAge=255  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=411  Best=0.00481758   BestAge=256  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=412  Best=0.00481758   BestAge=257  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=413  Best=0.00481758   BestAge=258  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=414  Best=0.00481758   BestAge=259  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=415  Best=0.00481758   BestAge=260  Time=0.0  Run Time=4.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=416  Best=0.00481758   BestAge=261  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=417  Best=0.00481758   BestAge=262  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=418  Best=0.00481758   BestAge=263  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=419  Best=0.00481758   BestAge=264  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=420  Best=0.00481758   BestAge=265  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=421  Best=0.00481758   BestAge=266  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=422  Best=0.00481758   BestAge=267  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=423  Best=0.00481758   BestAge=268  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=424  Best=0.00481758   BestAge=269  Time=0.0  Run Time=5.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=425  Best=0.00481758   BestAge=270  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=426  Best=0.00481758   BestAge=271  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=427  Best=0.00481758   BestAge=272  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=428  Best=0.00481758   BestAge=273  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=429  Best=0.00481758   BestAge=274  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=430  Best=0.00481758   BestAge=275  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=431  Best=0.00481758   BestAge=276  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=432  Best=0.00481758   BestAge=277  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=433  Best=0.00481758   BestAge=278  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=434  Best=0.00481758   BestAge=279  Time=0.0  Run Time=5.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=435  Best=0.00481758   BestAge=280  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=436  Best=0.00481758   BestAge=281  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=437  Best=0.00481758   BestAge=282  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=438  Best=0.00481758   BestAge=283  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=439  Best=0.00481758   BestAge=284  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=440  Best=0.00481758   BestAge=285  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=441  Best=0.00481758   BestAge=286  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=442  Best=0.00481758   BestAge=287  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=443  Best=0.00481758   BestAge=288  Time=0.0  Run Time=5.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=444  Best=0.00481758   BestAge=289  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=445  Best=0.00481758   BestAge=290  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=446  Best=0.00481758   BestAge=291  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=447  Best=0.00481758   BestAge=292  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=448  Best=0.00481758   BestAge=293  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=449  Best=0.00481758   BestAge=294  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=450  Best=0.00481758   BestAge=295  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=451  Best=0.00481758   BestAge=296  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=452  Best=0.00481758   BestAge=297  Time=0.0  Run Time=5.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=453  Best=0.00481758   BestAge=298  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=454  Best=0.00481758   BestAge=299  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=455  Best=0.00481758   BestAge=300  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=456  Best=0.00481758   BestAge=301  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=457  Best=0.00481758   BestAge=302  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=458  Best=0.00481758   BestAge=303  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=459  Best=0.00481758   BestAge=304  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=460  Best=0.00481758   BestAge=305  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=461  Best=0.00425346   BestAge=0  Time=0.0  Run Time=5.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=462  Best=0.00425346   BestAge=1  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=463  Best=0.00425346   BestAge=2  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=464  Best=0.00425346   BestAge=3  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=465  Best=0.00425346   BestAge=4  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=466  Best=0.00425346   BestAge=5  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=467  Best=0.00425346   BestAge=6  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=468  Best=0.00425346   BestAge=7  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=469  Best=0.00425346   BestAge=8  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=470  Best=0.00425346   BestAge=9  Time=0.0  Run Time=5.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=471  Best=0.00425346   BestAge=10  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=472  Best=0.00425346   BestAge=11  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=473  Best=0.00425346   BestAge=12  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=474  Best=0.00425346   BestAge=13  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=475  Best=0.00425346   BestAge=14  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=476  Best=0.00425346   BestAge=15  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=477  Best=0.00425346   BestAge=16  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=478  Best=0.00425346   BestAge=17  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=479  Best=0.00425346   BestAge=18  Time=0.0  Run Time=5.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=480  Best=0.00425346   BestAge=19  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=481  Best=0.00425346   BestAge=20  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=482  Best=0.00425346   BestAge=21  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=483  Best=0.00425346   BestAge=22  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=484  Best=0.00425346   BestAge=23  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=485  Best=0.00425346   BestAge=24  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=486  Best=0.00425346   BestAge=25  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=487  Best=0.00425346   BestAge=26  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=488  Best=0.00425346   BestAge=27  Time=0.0  Run Time=5.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=489  Best=0.00425346   BestAge=28  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=490  Best=0.00425346   BestAge=29  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=491  Best=0.00425346   BestAge=30  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=492  Best=0.00425346   BestAge=31  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=493  Best=0.00425346   BestAge=32  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=494  Best=0.00425346   BestAge=33  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=495  Best=0.00425346   BestAge=34  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=496  Best=0.00425346   BestAge=35  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=497  Best=0.00425346   BestAge=36  Time=0.0  Run Time=5.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=498  Best=0.00425346   BestAge=37  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=499  Best=0.00425346   BestAge=38  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=500  Best=0.00425346   BestAge=39  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=501  Best=0.00425346   BestAge=40  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=502  Best=0.00425346   BestAge=41  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=503  Best=0.00425346   BestAge=42  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=504  Best=0.00425346   BestAge=43  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=505  Best=0.00425346   BestAge=44  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=506  Best=0.00425346   BestAge=45  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=507  Best=0.00425346   BestAge=46  Time=0.0  Run Time=5.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=508  Best=0.00425346   BestAge=47  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=509  Best=0.00425346   BestAge=48  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=510  Best=0.00425346   BestAge=49  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=511  Best=0.00425346   BestAge=50  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=512  Best=0.00425346   BestAge=51  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=513  Best=0.00425346   BestAge=52  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=514  Best=0.00425346   BestAge=53  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=515  Best=0.00425346   BestAge=54  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=516  Best=0.00425346   BestAge=55  Time=0.0  Run Time=6.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=517  Best=0.00425346   BestAge=56  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=518  Best=0.00425346   BestAge=57  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=519  Best=0.00425346   BestAge=58  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=520  Best=0.00425346   BestAge=59  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=521  Best=0.00425346   BestAge=60  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=522  Best=0.00425346   BestAge=61  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=523  Best=0.00425346   BestAge=62  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=524  Best=0.00425346   BestAge=63  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=525  Best=0.00425346   BestAge=64  Time=0.0  Run Time=6.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=526  Best=0.00425346   BestAge=65  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=527  Best=0.00425346   BestAge=66  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=528  Best=0.00425346   BestAge=67  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=529  Best=0.00425346   BestAge=68  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=530  Best=0.00425346   BestAge=69  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=531  Best=0.00425346   BestAge=70  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=532  Best=0.00425346   BestAge=71  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=533  Best=0.00425346   BestAge=72  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=534  Best=0.00425346   BestAge=73  Time=0.0  Run Time=6.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=535  Best=0.00425346   BestAge=74  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=536  Best=0.00425346   BestAge=75  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=537  Best=0.00425346   BestAge=76  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=538  Best=0.00425346   BestAge=77  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=539  Best=0.00425346   BestAge=78  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=540  Best=0.00425346   BestAge=79  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=541  Best=0.00425346   BestAge=80  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=542  Best=0.00425346   BestAge=81  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=543  Best=0.00425346   BestAge=82  Time=0.0  Run Time=6.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=544  Best=0.00425346   BestAge=83  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=545  Best=0.00425346   BestAge=84  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=546  Best=0.00425346   BestAge=85  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=547  Best=0.00425346   BestAge=86  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=548  Best=0.00425346   BestAge=87  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=549  Best=0.00425346   BestAge=88  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=550  Best=0.00425346   BestAge=89  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=551  Best=0.00425346   BestAge=90  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=552  Best=0.00425346   BestAge=91  Time=0.0  Run Time=6.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=553  Best=0.00425346   BestAge=92  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=554  Best=0.00425346   BestAge=93  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=555  Best=0.00425346   BestAge=94  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=556  Best=0.00425346   BestAge=95  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=557  Best=0.00425346   BestAge=96  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=558  Best=0.00425346   BestAge=97  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=559  Best=0.00425346   BestAge=98  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=560  Best=0.00425346   BestAge=99  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=561  Best=0.00425346   BestAge=100  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=562  Best=0.00425346   BestAge=101  Time=0.0  Run Time=6.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=563  Best=0.00425346   BestAge=102  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=564  Best=0.00425346   BestAge=103  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=565  Best=0.00425346   BestAge=104  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=566  Best=0.00425346   BestAge=105  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=567  Best=0.00425346   BestAge=106  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=568  Best=0.00425346   BestAge=107  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=569  Best=0.00425346   BestAge=108  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=570  Best=0.00425346   BestAge=109  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=571  Best=0.00425346   BestAge=110  Time=0.0  Run Time=6.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=572  Best=0.00425346   BestAge=111  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=573  Best=0.00425346   BestAge=112  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=574  Best=0.00425346   BestAge=113  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=575  Best=0.00425346   BestAge=114  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=576  Best=0.00425346   BestAge=115  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=577  Best=0.00425346   BestAge=116  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=578  Best=0.00425346   BestAge=117  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=579  Best=0.00425346   BestAge=118  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=580  Best=0.00425346   BestAge=119  Time=0.0  Run Time=6.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=581  Best=0.00425346   BestAge=120  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=582  Best=0.00425346   BestAge=121  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=583  Best=0.00425346   BestAge=122  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=584  Best=0.00425346   BestAge=123  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=585  Best=0.00425346   BestAge=124  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=586  Best=0.00425346   BestAge=125  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=587  Best=0.00425346   BestAge=126  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=588  Best=0.00425346   BestAge=127  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=589  Best=0.00425346   BestAge=128  Time=0.0  Run Time=6.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=590  Best=0.00425346   BestAge=129  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=591  Best=0.00425346   BestAge=130  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=592  Best=0.00425346   BestAge=131  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=593  Best=0.00425346   BestAge=132  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=594  Best=0.00425346   BestAge=133  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=595  Best=0.00425346   BestAge=134  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=596  Best=0.00425346   BestAge=135  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=597  Best=0.00425346   BestAge=136  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=598  Best=0.00425346   BestAge=137  Time=0.0  Run Time=6.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=599  Best=0.00425346   BestAge=138  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=600  Best=0.00425346   BestAge=139  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=601  Best=0.00425346   BestAge=140  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=602  Best=0.00425346   BestAge=141  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=603  Best=0.00425346   BestAge=142  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=604  Best=0.00425346   BestAge=143  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=605  Best=0.00425346   BestAge=144  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=606  Best=0.00425346   BestAge=145  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=607  Best=0.00425346   BestAge=146  Time=0.0  Run Time=7.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=608  Best=0.00425346   BestAge=147  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=609  Best=0.00425346   BestAge=148  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=610  Best=0.00425346   BestAge=149  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=611  Best=0.00425346   BestAge=150  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=612  Best=0.00425346   BestAge=151  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=613  Best=0.00425346   BestAge=152  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=614  Best=0.00425346   BestAge=153  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=615  Best=0.00425346   BestAge=154  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=616  Best=0.00425346   BestAge=155  Time=0.0  Run Time=7.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=617  Best=0.00425346   BestAge=156  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=618  Best=0.00425346   BestAge=157  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=619  Best=0.00425346   BestAge=158  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=620  Best=0.00425346   BestAge=159  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=621  Best=0.00425346   BestAge=160  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=622  Best=0.00425346   BestAge=161  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=623  Best=0.00425346   BestAge=162  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=624  Best=0.00425346   BestAge=163  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=625  Best=0.00425346   BestAge=164  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=626  Best=0.00425346   BestAge=165  Time=0.0  Run Time=7.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=627  Best=0.00425346   BestAge=166  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=628  Best=0.00425346   BestAge=167  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=629  Best=0.00425346   BestAge=168  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=630  Best=0.00425346   BestAge=169  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=631  Best=0.00425346   BestAge=170  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=632  Best=0.00425346   BestAge=171  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=633  Best=0.00425346   BestAge=172  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=634  Best=0.00425346   BestAge=173  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=635  Best=0.00425346   BestAge=174  Time=0.0  Run Time=7.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=636  Best=0.00425346   BestAge=175  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=637  Best=0.00425346   BestAge=176  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=638  Best=0.00425346   BestAge=177  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=639  Best=0.00425346   BestAge=178  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=640  Best=0.00425346   BestAge=179  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=641  Best=0.00425346   BestAge=180  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=642  Best=0.00425346   BestAge=181  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=643  Best=0.00425346   BestAge=182  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=644  Best=0.00425346   BestAge=183  Time=0.0  Run Time=7.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=645  Best=0.00425346   BestAge=184  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=646  Best=0.00425346   BestAge=185  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=647  Best=0.00425346   BestAge=186  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=648  Best=0.00425346   BestAge=187  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=649  Best=0.00425346   BestAge=188  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=650  Best=0.00425346   BestAge=189  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=651  Best=0.00425346   BestAge=190  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=652  Best=0.00425346   BestAge=191  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=653  Best=0.00425346   BestAge=192  Time=0.0  Run Time=7.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=654  Best=0.00425346   BestAge=193  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=655  Best=0.00425346   BestAge=194  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=656  Best=0.00425346   BestAge=195  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=657  Best=0.00425346   BestAge=196  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=658  Best=0.00425346   BestAge=197  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=659  Best=0.00425346   BestAge=198  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=660  Best=0.00425346   BestAge=199  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=661  Best=0.00425346   BestAge=200  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=662  Best=0.00425346   BestAge=201  Time=0.0  Run Time=7.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=663  Best=0.00425346   BestAge=202  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=664  Best=0.00425346   BestAge=203  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=665  Best=0.00425346   BestAge=204  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=666  Best=0.00425346   BestAge=205  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=667  Best=0.00425346   BestAge=206  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=668  Best=0.00425346   BestAge=207  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=669  Best=0.00425346   BestAge=208  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=670  Best=0.00425346   BestAge=209  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=671  Best=0.00425346   BestAge=210  Time=0.0  Run Time=7.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=672  Best=0.00425346   BestAge=211  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=673  Best=0.00425346   BestAge=212  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=674  Best=0.00425346   BestAge=213  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=675  Best=0.00425346   BestAge=214  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=676  Best=0.00425346   BestAge=215  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=677  Best=0.00425346   BestAge=216  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=678  Best=0.00425346   BestAge=217  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=679  Best=0.00425346   BestAge=218  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=680  Best=0.00425346   BestAge=219  Time=0.0  Run Time=7.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=681  Best=0.00425346   BestAge=220  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=682  Best=0.00425346   BestAge=221  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=683  Best=0.00425346   BestAge=222  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=684  Best=0.00425346   BestAge=223  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=685  Best=0.00425346   BestAge=224  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=686  Best=0.00425346   BestAge=225  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=687  Best=0.00425346   BestAge=226  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=688  Best=0.00425346   BestAge=227  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=689  Best=0.00425346   BestAge=228  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=690  Best=0.00425346   BestAge=229  Time=0.0  Run Time=7.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=691  Best=0.00425346   BestAge=230  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=692  Best=0.00425346   BestAge=231  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=693  Best=0.00425346   BestAge=232  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=694  Best=0.00425346   BestAge=233  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=695  Best=0.00425346   BestAge=234  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=696  Best=0.00425346   BestAge=235  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=697  Best=0.00425346   BestAge=236  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=698  Best=0.00425346   BestAge=237  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=699  Best=0.00425346   BestAge=238  Time=0.0  Run Time=8.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=700  Best=0.00425346   BestAge=239  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=701  Best=0.00425346   BestAge=240  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=702  Best=0.00425346   BestAge=241  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=703  Best=0.00425346   BestAge=242  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=704  Best=0.00425346   BestAge=243  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=705  Best=0.00425346   BestAge=244  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=706  Best=0.00425346   BestAge=245  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=707  Best=0.00425346   BestAge=246  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=708  Best=0.00425346   BestAge=247  Time=0.0  Run Time=8.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=709  Best=0.00425346   BestAge=248  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=710  Best=0.00425346   BestAge=249  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=711  Best=0.00425346   BestAge=250  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=712  Best=0.00425346   BestAge=251  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=713  Best=0.00425346   BestAge=252  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=714  Best=0.00425346   BestAge=253  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=715  Best=0.00425346   BestAge=254  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=716  Best=0.00425346   BestAge=255  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=717  Best=0.00425346   BestAge=256  Time=0.0  Run Time=8.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=718  Best=0.00425346   BestAge=257  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=719  Best=0.00425346   BestAge=258  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=720  Best=0.00425346   BestAge=259  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=721  Best=0.00425346   BestAge=260  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=722  Best=0.00425346   BestAge=261  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=723  Best=0.00425346   BestAge=262  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=724  Best=0.00425346   BestAge=263  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=725  Best=0.00425346   BestAge=264  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=726  Best=0.00425346   BestAge=265  Time=0.0  Run Time=8.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=727  Best=0.00425346   BestAge=266  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=728  Best=0.00425346   BestAge=267  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=729  Best=0.00425346   BestAge=268  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=730  Best=0.00425346   BestAge=269  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=731  Best=0.00425346   BestAge=270  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=732  Best=0.00425346   BestAge=271  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=733  Best=0.00425346   BestAge=272  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=734  Best=0.00425346   BestAge=273  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=735  Best=0.00425346   BestAge=274  Time=0.0  Run Time=8.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=736  Best=0.00425346   BestAge=275  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=737  Best=0.00425346   BestAge=276  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=738  Best=0.00425346   BestAge=277  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=739  Best=0.00425346   BestAge=278  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=740  Best=0.00425346   BestAge=279  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=741  Best=0.00425346   BestAge=280  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=742  Best=0.00425346   BestAge=281  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=743  Best=0.00425346   BestAge=282  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=744  Best=0.00425346   BestAge=283  Time=0.0  Run Time=8.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=745  Best=0.00425346   BestAge=284  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=746  Best=0.00425346   BestAge=285  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=747  Best=0.00425346   BestAge=286  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=748  Best=0.00425346   BestAge=287  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=749  Best=0.00425346   BestAge=288  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=750  Best=0.00425346   BestAge=289  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=751  Best=0.00425346   BestAge=290  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=752  Best=0.00425346   BestAge=291  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=753  Best=0.00425346   BestAge=292  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=754  Best=0.00425346   BestAge=293  Time=0.0  Run Time=8.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=755  Best=0.00425346   BestAge=294  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=756  Best=0.00425346   BestAge=295  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=757  Best=0.00425346   BestAge=296  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=758  Best=0.00425346   BestAge=297  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=759  Best=0.00425346   BestAge=298  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=760  Best=0.00425346   BestAge=299  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=761  Best=0.00425346   BestAge=300  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=762  Best=0.00425346   BestAge=301  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=763  Best=0.00425346   BestAge=302  Time=0.0  Run Time=8.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=764  Best=0.00425346   BestAge=303  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=765  Best=0.00425346   BestAge=304  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=766  Best=0.00425346   BestAge=305  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=767  Best=0.00425346   BestAge=306  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=768  Best=0.00425346   BestAge=307  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=769  Best=0.00425346   BestAge=308  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=770  Best=0.00425346   BestAge=309  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=771  Best=0.00425346   BestAge=310  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=772  Best=0.00425346   BestAge=311  Time=0.0  Run Time=8.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=773  Best=0.00425346   BestAge=312  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=774  Best=0.00425346   BestAge=313  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=775  Best=0.00425346   BestAge=314  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=776  Best=0.00425346   BestAge=315  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=777  Best=0.00425346   BestAge=316  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=778  Best=0.00425346   BestAge=317  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=779  Best=0.00425346   BestAge=318  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=780  Best=0.00425346   BestAge=319  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=781  Best=0.00425346   BestAge=320  Time=0.0  Run Time=8.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=782  Best=0.00425346   BestAge=321  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=783  Best=0.00425346   BestAge=322  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=784  Best=0.00425346   BestAge=323  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=785  Best=0.00425346   BestAge=324  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=786  Best=0.00425346   BestAge=325  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=787  Best=0.00425346   BestAge=326  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=788  Best=0.00425346   BestAge=327  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=789  Best=0.00425346   BestAge=328  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=790  Best=0.00425346   BestAge=329  Time=0.0  Run Time=9.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=791  Best=0.00425346   BestAge=330  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=792  Best=0.00425346   BestAge=331  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=793  Best=0.00425346   BestAge=332  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=794  Best=0.00425346   BestAge=333  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=795  Best=0.00425346   BestAge=334  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=796  Best=0.00425346   BestAge=335  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=797  Best=0.00425346   BestAge=336  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=798  Best=0.00425346   BestAge=337  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=799  Best=0.00425346   BestAge=338  Time=0.0  Run Time=9.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=800  Best=0.00425346   BestAge=339  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=801  Best=0.00425346   BestAge=340  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=802  Best=0.00425346   BestAge=341  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=803  Best=0.00425346   BestAge=342  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=804  Best=0.00425346   BestAge=343  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=805  Best=0.00425346   BestAge=344  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=806  Best=0.00425346   BestAge=345  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=807  Best=0.00425346   BestAge=346  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=808  Best=0.00425346   BestAge=347  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=809  Best=0.00425346   BestAge=348  Time=0.0  Run Time=9.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=810  Best=0.00425346   BestAge=349  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=811  Best=0.00425346   BestAge=350  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=812  Best=0.00425346   BestAge=351  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=813  Best=0.00425346   BestAge=352  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=814  Best=0.00425346   BestAge=353  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=815  Best=0.00425346   BestAge=354  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=816  Best=0.00425346   BestAge=355  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=817  Best=0.00425346   BestAge=356  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=818  Best=0.00425346   BestAge=357  Time=0.0  Run Time=9.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=819  Best=0.00425346   BestAge=358  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=820  Best=0.00425346   BestAge=359  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=821  Best=0.00425346   BestAge=360  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=822  Best=0.00425346   BestAge=361  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=823  Best=0.00425346   BestAge=362  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=824  Best=0.00425346   BestAge=363  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=825  Best=0.00425346   BestAge=364  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=826  Best=0.00425346   BestAge=365  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=827  Best=0.00425346   BestAge=366  Time=0.0  Run Time=9.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=828  Best=0.00425346   BestAge=367  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=829  Best=0.00425346   BestAge=368  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=830  Best=0.00425346   BestAge=369  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=831  Best=0.00425346   BestAge=370  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=832  Best=0.00425346   BestAge=371  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=833  Best=0.00425346   BestAge=372  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=834  Best=0.00425346   BestAge=373  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=835  Best=0.00425346   BestAge=374  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=836  Best=0.00425346   BestAge=375  Time=0.0  Run Time=9.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=837  Best=0.00425346   BestAge=376  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=838  Best=0.00425346   BestAge=377  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=839  Best=0.00425346   BestAge=378  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=840  Best=0.00425346   BestAge=379  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=841  Best=0.00425346   BestAge=380  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=842  Best=0.00425346   BestAge=381  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=843  Best=0.00425346   BestAge=382  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=844  Best=0.00425346   BestAge=383  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=845  Best=0.00425346   BestAge=384  Time=0.0  Run Time=9.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=846  Best=0.00425346   BestAge=385  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=847  Best=0.00425346   BestAge=386  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=848  Best=0.00425346   BestAge=387  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=849  Best=0.00425346   BestAge=388  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=850  Best=0.00425346   BestAge=389  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=851  Best=0.00425346   BestAge=390  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=852  Best=0.00425346   BestAge=391  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=853  Best=0.00425346   BestAge=392  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=854  Best=0.00425346   BestAge=393  Time=0.0  Run Time=9.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=855  Best=0.00425346   BestAge=394  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=856  Best=0.00425346   BestAge=395  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=857  Best=0.00425346   BestAge=396  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=858  Best=0.00425346   BestAge=397  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=859  Best=0.00425346   BestAge=398  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=860  Best=0.00425346   BestAge=399  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=861  Best=0.00425346   BestAge=400  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=862  Best=0.00425346   BestAge=401  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=863  Best=0.00425346   BestAge=402  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=864  Best=0.00425346   BestAge=403  Time=0.0  Run Time=9.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=865  Best=0.00425346   BestAge=404  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=866  Best=0.00425346   BestAge=405  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=867  Best=0.00425346   BestAge=406  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=868  Best=0.00425346   BestAge=407  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=869  Best=0.00425346   BestAge=408  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=870  Best=0.00425346   BestAge=409  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=871  Best=0.00425346   BestAge=410  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=872  Best=0.00425346   BestAge=411  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=873  Best=0.00425346   BestAge=412  Time=0.0  Run Time=9.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=874  Best=0.00425346   BestAge=413  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=875  Best=0.00425346   BestAge=414  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=876  Best=0.00425346   BestAge=415  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=877  Best=0.00425346   BestAge=416  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=878  Best=0.00425346   BestAge=417  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=879  Best=0.00425346   BestAge=418  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=880  Best=0.00425346   BestAge=419  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=881  Best=0.00425346   BestAge=420  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=882  Best=0.00425346   BestAge=421  Time=0.0  Run Time=10.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=883  Best=0.00425346   BestAge=422  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=884  Best=0.00425346   BestAge=423  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=885  Best=0.00425346   BestAge=424  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=886  Best=0.00425346   BestAge=425  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=887  Best=0.00121864   BestAge=0  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=888  Best=0.00121864   BestAge=1  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=889  Best=0.00121864   BestAge=2  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=890  Best=0.00121864   BestAge=3  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=891  Best=0.00121864   BestAge=4  Time=0.0  Run Time=10.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=892  Best=0.00121864   BestAge=5  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=893  Best=0.00121864   BestAge=6  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=894  Best=0.00121864   BestAge=7  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=895  Best=0.00121864   BestAge=8  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=896  Best=0.00121864   BestAge=9  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=897  Best=0.00121864   BestAge=10  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=898  Best=0.00121864   BestAge=11  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=899  Best=0.00121864   BestAge=12  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=900  Best=0.00121864   BestAge=13  Time=0.0  Run Time=10.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=901  Best=0.00121864   BestAge=14  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=902  Best=0.00121864   BestAge=15  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=903  Best=0.00121864   BestAge=16  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=904  Best=0.00121864   BestAge=17  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=905  Best=0.00121864   BestAge=18  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=906  Best=0.00121864   BestAge=19  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=907  Best=0.00121864   BestAge=20  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=908  Best=0.00121864   BestAge=21  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=909  Best=0.00121864   BestAge=22  Time=0.0  Run Time=10.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=910  Best=0.00121864   BestAge=23  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=911  Best=0.00121864   BestAge=24  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=912  Best=0.00121864   BestAge=25  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=913  Best=0.00121864   BestAge=26  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=914  Best=0.00121864   BestAge=27  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=915  Best=0.00121864   BestAge=28  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=916  Best=0.00121864   BestAge=29  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=917  Best=0.00121864   BestAge=30  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=918  Best=0.00121864   BestAge=31  Time=0.0  Run Time=10.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=919  Best=0.00121864   BestAge=32  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=920  Best=0.00121864   BestAge=33  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=921  Best=0.00121864   BestAge=34  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=922  Best=0.00121864   BestAge=35  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=923  Best=0.00121864   BestAge=36  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=924  Best=0.00121864   BestAge=37  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=925  Best=0.00121864   BestAge=38  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=926  Best=0.00121864   BestAge=39  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=927  Best=0.00121864   BestAge=40  Time=0.0  Run Time=10.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=928  Best=0.00121864   BestAge=41  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=929  Best=0.00121864   BestAge=42  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=930  Best=0.00121864   BestAge=43  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=931  Best=0.00121864   BestAge=44  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=932  Best=0.00121864   BestAge=45  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=933  Best=0.00121864   BestAge=46  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=934  Best=0.00121864   BestAge=47  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=935  Best=0.00121864   BestAge=48  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=936  Best=0.00121864   BestAge=49  Time=0.0  Run Time=10.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=937  Best=0.00121864   BestAge=50  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=938  Best=0.00121864   BestAge=51  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=939  Best=0.00121864   BestAge=52  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=940  Best=0.00121864   BestAge=53  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=941  Best=0.00121864   BestAge=54  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=942  Best=0.00121864   BestAge=55  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=943  Best=0.00121864   BestAge=56  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=944  Best=0.00121864   BestAge=57  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=945  Best=0.00121864   BestAge=58  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=946  Best=0.00121864   BestAge=59  Time=0.0  Run Time=10.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=947  Best=0.00121864   BestAge=60  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=948  Best=0.00121864   BestAge=61  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=949  Best=0.00121864   BestAge=62  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=950  Best=0.00121864   BestAge=63  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=951  Best=0.00121864   BestAge=64  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=952  Best=0.00121864   BestAge=65  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=953  Best=0.00121864   BestAge=66  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=954  Best=0.00121864   BestAge=67  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=955  Best=0.00121864   BestAge=68  Time=0.0  Run Time=10.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=956  Best=0.00121864   BestAge=69  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=957  Best=0.00121864   BestAge=70  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=958  Best=0.00121864   BestAge=71  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=959  Best=0.00121864   BestAge=72  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=960  Best=0.00121864   BestAge=73  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=961  Best=0.00121864   BestAge=74  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=962  Best=0.00121864   BestAge=75  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=963  Best=0.00121864   BestAge=76  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=964  Best=0.00121864   BestAge=77  Time=0.0  Run Time=10.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=965  Best=0.00121864   BestAge=78  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=966  Best=0.00121864   BestAge=79  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=967  Best=0.00121864   BestAge=80  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=968  Best=0.00121864   BestAge=81  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=969  Best=0.00121864   BestAge=82  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=970  Best=0.00121864   BestAge=83  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=971  Best=0.00121864   BestAge=84  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=972  Best=0.00121864   BestAge=85  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=973  Best=0.00121864   BestAge=86  Time=0.0  Run Time=11.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=974  Best=0.00121864   BestAge=87  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=975  Best=0.00121864   BestAge=88  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=976  Best=0.00121864   BestAge=89  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=977  Best=0.00121864   BestAge=90  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=978  Best=0.00121864   BestAge=91  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=979  Best=0.00121864   BestAge=92  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=980  Best=0.00121864   BestAge=93  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=981  Best=0.00121864   BestAge=94  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=982  Best=0.00121864   BestAge=95  Time=0.0  Run Time=11.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=983  Best=0.00121864   BestAge=96  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=984  Best=0.00121864   BestAge=97  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=985  Best=0.00121864   BestAge=98  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=986  Best=0.00121864   BestAge=99  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=987  Best=0.00121864   BestAge=100  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=988  Best=0.00121864   BestAge=101  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=989  Best=0.00121864   BestAge=102  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=990  Best=0.00121864   BestAge=103  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=991  Best=0.00121864   BestAge=104  Time=0.0  Run Time=11.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=992  Best=0.00121864   BestAge=105  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=993  Best=0.00121864   BestAge=106  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=994  Best=0.00121864   BestAge=107  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=995  Best=0.00121864   BestAge=108  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=996  Best=0.00121864   BestAge=109  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=997  Best=0.00121864   BestAge=110  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=998  Best=0.00121864   BestAge=111  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=999  Best=0.00121864   BestAge=112  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1000  Best=0.00121864   BestAge=113  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1001  Best=0.00121864   BestAge=114  Time=0.0  Run Time=11.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1002  Best=0.00121864   BestAge=115  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1003  Best=0.00121864   BestAge=116  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1004  Best=0.00121864   BestAge=117  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1005  Best=0.00121864   BestAge=118  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1006  Best=0.00121864   BestAge=119  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1007  Best=0.00121864   BestAge=120  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1008  Best=0.00121864   BestAge=121  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1009  Best=0.00121864   BestAge=122  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1010  Best=0.00121864   BestAge=123  Time=0.0  Run Time=11.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1011  Best=0.00121864   BestAge=124  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1012  Best=0.00121864   BestAge=125  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1013  Best=0.00121864   BestAge=126  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1014  Best=0.00121864   BestAge=127  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1015  Best=0.00121864   BestAge=128  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1016  Best=0.00121864   BestAge=129  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1017  Best=0.00121864   BestAge=130  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1018  Best=0.00121864   BestAge=131  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1019  Best=0.00121864   BestAge=132  Time=0.0  Run Time=11.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1020  Best=0.00121864   BestAge=133  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1021  Best=0.00121864   BestAge=134  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1022  Best=0.00121864   BestAge=135  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1023  Best=0.00121864   BestAge=136  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1024  Best=0.00121864   BestAge=137  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1025  Best=0.00121864   BestAge=138  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1026  Best=0.00121864   BestAge=139  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1027  Best=0.00121864   BestAge=140  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1028  Best=0.00121864   BestAge=141  Time=0.0  Run Time=11.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1029  Best=0.00121864   BestAge=142  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1030  Best=0.00121864   BestAge=143  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1031  Best=0.00121864   BestAge=144  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1032  Best=0.00121864   BestAge=145  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1033  Best=0.00121864   BestAge=146  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1034  Best=0.00121864   BestAge=147  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1035  Best=0.00121864   BestAge=148  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1036  Best=0.00121864   BestAge=149  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1037  Best=0.00121864   BestAge=150  Time=0.0  Run Time=11.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1038  Best=0.00121864   BestAge=151  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1039  Best=0.00121864   BestAge=152  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1040  Best=0.00121864   BestAge=153  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1041  Best=0.00121864   BestAge=154  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1042  Best=0.00121864   BestAge=155  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1043  Best=0.00121864   BestAge=156  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1044  Best=0.00121864   BestAge=157  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1045  Best=0.00121864   BestAge=158  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1046  Best=0.00121864   BestAge=159  Time=0.0  Run Time=11.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1047  Best=0.00121864   BestAge=160  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1048  Best=0.00121864   BestAge=161  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1049  Best=0.00121864   BestAge=162  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1050  Best=0.00121864   BestAge=163  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1051  Best=0.00121864   BestAge=164  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1052  Best=0.00121864   BestAge=165  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1053  Best=0.00121864   BestAge=166  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1054  Best=0.00121864   BestAge=167  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1055  Best=0.00121864   BestAge=168  Time=0.0  Run Time=11.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1056  Best=0.00121864   BestAge=169  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1057  Best=0.00121864   BestAge=170  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1058  Best=0.00121864   BestAge=171  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1059  Best=0.00121864   BestAge=172  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1060  Best=0.00121864   BestAge=173  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1061  Best=0.00121864   BestAge=174  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1062  Best=0.00121864   BestAge=175  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1063  Best=0.00121864   BestAge=176  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1064  Best=0.00121864   BestAge=177  Time=0.0  Run Time=12.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1065  Best=0.00121864   BestAge=178  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1066  Best=0.00121864   BestAge=179  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1067  Best=0.00121864   BestAge=180  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1068  Best=0.00121864   BestAge=181  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1069  Best=0.00121864   BestAge=182  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1070  Best=0.00121864   BestAge=183  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1071  Best=0.00121864   BestAge=184  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1072  Best=0.00121864   BestAge=185  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1073  Best=0.00121864   BestAge=186  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1074  Best=0.00121864   BestAge=187  Time=0.0  Run Time=12.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1075  Best=0.00121864   BestAge=188  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1076  Best=0.00121864   BestAge=189  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1077  Best=0.00121864   BestAge=190  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1078  Best=0.00121864   BestAge=191  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1079  Best=0.00121864   BestAge=192  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1080  Best=0.00121864   BestAge=193  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1081  Best=0.00121864   BestAge=194  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1082  Best=0.00121864   BestAge=195  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1083  Best=0.00121864   BestAge=196  Time=0.0  Run Time=12.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1084  Best=0.00121864   BestAge=197  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1085  Best=0.00121864   BestAge=198  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1086  Best=0.00121864   BestAge=199  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1087  Best=0.00121864   BestAge=200  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1088  Best=0.00121864   BestAge=201  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1089  Best=0.00121864   BestAge=202  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1090  Best=0.00121864   BestAge=203  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1091  Best=0.00121864   BestAge=204  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1092  Best=0.00121864   BestAge=205  Time=0.0  Run Time=12.3
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1093  Best=0.00121864   BestAge=206  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1094  Best=0.00121864   BestAge=207  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1095  Best=0.00121864   BestAge=208  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1096  Best=0.00121864   BestAge=209  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1097  Best=0.00121864   BestAge=210  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1098  Best=0.00121864   BestAge=211  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1099  Best=0.00121864   BestAge=212  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1100  Best=0.00121864   BestAge=213  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1101  Best=0.00121864   BestAge=214  Time=0.0  Run Time=12.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1102  Best=0.00121864   BestAge=215  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1103  Best=0.00121864   BestAge=216  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1104  Best=0.00121864   BestAge=217  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1105  Best=0.00121864   BestAge=218  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1106  Best=0.00121864   BestAge=219  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1107  Best=0.00121864   BestAge=220  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1108  Best=0.00121864   BestAge=221  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1109  Best=0.00121864   BestAge=222  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1110  Best=0.00121864   BestAge=223  Time=0.0  Run Time=12.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1111  Best=0.00121864   BestAge=224  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1112  Best=0.00121864   BestAge=225  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1113  Best=0.00121864   BestAge=226  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1114  Best=0.00121864   BestAge=227  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1115  Best=0.00121864   BestAge=228  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1116  Best=0.00121864   BestAge=229  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1117  Best=0.00121864   BestAge=230  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1118  Best=0.00121864   BestAge=231  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1119  Best=0.00121864   BestAge=232  Time=0.0  Run Time=12.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1120  Best=0.00121864   BestAge=233  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1121  Best=0.00121864   BestAge=234  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1122  Best=0.00121864   BestAge=235  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1123  Best=0.00121864   BestAge=236  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1124  Best=0.00121864   BestAge=237  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1125  Best=0.00121864   BestAge=238  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1126  Best=0.00121864   BestAge=239  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1127  Best=0.00121864   BestAge=240  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1128  Best=0.00121864   BestAge=241  Time=0.0  Run Time=12.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1129  Best=0.00121864   BestAge=242  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1130  Best=0.00121864   BestAge=243  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1131  Best=0.00121864   BestAge=244  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1132  Best=0.00121864   BestAge=245  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1133  Best=0.00121864   BestAge=246  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1134  Best=0.00121864   BestAge=247  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1135  Best=0.00121864   BestAge=248  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1136  Best=0.00121864   BestAge=249  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1137  Best=0.00121864   BestAge=250  Time=0.0  Run Time=12.8
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1138  Best=0.00121864   BestAge=251  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1139  Best=0.00121864   BestAge=252  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1140  Best=0.00121864   BestAge=253  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1141  Best=0.00121864   BestAge=254  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1142  Best=0.00121864   BestAge=255  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1143  Best=0.00121864   BestAge=256  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1144  Best=0.00121864   BestAge=257  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1145  Best=0.00121864   BestAge=258  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1146  Best=0.00121864   BestAge=259  Time=0.0  Run Time=12.9
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1147  Best=0.00121864   BestAge=260  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1148  Best=0.00121864   BestAge=261  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1149  Best=0.00121864   BestAge=262  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1150  Best=0.00121864   BestAge=263  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1151  Best=0.00121864   BestAge=264  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1152  Best=0.00121864   BestAge=265  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1153  Best=0.00121864   BestAge=266  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1154  Best=0.00121864   BestAge=267  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1155  Best=0.00121864   BestAge=268  Time=0.0  Run Time=13.0
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1156  Best=0.00121864   BestAge=269  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1157  Best=0.00121864   BestAge=270  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1158  Best=0.00121864   BestAge=271  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1159  Best=0.00121864   BestAge=272  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1160  Best=0.00121864   BestAge=273  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1161  Best=0.00121864   BestAge=274  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1162  Best=0.00121864   BestAge=275  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1163  Best=0.00121864   BestAge=276  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1164  Best=0.00121864   BestAge=277  Time=0.0  Run Time=13.1
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1165  Best=0.00121864   BestAge=278  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1166  Best=0.00121864   BestAge=279  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1167  Best=0.00121864   BestAge=280  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1168  Best=0.00121864   BestAge=281  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1169  Best=0.00121864   BestAge=282  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1170  Best=0.00121864   BestAge=283  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1171  Best=0.00121864   BestAge=284  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1172  Best=0.00121864   BestAge=285  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1173  Best=0.00121864   BestAge=286  Time=0.0  Run Time=13.2
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=1174  Best=0.00121864   BestAge=287  Time=0.0  Run Time=13.2

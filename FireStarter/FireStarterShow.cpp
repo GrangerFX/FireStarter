@@ -354,7 +354,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             else
                 statusString += "  ";
             statusString += Format("Result=%.8f", state.m_maxResult);
-        }
+        } else if (settings.m_mode == FIRESTARTER_SINSIM)
+            statusString += Format("  Generation=%3u", generation);
 
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
