@@ -195,17 +195,13 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         size_t networksSize = settings.m_population * sizeof(FireStarterNetwork);
         if ((m_resultsSize != resultsSize) || (m_networksSize != networksSize)) {
             FinishPopulation();
-            m_resultsSize = resultsSize;
-            m_networksSize = networksSize;
 
-            checkCUDAErrors(cudaMallocHost(&m_hostResults, resultsSize));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, resultsSize, Stream()));
+            m_networksSize = networksSize;
             checkCUDAErrors(cudaMallocHost(&m_hostNetworks, m_networksSize));
             checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
             Context()->Synchronize();
 
-            result = m_hostResults && m_deviceResults && m_hostCode && m_deviceCode;
-            result = result && m_hostPopulation && m_deviceNetworks;
+            result = result && m_hostNetworks && m_deviceNetworks;
         }
     }
     return result;
@@ -407,8 +403,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     unsigned int passes = settings.m_passes;
     unsigned int populationSize = settings.m_population;
 
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                    reinterpret_cast<void*>(&m_deviceNetworks),
+    void* arr[] = { reinterpret_cast<void*>(&m_deviceNetworks),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&generation),
                     reinterpret_cast<void*>(&seed),
@@ -435,7 +430,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
         FireStarterNetwork& network = m_hostNetworks[i];
-        float curResult = m_hostResults[i];
+        float curResult = network.grade;
         if (curResult < minResult) {
             minResult = curResult;
             minNetwork = m_hostNetworks[i];
