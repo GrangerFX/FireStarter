@@ -191,9 +191,8 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         }
     } else if (settings.m_mode == FIRESTARTER_SINSIM) {
         // Reallocate the populations if the size has changed.
-        size_t resultsSize = settings.m_population * sizeof(float);
         size_t networksSize = settings.m_population * sizeof(FireStarterNetwork);
-        if ((m_resultsSize != resultsSize) || (m_networksSize != networksSize)) {
+        if (m_networksSize != networksSize) {
             FinishPopulation();
 
             m_networksSize = networksSize;
@@ -403,6 +402,9 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     unsigned int passes = settings.m_passes;
     unsigned int populationSize = settings.m_population;
 
+    checkCUDAErrors(cudaMemcpyAsync(m_hostNetworks, m_deviceNetworks, m_networksSize, cudaMemcpyDeviceToHost, Stream()));
+    Context()->Synchronize();
+
     void* arr[] = { reinterpret_cast<void*>(&m_deviceNetworks),
                     reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&generation),
@@ -419,7 +421,6 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
         &arr[0],                                            // arguments
         0));
 
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
     checkCUDAErrors(cudaMemcpyAsync(m_hostNetworks, m_deviceNetworks, m_networksSize, cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
 

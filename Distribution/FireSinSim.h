@@ -4,6 +4,7 @@
 #include "HashRandom.h"
 
 #define NEURON_COUNT    4
+#define NETWORK_MAXAGE  100
 #define EVOLVE_WIEGHT   0.75f
 #define BAD_VALUE       10.0f
 #define DATA_FREQUENCY  111.2f

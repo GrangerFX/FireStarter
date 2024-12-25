@@ -74,8 +74,8 @@ GPU_GLOBAL void SinSim(FireStarterNetwork* networks, const unsigned int variatio
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Iterate to evolve the data.
-//        if (network.age > 200)
-//            InitNetwork(network, memberSeed);
+        if (network.age > NETWORK_MAXAGE)
+            InitNetwork(network, memberSeed);
         FireStarterNetwork oldNetwork = network;
 
         for (unsigned int i = 0; i < FIRESTARTER_SINSIM_ITERATIONS; i++) {
