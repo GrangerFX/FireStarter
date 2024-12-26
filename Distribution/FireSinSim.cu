@@ -28,6 +28,7 @@ GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, co
         SinSimNetwork oldNetwork = network;
 
         for (unsigned int i = 0; i < FIRESTARTER_SINSIM_ITERATIONS; i++) {
+            // Randomize something in the network.
             SinSimEvolveNetwork(network, memberSeed);
 
             // Grade the network.
@@ -38,6 +39,8 @@ GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, co
                 float target = SinSimTargetSample(s);
                 float difference = sample - target;
                 network.grade += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_SAMPLES);
+                if (network.grade >= oldNetwork.grade)
+                    break;
             }
 
             // Did the grade improve?

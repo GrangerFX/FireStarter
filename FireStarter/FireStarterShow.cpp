@@ -323,7 +323,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
             statusString += Format("  Test=%2u", test);
-        if ((state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW_GPU)) {
+        if ((state.PassMode() == FIRESTARTER_EVOLVE_CPU) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW)) {
             if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
                 statusString += Format("  Index=%4llu  Id=%4llu", state.m_index, state.m_id);
             statusString += Format("  Generation=%3u", generation);
@@ -338,7 +338,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             else
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.m_maxResult);
-            if ((state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW_GPU))
+            if ((state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW))
                 statusString += Format("  MinIndex=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)*results[0]->EvolveAge1());
         } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
             statusString += Format("  Generation=%3u", generation);
