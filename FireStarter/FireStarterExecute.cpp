@@ -191,7 +191,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         }
     } else if (settings.m_mode == FIRESTARTER_SINSIM) {
         // Reallocate the populations if the size has changed.
-        size_t networksSize = settings.m_population * sizeof(FireStarterNetwork);
+        size_t networksSize = settings.m_population * sizeof(SinSimNetwork);
         if (m_networksSize != networksSize) {
             FinishPopulation();
 
@@ -427,20 +427,19 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     // Get the best variation results.
     bool validResult = false;
     float minResult = settings.m_startResult;
-    FireStarterNetwork minNetwork;
+    SinSimNetwork minNetwork;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
-        FireStarterNetwork& network = m_hostNetworks[i];
-        float curResult = network.grade;
-        if (curResult < minResult) {
-            minResult = curResult;
+        SinSimNetwork& network = m_hostNetworks[i];
+        if (network.grade < minResult) {
+            minResult = network.grade;
             minNetwork = m_hostNetworks[i];
             minIndex = i;
         }
     }
 
     float oldResult = state.m_maxResult;
-    state.InitNetwork(settings, minNetwork, minResult, minIndex);
+    state.InitNetwork(settings, minNetwork, minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteSinSimPass
 

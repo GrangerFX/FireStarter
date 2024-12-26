@@ -12,7 +12,7 @@ private:
     std::vector<unsigned char> m_codeData;     // Backing data for the code.
     std::vector<FireStarterResult*> m_results;
     FireStarterCode* m_code = nullptr;
-    FireStarterNetwork m_network;
+    SinSimNetwork m_network;
 
     inline void swap(const FireStarterState& other)
     {
@@ -320,7 +320,7 @@ public:
     void SaveVariation(unsigned int variation, std::string& code) const;
     void SaveResult(std::string& code) const;
     void SaveState(std::string& code) const;
-    float TestResult(unsigned int samples = FIRESTARTER_SAMPLES) const;
+    float TestResult(unsigned int sample) const;
     void InitResults(void);
     void InitCode(void);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
@@ -329,10 +329,10 @@ public:
     void InitResults(const FireStarterSettings& settings, const FireStarterResult* results, const FireStarterCode* code, unsigned int index);
     void InitResults(const FireStarterSettings& settings, const FireStarterResult* results, unsigned int variation, unsigned int index);
 
-    inline void InitNetwork(const FireStarterSettings& settings, const FireStarterNetwork& network, float result, unsigned int index)
+    inline void InitNetwork(const FireStarterSettings& settings, const SinSimNetwork& network, unsigned int index)
     {
         m_network = network;
-        m_maxResult = result;
+        m_maxResult = network.grade;
         m_minIndex = index;
         m_optimizeValid = true;
     } // InitNetwork

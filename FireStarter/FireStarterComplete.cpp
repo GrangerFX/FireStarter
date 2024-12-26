@@ -111,7 +111,7 @@ void FireStarterComplete::SaveResults(const FireStarterState& bestState)
 void FireStarterComplete::DisplayResults(const FireStarterState& bestState)
 {
     // Test the current state.
-    m_bestError = bestState.TestResult();
+    m_bestError = bestState.TestResult(bestState.Settings().m_samples);
 
     // Save the new best state.
     if (m_saveBestState)

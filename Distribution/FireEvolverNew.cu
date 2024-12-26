@@ -52,18 +52,18 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
         // Iterate to evolve the data.
         float result = 0.0f;
         sharedData = data;
-        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS * FIRESTARTER_SAMPLES; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS * FIRESTARTER_EVOLVE_NEW_GPU_SAMPLES; i++) {
             float t = TARGET_MIN + (TARGET_MAX - TARGET_MIN) * RANDOMNUM(memberSeed);
             float sample = code.Evaluate(sharedData, t);
             float target = Target(t, variation);
             float difference = sample - target;
             data[1] = difference;
 //          result += fabsf(difference); // Average result
-            result = (result * (FIRESTARTER_SAMPLES - 1) + fabsf(sample - target)) * (1.0f / FIRESTARTER_SAMPLES); // Accumulated result.
+            result = (result * (FIRESTARTER_EVOLVE_NEW_GPU_SAMPLES - 1) + fabsf(sample - target)) * (1.0f / FIRESTARTER_EVOLVE_NEW_GPU_SAMPLES); // Accumulated result.
             if (result >= FIRESTARTER_START_RESULT)
                 break;
         }
-//      result /= FIRESTARTER_EVOLVE_GPU_ITERATIONS * FIRESTARTER_SAMPLES;  // Averge result
+//      result /= FIRESTARTER_EVOLVE_GPU_ITERATIONS * FIRESTARTER_EVOLVE_NEW_GPU_SAMPLES;  // Averge result
 
         // Did the results improve?
         if (!pass || (result < memberResult)) {

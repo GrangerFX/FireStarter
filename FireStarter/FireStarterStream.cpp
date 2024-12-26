@@ -484,7 +484,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
-        }, sync);
+    }, sync);
 } // SpeedTestStream
 
 void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
@@ -511,47 +511,43 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         // Generate and compile the evolve code.
         executeSinSim->ExecuteGenerateSinSim();
 
-        // Loop until the the evolve completion condition or the host program is quit.
-        unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
-        for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            // Reset the timer if there is only one stream.
-            if (evolveSettings.m_streams == 1)
-                streamTimer.Start();
+        // Reset the timer if there is only one stream.
+        if (evolveSettings.m_streams == 1)
+            streamTimer.Start();
 
-            // Initialize the states.
-            unsigned long long test = FIRESTARTER_START_TEST + t;
-            FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
-            FireStarterState bestState = FireStarterState(evolveSettings, 0, 0, 0, test);
+        // Initialize the states.
+        unsigned long long test = FIRESTARTER_START_TEST;
+        FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
+        FireStarterState bestState = FireStarterState(evolveSettings, 0, 0, 0, test);
 
-            // Evolve the current test.
-            while (!WillTerminate() && !bestState.m_evolveComplete) {
-                // Execute the initial GPU evolve.
-                executeSinSim->ExecuteSinSim(evolveState);
-                if (complete->CompleteState(bestState, evolveState))
-                    break;
+        // Evolve the current test.
+        while (!WillTerminate() && !bestState.m_evolveComplete) {
+            // Execute the initial GPU evolve.
+            executeSinSim->ExecuteSinSim(evolveState);
+            if (complete->CompleteState(bestState, evolveState))
+                break;
 
-                // Exit after a set number of generations.
-                if (++evolveState.m_generation == evolveSettings.m_generations)
-                    break;
-            }
+            // Exit after a set number of generations.
+            if (++evolveState.m_generation == evolveSettings.m_generations)
+                break;
+        }
 
-            // Output the test results.
-            if (!WillTerminate()) {
-                // Output the evolve results.
-                double duration = streamTimer.Duration();
-                totalDuration += duration;
+        // Output the test results.
+        if (!WillTerminate()) {
+            // Output the evolve results.
+            double duration = streamTimer.Duration();
+            totalDuration += duration;
 
-                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
-                if (bestState.m_maxResult <= evolveSettings.m_target)
-                    resultText += " *******";
-                resultText += "\n";
-                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+            if (bestState.m_maxResult <= evolveSettings.m_target)
+                resultText += " *******";
+            resultText += "\n";
+            FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
 
-                // Save the best state and best solution.
+            // Save the best state and best solution.
 #if FIRESTARTER_SAVE_BESTSTATE
-                complete->CompleteBestState(bestState);
+            complete->CompleteBestState(bestState);
 #endif
-            }
         }
 
         // Cancel any waiting jobs

@@ -14,7 +14,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 {
     float maxResult = result;
     result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    for (int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
         sharedData = data;
         float n = fabsf(code.Evaluate(sharedData, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
@@ -43,10 +43,10 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     FireStarterData data;
 
     // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_SAMPLES];
-    float target[FIRESTARTER_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    float theta[FIRESTARTER_EVOLVE_GPU_SAMPLES];
+    float target[FIRESTARTER_EVOLVE_GPU_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_GPU_SAMPLES - 1);
+    for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, variation);
     }
@@ -152,11 +152,11 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     FireStarterData data[FIRESTARTER_EVOLVE_GPU_VARIATIONS];
 
     // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_SAMPLES];
-    float target[FIRESTARTER_EVOLVE_GPU_VARIATIONS][FIRESTARTER_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
+    float theta[FIRESTARTER_EVOLVE_GPU_SAMPLES];
+    float target[FIRESTARTER_EVOLVE_GPU_VARIATIONS][FIRESTARTER_EVOLVE_GPU_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_GPU_SAMPLES - 1);
     for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++)
-        for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
             float t = theta[i] = TARGET_MIN + i * sampleStep;
             target[v][i] = Target(t, v);
         }

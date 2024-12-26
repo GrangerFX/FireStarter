@@ -14,7 +14,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
 {
     float maxResult = result;
     result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    for (int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
         float n = fabsf(OptimizeEvaluate(data, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
@@ -33,10 +33,10 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
         return;
 
     // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_SAMPLES];
-    float target[FIRESTARTER_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    for (unsigned int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    float theta[FIRESTARTER_OPTIMIZE_SAMPLES];
+    float target[FIRESTARTER_OPTIMIZE_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_OPTIMIZE_SAMPLES - 1);
+    for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, variation);
     }

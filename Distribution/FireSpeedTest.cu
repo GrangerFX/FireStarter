@@ -134,7 +134,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 {
     float maxResult = result;
     result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    for (int i = 0; i < FIRESTARTER_SPEED_TEST_SAMPLES; i++) {
         sharedData = data;
 #if 0
         // Various speed tests.
@@ -165,10 +165,10 @@ GPU_GLOBAL void SpeedTest(FireStarterResult* newResults, FireStarterCode* newCod
     GPU_SHARED FireStarterSharedData sharedData;
 
     // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_SAMPLES];
-    float target[FIRESTARTER_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    float theta[FIRESTARTER_SPEED_TEST_SAMPLES];
+    float target[FIRESTARTER_SPEED_TEST_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SPEED_TEST_SAMPLES - 1);
+    for (int i = 0; i < FIRESTARTER_SPEED_TEST_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, variation);
     }
@@ -342,7 +342,7 @@ inline bool TestEvaluate2(FireStarterSharedData& sharedData, const FireStarterDa
 {
     float maxResult = result;
     result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    for (int i = 0; i < FIRESTARTER_SPEED_TEST_SAMPLES; i++) {
         sharedData = data;
         float n = fabsf(Evaluate2(sharedData, registers, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
@@ -362,10 +362,10 @@ GPU_GLOBAL void SpeedTest(const FireStarterResult* initResult, const FireStarter
         return;
 
     // Precalculate the target theta values and target samples.
-    float theta[FIRESTARTER_SAMPLES];
-    float target[FIRESTARTER_SAMPLES];
-    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SAMPLES - 1);
-    for (int i = 0; i < FIRESTARTER_SAMPLES; i++) {
+    float theta[FIRESTARTER_SPEED_TEST_SAMPLES];
+    float target[FIRESTARTER_SPEED_TEST_SAMPLES];
+    float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_SPEED_TEST_SAMPLES - 1);
+    for (int i = 0; i < FIRESTARTER_SPEED_TEST_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
         target[i] = Target(t, variation);
     }

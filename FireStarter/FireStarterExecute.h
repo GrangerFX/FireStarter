@@ -33,8 +33,8 @@ private:
     std::vector<FireStarterResult*> m_devicePopulation1;
     FireStarterCode* m_hostCode = nullptr;
     FireStarterCode* m_deviceCode = nullptr;
-    FireStarterNetwork* m_hostNetworks = nullptr;
-    FireStarterNetwork* m_deviceNetworks = nullptr;
+    SinSimNetwork* m_hostNetworks = nullptr;
+    SinSimNetwork* m_deviceNetworks = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
