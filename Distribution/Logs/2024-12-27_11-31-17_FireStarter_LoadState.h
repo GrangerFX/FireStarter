@@ -1,11 +1,11 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 12/27/24 11:32:52 Pacific Standard Time
-// Run duration = 12.565569 seconds
-// Run generation = 22
+// Run date: 12/27/24 11:31:17 Pacific Standard Time
+// Run duration = 22.587907 seconds
+// Run generation = 93
 // Run evolution = 0
-// Run max result = 0.42171878
+// Run max result = 0.00003164
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
@@ -103,7 +103,7 @@ inline void LoadVariation0(FireStarterResult* result)
 inline void LoadResult(FireStarterState& state)
 {
     LoadVariation0(state.Result(0));
-    state.m_maxResult = 0.42171878f;
+    state.m_maxResult = 0.00003164f;
 } // LoadResult
 
 inline void LoadProgram(FireStarterProgram& program)
@@ -153,7 +153,7 @@ inline void LoadState(FireStarterState& state)
     LoadResult(state);
     LoadProgram(state.m_program);
     state.LoadCodeFromProgram();
-    state.m_generation = 22;
+    state.m_generation = 93;
     state.m_evolution = 0;
     state.m_index = 0;
     state.m_copy_index = 0;
@@ -161,8 +161,8 @@ inline void LoadState(FireStarterState& state)
     state.m_test = 0;
     state.m_seed = 0;
     state.m_optimize_pass = 0;
-    state.m_oldResult = 0.42171928f;
-    state.m_maxResult = 0.42171878f;
+    state.m_oldResult = 0.00003736f;
+    state.m_maxResult = 0.00003164f;
     state.m_evolveWeight = 0.000000f;
     state.m_optimizeValid = true;
 } // LoadState

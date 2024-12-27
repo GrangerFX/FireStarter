@@ -1,8 +1,8 @@
-// Run date: 12/27/24 11:32:52 Pacific Standard Time
-// Run duration = 13.622080 seconds
-// Run generation = 22
+// Run date: 12/27/24 11:32:07 Pacific Standard Time
+// Run duration = 15.136035 seconds
+// Run generation = 93
 // Run evolution = 0
-// Run max result = 0.42171878
+// Run max result = 0.00001528
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
