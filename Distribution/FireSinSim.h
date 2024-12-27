@@ -55,7 +55,7 @@ GPU_FUNCTION float SinSimTestNetwork(SinSimNetwork& network, float inputData)
 GPU_FUNCTION void SinSimInitNetwork(SinSimNetwork& network, unsigned long long& seed)
 {
     for (unsigned int i = 0; i < SINSIM_NEURON_COUNT; i++) {
-#if 0
+#if 1
         for (unsigned int j = 0; j < SINSIM_NEURON_COUNT; j++)
             network.neuron[i].connection[j] = RANDOMFACTOR(seed);// / SINSIM_NEURON_COUNT;
         network.neuron[i].addValue = RANDOMFACTOR(seed);
