@@ -1,0 +1,60 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+patternOpcodes = 4
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_SINSIM
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 1000
+population = 65536
+passes = 1
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  0  Best=0.01221595   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  1  Best=0.00783644   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  2  Best=0.00528636   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  3  Best=0.00469092   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  4  Best=0.00270695   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  5  Best=0.00172511   BestAge=0  Time=0.0  Run Time=0.4
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  6  Best=0.00151651   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  7  Best=0.00096493   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  8  Best=0.00094585   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation=  9  Best=0.00044780   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 10  Best=0.00008167   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 11  Best=0.00005967   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 12  Best=0.00005673   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 13  Best=0.00003981   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 14  Best=0.00003978   BestAge=0  Time=0.0  Run Time=0.5
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 15  Best=0.00003964   BestAge=0  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 16  Best=0.00003858   BestAge=0  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 17  Best=0.00003858   BestAge=1  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 18  Best=0.00003776   BestAge=0  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 19  Best=0.00003758   BestAge=0  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 20  Best=0.00003741   BestAge=0  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 21  Best=0.00003732   BestAge=0  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 22  Best=0.00003727   BestAge=0  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 23  Best=0.00001655   BestAge=0  Time=0.0  Run Time=0.6
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 24  Best=0.00001324   BestAge=0  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 25  Best=0.00000791   BestAge=0  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 26  Best=0.00000533   BestAge=0  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 27  Best=0.00000296   BestAge=0  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 28  Best=0.00000230   BestAge=0  Time=0.0  Run Time=0.7
+FIRESTARTER_SINSIM: Seed=0  Test= 0  Generation= 29  Best=0.00000094   BestAge=0  Time=0.0  Run Time=0.7

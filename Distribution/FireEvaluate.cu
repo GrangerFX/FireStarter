@@ -10,7 +10,6 @@ GPU_GLOBAL void Evaluate(float* target, float* results, unsigned int size, float
     if (index >= size)
         return;
 
-
     // Generate the target data.
     float theta = thetaStart + index * (thetaEnd - thetaStart) / size;
     if (target)

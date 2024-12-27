@@ -21,16 +21,27 @@ typedef struct {
     unsigned int age;
 } SinSimNetwork;
 
+#if 0
+GPU_FUNCTION float SinSimInputSample(unsigned int s)
+{
+    return TARGET_PI * RANDOMNUM(s);
+} // SinSimInputSample
+
+GPU_FUNCTION float SinSimTargetSample(unsigned int s)
+{
+    return sinf(SinSimInputSample(s));
+} // SinSimInputSample
+#else
 GPU_FUNCTION float SinSimInputSample(unsigned int s)
 {
     return cosf(s * (TARGET_PI * 2.0f) / SINSIM_DATA_FREQUENCY);
-//    return s * (TARGET_PI * 2.0f) / SINSIM_DATA_FREQUENCY;
 } // SinSimInputSample
 
 GPU_FUNCTION float SinSimTargetSample(unsigned int s)
 {
     return sinf((s + 15) * (TARGET_PI * 2.0f) / SINSIM_DATA_FREQUENCY) + 10.0f;
 } // SinSimInputSample
+#endif
 
 GPU_FUNCTION void SinSimTestNeuron(SinSimNetwork& network, const unsigned int index)
 {
@@ -55,15 +66,9 @@ GPU_FUNCTION float SinSimTestNetwork(SinSimNetwork& network, float inputData)
 GPU_FUNCTION void SinSimInitNetwork(SinSimNetwork& network, unsigned long long& seed)
 {
     for (unsigned int i = 0; i < SINSIM_NEURON_COUNT; i++) {
-#if 1
         for (unsigned int j = 0; j < SINSIM_NEURON_COUNT; j++)
-            network.neuron[i].connection[j] = RANDOMFACTOR(seed);// / SINSIM_NEURON_COUNT;
+            network.neuron[i].connection[j] = RANDOMFACTOR(seed);
         network.neuron[i].addValue = RANDOMFACTOR(seed);
-#else
-        for (unsigned int j = 0; j < SINSIM_NEURON_COUNT; j++)
-            network.neuron[i].connection[j] = 1.0f / SINSIM_NEURON_COUNT;
-        network.neuron[i].addValue = 0.0f;
-#endif
         network.neuron[i].value = 0.0f;
         network.grade = SINSIM_BAD_VALUE;
         network.age = 0;

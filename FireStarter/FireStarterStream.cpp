@@ -538,7 +538,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
             double duration = streamTimer.Duration();
             totalDuration += duration;
 
-            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.2f  GenTime: %.3f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation);
             if (bestState.m_maxResult <= evolveSettings.m_target)
                 resultText += " *******";
             resultText += "\n";
