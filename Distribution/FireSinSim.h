@@ -45,7 +45,7 @@ GPU_FUNCTION float SinSimTestNetwork(SinSimNetwork& network, float inputData)
 {
     // Process a single input data and compare the result to the target data.
     // This version calculates each neuron in series.
-    network.neuron[0].value = inputData;
+    network.neuron[SINSIM_NEURON_COUNT - 1].value = inputData;
     for (unsigned int i = 1; i < SINSIM_NEURON_COUNT; i++)
         SinSimTestNeuron(network, i);
     return network.neuron[SINSIM_NEURON_COUNT - 1].value;
