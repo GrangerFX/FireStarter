@@ -35,8 +35,7 @@ GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, co
             network.grade = 0.0f;
             for (unsigned int s = 0; s < FIRESTARTER_SINSIM_SAMPLES; s++) {
                 float input = SinSimInputSample(s);
-//                float sample = SinSimTestNetwork(network, input);
-                float sample = SinSimTestNetwork2(network, input);
+                float sample = SinSimTestNetwork(network, input);
                 float target = SinSimTargetSample(s);
                 float difference = sample - target;
                 network.grade += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_SAMPLES);
