@@ -34,6 +34,7 @@ GPU_FUNCTION float SinSimTargetSample(unsigned int s)
 GPU_FUNCTION float SinSimTestNeuron(SinSimNetwork& network, const unsigned int index)
 {
     // Process a single nuron by adding the weighted connections.
+    // This version calculates each connection in parallel.
     SinSimNeuron& theNeuron = network.neuron[index];
     float newValue = theNeuron.addValue;
     for (unsigned int i = 0; i < SINSIM_NEURON_COUNT; i++)
@@ -41,9 +42,20 @@ GPU_FUNCTION float SinSimTestNeuron(SinSimNetwork& network, const unsigned int i
     return newValue;
 } // SinSimTestNeuron
 
+GPU_FUNCTION void SinSimTestNeuron2(SinSimNetwork& network, const unsigned int index)
+{
+    // Process a single nuron by adding the weighted connections.
+    // This version calculates each connection in series.
+    SinSimNeuron& theNeuron = network.neuron[index];
+    theNeuron.value = theNeuron.addValue;
+    for (unsigned int i = 0; i < SINSIM_NEURON_COUNT; i++)
+        theNeuron.value += theNeuron.connection[i] * network.neuron[i].value;
+} // SinSimTestNeuron2
+
 GPU_FUNCTION float SinSimTestNetwork(SinSimNetwork& network, float inputData)
 {
     // Process a single input data and compare the result to the target data.
+    // This version calculates each neuron in parallel.
     network.neuron[0].value = inputData;
     float newValues[SINSIM_NEURON_COUNT];
     for (unsigned int i = 1; i < SINSIM_NEURON_COUNT; i++)
@@ -52,6 +64,16 @@ GPU_FUNCTION float SinSimTestNetwork(SinSimNetwork& network, float inputData)
         network.neuron[i].value = newValues[i];
     return newValues[SINSIM_NEURON_COUNT - 1];
 } // SinSimTestNetwork
+
+GPU_FUNCTION float SinSimTestNetwork2(SinSimNetwork& network, float inputData)
+{
+    // Process a single input data and compare the result to the target data.
+    // This version calculates each neuron in series.
+    network.neuron[0].value = inputData;
+    for (unsigned int i = 1; i < SINSIM_NEURON_COUNT; i++)
+        SinSimTestNeuron2(network, i);
+    return network.neuron[SINSIM_NEURON_COUNT - 1].value;
+} // SinSimTestNetwork2
 
 GPU_FUNCTION void SinSimInitNetwork(SinSimNetwork& network, unsigned long long& seed)
 {

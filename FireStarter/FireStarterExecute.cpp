@@ -284,57 +284,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     }
 } // ExecuteEvolvePass
 
-void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation)
-{
-    // Launch the calculation kernel
-    FireStarterSettings settings = state.Settings();
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned long long seed = state.EvolutionSeed();
-    unsigned int passes = settings.m_passes;
-    unsigned int populationSize = settings.m_population;
-
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                    reinterpret_cast<void*>(&m_devicePopulation0[0]),
-                    reinterpret_cast<void*>(&m_deviceCode),
-                    reinterpret_cast<void*>(&variation),
-                    reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&populationSize)
-    };
-
-    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-        0,                                                  // shared mem
-        Stream(),                                           // stream
-        &arr[0],                                            // arguments
-        0));
-
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0[0], m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCode, m_deviceCode, m_codeSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-
-    // Get the best variation results.
-    bool validResult = false;
-    float minResult = settings.m_startResult;
-    unsigned int minIndex = 0;
-    for (unsigned int i = 0; i < populationSize; i++) {
-        FireStarterResult& member = m_hostPopulation[i];
-        float curResult = *member.MinResult();
-        if (curResult < minResult) {
-            minResult = curResult;
-            minIndex = i;
-        }
-    }
-
-    float oldResult = state.m_maxResult;
-    state.InitResults(settings, m_hostPopulation, m_hostCode, minIndex);
-    state.m_oldResult = oldResult;
-} // ExecuteEvolveNewPass
-
 void FireStarterExecute::ExecuteEvolveVariationsPass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation)
 {
     // Launch the calculation kernel
@@ -388,6 +337,59 @@ void FireStarterExecute::ExecuteEvolveVariationsPass(FireStarterState& state, Fi
     state.InitResult(settings, minResult, m_hostCode->Member(settings, minIndex), minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteEvolveVariationsPass
+
+void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation)
+{
+    // Launch the calculation kernel
+    FireStarterSettings settings = state.Settings();
+    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long generation = state.m_generation;
+    unsigned long long seed = state.EvolutionSeed();
+    unsigned int passes = settings.m_passes;
+    unsigned int populationSize = settings.m_population;
+
+    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
+                    reinterpret_cast<void*>(&m_devicePopulation0[0]),
+                    reinterpret_cast<void*>(&m_deviceCode),
+                    reinterpret_cast<void*>(&variation),
+                    reinterpret_cast<void*>(&generation),
+                    reinterpret_cast<void*>(&seed),
+                    reinterpret_cast<void*>(&passes),
+                    reinterpret_cast<void*>(&populationSize)
+    };
+
+    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+        0,                                                  // shared mem
+        Stream(),                                           // stream
+        &arr[0],                                            // arguments
+        0));
+
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0[0], m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostCode, m_deviceCode, m_codeSize, cudaMemcpyDeviceToHost, Stream()));
+    Context()->Synchronize();
+
+    // Get the best variation results.
+    bool validResult = false;
+    float minResult = settings.m_startResult;
+    unsigned int minIndex = 0;
+    for (unsigned int i = 0; i < populationSize; i++) {
+        FireStarterResult& member = m_hostPopulation[i];
+        float curResult = *member.MinResult();
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
+        }
+    }
+
+    float oldResult = state.m_maxResult;
+    state.InitResults(settings, m_hostPopulation, m_hostCode, minIndex);
+    state.m_oldResult = oldResult;
+} // ExecuteEvolveNewPass
 
 void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int variation)
 {
