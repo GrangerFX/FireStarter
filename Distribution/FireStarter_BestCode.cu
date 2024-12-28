@@ -39,9 +39,9 @@ GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, co
                 float target = SinSimTargetSample(s);
 
                 // Grade the second half of the samples.
-                if (s >= FIRESTARTER_SINSIM_SAMPLES - (FIRESTARTER_SINSIM_SAMPLES / 8)) {
+                if (s >= FIRESTARTER_SINSIM_SAMPLES - FIRESTARTER_SINSIM_CANDIDATES) {
                     float difference = sample - target;
-                    network.grade += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_SAMPLES);
+                    network.grade += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_CANDIDATES);
                     if (network.grade >= oldNetwork.grade)
                         break;
                 }

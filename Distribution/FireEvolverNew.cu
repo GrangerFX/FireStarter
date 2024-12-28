@@ -67,7 +67,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
             result = 0.0f;
             sharedData = data;
             for (unsigned int s = 0; s < FIRESTARTER_EVOLVE_NEW_SAMPLES; s++) {
-                float input = s; // SinSimInputSample(s);
+                float input = SinSimInputSample(s);
                 float sample = code.Evaluate(sharedData, input);
                 float target = SinSimTargetSample(s);
                 float difference = sample - target;
