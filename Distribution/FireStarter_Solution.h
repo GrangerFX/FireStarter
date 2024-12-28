@@ -1,8 +1,8 @@
-// Run date: 12/28/24 10:29:58 Pacific Standard Time
-// Run duration = 10.320494 seconds
-// Run generation = 157
+// Run date: 12/28/24 11:38:16 Pacific Standard Time
+// Run duration = 82.145693 seconds
+// Run generation = 710
 // Run evolution = 0
-// Run max result = 0.00000367
+// Run max result = 0.41665831
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
@@ -13,7 +13,7 @@
 // Run targetMax = 6.283185f
 // Run target = 0.000001f
 
-// Run mode = FIRESTARTER_SINSIM
+// Run mode = FIRESTARTER_EVOLVE_NEW
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
 // Run tests = 256
@@ -57,39 +57,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0;
+    float r0, r1, r2, r3, r4, r5;
 
-    r0 = n *= 0.00000000f;
+    r0 = n *= -0.62981868f;
+    n *= -0.52226114f;
+    n += -1.30030715f;
+    n *= 0.27053881f;
+    r1 = n += -0.51777315f;
+    n = r0 += n;
+    n *= 1.99543357f;
+    n *= -1.34538341f;
+    r2 = n *= 0.11161298f;
+    r3 = n *= 2.04136729f;
+    n *= -1.54356480f;
+    r4 = n *= -0.85706031f;
+    n = r0 += n;
+    r5 = n *= -0.30323160f;
+    n *= r2;
+    n *= 1.92201650f;
+    n *= -5.41100550f;
+    n *= -0.00336188f;
+    r2 = n *= 4.40935946f;
     n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n = r0 *= n;
-    n *= r0;
+    n += r2;
+    n *= 0.29204541f;
+    n *= r1;
+    n += r4;
+    n *= -0.16263479f;
+    n += 0.36312640f;
+    n += r0;
+    n *= 4.50626945f;
+    n *= 3.31191444f;
+    n *= r3;
+    n += 7.58863354f;
+    n += r5;
     return n;
 } // Solution

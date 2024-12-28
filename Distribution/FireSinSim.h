@@ -6,7 +6,7 @@
 #define SINSIM_NEURON_COUNT    4
 #define SINSIM_NETWORK_MAXAGE  100
 #define SINSIM_EVOLVE_WIEGHT   0.75f
-#define SINSIM_BAD_VALUE       10.0f
+#define SINSIM_INIT_GRADE      10.0f
 #define SINSIM_DATA_FREQUENCY  111.2f
 
 typedef struct {
@@ -70,7 +70,7 @@ GPU_FUNCTION void SinSimInitNetwork(SinSimNetwork& network, unsigned long long& 
             network.neuron[i].connection[j] = RANDOMFACTOR(seed);
         network.neuron[i].addValue = RANDOMFACTOR(seed);
         network.neuron[i].value = 0.0f;
-        network.grade = SINSIM_BAD_VALUE;
+        network.grade = SINSIM_INIT_GRADE;
         network.age = 0;
     }
 } // SinSimInitNetwork
@@ -86,8 +86,7 @@ GPU_FUNCTION void SinSimEvolveNetwork(SinSimNetwork& network, unsigned long long
     if (neuron) {
         unsigned int connection = RANDOMSEED(seed) % SINSIM_NEURON_COUNT;
         network.neuron[neuron].connection[connection] += network.grade * SINSIM_EVOLVE_WIEGHT * RANDOMFACTOR(seed);
-    }
-    else {
+    } else {
         neuron = RANDOMSEED(seed) % SINSIM_NEURON_COUNT;
         network.neuron[neuron].addValue += network.grade * SINSIM_EVOLVE_WIEGHT * RANDOMFACTOR(seed);
     }
