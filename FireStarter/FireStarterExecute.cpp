@@ -514,7 +514,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             }
         }
 
-        FireStarterResult* result = state.Result(variation);
+        const FireStarterResult* result = state.Result(variation);
         state.InitResults(settings, m_hostPopulation, variation, minIndex);
     } else {
         // Get the results.

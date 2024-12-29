@@ -110,7 +110,7 @@ public:
             return (FireStarterResult*)&m_resultsData[variation * resultSize];
         else
             return nullptr;
-    } // OptimizeResults
+    } // Result
 
     inline FireStarterResult* Result(unsigned int variation = 0)
     {
@@ -119,7 +119,12 @@ public:
             return (FireStarterResult*)&m_resultsData[variation * resultSize];
         else
             return nullptr;
-    } // OptimizeResults
+    } // Result
+
+    inline const SinSimNetwork* Network(void) const
+    {
+        return &m_network;
+    } // Network
 
     inline float MinResult(unsigned int variation = 0) const
     {

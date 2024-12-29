@@ -3,7 +3,8 @@
 #include "FireSinSim.h"
 #include "CUDADefines.h"
 
-#if 1
+#if FIRESTARTER_NEW_SINSIM
+
 GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
 {
     // Determine the member to be optimized.

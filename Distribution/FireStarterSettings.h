@@ -1,6 +1,7 @@
 #pragma once
 #include "FireStarterTarget.h"
 
+#define FIRESTARTER_WARP_THREADS    32
 #define FIRESTARTER_INSTRUCTIONS    32
 #define FIRESTARTER_REGISTERS       30
 #define FIRESTARTER_VARIATIONS      1
@@ -8,7 +9,6 @@
 
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
-#define FIRESTARTER_WARP_THREADS    32
 #define FIRESTARTER_MULTIPROCESS    1           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
@@ -39,6 +39,8 @@
 // First 16 tests of 16 states for unlimited generations is the standard evolve test.
 #define FIRESTARTER_START_TEST      0           // The starting test index.
 #define FIRESTARTER_TESTS           256
+
+#define FIRESTARTER_NEW_SINSIM      1           // Set to 1 to target SinSim for new GPU evolution.
 
 #define FIRESTARTER_AUTO            0           // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_RANDOM          1           // First result of states random instructions and data.
@@ -94,7 +96,7 @@
 #define FIRESTARTER_EVOLVE_GPU_OPTIMIZE         1
 #define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
 
-#if 1
+#if FIRESTARTER_NEW_SINSIM
 #define FIRESTARTER_EVOLVE_NEW_VARIATIONS       1
 #define FIRESTARTER_EVOLVE_NEW_STREAMS          1
 #define FIRESTARTER_EVOLVE_NEW_UNITS            1
