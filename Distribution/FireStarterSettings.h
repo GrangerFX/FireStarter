@@ -257,6 +257,50 @@ public:
         return Mode(m_mode);
     } // Mode
 
+    static inline const char* ProgramName(unsigned int mode)
+    {
+        switch (mode) {
+            case FIRESTARTER_EVOLVE_GPU:
+                return "FireEvolver.cu";
+            case FIRESTARTER_EVOLVE_NEW:
+                return "FireEvolverNew.cu";
+            case FIRESTARTER_SINSIM:
+                return "FireSinSim.cu";
+            case FIRESTARTER_SPEED_TEST:
+                return "FireSpeedTest.cu";
+            case FIRESTARTER_OPTIMIZE:
+            default:
+                return "FireOptimizer.cu";
+        }
+    } // ProgramName
+
+    inline const char* ProgramName(void) const
+    {
+        return ProgramName(m_mode);
+    } // ProgramName
+
+    static inline const char* FunctionName(unsigned int mode)
+    {
+        switch (mode) {
+            case FIRESTARTER_EVOLVE_GPU:
+                return "Evolver";
+            case FIRESTARTER_EVOLVE_NEW:
+                return "EvolverNew";
+            case FIRESTARTER_SINSIM:
+                return "SinSim";
+            case FIRESTARTER_SPEED_TEST:
+                return "SpeedTest";
+            case FIRESTARTER_OPTIMIZE:
+            default:
+                return "Optimizer";
+        }
+    } // FunctionName
+
+    inline const char* FunctionName(void) const
+    {
+        return FunctionName(m_mode);
+    } // FunctionName
+
     inline void CopyCodeSettings(FireStarterSetting& source)
     {
         m_variations = source.m_variations;

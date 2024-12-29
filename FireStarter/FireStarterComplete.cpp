@@ -16,28 +16,7 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 {
     static std::string executeCode;
     if (executeCode.empty()) {
-        std::string programName;
-        switch (bestState.Settings().m_mode) {
-            case FIRESTARTER_EVOLVE_GPU:
-                programName = EVOLVE_PROGRAM_NAME;
-                break;
-            case FIRESTARTER_EVOLVE_NEW:
-                programName = EVOLVE_NEW_PROGRAM_NAME;
-                break;
-            case FIRESTARTER_SINSIM:
-                programName = SINSIM_PROGRAM_NAME;
-                break;
-            case FIRESTARTER_RANDOM:
-            case FIRESTARTER_EVOLVE_CPU:
-            case FIRESTARTER_OPTIMIZE:
-                programName = OPTIMIZE_PROGRAM_NAME;
-                break;
-            case FIRESTARTER_SPEED_TEST:
-                programName = SPEEDTEST_PROGRAM_NAME;
-                break;
-            default:
-                break;
-        }
+        std::string programName = bestState.Settings().ProgramName();
         FireStarterSource::LoadSource(executeCode, programName);
     }
     if (!executeCode.empty()) {

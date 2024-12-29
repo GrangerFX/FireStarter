@@ -42,6 +42,7 @@ private:
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
     std::string m_executeProgramName;
+    std::string m_executeFunctionName;
     std::string m_executeCode;
     size_t m_resultSize = 0;
     size_t m_resultsSize = 0;

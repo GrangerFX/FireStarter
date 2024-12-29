@@ -7,7 +7,7 @@ void FireStarterShow::LoadFireEvaluator(void)
 {
     if (FireStarterSource::LoadSource(m_fireEvaluateCode, "FireEvaluate.cu"))
         DispatchSync([this] {
-            if (CUDACompile::CompileProgram(m_fireEvaluateModule, m_fireEvaluateCode, EVOLVE_PROGRAM_NAME)) {
+            if (CUDACompile::CompileProgram(m_fireEvaluateModule, m_fireEvaluateCode, "FireEvaluate.cu")) {
                 m_fireEvaluateFunction = CUDACompile::GetFunction(m_fireEvaluateModule, "Evaluate");
                 if (!m_fireEvaluateFunction)
                     CUDACompile::ReleaseModule(m_fireEvaluateModule);

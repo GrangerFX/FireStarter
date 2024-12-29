@@ -625,7 +625,7 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     // Initialize the results and compile the CUDA module.
     if (!job->m_ptx.empty())
         if (CUDACompile::CompileModule(m_executeModule, job->m_ptx)) {
-            m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
+            m_executeFunction = CUDACompile::GetFunction(m_executeModule, FireStarterSettings::FunctionName(FIRESTARTER_OPTIMIZE));
             if (m_executeFunction)
                 return true;
             CUDACompile::ReleaseModule(m_executeModule);
@@ -658,22 +658,22 @@ bool FireStarterExecute::ExecuteJob(void)
 bool FireStarterExecute::GenerateEvolve(void)
 {
     // Load the base Evolver code into memory.
-    m_executeProgramName = EVOLVE_PROGRAM_NAME;
+    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_EVOLVE_GPU);
+    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_EVOLVE_GPU);
     if (m_executeCode.empty()) {
         if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", EVOLVE_PROGRAM_NAME);
+            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
             std::terminate();
         }
     }
 
     // Return immediately if the Evolver code has already been compiled.
-    m_executeProgramName = EVOLVE_NEW_PROGRAM_NAME;
     if (m_executeFunction)
         return true;
 
-    // Compile the code and get the Evolver and Optimizer functions from the module.
+    // Compile the code and get the Evolver function from the module.
     if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Evolver");
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, m_executeFunctionName);
         if (m_executeFunction)
             return true;
     }
@@ -684,22 +684,23 @@ bool FireStarterExecute::GenerateEvolve(void)
 
 bool FireStarterExecute::GenerateEvolveNew(void)
 {
-    // Load the base Evolver code into memory.
-    m_executeProgramName = EVOLVE_NEW_PROGRAM_NAME;
+    // Load the base EvolverNew code into memory.
+    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_EVOLVE_NEW);
+    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_EVOLVE_NEW);
     if (m_executeCode.empty()) {
         if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", EVOLVE_NEW_PROGRAM_NAME);
+            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
             std::terminate();
         }
     }
 
-    // Return immediately if the Evolver code has already been compiled.
+    // Return immediately if the EvolverNew code has already been compiled.
     if (m_executeFunction)
         return true;
 
-    // Compile the code and get the Evolver and Optimizer functions from the module.
+    // Compile the code and get the EvolverNew function from the module.
     if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "EvolverNew");
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, m_executeFunctionName);
         if (m_executeFunction)
             return true;
     }
@@ -710,22 +711,23 @@ bool FireStarterExecute::GenerateEvolveNew(void)
 
 bool FireStarterExecute::GenerateSinSim(void)
 {
-    // Load the base Evolver code into memory.
-    m_executeProgramName = SINSIM_PROGRAM_NAME;
+    // Load the base SinSim code into memory.
+    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_SINSIM);
+    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_SINSIM);
     if (m_executeCode.empty()) {
         if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", SINSIM_PROGRAM_NAME);
+            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
             std::terminate();
         }
     }
 
-    // Return immediately if the Evolver code has already been compiled.
+    // Return immediately if the SinSim code has already been compiled.
     if (m_executeFunction)
         return true;
 
-    // Compile the code and get the Evolver and Optimizer functions from the module.
+    // Compile the code and get the SinSim function from the module.
     if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "SinSim");
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, m_executeFunctionName);
         if (m_executeFunction)
             return true;
     }
@@ -734,41 +736,14 @@ bool FireStarterExecute::GenerateSinSim(void)
     return false;
 } // GenerateSinSim
 
-bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
-{
-    // Load the base Optimize code into memory.
-    m_executeProgramName = OPTIMIZE_PROGRAM_NAME;
-    if (m_executeCode.empty()) {
-        if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", m_executeProgramName);
-            std::terminate();
-        }
-    }
-
-    // Generate the evaluate code
-    m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
-
-    // Create the Optimize code by replacing the evaluate code block.
-    FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
-
-    // Compile the code and get the Optimizer function from the module.
-    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "Optimizer");
-        if (m_executeFunction)
-            return true;
-    }
-    CUDACompile::ReleaseModule(m_executeModule);
-    m_executeFunction = nullptr;
-    return false;
-} // GenerateOptimize
-
 bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
 {
     // Load the base SpeedTest code into memory.
-    m_executeProgramName = SPEEDTEST_PROGRAM_NAME;
+    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_SPEED_TEST);
+    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_SPEED_TEST);
     if (m_executeCode.empty()) {
         if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", m_executeProgramName);
+            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
             std::terminate();
         }
     }
@@ -781,7 +756,7 @@ bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
 
     // Compile the code and get the SpeedTest function from the module.
     if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, "SpeedTest");
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, m_executeFunctionName);
         if (m_executeFunction)
             return true;
     }
@@ -789,6 +764,35 @@ bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
     m_executeFunction = nullptr;
     return false;
 } // GenerateSpeedTest
+
+bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
+{
+    // Load the base Optimizer code into memory.
+    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_OPTIMIZE);
+    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_OPTIMIZE);
+    if (m_executeCode.empty()) {
+        if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
+            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
+            std::terminate();
+        }
+    }
+
+    // Generate the evaluate code
+    m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
+
+    // Create the Optimizer code by replacing the evaluate code block.
+    FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
+
+    // Compile the code and get the Optimizer function from the module.
+    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
+        m_executeFunction = CUDACompile::GetFunction(m_executeModule, m_executeFunctionName);
+        if (m_executeFunction)
+            return true;
+    }
+    CUDACompile::ReleaseModule(m_executeModule);
+    m_executeFunction = nullptr;
+    return false;
+} // GenerateOptimize
 
 bool FireStarterExecute::ExecuteGenerateEvolve(bool sync)
 {
