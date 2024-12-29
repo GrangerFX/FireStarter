@@ -18,9 +18,9 @@ void FireStarterShow::LoadFireEvaluator(void)
         });
 } // LoadFireEvaluator
 
-void FireStarterShow::DeallocateWindowData(void)
+void FireStarterShow::DeallocateEvaluateData(void)
 {
-    if (m_windowSize) {
+    if (m_evaluateSize) {
         checkCUDAErrors(cudaFreeHost(m_hostTargetData));
         m_hostTargetData = nullptr;
         checkCUDAErrors(cudaFreeAsync(m_deviceTargetData, Stream()));
@@ -29,9 +29,9 @@ void FireStarterShow::DeallocateWindowData(void)
         m_hostEvaluateData = nullptr;
         checkCUDAErrors(cudaFreeAsync(m_deviceEvaluateData, Stream()));
         m_deviceEvaluateData = nullptr;
-        m_windowSize = 0;
+        m_evaluateSize = 0;
     }
-} // DeallocateWindowData
+} // DeallocateEvaluateData
 
 void FireStarterShow::DeallocateCodeData(void)
 {
@@ -47,11 +47,78 @@ void FireStarterShow::DeallocateCodeData(void)
     }
 } // DeallocateCodeData(void);
 
+void FireStarterShow::AllocateEvaluateData(size_t evaluateSize, size_t codeSize, size_t dataSize)
+{
+    if ((evaluateSize != m_evaluateSize) || (codeSize != m_codeSize) || (dataSize != m_dataSize)) {
+        if (evaluateSize != m_evaluateSize) {
+            DeallocateEvaluateData();
+            m_evaluateSize = evaluateSize;
+            checkCUDAErrors(cudaMallocHost(&m_hostTargetData, m_evaluateSize));
+            checkCUDAErrors(cudaMallocAsync(&m_deviceTargetData, m_evaluateSize, Stream()));
+            checkCUDAErrors(cudaMallocHost(&m_hostEvaluateData, m_evaluateSize));
+            checkCUDAErrors(cudaMallocAsync(&m_deviceEvaluateData, m_evaluateSize, Stream()));
+        }
+        if ((codeSize != m_codeSize) || (dataSize != m_dataSize)) {
+            DeallocateCodeData();
+            m_codeSize = codeSize;
+            m_dataSize = dataSize;
+            checkCUDAErrors(cudaMallocAsync(&m_deviceCode, m_codeSize, Stream()));
+            checkCUDAErrors(cudaMallocAsync(&m_deviceData, m_dataSize, Stream()));
+        }
+        Context()->Synchronize();
+    }
+} // AllocateEvaluateData
+
+bool FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation)
+{
+    const FireStarterSettings& settings = state.Settings();
+    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int blocksPerGrid = (evaluateWidth + (threadsPerBlock - 1)) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+
+    if (m_codeSize)
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceCode, state.Code(), m_codeSize, cudaMemcpyHostToDevice, Stream()));
+
+    // If the FireEvaluate code was compiled, use it to generate the target and evaluate arrays.
+    // Note: The purpose is generality not speed. This allows the settings and instruction set to be modified after the main code is compiled.
+    if (m_fireEvaluateFunction) {
+        const FireStarterResult* result = state.Result(variation);
+
+        if (m_dataSize)
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceData, result->Data(), m_dataSize, cudaMemcpyHostToDevice, Stream()));
+
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceTargetData),
+                        reinterpret_cast<void*>(&m_deviceEvaluateData),
+                        reinterpret_cast<void*>(&evaluateWidth),
+                        reinterpret_cast<void*>(&thetaStart),
+                        reinterpret_cast<void*>(&thetaEnd),
+                        reinterpret_cast<void*>(&m_deviceCode),
+                        reinterpret_cast<void*>(&m_deviceData),
+                        reinterpret_cast<void*>(&variation)
+        };
+
+        checkCUDAErrors(cuLaunchKernel(m_fireEvaluateFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
+
+        checkCUDAErrors(cudaMemcpyAsync(m_hostTargetData, m_deviceTargetData, m_evaluateSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostEvaluateData, m_deviceEvaluateData, m_evaluateSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+        return true;
+    }
+    return false;
+} // EvaluateData
+
 void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
 {
     Dispatch([this, state] {
         // Setup the data
-        FireStarterSettings settings = state.Settings();        
+        const FireStarterSettings& settings = state.Settings();        
         m_window.Erase();
         uchar4* pixels = (uchar4*)m_window.GetPixels();
         unsigned int width = m_window.m_width;
@@ -78,68 +145,15 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
             };
         }
 
-        // If the FireEvaluate code was compiled, use it to generate the target and evaluate arrays.
-        // Note: The purpose is generality not speed. This allows the settings and instruction set to be modified after the main code is compiled.
-        if (m_fireEvaluateFunction) {
-            unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-            unsigned int blocksPerGrid = (width + (threadsPerBlock - 1)) / threadsPerBlock;
-            dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-            dim3 cudaGridSize(blocksPerGrid, 1, 1);
+        // Allocate the host and GPU memory.
+        size_t evaluateSize = width * sizeof(float);
+        size_t codeSize = FireStarterCode::CodeSize(settings);
+        size_t dataSize = FireStarterData::DataSize(settings);
+        AllocateEvaluateData(evaluateSize, codeSize, dataSize);
 
-            // Allocate the host and GPU memory.
-            size_t windowSize = width * sizeof(float);
-            size_t codeSize = FireStarterCode::CodeSize(settings);
-            size_t dataSize = FireStarterData::DataSize(settings);
-            if ((windowSize != m_windowSize) || (codeSize != m_codeSize) || (dataSize != m_dataSize)) {
-                if (windowSize != m_windowSize) {
-                    DeallocateWindowData();
-                    m_windowSize = windowSize;
-                    checkCUDAErrors(cudaMallocHost(&m_hostTargetData, m_windowSize));
-                    checkCUDAErrors(cudaMallocAsync(&m_deviceTargetData, m_windowSize, Stream()));
-                    checkCUDAErrors(cudaMallocHost(&m_hostEvaluateData, m_windowSize));
-                    checkCUDAErrors(cudaMallocAsync(&m_deviceEvaluateData, m_windowSize, Stream()));
-                }
-
-
-                if ((codeSize != m_codeSize) || (dataSize != m_dataSize)) {
-                    DeallocateCodeData();
-                    m_codeSize = codeSize;
-                    m_dataSize = dataSize;
-                    checkCUDAErrors(cudaMallocAsync(&m_deviceCode, m_codeSize, Stream()));
-                    checkCUDAErrors(cudaMallocAsync(&m_deviceData, m_dataSize, Stream()));
-                }
-
-                Context()->Synchronize();
-            }
-            checkCUDAErrors(cudaMemcpyAsync(m_deviceCode, state.Code(), m_codeSize, cudaMemcpyHostToDevice, Stream()));
-
-            for (unsigned int v = 0; v < settings.m_variations; v++) {
-                const FireStarterResult* result = state.Result(v);
-
-                checkCUDAErrors(cudaMemcpyAsync(m_deviceData, result->Data(), m_dataSize, cudaMemcpyHostToDevice, Stream()));
-
-                void* arr[] = { reinterpret_cast<void*>(&m_deviceTargetData),
-                                reinterpret_cast<void*>(&m_deviceEvaluateData),
-                                reinterpret_cast<void*>(&width),
-                                reinterpret_cast<void*>(&thetaStart),
-                                reinterpret_cast<void*>(&thetaEnd),
-                                reinterpret_cast<void*>(&m_deviceCode),
-                                reinterpret_cast<void*>(&m_deviceData),
-                                reinterpret_cast<void*>(&v)
-                };
-
-                checkCUDAErrors(cuLaunchKernel(m_fireEvaluateFunction,
-                    cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-                    cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-                    0,                                                  // shared mem
-                    Stream(),                                           // stream
-                    &arr[0],                                            // arguments
-                    0));
-
-                checkCUDAErrors(cudaMemcpyAsync(m_hostTargetData, m_deviceTargetData, m_windowSize, cudaMemcpyDeviceToHost, Stream()));
-                checkCUDAErrors(cudaMemcpyAsync(m_hostEvaluateData, m_deviceEvaluateData, m_windowSize, cudaMemcpyDeviceToHost, Stream()));
-                Context()->Synchronize();
-
+        // Evaluate the FireShow data.
+        for (unsigned int v = 0; v < settings.m_variations; v++) {
+            if (EvaluateData(state, width, thetaStart, thetaEnd, v)) {
                 for (unsigned int x = 0; x < width; x++) {
                     float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
                     float center = height * 0.66f;
@@ -162,10 +176,8 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                         pixel.x = pixel.y = pixel.z = 255;
                     };
                 }
-            }
-        } else {
-            // As a fallback and validation test, generate the target and evaluate the code on the CPU.
-            for (unsigned int v = 0; v < settings.m_variations; v++) {
+            } else {
+                // As a fallback and validation test, generate the target and evaluate the code on the CPU.
                 const FireStarterResult* result = state.Result(v);
                 const FireStarterCode* code = state.Code();
                 for (unsigned int x = 0; x < width; x++) {
@@ -382,7 +394,7 @@ FireStarterShow::FireStarterShow(const FireStarterWindow& window) : CUDAThread("
 FireStarterShow::~FireStarterShow(void)
 {
     DispatchSync([this] {
-        DeallocateWindowData();
+        DeallocateEvaluateData();
         DeallocateCodeData();
         if (m_fireEvaluateModule) {
             checkCUDAErrors(cuModuleUnload(m_fireEvaluateModule));

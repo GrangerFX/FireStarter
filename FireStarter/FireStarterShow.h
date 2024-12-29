@@ -10,7 +10,7 @@ private:
 	std::string m_fireEvaluateCode;
 	CUfunction m_fireEvaluateFunction = nullptr;
 	CUmodule m_fireEvaluateModule = nullptr;
-    size_t m_windowSize = 0;
+    size_t m_evaluateSize = 0;
     size_t m_dataSize = 0;
     size_t m_codeSize = 0;
     float* m_hostTargetData = nullptr;
@@ -20,9 +20,11 @@ private:
     float* m_deviceData = nullptr;
     float* m_deviceCode = nullptr;
 
-    void DeallocateWindowData(void);
+    void DeallocateEvaluateData(void);
     void DeallocateCodeData(void);
+    void AllocateEvaluateData(size_t evaluateSize, size_t codeSize, size_t dataSize);
     void LoadFireEvaluator(void);
+    bool EvaluateData(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation);
 
 public:
 	static void FireSolution(FireStarterWindow& window);
