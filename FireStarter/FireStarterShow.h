@@ -20,10 +20,10 @@ private:
     float* m_deviceData = nullptr;
     float* m_deviceCode = nullptr;
 
+    bool LoadFireEvaluator(const FireStarterSettings& settings);
     void DeallocateEvaluateData(void);
     void DeallocateCodeData(void);
     void AllocateEvaluateData(size_t evaluateSize, size_t codeSize, size_t dataSize);
-    void LoadFireEvaluator(void);
     void EvaluateData(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation);
     void EvaluateSinSim(const FireStarterState& state, unsigned int evaluateWidth);
 

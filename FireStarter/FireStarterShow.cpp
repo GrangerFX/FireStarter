@@ -3,19 +3,24 @@
 #include "FireStarter_Solution.h"
 #include "CUDACompile.h"
 
-void FireStarterShow::LoadFireEvaluator(void)
+bool FireStarterShow::LoadFireEvaluator(const FireStarterSettings& settings)
 {
-    if (FireStarterSource::LoadSource(m_fireEvaluateCode, "FireEvaluate.cu"))
-        DispatchSync([this] {
-            if (CUDACompile::CompileProgram(m_fireEvaluateModule, m_fireEvaluateCode, "FireEvaluate.cu")) {
-                m_fireEvaluateFunction = CUDACompile::GetFunction(m_fireEvaluateModule, "Evaluate");
-                if (!m_fireEvaluateFunction)
-                    CUDACompile::ReleaseModule(m_fireEvaluateModule);
-            } else {
-                m_fireEvaluateModule = nullptr;
-                m_fireEvaluateFunction = nullptr;
-            }
-        });
+    if (m_fireEvaluateFunction)
+        return true;
+
+    if (m_fireEvaluateCode.empty() && !FireStarterSource::LoadSource(m_fireEvaluateCode, settings.ProgramName()))
+        return false;
+
+    if (CUDACompile::CompileProgram(m_fireEvaluateModule, m_fireEvaluateCode, settings.ProgramName())) {
+        m_fireEvaluateFunction = CUDACompile::GetFunction(m_fireEvaluateModule, "ShowEvaluate");
+        if (!m_fireEvaluateFunction)
+            CUDACompile::ReleaseModule(m_fireEvaluateModule);
+        return true;
+    } else {
+        m_fireEvaluateModule = nullptr;
+        m_fireEvaluateFunction = nullptr;
+        return false;
+    }
 } // LoadFireEvaluator
 
 void FireStarterShow::DeallocateEvaluateData(void)
@@ -165,71 +170,44 @@ void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int
 void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
 {
     Dispatch([this, state] {
-        // Setup the data
-        const FireStarterSettings& settings = state.Settings();        
-        m_window.Erase();
-        uchar4* pixels = (uchar4*)m_window.GetPixels();
-        unsigned int width = m_window.m_width;
-        unsigned int height = m_window.m_height;
-        int xScale = height / 8;
-        int yScale = height / 16;
-        float thetaStart = TARGET_PI * ((-0.5f * width) / xScale + 1.0f);
-        float thetaEnd = TARGET_PI * ((0.5f * width) / xScale + 1.0f);
-        float maxError = 0.0f;
-        for (unsigned int y = 0; y < height; y++) {
-            int x0 = (width / 2) - xScale;
-            int x1 = (width / 2) + xScale;
-            if (x0 >= 0) {
-                uchar4& pixel(pixels[y * width + x0]);
-                pixel.x = 64;
-                pixel.y = 128;
-                pixel.z = 64;
-            };
-            if (x1 < (int)width) {
-                uchar4& pixel(pixels[y * width + x1]);
-                pixel.x = 64;
-                pixel.y = 128;
-                pixel.z = 64;
-            };
-        }
-
-        // Allocate the host and GPU memory.
-        size_t evaluateSize = width * sizeof(float);
-        if ((settings.m_mode == FIRESTARTER_SINSIM) || (FIRESTARTER_NEW_SINSIM && (settings.m_mode == FIRESTARTER_EVOLVE_NEW))) {
-            size_t codeSize = 0;
-            size_t dataSize = sizeof(SinSimNetwork);
-            AllocateEvaluateData(evaluateSize, codeSize, dataSize);
-            EvaluateSinSim(state, width);
-            for (unsigned int x = 0; x < width; x++) {
-                float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
-                float center = height * 0.66f;
-                float target = m_hostTargetData[x];
-                float result = m_hostEvaluateData[x];
-
-                if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
-                    float error = fabsf(result - target);
-                    maxError = max(maxError, error);
-                }
-                long long y = (long long)(center + target * yScale);
-                if ((y >= 0) && (y < height)) {
-                    uchar4& pixel(pixels[y * width + x]);
-                    pixel.x = 255;
+        const FireStarterSettings& settings = state.Settings();
+        if (LoadFireEvaluator(settings)) {
+            // Setup the data
+            m_window.Erase();
+            uchar4* pixels = (uchar4*)m_window.GetPixels();
+            unsigned int width = m_window.m_width;
+            unsigned int height = m_window.m_height;
+            int xScale = height / 8;
+            int yScale = height / 16;
+            float thetaStart = TARGET_PI * ((-0.5f * width) / xScale + 1.0f);
+            float thetaEnd = TARGET_PI * ((0.5f * width) / xScale + 1.0f);
+            float maxError = 0.0f;
+            for (unsigned int y = 0; y < height; y++) {
+                int x0 = (width / 2) - xScale;
+                int x1 = (width / 2) + xScale;
+                if (x0 >= 0) {
+                    uchar4& pixel(pixels[y * width + x0]);
+                    pixel.x = 64;
                     pixel.y = 128;
+                    pixel.z = 64;
                 };
-                y = (long long)(center + result * yScale);
-                if ((y >= 0) && (y < height)) {
-                    uchar4& pixel(pixels[y * width + x]);
-                    pixel.x = pixel.y = pixel.z = 255;
+                if (x1 < (int)width) {
+                    uchar4& pixel(pixels[y * width + x1]);
+                    pixel.x = 64;
+                    pixel.y = 128;
+                    pixel.z = 64;
                 };
             }
-        } else {
-            size_t codeSize = FireStarterCode::CodeSize(settings);
-            size_t dataSize = FireStarterData::DataSize(settings);
-            AllocateEvaluateData(evaluateSize, codeSize, dataSize);
 
-            // Evaluate the FireShow data.
-            for (unsigned int v = 0; v < settings.m_variations; v++) {
-                EvaluateData(state, width, thetaStart, thetaEnd, v);
+            // Allocate the host and GPU memory.
+            size_t evaluateSize = width * sizeof(float);
+            if ((settings.m_mode == FIRESTARTER_SINSIM) || (FIRESTARTER_NEW_SINSIM && (settings.m_mode == FIRESTARTER_EVOLVE_NEW))) {
+                size_t codeSize = 0;
+                size_t dataSize = sizeof(SinSimNetwork);
+                AllocateEvaluateData(evaluateSize, codeSize, dataSize);
+
+                // Evaluate the SinSim FireShow data.
+                EvaluateSinSim(state, width);
                 for (unsigned int x = 0; x < width; x++) {
                     float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
                     float center = height * 0.66f;
@@ -252,9 +230,40 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                         pixel.x = pixel.y = pixel.z = 255;
                     };
                 }
+            } else {
+                size_t codeSize = FireStarterCode::CodeSize(settings);
+                size_t dataSize = FireStarterData::DataSize(settings);
+                AllocateEvaluateData(evaluateSize, codeSize, dataSize);
+
+                // Evaluate the evolve FireShow data.
+                for (unsigned int v = 0; v < settings.m_variations; v++) {
+                    EvaluateData(state, width, thetaStart, thetaEnd, v);
+                    for (unsigned int x = 0; x < width; x++) {
+                        float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
+                        float center = height * 0.66f;
+                        float target = m_hostTargetData[x];
+                        float result = m_hostEvaluateData[x];
+
+                        if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
+                            float error = fabsf(result - target);
+                            maxError = max(maxError, error);
+                        }
+                        long long y = (long long)(center + target * yScale);
+                        if ((y >= 0) && (y < height)) {
+                            uchar4& pixel(pixels[y * width + x]);
+                            pixel.x = 255;
+                            pixel.y = 128;
+                        };
+                        y = (long long)(center + result * yScale);
+                        if ((y >= 0) && (y < height)) {
+                            uchar4& pixel(pixels[y * width + x]);
+                            pixel.x = pixel.y = pixel.z = 255;
+                        };
+                    }
+                }
             }
+            m_window.DisplayImage();
         }
-        m_window.DisplayImage();
     }, sync);
 } // FireShow
 
@@ -437,7 +446,6 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 
 FireStarterShow::FireStarterShow(const FireStarterWindow& window) : CUDAThread("FireStarterShow"), m_window(window)
 {
-    LoadFireEvaluator();
 } // FireStarterShow
 
 FireStarterShow::~FireStarterShow(void)
