@@ -39,8 +39,8 @@ GPU_FUNCTION float SinSimInputSample(unsigned int s)
 
 GPU_FUNCTION float SinSimTargetSample(unsigned int s)
 {
-    return sinf((s + 15) * (TARGET_PI * 2.0f) / SINSIM_DATA_FREQUENCY) + 10.0f;
-} // SinSimInputSample
+    return sinf((s + 15) * (TARGET_PI * 2.0f) / SINSIM_DATA_FREQUENCY);
+} // SinSimTargetSample
 #endif
 
 GPU_FUNCTION void SinSimTestNeuron(SinSimNetwork& network, const unsigned int index)
@@ -69,6 +69,18 @@ GPU_FUNCTION void SinSimInitNetwork(SinSimNetwork& network, unsigned long long& 
         for (unsigned int j = 0; j < SINSIM_NEURON_COUNT; j++)
             network.neuron[i].connection[j] = RANDOMFACTOR(seed);
         network.neuron[i].addValue = RANDOMFACTOR(seed);
+        network.neuron[i].value = 0.0f;
+        network.grade = SINSIM_INIT_GRADE;
+        network.age = 0;
+    }
+} // SinSimInitNetwork
+
+GPU_FUNCTION void SinSimInitNetwork(SinSimNetwork& network)
+{
+    for (unsigned int i = 0; i < SINSIM_NEURON_COUNT; i++) {
+        for (unsigned int j = 0; j < SINSIM_NEURON_COUNT; j++)
+            network.neuron[i].connection[j] = 1.0f / SINSIM_NEURON_COUNT;
+        network.neuron[i].addValue = 0.0f;
         network.neuron[i].value = 0.0f;
         network.grade = SINSIM_INIT_GRADE;
         network.age = 0;

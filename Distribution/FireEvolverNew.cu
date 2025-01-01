@@ -5,7 +5,7 @@
 
 #if FIRESTARTER_NEW_SINSIM
 
-GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, SinSimNetwork* data)
+GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
 {
     // Determine the member to be optimized.
     unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -13,11 +13,12 @@ GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, 
         return;
 
     // Generate the test data.
-    if (results && data) {
-        SinSimNetwork network(*data);
+    if (results && targets && data) {
+        FireStarterCode localCode(code);
+        FireStarterData localData(data);
         for (unsigned int s = 0; s < size; s++) {
             float input = SinSimInputSample(s);
-            float sample = SinSimTestNetwork(network, input);
+            float sample = localCode.Evaluate(localData, input);
             float target = SinSimTargetSample(s);
             targets[s] = target;
             results[s] = sample;

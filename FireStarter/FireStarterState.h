@@ -20,6 +20,7 @@ private:
         m_codeData = other.m_codeData;
         m_results = Results();
         m_code = Code();
+        m_network = other.m_network;
         m_program = other.m_program;
         m_evaluateCode = other.m_evaluateCode;
         m_timer = other.m_timer;
@@ -328,6 +329,7 @@ public:
     float TestResult(unsigned int sample) const;
     void InitResults(void);
     void InitCode(void);
+    void InitNetwork(void);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
     void InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index);
     void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index);
@@ -358,5 +360,7 @@ public:
         swap(other);
     } // FireStarterState
 
-    inline FireStarterState(void) {}
+    inline FireStarterState(void) {
+        SinSimInitNetwork(m_network);
+    } // FireStarterState
 }; // class FireStarterState;

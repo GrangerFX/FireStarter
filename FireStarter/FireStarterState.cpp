@@ -126,6 +126,11 @@ void FireStarterState::InitCode(void)
     m_code = Code();
 } // InitCode
 
+void FireStarterState::InitNetwork(void)
+{
+    SinSimInitNetwork(m_network);
+} // InitCode
+
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long id, unsigned long long test)
 {
     m_timer.Start();
@@ -159,6 +164,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitGenerationSeed();
     InitResults();
     InitCode();
+    InitNetwork();
 } // InitState
 
 void FireStarterState::InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index)

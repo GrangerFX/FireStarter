@@ -201,7 +201,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
 
             // Allocate the host and GPU memory.
             size_t evaluateSize = width * sizeof(float);
-            if ((settings.m_mode == FIRESTARTER_SINSIM) || (FIRESTARTER_NEW_SINSIM && (settings.m_mode == FIRESTARTER_EVOLVE_NEW))) {
+            if (settings.m_mode == FIRESTARTER_SINSIM) {
                 size_t codeSize = 0;
                 size_t dataSize = sizeof(SinSimNetwork);
                 AllocateEvaluateData(evaluateSize, codeSize, dataSize);
