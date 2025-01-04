@@ -18,6 +18,7 @@
 #define FIRESTARTER_EVOLVE_TEST     0           // Test evolution mode.
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
 
+#define FIRESTARTER_FIRSTLIGHT      0          // Use the original instructions from FireStarter First Light.
 #define FIRESTARTER_MADD            0           // Use only non-random multiply-add instructions.
 
 #define FIRESTARTER_POPULATION      8192 * FIRESTARTER_WARP_THREADS  // For debugging display of the population contents only.
@@ -168,9 +169,17 @@
 #define FIRESTARTER_OPTIMIZE_OPTIMIZE           1
 #define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
 
+#if FIRESTARTER_FIRSTLIGHT
 typedef enum {
-    Operation_multiply = 0,
-    Operation_add,
+    Operation_noop = 0,
+    Operation_store,    // data[d] = r;
+    Operation_square,   // r *= r;
+    Operation_add,      // r += data[d];
+    Operation_subtract, // r -= data[d];
+    Operation_multiply, // r *= data[d];
+    Operation_divide,   // r /= data[d];
+    Operation_max,      // r = data[d] >= r ? data[d] : r;
+    Operation_min,      // r = data[d] <= r ? data[d] : r;
 } FireStarterOpcode;
 
 #if FIRESTARTER_MADD
@@ -178,7 +187,54 @@ const FireStarterOpcode fireStarterPattern[] = {
     Operation_add,
     Operation_multiply,
 };
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_add,
+    Operation_multiply,
 #else
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_store,
+    Operation_square,
+    Operation_add,
+    Operation_subtract,
+    Operation_multiply,
+    Operation_divide,
+    Operation_max,
+    Operation_min,
+};
+
+const FireStarterOpcode fireStarterPattern[] = {
+    Operation_store,
+    Operation_square,
+    Operation_add,
+    Operation_subtract,
+    Operation_multiply,
+    Operation_divide,
+    Operation_max,
+    Operation_min,
+};
+#endif
+#else
+typedef enum {
+    Operation_multiply = 0,
+    Operation_add,
+} FireStarterOpcode;
+
+#if FIRESTARTER_MADD
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_add,
+    Operation_multiply,
+};
+
+const FireStarterOpcode fireStarterPattern[] = {
+    Operation_add,
+    Operation_multiply,
+};
+#else
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_add,
+    Operation_multiply,
+};
+
 const FireStarterOpcode fireStarterPattern[] = {
     Operation_add,
     Operation_multiply,
@@ -186,10 +242,7 @@ const FireStarterOpcode fireStarterPattern[] = {
     Operation_multiply,
 };
 #endif
-const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_add,
-    Operation_multiply,
-};
+#endif
 
 #define FIRESTARTER_OPCODES (sizeof(fireStarterOpcodes) / sizeof(FireStarterOpcode))
 #define FIRESTARTER_PATTERN_OPCODES (sizeof(fireStarterPattern) / sizeof(FireStarterOpcode))
