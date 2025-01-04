@@ -18,7 +18,7 @@
 #define FIRESTARTER_EVOLVE_TEST     0           // Test evolution mode.
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
 
-#define FIRESTARTER_FIRSTLIGHT      0          // Use the original instructions from FireStarter First Light.
+#define FIRESTARTER_FIRSTLIGHT      1           // Use the original instructions from FireStarter First Light.
 #define FIRESTARTER_MADD            0           // Use only non-random multiply-add instructions.
 
 #define FIRESTARTER_POPULATION      8192 * FIRESTARTER_WARP_THREADS  // For debugging display of the population contents only.
@@ -53,7 +53,7 @@
 #define FIRESTARTER_OPTIMIZE        7           // Optimize a previously CPU evolved state.
 #define FIRESTARTER_SOLUTION        8           // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           9
-#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_GPU
+#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_NEW
 
 #define FIRESTARTER_RANDOM_VARIATIONS           FIRESTARTER_VARIATIONS
 #define FIRESTARTER_RANDOM_STREAMS              8
@@ -172,14 +172,15 @@
 #if FIRESTARTER_FIRSTLIGHT
 typedef enum {
     Operation_noop = 0,
-    Operation_store,    // data[d] = r;
-    Operation_square,   // r *= r;
-    Operation_add,      // r += data[d];
-    Operation_subtract, // r -= data[d];
-    Operation_multiply, // r *= data[d];
-    Operation_divide,   // r /= data[d];
-    Operation_max,      // r = data[d] >= r ? data[d] : r;
-    Operation_min,      // r = data[d] <= r ? data[d] : r;} FireStarterOpcode;
+    Operation_store,    // data[d] = n;
+    Operation_square,   // n *= n;
+    Operation_add,      // n += data[d];
+    Operation_subtract, // n -= data[d];
+    Operation_multiply, // n *= data[d];
+    Operation_divide,   // n /= data[d];
+    Operation_max,      // n = data[d] > n ? data[d] : n;
+    Operation_min,      // n = data[d] < n ? data[d] : n;
+} FireStarterOpcode;
 
 #if FIRESTARTER_MADD
 const FireStarterOpcode fireStarterOpcodes[] = {
@@ -200,8 +201,8 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 #endif
 #else
 typedef enum {
-    Operation_multiply = 0,
     Operation_add,
+    Operation_multiply = 0,
 } FireStarterOpcode;
 
 #if FIRESTARTER_MADD

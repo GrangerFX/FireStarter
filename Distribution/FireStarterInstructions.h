@@ -51,21 +51,60 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
         GenerateTabs(buffer, size, length, tabs);
 
         // Convert the instructions.
+#if FIRESTARTER_FIRSTLIGHT
         switch (op) {
-        case Operation_multiply:
-            if (instructionLast)
-                anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
-            else
-                anprintf(buffer, size, length, "n = data[%u] *= n;\r\n", reg);
-            break;
+            case Operation_noop:
+                break;
 
-        case Operation_add:
-            if (instructionLast)
+            case Operation_store:
+                anprintf(buffer, size, length, "data[%u] = n;\r\n", reg);
+                break;
+
+            case Operation_square:
+                anprintf(buffer, size, length, "n *= n;\r\n");
+                break;
+
+            case Operation_add:
                 anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
-            else
-                anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
-            break;
+                break;
+
+            case Operation_subtract:
+                anprintf(buffer, size, length, "n -= data[%u];\r\n", reg);
+                break;
+
+            case Operation_multiply:
+                anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
+                break;
+
+            case Operation_divide:
+                anprintf(buffer, size, length, "n /= data[%u];\r\n", reg);
+                break;
+
+            case Operation_max:
+                anprintf(buffer, size, length, "n = data[%u] > n ? data[%u] : n;\r\n", reg, reg);
+                break;
+
+            case Operation_min:
+                anprintf(buffer, size, length, "n = data[%u] < n ? data[%u] : n;\r\n", reg, reg);
+                break;
         }
+#else
+        switch (op) {
+            case Operation_add:
+                if (instructionLast)
+                    anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
+                else
+                    anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
+                break;
+
+            case Operation_multiply:
+                if (instructionLast)
+                    anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
+                else
+                    anprintf(buffer, size, length, "n = data[%u] *= n;\r\n", reg);
+                break;
+        }
+#endif
     } // GenerateEvaluate
 
     inline void GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int r, float data, bool instructionFirst, bool instructionLast) const
@@ -74,20 +113,45 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
         GenerateTabs(buffer, size, length, tabs);
 
         // Convert the instructions.
+#if FIRESTARTER_FIRSTLIGHT
         switch (op) {
-            case Operation_multiply:
-                if (instructionFirst)
-                    if (instructionLast)
-                        anprintf(buffer, size, length, "n *= %.8ff;\r\n", data);
-                    else
-                        anprintf(buffer, size, length, "r%u = n *= %.8ff;\r\n", r, data);
-                else
-                    if (instructionLast)
-                        anprintf(buffer, size, length, "n *= r%u;\r\n", r);
-                    else
-                        anprintf(buffer, size, length, "n = r%u *= n;\r\n", r);
+            case Operation_noop:
                 break;
 
+            case Operation_store:
+                anprintf(buffer, size, length, "r%u = n;\r\n", reg);
+                break;
+
+            case Operation_square:
+                anprintf(buffer, size, length, "n *= n;\r\n");
+                break;
+
+            case Operation_add:
+                anprintf(buffer, size, length, "n += r%u;\r\n", reg);
+                break;
+
+            case Operation_subtract:
+                anprintf(buffer, size, length, "n -= r%u;\r\n", reg);
+                break;
+
+            case Operation_multiply:
+                anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
+                break;
+
+            case Operation_divide:
+                anprintf(buffer, size, length, "n /= r%u;\r\n", reg);
+                break;
+
+            case Operation_max:
+                anprintf(buffer, size, length, "n = r%u > n ? r%u : n;\r\n", reg, reg);
+                break;
+
+            case Operation_min:
+                anprintf(buffer, size, length, "n = r%u < n ? r%u : n;\r\n", reg, reg);
+                break;
+        }
+#else
+        switch (op) {
             case Operation_add:
                 if (instructionFirst)
                     if (instructionLast)
@@ -100,7 +164,21 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                     else
                         anprintf(buffer, size, length, "n = r%u += n;\r\n", r);
                 break;
+
+            case Operation_multiply:
+                if (instructionFirst)
+                    if (instructionLast)
+                        anprintf(buffer, size, length, "n *= %.8ff;\r\n", data);
+                    else
+                        anprintf(buffer, size, length, "r%u = n *= %.8ff;\r\n", r, data);
+                else
+                    if (instructionLast)
+                        anprintf(buffer, size, length, "n *= r%u;\r\n", r);
+                    else
+                        anprintf(buffer, size, length, "n = r%u *= n;\r\n", r);
+                break;
         }
+#endif
     } // GenerateSolution
 
     inline FireStarterInstruction(void)
@@ -189,22 +267,14 @@ typedef struct FireStarterInstructions {
 
     inline void SetRandom(unsigned int index, unsigned long long& seed, unsigned int registers, unsigned int opcodes)
     {
-#if FIRESTARTER_MADD
-        i[index].op = index & 1 ? Operation_multiply : Operation_add;
-#else
-        i[index].op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
-#endif
-        i[index].reg = RANDOMMOD(seed, registers);
+        SetRandomOp(index, seed, opcodes);
+        SetRandomReg(index, seed, registers);
     } // SetRandom
 
     inline void SetRandom(unsigned int index, unsigned long long& seed)
     {
-#if FIRESTARTER_MADD
-        i[index].op = index & 1 ? Operation_multiply : Operation_add;
-#else
-        i[index].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
-#endif
-        i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+        SetRandomOp(index, seed);
+        SetRandomReg(index, seed);
     } // SetRandom
 
     inline void SetRandom(unsigned long long& seed)
@@ -215,26 +285,14 @@ typedef struct FireStarterInstructions {
 
     inline void Randomize(unsigned long long& seed)
     {
-        for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++) {
-#if FIRESTARTER_MADD
-            i[index].op = index & 1 ? Operation_multiply : Operation_add;
-#else
-            i[index].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
-#endif
-            i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
-        }
+        for (unsigned int index = 0; index < FIRESTARTER_INSTRUCTIONS; index++)
+            SetRandom(index, seed);
     } // Randomize
 
     inline void Randomize(unsigned long long& seed, unsigned int instructions, unsigned int registers, unsigned int opcodes)
     {
-        for (unsigned int index = 0; index < instructions; index++) {
-#if FIRESTARTER_MADD
-            i[index].op = index & 1 ? Operation_multiply : Operation_add;
-#else
-            i[index].op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
-#endif
-            i[index].reg = RANDOMMOD(seed, registers);
-        }
+        for (unsigned int index = 0; index < instructions; index++)
+            SetRandom(index, seed, registers, opcodes);
     } // Randomize
 
     inline float Execute(FireStarterData data, float n) const
