@@ -238,8 +238,8 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 const FireStarterOpcode fireStarterPattern[] = {
     Operation_add,
     Operation_multiply,
-//    Operation_multiply,
-//    Operation_multiply,
+    Operation_multiply,
+    Operation_multiply,
 };
 #endif
 #endif
