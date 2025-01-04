@@ -7,7 +7,8 @@
 #define SINSIM_NETWORK_MAXAGE  100
 #define SINSIM_EVOLVE_WIEGHT   0.75f
 #define SINSIM_INIT_GRADE      10.0f
-#define SINSIM_DATA_FREQUENCY  111.2f
+//#define SINSIM_DATA_FREQUENCY  111.2f
+#define SINSIM_DATA_FREQUENCY  222.4f
 
 typedef struct {
     float connection[SINSIM_NEURON_COUNT];
@@ -34,12 +35,12 @@ GPU_FUNCTION float SinSimTargetSample(unsigned int s)
 #else
 GPU_FUNCTION float SinSimInputSample(unsigned int s)
 {
-    return cosf(s * (TARGET_PI * 2.0f) / SINSIM_DATA_FREQUENCY);
+    return cosf(s * TARGET_PI / SINSIM_DATA_FREQUENCY);
 } // SinSimInputSample
 
 GPU_FUNCTION float SinSimTargetSample(unsigned int s)
 {
-    return sinf((s + 15) * (TARGET_PI * 2.0f) / SINSIM_DATA_FREQUENCY);
+    return sinf((s + 15) * TARGET_PI / SINSIM_DATA_FREQUENCY);
 } // SinSimTargetSample
 #endif
 
