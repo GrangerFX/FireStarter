@@ -219,7 +219,7 @@ typedef struct FireStarterInstructions {
 #if FIRESTARTER_MADD
             i[index].op = index & 1 ? Operation_multiply : Operation_add;
 #else
-            i[index].op = fireStarterPattern[RANDOMMOD(seed, FIRESTARTER_PATTERN_OPCODES)];
+            i[index].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
 #endif
             i[index].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
         }
@@ -231,7 +231,7 @@ typedef struct FireStarterInstructions {
 #if FIRESTARTER_MADD
             i[index].op = index & 1 ? Operation_multiply : Operation_add;
 #else
-            i[index].op = fireStarterPattern[RANDOMMOD(seed, opcodes)];
+            i[index].op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
 #endif
             i[index].reg = RANDOMMOD(seed, registers);
         }

@@ -354,7 +354,7 @@ typedef struct FireStarterCode {
 #if FIRESTARTER_MADD
         c[i].op = i & 1 ? Operation_multiply : Operation_add;
 #else
-        c[i].op = RANDOMMOD(seed, FIRESTARTER_OPCODES);
+        c[i].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
 #endif
     } // RandomInstruction
 
@@ -363,18 +363,6 @@ typedef struct FireStarterCode {
         unsigned int i = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
         RandomInstruction(seed, i);
     } // RandomInstruction
-
-    inline void InitInstruction(unsigned long long& seed, unsigned int i)
-    {
-        c[i].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
-        c[i].op = fireStarterPattern[RANDOMMOD(seed, FIRESTARTER_PATTERN_OPCODES)];
-    } // InitInstruction
-
-    inline void InitInstruction(unsigned long long& seed)
-    {
-        unsigned int i = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
-        InitInstruction(seed, i);
-    } // InitInstruction
 
     static inline FireStarterCode* Member(FireStarterCode* population, const FireStarterSettings& settings, unsigned int index)
     {
@@ -431,7 +419,7 @@ typedef struct FireStarterCode {
     inline void Init(unsigned long long& seed)
     {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            InitInstruction(seed, i);
+            RandomInstruction(seed, i);
     } // Init
 
     inline FireStarterCode(const struct FireStarterCode& code)

@@ -179,30 +179,15 @@ typedef enum {
     Operation_multiply, // r *= data[d];
     Operation_divide,   // r /= data[d];
     Operation_max,      // r = data[d] >= r ? data[d] : r;
-    Operation_min,      // r = data[d] <= r ? data[d] : r;
-} FireStarterOpcode;
+    Operation_min,      // r = data[d] <= r ? data[d] : r;} FireStarterOpcode;
 
 #if FIRESTARTER_MADD
-const FireStarterOpcode fireStarterPattern[] = {
-    Operation_add,
-    Operation_multiply,
-};
 const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_add,
     Operation_multiply,
+};
 #else
 const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_store,
-    Operation_square,
-    Operation_add,
-    Operation_subtract,
-    Operation_multiply,
-    Operation_divide,
-    Operation_max,
-    Operation_min,
-};
-
-const FireStarterOpcode fireStarterPattern[] = {
     Operation_store,
     Operation_square,
     Operation_add,
@@ -224,35 +209,23 @@ const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_add,
     Operation_multiply,
 };
-
-const FireStarterOpcode fireStarterPattern[] = {
-    Operation_add,
-    Operation_multiply,
-};
 #else
 const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_add,
     Operation_multiply,
-};
-
-const FireStarterOpcode fireStarterPattern[] = {
-    Operation_add,
     Operation_multiply,
-//    Operation_multiply,
-//    Operation_multiply,
+    Operation_multiply,
 };
 #endif
 #endif
 
 #define FIRESTARTER_OPCODES (sizeof(fireStarterOpcodes) / sizeof(FireStarterOpcode))
-#define FIRESTARTER_PATTERN_OPCODES (sizeof(fireStarterPattern) / sizeof(FireStarterOpcode))
 
 class FireStarterSetting {
 public:
     unsigned int m_instructions =   FIRESTARTER_INSTRUCTIONS;
     unsigned int m_registers =      FIRESTARTER_REGISTERS;
     unsigned int m_opcodes =        FIRESTARTER_OPCODES;
-    unsigned int m_patternOpcodes = FIRESTARTER_PATTERN_OPCODES;
 
     float m_targetMin =             TARGET_MIN;
     float m_targetMax =             TARGET_MAX;
@@ -360,7 +333,6 @@ public:
         m_instructions = source.m_instructions;
         m_registers = source.m_registers;
         m_opcodes = source.m_opcodes;
-        m_patternOpcodes = source.m_patternOpcodes;
         m_targetMin = source.m_targetMin;
         m_targetMax = source.m_targetMax;
     } // CopyCodeSettings
