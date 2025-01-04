@@ -2,6 +2,15 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
+// Not used in Evolver. For code check in only.
+inline float OptimizeEvaluate(const FireStarterData& testData, float n)
+{
+    FireStarterData data = testData;
+    // EVALUATE //
+    // END //
+    return n;
+} // OptimizeEvaluate
+
 GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
 {
     // Determine the member to be optimized.
@@ -21,14 +30,6 @@ GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, f
         results[index] = localCode.Evaluate(localData, theta);
     }
 } // ShowEvaluate
-
-inline float OptimizeEvaluate(const FireStarterData& testData, float n)
-{
-    FireStarterData data = testData;
-// EVALUATE //
-// END //
-    return n;
-} // OptimizeEvaluate
 
 inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
