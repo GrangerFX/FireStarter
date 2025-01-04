@@ -364,6 +364,18 @@ typedef struct FireStarterCode {
         RandomInstruction(seed, i);
     } // RandomInstruction
 
+    inline void InitInstruction(unsigned long long& seed, unsigned int i)
+    {
+        c[i].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
+        c[i].op = fireStarterPattern[RANDOMMOD(seed, FIRESTARTER_PATTERN_OPCODES)];
+    } // InitInstruction
+
+    inline void InitInstruction(unsigned long long& seed)
+    {
+        unsigned int i = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
+        InitInstruction(seed, i);
+    } // InitInstruction
+
     static inline FireStarterCode* Member(FireStarterCode* population, const FireStarterSettings& settings, unsigned int index)
     {
         return (FireStarterCode*)((char*)population + CodeSize(settings) * index);
@@ -419,7 +431,7 @@ typedef struct FireStarterCode {
     inline void Init(unsigned long long& seed)
     {
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            RandomInstruction(seed, i);
+            InitInstruction(seed, i);
     } // Init
 
     inline FireStarterCode(const struct FireStarterCode& code)
