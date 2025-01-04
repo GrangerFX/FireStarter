@@ -39,7 +39,7 @@ GPU_FUNCTION float SinSimInputSample(unsigned int s)
 
 GPU_FUNCTION float SinSimTargetSample(unsigned int s)
 {
-    return sinf((s + 15) * TARGET_PI / 233.6f);
+    return sinf((s + 15) * TARGET_PI / SINSIM_DATA_FREQUENCY);
 } // SinSimTargetSample
 #endif
 
