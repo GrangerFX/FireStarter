@@ -183,7 +183,7 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
 
     inline FireStarterInstruction(void)
     {
-        op = 0;
+        op = (FireStarterOpcode)0;
         reg = 0;
     } // FireStarterInstruction
 }; // struct FireStarterInstruction
@@ -226,14 +226,25 @@ typedef struct FireStarterInstructions {
         i[index].reg = (unsigned short)reg;
     } // SetOperation
 
-    inline void SetOpcode(unsigned int index, unsigned int op = 0)
+    inline void SetOpcode(unsigned int index, FireStarterOpcode op = (FireStarterOpcode)0)
     {
-        i[index].op = (unsigned short)op;
+        i[index].op = op;
     } // SetOpcode
 
-    inline void SetOperation(unsigned int index, unsigned int op = 0, unsigned int reg = 0)
+    inline void SetOpcode(unsigned int index, unsigned short op = 0)
     {
-        i[index].op = (unsigned short)op;
+        i[index].op = (FireStarterOpcode)op;
+    } // SetOpcode
+
+    inline void SetOperation(unsigned int index, FireStarterOpcode op = (FireStarterOpcode)0, unsigned int reg = 0)
+    {
+        i[index].op = op;
+        i[index].reg = (unsigned short)reg;
+    } // SetOperation
+
+    inline void SetOperation(unsigned int index, unsigned int op, unsigned int reg)
+    {
+        i[index].op = (FireStarterOpcode)op;
         i[index].reg = (unsigned short)reg;
     } // SetOperation
 

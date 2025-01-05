@@ -224,7 +224,7 @@ typedef struct FireStarterSharedData {
 } FireStarterSharedData;
 
 typedef struct FireStarterCodeInstruction {
-    unsigned short op = 0;
+    FireStarterOpcode op = (FireStarterOpcode)0;
     unsigned short reg = 0;
 } FireStarterCodeInstruction;
 
@@ -251,12 +251,12 @@ typedef struct FireStarterCode {
         return c[index];
     } // Instruction
 
-    inline unsigned short& Operation(unsigned int index)
+    inline FireStarterOpcode& Operation(unsigned int index)
     {
         return c[index].op;
     } // Operation
 
-    inline unsigned short Operation(unsigned int index) const
+    inline FireStarterOpcode Operation(unsigned int index) const
     {
         return c[index].op;
     } // Operation
@@ -322,7 +322,48 @@ typedef struct FireStarterCode {
 
     inline float Evaluate(FireStarterData& data, float n) const
     {
-#if FIRESTARTER_MADD
+#if FIRESTARTER_FIRSTLIGHT
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+            const FireStarterOpcode op = c[i].op;
+            float& reg = data[c[i].reg];
+            switch (c[i].op) {
+                case Operation_noop:
+                    break;
+
+                case Operation_store:
+                    reg =  n;
+                    break;
+
+                case Operation_square:
+                    n *= n;
+                    break;
+
+                case Operation_add:
+                    n += reg;
+                    break;
+
+                case Operation_subtract:
+                    n -= reg;
+                    break;
+
+                case Operation_multiply:
+                    n *= reg;
+                    break;
+
+                case Operation_divide:
+                    n /= reg;
+                    break;
+
+                case Operation_max:
+                    n = reg > n ? reg : n;
+                    break;
+
+                case Operation_min:
+                    n = reg < n ? reg : n;
+                    break;
+            }
+        }
+#elif FIRESTARTER_MADD
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
             n = data[c[i].reg] *= n;
             n = data[c[i + 1].reg] += n;
@@ -336,7 +377,48 @@ typedef struct FireStarterCode {
 
     inline float Evaluate(FireStarterSharedData& data, float n) const
     {
-#if FIRESTARTER_MADD
+#if FIRESTARTER_FIRSTLIGHT
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+            const FireStarterOpcode op = c[i].op;
+            float& reg = data[c[i].reg];
+            switch (c[i].op) {
+                case Operation_noop:
+                    break;
+
+                case Operation_store:
+                    reg =  n;
+                    break;
+
+                case Operation_square:
+                    n *= n;
+                    break;
+
+                case Operation_add:
+                    n += reg;
+                    break;
+
+                case Operation_subtract:
+                    n -= reg;
+                    break;
+
+                case Operation_multiply:
+                    n *= reg;
+                    break;
+
+                case Operation_divide:
+                    n /= reg;
+                    break;
+
+                case Operation_max:
+                    n = reg > n ? reg : n;
+                    break;
+
+                case Operation_min:
+                    n = reg < n ? reg : n;
+                    break;
+            }
+        }
+#elif FIRESTARTER_MADD
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
             n = data[c[i].reg] *= n;
             n = data[c[i + 1].reg] += n;

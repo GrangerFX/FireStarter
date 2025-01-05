@@ -241,7 +241,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         SerialThread compiler;
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_BESTSTATE);
 
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0);
@@ -326,7 +326,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
     }, sync);
 } // EvolveGPUStream
 
-void FireStarterStream::EvolveNewGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
+void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
@@ -407,7 +407,7 @@ void FireStarterStream::EvolveNewGPUStream(FireStarterServer* server, std::atomi
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
     }, sync);
-} // EvolveNewGPUStream
+} // EvolveNewStream
 
 void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
@@ -720,7 +720,7 @@ void FireStarterStreams::ExecuteStreams(void)
                     streams[stream]->EvolveGPUStream(server, m_testCount);
                     break;
                 case FIRESTARTER_EVOLVE_NEW:
-                    streams[stream]->EvolveNewGPUStream(server, m_testCount);
+                    streams[stream]->EvolveNewStream(server, m_testCount);
                     break;
                 case FIRESTARTER_SPEED_TEST:
                     streams[stream]->SpeedTestStream(server, m_testCount);

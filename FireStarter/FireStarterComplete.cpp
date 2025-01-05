@@ -62,7 +62,7 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
     if (state.m_optimizeValid) {
         static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
         bestStateMutex.lock();
-        bool update = state.m_optimizeValid && (state.m_maxResult < bestState.m_maxResult);
+        bool update = state.m_optimizeValid && ((state.m_maxResult < bestState.m_maxResult) || !bestState.m_optimizeValid);
         if (update) {
             // Update the best state.
             bestState = state;
