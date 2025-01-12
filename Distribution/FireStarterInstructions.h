@@ -47,9 +47,6 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
 
     inline void GenerateEvaluate(char* buffer, size_t size, size_t &length, unsigned int tabs, bool instructionLast = false) const
     {
-        // Insert leading tabs (four spaces).
-        GenerateTabs(buffer, size, length, tabs);
-
         // Convert the instructions.
 #if FIRESTARTER_FIRSTLIGHT
         switch (op) {
@@ -57,38 +54,51 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                 break;
 
             case Operation_store:
-                anprintf(buffer, size, length, "data[%u] = n;\r\n", reg);
+                if (!instructionLast) {
+                    GenerateTabs(buffer, size, length, tabs);
+                    anprintf(buffer, size, length, "data[%u] = n;\r\n", reg);
+                }
                 break;
 
             case Operation_square:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= n;\r\n");
                 break;
 
             case Operation_add:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
                 break;
 
             case Operation_subtract:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n -= data[%u];\r\n", reg);
                 break;
 
             case Operation_multiply:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
                 break;
 
             case Operation_divide:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n /= data[%u];\r\n", reg);
                 break;
 
             case Operation_max:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = data[%u] > n ? data[%u] : n;\r\n", reg, reg);
                 break;
 
             case Operation_min:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = data[%u] < n ? data[%u] : n;\r\n", reg, reg);
                 break;
         }
 #else
+        // Insert leading tabs (four spaces).
+        GenerateTabs(buffer, size, length, tabs);
+
         switch (op) {
             case Operation_add:
                 if (instructionLast)
@@ -109,9 +119,6 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
 
     inline void GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int r, float data, bool instructionFirst, bool instructionLast) const
     {
-        // Insert leading tabs (four spaces).
-        GenerateTabs(buffer, size, length, tabs);
-
         // Convert the instructions.
 #if FIRESTARTER_FIRSTLIGHT
         switch (op) {
@@ -119,38 +126,51 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                 break;
 
             case Operation_store:
-                anprintf(buffer, size, length, "r%u = n;\r\n", reg);
+                if (!instructionLast) {
+                    GenerateTabs(buffer, size, length, tabs);
+                    anprintf(buffer, size, length, "r%u = n;\r\n", reg);
+                }
                 break;
 
             case Operation_square:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= n;\r\n");
                 break;
 
             case Operation_add:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n += r%u;\r\n", reg);
                 break;
 
             case Operation_subtract:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n -= r%u;\r\n", reg);
                 break;
 
             case Operation_multiply:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
                 break;
 
             case Operation_divide:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n /= r%u;\r\n", reg);
                 break;
 
             case Operation_max:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = r%u > n ? r%u : n;\r\n", reg, reg);
                 break;
 
             case Operation_min:
+                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = r%u < n ? r%u : n;\r\n", reg, reg);
                 break;
         }
 #else
+        // Insert leading tabs (four spaces).
+        GenerateTabs(buffer, size, length, tabs);
+
         switch (op) {
             case Operation_add:
                 if (instructionFirst)
@@ -261,7 +281,7 @@ typedef struct FireStarterInstructions {
     inline void SetRandomOp(unsigned int index, unsigned long long& seed)
     {
 #if FIRESTARTER_MADD
-        i[index].op = index & 1 ? Operation_multiply : Operation_add;
+        i[index].op = index & 1 ? Operation_add : Operation_multiply;
 #else
         i[index].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
 #endif
@@ -270,7 +290,7 @@ typedef struct FireStarterInstructions {
     inline void SetRandomOp(unsigned int index, unsigned long long& seed, unsigned int opcodes)
     {
 #if FIRESTARTER_MADD
-        i[index].op = index & 1 ? Operation_multiply : Operation_add;
+        i[index].op = index & 1 ? Operation_add : Operation_multiply;
 #else
         i[index].op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
 #endif
@@ -352,7 +372,16 @@ inline void GenerateEvaluateCode(char* buffer, size_t size, size_t& length, unsi
 
 inline void GenerateSolutionCode(char* buffer, size_t size, size_t& length, unsigned int tabs, const FireStarterInstructions* instructions, unsigned int numInstructions, const FireStarterRegisterUsage* registerUsage, unsigned int numRegisters, const FireStarterData* data)
 {
-    // Find the maximum code register.
+#if FIRESTARTER_FIRSTLIGHT
+    // Generate the solution function registers.
+    for (unsigned int i = 0; i < numRegisters; i++) {
+        for (unsigned int j = 0; j < tabs; j++)
+            anprintf(buffer, size, length, "    ");
+        anprintf(buffer, size, length, "float r%u = %.8ff;\r\n", i, data->d[i]);
+    }
+    anprintf(buffer, size, length, "\r\n");
+#else
+    // Find the first and last instruction register usage.
     unsigned int maxRegister = 0;
     for (unsigned int i = 0; i < numInstructions; i++) {
         unsigned int reg = instructions->Register(i);
@@ -364,14 +393,16 @@ inline void GenerateSolutionCode(char* buffer, size_t size, size_t& length, unsi
         }
     }
 
-    // Generate the solution function code.
+    // Generate the solution function registers.
     for (unsigned int i = 0; i < tabs; i++)
         anprintf(buffer, size, length, "    ");
     anprintf(buffer, size, length, "float r0");
     for (unsigned int i = 1; i <= maxRegister; i++)
         anprintf(buffer, size, length, ", r%u", i);
     anprintf(buffer, size, length, ";\r\n\r\n");
+#endif
 
+    // Generate the solution function code.
     for (unsigned int i = 0; i < numInstructions; i++) {
         unsigned int reg = instructions->Register(i);
         const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);

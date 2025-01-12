@@ -324,14 +324,12 @@ typedef struct FireStarterCode {
     {
 #if FIRESTARTER_FIRSTLIGHT
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
-            const FireStarterOpcode op = c[i].op;
-            float& reg = data[c[i].reg];
             switch (c[i].op) {
                 case Operation_noop:
                     break;
 
                 case Operation_store:
-                    reg =  n;
+                    data[c[i].reg] =  n;
                     break;
 
                 case Operation_square:
@@ -339,27 +337,27 @@ typedef struct FireStarterCode {
                     break;
 
                 case Operation_add:
-                    n += reg;
+                    n += data[c[i].reg];
                     break;
 
                 case Operation_subtract:
-                    n -= reg;
+                    n -= data[c[i].reg];
                     break;
 
                 case Operation_multiply:
-                    n *= reg;
+                    n *= data[c[i].reg];
                     break;
 
                 case Operation_divide:
-                    n /= reg;
+                    n /= data[c[i].reg];
                     break;
 
                 case Operation_max:
-                    n = reg > n ? reg : n;
+                    n = data[c[i].reg] > n ? data[c[i].reg] : n;
                     break;
 
                 case Operation_min:
-                    n = reg < n ? reg : n;
+                    n = data[c[i].reg] < n ? data[c[i].reg] : n;
                     break;
             }
         }
@@ -379,14 +377,12 @@ typedef struct FireStarterCode {
     {
 #if FIRESTARTER_FIRSTLIGHT
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
-            const FireStarterOpcode op = c[i].op;
-            float& reg = data[c[i].reg];
             switch (c[i].op) {
                 case Operation_noop:
                     break;
 
                 case Operation_store:
-                    reg =  n;
+                    data[c[i].reg] =  n;
                     break;
 
                 case Operation_square:
@@ -394,27 +390,27 @@ typedef struct FireStarterCode {
                     break;
 
                 case Operation_add:
-                    n += reg;
+                    n += data[c[i].reg];
                     break;
 
                 case Operation_subtract:
-                    n -= reg;
+                    n -= data[c[i].reg];
                     break;
 
                 case Operation_multiply:
-                    n *= reg;
+                    n *= data[c[i].reg];
                     break;
 
                 case Operation_divide:
-                    n /= reg;
+                    n /= data[c[i].reg];
                     break;
 
                 case Operation_max:
-                    n = reg > n ? reg : n;
+                    n = data[c[i].reg] > n ? data[c[i].reg] : n;
                     break;
 
                 case Operation_min:
-                    n = reg < n ? reg : n;
+                    n = data[c[i].reg] < n ? data[c[i].reg] : n;
                     break;
             }
         }
@@ -434,7 +430,7 @@ typedef struct FireStarterCode {
     {
         c[i].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
 #if FIRESTARTER_MADD
-        c[i].op = i & 1 ? Operation_multiply : Operation_add;
+        c[i].op = i & 1 ? Operation_add : Operation_multiply;
 #else
         c[i].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
 #endif
