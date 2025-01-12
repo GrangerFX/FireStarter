@@ -1,0 +1,10 @@
+Seed: 0  Test:   0  Generation=1000  Evolve Result=0.00142561  Best Result=0.00142561  Duration: 575.1  GenTime: 0.6  Total: 575.1  Average: 575.1
+Seed: 0  Test:   1  Generation=1000  Evolve Result=0.00030232  Best Result=0.00030232  Duration: 566.7  GenTime: 0.6  Total: 1141.7  Average: 570.9
+Seed: 0  Test:   2  Generation=1000  Evolve Result=0.00033003  Best Result=0.00033003  Duration: 589.5  GenTime: 0.6  Total: 1731.3  Average: 577.1
+Seed: 0  Test:   3  Generation=1000  Evolve Result=0.00105822  Best Result=0.00105822  Duration: 578.1  GenTime: 0.6  Total: 2309.4  Average: 577.4
+Seed: 0  Test:   4  Generation=1000  Evolve Result=0.00005157  Best Result=0.00005157  Duration: 561.8  GenTime: 0.6  Total: 2871.2  Average: 574.2
+Seed: 0  Test:   5  Generation=1000  Evolve Result=0.00007136  Best Result=0.00007136  Duration: 583.0  GenTime: 0.6  Total: 3454.2  Average: 575.7
+Seed: 0  Test:   6  Generation=1000  Evolve Result=0.00026079  Best Result=0.00026079  Duration: 577.2  GenTime: 0.6  Total: 4031.4  Average: 575.9
+Seed: 0  Test:   7  Generation=1000  Evolve Result=0.00073395  Best Result=0.00073395  Duration: 571.1  GenTime: 0.6  Total: 4602.5  Average: 575.3
+Seed: 0  Test:   8  Generation=1000  Evolve Result=0.00078347  Best Result=0.00078347  Duration: 571.7  GenTime: 0.6  Total: 5174.2  Average: 574.9
+Seed: 0  Test:   9  Generation=1000  Evolve Result=0.00063885  Best Result=0.00063885  Duration: 572.9  GenTime: 0.6  Total: 5747.1  Average: 574.7

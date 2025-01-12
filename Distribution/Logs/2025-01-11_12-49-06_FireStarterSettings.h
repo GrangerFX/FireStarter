@@ -190,13 +190,13 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 #else
 const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_store,
-//    Operation_square,
+    Operation_square,
     Operation_add,
     Operation_subtract,
     Operation_multiply,
     Operation_divide,
-//    Operation_max,
-//    Operation_min
+    Operation_max,
+    Operation_min
 };
 #endif
 #else
