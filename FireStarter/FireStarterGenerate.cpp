@@ -132,7 +132,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     const FireStarterInstructions* instructions = state.m_program.OptimizedInstructions();
     std::vector<FireStarterRegisterInfo> registers;
     unsigned int numRegisters = state.m_program.GenerateRegisters(registers);
-    FireStarterRegisterUsage* registersData = (FireStarterRegisterUsage*)registers.data();
+    FireStarterRegisterUsage* registersUsage = (FireStarterRegisterUsage*)registers.data();
     std::string generateCode;
 
     const FireStarterSettings& settings = state.Settings();
@@ -164,7 +164,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
             dim3 cudaGridSize(1, 1, 1);
             CUstream stream = m_CUDAContext->Stream();
             checkCUDAErrors(cudaMemcpyAsync(m_deviceInstructions, instructions, FireStarterInstructions::InstructionsSize(numInstructions), cudaMemcpyHostToDevice, stream));
-            checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registersData, FireStarterRegisterUsage::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registersUsage, FireStarterRegisterUsage::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
             checkCUDAErrors(cudaMemcpyAsync(m_deviceData, data, FireStarterData::DataSize(numRegisters), cudaMemcpyHostToDevice, stream));
 
             size_t stringSize = 0;
@@ -206,10 +206,10 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
             m_CUDAContext->Synchronize();
         } else {
             size_t codeLength = 0;
-            GenerateSolutionCode(nullptr, 0, codeLength, tabs, instructions, numInstructions, registersData, numRegisters, data);
+            GenerateSolutionCode(nullptr, 0, codeLength, tabs, instructions, numInstructions, registersUsage, numRegisters, data);
             generateCode.resize(codeLength, 0);
             codeLength = 0;
-            GenerateSolutionCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, numInstructions, registersData, numRegisters, data);
+            GenerateSolutionCode(generateCode.data(), generateCode.max_size(), codeLength, tabs, instructions, numInstructions, registersUsage, numRegisters, data);
         }
         code += generateCode;
 

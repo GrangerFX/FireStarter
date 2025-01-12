@@ -1,0 +1,52 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_NEW
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 100
+population = 65536
+passes = 1
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  0  Old Result=10.00000000 *New Result=0.67720419  MinIndex=26770  EvolveAge=4  Best=0.67720419   BestAge=0  Time=0.1  Run Time=7.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  1  Old Result=0.67720419  Bad Result=0.67720419  MinIndex=26770  EvolveAge=4  Best=0.67720419   BestAge=1  Time=0.1  Run Time=7.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  2  Old Result=0.67720419 *New Result=0.67720413  MinIndex=3675  EvolveAge=7  Best=0.67720413   BestAge=0  Time=0.1  Run Time=7.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  3  Old Result=0.67720413  Bad Result=0.67720413  MinIndex=3675  EvolveAge=7  Best=0.67720413   BestAge=1  Time=0.1  Run Time=7.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  4  Old Result=0.67720413  Bad Result=0.67720413  MinIndex=3675  EvolveAge=7  Best=0.67720413   BestAge=2  Time=0.1  Run Time=7.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  5  Old Result=0.67720413 *New Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=0  Time=0.1  Run Time=7.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  6  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=1  Time=0.1  Run Time=7.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  7  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=2  Time=0.1  Run Time=8.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  8  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=3  Time=0.1  Run Time=8.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  9  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=4  Time=0.1  Run Time=8.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 10  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=5  Time=0.1  Run Time=8.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 11  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=6  Time=0.1  Run Time=8.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 12  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=7  Time=0.1  Run Time=8.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 13  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=8  Time=0.1  Run Time=8.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 14  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2653  EvolveAge=9  Best=0.67720407   BestAge=9  Time=0.1  Run Time=8.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 15  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2653  EvolveAge=9  Best=0.67720407   BestAge=10  Time=0.1  Run Time=8.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 16  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=11  Time=0.1  Run Time=8.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 17  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=12  Time=0.1  Run Time=8.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 18  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=13  Time=0.1  Run Time=8.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 19  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=14  Time=0.1  Run Time=8.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 20  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=15  Time=0.1  Run Time=8.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 21  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=16  Time=0.1  Run Time=8.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 22  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=17  Time=0.1  Run Time=9.0
