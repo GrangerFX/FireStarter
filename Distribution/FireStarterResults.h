@@ -322,7 +322,12 @@ typedef struct FireStarterCode {
 
     inline float Evaluate(FireStarterData& data, float n) const
     {
-#if FIRESTARTER_FIRSTLIGHT
+#if FIRESTARTER_MADD
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+            n = data[c[i].reg] *= n;
+            n = data[c[i + 1].reg] += n;
+        }
+#elif FIRESTARTER_FIRSTLIGHT
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
             switch (c[i].op) {
                 case Operation_noop:
@@ -360,11 +365,6 @@ typedef struct FireStarterCode {
                     n = data[c[i].reg] < n ? data[c[i].reg] : n;
                     break;
             }
-        }
-#elif FIRESTARTER_MADD
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
-            n = data[c[i].reg] *= n;
-            n = data[c[i + 1].reg] += n;
         }
 #else
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
@@ -375,7 +375,12 @@ typedef struct FireStarterCode {
 
     inline float Evaluate(FireStarterSharedData& data, float n) const
     {
-#if FIRESTARTER_FIRSTLIGHT
+#if FIRESTARTER_MADD
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+            n = data[c[i].reg] *= n;
+            n = data[c[i + 1].reg] += n;
+        }
+#elif FIRESTARTER_FIRSTLIGHT
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
             switch (c[i].op) {
                 case Operation_noop:
@@ -413,11 +418,6 @@ typedef struct FireStarterCode {
                     n = data[c[i].reg] < n ? data[c[i].reg] : n;
                     break;
             }
-        }
-#elif FIRESTARTER_MADD
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
-            n = data[c[i].reg] *= n;
-            n = data[c[i + 1].reg] += n;
         }
 #else
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)

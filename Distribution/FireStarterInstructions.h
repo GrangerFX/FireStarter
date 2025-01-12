@@ -85,6 +85,16 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                 anprintf(buffer, size, length, "n /= data[%u];\r\n", reg);
                 break;
 
+            case Operation_add2:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
+                break;
+
+            case Operation_multiply2:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n = data[%u] *= n;\r\n", reg);
+                break;
+
             case Operation_max:
                 GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = data[%u] > n ? data[%u] : n;\r\n", reg, reg);
@@ -155,6 +165,16 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
             case Operation_divide:
                 GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n /= r%u;\r\n", reg);
+                break;
+
+            case Operation_add2:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n = r%u += n;\r\n", reg);
+                break;
+
+            case Operation_multiply2:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n = r%u *= n;\r\n", reg);
                 break;
 
             case Operation_max:
