@@ -1,0 +1,1029 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 2
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_NEW
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+generations = 1000
+population = 65536
+passes = 1
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  0  Old Result=10.00000000 *New Result=0.67720419  MinIndex=26770  EvolveAge=4  Best=0.67720419   BestAge=0  Time=0.1  Run Time=66.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  1  Old Result=0.67720419  Bad Result=0.67720419  MinIndex=26770  EvolveAge=4  Best=0.67720419   BestAge=1  Time=0.1  Run Time=66.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  2  Old Result=0.67720419 *New Result=0.67720413  MinIndex=3675  EvolveAge=7  Best=0.67720413   BestAge=0  Time=0.1  Run Time=67.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  3  Old Result=0.67720413  Bad Result=0.67720413  MinIndex=3675  EvolveAge=7  Best=0.67720413   BestAge=1  Time=0.1  Run Time=67.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  4  Old Result=0.67720413  Bad Result=0.67720413  MinIndex=3675  EvolveAge=7  Best=0.67720413   BestAge=2  Time=0.1  Run Time=67.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  5  Old Result=0.67720413 *New Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=0  Time=0.1  Run Time=67.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  6  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=1  Time=0.1  Run Time=67.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  7  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=2  Time=0.1  Run Time=67.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  8  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=3  Time=0.1  Run Time=67.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=  9  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=4  Time=0.1  Run Time=67.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 10  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=5  Time=0.1  Run Time=67.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 11  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=6  Time=0.1  Run Time=67.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 12  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=7  Time=0.1  Run Time=67.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 13  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2944  EvolveAge=5  Best=0.67720407   BestAge=8  Time=0.1  Run Time=67.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 14  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2653  EvolveAge=9  Best=0.67720407   BestAge=9  Time=0.1  Run Time=67.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 15  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=2653  EvolveAge=9  Best=0.67720407   BestAge=10  Time=0.1  Run Time=67.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 16  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=11  Time=0.1  Run Time=67.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 17  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=12  Time=0.1  Run Time=68.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 18  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=13  Time=0.1  Run Time=68.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 19  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=14  Time=0.1  Run Time=68.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 20  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=15  Time=0.1  Run Time=68.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 21  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=16  Time=0.1  Run Time=68.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 22  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=17  Time=0.1  Run Time=68.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 23  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=18  Time=0.1  Run Time=68.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 24  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=19  Time=0.1  Run Time=68.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 25  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=20  Time=0.1  Run Time=68.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 26  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=21  Time=0.1  Run Time=68.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 27  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1443  EvolveAge=4  Best=0.67720407   BestAge=22  Time=0.1  Run Time=68.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 28  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=23  Time=0.1  Run Time=68.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 29  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=24  Time=0.1  Run Time=68.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 30  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=25  Time=0.1  Run Time=68.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 31  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=26  Time=0.1  Run Time=68.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 32  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=27  Time=0.1  Run Time=69.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 33  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=28  Time=0.1  Run Time=69.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 34  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=29  Time=0.1  Run Time=69.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 35  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=30  Time=0.1  Run Time=69.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 36  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=31  Time=0.1  Run Time=69.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 37  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=32  Time=0.1  Run Time=69.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 38  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=33  Time=0.1  Run Time=69.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 39  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=34  Time=0.1  Run Time=69.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 40  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=35  Time=0.1  Run Time=69.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 41  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=36  Time=0.1  Run Time=69.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 42  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=37  Time=0.1  Run Time=69.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 43  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=38  Time=0.1  Run Time=69.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 44  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=39  Time=0.1  Run Time=69.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 45  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=1330  EvolveAge=3  Best=0.67720407   BestAge=40  Time=0.1  Run Time=69.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 46  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=41  Time=0.1  Run Time=69.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 47  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=42  Time=0.1  Run Time=70.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 48  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=43  Time=0.1  Run Time=70.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 49  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=44  Time=0.1  Run Time=70.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 50  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=45  Time=0.1  Run Time=70.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 51  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=46  Time=0.1  Run Time=70.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 52  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=47  Time=0.1  Run Time=70.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 53  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=48  Time=0.1  Run Time=70.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 54  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=49  Time=0.1  Run Time=70.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 55  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=50  Time=0.1  Run Time=70.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 56  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=51  Time=0.1  Run Time=70.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 57  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=52  Time=0.1  Run Time=70.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 58  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=53  Time=0.1  Run Time=70.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 59  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=54  Time=0.1  Run Time=70.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 60  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=55  Time=0.1  Run Time=70.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 61  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=56  Time=0.1  Run Time=70.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 62  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=57  Time=0.1  Run Time=71.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 63  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=58  Time=0.1  Run Time=71.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 64  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=59  Time=0.1  Run Time=71.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 65  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=60  Time=0.1  Run Time=71.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 66  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=61  Time=0.1  Run Time=71.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 67  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=62  Time=0.1  Run Time=71.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 68  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=63  Time=0.1  Run Time=71.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 69  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=64  Time=0.1  Run Time=71.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 70  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=65  Time=0.1  Run Time=71.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 71  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=66  Time=0.1  Run Time=71.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 72  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=67  Time=0.1  Run Time=71.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 73  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=68  Time=0.1  Run Time=71.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 74  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=69  Time=0.1  Run Time=71.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 75  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=70  Time=0.1  Run Time=71.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 76  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=71  Time=0.1  Run Time=71.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 77  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=72  Time=0.1  Run Time=71.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 78  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=73  Time=0.1  Run Time=72.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 79  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=74  Time=0.1  Run Time=72.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 80  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=75  Time=0.1  Run Time=72.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 81  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=76  Time=0.1  Run Time=72.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 82  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=77  Time=0.1  Run Time=72.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 83  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=78  Time=0.1  Run Time=72.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 84  Old Result=0.67720407  Bad Result=0.67720407  MinIndex=169  EvolveAge=7  Best=0.67720407   BestAge=79  Time=0.1  Run Time=72.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 85  Old Result=0.67720407 *New Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=0  Time=0.1  Run Time=72.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 86  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=1  Time=0.1  Run Time=72.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 87  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=2  Time=0.1  Run Time=72.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 88  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=3  Time=0.1  Run Time=72.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 89  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=4  Time=0.1  Run Time=72.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 90  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=5  Time=0.1  Run Time=72.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 91  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=6  Time=0.1  Run Time=72.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 92  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=7  Time=0.1  Run Time=72.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 93  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=8  Time=0.1  Run Time=73.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 94  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=9  Time=0.1  Run Time=73.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 95  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=10  Time=0.1  Run Time=73.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 96  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=11  Time=0.1  Run Time=73.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 97  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=12  Time=0.1  Run Time=73.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 98  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=13  Time=0.1  Run Time=73.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation= 99  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=14  Time=0.1  Run Time=73.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=100  Old Result=0.60982090  Bad Result=0.60982090  MinIndex=63034  EvolveAge=0  Best=0.60982090   BestAge=15  Time=0.1  Run Time=73.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=101  Old Result=0.60982090 *New Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=0  Time=0.1  Run Time=73.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=102  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=1  Time=0.1  Run Time=73.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=103  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=2  Time=0.1  Run Time=73.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=104  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=3  Time=0.1  Run Time=73.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=105  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=4  Time=0.1  Run Time=73.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=106  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=5  Time=0.1  Run Time=73.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=107  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=6  Time=0.1  Run Time=73.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=108  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=7  Time=0.1  Run Time=74.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=109  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=8  Time=0.1  Run Time=74.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=110  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=9  Time=0.1  Run Time=74.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=111  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=10  Time=0.1  Run Time=74.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=112  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=11  Time=0.1  Run Time=74.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=113  Old Result=0.57624775  Bad Result=0.57624775  MinIndex=63034  EvolveAge=6  Best=0.57624775   BestAge=12  Time=0.1  Run Time=74.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=114  Old Result=0.57624775 *New Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=0  Time=0.1  Run Time=74.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=115  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=1  Time=0.1  Run Time=74.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=116  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=2  Time=0.1  Run Time=74.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=117  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=3  Time=0.1  Run Time=74.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=118  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=4  Time=0.1  Run Time=74.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=119  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=5  Time=0.1  Run Time=74.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=120  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=6  Time=0.1  Run Time=74.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=121  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=7  Time=0.1  Run Time=74.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=122  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=8  Time=0.1  Run Time=74.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=123  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=9  Time=0.1  Run Time=75.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=124  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=10  Time=0.1  Run Time=75.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=125  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=11  Time=0.1  Run Time=75.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=126  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=12  Time=0.1  Run Time=75.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=127  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=13  Time=0.1  Run Time=75.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=128  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=14  Time=0.1  Run Time=75.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=129  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=15  Time=0.1  Run Time=75.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=130  Old Result=0.55179322  Bad Result=0.55179322  MinIndex=63034  EvolveAge=9  Best=0.55179322   BestAge=16  Time=0.1  Run Time=75.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=131  Old Result=0.55179322 *New Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=0  Time=0.1  Run Time=75.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=132  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=1  Time=0.1  Run Time=75.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=133  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=2  Time=0.1  Run Time=75.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=134  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=3  Time=0.1  Run Time=75.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=135  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=4  Time=0.1  Run Time=75.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=136  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=5  Time=0.1  Run Time=75.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=137  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=6  Time=0.1  Run Time=75.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=138  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=7  Time=0.1  Run Time=76.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=139  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=8  Time=0.1  Run Time=76.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=140  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=9  Time=0.1  Run Time=76.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=141  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=10  Time=0.1  Run Time=76.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=142  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=11  Time=0.1  Run Time=76.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=143  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=12  Time=0.1  Run Time=76.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=144  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=13  Time=0.1  Run Time=76.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=145  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=14  Time=0.1  Run Time=76.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=146  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=15  Time=0.1  Run Time=76.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=147  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=16  Time=0.1  Run Time=76.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=148  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=17  Time=0.1  Run Time=76.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=149  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=18  Time=0.1  Run Time=76.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=150  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=19  Time=0.1  Run Time=76.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=151  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=20  Time=0.1  Run Time=76.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=152  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=21  Time=0.1  Run Time=76.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=153  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=22  Time=0.1  Run Time=77.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=154  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=23  Time=0.1  Run Time=77.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=155  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=24  Time=0.1  Run Time=77.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=156  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=25  Time=0.1  Run Time=77.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=157  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=26  Time=0.1  Run Time=77.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=158  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=27  Time=0.1  Run Time=77.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=159  Old Result=0.54807186  Bad Result=0.54807186  MinIndex=63034  EvolveAge=9  Best=0.54807186   BestAge=28  Time=0.1  Run Time=77.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=160  Old Result=0.54807186 *New Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=0  Time=0.1  Run Time=77.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=161  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=1  Time=0.1  Run Time=77.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=162  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=2  Time=0.1  Run Time=77.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=163  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=3  Time=0.1  Run Time=77.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=164  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=4  Time=0.1  Run Time=77.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=165  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=5  Time=0.1  Run Time=77.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=166  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=6  Time=0.1  Run Time=77.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=167  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=7  Time=0.1  Run Time=77.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=168  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=8  Time=0.1  Run Time=78.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=169  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=9  Time=0.1  Run Time=78.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=170  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=10  Time=0.1  Run Time=78.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=171  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=11  Time=0.1  Run Time=78.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=172  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=12  Time=0.1  Run Time=78.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=173  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=13  Time=0.1  Run Time=78.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=174  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=14  Time=0.1  Run Time=78.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=175  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=15  Time=0.1  Run Time=78.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=176  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=16  Time=0.1  Run Time=78.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=177  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=17  Time=0.1  Run Time=78.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=178  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=18  Time=0.1  Run Time=78.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=179  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=19  Time=0.1  Run Time=78.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=180  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=20  Time=0.1  Run Time=78.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=181  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=21  Time=0.1  Run Time=78.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=182  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=22  Time=0.1  Run Time=78.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=183  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=23  Time=0.1  Run Time=79.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=184  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=24  Time=0.1  Run Time=79.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=185  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=25  Time=0.1  Run Time=79.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=186  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=26  Time=0.1  Run Time=79.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=187  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=27  Time=0.1  Run Time=79.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=188  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=28  Time=0.1  Run Time=79.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=189  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=29  Time=0.1  Run Time=79.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=190  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=30  Time=0.1  Run Time=79.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=191  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=31  Time=0.1  Run Time=79.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=192  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=32  Time=0.1  Run Time=79.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=193  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=33  Time=0.1  Run Time=79.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=194  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=34  Time=0.1  Run Time=79.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=195  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=35  Time=0.1  Run Time=79.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=196  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=36  Time=0.1  Run Time=79.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=197  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=37  Time=0.1  Run Time=79.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=198  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=38  Time=0.1  Run Time=80.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=199  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=39  Time=0.1  Run Time=80.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=200  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=40  Time=0.1  Run Time=80.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=201  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=41  Time=0.1  Run Time=80.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=202  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=42  Time=0.1  Run Time=80.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=203  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=43  Time=0.1  Run Time=80.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=204  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=44  Time=0.1  Run Time=80.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=205  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=45  Time=0.1  Run Time=80.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=206  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=46  Time=0.1  Run Time=80.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=207  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=47  Time=0.1  Run Time=80.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=208  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=48  Time=0.1  Run Time=80.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=209  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=49  Time=0.1  Run Time=80.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=210  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=50  Time=0.1  Run Time=80.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=211  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=51  Time=0.1  Run Time=80.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=212  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=52  Time=0.1  Run Time=80.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=213  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=53  Time=0.1  Run Time=81.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=214  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=54  Time=0.1  Run Time=81.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=215  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=55  Time=0.1  Run Time=81.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=216  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=56  Time=0.1  Run Time=81.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=217  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=57  Time=0.1  Run Time=81.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=218  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=58  Time=0.1  Run Time=81.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=219  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=59  Time=0.1  Run Time=81.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=220  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=60  Time=0.1  Run Time=81.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=221  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=61  Time=0.1  Run Time=81.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=222  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=62  Time=0.1  Run Time=81.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=223  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=63  Time=0.1  Run Time=81.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=224  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=64  Time=0.1  Run Time=81.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=225  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=65  Time=0.1  Run Time=81.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=226  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=66  Time=0.1  Run Time=81.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=227  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=67  Time=0.1  Run Time=81.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=228  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=68  Time=0.1  Run Time=81.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=229  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=69  Time=0.1  Run Time=82.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=230  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=70  Time=0.1  Run Time=82.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=231  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=71  Time=0.1  Run Time=82.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=232  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=72  Time=0.1  Run Time=82.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=233  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=73  Time=0.1  Run Time=82.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=234  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=74  Time=0.1  Run Time=82.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=235  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=75  Time=0.1  Run Time=82.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=236  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=76  Time=0.1  Run Time=82.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=237  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=77  Time=0.1  Run Time=82.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=238  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=78  Time=0.1  Run Time=82.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=239  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=79  Time=0.1  Run Time=82.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=240  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=80  Time=0.1  Run Time=82.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=241  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=81  Time=0.1  Run Time=82.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=242  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=82  Time=0.1  Run Time=82.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=243  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=83  Time=0.1  Run Time=82.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=244  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=84  Time=0.1  Run Time=83.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=245  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=85  Time=0.1  Run Time=83.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=246  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=86  Time=0.1  Run Time=83.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=247  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=87  Time=0.1  Run Time=83.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=248  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=88  Time=0.1  Run Time=83.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=249  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=89  Time=0.1  Run Time=83.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=250  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=90  Time=0.1  Run Time=83.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=251  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=91  Time=0.1  Run Time=83.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=252  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=92  Time=0.1  Run Time=83.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=253  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=93  Time=0.1  Run Time=83.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=254  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=94  Time=0.1  Run Time=83.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=255  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=95  Time=0.1  Run Time=83.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=256  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=96  Time=0.1  Run Time=83.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=257  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=97  Time=0.1  Run Time=83.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=258  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=98  Time=0.1  Run Time=83.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=259  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=99  Time=0.1  Run Time=84.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=260  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=100  Time=0.1  Run Time=84.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=261  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=101  Time=0.1  Run Time=84.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=262  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=102  Time=0.1  Run Time=84.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=263  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=103  Time=0.1  Run Time=84.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=264  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=104  Time=0.1  Run Time=84.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=265  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=105  Time=0.1  Run Time=84.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=266  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=106  Time=0.1  Run Time=84.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=267  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=107  Time=0.1  Run Time=84.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=268  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=108  Time=0.1  Run Time=84.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=269  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=109  Time=0.1  Run Time=84.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=270  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=110  Time=0.1  Run Time=84.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=271  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=111  Time=0.1  Run Time=84.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=272  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=112  Time=0.1  Run Time=84.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=273  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=113  Time=0.1  Run Time=84.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=274  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=114  Time=0.1  Run Time=85.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=275  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=115  Time=0.1  Run Time=85.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=276  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=116  Time=0.1  Run Time=85.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=277  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=117  Time=0.1  Run Time=85.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=278  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=118  Time=0.1  Run Time=85.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=279  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=119  Time=0.1  Run Time=85.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=280  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=120  Time=0.1  Run Time=85.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=281  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=121  Time=0.1  Run Time=85.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=282  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=122  Time=0.1  Run Time=85.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=283  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=123  Time=0.1  Run Time=85.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=284  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=124  Time=0.1  Run Time=85.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=285  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=125  Time=0.1  Run Time=85.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=286  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=126  Time=0.1  Run Time=85.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=287  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=127  Time=0.1  Run Time=85.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=288  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=128  Time=0.1  Run Time=85.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=289  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=129  Time=0.1  Run Time=86.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=290  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=130  Time=0.1  Run Time=86.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=291  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=131  Time=0.1  Run Time=86.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=292  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=132  Time=0.1  Run Time=86.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=293  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=133  Time=0.1  Run Time=86.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=294  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=134  Time=0.1  Run Time=86.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=295  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=135  Time=0.1  Run Time=86.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=296  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=136  Time=0.1  Run Time=86.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=297  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=137  Time=0.1  Run Time=86.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=298  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=138  Time=0.1  Run Time=86.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=299  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=139  Time=0.1  Run Time=86.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=300  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=140  Time=0.1  Run Time=86.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=301  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=141  Time=0.1  Run Time=86.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=302  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=142  Time=0.1  Run Time=86.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=303  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=143  Time=0.1  Run Time=86.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=304  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=144  Time=0.1  Run Time=87.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=305  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=145  Time=0.1  Run Time=87.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=306  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=146  Time=0.1  Run Time=87.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=307  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=147  Time=0.1  Run Time=87.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=308  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=148  Time=0.1  Run Time=87.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=309  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=149  Time=0.1  Run Time=87.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=310  Old Result=0.53955770  Bad Result=0.53955770  MinIndex=63034  EvolveAge=9  Best=0.53955770   BestAge=150  Time=0.1  Run Time=87.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=311  Old Result=0.53955770 *New Result=0.46468377  MinIndex=10552  EvolveAge=1  Best=0.46468377   BestAge=0  Time=0.1  Run Time=87.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=312  Old Result=0.46468377  Bad Result=0.46468377  MinIndex=10552  EvolveAge=1  Best=0.46468377   BestAge=1  Time=0.1  Run Time=87.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=313  Old Result=0.46468377  Bad Result=0.46468377  MinIndex=10552  EvolveAge=1  Best=0.46468377   BestAge=2  Time=0.1  Run Time=87.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=314  Old Result=0.46468377  Bad Result=0.46468377  MinIndex=10552  EvolveAge=1  Best=0.46468377   BestAge=3  Time=0.1  Run Time=87.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=315  Old Result=0.46468377 *New Result=0.45491287  MinIndex=10552  EvolveAge=6  Best=0.45491287   BestAge=0  Time=0.1  Run Time=87.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=316  Old Result=0.45491287  Bad Result=0.45491287  MinIndex=10552  EvolveAge=6  Best=0.45491287   BestAge=1  Time=0.1  Run Time=87.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=317  Old Result=0.45491287 *New Result=0.41423273  MinIndex=10552  EvolveAge=10  Best=0.41423273   BestAge=0  Time=0.1  Run Time=87.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=318  Old Result=0.41423273  Bad Result=0.41423273  MinIndex=10552  EvolveAge=10  Best=0.41423273   BestAge=1  Time=0.1  Run Time=87.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=319  Old Result=0.41423273  Bad Result=0.41423273  MinIndex=10552  EvolveAge=10  Best=0.41423273   BestAge=2  Time=0.1  Run Time=88.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=320  Old Result=0.41423273  Bad Result=0.41423273  MinIndex=10552  EvolveAge=10  Best=0.41423273   BestAge=3  Time=0.1  Run Time=88.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=321  Old Result=0.41423273  Bad Result=0.41423273  MinIndex=10552  EvolveAge=10  Best=0.41423273   BestAge=4  Time=0.1  Run Time=88.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=322  Old Result=0.41423273  Bad Result=0.41423273  MinIndex=10552  EvolveAge=10  Best=0.41423273   BestAge=5  Time=0.1  Run Time=88.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=323  Old Result=0.41423273  Bad Result=0.41423273  MinIndex=10552  EvolveAge=10  Best=0.41423273   BestAge=6  Time=0.1  Run Time=88.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=324  Old Result=0.41423273 *New Result=0.41189110  MinIndex=10552  EvolveAge=12  Best=0.41189110   BestAge=0  Time=0.1  Run Time=88.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=325  Old Result=0.41189110  Bad Result=0.41189110  MinIndex=10552  EvolveAge=12  Best=0.41189110   BestAge=1  Time=0.1  Run Time=88.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=326  Old Result=0.41189110  Bad Result=0.41189110  MinIndex=10552  EvolveAge=12  Best=0.41189110   BestAge=2  Time=0.1  Run Time=88.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=327  Old Result=0.41189110  Bad Result=0.41189110  MinIndex=10552  EvolveAge=12  Best=0.41189110   BestAge=3  Time=0.1  Run Time=88.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=328  Old Result=0.41189110  Bad Result=0.41189110  MinIndex=10552  EvolveAge=12  Best=0.41189110   BestAge=4  Time=0.1  Run Time=88.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=329  Old Result=0.41189110  Bad Result=0.41189110  MinIndex=10552  EvolveAge=12  Best=0.41189110   BestAge=5  Time=0.1  Run Time=88.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=330  Old Result=0.41189110  Bad Result=0.41189110  MinIndex=10552  EvolveAge=12  Best=0.41189110   BestAge=6  Time=0.1  Run Time=88.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=331  Old Result=0.41189110 *New Result=0.38399437  MinIndex=10552  EvolveAge=0  Best=0.38399437   BestAge=0  Time=0.1  Run Time=88.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=332  Old Result=0.38399437  Bad Result=0.38399437  MinIndex=10552  EvolveAge=0  Best=0.38399437   BestAge=1  Time=0.1  Run Time=88.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=333  Old Result=0.38399437  Bad Result=0.38399437  MinIndex=10552  EvolveAge=0  Best=0.38399437   BestAge=2  Time=0.1  Run Time=88.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=334  Old Result=0.38399437  Bad Result=0.38399437  MinIndex=10552  EvolveAge=0  Best=0.38399437   BestAge=3  Time=0.1  Run Time=89.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=335  Old Result=0.38399437  Bad Result=0.38399437  MinIndex=10552  EvolveAge=0  Best=0.38399437   BestAge=4  Time=0.1  Run Time=89.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=336  Old Result=0.38399437  Bad Result=0.38399437  MinIndex=10552  EvolveAge=0  Best=0.38399437   BestAge=5  Time=0.1  Run Time=89.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=337  Old Result=0.38399437 *New Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=0  Time=0.1  Run Time=89.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=338  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=1  Time=0.1  Run Time=89.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=339  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=2  Time=0.1  Run Time=89.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=340  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=3  Time=0.1  Run Time=89.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=341  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=4  Time=0.1  Run Time=89.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=342  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=5  Time=0.1  Run Time=89.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=343  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=6  Time=0.1  Run Time=89.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=344  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=7  Time=0.1  Run Time=89.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=345  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=8  Time=0.1  Run Time=89.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=346  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=9  Time=0.1  Run Time=89.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=347  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=10  Time=0.1  Run Time=89.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=348  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=11  Time=0.1  Run Time=89.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=349  Old Result=0.38252980  Bad Result=0.38252980  MinIndex=10552  EvolveAge=2  Best=0.38252980   BestAge=12  Time=0.1  Run Time=90.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=350  Old Result=0.38252980 *New Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=0  Time=0.1  Run Time=90.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=351  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=1  Time=0.1  Run Time=90.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=352  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=2  Time=0.1  Run Time=90.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=353  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=3  Time=0.1  Run Time=90.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=354  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=4  Time=0.1  Run Time=90.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=355  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=5  Time=0.1  Run Time=90.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=356  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=6  Time=0.1  Run Time=90.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=357  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=7  Time=0.1  Run Time=90.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=358  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=8  Time=0.1  Run Time=90.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=359  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=9  Time=0.1  Run Time=90.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=360  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=10  Time=0.1  Run Time=90.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=361  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=11  Time=0.1  Run Time=90.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=362  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=12  Time=0.1  Run Time=90.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=363  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=13  Time=0.1  Run Time=90.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=364  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=14  Time=0.1  Run Time=91.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=365  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=15  Time=0.1  Run Time=91.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=366  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=16  Time=0.1  Run Time=91.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=367  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=17  Time=0.1  Run Time=91.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=368  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=18  Time=0.1  Run Time=91.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=369  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=19  Time=0.1  Run Time=91.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=370  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=20  Time=0.1  Run Time=91.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=371  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=21  Time=0.1  Run Time=91.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=372  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=22  Time=0.1  Run Time=91.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=373  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=23  Time=0.1  Run Time=91.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=374  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=24  Time=0.1  Run Time=91.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=375  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=25  Time=0.1  Run Time=91.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=376  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=26  Time=0.1  Run Time=91.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=377  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=27  Time=0.1  Run Time=91.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=378  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=28  Time=0.1  Run Time=91.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=379  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=29  Time=0.1  Run Time=92.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=380  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=30  Time=0.1  Run Time=92.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=381  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=31  Time=0.1  Run Time=92.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=382  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=32  Time=0.1  Run Time=92.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=383  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=33  Time=0.1  Run Time=92.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=384  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=34  Time=0.1  Run Time=92.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=385  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=35  Time=0.1  Run Time=92.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=386  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=36  Time=0.1  Run Time=92.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=387  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=37  Time=0.1  Run Time=92.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=388  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=38  Time=0.1  Run Time=92.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=389  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=39  Time=0.1  Run Time=92.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=390  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=40  Time=0.1  Run Time=92.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=391  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=41  Time=0.1  Run Time=92.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=392  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=42  Time=0.1  Run Time=92.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=393  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=43  Time=0.1  Run Time=92.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=394  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=44  Time=0.1  Run Time=93.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=395  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=45  Time=0.1  Run Time=93.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=396  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=46  Time=0.1  Run Time=93.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=397  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=47  Time=0.1  Run Time=93.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=398  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=48  Time=0.1  Run Time=93.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=399  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=49  Time=0.1  Run Time=93.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=400  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=50  Time=0.1  Run Time=93.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=401  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=51  Time=0.1  Run Time=93.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=402  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=52  Time=0.1  Run Time=93.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=403  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=53  Time=0.1  Run Time=93.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=404  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=54  Time=0.1  Run Time=93.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=405  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=55  Time=0.1  Run Time=93.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=406  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=56  Time=0.1  Run Time=93.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=407  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=57  Time=0.1  Run Time=93.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=408  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=58  Time=0.1  Run Time=93.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=409  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=59  Time=0.1  Run Time=93.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=410  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=60  Time=0.1  Run Time=94.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=411  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=61  Time=0.1  Run Time=94.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=412  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=62  Time=0.1  Run Time=94.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=413  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=63  Time=0.1  Run Time=94.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=414  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=64  Time=0.1  Run Time=94.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=415  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=65  Time=0.1  Run Time=94.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=416  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=66  Time=0.1  Run Time=94.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=417  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=67  Time=0.1  Run Time=94.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=418  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=68  Time=0.1  Run Time=94.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=419  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=69  Time=0.1  Run Time=94.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=420  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=70  Time=0.1  Run Time=94.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=421  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=71  Time=0.1  Run Time=94.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=422  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=72  Time=0.1  Run Time=94.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=423  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=73  Time=0.1  Run Time=94.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=424  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=74  Time=0.1  Run Time=94.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=425  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=75  Time=0.1  Run Time=95.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=426  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=76  Time=0.1  Run Time=95.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=427  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=77  Time=0.1  Run Time=95.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=428  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=78  Time=0.1  Run Time=95.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=429  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=79  Time=0.1  Run Time=95.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=430  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=80  Time=0.1  Run Time=95.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=431  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=81  Time=0.1  Run Time=95.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=432  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=82  Time=0.1  Run Time=95.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=433  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=83  Time=0.1  Run Time=95.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=434  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=84  Time=0.1  Run Time=95.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=435  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=85  Time=0.1  Run Time=95.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=436  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=86  Time=0.1  Run Time=95.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=437  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=87  Time=0.1  Run Time=95.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=438  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=88  Time=0.1  Run Time=95.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=439  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=89  Time=0.1  Run Time=95.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=440  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=90  Time=0.1  Run Time=96.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=441  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=91  Time=0.1  Run Time=96.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=442  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=92  Time=0.1  Run Time=96.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=443  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=93  Time=0.1  Run Time=96.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=444  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=94  Time=0.1  Run Time=96.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=445  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=95  Time=0.1  Run Time=96.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=446  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=96  Time=0.1  Run Time=96.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=447  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=97  Time=0.1  Run Time=96.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=448  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=98  Time=0.1  Run Time=96.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=449  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=99  Time=0.1  Run Time=96.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=450  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=100  Time=0.1  Run Time=96.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=451  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=101  Time=0.1  Run Time=96.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=452  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=102  Time=0.1  Run Time=96.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=453  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=103  Time=0.1  Run Time=96.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=454  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=104  Time=0.1  Run Time=96.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=455  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=105  Time=0.1  Run Time=97.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=456  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=106  Time=0.1  Run Time=97.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=457  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=107  Time=0.1  Run Time=97.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=458  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=108  Time=0.1  Run Time=97.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=459  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=109  Time=0.1  Run Time=97.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=460  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=110  Time=0.1  Run Time=97.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=461  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=111  Time=0.1  Run Time=97.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=462  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=112  Time=0.1  Run Time=97.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=463  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=113  Time=0.1  Run Time=97.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=464  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=114  Time=0.1  Run Time=97.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=465  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=115  Time=0.1  Run Time=97.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=466  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=116  Time=0.1  Run Time=97.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=467  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=117  Time=0.1  Run Time=97.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=468  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=118  Time=0.1  Run Time=97.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=469  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=119  Time=0.1  Run Time=97.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=470  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=120  Time=0.1  Run Time=98.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=471  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=121  Time=0.1  Run Time=98.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=472  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=122  Time=0.1  Run Time=98.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=473  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=123  Time=0.1  Run Time=98.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=474  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=124  Time=0.1  Run Time=98.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=475  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=125  Time=0.1  Run Time=98.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=476  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=126  Time=0.1  Run Time=98.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=477  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=127  Time=0.1  Run Time=98.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=478  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=128  Time=0.1  Run Time=98.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=479  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=129  Time=0.1  Run Time=98.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=480  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=130  Time=0.1  Run Time=98.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=481  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=131  Time=0.1  Run Time=98.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=482  Old Result=0.38109812  Bad Result=0.38109812  MinIndex=10552  EvolveAge=10  Best=0.38109812   BestAge=132  Time=0.1  Run Time=98.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=483  Old Result=0.38109812 *New Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=0  Time=0.1  Run Time=98.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=484  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=1  Time=0.1  Run Time=98.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=485  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=2  Time=0.1  Run Time=99.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=486  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=3  Time=0.1  Run Time=99.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=487  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=4  Time=0.1  Run Time=99.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=488  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=5  Time=0.1  Run Time=99.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=489  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=6  Time=0.1  Run Time=99.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=490  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=7  Time=0.1  Run Time=99.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=491  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=8  Time=0.1  Run Time=99.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=492  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=9  Time=0.1  Run Time=99.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=493  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=10  Time=0.1  Run Time=99.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=494  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=11  Time=0.1  Run Time=99.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=495  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=12  Time=0.1  Run Time=99.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=496  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=13  Time=0.1  Run Time=99.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=497  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=14  Time=0.1  Run Time=99.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=498  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=15  Time=0.1  Run Time=99.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=499  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=16  Time=0.1  Run Time=99.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=500  Old Result=0.37593424  Bad Result=0.37593424  MinIndex=10552  EvolveAge=11  Best=0.37593424   BestAge=17  Time=0.1  Run Time=100.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=501  Old Result=0.37593424 *New Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=0  Time=0.1  Run Time=100.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=502  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=1  Time=0.1  Run Time=100.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=503  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=2  Time=0.1  Run Time=100.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=504  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=3  Time=0.1  Run Time=100.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=505  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=4  Time=0.1  Run Time=100.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=506  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=5  Time=0.1  Run Time=100.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=507  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=6  Time=0.1  Run Time=100.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=508  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=7  Time=0.1  Run Time=100.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=509  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=8  Time=0.1  Run Time=100.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=510  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=9  Time=0.1  Run Time=100.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=511  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=10  Time=0.1  Run Time=100.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=512  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=11  Time=0.1  Run Time=100.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=513  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=12  Time=0.1  Run Time=100.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=514  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=13  Time=0.1  Run Time=100.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=515  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=14  Time=0.1  Run Time=101.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=516  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=15  Time=0.1  Run Time=101.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=517  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=16  Time=0.1  Run Time=101.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=518  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=17  Time=0.1  Run Time=101.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=519  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=18  Time=0.1  Run Time=101.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=520  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=19  Time=0.1  Run Time=101.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=521  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=20  Time=0.1  Run Time=101.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=522  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=21  Time=0.1  Run Time=101.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=523  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=22  Time=0.1  Run Time=101.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=524  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=23  Time=0.1  Run Time=101.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=525  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=24  Time=0.1  Run Time=101.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=526  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=25  Time=0.1  Run Time=101.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=527  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=26  Time=0.1  Run Time=101.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=528  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=27  Time=0.1  Run Time=101.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=529  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=28  Time=0.1  Run Time=101.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=530  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=29  Time=0.1  Run Time=101.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=531  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=30  Time=0.1  Run Time=102.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=532  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=31  Time=0.1  Run Time=102.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=533  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=32  Time=0.1  Run Time=102.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=534  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=33  Time=0.1  Run Time=102.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=535  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=34  Time=0.1  Run Time=102.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=536  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=35  Time=0.1  Run Time=102.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=537  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=36  Time=0.1  Run Time=102.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=538  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=37  Time=0.1  Run Time=102.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=539  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=38  Time=0.1  Run Time=102.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=540  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=39  Time=0.1  Run Time=102.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=541  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=40  Time=0.1  Run Time=102.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=542  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=41  Time=0.1  Run Time=102.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=543  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=42  Time=0.1  Run Time=102.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=544  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=43  Time=0.1  Run Time=102.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=545  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=44  Time=0.1  Run Time=102.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=546  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=45  Time=0.1  Run Time=103.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=547  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=46  Time=0.1  Run Time=103.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=548  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=47  Time=0.1  Run Time=103.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=549  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=48  Time=0.1  Run Time=103.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=550  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=49  Time=0.1  Run Time=103.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=551  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=50  Time=0.1  Run Time=103.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=552  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=51  Time=0.1  Run Time=103.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=553  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=52  Time=0.1  Run Time=103.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=554  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=53  Time=0.1  Run Time=103.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=555  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=54  Time=0.1  Run Time=103.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=556  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=55  Time=0.1  Run Time=103.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=557  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=56  Time=0.1  Run Time=103.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=558  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=57  Time=0.1  Run Time=103.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=559  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=58  Time=0.1  Run Time=103.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=560  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=59  Time=0.1  Run Time=103.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=561  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=60  Time=0.1  Run Time=104.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=562  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=61  Time=0.1  Run Time=104.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=563  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=62  Time=0.1  Run Time=104.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=564  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=63  Time=0.1  Run Time=104.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=565  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=64  Time=0.1  Run Time=104.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=566  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=65  Time=0.1  Run Time=104.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=567  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=66  Time=0.1  Run Time=104.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=568  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=67  Time=0.1  Run Time=104.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=569  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=68  Time=0.1  Run Time=104.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=570  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=69  Time=0.1  Run Time=104.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=571  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=70  Time=0.1  Run Time=104.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=572  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=71  Time=0.1  Run Time=104.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=573  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=72  Time=0.1  Run Time=104.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=574  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=73  Time=0.1  Run Time=104.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=575  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=74  Time=0.1  Run Time=104.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=576  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=75  Time=0.1  Run Time=105.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=577  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=76  Time=0.1  Run Time=105.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=578  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=77  Time=0.1  Run Time=105.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=579  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=78  Time=0.1  Run Time=105.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=580  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=79  Time=0.1  Run Time=105.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=581  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=80  Time=0.1  Run Time=105.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=582  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=81  Time=0.1  Run Time=105.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=583  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=82  Time=0.1  Run Time=105.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=584  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=83  Time=0.1  Run Time=105.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=585  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=84  Time=0.1  Run Time=105.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=586  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=85  Time=0.1  Run Time=105.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=587  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=86  Time=0.1  Run Time=105.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=588  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=87  Time=0.1  Run Time=105.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=589  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=88  Time=0.1  Run Time=105.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=590  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=89  Time=0.1  Run Time=105.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=591  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=90  Time=0.1  Run Time=106.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=592  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=91  Time=0.1  Run Time=106.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=593  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=92  Time=0.1  Run Time=106.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=594  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=93  Time=0.1  Run Time=106.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=595  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=94  Time=0.1  Run Time=106.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=596  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=95  Time=0.1  Run Time=106.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=597  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=96  Time=0.1  Run Time=106.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=598  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=97  Time=0.1  Run Time=106.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=599  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=98  Time=0.1  Run Time=106.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=600  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=99  Time=0.1  Run Time=106.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=601  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=100  Time=0.1  Run Time=106.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=602  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=101  Time=0.1  Run Time=106.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=603  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=102  Time=0.1  Run Time=106.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=604  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=103  Time=0.1  Run Time=106.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=605  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=104  Time=0.1  Run Time=106.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=606  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=105  Time=0.1  Run Time=107.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=607  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=106  Time=0.1  Run Time=107.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=608  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=107  Time=0.1  Run Time=107.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=609  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=108  Time=0.1  Run Time=107.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=610  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=109  Time=0.1  Run Time=107.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=611  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=110  Time=0.1  Run Time=107.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=612  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=111  Time=0.1  Run Time=107.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=613  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=112  Time=0.1  Run Time=107.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=614  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=113  Time=0.1  Run Time=107.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=615  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=114  Time=0.1  Run Time=107.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=616  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=115  Time=0.1  Run Time=107.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=617  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=116  Time=0.1  Run Time=107.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=618  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=117  Time=0.1  Run Time=107.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=619  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=118  Time=0.1  Run Time=107.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=620  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=119  Time=0.1  Run Time=107.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=621  Old Result=0.37551475  Bad Result=0.37551475  MinIndex=10552  EvolveAge=7  Best=0.37551475   BestAge=120  Time=0.1  Run Time=108.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=622  Old Result=0.37551475 *New Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=0  Time=0.1  Run Time=108.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=623  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=1  Time=0.1  Run Time=108.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=624  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=2  Time=0.1  Run Time=108.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=625  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=3  Time=0.1  Run Time=108.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=626  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=4  Time=0.1  Run Time=108.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=627  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=5  Time=0.1  Run Time=108.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=628  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=6  Time=0.1  Run Time=108.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=629  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=7  Time=0.1  Run Time=108.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=630  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=8  Time=0.1  Run Time=108.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=631  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=9  Time=0.1  Run Time=108.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=632  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=10  Time=0.1  Run Time=108.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=633  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=11  Time=0.1  Run Time=108.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=634  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=12  Time=0.1  Run Time=108.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=635  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=13  Time=0.1  Run Time=108.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=636  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=14  Time=0.1  Run Time=109.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=637  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=15  Time=0.1  Run Time=109.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=638  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=16  Time=0.1  Run Time=109.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=639  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=17  Time=0.1  Run Time=109.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=640  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=18  Time=0.1  Run Time=109.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=641  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=19  Time=0.1  Run Time=109.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=642  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=20  Time=0.1  Run Time=109.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=643  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=21  Time=0.1  Run Time=109.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=644  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=22  Time=0.1  Run Time=109.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=645  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=23  Time=0.1  Run Time=109.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=646  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=24  Time=0.1  Run Time=109.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=647  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=25  Time=0.1  Run Time=109.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=648  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=26  Time=0.1  Run Time=109.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=649  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=27  Time=0.1  Run Time=109.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=650  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=28  Time=0.1  Run Time=109.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=651  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=29  Time=0.1  Run Time=110.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=652  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=30  Time=0.1  Run Time=110.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=653  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=31  Time=0.1  Run Time=110.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=654  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=32  Time=0.1  Run Time=110.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=655  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=33  Time=0.1  Run Time=110.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=656  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=34  Time=0.1  Run Time=110.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=657  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=35  Time=0.1  Run Time=110.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=658  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=36  Time=0.1  Run Time=110.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=659  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=37  Time=0.1  Run Time=110.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=660  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=38  Time=0.1  Run Time=110.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=661  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=39  Time=0.1  Run Time=110.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=662  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=40  Time=0.1  Run Time=110.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=663  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=41  Time=0.1  Run Time=110.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=664  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=42  Time=0.1  Run Time=110.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=665  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=43  Time=0.1  Run Time=110.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=666  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=44  Time=0.1  Run Time=110.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=667  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=45  Time=0.1  Run Time=111.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=668  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=46  Time=0.1  Run Time=111.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=669  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=47  Time=0.1  Run Time=111.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=670  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=48  Time=0.1  Run Time=111.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=671  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=49  Time=0.1  Run Time=111.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=672  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=50  Time=0.1  Run Time=111.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=673  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=51  Time=0.1  Run Time=111.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=674  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=52  Time=0.1  Run Time=111.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=675  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=53  Time=0.1  Run Time=111.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=676  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=54  Time=0.1  Run Time=111.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=677  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=55  Time=0.1  Run Time=111.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=678  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=56  Time=0.1  Run Time=111.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=679  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=57  Time=0.1  Run Time=111.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=680  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=58  Time=0.1  Run Time=111.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=681  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=59  Time=0.1  Run Time=111.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=682  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=60  Time=0.1  Run Time=112.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=683  Old Result=0.37536144  Bad Result=0.37536144  MinIndex=10552  EvolveAge=0  Best=0.37536144   BestAge=61  Time=0.1  Run Time=112.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=684  Old Result=0.37536144 *New Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=0  Time=0.1  Run Time=112.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=685  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=1  Time=0.1  Run Time=112.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=686  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=2  Time=0.1  Run Time=112.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=687  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=3  Time=0.1  Run Time=112.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=688  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=4  Time=0.1  Run Time=112.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=689  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=5  Time=0.1  Run Time=112.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=690  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=6  Time=0.1  Run Time=112.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=691  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=7  Time=0.1  Run Time=112.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=692  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=8  Time=0.1  Run Time=112.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=693  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=9  Time=0.1  Run Time=112.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=694  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=10  Time=0.1  Run Time=112.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=695  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=11  Time=0.1  Run Time=112.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=696  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=12  Time=0.1  Run Time=112.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=697  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=13  Time=0.1  Run Time=113.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=698  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=14  Time=0.1  Run Time=113.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=699  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=15  Time=0.1  Run Time=113.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=700  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=16  Time=0.1  Run Time=113.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=701  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=17  Time=0.1  Run Time=113.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=702  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=18  Time=0.1  Run Time=113.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=703  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=19  Time=0.1  Run Time=113.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=704  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=20  Time=0.1  Run Time=113.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=705  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=21  Time=0.1  Run Time=113.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=706  Old Result=0.35866219  Bad Result=0.35866219  MinIndex=10552  EvolveAge=12  Best=0.35866219   BestAge=22  Time=0.1  Run Time=113.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=707  Old Result=0.35866219 *New Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=0  Time=0.1  Run Time=113.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=708  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=1  Time=0.1  Run Time=113.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=709  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=2  Time=0.1  Run Time=113.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=710  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=3  Time=0.1  Run Time=113.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=711  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=4  Time=0.1  Run Time=113.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=712  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=5  Time=0.1  Run Time=114.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=713  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=6  Time=0.1  Run Time=114.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=714  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=7  Time=0.1  Run Time=114.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=715  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=8  Time=0.1  Run Time=114.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=716  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=9  Time=0.1  Run Time=114.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=717  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=10  Time=0.1  Run Time=114.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=718  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=11  Time=0.1  Run Time=114.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=719  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=12  Time=0.1  Run Time=114.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=720  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=13  Time=0.1  Run Time=114.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=721  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=14  Time=0.1  Run Time=114.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=722  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=15  Time=0.1  Run Time=114.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=723  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=16  Time=0.1  Run Time=114.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=724  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=17  Time=0.1  Run Time=114.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=725  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=18  Time=0.1  Run Time=114.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=726  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=19  Time=0.1  Run Time=114.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=727  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=20  Time=0.1  Run Time=115.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=728  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=21  Time=0.1  Run Time=115.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=729  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=22  Time=0.1  Run Time=115.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=730  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=23  Time=0.1  Run Time=115.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=731  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=24  Time=0.1  Run Time=115.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=732  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=25  Time=0.1  Run Time=115.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=733  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=26  Time=0.1  Run Time=115.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=734  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=27  Time=0.1  Run Time=115.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=735  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=28  Time=0.1  Run Time=115.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=736  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=29  Time=0.1  Run Time=115.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=737  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=30  Time=0.1  Run Time=115.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=738  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=31  Time=0.1  Run Time=115.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=739  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=32  Time=0.1  Run Time=115.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=740  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=33  Time=0.1  Run Time=115.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=741  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=34  Time=0.1  Run Time=115.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=742  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=35  Time=0.1  Run Time=116.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=743  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=36  Time=0.1  Run Time=116.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=744  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=37  Time=0.1  Run Time=116.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=745  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=38  Time=0.1  Run Time=116.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=746  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=39  Time=0.1  Run Time=116.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=747  Old Result=0.35443205  Bad Result=0.35443205  MinIndex=10552  EvolveAge=5  Best=0.35443205   BestAge=40  Time=0.1  Run Time=116.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=748  Old Result=0.35443205 *New Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=0  Time=0.1  Run Time=116.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=749  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=1  Time=0.1  Run Time=116.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=750  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=2  Time=0.1  Run Time=116.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=751  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=3  Time=0.1  Run Time=116.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=752  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=4  Time=0.1  Run Time=116.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=753  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=5  Time=0.1  Run Time=116.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=754  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=6  Time=0.1  Run Time=116.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=755  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=7  Time=0.1  Run Time=116.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=756  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=8  Time=0.1  Run Time=116.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=757  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=9  Time=0.1  Run Time=117.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=758  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=10  Time=0.1  Run Time=117.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=759  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=11  Time=0.1  Run Time=117.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=760  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=12  Time=0.1  Run Time=117.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=761  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=13  Time=0.1  Run Time=117.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=762  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=14  Time=0.1  Run Time=117.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=763  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=15  Time=0.1  Run Time=117.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=764  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=16  Time=0.1  Run Time=117.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=765  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=17  Time=0.1  Run Time=117.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=766  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=18  Time=0.1  Run Time=117.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=767  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=19  Time=0.1  Run Time=117.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=768  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=20  Time=0.1  Run Time=117.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=769  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=21  Time=0.1  Run Time=117.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=770  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=22  Time=0.1  Run Time=117.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=771  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=23  Time=0.1  Run Time=117.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=772  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=24  Time=0.1  Run Time=118.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=773  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=25  Time=0.1  Run Time=118.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=774  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=26  Time=0.1  Run Time=118.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=775  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=27  Time=0.1  Run Time=118.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=776  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=28  Time=0.1  Run Time=118.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=777  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=29  Time=0.1  Run Time=118.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=778  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=30  Time=0.1  Run Time=118.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=779  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=31  Time=0.1  Run Time=118.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=780  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=32  Time=0.1  Run Time=118.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=781  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=33  Time=0.1  Run Time=118.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=782  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=34  Time=0.1  Run Time=118.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=783  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=35  Time=0.1  Run Time=118.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=784  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=36  Time=0.1  Run Time=118.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=785  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=37  Time=0.1  Run Time=118.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=786  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=38  Time=0.1  Run Time=118.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=787  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=39  Time=0.1  Run Time=119.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=788  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=40  Time=0.1  Run Time=119.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=789  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=41  Time=0.1  Run Time=119.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=790  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=42  Time=0.1  Run Time=119.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=791  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=43  Time=0.1  Run Time=119.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=792  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=44  Time=0.1  Run Time=119.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=793  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=45  Time=0.1  Run Time=119.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=794  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=46  Time=0.1  Run Time=119.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=795  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=47  Time=0.1  Run Time=119.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=796  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=48  Time=0.1  Run Time=119.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=797  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=49  Time=0.1  Run Time=119.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=798  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=50  Time=0.1  Run Time=119.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=799  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=51  Time=0.1  Run Time=119.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=800  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=52  Time=0.1  Run Time=119.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=801  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=53  Time=0.1  Run Time=119.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=802  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=54  Time=0.1  Run Time=119.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=803  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=55  Time=0.1  Run Time=120.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=804  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=56  Time=0.1  Run Time=120.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=805  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=57  Time=0.1  Run Time=120.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=806  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=58  Time=0.1  Run Time=120.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=807  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=59  Time=0.1  Run Time=120.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=808  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=60  Time=0.1  Run Time=120.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=809  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=61  Time=0.1  Run Time=120.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=810  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=62  Time=0.1  Run Time=120.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=811  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=63  Time=0.1  Run Time=120.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=812  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=64  Time=0.1  Run Time=120.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=813  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=65  Time=0.1  Run Time=120.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=814  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=66  Time=0.1  Run Time=120.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=815  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=67  Time=0.1  Run Time=120.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=816  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=68  Time=0.1  Run Time=120.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=817  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=69  Time=0.1  Run Time=120.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=818  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=70  Time=0.1  Run Time=121.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=819  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=71  Time=0.1  Run Time=121.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=820  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=72  Time=0.1  Run Time=121.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=821  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=73  Time=0.1  Run Time=121.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=822  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=74  Time=0.1  Run Time=121.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=823  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=75  Time=0.1  Run Time=121.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=824  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=76  Time=0.1  Run Time=121.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=825  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=77  Time=0.1  Run Time=121.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=826  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=78  Time=0.1  Run Time=121.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=827  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=79  Time=0.1  Run Time=121.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=828  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=80  Time=0.1  Run Time=121.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=829  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=81  Time=0.1  Run Time=121.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=830  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=82  Time=0.1  Run Time=121.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=831  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=83  Time=0.1  Run Time=121.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=832  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=84  Time=0.1  Run Time=121.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=833  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=85  Time=0.1  Run Time=122.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=834  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=86  Time=0.1  Run Time=122.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=835  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=87  Time=0.1  Run Time=122.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=836  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=88  Time=0.1  Run Time=122.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=837  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=89  Time=0.1  Run Time=122.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=838  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=90  Time=0.1  Run Time=122.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=839  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=91  Time=0.1  Run Time=122.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=840  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=92  Time=0.1  Run Time=122.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=841  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=93  Time=0.1  Run Time=122.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=842  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=94  Time=0.1  Run Time=122.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=843  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=95  Time=0.1  Run Time=122.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=844  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=96  Time=0.1  Run Time=122.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=845  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=97  Time=0.1  Run Time=122.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=846  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=98  Time=0.1  Run Time=122.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=847  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=99  Time=0.1  Run Time=122.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=848  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=100  Time=0.1  Run Time=123.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=849  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=101  Time=0.1  Run Time=123.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=850  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=102  Time=0.1  Run Time=123.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=851  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=103  Time=0.1  Run Time=123.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=852  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=104  Time=0.1  Run Time=123.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=853  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=105  Time=0.1  Run Time=123.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=854  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=106  Time=0.1  Run Time=123.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=855  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=107  Time=0.1  Run Time=123.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=856  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=108  Time=0.1  Run Time=123.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=857  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=109  Time=0.1  Run Time=123.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=858  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=110  Time=0.1  Run Time=123.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=859  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=111  Time=0.1  Run Time=123.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=860  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=112  Time=0.1  Run Time=123.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=861  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=113  Time=0.1  Run Time=123.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=862  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=114  Time=0.1  Run Time=123.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=863  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=115  Time=0.1  Run Time=124.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=864  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=116  Time=0.1  Run Time=124.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=865  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=117  Time=0.1  Run Time=124.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=866  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=118  Time=0.1  Run Time=124.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=867  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=119  Time=0.1  Run Time=124.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=868  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=120  Time=0.1  Run Time=124.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=869  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=121  Time=0.1  Run Time=124.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=870  Old Result=0.35374159  Bad Result=0.35374159  MinIndex=10552  EvolveAge=12  Best=0.35374159   BestAge=122  Time=0.1  Run Time=124.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=871  Old Result=0.35374159 *New Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=0  Time=0.1  Run Time=124.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=872  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=1  Time=0.1  Run Time=124.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=873  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=2  Time=0.1  Run Time=124.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=874  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=3  Time=0.1  Run Time=124.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=875  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=4  Time=0.1  Run Time=124.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=876  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=5  Time=0.1  Run Time=124.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=877  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=6  Time=0.1  Run Time=124.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=878  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=7  Time=0.1  Run Time=125.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=879  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=8  Time=0.1  Run Time=125.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=880  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=9  Time=0.1  Run Time=125.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=881  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=10  Time=0.1  Run Time=125.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=882  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=11  Time=0.1  Run Time=125.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=883  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=12  Time=0.1  Run Time=125.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=884  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=13  Time=0.1  Run Time=125.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=885  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=14  Time=0.1  Run Time=125.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=886  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=15  Time=0.1  Run Time=125.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=887  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=16  Time=0.1  Run Time=125.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=888  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=17  Time=0.1  Run Time=125.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=889  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=18  Time=0.1  Run Time=125.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=890  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=19  Time=0.1  Run Time=125.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=891  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=20  Time=0.1  Run Time=125.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=892  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=21  Time=0.1  Run Time=125.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=893  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=22  Time=0.1  Run Time=126.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=894  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=23  Time=0.1  Run Time=126.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=895  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=24  Time=0.1  Run Time=126.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=896  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=25  Time=0.1  Run Time=126.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=897  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=26  Time=0.1  Run Time=126.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=898  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=27  Time=0.1  Run Time=126.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=899  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=28  Time=0.1  Run Time=126.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=900  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=29  Time=0.1  Run Time=126.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=901  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=30  Time=0.1  Run Time=126.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=902  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=31  Time=0.1  Run Time=126.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=903  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=32  Time=0.1  Run Time=126.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=904  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=33  Time=0.1  Run Time=126.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=905  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=34  Time=0.1  Run Time=126.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=906  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=35  Time=0.1  Run Time=126.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=907  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=36  Time=0.1  Run Time=126.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=908  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=37  Time=0.1  Run Time=127.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=909  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=38  Time=0.1  Run Time=127.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=910  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=39  Time=0.1  Run Time=127.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=911  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=40  Time=0.1  Run Time=127.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=912  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=41  Time=0.1  Run Time=127.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=913  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=42  Time=0.1  Run Time=127.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=914  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=43  Time=0.1  Run Time=127.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=915  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=44  Time=0.1  Run Time=127.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=916  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=45  Time=0.1  Run Time=127.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=917  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=46  Time=0.1  Run Time=127.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=918  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=47  Time=0.1  Run Time=127.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=919  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=48  Time=0.1  Run Time=127.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=920  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=49  Time=0.1  Run Time=127.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=921  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=50  Time=0.1  Run Time=127.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=922  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=51  Time=0.1  Run Time=127.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=923  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=52  Time=0.1  Run Time=128.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=924  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=53  Time=0.1  Run Time=128.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=925  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=54  Time=0.1  Run Time=128.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=926  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=55  Time=0.1  Run Time=128.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=927  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=56  Time=0.1  Run Time=128.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=928  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=57  Time=0.1  Run Time=128.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=929  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=58  Time=0.1  Run Time=128.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=930  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=59  Time=0.1  Run Time=128.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=931  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=60  Time=0.1  Run Time=128.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=932  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=61  Time=0.1  Run Time=128.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=933  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=62  Time=0.1  Run Time=128.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=934  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=63  Time=0.1  Run Time=128.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=935  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=64  Time=0.1  Run Time=128.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=936  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=65  Time=0.1  Run Time=128.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=937  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=66  Time=0.1  Run Time=128.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=938  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=67  Time=0.1  Run Time=128.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=939  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=68  Time=0.1  Run Time=129.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=940  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=69  Time=0.1  Run Time=129.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=941  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=70  Time=0.1  Run Time=129.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=942  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=71  Time=0.1  Run Time=129.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=943  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=72  Time=0.1  Run Time=129.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=944  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=73  Time=0.1  Run Time=129.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=945  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=74  Time=0.1  Run Time=129.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=946  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=75  Time=0.1  Run Time=129.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=947  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=76  Time=0.1  Run Time=129.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=948  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=77  Time=0.1  Run Time=129.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=949  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=78  Time=0.1  Run Time=129.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=950  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=79  Time=0.1  Run Time=129.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=951  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=80  Time=0.1  Run Time=129.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=952  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=81  Time=0.1  Run Time=129.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=953  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=82  Time=0.1  Run Time=129.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=954  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=83  Time=0.1  Run Time=130.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=955  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=84  Time=0.1  Run Time=130.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=956  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=85  Time=0.1  Run Time=130.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=957  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=86  Time=0.1  Run Time=130.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=958  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=87  Time=0.1  Run Time=130.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=959  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=88  Time=0.1  Run Time=130.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=960  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=89  Time=0.1  Run Time=130.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=961  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=90  Time=0.1  Run Time=130.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=962  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=91  Time=0.1  Run Time=130.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=963  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=92  Time=0.1  Run Time=130.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=964  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=93  Time=0.1  Run Time=130.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=965  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=94  Time=0.1  Run Time=130.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=966  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=95  Time=0.1  Run Time=130.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=967  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=96  Time=0.1  Run Time=130.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=968  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=97  Time=0.1  Run Time=130.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=969  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=98  Time=0.1  Run Time=131.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=970  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=99  Time=0.1  Run Time=131.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=971  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=100  Time=0.1  Run Time=131.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=972  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=101  Time=0.1  Run Time=131.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=973  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=102  Time=0.1  Run Time=131.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=974  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=103  Time=0.1  Run Time=131.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=975  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=104  Time=0.1  Run Time=131.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=976  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=105  Time=0.1  Run Time=131.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=977  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=106  Time=0.1  Run Time=131.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=978  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=107  Time=0.1  Run Time=131.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=979  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=108  Time=0.1  Run Time=131.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=980  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=109  Time=0.1  Run Time=131.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=981  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=110  Time=0.1  Run Time=131.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=982  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=111  Time=0.1  Run Time=131.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=983  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=112  Time=0.1  Run Time=131.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=984  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=113  Time=0.1  Run Time=132.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=985  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=114  Time=0.1  Run Time=132.0
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=986  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=115  Time=0.1  Run Time=132.1
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=987  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=116  Time=0.1  Run Time=132.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=988  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=117  Time=0.1  Run Time=132.2
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=989  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=118  Time=0.1  Run Time=132.3
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=990  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=119  Time=0.1  Run Time=132.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=991  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=120  Time=0.1  Run Time=132.4
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=992  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=121  Time=0.1  Run Time=132.5
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=993  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=122  Time=0.1  Run Time=132.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=994  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=123  Time=0.1  Run Time=132.6
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=995  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=124  Time=0.1  Run Time=132.7
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=996  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=125  Time=0.1  Run Time=132.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=997  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=126  Time=0.1  Run Time=132.8
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=998  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=127  Time=0.1  Run Time=132.9
+FIRESTARTER_EVOLVE_NEW: Seed=0  Test= 1  Generation=999  Old Result=0.35369107  Bad Result=0.35369107  MinIndex=10552  EvolveAge=12  Best=0.35369107   BestAge=128  Time=0.1  Run Time=133.0
