@@ -1,0 +1,1 @@
+Seed: 0  Test:   0  Generation=1000  Evolve Result=0.00067905  Best Result=0.00067905  Duration: 238.6  GenTime: 0.2  Total: 238.6  Average: 238.6
