@@ -827,23 +827,21 @@ bool FireStarterExecute::ExecuteGenerateSinSim(bool sync)
     return result;
 } // ExecuteGenerateSinSim
 
-bool FireStarterExecute::ExecuteGenerateOptimize(const FireStarterState& initState, bool sync)
+bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& state, bool sync)
 {
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
     bool result = false;
-    Dispatch([this, initState, &result] {
-        FireStarterState state(initState);
+    Dispatch([this, &state, &result] {
         result = GenerateOptimize(state);
     }, sync);
     return result;
 } // ExecuteGenerateOptimize
 
-bool FireStarterExecute::ExecuteGenerateSpeedTest(const FireStarterState& initState, bool sync)
+bool FireStarterExecute::ExecuteGenerateSpeedTest(FireStarterState& state, bool sync)
 {
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
     bool result = false;
-    Dispatch([this, initState, &result] {
-        FireStarterState state(initState);
+    Dispatch([this, &state, &result] {
         result = GenerateSpeedTest(state);
     }, sync);
     return result;

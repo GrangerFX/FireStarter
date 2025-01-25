@@ -72,8 +72,8 @@ public:
     bool ExecuteGenerateEvolve(bool sync = true);
     bool ExecuteGenerateEvolveNew(bool sync = true);
     bool ExecuteGenerateSinSim(bool sync = true);
-    bool ExecuteGenerateOptimize(const FireStarterState& initState, bool sync = true);
-    bool ExecuteGenerateSpeedTest(const FireStarterState& initState, bool sync = true);
+    bool ExecuteGenerateOptimize(FireStarterState& state, bool sync = true);
+    bool ExecuteGenerateSpeedTest(FireStarterState& state, bool sync = true);
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state, FireStarterBestCodes &bestCodes);
     void ExecuteEvolveNew(FireStarterState& state);

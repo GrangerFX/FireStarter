@@ -14,26 +14,36 @@ void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 
 void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 {
-    static std::string executeCode;
-    if (executeCode.empty()) {
-        std::string programName = bestState.Settings().ProgramName();
-        FireStarterSource::LoadSource(executeCode, programName);
-    }
-    if (!executeCode.empty()) {
-        // Generate the evaluate function
-        std::string variationsCode;
-        bestState.SaveStats(variationsCode);
-        unsigned int variations = bestState.Settings().m_variations;
-        for (unsigned int i = 0; i < variations; i++)
-            bestState.SaveVariation(i, variationsCode);
+    if (!bestState.m_evaluateCode.empty()) {
+        static std::string evolveProgramName;
+        static std::string evolveProgram;
+        if (evolveProgramName.empty())
+            evolveProgramName = m_settings.ProgramName();
+        if (evolveProgram.empty() && !evolveProgramName.empty())
+            FireStarterSource::LoadSource(evolveProgram, evolveProgramName);
 
-        // Create the units code by replacing the evaluate and optimize sections of the optimize code.
-        std::string bestCode = executeCode;
-        FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
-        std::string saveFile = "FireStarter_BestCode.cu";
-        FireStarterSource::SaveSource(bestCode, saveFile);
-        std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str());
-        FireStarterSource::SaveSource(bestCode, savePath);
+        static std::string optimizeProgramName;
+        static std::string optimizeProgram;
+        if (optimizeProgramName.empty())
+            optimizeProgramName = bestState.Settings().ProgramName();
+        if (optimizeProgram.empty() && !optimizeProgramName.empty() && (optimizeProgramName != evolveProgramName))
+            FireStarterSource::LoadSource(optimizeProgram, optimizeProgramName);
+
+        // Save the best evolve program.
+        if (!evolveProgram.empty()) {
+            std::string bestCode = evolveProgram;
+            FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
+            std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), evolveProgramName.c_str());
+            FireStarterSource::SaveSource(bestCode, savePath);
+        }
+
+        // Save the best optimize program.
+        if (!optimizeProgram.empty()) {
+            std::string bestCode = optimizeProgram;
+            FireStarterSource::UpdateProgram(bestCode, bestState.m_evaluateCode, EVALUATE_CODE);
+            std::string savePath = Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), optimizeProgramName.c_str());
+            FireStarterSource::SaveSource(bestCode, savePath);
+        }
     }
 } // SaveBestCode
 
@@ -265,7 +275,7 @@ void FireStarterComplete::CompleteBestState(const FireStarterState& bestState)
     });
 } // CompleteBestState
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState) : CUDAThread("FireStarterComplete"), m_manager(manager), m_window(window), m_saveBestState(saveBestState), m_fireShow(window)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : CUDAThread("FireStarterComplete"), m_manager(manager), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
 {
     DispatchSync([this] {
         if (LoadSolutionTargetCode())

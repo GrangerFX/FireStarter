@@ -27,7 +27,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, randomSettings);
 
         // Loop until the the completion condition or the host program is quit.
         unsigned int tests = MAX(randomSettings.m_tests, 1);
@@ -116,7 +116,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             execute = new FireStarterExecute(manager, evolveSettings.m_units);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
@@ -241,7 +241,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         SerialThread compiler;
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0);
@@ -343,7 +343,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
         SerialThread compiler;
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0);
@@ -424,7 +424,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, speedTestSettings);
 
         // Generate the optimize code.
         FireStarterState evolveState = FireStarterState(speedTestSettings);
@@ -490,8 +490,8 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
 void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
-        // Evolve a number of states equal to the evolveSettings.m_seeds.
-        FireStarterSettings evolveSettings(m_streamSettings);
+        // Test the original SinSim neural net.
+        FireStarterSettings sinSimSettings(m_streamSettings);
         SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
@@ -503,7 +503,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         SerialThread compiler;
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, sinSimSettings);
 
         // Create the execution unit used to evolve the best states.
         FireStarterExecute* executeSinSim = new FireStarterExecute(manager, 0);
@@ -512,13 +512,13 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         executeSinSim->ExecuteGenerateSinSim();
 
         // Reset the timer if there is only one stream.
-        if (evolveSettings.m_streams == 1)
+        if (sinSimSettings.m_streams == 1)
             streamTimer.Start();
 
         // Initialize the states.
         unsigned long long test = FIRESTARTER_START_TEST;
-        FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
-        FireStarterState bestState = FireStarterState(evolveSettings, 0, 0, 0, test);
+        FireStarterState evolveState = FireStarterState(sinSimSettings, 0, 0, 0, test);
+        FireStarterState bestState = FireStarterState(sinSimSettings, 0, 0, 0, test);
 
         // Evolve the current test.
         while (!WillTerminate() && !bestState.m_evolveComplete) {
@@ -528,7 +528,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
                 break;
 
             // Exit after a set number of generations.
-            if (++evolveState.m_generation == evolveSettings.m_generations)
+            if (++evolveState.m_generation == sinSimSettings.m_generations)
                 break;
         }
 
@@ -538,8 +538,8 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
             double duration = streamTimer.Duration();
             totalDuration += duration;
 
-            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.2f  GenTime: %.3f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation);
-            if (bestState.m_maxResult <= evolveSettings.m_target)
+            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.2f  GenTime: %.3f", sinSimSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.m_maxResult, bestState.m_maxResult, duration, duration / evolveState.m_generation);
+            if (bestState.m_maxResult <= sinSimSettings.m_target)
                 resultText += " *******";
             resultText += "\n";
             FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
@@ -582,7 +582,7 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
         FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, optimizeSettings);
 
         // Generate the optimize code.
         if (execute->ExecuteGenerateOptimize(evolveState)) {

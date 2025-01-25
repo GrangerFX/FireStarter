@@ -7,6 +7,7 @@ class FireStarterComplete : public CUDAThread {
 private:
 	FireStarterWindow m_window;
 	FireStarterShow m_fireShow;
+    FireStarterSettings m_settings;
 	SimpleTimer m_completeTimer;
 	FireStarterManager* m_manager = nullptr;
 	FireStarterGenerate* m_generate = nullptr;
@@ -32,6 +33,6 @@ public:
 	bool CompleteRandom(FireStarterState& bestState, FireStarterState& oldState);
 	bool CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation);
     void CompleteBestState(const FireStarterState& bestState);
-    FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, bool saveBestState = false);
+    FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState = false);
 	~FireStarterComplete(void);
 }; // class FireStarterEvolve

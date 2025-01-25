@@ -5,6 +5,15 @@
 
 #if FIRESTARTER_NEW_SINSIM
 
+// Not used in EvolverNew. For code checkins in only.
+inline float OptimizeEvaluate(const FireStarterData& testData, float n)
+{
+    FireStarterData data = testData;
+    // EVALUATE //
+    // END //
+    return n;
+} // OptimizeEvaluate
+
 GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
 {
     // Determine the member to be optimized.
