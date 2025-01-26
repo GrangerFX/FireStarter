@@ -173,18 +173,18 @@
 // Complex program generation.
 typedef enum : unsigned short {
 #if FIRESTARTER_MADD
-    Operation_add,      // n = data[d] += n;
-    Operation_multiply  // n = data[d] *= n;
+    Operation_multiply, // n = data[d] *= n;
+    Operation_add       // n = data[d] += n;
 #else
     Operation_noop = 0,
     Operation_store,    // data[d] = n;
     Operation_square,   // n *= n;
-    Operation_add,      // n += data[d];
-    Operation_subtract, // n -= data[d];
     Operation_multiply, // n *= data[d];
     Operation_divide,   // n /= data[d];
-    Operation_max,      // n = data[d] > n ? data[d] : n;
-    Operation_min       // n = data[d] < n ? data[d] : n;
+    Operation_add,      // n += data[d];
+    Operation_subtract, // n -= data[d];
+    Operation_min,      // n = data[d] < n ? data[d] : n;
+    Operation_max       // n = data[d] > n ? data[d] : n;
 #endif
 } FireStarterOpcode;
 
@@ -195,19 +195,19 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 #else
     Operation_store,
 //  Operation_square,
-    Operation_add,
-//  Operation_subtract,
     Operation_multiply,
 //  Operation_divide,
-//  Operation_max,
+    Operation_add,
+//  Operation_subtract,
 //  Operation_min
+//  Operation_max,
 #endif
 };
 #else
 // Simple accumulator multiply or add instructions.
 typedef enum : unsigned short {
-    Operation_add = 0,
-    Operation_multiply
+    Operation_multiply,
+    Operation_add
 } FireStarterOpcode;
 
 #if FIRESTARTER_MADD
@@ -218,10 +218,10 @@ const FireStarterOpcode fireStarterOpcodes[] = {
 };
 #else
 const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_add,
     Operation_multiply,
     Operation_multiply,
-    Operation_multiply
+    Operation_multiply,
+    Operation_add
 };
 #endif
 #endif

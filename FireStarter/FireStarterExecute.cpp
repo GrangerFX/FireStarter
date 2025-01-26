@@ -778,6 +778,7 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     }
 
     // Generate the evaluate code
+    state.m_evaluateCode.clear();
     m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
 
     // Create the Optimizer code by replacing the evaluate code block.

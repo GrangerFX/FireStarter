@@ -51,20 +51,20 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
 #if FIRESTARTER_FIRSTLIGHT
         switch (op) {
 #if FIRESTARTER_MADD
-            case Operation_add:
-                GenerateTabs(buffer, size, length, tabs);
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
-                break;
-
             case Operation_multiply:
                 GenerateTabs(buffer, size, length, tabs);
                 if (instructionLast)
                     anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
                 else
                     anprintf(buffer, size, length, "n = data[%u] *= n;\r\n", reg);
+                break;
+
+            case Operation_add:
+                GenerateTabs(buffer, size, length, tabs);
+                if (instructionLast)
+                    anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
+                else
+                    anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
                 break;
 #else
             case Operation_noop:
@@ -82,16 +82,6 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                 anprintf(buffer, size, length, "n *= n;\r\n");
                 break;
 
-            case Operation_add:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
-                break;
-
-            case Operation_subtract:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n -= data[%u];\r\n", reg);
-                break;
-
             case Operation_multiply:
                 GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
@@ -102,14 +92,24 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                 anprintf(buffer, size, length, "n /= data[%u];\r\n", reg);
                 break;
 
-            case Operation_max:
+            case Operation_add:
                 GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n = data[%u] > n ? data[%u] : n;\r\n", reg, reg);
+                anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
+                break;
+
+            case Operation_subtract:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n -= data[%u];\r\n", reg);
                 break;
 
             case Operation_min:
                 GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = data[%u] < n ? data[%u] : n;\r\n", reg, reg);
+                break;
+
+            case Operation_max:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n = data[%u] > n ? data[%u] : n;\r\n", reg, reg);
                 break;
 #endif
         }
@@ -118,18 +118,18 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
         GenerateTabs(buffer, size, length, tabs);
 
         switch (op) {
-            case Operation_add:
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
-                break;
-
             case Operation_multiply:
                 if (instructionLast)
                     anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
                 else
                     anprintf(buffer, size, length, "n = data[%u] *= n;\r\n", reg);
+                break;
+
+            case Operation_add:
+                if (instructionLast)
+                    anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
+                else
+                    anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
                 break;
         }
 #endif
@@ -141,20 +141,20 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
 #if FIRESTARTER_FIRSTLIGHT
         switch (op) {
 #if FIRESTARTER_MADD
-            case Operation_add:
-                GenerateTabs(buffer, size, length, tabs);
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n += r%u;\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = r%u += n;\r\n", reg);
-                break;
-
             case Operation_multiply:
                 GenerateTabs(buffer, size, length, tabs);
                 if (instructionLast)
                     anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
                 else
                     anprintf(buffer, size, length, "n = r%u *= n;\r\n", reg);
+                break;
+
+            case Operation_add:
+                GenerateTabs(buffer, size, length, tabs);
+                if (instructionLast)
+                    anprintf(buffer, size, length, "n += r%u;\r\n", reg);
+                else
+                    anprintf(buffer, size, length, "n = r%u += n;\r\n", reg);
                 break;
 #else
             case Operation_noop:
@@ -172,16 +172,6 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                 anprintf(buffer, size, length, "n *= n;\r\n");
                 break;
 
-            case Operation_add:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n += r%u;\r\n", reg);
-                break;
-
-            case Operation_subtract:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n -= r%u;\r\n", reg);
-                break;
-
             case Operation_multiply:
                 GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
@@ -192,14 +182,24 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                 anprintf(buffer, size, length, "n /= r%u;\r\n", reg);
                 break;
 
-            case Operation_max:
+            case Operation_add:
                 GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n = r%u > n ? r%u : n;\r\n", reg, reg);
+                anprintf(buffer, size, length, "n += r%u;\r\n", reg);
+                break;
+
+            case Operation_subtract:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n -= r%u;\r\n", reg);
                 break;
 
             case Operation_min:
                 GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = r%u < n ? r%u : n;\r\n", reg, reg);
+                break;
+
+            case Operation_max:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n = r%u > n ? r%u : n;\r\n", reg, reg);
                 break;
 #endif
         }
@@ -208,19 +208,6 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
         GenerateTabs(buffer, size, length, tabs);
 
         switch (op) {
-            case Operation_add:
-                if (instructionFirst)
-                    if (instructionLast)
-                        anprintf(buffer, size, length, "n += %.8ff;\r\n", data);
-                    else
-                        anprintf(buffer, size, length, "r%u = n += %.8ff;\r\n", reg, data);
-                else
-                    if (instructionLast)
-                        anprintf(buffer, size, length, "n += r%u;\r\n", reg);
-                    else
-                        anprintf(buffer, size, length, "n = r%u += n;\r\n", reg);
-                break;
-
             case Operation_multiply:
                 if (instructionFirst)
                     if (instructionLast)
@@ -232,6 +219,19 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                         anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
                     else
                         anprintf(buffer, size, length, "n = r%u *= n;\r\n", reg);
+                break;
+
+            case Operation_add:
+                if (instructionFirst)
+                    if (instructionLast)
+                        anprintf(buffer, size, length, "n += %.8ff;\r\n", data);
+                    else
+                        anprintf(buffer, size, length, "r%u = n += %.8ff;\r\n", reg, data);
+                else
+                    if (instructionLast)
+                        anprintf(buffer, size, length, "n += r%u;\r\n", reg);
+                    else
+                        anprintf(buffer, size, length, "n = r%u += n;\r\n", reg);
                 break;
         }
 #endif

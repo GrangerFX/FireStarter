@@ -341,14 +341,6 @@ typedef struct FireStarterCode {
                     n *= n;
                     break;
 
-                case Operation_add:
-                    n += data[c[i].reg];
-                    break;
-
-                case Operation_subtract:
-                    n -= data[c[i].reg];
-                    break;
-
                 case Operation_multiply:
                     n *= data[c[i].reg];
                     break;
@@ -357,18 +349,26 @@ typedef struct FireStarterCode {
                     n /= data[c[i].reg];
                     break;
 
-                case Operation_max:
-                    n = data[c[i].reg] > n ? data[c[i].reg] : n;
+                case Operation_add:
+                    n += data[c[i].reg];
+                    break;
+
+                case Operation_subtract:
+                    n -= data[c[i].reg];
                     break;
 
                 case Operation_min:
                     n = data[c[i].reg] < n ? data[c[i].reg] : n;
                     break;
+
+                case Operation_max:
+                    n = data[c[i].reg] > n ? data[c[i].reg] : n;
+                    break;
             }
         }
 #else
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            n = c[i].op ? data[c[i].reg] += n : data[c[i].reg] *= n;
+            n = c[i].op == Operation_multiply ? data[c[i].reg] *= n : data[c[i].reg] += n;
 #endif
         return n;
     } // Evaluate
@@ -394,20 +394,20 @@ typedef struct FireStarterCode {
                     n *= n;
                     break;
 
-                case Operation_add:
-                    n += data[c[i].reg];
-                    break;
-
-                case Operation_subtract:
-                    n -= data[c[i].reg];
-                    break;
-
                 case Operation_multiply:
                     n *= data[c[i].reg];
                     break;
 
                 case Operation_divide:
                     n /= data[c[i].reg];
+                    break;
+
+                case Operation_add:
+                    n += data[c[i].reg];
+                    break;
+
+                case Operation_subtract:
+                    n -= data[c[i].reg];
                     break;
 
                 case Operation_max:
@@ -421,7 +421,7 @@ typedef struct FireStarterCode {
         }
 #else
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            n = c[i].op ? data[c[i].reg] += n : data[c[i].reg] *= n;
+            n = c[i].op == Operation_multiply ? data[c[i].reg] *= n : data[c[i].reg] += n;
 #endif
         return n;
     } // Evaluate
