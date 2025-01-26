@@ -18,7 +18,7 @@
 #define FIRESTARTER_EVOLVE_TEST     0           // Test evolution mode.
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
 
-#define FIRESTARTER_FIRSTLIGHT      1           // Use the original instructions from FireStarter First Light.
+#define FIRESTARTER_FIRSTLIGHT      0           // Use the original instructions from FireStarter First Light.
 #define FIRESTARTER_MADD            0           // Use only non-random multiply-add instructions.
 
 #define FIRESTARTER_POPULATION      8192 * FIRESTARTER_WARP_THREADS  // For debugging display of the population contents only.
