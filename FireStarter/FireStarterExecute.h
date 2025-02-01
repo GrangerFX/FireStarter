@@ -44,7 +44,6 @@ private:
     std::string m_executeProgramName;
     std::string m_executeFunctionName;
     std::string m_executeCode;
-    size_t m_resultSize = 0;
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
     size_t m_networksSize = 0;

@@ -96,35 +96,31 @@ typedef struct FireStarterData {
     inline void Init()
     {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i] = 0.0f;
+            d[i] = 0.0f; // Clear all the registers
     } // Init
 
     inline void Init(unsigned int registers)
     {
         for (unsigned int i = 0; i < registers; i++)
-            d[i] = 0.0f;
+            d[i] = 0.0f; // Clear all the registers
     } // Init
 
     inline void Init(unsigned long long& seed, float startScale)
     {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
+            d[i] = RANDOMFACTOR(seed) * startScale; // Randomize all the registers.
     } // Init
 
     inline void Init(unsigned long long& seed, float startScale, unsigned int registers)
     {
-        for (unsigned int i = 0; i < registers; i++)
-            d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
-        for (unsigned int i = registers; i < FIRESTARTER_REGISTERS; i++)
-            d[i] = 0.0f;                            // Clear the unused registers.
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
+            d[i] = i < registers ? RANDOMFACTOR(seed) * startScale : 0.0f; // Randomize the active registers and clear the unused registers
     } // Init
 
     inline void Init(unsigned long long& seed, float startScale, unsigned int registers, unsigned int maxRegisters)
     {
-        for (unsigned int i = 0; i < registers; i++)
-            d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the active registers.
-        for (unsigned int i = registers; i < maxRegisters; i++)
-            d[i] = 0.0f;                            // Clear the unused registers.
+        for (unsigned int i = 0; i < maxRegisters; i++)
+            d[i] = i < registers ? RANDOMFACTOR(seed) * startScale : 0; // Randomize the active registers and clear the unused registers
     } // Init
 
     inline FireStarterData(const struct FireStarterData& data)
@@ -334,7 +330,7 @@ typedef struct FireStarterCode {
                     break;
 
                 case Operation_store:
-                    data[c[i].reg] =  n;
+                    data[c[i].reg] = n;
                     break;
 
                 case Operation_square:
@@ -387,7 +383,7 @@ typedef struct FireStarterCode {
                     break;
 
                 case Operation_store:
-                    data[c[i].reg] =  n;
+                    data[c[i].reg] = n;
                     break;
 
                 case Operation_square:
@@ -410,12 +406,12 @@ typedef struct FireStarterCode {
                     n -= data[c[i].reg];
                     break;
 
-                case Operation_max:
-                    n = data[c[i].reg] > n ? data[c[i].reg] : n;
-                    break;
-
                 case Operation_min:
                     n = data[c[i].reg] < n ? data[c[i].reg] : n;
+                    break;
+
+                case Operation_max:
+                    n = data[c[i].reg] > n ? data[c[i].reg] : n;
                     break;
             }
         }

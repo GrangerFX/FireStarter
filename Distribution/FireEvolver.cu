@@ -6,8 +6,8 @@
 inline float OptimizeEvaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data = testData;
-    // EVALUATE //
-    // END //
+// EVALUATE //
+// END //
     return n;
 } // OptimizeEvaluate
 
@@ -196,7 +196,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         code.Init(memberSeed);
         registers = code.Optimize();
         for (unsigned int v = 0; v < FIRESTARTER_EVOLVE_GPU_VARIATIONS; v++) {
-            data[v].Init(memberSeed, FIRESTARTER_START_SCALE);
+            data[v].Init(memberSeed, FIRESTARTER_START_SCALE, registers);
             initResults[v] = FIRESTARTER_START_RESULT;
             valid = valid && TestEvaluate(sharedData, data[v], code, target[v], theta, initResults[v]);
         }

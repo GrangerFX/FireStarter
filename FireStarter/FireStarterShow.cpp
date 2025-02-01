@@ -86,7 +86,7 @@ void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int e
 
     // If the FireEvaluate code was compiled, use it to generate the target and evaluate arrays.
     // Note: The purpose is generality not speed. This allows the settings and instruction set to be modified after the main code is compiled.
-    if (m_fireEvaluateFunction) {
+    if (0 && m_fireEvaluateFunction) {
         const FireStarterResult* result = state.Result(variation);
 
         checkCUDAErrors(cudaMemcpyAsync(m_deviceData, result->Data(), m_dataSize, cudaMemcpyHostToDevice, Stream()));
@@ -116,9 +116,10 @@ void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int e
         // As a fallback and validation test, generate the target and evaluate the code on the CPU.
         const FireStarterResult* result = state.Result(variation);
         const FireStarterCode* code = state.Code();
+        float thetaStep = (thetaEnd - thetaStart) / evaluateWidth;
         for (unsigned int i = 0; i < evaluateWidth; i++) {
             FireStarterData data = result->Data();
-            float theta = thetaStart + i * (thetaEnd - thetaStart) / evaluateWidth;
+            float theta = thetaStart + i * thetaStep;
             m_hostEvaluateData[i] = code->Evaluate(data, theta);
             m_hostTargetData[i] = Target(theta, variation);
         }

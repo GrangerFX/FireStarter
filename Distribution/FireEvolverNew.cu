@@ -9,8 +9,8 @@
 inline float OptimizeEvaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data = testData;
-    // EVALUATE //
-    // END //
+// EVALUATE //
+// END //
     return n;
 } // OptimizeEvaluate
 

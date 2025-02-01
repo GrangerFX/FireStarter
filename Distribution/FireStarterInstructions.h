@@ -71,10 +71,10 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
                 break;
 
             case Operation_store:
-                if (!instructionLast) {
+//                if (!instructionLast) {
                     GenerateTabs(buffer, size, length, tabs);
                     anprintf(buffer, size, length, "data[%u] = n;\r\n", reg);
-                }
+//                }
                 break;
 
             case Operation_square:

@@ -257,6 +257,10 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         float oldResult = state.m_maxResult;
         state.InitResults(settings, m_hostPopulation, m_hostCode, minIndex);
         state.m_oldResult = oldResult;
+#if 1
+        float error = state.EvaluateCode();
+        int foo = 1;
+#endif
     } else {
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_hostCode, m_deviceCode, m_codeSize, cudaMemcpyDeviceToHost, Stream()));
@@ -514,7 +518,6 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             }
         }
 
-        const FireStarterResult* result = state.Result(variation);
         state.InitResults(settings, m_hostPopulation, variation, minIndex);
     } else {
         // Get the results.
@@ -537,7 +540,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         // Get the best population member result for the variation.
         checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, FireStarterResult::Member(m_devicePopulation0[variation], settings, minIndex), FireStarterResult::ResultSize(settings), cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
-        state.InitResult(settings, m_hostPopulation, nullptr, variation, minIndex);
+        state.InitResult(settings, m_hostPopulation, nullptr, variation, 0);
     }
 } // ExecuteOptimizePass
 
@@ -547,6 +550,10 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
     unsigned int variations = settings.m_variations;
     for (unsigned int v = 0; v < variations; v++)
         ExecuteOptimizePass(state, v);
+
+#if 1
+    float error = state.EvaluateCode();
+#endif
 
     // Calculate the state's max result.
     state.m_maxResult = state.MaxResult();

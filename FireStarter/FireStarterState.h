@@ -310,6 +310,7 @@ public:
         LoadProgramFromCode();
     } // CopyInstructions
 
+
     inline void RandomProgram(void)
     {
         m_program.RandomProgram(m_seed);
@@ -324,9 +325,10 @@ public:
     bool Packetize(FireStarterPacket& packet);
     void SaveStats(std::string& code) const;
     void SaveVariation(unsigned int variation, std::string& code) const;
-    void SaveResult(std::string& code) const;
+    void SaveResults(std::string& code) const;
     void SaveState(std::string& code) const;
-    float TestResult(unsigned int sample) const;
+    float TestResults(void) const;
+    float EvaluateCode(void) const;
     void InitResults(void);
     void InitCode(void);
     void InitNetwork(void);

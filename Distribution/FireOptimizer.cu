@@ -23,10 +23,13 @@ GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, f
         target[index] = Target(theta, variation);
 
     // Generate the test data.
-    if (results && data && code) {
-        FireStarterCode localCode(code);
-        FireStarterData localData(data);
-        results[index] = localCode.Evaluate(localData, theta);
+    if (results && data) {
+        if (code) {
+            FireStarterCode localCode(code);
+            FireStarterData localData(data);
+            results[index] = localCode.Evaluate(localData, theta);
+        } else
+            results[index] = OptimizeEvaluate(data, theta);
     }
 } // ShowEvaluate
 
@@ -72,7 +75,7 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
         for (unsigned int i = 0; i < 10; i++) {
-            data.Init(memberSeed, FIRESTARTER_START_SCALE);
+            data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
             result = FIRESTARTER_START_RESULT;
             if (TestEvaluate(data, target, theta, result))
                 break;
@@ -95,9 +98,9 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
                 memberResult = result = oldResult.MinResult();
             } else
                 memberResult = FIRESTARTER_START_RESULT; // Validated as being faster than result  11/17/2024
-            evolutionScale = 0.6f * memberResult; // Validated as being faster than 0.6f * FIRESTARTER_START_RESULT  11/17/2024
+            evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult; // Validated as being faster than 0.6f * FIRESTARTER_START_RESULT  11/17/2024
         } else {
-            result = memberResult = oldResult.MinResult();
+            memberResult = result = oldResult.MinResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }

@@ -35,7 +35,7 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& code) 
     code += "\r\n";
 } // SaveVariation
 
-void FireStarterState::SaveResult(std::string& code) const
+void FireStarterState::SaveResults(std::string& code) const
 {
     for (unsigned int v = 0; v < m_settings.m_variations; v++)
         SaveVariation(v, code);
@@ -46,7 +46,7 @@ void FireStarterState::SaveResult(std::string& code) const
     code += Format("    state.m_maxResult = %.8ff;\r\n", m_maxResult);
     code += "} // LoadResult\r\n";
     code += "\r\n";
-} // SaveResult
+} // SaveResults
 
 void FireStarterState::SaveState(std::string& code) const
 {
@@ -55,7 +55,7 @@ void FireStarterState::SaveState(std::string& code) const
     code += "\r\n";
     SaveStats(code);
     m_program.SaveSettings(code);
-    SaveResult(code);
+    SaveResults(code);
     m_program.SaveProgram(code);
 
     code += "inline void LoadState(FireStarterState& state)\r\n";
@@ -82,35 +82,67 @@ void FireStarterState::SaveState(std::string& code) const
     code += "} // LoadState\r\n";
 } // SaveState
 
-float FireStarterState::TestResult(unsigned int samples) const
+float FireStarterState::TestResults(void) const
 {
     // Get an accurate test result for the state.
     const FireStarterInstructions* testInstructions = m_program.OptimizedInstructions();
-    unsigned int instructions = m_settings.m_instructions;
-    size_t dataSize = FireStarterData::DataSize(m_settings.m_registers);
+    unsigned int instructions = Settings().m_instructions;
+    unsigned int registers = Settings().m_registers;
+    size_t dataSize = FireStarterData::DataSize(registers);
     FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
+    unsigned int variations = Settings().m_variations;
+    unsigned int samples = Settings().m_samples;
+    float targetMin = Settings().m_targetMin;
+    float targetMax = Settings().m_targetMax;
+    float sampleStep = (targetMax - targetMin) / (samples - 1);
+    float startResult = Settings().m_startResult;
     float testResult = 0.0f;
-    for (unsigned int v = 0; v < m_settings.m_variations; v++) {
+    for (unsigned int v = 0; v < variations; v++) {
         const FireStarterData* initData = Result(v)->Data();
         float minResult = MinResult(v);
-        if (minResult < m_settings.m_startResult) {
+        if (minResult < startResult) {
             float result = 0.0f;
-            float sampleStep = (m_settings.m_targetMax - m_settings.m_targetMin) / (samples - 1);
             for (unsigned int i = 0; i < samples; i++) {
-                float theta = m_settings.m_targetMin + i * sampleStep;
+                float theta = targetMin + i * sampleStep;
                 float target = Target(theta, v);
                 memcpy(workData, initData, dataSize);
-                float sampleResult = (float)m_program.OptimizedInstructions()->Execute(workData, instructions, theta);
-                float sampleTarget = Target(theta, v);
-                float difference = fabsf(sampleResult - sampleTarget);
-                result = max(result, difference);
+                float n = m_program.OptimizedInstructions()->Execute(workData, instructions, theta);
+                float error = fabsf(n - target);
+                result = max(result, error);
             }
-            testResult = max(testResult, fabsf(result - minResult));
+            if (!isfinite(result) || (result >= startResult))
+                testResult = startResult;
+            else
+                testResult = max(testResult, fabsf(result - minResult));
         }
     }
     free(workData);
     return testResult;
-} // TestResult
+} // TestResults
+
+float FireStarterState::EvaluateCode(void) const
+{
+    float result = 0.0f;
+    unsigned int variations = Settings().m_variations;
+    unsigned int samples = Settings().m_samples;
+    float targetMin = Settings().m_targetMin;
+    float targetMax = Settings().m_targetMax;
+    float sampleStep = (targetMax - targetMin) / (samples - 1);
+    float startResult = Settings().m_startResult;
+    for (unsigned int v = 0; v < variations; v++)
+        for (unsigned int i = 0; i < samples; i++) {
+            FireStarterData data(Result(v)->m_data);
+            float theta = targetMin + i * sampleStep;
+            float target = Target(theta, v);
+            float n = Code()->Evaluate(data, theta);
+            float error = fabsf(n - target);
+            if (!isfinite(error) || (error >= startResult))
+                return startResult;
+            else
+                result = fmaxf(error, result);
+        }
+    return result;
+} // EvaluateCode
 
 void FireStarterState::InitResults(void)
 {
@@ -204,5 +236,5 @@ void FireStarterState::InitResults(const FireStarterSettings& settings, const Fi
 void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* results, unsigned int variation, unsigned int index)
 {
     for (unsigned int v = 0; v < settings.m_variations; v++)
-        InitResult(settings, results + index, nullptr, v, index);
+        InitResult(settings, results->Member(settings, index), nullptr, v, index);
 } // InitResults
