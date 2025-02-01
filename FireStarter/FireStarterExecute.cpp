@@ -527,11 +527,6 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
     for (unsigned int v = 0; v < variations; v++)
         ExecuteOptimizePass(state, v);
 
-#if 0
-    float error1 = state.TestResults();
-    float error2 = state.EvaluateCode();
-#endif
-
     // Calculate the state's max result.
     state.m_maxResult = state.MaxResult();
     state.m_optimizeValid = true;

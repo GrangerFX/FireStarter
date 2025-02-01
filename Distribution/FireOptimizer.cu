@@ -149,10 +149,6 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
         }
     }
 
-#if 0
-    TestEvaluate(data, target, theta, result);
-#endif
-
     if (results)
         results[member] = result;
     if (newPopulation)
