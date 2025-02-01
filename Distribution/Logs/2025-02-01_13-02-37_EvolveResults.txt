@@ -1,0 +1,1 @@
+Seed: 0  Test:   0  Generation=3278  Evolve Result=0.00748336  Optimize Result=0.00000054  Duration: 4887.6  GenTime: 1.5  Total: 4887.6  Average: 4887.6 *******
