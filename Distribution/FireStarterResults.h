@@ -324,7 +324,7 @@ typedef struct FireStarterCode {
             n = data[c[i + 1].reg] += n;
         }
 #elif FIRESTARTER_FIRSTLIGHT
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
             switch (c[i].op) {
                 case Operation_noop:
                     break;
@@ -377,7 +377,7 @@ typedef struct FireStarterCode {
             n = data[c[i + 1].reg] += n;
         }
 #elif FIRESTARTER_FIRSTLIGHT
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
             switch (c[i].op) {
                 case Operation_noop:
                     break;

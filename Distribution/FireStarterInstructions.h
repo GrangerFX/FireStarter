@@ -27,10 +27,49 @@ struct FireStarterInstruction : public FireStarterCodeInstruction {
 
     inline void Execute(FireStarterData& data, float& n) const
     {
-        if (op == Operation_multiply)
-            n = data.d[reg] *= n;
-        else
-            n = data.d[reg] += n;
+#if FIRESTARTER_FIRSTLIGHT
+    switch (op) {
+        case Operation_noop:
+            break;
+
+        case Operation_store:
+            data.d[reg] = n;
+            break;
+
+        case Operation_square:
+            n *= n;
+            break;
+
+        case Operation_multiply:
+            n *= data.d[reg];
+            break;
+
+        case Operation_divide:
+            n /= data.d[reg];
+            break;
+
+        case Operation_add:
+            n += data.d[reg];
+            break;
+
+        case Operation_subtract:
+            n -= data.d[reg];
+            break;
+
+        case Operation_min:
+            n = data.d[reg] < n ? data.d[reg] : n;
+            break;
+
+        case Operation_max:
+            n = data.d[reg] > n ? data.d[reg] : n;
+            break;
+    }
+#else
+    if (op == Operation_multiply)
+        n = data.d[reg] *= n;
+    else
+        n = data.d[reg] += n;
+#endif
     } // Execute
 
     inline void Execute(FireStarterData* data, float& n) const

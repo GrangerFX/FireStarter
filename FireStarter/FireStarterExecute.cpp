@@ -500,48 +500,24 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         Context()->Synchronize();
     }
 
-    if (m_populationSize) {
-        // Get the population data.
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-        Context()->Synchronize();
+    // Get the population data.
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+    Context()->Synchronize();
 
-        // Get the best variation results.
-        // Note: The best result may get worse generation to generation before it improves.
-        // This allows for better diversity among members when they struggle to evolve and yields better results.
-        float minResult = *m_hostPopulation[0].MinResult();
-        unsigned int minIndex = 0;
-        for (unsigned int i = 1; i < population; i++) {
-            float curResult = *m_hostPopulation[i].MinResult();
-            if (curResult < minResult) {
-                minResult = curResult;
-                minIndex = i;
-            }
+    // Get the best variation results.
+    // Note: The best result may get worse generation to generation before it improves.
+    // This allows for better diversity among members when they struggle to evolve and yields better results.
+    float minResult = *m_hostPopulation[0].MinResult();
+    unsigned int minIndex = 0;
+    for (unsigned int i = 1; i < population; i++) {
+        float curResult = *m_hostPopulation[i].MinResult();
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
         }
-
-        state.InitResults(settings, m_hostPopulation, variation, minIndex);
-    } else {
-        // Get the results.
-        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
-        Context()->Synchronize();
-
-        // Get the best variation results.
-        // Note: The best result may get worse generation to generation before it improves.
-        // This allows for better diversity among members when they struggle to evolve and yields better results.
-        float minResult = m_hostResults[0];
-        unsigned int minIndex = 0;
-        for (unsigned int i = 1; i < population; i++) {
-            float curResult = m_hostResults[i];
-            if (curResult < minResult) {
-                minResult = curResult;
-                minIndex = i;
-            }
-        }
-
-        // Get the best population member result for the variation.
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, FireStarterResult::Member(m_devicePopulation0[variation], settings, minIndex), FireStarterResult::ResultSize(settings), cudaMemcpyDeviceToHost, Stream()));
-        Context()->Synchronize();
-        state.InitResult(settings, m_hostPopulation, nullptr, variation, 0);
     }
+
+    state.InitResults(settings, m_hostPopulation, variation, minIndex);
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
@@ -551,8 +527,9 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
     for (unsigned int v = 0; v < variations; v++)
         ExecuteOptimizePass(state, v);
 
-#if 1
-    float error = state.EvaluateCode();
+#if 0
+    float error1 = state.TestResults();
+    float error2 = state.EvaluateCode();
 #endif
 
     // Calculate the state's max result.
