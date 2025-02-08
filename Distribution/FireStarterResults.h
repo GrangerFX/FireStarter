@@ -222,6 +222,51 @@ typedef struct FireStarterSharedData {
 typedef struct FireStarterCodeInstruction {
     FireStarterOpcode op = (FireStarterOpcode)0;
     unsigned short reg = 0;
+
+    inline float Evaluate(float& data, float &n) const
+    {
+#if FIRESTARTER_FIRSTLIGHT
+        switch (op) {
+            case Operation_noop:
+                break;
+
+            case Operation_store:
+                data = n;
+                break;
+
+            case Operation_square:
+                n *= n;
+                break;
+
+            case Operation_multiply:
+                n *= data;
+                break;
+
+            case Operation_divide:
+                n /= data;
+                break;
+
+            case Operation_add:
+                n += data;
+                break;
+
+            case Operation_subtract:
+                n -= data;
+                break;
+
+            case Operation_min:
+                n = data < n ? data : n;
+                break;
+
+            case Operation_max:
+                n = data > n ? data : n;
+                break;
+        }
+#else
+        n = op == Operation_multiply ? data *= n : data += n;
+#endif
+        return n;
+    } // Evaluate
 } FireStarterCodeInstruction;
 
 typedef struct FireStarterCode {
@@ -323,6 +368,9 @@ typedef struct FireStarterCode {
             n = data[c[i].reg] *= n;
             n = data[c[i + 1].reg] += n;
         }
+#elif 1
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            c[i].Evaluate(data[c[i].reg], n);
 #elif FIRESTARTER_FIRSTLIGHT
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
             switch (c[i].op) {
@@ -376,6 +424,9 @@ typedef struct FireStarterCode {
             n = data[c[i].reg] *= n;
             n = data[c[i + 1].reg] += n;
         }
+#elif 1
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            c[i].Evaluate(data[c[i].reg], n);
 #elif FIRESTARTER_FIRSTLIGHT
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
             switch (c[i].op) {
