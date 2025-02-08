@@ -232,6 +232,10 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState, generation);
 
+                    // Update the best state and display the results.
+                    if (isBestState)
+                        DisplayResults(bestState);
+
                     // Replace the old state with the new state if it improved.
                     FireStarterState& oldState = allStates[newState.m_id];
                     if (newState.m_maxResult < oldState.m_maxResult) {
@@ -239,15 +243,10 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                         newState.m_age = 1;
                         oldState = newState;
                     }
-
-                    // Update the best state and display the results.
-                    if (isBestState)
-                        DisplayResults(bestState);
                 } else
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState, generation);
             }
-
 
             // Has the evolve target or the maximum number of attempts been reached?
             if (bestState.m_maxResult < bestState.Settings().m_target)
@@ -258,11 +257,9 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
                     bestState.m_evolveComplete = true;
             }
 
-            // When the quickest solution is desired, stop as soon as the best state among all the streams has reached the evolve target.
-#if !FIRESTARTER_EVOLVE_TEST
+            // Evolution is complete when the best state among all the streams has reached the evolve target.
             if (displayState.m_maxResult <= displayState.Settings().m_target)
                 bestState.m_evolveComplete = true;
-#endif
         }
     });
     return bestState.m_evolveComplete;
