@@ -3,8 +3,8 @@
 bool FireStarterProgram::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
-    result = result && packet.Packetize(m_evolvedInstructionsData);
-    result = result && packet.Packetize(m_optimizedInstructionsData);
+    result = result && packet.Packetize(m_evolvedCodeData);
+    result = result && packet.Packetize(m_optimizedCodeData);
     result = result && packet.Packetize(&m_settings, sizeof(m_settings));
     result = result && packet.Packetize(m_uniqueRegisters);
     return result;
@@ -13,20 +13,20 @@ bool FireStarterProgram::Packetize(FireStarterPacket& packet)
 void FireStarterProgram::OptimizeRegisters(void)
 {
     // Delete the unused registers and sort the remaining ones.
-    FireStarterInstructions* instructions = OptimizedInstructions();
-    memcpy(instructions, EvolvedInstructions(), InstructionsSize());
+    FireStarterCode* code = OptimizedCode();
+    memcpy(code, EvolvedCode(), CodeSize());
     m_uniqueRegisters = 0;
     std::vector<int> dataRegisters(m_settings.m_registers, -1);
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        unsigned int r = instructions->Register(i);
+        unsigned int r = code->Register(i);
         if (r < m_settings.m_registers) {
             int index = dataRegisters[r];
             if (index == -1)
                 dataRegisters[r] = index = m_uniqueRegisters++;
-            instructions->SetRegister(i, index);
+            code->Register(i) = index;
         } else {
             printf("Bad register: %u  Max registers: %u\n", r, m_settings.m_registers);
-            instructions->SetRegister(i, 0);
+            code->Register(i) = 0;
         }
     }
 } // OptimizeRegisters
@@ -34,14 +34,14 @@ void FireStarterProgram::OptimizeRegisters(void)
 unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegisterInfo>& registers) const
 {
     // Optimize the registers based on the ones in use at any point in the code.
-    const FireStarterInstructions* instructions = OptimizedInstructions();
+    const FireStarterCode* code = OptimizedCode();
     unsigned int numInstructions = m_settings.m_instructions;
     unsigned int uniqueRegisters = m_uniqueRegisters ? m_uniqueRegisters : m_settings.m_registers;
     registers.resize(uniqueRegisters);
     for (unsigned int i = 0; i < uniqueRegisters; i++)
         registers[i] = FireStarterRegisterInfo(-1, numInstructions, numInstructions);
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        unsigned int index = instructions->Register(i);
+        unsigned int index = code->Register(i);
         FireStarterRegisterInfo& reg = registers[index];
         if (reg.instructionFirst == numInstructions)
             reg.instructionFirst = i;
@@ -51,7 +51,7 @@ unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegist
     std::vector<unsigned int> freeRegisters;
     unsigned int numActiveRegisters = 0;
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        unsigned int index = instructions->Register(i);
+        unsigned int index = code->Register(i);
         FireStarterRegisterInfo& reg = registers[index];
         if (reg.instructionLast > reg.instructionFirst)
             if (reg.instructionFirst == i) {
@@ -71,38 +71,38 @@ unsigned int FireStarterProgram::GenerateRegisters(std::vector<FireStarterRegist
 
 void FireStarterProgram::RandomProgram(unsigned long long &seed)
 {
-    EvolvedInstructions()->Randomize(seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
+    EvolvedCode()->Init(seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomProgram
 
 void FireStarterProgram::RandomInstruction(unsigned long long& seed, unsigned int index)
 {
-    EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
+    EvolvedCode()->Instruction(index).RandomInstruction(seed, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomInstruction
 
 void FireStarterProgram::RandomInstruction(unsigned long long& seed)
 {
     unsigned int index = RANDOMMOD(seed, m_settings.m_instructions);
-    EvolvedInstructions()->SetRandom(index, seed, m_settings.m_registers, m_settings.m_opcodes);
+    EvolvedCode()->RandomInstruction(seed, index, m_settings.m_registers, m_settings.m_opcodes);
 } // RandomInstruction
 
-bool FireStarterProgram::CopyInstructions(const FireStarterProgram& srcProgram)
+bool FireStarterProgram::CopyCode(const FireStarterProgram& srcProgram)
 {
-    size_t instructionsSize = InstructionsSize();
-    if ((EvolvedInstructionsData().size() == instructionsSize) && (OptimizedInstructionsData().size() == instructionsSize) && (srcProgram.EvolvedInstructionsData().size() == instructionsSize) && (srcProgram.OptimizedInstructionsData().size() == instructionsSize)) {
-        memcpy(m_evolvedInstructionsData.data(), srcProgram.EvolvedInstructionsData().data(), instructionsSize);
-        memcpy(m_optimizedInstructionsData.data(), srcProgram.OptimizedInstructionsData().data(), instructionsSize);
+    size_t codeSize = CodeSize();
+    if ((EvolvedCodeData().size() == codeSize) && (OptimizedCodeData().size() == codeSize) && (srcProgram.EvolvedCodeData().size() == codeSize) && (srcProgram.OptimizedCodeData().size() == codeSize)) {
+        memcpy(m_evolvedCodeData.data(), srcProgram.EvolvedCodeData().data(), codeSize);
+        memcpy(m_optimizedCodeData.data(), srcProgram.OptimizedCodeData().data(), codeSize);
         m_uniqueRegisters = srcProgram.m_uniqueRegisters;
         return true;
     }
     return false;
 } // CopyInstructions
 
-bool FireStarterProgram::LoadInstructions(const FireStarterInstructions* instructions)
+bool FireStarterProgram::LoadCode(const FireStarterCode* code)
 {
-    size_t instructionsSize = InstructionsSize();
-    if ((EvolvedInstructionsData().size() == instructionsSize) && (OptimizedInstructionsData().size() == instructionsSize)) {
-        memcpy(m_evolvedInstructionsData.data(), instructions, instructionsSize);
-        memcpy(m_optimizedInstructionsData.data(), instructions, instructionsSize);
+    size_t codeSize = CodeSize();
+    if ((EvolvedCodeData().size() == codeSize) && (OptimizedCodeData().size() == codeSize)) {
+        memcpy(m_evolvedCodeData.data(), code, codeSize);
+        memcpy(m_optimizedCodeData.data(), code, codeSize);
         return true;
     }
     return false;
@@ -137,39 +137,39 @@ void FireStarterProgram::SettingsText(const FireStarterSettings &settings, std::
     code += prefix + Format("startResult = %ff", settings.m_startResult) + postfix + "\r\n";
 } // SettingsText
 
-void FireStarterProgram::SaveSettings(std::string& code) const
+void FireStarterProgram::SaveSettings(std::string& text) const
 {
-    code += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
-    code += "{\r\n";
-    SettingsText(m_settings, code, "    settings.m_", ";");
-    code += "} // LoadSettings\r\n";
-    code += "\r\n";
+    text += "inline void LoadSettings(FireStarterSettings& settings)\r\n";
+    text += "{\r\n";
+    SettingsText(m_settings, text, "    settings.m_", ";");
+    text += "} // LoadSettings\r\n";
+    text += "\r\n";
 } // SaveSettings
 
-void FireStarterProgram::SaveProgram(std::string& code) const
+void FireStarterProgram::SaveProgram(std::string& text) const
 {
-    code += "inline void LoadProgram(FireStarterProgram& program)\r\n";
-    code += "{\r\n";
+    text += "inline void LoadProgram(FireStarterProgram& program)\r\n";
+    text += "{\r\n";
 
-    const FireStarterInstructions* instructions = EvolvedInstructions();
-    code += "    FireStarterInstructions* instructions = program.EvolvedInstructions();\r\n";
+    const FireStarterCode* code = EvolvedCode();
+    text += "    FireStarterCode* code = program.EvolvedCode();\r\n";
     for (unsigned int i = 0; i < m_settings.m_instructions; i++)
-        code += Format("    instructions->SetOperation(%u, %u, %u);\r\n", i, instructions->Opcode(i), instructions->Register(i));
-    code += "    program.OptimizeRegisters();\r\n";
+        text += Format("    code->SetOperation(%u, (FireStarterOpcode)%u, %u);\r\n", i, (unsigned int)code->Operation(i), code->Register(i));
+    text += "    program.OptimizeRegisters();\r\n";
 
-    code += "} // LoadProgram\r\n";
-    code += "\r\n";
+    text += "} // LoadProgram\r\n";
+    text += "\r\n";
 } // SaveProgram
 
 void FireStarterProgram::InitProgram(const FireStarterSettings& settings)
 {
     m_settings = settings;
-    m_evolvedInstructionsData.resize(InstructionsSize());
-    m_optimizedInstructionsData.resize(InstructionsSize());
-    m_evolvedInstructions = EvolvedInstructions();
-    m_optimizedInstructions = OptimizedInstructions();
+    m_evolvedCodeData.resize(CodeSize());
+    m_optimizedCodeData.resize(CodeSize());
+    m_evolvedCode = EvolvedCode();
+    m_optimizedCode = OptimizedCode();
     for (unsigned int i = 0; i < m_settings.m_instructions; i++) {
-        m_evolvedInstructions->SetOperation(i);
-        m_optimizedInstructions->SetOperation(i);
+        m_evolvedCode->Instruction(i) = FireStarterCodeInstruction();
+        m_optimizedCode->Instruction(i) = FireStarterCodeInstruction();
     }
 } // InitProgram

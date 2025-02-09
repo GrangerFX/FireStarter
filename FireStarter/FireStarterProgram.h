@@ -1,5 +1,6 @@
 #pragma once
-#include "FireStarterInstructions.h"
+#include "FireStarterResults.h"
+#include "FireStarterCodeGenerate.h"
 #include "FireStarterPacket.h"
 #include "FireStarterUtil.h"
 #include <vector>
@@ -10,17 +11,17 @@ typedef std::set<std::vector<unsigned char>> TestedInstructions;
 
 class FireStarterProgram {
 private:
-    std::vector<unsigned char> m_evolvedInstructionsData;
-    std::vector<unsigned char> m_optimizedInstructionsData;
-    FireStarterInstructions* m_evolvedInstructions = nullptr;   // For debugging.
-    FireStarterInstructions* m_optimizedInstructions = nullptr; // For debugging.
+    std::vector<unsigned char> m_evolvedCodeData;
+    std::vector<unsigned char> m_optimizedCodeData;
+    FireStarterCodeGenerate* m_evolvedCode = nullptr;   // For debugging.
+    FireStarterCodeGenerate* m_optimizedCode = nullptr; // For debugging.
 
     inline void swap(const FireStarterProgram& other)
     {
-        m_evolvedInstructionsData = other.m_evolvedInstructionsData;
-        m_optimizedInstructionsData = other.m_optimizedInstructionsData;
-        m_evolvedInstructions = EvolvedInstructions();
-        m_optimizedInstructions = OptimizedInstructions();
+        m_evolvedCodeData = other.m_evolvedCodeData;
+        m_optimizedCodeData = other.m_optimizedCodeData;
+        m_evolvedCode = EvolvedCode();
+        m_optimizedCode = OptimizedCode();
         m_settings = other.m_settings;
         m_uniqueRegisters = other.m_uniqueRegisters;
     } // swap
@@ -34,59 +35,59 @@ public:
         return *this;
     } // operator =
 
-    inline const std::vector<unsigned char>& EvolvedInstructionsData(void) const
+    inline const std::vector<unsigned char>& EvolvedCodeData(void) const
     {
-        return m_evolvedInstructionsData;
+        return m_evolvedCodeData;
     } // EvolvedInstructionsData
 
-    inline const std::vector<unsigned char>& OptimizedInstructionsData(void) const
+    inline const std::vector<unsigned char>& OptimizedCodeData(void) const
     {
-        return m_optimizedInstructionsData;
+        return m_optimizedCodeData;
     } // OptimizedInstructionsData
 
-    inline FireStarterInstructions* EvolvedInstructions(void)
+    inline FireStarterCodeGenerate* EvolvedCode(void)
     {
-        return (FireStarterInstructions*)m_evolvedInstructionsData.data();
-    } // EvolvedInstructions
+        return (FireStarterCodeGenerate*)m_evolvedCodeData.data();
+    } // EvolvedCode
 
-    inline const FireStarterInstructions* EvolvedInstructions(void) const
+    inline const FireStarterCodeGenerate* EvolvedCode(void) const
     {
-        return (const FireStarterInstructions*)m_evolvedInstructionsData.data();
-    } // EvolvedInstructions
+        return (const FireStarterCodeGenerate*)m_evolvedCodeData.data();
+    } // EvolvedCode
 
-    inline FireStarterInstructions* OptimizedInstructions(void)
+    inline FireStarterCodeGenerate* OptimizedCode(void)
     {
-        return (FireStarterInstructions*)(m_optimizedInstructionsData.data());
-    } // RawInstructions
+        return (FireStarterCodeGenerate*)(m_optimizedCodeData.data());
+    } // OptimizedCode
 
-    inline const FireStarterInstructions* OptimizedInstructions(void) const
+    inline const FireStarterCodeGenerate* OptimizedCode(void) const
     {
-        return (const FireStarterInstructions*)(m_optimizedInstructionsData.data());
-    } // OptimizedInstructions
+        return (const FireStarterCodeGenerate*)(m_optimizedCodeData.data());
+    } // OptimizedCode
 
-    inline size_t InstructionsSize(void) const
+    inline size_t CodeSize(void) const
     {
-        return FireStarterInstructions::InstructionsSize(m_settings.m_instructions);
-    } // InstructionsSize
+        return FireStarterCode::CodeSize(m_settings.m_instructions);
+    } // CodeSize
 
-    inline FireStarterInstruction& EvolvedInstruction(unsigned int index)
+    inline FireStarterCodeInstruction& EvolvedInstruction(unsigned int index)
     {
-        return EvolvedInstructions()->Instruction(index);
+        return EvolvedCode()->Instruction(index);
     } // EvolvedInstruction
 
-    inline const FireStarterInstruction& EvolvedInstruction(unsigned int index) const
+    inline const FireStarterCodeInstruction& EvolvedInstruction(unsigned int index) const
     {
-        return EvolvedInstructions()->Instruction(index);
+        return EvolvedCode()->Instruction(index);
     } // EvolvedInstruction
 
-    inline FireStarterInstruction& OptimizedInstruction(unsigned int index)
+    inline FireStarterCodeInstruction& OptimizedInstruction(unsigned int index)
     {
-        return OptimizedInstructions()->Instruction(index);
+        return OptimizedCode()->Instruction(index);
     } // OptimizedInstruction
 
-    inline const FireStarterInstruction& OptimizedInstruction(unsigned int index) const
+    inline const FireStarterCodeInstruction& OptimizedInstruction(unsigned int index) const
     {
-        return OptimizedInstructions()->Instruction(index);
+        return OptimizedCode()->Instruction(index);
     } // OptimizedInstruction
 
     bool Packetize(FireStarterPacket& packet);
@@ -95,8 +96,8 @@ public:
     void RandomProgram(unsigned long long& seed);
     void RandomInstruction(unsigned long long& seed, unsigned int index);
     void RandomInstruction(unsigned long long& seed);
-    bool CopyInstructions(const FireStarterProgram& srcProgram);
-    bool LoadInstructions(const FireStarterInstructions* instructions);
+    bool CopyCode(const FireStarterProgram& srcProgram);
+    bool LoadCode(const FireStarterCode* code);
     static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "", const std::string& postfix = "");
     void SaveSettings(std::string& code) const;
     void SaveProgram(std::string& code) const;

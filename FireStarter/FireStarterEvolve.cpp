@@ -69,10 +69,10 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
 
                         // Optimize the program registers.
                         curState.m_program.OptimizeRegisters();
-                    } while (testedInstructions.count(curState.m_program.OptimizedInstructionsData()));
+                    } while (testedInstructions.count(curState.m_program.OptimizedCodeData()));
 
                     // Add the instructions to the set of unique instructions.
-                    testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+                    testedInstructions.insert(curState.m_program.OptimizedCodeData());
 
                     // Copy the program code to the results code (variation 0 for consistency).
                     curState.LoadCodeFromProgram();
@@ -129,9 +129,9 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         curState.LoadCodeFromProgram();
 
                         // Check if the optimized instructions are unique.
-                        if (!testedInstructions.count(curState.m_program.OptimizedInstructionsData())) {
+                        if (!testedInstructions.count(curState.m_program.OptimizedCodeData())) {
                             // Add the instructions to the set of unique instructions.
-                            testedInstructions.insert(curState.m_program.OptimizedInstructionsData());
+                            testedInstructions.insert(curState.m_program.OptimizedCodeData());
                             break;
                         }
                     }

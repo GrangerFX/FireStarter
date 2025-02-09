@@ -85,7 +85,7 @@ void FireStarterState::SaveState(std::string& code) const
 float FireStarterState::TestResults(void) const
 {
     // Get an accurate test result for the state.
-    const FireStarterInstructions* testInstructions = m_program.OptimizedInstructions();
+    const FireStarterCode* testCode = m_program.OptimizedCode();
     unsigned int instructions = Settings().m_instructions;
     unsigned int registers = Settings().m_registers;
     size_t dataSize = FireStarterData::DataSize(registers);
@@ -106,7 +106,7 @@ float FireStarterState::TestResults(void) const
                 float theta = targetMin + i * sampleStep;
                 float target = Target(theta, v);
                 memcpy(workData, initData, dataSize);
-                float n = m_program.OptimizedInstructions()->Execute(workData, instructions, theta);
+                float n = m_program.OptimizedCode()->Evaluate(*workData, theta, instructions);
                 float error = fabsf(n - target);
                 result = max(result, error);
             }

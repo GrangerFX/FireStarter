@@ -10,7 +10,7 @@ private:
 	CUmodule m_module = nullptr;
 	CUfunction m_evaluateFunction = nullptr;
 	CUfunction m_solutionFunction = nullptr;
-	FireStarterInstructions* m_deviceInstructions = nullptr;
+	FireStarterCode* m_deviceCode = nullptr;
 	FireStarterRegisterUsage* m_deviceRegisters = nullptr;
 	FireStarterData* m_deviceData = nullptr;
 	unsigned char* m_deviceString = nullptr;
@@ -20,8 +20,8 @@ private:
 
 public:
 	bool InitGenerateGPU(const FireStarterSettings& settings);
-	void GenerateEvaluate(const FireStarterState& state, std::string& code);
-	void GenerateSolution(const FireStarterState& state, std::string& code, const std::string& targetCode);
+	void GenerateEvaluate(const FireStarterState& state, std::string& text);
+	void GenerateSolution(const FireStarterState& state, std::string& text, const std::string& targetCode);
 	FireStarterGenerate(CUDAContext* context = nullptr);
 	~FireStarterGenerate(void);
 }; // FireStarterGenerate

@@ -271,36 +271,26 @@ public:
     inline void LoadProgramFromCode(const FireStarterCode* code = nullptr)
     {
         unsigned int numInstructions = Settings().m_instructions;
-        FireStarterInstructions* instructions = m_program.EvolvedInstructions();
+        FireStarterCode* programCode = m_program.EvolvedCode();
         if (code)
             *Code() = code;
         else
             code = Code();
-        for (unsigned int i = 0; i < numInstructions; i++) {
-            FireStarterInstruction& instruction = instructions->Instruction(i);
-            const FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
-            instruction.op = codeInstruction.op;
-            instruction.reg = codeInstruction.reg;
-        }
+        programCode->Copy(code);
         m_program.OptimizeRegisters();
     } // LoadProgramFromCode
 
     inline void LoadCodeFromProgram(void)
     {
         unsigned int numInstructions = Settings().m_instructions;
-        FireStarterInstructions* instructions = m_program.OptimizedInstructions();
+        FireStarterCode* programCode = m_program.OptimizedCode();
         FireStarterCode* code = Code();
-        for (unsigned int i = 0; i < numInstructions; i++) {
-            FireStarterInstruction& instruction = instructions->Instruction(i);
-            FireStarterCodeInstruction& codeInstruction = code->Instruction(i);
-            codeInstruction.op = instruction.op;
-            codeInstruction.reg =  instruction.reg;
-        }
+        code->Copy(programCode);
     } // LoadCodeFromProgram
 
     inline void CopyInstructions(const FireStarterState& srcState)
     {
-        m_program.CopyInstructions(srcState.m_program);
+        m_program.CopyCode(srcState.m_program);
         LoadCodeFromProgram();
     } // CopyInstructions
 

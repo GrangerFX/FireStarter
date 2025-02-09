@@ -223,6 +223,16 @@ typedef struct FireStarterCodeInstruction {
     FireStarterOpcode op = (FireStarterOpcode)0;
     unsigned short reg = 0;
 
+    inline void RandomInstruction(unsigned long long& seed, unsigned int registers = FIRESTARTER_REGISTERS, unsigned int opcodes = FIRESTARTER_OPCODES)
+    {
+        reg = RANDOMMOD(seed, registers);
+#if FIRESTARTER_MADD
+        op = i & 1 ? Operation_add : Operation_multiply;
+#else
+        op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
+#endif
+    } // RandomInstruction
+
     inline float Evaluate(float& data, float &n) const
     {
 #if FIRESTARTER_FIRSTLIGHT
@@ -312,6 +322,12 @@ typedef struct FireStarterCode {
         return c[index].reg;
     } // Register
 
+    inline void SetOperation(unsigned int index, FireStarterOpcode op, unsigned short reg)
+    {
+        c[index].op = op;
+        c[index].reg = reg;
+    } // SetOperation
+
     static inline size_t CodeSize(void)
     {
         return sizeof(FireStarterCode);
@@ -327,25 +343,13 @@ typedef struct FireStarterCode {
         return sizeof(FireStarterCodeInstruction) * settings.m_instructions;
     } // CodeSize
 
-    inline void Copy(const FireStarterCode& code)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            c[i] = code[i];
-    } // Copy
-
-    inline void Copy(const FireStarterCode& code, unsigned int instructions)
+    inline void Copy(const FireStarterCode& code, unsigned int instructions = FIRESTARTER_INSTRUCTIONS)
     {
         for (unsigned int i = 0; i < instructions; i++)
             c[i] = code[i];
     } // Copy
 
-    inline void Copy(const FireStarterCode* code)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            c[i] = (*code)[i];
-    } // Copy
-
-    inline void Copy(const FireStarterCode* code, unsigned int instructions)
+    inline void Copy(const FireStarterCode* code, unsigned int instructions = FIRESTARTER_INSTRUCTIONS)
     {
         for (unsigned int i = 0; i < instructions; i++)
             c[i] = (*code)[i];
@@ -361,132 +365,38 @@ typedef struct FireStarterCode {
         Copy(code);
     } // operator=
 
-    inline float Evaluate(FireStarterData& data, float n) const
+    inline float Evaluate(FireStarterData& data, float n, unsigned int instructions = FIRESTARTER_INSTRUCTIONS) const
     {
 #if FIRESTARTER_MADD
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+        for (unsigned int i = 0; i < instructions; i += 2) {
             n = data[c[i].reg] *= n;
             n = data[c[i + 1].reg] += n;
         }
-#elif 1
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            c[i].Evaluate(data[c[i].reg], n);
-#elif FIRESTARTER_FIRSTLIGHT
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
-            switch (c[i].op) {
-                case Operation_noop:
-                    break;
-
-                case Operation_store:
-                    data[c[i].reg] = n;
-                    break;
-
-                case Operation_square:
-                    n *= n;
-                    break;
-
-                case Operation_multiply:
-                    n *= data[c[i].reg];
-                    break;
-
-                case Operation_divide:
-                    n /= data[c[i].reg];
-                    break;
-
-                case Operation_add:
-                    n += data[c[i].reg];
-                    break;
-
-                case Operation_subtract:
-                    n -= data[c[i].reg];
-                    break;
-
-                case Operation_min:
-                    n = data[c[i].reg] < n ? data[c[i].reg] : n;
-                    break;
-
-                case Operation_max:
-                    n = data[c[i].reg] > n ? data[c[i].reg] : n;
-                    break;
-            }
-        }
 #else
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            n = c[i].op == Operation_multiply ? data[c[i].reg] *= n : data[c[i].reg] += n;
+        for (unsigned int i = 0; i < instructions; i++)
+            c[i].Evaluate(data[c[i].reg], n);
 #endif
         return n;
     } // Evaluate
 
-    inline float Evaluate(FireStarterSharedData& data, float n) const
+    inline float Evaluate(FireStarterSharedData& data, float n, unsigned int instructions = FIRESTARTER_INSTRUCTIONS) const
     {
 #if FIRESTARTER_MADD
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i += 2) {
+        for (unsigned int i = 0; i < instructions; i += 2) {
             n = data[c[i].reg] *= n;
             n = data[c[i + 1].reg] += n;
         }
-#elif 1
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            c[i].Evaluate(data[c[i].reg], n);
-#elif FIRESTARTER_FIRSTLIGHT
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
-            switch (c[i].op) {
-                case Operation_noop:
-                    break;
-
-                case Operation_store:
-                    data[c[i].reg] = n;
-                    break;
-
-                case Operation_square:
-                    n *= n;
-                    break;
-
-                case Operation_multiply:
-                    n *= data[c[i].reg];
-                    break;
-
-                case Operation_divide:
-                    n /= data[c[i].reg];
-                    break;
-
-                case Operation_add:
-                    n += data[c[i].reg];
-                    break;
-
-                case Operation_subtract:
-                    n -= data[c[i].reg];
-                    break;
-
-                case Operation_min:
-                    n = data[c[i].reg] < n ? data[c[i].reg] : n;
-                    break;
-
-                case Operation_max:
-                    n = data[c[i].reg] > n ? data[c[i].reg] : n;
-                    break;
-            }
-        }
 #else
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            n = c[i].op == Operation_multiply ? data[c[i].reg] *= n : data[c[i].reg] += n;
+        for (unsigned int i = 0; i < instructions; i++)
+            c[i].Evaluate(data[c[i].reg], n);
 #endif
         return n;
     } // Evaluate
 
-    inline void RandomInstruction(unsigned long long& seed, unsigned int i)
+    inline void RandomInstruction(unsigned long long& seed, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS, unsigned int opcodes = FIRESTARTER_OPCODES)
     {
-        c[i].reg = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
-#if FIRESTARTER_MADD
-        c[i].op = i & 1 ? Operation_add : Operation_multiply;
-#else
-        c[i].op = fireStarterOpcodes[RANDOMMOD(seed, FIRESTARTER_OPCODES)];
-#endif
-    } // RandomInstruction
-
-    inline void RandomInstruction(unsigned long long& seed)
-    {
-        unsigned int i = RANDOMMOD(seed, FIRESTARTER_INSTRUCTIONS);
-        RandomInstruction(seed, i);
+        unsigned int i = RANDOMMOD(seed, instructions);
+        c[i].RandomInstruction(seed, registers, opcodes);
     } // RandomInstruction
 
     static inline FireStarterCode* Member(FireStarterCode* population, const FireStarterSettings& settings, unsigned int index)
@@ -529,22 +439,16 @@ typedef struct FireStarterCode {
         return Optimize(settings.m_instructions, settings.m_registers);
     } // Optimize
 
-    inline void Init()
+    inline void Init(unsigned int instructions = FIRESTARTER_INSTRUCTIONS)
     {
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+        for (unsigned int i = 0; i < instructions; i++)
             c[i] = FireStarterCodeInstruction();
     } // Init
 
-    inline void Init(unsigned int registers)
+    inline void Init(unsigned long long& seed, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS, unsigned int opcodes = FIRESTARTER_OPCODES)
     {
-        for (unsigned int i = 0; i < registers; i++)
-            c[i] = FireStarterCodeInstruction();
-    } // Init
-
-    inline void Init(unsigned long long& seed)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            RandomInstruction(seed, i);
+        for (unsigned int i = 0; i < instructions; i++)
+            RandomInstruction(seed, i, registers, opcodes);
     } // Init
 
     inline FireStarterCode(const struct FireStarterCode& code)
