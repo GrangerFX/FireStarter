@@ -109,7 +109,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         curState.m_timer.Start();
 
                         // Copy the program and result from the random index.
-                        curState.CopyCode(allStates[evolveIndex].Code());
+                        curState.CopyCode(allStates[evolveIndex]);
 
                         // Randomize 2 and 3 instructions alternately.
                         curState.RandomInstruction();

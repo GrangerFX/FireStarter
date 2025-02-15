@@ -433,7 +433,6 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
             // Loop until the the evolve completion condition or the host program is quit.
             unsigned long long evolveTests = MAX(speedTestSettings.m_tests, 1);
             for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-
                 // Reset the timer if there is only one stream.
                 if (speedTestSettings.m_streams == 1)
                     streamTimer.Start();
