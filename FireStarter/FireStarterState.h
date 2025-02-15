@@ -1,17 +1,21 @@
 #pragma once
-#include "FireStarterProgram.h"
-#include "FireStarterResults.h"
+#include "FireStarterCodeGenerate.h"
+#include "FireStarterPacket.h"
 #include "FireSinSim.h"
+#include "SimpleTimer.h"
 #include <vector>
+#include <string>
+#include <set>
 
 typedef std::vector<class FireStarterState> FireStarterStates;
+typedef std::set<std::vector<unsigned char>> TestedCodes;
 
 class FireStarterState {
 private:
     std::vector<unsigned char> m_resultsData;  // Backing data for the results.
     std::vector<unsigned char> m_codeData;     // Backing data for the code.
     std::vector<FireStarterResult*> m_results;
-    FireStarterCode* m_code = nullptr;
+    FireStarterCodeGenerate* m_code = nullptr;
     SinSimNetwork m_network;
 
     inline void swap(const FireStarterState& other)
@@ -21,8 +25,7 @@ private:
         m_results = Results();
         m_code = Code();
         m_network = other.m_network;
-        m_program = other.m_program;
-        m_evaluateCode = other.m_evaluateCode;
+        m_settings = other.m_settings;
         m_timer = other.m_timer;
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
@@ -44,9 +47,8 @@ private:
     } // swap
 
 public:
-    FireStarterProgram m_program;
     std::string m_evaluateCode;
-    FireStarterSettings& m_settings = m_program.m_settings;
+    FireStarterSettings m_settings;
     SimpleTimer m_timer;
     std::vector<unsigned int> m_variationOrder;
     std::vector<unsigned int> m_variationCount;
@@ -60,6 +62,7 @@ public:
     unsigned long long m_seed = 0;
     unsigned long long m_optimize_pass = 0;
     unsigned int m_minIndex = 0;
+    unsigned int m_uniqueRegisters = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
@@ -74,12 +77,12 @@ public:
 
     inline FireStarterSettings& Settings(void)
     {
-        return m_program.m_settings;
+        return m_settings;
     } // Settings
 
     inline const FireStarterSettings& Settings(void) const
     {
-        return m_program.m_settings;
+        return m_settings;
     } // Settings
 
     inline size_t ResultSize(void) const
@@ -159,15 +162,20 @@ public:
         return FireStarterCode::CodeSize(m_settings);
     } // CodeSize
 
-    inline FireStarterCode* Code(void)
+    inline FireStarterCodeGenerate* Code(void)
     {
-        return m_codeData.size() == CodeSize() ? (FireStarterCode*)m_codeData.data() : nullptr;
+        return m_codeData.size() == CodeSize() ? (FireStarterCodeGenerate*)m_codeData.data() : nullptr;
     } // Code
 
-    inline const FireStarterCode* Code(void) const
+    inline const FireStarterCodeGenerate* Code(void) const
     {
-        return m_codeData.size() == CodeSize() ? (const FireStarterCode*)m_codeData.data() : nullptr;
+        return m_codeData.size() == CodeSize() ? (const FireStarterCodeGenerate*)m_codeData.data() : nullptr;
     } // Code
+
+    const std::vector<unsigned char>& CodeData(void) const
+    {
+        return m_codeData;
+    } // CodeData
 
     inline float MaxResult(void) const
     {
@@ -180,8 +188,8 @@ public:
 
     inline bool ResultsValid(void) const
     {
-        for (unsigned int v = 0; v < m_program.m_settings.m_variations; v++)
-            if (MinResult(v) == m_program.m_settings.m_startResult)
+        for (unsigned int v = 0; v <m_settings.m_variations; v++)
+            if (MinResult(v) == m_settings.m_startResult)
                 return false;
         return true;
     } // ResultsValid
@@ -193,7 +201,7 @@ public:
 
     inline unsigned int PassMode(void) const
     {
-        return m_program.m_settings.m_mode;
+        return m_settings.m_mode;
     } // PassMode
 
     inline const char* Mode(void) const
@@ -208,17 +216,17 @@ public:
 
     inline unsigned long long EvolutionSeed(void) const
     {
-        return SEED1(m_program.m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_id) + SEED4(m_test);
+        return SEED1(m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_id) + SEED4(m_test);
     } // EvolutionSeed
 
     inline unsigned long long OptimizationSeed(unsigned long long optimization = 0) const
     {
-        return SEED1(m_program.m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_generation) + SEED4(m_id) + SEED5(m_test);
+        return SEED1(m_settings.m_optimizeSeed) + SEED2(optimization) + SEED3(m_generation) + SEED4(m_id) + SEED5(m_test);
     } // OptimizationSeed
 
     inline unsigned long long GenerationSeed(void) const
     {
-        return SEED1(m_program.m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_index) + SEED4(m_test);
+        return SEED1(m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_index) + SEED4(m_test);
     } // GenerationSeed
 
     unsigned long long InitGenerationSeed(void)
@@ -229,7 +237,7 @@ public:
 
     unsigned long long RootSeed(unsigned int seed)
     {
-        m_program.m_settings.m_evolveSeed = seed;
+        m_settings.m_evolveSeed = seed;
         return InitGenerationSeed();
     } // RootSeed
 
@@ -248,63 +256,74 @@ public:
         return RANDOMMOD(m_seed, m);
     } // RandomMod
 
-    inline void RandomInstruction(unsigned long long& seed, unsigned int index)
-    {
-        m_program.RandomInstruction(seed, index);
-    } // RandomInstruction
-
-    inline void RandomInstruction(unsigned int index)
-    {
-        m_program.RandomInstruction(m_seed, index);
-    } // RandomInstruction
-
     inline void RandomInstruction(unsigned long long& seed)
     {
-        m_program.RandomInstruction(seed);
+        Code()->RandomInstruction(seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
     } // RandomInstruction
 
     inline void RandomInstruction(void)
     {
-        m_program.RandomInstruction(m_seed);
+        RandomInstruction(m_seed);
     } // RandomInstruction
 
-    inline void LoadProgramFromCode(const FireStarterCode* code = nullptr)
+    inline void CopyCode(const FireStarterCode* srcCode)
     {
-        unsigned int numInstructions = Settings().m_instructions;
-        FireStarterCode* programCode = m_program.EvolvedCode();
-        if (code)
-            *Code() = code;
-        else
-            code = Code();
-        programCode->Copy(code);
-        m_program.OptimizeRegisters();
-    } // LoadProgramFromCode
-
-    inline void LoadCodeFromProgram(void)
-    {
-        unsigned int numInstructions = Settings().m_instructions;
-        FireStarterCode* programCode = m_program.OptimizedCode();
-        FireStarterCode* code = Code();
-        code->Copy(programCode);
-    } // LoadCodeFromProgram
+        memcpy(Code(), srcCode, FireStarterCode::CodeSize(m_settings));
+    } // CopyInstructions
 
     inline void CopyInstructions(const FireStarterState& srcState)
     {
-        m_program.CopyCode(srcState.m_program);
-        LoadCodeFromProgram();
+        CopyCode(srcState.Code());
     } // CopyInstructions
 
-    inline void CopyCode(const FireStarterCode& srcCode)
+    inline void RandomCode(void)
     {
-        memcpy(Code(), &srcCode, FireStarterCode::CodeSize(m_settings));
-        LoadProgramFromCode();
-    } // CopyInstructions
+        Code()->Init(m_seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
+    } // RandomCode
 
-
-    inline void RandomProgram(void)
+    inline unsigned int OptimizeCode(void)
     {
-        m_program.RandomProgram(m_seed);
-    } // RandomProgram
+        m_uniqueRegisters = Code()->Optimize();
+        return m_uniqueRegisters;
+    } // OptimizeCode
+
+    inline unsigned int GenerateRegisters(std::vector<FireStarterRegisterInfo>& registers) const
+    {
+        const FireStarterCode* code = Code();
+        unsigned int numInstructions = m_settings.m_instructions;
+
+        // Optimize the registers based on the ones in use at any point in the code.
+        registers.resize(m_uniqueRegisters);
+        for (unsigned int i = 0; i < m_uniqueRegisters; i++)
+            registers[i] = FireStarterRegisterInfo(-1, numInstructions, numInstructions);
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int index = code->Register(i);
+            FireStarterRegisterInfo& reg = registers[index];
+            if (reg.instructionFirst == numInstructions)
+                reg.instructionFirst = i;
+            reg.instructionLast = i;
+        }
+
+        std::vector<unsigned int> freeRegisters;
+        unsigned int numActiveRegisters = 0;
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int index = code->Register(i);
+            FireStarterRegisterInfo& reg = registers[index];
+            if (reg.instructionLast > reg.instructionFirst)
+                if (reg.instructionFirst == i) {
+                    if (!freeRegisters.empty()) {
+                        reg.registerIndex = freeRegisters.back();
+                        freeRegisters.pop_back();
+                    } else
+                        reg.registerIndex = numActiveRegisters;
+                    numActiveRegisters++;
+                } else if (reg.instructionLast == i) {
+                    freeRegisters.push_back(reg.registerIndex);
+                    numActiveRegisters--;
+                }
+        }
+        return m_uniqueRegisters;
+    } // GenerateRegisters
 
     inline void NextGeneration(void)
     {
@@ -313,6 +332,9 @@ public:
     } // NextGeneration
 
     bool Packetize(FireStarterPacket& packet);
+    static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "", const std::string& postfix = "");
+    void SaveSettings(std::string& code) const;
+    void SaveCode(std::string& code) const;
     void SaveStats(std::string& code) const;
     void SaveVariation(unsigned int variation, std::string& code) const;
     void SaveResults(std::string& code) const;

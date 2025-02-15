@@ -104,9 +104,8 @@ inline void LoadResult(FireStarterState& state)
     state.m_maxResult = 0.00008190f;
 } // LoadResult
 
-inline void LoadProgram(FireStarterProgram& program)
+inline unsigned int LoadCode(FireStarterCode* code)
 {
-    FireStarterCode* code = program.EvolvedCode();
     code->SetOperation(0, (FireStarterOpcode)0, 0);
     code->SetOperation(1, (FireStarterOpcode)1, 1);
     code->SetOperation(2, (FireStarterOpcode)0, 2);
@@ -139,7 +138,7 @@ inline void LoadProgram(FireStarterProgram& program)
     code->SetOperation(29, (FireStarterOpcode)0, 19);
     code->SetOperation(30, (FireStarterOpcode)0, 0);
     code->SetOperation(31, (FireStarterOpcode)0, 20);
-    program.OptimizeRegisters();
+    return code->Optimize();
 } // LoadProgram
 
 inline void LoadState(FireStarterState& state)
@@ -149,8 +148,7 @@ inline void LoadState(FireStarterState& state)
     LoadSettings(settings);
     state.InitState(settings);
     LoadResult(state);
-    LoadProgram(state.m_program);
-    state.LoadCodeFromProgram();
+    state.m_uniqueRegisters = LoadCode(state.Code());
     state.m_generation = 5;
     state.m_evolution = 0;
     state.m_index = 0;

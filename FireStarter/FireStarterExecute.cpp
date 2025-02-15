@@ -465,7 +465,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 
     for (unsigned int p = 0; p < passes; p++) {
         // Run all the evolve states in parallel.
-        unsigned int registers = state.m_program.m_uniqueRegisters;
+        unsigned int registers = state.m_uniqueRegisters;
         newPopulation = p & 1 ? m_devicePopulation0[variation] : m_devicePopulation1[variation];
         oldPopulation = p & 1 ? m_devicePopulation1[variation] : m_devicePopulation0[variation];
         unsigned long long seed = state.OptimizationSeed(pass);

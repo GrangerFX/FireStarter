@@ -5,7 +5,6 @@
 #include "FireStarterStream.h"
 #include "CUDAContext.h"
 #include "CUDACompile.h"
-#include <cmath>
 
 void FireStarter::ControlSolution(void)
 {
@@ -67,7 +66,7 @@ static void TestRandom(void)
         double maxq = 0.0f;
         for (int i = 0; i < 32; i++) {
             double q = fabs(1.0 - (double)randomBucket[i] * (32.0 / (double)total));
-            maxq = max(maxq, q);
+            maxq = MAX(maxq, q);
         }
         printf("seed: %llu  maxq = %f\n", settingsSeed, maxq);
     }

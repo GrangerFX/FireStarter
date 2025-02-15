@@ -1,5 +1,6 @@
 #include "FireStarterEvolve.h"
 #include "FireStarterSource.h"
+#include "FireStarterState.h"
 #include "CUDACompile.h"
 
 void FireStarterEvolve::GenerateCode(FireStarterJob* job)
@@ -29,13 +30,10 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state)
         if (job) {
             // Randomize the program.
             job->m_state = evolveState;
-            job->m_state.RandomProgram();
+            job->m_state.RandomCode();
 
             // Optimize the program registers.
-            job->m_state.m_program.OptimizeRegisters();
-
-            // Copy the program code to the results code (variation 0 for consistency).
-            job->m_state.LoadCodeFromProgram();
+            job->m_state.OptimizeCode();
 
             // Generate the evaluate code
             GenerateCode(job);
@@ -46,9 +44,9 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state)
     return true;
 } // RandomState
 
-bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedInstructions& testedInstructions, unsigned long long generation)
+bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
 {
-    DispatchSync([this, test, &evolveSettings, &allStates, &testedInstructions, generation] {
+    DispatchSync([this, test, &evolveSettings, &allStates, &testedCodes, generation] {
         unsigned long long numStates = evolveSettings.m_states;
         unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM;
         unsigned long long totalStates = allStates.size();
@@ -65,17 +63,14 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     // Keep randomizing instructions until a unique set of instructions is found.
                     do {
                         // Randomize the program.
-                        curState.RandomProgram();
+                        curState.RandomCode();
 
                         // Optimize the program registers.
-                        curState.m_program.OptimizeRegisters();
-                    } while (testedInstructions.count(curState.m_program.OptimizedCodeData()));
+                        curState.OptimizeCode();
+                    } while (testedCodes.count(curState.CodeData()));
 
                     // Add the instructions to the set of unique instructions.
-                    testedInstructions.insert(curState.m_program.OptimizedCodeData());
-
-                    // Copy the program code to the results code (variation 0 for consistency).
-                    curState.LoadCodeFromProgram();
+                    testedCodes.insert(curState.CodeData());
 
                     // Add the state to the list of active states.
                     allStates.push_back(curState);
@@ -114,7 +109,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         curState.m_timer.Start();
 
                         // Copy the program and result from the random index.
-                        curState.m_program = allStates[evolveIndex].m_program;
+                        curState.CopyCode(allStates[evolveIndex].Code());
 
                         // Randomize 2 and 3 instructions alternately.
                         curState.RandomInstruction();
@@ -123,15 +118,12 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                             curState.RandomInstruction();
 
                         // Optimize the program registers.
-                        curState.m_program.OptimizeRegisters();
-
-                        // Copy the program code to the results code (variation 0 for consistency).
-                        curState.LoadCodeFromProgram();
+                        curState.OptimizeCode();
 
                         // Check if the optimized instructions are unique.
-                        if (!testedInstructions.count(curState.m_program.OptimizedCodeData())) {
+                        if (!testedCodes.count(curState.CodeData())) {
                             // Add the instructions to the set of unique instructions.
-                            testedInstructions.insert(curState.m_program.OptimizedCodeData());
+                            testedCodes.insert(curState.CodeData());
                             break;
                         }
                     }

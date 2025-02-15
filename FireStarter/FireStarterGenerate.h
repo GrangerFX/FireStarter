@@ -1,5 +1,4 @@
 #pragma once
-#include "FireStarterProgram.h"
 #include "FireStarterState.h"
 #include "CUDAContext.h"
 

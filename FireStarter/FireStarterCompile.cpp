@@ -1,5 +1,6 @@
 #include "FireStarterCompile.h"
 #include "CUDACompile.h"
+#include "Format.h"
 
 #define COMPILE_EXECUTE "CompileExecute"
 

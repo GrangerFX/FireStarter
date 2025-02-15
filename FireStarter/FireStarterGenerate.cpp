@@ -56,10 +56,10 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
     bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the evaluate function.
-    unsigned int numInstructions = state.m_program.m_settings.m_instructions;
-    const FireStarterCodeGenerate* code = state.m_program.OptimizedCode();
+    unsigned int numInstructions = state.m_settings.m_instructions;
+    const FireStarterCodeGenerate* code = state.Code();
     std::vector<FireStarterRegisterInfo> registers;
-    unsigned int numRegisters = state.m_program.GenerateRegisters(registers);
+    unsigned int numRegisters = state.GenerateRegisters(registers);
     FireStarterRegisterUsage* registersUsage = (FireStarterRegisterUsage*)registers.data();
     std::string generateText;
     unsigned int tabs = 1;
@@ -129,10 +129,10 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     bool generateGPU = InitGenerateGPU(state.Settings());
 
     // Generate the solution function.
-    unsigned int numInstructions = state.m_program.m_settings.m_instructions;
-    const FireStarterCodeGenerate* code = state.m_program.OptimizedCode();
+    unsigned int numInstructions = state.m_settings.m_instructions;
+    const FireStarterCodeGenerate* code = state.Code();
     std::vector<FireStarterRegisterInfo> registers;
-    unsigned int numRegisters = state.m_program.GenerateRegisters(registers);
+    unsigned int numRegisters = state.GenerateRegisters(registers);
     FireStarterRegisterUsage* registersUsage = (FireStarterRegisterUsage*)registers.data();
     std::string generateText;
 

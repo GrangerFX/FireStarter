@@ -1,6 +1,7 @@
 #include "FireStarterShow.h"
 #include "FireStarterSource.h"
 #include "FireStarter_Solution.h"
+#include "FireStarterUtil.h"
 #include "CUDACompile.h"
 
 bool FireStarterShow::LoadFireEvaluator(const FireStarterSettings& settings)
@@ -340,7 +341,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     const FireStarterSettings& settings = state.Settings();
     static std::string settingsText;
     if (settingsText.empty()) {
-        FireStarterProgram::SettingsText(settings, settingsText);
+        FireStarterState::SettingsText(settings, settingsText);
         settingsText += "\r\n";
     }
 
@@ -387,7 +388,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     float bestResult = bestState.m_maxResult;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, state.m_maxResult, bestResult, bestError, bestState.m_program.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, state.m_maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
         for (unsigned int v = 0; v < settings.m_variations; v++)
             statusString += Format("  V:%d=%.8f", v, results[v]->MinResult());
     } else {

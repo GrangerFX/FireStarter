@@ -1,6 +1,7 @@
 #include "FireStarterComplete.h"
 #include "FireStarterState.h"
 #include "FireStarterSource.h"
+#include "FireStarterUtil.h"
 
 void FireStarterComplete::SaveBestState(const FireStarterState& bestState)
 {

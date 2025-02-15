@@ -4,6 +4,7 @@
 #include "FireStarterExecute.h"
 #include "FireStarterComplete.h"
 #include "FireStarterSource.h"
+#include "FireStarterUtil.h"
 #include "FireStarter_LoadState.h"
 
 #define FIRESTARTER_STREAM_EVOLUTIONS 100
@@ -131,13 +132,13 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             FireStarterState bestEvolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
 
             // Keep track of the tested instructions so they don't get generated again.
-            TestedInstructions testedInstructions;
+            TestedCodes testedCodes;
 
             // Evolve the current test.
             unsigned long long generation = 0;
             while (!WillTerminate()) {
                 // Evolve a new generation.
-                evolve->EvolveStates(test, evolveSettings, allStates, testedInstructions, generation);
+                evolve->EvolveStates(test, evolveSettings, allStates, testedCodes, generation);
 
                 // Execute each state using one of the evolution execution units.
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
@@ -272,7 +273,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 FireStarterCode* bestCode = bestCodes.GetBestCode();
                 if (bestCode) {
                     optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, 0, test);
-                    optimizeState.LoadProgramFromCode(bestCode);
 
                     // Compile the optimize code asynchronously.
                     executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
