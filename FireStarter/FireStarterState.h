@@ -39,6 +39,7 @@ private:
         m_seed = other.m_seed;
         m_optimize_pass = other.m_optimize_pass;
         m_minIndex = other.m_minIndex;
+        m_uniqueRegisters = other.m_uniqueRegisters;
         m_oldResult = other.m_oldResult;
         m_maxResult = other.m_maxResult;
         m_evolveWeight = other.m_evolveWeight;
@@ -266,15 +267,26 @@ public:
         RandomInstruction(m_seed);
     } // RandomInstruction
 
-    inline void CopyCode(const FireStarterCode* srcCode)
+    inline void CopyCode(const FireStarterCode* srcCode, unsigned int uniqueRegisters = 0)
     {
-        memcpy(Code(), srcCode, FireStarterCode::CodeSize(m_settings));
+        FireStarterCodeGenerate* dstCode = Code();
+        if (srcCode && dstCode) {
+            memcpy(dstCode, srcCode, FireStarterCode::CodeSize(m_settings));
+            if (!uniqueRegisters)
+                uniqueRegisters = OptimizeCode();
+            m_uniqueRegisters = uniqueRegisters;
+        } else
+            std::terminate();
     } // CopyInstructions
 
-    inline void CopyInstructions(const FireStarterState& srcState)
+    inline void CopyCode(const FireStarterState& srcState)
     {
-        CopyCode(srcState.Code());
-    } // CopyInstructions
+        const FireStarterCodeGenerate* srcCode = srcState.Code();
+        if (srcCode && (srcState.m_settings.m_instructions == m_settings.m_instructions))
+            CopyCode(srcCode, srcState.m_uniqueRegisters);
+        else
+            std::terminate();
+    } // CopyCode
 
     inline void RandomCode(void)
     {
