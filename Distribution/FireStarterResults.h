@@ -93,13 +93,7 @@ typedef struct FireStarterData {
         Copy(data);
     } // operator=
 
-    inline void Init()
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i] = 0.0f; // Clear all the registers
-    } // Init
-
-    inline void Init(unsigned int registers)
+    inline void Clear(unsigned int registers = FIRESTARTER_REGISTERS)
     {
         for (unsigned int i = 0; i < registers; i++)
             d[i] = 0.0f; // Clear all the registers
@@ -108,19 +102,13 @@ typedef struct FireStarterData {
     inline void Init(unsigned long long& seed, float startScale)
     {
         for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i] = RANDOMFACTOR(seed) * startScale; // Randomize all the registers.
+            d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the registers
     } // Init
 
-    inline void Init(unsigned long long& seed, float startScale, unsigned int registers)
+    inline void Init(unsigned long long& seed, float startScale, unsigned int uniqueRegisters, unsigned int registers = FIRESTARTER_REGISTERS)
     {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i] = i < registers ? RANDOMFACTOR(seed) * startScale : 0.0f; // Randomize the active registers and clear the unused registers
-    } // Init
-
-    inline void Init(unsigned long long& seed, float startScale, unsigned int registers, unsigned int maxRegisters)
-    {
-        for (unsigned int i = 0; i < maxRegisters; i++)
-            d[i] = i < registers ? RANDOMFACTOR(seed) * startScale : 0; // Randomize the active registers and clear the unused registers
+        for (unsigned int i = 0; i < registers; i++)
+            d[i] = i < uniqueRegisters ? RANDOMFACTOR(seed) * startScale : 0; // Randomize the active registers and clear the unused registers
     } // Init
 
     inline FireStarterData(const struct FireStarterData& data)
@@ -727,7 +715,7 @@ typedef struct FireStarterResult {
 
     inline void Init(unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
     {
-        m_data.Init();
+        m_data.Clear();
         m_resultMin = FIRESTARTER_START_RESULT;
         m_evolveAge1 = evolveAge1;
         m_evolveAge2 = evolveAge2;
@@ -735,7 +723,7 @@ typedef struct FireStarterResult {
 
     inline void Init(const FireStarterSettings& settings, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
     {
-        m_data.Init(settings.m_registers);
+        m_data.Clear(settings.m_registers);
         m_resultMin = settings.m_startResult;
         m_evolveAge1 = evolveAge1;
         m_evolveAge2 = evolveAge2;
@@ -770,7 +758,7 @@ typedef struct FireStarterResult {
         if (data)
             m_data.Copy(data);
         else
-            m_data.Init();
+            m_data.Clear();
         m_resultMin = resultMin;
         m_evolveAge1 = evolveAge1;
         m_evolveAge2 = evolveAge2;
@@ -789,7 +777,7 @@ typedef struct FireStarterResult {
         if (data)
             m_data.Copy(data, settings.m_registers);
         else
-            m_data.Init(settings.m_registers);
+            m_data.Clear(settings.m_registers);
         m_resultMin = resultMin;
         m_evolveAge1 = evolveAge1;
         m_evolveAge2 = evolveAge2;
