@@ -510,7 +510,8 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     float minResult = *m_hostPopulation[0].MinResult();
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < population; i++) {
-        float curResult = *m_hostPopulation[i].MinResult();
+        FireStarterResult& member = m_hostPopulation[i];
+        float curResult = *member.MinResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;

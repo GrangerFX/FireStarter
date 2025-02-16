@@ -419,10 +419,9 @@ typedef struct FireStarterCode {
         return Member(this, settings, index);
     } // Member
 
-    inline unsigned int Optimize(void)
+    inline unsigned int Optimize(unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS)
     {
         // Sort and count the used registers.
-        // Note: For use on GPU only due to fixed sizes for the registers and instructions.
         unsigned int regCount[FIRESTARTER_REGISTERS] = {};
         unsigned short uniqueRegisters = 0;
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
@@ -433,6 +432,11 @@ typedef struct FireStarterCode {
             c[i].reg = index - 1;
         }
         return uniqueRegisters;
+    } // Optimize
+
+    inline unsigned int Optimize(const FireStarterSettings& settings)
+    {
+        return Optimize(settings.m_instructions, settings.m_registers);
     } // Optimize
 
     inline void Init(unsigned int instructions = FIRESTARTER_INSTRUCTIONS)
