@@ -436,7 +436,7 @@ typedef struct FireStarterCode {
     inline void Init(unsigned long long& seed, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS, unsigned int opcodes = FIRESTARTER_OPCODES)
     {
         for (unsigned int i = 0; i < instructions; i++)
-            RandomInstruction(seed, i, registers, opcodes);
+            c[i].RandomInstruction(seed, registers, opcodes);
     } // Init
 
     inline FireStarterCode(const struct FireStarterCode& code)
