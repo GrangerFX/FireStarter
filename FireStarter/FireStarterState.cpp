@@ -286,6 +286,5 @@ void FireStarterState::InitResults(const FireStarterSettings& settings, const Fi
 
 void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* results, unsigned int variation, unsigned int index)
 {
-    for (unsigned int v = 0; v < settings.m_variations; v++)
-        InitResult(settings, results->Member(settings, index), nullptr, v, index);
+    InitResult(settings, results->Member(settings, index), nullptr, variation, index);
 } // InitResults
