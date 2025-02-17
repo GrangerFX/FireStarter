@@ -257,14 +257,9 @@ public:
         return RANDOMMOD(m_seed, m);
     } // RandomMod
 
-    inline void RandomInstruction(unsigned long long& seed)
-    {
-        Code()->RandomInstruction(seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
-    } // RandomInstruction
-
     inline void RandomInstruction(void)
     {
-        RandomInstruction(m_seed);
+        Code()->RandomInstruction(m_seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
     } // RandomInstruction
 
     inline void CopyCode(const FireStarterCode* srcCode, unsigned int uniqueRegisters = 0)
