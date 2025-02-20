@@ -12,17 +12,17 @@ typedef std::set<std::vector<unsigned char>> TestedCodes;
 
 class FireStarterState {
 private:
-    std::vector<unsigned char> m_resultsData;  // Backing data for the results.
-    std::vector<unsigned char> m_codeData;     // Backing data for the code.
-    std::vector<FireStarterResult*> m_results;
+    std::vector<unsigned char> m_resultData;    // Backing data for the result.
+    std::vector<unsigned char> m_codeData;      // Backing data for the code.
+    FireStarterResult* m_result;
     FireStarterCodeGenerate* m_code = nullptr;
     SinSimNetwork m_network;
 
     inline void swap(const FireStarterState& other)
     {
-        m_resultsData = other.m_resultsData;
+        m_resultData = other.m_resultData;
         m_codeData = other.m_codeData;
-        m_results = Results();
+        m_result = Result();
         m_code = Code();
         m_network = other.m_network;
         m_settings = other.m_settings;
@@ -41,7 +41,6 @@ private:
         m_minIndex = other.m_minIndex;
         m_uniqueRegisters = other.m_uniqueRegisters;
         m_oldResult = other.m_oldResult;
-        m_maxResult = other.m_maxResult;
         m_evolveWeight = other.m_evolveWeight;
         m_optimizeValid = other.m_optimizeValid;
         m_evolveComplete = other.m_evolveComplete;
@@ -65,7 +64,6 @@ public:
     unsigned int m_minIndex = 0;
     unsigned int m_uniqueRegisters = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
-    float m_maxResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
     bool m_optimizeValid = false;
     bool m_evolveComplete = false;
@@ -91,37 +89,20 @@ public:
         return FireStarterResult::ResultSize(m_settings);
     } // ResultSize
 
-    inline size_t ResultsSize(void) const
-    {
-        return ResultSize() * m_settings.m_variations;
-    } // OptimizeResultsSize
-
-    inline std::vector<FireStarterResult*> Results(void) const
-    {
-        std::vector<FireStarterResult*> results;
-        size_t resultSize = ResultSize();
-        if (m_resultsData.size() == resultSize * m_settings.m_variations) {
-            results.resize(m_settings.m_variations);
-            for (unsigned int v = 0; v < m_settings.m_variations; v++)
-                results[v] = (FireStarterResult*)&m_resultsData[v * resultSize];
-        }
-        return results;
-    } // Results
-
-    inline const FireStarterResult* Result(unsigned int variation = 0) const
+    inline const FireStarterResult* Result(void) const
     {
         size_t resultSize = FireStarterResult::ResultSize(m_settings);
-        if (m_resultsData.size() == resultSize * m_settings.m_variations)
-            return (FireStarterResult*)&m_resultsData[variation * resultSize];
+        if (m_resultData.size() == resultSize)
+            return (const FireStarterResult*)m_resultData.data();
         else
             return nullptr;
     } // Result
 
-    inline FireStarterResult* Result(unsigned int variation = 0)
+    inline FireStarterResult* Result(void)
     {
-        size_t resultSize = FireStarterResult::ResultSize(m_settings);
-        if (m_resultsData.size() == resultSize * m_settings.m_variations)
-            return (FireStarterResult*)&m_resultsData[variation * resultSize];
+        size_t resultSize = ResultSize();
+        if (m_resultData.size() == resultSize)
+            return (FireStarterResult*)m_resultData.data();
         else
             return nullptr;
     } // Result
@@ -131,27 +112,27 @@ public:
         return &m_network;
     } // Network
 
-    inline float MinResult(unsigned int variation = 0) const
+    inline float MaxResult(void) const
     {
-        const FireStarterResult* result = Result(variation);
+        const FireStarterResult* result = Result();
         if (result)
-            return result->MinResult();
+            return result->MaxResult();
         else
             return m_settings.m_startResult;
-    } // MinResult
+    } // MaxResult
 
-    inline unsigned short EvolveAge1(unsigned int variation = 0) const
+    inline unsigned short EvolveAge1(void) const
     {
-        const FireStarterResult* result = Result(variation);
+        const FireStarterResult* result = Result();
         if (result)
             return result->EvolveAge1();
         else
             return 0;
     } // EvolveAge1
 
-    inline unsigned short EvolveAge2(unsigned int variation = 0) const
+    inline unsigned short EvolveAge2(void) const
     {
-        const FireStarterResult* result = Result(variation);
+        const FireStarterResult* result = Result();
         if (result)
             return result->EvolveAge2();
         else
@@ -178,26 +159,16 @@ public:
         return m_codeData;
     } // CodeData
 
-    inline float MaxResult(void) const
+    inline bool ResultValid(void) const
     {
-        float maxResult = 0.0f;
-        unsigned int variations = m_settings.m_variations;
-        for (unsigned int v = 0; v < variations; v++)
-            maxResult = MAX(maxResult, MinResult(v));
-        return maxResult;
-    } // MaxResult
-
-    inline bool ResultsValid(void) const
-    {
-        for (unsigned int v = 0; v <m_settings.m_variations; v++)
-            if (MinResult(v) == m_settings.m_startResult)
-                return false;
+        if (MaxResult() == m_settings.m_startResult)
+            return false;
         return true;
-    } // ResultsValid
+    } // ResultValid
 
     inline bool Initialized(void) const
     {
-        return m_resultsData.size() == ResultsSize();
+        return m_resultData.size() == ResultSize();
     } // Initialized
 
     inline unsigned int PassMode(void) const
@@ -212,7 +183,7 @@ public:
 
     inline float EvolveWeight(void) const
     {
-        return m_generation * m_maxResult;
+        return m_generation * MaxResult();
     } // EvolveWeight
 
     inline unsigned long long EvolutionSeed(void) const
@@ -348,19 +319,18 @@ public:
     void SaveState(std::string& code) const;
     float TestResults(void) const;
     float EvaluateCode(void) const;
-    void InitResults(void);
+    void InitResult(void);
     void InitCode(void);
     void InitNetwork(void);
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
     void InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index);
     void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index);
-    void InitResults(const FireStarterSettings& settings, const FireStarterResult* results, const FireStarterCode* code, unsigned int index);
-    void InitResults(const FireStarterSettings& settings, const FireStarterResult* results, unsigned int variation, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, unsigned int variation, unsigned int index);
 
     inline void InitNetwork(const FireStarterSettings& settings, const SinSimNetwork& network, unsigned int index)
     {
         m_network = network;
-        m_maxResult = network.grade;
         m_minIndex = index;
         m_optimizeValid = true;
     } // InitNetwork
@@ -373,7 +343,7 @@ public:
     inline FireStarterState(const FireStarterSettings& settings, const FireStarterResult* results, const FireStarterCode* code, unsigned int index)
     {
         InitState(settings);
-        InitResults(settings, results, code, index);
+        InitResult(settings, results, code, index);
     } // FireStarterState
 
     inline FireStarterState(const FireStarterState& other)

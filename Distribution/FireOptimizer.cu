@@ -85,7 +85,7 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     } else {
         // Later generations randomize a single register if they were copied.
         const FireStarterResult& oldResult = oldPopulation[member];
-        data.Copy(oldResult.Data());
+        data.Copy(oldResult.Data(variation));
         evolveAge = oldResult.EvolveAge1();
         initAge = oldResult.EvolveAge2();
         if (evolveAge > 1) {
@@ -96,12 +96,12 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
             result = 1.0e+6f; // Validated as being faster than FIRESTARTER_START_RESULT  11/17/2024
             if (!TestEvaluate(data, target, theta, result)) {
                 data[d] = oldData;
-                memberResult = result = oldResult.MinResult();
+                memberResult = result = oldResult.MaxResult();
             } else
                 memberResult = FIRESTARTER_START_RESULT; // Validated as being faster than result  11/17/2024
             evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult; // Validated as being faster than 0.6f * FIRESTARTER_START_RESULT  11/17/2024
         } else {
-            memberResult = result = oldResult.MinResult();
+            memberResult = result = oldResult.MaxResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
     }
@@ -133,7 +133,7 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
             unsigned int candidate = RANDOMMOD(memberSeed, population);
             unsigned short candidateAge = oldPopulation[candidate].EvolveAge1();
             if (candidateAge <= 1) {
-                float candidateResult = oldPopulation[candidate].MinResult();
+                float candidateResult = oldPopulation[candidate].MaxResult();
                 if (candidateResult <= result) {
                     bestCandidate = candidate;
                     result = candidateResult;
@@ -153,6 +153,6 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     if (results)
         results[member] = result;
     if (newPopulation)
-        newPopulation[member].Init(data, result, evolveAge, initAge);
+        newPopulation[member].Init(data, variation, result, evolveAge, initAge);
 } // Optimizer
 

@@ -245,7 +245,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         float minResult = settings.m_startResult;
         unsigned int minIndex = 0;
         for (unsigned int i = 0; i < populationSize; i++) {
-            float curResult = *m_hostPopulation[i].MinResult();
+            float curResult = *m_hostPopulation[i].MaxResult();
             if (curResult < minResult) {
                 minResult = curResult;
                 minIndex = i;
@@ -254,8 +254,8 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
                 bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
         }
 
-        float oldResult = state.m_maxResult;
-        state.InitResults(settings, m_hostPopulation, m_hostCode, minIndex);
+        float oldResult = state.MaxResult();
+        state.InitResult(settings, m_hostPopulation, m_hostCode, minIndex);
         state.m_oldResult = oldResult;
 #if 1
         float error = state.EvaluateCode();
@@ -280,7 +280,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
                 bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
         }
 
-        float oldResult = state.m_maxResult;
+        float oldResult = state.MaxResult();
         checkCUDAErrors(cudaMemcpyAsync(m_hostCode, FireStarterCode::Member(m_deviceCode, settings, minIndex), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
         state.InitResult(settings, minResult, m_hostCode->Member(settings, minIndex), minIndex);
@@ -335,7 +335,7 @@ void FireStarterExecute::ExecuteEvolveVariationsPass(FireStarterState& state, Fi
             bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
     }
 
-    float oldResult = state.m_maxResult;
+    float oldResult = state.MaxResult();
     checkCUDAErrors(cudaMemcpyAsync(m_hostCode, FireStarterCode::Member(m_deviceCode, settings, minIndex), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
     state.InitResult(settings, minResult, m_hostCode->Member(settings, minIndex), minIndex);
@@ -383,15 +383,15 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
         FireStarterResult& member = m_hostPopulation[i];
-        float curResult = *member.MinResult();
+        float curResult = *member.MaxResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
         }
     }
 
-    float oldResult = state.m_maxResult;
-    state.InitResults(settings, m_hostPopulation, m_hostCode, minIndex);
+    float oldResult = state.MaxResult();
+    state.InitResult(settings, m_hostPopulation, m_hostCode, minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteEvolveNewPass
 
@@ -444,7 +444,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
         }
     }
 
-    float oldResult = state.m_maxResult;
+    float oldResult = state.MaxResult();
     state.InitNetwork(settings, minNetwork, minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteSinSimPass
@@ -507,18 +507,18 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float minResult = *m_hostPopulation[0].MinResult();
+    float minResult = *m_hostPopulation[0].MaxResult();
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < population; i++) {
         FireStarterResult& member = m_hostPopulation[i];
-        float curResult = *member.MinResult();
+        float curResult = *member.MaxResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
         }
     }
 
-    state.InitResults(settings, m_hostPopulation, variation, minIndex);
+    state.InitResult(settings, m_hostPopulation, variation, minIndex);
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
@@ -529,7 +529,6 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
         ExecuteOptimizePass(state, v);
 
     // Calculate the state's max result.
-    state.m_maxResult = state.MaxResult();
     state.m_optimizeValid = true;
 } // ExecuteOptimizePasses
 
@@ -537,24 +536,21 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
 {
     unsigned int variations = state.Settings().m_variations;
     if (variations > 1) {
-        std::vector<FireStarterResult*> results = state.Results();
-        float oldResult = state.m_maxResult;
+       FireStarterResult* result = state.Result();
+        float oldResult = state.MaxResult();
         bool validResult = true;
-        float variationMax = 0.0f;
         for (unsigned int v = 0; v < variations; v++) {
             unsigned int variation = state.m_variationOrder[v];
             if (validResult) {
                 // If the variation result is worse, skip the rest of the variations.
                 ExecuteOptimizePass(state, variation);
-                float variationResult = state.MinResult(variation);
-                variationMax = MAX(variationMax, variationResult);
-                if (state.m_evolution && (variationMax >= oldResult)) {
+                if (state.m_evolution && (state.MaxResult() >= oldResult)) {
                     // Count the variation that caused an invalid result.
                     state.m_variationCount[variation]++;
+                    result->Init(state.Settings());
                     validResult = false;
                 }
-            } else
-                results[variation]->Init(state.Settings());
+            }
         }
 
         // Resort the variation order with the highest invalidation count first.
@@ -576,13 +572,11 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
         }
 
         // Set the state's max result.
-        state.m_maxResult = variationMax;
         state.m_optimizeValid = validResult;
     } else {
         ExecuteOptimizePass(state, 0);
 
         // Set the state's max result.
-        state.m_maxResult = state.MaxResult();
         state.m_optimizeValid = true;
     }
 } // ExecuteSmartOptimizePass
