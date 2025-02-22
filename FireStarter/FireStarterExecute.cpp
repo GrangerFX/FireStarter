@@ -129,7 +129,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         size_t resultsSize = settings.m_population * sizeof(float);
         size_t populationSize = 0;
         if ((settings.m_mode == FIRESTARTER_EVOLVE_NEW) || FIRESTARTER_EVOLVE_RESULTS)
-            populationSize = settings.m_population * FireStarterResult::ResultSize(settings);
+            populationSize = FireStarterResult::PopulationSize(settings);
         size_t codeSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codeSize != m_codeSize)) {
             FinishPopulation();
@@ -159,7 +159,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
         // Reallocate the populations if the size has changed.
         size_t resultsSize = settings.m_population * sizeof(float);
-        size_t populationSize = settings.m_population * FireStarterResult::ResultSize(settings);
+        size_t populationSize = FireStarterResult::PopulationSize(settings);
         if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize)) {
             FinishPopulation();
             m_resultsSize = resultsSize;
@@ -257,10 +257,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         float oldResult = state.MaxResult();
         state.InitResult(settings, m_hostPopulation, m_hostCode, minIndex);
         state.m_oldResult = oldResult;
-#if 1
-        float error = state.EvaluateCode();
-        int foo = 1;
-#endif
     } else {
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_hostCode, m_deviceCode, m_codeSize, cudaMemcpyDeviceToHost, Stream()));
@@ -382,8 +378,8 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     float minResult = settings.m_startResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
-        FireStarterResult& member = m_hostPopulation[i];
-        float curResult = *member.MaxResult();
+        const FireStarterResult* member = m_hostPopulation->Member(settings, i);
+        float curResult = member->MaxResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -507,11 +503,11 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float minResult = *m_hostPopulation[0].MaxResult();
+    float minResult = settings.m_startResult;
     unsigned int minIndex = 0;
-    for (unsigned int i = 1; i < population; i++) {
-        FireStarterResult& member = m_hostPopulation[i];
-        float curResult = *member.MaxResult();
+    for (unsigned int i = 0; i < population; i++) {
+        const FireStarterResult* member = m_hostPopulation->Member(settings, i);
+        float curResult = member->MaxResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -620,12 +616,12 @@ bool FireStarterExecute::ExecuteJob(void)
             ExecuteSmartOptimizePasses(state);
             m_executeManager->AddComplete(job);
         } else
-            m_executeManager->AddComplete(nullptr);
+            m_executeManager->AddComplete();
         return true;
     }
     if (job)
         m_executeManager->AddFree(job);
-    m_executeManager->AddComplete(nullptr);
+    m_executeManager->AddComplete();
     return false;
 } // ExecuteJob
 

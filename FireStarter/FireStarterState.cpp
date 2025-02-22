@@ -184,7 +184,7 @@ float FireStarterState::EvaluateCode(void) const
     float startResult = Settings().m_startResult;
     for (unsigned int v = 0; v < variations; v++)
         for (unsigned int i = 0; i < samples; i++) {
-            FireStarterData data(Result()->m_data[v]);
+            FireStarterData data(Result()->Data(v));
             float theta = targetMin + i * sampleStep;
             float target = Target(theta, v);
             float n = Code()->Evaluate(data, theta);
@@ -258,6 +258,7 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, float res
         CopyCode(code);
 
     // Load the state's data from the population data.
+    *Result()->MaxResult() = result;
     m_minIndex = index;
     m_optimizeValid = true;
 } // InitResult
@@ -269,17 +270,17 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
         CopyCode(code);
 
     // Load the state's data from the population data.
-    memcpy(Result(), result, ResultSize());
+    Result()->CopyData(result, variation);
     m_minIndex = index;
     m_optimizeValid = true;
 } // InitResult
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int index)
+void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, const FireStarterCode* code, unsigned int index)
 {
-    InitResult(settings, result->Member(settings, index), code->Member(settings, index), 0, index);
+    InitResult(settings, population->Member(settings, index), code->Member(settings, index), 0, index);
 } // InitResults
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* result, unsigned int variation, unsigned int index)
+void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int variation, unsigned int index)
 {
-    InitResult(settings, result->Member(settings, index), nullptr, variation, index);
+    InitResult(settings, population->Member(settings, index), nullptr, variation, index);
 } // InitResults
