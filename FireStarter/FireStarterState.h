@@ -91,21 +91,13 @@ public:
 
     inline const FireStarterResult* Result(void) const
     {
-        size_t resultSize = FireStarterResult::ResultSize(m_settings);
-        if (m_resultData.size() == resultSize)
-            return (const FireStarterResult*)m_resultData.data();
-        else
-            return nullptr;
+         return (const FireStarterResult*)m_resultData.data();
     } // Result
 
     inline FireStarterResult* Result(void)
     {
-        size_t resultSize = ResultSize();
-        if (m_resultData.size() == resultSize)
-            return (FireStarterResult*)m_resultData.data();
-        else
-            return nullptr;
-    } // Result
+        return (FireStarterResult*)m_resultData.data();
+     } // Result
 
     inline const SinSimNetwork* Network(void) const
     {
@@ -119,6 +111,12 @@ public:
             return result->MaxResult();
         else
             return m_settings.m_startResult;
+    } // MaxResult
+
+    inline float& MaxResult(void)
+    {
+        FireStarterResult* result = Result();
+         return *result->MaxResult();
     } // MaxResult
 
     inline unsigned short EvolveAge1(void) const

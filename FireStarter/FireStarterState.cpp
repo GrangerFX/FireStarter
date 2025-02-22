@@ -271,6 +271,11 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
 
     // Load the state's data from the population data.
     Result()->CopyData(result, variation);
+    float& maxResult = MaxResult();
+    if (!variation)
+        maxResult = result->MaxResult();
+    else
+        maxResult = MAX(maxResult, result->MaxResult());
     m_minIndex = index;
     m_optimizeValid = true;
 } // InitResult

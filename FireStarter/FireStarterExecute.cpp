@@ -519,8 +519,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
 {
-    const FireStarterSettings& settings = state.Settings();
-    unsigned int variations = settings.m_variations;
+    unsigned int variations = state.Settings().m_variations;
     for (unsigned int v = 0; v < variations; v++)
         ExecuteOptimizePass(state, v);
 
@@ -531,8 +530,8 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
 void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
 {
     unsigned int variations = state.Settings().m_variations;
-    if (variations > 1) {
-       FireStarterResult* result = state.Result();
+    if ((variations > 1) && state.m_evolution) {
+        FireStarterResult* result = state.Result();
         float oldResult = state.MaxResult();
         bool validResult = true;
         for (unsigned int v = 0; v < variations; v++) {
@@ -540,7 +539,7 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
             if (validResult) {
                 // If the variation result is worse, skip the rest of the variations.
                 ExecuteOptimizePass(state, variation);
-                if (state.m_evolution && (state.MaxResult() >= oldResult)) {
+                if (state.MaxResult() >= oldResult) {
                     // Count the variation that caused an invalid result.
                     state.m_variationCount[variation]++;
                     result->Init(state.Settings());
@@ -569,12 +568,8 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
 
         // Set the state's max result.
         state.m_optimizeValid = validResult;
-    } else {
-        ExecuteOptimizePass(state, 0);
-
-        // Set the state's max result.
-        state.m_optimizeValid = true;
-    }
+    } else
+        ExecuteOptimizePasses(state);
 } // ExecuteSmartOptimizePass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
