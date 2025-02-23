@@ -10,20 +10,220 @@
 typedef std::vector<class FireStarterState> FireStarterStates;
 typedef std::set<std::vector<unsigned char>> TestedCodes;
 
-class FireStarterState {
+class FireStarterCodeVector {
+private:
+    std::vector<unsigned char> m_codeData;      // Backing data for the code.
+    FireStarterCodeGenerate* m_code = nullptr;
+
+public:
+    inline void operator=(const FireStarterCodeVector* code)
+    {
+        m_codeData = code->m_codeData;
+        m_code = (FireStarterCodeGenerate*)m_codeData.data();
+    } // operator=
+
+    inline void operator=(const FireStarterCode* code)
+    {
+        memcpy(m_codeData.data(), code, m_codeData.size());
+    } // operator=
+
+    inline FireStarterCodeInstruction& operator[](unsigned int i)
+    {
+        return (*m_code)[i];
+    } // operator[]
+
+    inline FireStarterCodeInstruction operator[](unsigned int i) const
+    {
+        return (*m_code)[i];
+    } // operator[]
+
+    inline size_t size(void) const
+    {
+        return m_codeData.size();
+    } // size
+
+    inline unsigned char* data(void)
+    {
+        return m_codeData.data();
+    } // data
+
+    inline const unsigned char* data(void) const
+    {
+        return m_codeData.data();
+    } // data
+
+    inline const std::vector<unsigned char>& vector(void) const
+    {
+        return m_codeData;
+    } // vector
+
+    inline FireStarterCodeGenerate* Code(void)
+    {
+        return m_code;
+    } // Code
+
+    inline const FireStarterCodeGenerate* Code(void) const
+    {
+        return m_code;
+    } // Code
+
+    void Init(const FireStarterSettings& settings)
+    {
+        m_codeData.resize(FireStarterCodeGenerate::CodeSize(settings));
+        m_code = (FireStarterCodeGenerate*)m_codeData.data();
+    } // Init
+
+    FireStarterCodeVector(const FireStarterSettings& settings)
+    {
+        Init(settings);
+    } // FireStarterCodeVector
+
+    FireStarterCodeVector(void)
+    {
+        Init(FireStarterSettings());
+    } // FireStarterCodeVector
+}; // class FireStarterCodeVector
+
+class FireStarterDataVector {
+private:
+    std::vector<unsigned char> m_data;    // Backing data for the result.
+
+public:
+    inline void operator=(const FireStarterData* data)
+    {
+        memcpy(m_data.data(), data, m_data.size());
+    } // operator=
+
+    inline float& operator[](unsigned int i)
+    {
+        return Data()[i];
+    } // operator[]
+
+    inline float operator[](unsigned int i) const
+    {
+        return Data()[i];
+    } // operator[]
+
+    inline size_t size(void) const
+    {
+        return m_data.size();
+    } // size
+
+    inline unsigned char* data(void)
+    {
+        return m_data.data();
+    } // data
+
+    inline const unsigned char* data(void) const
+    {
+        return m_data.data();
+    } // data
+
+    inline const std::vector<unsigned char>& vector(void) const
+    {
+        return m_data;
+    } // vector
+
+    inline FireStarterData& Data(void)
+    {
+        return *(FireStarterData*)m_data.data();
+    } // Result
+
+    inline const FireStarterData& Data(void) const
+    {
+        return *(const FireStarterData*)m_data.data();
+    } // Data
+
+    void Init(const FireStarterSettings& settings)
+    {
+        m_data.resize(FireStarterData::DataSize(settings));
+    } // Init
+
+    FireStarterDataVector(const FireStarterSettings& settings)
+    {
+        Init(settings);
+    } // FireStarterDataVector
+
+    FireStarterDataVector(void)
+    {
+        Init(FireStarterSettings());
+    } // FireStarterDataVector
+}; // class FireStartercDataVector
+
+class FireStarterResultVector {
 private:
     std::vector<unsigned char> m_resultData;    // Backing data for the result.
-    std::vector<unsigned char> m_codeData;      // Backing data for the code.
-    FireStarterResult* m_result;
-    FireStarterCodeGenerate* m_code = nullptr;
+    FireStarterResult* m_result = nullptr;
+
+public:
+    inline void operator=(const FireStarterResultVector* result)
+    {
+        m_resultData = result->m_resultData;
+        m_result = (FireStarterResult*)m_resultData.data();
+    } // operator=
+
+    inline void operator=(const FireStarterResult* result)
+    {
+        memcpy(m_resultData.data(), result, m_resultData.size());
+    } // operator=
+
+    inline size_t size(void) const
+    {
+        return m_resultData.size();
+    } // size
+
+    inline unsigned char* data(void)
+    {
+        return m_resultData.data();
+    } // data
+
+    inline const unsigned char* data(void) const
+    {
+        return m_resultData.data();
+    } // data
+
+    inline const std::vector<unsigned char>& vector(void) const
+    {
+        return m_resultData;
+    } // vector
+
+    inline FireStarterResult* Result(void)
+    {
+        return m_result;
+    } // Result
+
+    inline const FireStarterResult* Result(void) const
+    {
+        return m_result;
+    } // Result
+
+    void Init(const FireStarterSettings& settings)
+    {
+        m_resultData.resize(FireStarterResult::ResultSize(settings));
+        m_result = (FireStarterResult*)m_resultData.data();
+    } // Init
+
+    FireStarterResultVector(const FireStarterSettings& settings)
+    {
+        Init(settings);
+    } // FireStarterResultVector
+
+    FireStarterResultVector(void)
+    {
+        Init(FireStarterSettings());
+    } // FireStarterResultVector
+}; // class FireStarterDynamicResult
+
+class FireStarterState {
+private:
+    FireStarterResultVector m_result;
+    FireStarterCodeVector m_code;
     SinSimNetwork m_network;
 
     inline void swap(const FireStarterState& other)
     {
-        m_resultData = other.m_resultData;
-        m_codeData = other.m_codeData;
-        m_result = Result();
-        m_code = Code();
+        m_result = other.m_result;
+        m_code = other.m_code;
         m_network = other.m_network;
         m_settings = other.m_settings;
         m_timer = other.m_timer;
@@ -91,12 +291,12 @@ public:
 
     inline const FireStarterResult* Result(void) const
     {
-         return (const FireStarterResult*)m_resultData.data();
+         return (const FireStarterResult*)m_result.Result();
     } // Result
 
     inline FireStarterResult* Result(void)
     {
-        return (FireStarterResult*)m_resultData.data();
+        return m_result.Result();
      } // Result
 
     inline const SinSimNetwork* Network(void) const
@@ -115,7 +315,7 @@ public:
 
     inline float& MaxResult(void)
     {
-        FireStarterResult* result = Result();
+         FireStarterResult* result = Result();
          return *result->MaxResult();
     } // MaxResult
 
@@ -144,18 +344,18 @@ public:
 
     inline FireStarterCodeGenerate* Code(void)
     {
-        return m_codeData.size() == CodeSize() ? (FireStarterCodeGenerate*)m_codeData.data() : nullptr;
+        return m_code.size() == CodeSize() ? m_code.Code() : nullptr;
     } // Code
 
     inline const FireStarterCodeGenerate* Code(void) const
     {
-        return m_codeData.size() == CodeSize() ? (const FireStarterCodeGenerate*)m_codeData.data() : nullptr;
+        return m_code.size() == CodeSize() ? m_code.Code() : nullptr;
     } // Code
 
-    const std::vector<unsigned char>& CodeData(void) const
+    const std::vector<unsigned char>& CodeVector(void) const
     {
-        return m_codeData;
-    } // CodeData
+        return m_code.vector();
+    } // CodeVector
 
     inline bool ResultValid(void) const
     {
@@ -166,7 +366,7 @@ public:
 
     inline bool Initialized(void) const
     {
-        return m_resultData.size() == ResultSize();
+        return m_result.size() == ResultSize();
     } // Initialized
 
     inline unsigned int PassMode(void) const
@@ -333,18 +533,18 @@ public:
         m_optimizeValid = true;
     } // InitNetwork
 
-    inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
+    inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0) : m_code(settings), m_result(settings)
     {
         InitState(settings, generation, index, id, test);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterSettings& settings, const FireStarterResult* results, const FireStarterCode* code, unsigned int index)
+    inline FireStarterState(const FireStarterSettings& settings, const FireStarterResult* results, const FireStarterCode* code, unsigned int index) : m_code(settings), m_result(settings)
     {
         InitState(settings);
         InitResult(settings, results, code, index);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterState& other)
+    inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_result(other.m_result)
     {
         swap(other);
     } // FireStarterState

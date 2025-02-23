@@ -5,9 +5,9 @@
 bool FireStarterState::Packetize(FireStarterPacket& packet)
 {
     bool result = true;
-    result = result && packet.Packetize(m_codeData);
+    result = result && packet.Packetize(m_code.data(), m_code.size());
     result = result && packet.Packetize(&m_settings, sizeof(m_settings));
-    result = result && packet.Packetize(m_resultData);
+    result = result && packet.Packetize(m_result.data(), m_result.size());
     result = result && packet.Packetize(&m_generation, sizeof(m_generation));
     return result;
 } // Packetize
@@ -199,15 +199,12 @@ float FireStarterState::EvaluateCode(void) const
 
 void FireStarterState::InitResult(void)
 {
-    m_resultData.resize(ResultSize());
-    m_result = (FireStarterResult*)m_resultData.data();
-    m_result->Init(m_settings);
+    m_result.Init(m_settings);
 } // InitResults
 
 void FireStarterState::InitCode(void)
 {
-    m_codeData.resize(CodeSize());
-    m_code = Code();
+    m_code.Init(m_settings);
 } // InitCode
 
 void FireStarterState::InitNetwork(void)
