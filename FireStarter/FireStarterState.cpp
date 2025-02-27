@@ -98,7 +98,7 @@ void FireStarterState::SaveResults(std::string& text) const
     text += Format("    FireStarterResult *result = state.Result();\r\n");
     text += Format("    *(result->MaxResult()) = %.8ff;\r\n", MaxResult());
     for (unsigned int v = 0; v < m_settings.m_variations; v++)
-        text += Format("    LoadVariation%u(state.Result(%u));\r\n", v, v);
+        text += Format("    LoadVariation%u(state.Result());\r\n", v, v);
     text += "} // LoadResult\r\n";
     text += "\r\n";
 } // SaveResults

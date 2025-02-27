@@ -13,13 +13,11 @@ typedef std::set<std::vector<unsigned char>> TestedCodes;
 class FireStarterCodeVector {
 private:
     std::vector<unsigned char> m_codeData;      // Backing data for the code.
-    FireStarterCodeGenerate* m_code = nullptr;
 
 public:
     inline void operator=(const FireStarterCodeVector* code)
     {
         m_codeData = code->m_codeData;
-        m_code = (FireStarterCodeGenerate*)m_codeData.data();
     } // operator=
 
     inline void operator=(const FireStarterCode* code)
@@ -29,12 +27,12 @@ public:
 
     inline FireStarterCodeInstruction& operator[](unsigned int i)
     {
-        return (*m_code)[i];
+        return (*Code())[i];
     } // operator[]
 
     inline FireStarterCodeInstruction operator[](unsigned int i) const
     {
-        return (*m_code)[i];
+        return (*Code())[i];
     } // operator[]
 
     inline size_t size(void) const
@@ -59,18 +57,17 @@ public:
 
     inline FireStarterCodeGenerate* Code(void)
     {
-        return m_code;
+        return (FireStarterCodeGenerate*)m_codeData.data();
     } // Code
 
     inline const FireStarterCodeGenerate* Code(void) const
     {
-        return m_code;
+        return (const FireStarterCodeGenerate*)m_codeData.data();
     } // Code
 
     void Init(const FireStarterSettings& settings)
     {
         m_codeData.resize(FireStarterCodeGenerate::CodeSize(settings));
-        m_code = (FireStarterCodeGenerate*)m_codeData.data();
     } // Init
 
     FireStarterCodeVector(const FireStarterSettings& settings)
@@ -153,13 +150,11 @@ public:
 class FireStarterResultVector {
 private:
     std::vector<unsigned char> m_resultData;    // Backing data for the result.
-    FireStarterResult* m_result = nullptr;
 
 public:
     inline void operator=(const FireStarterResultVector* result)
     {
         m_resultData = result->m_resultData;
-        m_result = (FireStarterResult*)m_resultData.data();
     } // operator=
 
     inline void operator=(const FireStarterResult* result)
@@ -189,26 +184,30 @@ public:
 
     inline FireStarterResult* Result(void)
     {
-        return m_result;
+        return (FireStarterResult*)m_resultData.data();
     } // Result
 
     inline const FireStarterResult* Result(void) const
     {
-        return m_result;
+        return (FireStarterResult*)m_resultData.data();
     } // Result
 
-    void Init(const FireStarterSettings& settings)
+    inline void Init(const FireStarterSettings& settings)
     {
         m_resultData.resize(FireStarterResult::ResultSize(settings));
-        m_result = (FireStarterResult*)m_resultData.data();
     } // Init
 
-    FireStarterResultVector(const FireStarterSettings& settings)
+    inline FireStarterResultVector(const FireStarterResultVector& other)
+    {
+        m_resultData = other.m_resultData;
+    } // FireStarterResultVector
+
+    inline FireStarterResultVector(const FireStarterSettings& settings)
     {
         Init(settings);
     } // FireStarterResultVector
 
-    FireStarterResultVector(void)
+    inline FireStarterResultVector(void)
     {
         Init(FireStarterSettings());
     } // FireStarterResultVector

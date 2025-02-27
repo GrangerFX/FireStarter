@@ -1,8 +1,8 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 02/17/25 15:29:49 Pacific Standard Time
-// Run duration = 14.107572 seconds
+// Run date: 02/26/25 21:09:16 Pacific Standard Time
+// Run duration = 95.233842 seconds
 // Run generation = 3
 // Run evolution = 0
 // Run max result = 0.00000379
@@ -61,7 +61,7 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_startResult = 10.000000f;
 } // LoadSettings
 
-// Variation: 0  result = 0.00000379
+// Variation: 0
 inline void LoadVariation0(FireStarterResult* result)
 {
     FireStarterData *data = result->Data();
@@ -95,11 +95,12 @@ inline void LoadVariation0(FireStarterResult* result)
     data->d[27] = 0.00000000f;
     data->d[28] = 0.00000000f;
     data->d[29] = 0.00000000f;
-    *(result->MaxResult()) = 0.00000379f;
 } // LoadVariation0
 
 inline void LoadResult(FireStarterState& state)
 {
+    FireStarterResult *result = state.Result();
+    *(result->MaxResult()) = 0.00000379f;
     LoadVariation0(state.Result());
 } // LoadResult
 

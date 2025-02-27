@@ -29,8 +29,8 @@ private:
     float* m_hostResults = nullptr;
     float* m_deviceResults = nullptr;
     FireStarterResult* m_hostPopulation = nullptr;
-    std::vector<FireStarterResult*> m_devicePopulation0;
-    std::vector<FireStarterResult*> m_devicePopulation1;
+    FireStarterResult* m_devicePopulation0 = nullptr;
+    FireStarterResult* m_devicePopulation1 = nullptr;
     FireStarterCode* m_hostCode = nullptr;
     FireStarterCode* m_deviceCode = nullptr;
     SinSimNetwork* m_hostNetworks = nullptr;
