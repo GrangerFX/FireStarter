@@ -74,7 +74,7 @@ static void TestRandom(void)
 
 static void TestParallelFor(void)
 {
-    SimpleTimer timer(true);
+    SimpleTimer timer;
     const size_t memorySize = 4llu * 1024llu * 1024llu * 1024llu; // 4 GB
     unsigned char* memory1 = (unsigned char*)calloc(1, memorySize);
     unsigned char* memory2 = (unsigned char*)calloc(1, memorySize);

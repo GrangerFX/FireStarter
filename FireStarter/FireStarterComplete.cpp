@@ -114,7 +114,7 @@ void FireStarterComplete::DisplayResults(const FireStarterState& bestState)
 void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation)
 {
     const FireStarterSettings& settings = state.Settings();
-    double duration = SimpleTimer::RunDuration();
+    double duration = settings.m_streams > 1 ? SimpleTimer::RunDuration() : bestState.m_timer.Duration();
 
     // Calculate the average time per generation.
     if (settings.m_mode == FIRESTARTER_RANDOM) {

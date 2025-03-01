@@ -77,7 +77,7 @@ bool CUDACompile::Compile(std::string& ptx, std::string& log, const std::string&
 bool CUDACompile::CompilePTX(std::string& ptx, const std::string& program, const std::string& programName)
 {
 #if COMPILE_TIME
-    SimpleTimer compileTimer;
+    SimpleTimer timer;
 #endif
 
     std::vector<std::string> options;
@@ -92,7 +92,7 @@ bool CUDACompile::CompilePTX(std::string& ptx, const std::string& program, const
 
     // Optionaly output the compile time.
 #if COMPILE_TIME
-    printf("%s compile ptx time = %f\n", programName.c_str(), compileTimer.Duration());
+    printf("%s compile ptx time = %f\n", programName.c_str(), timer.Duration());
 #endif
 
     // Note: Currently the program is forced to terminate if there were any compile errors.
@@ -119,7 +119,7 @@ bool CUDACompile::CompileModule(CUmodule& cuda_module, const std::string& ptx)
 bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& program, const std::string& programName)
 {
 #if COMPILE_TIME
-    SimpleTimer compileTimer;
+    SimpleTimer timer;
 #endif
 
     std::vector<std::string> options;
@@ -137,7 +137,7 @@ bool CUDACompile::CompileProgram(CUmodule& cuda_module, const std::string& progr
 
     // Optionaly output the compile time.
 #if COMPILE_TIME
-    printf("%s compile program time = %f\n", programName.c_str(), compileTimer.Duration());
+    printf("%s compile program time = %f\n", programName.c_str(), timer.Duration());
 #endif
 
     // Note: Currently the program is forced to terminate if there were any compile errors.

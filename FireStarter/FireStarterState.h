@@ -225,7 +225,6 @@ private:
         m_code = other.m_code;
         m_network = other.m_network;
         m_settings = other.m_settings;
-        m_timer = other.m_timer;
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
@@ -282,6 +281,11 @@ public:
     {
         return m_settings;
     } // Settings
+
+    inline double Duration(void) const
+    {
+        return m_timer.Duration();
+    } // Duration
 
     inline size_t ResultSize(void) const
     {
@@ -545,6 +549,7 @@ public:
 
     inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_result(other.m_result)
     {
+        m_timer = other.m_timer;
         swap(other);
     } // FireStarterState
 

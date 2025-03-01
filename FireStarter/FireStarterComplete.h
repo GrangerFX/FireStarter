@@ -8,7 +8,6 @@ private:
 	FireStarterWindow m_window;
 	FireStarterShow m_fireShow;
     FireStarterSettings m_settings;
-	SimpleTimer m_completeTimer;
 	FireStarterManager* m_manager = nullptr;
 	FireStarterGenerate* m_generate = nullptr;
 	std::string m_solutionTargetCode;

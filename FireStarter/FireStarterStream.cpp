@@ -90,7 +90,6 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
         FireStarterSettings evolveSettings(m_streamSettings);
         unsigned int numStates = evolveSettings.m_states;
         evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
-        SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
 
         // Create the compiler manager
@@ -122,10 +121,6 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            // Reset the timer if there is only one stream.
-            if (evolveSettings.m_streams == 1)
-                streamTimer.Start();
-
             // Initialize the states.
             FireStarterStates allStates;
             unsigned long long test = FIRESTARTER_START_TEST + t;
@@ -160,7 +155,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
-                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", streamTimer.Duration(), bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResult());
+                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", bestEvolveState.Duration(), bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResult());
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
@@ -231,7 +226,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
         FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
-        SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
@@ -256,10 +250,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            // Reset the timer if there is only one stream.
-            if (evolveSettings.m_streams == 1)
-                streamTimer.Start();
-
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
             FireStarterBestCodes bestCodes(evolveSettings);
@@ -295,7 +285,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             // Output the test results.
             if (!WillTerminate()) {
                 // Output the evolve results.
-                double duration = streamTimer.Duration();
+                double duration = bestState.Duration();
                 totalDuration += duration;
 
                 std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResult(), bestState.MaxResult(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
@@ -333,7 +323,6 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
         FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
-        SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
@@ -355,10 +344,6 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-            // Reset the timer if there is only one stream.
-            if (evolveSettings.m_streams == 1)
-                streamTimer.Start();
-
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
@@ -379,7 +364,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
             // Output the test results.
             if (!WillTerminate()) {
                 // Output the evolve results.
-                double duration = streamTimer.Duration();
+                double duration = bestState.Duration();
                 totalDuration += duration;
 
                 std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResult(), bestState.MaxResult(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
@@ -415,7 +400,6 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings speedTestSettings(m_streamSettings);
-        SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
 
         // Create the compiler manager
@@ -433,10 +417,6 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
             // Loop until the the evolve completion condition or the host program is quit.
             unsigned long long evolveTests = MAX(speedTestSettings.m_tests, 1);
             for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-                // Reset the timer if there is only one stream.
-                if (speedTestSettings.m_streams == 1)
-                    streamTimer.Start();
-
                 // Initialize the states.
                 FireStarterStates allStates;
                 unsigned long long test = FIRESTARTER_START_TEST + t;
@@ -464,7 +444,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
-                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResult(), optimizeState.MaxResult(), streamTimer.Duration());
+                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResult(), optimizeState.MaxResult(), bestState.Duration());
                     if (bestState.MaxResult() <= speedTestSettings.m_target)
                         resultText += " *******";
                     resultText += "\n";
@@ -492,7 +472,6 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
     Dispatch([this, server, &testCount] {
         // Test the original SinSim neural net.
         FireStarterSettings sinSimSettings(m_streamSettings);
-        SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
@@ -510,10 +489,6 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
 
         // Generate and compile the evolve code.
         executeSinSim->ExecuteGenerateSinSim();
-
-        // Reset the timer if there is only one stream.
-        if (sinSimSettings.m_streams == 1)
-            streamTimer.Start();
 
         // Initialize the states.
         unsigned long long test = FIRESTARTER_START_TEST;
@@ -535,7 +510,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         // Output the test results.
         if (!WillTerminate()) {
             // Output the evolve results.
-            double duration = streamTimer.Duration();
+            double duration = bestState.Duration();
             totalDuration += duration;
 
             std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.2f  GenTime: %.3f", sinSimSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResult(), bestState.MaxResult(), duration, duration / evolveState.m_generation);
@@ -570,7 +545,6 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings optimizeSettings(m_streamSettings);
-        SimpleTimer streamTimer;
         std::string streamDate = m_streamDate;
         FireStarterState evolveState;
         LoadState(evolveState);
@@ -589,10 +563,6 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
             // Loop until the the evolve completion condition or the host program is quit.
             unsigned long long evolveTests = MAX(optimizeSettings.m_tests, 1);
             for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
-                // Reset the timer if there is only one stream.
-                if (optimizeSettings.m_streams == 1)
-                    streamTimer.Start();
-
                 // Initialize the states.
                 FireStarterStates allStates;
                 unsigned long long test = FIRESTARTER_START_TEST + t;
@@ -618,7 +588,7 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
-                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResult(), optimizeState.MaxResult(), streamTimer.Duration());
+                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResult(), optimizeState.MaxResult(), bestState.Duration());
                     if (bestState.MaxResult() <= optimizeSettings.m_target)
                         resultText += " *******";
                     resultText += "\n";

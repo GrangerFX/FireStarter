@@ -64,7 +64,7 @@ public:
         return s_second;
     } // RunSecond
 
-    inline SimpleTimer(bool start = false)
+    inline SimpleTimer(bool start = true)
     {
         // Synchronize the start times of all timers by default.
         if (!s_second && !s_nanosecond) {
