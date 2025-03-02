@@ -1,9 +1,9 @@
-// Run date: 03/01/25 10:07:24 Pacific Standard Time
-// Run duration = 27.623604 seconds
+// Run date: 03/02/25 11:46:21 Pacific Standard Time
+// Run duration = 11.026516 seconds
 // Run generation = 2
 // Run evolution = 0
-// Run max result = 0.00000086
-// Run variations = 1
+// Run max result = 1.82481635
+// Run variations = 3
 // Run instructions = 32
 // Run registers = 30
 // Run opcodes = 3
@@ -29,7 +29,7 @@
 // Run startScale = 2.500000f
 // Run startResult = 10.000000f
 
-#define SOLUTION_VARIATIONS 1
+#define SOLUTION_VARIATIONS 3
 
 #ifndef __CUDACC__
 #include <cmath>
@@ -62,41 +62,132 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
     }
 } // SolutionTarget
 
-inline float Solution(float n)
+inline float Solution0(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6, r7;
+    float r0;
 
-    r0 = n += -0.80530405f;
-    r1 = n += -2.33628845f;
-    r2 = n *= 0.06312569f;
-    r3 = n *= 1.54158175f;
-    n *= 0.64468789f;
-    r4 = n *= 1.98378408f;
-    r5 = n *= -0.86756599f;
-    n = r4 *= n;
-    n += 1.20393145f;
-    r6 = n += -0.28448829f;
-    n *= 0.64925462f;
-    r7 = n *= 1.11841822f;
-    n = r1 *= n;
-    n *= -1.92116582f;
-    n = r7 *= n;
-    n *= r3;
-    n = r7 *= n;
-    n *= r2;
-    n *= r4;
-    n += 1.11615849f;
-    n *= r6;
-    n *= 4.80659199f;
-    n *= r5;
-    n += 7.05728436f;
-    n += r0;
-    n += 8.14118099f;
-    n *= -0.32850522f;
-    n += r1;
-    n += 5.76025820f;
-    n *= -0.97257608f;
-    n = r7 += n;
-    n += r7;
+    r0 = n *= -0.01134519f;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n *= r0;
     return n;
+} // Solution0
+
+inline float Solution1(float n)
+{
+    float r0;
+
+    r0 = n *= -0.01134519f;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n *= r0;
+    return n;
+} // Solution1
+
+inline float Solution2(float n)
+{
+    float r0;
+
+    r0 = n *= 0.15915494f;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n = r0 *= n;
+    n *= r0;
+    return n;
+} // Solution2
+
+inline float Solution(float n, unsigned int variation)
+{
+    switch (variation) {
+    case 0:
+        return Solution0(n);
+    case 1:
+        return Solution1(n);
+    case 2:
+        return Solution2(n);
+    }
+    return 0.0f;
 } // Solution

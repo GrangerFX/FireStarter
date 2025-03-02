@@ -77,7 +77,6 @@ public:
 
     FireStarterCodeVector(void)
     {
-        Init(FireStarterSettings());
     } // FireStarterCodeVector
 }; // class FireStarterCodeVector
 
@@ -143,14 +142,13 @@ public:
 
     FireStarterDataVector(void)
     {
-        Init(FireStarterSettings());
     } // FireStarterDataVector
 }; // class FireStartercDataVector
 
 class FireStarterResultVector {
 private:
     std::vector<unsigned char> m_resultData;    // Backing data for the result.
-
+    size_t m_resultSize;
 public:
     inline void operator=(const FireStarterResultVector* result)
     {
@@ -182,19 +180,20 @@ public:
         return m_resultData;
     } // vector
 
-    inline FireStarterResult* Result(void)
+    inline FireStarterResult* Result(unsigned int variation = 0)
     {
-        return (FireStarterResult*)m_resultData.data();
+        return (FireStarterResult*)(m_resultData.data() + m_resultSize * variation);
     } // Result
 
-    inline const FireStarterResult* Result(void) const
+    inline const FireStarterResult* Result(unsigned int variation = 0) const
     {
-        return (FireStarterResult*)m_resultData.data();
+        return (const FireStarterResult*)(m_resultData.data() + m_resultSize * variation);
     } // Result
 
     inline void Init(const FireStarterSettings& settings)
     {
-        m_resultData.resize(FireStarterResult::ResultSize(settings));
+        m_resultSize = FireStarterResult::ResultSize(settings);
+        m_resultData.resize(m_resultSize * settings.m_variations);
     } // Init
 
     inline FireStarterResultVector(const FireStarterResultVector& other)
@@ -209,7 +208,6 @@ public:
 
     inline FireStarterResultVector(void)
     {
-        Init(FireStarterSettings());
     } // FireStarterResultVector
 }; // class FireStarterDynamicResult
 
@@ -292,14 +290,14 @@ public:
         return FireStarterResult::ResultSize(m_settings);
     } // ResultSize
 
-    inline const FireStarterResult* Result(void) const
+    inline const FireStarterResult* Result(unsigned int variation) const
     {
-         return (const FireStarterResult*)m_result.Result();
+         return (const FireStarterResult*)m_result.Result(variation);
     } // Result
 
-    inline FireStarterResult* Result(void)
+    inline FireStarterResult* Result(unsigned int variation)
     {
-        return m_result.Result();
+        return m_result.Result(variation);
      } // Result
 
     inline const SinSimNetwork* Network(void) const
@@ -309,35 +307,46 @@ public:
 
     inline float MaxResult(void) const
     {
-        const FireStarterResult* result = Result();
-        if (result)
-            return result->MaxResult();
-        else
-            return m_settings.m_startResult;
+        float maxResult = Result(0)->m_maxResult;
+        for (unsigned int v = 1; v < m_settings.m_variations; v++)
+            maxResult = MAX(maxResult, Result(v)->m_maxResult);
+        return maxResult;
     } // MaxResult
 
-    inline float& MaxResult(void)
+    inline float MaxResult(unsigned int variation) const
     {
-         FireStarterResult* result = Result();
+        const FireStarterResult* result = Result(variation);
+        return result->MaxResult();
+    } // MaxResult
+
+    inline float& MaxResult(unsigned int variation)
+    {
+         FireStarterResult* result = Result(variation);
          return *result->MaxResult();
     } // MaxResult
 
-    inline unsigned short EvolveAge1(void) const
+    inline unsigned short EvolveAge1(unsigned int variation) const
     {
-        const FireStarterResult* result = Result();
-        if (result)
-            return result->EvolveAge1();
-        else
-            return 0;
+        const FireStarterResult* result = Result(variation);
+        return result->EvolveAge1();
     } // EvolveAge1
 
-    inline unsigned short EvolveAge2(void) const
+    inline unsigned short* EvolveAge1(unsigned int variation)
     {
-        const FireStarterResult* result = Result();
-        if (result)
-            return result->EvolveAge2();
-        else
-            return 0;
+        FireStarterResult* result = Result(variation);
+        return result->EvolveAge1();
+    } // EvolveAge1
+
+    inline unsigned short EvolveAge2(unsigned int variation) const
+    {
+        const FireStarterResult* result = Result(variation);
+        return result->EvolveAge2();
+    } // EvolveAge2
+
+    inline unsigned short* EvolveAge2(unsigned int variation)
+    {
+        FireStarterResult* result = Result(variation);
+        return result->EvolveAge2();
     } // EvolveAge2
 
     inline size_t CodeSize(void) const
@@ -520,31 +529,38 @@ public:
     void SaveState(std::string& code) const;
     float TestResults(void) const;
     float EvaluateCode(void) const;
-    void InitResult(void);
-    void InitCode(void);
-    void InitNetwork(void);
-    void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
-    void InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, unsigned int variation, unsigned int index);
+
+    inline void InitResult(void)
+    {
+        m_result.Init(m_settings);
+    } // InitResults
+
+    inline void InitCode(void)
+    {
+        m_code.Init(m_settings);
+    } // InitCode
+
+    inline void InitNetwork(void)
+    {
+        SinSimInitNetwork(m_network);
+    } // InitCode
 
     inline void InitNetwork(const FireStarterSettings& settings, const SinSimNetwork& network, unsigned int index)
     {
+        m_settings = settings;
         m_network = network;
         m_minIndex = index;
         m_optimizeValid = true;
     } // InitNetwork
 
+    void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
+    void InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, unsigned int variation, unsigned int index);
+
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0) : m_code(settings), m_result(settings)
     {
         InitState(settings, generation, index, id, test);
-    } // FireStarterState
-
-    inline FireStarterState(const FireStarterSettings& settings, const FireStarterResult* results, const FireStarterCode* code, unsigned int index) : m_code(settings), m_result(settings)
-    {
-        InitState(settings);
-        InitResult(settings, results, code, index);
     } // FireStarterState
 
     inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_result(other.m_result)
@@ -553,7 +569,8 @@ public:
         swap(other);
     } // FireStarterState
 
-    inline FireStarterState(void) {
-        SinSimInitNetwork(m_network);
+    inline FireStarterState(void) 
+    {
+        InitNetwork();
     } // FireStarterState
 }; // class FireStarterState;

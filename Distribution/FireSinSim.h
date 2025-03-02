@@ -9,13 +9,13 @@
 #define SINSIM_INIT_GRADE      10.0f
 #define SINSIM_DATA_FREQUENCY  222.4f
 
-typedef struct {
+typedef struct SinSimNeuron {
     float connection[SINSIM_NEURON_COUNT];
     float addValue;
     float value;
 } SinSimNeuron;
 
-typedef struct {
+typedef struct SinSimNetwork {
     SinSimNeuron neuron[SINSIM_NEURON_COUNT];
     float grade;
     unsigned int age;
@@ -82,9 +82,9 @@ GPU_FUNCTION void SinSimInitNetwork(SinSimNetwork& network)
             network.neuron[i].connection[j] = 1.0f / SINSIM_NEURON_COUNT;
         network.neuron[i].addValue = 0.0f;
         network.neuron[i].value = 0.0f;
-        network.grade = SINSIM_INIT_GRADE;
-        network.age = 0;
     }
+    network.grade = SINSIM_INIT_GRADE;
+    network.age = 0;
 } // SinSimInitNetwork
 
 GPU_FUNCTION void SinSimEvolveNetwork(SinSimNetwork& network, unsigned long long& seed)

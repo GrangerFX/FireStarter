@@ -88,9 +88,9 @@ void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int e
     // If the FireEvaluate code was compiled, use it to generate the target and evaluate arrays.
     // Note: The purpose is generality not speed. This allows the settings and instruction set to be modified after the main code is compiled.
     if (0 && m_fireEvaluateFunction) {
-        const FireStarterResult* result = state.Result();
+        const FireStarterResult* result = state.Result(variation);
 
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceData, result->Data(variation), m_dataSize, cudaMemcpyHostToDevice, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceData, result->Data(), m_dataSize, cudaMemcpyHostToDevice, Stream()));
 
         void* arr[] = { reinterpret_cast<void*>(&m_deviceTargetData),
                         reinterpret_cast<void*>(&m_deviceEvaluateData),
@@ -116,12 +116,12 @@ void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int e
     }  else {
         // As a fallback and validation test, generate the target and evaluate the code on the CPU.
         // The CPU evalate won't need to wait for the GPU to become available.
-        const FireStarterResult* result = state.Result();
+        const FireStarterResult* result = state.Result(variation);
         const FireStarterCode* code = state.Code();
         FireStarterDataVector data(settings);
         float thetaStep = (thetaEnd - thetaStart) / evaluateWidth;
         for (unsigned int i = 0; i < evaluateWidth; i++) {
-            data = result->Data(variation);
+            data = result->Data();
             float theta = thetaStart + i * thetaStep;
             m_hostEvaluateData[i] = code->Evaluate(data.Data(), theta);
             m_hostTargetData[i] = Target(theta, variation);
@@ -385,12 +385,11 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     }
 
     // Update the log file and window status text.
-    const FireStarterResult* result = state.Result();
     std::string statusString;
     float bestResult = bestState.MaxResult();
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds  Result=%.8f", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, state.MaxResult(), bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, result->MaxResult());
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds  Result=%.8f", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, state.MaxResult(), bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, state.MaxResult());
     } else {
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
@@ -410,8 +409,11 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             else
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.MaxResult());
-            if ((state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW))
-                statusString += Format("  MinIndex=%u  EvolveAge=%u", state.m_minIndex, (unsigned int)result->EvolveAge1());
+            if ((state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW)) {
+                statusString += Format("  MinIndex=%u", state.m_minIndex);
+                if (settings.m_variations == 1)
+                    statusString += Format("  EvolveAge=%u", state.m_minIndex, (unsigned int)state.EvolveAge1(0));
+            }
         } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
             statusString += Format("  Generation=%3u", generation);
             if ((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {

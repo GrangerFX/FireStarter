@@ -80,9 +80,12 @@ void FireStarterState::SaveVariation(unsigned int variation, std::string& text) 
     text += Format("// Variation: %d\r\n", variation);
     text += Format("inline void LoadVariation%u(FireStarterResult* result)\r\n", variation);
     text += "{\r\n";
+    text += Format("    *(result->MaxResult()) = %.8ff;\r\n", MaxResult(variation));
+    text += Format("    *(result->EvolveAge1()) = %u;\r\n", EvolveAge1(variation));
+    text += Format("    *(result->EvolveAge2()) = %u;\r\n", EvolveAge2(variation));
     text += "    FireStarterData *data = result->Data();\r\n";
     for (unsigned int i = 0; i < m_settings.m_registers; i++) {
-        float data = Result()->Data(variation)->d[i];
+        float data = Result(variation)->Data()->d[i];
         text += Format("    data->d[%u] = %.8ff;\r\n", i, data);
     }
     text += Format("} // LoadVariation%u\r\n", variation);
@@ -95,10 +98,8 @@ void FireStarterState::SaveResults(std::string& text) const
         SaveVariation(v, text);
     text += "inline void LoadResult(FireStarterState& state)\r\n";
     text += "{\r\n";
-    text += Format("    FireStarterResult *result = state.Result();\r\n");
-    text += Format("    *(result->MaxResult()) = %.8ff;\r\n", MaxResult());
     for (unsigned int v = 0; v < m_settings.m_variations; v++)
-        text += Format("    LoadVariation%u(state.Result());\r\n", v, v);
+        text += Format("    LoadVariation%u(state.Result(%u));\r\n", v, v);
     text += "} // LoadResult\r\n";
     text += "\r\n";
 } // SaveResults
@@ -153,7 +154,7 @@ float FireStarterState::TestResults(void) const
     float maxResult = MaxResult();
     if (maxResult < startResult) {
         for (unsigned int v = 0; v < variations; v++) {
-            const FireStarterData* initData = Result()->Data(v);
+            const FireStarterData* initData = Result(v)->Data();
             float result = 0.0f;
             for (unsigned int i = 0; i < samples; i++) {
                 float theta = targetMin + i * sampleStep;
@@ -184,7 +185,7 @@ float FireStarterState::EvaluateCode(void) const
     float startResult = Settings().m_startResult;
     for (unsigned int v = 0; v < variations; v++)
         for (unsigned int i = 0; i < samples; i++) {
-            FireStarterData data(Result()->Data(v));
+            FireStarterData data(Result(v)->Data());
             float theta = targetMin + i * sampleStep;
             float target = Target(theta, v);
             float n = Code()->Evaluate(data, theta);
@@ -196,21 +197,6 @@ float FireStarterState::EvaluateCode(void) const
         }
     return result;
 } // EvaluateCode
-
-void FireStarterState::InitResult(void)
-{
-    m_result.Init(m_settings);
-} // InitResults
-
-void FireStarterState::InitCode(void)
-{
-    m_code.Init(m_settings);
-} // InitCode
-
-void FireStarterState::InitNetwork(void)
-{
-    SinSimInitNetwork(m_network);
-} // InitCode
 
 void FireStarterState::InitState(const FireStarterSettings& settings, unsigned long long generation, unsigned long long index, unsigned long long id, unsigned long long test)
 {
@@ -255,7 +241,6 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, float res
         CopyCode(code);
 
     // Load the state's data from the population data.
-    *Result()->MaxResult() = result;
     m_minIndex = index;
     m_optimizeValid = true;
 } // InitResult
@@ -267,22 +252,12 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
         CopyCode(code);
 
     // Load the state's data from the population data.
-    Result()->CopyData(result, variation);
-    float& maxResult = MaxResult();
-    if (!variation)
-        maxResult = result->MaxResult();
-    else
-        maxResult = MAX(maxResult, result->MaxResult());
+    Result(variation)->Copy(result, settings);
     m_minIndex = index;
     m_optimizeValid = true;
 } // InitResult
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, const FireStarterCode* code, unsigned int index)
-{
-    InitResult(settings, population->Member(settings, index), code->Member(settings, index), 0, index);
-} // InitResults
-
 void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int variation, unsigned int index)
 {
-    InitResult(settings, population->Member(settings, index), nullptr, variation, index);
+    InitResult(settings, population->Result(settings, index, variation), nullptr, variation, index);
 } // InitResults

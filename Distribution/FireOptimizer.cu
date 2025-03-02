@@ -84,8 +84,8 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
         evolveAge = 0;
     } else {
         // Later generations randomize a single register if they were copied.
-        const FireStarterResult& oldResult = oldPopulation[member];
-        data.Copy(oldResult.Data(variation));
+        const FireStarterResult& oldResult = *FireStarterResult::Result(oldPopulation, member, variation);
+        data.Copy(oldResult.Data());
         evolveAge = oldResult.EvolveAge1();
         initAge = oldResult.EvolveAge2();
         if (evolveAge > 1) {
@@ -124,16 +124,16 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
         evolveAge = 0;
     else {
         // If the result was worse, copy a result from among the previous generation's results.
-        unsigned int bestCandidate = member;
+        const FireStarterResult* bestCandidate = nullptr;
 
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
         for (int i = 0; i < FIRESTARTER_OPTIMIZE_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
-            unsigned int candidate = RANDOMMOD(memberSeed, population);
-            unsigned short candidateAge = oldPopulation[candidate].EvolveAge1();
+            const FireStarterResult* candidate = FireStarterResult::Result(oldPopulation, RANDOMMOD(memberSeed, population), variation);
+            unsigned short candidateAge = candidate->EvolveAge1();
             if (candidateAge <= 1) {
-                float candidateResult = oldPopulation[candidate].MaxResult();
+                float candidateResult = candidate->MaxResult();
                 if (candidateResult <= result) {
                     bestCandidate = candidate;
                     result = candidateResult;
@@ -142,10 +142,10 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
         }
 
         // Switch to the selected member's data and results.
-        if (bestCandidate != member) {
-            data = oldPopulation[bestCandidate].Data();
+        if (bestCandidate) {
+            data = bestCandidate->Data();
             evolveAge = evolveAge ? evolveAge + 1 : 2;
-            initAge = oldPopulation[bestCandidate].EvolveAge2();
+            initAge = bestCandidate->EvolveAge2();
         } else
             evolveAge = 1;
     }
@@ -153,6 +153,6 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     if (results)
         results[member] = result;
     if (newPopulation)
-        newPopulation[member].Init(data, variation, result, evolveAge, initAge);
+        FireStarterResult::Result(newPopulation, member, variation)->Init(data, result, evolveAge, initAge);
 } // Optimizer
 

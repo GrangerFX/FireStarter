@@ -208,7 +208,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
                     reinterpret_cast<void*>(&m_devicePopulation0),
                     reinterpret_cast<void*>(&m_deviceCode),
-                    reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&populationSize)
@@ -232,7 +231,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         float minResult = settings.m_startResult;
         unsigned int minIndex = 0;
         for (unsigned int i = 0; i < populationSize; i++) {
-            float curResult = *m_hostPopulation[i].MaxResult();
+            float curResult = FireStarterResult::MaxResult(m_hostPopulation, settings, i);
             if (curResult < minResult) {
                 minResult = curResult;
                 minIndex = i;
@@ -242,7 +241,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         }
 
         float oldResult = state.MaxResult();
-        state.InitResult(settings, m_hostPopulation, m_hostCode, minIndex);
+        state.InitResult(settings, m_hostPopulation, m_hostCode, variation, minIndex);
         state.m_oldResult = oldResult;
     } else {
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
@@ -270,60 +269,6 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
         state.m_oldResult = oldResult;
     }
 } // ExecuteEvolvePass
-
-void FireStarterExecute::ExecuteEvolveVariationsPass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation)
-{
-    // Launch the calculation kernel
-    FireStarterSettings settings = state.Settings();
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned long long seed = state.EvolutionSeed();
-    unsigned int passes = settings.m_passes;
-    unsigned int populationSize = settings.m_population;
-
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                    reinterpret_cast<void*>(&m_devicePopulation0),
-                    reinterpret_cast<void*>(&m_deviceCode),
-                    reinterpret_cast<void*>(&variation),
-                    reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&populationSize)
-    };
-
-    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-        0,                                                  // shared mem
-        Stream(),                                           // stream
-        &arr[0],                                            // arguments
-        0));
-
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCode, m_deviceCode, m_codeSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-
-    // Get the best variation results.
-    bool validResult = false;
-    float minResult = settings.m_startResult;
-    unsigned int minIndex = 0;
-    for (unsigned int i = 0; i < populationSize; i++) {
-        float curResult = m_hostResults[i];
-        if (curResult < minResult) {
-            minResult = curResult;
-            minIndex = i;
-        }
-        if (curResult < bestCodes.WorstResult())
-            bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
-    }
-
-    float oldResult = state.MaxResult();
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCode, FireStarterCode::Member(m_deviceCode, settings, minIndex), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-    state.InitResult(settings, minResult, m_hostCode->Member(settings, minIndex), minIndex);
-    state.m_oldResult = oldResult;
-} // ExecuteEvolveVariationsPass
 
 void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation)
 {
@@ -374,7 +319,7 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     }
 
     float oldResult = state.MaxResult();
-    state.InitResult(settings, m_hostPopulation, m_hostCode, minIndex);
+    state.InitResult(settings, m_hostPopulation, m_hostCode, variation, minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteEvolveNewPass
 
@@ -518,7 +463,6 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
 {
     unsigned int variations = state.Settings().m_variations;
     if ((variations > 1) && state.m_evolution) {
-        FireStarterResult* result = state.Result();
         float oldResult = state.MaxResult();
         bool validResult = true;
         for (unsigned int v = 0; v < variations; v++) {
@@ -529,6 +473,7 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
                 if (state.MaxResult() >= oldResult) {
                     // Count the variation that caused an invalid result.
                     state.m_variationCount[variation]++;
+                    FireStarterResult* result = state.Result(variation);
                     result->Init(state.Settings());
                     validResult = false;
                 }
@@ -813,10 +758,7 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestC
         if (GenerateEvolveNew()) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
-                if (state.Settings().m_variations == 1)
-                    ExecuteEvolvePass(state, bestCodes);
-                else
-                    ExecuteEvolveVariationsPass(state, bestCodes);
+                ExecuteEvolvePass(state, bestCodes);
         }
     });
 } // ExecuteEvolve
