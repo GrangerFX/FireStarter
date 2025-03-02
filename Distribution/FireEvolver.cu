@@ -191,11 +191,12 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
 
     // The first generation is initalized with random numbers.
     float variationResult[FIRESTARTER_VARIATIONS];
-    float memberResult = 0.0f;
+    float memberResult;
     bool valid = false;
-    for (unsigned int i = 0; valid && (i < 10); i++) {
+    for (unsigned int i = 0; !valid && (i < 10); i++) {
         code.Init(memberSeed);
         registers = code.Optimize();
+        memberResult = 0.0f;
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
             data[v].Init(memberSeed, FIRESTARTER_START_SCALE, registers);
             variationResult[v] = FIRESTARTER_START_RESULT;

@@ -2,6 +2,9 @@
 #include "CUDADefines.h"
 #include "FireStarterSettings.h"
 #include "HashRandom.h"
+#ifndef __CUDACC__
+#include <vector>
+#endif
 
 typedef struct FireStarterData {
     float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
@@ -410,7 +413,11 @@ typedef struct FireStarterCode {
     inline unsigned int Optimize(unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS)
     {
         // Sort and count the used registers.
+#ifdef __CUDACC__
         unsigned int regCount[FIRESTARTER_REGISTERS] = {};
+#else
+        std::vector<unsigned int> regCount(registers, 0);
+#endif
         unsigned short uniqueRegisters = 0;
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
             unsigned int r = c[i].reg;
