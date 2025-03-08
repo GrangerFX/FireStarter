@@ -143,7 +143,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
 
                 // Gather and sort the results, update the UI and check for the completion condition.
                 // Note: This syncronizes the execution units.
-                if (complete->CompleteStates(m_streamBestState, bestEvolveState, allStates, numStates, generation))
+                if (complete->CompleteStates(bestEvolveState, allStates, numStates, generation))
                     break;
 
                 // Increment the generation.

@@ -195,9 +195,9 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarte
 } // CompleteRandom
 
 // Replace old states with new ones when better and resort the list.
-bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation)
+bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation)
 {
-    DispatchSync([this, &displayState, &bestState, &allStates, numStates, generation] {
+    DispatchSync([this, &bestState, &allStates, numStates, generation] {
         // Sort the states as they are received.
         FireStarterStates newStates(numStates);
         bool abort = false;
@@ -259,7 +259,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& displayState, FireSta
             }
 
             // Evolution is complete when the best state among all the streams has reached the evolve target.
-            if (displayState.MaxResult() <= displayState.Settings().m_target)
+            if (bestState.MaxResult() <= bestState.Settings().m_target)
                 bestState.m_evolveComplete = true;
         }
     });

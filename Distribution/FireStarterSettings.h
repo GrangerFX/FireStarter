@@ -10,7 +10,7 @@
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
-#define FIRESTARTER_GENERATE_GPU    0
+#define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
 #define FIRESTARTER_AUTO_QUIT       1           // Automatically exit the app after completing the work.
 
@@ -68,7 +68,7 @@
 #define FIRESTARTER_RANDOM_TARGET               FIRESTARTER_TARGET
 
 #define FIRESTARTER_EVOLVE_CPU_STREAMS          1
-#define FIRESTARTER_EVOLVE_CPU_UNITS            1
+#define FIRESTARTER_EVOLVE_CPU_UNITS            8
 #define FIRESTARTER_EVOLVE_CPU_STATES           16
 #define FIRESTARTER_EVOLVE_CPU_GENERATIONS      0
 #define FIRESTARTER_EVOLVE_CPU_POPULATION       FIRESTARTER_POPULATION

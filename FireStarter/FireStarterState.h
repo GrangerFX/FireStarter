@@ -7,7 +7,7 @@
 #include <string>
 #include <set>
 
-#define FIRESTARTER_STATE_DEBUG 1
+#define FIRESTARTER_STATE_DEBUG 0
 
 typedef std::vector<class FireStarterState> FireStarterStates;
 typedef std::set<std::vector<unsigned char>> TestedCodes;
@@ -184,6 +184,7 @@ class FireStarterResultVector {
 private:
     std::vector<unsigned char> m_resultData;    // Backing data for the result.
     size_t m_resultSize = 0;
+    size_t m_variations = 0;
 #if FIRESTARTER_STATE_DEBUG
     FireStarterResult* m_resultDebug[FIRESTARTER_VARIATIONS] = {};          // For debugging purposes only!
 #endif
@@ -192,7 +193,8 @@ public:
     inline void operator=(const FireStarterResultVector* result)
     {
         m_resultData = result->m_resultData;
-        m_resultSize = m_resultData.size();
+        m_resultSize = result->m_resultSize;;
+        m_variations = result->m_variations;
 #if FIRESTARTER_STATE_DEBUG
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
@@ -229,10 +231,29 @@ public:
         return (const FireStarterResult*)(m_resultData.data() + m_resultSize * variation);
     } // Result
 
+    inline float MaxResult(void) const
+    {
+        float maxResult = MaxResult(0);
+        for (unsigned int v = 1; v < m_variations; v++)
+            maxResult = MAX(maxResult, MaxResult(v));
+        return maxResult;
+    } // MaxResult
+
+    inline float MaxResult(unsigned int variation) const
+    {
+        return Result(variation)->MaxResult();
+    } // MaxResult
+
+    inline float& MaxResult(unsigned int variation)
+    {
+        return *Result(variation)->MaxResult();
+    } // MaxResult
+
     inline void Init(const FireStarterSettings& settings)
     {
         m_resultSize = FireStarterResult::ResultSize(settings);
-        m_resultData.resize(m_resultSize * settings.m_variations);
+        m_variations = settings.m_variations;
+        m_resultData.resize(m_resultSize * m_variations);
 #if FIRESTARTER_STATE_DEBUG
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
@@ -350,22 +371,17 @@ public:
 
     inline float MaxResult(void) const
     {
-        float maxResult = Result(0)->m_maxResult;
-        for (unsigned int v = 1; v < m_settings.m_variations; v++)
-            maxResult = MAX(maxResult, Result(v)->m_maxResult);
-        return maxResult;
+        return m_result.MaxResult();
     } // MaxResult
 
     inline float MaxResult(unsigned int variation) const
     {
-        const FireStarterResult* result = Result(variation);
-        return result->MaxResult();
+        return m_result.MaxResult(variation);
     } // MaxResult
 
     inline float& MaxResult(unsigned int variation)
     {
-         FireStarterResult* result = Result(variation);
-         return *result->MaxResult();
+        return m_result.MaxResult(variation);
     } // MaxResult
 
     inline unsigned short EvolveAge1(unsigned int variation) const
