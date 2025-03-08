@@ -7,17 +7,25 @@
 #include <string>
 #include <set>
 
+#define FIRESTARTER_STATE_DEBUG 1
+
 typedef std::vector<class FireStarterState> FireStarterStates;
 typedef std::set<std::vector<unsigned char>> TestedCodes;
 
 class FireStarterCodeVector {
 private:
     std::vector<unsigned char> m_codeData;      // Backing data for the code.
+#if FIRESTARTER_STATE_DEBUG
+    FireStarterCode* m_codeDebug = nullptr;          // For debugging purposes only!
+#endif
 
 public:
     inline void operator=(const FireStarterCodeVector* code)
     {
         m_codeData = code->m_codeData;
+#if FIRESTARTER_STATE_DEBUG
+        m_codeDebug = Code();
+#endif
     } // operator=
 
     inline void operator=(const FireStarterCode* code)
@@ -68,11 +76,19 @@ public:
     void Init(const FireStarterSettings& settings)
     {
         m_codeData.resize(FireStarterCodeGenerate::CodeSize(settings));
+#if FIRESTARTER_STATE_DEBUG
+        m_codeDebug = Code();
+#endif
     } // Init
 
     FireStarterCodeVector(const FireStarterSettings& settings)
     {
         Init(settings);
+    } // FireStarterCodeVector
+
+    inline FireStarterCodeVector(const FireStarterCodeVector& other)
+    {
+        *this = other;
     } // FireStarterCodeVector
 
     FireStarterCodeVector(void)
@@ -83,8 +99,19 @@ public:
 class FireStarterDataVector {
 private:
     std::vector<unsigned char> m_data;    // Backing data for the result.
+#if FIRESTARTER_STATE_DEBUG
+    FireStarterData* m_dataDebug = nullptr;          // For debugging purposes only!
+#endif
 
 public:
+    inline void operator=(const FireStarterDataVector* other)
+    {
+        m_data = other->m_data;
+#if FIRESTARTER_STATE_DEBUG
+        m_dataDebug = (FireStarterData*)m_data.data();
+#endif
+    } // operator=
+
     inline void operator=(const FireStarterData* data)
     {
         memcpy(m_data.data(), data, m_data.size());
@@ -133,6 +160,9 @@ public:
     void Init(const FireStarterSettings& settings)
     {
         m_data.resize(FireStarterData::DataSize(settings));
+#if FIRESTARTER_STATE_DEBUG
+        m_dataDebug = (FireStarterData*)m_data.data();
+#endif
     } // Init
 
     FireStarterDataVector(const FireStarterSettings& settings)
@@ -140,24 +170,33 @@ public:
         Init(settings);
     } // FireStarterDataVector
 
+    inline FireStarterDataVector(const FireStarterDataVector& other)
+    {
+        *this = other;
+    } // FireStarterDataVector
+
     FireStarterDataVector(void)
     {
     } // FireStarterDataVector
-}; // class FireStartercDataVector
+}; // class FireStarterDataVector
 
 class FireStarterResultVector {
 private:
     std::vector<unsigned char> m_resultData;    // Backing data for the result.
-    size_t m_resultSize;
+    size_t m_resultSize = 0;
+#if FIRESTARTER_STATE_DEBUG
+    FireStarterResult* m_resultDebug[FIRESTARTER_VARIATIONS] = {};          // For debugging purposes only!
+#endif
+
 public:
     inline void operator=(const FireStarterResultVector* result)
     {
         m_resultData = result->m_resultData;
-    } // operator=
-
-    inline void operator=(const FireStarterResult* result)
-    {
-        memcpy(m_resultData.data(), result, m_resultData.size());
+        m_resultSize = m_resultData.size();
+#if FIRESTARTER_STATE_DEBUG
+        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+            m_resultDebug[v] = Result(v);
+#endif
     } // operator=
 
     inline size_t size(void) const
@@ -194,22 +233,26 @@ public:
     {
         m_resultSize = FireStarterResult::ResultSize(settings);
         m_resultData.resize(m_resultSize * settings.m_variations);
+#if FIRESTARTER_STATE_DEBUG
+        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+            m_resultDebug[v] = Result(v);
+#endif
     } // Init
-
-    inline FireStarterResultVector(const FireStarterResultVector& other)
-    {
-        m_resultData = other.m_resultData;
-    } // FireStarterResultVector
 
     inline FireStarterResultVector(const FireStarterSettings& settings)
     {
         Init(settings);
     } // FireStarterResultVector
 
+    inline FireStarterResultVector(const FireStarterResultVector& other)
+    {
+        *this = other;
+    } // FireStarterResultVector
+
     inline FireStarterResultVector(void)
     {
     } // FireStarterResultVector
-}; // class FireStarterDynamicResult
+}; // class FireStarterResultVector
 
 class FireStarterState {
 private:

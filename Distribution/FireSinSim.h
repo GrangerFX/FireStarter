@@ -10,15 +10,15 @@
 #define SINSIM_DATA_FREQUENCY  222.4f
 
 typedef struct SinSimNeuron {
-    float connection[SINSIM_NEURON_COUNT];
-    float addValue;
-    float value;
+    float connection[SINSIM_NEURON_COUNT] = {};
+    float addValue = 0.0f;
+    float value = 0.0f;
 } SinSimNeuron;
 
 typedef struct SinSimNetwork {
-    SinSimNeuron neuron[SINSIM_NEURON_COUNT];
-    float grade;
-    unsigned int age;
+    SinSimNeuron neuron[SINSIM_NEURON_COUNT] = {};
+    float grade = 0.0f;
+    unsigned int age = 0;
 } SinSimNetwork;
 
 #if 0
