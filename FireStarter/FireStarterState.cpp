@@ -2,16 +2,6 @@
 #include "Format.h"
 #include <algorithm>
 
-bool FireStarterState::Packetize(FireStarterPacket& packet)
-{
-    bool result = true;
-    result = result && packet.Packetize(m_code.data(), m_code.size());
-    result = result && packet.Packetize(&m_settings, sizeof(m_settings));
-    result = result && packet.Packetize(m_result.data(), m_result.size());
-    result = result && packet.Packetize(&m_generation, sizeof(m_generation));
-    return result;
-} // Packetize
-
 void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix, const std::string& postfix)
 {
     code += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";

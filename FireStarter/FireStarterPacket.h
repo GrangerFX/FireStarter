@@ -113,7 +113,22 @@ public:
         return Packetize(&n, sizeof(n));
     } // Packetize
 
+    inline bool Packetize(long long& n)
+    {
+        return Packetize(&n, sizeof(n));
+    } // Packetize
+
+    inline bool Packetize(unsigned long long& n)
+    {
+        return Packetize(&n, sizeof(n));
+    } // Packetize
+
     inline bool Packetize(float& n)
+    {
+        return Packetize(&n, sizeof(n));
+    } // Packetize
+
+    inline bool Packetize(double& n)
     {
         return Packetize(&n, sizeof(n));
     } // Packetize

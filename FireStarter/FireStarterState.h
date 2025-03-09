@@ -14,70 +14,89 @@ typedef std::set<std::vector<unsigned char>> TestedCodes;
 
 class FireStarterCodeVector {
 private:
-    std::vector<unsigned char> m_codeData;      // Backing data for the code.
+    std::vector<unsigned char> m_codeVector;    // Backing data for the code.
 #if FIRESTARTER_STATE_DEBUG
-    FireStarterCode* m_codeDebug = nullptr;          // For debugging purposes only!
+    FireStarterCode* m_codeDebug = nullptr;     // For debugging purposes only!
 #endif
 
 public:
+    inline bool Packetize(FireStarterPacket& packet) // Note: Not used currently.
+    {
+        bool result = packet.Packetize(m_codeVector);
+#if FIRESTARTER_STATE_DEBUG
+        m_codeDebug = CodePtr();
+#endif
+        return result;
+    } // Packetize
+
     inline void operator=(const FireStarterCodeVector* code)
     {
-        m_codeData = code->m_codeData;
+        m_codeVector = code->m_codeVector;
 #if FIRESTARTER_STATE_DEBUG
-        m_codeDebug = Code();
+        m_codeDebug = CodePtr();
 #endif
     } // operator=
 
     inline void operator=(const FireStarterCode* code)
     {
-        memcpy(m_codeData.data(), code, m_codeData.size());
+        memcpy(m_codeVector.data(), code, m_codeVector.size());
     } // operator=
 
     inline FireStarterCodeInstruction& operator[](unsigned int i)
     {
-        return (*Code())[i];
+        return Code()[i];
     } // operator[]
 
     inline FireStarterCodeInstruction operator[](unsigned int i) const
     {
-        return (*Code())[i];
+        return Code()[i];
     } // operator[]
 
     inline size_t size(void) const
     {
-        return m_codeData.size();
+        return m_codeVector.size();
     } // size
 
     inline unsigned char* data(void)
     {
-        return m_codeData.data();
+        return m_codeVector.data();
     } // data
 
     inline const unsigned char* data(void) const
     {
-        return m_codeData.data();
+        return m_codeVector.data();
     } // data
 
     inline const std::vector<unsigned char>& vector(void) const
     {
-        return m_codeData;
+        return m_codeVector;
     } // vector
 
-    inline FireStarterCodeGenerate* Code(void)
+    inline FireStarterCodeGenerate* CodePtr(void)
     {
-        return (FireStarterCodeGenerate*)m_codeData.data();
+        return (FireStarterCodeGenerate*)m_codeVector.data();
+    } // CodePtr
+
+    inline const FireStarterCodeGenerate* CodePtr(void) const
+    {
+        return (const FireStarterCodeGenerate*)m_codeVector.data();
+    } // CodePtr
+
+    inline FireStarterCodeGenerate& Code(void)
+    {
+        return *CodePtr();
     } // Code
 
-    inline const FireStarterCodeGenerate* Code(void) const
+    inline const FireStarterCodeGenerate& Code(void) const
     {
-        return (const FireStarterCodeGenerate*)m_codeData.data();
+        return *CodePtr();
     } // Code
 
     void Init(const FireStarterSettings& settings)
     {
-        m_codeData.resize(FireStarterCodeGenerate::CodeSize(settings));
+        m_codeVector.resize(FireStarterCodeGenerate::CodeSize(settings));
 #if FIRESTARTER_STATE_DEBUG
-        m_codeDebug = Code();
+        m_codeDebug = CodePtr();
 #endif
     } // Init
 
@@ -98,23 +117,32 @@ public:
 
 class FireStarterDataVector {
 private:
-    std::vector<unsigned char> m_data;    // Backing data for the result.
+    std::vector<unsigned char> m_dataVector;    // Backing data for the result.
 #if FIRESTARTER_STATE_DEBUG
     FireStarterData* m_dataDebug = nullptr;          // For debugging purposes only!
 #endif
 
 public:
+    inline bool Packetize(FireStarterPacket& packet) // Note: Not used currently.
+    {
+        bool result = packet.Packetize(m_dataVector);
+#if FIRESTARTER_STATE_DEBUG
+        m_dataDebug = DataPtr();
+#endif
+        return result;
+    } // Packetize
+
     inline void operator=(const FireStarterDataVector* other)
     {
-        m_data = other->m_data;
+        m_dataVector = other->m_dataVector;
 #if FIRESTARTER_STATE_DEBUG
-        m_dataDebug = (FireStarterData*)m_data.data();
+        m_dataDebug = DataPtr();
 #endif
     } // operator=
 
     inline void operator=(const FireStarterData* data)
     {
-        memcpy(m_data.data(), data, m_data.size());
+        memcpy(m_dataVector.data(), data, m_dataVector.size());
     } // operator=
 
     inline float& operator[](unsigned int i)
@@ -129,39 +157,49 @@ public:
 
     inline size_t size(void) const
     {
-        return m_data.size();
+        return m_dataVector.size();
     } // size
 
     inline unsigned char* data(void)
     {
-        return m_data.data();
+        return m_dataVector.data();
     } // data
 
     inline const unsigned char* data(void) const
     {
-        return m_data.data();
+        return m_dataVector.data();
     } // data
 
     inline const std::vector<unsigned char>& vector(void) const
     {
-        return m_data;
+        return m_dataVector;
     } // vector
+
+    inline FireStarterData* DataPtr(void)
+    {
+        return (FireStarterData*)m_dataVector.data();
+    } // Result
+
+    inline const FireStarterData* DataPtr(void) const
+    {
+        return (const FireStarterData*)m_dataVector.data();
+    } // DataPtr
 
     inline FireStarterData& Data(void)
     {
-        return *(FireStarterData*)m_data.data();
+        return *DataPtr();
     } // Result
 
     inline const FireStarterData& Data(void) const
     {
-        return *(const FireStarterData*)m_data.data();
+        return *DataPtr();
     } // Data
 
     void Init(const FireStarterSettings& settings)
     {
-        m_data.resize(FireStarterData::DataSize(settings));
+        m_dataVector.resize(FireStarterData::DataSize(settings));
 #if FIRESTARTER_STATE_DEBUG
-        m_dataDebug = (FireStarterData*)m_data.data();
+        m_dataDebug = (FireStarterData*)m_dataVector.data();
 #endif
     } // Init
 
@@ -190,6 +228,18 @@ private:
 #endif
 
 public:
+    inline bool Packetize(FireStarterPacket& packet) // Note: Not used currently.
+    {
+        bool result = packet.Packetize(m_resultData);
+#if FIRESTARTER_STATE_DEBUG
+        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+            m_resultDebug[v] = Result(v);
+#endif
+        result = result && packet.Packetize(m_resultSize);
+        result = result && packet.Packetize(m_variations);
+        return result;
+    } // Packetize
+
     inline void operator=(const FireStarterResultVector* result)
     {
         m_resultData = result->m_resultData;
@@ -281,6 +331,29 @@ private:
     FireStarterCodeVector m_code;
     SinSimNetwork m_network;
 
+public:
+    FireStarterSettings m_settings;
+    SimpleTimer m_timer;
+    std::string m_evaluateCode;
+    std::vector<unsigned int> m_variationOrder;
+    std::vector<unsigned int> m_variationCount;
+    unsigned long long m_generation = 0;
+    unsigned long long m_age = 0;
+    unsigned long long m_evolution = 0;
+    unsigned long long m_index = 0;
+    unsigned long long m_copy_index = 0;
+    unsigned long long m_id = 0;
+    unsigned long long m_test = 0;
+    unsigned long long m_seed = 0;
+    unsigned long long m_optimize_pass = 0;
+    unsigned int m_minIndex = 0;
+    unsigned int m_uniqueRegisters = 0;
+    float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
+    float m_evolveWeight = 0.0f;
+    bool m_optimizeValid = false;
+    bool m_evolveComplete = false;
+
+private:
     inline void swap(const FireStarterState& other)
     {
         m_result = other.m_result;
@@ -307,26 +380,31 @@ private:
     } // swap
 
 public:
-    std::string m_evaluateCode;
-    FireStarterSettings m_settings;
-    SimpleTimer m_timer;
-    std::vector<unsigned int> m_variationOrder;
-    std::vector<unsigned int> m_variationCount;
-    unsigned long long m_generation = 0;
-    unsigned long long m_age = 0;
-    unsigned long long m_evolution = 0;
-    unsigned long long m_index = 0;
-    unsigned long long m_copy_index = 0;
-    unsigned long long m_id = 0;
-    unsigned long long m_test = 0;
-    unsigned long long m_seed = 0;
-    unsigned long long m_optimize_pass = 0;
-    unsigned int m_minIndex = 0;
-    unsigned int m_uniqueRegisters = 0;
-    float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
-    float m_evolveWeight = 0.0f;
-    bool m_optimizeValid = false;
-    bool m_evolveComplete = false;
+    inline bool Packetize(FireStarterPacket& packet)
+    {
+        bool result = true;
+        result = result && m_result.Packetize(packet);
+        result = result && m_code.Packetize(packet);
+        result = result && packet.Packetize(&m_network, sizeof(m_network));
+        result = result && packet.Packetize(&m_settings, sizeof(m_settings));
+        result = result && packet.Packetize(m_evaluateCode);
+        result = result && packet.Packetize(m_generation);
+        result = result && packet.Packetize(m_age);
+        result = result && packet.Packetize(m_evolution);
+        result = result && packet.Packetize(m_index);
+        result = result && packet.Packetize(m_copy_index);
+        result = result && packet.Packetize(m_id);
+        result = result && packet.Packetize(m_test);
+        result = result && packet.Packetize(m_seed);
+        result = result && packet.Packetize(m_optimize_pass);
+        result = result && packet.Packetize(m_minIndex);
+        result = result && packet.Packetize(m_uniqueRegisters);
+        result = result && packet.Packetize(m_oldResult);
+        result = result && packet.Packetize(m_evolveWeight);
+        result = result && packet.Packetize(m_optimizeValid);
+        result = result && packet.Packetize(m_evolveComplete);
+        return result;
+    } // Packetize
 
     inline FireStarterState& operator = (const FireStarterState& other)
     {
@@ -415,12 +493,12 @@ public:
 
     inline FireStarterCodeGenerate* Code(void)
     {
-        return m_code.size() == CodeSize() ? m_code.Code() : nullptr;
+        return m_code.size() == CodeSize() ? m_code.CodePtr() : nullptr;
     } // Code
 
     inline const FireStarterCodeGenerate* Code(void) const
     {
-        return m_code.size() == CodeSize() ? m_code.Code() : nullptr;
+        return m_code.size() == CodeSize() ? m_code.CodePtr() : nullptr;
     } // Code
 
     const std::vector<unsigned char>& CodeVector(void) const
@@ -578,7 +656,6 @@ public:
         InitGenerationSeed();
     } // NextGeneration
 
-    bool Packetize(FireStarterPacket& packet);
     static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "", const std::string& postfix = "");
     void SaveSettings(std::string& code) const;
     void SaveCode(std::string& code) const;
