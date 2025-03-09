@@ -642,8 +642,10 @@ void FireStarterStreams::ExecuteStreams(void)
     DispatchSync([this] {
         // Load the optimize settings from the compiled CUDA code.
         // This allows the settings to be modified without recompiling the main program.
+#if FIRESTARTER_GENERATE_GPU
         FireStarterBuildSettings buildSettings;
         buildSettings.FireSettings(m_streamSettings);  // This will set the default mode.
+#endif
 
         size_t numStreams = MAX(MIN(m_streamSettings.m_streams, m_streamSettings.m_tests), 1);
         FireStarterState bestState(m_streamSettings);
