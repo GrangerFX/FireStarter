@@ -1,10 +1,6 @@
 #include "FireStarter.h"
-#include "FireStarterEvolve.h"
-#include "FireStarterExecute.h"
-#include "FireStarterComplete.h"
+#include "FireStarterShow.h"
 #include "FireStarterStream.h"
-#include "CUDAContext.h"
-#include "CUDACompile.h"
 
 void FireStarter::ControlSolution(void)
 {
@@ -12,38 +8,21 @@ void FireStarter::ControlSolution(void)
     FireStarterShow::FireSolution(m_window);
 } // ControlSolution
 
-void FireStarter::ControlRandom(const FireStarterSettings& randomSettings)
+void FireStarter::ControlStreams(void)
 {
-    FireStarterStreams streams(m_window, m_server, randomSettings);
-    streams.RandomStreams();
-} // ControlRandom
-
-void FireStarter::ControlStreams(const FireStarterSettings& evolveSettings)
-{
-    FireStarterStreams streams(m_window, m_server, evolveSettings);
+    FireStarterStreams streams(m_window);
     streams.ExecuteStreams();
 } // ControlStreams
 
 void FireStarter::ControlThread(void)
 {
     DispatchAsync([this] {
-        // Load the optimize settings from the compiled CUDA code.
-        // This allows the settings to be modified without recompiling the main program.
-        FireStarterSettings controlSettings(FIRESTARTER_SOLUTION); // This will set all the settings to zero.
-        m_buildSettings.FireSettings(controlSettings);  // This will set the default mode.
-        switch (controlSettings.m_mode) {
-        case FIRESTARTER_SOLUTION:
+        if (FIRESTARTER_MODE == FIRESTARTER_SOLUTION)
             // Run the most recent solution on the CPU.
             ControlSolution();
-            break;
-        case FIRESTARTER_RANDOM:
-            // Random generations.
-            ControlRandom(controlSettings);
-            break;
-        default:
-            ControlStreams(controlSettings);
-            break;
-        }
+        else
+            // Evolve and optimize a new solution.
+            ControlStreams();
     });
 } // ControlThread
 
@@ -230,9 +209,6 @@ FireStarter::FireStarter(const FireStarterWindow& window) : SerialThread("FireSt
 #endif
 
 #if 1
-#if FIRESTARTER_MULTIPROCESS
-    m_server = new FireStarterServer();
-#endif
     ControlThread();
 #endif
 } // FireStarter
@@ -241,5 +217,4 @@ FireStarter::~FireStarter(void)
 {
     QuitThreads();
     Synchronize();
-    delete m_server;
 } // ~FireStarter

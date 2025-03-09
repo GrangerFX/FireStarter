@@ -4,12 +4,12 @@
 #define FIRESTARTER_WARP_THREADS    32
 #define FIRESTARTER_INSTRUCTIONS    32
 #define FIRESTARTER_REGISTERS       30
-#define FIRESTARTER_VARIATIONS      3
+#define FIRESTARTER_VARIATIONS      1
 #define FIRESTARTER_VARIATION       0
 
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
-#define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
+#define FIRESTARTER_MULTIPROCESS    2           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    1
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
 #define FIRESTARTER_AUTO_QUIT       1           // Automatically exit the app after completing the work.
@@ -56,7 +56,7 @@
 
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1
-#define FIRESTARTER_RANDOM_STATES               11000
+#define FIRESTARTER_RANDOM_STATES               1
 #define FIRESTARTER_RANDOM_GENERATIONS          0
 #define FIRESTARTER_RANDOM_POPULATION           FIRESTARTER_POPULATION
 #define FIRESTARTER_RANDOM_PASSES               FIRESTARTER_PASSES
@@ -65,10 +65,11 @@
 #define FIRESTARTER_RANDOM_CANDIDATES           FIRESTARTER_CANDIDATES
 #define FIRESTARTER_RANDOM_ATTEMPTS             0
 #define FIRESTARTER_RANDOM_OPTIMIZE             0
+#define FIRESTARTER_RANDOM_TESTS                11000
 #define FIRESTARTER_RANDOM_TARGET               FIRESTARTER_TARGET
 
 #define FIRESTARTER_EVOLVE_CPU_STREAMS          1
-#define FIRESTARTER_EVOLVE_CPU_UNITS            8
+#define FIRESTARTER_EVOLVE_CPU_UNITS            1
 #define FIRESTARTER_EVOLVE_CPU_STATES           16
 #define FIRESTARTER_EVOLVE_CPU_GENERATIONS      0
 #define FIRESTARTER_EVOLVE_CPU_POPULATION       FIRESTARTER_POPULATION
@@ -78,6 +79,7 @@
 #define FIRESTARTER_EVOLVE_CPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_CPU_ATTEMPTS         0
 #define FIRESTARTER_EVOLVE_CPU_OPTIMIZE         1
+#define FIRESTARTER_EVOLVE_CPU_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
 
 #define FIRESTARTER_EVOLVE_GPU_STREAMS          1
@@ -91,6 +93,7 @@
 #define FIRESTARTER_EVOLVE_GPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_GPU_ATTEMPTS         0
 #define FIRESTARTER_EVOLVE_GPU_OPTIMIZE         1
+#define FIRESTARTER_EVOLVE_GPU_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
 
 #if FIRESTARTER_NEW_SINSIM
@@ -105,6 +108,7 @@
 #define FIRESTARTER_EVOLVE_NEW_CANDIDATES       256
 #define FIRESTARTER_EVOLVE_NEW_ATTEMPTS         0
 #define FIRESTARTER_EVOLVE_NEW_OPTIMIZE         1
+#define FIRESTARTER_EVOLVE_NEW_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_NEW_TARGET           FIRESTARTER_TARGET
 #else
 #define FIRESTARTER_EVOLVE_NEW_STREAMS          1
@@ -118,6 +122,7 @@
 #define FIRESTARTER_EVOLVE_NEW_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_NEW_ATTEMPTS         0
 #define FIRESTARTER_EVOLVE_NEW_OPTIMIZE         1
+#define FIRESTARTER_EVOLVE_NEW_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_NEW_TARGET           FIRESTARTER_TARGET
 #endif
 
@@ -132,6 +137,7 @@
 #define FIRESTARTER_SPEED_TEST_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_SPEED_TEST_ATTEMPTS         0
 #define FIRESTARTER_SPEED_TEST_OPTIMIZE         5
+#define FIRESTARTER_SPEED_TEST_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_SPEED_TEST_TARGET           0.0f
 
 #define FIRESTARTER_SINSIM_STREAMS              1
@@ -145,6 +151,7 @@
 #define FIRESTARTER_SINSIM_CANDIDATES           256
 #define FIRESTARTER_SINSIM_ATTEMPTS             0
 #define FIRESTARTER_SINSIM_OPTIMIZE             1
+#define FIRESTARTER_SINSIM_TESTS                FIRESTARTER_TESTS
 #define FIRESTARTER_SINSIM_TARGET               FIRESTARTER_TARGET
 
 #define FIRESTARTER_OPTIMIZE_STREAMS            1
@@ -158,6 +165,7 @@
 #define FIRESTARTER_OPTIMIZE_CANDIDATES         FIRESTARTER_CANDIDATES
 #define FIRESTARTER_OPTIMIZE_ATTEMPTS           0
 #define FIRESTARTER_OPTIMIZE_OPTIMIZE           1
+#define FIRESTARTER_OPTIMIZE_TESTS              FIRESTARTER_TESTS
 #define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
 
 #if FIRESTARTER_FIRSTLIGHT
@@ -234,8 +242,7 @@ public:
     unsigned int m_evolveSeed =     FIRESTARTER_EVOLVE_SEED;
     unsigned int m_optimizeSeed =   FIRESTARTER_OPTIMIZE_SEED;
 
-    unsigned int m_tests =          FIRESTARTER_TESTS;
-
+ 
     unsigned int m_mode =           FIRESTARTER_MODE;
     unsigned int m_variations =     FIRESTARTER_VARIATIONS;
     unsigned int m_streams =        0;
@@ -249,7 +256,8 @@ public:
     unsigned int m_candidates =     0;
     unsigned int m_attempts =       0;
     unsigned int m_optimize =       0;
-    float m_target =                0.0f;
+    unsigned int m_tests =          0;
+    float        m_target =         0.0f;
 
     static inline const char* Mode(unsigned int mode)
     {
@@ -338,7 +346,6 @@ public:
     {
         m_evolveSeed = source.m_evolveSeed;
         m_optimizeSeed = source.m_optimizeSeed;
-        m_tests = source.m_tests;
         m_mode = source.m_mode;
         m_variations = source.m_variations;
         m_streams = source.m_streams;
@@ -352,6 +359,7 @@ public:
         m_candidates = source.m_candidates;
         m_attempts = source.m_attempts;
         m_optimize = source.m_optimize;
+        m_tests = source.m_tests;
         m_target = source.m_target;
         m_scale = source.m_scale;
         m_startScale = source.m_startScale;
@@ -376,6 +384,7 @@ public:
             m_samples =     FIRESTARTER_RANDOM_SAMPLES;
             m_attempts =    FIRESTARTER_RANDOM_ATTEMPTS;
             m_optimize =    FIRESTARTER_RANDOM_OPTIMIZE;
+            m_tests =       FIRESTARTER_RANDOM_TESTS;
             m_target =      FIRESTARTER_RANDOM_TARGET;
             break;
 
@@ -390,6 +399,7 @@ public:
             m_samples =     FIRESTARTER_EVOLVE_CPU_SAMPLES;
             m_attempts =    FIRESTARTER_EVOLVE_CPU_ATTEMPTS;
             m_optimize =    FIRESTARTER_EVOLVE_CPU_OPTIMIZE;
+            m_tests =       FIRESTARTER_EVOLVE_CPU_TESTS;
             m_target =      FIRESTARTER_EVOLVE_CPU_TARGET;
             break;
 
@@ -404,6 +414,7 @@ public:
             m_samples =     FIRESTARTER_EVOLVE_GPU_SAMPLES;
             m_attempts =    FIRESTARTER_EVOLVE_GPU_ATTEMPTS;
             m_optimize =    FIRESTARTER_EVOLVE_GPU_OPTIMIZE;
+            m_tests =       FIRESTARTER_EVOLVE_GPU_TESTS;
             m_target =      FIRESTARTER_EVOLVE_GPU_TARGET;
             break;
 
@@ -418,6 +429,7 @@ public:
             m_samples =     FIRESTARTER_EVOLVE_NEW_SAMPLES;
             m_attempts =    FIRESTARTER_EVOLVE_NEW_ATTEMPTS;
             m_optimize =    FIRESTARTER_EVOLVE_NEW_OPTIMIZE;
+            m_tests =       FIRESTARTER_EVOLVE_NEW_TESTS;
             m_target =      FIRESTARTER_EVOLVE_NEW_TARGET;
             break;
 
@@ -432,7 +444,8 @@ public:
             m_samples =     FIRESTARTER_SPEED_TEST_SAMPLES;
             m_attempts =    FIRESTARTER_SPEED_TEST_ATTEMPTS;
             m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
-            m_target =  FIRESTARTER_SPEED_TEST_TARGET;
+            m_tests =       FIRESTARTER_SPEED_TEST_TESTS;
+            m_target =      FIRESTARTER_SPEED_TEST_TARGET;
             break;
 
         case FIRESTARTER_SINSIM:
@@ -446,6 +459,7 @@ public:
             m_samples =     FIRESTARTER_SINSIM_SAMPLES;
             m_attempts =    FIRESTARTER_SINSIM_ATTEMPTS;
             m_optimize =    FIRESTARTER_SINSIM_OPTIMIZE;
+            m_tests =       FIRESTARTER_SINSIM_TESTS;
             m_target =      FIRESTARTER_SINSIM_TARGET;
             break;
 
@@ -460,6 +474,7 @@ public:
             m_samples =     FIRESTARTER_OPTIMIZE_SAMPLES;
             m_attempts =    FIRESTARTER_OPTIMIZE_ATTEMPTS;
             m_optimize =    FIRESTARTER_OPTIMIZE_OPTIMIZE;
+            m_tests =       FIRESTARTER_OPTIMIZE_TESTS;
             m_target =      FIRESTARTER_OPTIMIZE_TARGET;
             break;
 
@@ -474,6 +489,7 @@ public:
             m_samples =     0;
             m_attempts =    0;
             m_optimize =    0;
+            m_tests =       0;
             m_target =      0.0f;
             break;
         }

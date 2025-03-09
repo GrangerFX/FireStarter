@@ -7,7 +7,7 @@
 #include <string>
 #include <set>
 
-#define FIRESTARTER_STATE_DEBUG 0
+#define FIRESTARTER_STATE_DEBUG 1
 
 typedef std::vector<class FireStarterState> FireStarterStates;
 typedef std::set<std::vector<unsigned char>> TestedCodes;

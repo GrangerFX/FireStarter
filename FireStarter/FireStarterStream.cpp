@@ -1,4 +1,5 @@
 #include "FireStarterStream.h"
+#include "FireStarterBuildSettings.h"
 #include "FireStarterEvolve.h"
 #include "FireStarterCompile.h"
 #include "FireStarterExecute.h"
@@ -636,40 +637,14 @@ bool FireStarterStreams::SynchronizeStreams(std::vector<FireStarterStream*>& str
     return result;
 } // SynchronizeStreams
 
-void FireStarterStreams::RandomStreams(void)
-{
-    // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
-    // Initialize the streams.
-    DispatchSync([this] {
-        // Generate sequential random programs and test each of them.
-        size_t randomTests = m_streamSettings.m_states * MAX(m_streamSettings.m_tests, 1);
-        size_t numStreams = MAX(MIN(m_streamSettings.m_streams, randomTests), 1);
-        FireStarterState bestState(m_streamSettings);
-
-        // Create the streams.
-        std::vector<FireStarterStream*> streams(numStreams, nullptr);
-        for (size_t stream = 0; stream < numStreams; stream++)
-            streams[stream] = new FireStarterStream(stream, m_window, bestState, m_streamSettings);
-
-        // Randomize and test the streams.
-        m_testCount = 0;
-        for (FireStarterStream* stream : streams)
-            stream->RandomStream(m_server, m_testCount);
-
-        // Wait for all the streams to finish the random pass.
-        SynchronizeStreams(streams);
-
-        // Terminate and delete each stream unit.
-        for (FireStarterStream* stream : streams)
-            delete stream;
-    });
-} // RandomStreams
-
 void FireStarterStreams::ExecuteStreams(void)
 {
-    // Note: TODO: SerialThread should terminate if its parent SerialThread should terminate.
-    // Initialize the streams.
     DispatchSync([this] {
+        // Load the optimize settings from the compiled CUDA code.
+        // This allows the settings to be modified without recompiling the main program.
+        FireStarterBuildSettings buildSettings;
+        buildSettings.FireSettings(m_streamSettings);  // This will set the default mode.
+
         size_t numStreams = MAX(MIN(m_streamSettings.m_streams, m_streamSettings.m_tests), 1);
         FireStarterState bestState(m_streamSettings);
 
@@ -680,26 +655,30 @@ void FireStarterStreams::ExecuteStreams(void)
 
         // Evolve the streams.
         m_testCount = 0;
-        FireStarterServer* server = MAX(numStreams, m_streamSettings.m_units) > 1 ? m_server : nullptr;
+
+        m_server = (FIRESTARTER_MULTIPROCESS > 1) || MAX(numStreams, m_streamSettings.m_units) > 1 ? new FireStarterServer() : nullptr;
         for (size_t stream = 0; stream < numStreams; stream++)
             switch (m_streamSettings.m_mode) {
+                case FIRESTARTER_RANDOM:
+                    streams[stream]->RandomStream(m_server, m_testCount);
+                    break;
                 case FIRESTARTER_EVOLVE_CPU:
-                    streams[stream]->EvolveCPUStream(server, m_testCount);
+                    streams[stream]->EvolveCPUStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_EVOLVE_GPU:
-                    streams[stream]->EvolveGPUStream(server, m_testCount);
+                    streams[stream]->EvolveGPUStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_EVOLVE_NEW:
-                    streams[stream]->EvolveNewStream(server, m_testCount);
+                    streams[stream]->EvolveNewStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_SPEED_TEST:
-                    streams[stream]->SpeedTestStream(server, m_testCount);
+                    streams[stream]->SpeedTestStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_SINSIM:
-                    streams[stream]->SinSimStream(server, m_testCount);
+                    streams[stream]->SinSimStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_OPTIMIZE:
-                    streams[stream]->OptimizeStream(server, m_testCount);
+                    streams[stream]->OptimizeStream(m_server, m_testCount);
                     break;
             }
 
@@ -718,10 +697,13 @@ void FireStarterStreams::ExecuteStreams(void)
         // Terminate and delete each stream unit.
         for (FireStarterStream* stream : streams)
             delete stream;
+
+        // Shut down and delete the server.
+        delete m_server;
     });
 } // ExecuteStreams
 
-FireStarterStreams::FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings) : m_window(window), m_server(server), m_streamSettings(streamSettings), m_testCount(0)
+FireStarterStreams::FireStarterStreams(const FireStarterWindow& window) : m_window(window), m_testCount(0)
 {
 } // FireStarterStreams
 

@@ -28,13 +28,12 @@ private:
 	FireStarterWindow m_window;
 	FireStarterSettings m_streamSettings;
 	FireStarterSettings m_optimizeSettings;
-	FireStarterServer* m_server;
+	FireStarterServer* m_server = nullptr;
 	std::atomic<unsigned int> m_testCount;
 
 public:
 	bool SynchronizeStreams(std::vector<FireStarterStream*>& streams);
-	void RandomStreams(void);
 	void ExecuteStreams(void);
-	FireStarterStreams(const FireStarterWindow& window, FireStarterServer* server, const FireStarterSettings& streamSettings);
+	FireStarterStreams(const FireStarterWindow& window);
 	~FireStarterStreams(void);
 }; // class FireStarterStreams
