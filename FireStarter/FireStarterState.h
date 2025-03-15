@@ -281,6 +281,16 @@ public:
         return (const FireStarterResult*)(m_resultData.data() + m_resultSize * variation);
     } // Result
 
+    inline FireStarterData* DataPtr(unsigned int variation = 0)
+    {
+        return Result(variation)->Data();
+    } // DataPtr
+
+    inline FireStarterData& Data(unsigned int variation = 0)
+    {
+        return *DataPtr(variation);
+    } // Data
+
     inline float MaxResult(void) const
     {
         float maxResult = MaxResult(0);
@@ -326,13 +336,11 @@ public:
 }; // class FireStarterResultVector
 
 class FireStarterState {
-private:
+public:
+    FireStarterSettings m_settings;
     FireStarterResultVector m_result;
     FireStarterCodeVector m_code;
     SinSimNetwork m_network;
-
-public:
-    FireStarterSettings m_settings;
     SimpleTimer m_timer;
     std::string m_evaluateCode;
     std::vector<unsigned int> m_variationOrder;

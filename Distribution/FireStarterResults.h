@@ -633,7 +633,7 @@ typedef struct FireStarterResult {
     float m_maxResult;
     unsigned short m_evolveAge1;
     unsigned short m_evolveAge2;
-    float m_data[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
+    FireStarterData m_data; // Note: Dynamically allocated!
 
     static inline size_t ResultSize(void)
     {
@@ -682,12 +682,12 @@ typedef struct FireStarterResult {
 
     inline FireStarterData* Data(void)
     {
-        return (FireStarterData*)m_data;
+        return &m_data;
     } // Data
 
     inline const FireStarterData* Data(void) const
     {
-        return (const FireStarterData*)m_data;
+        return &m_data;
     } // Data
 
     inline void Copy(const FireStarterResult* src)
