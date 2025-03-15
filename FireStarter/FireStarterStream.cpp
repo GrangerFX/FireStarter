@@ -38,7 +38,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
             // Setup the intial state
             FireStarterSettings evolveSettings(randomSettings);
             evolveSettings.m_evolveSeed = randomSettings.m_evolveSeed + test / tests;
-            FireStarterState evolveState(evolveSettings, m_streamIndex, test % tests);
+            FireStarterState evolveState(evolveSettings, 0, m_streamIndex, test % tests, test);
 
             // Evolve the first generation for the state.
             evolve->RandomState(evolveState);
