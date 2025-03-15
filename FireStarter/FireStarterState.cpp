@@ -242,7 +242,7 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
         CopyCode(code);
 
     // Load the state's data from the population data.
-    Result(variation)->Copy(result, settings);
+    Result(variation)->Copy(result, settings.m_registers);
     m_minIndex = index;
     m_optimizeValid = true;
 } // InitResult

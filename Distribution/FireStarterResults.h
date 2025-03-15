@@ -645,11 +645,6 @@ typedef struct FireStarterResult {
         return (sizeof(FireStarterResult) - sizeof(m_data)) + FireStarterData::DataSize(registers);
     } // ResultSize
 
-    static inline size_t ResultSize(const FireStarterSettings& settings)
-    {
-        return ResultSize(settings.m_registers);
-    } // ResultSize
-
     inline float* MaxResult(void)
     {
         return &m_maxResult;
@@ -695,9 +690,9 @@ typedef struct FireStarterResult {
         memcpy(this, src, ResultSize());
     } // Copy
 
-    inline void Copy(const FireStarterResult* src, const FireStarterSettings& settings)
+    inline void Copy(const FireStarterResult* src, unsigned int registers)
     {
-        memcpy(this, src, ResultSize(settings));
+        memcpy(this, src, ResultSize(registers));
     } // Copy
 
     inline void CopyData(const FireStarterResult* src)
@@ -801,7 +796,7 @@ typedef struct FireStarterResult {
 
     static inline size_t MemberSize(const FireStarterSettings& settings)
     {
-        return ResultSize(settings) * settings.m_variations;
+        return ResultSize(settings.m_registers) * settings.m_variations;
     } // MemberSize
 
     static inline FireStarterResult* Member(FireStarterResult* population, unsigned int index)
@@ -856,12 +851,12 @@ typedef struct FireStarterResult {
 
     static inline FireStarterResult* Result(FireStarterResult* population, const FireStarterSettings& settings, unsigned int index, unsigned int variation = 0)
     {
-        return (FireStarterResult*)((char*)population + MemberSize(settings) * index + ResultSize(settings) * variation);
+        return (FireStarterResult*)((char*)population + MemberSize(settings) * index + ResultSize(settings.m_registers) * variation);
     } // Result
 
     static inline const FireStarterResult* Result(const FireStarterResult* population, const FireStarterSettings& settings, unsigned int index, unsigned int variation = 0)
     {
-        return (FireStarterResult*)((char*)population + MemberSize(settings) * index + ResultSize(settings) * variation);
+        return (FireStarterResult*)((char*)population + MemberSize(settings) * index + ResultSize(settings.m_registers) * variation);
     } // Result
 
     inline FireStarterResult* Result(unsigned int index, unsigned int variation = 0)

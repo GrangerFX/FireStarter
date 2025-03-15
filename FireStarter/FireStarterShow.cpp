@@ -116,14 +116,13 @@ void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int e
     }  else {
         // As a fallback and validation test, generate the target and evaluate the code on the CPU.
         // The CPU evalate won't need to wait for the GPU to become available.
-        FireStarterResultVector result;
+        FireStarterDataVector dataVector;
         const FireStarterCode* code = state.Code();
         float thetaStep = (thetaEnd - thetaStart) / evaluateWidth;
         for (unsigned int i = 0; i < evaluateWidth; i++) {
-            result = state.m_result;
-            FireStarterData& data = result.Data(variation);
+            state.DataVector(dataVector, variation);
             float theta = thetaStart + i * thetaStep;
-            m_hostEvaluateData[i] = code->Evaluate(data, theta, settings.m_instructions);
+            m_hostEvaluateData[i] = code->Evaluate(dataVector.Data(), theta, settings.m_instructions);
             m_hostTargetData[i] = Target(theta, variation);
         }
     }

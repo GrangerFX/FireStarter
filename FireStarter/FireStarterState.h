@@ -203,9 +203,22 @@ public:
 #endif
     } // Init
 
+    void Init(unsigned int registers)
+    {
+        m_dataVector.resize(FireStarterData::DataSize(registers));
+#if FIRESTARTER_STATE_DEBUG
+        m_dataDebug = (FireStarterData*)m_dataVector.data();
+#endif
+    } // Init
+
     FireStarterDataVector(const FireStarterSettings& settings)
     {
         Init(settings);
+    } // FireStarterDataVector
+
+    FireStarterDataVector(unsigned int registers)
+    {
+        Init(registers);
     } // FireStarterDataVector
 
     inline FireStarterDataVector(const FireStarterDataVector& other)
@@ -222,7 +235,8 @@ class FireStarterResultVector {
 private:
     std::vector<unsigned char> m_resultData;    // Backing data for the result.
     size_t m_resultSize = 0;
-    size_t m_variations = 0;
+    unsigned int m_variations = 0;
+    unsigned int m_registers = 0;
 #if FIRESTARTER_STATE_DEBUG
     FireStarterResult* m_resultDebug[FIRESTARTER_VARIATIONS] = {};          // For debugging purposes only!
 #endif
@@ -286,10 +300,21 @@ public:
         return Result(variation)->Data();
     } // DataPtr
 
-    inline FireStarterData& Data(unsigned int variation = 0)
+    inline const FireStarterData* DataPtr(unsigned int variation = 0) const
+    {
+        return Result(variation)->Data();
+    } // DataPtr
+
+    inline const FireStarterData& Data(unsigned int variation = 0) const
     {
         return *DataPtr(variation);
     } // Data
+
+    inline void DataVector(FireStarterDataVector& dataVector, unsigned int variation = 0) const
+    {
+        dataVector.Init(m_registers);
+        dataVector = DataPtr(variation);
+    } // DataVector
 
     inline float MaxResult(void) const
     {
@@ -311,8 +336,9 @@ public:
 
     inline void Init(const FireStarterSettings& settings)
     {
-        m_resultSize = FireStarterResult::ResultSize(settings);
+        m_resultSize = FireStarterResult::ResultSize(settings.m_registers);
         m_variations = settings.m_variations;
+        m_registers = settings.m_registers;
         m_resultData.resize(m_resultSize * m_variations);
 #if FIRESTARTER_STATE_DEBUG
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
@@ -437,7 +463,7 @@ public:
 
     inline size_t ResultSize(void) const
     {
-        return FireStarterResult::ResultSize(m_settings);
+        return FireStarterResult::ResultSize(m_settings.m_registers);
     } // ResultSize
 
     inline const FireStarterResult* Result(unsigned int variation) const
@@ -448,7 +474,17 @@ public:
     inline FireStarterResult* Result(unsigned int variation)
     {
         return m_result.Result(variation);
-     } // Result
+    } // Result
+
+    inline const FireStarterResultVector& ResultVector(void) const
+    {
+        return m_result;
+    } // ResultVector(void)
+
+    inline void DataVector(FireStarterDataVector& dataVector, unsigned int variation) const
+    {
+        m_result.DataVector(dataVector, variation);
+    } // ResultVector(void)
 
     inline const SinSimNetwork* Network(void) const
     {

@@ -163,7 +163,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             if (populationSize)
                 checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
             else
-                checkCUDAErrors(cudaMallocHost(&m_hostPopulation, FireStarterResult::ResultSize(settings)));
+                checkCUDAErrors(cudaMallocHost(&m_hostPopulation, FireStarterResult::ResultSize(settings.m_registers)));
             Context()->Synchronize();
 
             result = m_hostResults && m_deviceResults && m_hostPopulation;
