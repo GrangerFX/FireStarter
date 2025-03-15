@@ -4,7 +4,7 @@
 #define FIRESTARTER_WARP_THREADS    32
 #define FIRESTARTER_INSTRUCTIONS    32
 #define FIRESTARTER_REGISTERS       30
-#define FIRESTARTER_VARIATIONS      3
+#define FIRESTARTER_VARIATIONS      1
 #define FIRESTARTER_VARIATION       0
 
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing

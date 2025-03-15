@@ -2,6 +2,99 @@
 #include "Format.h"
 #include <algorithm>
 
+const FireStarterCode* FireStarterBestCodes::GetBestCode(void)
+{
+    if (!m_numCodes)
+        return nullptr;
+    FireStarterCode* bestCode = m_bestCodes[0];
+    float bestResult = m_bestResults[0];
+    for (size_t i = 1; i < m_maxCodes; i++) {
+        m_bestCodes[i - 1] = m_bestCodes[i];
+        m_bestResults[i - 1] = m_bestResults[i];
+    }
+    m_bestCodes[m_maxCodes - 1] = bestCode;
+    m_bestResults[m_maxCodes - 1] = bestResult;
+    m_numCodes--;
+    m_worstResult = m_settings.m_startResult;
+    return bestCode;
+} // GetBestCode
+
+bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
+{
+    // Skip bad results entirely.
+    if (result >= m_worstResult)
+        return false;
+
+    // Only add states with a unique instruction set.
+    std::vector<unsigned char> codeInstructions(m_codeSize);
+    memcpy(codeInstructions.data(), code, m_codeSize);
+    if (m_testedCodes.count(codeInstructions))
+        return false;
+    m_testedCodes.insert(codeInstructions);
+
+    // Insert the new code and result at the end of the list.
+    float newResult = result;
+    size_t newIndex = (m_numCodes < m_maxCodes) ? m_numCodes : --m_numCodes;
+    m_bestResults[newIndex] = newResult;
+    FireStarterCode* newCode = m_bestCodes[newIndex];
+    memcpy(newCode, code, m_codeSize);
+
+    for (size_t i = 0; i < m_numCodes; i++) {
+        FireStarterCode* curCode = m_bestCodes[i];
+        float curResult = m_bestResults[i];
+        if (curResult > newResult) {
+            for (size_t j = i; j < m_numCodes; j++) {
+                curCode = m_bestCodes[j];
+                curResult = m_bestResults[j];
+                m_bestCodes[j] = newCode;
+                m_bestResults[j] = newResult;
+                newCode = curCode;
+                newResult = curResult;
+            }
+            break;
+        }
+    }
+    m_bestCodes[m_numCodes] = newCode;
+    m_bestResults[m_numCodes] = newResult;
+    m_numCodes++;
+    return true;
+} // AddCode
+
+float FireStarterBestCodes::WorstResult(void)
+{
+    return m_worstResult;
+} // WorstResult
+
+void FireStarterBestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
+{
+    m_settings = settings;
+    m_maxCodes = maxCodes;
+    m_codeSize = FireStarterCode::CodeSize(m_settings);
+    m_numCodes = 0;
+    m_worstResult = m_settings.m_startResult;
+    m_bestCodes.resize(m_maxCodes);
+    m_bestResults.resize(m_maxCodes);
+    for (size_t i = 0; i < m_maxCodes; i++) {
+        m_bestCodes[i] = (FireStarterCode*)calloc(m_codeSize, 1);
+        m_bestResults[i] = m_settings.m_startResult;
+    }
+} // InitBestCodes
+
+FireStarterBestCodes::FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes)
+{
+    InitBestCodes(settings, maxCodes);
+} // FireStarterBestCodes
+
+FireStarterBestCodes::FireStarterBestCodes(void)
+{
+} // FireStarterBestCodes
+
+FireStarterBestCodes::~FireStarterBestCodes(void)
+{
+    for (size_t i = 0; i < m_bestCodes.size(); i++)
+        free(m_bestCodes[i]);
+} // ~FireStarterBestCodes
+
 void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix, const std::string& postfix)
 {
     code += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";

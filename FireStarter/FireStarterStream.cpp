@@ -246,22 +246,24 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager, 1);
 
         // Generate and compile the evolve code.
-        executeEvolve->ExecuteGenerateEvolve();
+        executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
-            FireStarterBestCodes bestCodes(evolveSettings);
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
             FireStarterState optimizeState = FireStarterState(optimizeSettings, 0, 0, 0, test);
             FireStarterState bestState = FireStarterState(optimizeSettings, 0, 0, 0, test);
 
+            // Initialize the evolve state's best codes.
+            evolveState.m_bestCodes.InitBestCodes(evolveSettings);
+
             // Evolve the current test.
             while (!WillTerminate() && !bestState.m_evolveComplete) {
                 // Get the best code to optimize.
-                FireStarterCode* bestCode = bestCodes.GetBestCode();
+                const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
                 if (bestCode) {
                     optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, 0, test);
                     optimizeState.CopyCode(bestCode);
@@ -270,13 +272,13 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
 
                     // Execute the next GPU evolve while the optimize code is compiling.
-                    executeEvolve->ExecuteEvolve(evolveState, bestCodes);
+                    executeEvolve->ExecuteEvolve(evolveState);
 
                     // Execute optimize for any completed compile jobs.
                     executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete);
                 } else
                     // Execute the initial GPU evolve.
-                    executeEvolve->ExecuteEvolve(evolveState, bestCodes);
+                    executeEvolve->ExecuteEvolve(evolveState);
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
@@ -340,7 +342,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
         FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0);
 
         // Generate and compile the evolve code.
-        executeEvolve->ExecuteGenerateEvolveNew();
+        executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
@@ -349,6 +351,9 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
             unsigned long long test = FIRESTARTER_START_TEST + t;
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
             FireStarterState bestState = FireStarterState(evolveSettings, 0, 0, 0, test);
+
+            // Initialize the evolve state's best codes.
+            evolveState.m_bestCodes.InitBestCodes(evolveSettings);
 
             // Evolve the current test.
             while (!WillTerminate() && !bestState.m_evolveComplete) {
@@ -414,7 +419,11 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
 
         // Generate the optimize code.
         FireStarterState evolveState = FireStarterState(speedTestSettings);
-        if (execute->ExecuteGenerateSpeedTest(evolveState)) {
+
+        // Initialize the evolve state's best codes.
+        evolveState.m_bestCodes.InitBestCodes(speedTestSettings);
+
+        if (execute->ExecuteGenerateEvolve(speedTestSettings.m_mode)) {
             // Loop until the the evolve completion condition or the host program is quit.
             unsigned long long evolveTests = MAX(speedTestSettings.m_tests, 1);
             for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
@@ -426,13 +435,12 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 FireStarterState optimizeState(speedTestSettings);
                 optimizeState.CopyCode(evolveState);
                 optimizeState.m_test = test;
-                FireStarterBestCodes bestCodes(speedTestSettings);
                 FireStarterState bestState(optimizeState);
 
                 // Loop until the the optimize completion condition or the host program is quit.
                 while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Optimize the current generation.
-                    execute->ExecuteEvolve(optimizeState, bestCodes);
+                    execute->ExecuteEvolve(optimizeState);
 
                     // Update the results in the UI and check for completion.
                     if (complete->CompleteState(bestState, optimizeState))
@@ -489,7 +497,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         FireStarterExecute* executeSinSim = new FireStarterExecute(manager, 0);
 
         // Generate and compile the evolve code.
-        executeSinSim->ExecuteGenerateSinSim();
+        executeSinSim->ExecuteGenerateEvolve(sinSimSettings.m_mode);
 
         // Initialize the states.
         unsigned long long test = FIRESTARTER_START_TEST;

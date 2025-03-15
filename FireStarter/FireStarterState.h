@@ -361,11 +361,33 @@ public:
     } // FireStarterResultVector
 }; // class FireStarterResultVector
 
+class FireStarterBestCodes {
+private:
+    std::set<std::vector<unsigned char>> m_testedCodes;
+    std::vector<FireStarterCode*> m_bestCodes;
+    std::vector<float> m_bestResults;
+    FireStarterSettings m_settings;
+    size_t m_codeSize = 0;
+    size_t m_maxCodes = 0;
+    size_t m_numCodes = 0;
+    float m_worstResult = 0.0f;
+
+public:
+    const FireStarterCode* GetBestCode(void);
+    bool AddCode(const FireStarterCode* code, float result);
+    float WorstResult(void);
+    void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
+    FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
+    FireStarterBestCodes(void);
+    ~FireStarterBestCodes(void);
+}; // FireStarterBestCodes
+
 class FireStarterState {
 public:
     FireStarterSettings m_settings;
     FireStarterResultVector m_result;
     FireStarterCodeVector m_code;
+    FireStarterBestCodes m_bestCodes;
     SinSimNetwork m_network;
     SimpleTimer m_timer;
     std::string m_evaluateCode;
@@ -743,7 +765,7 @@ public:
         InitState(settings, generation, index, id, test);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_result(other.m_result)
+    inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_result(other.m_result), m_bestCodes(other.m_bestCodes)
     {
         m_timer = other.m_timer;
         swap(other);

@@ -11,89 +11,6 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
     return curFloat;
 } // AtomicMin
 
-FireStarterCode* FireStarterBestCodes::GetBestCode(void)
-{
-    if (!m_numCodes)
-        return nullptr;
-    FireStarterCode* bestCode = m_bestCodes[0];
-    float bestResult = m_bestResults[0];
-    for (size_t i = 1; i < m_maxCodes; i++) {
-        m_bestCodes[i - 1] = m_bestCodes[i];
-        m_bestResults[i - 1] = m_bestResults[i];
-    }
-    m_bestCodes[m_maxCodes - 1] = bestCode;
-    m_bestResults[m_maxCodes - 1] = bestResult;
-    m_numCodes--;
-    m_worstResult = m_settings.m_startResult;
-    return bestCode;
-} // GetBestCode
-
-bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
-{
-    // Skip bad results entirely.
-    if (result >= m_worstResult)
-        return false;
-
-    // Only add states with a unique instruction set.
-    std::vector<unsigned char> codeInstructions(m_codeSize);
-    memcpy(codeInstructions.data(), code, m_codeSize);
-    if (m_testedCodes.count(codeInstructions))
-        return false;
-    m_testedCodes.insert(codeInstructions);
-
-    // Insert the new code and result at the end of the list.
-    float newResult = result;
-    size_t newIndex = (m_numCodes < m_maxCodes) ? m_numCodes : --m_numCodes;
-    m_bestResults[newIndex] = newResult;
-    FireStarterCode* newCode = m_bestCodes[newIndex];
-    memcpy(newCode, code, m_codeSize);
-
-    for (size_t i = 0; i < m_numCodes; i++) {
-        FireStarterCode* curCode = m_bestCodes[i];
-        float curResult = m_bestResults[i];
-        if (curResult > newResult) {
-            for (size_t j = i; j < m_numCodes; j++) {
-                curCode = m_bestCodes[j];
-                curResult = m_bestResults[j];
-                m_bestCodes[j] = newCode;
-                m_bestResults[j] = newResult;
-                newCode = curCode;
-                newResult = curResult;
-            }
-            break;
-        }
-    }
-    m_bestCodes[m_numCodes] = newCode;
-    m_bestResults[m_numCodes] = newResult;
-    m_numCodes++;
-    return true;
-} // AddCode
-
-float FireStarterBestCodes::WorstResult(void)
-{
-    return m_worstResult;
-} // WorstResult
-
-FireStarterBestCodes::FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes) : m_settings(settings)
-{
-    m_codeSize = FireStarterCode::CodeSize(m_settings);
-    m_maxCodes = maxCodes;
-    m_numCodes = 0;
-    m_worstResult = m_settings.m_startResult;
-    m_bestCodes.resize(m_maxCodes);
-    m_bestResults.resize(m_maxCodes);
-    for (size_t i = 0; i < m_maxCodes; i++) {
-        m_bestCodes[i] = (FireStarterCode*)calloc(m_codeSize, 1);
-        m_bestResults[i] = m_settings.m_startResult;
-    }
-} // FireStarterBestCodes
-
-FireStarterBestCodes::~FireStarterBestCodes(void)
-{
-    for (size_t i = 0; i < m_maxCodes; i++)
-        free(m_bestCodes[i]);
-} // ~FireStarterBestCodes
-
 void FireStarterExecute::FinishPopulation(void)
 {
     checkCUDAErrors(cudaFreeHost(m_hostResults));
@@ -193,7 +110,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     return result;
 } // InitPopulation
 
-void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes, unsigned int variation)
+void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -236,8 +153,8 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
                 minResult = curResult;
                 minIndex = i;
             }
-            if (curResult < bestCodes.WorstResult())
-                bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
+            if (curResult < state.m_bestCodes.WorstResult())
+                state.m_bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
         }
 
         float oldResult = state.MaxResult();
@@ -258,8 +175,8 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, FireStarterB
                 minResult = curResult;
                 minIndex = i;
             }
-            if (curResult < bestCodes.WorstResult())
-                bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
+            if (curResult < state.m_bestCodes.WorstResult())
+                state.m_bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
         }
 
         float oldResult = state.MaxResult();
@@ -552,11 +469,11 @@ bool FireStarterExecute::ExecuteJob(void)
     return false;
 } // ExecuteJob
 
-bool FireStarterExecute::GenerateEvolve(void)
+bool FireStarterExecute::GenerateEvolve(unsigned int mode)
 {
     // Load the base Evolver code into memory.
-    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_EVOLVE_GPU);
-    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_EVOLVE_GPU);
+    m_executeProgramName = FireStarterSettings::ProgramName(mode);
+    m_executeFunctionName = FireStarterSettings::FunctionName(mode);
     if (m_executeCode.empty()) {
         if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
             printf("%s could not be loaded!\n", m_executeProgramName.c_str());
@@ -578,89 +495,6 @@ bool FireStarterExecute::GenerateEvolve(void)
     m_executeFunction = nullptr;
     return false;
 } // GenerateEvolve
-
-bool FireStarterExecute::GenerateEvolveNew(void)
-{
-    // Load the base EvolverNew code into memory.
-    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_EVOLVE_NEW);
-    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_EVOLVE_NEW);
-    if (m_executeCode.empty()) {
-        if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
-            std::terminate();
-        }
-    }
-
-    // Return immediately if the EvolverNew code has already been compiled.
-    if (m_executeFunction)
-        return true;
-
-    // Compile the code and get the EvolverNew function from the module.
-    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, m_executeFunctionName);
-        if (m_executeFunction)
-            return true;
-    }
-    CUDACompile::ReleaseModule(m_executeModule);
-    m_executeFunction = nullptr;
-    return false;
-} // GenerateEvolveNew
-
-bool FireStarterExecute::GenerateSinSim(void)
-{
-    // Load the base SinSim code into memory.
-    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_SINSIM);
-    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_SINSIM);
-    if (m_executeCode.empty()) {
-        if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
-            std::terminate();
-        }
-    }
-
-    // Return immediately if the SinSim code has already been compiled.
-    if (m_executeFunction)
-        return true;
-
-    // Compile the code and get the SinSim function from the module.
-    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, m_executeFunctionName);
-        if (m_executeFunction)
-            return true;
-    }
-    CUDACompile::ReleaseModule(m_executeModule);
-    m_executeFunction = nullptr;
-    return false;
-} // GenerateSinSim
-
-bool FireStarterExecute::GenerateSpeedTest(FireStarterState& state)
-{
-    // Load the base SpeedTest code into memory.
-    m_executeProgramName = FireStarterSettings::ProgramName(FIRESTARTER_SPEED_TEST);
-    m_executeFunctionName = FireStarterSettings::FunctionName(FIRESTARTER_SPEED_TEST);
-    if (m_executeCode.empty()) {
-        if (!FireStarterSource::LoadSource(m_executeCode, m_executeProgramName)) {
-            printf("%s could not be loaded!\n", m_executeProgramName.c_str());
-            std::terminate();
-        }
-    }
-
-    // Generate the evaluate code
-    m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
-
-    // Create the SpeedTest code by replacing the evaluate code block.
-    FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
-
-    // Compile the code and get the SpeedTest function from the module.
-    if (CUDACompile::CompileProgram(m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_executeFunction = CUDACompile::GetFunction(m_executeModule, m_executeFunctionName);
-        if (m_executeFunction)
-            return true;
-    }
-    CUDACompile::ReleaseModule(m_executeModule);
-    m_executeFunction = nullptr;
-    return false;
-} // GenerateSpeedTest
 
 bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
 {
@@ -692,38 +526,16 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     return false;
 } // GenerateOptimize
 
-bool FireStarterExecute::ExecuteGenerateEvolve(bool sync)
+bool FireStarterExecute::ExecuteGenerateEvolve(unsigned int mode, bool sync)
 {
     if (m_executeFunction)
         return true;
     bool result = false;
-    Dispatch([this, &result] {
-        result = GenerateEvolve();
+    Dispatch([this, mode, &result] {
+        result = GenerateEvolve(mode);
     }, sync);
     return result;
 } // ExecuteGenerateEvolve
-
-bool FireStarterExecute::ExecuteGenerateEvolveNew(bool sync)
-{
-    if (m_executeFunction)
-        return true;
-    bool result = false;
-    Dispatch([this, &result] {
-        result = GenerateEvolveNew();
-    }, sync);
-    return result;
-} // ExecuteGenerateEvolveNew
-
-bool FireStarterExecute::ExecuteGenerateSinSim(bool sync)
-{
-    if (m_executeFunction)
-        return true;
-    bool result = false;
-    Dispatch([this, &result] {
-        result = GenerateSinSim();
-    }, sync);
-    return result;
-} // ExecuteGenerateSinSim
 
 bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& state, bool sync)
 {
@@ -735,16 +547,6 @@ bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& state, bool s
     return result;
 } // ExecuteGenerateOptimize
 
-bool FireStarterExecute::ExecuteGenerateSpeedTest(FireStarterState& state, bool sync)
-{
-    // Must copy the intitState pointer in case it becomes invalid when the code below is called.
-    bool result = false;
-    Dispatch([this, &state, &result] {
-        result = GenerateSpeedTest(state);
-    }, sync);
-    return result;
-} // ExecuteGenerateSpeedTest
-
 void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
 {
     DispatchSync([this, state] {
@@ -752,13 +554,13 @@ void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
     });
 } // ExecuteInitPopulation
 
-void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestCodes& bestCodes)
+void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
 {
-    DispatchSync([this, &state, &bestCodes] {
-        if (GenerateEvolveNew()) {
+    DispatchSync([this, &state] {
+        if (GenerateEvolve(FIRESTARTER_EVOLVE_GPU)) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
-                ExecuteEvolvePass(state, bestCodes);
+                ExecuteEvolvePass(state);
         }
     });
 } // ExecuteEvolve
@@ -766,7 +568,7 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state, FireStarterBestC
 void FireStarterExecute::ExecuteEvolveNew(FireStarterState& state)
 {
     DispatchSync([this, &state] {
-        if (GenerateEvolveNew()) {
+        if (GenerateEvolve(FIRESTARTER_EVOLVE_NEW)) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
                 ExecuteEvolveNewPass(state);
@@ -777,7 +579,7 @@ void FireStarterExecute::ExecuteEvolveNew(FireStarterState& state)
 void FireStarterExecute::ExecuteSinSim(FireStarterState& state)
 {
     DispatchSync([this, &state] {
-        if (GenerateSinSim()) {
+        if (GenerateEvolve(FIRESTARTER_SINSIM)) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
                 ExecuteSinSimPass(state);
