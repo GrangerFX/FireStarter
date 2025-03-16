@@ -195,30 +195,30 @@ public:
         return *DataPtr();
     } // Data
 
-    void Init(const FireStarterSettings& settings)
+    void InitData(const FireStarterSettings& settings)
     {
         m_dataVector.resize(FireStarterData::DataSize(settings));
 #if FIRESTARTER_STATE_DEBUG
         m_dataDebug = (FireStarterData*)m_dataVector.data();
 #endif
-    } // Init
+    } // InitData
 
-    void Init(unsigned int registers)
+    void InitData(unsigned int registers)
     {
         m_dataVector.resize(FireStarterData::DataSize(registers));
 #if FIRESTARTER_STATE_DEBUG
         m_dataDebug = (FireStarterData*)m_dataVector.data();
 #endif
-    } // Init
+    } // InitData
 
     FireStarterDataVector(const FireStarterSettings& settings)
     {
-        Init(settings);
+        InitData(settings);
     } // FireStarterDataVector
 
     FireStarterDataVector(unsigned int registers)
     {
-        Init(registers);
+        InitData(registers);
     } // FireStarterDataVector
 
     inline FireStarterDataVector(const FireStarterDataVector& other)
@@ -312,7 +312,7 @@ public:
 
     inline void DataVector(FireStarterDataVector& dataVector, unsigned int variation = 0) const
     {
-        dataVector.Init(m_registers);
+        dataVector.InitData(m_registers);
         dataVector = DataPtr(variation);
     } // DataVector
 
@@ -334,7 +334,7 @@ public:
         return *Result(variation)->MaxResult();
     } // MaxResult
 
-    inline void Init(const FireStarterSettings& settings)
+    inline void InitResult(const FireStarterSettings& settings)
     {
         m_resultSize = FireStarterResult::ResultSize(settings.m_registers);
         m_variations = settings.m_variations;
@@ -344,11 +344,11 @@ public:
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
 #endif
-    } // Init
+    } // InitResult
 
     inline FireStarterResultVector(const FireStarterSettings& settings)
     {
-        Init(settings);
+        InitResult(settings);
     } // FireStarterResultVector
 
     inline FireStarterResultVector(const FireStarterResultVector& other)
@@ -737,7 +737,7 @@ public:
 
     inline void InitResult(void)
     {
-        m_result.Init(m_settings);
+        m_result.InitResult(m_settings);
     } // InitResults
 
     inline void InitCode(void)

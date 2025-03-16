@@ -392,7 +392,7 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
                     // Count the variation that caused an invalid result.
                     state.m_variationCount[variation]++;
                     FireStarterResult* result = state.Result(variation);
-                    result->Init(state.Settings());
+                    result->InitResult(state.Settings());
                     validResult = false;
                 }
             }

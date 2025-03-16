@@ -45,7 +45,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
     // The first generation is initalized with random numbers.
     code.InitCode(memberSeed);
     registers = code.Optimize();
-    data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
+    data.InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
     FireStarterCode bestCode = code;
     FireStarterCode oldCode = code;
     FireStarterData bestData = data;
@@ -64,7 +64,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
             evolutionScale = FIRESTARTER_START_SCALE;
             code.InitCode(memberSeed);
             registers = code.Optimize();
-            data.Init(memberSeed, 1.0f, registers);
+            data.InitData(memberSeed, 1.0f, registers);
             memberResult = 1.0e+10f;
             result = 1.0e+10f;
         }
@@ -114,5 +114,5 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
 
     // Return the variation data for debugging.
     if (population)
-        population[member].Init(bestData, bestResult, bestAge);
+        population[member].InitResult(bestData, bestResult, bestAge);
 } // EvolverNew

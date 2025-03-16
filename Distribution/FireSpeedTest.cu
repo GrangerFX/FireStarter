@@ -83,7 +83,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     for (unsigned int i = 0; i < 10; i++) {
         code.InitCode(memberSeed);
         registers = code.Optimize();
-        data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
+        data.InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
         if (TestEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
@@ -104,7 +104,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
             evolutionScale = FIRESTARTER_START_SCALE;
             code.InitCode(memberSeed);
             registers = code.Optimize();
-            data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
+            data.InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
             result = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
         } else {
@@ -154,7 +154,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
 
     // Return the variation data for debugging.
     if (population)
-        FireStarterResult::Result(population, member)->Init(bestData, bestResult, bestAge);
+        FireStarterResult::Result(population, member)->InitResult(bestData, bestResult, bestAge);
 } // SpeedTest
 #else
 // Multi-variation version.
@@ -198,7 +198,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
         registers = code.Optimize();
         memberResult = 0.0f;
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-            data[v].Init(memberSeed, FIRESTARTER_START_SCALE, registers);
+            data[v].InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
             variationResult[v] = FIRESTARTER_START_RESULT;
             valid = TestEvaluate(sharedData, data[v], code, target[v], theta, variationResult[v]);
             memberResult = MAX(memberResult, variationResult[v]);
@@ -224,7 +224,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
             code.InitCode(memberSeed);
             registers = code.Optimize();
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-                data[v].Init(memberSeed, FIRESTARTER_START_SCALE, registers);
+                data[v].InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
                 variationResult[v] = FIRESTARTER_START_RESULT;
             }
             memberResult = FIRESTARTER_START_RESULT;
@@ -288,6 +288,6 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     // Return the variation data for debugging.
     if (population)
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
-            FireStarterResult::Result(population, member, v)->Init(bestData[v], variationResult[v], bestAge);
+            FireStarterResult::Result(population, member, v)->InitResult(bestData[v], variationResult[v], bestAge);
 } // SpeedTest
 #endif

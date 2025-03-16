@@ -74,7 +74,7 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
         for (initAge = 1; initAge <= 10; initAge++) {
-            data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
+            data.InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
             result = FIRESTARTER_START_RESULT;
             if (TestEvaluate(data, target, theta, result))
                 break;
@@ -153,6 +153,6 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     if (results)
         results[member] = result;
     if (newPopulation)
-        FireStarterResult::Result(newPopulation, member, variation)->Init(data, result, evolveAge, initAge);
+        FireStarterResult::Result(newPopulation, member, variation)->InitResult(data, result, evolveAge, initAge);
 } // Optimizer
 

@@ -57,7 +57,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     // The first generation is initalized with random numbers.
     bestCode.InitCode(memberSeed);
     registers = bestCode.Optimize();
-    bestData.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
+    bestData.InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
     bestResult = SINSIM_INIT_GRADE;
     bestAge = 0;
 
@@ -73,7 +73,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
         if (passAge > SINSIM_NETWORK_MAXAGE) {
             passCode.InitCode(memberSeed);
             registers = passCode.Optimize();
-            passData.Init(memberSeed, 1.0f, registers);
+            passData.InitData(memberSeed, 1.0f, registers);
             passResult = SINSIM_INIT_GRADE;
             passAge = 0;
         }
@@ -124,7 +124,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     results[member] = bestResult;
 
     // Return the variation data for debugging.
-    population[member].Init(bestData, bestResult, bestAge);
+    population[member].InitResult(bestData, bestResult, bestAge);
 
     // Return the optimized best code.
     codes[member].Copy(bestCode);
