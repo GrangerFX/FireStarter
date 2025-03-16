@@ -43,7 +43,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         // Reallocate the populations if the size has changed.
         size_t resultsSize = settings.m_population * sizeof(float);
         size_t populationSize = 0;
-        if ((settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || FIRESTARTER_EVOLVE_RESULTS)
+        if ((settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_SPEED_TEST) || FIRESTARTER_EVOLVE_RESULTS)
             populationSize = FireStarterResult::PopulationSize(settings);
         size_t codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize)) {
