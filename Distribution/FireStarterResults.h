@@ -434,17 +434,17 @@ typedef struct FireStarterCode {
         return Optimize(settings.m_instructions, settings.m_registers);
     } // Optimize
 
-    inline void Init(unsigned int instructions = FIRESTARTER_INSTRUCTIONS)
+    inline void InitCode(unsigned int instructions = FIRESTARTER_INSTRUCTIONS)
     {
         for (unsigned int i = 0; i < instructions; i++)
             c[i] = FireStarterCodeInstruction();
-    } // Init
+    } // InitCode
 
-    inline void Init(unsigned long long& seed, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS, unsigned int opcodes = FIRESTARTER_OPCODES)
+    inline void InitCode(unsigned long long& seed, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS, unsigned int opcodes = FIRESTARTER_OPCODES)
     {
         for (unsigned int i = 0; i < instructions; i++)
             c[i].RandomInstruction(seed, registers, opcodes);
-    } // Init
+    } // InitCode
 
     inline FireStarterCode(const struct FireStarterCode& code)
     {

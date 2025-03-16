@@ -55,7 +55,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     float bestResult;
 
     // The first generation is initalized with random numbers.
-    bestCode.Init(memberSeed);
+    bestCode.InitCode(memberSeed);
     registers = bestCode.Optimize();
     bestData.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
     bestResult = SINSIM_INIT_GRADE;
@@ -71,7 +71,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Iterate to evolve the data.
         if (passAge > SINSIM_NETWORK_MAXAGE) {
-            passCode.Init(memberSeed);
+            passCode.InitCode(memberSeed);
             registers = passCode.Optimize();
             passData.Init(memberSeed, 1.0f, registers);
             passResult = SINSIM_INIT_GRADE;

@@ -81,7 +81,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     // The first generation is initalized with random numbers.
     float memberResult = FIRESTARTER_START_RESULT;
     for (unsigned int i = 0; i < 10; i++) {
-        code.Init(memberSeed);
+        code.InitCode(memberSeed);
         registers = code.Optimize();
         data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
         if (TestEvaluate(sharedData, data, code, target, theta, memberResult))
@@ -102,7 +102,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
             evolveAge = 0;
             evolutionScale = FIRESTARTER_START_SCALE;
-            code.Init(memberSeed);
+            code.InitCode(memberSeed);
             registers = code.Optimize();
             data.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
             result = FIRESTARTER_START_RESULT;
@@ -194,7 +194,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     float memberResult;
     bool valid = false;
     for (unsigned int i = 0; !valid && (i < 10); i++) {
-        code.Init(memberSeed);
+        code.InitCode(memberSeed);
         registers = code.Optimize();
         memberResult = 0.0f;
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
@@ -221,7 +221,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         // Evolve the code and data.
         if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
             evolveAge = 0;
-            code.Init(memberSeed);
+            code.InitCode(memberSeed);
             registers = code.Optimize();
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                 data[v].Init(memberSeed, FIRESTARTER_START_SCALE, registers);

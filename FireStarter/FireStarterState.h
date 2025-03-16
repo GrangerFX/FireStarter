@@ -92,17 +92,17 @@ public:
         return *CodePtr();
     } // Code
 
-    void Init(const FireStarterSettings& settings)
+    void InitCode(const FireStarterSettings& settings)
     {
         m_codeVector.resize(FireStarterCodeGenerate::CodeSize(settings));
 #if FIRESTARTER_STATE_DEBUG
         m_codeDebug = CodePtr();
 #endif
-    } // Init
+    } // InitCode
 
     FireStarterCodeVector(const FireStarterSettings& settings)
     {
-        Init(settings);
+        InitCode(settings);
     } // FireStarterCodeVector
 
     inline FireStarterCodeVector(const FireStarterCodeVector& other)
@@ -672,7 +672,7 @@ public:
 
     inline void RandomCode(void)
     {
-        Code()->Init(m_seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
+        Code()->InitCode(m_seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
     } // RandomCode
 
     inline unsigned int OptimizeCode(void)
@@ -742,7 +742,7 @@ public:
 
     inline void InitCode(void)
     {
-        m_code.Init(m_settings);
+        m_code.InitCode(m_settings);
     } // InitCode
 
     inline void InitNetwork(void)
