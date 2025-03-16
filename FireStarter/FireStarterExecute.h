@@ -12,8 +12,8 @@ private:
     FireStarterResult* m_hostPopulation = nullptr;
     FireStarterResult* m_devicePopulation0 = nullptr;
     FireStarterResult* m_devicePopulation1 = nullptr;
-    FireStarterCode* m_hostCode = nullptr;
-    FireStarterCode* m_deviceCode = nullptr;
+    FireStarterCode* m_hostCodes = nullptr;
+    FireStarterCode* m_deviceCodes = nullptr;
     SinSimNetwork* m_hostNetworks = nullptr;
     SinSimNetwork* m_deviceNetworks = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
@@ -28,7 +28,7 @@ private:
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
     size_t m_networksSize = 0;
-    size_t m_codeSize = 0;
+    size_t m_codesSize = 0;
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
@@ -50,6 +50,7 @@ public:
     void ExecuteInitPopulation(const FireStarterState& state);
     void ExecuteEvolve(FireStarterState& state);
     void ExecuteEvolveNew(FireStarterState& state);
+    void ExecuteEvolveSinSim(FireStarterState& state);
     void ExecuteSinSim(FireStarterState& state);
     void ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& state);

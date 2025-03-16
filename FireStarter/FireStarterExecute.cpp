@@ -28,10 +28,10 @@ void FireStarterExecute::FinishPopulation(void)
     checkCUDAErrors(cudaFreeHost(m_hostNetworks));
     checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
 
-    checkCUDAErrors(cudaFreeHost(m_hostCode));
-    m_hostCode = nullptr;
-    checkCUDAErrors(cudaFreeAsync(m_deviceCode, Stream()));
-    m_deviceCode = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_hostCodes));
+    m_hostCodes = nullptr;
+    checkCUDAErrors(cudaFreeAsync(m_deviceCodes, Stream()));
+    m_deviceCodes = nullptr;
 
     Context()->Synchronize();
 } // FinishPopulation
@@ -45,24 +45,24 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         size_t populationSize = 0;
         if ((settings.m_mode == FIRESTARTER_EVOLVE_NEW) || FIRESTARTER_EVOLVE_RESULTS)
             populationSize = FireStarterResult::PopulationSize(settings);
-        size_t codeSize = settings.m_population * FireStarterCode::CodeSize(settings);
-        if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codeSize != m_codeSize)) {
+        size_t codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
+        if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize)) {
             FinishPopulation();
             m_resultsSize = resultsSize;
             m_populationSize = populationSize;
-            m_codeSize = codeSize;
+            m_codesSize = codesSize;
 
-            checkCUDAErrors(cudaMallocHost(&m_hostResults, resultsSize));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, resultsSize, Stream()));
-            checkCUDAErrors(cudaMallocHost(&m_hostCode, codeSize));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceCode, codeSize, Stream()));
+            checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
+            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
+            checkCUDAErrors(cudaMallocHost(&m_hostCodes, m_codesSize));
+            checkCUDAErrors(cudaMallocAsync(&m_deviceCodes, m_codesSize, Stream()));
             if (populationSize) {
                 checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
                 checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
             }
             Context()->Synchronize();
 
-            result = m_hostResults && m_deviceResults && m_hostCode && m_deviceCode;
+            result = m_hostResults && m_deviceResults && m_hostCodes && m_deviceCodes;
             if (populationSize)
                 result = result && m_hostPopulation && m_devicePopulation0;
         }
@@ -124,7 +124,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
 
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
                     reinterpret_cast<void*>(&m_devicePopulation0),
-                    reinterpret_cast<void*>(&m_deviceCode),
+                    reinterpret_cast<void*>(&m_deviceCodes),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&populationSize)
@@ -140,7 +140,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
 
     if (m_populationSize) {
         checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(m_hostCode, m_deviceCode, m_codeSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
 
         // Get the best variation results.
@@ -154,15 +154,15 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
                 minIndex = i;
             }
             if (curResult < state.m_bestCodes.WorstResult())
-                state.m_bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
+                state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
         }
 
         float oldResult = state.MaxResult();
-        state.InitResult(settings, m_hostPopulation, m_hostCode, variation, minIndex);
+        state.InitResult(settings, m_hostPopulation, m_hostCodes, variation, minIndex);
         state.m_oldResult = oldResult;
     } else {
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(m_hostCode, m_deviceCode, m_codeSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
 
         // Get the best variation results.
@@ -176,13 +176,13 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
                 minIndex = i;
             }
             if (curResult < state.m_bestCodes.WorstResult())
-                state.m_bestCodes.AddCode(m_hostCode->Member(settings, i), curResult);
+                state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
         }
 
         float oldResult = state.MaxResult();
-        checkCUDAErrors(cudaMemcpyAsync(m_hostCode, FireStarterCode::Member(m_deviceCode, settings, minIndex), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, FireStarterCode::Member(m_deviceCodes, settings, minIndex), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
-        state.InitResult(settings, minResult, m_hostCode->Member(settings, minIndex), minIndex);
+        state.InitResult(settings, minResult, m_hostCodes->Member(settings, minIndex), minIndex);
         state.m_oldResult = oldResult;
     }
 } // ExecuteEvolvePass
@@ -202,9 +202,8 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
 
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
                     reinterpret_cast<void*>(&m_devicePopulation0),
-                    reinterpret_cast<void*>(&m_deviceCode),
+                    reinterpret_cast<void*>(&m_deviceCodes),
                     reinterpret_cast<void*>(&variation),
-                    reinterpret_cast<void*>(&generation),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&populationSize)
@@ -219,7 +218,7 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
         0));
 
     checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCode, m_deviceCode, m_codeSize, cudaMemcpyDeviceToHost, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
 
     // Get the best variation results.
@@ -227,8 +226,9 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     float minResult = settings.m_startResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
-        const FireStarterResult* member = m_hostPopulation->Member(settings, i);
-        float curResult = member->MaxResult();
+        const FireStarterResult* result = m_hostPopulation->Member(settings, i);
+        const FireStarterCode* code = m_hostCodes->Member(settings, i);
+        float curResult = result->MaxResult();
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -236,7 +236,7 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     }
 
     float oldResult = state.MaxResult();
-    state.InitResult(settings, m_hostPopulation, m_hostCode, variation, minIndex);
+    state.InitResult(settings, m_hostPopulation, m_hostCodes, variation, minIndex);
     state.m_oldResult = oldResult;
 } // ExecuteEvolveNewPass
 
@@ -557,7 +557,7 @@ void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
 void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
 {
     DispatchSync([this, &state] {
-        if (GenerateEvolve(FIRESTARTER_EVOLVE_GPU)) {
+        if (GenerateEvolve(state.Settings().m_mode)) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
                 ExecuteEvolvePass(state);
@@ -568,7 +568,7 @@ void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
 void FireStarterExecute::ExecuteEvolveNew(FireStarterState& state)
 {
     DispatchSync([this, &state] {
-        if (GenerateEvolve(FIRESTARTER_EVOLVE_NEW)) {
+        if (GenerateEvolve(state.Settings().m_mode)) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
                 ExecuteEvolveNewPass(state);
@@ -576,10 +576,21 @@ void FireStarterExecute::ExecuteEvolveNew(FireStarterState& state)
     });
 } // ExecuteEvolveNew
 
+void FireStarterExecute::ExecuteEvolveSinSim(FireStarterState& state)
+{
+    DispatchSync([this, &state] {
+        if (GenerateEvolve(state.Settings().m_mode)) {
+            state.m_timer.Start();
+            if (InitPopulation(state.Settings()))
+                ExecuteEvolveNewPass(state);
+        }
+        });
+} // ExecuteEvolveNew
+
 void FireStarterExecute::ExecuteSinSim(FireStarterState& state)
 {
     DispatchSync([this, &state] {
-        if (GenerateEvolve(FIRESTARTER_SINSIM)) {
+        if (GenerateEvolve(state.Settings().m_mode)) {
             state.m_timer.Start();
             if (InitPopulation(state.Settings()))
                 ExecuteSinSimPass(state);

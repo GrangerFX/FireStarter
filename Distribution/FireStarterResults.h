@@ -390,14 +390,14 @@ typedef struct FireStarterCode {
         c[i].RandomInstruction(seed, registers, opcodes);
     } // RandomInstruction
 
-    static inline FireStarterCode* Member(FireStarterCode* population, const FireStarterSettings& settings, unsigned int index)
+    static inline FireStarterCode* Member(FireStarterCode* codes, const FireStarterSettings& settings, unsigned int index)
     {
-        return (FireStarterCode*)((char*)population + CodeSize(settings) * index);
+        return (FireStarterCode*)((char*)codes + CodeSize(settings) * index);
     } // Member
 
-    static inline const FireStarterCode* Member(const FireStarterCode* population, const FireStarterSettings& settings, unsigned int index)
+    static inline const FireStarterCode* Member(const FireStarterCode* codes, const FireStarterSettings& settings, unsigned int index)
     {
-        return (FireStarterCode*)((char*)population + CodeSize(settings) * index);
+        return (FireStarterCode*)((char*)codes + CodeSize(settings) * index);
     } // Member
 
     inline FireStarterCode* Member(const FireStarterSettings& settings, unsigned int index)

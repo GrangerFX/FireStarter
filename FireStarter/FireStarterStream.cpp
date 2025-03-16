@@ -679,6 +679,7 @@ void FireStarterStreams::ExecuteStreams(void)
                     streams[stream]->EvolveGPUStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_EVOLVE_NEW:
+                case FIRESTARTER_EVOLVE_SINSIM:
                     streams[stream]->EvolveNewStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_SPEED_TEST:
