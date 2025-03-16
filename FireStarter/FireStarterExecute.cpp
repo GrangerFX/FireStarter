@@ -179,9 +179,10 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
                 state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
         }
 
-        float oldResult = state.MaxResult();
         checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, FireStarterCode::Member(m_deviceCodes, settings, minIndex), FireStarterCode::CodeSize(settings), cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
+
+        float oldResult = state.MaxResult();
         state.InitResult(settings, minResult, m_hostCodes->Member(settings, minIndex), minIndex);
         state.m_oldResult = oldResult;
     }

@@ -515,7 +515,10 @@ public:
 
     inline float MaxResult(void) const
     {
-        return m_result.MaxResult();
+        if (m_settings.m_mode == FIRESTARTER_SINSIM)
+            return m_network.grade;
+        else
+            return m_result.MaxResult();
     } // MaxResult
 
     inline float MaxResult(unsigned int variation) const

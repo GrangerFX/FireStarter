@@ -91,11 +91,13 @@ void FireStarterComplete::SaveResults(const FireStarterState& bestState)
     // Update the best state.
     SaveBestState(bestState);
 
-    // Update the best code on disk.
-    SaveBestCode(bestState);
+    if (bestState.Settings().m_mode != FIRESTARTER_SINSIM) {
+        // Update the best code on disk.
+        SaveBestCode(bestState);
 
-    // Update the solution code on disk.
-    SaveSolution(bestState);
+        // Update the solution code on disk.
+        SaveSolution(bestState);
+    }
 } // SaveResults
 
 void FireStarterComplete::DisplayResults(const FireStarterState& bestState)
