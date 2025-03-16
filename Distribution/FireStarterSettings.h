@@ -51,7 +51,7 @@
 #define FIRESTARTER_OPTIMIZE        8           // Optimize a previously CPU evolved state.
 #define FIRESTARTER_SOLUTION        9           // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           10
-#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_NEW
+#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_SINSIM
 
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1
@@ -267,6 +267,8 @@ public:
                 return "FIRESTARTER_EVOLVE_GPU";
             case FIRESTARTER_EVOLVE_NEW:
                 return "FIRESTARTER_EVOLVE_NEW";
+            case FIRESTARTER_EVOLVE_SINSIM:
+                return "FIRESTARTER_EVOLVE_SINSIM";
             case FIRESTARTER_SINSIM:
                 return "FIRESTARTER_SINSIM";
             case FIRESTARTER_SPEED_TEST:
@@ -374,140 +376,140 @@ public:
         else
             m_mode = mode;
         switch (m_mode) {
-        case FIRESTARTER_RANDOM:
-            m_streams =     FIRESTARTER_RANDOM_STREAMS;
-            m_units =       FIRESTARTER_RANDOM_UNITS;
-            m_states =      FIRESTARTER_RANDOM_STATES;
-            m_generations = FIRESTARTER_RANDOM_GENERATIONS;
-            m_population =  FIRESTARTER_RANDOM_POPULATION;
-            m_passes =      FIRESTARTER_RANDOM_PASSES;
-            m_iterations =  FIRESTARTER_RANDOM_ITERATIONS;
-            m_samples =     FIRESTARTER_RANDOM_SAMPLES;
-            m_attempts =    FIRESTARTER_RANDOM_ATTEMPTS;
-            m_optimize =    FIRESTARTER_RANDOM_OPTIMIZE;
-            m_tests =       FIRESTARTER_RANDOM_TESTS;
-            m_target =      FIRESTARTER_RANDOM_TARGET;
-            break;
+            case FIRESTARTER_RANDOM:
+                m_streams =     FIRESTARTER_RANDOM_STREAMS;
+                m_units =       FIRESTARTER_RANDOM_UNITS;
+                m_states =      FIRESTARTER_RANDOM_STATES;
+                m_generations = FIRESTARTER_RANDOM_GENERATIONS;
+                m_population =  FIRESTARTER_RANDOM_POPULATION;
+                m_passes =      FIRESTARTER_RANDOM_PASSES;
+                m_iterations =  FIRESTARTER_RANDOM_ITERATIONS;
+                m_samples =     FIRESTARTER_RANDOM_SAMPLES;
+                m_attempts =    FIRESTARTER_RANDOM_ATTEMPTS;
+                m_optimize =    FIRESTARTER_RANDOM_OPTIMIZE;
+                m_tests =       FIRESTARTER_RANDOM_TESTS;
+                m_target =      FIRESTARTER_RANDOM_TARGET;
+                break;
 
-        case FIRESTARTER_EVOLVE_CPU:
-            m_streams =     FIRESTARTER_EVOLVE_CPU_STREAMS;
-            m_units =       FIRESTARTER_EVOLVE_CPU_UNITS;
-            m_states =      FIRESTARTER_EVOLVE_CPU_STATES;
-            m_generations = FIRESTARTER_EVOLVE_CPU_GENERATIONS;
-            m_population =  FIRESTARTER_EVOLVE_CPU_POPULATION;
-            m_passes =      FIRESTARTER_EVOLVE_CPU_PASSES;
-            m_iterations =  FIRESTARTER_EVOLVE_CPU_ITERATIONS;
-            m_samples =     FIRESTARTER_EVOLVE_CPU_SAMPLES;
-            m_attempts =    FIRESTARTER_EVOLVE_CPU_ATTEMPTS;
-            m_optimize =    FIRESTARTER_EVOLVE_CPU_OPTIMIZE;
-            m_tests =       FIRESTARTER_EVOLVE_CPU_TESTS;
-            m_target =      FIRESTARTER_EVOLVE_CPU_TARGET;
-            break;
+            case FIRESTARTER_EVOLVE_CPU:
+                m_streams =     FIRESTARTER_EVOLVE_CPU_STREAMS;
+                m_units =       FIRESTARTER_EVOLVE_CPU_UNITS;
+                m_states =      FIRESTARTER_EVOLVE_CPU_STATES;
+                m_generations = FIRESTARTER_EVOLVE_CPU_GENERATIONS;
+                m_population =  FIRESTARTER_EVOLVE_CPU_POPULATION;
+                m_passes =      FIRESTARTER_EVOLVE_CPU_PASSES;
+                m_iterations =  FIRESTARTER_EVOLVE_CPU_ITERATIONS;
+                m_samples =     FIRESTARTER_EVOLVE_CPU_SAMPLES;
+                m_attempts =    FIRESTARTER_EVOLVE_CPU_ATTEMPTS;
+                m_optimize =    FIRESTARTER_EVOLVE_CPU_OPTIMIZE;
+                m_tests =       FIRESTARTER_EVOLVE_CPU_TESTS;
+                m_target =      FIRESTARTER_EVOLVE_CPU_TARGET;
+                break;
 
-        case FIRESTARTER_EVOLVE_GPU:
-            m_streams =     FIRESTARTER_EVOLVE_GPU_STREAMS;
-            m_units =       FIRESTARTER_EVOLVE_GPU_UNITS;
-            m_states =      FIRESTARTER_EVOLVE_GPU_STATES;
-            m_generations = FIRESTARTER_EVOLVE_GPU_GENERATIONS;
-            m_population =  FIRESTARTER_EVOLVE_GPU_POPULATION;
-            m_passes =      FIRESTARTER_EVOLVE_GPU_PASSES;
-            m_iterations =  FIRESTARTER_EVOLVE_GPU_ITERATIONS;
-            m_samples =     FIRESTARTER_EVOLVE_GPU_SAMPLES;
-            m_attempts =    FIRESTARTER_EVOLVE_GPU_ATTEMPTS;
-            m_optimize =    FIRESTARTER_EVOLVE_GPU_OPTIMIZE;
-            m_tests =       FIRESTARTER_EVOLVE_GPU_TESTS;
-            m_target =      FIRESTARTER_EVOLVE_GPU_TARGET;
-            break;
+            case FIRESTARTER_EVOLVE_GPU:
+                m_streams =     FIRESTARTER_EVOLVE_GPU_STREAMS;
+                m_units =       FIRESTARTER_EVOLVE_GPU_UNITS;
+                m_states =      FIRESTARTER_EVOLVE_GPU_STATES;
+                m_generations = FIRESTARTER_EVOLVE_GPU_GENERATIONS;
+                m_population =  FIRESTARTER_EVOLVE_GPU_POPULATION;
+                m_passes =      FIRESTARTER_EVOLVE_GPU_PASSES;
+                m_iterations =  FIRESTARTER_EVOLVE_GPU_ITERATIONS;
+                m_samples =     FIRESTARTER_EVOLVE_GPU_SAMPLES;
+                m_attempts =    FIRESTARTER_EVOLVE_GPU_ATTEMPTS;
+                m_optimize =    FIRESTARTER_EVOLVE_GPU_OPTIMIZE;
+                m_tests =       FIRESTARTER_EVOLVE_GPU_TESTS;
+                m_target =      FIRESTARTER_EVOLVE_GPU_TARGET;
+                break;
 
-        case FIRESTARTER_EVOLVE_NEW:
-            m_streams =     FIRESTARTER_EVOLVE_NEW_STREAMS;
-            m_units =       FIRESTARTER_EVOLVE_NEW_UNITS;
-            m_states =      FIRESTARTER_EVOLVE_NEW_STATES;
-            m_generations = FIRESTARTER_EVOLVE_NEW_GENERATIONS;
-            m_population =  FIRESTARTER_EVOLVE_NEW_POPULATION;
-            m_passes =      FIRESTARTER_EVOLVE_NEW_PASSES;
-            m_iterations =  FIRESTARTER_EVOLVE_NEW_ITERATIONS;
-            m_samples =     FIRESTARTER_EVOLVE_NEW_SAMPLES;
-            m_attempts =    FIRESTARTER_EVOLVE_NEW_ATTEMPTS;
-            m_optimize =    FIRESTARTER_EVOLVE_NEW_OPTIMIZE;
-            m_tests =       FIRESTARTER_EVOLVE_NEW_TESTS;
-            m_target =      FIRESTARTER_EVOLVE_NEW_TARGET;
-            break;
+            case FIRESTARTER_EVOLVE_NEW:
+                m_streams =     FIRESTARTER_EVOLVE_NEW_STREAMS;
+                m_units =       FIRESTARTER_EVOLVE_NEW_UNITS;
+                m_states =      FIRESTARTER_EVOLVE_NEW_STATES;
+                m_generations = FIRESTARTER_EVOLVE_NEW_GENERATIONS;
+                m_population =  FIRESTARTER_EVOLVE_NEW_POPULATION;
+                m_passes =      FIRESTARTER_EVOLVE_NEW_PASSES;
+                m_iterations =  FIRESTARTER_EVOLVE_NEW_ITERATIONS;
+                m_samples =     FIRESTARTER_EVOLVE_NEW_SAMPLES;
+                m_attempts =    FIRESTARTER_EVOLVE_NEW_ATTEMPTS;
+                m_optimize =    FIRESTARTER_EVOLVE_NEW_OPTIMIZE;
+                m_tests =       FIRESTARTER_EVOLVE_NEW_TESTS;
+                m_target =      FIRESTARTER_EVOLVE_NEW_TARGET;
+                break;
 
-        case FIRESTARTER_EVOLVE_SINSIM:
-            m_streams =     FIRESTARTER_EVOLVE_SINSIM_STREAMS;
-            m_units =       FIRESTARTER_EVOLVE_SINSIM_UNITS;
-            m_states =      FIRESTARTER_EVOLVE_SINSIM_STATES;
-            m_generations = FIRESTARTER_EVOLVE_SINSIM_GENERATIONS;
-            m_population =  FIRESTARTER_EVOLVE_SINSIM_POPULATION;
-            m_passes =      FIRESTARTER_EVOLVE_SINSIM_PASSES;
-            m_iterations =  FIRESTARTER_EVOLVE_SINSIM_ITERATIONS;
-            m_samples =     FIRESTARTER_EVOLVE_SINSIM_SAMPLES;
-            m_attempts =    FIRESTARTER_EVOLVE_SINSIM_ATTEMPTS;
-            m_optimize =    FIRESTARTER_EVOLVE_SINSIM_OPTIMIZE;
-            m_tests =       FIRESTARTER_EVOLVE_SINSIM_TESTS;
-            m_target =      FIRESTARTER_EVOLVE_SINSIM_TARGET;
-            break;
+            case FIRESTARTER_EVOLVE_SINSIM:
+                m_streams =     FIRESTARTER_EVOLVE_SINSIM_STREAMS;
+                m_units =       FIRESTARTER_EVOLVE_SINSIM_UNITS;
+                m_states =      FIRESTARTER_EVOLVE_SINSIM_STATES;
+                m_generations = FIRESTARTER_EVOLVE_SINSIM_GENERATIONS;
+                m_population =  FIRESTARTER_EVOLVE_SINSIM_POPULATION;
+                m_passes =      FIRESTARTER_EVOLVE_SINSIM_PASSES;
+                m_iterations =  FIRESTARTER_EVOLVE_SINSIM_ITERATIONS;
+                m_samples =     FIRESTARTER_EVOLVE_SINSIM_SAMPLES;
+                m_attempts =    FIRESTARTER_EVOLVE_SINSIM_ATTEMPTS;
+                m_optimize =    FIRESTARTER_EVOLVE_SINSIM_OPTIMIZE;
+                m_tests =       FIRESTARTER_EVOLVE_SINSIM_TESTS;
+                m_target =      FIRESTARTER_EVOLVE_SINSIM_TARGET;
+                break;
 
-        case FIRESTARTER_SINSIM:
-            m_streams =     FIRESTARTER_SINSIM_STREAMS;
-            m_units =       FIRESTARTER_SINSIM_UNITS;
-            m_states =      FIRESTARTER_SINSIM_STATES;
-            m_generations = FIRESTARTER_SINSIM_GENERATIONS;
-            m_population =  FIRESTARTER_SINSIM_POPULATION;
-            m_passes =      FIRESTARTER_SINSIM_PASSES;
-            m_iterations =  FIRESTARTER_SINSIM_ITERATIONS;
-            m_samples =     FIRESTARTER_SINSIM_SAMPLES;
-            m_attempts =    FIRESTARTER_SINSIM_ATTEMPTS;
-            m_optimize =    FIRESTARTER_SINSIM_OPTIMIZE;
-            m_tests =       FIRESTARTER_SINSIM_TESTS;
-            m_target =      FIRESTARTER_SINSIM_TARGET;
-            break;
+            case FIRESTARTER_SINSIM:
+                m_streams =     FIRESTARTER_SINSIM_STREAMS;
+                m_units =       FIRESTARTER_SINSIM_UNITS;
+                m_states =      FIRESTARTER_SINSIM_STATES;
+                m_generations = FIRESTARTER_SINSIM_GENERATIONS;
+                m_population =  FIRESTARTER_SINSIM_POPULATION;
+                m_passes =      FIRESTARTER_SINSIM_PASSES;
+                m_iterations =  FIRESTARTER_SINSIM_ITERATIONS;
+                m_samples =     FIRESTARTER_SINSIM_SAMPLES;
+                m_attempts =    FIRESTARTER_SINSIM_ATTEMPTS;
+                m_optimize =    FIRESTARTER_SINSIM_OPTIMIZE;
+                m_tests =       FIRESTARTER_SINSIM_TESTS;
+                m_target =      FIRESTARTER_SINSIM_TARGET;
+                break;
 
-        case FIRESTARTER_SPEED_TEST:
-            m_streams =     FIRESTARTER_SPEED_TEST_STREAMS;
-            m_units =       FIRESTARTER_SPEED_TEST_UNITS;
-            m_states =      FIRESTARTER_SPEED_TEST_STATES;
-            m_generations = FIRESTARTER_SPEED_TEST_GENERATIONS;
-            m_population =  FIRESTARTER_SPEED_TEST_POPULATION;
-            m_passes =      FIRESTARTER_SPEED_TEST_PASSES;
-            m_iterations =  FIRESTARTER_SPEED_TEST_ITERATIONS;
-            m_samples =     FIRESTARTER_SPEED_TEST_SAMPLES;
-            m_attempts =    FIRESTARTER_SPEED_TEST_ATTEMPTS;
-            m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
-            m_tests =       FIRESTARTER_SPEED_TEST_TESTS;
-            m_target =      FIRESTARTER_SPEED_TEST_TARGET;
-            break;
+            case FIRESTARTER_SPEED_TEST:
+                m_streams =     FIRESTARTER_SPEED_TEST_STREAMS;
+                m_units =       FIRESTARTER_SPEED_TEST_UNITS;
+                m_states =      FIRESTARTER_SPEED_TEST_STATES;
+                m_generations = FIRESTARTER_SPEED_TEST_GENERATIONS;
+                m_population =  FIRESTARTER_SPEED_TEST_POPULATION;
+                m_passes =      FIRESTARTER_SPEED_TEST_PASSES;
+                m_iterations =  FIRESTARTER_SPEED_TEST_ITERATIONS;
+                m_samples =     FIRESTARTER_SPEED_TEST_SAMPLES;
+                m_attempts =    FIRESTARTER_SPEED_TEST_ATTEMPTS;
+                m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
+                m_tests =       FIRESTARTER_SPEED_TEST_TESTS;
+                m_target =      FIRESTARTER_SPEED_TEST_TARGET;
+                break;
 
-        case FIRESTARTER_OPTIMIZE:
-            m_streams =     FIRESTARTER_OPTIMIZE_STREAMS;
-            m_units =       FIRESTARTER_OPTIMIZE_UNITS;
-            m_states =      FIRESTARTER_OPTIMIZE_STATES;
-            m_generations = FIRESTARTER_OPTIMIZE_GENERATIONS;
-            m_population =  FIRESTARTER_OPTIMIZE_POPULATION;
-            m_passes =      FIRESTARTER_OPTIMIZE_PASSES;
-            m_iterations =  FIRESTARTER_OPTIMIZE_ITERATIONS;
-            m_samples =     FIRESTARTER_OPTIMIZE_SAMPLES;
-            m_attempts =    FIRESTARTER_OPTIMIZE_ATTEMPTS;
-            m_optimize =    FIRESTARTER_OPTIMIZE_OPTIMIZE;
-            m_tests =       FIRESTARTER_OPTIMIZE_TESTS;
-            m_target =      FIRESTARTER_OPTIMIZE_TARGET;
-            break;
+            case FIRESTARTER_OPTIMIZE:
+                m_streams =     FIRESTARTER_OPTIMIZE_STREAMS;
+                m_units =       FIRESTARTER_OPTIMIZE_UNITS;
+                m_states =      FIRESTARTER_OPTIMIZE_STATES;
+                m_generations = FIRESTARTER_OPTIMIZE_GENERATIONS;
+                m_population =  FIRESTARTER_OPTIMIZE_POPULATION;
+                m_passes =      FIRESTARTER_OPTIMIZE_PASSES;
+                m_iterations =  FIRESTARTER_OPTIMIZE_ITERATIONS;
+                m_samples =     FIRESTARTER_OPTIMIZE_SAMPLES;
+                m_attempts =    FIRESTARTER_OPTIMIZE_ATTEMPTS;
+                m_optimize =    FIRESTARTER_OPTIMIZE_OPTIMIZE;
+                m_tests =       FIRESTARTER_OPTIMIZE_TESTS;
+                m_target =      FIRESTARTER_OPTIMIZE_TARGET;
+                break;
 
-        default:
-            m_streams =     0;
-            m_units =       0;
-            m_states =      0;
-            m_generations = 0;
-            m_population =  0;
-            m_passes =      0;
-            m_iterations =  0;
-            m_samples =     0;
-            m_attempts =    0;
-            m_optimize =    0;
-            m_tests =       0;
-            m_target =      0.0f;
-            break;
+            default:
+                m_streams =     0;
+                m_units =       0;
+                m_states =      0;
+                m_generations = 0;
+                m_population =  0;
+                m_passes =      0;
+                m_iterations =  0;
+                m_samples =     0;
+                m_attempts =    0;
+                m_optimize =    0;
+                m_tests =       0;
+                m_target =      0.0f;
+                break;
         }
     } // FireStarterSetting
 }; // class FireStarterSetting

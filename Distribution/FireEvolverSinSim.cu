@@ -34,7 +34,7 @@ GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, 
 } // ShowEvaluate
 
 // SinSim based evolution.
-GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long generation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -53,22 +53,13 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     unsigned int registers;
     unsigned short bestAge;
     float bestResult;
-    if (!generation) {
-        // The first generation is initalized with random numbers.
-        bestCode.Init(memberSeed);
-        registers = bestCode.Optimize();
-        bestData.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
-        bestResult = SINSIM_INIT_GRADE;
-        bestAge = 0;
-    }
-    else {
-        // The later generations are loaded from memory.
-        bestCode.Copy(codes[member]);
-        registers = bestCode.Optimize();
-        bestData.Copy(population[member].Data());
-        bestResult = results[member];
-        bestAge = *population[member].EvolveAge1();
-    }
+
+    // The first generation is initalized with random numbers.
+    bestCode.Init(memberSeed);
+    registers = bestCode.Optimize();
+    bestData.Init(memberSeed, FIRESTARTER_START_SCALE, registers);
+    bestResult = SINSIM_INIT_GRADE;
+    bestAge = 0;
 
     // The best code, data, result and age.
     FireStarterCode passCode(bestCode);
