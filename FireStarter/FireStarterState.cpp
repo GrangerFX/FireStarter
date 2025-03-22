@@ -208,7 +208,7 @@ void FireStarterState::SaveState(std::string& text) const
     text += Format("    state.m_generation = %llu;\r\n", m_generation);
     text += Format("    state.m_evolution = %llu;\r\n", m_evolution);
     text += Format("    state.m_index = %llu;\r\n", m_index);
-    text += Format("    state.m_copy_index = %llu;\r\n", m_copy_index);
+    text += Format("    state.m_evolveIndex = %llu;\r\n", m_evolveIndex);
     text += Format("    state.m_id = %llu;\r\n", m_id);
     text += Format("    state.m_test = %llu;\r\n", m_test);
     text += Format("    state.m_seed = %llu;\r\n", m_seed);
@@ -303,7 +303,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_age = 1;
     m_evolution = 0;
     m_index = index;
-    m_copy_index = index;
+    m_evolveIndex = index;
     m_id = id;
     m_test = test;
     m_seed = 0;

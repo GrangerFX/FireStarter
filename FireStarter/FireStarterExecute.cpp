@@ -388,7 +388,7 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
             if (validResult) {
                 // If the variation result is worse, skip the rest of the variations.
                 ExecuteOptimizePass(state, variation);
-                if (state.MaxResult() >= oldResult) {
+                if (state.MaxResult(v) >= oldResult) {
                     // Count the variation that caused an invalid result.
                     state.m_variationCount[variation]++;
                     FireStarterResult* result = state.Result(variation);

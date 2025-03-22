@@ -102,7 +102,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         curState.m_generation = ++oldState.m_generation;
                         curState.m_evolution++;
                         curState.m_index = index;
-                        curState.m_copy_index = evolveIndex;
+                        curState.m_evolveIndex = evolveIndex;
                         curState.m_oldResult = curState.MaxResult();
                         curState.m_evolveWeight = evolveWeight;
                         curState.InitGenerationSeed();

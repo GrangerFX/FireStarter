@@ -245,12 +245,13 @@ public:
     inline bool Packetize(FireStarterPacket& packet) // Note: Not used currently.
     {
         bool result = packet.Packetize(m_resultData);
+        result = result && packet.Packetize(m_resultSize);
+        result = result && packet.Packetize(m_variations);
+        result = result && packet.Packetize(m_registers);
 #if FIRESTARTER_STATE_DEBUG
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
 #endif
-        result = result && packet.Packetize(m_resultSize);
-        result = result && packet.Packetize(m_variations);
         return result;
     } // Packetize
 
@@ -259,6 +260,19 @@ public:
         m_resultData = result->m_resultData;
         m_resultSize = result->m_resultSize;;
         m_variations = result->m_variations;
+        m_registers = result->m_registers;
+#if FIRESTARTER_STATE_DEBUG
+        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+            m_resultDebug[v] = Result(v);
+#endif
+    } // operator=
+
+    inline void operator=(const FireStarterResultVector& result)
+    {
+        m_resultData = result.m_resultData;
+        m_resultSize = result.m_resultSize;;
+        m_variations = result.m_variations;
+        m_registers = result.m_registers;
 #if FIRESTARTER_STATE_DEBUG
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
@@ -326,7 +340,8 @@ public:
 
     inline float MaxResult(unsigned int variation) const
     {
-        return Result(variation)->MaxResult();
+        const FireStarterResult* result = Result(variation);
+        return result->MaxResult();
     } // MaxResult
 
     inline float& MaxResult(unsigned int variation)
@@ -339,7 +354,9 @@ public:
         m_resultSize = FireStarterResult::ResultSize(settings.m_registers);
         m_variations = settings.m_variations;
         m_registers = settings.m_registers;
-        m_resultData.resize(m_resultSize * m_variations);
+        m_resultData.resize(m_resultSize * m_variations, 0);
+        for (unsigned int v = 0; v < m_variations; v++)
+            Result(v)->m_maxResult = settings.m_startResult;
 #if FIRESTARTER_STATE_DEBUG
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
@@ -397,7 +414,7 @@ public:
     unsigned long long m_age = 0;
     unsigned long long m_evolution = 0;
     unsigned long long m_index = 0;
-    unsigned long long m_copy_index = 0;
+    unsigned long long m_evolveIndex = 0;
     unsigned long long m_id = 0;
     unsigned long long m_test = 0;
     unsigned long long m_seed = 0;
@@ -422,7 +439,7 @@ private:
         m_age = other.m_age;
         m_evolution = other.m_evolution;
         m_index = other.m_index;
-        m_copy_index = other.m_copy_index;
+        m_evolveIndex = other.m_evolveIndex;
         m_id = other.m_id;
         m_test = other.m_test;
         m_seed = other.m_seed;
@@ -448,7 +465,7 @@ public:
         result = result && packet.Packetize(m_age);
         result = result && packet.Packetize(m_evolution);
         result = result && packet.Packetize(m_index);
-        result = result && packet.Packetize(m_copy_index);
+        result = result && packet.Packetize(m_evolveIndex);
         result = result && packet.Packetize(m_id);
         result = result && packet.Packetize(m_test);
         result = result && packet.Packetize(m_seed);
