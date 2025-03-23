@@ -78,8 +78,7 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
             // Update the best state.
             bestState = state;
             bestState.m_age = 0;
-        } else
-            bestState.m_age++;
+        }
         bestStateMutex.unlock();
         return update;
     }
@@ -143,6 +142,8 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireS
             // Update the best state and display the results.
             if (UpdateBestState(bestState, state))
                 DisplayResults(bestState);
+            else
+                bestState.m_age++;
 
             // Update the render status after every pass.
             CompleteStatus(bestState, state, state.m_generation);
@@ -178,6 +179,8 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarte
             // Update the best state and display the results.
             if (UpdateBestState(bestState, newState))
                 DisplayResults(bestState);
+            else
+                bestState.m_age++;
 
             // Update the render status after every pass.
             CompleteStatus(state, newState);
@@ -224,6 +227,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
         }
 
         if (!abort) {
+            bestState.m_age++;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
 

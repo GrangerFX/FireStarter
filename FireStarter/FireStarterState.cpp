@@ -113,9 +113,12 @@ void FireStarterState::SettingsText(const FireStarterSettings& settings, std::st
     code += prefix + Format("streams = %u", settings.m_streams) + postfix + "\r\n";
     code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
     code += prefix + Format("states = %u", settings.m_states) + postfix + "\r\n";
-    code += prefix + Format("generations = %u", settings.m_generations) + postfix + "\r\n";
     code += prefix + Format("population = %u", settings.m_population) + postfix + "\r\n";
+    code += prefix + Format("generations = %u", settings.m_generations) + postfix + "\r\n";
     code += prefix + Format("passes = %u", settings.m_passes) + postfix + "\r\n";
+    code += prefix + Format("samples = %u", settings.m_samples) + postfix + "\r\n";
+    code += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";
+    code += prefix + Format("candidates = %u", settings.m_candidates) + postfix + "\r\n";
     code += prefix + Format("attempts = %u", settings.m_attempts) + postfix + "\r\n";
     code += prefix + Format("optimize = %u", settings.m_optimize) + postfix + "\r\n";
     code += "\r\n";
