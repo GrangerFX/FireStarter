@@ -83,7 +83,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     for (unsigned int i = 0; i < 10; i++) {
         code.InitCode(memberSeed);
         registers = code.Optimize();
-        data.InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
+        data.InitData(memberSeed, registers);
         if (TestEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
@@ -104,7 +104,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             evolutionScale = FIRESTARTER_START_SCALE;
             code.InitCode(memberSeed);
             registers = code.Optimize();
-            data.InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
+            data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
         } else {
@@ -198,7 +198,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         registers = code.Optimize();
         memberResult = 0.0f;
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-            data[v].InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
+            data[v].InitData(memberSeed, registers);
             variationResult[v] = FIRESTARTER_START_RESULT;
             valid = TestEvaluate(sharedData, data[v], code, target[v], theta, variationResult[v]);
             memberResult = MAX(memberResult, variationResult[v]);
@@ -224,7 +224,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             code.InitCode(memberSeed);
             registers = code.Optimize();
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-                data[v].InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
+                data[v].InitData(memberSeed,  registers);
                 variationResult[v] = FIRESTARTER_START_RESULT;
             }
             memberResult = FIRESTARTER_START_RESULT;

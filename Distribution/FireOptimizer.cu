@@ -48,7 +48,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
     return true;
 } // TestEvaluate
 
-GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -69,12 +69,12 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
     unsigned short evolveAge, initAge;
     float result, memberResult;
     float evolutionScale;
-    unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation/variation/member
+    unsigned long long memberSeed = optimizeSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/member
 
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
         for (initAge = 1; initAge <= 10; initAge++) {
-            data.InitData(memberSeed, FIRESTARTER_START_SCALE, registers);
+            data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
             if (TestEvaluate(data, target, theta, result))
                 break;
@@ -150,8 +150,6 @@ GPU_GLOBAL void Optimizer(float* results, FireStarterResult* newPopulation, cons
             evolveAge = 1;
     }
 
-    if (results)
-        results[member] = result;
     if (newPopulation)
         FireStarterResult::Result(newPopulation, member, variation)->InitResult(data, result, evolveAge, initAge);
 } // Optimizer

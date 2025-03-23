@@ -50,13 +50,7 @@ typedef struct FireStarterData {
         return sizeof(float) * settings.m_registers;
     } // DataSize
 
-    inline void RandomData(unsigned long long& seed, float scale)
-    {
-        unsigned int i = RANDOMMOD(seed, FIRESTARTER_REGISTERS);
-        d[i] += RANDOMFACTOR(seed) * scale;
-    } // RandomData
-
-    inline void RandomData(unsigned long long& seed, float scale, unsigned int registers)
+    inline void RandomData(unsigned long long& seed, float scale, unsigned int registers = FIRESTARTER_REGISTERS)
     {
         unsigned int i = RANDOMMOD(seed, registers);
         d[i] += RANDOMFACTOR(seed) * scale;
@@ -102,13 +96,7 @@ typedef struct FireStarterData {
             d[i] = 0.0f; // Clear all the registers
     } // Init
 
-    inline void InitData(unsigned long long& seed, float startScale)
-    {
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS; i++)
-            d[i] = RANDOMFACTOR(seed) * startScale; // Randomize the registers
-    } // InitData
-
-    inline void InitData(unsigned long long& seed, float startScale, unsigned int uniqueRegisters, unsigned int registers = FIRESTARTER_REGISTERS)
+    inline void InitData(unsigned long long& seed, unsigned int uniqueRegisters = FIRESTARTER_REGISTERS, float startScale = FIRESTARTER_START_SCALE, unsigned int registers = FIRESTARTER_REGISTERS)
     {
         for (unsigned int i = 0; i < registers; i++)
             d[i] = i < uniqueRegisters ? RANDOMFACTOR(seed) * startScale : 0; // Randomize the active registers and clear the unused registers
@@ -559,7 +547,7 @@ typedef struct FireStarterResult {
 
     inline void InitResult(unsigned long long& seed, unsigned int uniqueRegisters, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
     {
-        Data()->InitData(seed, FIRESTARTER_START_SCALE, uniqueRegisters);
+        Data()->InitData(seed, uniqueRegisters);
         m_maxResult = FIRESTARTER_START_RESULT;
         m_evolveAge1 = evolveAge1;
         m_evolveAge2 = evolveAge2;
@@ -567,7 +555,7 @@ typedef struct FireStarterResult {
 
     inline void InitResult(const FireStarterSettings& settings, unsigned long long& seed, unsigned int uniqueRegisters, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
     {
-        Data()->InitData(seed, settings.m_startScale, uniqueRegisters, settings.m_registers);
+        Data()->InitData(seed, uniqueRegisters, settings.m_startScale, settings.m_registers);
         m_maxResult = settings.m_startResult;
         m_evolveAge1 = evolveAge1;
         m_evolveAge2 = evolveAge2;

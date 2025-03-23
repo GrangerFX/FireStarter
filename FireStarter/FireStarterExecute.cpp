@@ -75,8 +75,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             m_resultsSize = resultsSize;
             m_populationSize = populationSize;
 
-            checkCUDAErrors(cudaMallocHost(&m_hostResults, resultsSize));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, resultsSize, Stream()));
             if (populationSize)
                 checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
             else
@@ -316,8 +314,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         oldPopulation = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long seed = state.OptimizationSeed(pass);
 
-        void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                        reinterpret_cast<void*>(&newPopulation),
+        void* arr[] = { reinterpret_cast<void*>(&newPopulation),
                         reinterpret_cast<void*>(&oldPopulation),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
