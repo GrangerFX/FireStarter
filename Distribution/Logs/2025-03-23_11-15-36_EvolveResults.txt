@@ -1,0 +1,3 @@
+Duration: 853.0  Seed=0  Test=0  Generation=48  Best Generations=312  Evolutions=11  Evolve Result=0.00000060  Optimize Result=0.00000060 *******
+Duration: 414.7  Seed=0  Test=1  Generation=20  Best Generations=105  Evolutions=9  Evolve Result=0.00000024  Optimize Result=0.00000024 *******
+Duration: 704.5  Seed=0  Test=2  Generation=42  Best Generations=332  Evolutions=8  Evolve Result=0.00000060  Optimize Result=0.00000060 *******

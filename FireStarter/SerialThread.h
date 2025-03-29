@@ -5,6 +5,7 @@
 #include <thread>
 #include <functional>
 #include <condition_variable>
+#include <algorithm>
 #ifdef WIN32
 #include <Windows.h>
 #endif
