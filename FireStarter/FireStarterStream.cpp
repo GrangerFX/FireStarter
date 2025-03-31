@@ -666,7 +666,7 @@ void FireStarterStreams::ExecuteStreams(void)
         // Evolve the streams.
         m_testCount = 0;
 
-        m_server = (FIRESTARTER_MULTIPROCESS > 1) || MAX(numStreams, m_streamSettings.m_units) > 1 ? new FireStarterServer() : nullptr;
+        m_server = (FIRESTARTER_MULTIPROCESS > 1) || (FIRESTARTER_MULTIPROCESS && (MAX(numStreams, m_streamSettings.m_units) > 1)) ? new FireStarterServer() : nullptr;
         for (size_t stream = 0; stream < numStreams; stream++)
             switch (m_streamSettings.m_mode) {
                 case FIRESTARTER_RANDOM:

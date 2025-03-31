@@ -205,13 +205,13 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
     DispatchSync([this, &bestState, &allStates, numStates, generation] {
         // Sort the states as they are received.
         FireStarterStates newStates(numStates);
-        bool abort = false;
+        bool abortJob = false;
 
         for (size_t i = 0; i < numStates; i++) {
             // Get the next job in the order they are completed.
             FireStarterJob* job = m_manager->GetComplete();
             if (!job) {
-                abort = true;
+                abortJob = true;
                 break;
             }
 
@@ -226,7 +226,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
             m_manager->AddFree(job);
         }
 
-        if (!abort) {
+        if (!abortJob) {
             bestState.m_age++;
             for (size_t i = 0; i < numStates; i++) {
                 FireStarterState& newState = newStates[i];
@@ -265,7 +265,7 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
             }
 
             // Evolution is complete when the best state among all the streams has reached the evolve target.
-            if (bestState.MaxResult() <= bestState.Settings().m_target)
+            if (abortJob || (bestState.MaxResult() <= bestState.Settings().m_target))
                 bestState.m_evolveComplete = true;
         }
     });

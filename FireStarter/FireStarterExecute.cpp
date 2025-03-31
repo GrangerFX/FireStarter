@@ -79,17 +79,12 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
                 checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
             else
                 checkCUDAErrors(cudaMallocHost(&m_hostPopulation, FireStarterResult::ResultSize(settings.m_registers)));
-            Context()->Synchronize();
-
-            result = m_hostResults && m_deviceResults && m_hostPopulation;
 
             checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
-            Context()->Synchronize();
-
             checkCUDAErrors(cudaMallocAsync(&m_devicePopulation1, m_populationSize, Stream()));
-            Context()->Synchronize();
 
-            result = result && m_devicePopulation0 && m_devicePopulation1;
+            Context()->Synchronize();
+            result = m_hostPopulation && m_devicePopulation0 && m_devicePopulation1;
         }
     } else if (settings.m_mode == FIRESTARTER_SINSIM) {
         // Reallocate the populations if the size has changed.
