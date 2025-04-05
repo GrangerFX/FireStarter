@@ -2,6 +2,27 @@
 #include "FireStarterSource.h"
 #include "CUDACompile.h"
 
+#define SIMULATE_GPU 1
+
+#if SIMULATE_GPU
+#include "FireOptimizer.cu"
+uint3 threadIdx = { 0, 0, 0 };
+uint3 blockIdx = { 0, 0, 0 };
+dim3 blockDim = { 1, 1, 1 };
+
+static void ExecuteOptimizer(dim3 gridSize, dim3 blockSize, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+{
+    blockDim = blockSize;
+    for (blockIdx.x = 0; blockIdx.x < gridSize.x; blockIdx.x++)
+        for (blockIdx.y = 0; blockIdx.y < gridSize.y; blockIdx.y++)
+            for (blockIdx.z = 0; blockIdx.z < gridSize.z; blockIdx.z++)
+                for (threadIdx.x = 0; threadIdx.x < blockDim.x; threadIdx.x++)
+                    for (threadIdx.y = 0; threadIdx.y < blockDim.y; threadIdx.y++)
+                        for (threadIdx.z = 0; threadIdx.z < blockDim.z; threadIdx.z++)
+                            Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, population);
+} // ExecuteOptimizer
+#endif
+
 // Not used currently.
 inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
 {
@@ -13,6 +34,27 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
 
 void FireStarterExecute::FinishPopulation(void)
 {
+#if SIMULATE_GPU
+    checkCUDAErrors(cudaFreeHost(m_hostResults));
+    m_hostResults = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_deviceResults));
+    m_deviceResults = nullptr;
+
+    checkCUDAErrors(cudaFreeHost(m_hostPopulation));
+    m_hostPopulation = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_devicePopulation0));
+    m_devicePopulation0 = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_devicePopulation1));
+    m_devicePopulation1 = nullptr;
+
+    checkCUDAErrors(cudaFreeHost(m_hostNetworks));
+    checkCUDAErrors(cudaFreeHost(m_deviceNetworks));
+
+    checkCUDAErrors(cudaFreeHost(m_hostCodes));
+    m_hostCodes = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_deviceCodes));
+    m_deviceCodes = nullptr;
+#else
     checkCUDAErrors(cudaFreeHost(m_hostResults));
     m_hostResults = nullptr;
     checkCUDAErrors(cudaFreeAsync(m_deviceResults, Stream()));
@@ -34,6 +76,7 @@ void FireStarterExecute::FinishPopulation(void)
     m_deviceCodes = nullptr;
 
     Context()->Synchronize();
+#endif
 } // FinishPopulation
 
 bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
@@ -53,14 +96,22 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             m_codesSize = codesSize;
 
             checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
             checkCUDAErrors(cudaMallocHost(&m_hostCodes, m_codesSize));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceCodes, m_codesSize, Stream()));
-            if (populationSize) {
+            if (m_populationSize)
                 checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
+
+#if SIMULATE_GPU
+            checkCUDAErrors(cudaMallocHost(&m_deviceResults, m_resultsSize));
+            checkCUDAErrors(cudaMallocHost(&m_deviceCodes, m_codesSize));
+            if (m_populationSize)
+                checkCUDAErrors(cudaMallocHost(&m_devicePopulation0, m_populationSize));
+#else
+            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
+            checkCUDAErrors(cudaMallocAsync(&m_deviceCodes, m_codesSize, Stream()));
+            if (m_populationSize)
                 checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
-            }
             Context()->Synchronize();
+#endif
 
             result = m_hostResults && m_deviceResults && m_hostCodes && m_deviceCodes;
             if (populationSize)
@@ -75,13 +126,18 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             m_resultsSize = resultsSize;
             m_populationSize = populationSize;
 
-            if (populationSize)
+            if (m_populationSize)
                 checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
             else
                 checkCUDAErrors(cudaMallocHost(&m_hostPopulation, FireStarterResult::ResultSize(settings.m_registers)));
 
+#if SIMULATE_GPU
+            checkCUDAErrors(cudaMallocHost(&m_devicePopulation0, m_populationSize));
+            checkCUDAErrors(cudaMallocHost(&m_devicePopulation1, m_populationSize));
+#else
             checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
             checkCUDAErrors(cudaMallocAsync(&m_devicePopulation1, m_populationSize, Stream()));
+#endif
 
             Context()->Synchronize();
             result = m_hostPopulation && m_devicePopulation0 && m_devicePopulation1;
@@ -94,7 +150,11 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 
             m_networksSize = networksSize;
             checkCUDAErrors(cudaMallocHost(&m_hostNetworks, m_networksSize));
+#if SIMULATE_GPU
+            checkCUDAErrors(cudaMallocHost(&m_deviceNetworks, m_networksSize));
+#else
             checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
+#endif
             Context()->Synchronize();
 
             result = result && m_hostNetworks && m_deviceNetworks;
@@ -309,6 +369,9 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         oldPopulation = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
         unsigned long long seed = state.OptimizationSeed(pass);
 
+#if SIMULATE_GPU
+        ExecuteOptimizer(cudaGridSize, cudaBlockSize, newPopulation, oldPopulation, variation, registers, seed, pass, population);
+#else
         void* arr[] = { reinterpret_cast<void*>(&newPopulation),
                         reinterpret_cast<void*>(&oldPopulation),
                         reinterpret_cast<void*>(&variation),
@@ -326,12 +389,19 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             &arr[0],                                            // arguments
             0));
 
-
         // Synchronize all GPU threads and results.
         Context()->Synchronize();
+#endif
         pass++;
     }
 
+#if SIMULATE_GPU
+    if (passes & 1)
+        checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+
+    // Get the population data.
+    checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+#else
     // If the number off passes is odd, copy the new population to the old population for the next pass.
     if (passes & 1) {
         checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
@@ -341,13 +411,14 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     // Get the population data.
     checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
     Context()->Synchronize();
+#endif
 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float minResult = settings.m_startResult;
+    float minResult = *m_hostPopulation[0].MaxResult();
     unsigned int minIndex = 0;
-    for (unsigned int i = 0; i < population; i++) {
+    for (unsigned int i = 1; i < population; i++) {
         const FireStarterResult* member = m_hostPopulation->Member(settings, i);
         float curResult = member->MaxResult();
         if (curResult < minResult) {
