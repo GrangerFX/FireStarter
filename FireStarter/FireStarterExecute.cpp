@@ -6,22 +6,11 @@
 
 #if SIMULATE_GPU
 #include "FireOptimizer.cu"
+#endif
+
 uint3 threadIdx = { 0, 0, 0 };
 uint3 blockIdx = { 0, 0, 0 };
 dim3 blockDim = { 1, 1, 1 };
-
-static void ExecuteOptimizer(dim3 gridSize, dim3 blockSize, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
-{
-    blockDim = blockSize;
-    for (blockIdx.x = 0; blockIdx.x < gridSize.x; blockIdx.x++)
-        for (blockIdx.y = 0; blockIdx.y < gridSize.y; blockIdx.y++)
-            for (blockIdx.z = 0; blockIdx.z < gridSize.z; blockIdx.z++)
-                for (threadIdx.x = 0; threadIdx.x < blockDim.x; threadIdx.x++)
-                    for (threadIdx.y = 0; threadIdx.y < blockDim.y; threadIdx.y++)
-                        for (threadIdx.z = 0; threadIdx.z < blockDim.z; threadIdx.z++)
-                            Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, population);
-} // ExecuteOptimizer
-#endif
 
 // Not used currently.
 inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
@@ -34,44 +23,41 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
 
 void FireStarterExecute::FinishPopulation(void)
 {
-#if SIMULATE_GPU
     checkCUDAErrors(cudaFreeHost(m_hostResults));
     m_hostResults = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_hostPopulation));
+    m_hostPopulation = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_hostNetworks));
+    m_hostNetworks = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_hostCodes));
+    m_hostCodes = nullptr;
+
+#if SIMULATE_GPU
     checkCUDAErrors(cudaFreeHost(m_deviceResults));
     m_deviceResults = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_hostPopulation));
-    m_hostPopulation = nullptr;
     checkCUDAErrors(cudaFreeHost(m_devicePopulation0));
     m_devicePopulation0 = nullptr;
     checkCUDAErrors(cudaFreeHost(m_devicePopulation1));
     m_devicePopulation1 = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_hostNetworks));
     checkCUDAErrors(cudaFreeHost(m_deviceNetworks));
+    m_deviceNetworks = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_hostCodes));
-    m_hostCodes = nullptr;
     checkCUDAErrors(cudaFreeHost(m_deviceCodes));
     m_deviceCodes = nullptr;
 #else
-    checkCUDAErrors(cudaFreeHost(m_hostResults));
-    m_hostResults = nullptr;
     checkCUDAErrors(cudaFreeAsync(m_deviceResults, Stream()));
     m_deviceResults = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_hostPopulation));
-    m_hostPopulation = nullptr;
     checkCUDAErrors(cudaFreeAsync(m_devicePopulation0, Stream()));
     m_devicePopulation0 = nullptr;
     checkCUDAErrors(cudaFreeAsync(m_devicePopulation1, Stream()));
     m_devicePopulation1 = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_hostNetworks));
     checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
+    m_deviceNetworks = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_hostCodes));
-    m_hostCodes = nullptr;
     checkCUDAErrors(cudaFreeAsync(m_deviceCodes, Stream()));
     m_deviceCodes = nullptr;
 
@@ -358,7 +344,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     unsigned long long passes = settings.m_passes;
-    unsigned long long pass = state.m_optimize_pass * passes;
+    unsigned long long optimizePass = state.m_optimize_pass * passes;
     FireStarterResult* newPopulation = nullptr;
     FireStarterResult* oldPopulation = nullptr;
 
@@ -367,17 +353,32 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         unsigned int registers = state.m_uniqueRegisters;
         newPopulation = p & 1 ? m_devicePopulation0 : m_devicePopulation1;
         oldPopulation = p & 1 ? m_devicePopulation1 : m_devicePopulation0;
-        unsigned long long seed = state.OptimizationSeed(pass);
+        unsigned long long optimizeSeed = state.OptimizationSeed(optimizePass);
 
 #if SIMULATE_GPU
-        ExecuteOptimizer(cudaGridSize, cudaBlockSize, newPopulation, oldPopulation, variation, registers, seed, pass, population);
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, population);
+
+        unsigned int hash = 0;
+        for (unsigned int i = 0; i < settings.m_population; i++) {
+            const FireStarterResult* member = newPopulation->Member(settings, i);
+            float curResult = member->MaxResult();
+            hash ^= *(unsigned int*)&curResult;
+        }
+        printf("pass: %u  hash: %X\n", p, hash);
 #else
         void* arr[] = { reinterpret_cast<void*>(&newPopulation),
                         reinterpret_cast<void*>(&oldPopulation),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
-                        reinterpret_cast<void*>(&seed),
-                        reinterpret_cast<void*>(&pass),
+                        reinterpret_cast<void*>(&optimizeSeed),
+                        reinterpret_cast<void*>(&optimizePass),
                         reinterpret_cast<void*>(&population)
         };
 
@@ -392,7 +393,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         // Synchronize all GPU threads and results.
         Context()->Synchronize();
 #endif
-        pass++;
+        optimizePass++;
     }
 
 #if SIMULATE_GPU
