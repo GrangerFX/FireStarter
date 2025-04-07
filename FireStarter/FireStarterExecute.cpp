@@ -2,7 +2,7 @@
 #include "FireStarterSource.h"
 #include "CUDACompile.h"
 
-#define SIMULATE_GPU 1
+#define SIMULATE_GPU 0
 
 #if SIMULATE_GPU
 #include "FireOptimizer.cu"

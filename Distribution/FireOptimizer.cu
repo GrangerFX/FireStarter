@@ -6,38 +6,6 @@ inline float OptimizeEvaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data = testData;
 // EVALUATE //
-    n += data[0];
-    n *= data[1];
-    n = data[2] *= n;
-    n *= data[3];
-    n *= data[4];
-    n *= data[5];
-    n += data[6];
-    n *= data[7];
-    n = data[8] *= n;
-    n = data[9] += n;
-    n *= data[10];
-    n = data[11] *= n;
-    n = data[12] *= n;
-    n = data[13] += n;
-    n = data[14] *= n;
-    n = data[9] *= n;
-    n = data[15] *= n;
-    n = data[15] *= n;
-    n *= data[16];
-    n *= data[2];
-    n = data[17] *= n;
-    n *= data[15];
-    n += data[18];
-    n *= data[19];
-    n *= data[20];
-    n += data[11];
-    n += data[9];
-    n += data[17];
-    n *= data[13];
-    n *= data[8];
-    n += data[12];
-    n *= data[14];
 // END //
     return n;
 } // OptimizeEvaluate
@@ -156,28 +124,30 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         evolveAge = 0;
     else {
         // If the result was worse, copy a result from among the previous generation's results.
-        const FireStarterResult* bestCandidate = nullptr;
+        unsigned int bestCandidate = member;
 
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
         for (int i = 0; i < FIRESTARTER_OPTIMIZE_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
-            const FireStarterResult* candidate = FireStarterResult::Result(oldPopulation, RANDOMMOD(memberSeed, population), variation);
-            unsigned short candidateAge = candidate->EvolveAge1();
+            unsigned int candidate = RANDOMMOD(memberSeed, population);
+            const FireStarterResult* candidateResult = FireStarterResult::Result(oldPopulation, candidate, variation);
+            unsigned short candidateAge = candidateResult->EvolveAge1();
             if (candidateAge <= 1) {
-                float candidateResult = candidate->MaxResult();
-                if (candidateResult <= result) {
+                float candidateMaxResult = candidateResult->MaxResult();
+                if (candidateMaxResult <= result) {
                     bestCandidate = candidate;
-                    result = candidateResult;
+                    result = candidateMaxResult;
                 }
             }
         }
 
         // Switch to the selected member's data and results.
-        if (bestCandidate) {
-            data = bestCandidate->Data();
+        if (bestCandidate != member) {
+            const FireStarterResult* bestCandidateResult = FireStarterResult::Result(oldPopulation, bestCandidate, variation);
+            data = bestCandidateResult->Data();
             evolveAge = evolveAge ? evolveAge + 1 : 2;
-            initAge = bestCandidate->EvolveAge2();
+            initAge = bestCandidateResult->EvolveAge2();
         } else
             evolveAge = 1;
     }
