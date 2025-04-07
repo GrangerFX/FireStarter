@@ -69,7 +69,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
     unsigned short evolveAge, initAge;
     float result, memberResult;
     float evolutionScale;
-    unsigned long long memberSeed = optimizeSeed + SEED10(variation) + SEED11(member); // Unique seed for the generation/variation/member
+    unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation/variation/member
 
     // The first generation is initalized with random numbers.
     if (!optimizePass) {
