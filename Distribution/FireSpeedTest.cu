@@ -21,7 +21,7 @@ GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, f
     // Generate the target data.
     float theta = thetaStart + index * (thetaEnd - thetaStart) / size;
     if (target)
-        target[index] = Target(theta, variation);
+        target[index] = Target(theta, variation + FIRESTARTER_VARIATION);
 
     // Generate the test data.
     if (results && data && code) {
@@ -73,7 +73,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member) + SEED10(FIRESTARTER_VARIATION);   // Unique seed for the member
+    unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
     unsigned short evolveAge = 0;
     unsigned short bestAge = 0;
     unsigned int registers = 0;
@@ -179,7 +179,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
             float t = theta[i] = TARGET_MIN + i * sampleStep;
-            target[v][i] = Target(t, v);
+            target[v][i] = Target(t, v + FIRESTARTER_VARIATION);
         }
     }
 

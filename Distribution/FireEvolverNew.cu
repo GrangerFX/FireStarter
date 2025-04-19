@@ -12,7 +12,7 @@ GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, f
     // Generate the target data.
     float theta = thetaStart + index * (thetaEnd - thetaStart) / size;
     if (target)
-        target[index] = Target(theta, variation);
+        target[index] = Target(theta, variation + FIRESTARTER_VARIATION);
 
     // Generate the test data.
     if (results && data && code) {
@@ -37,7 +37,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
     FireStarterData data;
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member) + SEED10(variation);   // Unique seed for the member
+    unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
     unsigned short evolveAge = 0;
     unsigned short bestAge = 0;
     unsigned int registers = 0;
@@ -75,7 +75,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_NEW_ITERATIONS * FIRESTARTER_EVOLVE_NEW_SAMPLES; i++) {
             float t = TARGET_MIN + (TARGET_MAX - TARGET_MIN) * RANDOMNUM(memberSeed);
             float sample = code.Evaluate(sharedData, t);
-            float target = Target(t, variation);
+            float target = Target(t, variation + FIRESTARTER_VARIATION);
             float difference = sample - target;
             data[1] = difference;
 //          result += fabsf(difference); // Average result

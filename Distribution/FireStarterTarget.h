@@ -16,7 +16,7 @@ namespace Constants {
 
 inline float Target(float n, unsigned int variation = 0)
 {
-    switch (variation) {
+    switch (variation & 3) {
         default:
         case 0:
             return sinf(n);

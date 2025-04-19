@@ -83,14 +83,12 @@ void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int e
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
-    checkCUDAErrors(cudaMemcpyAsync(m_deviceCode, state.Code(), m_codeSize, cudaMemcpyHostToDevice, Stream()));
-
     // If the FireEvaluate code was compiled, use it to generate the target and evaluate arrays.
     // Note: The purpose is generality not speed. This allows the settings and instruction set to be modified after the main code is compiled.
     if (0 && m_fireEvaluateFunction) {
         const FireStarterResult* result = state.Result(variation);
-
         checkCUDAErrors(cudaMemcpyAsync(m_deviceData, result->Data(), m_dataSize, cudaMemcpyHostToDevice, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceCode, state.Code(), m_codeSize, cudaMemcpyHostToDevice, Stream()));
 
         void* arr[] = { reinterpret_cast<void*>(&m_deviceTargetData),
                         reinterpret_cast<void*>(&m_deviceEvaluateData),
@@ -123,7 +121,7 @@ void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int e
             state.DataVector(dataVector, variation);
             float theta = thetaStart + i * thetaStep;
             m_hostEvaluateData[i] = code->Evaluate(dataVector.Data(), theta, settings.m_instructions);
-            m_hostTargetData[i] = Target(theta, variation);
+            m_hostTargetData[i] = Target(theta, variation + FIRESTARTER_VARIATION);
         }
     }
 } // EvaluateData

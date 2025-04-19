@@ -20,7 +20,7 @@ GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, f
     // Generate the target data.
     float theta = thetaStart + index * (thetaEnd - thetaStart) / size;
     if (target)
-        target[index] = Target(theta, variation);
+        target[index] = Target(theta, variation + FIRESTARTER_VARIATION);
 
     // Generate the test data.
     if (results && data) {
@@ -61,7 +61,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_OPTIMIZE_SAMPLES - 1);
     for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, variation);
+        target[i] = Target(t, variation + FIRESTARTER_VARIATION);
     }
 
     // Evolve the program registers for each variation.

@@ -244,7 +244,7 @@ float FireStarterState::TestResults(void) const
             float result = 0.0f;
             for (unsigned int i = 0; i < samples; i++) {
                 float theta = targetMin + i * sampleStep;
-                float target = Target(theta, v);
+                float target = Target(theta, v + FIRESTARTER_VARIATION);
                 memcpy(workData, initData, dataSize);
                 float n = testCode->Evaluate(*workData, theta, instructions);
                 float error = fabsf(n - target);
@@ -273,7 +273,7 @@ float FireStarterState::EvaluateCode(void) const
         for (unsigned int i = 0; i < samples; i++) {
             FireStarterData data(Result(v)->Data());
             float theta = targetMin + i * sampleStep;
-            float target = Target(theta, v);
+            float target = Target(theta, v + FIRESTARTER_VARIATION);
             float n = Code()->Evaluate(data, theta);
             float error = fabsf(n - target);
             if (!isfinite(error) || (error >= startResult))
