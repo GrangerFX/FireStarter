@@ -371,7 +371,6 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             float curResult = member->MaxResult();
             hash ^= *(unsigned int*)&curResult;
         }
-        printf("pass: %u  hash: %X\n", p, hash);
 #else
         void* arr[] = { reinterpret_cast<void*>(&newPopulation),
                         reinterpret_cast<void*>(&oldPopulation),
