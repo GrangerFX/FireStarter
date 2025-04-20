@@ -430,7 +430,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
-            statusString += Format("BestError=%.8f", bestResult, bestError);
+            statusString += Format("BestError=%.8f", bestError);
         if (!((state.PassMode() == FIRESTARTER_OPTIMIZE) ||(state.PassMode() == FIRESTARTER_SPEED_TEST)))
             statusString += Format("  BestAge=%u", bestState.m_age);
 
