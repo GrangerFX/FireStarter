@@ -266,9 +266,8 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     float minResult = settings.m_startResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
-        const FireStarterResult* result = m_hostPopulation->Member(settings, i);
         const FireStarterCode* code = m_hostCodes->Member(settings, i);
-        float curResult = result->MaxResult();
+        float curResult = FireStarterResult::MaxResult(m_hostPopulation, settings, i);
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -419,8 +418,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     float minResult = *m_hostPopulation[0].MaxResult();
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < population; i++) {
-        const FireStarterResult* member = m_hostPopulation->Member(settings, i);
-        float curResult = member->MaxResult();
+        float curResult = FireStarterResult::MaxResult(m_hostPopulation, settings, i);
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
