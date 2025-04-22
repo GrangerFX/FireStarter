@@ -423,6 +423,7 @@ public:
     unsigned int m_uniqueRegisters = 0;
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
+    float m_precision = 0.0f;
     bool m_optimizeValid = false;
     bool m_evolveComplete = false;
 

@@ -2,6 +2,15 @@
 #include "FireStarterShow.h"
 #include "FireStarterStream.h"
 
+#if 0
+// Reference for PI at various precisions.
+namespace Constants {
+    constexpr long double PIld = 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899L; // 80 digits of precision but long double is only 80 bits.
+    constexpr double PId = 3.1415926535897932;
+    constexpr float PIf = 3.14159265f;
+} // Constants
+#endif
+
 void FireStarter::ControlSolution(void)
 {
     // Draw the solution in the window.

@@ -153,9 +153,9 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
         const FireStarterData* data = result->Data();
 
         text += "\r\n";
-        if (settings.m_variations > 1) {
+        if (settings.m_variations > 1)
             text += Format("inline float Solution%d(float n)\r\n", v);
-        } else
+        else
             text += "inline float Solution(float n)\r\n";
         text += "{\r\n";
 

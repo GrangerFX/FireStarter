@@ -154,7 +154,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
 
     // Return the variation data for debugging.
     if (population)
-        FireStarterResult::Result(population, member)->InitResult(bestData, bestResult, bestAge);
+        FireStarterResult::Result(population, member, 0)->InitResult(bestData, bestResult, bestAge);
 } // SpeedTest
 #else
 // Multi-variation version.

@@ -30,7 +30,7 @@ private:
 public:
 	static void FireSolution(FireStarterWindow& window);
 	void FireShow(const FireStarterState& state, bool sync = false);
-	void ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, double bestError, bool sync = false);
+	void ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, bool sync = false);
 	FireStarterShow(const FireStarterWindow& window);
 	~FireStarterShow(void);
 }; // class FireStarterShow

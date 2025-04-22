@@ -14,7 +14,6 @@ private:
 	size_t m_resultsCount = 0;
 	double m_resultsTime = 0.0;
 	double m_generationTime = 0.0;
-	float m_bestError = 0.0f;
 	bool m_saveBestState = true;
     bool m_complete = false;
 

@@ -652,7 +652,7 @@ typedef struct FireStarterResult {
     static inline float MaxResult(const FireStarterResult* population, size_t index)
     {
         float maxResult = Result(population, index, 0)->MaxResult();
-        for (unsigned int v = 1; v > FIRESTARTER_VARIATIONS; v++) {
+        for (unsigned int v = 1; v < FIRESTARTER_VARIATIONS; v++) {
             float result = Result(population, index, v)->MaxResult();
             maxResult = MAX(maxResult, result);
         }
@@ -662,7 +662,7 @@ typedef struct FireStarterResult {
     static inline float MaxResult(const FireStarterResult* population, const FireStarterSettings& settings, size_t index)
     {
         float maxResult = Result(population, settings, index, 0)->MaxResult();
-        for (unsigned int v = 1; v > settings.m_variations; v++) {
+        for (unsigned int v = 1; v < settings.m_variations; v++) {
             float result = Result(population, settings, index, v)->MaxResult();
             maxResult = MAX(maxResult, result);
         }
@@ -672,7 +672,7 @@ typedef struct FireStarterResult {
     inline float MaxResult(const FireStarterSettings& settings, size_t index) const
     {
         float maxResult = Result(settings, index, 0)->MaxResult();
-        for (unsigned int v = 1; v > settings.m_variations; v++) {
+        for (unsigned int v = 1; v < settings.m_variations; v++) {
             float result = Result(settings, index, v)->MaxResult();
             maxResult = MAX(maxResult, result);
         }

@@ -154,8 +154,10 @@ void FireStarterState::SaveStats(std::string& text) const
 {
     text += Format("// Run date: %s\r\n", SimpleTimer::RunDate().c_str());
     text += Format("// Run duration = %f seconds\r\n", SimpleTimer::RunDuration());
+    text += Format("// Run test = %llu\r\n", m_test);
     text += Format("// Run generation = %llu\r\n", m_generation);
     text += Format("// Run evolution = %llu\r\n", m_evolution);
+    text += Format("// Run precision  = %.8f\r\n", m_precision);
     text += Format("// Run max result = %.8f\r\n", MaxResult());
     SettingsText(m_settings, text, "// Run ");
     text += "\r\n";
@@ -231,13 +233,17 @@ float FireStarterState::TestResults(void) const
     size_t dataSize = FireStarterData::DataSize(registers);
     FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
     unsigned int variations = Settings().m_variations;
-    unsigned int samples = Settings().m_samples;
     float targetMin = Settings().m_targetMin;
     float targetMax = Settings().m_targetMax;
-    float sampleStep = (targetMax - targetMin) / (samples - 1);
     float startResult = Settings().m_startResult;
     float testResult = 0.0f;
     float maxResult = MaxResult();
+#if FIRESTARTER_PRECISION
+    unsigned int samples = FIRESTARTER_PRECISION;
+#else
+    unsigned int samples = Settings().m_samples;
+#endif
+    float sampleStep = (targetMax - targetMin) / (samples - 1);
     if (maxResult < startResult) {
         for (unsigned int v = 0; v < variations; v++) {
             const FireStarterData* initData = Result(v)->Data();

@@ -50,12 +50,17 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 
 void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
 {
+    static float bestSolution = 1.0e+12f;
+    const std::string saveFile = "FireStarter_Solution.h";
+    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%lld", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
     std::string solutionCode;
+
     m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
-    std::string saveFile = "FireStarter_Solution.h";
-    FireStarterSource::SaveSource(solutionCode, saveFile);
-    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str()) : saveFile;
     FireStarterSource::SaveSource(solutionCode, savePath);
+    if (bestState.m_precision < bestSolution) {
+        bestSolution = bestState.m_precision;
+        FireStarterSource::SaveSource(solutionCode, saveFile);
+    }
 } // SaveSolution
 
 bool FireStarterComplete::LoadSolutionTargetCode(void)
@@ -73,10 +78,15 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
     if (state.m_optimizeValid) {
         static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
         bestStateMutex.lock();
-        bool update = state.m_optimizeValid && ((state.MaxResult() < bestState.MaxResult()) || !bestState.m_optimizeValid);
+        bool update = (state.m_optimizeValid && ((state.MaxResult() < bestState.MaxResult())) || !bestState.m_optimizeValid);
         if (update) {
             // Update the best state.
             bestState = state;
+
+            // Test the precision of the results.
+            bestState.m_precision = bestState.TestResults();
+
+            // Reset the best state age to zero.
             bestState.m_age = 0;
         }
         bestStateMutex.unlock();
@@ -101,9 +111,6 @@ void FireStarterComplete::SaveResults(const FireStarterState& bestState)
 
 void FireStarterComplete::DisplayResults(const FireStarterState& bestState)
 {
-    // Test the current state.
-    m_bestError = bestState.TestResults();
-
     // Save the new best state.
     if (m_saveBestState)
         SaveResults(bestState);
@@ -131,7 +138,7 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
     m_resultsCount++;
 
     // Update the status text.
-    m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration, m_bestError);
+    m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration);
 } // CompleteStatus
 
 bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireStarterState& state)

@@ -1,10 +1,10 @@
 // Run date: 04/22/25 09:31:13 Pacific Daylight Time
-// Run duration = 297.925241 seconds
-// Run test = 7
-// Run generation = 7
-// Run evolution = 2
-// Run precision = 0.00000087
-// Run max result = 0.00000008
+// Run duration = 367.059967 seconds
+// Run test = 9
+// Run generation = 0
+// Run evolution = 0
+// Run precision = 0.00000833
+// Run max result = 0.00000050
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
@@ -62,39 +62,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4;
+    float r0, r1, r2, r3;
 
-    r0 = n += -1.57079625f;
-    n *= r0;
-    r0 = n += -1.55048871f;
-    r1 = n *= -0.00504709f;
-    r2 = n += -3.27915645f;
-    r3 = n *= 0.97507936f;
-    n += 6.77082920f;
-    n *= 5.91008902f;
-    n *= r0;
-    n *= 0.04096542f;
-    n *= -0.01095512f;
-    n *= -0.05268164f;
-    r0 = n += -0.22633524f;
-    n *= 5.91095209f;
-    r4 = n *= 1.69961059f;
-    n = r1 *= n;
-    n *= r4;
-    r4 = n += 1.94992745f;
-    n += r0;
-    n *= -3.13565612f;
-    n = r1 *= n;
-    n += 0.89263713f;
-    n = r1 += n;
-    n *= 0.72802269f;
-    n *= r4;
-    n *= r2;
-    n *= r1;
+    r0 = n *= 0.26365393f;
+    n += -0.10857154f;
+    n *= 0.84828871f;
+    r1 = n += -0.61053187f;
+    r2 = n *= -0.29860246f;
+    r3 = n *= 0.49257934f;
     n *= r3;
-    n *= 0.31613135f;
-    n *= 0.96034288f;
-    n += -2.72793937f;
-    n *= 0.36657712f;
+    n *= -10.57290554f;
+    n += 1.25900233f;
+    n = r2 *= n;
+    n = r2 += n;
+    r3 = n += 0.49179289f;
+    n *= -0.10178865f;
+    n *= -0.40847918f;
+    n = r0 *= n;
+    n += r3;
+    n += -0.51067877f;
+    n *= -1.63380086f;
+    n = r0 *= n;
+    n *= r0;
+    n += 0.53851682f;
+    n *= r1;
+    r1 = n *= -1.61066902f;
+    n *= r2;
+    r2 = n += -2.65849090f;
+    r0 = n *= -3.75629282f;
+    n *= 0.07676048f;
+    n *= r0;
+    r0 = n += -3.69451427f;
+    n += r2;
+    n *= r1;
+    n *= r0;
     return n;
 } // Solution

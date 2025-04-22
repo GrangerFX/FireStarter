@@ -326,7 +326,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
     window.DisplayText(statusString);
 } // FireSolution
 
-void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, double bestError, bool sync)
+void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, bool sync)
 {
     // Create the CUDA device text.
     static std::string cudaText;
@@ -355,14 +355,14 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     }
 
     // Create the log file.
-    unsigned int test = (unsigned int)state.m_test;
+    unsigned long long test = state.m_test;
     std::string logPath;
     if (settings.m_tests > 0) {
         static std::vector<std::string> logFilePaths;
         if (logFilePaths.empty())
             logFilePaths.resize(FIRESTARTER_START_TEST + settings.m_tests);
         if (logFilePaths[test].empty()) {
-            logFilePaths[test] = Format("Logs\\%s_%s_%d.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
+            logFilePaths[test] = Format("Logs\\%s_%s_%lld.txt", FileNameDate(SimpleTimer::RunSecond()).c_str(), settings.Mode(), test);
             Dispatch([test] {
                 FireStarterSource::AppendSource(cudaText, logFilePaths[test]);
                 FireStarterSource::AppendSource(settingsText, logFilePaths[test]);
@@ -384,6 +384,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     // Update the log file and window status text.
     std::string statusString;
     float bestResult = bestState.MaxResult();
+    float bestError = bestState.m_precision;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds  Result=%.8f", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, state.MaxResult(), bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, state.MaxResult());
