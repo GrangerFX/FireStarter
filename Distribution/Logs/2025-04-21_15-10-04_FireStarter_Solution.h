@@ -33,7 +33,6 @@
 // Run startResult = 10.000000f
 
 #define SOLUTION_VARIATIONS 1
-#define SOLUTION_VARIATION 1
 
 #ifndef __CUDACC__
 #include <cmath>

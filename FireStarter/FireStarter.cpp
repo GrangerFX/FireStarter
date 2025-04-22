@@ -187,7 +187,7 @@ static void TestCUDABug(void)
 
 bool FireStarter::ShouldQuit(void)
 {
-#if FIRESTARTER_AUTO_QUIT
+#if FIRESTARTER_AUTO_QUIT && (FIRESTARTER_MODE != FIRESTARTER_SOLUTION)
     return IsFinished();
 #else
     return false;

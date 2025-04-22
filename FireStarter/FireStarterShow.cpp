@@ -298,7 +298,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
         for (unsigned int x = 0; x < width; x++) {
             float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
             float center = height * 0.66f;
-            float target = SolutionTarget(theta, v);
+            float target = SolutionTarget(theta, v + SOLUTION_VARIATION);
 #if SOLUTION_VARIATIONS == 1
             float solution = Solution(theta);
 #else
@@ -320,7 +320,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
                 pixel.x = pixel.y = pixel.z = 255;
             };
         }
-        statusString += Format(" Solution %d = %f", v, maxError);
+        statusString += Format(" Solution %d = %.8f", v, maxError);
     }
     window.DisplayImage();
     window.DisplayText(statusString);

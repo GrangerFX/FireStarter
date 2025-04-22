@@ -5,7 +5,7 @@
 #define FIRESTARTER_INSTRUCTIONS    32
 #define FIRESTARTER_REGISTERS       30
 #define FIRESTARTER_VARIATIONS      1
-#define FIRESTARTER_VARIATION       1
+#define FIRESTARTER_VARIATION       0
 
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
@@ -53,7 +53,7 @@
 #define FIRESTARTER_OPTIMIZE        8           // Optimize a previously CPU evolved state.
 #define FIRESTARTER_SOLUTION        9           // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           10
-#define FIRESTARTER_MODE            FIRESTARTER_SOLUTION
+#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_CPU
 
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1

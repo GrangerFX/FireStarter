@@ -144,6 +144,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     solutionCode += "\r\n";
     state.SaveStats(text);
     text += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
+    text += Format("#define SOLUTION_VARIATION %d\r\n", FIRESTARTER_VARIATION);
     text += "\r\n";
     text += targetCode;
 
