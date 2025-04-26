@@ -330,14 +330,6 @@ public:
         dataVector = DataPtr(variation);
     } // DataVector
 
-    inline float MaxResults(void) const
-    {
-        float maxResult = MaxResult(0);
-        for (unsigned int v = 1; v < m_variations; v++)
-            maxResult = MAX(maxResult, MaxResult(v));
-        return maxResult;
-    } // MaxResults
-
     inline float MaxResult(unsigned int variation) const
     {
         const FireStarterResult* result = Result(variation);
@@ -348,6 +340,16 @@ public:
     {
         return *Result(variation)->MaxResult();
     } // MaxResult
+
+    inline float MaxResults(void) const
+    {
+        float maxResult = MaxResult(0);
+        for (unsigned int v = 1; v < m_variations; v++) {
+            float curResult = MaxResult(v);
+            maxResult = MAX(maxResult, curResult);
+        }
+        return maxResult;
+    } // MaxResults
 
     inline void InitResults(const FireStarterSettings& settings)
     {

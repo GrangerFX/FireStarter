@@ -124,7 +124,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     results[member] = bestResult;
 
     // Return the variation data for debugging.
-    population[member].InitResult(bestData, bestResult, bestAge);
+    FireStarterResult::PopulationResult(population, member, variation)->InitResult(bestData, bestResult, bestAge);
 
     // Return the optimized best code.
     codes[member].Copy(bestCode);

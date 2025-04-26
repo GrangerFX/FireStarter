@@ -84,7 +84,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         evolveAge = 0;
     } else {
         // Later generations randomize a single register if they were copied.
-        const FireStarterResult& oldResult = *FireStarterResult::Result(oldPopulation, member, variation);
+        const FireStarterResult& oldResult = *FireStarterResult::PopulationResult(oldPopulation, member, variation);
         data.Copy(oldResult.Data());
         evolveAge = oldResult.EvolveAge1();
         initAge = oldResult.EvolveAge2();
@@ -131,7 +131,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         for (int i = 0; i < FIRESTARTER_OPTIMIZE_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, population);
-            const FireStarterResult* candidateResult = FireStarterResult::Result(oldPopulation, candidate, variation);
+            const FireStarterResult* candidateResult = FireStarterResult::PopulationResult(oldPopulation, candidate, variation);
             unsigned short candidateAge = candidateResult->EvolveAge1();
             if (candidateAge <= 1) {
                 float candidateMaxResult = candidateResult->MaxResult();
@@ -144,7 +144,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
 
         // Switch to the selected member's data and results.
         if (bestCandidate != member) {
-            const FireStarterResult* bestCandidateResult = FireStarterResult::Result(oldPopulation, bestCandidate, variation);
+            const FireStarterResult* bestCandidateResult = FireStarterResult::PopulationResult(oldPopulation, bestCandidate, variation);
             data = bestCandidateResult->Data();
             evolveAge = evolveAge ? evolveAge + 1 : 2;
             initAge = bestCandidateResult->EvolveAge2();
@@ -153,6 +153,6 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
     }
 
     if (newPopulation)
-        FireStarterResult::Result(newPopulation, member, variation)->InitResult(data, result, evolveAge, initAge);
+        FireStarterResult::PopulationResult(newPopulation, member, variation)->InitResult(data, result, evolveAge, initAge);
 } // Optimizer
 

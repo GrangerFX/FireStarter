@@ -114,5 +114,5 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
 
     // Return the variation data for debugging.
     if (population)
-        population[member].InitResult(bestData, bestResult, bestAge);
+        FireStarterResult::PopulationResult(population, member, variation)->InitResult(bestData, bestResult, bestAge);
 } // EvolverNew
