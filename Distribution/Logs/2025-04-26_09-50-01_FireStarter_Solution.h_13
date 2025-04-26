@@ -1,10 +1,10 @@
 // Run date: 04/26/25 09:50:01 Pacific Daylight Time
-// Run duration = 298.002971 seconds
-// Run test = 7
-// Run generation = 7
-// Run evolution = 2
-// Run precision  = 0.00000087
-// Run max result = 0.00000008
+// Run duration = 480.763301 seconds
+// Run test = 13
+// Run generation = 9
+// Run evolution = 1
+// Run precision  = 0.00000347
+// Run max result = 0.00000012
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
@@ -62,39 +62,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4;
+    float r0, r1, r2, r3, r4, r5, r6;
 
-    r0 = n += -1.57079625f;
-    n *= r0;
-    r0 = n += -1.55048871f;
-    r1 = n *= -0.00504709f;
-    r2 = n += -3.27915645f;
-    r3 = n *= 0.97507936f;
-    n += 6.77082920f;
-    n *= 5.91008902f;
-    n *= r0;
-    n *= 0.04096542f;
-    n *= -0.01095512f;
-    n *= -0.05268164f;
-    r0 = n += -0.22633524f;
-    n *= 5.91095209f;
-    r4 = n *= 1.69961059f;
-    n = r1 *= n;
-    n *= r4;
-    r4 = n += 1.94992745f;
-    n += r0;
-    n *= -3.13565612f;
-    n = r1 *= n;
-    n += 0.89263713f;
-    n = r1 += n;
-    n *= 0.72802269f;
-    n *= r4;
+    r0 = n += -3.14159274f;
+    r1 = n *= 1.23400640f;
+    r2 = n *= 0.02196446f;
+    n *= 2.09178710f;
+    n *= 2.59796953f;
     n *= r2;
-    n *= r1;
+    r2 = n += -0.39065346f;
+    r3 = n *= -2.13103628f;
+    r4 = n *= -0.25571334f;
+    r5 = n *= -2.07602453f;
+    r6 = n *= 3.46424794f;
+    n *= r5;
+    n *= -6.61512327f;
+    n *= r6;
+    n *= -1.53115010f;
+    r6 = n *= -0.61304730f;
+    r5 = n += 2.23867583f;
     n *= r3;
-    n *= 0.31613135f;
-    n *= 0.96034288f;
-    n += -2.72793937f;
-    n *= 0.36657712f;
+    n += 2.40751195f;
+    n *= 4.78180265f;
+    r3 = n *= -1.26660824f;
+    n *= -0.43924701f;
+    n *= r2;
+    n *= -0.00000002f;
+    n *= r5;
+    n += r1;
+    n *= r3;
+    n *= 0.25629449f;
+    n *= r6;
+    n *= r4;
+    n += r0;
+    n *= -0.26023495f;
     return n;
 } // Solution
