@@ -351,5 +351,5 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
 
 void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int variation, unsigned int index)
 {
-    InitResult(settings, population->Result(settings, index, variation), nullptr, variation, index);
+    InitResult(settings, FireStarterResult::PopulationResult(population,settings, index, variation), nullptr, variation, index);
 } // InitResult
