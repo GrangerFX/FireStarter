@@ -25,7 +25,7 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state)
         evolveState.InitGenerationSeed();
         const FireStarterSettings& settings = evolveState.Settings();
         unsigned int numInstructions = settings.m_instructions;
-        float bestResult = evolveState.MaxResult();
+        float bestResult = evolveState.MaxResults();
         FireStarterJob* job = m_evolveManager->GetFree();
         if (job) {
             // Randomize the program.
@@ -103,7 +103,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                         curState.m_evolution++;
                         curState.m_index = index;
                         curState.m_evolveIndex = evolveIndex;
-                        curState.m_oldResult = curState.MaxResult();
+                        curState.m_oldResult = curState.MaxResults();
                         curState.m_evolveWeight = evolveWeight;
                         curState.InitGenerationSeed();
                         curState.m_timer.Start();

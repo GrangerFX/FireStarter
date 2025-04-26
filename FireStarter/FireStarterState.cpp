@@ -158,7 +158,7 @@ void FireStarterState::SaveStats(std::string& text) const
     text += Format("// Run generation = %llu\r\n", m_generation);
     text += Format("// Run evolution = %llu\r\n", m_evolution);
     text += Format("// Run precision  = %.8f\r\n", m_precision);
-    text += Format("// Run max result = %.8f\r\n", MaxResult());
+    text += Format("// Run max result = %.8f\r\n", MaxResults());
     SettingsText(m_settings, text, "// Run ");
     text += "\r\n";
 } // SaveStats
@@ -237,7 +237,7 @@ float FireStarterState::TestResults(void) const
     float targetMax = Settings().m_targetMax;
     float startResult = Settings().m_startResult;
     float testResult = 0.0f;
-    float maxResult = MaxResult();
+    float maxResult = MaxResults();
 #if FIRESTARTER_PRECISION
     unsigned int samples = FIRESTARTER_PRECISION;
 #else
@@ -352,4 +352,4 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
 void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int variation, unsigned int index)
 {
     InitResult(settings, population->Result(settings, index, variation), nullptr, variation, index);
-} // InitResults
+} // InitResult

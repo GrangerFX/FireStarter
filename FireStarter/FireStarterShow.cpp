@@ -383,11 +383,12 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 
     // Update the log file and window status text.
     std::string statusString;
-    float bestResult = bestState.MaxResult();
+    float maxResult = state.MaxResults();
+    float bestResult = bestState.MaxResults();
     float bestError = bestState.m_precision;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds  Result=%.8f", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, state.MaxResult(), bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime, state.MaxResult());
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
     } else {
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
@@ -400,13 +401,13 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 statusString += Format("  Age=%3u  Evolution=%2u  Weight=%.8f", state.m_age, state.m_evolution, state.m_evolveWeight);
 
             std::string resultString;
-            if (state.MaxResult() >= state.m_oldResult)
+            if (maxResult >= state.m_oldResult)
                 resultString = " Bad Result";
-            else if ((state.MaxResult() == bestResult) && isBestState)
+            else if ((maxResult == bestResult) && isBestState)
                 resultString = "*New Result";
             else
                 resultString = ">New Result";
-            statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), state.MaxResult());
+            statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), maxResult);
             if ((state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM)) {
                 statusString += Format("  MinIndex=%u", state.m_minIndex);
                 if (settings.m_variations == 1)
@@ -421,11 +422,11 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
                 if (settings.m_units > 1)
                     statusString += Format("  Unit=%u", state.m_index % settings.m_units);
             }
-            if ((state.MaxResult() == bestResult) && isBestState)
+            if ((maxResult == bestResult) && isBestState)
                 statusString += " *";
             else
                 statusString += "  ";
-            statusString += Format("Result=%.8f", state.MaxResult());
+            statusString += Format("Result=%.8f", maxResult);
         } else if (settings.m_mode == FIRESTARTER_SINSIM)
             statusString += Format("  Generation=%3u", generation);
 

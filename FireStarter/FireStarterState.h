@@ -330,13 +330,13 @@ public:
         dataVector = DataPtr(variation);
     } // DataVector
 
-    inline float MaxResult(void) const
+    inline float MaxResults(void) const
     {
         float maxResult = MaxResult(0);
         for (unsigned int v = 1; v < m_variations; v++)
             maxResult = MAX(maxResult, MaxResult(v));
         return maxResult;
-    } // MaxResult
+    } // MaxResults
 
     inline float MaxResult(unsigned int variation) const
     {
@@ -349,7 +349,7 @@ public:
         return *Result(variation)->MaxResult();
     } // MaxResult
 
-    inline void InitResult(const FireStarterSettings& settings)
+    inline void InitResults(const FireStarterSettings& settings)
     {
         m_resultSize = FireStarterResult::ResultSize(settings.m_registers);
         m_variations = settings.m_variations;
@@ -361,11 +361,11 @@ public:
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
 #endif
-    } // InitResult
+    } // InitResults
 
     inline FireStarterResultVector(const FireStarterSettings& settings)
     {
-        InitResult(settings);
+        InitResults(settings);
     } // FireStarterResultVector
 
     inline FireStarterResultVector(const FireStarterResultVector& other)
@@ -402,7 +402,7 @@ public:
 class FireStarterState {
 public:
     FireStarterSettings m_settings;
-    FireStarterResultVector m_result;
+    FireStarterResultVector m_results;
     FireStarterCodeVector m_code;
     FireStarterBestCodes m_bestCodes;
     SinSimNetwork m_network;
@@ -430,7 +430,7 @@ public:
 private:
     inline void swap(const FireStarterState& other)
     {
-        m_result = other.m_result;
+        m_results = other.m_results;
         m_code = other.m_code;
         m_network = other.m_network;
         m_settings = other.m_settings;
@@ -457,7 +457,7 @@ public:
     inline bool Packetize(FireStarterPacket& packet)
     {
         bool result = true;
-        result = result && m_result.Packetize(packet);
+        result = result && m_results.Packetize(packet);
         result = result && m_code.Packetize(packet);
         result = result && packet.Packetize(&m_network, sizeof(m_network));
         result = result && packet.Packetize(&m_settings, sizeof(m_settings));
@@ -508,22 +508,22 @@ public:
 
     inline const FireStarterResult* Result(unsigned int variation) const
     {
-         return (const FireStarterResult*)m_result.Result(variation);
+         return (const FireStarterResult*)m_results.Result(variation);
     } // Result
 
     inline FireStarterResult* Result(unsigned int variation)
     {
-        return m_result.Result(variation);
+        return m_results.Result(variation);
     } // Result
 
     inline const FireStarterResultVector& ResultVector(void) const
     {
-        return m_result;
+        return m_results;
     } // ResultVector(void)
 
     inline void DataVector(FireStarterDataVector& dataVector, unsigned int variation) const
     {
-        m_result.DataVector(dataVector, variation);
+        m_results.DataVector(dataVector, variation);
     } // ResultVector(void)
 
     inline const SinSimNetwork* Network(void) const
@@ -531,22 +531,22 @@ public:
         return &m_network;
     } // Network
 
-    inline float MaxResult(void) const
+    inline float MaxResults(void) const
     {
         if (m_settings.m_mode == FIRESTARTER_SINSIM)
             return m_network.grade;
         else
-            return m_result.MaxResult();
-    } // MaxResult
+            return m_results.MaxResults();
+    } // MaxResults
 
     inline float MaxResult(unsigned int variation) const
     {
-        return m_result.MaxResult(variation);
+        return m_results.MaxResult(variation);
     } // MaxResult
 
     inline float& MaxResult(unsigned int variation)
     {
-        return m_result.MaxResult(variation);
+        return m_results.MaxResult(variation);
     } // MaxResult
 
     inline unsigned short EvolveAge1(unsigned int variation) const
@@ -595,14 +595,14 @@ public:
 
     inline bool ResultValid(void) const
     {
-        if (MaxResult() == m_settings.m_startResult)
+        if (MaxResults() == m_settings.m_startResult)
             return false;
         return true;
     } // ResultValid
 
     inline bool Initialized(void) const
     {
-        return m_result.size() == ResultSize();
+        return m_results.size() == ResultSize();
     } // Initialized
 
     inline unsigned int PassMode(void) const
@@ -617,7 +617,7 @@ public:
 
     inline float EvolveWeight(void) const
     {
-        return m_generation * MaxResult();
+        return m_generation * MaxResults();
     } // EvolveWeight
 
     inline unsigned long long EvolutionSeed(void) const
@@ -755,7 +755,7 @@ public:
 
     inline void InitResult(void)
     {
-        m_result.InitResult(m_settings);
+        m_results.InitResults(m_settings);
     } // InitResults
 
     inline void InitCode(void)
@@ -781,12 +781,12 @@ public:
     void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index);
     void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, unsigned int variation, unsigned int index);
 
-    inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0) : m_code(settings), m_result(settings)
+    inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0) : m_code(settings), m_results(settings)
     {
         InitState(settings, generation, index, id, test);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_result(other.m_result), m_bestCodes(other.m_bestCodes)
+    inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_results(other.m_results), m_bestCodes(other.m_bestCodes)
     {
         m_timer = other.m_timer;
         swap(other);

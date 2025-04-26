@@ -59,7 +59,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
                 resultText += Format("Seed=%u  ", evolveState.Settings().m_evolveSeed);
             if (evolveState.Settings().m_tests > 1)
                 resultText += Format("Test=%u  ", evolveState.m_test);
-            resultText += Format("Random Result=%.8f\n", evolveState.MaxResult());
+            resultText += Format("Random Result=%.8f\n", evolveState.MaxResults());
             if (!m_streamDate.empty())
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_RandomResults.txt", m_streamDate.c_str()));
         }
@@ -156,7 +156,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
-                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", bestEvolveState.Duration(), bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResult());
+                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", bestEvolveState.Duration(), bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
@@ -183,14 +183,14 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
 
                         // Output the optimize results.
                         if (!WillTerminate()) {
-                            resultText += Format("  Optimize Result=%.8f", optimizeState.MaxResult());
-                            if ((bestEvolveState.MaxResult() > evolveSettings.m_target) && (optimizeState.MaxResult() <= evolveSettings.m_target))
+                            resultText += Format("  Optimize Result=%.8f", optimizeState.MaxResults());
+                            if ((bestEvolveState.MaxResults() > evolveSettings.m_target) && (optimizeState.MaxResults() <= evolveSettings.m_target))
                                 resultText += " *";
                         }
                     }
                 }
 
-                if (bestEvolveState.MaxResult() <= evolveSettings.m_target)
+                if (bestEvolveState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
@@ -291,8 +291,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 double duration = bestState.Duration();
                 totalDuration += duration;
 
-                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResult(), bestState.MaxResult(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
-                if (bestState.MaxResult() <= evolveSettings.m_target)
+                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+                if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
@@ -373,8 +373,8 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
                 double duration = bestState.Duration();
                 totalDuration += duration;
 
-                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResult(), bestState.MaxResult(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
-                if (bestState.MaxResult() <= evolveSettings.m_target)
+                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+                if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
@@ -447,8 +447,8 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
             double duration = bestState.Duration();
             totalDuration += duration;
 
-            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.2f  GenTime: %.3f", sinSimSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResult(), bestState.MaxResult(), duration, duration / evolveState.m_generation);
-            if (bestState.MaxResult() <= sinSimSettings.m_target)
+            std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Best Result=%.8f  Duration: %2.2f  GenTime: %.3f", sinSimSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation);
+            if (bestState.MaxResults() <= sinSimSettings.m_target)
                 resultText += " *******";
             resultText += "\n";
             FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
@@ -526,8 +526,8 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
-                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResult(), optimizeState.MaxResult(), bestState.Duration());
-                    if (bestState.MaxResult() <= speedTestSettings.m_target)
+                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResults(), optimizeState.MaxResults(), bestState.Duration());
+                    if (bestState.MaxResults() <= speedTestSettings.m_target)
                         resultText += " *******";
                     resultText += "\n";
                     FireStarterSource::AppendSource(resultText, Format("Logs\\%s_OptimizeResults.txt", streamDate.c_str()));
@@ -597,8 +597,8 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
                 // Output the test results.
                 if (!WillTerminate()) {
                     // Output the evolve results.
-                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResult(), optimizeState.MaxResult(), bestState.Duration());
-                    if (bestState.MaxResult() <= optimizeSettings.m_target)
+                    std::string resultText = Format("Test: %llu  Pass=%llu  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %.1f", test, optimizeState.m_optimize_pass, evolveState.MaxResults(), optimizeState.MaxResults(), bestState.Duration());
+                    if (bestState.MaxResults() <= optimizeSettings.m_target)
                         resultText += " *******";
                     resultText += "\n";
                     FireStarterSource::AppendSource(resultText, Format("Logs\\%s_OptimizeResults.txt", streamDate.c_str()));
