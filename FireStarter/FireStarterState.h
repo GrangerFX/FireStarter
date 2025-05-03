@@ -1,5 +1,4 @@
 #pragma once
-#include "FireStarterPopulation.h"
 #include "FireStarterCodeGenerate.h"
 #include "FireStarterPacket.h"
 #include "FireSinSim.h"

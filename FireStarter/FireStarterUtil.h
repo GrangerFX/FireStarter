@@ -8,7 +8,6 @@
 #include "CUDAErrors.h"
 #include "SerialThread.h"
 #include "SimpleTimer.h"
-#include "Checksum.h"
 
 inline std::string CurrentDate(void)
 {

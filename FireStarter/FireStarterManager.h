@@ -56,6 +56,7 @@ private:
 	double m_waitTime = 0.0;
 	size_t m_sizeJobs = 0;
 	size_t m_totalJobs = 0;
+    bool m_aborted = false;
 public:
 	void Add(FireStarterJob* job);
 	FireStarterJob* Get(bool wait = true);
@@ -63,6 +64,7 @@ public:
 	size_t Size(void);
 	void Restart(void);
 	void Cancel(void);
+    bool Aborted(void);
 	FireStarterJobQueue(const std::string &name);
 	~FireStarterJobQueue(void);
 }; // class FireStarterJobQueue
@@ -100,6 +102,7 @@ public:
 	inline size_t GetMaxJobs(void) { return m_maxJobs; }
 	void Restart(void);
 	void Cancel(void);
+    bool Aborted(void);
 	FireStarterManager(size_t maxJobs = 1);
 	~FireStarterManager(void);
 }; // FireStarterManager

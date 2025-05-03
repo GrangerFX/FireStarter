@@ -399,8 +399,8 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             uint64_t checksum = 0;
             for (unsigned int i = 0; i < settings.m_population; i++) {
                 checksum ^= FireStarterPopulation::PopulationResultChecksum(m_hostPopulation, settings, i, variation);
-                if (i < 16)
-                    printf("Result: index: %2llu  variation: %u  pass: %u  data: %016llX\n", i, variation, p, checksum);
+//                if (i < 16)
+//                    printf("Result: index: %2llu  variation: %u  pass: %u  data: %016llX\n", i, variation, p, checksum);
             }
             printf("ExecuteOptimizePass: index: %2llu  variation: %u  pass: %u  data: %016llX\n", state.m_index, variation, p, checksum);
         }

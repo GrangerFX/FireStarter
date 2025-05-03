@@ -154,7 +154,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
 
     // Return the variation data for debugging.
     if (population)
-        FireStarterResult::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
+        FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // Evolver
 #else
 // Multi-variation version.
@@ -288,6 +288,6 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     // Return the variation data for debugging.
     if (population)
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
-            FireStarterResult::PopulationResult(population, member, v)->InitResult(bestData[v], variationResult[v], bestAge);
+            FireStarterPopulation::PopulationResult(population, member, v)->InitResult(bestData[v], variationResult[v], bestAge);
 } // Evolver
 #endif
