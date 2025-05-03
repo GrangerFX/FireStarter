@@ -75,6 +75,7 @@ bool FireStarterComplete::LoadSolutionTargetCode(void)
 bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const FireStarterState& state)
 {
     // Get the result.
+#if 1
     if (state.m_optimizeValid) {
         static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
         bestStateMutex.lock();
@@ -88,10 +89,28 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
 
             // Reset the best state age to zero.
             bestState.m_age = 0;
-        }
+        } else
+            bestState.m_age++;
         bestStateMutex.unlock();
         return update;
     }
+#else
+    if (state.m_optimizeValid) {
+        static std::mutex bestStateMutex; // Shared among all FireStarterComplete objects.
+        bestStateMutex.lock();
+        bool update = state.m_optimizeValid && ((state.m_maxResult < bestState.m_maxResult) || !bestState.m_optimizeValid);
+        if (update) {
+            // Update the best state.
+            bestState = state;
+            bestState.m_age = 0;
+        }
+        else
+            bestState.m_age++;
+        bestStateMutex.unlock();
+        return update;
+    }
+
+#endif
     return false;
 } // UpdateBestState
 

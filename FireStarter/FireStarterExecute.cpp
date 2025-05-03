@@ -1,5 +1,6 @@
 #include "FireStarterExecute.h"
 #include "FireStarterSource.h"
+#include "FireStarterUtil.h"
 #include "CUDACompile.h"
 
 #define SIMULATE_GPU 0
@@ -390,6 +391,20 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 
         // Synchronize all GPU threads and results.
         Context()->Synchronize();
+
+#if 1
+        if (state.m_index == 0) {
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+            Context()->Synchronize();
+            uint64_t checksum = 0;
+            for (unsigned int i = 0; i < settings.m_population; i++) {
+                checksum ^= FireStarterResult::PopulationResultChecksum(m_hostPopulation, settings, i, variation);
+                if (i < 16)
+                    printf("Result: index: %2llu  variation: %u  pass: %u  data: %016llX\n", i, variation, p, checksum);
+            }
+            printf("ExecuteOptimizePass: index: %2llu  variation: %u  pass: %u  data: %016llX\n", state.m_index, variation, p, checksum);
+        }
+#endif
 #endif
         optimizePass++;
     }
@@ -426,6 +441,12 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     }
 
     state.InitResult(settings, m_hostPopulation, variation, minIndex);
+
+#if 1
+    uint64_t dataChecksum = Checksum(m_hostPopulation, m_populationSize);
+    uint64_t codeChecksum = Checksum(state.Code(), state.CodeSize());
+    printf("ExecuteOptimizePass: index: %2llu  variation: %u  data: %016llX  code: %016llX\n", state.m_index, variation, dataChecksum, codeChecksum);
+#endif
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
@@ -441,9 +462,10 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
 void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
 {
     unsigned int variations = state.Settings().m_variations;
-    if ((variations > 1) && state.m_evolution) {
+    if (0 && (variations > 1) && state.m_evolution) {
         float oldResult = state.MaxResults();
         bool validResult = true;
+        state.InitResults();
         for (unsigned int v = 0; v < variations; v++) {
             unsigned int variation = state.m_variationOrder[v];
             if (validResult) {

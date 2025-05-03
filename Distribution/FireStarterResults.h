@@ -465,6 +465,11 @@ typedef struct FireStarterResult {
         return (sizeof(FireStarterResult) - sizeof(m_data)) + FireStarterData::DataSize(registers);
     } // ResultSize
 
+    static inline size_t ResultSize(const FireStarterSettings& settings)
+    {
+        return ResultSize(settings.m_registers);
+    } // ResultSize
+
     inline float* MaxResult(void)
     {
         return &m_maxResult;
@@ -648,6 +653,28 @@ typedef struct FireStarterResult {
     {
         return ResultSize(settings.m_registers) * ((size_t)settings.m_variations * (size_t)settings.m_population);
     } // PopulationSize
+
+    static inline uint64_t PopulationResultChecksum(const FireStarterResult* population, const FireStarterSettings& settings, size_t index, unsigned int variation = 0)
+    {
+        const FireStarterResult* member = FireStarterResult::PopulationResult(population, settings, index, variation);
+        return Checksum(member, FireStarterResult::ResultSize(settings));
+    } // PopulationResultChecksum
+
+    static inline uint64_t PopulationVariationChecksum(const FireStarterResult* population, const FireStarterSettings& settings, unsigned int variation)
+    {
+        uint64_t checksum = 0;
+        for (unsigned int i = 0; i < settings.m_population; i++)
+            checksum ^= PopulationResultChecksum(population, settings, i, variation);
+        return checksum;
+    } // PopulationVariationChecksum
+
+    static inline uint64_t PopulationChecksum(const FireStarterResult* population, const FireStarterSettings& settings)
+    {
+        uint64_t checksum = 0;
+        for (unsigned int v = 0; v < settings.m_variations; v++)
+            checksum ^= PopulationVariationChecksum(population, settings, v);
+        return checksum;
+    } // PopulationChecksum
 
 } FireStarterResult;
 

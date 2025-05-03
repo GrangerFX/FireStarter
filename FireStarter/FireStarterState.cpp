@@ -224,6 +224,7 @@ void FireStarterState::SaveState(std::string& text) const
     text += "} // LoadState\r\n";
 } // SaveState
 
+#if 0
 float FireStarterState::TestResults(void) const
 {
     // Get an accurate test result for the state.
@@ -265,6 +266,45 @@ float FireStarterState::TestResults(void) const
     free(workData);
     return testResult;
 } // TestResults
+#else
+float FireStarterState::TestResults(void) const
+{
+    // Get an accurate test result for the state.
+    const FireStarterCode* testCode = Code();
+    unsigned int instructions = Settings().m_instructions;
+    unsigned int registers = Settings().m_registers;
+    size_t dataSize = FireStarterData::DataSize(registers);
+    FireStarterData* workData = (FireStarterData*)calloc(dataSize, 1);
+    unsigned int variations = Settings().m_variations;
+    unsigned int samples = Settings().m_samples;
+    float targetMin = Settings().m_targetMin;
+    float targetMax = Settings().m_targetMax;
+    float sampleStep = (targetMax - targetMin) / (samples - 1);
+    float startResult = Settings().m_startResult;
+    float testResult = 0.0f;
+    for (unsigned int v = 0; v < variations; v++) {
+        const FireStarterData* initData = Result(v)->Data();
+        float minResult = MaxResult(v);
+        if (minResult < startResult) {
+            float result = 0.0f;
+            for (unsigned int i = 0; i < samples; i++) {
+                float theta = targetMin + i * sampleStep;
+                float target = Target(theta, v + FIRESTARTER_VARIATION);
+                memcpy(workData, initData, dataSize);
+                float n = testCode->Evaluate(*workData, theta, instructions);
+                float error = fabsf(n - target);
+                result = std::max(result, error);
+            }
+            if (!isfinite(result) || (result >= startResult))
+                testResult = startResult;
+            else
+                testResult = std::max(testResult, fabsf(result - minResult));
+        }
+    }
+    free(workData);
+    return testResult;
+} // TestResults
+#endif
 
 float FireStarterState::EvaluateCode(void) const
 {
@@ -321,7 +361,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_optimizeValid = false;
 
     InitGenerationSeed();
-    InitResult();
+    InitResults();
     InitCode();
     InitNetwork();
 } // InitState

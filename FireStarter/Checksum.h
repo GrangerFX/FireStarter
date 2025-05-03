@@ -105,7 +105,7 @@ inline uint64_t MurmurHash64Finish(uint64_t h)
     return h;
 } // MurmurHash64Finish
 
-inline uint64_t Checksum(void* data, uint64_t size)
+inline uint64_t Checksum(const void* data, uint64_t size)
 {
     return MurmurHash64(data, size);
 } // Checksum

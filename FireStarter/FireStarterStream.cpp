@@ -133,6 +133,8 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             // Evolve the current test.
             unsigned long long generation = 0;
             while (!WillTerminate()) {
+                printf("EvolveCPUStream: generation: %llu\n", generation);
+                
                 // Evolve a new generation.
                 evolve->EvolveStates(test, evolveSettings, allStates, testedCodes, generation);
 

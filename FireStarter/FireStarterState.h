@@ -346,10 +346,25 @@ public:
         float maxResult = MaxResult(0);
         for (unsigned int v = 1; v < m_variations; v++) {
             float curResult = MaxResult(v);
+
+            // Note: Temporary
+            // Compatibility with "good" evolve CPU version
+#if 1
+            if (curResult < FIRESTARTER_START_RESULT)
+                maxResult = MAX(maxResult, curResult);
+            else
+                break;
+#else
             maxResult = MAX(maxResult, curResult);
+#endif
         }
         return maxResult;
     } // MaxResults
+
+    inline void InitResult(const FireStarterSettings& settings, unsigned int variation)
+    {
+        Result(variation)->InitResult(settings);
+    } // InitResult
 
     inline void InitResults(const FireStarterSettings& settings)
     {
@@ -358,7 +373,7 @@ public:
         m_registers = settings.m_registers;
         m_resultData.resize(m_resultSize * m_variations, 0);
         for (unsigned int v = 0; v < m_variations; v++)
-            Result(v)->m_maxResult = settings.m_startResult;
+            InitResult(settings, v);
 #if FIRESTARTER_STATE_DEBUG
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             m_resultDebug[v] = Result(v);
@@ -510,7 +525,7 @@ public:
 
     inline const FireStarterResult* Result(unsigned int variation) const
     {
-         return (const FireStarterResult*)m_results.Result(variation);
+         return m_results.Result(variation);
     } // Result
 
     inline FireStarterResult* Result(unsigned int variation)
@@ -755,7 +770,12 @@ public:
     float TestResults(void) const;
     float EvaluateCode(void) const;
 
-    inline void InitResult(void)
+    inline void InitResult(unsigned int variation)
+    {
+        m_results.InitResult(m_settings, variation);
+    } // InitResults
+
+    inline void InitResults(void)
     {
         m_results.InitResults(m_settings);
     } // InitResults
