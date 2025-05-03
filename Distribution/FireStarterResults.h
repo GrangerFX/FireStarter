@@ -2,6 +2,7 @@
 #include "CUDADefines.h"
 #include "FireStarterSettings.h"
 #include "HashRandom.h"
+#include "Checksum.h"
 #ifndef __CUDACC__
 #include <vector>
 #endif
@@ -611,9 +612,11 @@ typedef struct FireStarterResult {
         m_evolveAge1 = initResult->EvolveAge1();
         m_evolveAge2 = initResult->EvolveAge2();
     } // InitResult
+} FireStarterResult;
 
-    // Population functions
 
+typedef struct FireStarterPopulation : public FireStarterResult
+{
     static inline FireStarterResult* PopulationResult(FireStarterResult* population, size_t index, unsigned int variation = 0)
     {
         return (FireStarterResult*)((char*)population + ResultSize() * (index * FIRESTARTER_VARIATIONS + variation));
@@ -641,9 +644,9 @@ typedef struct FireStarterResult {
 
     static inline float PopulationMaxResults(const FireStarterResult* population, const FireStarterSettings& settings, size_t index)
     {
-        float maxResult = FireStarterResult::PopulationMaxResult(population, settings, index, 0);
+        float maxResult = PopulationMaxResult(population, settings, index, 0);
         for (unsigned int v = 1; v < settings.m_variations; v++) {
-            float result = FireStarterResult::PopulationMaxResult(population, settings, index, v);
+            float result = PopulationMaxResult(population, settings, index, v);
             maxResult = MAX(maxResult, result);
         }
         return maxResult;
@@ -656,7 +659,7 @@ typedef struct FireStarterResult {
 
     static inline uint64_t PopulationResultChecksum(const FireStarterResult* population, const FireStarterSettings& settings, size_t index, unsigned int variation = 0)
     {
-        const FireStarterResult* member = FireStarterResult::PopulationResult(population, settings, index, variation);
+        const FireStarterResult* member = PopulationResult(population, settings, index, variation);
         return Checksum(member, FireStarterResult::ResultSize(settings));
     } // PopulationResultChecksum
 
@@ -675,7 +678,4 @@ typedef struct FireStarterResult {
             checksum ^= PopulationVariationChecksum(population, settings, v);
         return checksum;
     } // PopulationChecksum
-
-} FireStarterResult;
-
-
+} FireStarterPopulation;

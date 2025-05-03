@@ -74,7 +74,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         size_t resultsSize = settings.m_population * sizeof(float);
         size_t populationSize = 0;
         if ((settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_SPEED_TEST) || FIRESTARTER_EVOLVE_RESULTS)
-            populationSize = FireStarterResult::PopulationSize(settings);
+            populationSize = FireStarterPopulation::PopulationSize(settings);
         size_t codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize)) {
             FinishPopulation();
@@ -107,7 +107,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
         // Reallocate the populations if the size has changed.
         size_t resultsSize = settings.m_population * sizeof(float);
-        size_t populationSize = FireStarterResult::PopulationSize(settings);
+        size_t populationSize = FireStarterPopulation::PopulationSize(settings);
         if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize)) {
             FinishPopulation();
             m_resultsSize = resultsSize;
@@ -188,7 +188,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
         float minResult = settings.m_startResult;
         unsigned int minIndex = 0;
         for (unsigned int i = 0; i < populationSize; i++) {
-            float curResult = FireStarterResult::PopulationMaxResult(m_hostPopulation, settings, i, variation);
+            float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i, variation);
             if (curResult < minResult) {
                 minResult = curResult;
                 minIndex = i;
@@ -268,7 +268,7 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
         const FireStarterCode* code = m_hostCodes->Member(settings, i);
-        float curResult = FireStarterResult::PopulationMaxResult(m_hostPopulation, settings, i, variation);
+        float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i, variation);
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
@@ -398,7 +398,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             Context()->Synchronize();
             uint64_t checksum = 0;
             for (unsigned int i = 0; i < settings.m_population; i++) {
-                checksum ^= FireStarterResult::PopulationResultChecksum(m_hostPopulation, settings, i, variation);
+                checksum ^= FireStarterPopulation::PopulationResultChecksum(m_hostPopulation, settings, i, variation);
                 if (i < 16)
                     printf("Result: index: %2llu  variation: %u  pass: %u  data: %016llX\n", i, variation, p, checksum);
             }
@@ -433,7 +433,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     float minResult = *m_hostPopulation[0].MaxResult();
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < population; i++) {
-        float curResult = FireStarterResult::PopulationMaxResult(m_hostPopulation, settings, i, variation);
+        float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i, variation);
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
