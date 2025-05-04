@@ -343,22 +343,22 @@ public:
 
     inline float MaxResults(void) const
     {
+#if 0
+        // Should be the same as the good version MaxResult().
+        float maxResult = 0.0f;
+        for (unsigned int v = 0; v < m_variations; v++) {
+            float curResult = MaxResult(v);
+            maxResult = MAX(maxResult, curResult);
+        }
+        return maxResult;
+#else
         float maxResult = MaxResult(0);
         for (unsigned int v = 1; v < m_variations; v++) {
             float curResult = MaxResult(v);
-
-            // Note: Temporary
-            // Compatibility with "good" evolve CPU version
-#if 1
-            if (curResult < FIRESTARTER_START_RESULT)
-                maxResult = MAX(maxResult, curResult);
-            else
-                break;
-#else
             maxResult = MAX(maxResult, curResult);
-#endif
         }
         return maxResult;
+#endif
     } // MaxResults
 
     inline void InitResult(const FireStarterSettings& settings, unsigned int variation)

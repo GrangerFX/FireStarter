@@ -392,7 +392,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         // Synchronize all GPU threads and results.
         Context()->Synchronize();
 
-#if 1
+#if 0
         if (state.m_index == 0) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
             Context()->Synchronize();
@@ -430,7 +430,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float minResult = *m_hostPopulation[0].MaxResult();
+    float minResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0, variation);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < population; i++) {
         float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i, variation);
@@ -442,10 +442,10 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 
     state.InitResult(settings, m_hostPopulation, variation, minIndex);
 
-#if 1
-    uint64_t dataChecksum = Checksum(m_hostPopulation, m_populationSize);
+#if 0
+    uint64_t dataChecksum = FireStarterPopulation::PopulationVariationChecksum(m_hostPopulation, settings, variation);
     uint64_t codeChecksum = Checksum(state.Code(), state.CodeSize());
-    printf("ExecuteOptimizePass: index: %2llu  variation: %u  data: %016llX  code: %016llX\n", state.m_index, variation, dataChecksum, codeChecksum);
+    printf("ExecuteOptimizePass: index: %2llu  variation: %u  data: %016llX  code: %016llX  minResult: %.8f  minIndex: %u\n", state.m_index, variation, dataChecksum, codeChecksum, minResult, minIndex);
 #endif
 } // ExecuteOptimizePass
 
@@ -457,6 +457,10 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
 
     // Calculate the state's max result.
     state.m_optimizeValid = true;
+
+#if 0
+    printf("State: %2llu  maxResult: %.8f\n", state.m_index, state.MaxResults());
+#endif
 } // ExecuteOptimizePasses
 
 void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)

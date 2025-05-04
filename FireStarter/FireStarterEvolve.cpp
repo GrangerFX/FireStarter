@@ -84,6 +84,7 @@ bool FireStarterEvolve::EvolveStates(unsigned long long test, const FireStarterS
                     for (size_t curIndex = 0; curIndex < totalStates; curIndex++) {
                         FireStarterState& curState = allStates[curIndex];
                         float curWeight = curState.EvolveWeight();
+                        printf("Evolve: State: %llu  weight=%.8f\n", curIndex, curWeight);
                         if (!curIndex || (curWeight < evolveWeight)) {
                             evolveWeight = curWeight;
                             evolveIndex = curIndex;
