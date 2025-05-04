@@ -466,7 +466,7 @@ void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
 void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
 {
     unsigned int variations = state.Settings().m_variations;
-    if (0 && (variations > 1) && state.m_evolution) {
+    if ((variations > 1) && state.m_evolution) {
         float oldResult = state.MaxResults();
         bool validResult = true;
         state.InitResults();
