@@ -224,7 +224,7 @@ void FireStarterState::SaveState(std::string& text) const
     text += "} // LoadState\r\n";
 } // SaveState
 
-#if 0
+#if 1
 float FireStarterState::TestResults(void) const
 {
     // Get an accurate test result for the state.
