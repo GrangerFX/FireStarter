@@ -73,7 +73,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         // Reallocate the populations if the size has changed.
         size_t resultsSize = settings.m_population * sizeof(float);
         size_t populationSize = 0;
-        if ((settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_SPEED_TEST) || FIRESTARTER_EVOLVE_RESULTS)
+        if (FIRESTARTER_EVOLVE_RESULTS || (settings.m_mode != FIRESTARTER_EVOLVE_GPU))
             populationSize = FireStarterPopulation::PopulationSize(settings);
         size_t codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize)) {
@@ -185,9 +185,9 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state, unsigned int
 
         // Get the best variation results.
         bool validResult = false;
-        float minResult = settings.m_startResult;
+        float minResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0, variation);
         unsigned int minIndex = 0;
-        for (unsigned int i = 0; i < populationSize; i++) {
+        for (unsigned int i = 1; i < populationSize; i++) {
             float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i, variation);
             if (curResult < minResult) {
                 minResult = curResult;
@@ -264,9 +264,9 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
 
     // Get the best variation results.
     bool validResult = false;
-    float minResult = settings.m_startResult;
+    float minResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0, variation);
     unsigned int minIndex = 0;
-    for (unsigned int i = 0; i < populationSize; i++) {
+    for (unsigned int i = 1; i < populationSize; i++) {
         const FireStarterCode* code = m_hostCodes->Member(settings, i);
         float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i, variation);
         if (curResult < minResult) {
