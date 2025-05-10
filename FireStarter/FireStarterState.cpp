@@ -218,6 +218,7 @@ void FireStarterState::SaveState(std::string& text) const
     text += Format("    state.m_test = %llu;\r\n", m_test);
     text += Format("    state.m_seed = %llu;\r\n", m_seed);
     text += Format("    state.m_optimize_pass = %llu;\r\n", m_optimize_pass);
+    text += Format("    state.m_bestResult = %.8ff;\r\n", m_bestResult);
     text += Format("    state.m_oldResult = %.8ff;\r\n", m_oldResult);
     text += Format("    state.m_evolveWeight = %ff;\r\n", m_evolveWeight);
     text += Format("    state.m_optimizeValid = %s;\r\n", m_optimizeValid ? "true" : "false");
@@ -357,6 +358,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     m_test = test;
     m_seed = 0;
     m_optimize_pass = 0;
+    m_bestResult = m_settings.m_startResult;
     m_oldResult = m_settings.m_startResult;
     m_optimizeValid = false;
 
@@ -366,24 +368,27 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitNetwork();
 } // InitState
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index)
+void FireStarterState::InitCode(const FireStarterSettings& settings, const FireStarterCode* codes, float result, unsigned int index)
 {
     // Load the state's program from the GPU evolved code.
-    if (code)
-        CopyCode(code);
+    if (codes)
+        CopyCode(codes->Member(settings, index));
 
     // Load the state's data from the population data.
+    m_oldResult = m_bestResult;
+    m_bestResult = result;
     m_minIndex = index;
     m_optimizeValid = true;
-} // InitResult
+} // InitCode
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index)
+void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, const FireStarterCode* code, unsigned int variation, unsigned int index)
 {
     // Load the state's program from the GPU evolved code.
     if (code)
         CopyCode(code);
 
     // Load the state's data from the population data.
+    const FireStarterResult* result = FireStarterPopulation::PopulationResult(population, settings, index, variation);
     Result(variation)->Copy(result, settings.m_registers);
     m_minIndex = index;
     m_optimizeValid = true;
@@ -393,3 +398,26 @@ void FireStarterState::InitResult(const FireStarterSettings& settings, const Fir
 {
     InitResult(settings, FireStarterPopulation::PopulationResult(population, settings, index, variation), nullptr, variation, index);
 } // InitResult
+
+void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* population, const FireStarterCode* codes, unsigned int index)
+{
+    // Load the state's program from the GPU evolved code.
+    if (codes)
+        CopyCode(codes->Member(settings, index));
+
+    // Load the state's data from the population data.
+    for (unsigned int v = 0; v < settings.m_variations; v++) {
+        const FireStarterResult* result = FireStarterPopulation::PopulationResult(population, settings, index, v);
+        Result(v)->Copy(result, settings.m_registers);
+    }
+    m_oldResult = m_bestResult;
+    m_bestResult = MaxResults();
+    m_minIndex = index;
+    m_optimizeValid = true;
+} // InitResults
+
+void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index)
+{
+    for (unsigned int v = 0; v < settings.m_variations; v++) 
+        InitResult(settings, FireStarterPopulation::PopulationResult(population, settings, index, v), nullptr, v, index);
+} // InitResults

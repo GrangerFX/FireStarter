@@ -428,6 +428,7 @@ public:
     unsigned long long m_optimize_pass = 0;
     unsigned int m_minIndex = 0;
     unsigned int m_uniqueRegisters = 0;
+    float m_bestResult = -1.0f; // Set to m_settings.m_startResult when the state is initialized.
     float m_oldResult = -1.0f;  // Set to m_settings.m_startResult when the state is initialized.
     float m_evolveWeight = 0.0f;
     float m_precision = 0.0f;
@@ -454,6 +455,7 @@ private:
         m_optimize_pass = other.m_optimize_pass;
         m_minIndex = other.m_minIndex;
         m_uniqueRegisters = other.m_uniqueRegisters;
+        m_bestResult = other.m_bestResult;
         m_oldResult = other.m_oldResult;
         m_evolveWeight = other.m_evolveWeight;
         m_optimizeValid = other.m_optimizeValid;
@@ -480,6 +482,7 @@ public:
         result = result && packet.Packetize(m_optimize_pass);
         result = result && packet.Packetize(m_minIndex);
         result = result && packet.Packetize(m_uniqueRegisters);
+        result = result && packet.Packetize(m_bestResult);
         result = result && packet.Packetize(m_oldResult);
         result = result && packet.Packetize(m_evolveWeight);
         result = result && packet.Packetize(m_optimizeValid);
@@ -784,14 +787,18 @@ public:
     {
         m_settings = settings;
         m_network = network;
+        m_oldResult = m_bestResult;
+        m_bestResult = MaxResults();
         m_minIndex = index;
         m_optimizeValid = true;
     } // InitNetwork
 
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
-    void InitResult(const FireStarterSettings& settings, float result, const FireStarterCode* code, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, const FireStarterCode* code, unsigned int variation, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterResult* result, unsigned int variation, unsigned int index);
+    void InitCode(const FireStarterSettings& settings, const FireStarterCode* codes, float result, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterResult* population, const FireStarterCode* code, unsigned int variation, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int variation, unsigned int index);
+    void InitResults(const FireStarterSettings& settings, const FireStarterResult* population, const FireStarterCode* codes, unsigned int index);
+    void InitResults(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index);
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0) : m_code(settings), m_results(settings)
     {

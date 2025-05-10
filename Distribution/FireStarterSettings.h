@@ -13,7 +13,7 @@
 #define FIRESTARTER_MULTIPROCESS    1           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    1           // Generate the settings and code using the GPU.
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
-#define FIRESTARTER_AUTO_QUIT       1           // Automatically exit the app after completing the work.
+#define FIRESTARTER_AUTO_QUIT       0           // Automatically exit the app after completing the work.
 
 #define FIRESTARTER_EVOLVE_RESULTS  0           // Copy all of the evolve and optimize data to the host.
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
@@ -41,7 +41,7 @@
 
 // First 16 tests of 16 states for unlimited generations is the standard evolve test.
 #define FIRESTARTER_START_TEST      0           // The starting test index.
-#define FIRESTARTER_TESTS           256
+#define FIRESTARTER_TESTS           1
 
 #define FIRESTARTER_AUTO            0           // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_RANDOM          1           // First result of states random instructions and data.
@@ -54,7 +54,7 @@
 #define FIRESTARTER_OPTIMIZE        8           // Optimize a previously CPU evolved state.
 #define FIRESTARTER_SOLUTION        9           // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           10
-#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_CPU
+#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_GPU
 
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1
@@ -87,7 +87,7 @@
 #define FIRESTARTER_EVOLVE_GPU_STREAMS          1
 #define FIRESTARTER_EVOLVE_GPU_UNITS            1
 #define FIRESTARTER_EVOLVE_GPU_STATES           1
-#define FIRESTARTER_EVOLVE_GPU_GENERATIONS      0
+#define FIRESTARTER_EVOLVE_GPU_GENERATIONS      1
 #define FIRESTARTER_EVOLVE_GPU_POPULATION       32768
 #define FIRESTARTER_EVOLVE_GPU_PASSES           256
 #define FIRESTARTER_EVOLVE_GPU_ITERATIONS       FIRESTARTER_ITERATIONS

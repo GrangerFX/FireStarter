@@ -299,7 +299,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
                 // Save the best state and best solution.
 #if FIRESTARTER_SAVE_BESTSTATE
-                complete->CompleteBestState(bestState);
+                if (bestState.m_optimizeValid)
+                    complete->CompleteBestState(bestState);
 #endif
             }
         }
