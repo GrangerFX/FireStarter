@@ -198,7 +198,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
         }
 
         // Update the state's best results.
-        state.InitResults(settings, m_hostPopulation, m_hostCodes, minIndex);
+        state.InitResults(settings, m_hostCodes, m_hostPopulation, minIndex);
     } else {
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
@@ -271,7 +271,13 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     }
 
     // Update the state's best results.
-    state.InitResult(settings, m_hostPopulation, m_hostCodes, variation, minIndex);
+    state.InitResult(settings, m_hostCodes, m_hostPopulation, variation, minIndex);
+
+    // Note: The above is used by Optimize and does not init the following variables:
+    state.m_oldResult = state.m_bestResult;
+    state.m_bestResult = minResult;
+    state.m_minIndex = minIndex;
+    state.m_optimizeValid = true;
 } // ExecuteEvolveNewPass
 
 void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int variation)
@@ -323,6 +329,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
         }
     }
 
+    // Update the state's best results.
     state.InitNetwork(settings, minNetwork, minIndex);
 } // ExecuteSinSimPass
 

@@ -795,9 +795,9 @@ public:
 
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
     void InitCode(const FireStarterSettings& settings, const FireStarterCode* codes, float result, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterResult* population, const FireStarterCode* code, unsigned int variation, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int variation, unsigned int index);
     void InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int variation, unsigned int index);
-    void InitResults(const FireStarterSettings& settings, const FireStarterResult* population, const FireStarterCode* codes, unsigned int index);
+    void InitResults(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index);
     void InitResults(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index);
 
     inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0) : m_code(settings), m_results(settings)
