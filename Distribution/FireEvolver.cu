@@ -218,9 +218,12 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
+        float evolutionScale;
+
         // Evolve the code and data.
         if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
             evolveAge = 0;
+            evolutionScale = FIRESTARTER_START_SCALE;
             code.InitCode(memberSeed);
             registers = code.Optimize();
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
@@ -229,6 +232,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             }
             memberResult = FIRESTARTER_START_RESULT;
         } else {
+            evolutionScale = FIRESTARTER_SCALE * memberResult;
             if (evolveAge > 0)
                 for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                     float evolutionScale = FIRESTARTER_SCALE * variationResults[v];
@@ -247,7 +251,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
                 data[v][d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
                 float curResult = variationResult * 0.99f;
                 if (TestEvaluate(sharedData, data, code, target[v], theta, curResult))
-                    curResult = curResult;
+                    variationResult = curResult;
                 else
                     data[v][d] = old;
             }
