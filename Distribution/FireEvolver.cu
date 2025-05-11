@@ -202,17 +202,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Evolve the code and data.
-        if (!evolveAge || (evolveAge >= 6 * FIRESTARTER_VARIATIONS)) {
-#if 1
-            evolveAge = 0;
-            code.InitCode(memberSeed);
-            registers = code.Optimize();
-            memberResult = FIRESTARTER_START_RESULT;
-            for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
-                data[v].InitData(memberSeed, registers);
-                variationResults[v] = FIRESTARTER_START_RESULT;
-            }
-#else
+        if (!evolveAge || (evolveAge >= 6)) {
             bool valid = false;
             unsigned int i = 0;
             do {
@@ -244,27 +234,26 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             }
             memberResult = FIRESTARTER_START_RESULT;
             evolveAge = 1;
-#endif
         } else if (evolveAge > 1) {
             float evolutionScale = FIRESTARTER_SCALE * variationResults[maxVariation];
             data[maxVariation].RandomData(memberSeed, evolutionScale, registers);
         }
 
-
         // Iterate to evolve the highest variation.
-        float variationResult = variationResults[maxVariation];
-        float evolutionScale = variationResult * FIRESTARTER_SCALE;
+        float evolutionScale = variationResults[maxVariation] * FIRESTARTER_SCALE;
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[maxVariation][d];
             data[maxVariation][d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
-            float curResult = variationResult * 0.99f;
-            if (TestEvaluate(sharedData, data, code, target[maxVariation], theta, curResult))
-                variationResult = curResult;
-            else
+            float curResult = variationResults[maxVariation] * 0.99f;
+            if (TestEvaluate(sharedData, data, code, target[maxVariation], theta, curResult)) {
+                variationResults[maxVariation] = curResult;
+                for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
+                    if (variationResults[v] > curResult)
+                        maxVariation = v;
+            } else
                 data[maxVariation][d] = old;
         }
-        variationResults[maxVariation] = variationResult;
 
         // Find the new highest variation.
         float result = 0.0f;
@@ -289,7 +278,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
                 oldData[v] = data[v];
             memberResult = result;
-            evolveAge = 0;
+            evolveAge = 1;
         } else {
             // Revert to the original code and data.
             code = oldCode;
