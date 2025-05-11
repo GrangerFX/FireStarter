@@ -234,10 +234,18 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         } else {
             evolutionScale = FIRESTARTER_SCALE * memberResult;
             if (evolveAge > 0)
+#if 1
+            {
+                unsigned int v = RANDOMMOD(memberSeed, FIRESTARTER_VARIATIONS);
+                float evolutionScale = FIRESTARTER_SCALE * variationResults[v];
+                data[v].RandomData(memberSeed, evolutionScale, registers);
+            }
+#else
                 for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
                     float evolutionScale = FIRESTARTER_SCALE * variationResults[v];
                     data[v].RandomData(memberSeed, evolutionScale, registers);
                 }
+#endif
         }
 
         // Iterate to evolve the data.
