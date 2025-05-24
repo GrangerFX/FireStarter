@@ -1,0 +1,45 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 384
+samples = 15
+iterations = 64
+candidates = 0
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation=  2 *Result=0.00228402  Best=0.00228402   Time=0.103  Run Time=0.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation=  3 *Result=0.00000379  Best=0.00000379   Time=0.102  Run Time=1.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation=  4  Result=0.00008216  Best=0.00000379   Time=0.092  Run Time=1.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation=  5  Result=0.00003015  Best=0.00000379   Time=0.097  Run Time=1.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation=  6  Result=0.00007517  Best=0.00000379   Time=0.097  Run Time=2.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation=  7  Result=0.00320351  Best=0.00000379   Time=0.097  Run Time=2.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation=  8  Result=0.00145004  Best=0.00000379   Time=0.096  Run Time=3.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation=  9  Result=0.00005262  Best=0.00000379   Time=0.098  Run Time=3.7
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation= 10  Result=0.00001955  Best=0.00000379   Time=0.088  Run Time=4.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation= 11  Result=0.00000656  Best=0.00000379   Time=0.096  Run Time=4.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation= 12  Result=0.00014009  Best=0.00000379   Time=0.101  Run Time=5.0
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation= 13  Result=0.00001587  Best=0.00000379   Time=0.101  Run Time=5.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test= 3  Generation= 14 *Result=0.00000058  Best=0.00000058   Time=0.101  Run Time=6.0

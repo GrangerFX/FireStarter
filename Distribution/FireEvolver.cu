@@ -48,7 +48,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 } // TestEvaluate
 
 #if FIRESTARTER_VARIATIONS == 1
-#if 1
+#if 0
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
 GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
@@ -89,16 +89,13 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
-        float evolutionScale;
-
         // Evolve the code and data.
         if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
             code.InitCode(memberSeed);
             registers = code.Optimize();
             data.InitData(memberSeed, registers);
             memberResult = FIRESTARTER_START_RESULT;
-            TestEvaluate(sharedData, data, code, target, theta, memberResult);
-            if (!pass || (memberResult < FIRESTARTER_START_RESULT)) {
+            if (TestEvaluate(sharedData, data, code, target, theta, memberResult) || !pass) {
                 oldCode = code;
                 oldData = data;
                 oldResult = memberResult;
@@ -111,7 +108,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         }
 
         // Randomize a register each generation.
-        evolutionScale = FIRESTARTER_SCALE * memberResult;
+        float evolutionScale = FIRESTARTER_SCALE * memberResult;
         if (evolveAge > 0)
             data.RandomData(memberSeed, evolutionScale, registers);
 
