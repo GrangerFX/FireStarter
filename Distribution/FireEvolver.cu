@@ -175,6 +175,8 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     // The evolution code and data.
     FireStarterCode code;
     FireStarterData data[FIRESTARTER_VARIATIONS];
+    FireStarterData bestData[FIRESTARTER_VARIATIONS];
+    FireStarterData oldData[FIRESTARTER_VARIATIONS];
 
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_EVOLVE_GPU_SAMPLES];
@@ -194,16 +196,47 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     unsigned int registers = 0;
 
     // The first generation is initalized with random numbers.
-    FireStarterCode bestCode;
-    FireStarterCode oldCode;
-    FireStarterData bestData[FIRESTARTER_VARIATIONS];
-    FireStarterData oldData[FIRESTARTER_VARIATIONS];
+    float memberResult = FIRESTARTER_START_RESULT;
     float memberVariationResults[FIRESTARTER_VARIATIONS];
+#if 0
+    for (unsigned int i = 0; i < 100; i++) {
+        code.InitCode(memberSeed);
+        registers = code.Optimize();
+        for (unsigned int v = 0; (v < FIRESTARTER_VARIATIONS); v++)
+            memberVariationResults[v] = FIRESTARTER_START_RESULT;
+        memberResult = 0.0f;
+        for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+            data[v].InitData(memberSeed, registers);
+            if (TestEvaluate(sharedData, data[v], code, target[v], theta, memberVariationResults[v])) {
+                if (memberVariationResults[v] > memberResult)
+                    memberResult = memberVariationResults[v];
+            } else {
+                memberResult = FIRESTARTER_START_RESULT;
+                break;
+            }
+        }
+        if (memberResult < FIRESTARTER_START_RESULT)
+            break;
+    }
+#else
+    for (unsigned int v = 0; (v < FIRESTARTER_VARIATIONS); v++)
+        memberVariationResults[v] = FIRESTARTER_START_RESULT;
+#endif
+
+    // The first generation is initalized with random numbers.
+    FireStarterCode bestCode = code;
+    FireStarterCode oldCode = code;
     float bestVariationResults[FIRESTARTER_VARIATIONS];
     float oldVariationResults[FIRESTARTER_VARIATIONS];
-    float memberResult = FIRESTARTER_START_RESULT;
-    float bestResult = FIRESTARTER_START_RESULT;
-    float oldResult = FIRESTARTER_START_RESULT;
+    for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+        bestData[v] = data[v];
+        oldData[v] = data[v];
+        bestVariationResults[v] = memberVariationResults[v];
+        oldVariationResults[v] = memberVariationResults[v];
+    }
+    float bestResult = memberResult;
+    float oldResult = memberResult;
+
     for (unsigned int v = 0; (v < FIRESTARTER_VARIATIONS); v++) {
         memberVariationResults[v] = FIRESTARTER_START_RESULT;
         bestVariationResults[v] = FIRESTARTER_START_RESULT;
