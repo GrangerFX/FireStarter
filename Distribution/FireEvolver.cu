@@ -204,7 +204,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     FireStarterData bestData = data;
     FireStarterData oldData = data;
     float bestResult = memberResult;
-    float result = memberResult;
+    float oldResult = memberResult;
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
@@ -217,7 +217,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             registers = code.Optimize();
             data.InitData(memberSeed, registers);
 #if 1
-            result = FIRESTARTER_START_RESULT;
+            oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
 #else
             memberResult = FIRESTARTER_START_RESULT;
@@ -244,32 +244,33 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
-            float curResult = result * 0.99f;
+            float curResult = memberResult * 0.99f;
             if (TestEvaluate(sharedData, data, code, target, theta, curResult))
-                result = curResult;
+                memberResult = curResult;
             else
                 data[d] = old;
         }
 
         // Did the results improve?
-        if (!pass || (result < memberResult)) {
+        if (!pass || (memberResult < oldResult)) {
             // If the result was better, save the results.
             oldCode = code;
             oldData = data;
-            memberResult = result;
+            oldResult = memberResult;
             evolveAge = 0;
 
             // Update the best result.
-            if (result < bestResult) {
+            if (memberResult < bestResult) {
                 bestCode = code;
                 bestData = data;
-                bestResult = result;
+                bestResult = memberResult;
                 bestAge = evolveAge;
             }
         } else {
             // Revert to the original code and data.
             code = oldCode;
             data = oldData;
+            memberResult = oldResult;
             evolveAge++;
         }
     }
