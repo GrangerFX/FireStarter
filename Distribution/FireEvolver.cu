@@ -80,6 +80,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
 
     // The first generation is initalized with random numbers.
     float memberResult = FIRESTARTER_START_RESULT;
+#if 0
     for (unsigned int i = 0; i < 10; i++) {
         code.InitCode(memberSeed);
         registers = code.Optimize();
@@ -87,6 +88,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         if (TestEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
+#endif
 
     FireStarterCode bestCode = code;
     FireStarterCode oldCode = code;
