@@ -45,16 +45,17 @@
 
 #define FIRESTARTER_AUTO            0           // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_RANDOM          1           // First result of states random instructions and data.
-#define FIRESTARTER_EVOLVE_CPU      2           // CPU evolution used to generate actual results.
-#define FIRESTARTER_EVOLVE_GPU      3           // GPU evolution used to find faster algorithms.
-#define FIRESTARTER_EVOLVE_NEW      4           // GPU new evolution.
-#define FIRESTARTER_EVOLVE_SINSIM   5           // SinSim evolution.
-#define FIRESTARTER_SINSIM          6           // SinSim mini neural net algorithm for comparison.
-#define FIRESTARTER_SPEED_TEST      7           // Speed testing for variations of GPU evolution.
-#define FIRESTARTER_OPTIMIZE        8           // Optimize a previously CPU evolved state.
-#define FIRESTARTER_SOLUTION        9           // Execute or validate the most recently evolved best state.
-#define FIRESTARTER_MODES           10
-#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_GPU
+#define FIRESTARTER_EVOLVE_SELECT   2           // Evolution using both the CPU and GPU.
+#define FIRESTARTER_EVOLVE_CPU      3           // CPU evolution used to generate actual results.
+#define FIRESTARTER_EVOLVE_GPU      4           // GPU evolution used to find faster algorithms.
+#define FIRESTARTER_EVOLVE_NEW      5           // GPU new evolution.
+#define FIRESTARTER_EVOLVE_SINSIM   6           // SinSim evolution.
+#define FIRESTARTER_SINSIM          7           // SinSim mini neural net algorithm for comparison.
+#define FIRESTARTER_SPEED_TEST      8           // Speed testing for variations of GPU evolution.
+#define FIRESTARTER_OPTIMIZE        9           // Optimize a previously CPU evolved state.
+#define FIRESTARTER_SOLUTION        10          // Execute or validate the most recently evolved best state.
+#define FIRESTARTER_MODES           11
+#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_CPU
 
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1
@@ -70,6 +71,21 @@
 #define FIRESTARTER_RANDOM_TESTS                11000
 #define FIRESTARTER_RANDOM_TARGET               FIRESTARTER_TARGET
 
+#define FIRESTARTER_EVOLVE_SELECT_STREAMS       1
+#define FIRESTARTER_EVOLVE_SELECT_UNITS         8
+#define FIRESTARTER_EVOLVE_SELECT_STATES        16
+#define FIRESTARTER_EVOLVE_SELECT_GENERATIONS   0
+#define FIRESTARTER_EVOLVE_SELECT_POPULATION    32768
+#define FIRESTARTER_EVOLVE_SELECT_PASSES        FIRESTARTER_PASSES
+#define FIRESTARTER_EVOLVE_SELECT_ITERATIONS    FIRESTARTER_ITERATIONS
+#define FIRESTARTER_EVOLVE_SELECT_SAMPLES       FIRESTARTER_SAMPLES
+#define FIRESTARTER_EVOLVE_SELECT_CANDIDATES    FIRESTARTER_CANDIDATES
+#define FIRESTARTER_EVOLVE_SELECT_ATTEMPTS      0
+#define FIRESTARTER_EVOLVE_SELECT_OPTIMIZE      1
+#define FIRESTARTER_EVOLVE_SELECT_TESTS         16
+#define FIRESTARTER_EVOLVE_SELECT_TARGET        FIRESTARTER_TARGET
+
+#if 0
 #define FIRESTARTER_EVOLVE_CPU_STREAMS          1
 #define FIRESTARTER_EVOLVE_CPU_UNITS            8
 #define FIRESTARTER_EVOLVE_CPU_STATES           16
@@ -83,6 +99,21 @@
 #define FIRESTARTER_EVOLVE_CPU_OPTIMIZE         1
 #define FIRESTARTER_EVOLVE_CPU_TESTS            16
 #define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
+#else
+#define FIRESTARTER_EVOLVE_CPU_STREAMS          1
+#define FIRESTARTER_EVOLVE_CPU_UNITS            8
+#define FIRESTARTER_EVOLVE_CPU_STATES           16
+#define FIRESTARTER_EVOLVE_CPU_GENERATIONS      0
+#define FIRESTARTER_EVOLVE_CPU_POPULATION       32768
+#define FIRESTARTER_EVOLVE_CPU_PASSES           FIRESTARTER_PASSES
+#define FIRESTARTER_EVOLVE_CPU_ITERATIONS       FIRESTARTER_ITERATIONS
+#define FIRESTARTER_EVOLVE_CPU_SAMPLES          FIRESTARTER_SAMPLES
+#define FIRESTARTER_EVOLVE_CPU_CANDIDATES       FIRESTARTER_CANDIDATES
+#define FIRESTARTER_EVOLVE_CPU_ATTEMPTS         0
+#define FIRESTARTER_EVOLVE_CPU_OPTIMIZE         1
+#define FIRESTARTER_EVOLVE_CPU_TESTS            16
+#define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
+#endif
 
 #if FIRESTARTER_VARIATIONS == 1
 #define FIRESTARTER_EVOLVE_GPU_STREAMS          1
@@ -289,6 +320,8 @@ public:
         switch (mode) {
             case FIRESTARTER_RANDOM:
                 return "FIRESTARTER_RANDOM";
+            case FIRESTARTER_EVOLVE_SELECT:
+                return "FIRESTARTER_EVOLVE_SELECT";
             case FIRESTARTER_EVOLVE_CPU:
                 return "FIRESTARTER_EVOLVE_CPU";
             case FIRESTARTER_EVOLVE_GPU:
@@ -318,6 +351,7 @@ public:
     static inline const char* ProgramName(unsigned int mode)
     {
         switch (mode) {
+            case FIRESTARTER_EVOLVE_SELECT:
             case FIRESTARTER_EVOLVE_GPU:
                 return "FireEvolver.cu";
             case FIRESTARTER_EVOLVE_NEW:
@@ -342,6 +376,8 @@ public:
     static inline const char* FunctionName(unsigned int mode)
     {
         switch (mode) {
+            case FIRESTARTER_EVOLVE_SELECT:
+                return "Selecter";
             case FIRESTARTER_EVOLVE_GPU:
                 return "Evolver";
             case FIRESTARTER_EVOLVE_NEW:
@@ -417,6 +453,21 @@ public:
                 m_optimize =    FIRESTARTER_RANDOM_OPTIMIZE;
                 m_tests =       FIRESTARTER_RANDOM_TESTS;
                 m_target =      FIRESTARTER_RANDOM_TARGET;
+                break;
+
+            case FIRESTARTER_EVOLVE_SELECT:
+                m_streams =     FIRESTARTER_EVOLVE_SELECT_STREAMS;
+                m_units =       FIRESTARTER_EVOLVE_SELECT_UNITS;
+                m_states =      FIRESTARTER_EVOLVE_SELECT_STATES;
+                m_generations = FIRESTARTER_EVOLVE_SELECT_GENERATIONS;
+                m_population =  FIRESTARTER_EVOLVE_SELECT_POPULATION;
+                m_passes =      FIRESTARTER_EVOLVE_SELECT_PASSES;
+                m_iterations =  FIRESTARTER_EVOLVE_SELECT_ITERATIONS;
+                m_samples =     FIRESTARTER_EVOLVE_SELECT_SAMPLES;
+                m_attempts =    FIRESTARTER_EVOLVE_SELECT_ATTEMPTS;
+                m_optimize =    FIRESTARTER_EVOLVE_SELECT_OPTIMIZE;
+                m_tests =       FIRESTARTER_EVOLVE_SELECT_TESTS;
+                m_target =      FIRESTARTER_EVOLVE_SELECT_TARGET;
                 break;
 
             case FIRESTARTER_EVOLVE_CPU:
@@ -547,6 +598,7 @@ public:
     FireStarterSetting m_settings[FIRESTARTER_MODES] = {
         FireStarterSetting(FIRESTARTER_AUTO),
         FireStarterSetting(FIRESTARTER_RANDOM),
+        FireStarterSetting(FIRESTARTER_EVOLVE_SELECT),
         FireStarterSetting(FIRESTARTER_EVOLVE_CPU),
         FireStarterSetting(FIRESTARTER_EVOLVE_GPU),
         FireStarterSetting(FIRESTARTER_EVOLVE_NEW),

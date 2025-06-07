@@ -92,17 +92,20 @@ public:
         return *CodePtr();
     } // Code
 
-    void InitCode(const FireStarterSettings& settings)
+    void InitCode(const FireStarterSettings& settings, const FireStarterCode* code = nullptr)
     {
-        m_codeVector.resize(FireStarterCodeGenerate::CodeSize(settings));
+        size_t codeSize = FireStarterCode::CodeSize(settings);
+        m_codeVector.resize(codeSize);
 #if FIRESTARTER_STATE_DEBUG
         m_codeDebug = CodePtr();
 #endif
+        if (code)
+            memcpy(m_codeVector.data(), code, codeSize);
     } // InitCode
 
-    FireStarterCodeVector(const FireStarterSettings& settings)
+    FireStarterCodeVector(const FireStarterSettings& settings, const FireStarterCode* code = nullptr)
     {
-        InitCode(settings);
+        InitCode(settings, code);
     } // FireStarterCodeVector
 
     inline FireStarterCodeVector(const FireStarterCodeVector& other)
@@ -438,10 +441,14 @@ public:
 private:
     inline void swap(const FireStarterState& other)
     {
+// Note: Commented out values are not copied intentionally.
+        m_settings = other.m_settings;
         m_results = other.m_results;
         m_code = other.m_code;
+//      m_bestCodes = other.m_bestCodes;
         m_network = other.m_network;
-        m_settings = other.m_settings;
+//      m_timer = other.m_timer;
+//      m_evaluateCode = other.m_evaluateCode;
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
@@ -458,6 +465,7 @@ private:
         m_bestResult = other.m_bestResult;
         m_oldResult = other.m_oldResult;
         m_evolveWeight = other.m_evolveWeight;
+        m_precision = other.m_precision;
         m_optimizeValid = other.m_optimizeValid;
         m_evolveComplete = other.m_evolveComplete;
     } // swap
