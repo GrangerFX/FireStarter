@@ -87,6 +87,7 @@ FireStarterBestCodes::FireStarterBestCodes(const FireStarterSettings& settings, 
 
 FireStarterBestCodes::FireStarterBestCodes(void)
 {
+    InitBestCodes(FireStarterSettings());
 } // FireStarterBestCodes
 
 FireStarterBestCodes::~FireStarterBestCodes(void)
@@ -335,7 +336,6 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
 {
     m_timer.Start();
     m_settings = settings;
-    InitCode();
 
     if (m_settings.m_variations > 1) {
         m_variationOrder.resize(m_settings.m_variations);
@@ -365,6 +365,7 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitGenerationSeed();
     InitResults();
     InitCode();
+    InitBestCodes();
     InitNetwork();
 } // InitState
 

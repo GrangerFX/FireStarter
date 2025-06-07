@@ -786,6 +786,11 @@ public:
         m_code.InitCode(m_settings);
     } // InitCode
 
+    inline void InitBestCodes(void)
+    {
+        m_bestCodes.InitBestCodes(m_settings);
+    } // InitBestCodes
+
     inline void InitNetwork(void)
     {
         SinSimInitNetwork(m_network);
@@ -808,7 +813,7 @@ public:
     void InitResults(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index);
     void InitResults(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index);
 
-    inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0) : m_code(settings), m_results(settings)
+    inline FireStarterState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0)
     {
         InitState(settings, generation, index, id, test);
     } // FireStarterState
@@ -821,6 +826,6 @@ public:
 
     inline FireStarterState(void) 
     {
-        InitNetwork();
+        InitState(FireStarterSettings());
     } // FireStarterState
 }; // class FireStarterState;

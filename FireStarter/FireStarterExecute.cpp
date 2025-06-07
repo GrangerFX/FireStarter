@@ -28,10 +28,10 @@ void FireStarterExecute::FinishPopulation(void)
     m_hostResults = nullptr;
     checkCUDAErrors(cudaFreeHost(m_hostPopulation));
     m_hostPopulation = nullptr;
-    checkCUDAErrors(cudaFreeHost(m_hostNetworks));
-    m_hostNetworks = nullptr;
     checkCUDAErrors(cudaFreeHost(m_hostCodes));
     m_hostCodes = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_hostNetworks));
+    m_hostNetworks = nullptr;
 
 #if SIMULATE_GPU
     checkCUDAErrors(cudaFreeHost(m_deviceResults));
@@ -42,11 +42,14 @@ void FireStarterExecute::FinishPopulation(void)
     checkCUDAErrors(cudaFreeHost(m_devicePopulation1));
     m_devicePopulation1 = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_deviceNetworks));
-    m_deviceNetworks = nullptr;
-
     checkCUDAErrors(cudaFreeHost(m_deviceCodes));
     m_deviceCodes = nullptr;
+
+    checkCUDAErrors(cudaFreeHost(m_deviceParentCode));
+    m_deviceParentCode = nullptr;
+
+    checkCUDAErrors(cudaFreeHost(m_deviceNetworks));
+    m_deviceNetworks = nullptr;
 #else
     checkCUDAErrors(cudaFreeAsync(m_deviceResults, Stream()));
     m_deviceResults = nullptr;
@@ -56,96 +59,100 @@ void FireStarterExecute::FinishPopulation(void)
     checkCUDAErrors(cudaFreeAsync(m_devicePopulation1, Stream()));
     m_devicePopulation1 = nullptr;
 
-    checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
-    m_deviceNetworks = nullptr;
-
     checkCUDAErrors(cudaFreeAsync(m_deviceCodes, Stream()));
     m_deviceCodes = nullptr;
 
+    checkCUDAErrors(cudaFreeAsync(m_deviceParentCode, Stream()));
+    m_deviceParentCode = nullptr;
+
+    checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
+    m_deviceNetworks = nullptr;
+
     Context()->Synchronize();
 #endif
+
+    m_resultsSize = 0;
+    m_populationSize = 0;
+    m_codesSize = 0;
+    m_parentCodeSize = 0;
+    m_networksSize = 0;
 } // FinishPopulation
 
 bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 {
     bool result = true;
-    if ((settings.m_mode == FIRESTARTER_EVOLVE_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
-        // Reallocate the populations if the size has changed.
-        size_t resultsSize = settings.m_population * sizeof(float);
-        size_t populationSize = 0;
-        if (FIRESTARTER_EVOLVE_RESULTS || (settings.m_mode != FIRESTARTER_EVOLVE_SELECT) || (settings.m_mode != FIRESTARTER_EVOLVE_GPU))
+    size_t resultsSize = 0;
+    size_t populationSize = 0;
+    size_t codesSize = 0;
+    size_t parentCodeSize = 0;
+    size_t networksSize = 0;
+
+    if ((settings.m_mode == FIRESTARTER_EVOLVE_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
+        resultsSize = settings.m_population * sizeof(float);
+        if (FIRESTARTER_EVOLVE_RESULTS || (settings.m_mode != FIRESTARTER_EVOLVE_GPU))
             populationSize = FireStarterPopulation::PopulationSize(settings);
-        size_t codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
-        if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize)) {
-            FinishPopulation();
-            m_resultsSize = resultsSize;
-            m_populationSize = populationSize;
-            m_codesSize = codesSize;
-
-            checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
-            checkCUDAErrors(cudaMallocHost(&m_hostCodes, m_codesSize));
-            if (m_populationSize)
-                checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
-
-#if SIMULATE_GPU
-            checkCUDAErrors(cudaMallocHost(&m_deviceResults, m_resultsSize));
-            checkCUDAErrors(cudaMallocHost(&m_deviceCodes, m_codesSize));
-            if (m_populationSize)
-                checkCUDAErrors(cudaMallocHost(&m_devicePopulation0, m_populationSize));
-#else
-            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceCodes, m_codesSize, Stream()));
-            if (m_populationSize)
-                checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
-            Context()->Synchronize();
-#endif
-
-            result = m_hostResults && m_deviceResults && m_hostCodes && m_deviceCodes;
-            if (populationSize)
-                result = result && m_hostPopulation && m_devicePopulation0;
-        }
+        if ((settings.m_mode == FIRESTARTER_EVOLVE_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU))
+            codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
+        if (settings.m_mode == FIRESTARTER_EVOLVE_SELECT)
+            parentCodeSize = FireStarterCode::CodeSize(settings);
     } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
-        // Reallocate the populations if the size has changed.
-        size_t resultsSize = settings.m_population * sizeof(float);
-        size_t populationSize = FireStarterPopulation::PopulationSize(settings);
-        if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize)) {
-            FinishPopulation();
-            m_resultsSize = resultsSize;
-            m_populationSize = populationSize;
-
-            if (m_populationSize)
-                checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
-            else
-                checkCUDAErrors(cudaMallocHost(&m_hostPopulation, FireStarterResult::ResultSize(settings.m_registers)));
-
-#if SIMULATE_GPU
-            checkCUDAErrors(cudaMallocHost(&m_devicePopulation0, m_populationSize));
-            checkCUDAErrors(cudaMallocHost(&m_devicePopulation1, m_populationSize));
-#else
-            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
-            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation1, m_populationSize, Stream()));
-#endif
-
-            Context()->Synchronize();
-            result = m_hostPopulation && m_devicePopulation0 && m_devicePopulation1;
-        }
+        populationSize = FireStarterPopulation::PopulationSize(settings);
     } else if (settings.m_mode == FIRESTARTER_SINSIM) {
-        // Reallocate the populations if the size has changed.
-        size_t networksSize = settings.m_population * sizeof(SinSimNetwork);
-        if (m_networksSize != networksSize) {
-            FinishPopulation();
+        networksSize = settings.m_population * sizeof(SinSimNetwork);
+    }
 
-            m_networksSize = networksSize;
+    // Reallocate the data if the sizes has changed.
+    if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize) || (parentCodeSize != m_parentCodeSize) || (networksSize != m_networksSize)) {
+        FinishPopulation();
+        m_resultsSize = resultsSize;
+        m_populationSize = populationSize;
+        m_codesSize = codesSize;
+        m_parentCodeSize = parentCodeSize;
+        m_networksSize = networksSize;
+
+        if (m_resultsSize)
+            checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
+        if (m_codesSize)
+            checkCUDAErrors(cudaMallocHost(&m_hostCodes, m_codesSize));
+        if (m_populationSize)
+            checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
+        if (m_networksSize)
             checkCUDAErrors(cudaMallocHost(&m_hostNetworks, m_networksSize));
+
 #if SIMULATE_GPU
+        if (m_resultsSize)
+            checkCUDAErrors(cudaMallocHost(&m_deviceResults, m_resultsSize));
+        if (m_codesSize)
+            checkCUDAErrors(cudaMallocHost(&m_deviceCodes, m_codesSize));
+        if (m_populationSize) {
+            checkCUDAErrors(cudaMallocHost(&m_devicePopulation0, m_population0Size));
+            checkCUDAErrors(cudaMallocHost(&m_devicePopulation1, m_population1Size));
+        }
+        if (m_parentCodeSize)
+            checkCUDAErrors(cudaMallocHost(&m_deviceParentCode, m_parentCodeSize));
+        if (m_networksSize)
             checkCUDAErrors(cudaMallocHost(&m_deviceNetworks, m_networksSize));
 #else
-            checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
-#endif
-            Context()->Synchronize();
-
-            result = result && m_hostNetworks && m_deviceNetworks;
+        if (m_resultsSize)
+            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
+        if (m_codesSize)
+            checkCUDAErrors(cudaMallocAsync(&m_deviceCodes, m_codesSize, Stream()));
+        if (m_populationSize) {
+            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
+            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation1, m_populationSize, Stream()));
         }
+        if (m_parentCodeSize)
+            checkCUDAErrors(cudaMallocAsync(&m_deviceParentCode, m_parentCodeSize, Stream()));
+        if (m_networksSize)
+            checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
+        Context()->Synchronize();
+#endif
+
+        result = (!m_resultsSize || (m_hostResults && m_deviceResults));
+        result = result && (!m_codesSize || (m_hostCodes && m_deviceResults));
+        result = result && (!m_populationSize || (m_hostPopulation && m_devicePopulation0 && m_devicePopulation1));
+        result = result && (!m_parentCodeSize || m_deviceParentCode);
+        result = result && (!m_networksSize || (m_hostNetworks && m_deviceNetworks));
     }
     return result;
 } // InitPopulation
@@ -161,12 +168,14 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state)
     unsigned long long seed = state.EvolutionSeed();
     unsigned int passes = settings.m_passes;
     unsigned int populationSize = settings.m_population;
-    FireStarterCode* parentCode = state.m_generation ? state.m_code.CodePtr() : nullptr;
+    FireStarterCode* parentCode = state.m_code.CodePtr();
+
+    checkCUDAErrors(cudaMemcpyAsync(m_deviceParentCode, parentCode, m_parentCodeSize, cudaMemcpyHostToDevice, Stream()));
 
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
                     reinterpret_cast<void*>(&m_devicePopulation0),
                     reinterpret_cast<void*>(&m_deviceCodes),
-                    reinterpret_cast<void*>(&parentCode),
+                    reinterpret_cast<void*>(&m_deviceParentCode),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&populationSize)
@@ -180,6 +189,7 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state)
         &arr[0],                                            // arguments
         0));
 
+    Context()->Synchronize();
     if (m_populationSize)
         checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));

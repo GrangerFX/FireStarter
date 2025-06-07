@@ -14,6 +14,7 @@ private:
     FireStarterResult* m_devicePopulation1 = nullptr;
     FireStarterCode* m_hostCodes = nullptr;
     FireStarterCode* m_deviceCodes = nullptr;
+    FireStarterCode* m_deviceParentCode = nullptr;
     SinSimNetwork* m_hostNetworks = nullptr;
     SinSimNetwork* m_deviceNetworks = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
@@ -29,6 +30,7 @@ private:
     size_t m_populationSize = 0;
     size_t m_networksSize = 0;
     size_t m_codesSize = 0;
+    size_t m_parentCodeSize = 0;
     size_t m_executeIndex = 0;
 
     void FinishPopulation(void);
