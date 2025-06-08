@@ -161,9 +161,9 @@ void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int
         // As a fallback and validation test, generate the target and evaluate data on the CPU.
         SinSimNetwork network = *state.Network();
         for (unsigned int i = 0; i < evaluateWidth; i++) {
-            float input = SinSimInputSample(i);
-            m_hostEvaluateData[i] = SinSimTestNetwork(network, input);
-            m_hostTargetData[i] = SinSimTargetSample(i);
+            float input = SinSimNetwork::SinSimInputSample(i);
+            m_hostTargetData[i] = SinSimNetwork::SinSimTargetSample(i);
+            m_hostEvaluateData[i] = network.SinSimTestNetwork(input);
         }
     }
 } // EvaluateSinSim

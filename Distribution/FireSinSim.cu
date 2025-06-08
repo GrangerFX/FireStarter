@@ -13,9 +13,9 @@ GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, 
     if (results && data) {
         SinSimNetwork network(*data);
         for (unsigned int s = 0; s < size; s++) {
-            float input = SinSimInputSample(s);
-            float sample = SinSimTestNetwork(network, input);
-            float target = SinSimTargetSample(s);
+            float input = SinSimNetwork::SinSimInputSample(s);
+            float target = SinSimNetwork::SinSimTargetSample(s);
+            float sample = network.SinSimTestNetwork(input);
             targets[s] = target;
             results[s] = sample;
         }
@@ -37,30 +37,30 @@ GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, co
     if (generation)
         bestNetwork = networks[member];
     else
-        SinSimInitNetwork(bestNetwork, memberSeed);
+        bestNetwork.SinSimInitNetwork(memberSeed);
 
     // Perform all the passes on the GPU.
     SinSimNetwork passNetwork = bestNetwork;
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Iterate to evolve the data.
         if (passNetwork.age > SINSIM_NETWORK_MAXAGE)
-            SinSimInitNetwork(passNetwork, memberSeed);
+            passNetwork.SinSimInitNetwork(memberSeed);
 
         for (unsigned int i = 0; i < FIRESTARTER_SINSIM_ITERATIONS; i++) {
             // Randomize something in the network.
             SinSimNetwork newNetwork = passNetwork;
-            SinSimEvolveNetwork(newNetwork, memberSeed);
+            newNetwork.SinSimEvolveNetwork(memberSeed);
 
             // Test and grade the network.
             SinSimNetwork network = newNetwork;
             network.grade = 0.0f;
             for (unsigned int s = 0; s < FIRESTARTER_SINSIM_SAMPLES; s++) {
-                float input = SinSimInputSample(s);
-                float sample = SinSimTestNetwork(network, input);
+                float input = SinSimNetwork::SinSimInputSample(s);
+                float sample = network.SinSimTestNetwork(input);
 
                 // Grade the candidate samples.
                 if (s >= FIRESTARTER_SINSIM_SAMPLES - FIRESTARTER_SINSIM_CANDIDATES) {
-                    float target = SinSimTargetSample(s);
+                    float target = SinSimNetwork::SinSimTargetSample(s);
                     float difference = sample - target;
                     network.grade += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_CANDIDATES);
                 }

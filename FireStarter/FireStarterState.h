@@ -793,7 +793,7 @@ public:
 
     inline void InitNetwork(void)
     {
-        SinSimInitNetwork(m_network);
+        m_network.SinSimInitNetwork();
     } // InitCode
 
     inline void InitNetwork(const FireStarterSettings& settings, const SinSimNetwork& network, unsigned int index)
