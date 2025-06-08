@@ -6,7 +6,7 @@ const FireStarterCode* FireStarterBestCodes::GetBestCode(void)
 {
     if (!m_numCodes)
         return nullptr;
-    FireStarterCode* bestCode = m_bestCodes[0];
+    const FireStarterCodeVector& bestCode = m_bestCodes[0];
     float bestResult = m_bestResults[0];
     for (size_t i = 1; i < m_maxCodes; i++) {
         m_bestCodes[i - 1] = m_bestCodes[i];
@@ -16,7 +16,7 @@ const FireStarterCode* FireStarterBestCodes::GetBestCode(void)
     m_bestResults[m_maxCodes - 1] = bestResult;
     m_numCodes--;
     m_worstResult = m_settings.m_startResult;
-    return bestCode;
+    return bestCode.CodePtr();
 } // GetBestCode
 
 bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
@@ -26,25 +26,22 @@ bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
         return false;
 
     // Only add states with a unique instruction set.
-    std::vector<unsigned char> codeInstructions(m_codeSize);
-    memcpy(codeInstructions.data(), code, m_codeSize);
-    if (m_testedCodes.count(codeInstructions))
+    FireStarterCodeVector newCode(m_settings, code);
+    if (m_testedCodes.count(newCode.Vector()))
         return false;
-    m_testedCodes.insert(codeInstructions);
+    m_testedCodes.insert(newCode.Vector());
 
     // Insert the new code and result at the end of the list.
     float newResult = result;
     size_t newIndex = (m_numCodes < m_maxCodes) ? m_numCodes : --m_numCodes;
     m_bestResults[newIndex] = newResult;
-    FireStarterCode* newCode = m_bestCodes[newIndex];
-    memcpy(newCode, code, m_codeSize);
+    m_bestCodes[newIndex] = newCode;
 
     for (size_t i = 0; i < m_numCodes; i++) {
-        FireStarterCode* curCode = m_bestCodes[i];
         float curResult = m_bestResults[i];
         if (curResult > newResult) {
             for (size_t j = i; j < m_numCodes; j++) {
-                curCode = m_bestCodes[j];
+                FireStarterCodeVector curCode = m_bestCodes[j];
                 curResult = m_bestResults[j];
                 m_bestCodes[j] = newCode;
                 m_bestResults[j] = newResult;
@@ -89,12 +86,6 @@ FireStarterBestCodes::FireStarterBestCodes(void)
 {
     InitBestCodes(FireStarterSettings());
 } // FireStarterBestCodes
-
-FireStarterBestCodes::~FireStarterBestCodes(void)
-{
-    for (size_t i = 0; i < m_bestCodes.size(); i++)
-        free(m_bestCodes[i]);
-} // ~FireStarterBestCodes
 
 void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix, const std::string& postfix)
 {

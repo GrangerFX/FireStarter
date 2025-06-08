@@ -67,10 +67,10 @@ public:
         return m_codeVector.data();
     } // data
 
-    inline const std::vector<unsigned char>& vector(void) const
+    inline const std::vector<unsigned char>& Vector(void) const
     {
         return m_codeVector;
-    } // vector
+    } // Vector
 
     inline FireStarterCodeGenerate* CodePtr(void)
     {
@@ -391,7 +391,7 @@ public:
 class FireStarterBestCodes {
 private:
     std::set<std::vector<unsigned char>> m_testedCodes;
-    std::vector<FireStarterCode*> m_bestCodes;
+    std::vector<FireStarterCodeVector> m_bestCodes;
     std::vector<float> m_bestResults;
     FireStarterSettings m_settings;
     size_t m_codeSize = 0;
@@ -406,7 +406,6 @@ public:
     void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(void);
-    ~FireStarterBestCodes(void);
 }; // FireStarterBestCodes
 
 class FireStarterState {
@@ -608,7 +607,7 @@ public:
 
     const std::vector<unsigned char>& CodeVector(void) const
     {
-        return m_code.vector();
+        return m_code.Vector();
     } // CodeVector
 
     inline bool ResultValid(void) const
@@ -826,6 +825,5 @@ public:
 
     inline FireStarterState(void) 
     {
-        InitState(FireStarterSettings());
     } // FireStarterState
 }; // class FireStarterState;
