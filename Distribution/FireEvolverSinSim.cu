@@ -24,9 +24,9 @@ GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, 
         FireStarterCode localCode(code);
         FireStarterData localData(data);
         for (unsigned int s = 0; s < size; s++) {
-            float input = SinSimInputSample(s);
+            float input = SinSimNetwork::SinSimInputSample(s);
             float sample = localCode.Evaluate(localData, input);
-            float target = SinSimTargetSample(s);
+            float target = SinSimNetwork::SinSimTargetSample(s);
             targets[s] = target;
             results[s] = sample;
         }
@@ -88,12 +88,12 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
             float result = 0.0f;
             sharedData = newData;
             for (unsigned int s = 0; s < FIRESTARTER_EVOLVE_SINSIM_SAMPLES; s++) {
-                float input = SinSimInputSample(s);
+                float input = SinSimNetwork::SinSimInputSample(s);
                 float sample = code.Evaluate(sharedData, input);
 
                 // Grade the candidate samples.
                 if (s >= FIRESTARTER_SINSIM_SAMPLES - FIRESTARTER_SINSIM_CANDIDATES) {
-                    float target = SinSimTargetSample(s);
+                    float target = SinSimNetwork::SinSimTargetSample(s);
                     float difference = sample - target;
                     result += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_CANDIDATES);
                 }
