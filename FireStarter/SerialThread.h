@@ -9,7 +9,6 @@
 #ifdef WIN32
 #include <Windows.h>
 #endif
-#include "SimpleTimer.h"
 
 // SerialThread by Mark Granger.
 // Contact: grangerfx@gmail.com
