@@ -73,7 +73,6 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                         execute->ExecuteSelect(curState);
 
                         // Get the best code to optimize.
-                        FireStarterCodeVector codeVector(evolveSettings);
                         do {
                             bestCode = curState.m_bestCodes.GetBestCode();
                             if (bestCode)
@@ -92,7 +91,7 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                     size_t evolveIndex = 0;
                     for (size_t curIndex = 0; curIndex < totalStates; curIndex++) {
                         FireStarterState& curState = allStates[curIndex];
-                        float curWeight = curState.EvolveWeight();
+                        float curWeight = curState.SelectWeight();
                         if (!curIndex || (curWeight < evolveWeight)) {
                             evolveWeight = curWeight;
                             evolveIndex = curIndex;
@@ -102,6 +101,9 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                     // Loop until a unique new state is found.
                     FireStarterState& oldState = allStates[evolveIndex];
                     FireStarterState& curState = job->m_state;
+
+                    // Keep evolving instructions until a unique set of instructions is found.
+                    const FireStarterCode* bestCode = nullptr;
                     for (;;) {
                         // Copy and setup the new candidate state.
                         curState = oldState;
@@ -119,7 +121,7 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
 
                         // Copy the program and result from the random index.
                         curState.CopyCode(allStates[evolveIndex]);
-
+#if 0
                         // Randomize 2 and 3 instructions alternately.
                         curState.RandomInstruction();
                         curState.RandomInstruction();
@@ -135,6 +137,27 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                             testedCodes.insert(curState.CodeVector());
                             break;
                         }
+#else
+                        // Randomize 1 and 2 instructions alternately.
+                        curState.RandomInstruction();
+                        if (generation & 1)
+                            curState.RandomInstruction();
+
+                        // Select the best candidate evolution variation.
+                        execute->ExecuteSelect(curState);
+
+                        // Get the best code to optimize.
+                        do {
+                            bestCode = curState.m_bestCodes.GetBestCode();
+                            if (bestCode)
+                                curState.CopyCode(bestCode);
+                        } while (bestCode && testedCodes.count(curState.CodeVector()));
+                        if (bestCode) {
+                            // Add the instructions to the set of unique instructions.
+                            testedCodes.insert(curState.CodeVector());
+                            break;
+                        }
+#endif
                     }
                 }
 

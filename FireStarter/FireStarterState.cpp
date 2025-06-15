@@ -72,7 +72,7 @@ void FireStarterBestCodes::InitBestCodes(const FireStarterSettings& settings, si
     m_bestCodes.resize(m_maxCodes);
     m_bestResults.resize(m_maxCodes);
     for (size_t i = 0; i < m_maxCodes; i++) {
-        m_bestCodes[i] = (FireStarterCode*)calloc(m_codeSize, 1);
+        m_bestCodes[i].InitCode(settings);
         m_bestResults[i] = m_settings.m_startResult;
     }
 } // InitBestCodes

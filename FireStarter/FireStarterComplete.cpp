@@ -273,12 +273,52 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
             }
 
             // Evolution is complete when the best state among all the streams has reached the evolve target.
-            if (abortJob || (bestState.MaxResults() <= bestState.Settings().m_target))
+            if (abortJob || bestState.m_evolveComplete)
                 bestState.m_evolveComplete = true;
         }
     });
     return bestState.m_evolveComplete;
 } // CompleteStates
+
+// Replace old states with new ones when better and resort the list.
+bool FireStarterComplete::CompleteSelect(FireStarterState& bestState, FireStarterStates& allStates, size_t numStates, unsigned long long generation)
+{
+    DispatchSync([this, &bestState, &allStates, numStates, generation] {
+        bestState.m_age++;
+        for (size_t i = 0; i < numStates; i++) {
+            FireStarterState& curState = allStates[i];
+
+            // Keep the valid results.
+            if (curState.m_optimizeValid) {
+                // Update the current best state.
+                bool isBestState = UpdateBestState(bestState, curState);
+
+                // Update the render status after every pass.
+                CompleteStatus(bestState, curState, generation);
+
+                // Update the best state and display the results.
+                if (isBestState)
+                    DisplayResults(bestState);
+            } else
+                // Update the render status after every pass.
+                CompleteStatus(bestState, curState, generation);
+        }
+
+        // Has the evolve target or the maximum number of attempts been reached?
+        if (bestState.MaxResults() < bestState.Settings().m_target)
+            bestState.m_evolveComplete = true;
+        else if (bestState.Settings().m_attempts) {
+            unsigned long long bestAge = allStates[0].m_generation - bestState.m_generation;
+            if (bestAge >= bestState.Settings().m_attempts)
+                bestState.m_evolveComplete = true;
+        }
+
+        // Evolution is complete when the best state among all the streams has reached the evolve target.
+        if (bestState.m_evolveComplete)
+            bestState.m_evolveComplete = true;
+    });
+    return bestState.m_evolveComplete;
+} // CompleteSelect
 
 void FireStarterComplete::CompleteBestState(const FireStarterState& bestState)
 {

@@ -445,9 +445,10 @@ private:
         m_results = other.m_results;
         m_code = other.m_code;
 //      m_bestCodes = other.m_bestCodes;
+        m_bestCodes.InitBestCodes(m_settings);
         m_network = other.m_network;
 //      m_timer = other.m_timer;
-//      m_evaluateCode = other.m_evaluateCode;
+        m_evaluateCode = other.m_evaluateCode;
         m_variationOrder = other.m_variationOrder;
         m_variationCount = other.m_variationCount;
         m_generation = other.m_generation;
@@ -632,9 +633,18 @@ public:
         return FireStarterSettings::Mode(PassMode());
     } // Mode(void) const
 
+    inline float SelectWeight(void) const
+    {
+#if 1
+        return MaxResults() * m_age;
+#else
+        return MaxResults() * m_generation;
+#endif
+    } // EvolveWeight
+
     inline float EvolveWeight(void) const
     {
-        return m_generation * MaxResults();
+        return MaxResults() * m_generation;
     } // EvolveWeight
 
     inline unsigned long long EvolutionSeed(void) const
