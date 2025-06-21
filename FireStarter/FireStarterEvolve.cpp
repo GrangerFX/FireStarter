@@ -159,6 +159,9 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                         }
 #endif
                     }
+
+                    // The optimize pass should be compared with the best result of the last generation and not from the select code evolution.
+                    curState.m_bestResult = oldState.m_bestResult;
                 }
 
                 // Generate the evaluate code

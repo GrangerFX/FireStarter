@@ -39,6 +39,7 @@ private:
     void ExecuteEvolvePass(FireStarterState& state);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
+    void GatherOptimizePass(FireStarterState& state, unsigned int variation, FireStarterResult* newPopulation, unsigned long long pass, unsigned long long seed);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
@@ -56,7 +57,7 @@ public:
     void ExecuteEvolveNew(FireStarterState& state);
     void ExecuteEvolveSinSim(FireStarterState& state);
     void ExecuteSinSim(FireStarterState& state);
-    void ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
+    bool ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
