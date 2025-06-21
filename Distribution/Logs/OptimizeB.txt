@@ -1537,5 +1537,3 @@ ExecuteOptimizePass: state.m_id=68  generation=160  variation=2  pass=509  seed=
 ExecuteOptimizePass: state.m_id=68  generation=160  variation=2  pass=510  seed=12551648149991132766  minResult=0.00000087
 ExecuteOptimizePass: state.m_id=68  generation=160  variation=2  pass=511  seed=14162180841295546225  minResult=0.00000087
 ExecuteOptimizePass: state.m_id=68  generation=160  variation=2  pass=512  seed=15772713532599959684  minResult=0.00000087
-ExecuteOptimizePass: state.m_id=68  generation=161  variation=0  pass=512  seed=9821411088276358767  minResult=0.00000251
-ExecuteOptimizePass: state.m_id=68  generation=162  variation=0  pass=512  seed=3870108643952757850  minResult=0.00064476
