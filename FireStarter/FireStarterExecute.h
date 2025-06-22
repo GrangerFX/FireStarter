@@ -57,7 +57,7 @@ public:
     void ExecuteEvolveNew(FireStarterState& state);
     void ExecuteEvolveSinSim(FireStarterState& state);
     void ExecuteSinSim(FireStarterState& state);
-    bool ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
+    void ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);

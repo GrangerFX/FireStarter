@@ -408,8 +408,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             evolveState.m_bestCodes.InitBestCodes(evolveSettings);
 
             // Evolve the current test.
-            bool evolveComplete = false;
-            while (!WillTerminate() && !evolveComplete) {
+            while (!WillTerminate() && !bestState.m_evolveComplete) {
                 // Get the best code to optimize.
                 const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
                 if (bestCode) {
@@ -423,15 +422,17 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     executeEvolve->ExecuteEvolve(evolveState);
 
                     // Execute optimize for any completed compile jobs.
-                    if (executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete))
-                        evolveComplete = true;
-                } else
+                    executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete);
+                }
+                else
                     // Execute the initial GPU evolve.
                     executeEvolve->ExecuteEvolve(evolveState);
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
                     break;
+            }
+            if (!WillTerminate()) {
 
                 // Output the evolve results.
                 double duration = bestState.Duration();
@@ -503,7 +504,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
             evolveState.m_bestCodes.InitBestCodes(evolveSettings);
 
             // Evolve the current test.
-            while (!WillTerminate()) {
+            while (!WillTerminate() && !bestState.m_evolveComplete) {
                 // Execute the initial GPU evolve.
                 executeEvolve->ExecuteEvolveNew(evolveState);
                 if (complete->CompleteState(bestState, evolveState))
@@ -577,7 +578,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         FireStarterState bestState = FireStarterState(sinSimSettings, 0, 0, 0, test);
 
         // Evolve the current test.
-        while (!WillTerminate()) {
+        while (!WillTerminate() && !bestState.m_evolveComplete) {
             // Execute the initial GPU evolve.
             executeSinSim->ExecuteSinSim(evolveState);
             if (complete->CompleteState(bestState, evolveState))

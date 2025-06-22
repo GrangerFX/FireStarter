@@ -435,6 +435,7 @@ public:
     float m_evolveWeight = 0.0f;
     float m_precision = 0.0f;
     bool m_optimizeValid = false;
+    bool m_evolveComplete = false;
 
 private:
     inline void swap(const FireStarterState& other)
@@ -466,6 +467,7 @@ private:
         m_evolveWeight = other.m_evolveWeight;
         m_precision = other.m_precision;
         m_optimizeValid = other.m_optimizeValid;
+        m_evolveComplete = other.m_evolveComplete;
     } // swap
 
 public:
@@ -494,6 +496,7 @@ public:
         result = result && packet.Packetize(m_oldResult);
         result = result && packet.Packetize(m_evolveWeight);
         result = result && packet.Packetize(m_optimizeValid);
+        result = result && packet.Packetize(m_evolveComplete);
         return result;
     } // Packetize
 

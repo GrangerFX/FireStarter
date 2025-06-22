@@ -55,7 +55,7 @@
 #define FIRESTARTER_OPTIMIZE        9           // Optimize a previously CPU evolved state.
 #define FIRESTARTER_SOLUTION        10          // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           11
-#define FIRESTARTER_MODE            FIRESTARTER_SELECT
+#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_GPU
 
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1

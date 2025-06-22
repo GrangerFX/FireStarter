@@ -734,20 +734,19 @@ void FireStarterExecute::ExecuteSinSim(FireStarterState& state)
     });
 } // ExecuteSinSim
 
-bool FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete)
+void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete)
 {
-    bool evolveComplete = false;
-    DispatchSync([this, complete, &state, &bestState, &evolveComplete] {
+    DispatchSync([this, complete, &state, &bestState] {
         if (m_executeFunction) {
             if (InitPopulation(state.Settings())) {
-                while (!WillTerminate() && !evolveComplete && (state.m_optimize_pass < state.Settings().m_optimize)) {
+                while (!WillTerminate() && !bestState.m_evolveComplete && (state.m_optimize_pass < state.Settings().m_optimize)) {
                     // Execute the optimization passes.
                     state.m_timer.Start();
                     ExecuteOptimizePasses(state);
 
                     // Update the results in the UI and check for completion.
-                    if (complete->CompleteState(bestState, state))
-                        evolveComplete = true;
+                    if (complete && complete->CompleteState(bestState, state))
+                        break;
 
                     // Increment the generation.
                     state.m_optimize_pass++;
@@ -755,7 +754,6 @@ bool FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStar
             }
         }
     });
-    return evolveComplete;
 } // ExecuteEvolveOptimize
 
 void FireStarterExecute::ExecuteOptimize(FireStarterState& state)
