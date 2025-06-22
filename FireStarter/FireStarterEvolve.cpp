@@ -44,21 +44,22 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state)
     return true;
 } // RandomState
 
-bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
+bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
 {
-    DispatchSync([this, execute, test, &evolveSettings, &allStates, &testedCodes, generation] {
-        unsigned long long numStates = evolveSettings.m_states;
+    DispatchSync([this, execute, test, &selectSettings, &optimizeSettings, &allStates, &testedCodes, generation] {
+        unsigned long long numStates = selectSettings.m_states;
         unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM;
         unsigned long long totalStates = allStates.size();
 
         for (unsigned long long index = 0; index < numStates; index++) {
             FireStarterJob* job = m_evolveManager->GetFree();
             if (job) {
+                FireStarterState& curState = job->m_state;
+
                 // Evolved states are generated first so they cannot used the random states created in this generation.
                 if (index < randomStates) {
                     // Randomize the instructions.
-                    FireStarterState& curState = job->m_state;
-                    curState.InitState(evolveSettings, 0, index, allStates.size(), test);
+                    curState.InitState(optimizeSettings, 0, index, allStates.size(), test);
 
                     // Keep randomizing instructions until a unique set of instructions is found.
                     const FireStarterCode* bestCode = nullptr;
@@ -70,7 +71,7 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                         curState.OptimizeCode();
 
                         // Select the best candidate evolution variation.
-                        execute->ExecuteSelect(curState);
+                        execute->ExecuteSelect(curState, selectSettings);
 
                         // Get the best code to optimize.
                         do {
@@ -82,6 +83,9 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
 
                     // Add the instructions to the set of unique instructions.
                     testedCodes.insert(curState.CodeVector());
+
+                    // Set the state mode to optimize.
+                    curState.m_settings.SetMode(FIRESTARTER_OPTIMIZE);
 
                     // Add the state to the list of active states.
                     allStates.push_back(curState);
@@ -100,7 +104,6 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
 
                     // Loop until a unique new state is found.
                     FireStarterState& oldState = allStates[evolveIndex];
-                    FireStarterState& curState = job->m_state;
 
                     // Keep evolving instructions until a unique set of instructions is found.
                     const FireStarterCode* bestCode = nullptr;
@@ -144,7 +147,7 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                             curState.RandomInstruction();
 
                         // Select the best candidate evolution variation.
-                        execute->ExecuteSelect(curState);
+                        execute->ExecuteSelect(curState, selectSettings);
 
                         // Get the best code to optimize.
                         do {

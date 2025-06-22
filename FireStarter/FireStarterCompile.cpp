@@ -109,8 +109,8 @@ void FireStarterCompiler::CompilerClient(void)
                 if (result) {
                     const std::string& command = receivePacket.Command();
                     if (command == COMPILE_EXECUTE) {
-                        FireStarterJob job(receivePacket);
-
+                        FireStarterJob job;
+                        result = job.Packetize(receivePacket);
                         if (result) {
 #if FIRESTARTERCOMPILER_LOGGING
                             LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job.m_state.m_generation);
@@ -131,16 +131,20 @@ void FireStarterCompiler::CompilerClient(void)
                         result = false;
                         LOG("%s: Unknown command:%s\n", m_process->ProcessPrefix(), command.c_str());
                     }
+                } else {
+                    LOG("%s: Bad compile packet!\n", m_process->ProcessPrefix().c_str());
+                }
 
-                    // Error: Terminate the process on failure.
-                    if (!result) {
-                        LOG("%s: Terminate!\n", m_process->ProcessPrefix().c_str());
-                        m_process->Terminate();
-                    }
+                // Error: Terminate the process on failure.
+                if (!result) {
+                    LOG("%s: Terminate!\n", m_process->ProcessPrefix().c_str());
+                    m_process->Terminate();
+                }
+
 #if FIRESTARTERCOMPILER_LOGGING
+                if (m_process->ShouldTerminate())
                     LOG("%s: Terminate received!\n", m_process->ProcessPrefix().c_str());
 #endif
-                }
             };
         };
     });

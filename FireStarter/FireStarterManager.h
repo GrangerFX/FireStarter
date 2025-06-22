@@ -27,20 +27,16 @@ public:
 		m_next = next;
 	} // Copy
 
-	inline void Packetize(FireStarterPacket& packet)
+	inline bool Packetize(FireStarterPacket& packet)
 	{
-		m_state.Packetize(packet);
-		packet.Packetize(m_options);
-		packet.Packetize(m_program);
-		packet.Packetize(m_programName);
-		packet.Packetize(m_ptx);
-		packet.Packetize(m_log);
+        bool result = m_state.Packetize(packet);
+        result = result && packet.Packetize(m_options);
+        result = result && packet.Packetize(m_program);
+        result = result && packet.Packetize(m_programName);
+        result = result && packet.Packetize(m_ptx);
+        result = result && packet.Packetize(m_log);
+        return result;
 	} // Packetize
-
-	inline FireStarterJob(FireStarterPacket& packet)
-	{
-		Packetize(packet);
-	} // FireStarterCompilerJob
 
 	inline FireStarterJob(void)
 	{

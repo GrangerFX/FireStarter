@@ -87,13 +87,13 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     size_t parentCodeSize = 0;
     size_t networksSize = 0;
 
-    if ((settings.m_mode == FIRESTARTER_EVOLVE_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
+    if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
         resultsSize = settings.m_population * sizeof(float);
         if (FIRESTARTER_EVOLVE_RESULTS || (settings.m_mode != FIRESTARTER_EVOLVE_GPU))
             populationSize = FireStarterPopulation::PopulationSize(settings);
-        if ((settings.m_mode == FIRESTARTER_EVOLVE_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU))
+        if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU))
             codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
-        if (settings.m_mode == FIRESTARTER_EVOLVE_SELECT)
+        if (settings.m_mode == FIRESTARTER_SELECT)
             parentCodeSize = FireStarterCode::CodeSize(settings);
     } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
         populationSize = FireStarterPopulation::PopulationSize(settings);
@@ -157,17 +157,16 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     return result;
 } // InitPopulation
 
-void FireStarterExecute::ExecuteSelectPass(FireStarterState& state)
+void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireStarterSettings& selectSettings)
 {
     // Launch the calculation kernel
-    FireStarterSettings settings = state.Settings();
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = (settings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
+    unsigned int blocksPerGrid = (selectSettings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
-    unsigned int passes = settings.m_passes;
-    unsigned int populationSize = settings.m_population;
+    unsigned int passes = selectSettings.m_passes;
+    unsigned int populationSize = selectSettings.m_population;
     FireStarterCode* parentCode = state.m_code.CodePtr();
 
     checkCUDAErrors(cudaMemcpyAsync(m_deviceParentCode, parentCode, m_parentCodeSize, cudaMemcpyHostToDevice, Stream()));
@@ -198,7 +197,7 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state)
 
     // Get the best variation results.
     bool validResult = false;
-    float minResult = settings.m_startResult;
+    float minResult = selectSettings.m_startResult;
     unsigned int minIndex = 0;
     for (unsigned int i = 0; i < populationSize; i++) {
         float curResult = m_hostResults[i];
@@ -207,11 +206,11 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state)
             minIndex = i;
         }
         if (curResult < state.m_bestCodes.WorstResult())
-            state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
+            state.m_bestCodes.AddCode(m_hostCodes->Member(selectSettings, i), curResult);
     }
 
     // Update the state's best code.
-    state.InitCode(settings, m_hostCodes, minResult, minIndex);
+    state.InitCode(selectSettings, m_hostCodes, minResult, minIndex);
 } // ExecuteSelectPass
 
 void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
@@ -403,7 +402,6 @@ void FireStarterExecute::GatherOptimizePass(FireStarterState& state, unsigned in
 
     // Store the state's best result.
     state.InitResult(settings, m_hostPopulation, variation, minIndex);
-    printf("ExecuteOptimizePass: state.m_id=%llu  generation=%llu  variation=%u  pass=%llu  seed=%llu  minResult=%.8f\n", state.m_id, state.m_generation, variation, pass, seed, minResult);
 } // GatherOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
@@ -468,10 +466,6 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 
         // Synchronize all GPU threads and results.
         Context()->Synchronize();
-
-        // Note: DEBUG!
-        if (state.OptimizationSeed(0) == 2836714827960539780)
-            GatherOptimizePass(state, variation, newPopulation, optimizePass, optimizeSeed);
 #endif
     }
 
@@ -685,13 +679,13 @@ void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
     });
 } // ExecuteInitPopulation
 
-void FireStarterExecute::ExecuteSelect(FireStarterState& state)
+void FireStarterExecute::ExecuteSelect(FireStarterState& state, const FireStarterSettings& selectSettings)
 {
-    DispatchSync([this, &state] {
-        if (GenerateEvolve(state.Settings().m_mode)) {
+    DispatchSync([this, &state, &selectSettings] {
+        if (GenerateEvolve(selectSettings.m_mode)) {
             state.m_timer.Start();
-            if (InitPopulation(state.Settings()))
-                ExecuteSelectPass(state);
+            if (InitPopulation(selectSettings))
+                ExecuteSelectPass(state, selectSettings);
         }
     });
 } // ExecuteSelect

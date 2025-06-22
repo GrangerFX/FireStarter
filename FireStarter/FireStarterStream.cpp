@@ -88,17 +88,21 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
 {
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
-        FireStarterSettings evolveSettings(m_streamSettings);
-        unsigned int numStates = evolveSettings.m_states;
-        evolveSettings.m_units = MIN(evolveSettings.m_units, numStates);
+        FireStarterSettings selectSettings(m_streamSettings);
+        unsigned int numStates = selectSettings.m_states;
+        selectSettings.m_units = MIN(selectSettings.m_units, numStates);
         std::string streamDate = m_streamDate;
+
+        // Separate optmize settings
+        FireStarterSettings optimizeSettings(selectSettings);
+        optimizeSettings.SetMode(FIRESTARTER_OPTIMIZE);
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager(numStates);
 
         // Create a multi-process compiler for each unit.
         FireStarterCompile* compile = new FireStarterCompile(manager, server);
-        for (unsigned int i = 0; i < evolveSettings.m_units; i++)
+        for (unsigned int i = 0; i < selectSettings.m_units; i++)
             compile->AddCompiler();
 
         // Create the evolution code generator.
@@ -106,7 +110,7 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
 
         // Create the evolution execution units.
         std::vector<FireStarterExecute*> evolutionUnits;
-        for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
+        for (unsigned int i = 0; i < selectSettings.m_units; i++) {
             FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, i);
             evolutionUnits.push_back(evolutionUnit);
         }
@@ -116,19 +120,19 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
 
         // Create the optimization execution unit.
         FireStarterExecute* executeOptimize = nullptr;
-        if (evolveSettings.m_optimize)
+        if (selectSettings.m_optimize)
             executeOptimize = new FireStarterExecute(manager);
 
         // Create the completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, selectSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Loop until the the evolve completion condition or the host program is quit.
-        unsigned long long evolveTests = MAX(evolveSettings.m_tests, 1);
+        unsigned long long evolveTests = MAX(selectSettings.m_tests, 1);
         for (unsigned long long t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             // Initialize the states.
             FireStarterStates allStates;
             unsigned long long test = FIRESTARTER_START_TEST + t;
-            FireStarterState bestEvolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
+            FireStarterState bestEvolveState = FireStarterState(selectSettings, 0, 0, 0, test);
 
             // Keep track of the tested instructions so they don't get generated again.
             TestedCodes testedCodes;
@@ -137,7 +141,7 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
             unsigned long long generation = 0;
             while (!WillTerminate()) {
                 // Evolve a new generation.
-                evolve->SelectStates(executeSelect, test, evolveSettings, allStates, testedCodes, generation);
+                evolve->SelectStates(executeSelect, test, selectSettings, optimizeSettings, allStates, testedCodes, generation);
 
                 // Execute each state using one of the evolution execution units.
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
@@ -152,10 +156,9 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
 
                 // Increment the generation.
                 generation++;
-                if (generation == evolveSettings.m_generations)
+                if (generation == selectSettings.m_generations)
                     break;
             }
-            printf("EvolveSelectStream: test= %llu  best=%.8f\n", t, bestEvolveState.MaxResults());
 
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
@@ -164,11 +167,10 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
                 printf("%s\n", resultText.c_str());
 
                 // Optimize the evolved state.
-                if (evolveSettings.m_optimize) {
+                if (selectSettings.m_optimize) {
                     FireStarterState optimizeState(bestEvolveState);
                     optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE);
-                    optimizeState.Settings().m_optimize = bestEvolveState.Settings().m_optimize;
-                    optimizeState.Settings().m_variations = bestEvolveState.Settings().m_variations;
+                    optimizeState.Settings().m_optimize = selectSettings.m_optimize;
                     FireStarterState optimizeBestState(optimizeState);
 
                     // Generate the optimize code.
@@ -189,13 +191,13 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
                         // Output the optimize results.
                         if (!WillTerminate()) {
                             resultText += Format("  Optimize Result=%.8f", optimizeState.MaxResults());
-                            if ((bestEvolveState.MaxResults() > evolveSettings.m_target) && (optimizeState.MaxResults() <= evolveSettings.m_target))
+                            if ((bestEvolveState.MaxResults() > selectSettings.m_target) && (optimizeState.MaxResults() <= selectSettings.m_target))
                                 resultText += " *";
                         }
                     }
                 }
 
-                if (bestEvolveState.MaxResults() <= evolveSettings.m_target)
+                if (bestEvolveState.MaxResults() <= selectSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
                 FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
@@ -817,7 +819,7 @@ void FireStarterStreams::ExecuteStreams(void)
                 case FIRESTARTER_RANDOM:
                     streams[stream]->RandomStream(m_server, m_testCount);
                     break;
-                case FIRESTARTER_EVOLVE_SELECT:
+                case FIRESTARTER_SELECT:
                     streams[stream]->EvolveSelectStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_EVOLVE_CPU:
