@@ -163,7 +163,7 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
-                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", bestEvolveState.Duration(), bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
+                std::string resultText = Format("Duration: %.1f  Average: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", bestEvolveState.Duration(), SimpleTimer::RunDuration() / testCount, bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
                 printf("%s\n", resultText.c_str());
 
                 // Optimize the evolved state.
@@ -302,7 +302,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             // Optimize the best state.
             if (!WillTerminate() && !allStates.empty()) {
                 // Output the evolve results.
-                std::string resultText = Format("Duration: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", bestEvolveState.Duration(), bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
+                std::string resultText = Format("Duration: %.1f  Average: %.1f  Seed=%u  Test=%u  Generation=%u  Best Generations=%u  Evolutions=%u  Evolve Result=%.8f", bestEvolveState.Duration(), SimpleTimer::RunDuration() / testCount, bestEvolveState.Settings().m_evolveSeed, test, generation, bestEvolveState.m_generation, bestEvolveState.m_evolution, bestEvolveState.MaxResults());
 
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
