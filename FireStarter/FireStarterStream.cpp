@@ -176,13 +176,12 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
                     // Generate the optimize code.
                     if (executeOptimize->ExecuteGenerateOptimize(optimizeState)) {
                         // Loop until the the optimize completion condition or the host program is quit.
-                        while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                        while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize) && !optimizeBestState.Complete()) {
                             // Optimize the current generation.
                             executeOptimize->ExecuteOptimize(optimizeState);
 
                             // Update the results in the UI and check for completion.
-                            if (complete->CompleteState(optimizeBestState, optimizeState))
-                                break;
+                            complete->CompleteState(optimizeBestState, optimizeState);
 
                             // Increment the generation.
                             optimizeState.m_optimize_pass++;
@@ -316,13 +315,12 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                     // Generate the optimize code.
                     if (execute->ExecuteGenerateOptimize(optimizeState)) {
                         // Loop until the the optimize completion condition or the host program is quit.
-                        while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                        while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize) && !optimizeBestState.Complete()) {
                             // Optimize the current generation.
                             execute->ExecuteOptimize(optimizeState);
 
                             // Update the results in the UI and check for completion.
-                            if (complete->CompleteState(optimizeBestState, optimizeState))
-                                break;
+                            complete->CompleteState(optimizeBestState, optimizeState);
 
                             // Increment the generation.
                             optimizeState.m_optimize_pass++;
@@ -408,7 +406,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             evolveState.m_bestCodes.InitBestCodes(evolveSettings);
 
             // Evolve the current test.
-            while (!WillTerminate() && !bestState.m_evolveComplete) {
+            while (!WillTerminate() && !bestState.Complete()) {
                 // Get the best code to optimize.
                 const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
                 if (bestCode) {
@@ -504,11 +502,12 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
             evolveState.m_bestCodes.InitBestCodes(evolveSettings);
 
             // Evolve the current test.
-            while (!WillTerminate() && !bestState.m_evolveComplete) {
+            while (!WillTerminate() && !bestState.Complete()) {
                 // Execute the initial GPU evolve.
                 executeEvolve->ExecuteEvolveNew(evolveState);
-                if (complete->CompleteState(bestState, evolveState))
-                    break;
+
+                // Update the results in the UI and check for completion.
+                complete->CompleteState(bestState, evolveState);
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
@@ -578,11 +577,12 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         FireStarterState bestState = FireStarterState(sinSimSettings, 0, 0, 0, test);
 
         // Evolve the current test.
-        while (!WillTerminate() && !bestState.m_evolveComplete) {
+        while (!WillTerminate() && !bestState.Complete()) {
             // Execute the initial GPU evolve.
             executeSinSim->ExecuteSinSim(evolveState);
-            if (complete->CompleteState(bestState, evolveState))
-                break;
+
+            // Update the results in the UI and check for completion.
+            complete->CompleteState(bestState, evolveState);
 
             // Exit after a set number of generations.
             if (++evolveState.m_generation == sinSimSettings.m_generations)
@@ -659,13 +659,12 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 FireStarterState bestState(optimizeState);
 
                 // Loop until the the optimize completion condition or the host program is quit.
-                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize) && !bestState.Complete()) {
                     // Optimize the current generation.
                     execute->ExecuteEvolve(optimizeState);
 
                     // Update the results in the UI and check for completion.
-                    if (complete->CompleteState(bestState, optimizeState))
-                        break;
+                    complete->CompleteState(bestState, optimizeState);
 
                     // Increment the generation.
                     optimizeState.m_optimize_pass++;
@@ -730,13 +729,12 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
                 FireStarterState bestState(optimizeState);
 
                 // Loop until the the optimize completion condition or the host program is quit.
-                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
+                while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize) && !bestState.Complete()) {
                     // Optimize the current generation.
                     execute->ExecuteOptimize(optimizeState);
 
                     // Update the results in the UI and check for completion.
-                    if (complete->CompleteState(bestState, optimizeState))
-                        break;
+                    complete->CompleteState(bestState, optimizeState);
 
                     // Increment the generation.
                     optimizeState.m_optimize_pass++;

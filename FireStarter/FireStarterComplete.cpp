@@ -146,7 +146,7 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireS
 {
     DispatchSync([this, &bestState, &state] {
         // Skip if the best state was already completed.
-        if (!bestState.m_evolveComplete) {        // Update the best state and display the results.
+        if (!bestState.Complete()) {        // Update the best state and display the results.
             if (UpdateBestState(bestState, state))
                 DisplayResults(bestState);
             else
@@ -154,18 +154,9 @@ bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireS
 
             // Update the render status after every pass.
             CompleteStatus(bestState, state, state.m_generation);
-
-            // Has the completion condition been met?
-            if (bestState.MaxResults() < bestState.Settings().m_target)
-            bestState.m_evolveComplete = true;
-            else if (bestState.Settings().m_attempts) {
-                unsigned long long bestAge = state.m_generation - bestState.m_generation;
-                if (bestAge >= bestState.Settings().m_attempts)
-                    bestState.m_evolveComplete = true;
-            }
         }
     });
-    return bestState.m_evolveComplete;
+    return bestState.Complete();
 } // CompleteState
 
 bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarterState& state)
@@ -173,9 +164,7 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarte
     DispatchSync([this, &bestState, &state] {
         // Get the next job in the order they are completed.
         FireStarterJob* job = m_manager->GetComplete();
-        if (!job)
-            bestState.m_evolveComplete = true;
-        else {
+        if (job) {
             FireStarterState newState = job->m_state;
             m_manager->AddFree(job);
 
@@ -192,18 +181,9 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarte
             // Update the render status after every pass.
             CompleteStatus(state, newState);
             state.m_timer.Start();
-
-            // Has the completion condition been met?
-            if (bestState.MaxResults() < bestState.Settings().m_target)
-                bestState.m_evolveComplete = true;
-            else if (bestState.Settings().m_attempts) {
-                unsigned long long bestAge = newState.m_generation - state.m_generation;
-                if (bestAge >= bestState.Settings().m_attempts)
-                    bestState.m_evolveComplete = true;
-            }
         }
     });
-    return bestState.m_evolveComplete;
+    return bestState.Complete();
 } // CompleteRandom
 
 // Replace old states with new ones when better and resort the list.
@@ -261,18 +241,9 @@ bool FireStarterComplete::CompleteStates(FireStarterState& bestState, FireStarte
                     // Update the render status after every pass.
                     CompleteStatus(bestState, newState, generation);
             }
-
-            // Has the evolve target or the maximum number of attempts been reached?
-            if (abortJob || (bestState.MaxResults() < bestState.Settings().m_target))
-                bestState.m_evolveComplete = true;
-            else if (bestState.Settings().m_attempts) {
-                unsigned long long bestAge = newStates[0].m_generation - bestState.m_generation;
-                if (bestAge >= bestState.Settings().m_attempts)
-                    bestState.m_evolveComplete = true;
-            }
         }
     });
-    return bestState.m_evolveComplete;
+    return bestState.Complete();
 } // CompleteStates
 
 // Replace old states with new ones when better and resort the list.
@@ -298,17 +269,8 @@ bool FireStarterComplete::CompleteSelect(FireStarterState& bestState, FireStarte
                 // Update the render status after every pass.
                 CompleteStatus(bestState, curState, generation);
         }
-
-        // Has the evolve target or the maximum number of attempts been reached?
-        if (bestState.MaxResults() < bestState.Settings().m_target)
-            bestState.m_evolveComplete = true;
-        else if (bestState.Settings().m_attempts) {
-            unsigned long long bestAge = allStates[0].m_generation - bestState.m_generation;
-            if (bestAge >= bestState.Settings().m_attempts)
-                bestState.m_evolveComplete = true;
-        }
     });
-    return bestState.m_evolveComplete;
+    return bestState.Complete();
 } // CompleteSelect
 
 void FireStarterComplete::CompleteBestState(const FireStarterState& bestState)

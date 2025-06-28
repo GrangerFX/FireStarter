@@ -739,7 +739,7 @@ void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStar
     DispatchSync([this, complete, &state, &bestState] {
         if (m_executeFunction) {
             if (InitPopulation(state.Settings())) {
-                while (!WillTerminate() && !bestState.m_evolveComplete && (state.m_optimize_pass < state.Settings().m_optimize)) {
+                while (!WillTerminate() && !bestState.Complete() && (state.m_optimize_pass < state.Settings().m_optimize)) {
                     // Execute the optimization passes.
                     state.m_timer.Start();
                     ExecuteOptimizePasses(state);

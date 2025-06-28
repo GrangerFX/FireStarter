@@ -294,7 +294,6 @@ public:
     unsigned int m_iterations =     0;
     unsigned int m_samples =        0;
     unsigned int m_candidates =     0;
-    unsigned int m_attempts =       0;
     unsigned int m_optimize =       0;
     unsigned int m_tests =          0;
     float        m_target =         0.0f;
@@ -409,7 +408,6 @@ public:
         m_iterations = source.m_iterations;
         m_samples = source.m_samples;
         m_candidates = source.m_candidates;
-        m_attempts = source.m_attempts;
         m_optimize = source.m_optimize;
         m_tests = source.m_tests;
         m_target = source.m_target;
@@ -434,7 +432,6 @@ public:
                 m_passes =      FIRESTARTER_RANDOM_PASSES;
                 m_iterations =  FIRESTARTER_RANDOM_ITERATIONS;
                 m_samples =     FIRESTARTER_RANDOM_SAMPLES;
-                m_attempts =    FIRESTARTER_RANDOM_ATTEMPTS;
                 m_optimize =    FIRESTARTER_RANDOM_OPTIMIZE;
                 m_tests =       FIRESTARTER_RANDOM_TESTS;
                 m_target =      FIRESTARTER_RANDOM_TARGET;
@@ -449,7 +446,6 @@ public:
                 m_passes =      FIRESTARTER_EVOLVE_SELECT_PASSES;
                 m_iterations =  FIRESTARTER_EVOLVE_SELECT_ITERATIONS;
                 m_samples =     FIRESTARTER_EVOLVE_SELECT_SAMPLES;
-                m_attempts =    FIRESTARTER_EVOLVE_SELECT_ATTEMPTS;
                 m_optimize =    FIRESTARTER_EVOLVE_SELECT_OPTIMIZE;
                 m_tests =       FIRESTARTER_EVOLVE_SELECT_TESTS;
                 m_target =      FIRESTARTER_EVOLVE_SELECT_TARGET;
@@ -464,7 +460,6 @@ public:
                 m_passes =      FIRESTARTER_EVOLVE_CPU_PASSES;
                 m_iterations =  FIRESTARTER_EVOLVE_CPU_ITERATIONS;
                 m_samples =     FIRESTARTER_EVOLVE_CPU_SAMPLES;
-                m_attempts =    FIRESTARTER_EVOLVE_CPU_ATTEMPTS;
                 m_optimize =    FIRESTARTER_EVOLVE_CPU_OPTIMIZE;
                 m_tests =       FIRESTARTER_EVOLVE_CPU_TESTS;
                 m_target =      FIRESTARTER_EVOLVE_CPU_TARGET;
@@ -479,7 +474,6 @@ public:
                 m_passes =      FIRESTARTER_EVOLVE_GPU_PASSES;
                 m_iterations =  FIRESTARTER_EVOLVE_GPU_ITERATIONS;
                 m_samples =     FIRESTARTER_EVOLVE_GPU_SAMPLES;
-                m_attempts =    FIRESTARTER_EVOLVE_GPU_ATTEMPTS;
                 m_optimize =    FIRESTARTER_EVOLVE_GPU_OPTIMIZE;
                 m_tests =       FIRESTARTER_EVOLVE_GPU_TESTS;
                 m_target =      FIRESTARTER_EVOLVE_GPU_TARGET;
@@ -494,7 +488,6 @@ public:
                 m_passes =      FIRESTARTER_EVOLVE_NEW_PASSES;
                 m_iterations =  FIRESTARTER_EVOLVE_NEW_ITERATIONS;
                 m_samples =     FIRESTARTER_EVOLVE_NEW_SAMPLES;
-                m_attempts =    FIRESTARTER_EVOLVE_NEW_ATTEMPTS;
                 m_optimize =    FIRESTARTER_EVOLVE_NEW_OPTIMIZE;
                 m_tests =       FIRESTARTER_EVOLVE_NEW_TESTS;
                 m_target =      FIRESTARTER_EVOLVE_NEW_TARGET;
@@ -509,7 +502,6 @@ public:
                 m_passes =      FIRESTARTER_EVOLVE_SINSIM_PASSES;
                 m_iterations =  FIRESTARTER_EVOLVE_SINSIM_ITERATIONS;
                 m_samples =     FIRESTARTER_EVOLVE_SINSIM_SAMPLES;
-                m_attempts =    FIRESTARTER_EVOLVE_SINSIM_ATTEMPTS;
                 m_optimize =    FIRESTARTER_EVOLVE_SINSIM_OPTIMIZE;
                 m_tests =       FIRESTARTER_EVOLVE_SINSIM_TESTS;
                 m_target =      FIRESTARTER_EVOLVE_SINSIM_TARGET;
@@ -524,7 +516,6 @@ public:
                 m_passes =      FIRESTARTER_SINSIM_PASSES;
                 m_iterations =  FIRESTARTER_SINSIM_ITERATIONS;
                 m_samples =     FIRESTARTER_SINSIM_SAMPLES;
-                m_attempts =    FIRESTARTER_SINSIM_ATTEMPTS;
                 m_optimize =    FIRESTARTER_SINSIM_OPTIMIZE;
                 m_tests =       FIRESTARTER_SINSIM_TESTS;
                 m_target =      FIRESTARTER_SINSIM_TARGET;
@@ -539,7 +530,6 @@ public:
                 m_passes =      FIRESTARTER_SPEED_TEST_PASSES;
                 m_iterations =  FIRESTARTER_SPEED_TEST_ITERATIONS;
                 m_samples =     FIRESTARTER_SPEED_TEST_SAMPLES;
-                m_attempts =    FIRESTARTER_SPEED_TEST_ATTEMPTS;
                 m_optimize =    FIRESTARTER_SPEED_TEST_OPTIMIZE;
                 m_tests =       FIRESTARTER_SPEED_TEST_TESTS;
                 m_target =      FIRESTARTER_SPEED_TEST_TARGET;
@@ -554,7 +544,6 @@ public:
                 m_passes =      FIRESTARTER_OPTIMIZE_PASSES;
                 m_iterations =  FIRESTARTER_OPTIMIZE_ITERATIONS;
                 m_samples =     FIRESTARTER_OPTIMIZE_SAMPLES;
-                m_attempts =    FIRESTARTER_OPTIMIZE_ATTEMPTS;
                 m_optimize =    FIRESTARTER_OPTIMIZE_OPTIMIZE;
                 m_tests =       FIRESTARTER_OPTIMIZE_TESTS;
                 m_target =      FIRESTARTER_OPTIMIZE_TARGET;
@@ -569,7 +558,6 @@ public:
                 m_passes =      0;
                 m_iterations =  0;
                 m_samples =     0;
-                m_attempts =    0;
                 m_optimize =    0;
                 m_tests =       0;
                 m_target =      0.0f;

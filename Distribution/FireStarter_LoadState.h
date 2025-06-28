@@ -61,7 +61,6 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_samples = 15;
     settings.m_iterations = 64;
     settings.m_candidates = 0;
-    settings.m_attempts = 0;
     settings.m_optimize = 1;
 
     settings.m_scale = 0.300000f;
