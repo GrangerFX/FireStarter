@@ -141,10 +141,6 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                             break;
                         }
 #else
-                        // Randomize 1 and 2 instructions alternately.
-                        curState.RandomInstruction();
-                        if (generation & 1)
-                            curState.RandomInstruction();
 
                         // Select the best candidate evolution variation.
                         execute->ExecuteSelect(curState, selectSettings);

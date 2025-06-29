@@ -1,0 +1,1 @@
+Duration: 1001.6  Average: 1002.3  Seed=0  Test=0  Generation=37  Best Generations=68  Evolutions=6  Evolve Result=0.00000095 *******
