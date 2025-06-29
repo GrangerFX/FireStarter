@@ -205,8 +205,6 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
             minResult = curResult;
             minIndex = i;
         }
-        if (curResult < state.m_bestCodes.WorstResult())
-            state.m_bestCodes.AddCode(m_hostCodes->Member(selectSettings, i), curResult);
     }
 
     // Update the state's best code.
