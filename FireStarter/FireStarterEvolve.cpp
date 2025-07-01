@@ -61,7 +61,7 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                     // Randomize the instructions.
                     curState.InitState(optimizeSettings, 0, index, allStates.size(), test);
 
-                    // Keep randomizing instructions until a unique set of instructions is found.
+                    // Keep randomizing the code until a unique set of instructions is found.
                     const FireStarterCode* bestCode = nullptr;
                     do {
                         // Randomize the program.
@@ -72,14 +72,7 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
 
                         // Select the best candidate evolution variation.
                         execute->ExecuteSelect(curState, selectSettings);
-
-                        // Get the best code to optimize.
-                        do {
-                            bestCode = curState.m_bestCodes.GetBestCode();
-                            if (bestCode)
-                                curState.CopyCode(bestCode);
-                        } while (bestCode && testedCodes.count(curState.CodeVector()));
-                    } while (!bestCode);
+                    } while (testedCodes.count(curState.CodeVector()));
 
                     // Add the instructions to the set of unique instructions.
                     testedCodes.insert(curState.CodeVector());
@@ -105,11 +98,15 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                     // Loop until a unique new state is found.
                     FireStarterState& oldState = allStates[evolveIndex];
 
-                    // Keep evolving instructions until a unique set of instructions is found.
+                    // Keep varying the code until a unique set of instructions is found.
                     const FireStarterCode* bestCode = nullptr;
-                    for (;;) {
+                    do {
                         // Copy and setup the new candidate state.
+                        // Note: The bestCodes are initialized instead of copied.
                         curState = oldState;
+
+                        // Copy the program and result from the random index.
+                        curState.CopyCode(allStates[evolveIndex]);
 
                         // Note: The age and generation will increment even if the current instructions are not unique by design.
                         curState.m_age = ++oldState.m_age;
@@ -122,42 +119,12 @@ bool FireStarterEvolve::SelectStates(FireStarterExecute* execute, unsigned long 
                         curState.InitGenerationSeed();
                         curState.m_timer.Start();
 
-                        // Copy the program and result from the random index.
-                        curState.CopyCode(allStates[evolveIndex]);
-#if 0
-                        // Randomize 2 and 3 instructions alternately.
-                        curState.RandomInstruction();
-                        curState.RandomInstruction();
-                        if (generation & 1)
-                            curState.RandomInstruction();
-
-                        // Optimize the program registers.
-                        curState.OptimizeCode();
-
-                        // Check if the optimized instructions are unique.
-                        if (!testedCodes.count(curState.CodeVector())) {
-                            // Add the instructions to the set of unique instructions.
-                            testedCodes.insert(curState.CodeVector());
-                            break;
-                        }
-#else
-
                         // Select the best candidate evolution variation.
                         execute->ExecuteSelect(curState, selectSettings);
+                    } while (testedCodes.count(curState.CodeVector()));
 
-                        // Get the best code to optimize.
-                        do {
-                            bestCode = curState.m_bestCodes.GetBestCode();
-                            if (bestCode)
-                                curState.CopyCode(bestCode);
-                        } while (bestCode && testedCodes.count(curState.CodeVector()));
-                        if (bestCode) {
-                            // Add the instructions to the set of unique instructions.
-                            testedCodes.insert(curState.CodeVector());
-                            break;
-                        }
-#endif
-                    }
+                    // Add the instructions to the set of unique instructions.
+                    testedCodes.insert(curState.CodeVector());
 
                     // The optimize pass should be compared with the best result of the last generation and not from the select code evolution.
                     curState.m_bestResult = oldState.m_bestResult;
