@@ -1,5 +1,5 @@
-// Run date: 07/01/25 10:09:56 Pacific Daylight Time
-// Run duration = 918.903792 seconds
+// Run date: 07/01/25 09:38:21 Pacific Daylight Time
+// Run duration = 968.669069 seconds
 // Run test = 0
 // Run generation = 131
 // Run evolution = 8
@@ -17,7 +17,7 @@
 // Run mode = FIRESTARTER_EVOLVE_CPU
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
-// Run tests = 1
+// Run tests = 16
 // Run streams = 1
 // Run units = 8
 // Run states = 16

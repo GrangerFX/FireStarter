@@ -10,7 +10,7 @@
 
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
-#define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
+#define FIRESTARTER_MULTIPROCESS    1           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    1           // Generate the settings and code using the GPU.
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
 #define FIRESTARTER_AUTO_QUIT       0           // Automatically exit the app after completing the work.
@@ -41,7 +41,7 @@
 
 // First 16 tests of 16 states for unlimited generations is the standard evolve test.
 #define FIRESTARTER_START_TEST      0           // The starting test index.
-#define FIRESTARTER_TESTS           256
+#define FIRESTARTER_TESTS           1
 
 #define FIRESTARTER_AUTO            0           // Used to automatically set the mode using CUDA.
 #define FIRESTARTER_RANDOM          1           // First result of states random instructions and data.
@@ -96,7 +96,7 @@
 #define FIRESTARTER_EVOLVE_CPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_CPU_ATTEMPTS         0
 #define FIRESTARTER_EVOLVE_CPU_OPTIMIZE         1
-#define FIRESTARTER_EVOLVE_CPU_TESTS            1
+#define FIRESTARTER_EVOLVE_CPU_TESTS            16
 #define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
 
 #if FIRESTARTER_VARIATIONS == 1
