@@ -171,6 +171,18 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
 
     checkCUDAErrors(cudaMemcpyAsync(m_deviceParentCode, parentCode, m_parentCodeSize, cudaMemcpyHostToDevice, Stream()));
 
+#if 1
+    unsigned int variation = RANDOMMOD(seed, FIRESTARTER_VARIATIONS);
+    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
+                    reinterpret_cast<void*>(&m_devicePopulation0),
+                    reinterpret_cast<void*>(&m_deviceCodes),
+                    reinterpret_cast<void*>(&m_deviceParentCode),
+                    reinterpret_cast<void*>(&seed),
+                    reinterpret_cast<void*>(&passes),
+                    reinterpret_cast<void*>(&populationSize),
+                    reinterpret_cast<void*>(&variation)
+    };
+#else
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
                     reinterpret_cast<void*>(&m_devicePopulation0),
                     reinterpret_cast<void*>(&m_deviceCodes),
@@ -179,6 +191,7 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&populationSize)
     };
+#endif
 
     checkCUDAErrors(cuLaunchKernel(m_executeFunction,
         cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
