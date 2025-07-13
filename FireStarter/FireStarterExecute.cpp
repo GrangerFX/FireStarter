@@ -544,7 +544,7 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
         state.m_optimizeValid = validResult;
     } else
         ExecuteOptimizePasses(state);
-} // ExecuteSmartOptimizePass
+} // ExecuteSmartOptimizePasses
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
