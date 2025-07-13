@@ -354,6 +354,20 @@ public:
         return maxResult;
     } // MaxResults
 
+    inline unsigned int MaxVariation(void) const
+    {
+        float maxResult = MaxResult(0);
+        unsigned int maxVariation = 0;
+        for (unsigned int v = 1; v < m_variations; v++) {
+            float curResult = MaxResult(v);
+            if (curResult > maxResult) {
+                maxResult = curResult;
+                maxVariation = v;
+            }
+        }
+        return maxVariation;
+    } // MaxVariation
+
     inline void InitResult(const FireStarterSettings& settings, unsigned int variation)
     {
         Result(variation)->InitResult(settings);
@@ -565,6 +579,14 @@ public:
     {
         return m_results.MaxResult(variation);
     } // MaxResult
+
+    inline unsigned int MaxVariation(void) const
+    {
+        if (m_settings.m_mode == FIRESTARTER_SINSIM)
+            return 0;
+        else
+            return m_results.MaxVariation();
+    } // MaxVariation
 
     inline unsigned short EvolveAge1(unsigned int variation) const
     {
