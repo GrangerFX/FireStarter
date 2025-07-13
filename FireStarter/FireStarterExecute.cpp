@@ -171,7 +171,6 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
 
     checkCUDAErrors(cudaMemcpyAsync(m_deviceParentCode, parentCode, m_parentCodeSize, cudaMemcpyHostToDevice, Stream()));
 
-//  unsigned int variation = RANDOMMOD(seed, FIRESTARTER_VARIATIONS);
     unsigned int variation = state.MaxVariation();
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
                     reinterpret_cast<void*>(&m_devicePopulation0),
