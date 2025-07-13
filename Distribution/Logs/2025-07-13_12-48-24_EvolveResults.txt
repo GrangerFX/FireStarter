@@ -1,0 +1,16 @@
+Duration: 121.4  Average: 122.0  Seed=0  Test=0  Generation=4  Best Generations=54  Evolutions=4  Evolve Result=0.00000048 *******
+Duration: 67.3  Average: 94.7  Seed=0  Test=1  Generation=2  Best Generations=19  Evolutions=2  Evolve Result=0.00000030 *******
+Duration: 99.4  Average: 96.2  Seed=0  Test=2  Generation=3  Best Generations=34  Evolutions=3  Evolve Result=0.00000024 *******
+Duration: 70.9  Average: 89.9  Seed=0  Test=3  Generation=2  Best Generations=3  Evolutions=1  Evolve Result=0.00000083 *******
+Duration: 520.7  Average: 176.1  Seed=0  Test=4  Generation=26  Best Generations=115  Evolutions=8  Evolve Result=0.00000054 *******
+Duration: 99.8  Average: 163.3  Seed=0  Test=5  Generation=3  Best Generations=32  Evolutions=3  Evolve Result=0.00000042 *******
+Duration: 197.4  Average: 168.2  Seed=0  Test=6  Generation=8  Best Generations=79  Evolutions=8  Evolve Result=0.00000012 *******
+Duration: 151.4  Average: 166.1  Seed=0  Test=7  Generation=6  Best Generations=43  Evolutions=6  Evolve Result=0.00000060 *******
+Duration: 72.8  Average: 155.7  Seed=0  Test=8  Generation=2  Best Generations=4  Evolutions=2  Evolve Result=0.00000022 *******
+Duration: 50.8  Average: 145.2  Seed=0  Test=9  Generation=1  Best Generations=11  Evolutions=1  Evolve Result=0.00000060 *******
+Duration: 51.4  Average: 136.7  Seed=0  Test=10  Generation=1  Best Generations=2  Evolutions=1  Evolve Result=0.00000077 *******
+Duration: 132.4  Average: 136.3  Seed=0  Test=11  Generation=5  Best Generations=34  Evolutions=4  Evolve Result=0.00000026 *******
+Duration: 477.9  Average: 162.6  Seed=0  Test=12  Generation=25  Best Generations=217  Evolutions=12  Evolve Result=0.00000051 *******
+Duration: 75.5  Average: 156.4  Seed=0  Test=13  Generation=2  Best Generations=15  Evolutions=2  Evolve Result=0.00000072 *******
+Duration: 71.4  Average: 150.7  Seed=0  Test=14  Generation=2  Best Generations=17  Evolutions=2  Evolve Result=0.00000042 *******
+Duration: 217.9  Average: 154.9  Seed=0  Test=15  Generation=10  Best Generations=40  Evolutions=4  Evolve Result=0.00000039 *******
