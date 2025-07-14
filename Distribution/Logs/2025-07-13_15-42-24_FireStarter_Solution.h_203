@@ -1,0 +1,99 @@
+// Run date: 07/13/25 15:42:24 Pacific Daylight Time
+// Run duration = 911.286307 seconds
+// Run test = 203
+// Run generation = 7
+// Run evolution = 0
+// Run precision  = 0.00000114
+// Run max result = 0.00000017
+// Run variations = 1
+// Run instructions = 32
+// Run registers = 30
+// Run opcodes = 3
+
+// Run targetMin = 0.000000f
+// Run targetMax = 6.283185f
+// Run target = 0.000001f
+
+// Run mode = FIRESTARTER_OPTIMIZE
+// Run evolveSeed = 0
+// Run optimizeSeed = 0
+// Run tests = 256
+// Run streams = 1
+// Run units = 1
+// Run states = 1
+// Run population = 65536
+// Run generations = 0
+// Run passes = 512
+// Run samples = 15
+// Run iterations = 64
+// Run candidates = 0
+// Run optimize = 1
+
+// Run scale = 0.300000f
+// Run startScale = 2.500000f
+// Run startResult = 10.000000f
+
+#define SOLUTION_VARIATIONS 1
+#define SOLUTION_VARIATION 0
+
+#ifndef __CUDACC__
+#include <cmath>
+#endif
+
+#define SOLUTION_PI 3.14159265f
+#define SOLUTION_MIN 0.0f
+#define SOLUTION_MAX (2.0f * SOLUTION_PI)
+
+inline float SolutionTarget(float n, unsigned int variation = 0)
+{
+    switch (variation & 3) {
+        default:
+        case 0:
+            return sinf(n);
+        case 1:
+            return sinf((n + 0.4f) * 0.9f) - n * 0.2f + 0.5f;
+        case 2:
+            return sinf(n * 1.2f) + n * 0.2f;
+        case 3:
+            return fabsf(fmodf(fabsf(n - SOLUTION_PI * 0.5f), SOLUTION_PI * 2.0f) - SOLUTION_PI) - SOLUTION_PI * 0.5f;
+    }
+} // SolutionTarget
+
+inline float Solution(float n)
+{
+    float r0, r1, r2, r3, r4, r5;
+
+    r0 = n += -3.14159274f;
+    r1 = n *= -1.24760127f;
+    n = r1 *= n;
+    n += -11.09949875f;
+    r2 = n *= 0.04793279f;
+    n *= -0.92320120f;
+    r3 = n += 1.91878223f;
+    n += 3.64851308f;
+    r4 = n *= -0.06428768f;
+    n = r4 *= n;
+    r5 = n += 0.46267241f;
+    n *= 1.87637353f;
+    n *= -3.37121725f;
+    n *= r4;
+    r4 = n *= 0.35790625f;
+    n *= r1;
+    n += 2.29774284f;
+    n *= r4;
+    r4 = n *= 1.02869797f;
+    n += -0.55753344f;
+    n *= -0.65361571f;
+    n *= -0.00000000f;
+    n *= 10.34861088f;
+    n += r3;
+    n += r2;
+    n *= 0.67052943f;
+    n += -3.00469589f;
+    n *= 0.35269618f;
+    n += r4;
+    n = r5 += n;
+    n += r5;
+    n *= r0;
+    return n;
+} // Solution
