@@ -372,9 +372,12 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
         FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
-        optimizeSettings.m_population = 65536;  // This is for EvolveGPU and EvolveNew only!
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
+
+        // Optimization for single variation optimization population.
+        if (optimizeSettings.m_variations == 1)
+            optimizeSettings.m_population = 65536;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
@@ -473,7 +476,6 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
         FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
-        optimizeSettings.m_population = 65536;  // This is for EvolveGPU and EvolveNew only!
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
