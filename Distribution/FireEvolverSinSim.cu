@@ -62,30 +62,29 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     bestAge = 0;
 
     // The best code, data, result and age.
-    FireStarterCode passCode(bestCode);
-    FireStarterData passData(bestData);
-    float passResult = bestResult;
-    unsigned short passAge = bestAge;
+    FireStarterCode code(bestCode);
+    FireStarterData data(bestData);
+    float result = bestResult;
+    unsigned short age = bestAge;
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Iterate to evolve the data.
-        if (passAge > SINSIM_NETWORK_MAXAGE) {
-            passCode.InitCode(memberSeed);
-            registers = passCode.Optimize();
-            passData.InitData(memberSeed, registers, 1.0f);
-            passResult = SINSIM_INIT_GRADE;
-            passAge = 0;
+        if (age > SINSIM_NETWORK_MAXAGE) {
+            code.InitCode(memberSeed);
+            registers = code.Optimize();
+            data.InitData(memberSeed, registers, 1.0f);
+            result = SINSIM_INIT_GRADE;
+            age = 0;
         }
-        FireStarterCode code = passCode;
 
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_SINSIM_ITERATIONS; i++) {
             // Randomize a data element.
-            FireStarterData newData = passData;
+            FireStarterData newData = data;
             newData.RandomData(memberSeed, 1.0f, registers);
 
             // Test and grade the code.
-            float result = 0.0f;
+            float newResult = 0.0f;
             sharedData = newData;
             for (unsigned int s = 0; s < FIRESTARTER_EVOLVE_SINSIM_SAMPLES; s++) {
                 float input = SinSimNetwork::SinSimInputSample(s);
@@ -95,27 +94,27 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
                 if (s >= FIRESTARTER_SINSIM_SAMPLES - FIRESTARTER_SINSIM_CANDIDATES) {
                     float target = SinSimNetwork::SinSimTargetSample(s);
                     float difference = sample - target;
-                    result += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_CANDIDATES);
+                    newResult += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_CANDIDATES);
                 }
             }
 
             // Did the result improve?
-            if (result < passResult) {
+            if (newResult < result) {
                 // If the result improved, save the data.
-                passData = newData;
-                passResult = result;
-                passAge = 0;
+                data = newData;
+                result = newResult;
+                age = 0;
             } else
                 // If not, restore the old data.
-                passAge++;
+                age++;
         }
 
         // If the result was better, save the results.
-        if (passResult < bestResult) {
-            bestCode = passCode;
-            bestData = passData;
-            bestResult = passResult;
-            bestAge = passAge;
+        if (result < bestResult) {
+            bestCode = code;
+            bestData = data;
+            bestResult = result;
+            bestAge = age;
         }
     }
 
