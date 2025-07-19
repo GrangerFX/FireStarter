@@ -105,8 +105,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
                 passData = newData;
                 passResult = result;
                 passAge = 0;
-            }
-            else
+            } else
                 // If not, restore the old data.
                 passAge++;
         }

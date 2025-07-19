@@ -87,11 +87,11 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     size_t parentCodeSize = 0;
     size_t networksSize = 0;
 
-    if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
+    if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
         resultsSize = settings.m_population * sizeof(float);
         if (FIRESTARTER_EVOLVE_RESULTS || (settings.m_mode != FIRESTARTER_EVOLVE_GPU))
             populationSize = FireStarterPopulation::PopulationSize(settings);
-        if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU))
+        if (settings.m_mode != FIRESTARTER_SPEED_TEST)
             codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if (settings.m_mode == FIRESTARTER_SELECT)
             parentCodeSize = FireStarterCode::CodeSize(settings);
