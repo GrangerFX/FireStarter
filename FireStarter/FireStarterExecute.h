@@ -39,7 +39,7 @@ private:
     void ExecuteEvolvePass(FireStarterState& state);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
-    void GatherOptimizePass(FireStarterState& state, unsigned int variation, FireStarterResult* newPopulation, unsigned long long pass, unsigned long long seed);
+    void GatherOptimizePass(FireStarterState& state, unsigned int variation, FireStarterResult* newPopulation);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);

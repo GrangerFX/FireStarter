@@ -272,7 +272,6 @@ public:
     unsigned int m_evolveSeed =     FIRESTARTER_EVOLVE_SEED;
     unsigned int m_optimizeSeed =   FIRESTARTER_OPTIMIZE_SEED;
 
- 
     unsigned int m_mode =           FIRESTARTER_MODE;
     unsigned int m_variations =     FIRESTARTER_VARIATIONS;
     unsigned int m_streams =        0;

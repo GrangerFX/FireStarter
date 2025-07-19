@@ -375,7 +375,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     state.InitNetwork(settings, minNetwork, minIndex);
 } // ExecuteSinSimPass
 
-void FireStarterExecute::GatherOptimizePass(FireStarterState& state, unsigned int variation, FireStarterResult* newPopulation, unsigned long long pass, unsigned long long seed)
+void FireStarterExecute::GatherOptimizePass(FireStarterState& state, unsigned int variation, FireStarterResult* newPopulation)
 {
     FireStarterSettings settings = state.Settings();
 
@@ -481,9 +481,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 #endif
 
     // Gather the best results.
-    unsigned long long pass = state.m_optimize_pass * passes + passes;
-    unsigned long long seed = state.OptimizationSeed(pass);
-    GatherOptimizePass(state, variation, newPopulation, pass, seed);
+    GatherOptimizePass(state, variation, newPopulation);
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
