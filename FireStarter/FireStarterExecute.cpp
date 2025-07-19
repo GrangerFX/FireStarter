@@ -176,10 +176,10 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
                     reinterpret_cast<void*>(&m_devicePopulation0),
                     reinterpret_cast<void*>(&m_deviceCodes),
                     reinterpret_cast<void*>(&m_deviceParentCode),
+                    reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&populationSize),
-                    reinterpret_cast<void*>(&variation)
+                    reinterpret_cast<void*>(&populationSize)
     };
 
     checkCUDAErrors(cuLaunchKernel(m_executeFunction,
@@ -224,10 +224,12 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     unsigned long long seed = state.EvolutionSeed();
     unsigned int passes = settings.m_passes;
     unsigned int populationSize = settings.m_population;
+    unsigned int variation = FIRESTARTER_VARIATION;
 
     void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
                     reinterpret_cast<void*>(&m_devicePopulation0),
                     reinterpret_cast<void*>(&m_deviceCodes),
+                    reinterpret_cast<void*>(&variation),
                     reinterpret_cast<void*>(&seed),
                     reinterpret_cast<void*>(&passes),
                     reinterpret_cast<void*>(&populationSize)

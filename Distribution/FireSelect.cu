@@ -71,9 +71,10 @@ GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStar
     float theta[FIRESTARTER_EVOLVE_GPU_SAMPLES];
     float target[FIRESTARTER_EVOLVE_GPU_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_GPU_SAMPLES - 1);
+    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
     for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, variation);
+        target[i] = Target(t, targetVariation);
     }
 
     // Evolve the program registers for each variation.
@@ -95,11 +96,14 @@ GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStar
         if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
             // Randomize 2 and 3 instructions alternately.
             evolutionScale = FIRESTARTER_START_SCALE;
-            code = parentCode;
-            code.RandomInstruction(memberSeed);
-            code.RandomInstruction(memberSeed);
-            if (memberSeed & 1)
+            if (parentCode) {
+                code = parentCode;
                 code.RandomInstruction(memberSeed);
+                code.RandomInstruction(memberSeed);
+                if (memberSeed & 1)
+                    code.RandomInstruction(memberSeed);
+            } else
+                code.InitCode(memberSeed);
             registers = oldRegisters = code.Optimize();
             oldCode = code;
             data.InitData(memberSeed, registers);

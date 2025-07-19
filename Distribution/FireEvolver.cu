@@ -49,7 +49,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 
 #if FIRESTARTER_VARIATIONS == 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -67,9 +67,10 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     float theta[FIRESTARTER_EVOLVE_GPU_SAMPLES];
     float target[FIRESTARTER_EVOLVE_GPU_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_GPU_SAMPLES - 1);
+    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
     for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, FIRESTARTER_VARIATION);
+        target[i] = Target(t, targetVariation);
     }
 
     // Evolve the program registers for each variation.
@@ -162,7 +163,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
 } // Evolver
 #else
 // Multi-variation version.
-GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -183,9 +184,10 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     float target[FIRESTARTER_VARIATIONS][FIRESTARTER_EVOLVE_GPU_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_EVOLVE_GPU_SAMPLES - 1);
     for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
+        unsigned int tv = (v + variation) % FIRESTARTER_VARIATIONS
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_SAMPLES; i++) {
             float t = theta[i] = TARGET_MIN + i * sampleStep;
-            target[v][i] = Target(t, v + FIRESTARTER_VARIATION);
+            target[v][i] = Target(t, v + variation);
         }
     }
 

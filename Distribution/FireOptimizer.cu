@@ -59,9 +59,10 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
     float theta[FIRESTARTER_OPTIMIZE_SAMPLES];
     float target[FIRESTARTER_OPTIMIZE_SAMPLES];
     float sampleStep = (TARGET_MAX - TARGET_MIN) / (FIRESTARTER_OPTIMIZE_SAMPLES - 1);
+    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
     for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
         float t = theta[i] = TARGET_MIN + i * sampleStep;
-        target[i] = Target(t, variation + FIRESTARTER_VARIATION);
+        target[i] = Target(t, targetVariation);
     }
 
     // Evolve the program registers for each variation.

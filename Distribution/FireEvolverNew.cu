@@ -53,6 +53,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
     float memberResult = 1.0e+10f;
     float result = 1.0e+10f;
     float bestResult = 1.0e+10f;
+    unsigned int targetVariation = variation % FIRESTARTER_VARIATIONS;
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
@@ -75,7 +76,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
         for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_NEW_ITERATIONS * FIRESTARTER_EVOLVE_NEW_SAMPLES; i++) {
             float t = TARGET_MIN + (TARGET_MAX - TARGET_MIN) * RANDOMNUM(memberSeed);
             float sample = code.Evaluate(sharedData, t);
-            float target = Target(t, variation + FIRESTARTER_VARIATION);
+            float target = Target(t, targetVariation);
             float difference = sample - target;
             data[1] = difference;
 //          result += fabsf(difference); // Average result
