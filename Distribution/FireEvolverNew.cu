@@ -80,12 +80,10 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
             float target = Target(t, targetVariation);
             float difference = sample - target;
             data[1] = difference;
-//          result += fabsf(difference); // Average result
             result = (result * (FIRESTARTER_EVOLVE_NEW_SAMPLES - 1) + fabsf(difference)) * (1.0f / FIRESTARTER_EVOLVE_NEW_SAMPLES); // Accumulated result.
             if (result >= FIRESTARTER_START_RESULT)
                 break;
         }
-//      result /= FIRESTARTER_EVOLVE_GPU_ITERATIONS * FIRESTARTER_EVOLVE_NEW_SAMPLES;  // Averge result
 
         // Did the results improve?
         if (!pass || (result < memberResult)) {
