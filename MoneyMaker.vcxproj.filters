@@ -9,41 +9,197 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="CUDA Files">
+      <UniqueIdentifier>{63166211-d97e-484f-845e-d0720ce0852f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MoneyMaker\MoneyMaker.cpp">
+    <ClCompile Include="FireStarter\CUDACompile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterBuildSettings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterCompile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterComplete.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterEvolve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterExecute.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterGenerate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterProcess.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterShow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FireStarter\FireStarterMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MoneyMaker\framework.h">
+    <ClInclude Include="FireStarter\CUDACompile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MoneyMaker\MoneyMaker.h">
+    <ClInclude Include="FireStarter\CUDAContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MoneyMaker\Resource.h">
+    <ClInclude Include="FireStarter\CUDAErrors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MoneyMaker\targetver.h">
+    <ClInclude Include="FireStarter\CUDAThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterBuildSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterCompile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterComplete.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterEvolve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterExecute.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterGenerate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterPacket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterProcess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterShow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\FireStarterWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\Format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\PrintF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\SerialOutput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\SerialThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\SimpleOutput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FireStarter\SimpleTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\Checksum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\cnprintf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\CUDADefines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\FireSinSim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\FireStarter_LoadState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\FireStarter_Solution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\FireStarterCodeGenerate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\FireStarterResults.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\FireStarterSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\FireStarterTarget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\HashRandom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="MoneyMaker\MoneyMaker.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="MoneyMaker\small.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="MoneyMaker\MoneyMaker.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <None Include="Distribution\FireEvolver.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireEvolverNew.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireEvolverSinSim.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireGenerate.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireOptimizer.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireSelect.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireSettings.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireSinSim.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireSpeedTest.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
