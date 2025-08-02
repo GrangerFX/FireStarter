@@ -438,7 +438,7 @@ typedef struct FireStarterCode {
     inline FireStarterCode(const struct FireStarterCode& code)
     {
         Copy(code);
-    } // FireStarterData
+    } // FireStarterCode
 
     inline FireStarterCode(const struct FireStarterCode* code)
     {
