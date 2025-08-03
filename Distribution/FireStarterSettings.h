@@ -51,11 +51,12 @@
 #define FIRESTARTER_EVOLVE_NEW      5           // GPU new evolution.
 #define FIRESTARTER_EVOLVE_SINSIM   6           // SinSim evolution.
 #define FIRESTARTER_SINSIM          7           // SinSim mini neural net algorithm for comparison.
-#define FIRESTARTER_SPEED_TEST      8           // Speed testing for variations of GPU evolution.
-#define FIRESTARTER_OPTIMIZE        9           // Optimize a previously CPU evolved state.
-#define FIRESTARTER_SOLUTION        10          // Execute or validate the most recently evolved best state.
-#define FIRESTARTER_MODES           11
-#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_NEW
+#define FIRESTARTER_MONEYMAKER      8           // GPU MoneyMaker evolved share price prediction.
+#define FIRESTARTER_SPEED_TEST      9           // Speed testing for variations of GPU evolution.
+#define FIRESTARTER_OPTIMIZE        10          // Optimize a previously CPU evolved state.
+#define FIRESTARTER_SOLUTION        11          // Execute or validate the most recently evolved best state.
+#define FIRESTARTER_MODES           12
+#define FIRESTARTER_MODE            FIRESTARTER_MONEYMAKER
 
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1
@@ -162,6 +163,19 @@
 #define FIRESTARTER_SINSIM_OPTIMIZE             1
 #define FIRESTARTER_SINSIM_TESTS                FIRESTARTER_TESTS
 #define FIRESTARTER_SINSIM_TARGET               FIRESTARTER_TARGET
+
+#define FIRESTARTER_MONEYMAKER_STREAMS          1
+#define FIRESTARTER_MONEYMAKER_UNITS            1
+#define FIRESTARTER_MONEYMAKER_STATES           1
+#define FIRESTARTER_MONEYMAKER_GENERATIONS      0
+#define FIRESTARTER_MONEYMAKER_POPULATION       32768
+#define FIRESTARTER_MONEYMAKER_PASSES           256
+#define FIRESTARTER_MONEYMAKER_ITERATIONS       FIRESTARTER_ITERATIONS
+#define FIRESTARTER_MONEYMAKER_SAMPLES          FIRESTARTER_SAMPLES
+#define FIRESTARTER_MONEYMAKER_CANDIDATES       FIRESTARTER_CANDIDATES
+#define FIRESTARTER_MONEYMAKER_OPTIMIZE         1
+#define FIRESTARTER_MONEYMAKER_TESTS            FIRESTARTER_TESTS
+#define FIRESTARTER_MONEYMAKER_TARGET           FIRESTARTER_TARGET
 
 #define FIRESTARTER_SPEED_TEST_STREAMS          1
 #define FIRESTARTER_SPEED_TEST_UNITS            1
@@ -304,6 +318,8 @@ public:
                 return "FIRESTARTER_EVOLVE_SINSIM";
             case FIRESTARTER_SINSIM:
                 return "FIRESTARTER_SINSIM";
+            case FIRESTARTER_MONEYMAKER:
+                return "FIRESTARTER_MONEYMAKER";
             case FIRESTARTER_SPEED_TEST:
                 return "FIRESTARTER_SPEED_TEST";
             case FIRESTARTER_OPTIMIZE:
@@ -333,6 +349,8 @@ public:
                 return "FireEvolverSinSim.cu";
             case FIRESTARTER_SINSIM:
                 return "FireSinSim.cu";
+            case FIRESTARTER_MONEYMAKER:
+                return "FireMoneyMaker.cu";
             case FIRESTARTER_SPEED_TEST:
                 return "FireSpeedTest.cu";
             case FIRESTARTER_OPTIMIZE:
@@ -359,6 +377,8 @@ public:
                 return "EvolverSinSim";
             case FIRESTARTER_SINSIM:
                 return "SinSim";
+            case FIRESTARTER_MONEYMAKER:
+                return "MoneyMaker";
             case FIRESTARTER_SPEED_TEST:
                 return "SpeedTest";
             case FIRESTARTER_OPTIMIZE:
@@ -510,6 +530,20 @@ public:
                 m_target =      FIRESTARTER_SINSIM_TARGET;
                 break;
 
+            case FIRESTARTER_MONEYMAKER:
+                m_streams =     FIRESTARTER_MONEYMAKER_STREAMS;
+                m_units =       FIRESTARTER_MONEYMAKER_UNITS;
+                m_states =      FIRESTARTER_MONEYMAKER_STATES;
+                m_generations = FIRESTARTER_MONEYMAKER_GENERATIONS;
+                m_population =  FIRESTARTER_MONEYMAKER_POPULATION;
+                m_passes =      FIRESTARTER_MONEYMAKER_PASSES;
+                m_iterations =  FIRESTARTER_MONEYMAKER_ITERATIONS;
+                m_samples =     FIRESTARTER_MONEYMAKER_SAMPLES;
+                m_optimize =    FIRESTARTER_MONEYMAKER_OPTIMIZE;
+                m_tests =       FIRESTARTER_MONEYMAKER_TESTS;
+                m_target =      FIRESTARTER_MONEYMAKER_TARGET;
+                break;
+
             case FIRESTARTER_SPEED_TEST:
                 m_streams =     FIRESTARTER_SPEED_TEST_STREAMS;
                 m_units =       FIRESTARTER_SPEED_TEST_UNITS;
@@ -566,6 +600,7 @@ public:
         FireStarterSetting(FIRESTARTER_EVOLVE_NEW),
         FireStarterSetting(FIRESTARTER_EVOLVE_SINSIM),
         FireStarterSetting(FIRESTARTER_SINSIM),
+        FireStarterSetting(FIRESTARTER_MONEYMAKER),
         FireStarterSetting(FIRESTARTER_SPEED_TEST),
         FireStarterSetting(FIRESTARTER_OPTIMIZE),
         FireStarterSetting(FIRESTARTER_SOLUTION)

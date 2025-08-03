@@ -18,6 +18,7 @@ public:
 	void EvolveGPUStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
     void EvolveNewStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
     void SinSimStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
+    void MoneyMakerStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
     void SpeedTestStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
     void OptimizeStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync = false);
     FireStarterStream(size_t index, const FireStarterWindow& window, FireStarterState& bestState, const FireStarterSettings& streamSettings);
