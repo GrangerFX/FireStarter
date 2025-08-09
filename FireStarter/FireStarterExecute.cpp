@@ -687,12 +687,19 @@ bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& state, bool s
     return result;
 } // ExecuteGenerateOptimize
 
-void FireStarterExecute::ExecuteInitPopulation(const FireStarterState& state)
+void FireStarterExecute::ExecuteInitPopulation(const FireStarterSettings& settings)
 {
-    DispatchSync([this, state] {
-        InitPopulation(state.Settings());
+    DispatchSync([this, settings] {
+        InitPopulation(settings);
     });
 } // ExecuteInitPopulation
+
+void FireStarterExecute::ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock)
+{
+    DispatchSync([this, settings, filePath, stock] {
+        m_hostStocks->Load(settings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", stock);
+    });
+}
 
 void FireStarterExecute::ExecuteSelect(FireStarterState& state, const FireStarterSettings& selectSettings)
 {

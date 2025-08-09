@@ -55,7 +55,8 @@ private:
 public:
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& state, bool sync = true);
-    void ExecuteInitPopulation(const FireStarterState& state);
+    void ExecuteInitPopulation(const FireStarterSettings& settings);
+    void ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock = 0);
     void ExecuteSelect(FireStarterState& state, const FireStarterSettings& selectSettings);
     void ExecuteEvolve(FireStarterState& state);
     void ExecuteEvolveNew(FireStarterState& state);

@@ -128,6 +128,7 @@
     <ClCompile Include="FireStarter\FireStarterShow.cpp" />
     <ClCompile Include="FireStarter\FireStarterState.cpp" />
     <ClCompile Include="FireStarter\FireStarterStream.cpp" />
+    <ClCompile Include="FireStarter\MoneyMakerStocks.cpp" />
     <ClInclude Include="Distribution\Checksum.h" />
     <ClInclude Include="Distribution\CUDADefines.h" />
     <ClInclude Include="Distribution\FireSinSim.h" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Distribution\HashRandom.h" />
     <ClInclude Include="Distribution\FireStarter_Solution.h" />
     <ClInclude Include="Distribution\cnprintf.h" />
+    <ClInclude Include="Distribution\MoneyMakerStocks.h" />
     <ClInclude Include="FireStarter\CUDACompile.h" />
     <ClInclude Include="FireStarter\CUDAContext.h" />
     <ClInclude Include="FireStarter\CUDAErrors.h" />
