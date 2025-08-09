@@ -129,7 +129,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
 
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
-        for (int i = 0; i < FIRESTARTER_OPTIMIZE_CANDIDATES; i++) {
+        for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, population);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate, variation);

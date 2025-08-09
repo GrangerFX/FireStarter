@@ -32,6 +32,8 @@ void FireStarterExecute::FinishPopulation(void)
     m_hostCodes = nullptr;
     checkCUDAErrors(cudaFreeHost(m_hostNetworks));
     m_hostNetworks = nullptr;
+    checkCUDAErrors(cudaFreeHost(m_hostStocks));
+    m_hostStocks = nullptr;
 
 #if SIMULATE_GPU
     checkCUDAErrors(cudaFreeHost(m_deviceResults));
@@ -68,6 +70,9 @@ void FireStarterExecute::FinishPopulation(void)
     checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
     m_deviceNetworks = nullptr;
 
+    checkCUDAErrors(cudaFreeAsync(m_deviceStocks, Stream()));
+    m_deviceStocks = nullptr;
+
     Context()->Synchronize();
 #endif
 
@@ -86,6 +91,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     size_t codesSize = 0;
     size_t parentCodeSize = 0;
     size_t networksSize = 0;
+    size_t stocksSize = 0;
 
     if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
         resultsSize = settings.m_population * sizeof(float);
@@ -99,16 +105,19 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         populationSize = FireStarterPopulation::PopulationSize(settings);
     } else if (settings.m_mode == FIRESTARTER_SINSIM) {
         networksSize = settings.m_population * sizeof(SinSimNetwork);
+    } else if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
+        stocksSize = MoneyMakerStocks::StocksSize(settings);
     }
 
     // Reallocate the data if the sizes has changed.
-    if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize) || (parentCodeSize != m_parentCodeSize) || (networksSize != m_networksSize)) {
+    if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize) || (parentCodeSize != m_parentCodeSize) || (networksSize != m_networksSize) || (stocksSize != m_stocksSize)) {
         FinishPopulation();
         m_resultsSize = resultsSize;
         m_populationSize = populationSize;
         m_codesSize = codesSize;
         m_parentCodeSize = parentCodeSize;
         m_networksSize = networksSize;
+        m_stocksSize = stocksSize;
 
         if (m_resultsSize)
             checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
@@ -118,7 +127,8 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
         if (m_networksSize)
             checkCUDAErrors(cudaMallocHost(&m_hostNetworks, m_networksSize));
-
+        if (m_stocksSize)
+            checkCUDAErrors(cudaMallocHost(&m_hostStocks, m_stocksSize));
 #if SIMULATE_GPU
         if (m_resultsSize)
             checkCUDAErrors(cudaMallocHost(&m_deviceResults, m_resultsSize));
@@ -132,6 +142,8 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             checkCUDAErrors(cudaMallocHost(&m_deviceParentCode, m_parentCodeSize));
         if (m_networksSize)
             checkCUDAErrors(cudaMallocHost(&m_deviceNetworks, m_networksSize));
+        if (m_stocksSize)
+            checkCUDAErrors(cudaMallocHost(&m_deviceStocks, m_stocksSize));
 #else
         if (m_resultsSize)
             checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
@@ -145,6 +157,8 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             checkCUDAErrors(cudaMallocAsync(&m_deviceParentCode, m_parentCodeSize, Stream()));
         if (m_networksSize)
             checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
+        if (m_stocksSize)
+            checkCUDAErrors(cudaMallocAsync(&m_deviceStocks, m_stocksSize, Stream()));
         Context()->Synchronize();
 #endif
 
@@ -153,6 +167,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         result = result && (!m_populationSize || (m_hostPopulation && m_devicePopulation0 && m_devicePopulation1));
         result = result && (!m_parentCodeSize || m_deviceParentCode);
         result = result && (!m_networksSize || (m_hostNetworks && m_deviceNetworks));
+        result = result && (!m_stocksSize || (m_hostStocks && m_deviceStocks));
     }
     return result;
 } // InitPopulation

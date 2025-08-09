@@ -59,6 +59,9 @@
     <ClCompile Include="FireStarter\FireStarterMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FireStarter\MoneyMakerStocks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FireStarter\CUDACompile.h">
@@ -170,6 +173,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Distribution\HashRandom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Distribution\MoneyMakerStocks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

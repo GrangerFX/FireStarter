@@ -4,6 +4,7 @@
 #include "FireStarterManager.h"
 #include "FireSinSim.h"
 #include "CUDAThread.h"
+#include "MoneyMakerStocks.h"
 
 class FireStarterExecute : public CUDAThread {
 private:
@@ -17,6 +18,8 @@ private:
     FireStarterCode* m_deviceParentCode = nullptr;
     SinSimNetwork* m_hostNetworks = nullptr;
     SinSimNetwork* m_deviceNetworks = nullptr;
+    MoneyMakerStocks* m_hostStocks = nullptr;
+    MoneyMakerStocks* m_deviceStocks = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -29,6 +32,7 @@ private:
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
     size_t m_networksSize = 0;
+    size_t m_stocksSize = 0;
     size_t m_codesSize = 0;
     size_t m_parentCodeSize = 0;
     size_t m_executeIndex = 0;

@@ -95,7 +95,7 @@ typedef struct FireStarterData {
     {
         for (unsigned int i = 0; i < registers; i++)
             d[i] = 0.0f; // Clear all the registers
-    } // Init
+    } // Clear
 
     inline void InitData(unsigned long long& seed, unsigned int uniqueRegisters = FIRESTARTER_REGISTERS, float startScale = FIRESTARTER_START_SCALE, unsigned int registers = FIRESTARTER_REGISTERS)
     {

@@ -1,13 +1,15 @@
 #pragma once
 #include "FireStarterTarget.h"
 
-#define FIRESTARTER_WARP_THREADS    32
-#define FIRESTARTER_INSTRUCTIONS    32
-#define FIRESTARTER_REGISTERS       30
-#define FIRESTARTER_VARIATIONS      1
-#define FIRESTARTER_VARIATION       0
-#define FIRESTARTER_PRECISION       256
+#define FIRESTARTER_WARP_THREADS    32          // Threads per warp (CUDA hardware constant)
+#define FIRESTARTER_INSTRUCTIONS    32          // Code instructions
+#define FIRESTARTER_REGISTERS       30          // Data maximum registers
+#define FIRESTARTER_VARIATIONS      1           // Target function variations
+#define FIRESTARTER_VARIATION       0           // Target function starting variaton
 
+#define MONEYMAKER_HISTORY          1000        // Days of stock history data
+#define MONEYMAKER_WARMUP           200         // Days of stock warmup tests
+#define MONEYMAKER_STOCKS           1           // Stocks with history data
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
@@ -20,16 +22,17 @@
 
 #define FIRESTARTER_FIRSTLIGHT      0           // Use the original instructions from FireStarter First Light.
 #define FIRESTARTER_MADD            0           // Use only non-random multiply-add instructions.
+#define FIRESTARTER_OLD_EVOLVE_CPU  0           // The old GPU evolution instruction set
 
 #define FIRESTARTER_POPULATION      8192 * FIRESTARTER_WARP_THREADS  // For debugging display of the population contents only.
-#define FIRESTARTER_PASSES          512
-#define FIRESTARTER_ITERATIONS      64
-#define FIRESTARTER_SAMPLES         15
-#define FIRESTARTER_CANDIDATES      16
+#define FIRESTARTER_PASSES          512         // Evolve or optimize passes
+#define FIRESTARTER_ITERATIONS      64          // Data evolution iterations
+#define FIRESTARTER_SAMPLES         15          // Samples per iteration
+#define FIRESTARTER_CANDIDATES      16          // Optimize result candidates to search for better results
+#define FIRESTARTER_SINSIM_WARMUP   256         // Sinsim samples to skip during warm up
+#define FIRESTARTER_PRECISION       256         // Tests required to accurately determine precision
 
 #define FIRESTARTER_NUM_BEST        16          // The number of best evolved codes for optimization
-
-#define FIRESTARTER_OLD_EVOLVE_CPU  0
 
 #define FIRESTARTER_SCALE           0.3f
 #define FIRESTARTER_START_SCALE     2.5f
@@ -55,7 +58,7 @@
 #define FIRESTARTER_SPEED_TEST      9           // Speed testing for variations of GPU evolution.
 #define FIRESTARTER_OPTIMIZE        10          // Optimize a previously CPU evolved state.
 #define FIRESTARTER_SOLUTION        11          // Execute or validate the most recently evolved best state.
-#define FIRESTARTER_MODES           12
+#define FIRESTARTER_MODES           12          // Number of modes
 #define FIRESTARTER_MODE            FIRESTARTER_MONEYMAKER
 
 #define FIRESTARTER_RANDOM_STREAMS              8
@@ -66,7 +69,6 @@
 #define FIRESTARTER_RANDOM_PASSES               FIRESTARTER_PASSES
 #define FIRESTARTER_RANDOM_ITERATIONS           FIRESTARTER_ITERATIONS
 #define FIRESTARTER_RANDOM_SAMPLES              FIRESTARTER_SAMPLES
-#define FIRESTARTER_RANDOM_CANDIDATES           FIRESTARTER_CANDIDATES
 #define FIRESTARTER_RANDOM_OPTIMIZE             0
 #define FIRESTARTER_RANDOM_TESTS                11000
 #define FIRESTARTER_RANDOM_TARGET               FIRESTARTER_TARGET
@@ -79,7 +81,6 @@
 #define FIRESTARTER_EVOLVE_SELECT_PASSES        256
 #define FIRESTARTER_EVOLVE_SELECT_ITERATIONS    FIRESTARTER_ITERATIONS
 #define FIRESTARTER_EVOLVE_SELECT_SAMPLES       FIRESTARTER_SAMPLES
-#define FIRESTARTER_EVOLVE_SELECT_CANDIDATES    FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_SELECT_OPTIMIZE      0
 #define FIRESTARTER_EVOLVE_SELECT_TESTS         16
 #define FIRESTARTER_EVOLVE_SELECT_TARGET        FIRESTARTER_TARGET
@@ -92,7 +93,6 @@
 #define FIRESTARTER_EVOLVE_CPU_PASSES           FIRESTARTER_PASSES
 #define FIRESTARTER_EVOLVE_CPU_ITERATIONS       FIRESTARTER_ITERATIONS
 #define FIRESTARTER_EVOLVE_CPU_SAMPLES          FIRESTARTER_SAMPLES
-#define FIRESTARTER_EVOLVE_CPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_CPU_OPTIMIZE         1
 #define FIRESTARTER_EVOLVE_CPU_TESTS            16
 #define FIRESTARTER_EVOLVE_CPU_TARGET           FIRESTARTER_TARGET
@@ -106,7 +106,6 @@
 #define FIRESTARTER_EVOLVE_GPU_PASSES           256
 #define FIRESTARTER_EVOLVE_GPU_ITERATIONS       FIRESTARTER_ITERATIONS
 #define FIRESTARTER_EVOLVE_GPU_SAMPLES          FIRESTARTER_SAMPLES
-#define FIRESTARTER_EVOLVE_GPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_GPU_OPTIMIZE         1
 #define FIRESTARTER_EVOLVE_GPU_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
@@ -119,7 +118,6 @@
 #define FIRESTARTER_EVOLVE_GPU_PASSES           256
 #define FIRESTARTER_EVOLVE_GPU_ITERATIONS       FIRESTARTER_ITERATIONS
 #define FIRESTARTER_EVOLVE_GPU_SAMPLES          FIRESTARTER_SAMPLES
-#define FIRESTARTER_EVOLVE_GPU_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_GPU_OPTIMIZE         1
 #define FIRESTARTER_EVOLVE_GPU_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_GPU_TARGET           FIRESTARTER_TARGET
@@ -133,7 +131,6 @@
 #define FIRESTARTER_EVOLVE_NEW_PASSES           256
 #define FIRESTARTER_EVOLVE_NEW_ITERATIONS       FIRESTARTER_ITERATIONS
 #define FIRESTARTER_EVOLVE_NEW_SAMPLES          FIRESTARTER_SAMPLES
-#define FIRESTARTER_EVOLVE_NEW_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_EVOLVE_NEW_OPTIMIZE         1
 #define FIRESTARTER_EVOLVE_NEW_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_NEW_TARGET           FIRESTARTER_TARGET
@@ -146,7 +143,6 @@
 #define FIRESTARTER_EVOLVE_SINSIM_PASSES        1
 #define FIRESTARTER_EVOLVE_SINSIM_ITERATIONS    16
 #define FIRESTARTER_EVOLVE_SINSIM_SAMPLES       4096
-#define FIRESTARTER_EVOLVE_SINSIM_CANDIDATES    256
 #define FIRESTARTER_EVOLVE_SINSIM_OPTIMIZE      1
 #define FIRESTARTER_EVOLVE_SINSIM_TESTS         FIRESTARTER_TESTS
 #define FIRESTARTER_EVOLVE_SINSIM_TARGET        FIRESTARTER_TARGET
@@ -159,7 +155,6 @@
 #define FIRESTARTER_SINSIM_PASSES               1
 #define FIRESTARTER_SINSIM_ITERATIONS           16
 #define FIRESTARTER_SINSIM_SAMPLES              4096
-#define FIRESTARTER_SINSIM_CANDIDATES           256
 #define FIRESTARTER_SINSIM_OPTIMIZE             1
 #define FIRESTARTER_SINSIM_TESTS                FIRESTARTER_TESTS
 #define FIRESTARTER_SINSIM_TARGET               FIRESTARTER_TARGET
@@ -172,7 +167,6 @@
 #define FIRESTARTER_MONEYMAKER_PASSES           256
 #define FIRESTARTER_MONEYMAKER_ITERATIONS       FIRESTARTER_ITERATIONS
 #define FIRESTARTER_MONEYMAKER_SAMPLES          FIRESTARTER_SAMPLES
-#define FIRESTARTER_MONEYMAKER_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_MONEYMAKER_OPTIMIZE         1
 #define FIRESTARTER_MONEYMAKER_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_MONEYMAKER_TARGET           FIRESTARTER_TARGET
@@ -185,7 +179,6 @@
 #define FIRESTARTER_SPEED_TEST_PASSES           FIRESTARTER_PASSES
 #define FIRESTARTER_SPEED_TEST_ITERATIONS       FIRESTARTER_ITERATIONS
 #define FIRESTARTER_SPEED_TEST_SAMPLES          FIRESTARTER_SAMPLES
-#define FIRESTARTER_SPEED_TEST_CANDIDATES       FIRESTARTER_CANDIDATES
 #define FIRESTARTER_SPEED_TEST_OPTIMIZE         5
 #define FIRESTARTER_SPEED_TEST_TESTS            FIRESTARTER_TESTS
 #define FIRESTARTER_SPEED_TEST_TARGET           0.0f
@@ -198,7 +191,6 @@
 #define FIRESTARTER_OPTIMIZE_PASSES             FIRESTARTER_PASSES
 #define FIRESTARTER_OPTIMIZE_ITERATIONS         FIRESTARTER_ITERATIONS
 #define FIRESTARTER_OPTIMIZE_SAMPLES            FIRESTARTER_SAMPLES
-#define FIRESTARTER_OPTIMIZE_CANDIDATES         FIRESTARTER_CANDIDATES
 #define FIRESTARTER_OPTIMIZE_OPTIMIZE           1
 #define FIRESTARTER_OPTIMIZE_TESTS              FIRESTARTER_TESTS
 #define FIRESTARTER_OPTIMIZE_TARGET             FIRESTARTER_TARGET
@@ -275,6 +267,8 @@ public:
     unsigned int m_instructions =   FIRESTARTER_INSTRUCTIONS;
     unsigned int m_registers =      FIRESTARTER_REGISTERS;
     unsigned int m_opcodes =        FIRESTARTER_OPCODES;
+    unsigned int m_history =        MONEYMAKER_HISTORY;
+    unsigned int m_stocks =         MONEYMAKER_STOCKS;
 
     float m_targetMin =             TARGET_MIN;
     float m_targetMax =             TARGET_MAX;
