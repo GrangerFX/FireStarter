@@ -697,9 +697,9 @@ void FireStarterExecute::ExecuteInitPopulation(const FireStarterSettings& settin
 void FireStarterExecute::ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock)
 {
     DispatchSync([this, settings, filePath, stock] {
-        m_hostStocks->Load(settings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", stock);
+        m_hostStocks->Load(settings, filePath, stock);
     });
-}
+} // ExecuteLoadStock
 
 void FireStarterExecute::ExecuteSelect(FireStarterState& state, const FireStarterSettings& selectSettings)
 {

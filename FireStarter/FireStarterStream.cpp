@@ -656,8 +656,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
         // Allocate and load the stock market data;
         executeEvolve->ExecuteInitPopulation(evolveSettings);
-        std::string stockFilePath = "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt";
-        executeEvolve->ExecuteLoadStock(evolveSettings, stockFilePath);
+        executeEvolve->ExecuteLoadStock(evolveSettings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt");
 
         // Generate and compile the evolve code.
         executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
