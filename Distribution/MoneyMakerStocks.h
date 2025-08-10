@@ -101,38 +101,43 @@ typedef struct MoneyMakerStocks
 
     static inline size_t StocksSize(const FireStarterSettings& settings)
     {
-        return sizeof(float) * settings.m_history * settings.m_stocks;
+        return sizeof(float) * settings.m_stocks * settings.m_history;
     } // StocksSize
 
-    inline MoneyMakerStock* StockData(unsigned int history = MONEYMAKER_HISTORY, unsigned int stock = 0)
+    inline MoneyMakerStock& StockData(unsigned int stock = 0, unsigned int history = MONEYMAKER_HISTORY)
     {
-        return (MoneyMakerStock*)(&s[history * stock]);
+        return *(MoneyMakerStock*)(&s[stock * history]);
+    } // StockData
+
+    inline const MoneyMakerStock& StockData(unsigned int stock = 0, unsigned int history = MONEYMAKER_HISTORY) const
+    {
+        return *(MoneyMakerStock*)(&s[stock * history]);
+    } // StockData
+
+    inline void Stock(MoneyMakerStock& stockData, unsigned int stock = 0, unsigned int history = MONEYMAKER_HISTORY)
+    {
+        stockData = *(MoneyMakerStock*)(&s[stock * history]);
     } // Stock
 
-    inline void Stock(MoneyMakerStock& stockData, unsigned int history = MONEYMAKER_HISTORY, unsigned int stock = 0)
+    inline void Stock(MoneyMakerStock* stockData, unsigned int stock = 0, unsigned int history = MONEYMAKER_HISTORY)
     {
-        return stockData = StockData(history, stock);
+        stockData = (MoneyMakerStock*)(&s[stock * history]);
     } // Stock
 
-    inline void Stock(MoneyMakerStock* stockData, unsigned int history = MONEYMAKER_HISTORY, unsigned int stock = 0)
+    inline void Copy(MoneyMakerStock& stockData, unsigned int stock = 0, unsigned int history = MONEYMAKER_HISTORY)
     {
-        return *stockData = StockData(history, stock);
-    } // Stock
-
-    inline void Copy(MoneyMakerStock& stockData, unsigned int history = MONEYMAKER_HISTORY, unsigned int stock = 0)
-    {
-        StockData(stock)->Copy(stockData, history);
+        StockData(stock, history).Copy(stockData, history);
     } // Copy
 
-    inline void Copy(MoneyMakerStock* stockData, unsigned int history = MONEYMAKER_HISTORY, unsigned int stock = 0)
+    inline void Copy(MoneyMakerStock* stockData, unsigned int stock = 0, unsigned int history = MONEYMAKER_HISTORY)
     {
-        StockData(stock)->Copy(stockData, history);
+        StockData(stock, history).Copy(stockData, history);
     } // Copy
 
 #ifndef __CUDACC__
     inline bool Load(const FireStarterSettings& settings, const std::string& path, unsigned int stock = 0)
     {
-        return StockData(settings.m_history, stock)->Load(settings, path);
+        return StockData(stock, settings.m_history).Load(settings, path);
     } // Load
 #endif
 } MoneyMakerStocks;

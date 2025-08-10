@@ -10,6 +10,7 @@
 #define MONEYMAKER_HISTORY          1000        // Days of stock history data
 #define MONEYMAKER_WARMUP           200         // Days of stock warmup tests
 #define MONEYMAKER_STOCKS           1           // Stocks with history data
+#define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
@@ -267,8 +268,9 @@ public:
     unsigned int m_instructions =   FIRESTARTER_INSTRUCTIONS;
     unsigned int m_registers =      FIRESTARTER_REGISTERS;
     unsigned int m_opcodes =        FIRESTARTER_OPCODES;
-    unsigned int m_history =        MONEYMAKER_HISTORY;
     unsigned int m_stocks =         MONEYMAKER_STOCKS;
+    unsigned int m_history =        MONEYMAKER_HISTORY;
+    unsigned int m_warmup =         MONEYMAKER_WARMUP;
 
     float m_targetMin =             TARGET_MIN;
     float m_targetMax =             TARGET_MAX;

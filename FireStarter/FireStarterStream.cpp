@@ -654,8 +654,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         // Create the execution unit used to optimize the best states.
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
 
-        // Allocate and load the stock market data;
-        executeEvolve->ExecuteInitPopulation(evolveSettings);
+        // Load the stock market data;
         executeEvolve->ExecuteLoadStock(evolveSettings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt");
 
         // Generate and compile the evolve code.

@@ -43,7 +43,7 @@ private:
     void ExecuteEvolvePass(FireStarterState& state);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
-    void GatherOptimizePass(FireStarterState& state, unsigned int variation, FireStarterResult* newPopulation);
+    void GatherOptimizePass(FireStarterState& state, FireStarterResult* newPopulation, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
@@ -53,10 +53,9 @@ private:
     bool ExecuteJob(void);
 
 public:
+    void ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock = 0);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& state, bool sync = true);
-    void ExecuteInitPopulation(const FireStarterSettings& settings);
-    void ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock = 0);
     void ExecuteSelect(FireStarterState& state, const FireStarterSettings& selectSettings);
     void ExecuteEvolve(FireStarterState& state);
     void ExecuteEvolveNew(FireStarterState& state);

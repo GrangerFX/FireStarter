@@ -207,5 +207,8 @@
     <None Include="Distribution\FireSpeedTest.cu">
       <Filter>CUDA Files</Filter>
     </None>
+    <None Include="Distribution\FireMoneyMaker.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

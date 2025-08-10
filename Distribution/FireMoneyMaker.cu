@@ -1,5 +1,6 @@
 #pragma once
 #include "FireStarterResults.h"
+#include "MoneyMakerStocks.h"
 #include "CUDADefines.h"
 
 // Not used in Evolver. For code checkins in only.
@@ -31,7 +32,7 @@ GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, f
     }
 } // ShowEvaluate
 
-inline float TestEvaluate(FireStarterSharedData& sharedData, const FireStarterCode& code, const float *stockData, const unsigned int stockDataSize, const unsigned int warmupSize, float startFunds)
+inline float TestEvaluate(FireStarterSharedData& sharedData, const FireStarterCode& code, const MoneyMakerStock &stockData, const unsigned int stockDataSize, const unsigned int warmupSize, float startFunds)
 {
     float funds = startFunds;
     float oldPrice = stockData[0];
@@ -74,12 +75,15 @@ inline float TestEvaluate(FireStarterSharedData& sharedData, const FireStarterCo
 } // TestEvaluate
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireStarterCode* codes, float* stockData, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize, const unsigned int stockDataSize, const unsigned int warmupSize)
+GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
     if (member >= populationSize)
         return;
+
+    // Get the stock data.
+    const MoneyMakerStock& stockData = stocks->StockData();
 
     // The shared data for the threads in the warp.
     GPU_SHARED FireStarterSharedData sharedData;
@@ -101,7 +105,7 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
         registers = code.Optimize();
         data.InitData(memberSeed, registers);
         sharedData = data;
-        float result = TestEvaluate(sharedData, code, stockData, stockDataSize, warmupSize, 1000.0f);
+        float result = TestEvaluate(sharedData, code, stockData, MONEYMAKER_HISTORY, MONEYMAKER_WARMUP, MONEYMAKER_FUNDS);
         if (result > 0.0f)
             break;
     }
@@ -138,7 +142,7 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             sharedData = data;
-            float result = TestEvaluate(sharedData, code, stockData, stockDataSize, warmupSize, 1000.0f);
+            float result = TestEvaluate(sharedData, code, stockData, MONEYMAKER_HISTORY, MONEYMAKER_WARMUP, MONEYMAKER_FUNDS);
             if (result > memberResult)
                 memberResult = result;
             else

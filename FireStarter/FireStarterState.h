@@ -368,7 +368,7 @@ public:
         return maxVariation;
     } // MaxVariation
 
-    inline void InitResult(const FireStarterSettings& settings, unsigned int variation)
+    inline void InitResult(const FireStarterSettings& settings, unsigned int variation = 0)
     {
         Result(variation)->InitResult(settings);
     } // InitResult
@@ -806,7 +806,7 @@ public:
     float TestResults(void) const;
     float EvaluateCode(void) const;
 
-    inline void InitResult(unsigned int variation)
+    inline void InitResult(unsigned int variation = 0)
     {
         m_results.InitResult(m_settings, variation);
     } // InitResults
@@ -843,8 +843,8 @@ public:
 
     void InitState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long index = 0, unsigned long long id = 0, unsigned long long test = 0);
     void InitCode(const FireStarterSettings& settings, const FireStarterCode* codes, float result, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int variation, unsigned int index);
-    void InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int variation, unsigned int index);
+    void InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index, unsigned int variation = 0);
+    void InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index, unsigned int variation = 0);
     void InitResults(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index);
     void InitResults(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index);
 

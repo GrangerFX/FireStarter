@@ -330,7 +330,7 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     }
 
     // Update the state's best results.
-    state.InitResult(settings, m_hostCodes, m_hostPopulation, variation, minIndex);
+    state.InitResult(settings, m_hostCodes, m_hostPopulation, minIndex, variation);
 
     // Note: The above is used by Optimize and does not init the following variables:
     state.m_oldResult = state.m_bestResult;
@@ -392,7 +392,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     state.InitNetwork(settings, minNetwork, minIndex);
 } // ExecuteSinSimPass
 
-void FireStarterExecute::GatherOptimizePass(FireStarterState& state, unsigned int variation, FireStarterResult* newPopulation)
+void FireStarterExecute::GatherOptimizePass(FireStarterState& state, FireStarterResult* newPopulation, unsigned int variation)
 {
     FireStarterSettings settings = state.Settings();
 
@@ -418,7 +418,7 @@ void FireStarterExecute::GatherOptimizePass(FireStarterState& state, unsigned in
     }
 
     // Store the state's best result.
-    state.InitResult(settings, m_hostPopulation, variation, minIndex);
+    state.InitResult(settings, m_hostPopulation, minIndex, variation);
 } // GatherOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
@@ -466,6 +466,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 #else
         void* arr[] = { reinterpret_cast<void*>(&newPopulation),
                         reinterpret_cast<void*>(&oldPopulation),
+                        reinterpret_cast<void*>(&m_deviceStocks),
                         reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&registers),
                         reinterpret_cast<void*>(&optimizeSeed),
@@ -498,7 +499,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 #endif
 
     // Gather the best results.
-    GatherOptimizePass(state, variation, newPopulation);
+    GatherOptimizePass(state, newPopulation, variation);
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
@@ -666,6 +667,14 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     return false;
 } // GenerateOptimize
 
+void FireStarterExecute::ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock)
+{
+    DispatchSync([this, settings, filePath, stock] {
+        InitPopulation(settings);
+        m_hostStocks->Load(settings, filePath, stock);
+    });
+} // ExecuteLoadStock
+
 bool FireStarterExecute::ExecuteGenerateEvolve(unsigned int mode, bool sync)
 {
     if (m_executeFunction)
@@ -686,20 +695,6 @@ bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& state, bool s
     }, sync);
     return result;
 } // ExecuteGenerateOptimize
-
-void FireStarterExecute::ExecuteInitPopulation(const FireStarterSettings& settings)
-{
-    DispatchSync([this, settings] {
-        InitPopulation(settings);
-    });
-} // ExecuteInitPopulation
-
-void FireStarterExecute::ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock)
-{
-    DispatchSync([this, settings, filePath, stock] {
-        m_hostStocks->Load(settings, filePath, stock);
-    });
-} // ExecuteLoadStock
 
 void FireStarterExecute::ExecuteSelect(FireStarterState& state, const FireStarterSettings& selectSettings)
 {

@@ -372,27 +372,27 @@ void FireStarterState::InitCode(const FireStarterSettings& settings, const FireS
     m_optimizeValid = true;
 } // InitCode
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int variation, unsigned int index)
+void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index, unsigned int variation)
 {
     // Load the state's data from the population data.
     const FireStarterResult* result = FireStarterPopulation::PopulationResult(population, settings, index, variation);
     Result(variation)->Copy(result, settings.m_registers);
 } // InitResult
 
-void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int variation, unsigned int index)
+void FireStarterState::InitResult(const FireStarterSettings& settings, const FireStarterCode* codes, const FireStarterResult* population, unsigned int index, unsigned int variation)
 {
     // Load the state's code from the GPU evolved code.
     if (codes)
         CopyCode(codes->Member(settings, index));
 
     // Load the state's data from the population data.
-    InitResult(settings, population, variation, index);
+    InitResult(settings, population, index, variation);
 } // InitResult
 
 void FireStarterState::InitResults(const FireStarterSettings& settings, const FireStarterResult* population, unsigned int index)
 {
     for (unsigned int v = 0; v < settings.m_variations; v++)
-        InitResult(settings, population, v, index);
+        InitResult(settings, population, index, v);
     m_oldResult = m_bestResult;
     m_bestResult = MaxResults();
     m_minIndex = index;
