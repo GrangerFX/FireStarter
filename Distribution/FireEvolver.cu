@@ -31,7 +31,7 @@ GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, f
     }
 } // ShowEvaluate
 
-inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
+inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
@@ -45,7 +45,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
             result = fmaxf(n, result);
     }
     return true;
-} // TestEvaluate
+} // EvolveEvaluate
 
 #if FIRESTARTER_VARIATIONS == 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
@@ -85,7 +85,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers);
-        if (TestEvaluate(sharedData, data, code, target, theta, memberResult))
+        if (EvolveEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
 
@@ -121,7 +121,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult * 0.99f;
-            if (TestEvaluate(sharedData, data, code, target, theta, curResult))
+            if (EvolveEvaluate(sharedData, data, code, target, theta, curResult))
                 memberResult = curResult;
             else
                 data[d] = old;
@@ -256,7 +256,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             float old = data[memberVariation][d];
             data[memberVariation][d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult * 0.99f;
-            if (TestEvaluate(sharedData, data, code, target[memberVariation], theta, curResult)) {
+            if (EvolveEvaluate(sharedData, data, code, target[memberVariation], theta, curResult)) {
                 memberVariationResults[memberVariation] = curResult;
                 memberResult = memberVariationResults[0];
                 memberVariation = 0;

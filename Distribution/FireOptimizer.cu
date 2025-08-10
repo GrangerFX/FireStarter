@@ -3,13 +3,13 @@
 #include "FireStarterResults.h"
 #include "MoneyMakerStocks.h"
 
-inline float OptimizeEvaluate(const FireStarterData& testData, float n)
+inline float CompiledEvaluate(const FireStarterData& testData, float n)
 {
     FireStarterData data = testData;
 // EVALUATE //
 // END //
     return n;
-} // OptimizeEvaluate
+} // CompiledEvaluate
 
 GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
 {
@@ -30,16 +30,16 @@ GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, f
             FireStarterData localData(data);
             results[index] = localCode.Evaluate(localData, theta);
         } else
-            results[index] = OptimizeEvaluate(data, theta);
+            results[index] = CompiledEvaluate(data, theta);
     }
 } // ShowEvaluate
 
-inline bool TestEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
+inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
     for (int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
-        float n = fabsf(OptimizeEvaluate(data, theta[i]) - target[i]);
+        float n = fabsf(CompiledEvaluate(data, theta[i]) - target[i]);
         if (!isfinite(n) || (n > maxResult)) {
             result = maxResult;
             return false;
@@ -47,7 +47,7 @@ inline bool TestEvaluate(const FireStarterData& data, const float target[], cons
             result = fmaxf(n, result);
     }
     return true;
-} // TestEvaluate
+} // OptimizeEvaluate
 
 GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
@@ -78,7 +78,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         for (initAge = 1; initAge <= 10; initAge++) {
             data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
-            if (TestEvaluate(data, target, theta, result))
+            if (OptimizeEvaluate(data, target, theta, result))
                 break;
         }
         memberResult = FIRESTARTER_START_RESULT;
@@ -96,7 +96,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * FIRESTARTER_START_SCALE * (evolveAge - 1);
             result = 1.0e+6f; // Validated as being faster than FIRESTARTER_START_RESULT  11/17/2024
-            if (!TestEvaluate(data, target, theta, result)) {
+            if (!OptimizeEvaluate(data, target, theta, result)) {
                 data[d] = oldData;
                 memberResult = result = oldResult.MaxResult();
             } else
@@ -114,7 +114,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
         float curResult = result * 0.99f; // Validated as being faster than * 1.0f or * 0.9f. About the same as * 0.999f.  11/17/2024
-        if (TestEvaluate(data, target, theta, curResult))
+        if (OptimizeEvaluate(data, target, theta, curResult))
             result = curResult;
         else
             data[d] = oldData;
