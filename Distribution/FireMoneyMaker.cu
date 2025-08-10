@@ -75,7 +75,7 @@ inline float TestEvaluate(FireStarterSharedData& sharedData, const FireStarterCo
 } // TestEvaluate
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;

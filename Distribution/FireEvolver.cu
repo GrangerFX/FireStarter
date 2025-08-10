@@ -1,6 +1,6 @@
 #pragma once
 #include "FireStarterResults.h"
-#include "CUDADefines.h"
+#include "MoneyMakerStocks.h"
 
 // Not used in Evolver. For code checkins in only.
 inline float OptimizeEvaluate(const FireStarterData& testData, float n)
@@ -49,7 +49,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
 
 #if FIRESTARTER_VARIATIONS == 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
