@@ -101,13 +101,12 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if (settings.m_mode == FIRESTARTER_SELECT)
             parentCodeSize = FireStarterCode::CodeSize(settings);
-    } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
+        if (settings.m_mode == FIRESTARTER_MONEYMAKER)
+            stocksSize = MoneyMakerStocks::StocksSize(settings);
+    } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE))
         populationSize = FireStarterPopulation::PopulationSize(settings);
-    } else if (settings.m_mode == FIRESTARTER_SINSIM) {
+    else if (settings.m_mode == FIRESTARTER_SINSIM)
         networksSize = settings.m_population * sizeof(SinSimNetwork);
-    } else if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
-        stocksSize = MoneyMakerStocks::StocksSize(settings);
-    }
 
     // Reallocate the data if the sizes has changed.
     if ((m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize) || (parentCodeSize != m_parentCodeSize) || (networksSize != m_networksSize) || (stocksSize != m_stocksSize)) {

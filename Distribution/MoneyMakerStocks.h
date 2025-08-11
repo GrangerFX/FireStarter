@@ -1,6 +1,8 @@
 #pragma once
 #include "FireStarterSettings.h"
+#ifndef __CUDACC__
 #include <string>
+#endif
 
 typedef struct MoneyMakerStock
 {
