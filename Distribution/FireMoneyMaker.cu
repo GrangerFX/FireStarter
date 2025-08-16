@@ -3,35 +3,26 @@
 #include "MoneyMakerStocks.h"
 #include "CUDADefines.h"
 
-// Note: TODO: Implement a way to display the stock trades.
-GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
+inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock &stockData, float& result)
 {
-    // Determine the member to be optimized.
-    unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index >= size)
-        return;
-
-    // Generate the displayed results.
-    if (results)
-        results[index] = 0.0f;
-} // ShowEvaluate
-
-inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterCode& code, const MoneyMakerStock &stockData, float& result)
-{
-    float maxResult = result;
+    float minResult = result;
     float funds = MONEYMAKER_FUNDS;
     float oldPrice = stockData[0];
     int shares = 0;
     unsigned int i = 1;
 
+    sharedData = data;
     while (i < MONEYMAKER_WARMUP) {
         float newPrice = stockData[i];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
 
+        // Warmup evaluation ignoring the results.
         float n = fabsf(code.Evaluate(sharedData, priceChange));
-        if (!isfinite(n))
+        if (!isfinite(n)) {
+            result = 0.0f;
             return false;
+        }
         i++;
     }
     while (i < MONEYMAKER_HISTORY) {
@@ -39,9 +30,12 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterC
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
 
+        // Trading evaluation using the result to buy or sell shares.
         float n = fabsf(code.Evaluate(sharedData, priceChange));
-        if (!isfinite(n))
+        if (!isfinite(n)) {
+            result = 0.0f;
             return false;
+        }
 
         if (n >= 1.0f) {
             if (shares == 0) {
@@ -56,8 +50,8 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterC
         }
         i++;
     }
-    result = MONEYMAKER_FUNDS / funds;    // Inverted so that the smallest value can be selected to match other modes.
-    return result < maxResult;
+    result = funds - MONEYMAKER_FUNDS;
+    return result > minResult;
 } // EvolveEvaluate
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
@@ -85,13 +79,12 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     unsigned int registers = 0;
 
     // The first generation is initalized with random numbers.
-    float memberResult = FIRESTARTER_START_RESULT;
+    float memberResult = -MONEYMAKER_FUNDS;
     for (unsigned int i = 0; i < 10; i++) {
         code.InitCode(memberSeed);
         registers = code.Optimize();
-        data.InitData(memberSeed, registers);
-        sharedData = data;
-        if (EvolveEvaluate(sharedData, code, stockData, memberResult))
+        data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
+        if (EvolveEvaluate(sharedData, data, code, stockData, memberResult))
             break;
     }
 
@@ -106,7 +99,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Evolve the code and data.
         float evolutionScale;
-        if ((evolveAge >= 6) || (memberResult >= FIRESTARTER_START_RESULT)) {
+        if ((evolveAge >= 6) || (memberResult <= -MONEYMAKER_FUNDS)) {
             evolutionScale = FIRESTARTER_START_SCALE;
             code.InitCode(memberSeed);
             registers = code.Optimize();
@@ -126,16 +119,15 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
-            sharedData = data;
-            float curResult = memberResult * 0.99f;
-            if (EvolveEvaluate(sharedData, code, stockData, curResult))
+            float curResult = memberResult;
+            if (EvolveEvaluate(sharedData, data, code, stockData, curResult))
                 memberResult = curResult;
             else
                 data[d] = old;
         }
 
         // Did the results improve?
-        if (!pass || (memberResult < oldResult)) {
+        if (!pass || (memberResult > oldResult)) {
             // If the result was better, save the results.
             oldCode = code;
             oldData = data;
@@ -143,7 +135,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             evolveAge = 0;
 
             // Update the best result.
-            if (!pass || (memberResult < bestResult)) {
+            if (!pass || (memberResult > bestResult)) {
                 bestCode = code;
                 bestData = data;
                 bestResult = memberResult;

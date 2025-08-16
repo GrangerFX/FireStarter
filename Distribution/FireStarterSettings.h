@@ -200,8 +200,8 @@
 // Complex program generation.
 typedef enum : unsigned short {
 #if FIRESTARTER_MADD
-    Operation_multiply, // n = data[d] *= n;
-    Operation_add       // n = data[d] += n;
+    Operation_data_multiply, // n = data[d] *= n;
+    Operation_data_add       // n = data[d] += n;
 #else
     Operation_noop = 0,
     Operation_store,    // data[d] = n;
@@ -217,45 +217,57 @@ typedef enum : unsigned short {
 
 const FireStarterOpcode fireStarterOpcodes[] = {
 #if FIRESTARTER_MADD
-    Operation_multiply,
-    Operation_add
+    Operation_data_multiply, // n = data[d] *= n;
+    Operation_data_add       // n = data[d] += n;
 #else
-    Operation_store,
-//  Operation_square,
-    Operation_multiply,
-//  Operation_divide,
-    Operation_add,
-//  Operation_subtract,
-//  Operation_min
-//  Operation_max,
+    Operation_store,    // data[d] = n;
+//  Operation_square,   // n *= n;
+    Operation_multiply, // n *= data[d];
+//  Operation_divide,   // n /= data[d];
+    Operation_add,      // n += data[d];
+//  Operation_subtract, // n -= data[d];
+//  Operation_min       // n = MIN(n, data[d]);
+//  Operation_max,      // n = MAX(n, data[d]);
 #endif
+};
+#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
+typedef enum : unsigned short {
+    Operation_add,      // n += data[d];
+    Operation_multiply, // n *= data[d];
+    Operation_store,    // data[d] = n;
+} FireStarterOpcode;
+
+const FireStarterOpcode fireStarterOpcodes[] = {
+    Operation_multiply,
+    Operation_add,
+    Operation_store
 };
 #else
 // Simple accumulator multiply or add instructions.
 typedef enum : unsigned short {
-    Operation_multiply,
-    Operation_add
+    Operation_data_multiply,
+    Operation_data_add
 } FireStarterOpcode;
 
 #if FIRESTARTER_MADD
 // Note: Not used sice MADD has no random instructions.
 const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_multiply,
-    Operation_add
+    Operation_data_multiply,
+    Operation_data_add
 };
 #else
 #if FIRESTARTER_OLD_EVOLVE_CPU
 const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_multiply,
-    Operation_multiply,
-    Operation_multiply,
-    Operation_add
+    Operation_data_multiply,
+    Operation_data_multiply,
+    Operation_data_multiply,
+    Operation_data_add
 };
 #else
 const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_multiply,
-    Operation_multiply,
-    Operation_add
+    Operation_data_multiply,
+    Operation_data_multiply,
+    Operation_data_add
 };
 #endif
 #endif

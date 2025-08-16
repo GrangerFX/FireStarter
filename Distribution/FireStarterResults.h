@@ -207,7 +207,7 @@ typedef struct FireStarterCodeInstruction {
     {
         reg = RANDOMMOD(seed, registers);
 #if FIRESTARTER_MADD
-        op = i & 1 ? Operation_add : Operation_multiply;
+        op = i & 1 ? Operation_data_add : Operation_data_multiply;
 #else
         op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
 #endif
@@ -252,8 +252,22 @@ typedef struct FireStarterCodeInstruction {
                 n = data > n ? data : n;
                 break;
         }
+#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
+        switch (op) {
+            case Operation_multiply:
+                n *= data;
+                break;
+
+            case Operation_add:
+                n += data;
+                break;
+
+            case Operation_store:
+                data = n;
+                break;
+        }
 #else
-        n = op == Operation_multiply ? data *= n : data += n;
+        n = op == Operation_data_multiply ? data *= n : data += n;
 #endif
         return n;
     } // Evaluate
@@ -407,7 +421,7 @@ typedef struct FireStarterCode {
 #else
         std::vector<unsigned int> regCount(registers, 0);
 #endif
-        unsigned short uniqueRegisters = 0;
+        unsigned int uniqueRegisters = 0;
         for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
             unsigned int r = c[i].reg;
             int index = regCount[r];
@@ -417,6 +431,29 @@ typedef struct FireStarterCode {
         }
         return uniqueRegisters;
     } // Optimize
+
+    inline unsigned int Optimize2(unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS)
+    {
+        // Compact the registers keeping their order consistent.
+#ifdef __CUDACC__
+        unsigned int regCount[FIRESTARTER_REGISTERS] = {};
+        unsigned int regIndex[FIRESTARTER_REGISTERS] = {};
+#else
+        std::vector<unsigned int> regCount(registers, 0);
+        std::vector<unsigned int> regIndex(registers, 0);
+#endif
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            regCount[c[i].reg]++;
+
+        unsigned int uniqueRegisters = 0;
+        for (unsigned int i = 0; i < registers; i++)
+            if (regCount[i])
+                regIndex[i] = uniqueRegisters++;
+
+        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
+            c[i].reg = regIndex[c[i].reg];
+        return uniqueRegisters;
+    } // Optimize2
 
     inline unsigned int Optimize(const FireStarterSettings& settings)
     {

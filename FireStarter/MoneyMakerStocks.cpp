@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <vector>
 
-bool MoneyMakerStock::Load(const FireStarterSettings& settings, const std::string& filePath)
+bool MoneyMakerStock::Load(const FireStarterSettings& settings, const std::string& filePath, bool normalize)
 {
     FILE* file = NULL;
     errno_t err = fopen_s(&file, filePath.c_str(), "r");
@@ -46,7 +46,10 @@ bool MoneyMakerStock::Load(const FireStarterSettings& settings, const std::strin
             float lastData = theData[index++];
             for (unsigned int i = 0; i < settings.m_history; i++) {
                 float curData = theData[index++];
-                s[i] = curData / lastData;
+                if (normalize)
+                    s[i] = curData / lastData;
+                else
+                    s[i] = curData;
                 lastData = curData;
             }
             return true;

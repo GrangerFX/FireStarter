@@ -73,7 +73,7 @@ typedef struct MoneyMakerStock
     } // Clear
 
 #ifndef __CUDACC__
-    bool Load(const FireStarterSettings& settings, const std::string& filePath);
+    bool Load(const FireStarterSettings& settings, const std::string& filePath, bool normalize = false);
 #endif
 
     inline MoneyMakerStock(const struct MoneyMakerStock& data)

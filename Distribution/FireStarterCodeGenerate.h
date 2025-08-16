@@ -41,7 +41,7 @@ public:
 #if FIRESTARTER_FIRSTLIGHT
         switch (op) {
 #if FIRESTARTER_MADD
-            case Operation_multiply:
+            case Operation_data_multiply:
                 GenerateTabs(buffer, size, length, tabs);
                 if (instructionLast)
                     anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
@@ -49,7 +49,7 @@ public:
                     anprintf(buffer, size, length, "n = data[%u] *= n;\r\n", reg);
                 break;
 
-            case Operation_add:
+            case Operation_data_add:
                 GenerateTabs(buffer, size, length, tabs);
                 if (instructionLast)
                     anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
@@ -103,19 +103,20 @@ public:
                 break;
 #endif
         }
+#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
 #else
         // Insert leading tabs (four spaces).
         GenerateTabs(buffer, size, length, tabs);
 
         switch (op) {
-            case Operation_multiply:
+            case Operation_data_multiply:
                 if (instructionLast)
                     anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
                 else
                     anprintf(buffer, size, length, "n = data[%u] *= n;\r\n", reg);
                 break;
 
-            case Operation_add:
+            case Operation_data_add:
                 if (instructionLast)
                     anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
                 else
@@ -133,7 +134,7 @@ public:
 #if FIRESTARTER_FIRSTLIGHT
         switch (op) {
 #if FIRESTARTER_MADD
-            case Operation_multiply:
+            case Operation_data_multiply:
                 GenerateTabs(buffer, size, length, tabs);
                 if (instructionLast)
                     anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
@@ -141,7 +142,7 @@ public:
                     anprintf(buffer, size, length, "n = r%u *= n;\r\n", reg);
                 break;
 
-            case Operation_add:
+            case Operation_data_add:
                 GenerateTabs(buffer, size, length, tabs);
                 if (instructionLast)
                     anprintf(buffer, size, length, "n += r%u;\r\n", reg);
@@ -195,12 +196,34 @@ public:
                 break;
 #endif
         }
-#else
+#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
         // Insert leading tabs (four spaces).
         GenerateTabs(buffer, size, length, tabs);
 
         switch (op) {
             case Operation_multiply:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
+                break;
+
+            case Operation_add:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n += r%u;\r\n", reg);
+                break;
+
+            case Operation_store:
+                if (!instructionLast) {
+                    GenerateTabs(buffer, size, length, tabs);
+                    anprintf(buffer, size, length, "r%u = n;\r\n", reg);
+                }
+                break;
+        }
+#else
+        // Insert leading tabs (four spaces).
+        GenerateTabs(buffer, size, length, tabs);
+
+        switch (op) {
+            case Operation_data_multiply:
                 if (instructionFirst)
                     if (instructionLast)
                         anprintf(buffer, size, length, "n *= %.8ff;\r\n", data);
@@ -213,7 +236,7 @@ public:
                         anprintf(buffer, size, length, "n = r%u *= n;\r\n", reg);
                 break;
 
-            case Operation_add:
+            case Operation_data_add:
                 if (instructionFirst)
                     if (instructionLast)
                         anprintf(buffer, size, length, "n += %.8ff;\r\n", data);
