@@ -50,7 +50,7 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
         }
         i++;
     }
-    result = funds - MONEYMAKER_FUNDS;
+    result = funds + shares * stockData[MONEYMAKER_HISTORY - 1] - MONEYMAKER_FUNDS;
     return result > minResult;
 } // EvolveEvaluate
 
