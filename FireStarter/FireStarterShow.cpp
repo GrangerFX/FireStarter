@@ -339,12 +339,6 @@ FireStarterShow::~FireStarterShow(void)
 {
     DispatchSync([this] {
         DeallocateEvaluateData();
-        DeallocateCodeData();
-        if (m_fireEvaluateModule) {
-            checkCUDAErrors(cuModuleUnload(m_fireEvaluateModule));
-            m_fireEvaluateModule = nullptr;
-        }
-        Context()->Synchronize();
         MainSynchronize();
         m_window.Clear();
     });
