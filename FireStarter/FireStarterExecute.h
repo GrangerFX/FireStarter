@@ -43,6 +43,7 @@ private:
     void ExecuteEvolvePass(FireStarterState& state);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
+    void ExecuteMoneyMakerPass(FireStarterState& state);
     void GatherOptimizePass(FireStarterState& state, FireStarterResult* newPopulation, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);

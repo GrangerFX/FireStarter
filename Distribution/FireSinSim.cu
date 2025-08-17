@@ -2,7 +2,7 @@
 #include "FireSinSim.h"
 #include "CUDADefines.h"
 
-GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, SinSimNetwork* data)
+GPU_GLOBAL void SinSimShow(float* targets, float* results, unsigned int size, SinSimNetwork* data)
 {
     // Determine the member to be optimized.
     unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -20,7 +20,7 @@ GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, 
             results[s] = sample;
         }
     }
-} // ShowEvaluate
+} // SinSimShow
 
 GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, const unsigned long long generation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {

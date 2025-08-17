@@ -194,6 +194,7 @@
       </ExcludedFromBuild>
     </None>
     <None Include="Distribution\FireMoneyMaker.cu" />
+    <None Include="Distribution\FireMoneyOptimizer.cu" />
     <None Include="Distribution\FireSelect.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>

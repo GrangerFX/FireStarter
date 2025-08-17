@@ -19,14 +19,14 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
         static std::string evolveProgramName;
         static std::string evolveProgram;
         if (evolveProgramName.empty())
-            evolveProgramName = m_settings.ProgramName();
+            evolveProgramName = m_settings.EvolveProgramName();
         if (evolveProgram.empty() && !evolveProgramName.empty())
             FireStarterSource::LoadSource(evolveProgram, evolveProgramName);
 
         static std::string optimizeProgramName;
         static std::string optimizeProgram;
         if (optimizeProgramName.empty())
-            optimizeProgramName = bestState.Settings().ProgramName();
+            optimizeProgramName = bestState.Settings().OptimizeProgramName();
         if (optimizeProgram.empty() && !optimizeProgramName.empty() && (optimizeProgramName != evolveProgramName))
             FireStarterSource::LoadSource(optimizeProgram, optimizeProgramName);
 

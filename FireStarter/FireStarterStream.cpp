@@ -563,7 +563,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
 
-        // A serial thread for compiling the optimize pass.
+        // A serial thread for compiling the SinSim pass.
         SerialThread compiler;
 
         // Create the evolution completion unit.

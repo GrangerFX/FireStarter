@@ -7,8 +7,8 @@
 #define FIRESTARTER_VARIATIONS      1           // Target function variations
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
 
-#define MONEYMAKER_HISTORY          1000        // Days of stock history data
-#define MONEYMAKER_WARMUP           200         // Days of stock warmup tests
+#define MONEYMAKER_HISTORY          256         // Days of stock history data
+#define MONEYMAKER_WARMUP           16          // Days of stock warmup tests
 #define MONEYMAKER_STOCKS           1           // Stocks with history data
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
@@ -344,7 +344,7 @@ public:
         return Mode(m_mode);
     } // Mode
 
-    static inline const char* ProgramName(unsigned int mode)
+    static inline const char* EvolveProgramName(unsigned int mode)
     {
         switch (mode) {
             case FIRESTARTER_SELECT:
@@ -365,14 +365,48 @@ public:
             default:
                 return "FireOptimizer.cu";
         }
-    } // ProgramName
+    } // EvolveProgramName
 
-    inline const char* ProgramName(void) const
+    inline const char* EvolveProgramName(void) const
     {
-        return ProgramName(m_mode);
-    } // ProgramName
+        return FireStarterSetting::EvolveProgramName(m_mode);
+    } // EvolveProgramName
 
-    static inline const char* FunctionName(unsigned int mode)
+    static inline const char* OptimizeProgramName(unsigned int mode)
+    {
+        switch (mode) {
+            case FIRESTARTER_SINSIM:
+                return "FireSinSim.cu";
+            case FIRESTARTER_MONEYMAKER:
+                return "FireMoneyOptimizer.cu";
+            default:
+                return "FireOptimizer.cu";
+        }
+    } // OptimizeProgramName
+
+    inline const char* OptimizeProgramName(void) const
+    {
+        return FireStarterSetting::OptimizeProgramName(m_mode);
+    } // OptimizeProgramName
+
+    static inline const char* ShowProgramName(unsigned int mode)
+    {
+        switch (mode) {
+            case FIRESTARTER_SINSIM:
+                return "FireSinSim.cu";
+            case FIRESTARTER_MONEYMAKER:
+                return "FireMoneyOptimizer.cu";
+            default:
+                return "FireOptimizer.cu";
+        }
+    } // ShowProgramName
+
+    inline const char* ShowProgramName(void) const
+    {
+        return FireStarterSetting::ShowProgramName(m_mode);
+    } // ShowProgramName
+
+    static inline const char* EvolveFunctionName(unsigned int mode)
     {
         switch (mode) {
             case FIRESTARTER_SELECT:
@@ -393,12 +427,44 @@ public:
             default:
                 return "Optimizer";
         }
-    } // FunctionName
+    } // EvolveFunctionName
 
-    inline const char* FunctionName(void) const
+    inline const char* EvolveFunctionName(void) const
     {
-        return FunctionName(m_mode);
-    } // FunctionName
+        return EvolveFunctionName(m_mode);
+    } // EvolveFunctionName
+
+    static inline const char* OptimizeFunctionName(unsigned int mode)
+    {
+        switch (mode) {
+        case FIRESTARTER_MONEYMAKER:
+            return "MoneyOptimizer";
+        default:
+            return "Optimizer";
+        }
+    } // OptimizeFunctionName
+
+    inline const char* OptimizeFunctionName(void) const
+    {
+        return OptimizeFunctionName(m_mode);
+    } // OptimizeFunctionName
+
+    static inline const char* ShowFunctionName(unsigned int mode)
+    {
+        switch (mode) {
+        case FIRESTARTER_SINSIM:
+            return "SinSimShow";
+        case FIRESTARTER_MONEYMAKER:
+            return "MoneyShow";
+        default:
+            return "OptimizeShow";
+        }
+    } // ShowFunctionName
+
+    inline const char* ShowFunctionName(void) const
+    {
+        return ShowFunctionName(m_mode);
+    } // ShowFunctionName
 
     inline void CopyCodeSettings(FireStarterSetting& source)
     {

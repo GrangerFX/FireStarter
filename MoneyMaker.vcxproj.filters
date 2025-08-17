@@ -210,5 +210,8 @@
     <None Include="Distribution\FireMoneyMaker.cu">
       <Filter>CUDA Files</Filter>
     </None>
+    <None Include="Distribution\FireMoneyOptimizer.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

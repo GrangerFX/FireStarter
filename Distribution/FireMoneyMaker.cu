@@ -3,7 +3,7 @@
 #include "MoneyMakerStocks.h"
 #include "CUDADefines.h"
 
-inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock &stockData, float& result)
+inline bool MoneyMakerEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock &stockData, float& result)
 {
     float minResult = result;
     float funds = MONEYMAKER_FUNDS;
@@ -12,19 +12,6 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
     unsigned int i = 1;
 
     sharedData = data;
-    while (i < MONEYMAKER_WARMUP) {
-        float newPrice = stockData[i];
-        float priceChange = newPrice / oldPrice;
-        oldPrice = newPrice;
-
-        // Warmup evaluation ignoring the results.
-        float n = fabsf(code.Evaluate(sharedData, priceChange));
-        if (!isfinite(n)) {
-            result = 0.0f;
-            return false;
-        }
-        i++;
-    }
     while (i < MONEYMAKER_HISTORY) {
         float newPrice = stockData[i];
         float priceChange = newPrice / oldPrice;
@@ -37,25 +24,28 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
             return false;
         }
 
-        if (n >= 1.0f) {
-            if (shares == 0) {
-                shares = (int)(funds / newPrice);
-                funds -= shares * newPrice;
-            }
-        } else if (n <= -1.0f) {
-            if (shares > 0) {
-                funds += newPrice * shares;
-                shares = 0;
+        // Warmup evaluation ignoring the results.
+        if (i > MONEYMAKER_WARMUP) {
+            if (n >= 1.0f) {
+                if (!shares) {
+                    shares = (int)(funds / newPrice);
+                    funds -= shares * newPrice;
+                }
+            } else if (n <= -1.0f) {
+                if (shares) {
+                    funds += newPrice * shares;
+                    shares = 0;
+                }
             }
         }
         i++;
     }
     result = funds + shares * stockData[MONEYMAKER_HISTORY - 1] - MONEYMAKER_FUNDS;
     return result > minResult;
-} // EvolveEvaluate
+} // MoneyMakerEvaluate
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -84,7 +74,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        if (EvolveEvaluate(sharedData, data, code, stockData, memberResult))
+        if (MoneyMakerEvaluate(sharedData, data, code, stockData, memberResult))
             break;
     }
 
@@ -120,7 +110,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult;
-            if (EvolveEvaluate(sharedData, data, code, stockData, curResult))
+            if (MoneyMakerEvaluate(sharedData, data, code, stockData, curResult))
                 memberResult = curResult;
             else
                 data[d] = old;
@@ -159,4 +149,4 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     // Return the variation data for debugging.
     if (population)
         FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
-} // Evolver
+} // MoneyMaker

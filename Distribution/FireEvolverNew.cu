@@ -2,35 +2,6 @@
 #include "FireStarterResults.h"
 #include "MoneyMakerStocks.h"
 
-// Not used in Evolver. For code checkins in only.
-inline float OptimizeEvaluate(const FireStarterData& testData, float n)
-{
-    FireStarterData data = testData;
-    // EVALUATE //
-    // END //
-    return n;
-} // OptimizeEvaluate
-
-GPU_GLOBAL void ShowEvaluate(float* target, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
-{
-    // Determine the member to be optimized.
-    unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index >= size)
-        return;
-
-    // Generate the target data.
-    float theta = thetaStart + index * (thetaEnd - thetaStart) / size;
-    if (target)
-        target[index] = Target(theta, variation + FIRESTARTER_VARIATION);
-
-    // Generate the test data.
-    if (results && data && code) {
-        FireStarterCode localCode(code);
-        FireStarterData localData(data);
-        results[index] = localCode.Evaluate(localData, theta);
-    }
-} // ShowEvaluate
-
 inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;

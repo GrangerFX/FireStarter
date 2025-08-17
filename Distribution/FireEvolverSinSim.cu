@@ -3,36 +3,6 @@
 #include "FireSinSim.h"
 #include "CUDADefines.h"
 
-// Not used in EvolverSinSim. For code checkins in only.
-inline float OptimizeEvaluate(const FireStarterData& testData, float n)
-{
-    FireStarterData data = testData;
-    // EVALUATE //
-    // END //
-    return n;
-} // OptimizeEvaluate
-
-GPU_GLOBAL void ShowEvaluate(float* targets, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
-{
-    // Determine the member to be optimized.
-    unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index > 0)
-        return;
-
-    // Generate the test data.
-    if (results && targets && data) {
-        FireStarterCode localCode(code);
-        FireStarterData localData(data);
-        for (unsigned int s = 0; s < size; s++) {
-            float input = SinSimNetwork::SinSimInputSample(s);
-            float sample = localCode.Evaluate(localData, input);
-            float target = SinSimNetwork::SinSimTargetSample(s);
-            targets[s] = target;
-            results[s] = sample;
-        }
-    }
-} // ShowEvaluate
-
 // SinSim based evolution.
 GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {

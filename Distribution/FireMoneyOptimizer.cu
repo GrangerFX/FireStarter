@@ -1,59 +1,78 @@
 #pragma once
 
 #include "FireStarterResults.h"
+#include "MoneyMakerStocks.h"
 
-inline float OptimizeCompiledEvaluate(const FireStarterData& testData, float n)
+inline float MoneyCompiledEvaluate(const FireStarterData& data, float n)
 {
-    FireStarterData data = testData;
     // EVALUATE //
     // END //
     return n;
-} // OptimizeCompiledEvaluate
+} // MoneyCompiledEvaluate
 
-GPU_GLOBAL void OptimizeShow(float* target, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
+// Note: TODO: Implement a way to display the stock trades.
+GPU_GLOBAL void MoneyShow(float* target, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
 {
     // Determine the member to be optimized.
     unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
     if (index >= size)
         return;
 
-    // Generate the target data.
-    float theta = thetaStart + index * (thetaEnd - thetaStart) / size;
-    if (target)
-        target[index] = Target(theta, variation + FIRESTARTER_VARIATION);
+    // Generate the displayed results.
+    if (results)
+        results[index] = 0.0f;
+} // MoneyShow
 
-    // Generate the test data.
-    if (results && data) {
-        if (code) {
-            FireStarterCode localCode(code);
-            FireStarterData localData(data);
-            results[index] = localCode.Evaluate(localData, theta);
-        } else
-            results[index] = OptimizeCompiledEvaluate(data, theta);
-    }
-} // OptimizeShow
-
-inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
+inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerStock& stockData, float& result)
 {
-    float maxResult = result;
-    result = 0.0f;
-    for (int i = 0; i < FIRESTARTER_OPTIMIZE_SAMPLES; i++) {
-        float n = fabsf(OptimizeCompiledEvaluate(data, theta[i]) - target[i]);
-        if (!isfinite(n) || (n > maxResult)) {
-            result = maxResult;
-            return false;
-        } else
-            result = fmaxf(n, result);
-    }
-    return true;
-} // OptimizeEvaluate
+    float minResult = result;
+    float funds = MONEYMAKER_FUNDS;
+    float oldPrice = stockData[0];
+    int shares = 0;
+    unsigned int i = 1;
 
-GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+    FireStarterData workData = data;
+    while (i < MONEYMAKER_HISTORY) {
+        float newPrice = stockData[i];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+        // Trading evaluation using the result to buy or sell shares.
+        float n = fabsf(MoneyCompiledEvaluate(workData, priceChange));
+        if (!isfinite(n)) {
+            result = 0.0f;
+            return false;
+        }
+
+        // Warmup evaluation ignoring the results.
+        if (i > MONEYMAKER_WARMUP) {
+            if (n >= 1.0f) {
+                if (!shares) {
+                    shares = (int)(funds / newPrice);
+                    funds -= shares * newPrice;
+                }
+            }  else if (n <= -1.0f) {
+                if (shares) {
+                    funds += newPrice * shares;
+                    shares = 0;
+                }
+            }
+        }
+        i++;
+    }
+    result = funds + shares * stockData[MONEYMAKER_HISTORY - 1] - MONEYMAKER_FUNDS;
+    return result > minResult;
+} // MoneyOptimizeEvaluate
+
+GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
     if (member >= population)
         return;
+
+    // Get the stock data.
+    const MoneyMakerStock& stockData = stocks->StockData();
 
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_OPTIMIZE_SAMPLES];
@@ -77,7 +96,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         for (initAge = 1; initAge <= 10; initAge++) {
             data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
-            if (OptimizeEvaluate(data, target, theta, result))
+            if (MoneyOptimizeEvaluate(data, stockData, result))
                 break;
         }
         memberResult = FIRESTARTER_START_RESULT;
@@ -94,14 +113,16 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * FIRESTARTER_START_SCALE * (evolveAge - 1);
-            result = 1.0e+6f; // Validated as being faster than FIRESTARTER_START_RESULT  11/17/2024
-            if (!OptimizeEvaluate(data, target, theta, result)) {
+            result = MoneyOptimizeEvaluate(data, stockData, result);
+            if (result <= 0.0f) {
                 data[d] = oldData;
                 memberResult = result = oldResult.MaxResult();
-            } else
-                memberResult = FIRESTARTER_START_RESULT; // Validated as being faster than result  11/17/2024
+            }
+            else
+                memberResult = result;
             evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult; // Validated as being faster than 0.6f * FIRESTARTER_START_RESULT  11/17/2024
-        } else {
+        }
+        else {
             memberResult = result = oldResult.MaxResult();
             evolutionScale = FIRESTARTER_SCALE * memberResult;
         }
@@ -113,7 +134,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
         float curResult = result * 0.99f; // Validated as being faster than * 1.0f or * 0.9f. About the same as * 0.999f.  11/17/2024
-        if (OptimizeEvaluate(data, target, theta, curResult))
+        if (MoneyOptimizeEvaluate(data, stockData, curResult))
             result = curResult;
         else
             data[d] = oldData;
@@ -155,4 +176,4 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
 
     if (newPopulation)
         FireStarterPopulation::PopulationResult(newPopulation, member, variation)->InitResult(data, result, evolveAge, initAge);
-} // Optimizer
+} // MoneyOptimizer

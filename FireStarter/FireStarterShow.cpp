@@ -4,72 +4,25 @@
 #include "FireStarterUtil.h"
 #include "CUDACompile.h"
 
-bool FireStarterShow::LoadFireEvaluator(const FireStarterSettings& settings)
-{
-    if (m_fireEvaluateFunction)
-        return true;
-
-    if (m_fireEvaluateCode.empty() && !FireStarterSource::LoadSource(m_fireEvaluateCode, settings.ProgramName()))
-        return false;
-
-    if (CUDACompile::CompileProgram(m_fireEvaluateModule, m_fireEvaluateCode, settings.ProgramName())) {
-        m_fireEvaluateFunction = CUDACompile::GetFunction(m_fireEvaluateModule, "ShowEvaluate");
-        if (!m_fireEvaluateFunction)
-            CUDACompile::ReleaseModule(m_fireEvaluateModule);
-        return true;
-    } else {
-        m_fireEvaluateModule = nullptr;
-        m_fireEvaluateFunction = nullptr;
-        return false;
-    }
-} // LoadFireEvaluator
-
 void FireStarterShow::DeallocateEvaluateData(void)
 {
     if (m_evaluateSize) {
         checkCUDAErrors(cudaFreeHost(m_hostTargetData));
         m_hostTargetData = nullptr;
-        checkCUDAErrors(cudaFreeAsync(m_deviceTargetData, Stream()));
-        m_deviceTargetData = nullptr;
         checkCUDAErrors(cudaFreeHost(m_hostEvaluateData));
         m_hostEvaluateData = nullptr;
-        checkCUDAErrors(cudaFreeAsync(m_deviceEvaluateData, Stream()));
-        m_deviceEvaluateData = nullptr;
         m_evaluateSize = 0;
     }
 } // DeallocateEvaluateData
 
-void FireStarterShow::DeallocateCodeData(void)
+void FireStarterShow::AllocateEvaluateData(size_t evaluateSize)
 {
-    if (m_codeSize) {
-        checkCUDAErrors(cudaFreeAsync(m_deviceCode, Stream()));
-        m_deviceCode = nullptr;
-        m_codeSize = 0;
-    }
-    if (m_dataSize) {
-        checkCUDAErrors(cudaFreeAsync(m_deviceData, Stream()));
-        m_deviceData = nullptr;
-        m_dataSize = 0;
-    }
-} // DeallocateCodeData(void);
-
-void FireStarterShow::AllocateEvaluateData(size_t evaluateSize, size_t codeSize, size_t dataSize)
-{
-    if ((evaluateSize != m_evaluateSize) || (codeSize != m_codeSize) || (dataSize != m_dataSize)) {
+    if (evaluateSize != m_evaluateSize) {
         if (evaluateSize != m_evaluateSize) {
             DeallocateEvaluateData();
             m_evaluateSize = evaluateSize;
             checkCUDAErrors(cudaMallocHost(&m_hostTargetData, m_evaluateSize));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceTargetData, m_evaluateSize, Stream()));
             checkCUDAErrors(cudaMallocHost(&m_hostEvaluateData, m_evaluateSize));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceEvaluateData, m_evaluateSize, Stream()));
-        }
-        if ((codeSize != m_codeSize) || (dataSize != m_dataSize)) {
-            DeallocateCodeData();
-            m_codeSize = codeSize;
-            m_dataSize = dataSize;
-            checkCUDAErrors(cudaMallocAsync(&m_deviceCode, m_codeSize, Stream()));
-            checkCUDAErrors(cudaMallocAsync(&m_deviceData, m_dataSize, Stream()));
         }
         Context()->Synchronize();
     }
@@ -77,94 +30,30 @@ void FireStarterShow::AllocateEvaluateData(size_t evaluateSize, size_t codeSize,
 
 void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation)
 {
+    // The show data is generated on the CPU which prevents it from interrupting the GPU.
+    // Note: TODO: Use multiple CPU threads to speed this up.
     const FireStarterSettings& settings = state.Settings();
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = (evaluateWidth + (threadsPerBlock - 1)) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
-    // If the FireEvaluate code was compiled, use it to generate the target and evaluate arrays.
-    // Note: The purpose is generality not speed. This allows the settings and instruction set to be modified after the main code is compiled.
-    if (0 && m_fireEvaluateFunction) {
-        const FireStarterResult* result = state.Result(variation);
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceData, result->Data(), m_dataSize, cudaMemcpyHostToDevice, Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceCode, state.Code(), m_codeSize, cudaMemcpyHostToDevice, Stream()));
-
-        void* arr[] = { reinterpret_cast<void*>(&m_deviceTargetData),
-                        reinterpret_cast<void*>(&m_deviceEvaluateData),
-                        reinterpret_cast<void*>(&evaluateWidth),
-                        reinterpret_cast<void*>(&thetaStart),
-                        reinterpret_cast<void*>(&thetaEnd),
-                        reinterpret_cast<void*>(&m_deviceCode),
-                        reinterpret_cast<void*>(&m_deviceData),
-                        reinterpret_cast<void*>(&variation)
-        };
-
-        checkCUDAErrors(cuLaunchKernel(m_fireEvaluateFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-            0,                                                  // shared mem
-            Stream(),                                           // stream
-            &arr[0],                                            // arguments
-            0));
-
-        checkCUDAErrors(cudaMemcpyAsync(m_hostTargetData, m_deviceTargetData, m_evaluateSize, cudaMemcpyDeviceToHost, Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(m_hostEvaluateData, m_deviceEvaluateData, m_evaluateSize, cudaMemcpyDeviceToHost, Stream()));
-        Context()->Synchronize();
-    }  else {
-        // As a fallback and validation test, generate the target and evaluate the code on the CPU.
-        // The CPU evalate won't need to wait for the GPU to become available.
-        FireStarterDataVector dataVector;
-        const FireStarterCode* code = state.Code();
-        float thetaStep = (thetaEnd - thetaStart) / evaluateWidth;
-        for (unsigned int i = 0; i < evaluateWidth; i++) {
-            state.DataVector(dataVector, variation);
-            float theta = thetaStart + i * thetaStep;
-            m_hostEvaluateData[i] = code->Evaluate(dataVector.Data(), theta, settings.m_instructions);
-            m_hostTargetData[i] = Target(theta, variation + FIRESTARTER_VARIATION);
-        }
+    FireStarterDataVector dataVector;
+    const FireStarterCode* code = state.Code();
+    float thetaStep = (thetaEnd - thetaStart) / evaluateWidth;
+    for (unsigned int i = 0; i < evaluateWidth; i++) {
+        state.DataVector(dataVector, variation);
+        float theta = thetaStart + i * thetaStep;
+        m_hostEvaluateData[i] = code->Evaluate(dataVector.Data(), theta, settings.m_instructions);
+        m_hostTargetData[i] = Target(theta, variation + FIRESTARTER_VARIATION);
     }
 } // EvaluateData
 
 void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int evaluateWidth)
 {
+    // The show data is generated on the CPU which prevents it from interrupting the GPU.
+    // Note: The SinSim data must be evaluated on a single thread.
     const FireStarterSettings& settings = state.Settings();
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = (evaluateWidth + (threadsPerBlock - 1)) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-
-    // If the FireEvaluate code was compiled, use it to generate the target and evaluate arrays.
-    // Note: The purpose is generality not speed. This allows the settings and instruction set to be modified after the main code is compiled.
-    if (m_fireEvaluateFunction) {
-        const SinSimNetwork* network = state.Network();
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceData, network, m_dataSize, cudaMemcpyHostToDevice, Stream()));
-
-        void* arr[] = { reinterpret_cast<void*>(&m_deviceTargetData),
-                        reinterpret_cast<void*>(&m_deviceEvaluateData),
-                        reinterpret_cast<void*>(&evaluateWidth),
-                        reinterpret_cast<void*>(&m_deviceData)
-        };
-
-        checkCUDAErrors(cuLaunchKernel(m_fireEvaluateFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-            0,                                                  // shared mem
-            Stream(),                                           // stream
-            &arr[0],                                            // arguments
-            0));
-
-        checkCUDAErrors(cudaMemcpyAsync(m_hostTargetData, m_deviceTargetData, m_evaluateSize, cudaMemcpyDeviceToHost, Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(m_hostEvaluateData, m_deviceEvaluateData, m_evaluateSize, cudaMemcpyDeviceToHost, Stream()));
-        Context()->Synchronize();
-    } else {
-        // As a fallback and validation test, generate the target and evaluate data on the CPU.
-        SinSimNetwork network = *state.Network();
-        for (unsigned int i = 0; i < evaluateWidth; i++) {
-            float input = SinSimNetwork::SinSimInputSample(i);
-            m_hostTargetData[i] = SinSimNetwork::SinSimTargetSample(i);
-            m_hostEvaluateData[i] = network.SinSimTestNetwork(input);
-        }
+    SinSimNetwork network = *state.Network();
+    for (unsigned int i = 0; i < evaluateWidth; i++) {
+        float input = SinSimNetwork::SinSimInputSample(i);
+        m_hostTargetData[i] = SinSimNetwork::SinSimTargetSample(i);
+        m_hostEvaluateData[i] = network.SinSimTestNetwork(input);
     }
 } // EvaluateSinSim
 
@@ -172,43 +61,69 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
 {
     Dispatch([this, state] {
         const FireStarterSettings& settings = state.Settings();
-        if (LoadFireEvaluator(settings)) {
-            // Setup the data
-            m_window.Erase();
-            uchar4* pixels = (uchar4*)m_window.GetPixels();
-            unsigned int width = m_window.m_width;
-            unsigned int height = m_window.m_height;
-            int xScale = height / 8;
-            int yScale = height / 16;
-            float thetaStart = TARGET_PI * ((-0.5f * width) / xScale + 1.0f);
-            float thetaEnd = TARGET_PI * ((0.5f * width) / xScale + 1.0f);
-            float maxError = 0.0f;
-            for (unsigned int y = 0; y < height; y++) {
-                int x0 = (width / 2) - xScale;
-                int x1 = (width / 2) + xScale;
-                if (x0 >= 0) {
-                    uchar4& pixel(pixels[y * width + x0]);
-                    pixel.x = 64;
+        // Setup the data
+        m_window.Erase();
+        uchar4* pixels = (uchar4*)m_window.GetPixels();
+        unsigned int width = m_window.m_width;
+        unsigned int height = m_window.m_height;
+        int xScale = height / 8;
+        int yScale = height / 16;
+        float thetaStart = TARGET_PI * ((-0.5f * width) / xScale + 1.0f);
+        float thetaEnd = TARGET_PI * ((0.5f * width) / xScale + 1.0f);
+        float maxError = 0.0f;
+        for (unsigned int y = 0; y < height; y++) {
+            int x0 = (width / 2) - xScale;
+            int x1 = (width / 2) + xScale;
+            if (x0 >= 0) {
+                uchar4& pixel(pixels[y * width + x0]);
+                pixel.x = 64;
+                pixel.y = 128;
+                pixel.z = 64;
+            };
+            if (x1 < (int)width) {
+                uchar4& pixel(pixels[y * width + x1]);
+                pixel.x = 64;
+                pixel.y = 128;
+                pixel.z = 64;
+            };
+        }
+
+        // Allocate the host and GPU memory.
+        size_t evaluateSize = width * sizeof(float);
+        if (settings.m_mode == FIRESTARTER_SINSIM) {
+            size_t codeSize = 0;
+            AllocateEvaluateData(evaluateSize);
+
+            // Evaluate the SinSim FireShow data.
+            EvaluateSinSim(state, width);
+            for (unsigned int x = 0; x < width; x++) {
+                float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
+                float center = height * 0.66f;
+                float target = m_hostTargetData[x];
+                float result = m_hostEvaluateData[x];
+
+                if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
+                    float error = fabsf(result - target);
+                    maxError = max(maxError, error);
+                }
+                long long y = (long long)(center + target * yScale);
+                if ((y >= 0) && (y < height)) {
+                    uchar4& pixel(pixels[y * width + x]);
+                    pixel.x = 255;
                     pixel.y = 128;
-                    pixel.z = 64;
                 };
-                if (x1 < (int)width) {
-                    uchar4& pixel(pixels[y * width + x1]);
-                    pixel.x = 64;
-                    pixel.y = 128;
-                    pixel.z = 64;
+                y = (long long)(center + result * yScale);
+                if ((y >= 0) && (y < height)) {
+                    uchar4& pixel(pixels[y * width + x]);
+                    pixel.x = pixel.y = pixel.z = 255;
                 };
             }
+        } else {
+            AllocateEvaluateData(evaluateSize);
 
-            // Allocate the host and GPU memory.
-            size_t evaluateSize = width * sizeof(float);
-            if (settings.m_mode == FIRESTARTER_SINSIM) {
-                size_t codeSize = 0;
-                size_t dataSize = sizeof(SinSimNetwork);
-                AllocateEvaluateData(evaluateSize, codeSize, dataSize);
-
-                // Evaluate the SinSim FireShow data.
-                EvaluateSinSim(state, width);
+            // Evaluate the evolve FireShow data.
+            for (unsigned int v = 0; v < settings.m_variations; v++) {
+                EvaluateData(state, width, thetaStart, thetaEnd, v);
                 for (unsigned int x = 0; x < width; x++) {
                     float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
                     float center = height * 0.66f;
@@ -231,40 +146,9 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                         pixel.x = pixel.y = pixel.z = 255;
                     };
                 }
-            } else {
-                size_t codeSize = FireStarterCode::CodeSize(settings);
-                size_t dataSize = FireStarterData::DataSize(settings);
-                AllocateEvaluateData(evaluateSize, codeSize, dataSize);
-
-                // Evaluate the evolve FireShow data.
-                for (unsigned int v = 0; v < settings.m_variations; v++) {
-                    EvaluateData(state, width, thetaStart, thetaEnd, v);
-                    for (unsigned int x = 0; x < width; x++) {
-                        float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
-                        float center = height * 0.66f;
-                        float target = m_hostTargetData[x];
-                        float result = m_hostEvaluateData[x];
-
-                        if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
-                            float error = fabsf(result - target);
-                            maxError = max(maxError, error);
-                        }
-                        long long y = (long long)(center + target * yScale);
-                        if ((y >= 0) && (y < height)) {
-                            uchar4& pixel(pixels[y * width + x]);
-                            pixel.x = 255;
-                            pixel.y = 128;
-                        };
-                        y = (long long)(center + result * yScale);
-                        if ((y >= 0) && (y < height)) {
-                            uchar4& pixel(pixels[y * width + x]);
-                            pixel.x = pixel.y = pixel.z = 255;
-                        };
-                    }
-                }
             }
-            m_window.DisplayImage();
         }
+        m_window.DisplayImage();
     }, sync);
 } // FireShow
 
