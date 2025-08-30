@@ -109,7 +109,7 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
             evolutionScale = FIRESTARTER_START_SCALE;
             code.InitCode(memberSeed);
             registers = code.Optimize();
-            data.InitData(memberSeed, registers);
+            data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
             oldResult = FIRESTARTER_START_RESULT;
             memberResult = FIRESTARTER_START_RESULT;
             memberTrades = 0;

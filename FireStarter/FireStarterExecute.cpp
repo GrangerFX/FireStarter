@@ -517,7 +517,8 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
     }
 
     if (m_hostPopulation) {
-        FireStarterResult& minResult = m_hostPopulation[minIndex];
+        const FireStarterCode& minCode = m_hostCodes->Member(settings, minIndex);
+        const FireStarterResult& minResult = m_hostPopulation->Member(settings, minIndex);
         unsigned int minAge = minResult.m_evolveAge1;
         unsigned int minTrades = minResult.m_evolveAge2;
         int foo = 1;

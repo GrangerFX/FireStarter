@@ -548,6 +548,31 @@ typedef struct FireStarterResult {
         return &m_data;
     } // Data
 
+    static inline FireStarterResult* Member(FireStarterResult* results, const FireStarterSettings& settings, unsigned int index)
+    {
+        return (FireStarterResult*)((char*)results + ResultSize(settings) * index);
+    } // Member
+
+    static inline const FireStarterResult* Member(const FireStarterResult* results, const FireStarterSettings& settings, unsigned int index)
+    {
+        return (FireStarterResult*)((char*)results + ResultSize(settings) * index);
+    } // Member
+
+    inline FireStarterResult* Member(const FireStarterSettings& settings, unsigned int index)
+    {
+        return Member(this, settings, index);
+    } // Member
+
+    inline const FireStarterResult* Member(const FireStarterSettings& settings, unsigned int index) const
+    {
+        return Member(this, settings, index);
+    } // Member
+
+    inline void Copy(const FireStarterResult& src)
+    {
+        memcpy(this, &src, ResultSize());
+    } // Copy
+
     inline void Copy(const FireStarterResult* src)
     {
         memcpy(this, src, ResultSize());
@@ -649,6 +674,20 @@ typedef struct FireStarterResult {
         m_evolveAge1 = initResult->EvolveAge1();
         m_evolveAge2 = initResult->EvolveAge2();
     } // InitResult
+
+    inline FireStarterResult(const struct FireStarterResult& result)
+    {
+        Copy(result);
+    } // FireStarterResult
+
+    inline FireStarterResult(const struct FireStarterResult* result)
+    {
+        Copy(result);
+    } // FireStarterResult
+
+    inline FireStarterResult(void)
+    {
+    } // FireStarterResult
 } FireStarterResult;
 
 typedef struct FireStarterPopulation : public FireStarterResult
