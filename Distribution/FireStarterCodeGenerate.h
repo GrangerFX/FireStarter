@@ -277,7 +277,7 @@ public:
 
     inline void GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int numInstructions, const FireStarterRegisterUsage* registerUsage, unsigned int numRegisters, const FireStarterData* data) const
     {
-#if FIRESTARTER_FIRSTLIGHT
+#if FIRESTARTER_FIRSTLIGHT || (FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER)
         // Generate the solution function registers.
         for (unsigned int i = 0; i < numRegisters; i++) {
             for (unsigned int j = 0; j < tabs; j++)
@@ -288,7 +288,7 @@ public:
 
         // Generate the solution function code.
         for (unsigned int i = 0; i < numInstructions; i++) {
-            unsigned int reg = instructions->Register(i);
+            unsigned int reg = Register(i);
             const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
             float f = (float)data->d[reg];
             GenerateSolution(buffer, size, length, tabs, reg, f, i, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);

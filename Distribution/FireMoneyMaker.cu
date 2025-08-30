@@ -3,7 +3,9 @@
 #include "MoneyMakerStocks.h"
 #include "CUDADefines.h"
 
-inline bool MoneyMakerEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock &stockData, float& result)
+#define MONEYMAKER_RANDOM 0
+
+inline bool MoneyMakerEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock &stockData, unsigned long long seed, float& result)
 {
     float minResult = result;
     float funds = MONEYMAKER_FUNDS;
@@ -18,11 +20,16 @@ inline bool MoneyMakerEvaluate(FireStarterSharedData& sharedData, const FireStar
         oldPrice = newPrice;
 
         // Trading evaluation using the result to buy or sell shares.
+#if MONEYMAKER_RANDOM
+        float n = RANDOMFACTOR(seed);
+        n = (n * n) * 1.1f;
+#else
         float n = fabsf(code.Evaluate(sharedData, priceChange));
         if (!isfinite(n)) {
             result = 0.0f;
             return false;
         }
+#endif
 
         // Warmup evaluation ignoring the results.
         if (i > MONEYMAKER_WARMUP) {
@@ -40,7 +47,9 @@ inline bool MoneyMakerEvaluate(FireStarterSharedData& sharedData, const FireStar
         }
         i++;
     }
-    result = funds + shares * stockData[MONEYMAKER_HISTORY - 1] - MONEYMAKER_FUNDS;
+
+    // The result is the ratio between the final funds and the starting funds.
+    result = (funds + shares * stockData[MONEYMAKER_HISTORY - 1]) / MONEYMAKER_FUNDS;
     return result > minResult;
 } // MoneyMakerEvaluate
 
@@ -74,7 +83,7 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        if (MoneyMakerEvaluate(sharedData, data, code, stockData, memberResult))
+        if (MoneyMakerEvaluate(sharedData, data, code, stockData, memberSeed, memberResult))
             break;
     }
 
@@ -110,7 +119,7 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult;
-            if (MoneyMakerEvaluate(sharedData, data, code, stockData, curResult))
+            if (MoneyMakerEvaluate(sharedData, data, code, stockData, memberSeed, curResult))
                 memberResult = curResult;
             else
                 data[d] = old;
