@@ -57,9 +57,9 @@ void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int
     }
 } // EvaluateSinSim
 
-void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
+void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerStocks* stocks)
 {
-    Dispatch([this, state] {
+    DispatchAsync([this, state, stocks] {
         const FireStarterSettings& settings = state.Settings();
         // Setup the data
         m_window.Erase();
@@ -118,7 +118,9 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
                     pixel.x = pixel.y = pixel.z = 255;
                 };
             }
-        } else {
+        } else if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
+
+        } else{
             AllocateEvaluateData(evaluateSize);
 
             // Evaluate the evolve FireShow data.
@@ -149,7 +151,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, bool sync)
             }
         }
         m_window.DisplayImage();
-    }, sync);
+    });
 } // FireShow
 
 void FireStarterShow::FireSolution(FireStarterWindow& window)

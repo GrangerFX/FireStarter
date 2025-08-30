@@ -914,131 +914,131 @@ bool FireStarterExecute::ExecuteGenerateEvolve(unsigned int mode, bool sync)
     return result;
 } // ExecuteGenerateEvolve
 
-bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& state, bool sync)
+bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync)
 {
     // Must copy the intitState pointer in case it becomes invalid when the code below is called.
     bool result = false;
-    Dispatch([this, &state, &result] {
-        result = GenerateOptimize(state);
+    Dispatch([this, &optimizeState, &result] {
+        result = GenerateOptimize(optimizeState);
     }, sync);
     return result;
 } // ExecuteGenerateOptimize
 
-void FireStarterExecute::ExecuteSelect(FireStarterState& state, const FireStarterSettings& selectSettings)
+void FireStarterExecute::ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings)
 {
-    DispatchSync([this, &state, &selectSettings] {
+    DispatchSync([this, &selectState, &selectSettings] {
         if (GenerateEvolve(selectSettings.m_mode)) {
-            state.m_timer.Start();
+            selectState.m_timer.Start();
             if (InitPopulation(selectSettings))
-                ExecuteSelectPass(state, selectSettings);
+                ExecuteSelectPass(selectState, selectSettings);
         }
     });
 } // ExecuteSelect
 
-void FireStarterExecute::ExecuteEvolve(FireStarterState& state)
+void FireStarterExecute::ExecuteEvolve(FireStarterState& evolveState)
 {
-    DispatchSync([this, &state] {
-        if (GenerateEvolve(state.Settings().m_mode)) {
-            state.m_timer.Start();
-            if (InitPopulation(state.Settings()))
-                ExecuteEvolvePass(state);
+    DispatchSync([this, &evolveState] {
+        if (GenerateEvolve(evolveState.Settings().m_mode)) {
+            evolveState.m_timer.Start();
+            if (InitPopulation(evolveState.Settings()))
+                ExecuteEvolvePass(evolveState);
         }
     });
 } // ExecuteEvolve
 
-void FireStarterExecute::ExecuteEvolveNew(FireStarterState& state)
+void FireStarterExecute::ExecuteEvolveNew(FireStarterState& evolveState)
 {
-    DispatchSync([this, &state] {
-        if (GenerateEvolve(state.Settings().m_mode)) {
-            state.m_timer.Start();
-            if (InitPopulation(state.Settings()))
-                ExecuteEvolveNewPass(state);
+    DispatchSync([this, &evolveState] {
+        if (GenerateEvolve(evolveState.Settings().m_mode)) {
+            evolveState.m_timer.Start();
+            if (InitPopulation(evolveState.Settings()))
+                ExecuteEvolveNewPass(evolveState);
         }
     });
 } // ExecuteEvolveNew
 
-void FireStarterExecute::ExecuteEvolveSinSim(FireStarterState& state)
+void FireStarterExecute::ExecuteEvolveSinSim(FireStarterState& evolveState)
 {
-    DispatchSync([this, &state] {
-        if (GenerateEvolve(state.Settings().m_mode)) {
-            state.m_timer.Start();
-            if (InitPopulation(state.Settings()))
-                ExecuteEvolveNewPass(state);
+    DispatchSync([this, &evolveState] {
+        if (GenerateEvolve(evolveState.Settings().m_mode)) {
+            evolveState.m_timer.Start();
+            if (InitPopulation(evolveState.Settings()))
+                ExecuteEvolveNewPass(evolveState);
         }
         });
 } // ExecuteEvolveNew
 
-void FireStarterExecute::ExecuteSinSim(FireStarterState& state)
+void FireStarterExecute::ExecuteSinSim(FireStarterState& evolveState)
 {
-    DispatchSync([this, &state] {
-        if (GenerateEvolve(state.Settings().m_mode)) {
-            state.m_timer.Start();
-            if (InitPopulation(state.Settings()))
-                ExecuteSinSimPass(state);
+    DispatchSync([this, &evolveState] {
+        if (GenerateEvolve(evolveState.Settings().m_mode)) {
+            evolveState.m_timer.Start();
+            if (InitPopulation(evolveState.Settings()))
+                ExecuteSinSimPass(evolveState);
         }
     });
 } // ExecuteSinSim
 
-void FireStarterExecute::ExecuteMoneyMaker(FireStarterState& state)
+void FireStarterExecute::ExecuteMoneyMaker(FireStarterState& evolveState)
 {
-    DispatchSync([this, &state] {
-        if (GenerateEvolve(state.Settings().m_mode)) {
-            state.m_timer.Start();
-            if (InitPopulation(state.Settings()))
-                ExecuteMoneyMakerPass(state);
+    DispatchSync([this, &evolveState] {
+        if (GenerateEvolve(evolveState.Settings().m_mode)) {
+            evolveState.m_timer.Start();
+            if (InitPopulation(evolveState.Settings()))
+                ExecuteMoneyMakerPass(evolveState);
         }
     });
 } // ExecuteMoneyMaker
 
-void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete)
+void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete)
 {
-    DispatchSync([this, complete, &state, &bestState] {
+    DispatchSync([this, complete, &optimizeState, &bestState] {
         if (m_executeFunction) {
-            if (InitPopulation(state.Settings())) {
-                while (!WillTerminate() && !bestState.Complete() && (state.m_optimize_pass < state.Settings().m_optimize)) {
+            if (InitPopulation(optimizeState.Settings())) {
+                while (!WillTerminate() && !bestState.Complete() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Execute the optimization passes.
-                    state.m_timer.Start();
-                    ExecuteOptimizePasses(state);
+                    optimizeState.m_timer.Start();
+                    ExecuteOptimizePasses(optimizeState);
 
                     // Update the results in the UI and check for completion.
-                    if (complete && complete->CompleteState(bestState, state))
+                    if (complete && complete->CompleteState(bestState, optimizeState))
                         break;
 
                     // Increment the generation.
-                    state.m_optimize_pass++;
+                    optimizeState.m_optimize_pass++;
                 }
             }
         }
     });
 } // ExecuteEvolveOptimize
 
-void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete)
+void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete)
 {
-    DispatchSync([this, complete, &state, &bestState] {
+    DispatchSync([this, complete, &optimizeState, &bestState] {
         if (m_executeFunction) {
-            if (InitPopulation(state.Settings())) {
-                while (!WillTerminate() && !bestState.Complete() && (state.m_optimize_pass < state.Settings().m_optimize)) {
+            if (InitPopulation(optimizeState.Settings())) {
+                while (!WillTerminate() && !bestState.Complete() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Execute the optimization passes.
-                    state.m_timer.Start();
-                    ExecuteOptimizePasses(state);
+                    optimizeState.m_timer.Start();
+                    ExecuteOptimizePasses(optimizeState);
 
                     // Update the results in the UI and check for completion.
-                    if (complete && complete->CompleteState(bestState, state))
+                    if (complete && complete->CompleteState(bestState, optimizeState, m_hostStocks))
                         break;
 
                     // Increment the generation.
-                    state.m_optimize_pass++;
+                    optimizeState.m_optimize_pass++;
                 }
             }
         }
         });
 } // ExecuteMoneyOptimize
 
-void FireStarterExecute::ExecuteOptimize(FireStarterState& state)
+void FireStarterExecute::ExecuteOptimize(FireStarterState& optimizeState)
 {
-    DispatchSync([this, &state] {
-        if (InitPopulation(state.Settings()))
-            ExecuteOptimizePasses(state);
+    DispatchSync([this, &optimizeState] {
+        if (InitPopulation(optimizeState.Settings()))
+            ExecuteOptimizePasses(optimizeState);
     });
 } // ExecuteOptimize
 

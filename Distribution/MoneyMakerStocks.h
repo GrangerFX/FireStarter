@@ -7,6 +7,7 @@
 typedef struct MoneyMakerStock
 {
     float s[MONEYMAKER_HISTORY];    // The stock price changes (current day price / previous day price).
+    float minValue, maxValue;
 
     inline float& operator[](unsigned int i)
     {
@@ -36,12 +37,12 @@ typedef struct MoneyMakerStock
 
     static inline size_t StockSize(unsigned int history = MONEYMAKER_HISTORY)
     {
-        return sizeof(float) * history;
+        return (sizeof(MoneyMakerStock) - sizeof(float) * MONEYMAKER_HISTORY) + sizeof(float) * history;
     } // StockSize
 
     static inline size_t StockSize(const FireStarterSettings& settings)
     {
-        return sizeof(float) * settings.m_history;
+        return StockSize(settings.m_history);
     } // StockSize
 
     inline void Copy(const MoneyMakerStock& stock, unsigned int history = MONEYMAKER_HISTORY)
@@ -98,12 +99,12 @@ typedef struct MoneyMakerStocks
 
     static inline size_t StocksSize(unsigned int history = MONEYMAKER_HISTORY, unsigned int stocks = MONEYMAKER_STOCKS)
     {
-        return sizeof(float) * history * stocks;
+        return (sizeof(MoneyMakerStocks) - MoneyMakerStock::StockSize(MONEYMAKER_HISTORY) * MONEYMAKER_STOCKS) + sizeof(float) * MoneyMakerStock::StockSize(history) * stocks;
     } // StocksSize
 
     static inline size_t StocksSize(const FireStarterSettings& settings)
     {
-        return sizeof(float) * settings.m_stocks * settings.m_history;
+        return StocksSize(settings.m_stocks, settings.m_history);
     } // StocksSize
 
     inline MoneyMakerStock& StockData(unsigned int stock = 0, unsigned int history = MONEYMAKER_HISTORY)

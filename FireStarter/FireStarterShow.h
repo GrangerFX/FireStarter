@@ -2,6 +2,7 @@
 
 #include "FireStarterWindow.h"
 #include "FireStarterGenerate.h"
+#include "MoneyMakerStocks.h"
 #include "CUDAThread.h"
 
 class FireStarterShow : public CUDAThread {
@@ -19,7 +20,7 @@ private:
 
 public:
 	static void FireSolution(FireStarterWindow& window);
-	void FireShow(const FireStarterState& state, bool sync = false);
+	void FireShow(const FireStarterState& state, const MoneyMakerStocks *stocks = nullptr);
 	void ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, bool sync = false);
 	FireStarterShow(const FireStarterWindow& window);
 	~FireStarterShow(void);

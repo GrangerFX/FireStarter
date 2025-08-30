@@ -56,16 +56,16 @@ private:
 public:
     void ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock = 0);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
-    bool ExecuteGenerateOptimize(FireStarterState& state, bool sync = true);
-    void ExecuteSelect(FireStarterState& state, const FireStarterSettings& selectSettings);
-    void ExecuteEvolve(FireStarterState& state);
-    void ExecuteEvolveNew(FireStarterState& state);
-    void ExecuteEvolveSinSim(FireStarterState& state);
-    void ExecuteSinSim(FireStarterState& state);
-    void ExecuteMoneyMaker(FireStarterState& state);
-    void ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
-    void ExecuteMoneyOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
-    void ExecuteOptimize(FireStarterState& state);
+    bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
+    void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);
+    void ExecuteEvolve(FireStarterState& evolveState);
+    void ExecuteEvolveNew(FireStarterState& evolveState);
+    void ExecuteEvolveSinSim(FireStarterState& evolveState);
+    void ExecuteSinSim(FireStarterState& evolveState);
+    void ExecuteMoneyMaker(FireStarterState& evolveState);
+    void ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete);
+    void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete);
+    void ExecuteOptimize(FireStarterState& optimizeState);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
     void ExecuteFinish(void);

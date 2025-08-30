@@ -9,8 +9,8 @@ bool MoneyMakerStock::Load(const FireStarterSettings& settings, const std::strin
     errno_t err = fopen_s(&file, filePath.c_str(), "r");
     if (file) {
         std::vector<float>theData;
-        float minValue = 1.0E+10f;
-        float maxValue = 0.0f;
+        minValue = 1.0E+10f;
+        maxValue = 0.0f;
 
         char columns[256];
         fgets(columns, 255, file);
