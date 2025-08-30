@@ -420,7 +420,7 @@ public:
             case FIRESTARTER_SINSIM:
                 return "SinSim";
             case FIRESTARTER_MONEYMAKER:
-                return "Evolver";
+                return "MoneyMaker";
             case FIRESTARTER_SPEED_TEST:
                 return "SpeedTest";
             case FIRESTARTER_OPTIMIZE:

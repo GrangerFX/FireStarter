@@ -44,9 +44,9 @@ private:
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteMoneyMakerPass(FireStarterState& state);
-    void GatherOptimizePass(FireStarterState& state, FireStarterResult* newPopulation, unsigned int variation = 0);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
+    void ExecuteMoneyOptimizePass(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
     bool GenerateEvolve(unsigned int mode);
     bool GenerateOptimize(FireStarterState& state);
@@ -62,7 +62,9 @@ public:
     void ExecuteEvolveNew(FireStarterState& state);
     void ExecuteEvolveSinSim(FireStarterState& state);
     void ExecuteSinSim(FireStarterState& state);
+    void ExecuteMoneyMaker(FireStarterState& state);
     void ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
+    void ExecuteMoneyOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& state);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);

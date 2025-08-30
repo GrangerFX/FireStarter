@@ -521,35 +521,6 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
     state.InitCode(settings, m_hostCodes, -maxResult, maxIndex);
 } // ExecuteMoneyMakerPass
 
-void FireStarterExecute::GatherOptimizePass(FireStarterState& state, FireStarterResult* newPopulation, unsigned int variation)
-{
-    FireStarterSettings settings = state.Settings();
-
-    // Get the population data.
-#if SIMULATE_GPU
-    checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
-#else
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-#endif
-
-    // Get the best variation results.
-    // Note: The best result may get worse generation to generation before it improves.
-    // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float minResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0, variation);
-    unsigned int minIndex = 0;
-    for (unsigned int i = 1; i < settings.m_population; i++) {
-        float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i, variation);
-        if (curResult < minResult) {
-            minResult = curResult;
-            minIndex = i;
-        }
-    }
-
-    // Store the state's best result.
-    state.InitResult(settings, m_hostPopulation, minIndex, variation);
-} // GatherOptimizePass
-
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
@@ -615,19 +586,34 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 #endif
     }
 
+    // Gather the best results.
 #if SIMULATE_GPU
     if (passes & 1)
         checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+    checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
 #else
     // If the number off passes is odd, copy the new population to the old population for the next pass.
-    if (passes & 1) {
+    if (passes & 1)
         checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
-        Context()->Synchronize();
-    }
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+    Context()->Synchronize();
 #endif
 
-    // Gather the best results.
-    GatherOptimizePass(state, newPopulation, variation);
+    // Get the best variation results.
+    // Note: The best result may get worse generation to generation before it improves.
+    // This allows for better diversity among members when they struggle to evolve and yields better results.
+    float minResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0, variation);
+    unsigned int minIndex = 0;
+    for (unsigned int i = 1; i < settings.m_population; i++) {
+        float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i, variation);
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
+        }
+    }
+
+    // Store the state's best result.
+    state.InitResult(settings, m_hostPopulation, minIndex, variation);
 } // ExecuteOptimizePass
 
 void FireStarterExecute::ExecuteOptimizePasses(FireStarterState& state)
@@ -686,9 +672,110 @@ void FireStarterExecute::ExecuteSmartOptimizePasses(FireStarterState& state)
         state.m_oldResult = oldResult;
         state.m_bestResult = state.MaxResults();
         state.m_optimizeValid = validResult;
-    } else
+    }
+    else
         ExecuteOptimizePasses(state);
 } // ExecuteSmartOptimizePasses
+
+void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
+{
+    // Launch the calculation kernel
+    FireStarterSettings settings = state.Settings();
+    unsigned int population = settings.m_population;
+    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int blocksPerGrid = (population + (threadsPerBlock - 1)) / threadsPerBlock;
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    unsigned long long passes = settings.m_passes;
+    FireStarterResult* newPopulation = nullptr;
+    FireStarterResult* oldPopulation = nullptr;
+
+    for (unsigned int pass = 0; pass < passes; pass++) {
+        // Run all the evolve states in parallel.
+        unsigned int registers = state.m_uniqueRegisters;
+        unsigned long long optimizePass = state.m_optimize_pass * passes + pass;
+        unsigned long long optimizeSeed = state.OptimizationSeed(optimizePass);
+        if (pass & 1) {
+            newPopulation = m_devicePopulation0;
+            oldPopulation = m_devicePopulation1;
+        }
+        else {
+            newPopulation = m_devicePopulation1;
+            oldPopulation = m_devicePopulation0;
+        }
+
+#if SIMULATE_GPU
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                Optimizer(newPopulation, oldPopulation, m_deviceStocks, registers, optimizeSeed, optimizePass, population);
+
+        unsigned int hash = 0;
+        for (unsigned int i = 0; i < settings.m_population; i++) {
+            const FireStarterResult* member = FireStarterPopulation::PopulationResult(newPopulation, settings, i);
+            float curResult = member->MaxResult();
+            hash ^= *(unsigned int*)&curResult;
+        }
+#else
+        void* arr[] = { reinterpret_cast<void*>(&newPopulation),
+                        reinterpret_cast<void*>(&oldPopulation),
+                        reinterpret_cast<void*>(&m_deviceStocks),
+                        reinterpret_cast<void*>(&registers),
+                        reinterpret_cast<void*>(&optimizeSeed),
+                        reinterpret_cast<void*>(&optimizePass),
+                        reinterpret_cast<void*>(&population)
+        };
+
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
+
+        // Synchronize all GPU threads and results.
+        Context()->Synchronize();
+#endif
+    }
+
+#if SIMULATE_GPU
+    if (passes & 1)
+        checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+    checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+#else
+    // If the number off passes is odd, copy the new population to the old population for the next pass.
+    if (passes & 1)
+        checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
+    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+    Context()->Synchronize();
+#endif
+
+    // Gather the best results.
+    // Note: The best result may get worse generation to generation before it improves.
+    // This allows for better diversity among members when they struggle to evolve and yields better results.
+    float maxResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0);
+    unsigned int maxIndex = 0;
+    for (unsigned int i = 1; i < settings.m_population; i++) {
+        float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i);
+        if (curResult > maxResult) {
+            maxResult = curResult;
+            maxIndex = i;
+        }
+    }
+
+    // Store the state's best result.
+    state.InitResult(settings, m_hostPopulation, maxIndex);
+
+    // Calculate the state's max result.
+    state.m_oldResult = state.m_bestResult;
+    state.m_bestResult = 1.0f / maxResult;    // MoneyMaker finds the greatest profit so invert it for the complete code. Note: TEMORARY!
+    state.m_optimizeValid = true;
+} // ExecuteMoneyOptimizePass
 
 bool FireStarterExecute::Compile(FireStarterJob*& job)
 {
@@ -885,6 +972,17 @@ void FireStarterExecute::ExecuteSinSim(FireStarterState& state)
     });
 } // ExecuteSinSim
 
+void FireStarterExecute::ExecuteMoneyMaker(FireStarterState& state)
+{
+    DispatchSync([this, &state] {
+        if (GenerateEvolve(state.Settings().m_mode)) {
+            state.m_timer.Start();
+            if (InitPopulation(state.Settings()))
+                ExecuteMoneyMakerPass(state);
+        }
+    });
+} // ExecuteMoneyMaker
+
 void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete)
 {
     DispatchSync([this, complete, &state, &bestState] {
@@ -906,6 +1004,28 @@ void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& state, FireStar
         }
     });
 } // ExecuteEvolveOptimize
+
+void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& state, FireStarterState& bestState, FireStarterComplete* complete)
+{
+    DispatchSync([this, complete, &state, &bestState] {
+        if (m_executeFunction) {
+            if (InitPopulation(state.Settings())) {
+                while (!WillTerminate() && !bestState.Complete() && (state.m_optimize_pass < state.Settings().m_optimize)) {
+                    // Execute the optimization passes.
+                    state.m_timer.Start();
+                    ExecuteOptimizePasses(state);
+
+                    // Update the results in the UI and check for completion.
+                    if (complete && complete->CompleteState(bestState, state))
+                        break;
+
+                    // Increment the generation.
+                    state.m_optimize_pass++;
+                }
+            }
+        }
+        });
+} // ExecuteMoneyOptimize
 
 void FireStarterExecute::ExecuteOptimize(FireStarterState& state)
 {

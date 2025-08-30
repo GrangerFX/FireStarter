@@ -684,14 +684,14 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
 
                     // Execute the next GPU evolve while the optimize code is compiling.
-                    executeEvolve->ExecuteEvolve(evolveState);
+                    executeEvolve->ExecuteMoneyMaker(evolveState);
 
                     // Execute optimize for any completed compile jobs.
-                    executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete);
+                    executeOptimize->ExecuteMoneyOptimize(optimizeState, bestState, complete);
                 }
                 else
                     // Execute the initial GPU evolve.
-                    executeEvolve->ExecuteEvolve(evolveState);
+                    executeEvolve->ExecuteMoneyMaker(evolveState);
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
