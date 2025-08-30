@@ -23,7 +23,7 @@ GPU_GLOBAL void MoneyShow(float* target, float* results, unsigned int size, floa
         results[index] = 0.0f;
 } // MoneyShow
 
-inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerStock& stockData, float& result)
+inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerStock& stockData, unsigned long long seed, float& result)
 {
     float minResult = result;
     float funds = MONEYMAKER_FUNDS;
@@ -38,20 +38,25 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
         oldPrice = newPrice;
 
         // Trading evaluation using the result to buy or sell shares.
+#if MONEYMAKER_RANDOM
+        float n = RANDOMFACTOR(seed);
+        n = (n * n) * 1.1f;
+#else
         float n = fabsf(MoneyCompiledEvaluate(workData, priceChange));
-        if (!isfinite(n)) {
-            result = 0.0f;
+        if (!isfinite(n) || (fabsf(n) > 2.0f)) {
+            result = FIRESTARTER_START_RESULT;
             return false;
         }
+#endif
 
         // Warmup evaluation ignoring the results.
         if (i > MONEYMAKER_WARMUP) {
-            if (n >= 1.0f) {
+            if (n > 1.0f) {
                 if (!shares) {
                     shares = (int)(funds / newPrice);
                     funds -= shares * newPrice;
                 }
-            }  else if (n <= -1.0f) {
+            } else if (n < -1.0f) {
                 if (shares) {
                     funds += newPrice * shares;
                     shares = 0;
@@ -61,9 +66,11 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
         i++;
     }
 
-    // The result is the ratio between the final funds and the starting funds.
-    result = (funds + shares * stockData[MONEYMAKER_HISTORY - 1]) / MONEYMAKER_FUNDS;
-    return result > minResult;
+    // The result is the ratio between the starting funds and the final funds.
+    // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
+    result = funds + shares * stockData[MONEYMAKER_HISTORY - 1];
+    result = result > 0.0f ? MONEYMAKER_FUNDS / result : FIRESTARTER_START_RESULT;
+    return result < minResult;
 } // MoneyOptimizeEvaluate
 
 GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
@@ -88,7 +95,7 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
         for (initAge = 1; initAge <= 10; initAge++) {
             data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
-            if (MoneyOptimizeEvaluate(data, stockData, result))
+            if (MoneyOptimizeEvaluate(data, stockData, memberSeed, result))
                 break;
         }
         memberResult = FIRESTARTER_START_RESULT;
@@ -105,13 +112,11 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * FIRESTARTER_START_SCALE * (evolveAge - 1);
-            result = MoneyOptimizeEvaluate(data, stockData, result);
-            if (result <= 0.0f) {
+            if (!MoneyOptimizeEvaluate(data, stockData, memberSeed, result)) {
                 data[d] = oldData;
                 memberResult = result = oldResult.MaxResult();
-            }
-            else
-                memberResult = result;
+            } else
+                memberResult = FIRESTARTER_START_RESULT; // Validated as being faster than result  11/17/2024
             evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult; // Validated as being faster than 0.6f * FIRESTARTER_START_RESULT  11/17/2024
         } else {
             memberResult = result = oldResult.MaxResult();
@@ -125,7 +130,7 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
         float oldData = data[d];
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
         float curResult = result * 0.99f; // Validated as being faster than * 1.0f or * 0.9f. About the same as * 0.999f.  11/17/2024
-        if (MoneyOptimizeEvaluate(data, stockData, curResult))
+        if (MoneyOptimizeEvaluate(data, stockData, memberSeed, curResult))
             result = curResult;
         else
             data[d] = oldData;

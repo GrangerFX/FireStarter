@@ -1,5 +1,5 @@
-// Run date: 08/30/25 09:33:26 Pacific Daylight Time
-// Run duration = 29.779535 seconds
+// Run date: 08/30/25 09:44:12 Pacific Daylight Time
+// Run duration = 77.195971 seconds
 // Run test = 0
 // Run generation = 2
 // Run evolution = 0
@@ -84,31 +84,23 @@ inline float Solution(float n)
     float r20 = -0.18754339f;
     float r21 = 8.84253788f;
 
-        n += r0;
-        n *= r1;
+            r1 = n;
         n *= r2;
-        n *= r3;
-        n += r4;
-        n *= r5;
-        n += r6;
-            n += r7;
+            n *= r3;
+            n += r5;
+            n += r6;
+            n *= r8;
+        n *= r9;
+                n *= r12;
+        n *= r8;
+            n *= r14;
+        n *= r15;
+        r12 = n;
+        r16 = n;
+        n += r17;
+        n *= r18;
+        n += r16;
             n *= r9;
-            r11 = n;
-            r9 = n;
-        n *= r11;
-        n *= r3;
-        n *= r13;
-        n += r3;
-        n += r5;
-        r9 = n;
-        n += r14;
-            n *= r15;
-        n *= r16;
-            n *= r18;
-        n += r13;
-        n *= r19;
-        n += r20;
-        n *= r20;
-        n += r21;
-    return n;
+                n += r1;
+                return n;
 } // Solution

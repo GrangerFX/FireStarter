@@ -301,22 +301,21 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     Context()->Synchronize();
 #endif
 
-    // Get the best variation results.
     bool validResult = false;
-    float maxResult = m_hostResults[0];
-    unsigned int maxIndex = 0;
+    float minResult = m_hostResults[0];
+    unsigned int minIndex = 0;
     for (unsigned int i = 1; i < populationSize; i++) {
         float curResult = m_hostResults[i];
-        if (curResult > maxResult) {
-            maxResult = curResult;
-            maxIndex = i;
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
         }
         if (curResult < state.m_bestCodes.WorstResult())
             state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
     }
 
     // Update the state's best code.
-    state.InitCode(settings, m_hostCodes, -maxResult, maxIndex);
+    state.InitCode(settings, m_hostCodes, minResult, minIndex);
 } // ExecuteEvolvePass
 
 void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation)
@@ -473,7 +472,7 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
                 for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                     for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                         for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                            MoneyMaker(m_deviceResults, m_devicePopulation0, m_deviceCodes, m_deviceStocks,seed, passes, populationSize);
+                            MoneyMaker(m_deviceResults, m_devicePopulation0, m_deviceCodes, m_deviceStocks, seed, passes, populationSize);
     if (m_populationSize)
         checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
     checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
@@ -505,20 +504,27 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
 
     // Get the best variation results.
     bool validResult = false;
-    float maxResult = m_hostResults[0];
-    unsigned int maxIndex = 0;
+    float minResult = m_hostResults[0];
+    unsigned int minIndex = 0;
     for (unsigned int i = 1; i < populationSize; i++) {
         float curResult = m_hostResults[i];
-        if (curResult > maxResult) {
-            maxResult = curResult;
-            maxIndex = i;
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
         }
         if (curResult < state.m_bestCodes.WorstResult())
             state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
     }
 
+    if (m_hostPopulation) {
+        FireStarterResult& minResult = m_hostPopulation[minIndex];
+        unsigned int minAge = minResult.m_evolveAge1;
+        unsigned int minTrades = minResult.m_evolveAge2;
+        int foo = 1;
+    }
+
     // Update the state's best code.
-    state.InitCode(settings, m_hostCodes, -maxResult, maxIndex);
+    state.InitCode(settings, m_hostCodes, minResult, minIndex);
 } // ExecuteMoneyMakerPass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
@@ -712,7 +718,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
                     for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                         for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                Optimizer(newPopulation, oldPopulation, m_deviceStocks, registers, optimizeSeed, optimizePass, population);
+                                MoneyOptimizer(newPopulation, oldPopulation, m_deviceStocks, registers, optimizeSeed, optimizePass, population);
 
         unsigned int hash = 0;
         for (unsigned int i = 0; i < settings.m_population; i++) {

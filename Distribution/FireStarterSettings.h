@@ -11,6 +11,8 @@
 #define MONEYMAKER_WARMUP           16          // Days of stock warmup tests
 #define MONEYMAKER_STOCKS           1           // Stocks with history data
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
+#define MONEYMAKER_RANDOM           0           // Set to 1 to trade using random coin flips
+
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
