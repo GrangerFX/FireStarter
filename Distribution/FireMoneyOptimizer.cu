@@ -10,19 +10,6 @@ inline float MoneyCompiledEvaluate(const FireStarterData& data, float n)
     return n;
 } // MoneyCompiledEvaluate
 
-// Note: TODO: Implement a way to display the stock trades.
-GPU_GLOBAL void MoneyShow(float* target, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
-{
-    // Determine the member to be optimized.
-    unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index >= size)
-        return;
-
-    // Generate the displayed results.
-    if (results)
-        results[index] = 0.0f;
-} // MoneyShow
-
 inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerStock& stockData, unsigned long long seed, float& result)
 {
     float minResult = result;

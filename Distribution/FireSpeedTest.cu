@@ -2,7 +2,7 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
-inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
+inline bool SpeedTestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
@@ -16,7 +16,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
             result = fmaxf(n, result);
     }
     return true;
-} // TestEvaluate
+} // SpeedTestEvaluate
 
 #if FIRESTARTER_VARIATIONS == 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
@@ -55,7 +55,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers);
-        if (TestEvaluate(sharedData, data, code, target, theta, memberResult))
+        if (SpeedTestEvaluate(sharedData, data, code, target, theta, memberResult))
             break;
     }
     FireStarterCode bestCode = code;
@@ -90,7 +90,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = result * 0.99f;
-            if (TestEvaluate(sharedData, data, code, target, theta, curResult))
+            if (SpeedTestEvaluate(sharedData, data, code, target, theta, curResult))
                 result = curResult;
             else
                 data[d] = old;
@@ -171,7 +171,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++) {
             data[v].InitData(memberSeed, registers);
             variationResult[v] = FIRESTARTER_START_RESULT;
-            valid = TestEvaluate(sharedData, data[v], code, target[v], theta, variationResult[v]);
+            valid = SpeedTestEvaluate(sharedData, data[v], code, target[v], theta, variationResult[v]);
             memberResult = MAX(memberResult, variationResult[v]);
             if (!valid)
                 break;
@@ -217,7 +217,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
                 float old = data[v][d];
                 data[v][d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
                 float curResult = varResult * 0.99f;
-                if (TestEvaluate(sharedData, data, code, target[v], theta, curResult))
+                if (SpeedTestEvaluate(sharedData, data, code, target[v], theta, curResult))
                     curResult = curResult;
                 else
                     data[v][d] = old;

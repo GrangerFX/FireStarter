@@ -10,29 +10,6 @@ inline float OptimizeCompiledEvaluate(const FireStarterData& testData, float n)
     return n;
 } // OptimizeCompiledEvaluate
 
-GPU_GLOBAL void OptimizeShow(float* target, float* results, unsigned int size, float thetaStart, float thetaEnd, FireStarterCode* code, FireStarterData* data, unsigned int variation)
-{
-    // Determine the member to be optimized.
-    unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index >= size)
-        return;
-
-    // Generate the target data.
-    float theta = thetaStart + index * (thetaEnd - thetaStart) / size;
-    if (target)
-        target[index] = Target(theta, variation + FIRESTARTER_VARIATION);
-
-    // Generate the test data.
-    if (results && data) {
-        if (code) {
-            FireStarterCode localCode(code);
-            FireStarterData localData(data);
-            results[index] = localCode.Evaluate(localData, theta);
-        } else
-            results[index] = OptimizeCompiledEvaluate(data, theta);
-    }
-} // OptimizeShow
-
 inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], const float theta[], float& result)
 {
     float maxResult = result;

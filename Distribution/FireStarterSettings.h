@@ -391,23 +391,6 @@ public:
         return FireStarterSetting::OptimizeProgramName(m_mode);
     } // OptimizeProgramName
 
-    static inline const char* ShowProgramName(unsigned int mode)
-    {
-        switch (mode) {
-            case FIRESTARTER_SINSIM:
-                return "FireSinSim.cu";
-            case FIRESTARTER_MONEYMAKER:
-                return "FireMoneyOptimizer.cu";
-            default:
-                return "FireOptimizer.cu";
-        }
-    } // ShowProgramName
-
-    inline const char* ShowProgramName(void) const
-    {
-        return FireStarterSetting::ShowProgramName(m_mode);
-    } // ShowProgramName
-
     static inline const char* EvolveFunctionName(unsigned int mode)
     {
         switch (mode) {
@@ -450,23 +433,6 @@ public:
     {
         return OptimizeFunctionName(m_mode);
     } // OptimizeFunctionName
-
-    static inline const char* ShowFunctionName(unsigned int mode)
-    {
-        switch (mode) {
-        case FIRESTARTER_SINSIM:
-            return "SinSimShow";
-        case FIRESTARTER_MONEYMAKER:
-            return "MoneyShow";
-        default:
-            return "OptimizeShow";
-        }
-    } // ShowFunctionName
-
-    inline const char* ShowFunctionName(void) const
-    {
-        return ShowFunctionName(m_mode);
-    } // ShowFunctionName
 
     inline void CopyCodeSettings(FireStarterSetting& source)
     {

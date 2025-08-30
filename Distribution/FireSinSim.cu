@@ -2,26 +2,6 @@
 #include "FireSinSim.h"
 #include "CUDADefines.h"
 
-GPU_GLOBAL void SinSimShow(float* targets, float* results, unsigned int size, SinSimNetwork* data)
-{
-    // Determine the member to be optimized.
-    unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
-    if (index > 0)
-        return;
-
-    // Generate the test data.
-    if (results && data) {
-        SinSimNetwork network(*data);
-        for (unsigned int s = 0; s < size; s++) {
-            float input = SinSimNetwork::SinSimInputSample(s);
-            float target = SinSimNetwork::SinSimTargetSample(s);
-            float sample = network.SinSimTestNetwork(input);
-            targets[s] = target;
-            results[s] = sample;
-        }
-    }
-} // SinSimShow
-
 GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, const unsigned long long generation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.

@@ -2,7 +2,7 @@
 #include "FireStarterResults.h"
 #include "MoneyMakerStocks.h"
 
-inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterCode& code, const float target[], const float theta[], float& result)
+inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
@@ -15,7 +15,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterCod
             result = fmaxf(n, result);
     }
     return true;
-} // TestEvaluate
+} // EvolveEvaluate
 
 #if 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
@@ -57,9 +57,9 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
         data.InitData(memberSeed, registers);
         sharedData = data;
         memberResult = FIRESTARTER_START_RESULT;
-        TestEvaluate(sharedData, code, target, theta, memberResult);
+        EvolveEvaluate(sharedData, code, target, theta, memberResult);
         memberResult = FIRESTARTER_START_RESULT;
-        if (TestEvaluate(sharedData, code, target, theta, memberResult))
+        if (EvolveEvaluate(sharedData, code, target, theta, memberResult))
             break;
     }
 
@@ -98,10 +98,10 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
 
             // Warm up evaluation.
             float startResult = FIRESTARTER_START_RESULT;
-            if (TestEvaluate(sharedData, code, target, theta, startResult)) {
+            if (EvolveEvaluate(sharedData, code, target, theta, startResult)) {
                 // Acutal evaluatiopn.
                 float curResult = memberResult * 0.99f;
-                if (TestEvaluate(sharedData, code, target, theta, curResult)) {
+                if (EvolveEvaluate(sharedData, code, target, theta, curResult)) {
                     memberResult = curResult;
                     sharedData.GetData(data);
                 } else

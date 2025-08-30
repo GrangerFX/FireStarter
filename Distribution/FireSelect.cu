@@ -2,7 +2,7 @@
 #include "FireStarterResults.h"
 #include "CUDADefines.h"
 
-inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
+inline bool SelectEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const float target[], const float theta[], float& result)
 {
     float maxResult = result;
     result = 0.0f;
@@ -16,7 +16,7 @@ inline bool TestEvaluate(FireStarterSharedData& sharedData, const FireStarterDat
             result = fmaxf(n, result);
     }
     return true;
-} // TestEvaluate
+} // SelectEvaluate
 
 // Selecter finds the most promising child code of a parent code.
 // Note: Single variation version
@@ -99,7 +99,7 @@ GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStar
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult * 0.99f;
-            if (TestEvaluate(sharedData, data, code, target, theta, curResult))
+            if (SelectEvaluate(sharedData, data, code, target, theta, curResult))
                 memberResult = curResult;
             else
                 data[d] = old;
