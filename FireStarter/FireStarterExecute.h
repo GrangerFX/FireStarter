@@ -36,6 +36,7 @@ private:
     size_t m_codesSize = 0;
     size_t m_parentCodeSize = 0;
     size_t m_executeIndex = 0;
+    bool m_simulateGPU = false;
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
@@ -69,6 +70,7 @@ public:
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     void ExecuteRandom(void);
     void ExecuteFinish(void);
+    void SimulateGPU(bool simulateGPU);
     FireStarterExecute(FireStarterManager* manager, size_t index = 0, int priority = 0);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute

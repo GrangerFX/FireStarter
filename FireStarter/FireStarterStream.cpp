@@ -95,7 +95,6 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
 
         // Separate optmize settings
         FireStarterSettings optimizeSettings(selectSettings);
-        optimizeSettings.SetMode(FIRESTARTER_OPTIMIZE);
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager(numStates);
@@ -169,8 +168,6 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
                 // Optimize the evolved state.
                 if (selectSettings.m_optimize) {
                     FireStarterState optimizeState(bestEvolveState);
-                    optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE);
-                    optimizeState.Settings().m_optimize = selectSettings.m_optimize;
                     FireStarterState optimizeBestState(optimizeState);
 
                     // Generate the optimize code.
@@ -307,9 +304,6 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
                 // Optimize the evolved state.
                 if (evolveSettings.m_optimize) {
                     FireStarterState optimizeState(bestEvolveState);
-                    optimizeState.Settings().SetMode(FIRESTARTER_OPTIMIZE);
-                    optimizeState.Settings().m_optimize = bestEvolveState.Settings().m_optimize;
-                    optimizeState.Settings().m_variations = bestEvolveState.Settings().m_variations;
                     FireStarterState optimizeBestState(optimizeState);
 
                     // Generate the optimize code.
@@ -371,7 +365,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
-        FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
+        FireStarterSettings optimizeSettings(m_streamSettings);
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
@@ -475,7 +469,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
-        FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
+        FireStarterSettings optimizeSettings(m_streamSettings);
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
@@ -631,7 +625,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
-        FireStarterSettings optimizeSettings(FIRESTARTER_OPTIMIZE);
+        FireStarterSettings optimizeSettings(m_streamSettings);
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
@@ -656,6 +650,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
         // Load the stock market data;
         executeEvolve->ExecuteLoadStock(evolveSettings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt");
+        executeOptimize->ExecuteLoadStock(optimizeSettings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt");
 
         // Generate and compile the evolve code.
         executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);

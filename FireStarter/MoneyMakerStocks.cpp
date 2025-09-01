@@ -3,14 +3,12 @@
 #include <stdio.h>
 #include <vector>
 
-bool MoneyMakerStock::Load(const FireStarterSettings& settings, const std::string& filePath, bool normalize)
+bool MoneyMakerStock::Load(const std::string& filePath, unsigned int history, bool normalize)
 {
     FILE* file = NULL;
     errno_t err = fopen_s(&file, filePath.c_str(), "r");
     if (file) {
         std::vector<float>theData;
-        minValue = 1.0E+10f;
-        maxValue = 0.0f;
 
         char columns[256];
         fgets(columns, 255, file);
@@ -34,26 +32,31 @@ bool MoneyMakerStock::Load(const FireStarterSettings& settings, const std::strin
                 break;
 
             theData.push_back(close);
-            minValue = MIN(minValue, close);
-            maxValue = MAX(maxValue, close);
         }
         fclose(file);
         
         // Load the training data from the most recent history of the stock.
-        unsigned int dataSize = (unsigned int)theData.size();
-        if (dataSize >= settings.m_history) {
-            unsigned int index = dataSize - (settings.m_history  + 1);
+        unsigned int numValues = (unsigned int)theData.size();
+        if (numValues >= history) {
+            unsigned int index = numValues - (history + 1);
             float lastData = theData[index++];
-            for (unsigned int i = 0; i < settings.m_history; i++) {
+            minValue = lastData;
+            maxValue = lastData;
+            for (unsigned int i = 0; i < history; i++) {
                 float curData = theData[index++];
                 if (normalize)
                     s[i] = curData / lastData;
                 else
                     s[i] = curData;
                 lastData = curData;
+                if (lastData < minValue)
+                    minValue = lastData;
+                if (lastData > maxValue)
+                    maxValue = lastData;
             }
             return true;
         }
     }
+    minValue = maxValue = 0.0f;
     return false;
 } // Load

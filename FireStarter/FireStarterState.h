@@ -12,6 +12,8 @@
 typedef std::vector<class FireStarterState> FireStarterStates;
 typedef std::set<std::vector<unsigned char>> TestedCodes;
 
+class FireStarterState;
+
 class FireStarterCodeVector {
 private:
     std::vector<unsigned char> m_codeVector;    // Backing data for the code.
@@ -198,7 +200,7 @@ public:
         return *DataPtr();
     } // Data
 
-    void InitData(const FireStarterSettings& settings)
+    inline void InitData(const FireStarterSettings& settings)
     {
         m_dataVector.resize(FireStarterData::DataSize(settings));
 #if FIRESTARTER_STATE_DEBUG
@@ -206,7 +208,7 @@ public:
 #endif
     } // InitData
 
-    void InitData(unsigned int registers)
+    inline void InitData(unsigned int registers)
     {
         m_dataVector.resize(FireStarterData::DataSize(registers));
 #if FIRESTARTER_STATE_DEBUG
@@ -214,12 +216,12 @@ public:
 #endif
     } // InitData
 
-    FireStarterDataVector(const FireStarterSettings& settings)
+    inline FireStarterDataVector(const FireStarterSettings& settings)
     {
         InitData(settings);
     } // FireStarterDataVector
 
-    FireStarterDataVector(unsigned int registers)
+    inline FireStarterDataVector(unsigned int registers)
     {
         InitData(registers);
     } // FireStarterDataVector
@@ -229,7 +231,11 @@ public:
         *this = other;
     } // FireStarterDataVector
 
-    FireStarterDataVector(void)
+    inline FireStarterDataVector(const FireStarterState* state, unsigned int variation = 0);
+
+    inline FireStarterDataVector(const FireStarterState& state, unsigned int variation = 0);
+
+    inline FireStarterDataVector(void)
     {
     } // FireStarterDataVector
 }; // class FireStarterDataVector
@@ -552,7 +558,7 @@ public:
         return m_results;
     } // ResultVector(void)
 
-    inline void DataVector(FireStarterDataVector& dataVector, unsigned int variation) const
+    inline void DataVector(FireStarterDataVector& dataVector, unsigned int variation = 0) const
     {
         m_results.DataVector(dataVector, variation);
     } // ResultVector(void)
@@ -863,3 +869,13 @@ public:
     {
     } // FireStarterState
 }; // class FireStarterState;
+
+inline FireStarterDataVector::FireStarterDataVector(const FireStarterState* state, unsigned int variation)
+{
+    state->DataVector(*this, variation);
+} // FireStarterDataVector
+
+inline FireStarterDataVector::FireStarterDataVector(const FireStarterState& state, unsigned int variation)
+{
+    state.DataVector(*this, variation);
+} // FireStarterDataVector

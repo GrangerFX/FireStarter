@@ -1,7 +1,7 @@
 #include "FireStarterCodeGenerate.h"
 
 // Generate the evaluate function code.
-GPU_GLOBAL void FireGenerateEvaluate(char* buffer, size_t size, unsigned int tabs, FireStarterCodeGenerate* code, size_t numInstructions, FireStarterRegisterUsage* registers, size_t numRegisters)
+GPU_GLOBAL void FireGenerateEvaluate(char* buffer, size_t size, unsigned int tabs, FireStarterCodeGenerate* code, unsigned int numInstructions, FireStarterRegisterUsage* registers, unsigned int numRegisters)
 {
     const unsigned int thread = threadIdx.x;
     if (thread == 0) {
@@ -13,7 +13,7 @@ GPU_GLOBAL void FireGenerateEvaluate(char* buffer, size_t size, unsigned int tab
 } // FireGenerateEvaluate
 
 // Generate the solution function code.
-GPU_GLOBAL void FireGenerateSolution(char* buffer, size_t size, unsigned int tabs, FireStarterCodeGenerate* code, size_t numInstructions, FireStarterRegisterUsage* registers, size_t numRegisters, FireStarterData* data)
+GPU_GLOBAL void FireGenerateSolution(char* buffer, size_t size, unsigned int tabs, FireStarterCodeGenerate* code, unsigned int numInstructions, FireStarterRegisterUsage* registers, unsigned int numRegisters, FireStarterData* data)
 {
     const unsigned int thread = threadIdx.x;
     if (thread == 0) {

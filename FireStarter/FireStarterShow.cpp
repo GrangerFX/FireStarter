@@ -7,10 +7,8 @@
 void FireStarterShow::DeallocateEvaluateData(void)
 {
     if (m_evaluateSize) {
-        checkCUDAErrors(cudaFreeHost(m_hostTargetData));
-        m_hostTargetData = nullptr;
-        checkCUDAErrors(cudaFreeHost(m_hostEvaluateData));
-        m_hostEvaluateData = nullptr;
+        m_targetData.clear();
+        m_evaluateData.clear();
         m_evaluateSize = 0;
     }
 } // DeallocateEvaluateData
@@ -21,14 +19,14 @@ void FireStarterShow::AllocateEvaluateData(size_t evaluateSize)
         if (evaluateSize != m_evaluateSize) {
             DeallocateEvaluateData();
             m_evaluateSize = evaluateSize;
-            checkCUDAErrors(cudaMallocHost(&m_hostTargetData, m_evaluateSize));
-            checkCUDAErrors(cudaMallocHost(&m_hostEvaluateData, m_evaluateSize));
+            m_targetData.resize(evaluateSize, 0.0f);
+            m_evaluateData.resize(evaluateSize, 0.0f);
         }
         Context()->Synchronize();
     }
 } // AllocateEvaluateData
 
-void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation)
+void FireStarterShow::EvaluateEvolve(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation)
 {
     // The show data is generated on the CPU which prevents it from interrupting the GPU.
     // Note: TODO: Use multiple CPU threads to speed this up.
@@ -39,10 +37,10 @@ void FireStarterShow::EvaluateData(const FireStarterState& state, unsigned int e
     for (unsigned int i = 0; i < evaluateWidth; i++) {
         state.DataVector(dataVector, variation);
         float theta = thetaStart + i * thetaStep;
-        m_hostEvaluateData[i] = code->Evaluate(dataVector.Data(), theta, settings.m_instructions);
-        m_hostTargetData[i] = Target(theta, variation + FIRESTARTER_VARIATION);
+        m_targetData[i] = Target(theta, variation + FIRESTARTER_VARIATION);
+        m_evaluateData[i] = code->Evaluate(dataVector.Data(), theta, settings.m_instructions);
     }
-} // EvaluateData
+} // EvaluateEvolve
 
 void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int evaluateWidth)
 {
@@ -52,85 +50,150 @@ void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int
     SinSimNetwork network = *state.Network();
     for (unsigned int i = 0; i < evaluateWidth; i++) {
         float input = SinSimNetwork::SinSimInputSample(i);
-        m_hostTargetData[i] = SinSimNetwork::SinSimTargetSample(i);
-        m_hostEvaluateData[i] = network.SinSimTestNetwork(input);
+        m_targetData[i] = SinSimNetwork::SinSimTargetSample(i);
+        m_evaluateData[i] = network.SinSimTestNetwork(input);
     }
 } // EvaluateSinSim
+
+void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValues)
+{
+    // The show data is generated on the CPU which prevents it from interrupting the GPU.
+    // Note: TODO: Use multiple CPU threads to speed this up.
+    const FireStarterSettings& settings = state.Settings();
+    FireStarterDataVector dataVector(state);
+    const FireStarterCode* code = state.Code();
+    FireStarterData data = dataVector.Data();
+
+    for (unsigned int i = 0; i < numValues; i++) {
+        m_targetData[i] = 0.0f;
+        m_evaluateData[i] = 0.0f;
+    }
+    float oldPrice = stock[0];
+    m_targetData[0] = oldPrice;
+    m_evaluateData[0] = 0.0f;
+    for (unsigned int i = 1; i < numValues; i++) {
+        float newPrice = stock[i];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+        m_targetData[i] = newPrice;
+        m_evaluateData[i] = code->Evaluate(data, priceChange, settings.m_instructions);
+    }
+} // EvaluateMoneyMaker
 
 void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerStocks* stocks)
 {
     DispatchAsync([this, state, stocks] {
         const FireStarterSettings& settings = state.Settings();
-        // Setup the data
-        m_window.Erase();
         uchar4* pixels = (uchar4*)m_window.GetPixels();
         unsigned int width = m_window.m_width;
         unsigned int height = m_window.m_height;
-        int xScale = height / 8;
-        int yScale = height / 16;
-        float thetaStart = TARGET_PI * ((-0.5f * width) / xScale + 1.0f);
-        float thetaEnd = TARGET_PI * ((0.5f * width) / xScale + 1.0f);
-        float maxError = 0.0f;
-        for (unsigned int y = 0; y < height; y++) {
-            int x0 = (width / 2) - xScale;
-            int x1 = (width / 2) + xScale;
-            if (x0 >= 0) {
-                uchar4& pixel(pixels[y * width + x0]);
-                pixel.x = 64;
-                pixel.y = 128;
-                pixel.z = 64;
-            };
-            if (x1 < (int)width) {
-                uchar4& pixel(pixels[y * width + x1]);
-                pixel.x = 64;
-                pixel.y = 128;
-                pixel.z = 64;
-            };
-        }
 
-        // Allocate the host and GPU memory.
-        size_t evaluateSize = width * sizeof(float);
-        if (settings.m_mode == FIRESTARTER_SINSIM) {
-            size_t codeSize = 0;
-            AllocateEvaluateData(evaluateSize);
+        // Erase the window.
+        m_window.Erase();
 
-            // Evaluate the SinSim FireShow data.
-            EvaluateSinSim(state, width);
+        if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
+            const MoneyMakerStock& stock = stocks->Stock(0);
+            unsigned int numValues = stocks->numValues;
+            unsigned int warmup = settings.m_warmup;
+
+            AllocateEvaluateData(numValues);
+            EvaluateMoneyMaker(state, stock, numValues);
+
+            // extern \"C\" __global__ void HatTrickShow(SequenceData *sequenceData, unsigned int viewDays, unsigned int startDay, unsigned int testDays, unsigned int holdDays, HatTrickResults *results, float *bestValues, uchar4 *pixels, unsigned int width, unsigned int height)
+            float minValue = stock.minValue;
+            float maxValue = stock.maxValue;
+            float lastValue = stock[0];
+            float yScale = 0.5f * (float)height / (maxValue - minValue);
+
+            // Draw the warmup line.
+            unsigned int testX = (width * warmup) / numValues;
+            for (unsigned int y = 0; y < height; y++) {
+                uchar4 &pixel(pixels[y * width + testX]);
+                pixel.x = 255;
+                pixel.y = 128;
+                pixel.z = 128;
+            }
+
+            float price = 0.0f;
+            bool holding = false;
+            bool good = true;
             for (unsigned int x = 0; x < width; x++) {
-                float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
-                float center = height * 0.66f;
-                float target = m_hostTargetData[x];
-                float result = m_hostEvaluateData[x];
+                unsigned int i = (x * numValues) / width;
+                float curValue = m_targetData[i];
+                int y = (int)(height * 0.75f - (curValue - minValue) * yScale);
+                if ((y >= 0) && ((unsigned int)y < height)) {
+                    if (i >= warmup) {
+                        if (!holding && (m_evaluateData[i] > 1.0f)) {
+                            unsigned int j = i + 1;
+                            while (j < numValues) {
+                                if (m_evaluateData[j] < -1.0f)
+                                    break;
+                                j++;
+                            }
+                            if (j == numValues)
+                                j--;
+                            good = m_targetData[j] >= m_targetData[i];
+                            holding = true;
+                        } else if (holding && (m_evaluateData[i] < -1.0f))
+                            holding = false;
+                    }
 
-                if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
-                    float error = fabsf(result - target);
-                    maxError = max(maxError, error);
+                    uchar4& pixel(pixels[y * width + x]);
+                    if (holding) {
+                        if (good) {
+                            pixel.x = 128;
+                            pixel.y = 255;
+                            pixel.z = 128;
+                        } else {
+                            pixel.x = 128;
+                            pixel.y = 128;
+                            pixel.z = 255;
+                        }
+                    } else {
+                        pixel.x = 128;
+                        pixel.y = 128;
+                        pixel.z = 128;
+                    }
                 }
-                long long y = (long long)(center + target * yScale);
-                if ((y >= 0) && (y < height)) {
-                    uchar4& pixel(pixels[y * width + x]);
-                    pixel.x = 255;
+            }
+        } else {
+            int xScale = height / 8;
+            int yScale = height / 16;
+            float thetaStart = TARGET_PI * ((-0.5f * width) / xScale + 1.0f);
+            float thetaEnd = TARGET_PI * ((0.5f * width) / xScale + 1.0f);
+            float maxError = 0.0f;
+
+            // The -PI to +PI evaluation boundaries.
+            for (unsigned int y = 0; y < height; y++) {
+                int x0 = (width / 2) - xScale;
+                int x1 = (width / 2) + xScale;
+                if (x0 >= 0) {
+                    uchar4& pixel(pixels[y * width + x0]);
+                    pixel.x = 64;
                     pixel.y = 128;
+                    pixel.z = 64;
                 };
-                y = (long long)(center + result * yScale);
-                if ((y >= 0) && (y < height)) {
-                    uchar4& pixel(pixels[y * width + x]);
-                    pixel.x = pixel.y = pixel.z = 255;
+                if (x1 < (int)width) {
+                    uchar4& pixel(pixels[y * width + x1]);
+                    pixel.x = 64;
+                    pixel.y = 128;
+                    pixel.z = 64;
                 };
             }
-        } else if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
 
-        } else{
-            AllocateEvaluateData(evaluateSize);
+            if (settings.m_mode == FIRESTARTER_SINSIM) {
+                size_t codeSize = 0;
+                size_t evaluateSize = width * sizeof(float);
+                AllocateEvaluateData(evaluateSize);
 
-            // Evaluate the evolve FireShow data.
-            for (unsigned int v = 0; v < settings.m_variations; v++) {
-                EvaluateData(state, width, thetaStart, thetaEnd, v);
+                // Evaluate the SinSim FireShow data.
+                EvaluateSinSim(state, width);
                 for (unsigned int x = 0; x < width; x++) {
                     float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
                     float center = height * 0.66f;
-                    float target = m_hostTargetData[x];
-                    float result = m_hostEvaluateData[x];
+                    float target = m_targetData[x];
+                    float result = m_evaluateData[x];
 
                     if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
                         float error = fabsf(result - target);
@@ -141,12 +204,42 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
                         uchar4& pixel(pixels[y * width + x]);
                         pixel.x = 255;
                         pixel.y = 128;
-                    };
+                    }
                     y = (long long)(center + result * yScale);
                     if ((y >= 0) && (y < height)) {
                         uchar4& pixel(pixels[y * width + x]);
                         pixel.x = pixel.y = pixel.z = 255;
                     };
+                }
+            } else {
+                size_t evaluateSize = width * sizeof(float);
+                AllocateEvaluateData(evaluateSize);
+
+                // Evaluate the evolve FireShow data.
+                for (unsigned int v = 0; v < settings.m_variations; v++) {
+                    EvaluateEvolve(state, width, thetaStart, thetaEnd, v);
+                    for (unsigned int x = 0; x < width; x++) {
+                        float theta = TARGET_PI * ((x - width * 0.5f) / xScale + 1.0f);
+                        float center = height * 0.66f;
+                        float target = m_targetData[x];
+                        float result = m_evaluateData[x];
+
+                        if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
+                            float error = fabsf(result - target);
+                            maxError = max(maxError, error);
+                        }
+                        long long y = (long long)(center + target * yScale);
+                        if ((y >= 0) && (y < height)) {
+                            uchar4& pixel(pixels[y * width + x]);
+                            pixel.x = 255;
+                            pixel.y = 128;
+                        };
+                        y = (long long)(center + result * yScale);
+                        if ((y >= 0) && (y < height)) {
+                            uchar4& pixel(pixels[y * width + x]);
+                            pixel.x = pixel.y = pixel.z = 255;
+                        };
+                    }
                 }
             }
         }
@@ -274,7 +367,9 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     float bestError = bestState.m_precision;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
+        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Time=%.4f Seconds Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
+    } else if (state.PassMode() == FIRESTARTER_MONEYMAKER) {
+        statusString = Format("%s: Generation=%3u  Best=%.8f%%  Time=%.4f Seconds  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), generation, 100.0f / bestResult, generationTime, runTime);
     } else {
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)

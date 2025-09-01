@@ -3,16 +3,18 @@
 #include "FireStarterUtil.h"
 #include "CUDACompile.h"
 
-#define SIMULATE_GPU 0
-
-#if SIMULATE_GPU
-#if FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
-#include "FireMoneyMakerOptimizer.cu"
-#include "FireMoneyMaker.cu"
-#else
+// Note: Including these all the time is a very easy way to check for compiler errors.
 #include "FireEvolver.cu"
-#endif
-#endif
+#include "FireEvolverNew.cu"
+#include "FireEvolverSinSim.cu"
+#include "FireGenerate.cu"
+#include "FireMoneyMaker.cu"
+#include "FireMoneyOptimizer.cu"
+#include "FireOptimizer.cu"
+#include "FireSelect.cu"
+#include "FireSettings.cu"
+#include "FireSinSim.cu"
+#include "FireSpeedTest.cu"
 
 uint3 threadIdx = { 0, 0, 0 };
 uint3 blockIdx = { 0, 0, 0 };
@@ -40,46 +42,49 @@ void FireStarterExecute::FinishPopulation(void)
     checkCUDAErrors(cudaFreeHost(m_hostStocks));
     m_hostStocks = nullptr;
 
-#if SIMULATE_GPU
-    checkCUDAErrors(cudaFreeHost(m_deviceResults));
-    m_deviceResults = nullptr;
+    if (m_simulateGPU) {
+        checkCUDAErrors(cudaFreeHost(m_deviceResults));
+        m_deviceResults = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_devicePopulation0));
-    m_devicePopulation0 = nullptr;
-    checkCUDAErrors(cudaFreeHost(m_devicePopulation1));
-    m_devicePopulation1 = nullptr;
+        checkCUDAErrors(cudaFreeHost(m_devicePopulation0));
+        m_devicePopulation0 = nullptr;
+        checkCUDAErrors(cudaFreeHost(m_devicePopulation1));
+        m_devicePopulation1 = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_deviceCodes));
-    m_deviceCodes = nullptr;
+        checkCUDAErrors(cudaFreeHost(m_deviceCodes));
+        m_deviceCodes = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_deviceParentCode));
-    m_deviceParentCode = nullptr;
+        checkCUDAErrors(cudaFreeHost(m_deviceParentCode));
+        m_deviceParentCode = nullptr;
 
-    checkCUDAErrors(cudaFreeHost(m_deviceNetworks));
-    m_deviceNetworks = nullptr;
-#else
-    checkCUDAErrors(cudaFreeAsync(m_deviceResults, Stream()));
-    m_deviceResults = nullptr;
+        checkCUDAErrors(cudaFreeHost(m_deviceNetworks));
+        m_deviceNetworks = nullptr;
 
-    checkCUDAErrors(cudaFreeAsync(m_devicePopulation0, Stream()));
-    m_devicePopulation0 = nullptr;
-    checkCUDAErrors(cudaFreeAsync(m_devicePopulation1, Stream()));
-    m_devicePopulation1 = nullptr;
+        checkCUDAErrors(cudaFreeHost(m_deviceStocks));
+        m_deviceStocks = nullptr;
+    } else {
+        checkCUDAErrors(cudaFreeAsync(m_deviceResults, Stream()));
+        m_deviceResults = nullptr;
 
-    checkCUDAErrors(cudaFreeAsync(m_deviceCodes, Stream()));
-    m_deviceCodes = nullptr;
+        checkCUDAErrors(cudaFreeAsync(m_devicePopulation0, Stream()));
+        m_devicePopulation0 = nullptr;
+        checkCUDAErrors(cudaFreeAsync(m_devicePopulation1, Stream()));
+        m_devicePopulation1 = nullptr;
 
-    checkCUDAErrors(cudaFreeAsync(m_deviceParentCode, Stream()));
-    m_deviceParentCode = nullptr;
+        checkCUDAErrors(cudaFreeAsync(m_deviceCodes, Stream()));
+        m_deviceCodes = nullptr;
 
-    checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
-    m_deviceNetworks = nullptr;
+        checkCUDAErrors(cudaFreeAsync(m_deviceParentCode, Stream()));
+        m_deviceParentCode = nullptr;
 
-    checkCUDAErrors(cudaFreeAsync(m_deviceStocks, Stream()));
-    m_deviceStocks = nullptr;
+        checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
+        m_deviceNetworks = nullptr;
 
-    Context()->Synchronize();
-#endif
+        checkCUDAErrors(cudaFreeAsync(m_deviceStocks, Stream()));
+        m_deviceStocks = nullptr;
+
+        Context()->Synchronize();
+    }
 
     m_resultsSize = 0;
     m_populationSize = 0;
@@ -133,38 +138,38 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             checkCUDAErrors(cudaMallocHost(&m_hostNetworks, m_networksSize));
         if (m_stocksSize)
             checkCUDAErrors(cudaMallocHost(&m_hostStocks, m_stocksSize));
-#if SIMULATE_GPU
-        if (m_resultsSize)
-            checkCUDAErrors(cudaMallocHost(&m_deviceResults, m_resultsSize));
-        if (m_codesSize)
-            checkCUDAErrors(cudaMallocHost(&m_deviceCodes, m_codesSize));
-        if (m_populationSize) {
-            checkCUDAErrors(cudaMallocHost(&m_devicePopulation0, m_populationSize));
-            checkCUDAErrors(cudaMallocHost(&m_devicePopulation1, m_populationSize));
+        if (m_simulateGPU) {
+            if (m_resultsSize)
+                checkCUDAErrors(cudaMallocHost(&m_deviceResults, m_resultsSize));
+            if (m_codesSize)
+                checkCUDAErrors(cudaMallocHost(&m_deviceCodes, m_codesSize));
+            if (m_populationSize) {
+                checkCUDAErrors(cudaMallocHost(&m_devicePopulation0, m_populationSize));
+                checkCUDAErrors(cudaMallocHost(&m_devicePopulation1, m_populationSize));
+            }
+            if (m_parentCodeSize)
+                checkCUDAErrors(cudaMallocHost(&m_deviceParentCode, m_parentCodeSize));
+            if (m_networksSize)
+                checkCUDAErrors(cudaMallocHost(&m_deviceNetworks, m_networksSize));
+            if (m_stocksSize)
+                checkCUDAErrors(cudaMallocHost(&m_deviceStocks, m_stocksSize));
+        } else {
+            if (m_resultsSize)
+                checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
+            if (m_codesSize)
+                checkCUDAErrors(cudaMallocAsync(&m_deviceCodes, m_codesSize, Stream()));
+            if (m_populationSize) {
+                checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
+                checkCUDAErrors(cudaMallocAsync(&m_devicePopulation1, m_populationSize, Stream()));
+            }
+            if (m_parentCodeSize)
+                checkCUDAErrors(cudaMallocAsync(&m_deviceParentCode, m_parentCodeSize, Stream()));
+            if (m_networksSize)
+                checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
+            if (m_stocksSize)
+                checkCUDAErrors(cudaMallocAsync(&m_deviceStocks, m_stocksSize, Stream()));
+            Context()->Synchronize();
         }
-        if (m_parentCodeSize)
-            checkCUDAErrors(cudaMallocHost(&m_deviceParentCode, m_parentCodeSize));
-        if (m_networksSize)
-            checkCUDAErrors(cudaMallocHost(&m_deviceNetworks, m_networksSize));
-        if (m_stocksSize)
-            checkCUDAErrors(cudaMallocHost(&m_deviceStocks, m_stocksSize));
-#else
-        if (m_resultsSize)
-            checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
-        if (m_codesSize)
-            checkCUDAErrors(cudaMallocAsync(&m_deviceCodes, m_codesSize, Stream()));
-        if (m_populationSize) {
-            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation0, m_populationSize, Stream()));
-            checkCUDAErrors(cudaMallocAsync(&m_devicePopulation1, m_populationSize, Stream()));
-        }
-        if (m_parentCodeSize)
-            checkCUDAErrors(cudaMallocAsync(&m_deviceParentCode, m_parentCodeSize, Stream()));
-        if (m_networksSize)
-            checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
-        if (m_stocksSize)
-            checkCUDAErrors(cudaMallocAsync(&m_deviceStocks, m_stocksSize, Stream()));
-        Context()->Synchronize();
-#endif
 
         result = (!m_resultsSize || (m_hostResults && m_deviceResults));
         result = result && (!m_codesSize || (m_hostCodes && m_deviceResults));
@@ -184,55 +189,55 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
+    unsigned int variation = state.MaxVariation();
     unsigned int passes = selectSettings.m_passes;
     unsigned int populationSize = selectSettings.m_population;
     FireStarterCode* parentCode = state.m_code.CodePtr();
 
-#if SIMULATE_GPU
-    checkCUDAErrors(cudaMemcpy(m_deviceParentCode, parentCode, m_parentCodeSize, cudaMemcpyHostToHost));
+    if (m_simulateGPU) {
+        checkCUDAErrors(cudaMemcpy(m_deviceParentCode, parentCode, m_parentCodeSize, cudaMemcpyHostToHost));
 
-    blockDim = cudaBlockSize;
-    for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-        for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-            for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                    for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                        for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                            Selecter(m_deviceResults, m_devicePopulation0, m_deviceCodes, m_deviceParentCode, variation, seed, passes, populationSize);
-    if (m_populationSize)
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyHostToHost));
-#else
-    checkCUDAErrors(cudaMemcpyAsync(m_deviceParentCode, parentCode, m_parentCodeSize, cudaMemcpyHostToDevice, Stream()));
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                Selecter(m_deviceResults, m_devicePopulation0, m_deviceCodes, m_deviceParentCode, seed, passes, populationSize, variation);
+        if (m_populationSize)
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyHostToHost));
+    } else {
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceParentCode, parentCode, m_parentCodeSize, cudaMemcpyHostToDevice, Stream()));
 
-    unsigned int variation = state.MaxVariation();
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                    reinterpret_cast<void*>(&m_devicePopulation0),
-                    reinterpret_cast<void*>(&m_deviceCodes),
-                    reinterpret_cast<void*>(&m_deviceParentCode),
-                    reinterpret_cast<void*>(&variation),
-                    reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&populationSize)
-    };
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
+                        reinterpret_cast<void*>(&m_devicePopulation0),
+                        reinterpret_cast<void*>(&m_deviceCodes),
+                        reinterpret_cast<void*>(&m_deviceParentCode),
+                        reinterpret_cast<void*>(&variation),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&passes),
+                        reinterpret_cast<void*>(&populationSize)
+        };
 
-    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-        0,                                                  // shared mem
-        Stream(),                                           // stream
-        &arr[0],                                            // arguments
-        0));
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
 
-    Context()->Synchronize();
+        Context()->Synchronize();
 
-    if (m_populationSize)
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-#endif
+        if (m_populationSize)
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+    }
 
     // Get the best variation results.
     bool validResult = false;
@@ -263,43 +268,43 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
     unsigned int populationSize = settings.m_population;
     unsigned int variation = FIRESTARTER_VARIATION;
 
-#if SIMULATE_GPU
-    blockDim = cudaBlockSize;
-    for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-        for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-            for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                    for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                        for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                            Evolver(m_deviceResults, m_devicePopulation0, m_deviceCodes, variation, seed, passes, populationSize);
-    if (m_populationSize)
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyHostToHost));
-#else
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                    reinterpret_cast<void*>(&m_devicePopulation0),
-                    reinterpret_cast<void*>(&m_deviceCodes),
-                    reinterpret_cast<void*>(&variation),
-                    reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&populationSize)
-    };
+    if (m_simulateGPU) {
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                Evolver(m_deviceResults, m_devicePopulation0, m_deviceCodes, variation, seed, passes, populationSize);
+        if (m_populationSize)
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyHostToHost));
+    } else {
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
+                        reinterpret_cast<void*>(&m_devicePopulation0),
+                        reinterpret_cast<void*>(&m_deviceCodes),
+                        reinterpret_cast<void*>(&variation),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&passes),
+                        reinterpret_cast<void*>(&populationSize)
+        };
 
-    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-        0,                                                  // shared mem
-        Stream(),                                           // stream
-        &arr[0],                                            // arguments
-        0));
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
 
-    if (m_populationSize)
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-#endif
+        if (m_populationSize)
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+    }
 
     bool validResult = false;
     float minResult = m_hostResults[0];
@@ -331,40 +336,40 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     unsigned int passes = settings.m_passes;
     unsigned int populationSize = settings.m_population;
 
-#if SIMULATE_GPU
-    blockDim = cudaBlockSize;
-    for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-        for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-            for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                    for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                        for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                            EvolverNew(m_deviceResults, m_devicePopulation0, m_deviceCodes, variation, seed, passes, populationSize);
-    if (m_populationSize)
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyHostToHost));
-#else
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                    reinterpret_cast<void*>(&m_devicePopulation0),
-                    reinterpret_cast<void*>(&m_deviceCodes),
-                    reinterpret_cast<void*>(&variation),
-                    reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&populationSize)
-    };
+    if (m_simulateGPU) {
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                EvolverNew(m_deviceResults, m_devicePopulation0, m_deviceCodes, variation, seed, passes, populationSize);
+        if (m_populationSize)
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyHostToHost));
+    } else {
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
+                        reinterpret_cast<void*>(&m_devicePopulation0),
+                        reinterpret_cast<void*>(&m_deviceCodes),
+                        reinterpret_cast<void*>(&variation),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&passes),
+                        reinterpret_cast<void*>(&populationSize)
+        };
 
-    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-        0,                                                  // shared mem
-        Stream(),                                           // stream
-        &arr[0],                                            // arguments
-        0));
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
 
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-#endif
+        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+    }
 
     // Get the best variation results.
     bool validResult = false;
@@ -402,36 +407,36 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     unsigned int passes = settings.m_passes;
     unsigned int populationSize = settings.m_population;
 
-#if SIMULATE_GPU
-    blockDim = cudaBlockSize;
-    for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-        for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-            for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                    for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                        for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                            SinSim(m_deviceNetworks, variation, generation, seed, passes, populationSize);
-    checkCUDAErrors(cudaMemcpyAsync(m_hostNetworks, m_deviceNetworks, m_networksSize, cudaMemcpyHostToHost));
-#else
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceNetworks),
-                    reinterpret_cast<void*>(&variation),
-                    reinterpret_cast<void*>(&generation),
-                    reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&populationSize)
-    };
+    if (m_simulateGPU) {
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                SinSim(m_deviceNetworks, variation, generation, seed, passes, populationSize);
+        checkCUDAErrors(cudaMemcpyAsync(m_hostNetworks, m_deviceNetworks, m_networksSize, cudaMemcpyHostToHost));
+    } else {
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceNetworks),
+                        reinterpret_cast<void*>(&variation),
+                        reinterpret_cast<void*>(&generation),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&passes),
+                        reinterpret_cast<void*>(&populationSize)
+        };
 
-    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-        0,                                                  // shared mem
-        Stream(),                                           // stream
-        &arr[0],                                            // arguments
-        0));
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
 
-    checkCUDAErrors(cudaMemcpyAsync(m_hostNetworks, m_deviceNetworks, m_networksSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-#endif
+        checkCUDAErrors(cudaMemcpyAsync(m_hostNetworks, m_deviceNetworks, m_networksSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+    }
 
     // Get the best variation results.
     bool validResult = false;
@@ -464,43 +469,43 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
     unsigned int populationSize = settings.m_population;
     unsigned int variation = FIRESTARTER_VARIATION;
 
-#if SIMULATE_GPU
-    blockDim = cudaBlockSize;
-    for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-        for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-            for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                    for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                        for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                            MoneyMaker(m_deviceResults, m_devicePopulation0, m_deviceCodes, m_deviceStocks, seed, passes, populationSize);
-    if (m_populationSize)
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyHostToHost));
-#else
-    void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
-                    reinterpret_cast<void*>(&m_devicePopulation0),
-                    reinterpret_cast<void*>(&m_deviceCodes),
-                    reinterpret_cast<void*>(&m_deviceStocks),
-                    reinterpret_cast<void*>(&seed),
-                    reinterpret_cast<void*>(&passes),
-                    reinterpret_cast<void*>(&populationSize)
-    };
+    if (m_simulateGPU) {
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                MoneyMaker(m_deviceResults, m_devicePopulation0, m_deviceCodes, m_deviceStocks, seed, passes, populationSize);
+        if (m_populationSize)
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyHostToHost));
+    } else {
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceResults),
+                        reinterpret_cast<void*>(&m_devicePopulation0),
+                        reinterpret_cast<void*>(&m_deviceCodes),
+                        reinterpret_cast<void*>(&m_deviceStocks),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&passes),
+                        reinterpret_cast<void*>(&populationSize)
+        };
 
-    checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-        cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-        cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-        0,                                                  // shared mem
-        Stream(),                                           // stream
-        &arr[0],                                            // arguments
-        0));
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
 
-    if (m_populationSize)
-        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-#endif
+        if (m_populationSize)
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+    }
 
     // Get the best variation results.
     bool validResult = false;
@@ -554,57 +559,57 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             oldPopulation = m_devicePopulation0;
         }
 
-#if SIMULATE_GPU
-        blockDim = cudaBlockSize;
-        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, population);
+        if (m_simulateGPU) {
+            blockDim = cudaBlockSize;
+            for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+                for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                    for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                        for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                            for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                                for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                    Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, population);
 
-        unsigned int hash = 0;
-        for (unsigned int i = 0; i < settings.m_population; i++) {
-            const FireStarterResult* member = FireStarterPopulation::PopulationResult(newPopulation, settings, i);
-            float curResult = member->MaxResult();
-            hash ^= *(unsigned int*)&curResult;
+            unsigned int hash = 0;
+            for (unsigned int i = 0; i < settings.m_population; i++) {
+                const FireStarterResult* member = FireStarterPopulation::PopulationResult(newPopulation, settings, i);
+                float curResult = member->MaxResult();
+                hash ^= *(unsigned int*)&curResult;
+            }
+        } else {
+            void* arr[] = { reinterpret_cast<void*>(&newPopulation),
+                            reinterpret_cast<void*>(&oldPopulation),
+                            reinterpret_cast<void*>(&variation),
+                            reinterpret_cast<void*>(&registers),
+                            reinterpret_cast<void*>(&optimizeSeed),
+                            reinterpret_cast<void*>(&optimizePass),
+                            reinterpret_cast<void*>(&population)
+            };
+
+            checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+                0,                                                  // shared mem
+                Stream(),                                           // stream
+                &arr[0],                                            // arguments
+                0));
+
+            // Synchronize all GPU threads and results.
+            Context()->Synchronize();
         }
-#else
-        void* arr[] = { reinterpret_cast<void*>(&newPopulation),
-                        reinterpret_cast<void*>(&oldPopulation),
-                        reinterpret_cast<void*>(&variation),
-                        reinterpret_cast<void*>(&registers),
-                        reinterpret_cast<void*>(&optimizeSeed),
-                        reinterpret_cast<void*>(&optimizePass),
-                        reinterpret_cast<void*>(&population)
-        };
-
-        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-            0,                                                  // shared mem
-            Stream(),                                           // stream
-            &arr[0],                                            // arguments
-            0));
-
-        // Synchronize all GPU threads and results.
-        Context()->Synchronize();
-#endif
     }
 
     // Gather the best results.
-#if SIMULATE_GPU
-    if (passes & 1)
-        checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
-#else
-    // If the number off passes is odd, copy the new population to the old population for the next pass.
-    if (passes & 1)
-        checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-#endif
+    if (m_simulateGPU) {
+        if (passes & 1)
+            checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+    } else {
+        // If the number off passes is odd, copy the new population to the old population for the next pass.
+        if (passes & 1)
+            checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+    }
 
     // Get the best variation results.
     // Note: The best result may get worse generation to generation before it improves.
@@ -711,76 +716,76 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
             oldPopulation = m_devicePopulation0;
         }
 
-#if SIMULATE_GPU
-        blockDim = cudaBlockSize;
-        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                MoneyOptimizer(newPopulation, oldPopulation, m_deviceStocks, registers, optimizeSeed, optimizePass, population);
+        if (m_simulateGPU) {
+            blockDim = cudaBlockSize;
+            for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+                for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                    for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                        for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                            for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                                for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                    MoneyOptimizer(newPopulation, oldPopulation, m_deviceStocks, registers, optimizeSeed, optimizePass, population);
 
-        unsigned int hash = 0;
-        for (unsigned int i = 0; i < settings.m_population; i++) {
-            const FireStarterResult* member = FireStarterPopulation::PopulationResult(newPopulation, settings, i);
-            float curResult = member->MaxResult();
-            hash ^= *(unsigned int*)&curResult;
+            unsigned int hash = 0;
+            for (unsigned int i = 0; i < settings.m_population; i++) {
+                const FireStarterResult* member = FireStarterPopulation::PopulationResult(newPopulation, settings, i);
+                float curResult = member->MaxResult();
+                hash ^= *(unsigned int*)&curResult;
+            }
+        } else {
+            void* arr[] = { reinterpret_cast<void*>(&newPopulation),
+                            reinterpret_cast<void*>(&oldPopulation),
+                            reinterpret_cast<void*>(&m_deviceStocks),
+                            reinterpret_cast<void*>(&registers),
+                            reinterpret_cast<void*>(&optimizeSeed),
+                            reinterpret_cast<void*>(&optimizePass),
+                            reinterpret_cast<void*>(&population)
+            };
+
+            checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+                0,                                                  // shared mem
+                Stream(),                                           // stream
+                &arr[0],                                            // arguments
+                0));
+
+            // Synchronize all GPU threads and results.
+            Context()->Synchronize();
         }
-#else
-        void* arr[] = { reinterpret_cast<void*>(&newPopulation),
-                        reinterpret_cast<void*>(&oldPopulation),
-                        reinterpret_cast<void*>(&m_deviceStocks),
-                        reinterpret_cast<void*>(&registers),
-                        reinterpret_cast<void*>(&optimizeSeed),
-                        reinterpret_cast<void*>(&optimizePass),
-                        reinterpret_cast<void*>(&population)
-        };
-
-        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-            0,                                                  // shared mem
-            Stream(),                                           // stream
-            &arr[0],                                            // arguments
-            0));
-
-        // Synchronize all GPU threads and results.
-        Context()->Synchronize();
-#endif
     }
 
-#if SIMULATE_GPU
-    if (passes & 1)
-        checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
-    checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
-#else
-    // If the number off passes is odd, copy the new population to the old population for the next pass.
-    if (passes & 1)
-        checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
-    checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-    Context()->Synchronize();
-#endif
+    if (m_simulateGPU) {
+        if (passes & 1)
+            checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+    } else {
+        // If the number off passes is odd, copy the new population to the old population for the next pass.
+        if (passes & 1)
+            checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+    }
 
     // Gather the best results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
-    float maxResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0);
-    unsigned int maxIndex = 0;
+    float minResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0);
+    unsigned int minIndex = 0;
     for (unsigned int i = 1; i < settings.m_population; i++) {
         float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i);
-        if (curResult > maxResult) {
-            maxResult = curResult;
-            maxIndex = i;
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
         }
     }
 
     // Store the state's best result.
-    state.InitResult(settings, m_hostPopulation, maxIndex);
+    state.InitResult(settings, m_hostPopulation, minIndex);
 
     // Calculate the state's max result.
     state.m_oldResult = state.m_bestResult;
-    state.m_bestResult = 1.0f / maxResult;    // MoneyMaker finds the greatest profit so invert it for the complete code. Note: TEMORARY!
+    state.m_bestResult = minResult;
     state.m_optimizeValid = true;
 } // ExecuteMoneyOptimizePass
 
@@ -893,13 +898,14 @@ void FireStarterExecute::ExecuteLoadStock(const FireStarterSettings& settings, c
 {
     DispatchSync([this, settings, filePath, stock] {
         InitPopulation(settings);
-        m_hostStocks->Load(settings, filePath, stock);
-#if SIMULATE_GPU
-        checkCUDAErrors(cudaMemcpy(m_deviceStocks, m_hostStocks, m_stocksSize, cudaMemcpyHostToHost));
-#else
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceStocks, m_hostStocks, m_stocksSize, cudaMemcpyHostToDevice, Stream()));
-        Context()->Synchronize();
-#endif
+        m_hostStocks->Init(settings);
+        m_hostStocks->Load(filePath, stock);
+        if (m_simulateGPU) {
+            checkCUDAErrors(cudaMemcpy(m_deviceStocks, m_hostStocks, m_stocksSize, cudaMemcpyHostToHost));
+        } else {
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceStocks, m_hostStocks, m_stocksSize, cudaMemcpyHostToDevice, Stream()));
+            Context()->Synchronize();
+        }
     });
 } // ExecuteLoadStock
 
@@ -1020,7 +1026,7 @@ void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& optimizeState, F
                 while (!WillTerminate() && !bestState.Complete() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Execute the optimization passes.
                     optimizeState.m_timer.Start();
-                    ExecuteOptimizePasses(optimizeState);
+                    ExecuteMoneyOptimizePass(optimizeState);
 
                     // Update the results in the UI and check for completion.
                     if (complete && complete->CompleteState(bestState, optimizeState, m_hostStocks))
@@ -1074,6 +1080,11 @@ void FireStarterExecute::ExecuteFinish(void)
         m_executeFunction = nullptr;
     });
 } // ExecuteFinish
+
+void FireStarterExecute::SimulateGPU(bool simulateGPU)
+{
+    m_simulateGPU = simulateGPU;
+} // SimulateGPU
 
 FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", index), 0, priority)
 {
