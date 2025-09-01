@@ -94,17 +94,15 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
 
         if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
             const MoneyMakerStock& stock = stocks->Stock(0);
+            float minValue = stock.minValue;
+            float maxValue = stock.maxValue;
+            float lastValue = stock[0];
+            float yScale = 0.5f * (float)height / (maxValue - minValue);
             unsigned int numValues = stocks->numValues;
             unsigned int warmup = settings.m_warmup;
 
             AllocateEvaluateData(numValues);
             EvaluateMoneyMaker(state, stock, numValues);
-
-            // extern \"C\" __global__ void HatTrickShow(SequenceData *sequenceData, unsigned int viewDays, unsigned int startDay, unsigned int testDays, unsigned int holdDays, HatTrickResults *results, float *bestValues, uchar4 *pixels, unsigned int width, unsigned int height)
-            float minValue = stock.minValue;
-            float maxValue = stock.maxValue;
-            float lastValue = stock[0];
-            float yScale = 0.5f * (float)height / (maxValue - minValue);
 
             // Draw the warmup line.
             unsigned int testX = (width * warmup) / numValues;
