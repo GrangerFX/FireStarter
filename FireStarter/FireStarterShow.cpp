@@ -58,10 +58,9 @@ void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int
 void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValues)
 {
     // The show data is generated on the CPU which prevents it from interrupting the GPU.
-    // Note: TODO: Use multiple CPU threads to speed this up.
     const FireStarterSettings& settings = state.Settings();
-    FireStarterDataVector dataVector(state);
     const FireStarterCode* code = state.Code();
+    FireStarterDataVector dataVector(state);
     FireStarterData data = dataVector.Data();
 
     for (unsigned int i = 0; i < numValues; i++) {
@@ -80,6 +79,79 @@ void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const Mo
         m_evaluateData[i] = code->Evaluate(data, priceChange, settings.m_instructions);
     }
 } // EvaluateMoneyMaker
+
+void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValues, float &trainingPercent, float &validationPercent)
+{
+    const FireStarterSettings& settings = state.Settings();
+    const FireStarterCode* code = state.Code();
+    FireStarterDataVector dataVector(state);
+    FireStarterData data = dataVector.Data();
+    float funds = settings.m_funds;
+    unsigned int shares = 0;
+    unsigned int numTrades = 0;
+
+    // Warmup the data.
+    unsigned int i = 0;
+    float oldPrice = stock[i++];
+    while ((i < settings.m_warmup) && (i < numValues)) {
+        float newPrice = stock[i++];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+        code->Evaluate(data, priceChange, settings.m_instructions);
+    }
+
+    // Trade using the training data.
+    while ((i < settings.m_training) && (i < numValues)) {
+        float newPrice = stock[i++];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+        float n = code->Evaluate(data, priceChange, settings.m_instructions);
+        if (n > 1.0f) {
+            if (!shares) {
+                shares = (unsigned int)(funds / newPrice);
+                funds -= shares * newPrice;
+                numTrades++;
+            }
+        } else if (n < -1.0f) {
+            if (shares) {
+                funds += newPrice * shares;
+                shares = 0;
+                numTrades++;
+            }
+        }
+    }
+    float trainingFunds = funds + shares * stock[settings.m_training - 1];
+    trainingPercent = (((trainingFunds / settings.m_funds) - 1.0f) * 100.0f) / (settings.m_training - settings.m_warmup);
+
+    // Trade using the validation data.
+    if (settings.m_validation) {
+        while (i < numValues) {
+            float newPrice = stock[i++];
+            float priceChange = newPrice / oldPrice;
+            oldPrice = newPrice;
+
+            float n = code->Evaluate(data, priceChange, settings.m_instructions);
+            if (n > 1.0f) {
+                if (!shares) {
+                    shares = (unsigned int)(funds / newPrice);
+                    funds -= shares * newPrice;
+                    numTrades++;
+                }
+            } else if (n < -1.0f) {
+                if (shares) {
+                    funds += newPrice * shares;
+                    shares = 0;
+                    numTrades++;
+                }
+            }
+        }
+        float validationFunds = funds + shares * stock[numValues - 1];
+        validationPercent = (((validationFunds / trainingFunds) - 1.0f) * 100.0f) / settings.m_validation;
+    } else
+        validationPercent = 0.0f;
+} // TestMoneyMaker
 
 void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerStocks* stocks)
 {
@@ -100,16 +172,26 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
             float yScale = 0.5f * (float)height / (maxValue - minValue);
             unsigned int numValues = stocks->numValues;
             unsigned int warmup = settings.m_warmup;
+            unsigned int validation = settings.m_validation;
 
             AllocateEvaluateData(numValues);
             EvaluateMoneyMaker(state, stock, numValues);
 
             // Draw the warmup line.
-            unsigned int testX = (width * warmup) / numValues;
+            unsigned int warmupX = (width * warmup) / numValues;
             for (unsigned int y = 0; y < height; y++) {
-                uchar4 &pixel(pixels[y * width + testX]);
+                uchar4 &pixel(pixels[y * width + warmupX]);
                 pixel.x = 255;
                 pixel.y = 128;
+                pixel.z = 128;
+            }
+
+            // Draw the validation line.
+            unsigned int validationX = (width * (numValues - validation)) / numValues;
+            for (unsigned int y = 0; y < height; y++) {
+                uchar4& pixel(pixels[y * width + validationX]);
+                pixel.x = 128;
+                pixel.y = 255;
                 pixel.z = 128;
             }
 

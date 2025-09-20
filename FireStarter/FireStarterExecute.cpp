@@ -1036,7 +1036,7 @@ void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& optimizeState, F
                 }
             }
         }
-        });
+    });
 } // ExecuteMoneyOptimize
 
 void FireStarterExecute::ExecuteOptimize(FireStarterState& optimizeState)

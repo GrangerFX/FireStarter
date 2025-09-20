@@ -651,6 +651,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
 
         // Load the stock market data;
+        MoneyMakerStocks stocks;
+        stocks.Init(optimizeSettings);
+        stocks.Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 0);
         executeEvolve->ExecuteLoadStock(evolveSettings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt");
         executeOptimize->ExecuteLoadStock(optimizeSettings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt");
 
@@ -685,6 +688,21 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
                     // Execute optimize for any completed compile jobs.
                     executeOptimize->ExecuteMoneyOptimize(optimizeState, bestState, complete);
+
+#if 1
+                    // Output the results.
+                    double duration = bestState.Duration();
+                    totalDuration += duration;
+                    float trainingPercent = 0.0f;
+                    float validationPercent = 0.0f;
+                    const MoneyMakerStock& stock = stocks.Stock(0);
+                    FireStarterShow::TestMoneyMaker(bestState, stocks.Stock(0), stocks.numValues, trainingPercent, validationPercent);
+                    std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Training=%.4f%%  Validation=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), trainingPercent, validationPercent, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+                    if (bestState.MaxResults() <= evolveSettings.m_target)
+                        resultText += " *******";
+                    resultText += "\n";
+                    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
+#endif
                 } else
                     // Execute the initial GPU evolve.
                     executeEvolve->ExecuteMoneyMaker(evolveState);
@@ -693,13 +711,14 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                 if (++evolveState.m_generation == evolveSettings.m_generations)
                     break;
             }
+            
+#if 0
+            // Output the test results.
             if (!WillTerminate()) {
-
-                // Output the evolve results.
                 double duration = bestState.Duration();
                 totalDuration += duration;
 
-                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Training=%.4f%%  Validation=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), trainingPercent, validationPercent, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
@@ -711,6 +730,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     complete->CompleteBestState(bestState);
 #endif
             }
+#endif
 #if 0
             // Increment the evolve ID to make every evolution unique.
             // This will unfairly benefit some evolutions over others but create more opportumities for success.
