@@ -1,0 +1,59 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_MONEYMAKER
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 256
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_MONEYMAKER: Generation=  2  Best=202.14076233%  Time=1.4223 Seconds  Time=20.6631 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  3  Best=206.76982117%  Time=1.3511 Seconds  Time=31.6475 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  4  Best=237.53977966%  Time=1.4179 Seconds  Time=42.6992 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  5  Best=237.53977966%  Time=1.3099 Seconds  Time=53.6378 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  6  Best=237.53977966%  Time=1.2685 Seconds  Time=64.5352 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  7  Best=237.53977966%  Time=1.3680 Seconds  Time=75.5263 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  8  Best=237.53977966%  Time=1.3311 Seconds  Time=86.5097 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  9  Best=237.53977966%  Time=1.2886 Seconds  Time=97.4581 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 10  Best=237.53977966%  Time=1.2364 Seconds  Time=108.3535 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 11  Best=237.53977966%  Time=1.5120 Seconds  Time=119.5207 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 12  Best=237.53977966%  Time=1.3033 Seconds  Time=130.4844 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 13  Best=237.53977966%  Time=1.3125 Seconds  Time=141.4578 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 14  Best=237.53977966%  Time=1.3242 Seconds  Time=152.4402 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 15  Best=237.53977966%  Time=1.2593 Seconds  Time=163.3588 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 16  Best=237.53977966%  Time=1.2414 Seconds  Time=174.2681 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 17  Best=237.53977966%  Time=1.4673 Seconds  Time=185.4003 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 18  Best=237.53977966%  Time=1.2267 Seconds  Time=196.2847 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 19  Best=237.53977966%  Time=1.2616 Seconds  Time=207.2042 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 20  Best=237.53977966%  Time=1.2447 Seconds  Time=218.1102 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 21  Best=237.53977966%  Time=1.2792 Seconds  Time=229.0520 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 22  Best=237.53977966%  Time=1.3557 Seconds  Time=240.0746 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 23  Best=237.53977966%  Time=1.2979 Seconds  Time=251.0402 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 24  Best=237.53977966%  Time=1.2680 Seconds  Time=261.9673 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 25  Best=237.53977966%  Time=1.2475 Seconds  Time=272.8773 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 26  Best=237.53977966%  Time=1.4548 Seconds  Time=284.0029 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 27  Best=237.53977966%  Time=1.2719 Seconds  Time=294.9505 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 28  Best=237.53977966%  Time=1.2872 Seconds  Time=305.9042 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 29  Best=237.53977966%  Time=1.3322 Seconds  Time=316.9121 Seconds  Run Time=0.0000 Seconds

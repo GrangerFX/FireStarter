@@ -661,6 +661,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             // Initialize the states.
+#if 1
+            optimizeID = evolveID;
+#endif
             unsigned long long test = FIRESTARTER_START_TEST + t;
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, evolveID, test);
             FireStarterState optimizeState = FireStarterState(optimizeSettings, 0, 0, optimizeID, test);
@@ -716,7 +719,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     complete->CompleteBestState(bestState);
 #endif
             }
-#if 0
+#if 1
             // Increment the evolve ID to make every evolution unique.
             // This will unfairly benefit some evolutions over others but create more opportumities for success.
             evolveID++;
