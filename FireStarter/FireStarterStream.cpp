@@ -661,12 +661,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             // Initialize the states.
-#if 1
-            optimizeID = evolveID;
-#endif
             unsigned long long test = FIRESTARTER_START_TEST + t;
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, evolveID, test);
-            FireStarterState optimizeState = FireStarterState(optimizeSettings, 0, 0, optimizeID, test);
+            FireStarterState optimizeState = FireStarterState(optimizeSettings, 0, 0, evolveID, test);
             FireStarterState bestState = FireStarterState(optimizeSettings, 0, 0, 0, test);
 
             // Initialize the evolve state's best codes.
@@ -677,7 +674,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                 // Get the best code to optimize.
                 const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
                 if (bestCode) {
-                    optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, optimizeID, test);
+                    optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, evolveID, test);
                     optimizeState.CopyCode(bestCode);
 
                     // Compile the optimize code asynchronously.
@@ -688,11 +685,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
                     // Execute optimize for any completed compile jobs.
                     executeOptimize->ExecuteMoneyOptimize(optimizeState, bestState, complete);
-#if 0
-                    // Increment the optimize ID to make every optimization unique.
-                    // This will unfairly benefit some evolutions over others.
-                    optimizeID++;
-#endif
                 } else
                     // Execute the initial GPU evolve.
                     executeEvolve->ExecuteMoneyMaker(evolveState);
@@ -719,7 +711,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     complete->CompleteBestState(bestState);
 #endif
             }
-#if 1
+#if 0
             // Increment the evolve ID to make every evolution unique.
             // This will unfairly benefit some evolutions over others but create more opportumities for success.
             evolveID++;
