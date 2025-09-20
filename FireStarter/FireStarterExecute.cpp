@@ -710,8 +710,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         if (pass & 1) {
             newPopulation = m_devicePopulation0;
             oldPopulation = m_devicePopulation1;
-        }
-        else {
+        } else {
             newPopulation = m_devicePopulation1;
             oldPopulation = m_devicePopulation0;
         }
