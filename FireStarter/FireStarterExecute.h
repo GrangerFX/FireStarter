@@ -56,7 +56,7 @@ private:
     bool ExecuteJob(void);
 
 public:
-    void ExecuteSetStocks(const FireStarterSettings& settings, const MoneyMakerStocks &stocks);
+    void ExecuteSetStocks(const FireStarterSettings& settings, const MoneyMakerStocks *stocks);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
     void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);

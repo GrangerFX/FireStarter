@@ -651,9 +651,13 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
 
         // Load the stock market data;
-        MoneyMakerStocks stocks;
-        stocks.Init(optimizeSettings);
-        stocks.Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 0);
+        MoneyMakerStocks* stocks = (MoneyMakerStocks*)malloc(MoneyMakerStocks::StocksSize(4, optimizeSettings.m_history));
+        stocks->Init(optimizeSettings, 4);
+        MoneyMakerStock& stock = stocks->Stock(0);
+        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL', 0);
+        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA', 1);
+        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/intc.us.txt", 'INTC', 2);
+        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/msft.us.txt", 'MSFT', 3);
         executeEvolve->ExecuteSetStocks(evolveSettings, stocks);
         executeOptimize->ExecuteSetStocks(optimizeSettings, stocks);
 
@@ -691,16 +695,25 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
 #if 1
                     // Output the results.
-                    double duration = bestState.Duration();
-                    totalDuration += duration;
-                    float trainingPercent = 0.0f;
-                    float validationPercent = 0.0f;
-                    const MoneyMakerStock& stock = stocks.Stock(0);
-                    FireStarterShow::TestMoneyMaker(bestState, stocks.Stock(0), stocks.numValues, trainingPercent, validationPercent);
-                    std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Training=%.4f%%  Validation=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), trainingPercent, validationPercent, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
-                    if (bestState.MaxResults() <= evolveSettings.m_target)
-                        resultText += " *******";
-                    resultText += "\n";
+                    std::string resultText;
+                    if (optimizeSettings.m_validation) {
+                        float trainingPercent = 0.0f;
+                        float validationPercent = 0.0f;
+                        for (unsigned int i = 0; i < stocks->numStocks; i++) {
+                            const MoneyMakerStock& stock = stocks->Stock(i);
+                            FireStarterShow::TestMoneyMaker(bestState, stock, stocks->numValues, &trainingPercent, &validationPercent);
+                            char* symbol = (char*)&stock.symbol;
+                            resultText += Format("%c%c%c%c: Training=%.4f%%  Validation=%.4f%%\n", symbol[3], symbol[2], symbol[1], symbol[0], trainingPercent, validationPercent);
+                        }
+                    } else {
+                        float resultPercent = 0.0f;
+                        for (unsigned int i = 0; i < stocks->numStocks; i++) {
+                            const MoneyMakerStock& stock = stocks->Stock(i);
+                            FireStarterShow::TestMoneyMaker(bestState, stock, stocks->numValues, &resultPercent);
+                            char* symbol = (char*)&stock.symbol;
+                            resultText += Format("%c%c%c%c: Result=%.4f%%\n", symbol[3], symbol[2], symbol[1], symbol[0], resultPercent);
+                        }
+                    }
                     FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
 #endif
                 } else
@@ -712,13 +725,12 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     break;
             }
             
-#if 0
             // Output the test results.
             if (!WillTerminate()) {
                 double duration = bestState.Duration();
                 totalDuration += duration;
 
-                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Training=%.4f%%  Validation=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), trainingPercent, validationPercent, duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
+                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Training=%.4f%%  Validation=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
                 if (bestState.MaxResults() <= evolveSettings.m_target)
                     resultText += " *******";
                 resultText += "\n";
@@ -730,7 +742,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     complete->CompleteBestState(bestState);
 #endif
             }
-#endif
 #if 0
             // Increment the evolve ID to make every evolution unique.
             // This will unfairly benefit some evolutions over others but create more opportumities for success.
@@ -751,6 +762,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
+
+        // Delete the stock data
+        free(stocks);
     }, sync);
 } // MoneyMakerStream
 

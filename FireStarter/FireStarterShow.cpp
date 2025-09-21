@@ -80,7 +80,7 @@ void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const Mo
     }
 } // EvaluateMoneyMaker
 
-void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValues, float &trainingPercent, float &validationPercent)
+void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValues, float* trainingPercent, float* validationPercent)
 {
     const FireStarterSettings& settings = state.Settings();
     const FireStarterCode* code = state.Code();
@@ -114,7 +114,8 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
                 funds -= shares * newPrice;
                 numTrades++;
             }
-        } else if (n < -1.0f) {
+        }
+        else if (n < -1.0f) {
             if (shares) {
                 funds += newPrice * shares;
                 shares = 0;
@@ -123,34 +124,37 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
         }
     }
     float trainingFunds = funds + shares * stock[settings.m_training - 1];
-    trainingPercent = (((trainingFunds / settings.m_funds) - 1.0f) * 100.0f) / (settings.m_training - settings.m_warmup);
+    *trainingPercent = (((trainingFunds / settings.m_funds) - 1.0f) * 100.0f) / (settings.m_training - settings.m_warmup);
 
     // Trade using the validation data.
-    if (settings.m_validation) {
-        while (i < numValues) {
-            float newPrice = stock[i++];
-            float priceChange = newPrice / oldPrice;
-            oldPrice = newPrice;
+    if (validationPercent) {
+        if (settings.m_validation) {
+            while (i < numValues) {
+                float newPrice = stock[i++];
+                float priceChange = newPrice / oldPrice;
+                oldPrice = newPrice;
 
-            float n = code->Evaluate(data, priceChange, settings.m_instructions);
-            if (n > 1.0f) {
-                if (!shares) {
-                    shares = (unsigned int)(funds / newPrice);
-                    funds -= shares * newPrice;
-                    numTrades++;
+                float n = code->Evaluate(data, priceChange, settings.m_instructions);
+                if (n > 1.0f) {
+                    if (!shares) {
+                        shares = (unsigned int)(funds / newPrice);
+                        funds -= shares * newPrice;
+                        numTrades++;
+                    }
                 }
-            } else if (n < -1.0f) {
-                if (shares) {
-                    funds += newPrice * shares;
-                    shares = 0;
-                    numTrades++;
+                else if (n < -1.0f) {
+                    if (shares) {
+                        funds += newPrice * shares;
+                        shares = 0;
+                        numTrades++;
+                    }
                 }
             }
-        }
-        float validationFunds = funds + shares * stock[numValues - 1];
-        validationPercent = (((validationFunds / trainingFunds) - 1.0f) * 100.0f) / settings.m_validation;
-    } else
-        validationPercent = 0.0f;
+            float validationFunds = funds + shares * stock[numValues - 1];
+            *validationPercent = (((validationFunds / trainingFunds) - 1.0f) * 100.0f) / settings.m_validation;
+        } else
+            *validationPercent = 0.0f;
+    }
 } // TestMoneyMaker
 
 void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerStocks* stocks)

@@ -3,9 +3,14 @@
 #include <stdio.h>
 #include <vector>
 
-bool MoneyMakerStock::Load(const std::string& filePath, unsigned int history, bool normalize)
+bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history, bool normalize)
 {
+    bool result = false;
     FILE* file = NULL;
+
+    symbol = stockSymbol;
+    padding = 0;
+    minValue = maxValue = 0.0f;
     errno_t err = fopen_s(&file, filePath.c_str(), "r");
     if (file) {
         std::vector<float>theData;
@@ -28,7 +33,7 @@ bool MoneyMakerStock::Load(const std::string& filePath, unsigned int history, bo
             long long volume = 0;
             long long openinterest = 0;
             int num = sscanf_s(line, "%10[^,],%10[^,],%4d%2d%2d,%d,%f,%f,%f,%f,%lld,%lld", symbol, (unsigned)sizeof(symbol), period, (unsigned)sizeof(period), &year, &month, &day, &time, &open, &high, &low, &close, &volume, &openinterest);
-            if (num != 12)
+            if ((num != 12) && (num != 11)) // Intel and Microsoft for some reason return 11 as the number of parameters read.
                 break;
 
             theData.push_back(close);
@@ -54,9 +59,8 @@ bool MoneyMakerStock::Load(const std::string& filePath, unsigned int history, bo
                 if (lastData > maxValue)
                     maxValue = lastData;
             }
-            return true;
+            result = true;
         }
     }
-    minValue = maxValue = 0.0f;
-    return false;
+    return result;
 } // Load

@@ -112,7 +112,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         if (settings.m_mode == FIRESTARTER_SELECT)
             parentCodeSize = FireStarterCode::CodeSize(settings);
         if (settings.m_mode == FIRESTARTER_MONEYMAKER)
-            stocksSize = stocksSize = m_stocks ? m_stocks->StocksSize() : MoneyMakerStocks::StocksSize(settings);
+            stocksSize = MoneyMakerStocks::StocksSize(settings);
     } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE))
         populationSize = FireStarterPopulation::PopulationSize(settings);
     else if (settings.m_mode == FIRESTARTER_SINSIM)
@@ -893,10 +893,10 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     return false;
 } // GenerateOptimize
 
-void FireStarterExecute::ExecuteSetStocks(const FireStarterSettings& settings, const MoneyMakerStocks &stocks)
+void FireStarterExecute::ExecuteSetStocks(const FireStarterSettings& settings, const MoneyMakerStocks *stocks)
 {
-    DispatchSync([this, settings, &stocks] {
-        m_stocks = &stocks;
+    DispatchSync([this, settings, stocks] {
+        m_stocks = stocks;
         InitPopulation(settings);
         checkCUDAErrors(cudaMemcpy(m_hostStocks, m_stocks, m_stocksSize, cudaMemcpyHostToHost));
         if (m_simulateGPU)
