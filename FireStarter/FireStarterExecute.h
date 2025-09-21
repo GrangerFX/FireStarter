@@ -20,6 +20,7 @@ private:
     SinSimNetwork* m_deviceNetworks = nullptr;
     MoneyMakerStocks* m_hostStocks = nullptr;
     MoneyMakerStocks* m_deviceStocks = nullptr;
+    const MoneyMakerStocks* m_stocks = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -55,7 +56,7 @@ private:
     bool ExecuteJob(void);
 
 public:
-    void ExecuteLoadStock(const FireStarterSettings& settings, const std::string& filePath, unsigned int stock = 0);
+    void ExecuteSetStocks(const FireStarterSettings& settings, const MoneyMakerStocks &stocks);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
     void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);

@@ -95,7 +95,7 @@ typedef struct MoneyMakerStocks
     unsigned int numValues = MONEYMAKER_HISTORY;
     float s[MONEYMAKER_STOCKS * MONEYMAKER_HISTORY];
 
-    static inline size_t StocksSize(unsigned int stocks = MONEYMAKER_STOCKS, unsigned int history = MONEYMAKER_HISTORY)
+    static inline size_t StocksSize(unsigned int stocks, unsigned int history)
     {
         return (sizeof(MoneyMakerStocks) - MoneyMakerStock::StockSize(MONEYMAKER_HISTORY) * MONEYMAKER_STOCKS) + sizeof(float) * MoneyMakerStock::StockSize(history) * stocks;
     } // StocksSize
@@ -103,6 +103,11 @@ typedef struct MoneyMakerStocks
     static inline size_t StocksSize(const FireStarterSettings& settings)
     {
         return StocksSize(settings.m_stocks, settings.m_history);
+    } // StocksSize
+
+    inline size_t StocksSize(void) const
+    {
+        return StocksSize(numStocks, numValues);
     } // StocksSize
 
     inline MoneyMakerStock& Stock(unsigned int stock = 0)

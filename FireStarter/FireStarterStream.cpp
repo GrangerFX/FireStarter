@@ -654,8 +654,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         MoneyMakerStocks stocks;
         stocks.Init(optimizeSettings);
         stocks.Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 0);
-        executeEvolve->ExecuteLoadStock(evolveSettings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt");
-        executeOptimize->ExecuteLoadStock(optimizeSettings, "../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt");
+        executeEvolve->ExecuteSetStocks(evolveSettings, stocks);
+        executeOptimize->ExecuteSetStocks(optimizeSettings, stocks);
 
         // Generate and compile the evolve code.
         executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
