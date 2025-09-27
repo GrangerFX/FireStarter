@@ -145,7 +145,7 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
         }
     }
     float tradingFunds = funds + shares * stock[index - 1];
-    *tradingPercent = (tradingFunds / settings.m_funds) * (252.0f / settings.m_trading); // Percent gain per year.
+    *tradingPercent = settings.m_funds / tradingFunds; // Inverse alpha.
 
     // Trade using the validation data.
     if (validationPercent) {
@@ -183,7 +183,7 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
                 }
             }
             float validationFunds = funds + shares * stock[index - 1];
-            *validationPercent = (validationFunds / tradingFunds) * (252.0f / settings.m_validation); // Percent gain per year.
+            *validationPercent = tradingFunds / validationFunds; // Inverse alpha.
         } else
             *validationPercent = 0.0f;
     }
