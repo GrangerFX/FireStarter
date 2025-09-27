@@ -8,7 +8,7 @@
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
 
 #define MONEYMAKER_WARMUP           16          // Days of stock used for warmup prior to trading
-#define MONEYMAKER_TRADING          240         // Days used for stock trading
+#define MONEYMAKER_TRADING          256 - MONEYMAKER_WARMUP        // Days used for stock trading
 #define MONEYMAKER_VALIDATION       0           // Days of additional trading used to validate the data
 #define MONEYMAKER_HISTORY          (1 + MONEYMAKER_WARMUP + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
 #define MONEYMAKER_STOCKS           1           // Stocks with history data

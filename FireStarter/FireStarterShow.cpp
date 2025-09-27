@@ -80,42 +80,63 @@ void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const Mo
     }
 } // EvaluateMoneyMaker
 
-void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValues, float* trainingPercent, float* validationPercent)
+void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValues, float* tradingPercent, float* validationPercent)
 {
     const FireStarterSettings& settings = state.Settings();
     const FireStarterCode* code = state.Code();
     FireStarterDataVector dataVector(state);
     FireStarterData data = dataVector.Data();
     float funds = settings.m_funds;
+    float oldPrice = stock[0];
+    unsigned int index = 0;
     unsigned int shares = 0;
     unsigned int numTrades = 0;
 
     // Warmup the data.
-    unsigned int i = 0;
-    float oldPrice = stock[i++];
-    while ((i < settings.m_warmup) && (i < numValues)) {
+    for (unsigned int i = 0; (i < settings.m_warmup) && (index < numValues); i++) {
         float newPrice = stock[i++];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
 
-        code->Evaluate(data, priceChange, settings.m_instructions);
+#if MONEYMAKER_RANDOM
+        float n = RANDOMFACTOR(seed);
+        n *= 1.1f;
+#else
+        float n = code->Evaluate(data, priceChange, settings.m_instructions);
+        if (!isfinite(n) || (fabsf(n) > 2.0f)) {
+            *tradingPercent = FIRESTARTER_START_RESULT;
+            if (validationPercent)
+                *validationPercent = FIRESTARTER_START_RESULT;
+        }
+#endif
     }
 
     // Trade using the training data.
-    while ((i < settings.m_training) && (i < numValues)) {
-        float newPrice = stock[i++];
+    for (unsigned int i = 0; (i < settings.m_trading) && (index < numValues); i++) {
+        float newPrice = stock[index++];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
 
+#if MONEYMAKER_RANDOM
+        float n = RANDOMFACTOR(seed);
+        n *= 1.1f;
+#else
         float n = code->Evaluate(data, priceChange, settings.m_instructions);
+        if (!isfinite(n) || (fabsf(n) > 2.0f)) {
+            *tradingPercent = FIRESTARTER_START_RESULT;
+            if (validationPercent)
+                *validationPercent = FIRESTARTER_START_RESULT;
+        }
+#endif
+
+        // If the evaluation > 1.0f, buy shares. If below -1.0f, sell shares.
         if (n > 1.0f) {
             if (!shares) {
                 shares = (unsigned int)(funds / newPrice);
                 funds -= shares * newPrice;
                 numTrades++;
             }
-        }
-        else if (n < -1.0f) {
+        } else if (n < -1.0f) {
             if (shares) {
                 funds += newPrice * shares;
                 shares = 0;
@@ -123,26 +144,37 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
             }
         }
     }
-    float trainingFunds = funds + shares * stock[settings.m_training - 1];
-    *trainingPercent = (((trainingFunds / settings.m_funds) - 1.0f) * 100.0f) / (settings.m_training - settings.m_warmup);
+    float tradingFunds = funds + shares * stock[index - 1];
+    *tradingPercent = (tradingFunds / settings.m_funds) * (252.0f / settings.m_trading); // Percent gain per year.
 
     // Trade using the validation data.
     if (validationPercent) {
         if (settings.m_validation) {
-            while (i < numValues) {
-                float newPrice = stock[i++];
+            for (unsigned int i = 0; (i < settings.m_validation) && (index < numValues); i++) {
+                float newPrice = stock[index++];
                 float priceChange = newPrice / oldPrice;
                 oldPrice = newPrice;
 
+#if MONEYMAKER_RANDOM
+                float n = RANDOMFACTOR(seed);
+                n *= 1.1f;
+#else
                 float n = code->Evaluate(data, priceChange, settings.m_instructions);
+                if (!isfinite(n) || (fabsf(n) > 2.0f)) {
+                    *tradingPercent = FIRESTARTER_START_RESULT;
+                    if (validationPercent)
+                        *validationPercent = FIRESTARTER_START_RESULT;
+                }
+#endif
+
+                // If the evaluation > 1.0f, buy shares. If below -1.0f, sell shares.
                 if (n > 1.0f) {
                     if (!shares) {
                         shares = (unsigned int)(funds / newPrice);
                         funds -= shares * newPrice;
                         numTrades++;
                     }
-                }
-                else if (n < -1.0f) {
+                } else if (n < -1.0f) {
                     if (shares) {
                         funds += newPrice * shares;
                         shares = 0;
@@ -150,8 +182,8 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
                     }
                 }
             }
-            float validationFunds = funds + shares * stock[numValues - 1];
-            *validationPercent = (((validationFunds / trainingFunds) - 1.0f) * 100.0f) / settings.m_validation;
+            float validationFunds = funds + shares * stock[index - 1];
+            *validationPercent = (validationFunds / tradingFunds) * (252.0f / settings.m_validation); // Percent gain per year.
         } else
             *validationPercent = 0.0f;
     }
@@ -453,7 +485,8 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     if (state.PassMode() == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Time=%.4f Seconds Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
     } else if (state.PassMode() == FIRESTARTER_MONEYMAKER) {
-        statusString = Format("%s: Generation=%3u  Best=%.8f%%  Time=%.4f Seconds  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), generation, 100.0f / bestResult, generationTime, runTime);
+        float returns = 100.0f * (1.0f / bestResult) * (252.0f / (settings.m_history - settings.m_warmup)); // Percent gain per year.
+        statusString = Format("%s: Generation=%3u  Best=%.8f%%  Time=%.4f Seconds  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), generation, returns, generationTime, runTime);
     } else {
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);
         if ((settings.m_tests > 0) || test)
