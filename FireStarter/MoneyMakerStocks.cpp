@@ -9,7 +9,7 @@ bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol
     FILE* file = NULL;
 
     symbol = stockSymbol;
-    padding = 0;
+    numValues = history;
     minValue = maxValue = 0.0f;
     errno_t err = fopen_s(&file, filePath.c_str(), "r");
     if (file) {

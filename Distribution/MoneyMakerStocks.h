@@ -6,7 +6,8 @@
 
 typedef struct MoneyMakerStock
 {
-    unsigned int symbol, padding;   // Paddiing also serves as a zero terminator when converting symbol to a string
+    unsigned int symbol;
+    unsigned int numValues;
     float minValue, maxValue;
     float s[MONEYMAKER_HISTORY];    // The stock price changes (current day price / previous day price).
 
@@ -22,7 +23,7 @@ typedef struct MoneyMakerStock
 
     inline bool operator==(const MoneyMakerStock& other) const
     {
-        if ((other.symbol != symbol) || (other.minValue != minValue) || (other.maxValue != maxValue))
+        if ((other.symbol != symbol) || (other.minValue != minValue) || (other.maxValue != maxValue) || (other.numValues != numValues))
             return false;
         for (int i = 0; i < MONEYMAKER_HISTORY; i++)
             if (s[i] != other[i])
@@ -32,10 +33,7 @@ typedef struct MoneyMakerStock
 
     inline bool operator!=(const MoneyMakerStock& other) const
     {
-        for (int i = 0; i < MONEYMAKER_HISTORY; i++)
-            if (s[i] != other[i])
-                return true;
-        return false;
+        return !(*this == other);
     } // operator!=
 
     static inline size_t StockSize(unsigned int history = MONEYMAKER_HISTORY)
@@ -48,12 +46,14 @@ typedef struct MoneyMakerStock
         return StockSize(settings.m_history);
     } // StockSize
 
-    inline void Copy(const MoneyMakerStock* stock, unsigned int history = MONEYMAKER_HISTORY)
+    inline void Copy(const MoneyMakerStock* stock)
     {
-        minValue = stock->minValue;
-        maxValue = stock->maxValue;
-        for (unsigned int i = 0; i < history; i++)
-            s[i] = (*stock)[i];
+        if (numValues == stock->numValues) {
+            minValue = stock->minValue;
+            maxValue = stock->maxValue;
+            for (unsigned int i = 0; i < numValues; i++)
+                s[i] = (*stock)[i];
+        }
     } // Copy
 
     inline void operator=(const MoneyMakerStock& stock)
@@ -66,9 +66,9 @@ typedef struct MoneyMakerStock
         Copy(stock);
     } // operator=
 
-    inline void Clear(unsigned int history = MONEYMAKER_HISTORY)
+    inline void Clear(void)
     {
-        for (unsigned int i = 0; i < history; i++)
+        for (unsigned int i = 0; i < numValues; i++)
             s[i] = 0.0f; // Clear all the history days
     } // Clear
 
@@ -135,7 +135,7 @@ typedef struct MoneyMakerStocks
 
     inline void Copy(MoneyMakerStock* stockData, unsigned int stock = 0)
     {
-        StockData(stock)->Copy(stockData, numValues);
+        StockData(stock)->Copy(stockData);
     } // Copy
 
 #ifndef __CUDACC__
@@ -154,7 +154,7 @@ typedef struct MoneyMakerStocks
         for (unsigned int i = 0; i < stocks; i++) {
             MoneyMakerStock& stock = Stock(i);
             stock.symbol = 0;
-            stock.padding = 0;
+            stock.numValues = numValues;
             stock.minValue = 0.0f;
             stock.maxValue = 0.0f;
         }

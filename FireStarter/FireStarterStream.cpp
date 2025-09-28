@@ -701,7 +701,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 #else
                     unsigned int numStocks = stocks->numStocks;
 #endif
-                    if (optimizeSettings.m_validation) {
+                    if (bestState.Settings().m_validation) {
                         float tradingPercent = 0.0f;
                         float validationPercent = 0.0f;
                         for (unsigned int i = 0; i < numStocks; i++) {

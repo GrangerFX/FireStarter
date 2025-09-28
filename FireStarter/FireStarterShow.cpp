@@ -144,44 +144,40 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
     *tradingPercent = settings.m_funds / tradingFunds; // Inverse alpha.
 
     // Trade using the validation data.
-    if (validationPercent) {
-        if (settings.m_validation) {
-            for (unsigned int i = 0; (i < settings.m_validation) && (index < numValues); i++) {
-                float newPrice = stock[index++];
-                float priceChange = newPrice / oldPrice;
-                oldPrice = newPrice;
+    if (settings.m_validation) {
+        for (unsigned int i = 0; (i < settings.m_validation) && (index < numValues); i++) {
+            float newPrice = stock[index++];
+            float priceChange = newPrice / oldPrice;
+            oldPrice = newPrice;
 
 #if MONEYMAKER_RANDOM
-                float n = 1.1f * RANDOMFACTOR(seed);
+            float n = 1.1f * RANDOMFACTOR(seed);
 #else
-                float n = code->Evaluate(data, priceChange, settings.m_instructions);
+            float n = code->Evaluate(data, priceChange, settings.m_instructions);
 #endif
-                if (!isfinite(n)) {
-                    *tradingPercent = 0.0f;
-                    if (validationPercent)
-                        *validationPercent = 0.0f;
-                    return;
-                }
+            if (!isfinite(n)) {
+                *tradingPercent = 0.0f;
+                *validationPercent = 0.0f;
+                return;
+            }
 
-                // If the evaluation > 1.0f, buy shares. If below -1.0f, sell shares.
-                if (n > 1.0f) {
-                    if (!shares) {
-                        shares = (unsigned int)(funds / newPrice);
-                        funds -= shares * newPrice;
-                        numTrades++;
-                    }
-                } else if (n < -1.0f) {
-                    if (shares) {
-                        funds += newPrice * shares;
-                        shares = 0;
-                        numTrades++;
-                    }
+            // If the evaluation > 1.0f, buy shares. If below -1.0f, sell shares.
+            if (n > 1.0f) {
+                if (!shares) {
+                    shares = (unsigned int)(funds / newPrice);
+                    funds -= shares * newPrice;
+                    numTrades++;
+                }
+            } else if (n < -1.0f) {
+                if (shares) {
+                    funds += newPrice * shares;
+                    shares = 0;
+                    numTrades++;
                 }
             }
-            float validationFunds = funds + shares * stock[index - 1];
-            *validationPercent = tradingFunds / validationFunds; // Inverse alpha.
-        } else
-            *validationPercent = 0.0f;
+        }
+        float validationFunds = funds + shares * stock[index - 1];
+        *validationPercent = tradingFunds / validationFunds; // Inverse alpha.
     }
 } // TestMoneyMaker
 
