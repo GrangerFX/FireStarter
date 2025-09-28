@@ -48,12 +48,12 @@ typedef struct MoneyMakerStock
 
     inline void Copy(const MoneyMakerStock* stock)
     {
-        if (numValues == stock->numValues) {
-            minValue = stock->minValue;
-            maxValue = stock->maxValue;
-            for (unsigned int i = 0; i < numValues; i++)
-                s[i] = (*stock)[i];
-        }
+        symbol = stock->symbol;
+        numValues = stock->numValues;
+        minValue = stock->minValue;
+        maxValue = stock->maxValue;
+        for (unsigned int i = 0; i < numValues; i++)
+            s[i] = (*stock)[i];
     } // Copy
 
     inline void operator=(const MoneyMakerStock& stock)
