@@ -61,12 +61,8 @@ void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const Mo
     const FireStarterSettings& settings = state.Settings();
     const FireStarterCode* code = state.Code();
     FireStarterDataVector dataVector(state);
-    FireStarterData data = dataVector.Data();
+    FireStarterData& data = dataVector.Data();
 
-    for (unsigned int i = 0; i < numValues; i++) {
-        m_targetData[i] = 0.0f;
-        m_evaluateData[i] = 0.0f;
-    }
     float oldPrice = stock[0];
     m_targetData[0] = oldPrice;
     m_evaluateData[0] = 0.0f;
@@ -85,30 +81,30 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
     const FireStarterSettings& settings = state.Settings();
     const FireStarterCode* code = state.Code();
     FireStarterDataVector dataVector(state);
-    FireStarterData data = dataVector.Data();
+    FireStarterData& data = dataVector.Data();
     float funds = settings.m_funds;
     float oldPrice = stock[0];
-    unsigned int index = 0;
+    unsigned int index = 1;
     unsigned int shares = 0;
     unsigned int numTrades = 0;
 
     // Warmup the data.
     for (unsigned int i = 0; (i < settings.m_warmup) && (index < numValues); i++) {
-        float newPrice = stock[i++];
+        float newPrice = stock[index++];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
 
 #if MONEYMAKER_RANDOM
-        float n = RANDOMFACTOR(seed);
-        n *= 1.1f;
+        float n = 1.1f * RANDOMFACTOR(seed);
 #else
         float n = code->Evaluate(data, priceChange, settings.m_instructions);
-        if (!isfinite(n) || (fabsf(n) > 2.0f)) {
-            *tradingPercent = FIRESTARTER_START_RESULT;
-            if (validationPercent)
-                *validationPercent = FIRESTARTER_START_RESULT;
-        }
 #endif
+        if (!isfinite(n)) {
+            *tradingPercent = 0.0f;
+            if (validationPercent)
+                *validationPercent = 0.0f;
+            return;
+        }
     }
 
     // Trade using the training data.
@@ -121,12 +117,13 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
         float n = 1.1f * RANDOMFACTOR(seed);
 #else
         float n = code->Evaluate(data, priceChange, settings.m_instructions);
-        if (!isfinite(n) || (fabsf(n) > 2.0f)) {
-            *tradingPercent = FIRESTARTER_START_RESULT;
-            if (validationPercent)
-                *validationPercent = FIRESTARTER_START_RESULT;
-        }
 #endif
+        if (!isfinite(n)) {
+            *tradingPercent = 0.0f;
+            if (validationPercent)
+                *validationPercent = 0.0f;
+            return;
+        }
 
         // If the evaluation > 1.0f, buy shares. If below -1.0f, sell shares.
         if (n > 1.0f) {
@@ -158,12 +155,13 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
                 float n = 1.1f * RANDOMFACTOR(seed);
 #else
                 float n = code->Evaluate(data, priceChange, settings.m_instructions);
-                if (!isfinite(n) || (fabsf(n) > 2.0f)) {
-                    *tradingPercent = FIRESTARTER_START_RESULT;
-                    if (validationPercent)
-                        *validationPercent = FIRESTARTER_START_RESULT;
-                }
 #endif
+                if (!isfinite(n)) {
+                    *tradingPercent = 0.0f;
+                    if (validationPercent)
+                        *validationPercent = 0.0f;
+                    return;
+                }
 
                 // If the evaluation > 1.0f, buy shares. If below -1.0f, sell shares.
                 if (n > 1.0f) {

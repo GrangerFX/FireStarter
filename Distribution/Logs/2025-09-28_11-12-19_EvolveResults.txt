@@ -1,0 +1,8 @@
+AAPL: Result=144.5863%
+AAPL: Result=0.0000%
+AAPL: Result=0.0000%
+AAPL: Result=0.0000%
+AAPL: Result=0.0000%
+AAPL: Result=0.0000%
+AAPL: Result=116.9984%
+AAPL: Result=116.9984%

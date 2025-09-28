@@ -696,24 +696,29 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 #if 1
                     // Output the results.
                     std::string resultText;
+#if 1
+                    unsigned int numStocks = bestState.Settings().m_stocks;
+#else
+                    unsigned int numStocks = stocks->numStocks;
+#endif
                     if (optimizeSettings.m_validation) {
                         float tradingPercent = 0.0f;
                         float validationPercent = 0.0f;
-                        for (unsigned int i = 0; i < stocks->numStocks; i++) {
+                        for (unsigned int i = 0; i < numStocks; i++) {
                             const MoneyMakerStock& stock = stocks->Stock(i);
                             FireStarterShow::TestMoneyMaker(bestState, stock, stocks->numValues, &tradingPercent, &validationPercent);
                             char* symbol = (char*)&stock.symbol;
-                            float tradingReturns = 100.0f * (1.0f / tradingPercent) * (252.0f / (evolveSettings.m_history - evolveSettings.m_warmup)); // Percent gain per year.
-                            float validataionReturns = 100.0f * (1.0f / validationPercent) * (252.0f / (evolveSettings.m_history - evolveSettings.m_warmup)); // Percent gain per year.
+                            float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / (evolveSettings.m_history - evolveSettings.m_warmup)) : 0.0f; // Percent gain per year.
+                            float validataionReturns = validationPercent ? 100.0f * (1.0f / validationPercent) * (252.0f / (evolveSettings.m_history - evolveSettings.m_warmup)) : 0.0f; // Percent gain per year.
                             resultText += Format("%c%c%c%c: Training=%.4f%%  Validation=%.4f%%\n", symbol[3], symbol[2], symbol[1], symbol[0], tradingReturns, validataionReturns);
                         }
                     } else {
                         float tradingPercent = 0.0f;
-                        for (unsigned int i = 0; i < stocks->numStocks; i++) {
+                        for (unsigned int i = 0; i < numStocks; i++) {
                             const MoneyMakerStock& stock = stocks->Stock(i);
                             FireStarterShow::TestMoneyMaker(bestState, stock, stocks->numValues, &tradingPercent);
                             char* symbol = (char*)&stock.symbol;
-                            float tradingReturns = 100.0f * (1.0f / tradingPercent) * (252.0f / (evolveSettings.m_history - evolveSettings.m_warmup)); // Percent gain per year.
+                            float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / (evolveSettings.m_history - evolveSettings.m_warmup)) : 0.0f; // Percent gain per year.
                             resultText += Format("%c%c%c%c: Result=%.4f%%\n", symbol[3], symbol[2], symbol[1], symbol[0], tradingReturns);
                         }
                     }
