@@ -704,9 +704,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     float tradingPercent = 0.0f;
                     for (unsigned int i = 0; i < numStocks; i++) {
                         const MoneyMakerStock& stock = stocks->Stock(i);
-                        FireStarterShow::TestMoneyMaker(bestState, stock, stocks->numValues, &tradingPercent);
+                        FireStarterShow::TestMoneyMaker(bestState, stock, &tradingPercent);
                         char* symbol = (char*)&stock.symbol;
-                        float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / (evolveSettings.m_history - evolveSettings.m_warmup)) : 0.0f; // Percent gain per year.
+                        float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
                         resultText += Format("%c%c%c%c: Result=%.4f%%\n", symbol[3], symbol[2], symbol[1], symbol[0], tradingReturns);
                     }
                     FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));

@@ -55,13 +55,14 @@ void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int
     }
 } // EvaluateSinSim
 
-void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValues)
+void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock)
 {
     // The show data is generated on the CPU which prevents it from interrupting the GPU.
     const FireStarterSettings& settings = state.Settings();
     const FireStarterCode* code = state.Code();
     FireStarterDataVector dataVector(state);
     FireStarterData& data = dataVector.Data();
+    unsigned int numValues = stock.numValues;
 
     float oldPrice = stock[0];
     m_targetData[0] = oldPrice;
@@ -76,7 +77,7 @@ void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const Mo
     }
 } // EvaluateMoneyMaker
 
-void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stockData, unsigned int numValues, float* tradingPercent)
+void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stockData, float* tradingPercent)
 {
     const FireStarterSettings& settings = state.Settings();
     const FireStarterCode* code = state.Code();
@@ -88,11 +89,12 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
     unsigned int index = 1;
     unsigned int shares = 0;
     unsigned int numTrades = 0;
+    unsigned int numValues = stockData.numValues;
 
     FireStarterData& workData = dataVector.Data();
 
     // Warmup evaluation ignoring the results.
-    for (unsigned int i = 0; (i < settings.m_warmup) && (index < numValues); i++) {
+    for (unsigned int i = 1; (i < settings.m_warmup) && (index < numValues); i++) {
         float newPrice = stockData[index++];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
@@ -139,6 +141,9 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
 
     // The final funds after selling remaining shares.
     float tradingFunds = funds + shares * stockData[index - 1];
+
+    // The result is the ratio between the starting funds and the final funds.
+    // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
     *tradingPercent = startingFunds / tradingFunds; // Inverse alpha.
 } // TestMoneyMaker
 
@@ -163,7 +168,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
             unsigned int warmup = settings.m_warmup;
 
             AllocateEvaluateData(numValues);
-            EvaluateMoneyMaker(state, stock, numValues);
+            EvaluateMoneyMaker(state, stock);
 
             // Draw the warmup line.
             unsigned int warmupX = (width * warmup) / numValues;
@@ -428,7 +433,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     if (state.PassMode() == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Time=%.4f Seconds Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
     } else if (state.PassMode() == FIRESTARTER_MONEYMAKER) {
-        float returns = 100.0f * (1.0f / bestResult) * (252.0f / (settings.m_history - settings.m_warmup)); // Percent gain per year.
+        float returns = 100.0f * (1.0f / bestResult) * (252.0f / settings.m_trading); // Percent gain per year.
         statusString = Format("%s: Generation=%3u  Best=%.8f%%  Time=%.4f Seconds  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), generation, returns, generationTime, runTime);
     } else {
         statusString = Format("%s: Seed=%u", state.Mode(), settings.m_evolveSeed);

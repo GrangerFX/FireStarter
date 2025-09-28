@@ -17,10 +17,10 @@ private:
     void AllocateEvaluateData(size_t evaluateSize);
     void EvaluateEvolve(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation);
     void EvaluateSinSim(const FireStarterState& state, unsigned int evaluateWidth);
-    void EvaluateMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValue);
+    void EvaluateMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock);
 
 public:
-    static void TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int numValue, float* tradingPercent);
+    static void TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, float* tradingPercent);
     static void FireSolution(FireStarterWindow& window);
 	void FireShow(const FireStarterState& state, const MoneyMakerStocks *stocks = nullptr);
 	void ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, bool sync = false);
