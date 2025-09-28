@@ -118,8 +118,7 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
         oldPrice = newPrice;
 
 #if MONEYMAKER_RANDOM
-        float n = RANDOMFACTOR(seed);
-        n *= 1.1f;
+        float n = 1.1f * RANDOMFACTOR(seed);
 #else
         float n = code->Evaluate(data, priceChange, settings.m_instructions);
         if (!isfinite(n) || (fabsf(n) > 2.0f)) {
@@ -156,8 +155,7 @@ void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyM
                 oldPrice = newPrice;
 
 #if MONEYMAKER_RANDOM
-                float n = RANDOMFACTOR(seed);
-                n *= 1.1f;
+                float n = 1.1f * RANDOMFACTOR(seed);
 #else
                 float n = code->Evaluate(data, priceChange, settings.m_instructions);
                 if (!isfinite(n) || (fabsf(n) > 2.0f)) {

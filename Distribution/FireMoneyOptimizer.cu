@@ -29,8 +29,7 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
 
         // Trading evaluation using the result to buy or sell shares.
 #if MONEYMAKER_RANDOM
-        float n = RANDOMFACTOR(seed);
-        n *= 1.1f;
+        float n = 1.1f * RANDOMFACTOR(seed);
 #else
         float n = MoneyCompiledEvaluate(workData, priceChange);
         if (!isfinite(n) || (fabsf(n) > 2.0f)) {
@@ -40,7 +39,6 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
 #endif
     }
 
-
     // Use the evaluation to trade the stock.
     for (unsigned int i = 0; i < MONEYMAKER_TRADING; i++) {
         float newPrice = stockData[index++];
@@ -49,8 +47,7 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
 
         // Trading evaluation using the result to buy or sell shares.
 #if MONEYMAKER_RANDOM
-        float n = RANDOMFACTOR(seed);
-        n *= 1.1f;
+        float n = 1.1f * RANDOMFACTOR(seed);
 #else
         float n = MoneyCompiledEvaluate(workData, priceChange);
         if (!isfinite(n) || (fabsf(n) > 2.0f)) {

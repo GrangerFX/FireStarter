@@ -22,8 +22,7 @@ inline bool MoneyMakerEvaluate(FireStarterSharedData& sharedData, const FireStar
 
         // Trading evaluation using the result to buy or sell shares.
 #if MONEYMAKER_RANDOM
-        float n = RANDOMFACTOR(seed);
-        n *= 1.1f;
+        float n = 1.1f * RANDOMFACTOR(seed);
 #else
         float n = fabsf(code.Evaluate(sharedData, priceChange));
         if (!isfinite(n) || (fabsf(n) > 2.0f)) {
@@ -41,8 +40,7 @@ inline bool MoneyMakerEvaluate(FireStarterSharedData& sharedData, const FireStar
 
         // Trading evaluation using the result to buy or sell shares.
 #if MONEYMAKER_RANDOM
-        float n = RANDOMFACTOR(seed);
-        n *= 1.1f;
+        float n = 1.1f * RANDOMFACTOR(seed);
 #else
         float n = fabsf(code.Evaluate(sharedData, priceChange));
         if (!isfinite(n) || (fabsf(n) > 2.0f)) {
