@@ -61,7 +61,7 @@ void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const Mo
     const FireStarterSettings& settings = state.Settings();
     const FireStarterCode* code = state.Code();
     FireStarterDataVector dataVector(state);
-    FireStarterData& data = dataVector.Data();
+    FireStarterData& workData = dataVector.Data();
     unsigned int numValues = stock.numValues;
 
     float oldPrice = stock[0];
@@ -73,7 +73,7 @@ void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const Mo
         oldPrice = newPrice;
 
         m_targetData[i] = newPrice;
-        m_evaluateData[i] = code->Evaluate(data, priceChange, settings.m_instructions);
+        m_evaluateData[i] = code->Evaluate(workData, priceChange, settings.m_instructions);
     }
 } // EvaluateMoneyMaker
 
