@@ -19,6 +19,7 @@
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    0           // Generate the settings and code using the GPU.
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
+#define FIRESTARTER_SAVE_BESTCODE   1           // Save Optimizer.cu with the best evolved code.
 #define FIRESTARTER_AUTO_QUIT       0           // Automatically exit the app after completing the work.
 
 #define FIRESTARTER_EVOLVE_RESULTS  0           // Copy all of the evolve and optimize data to the host.
@@ -241,8 +242,8 @@ typedef enum : unsigned short {
 } FireStarterOpcode;
 
 const FireStarterOpcode fireStarterOpcodes[] = {
-    Operation_multiply,
     Operation_add,
+    Operation_multiply,
     Operation_store
 };
 #else
@@ -422,6 +423,16 @@ public:
         return EvolveFunctionName(m_mode);
     } // EvolveFunctionName
 
+    static inline const char* EvolveTestName(unsigned int mode)
+    {
+        return "";
+    } // EvolveTestName
+
+    inline const char* EvolveTestName(void) const
+    {
+        return EvolveTestName(m_mode);
+    } // EvolveTestName
+
     static inline const char* OptimizeFunctionName(unsigned int mode)
     {
         switch (mode) {
@@ -436,6 +447,21 @@ public:
     {
         return OptimizeFunctionName(m_mode);
     } // OptimizeFunctionName
+
+    static inline const char* OptimizeTestName(unsigned int mode)
+    {
+        switch (mode) {
+        case FIRESTARTER_MONEYMAKER:
+            return "MoneyTester";
+        default:
+            return "";
+        }
+    } // OptimizeTestName
+
+    inline const char* OptimizeTestName(void) const
+    {
+        return OptimizeTestName(m_mode);
+    } // OptimizeTestName
 
     inline void CopyCodeSettings(FireStarterSetting& source)
     {

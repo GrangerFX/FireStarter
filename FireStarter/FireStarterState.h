@@ -543,12 +543,12 @@ public:
         return FireStarterResult::ResultSize(m_settings.m_registers);
     } // ResultSize
 
-    inline const FireStarterResult* Result(unsigned int variation) const
+    inline const FireStarterResult* Result(unsigned int variation = 0) const
     {
          return m_results.Result(variation);
     } // Result
 
-    inline FireStarterResult* Result(unsigned int variation)
+    inline FireStarterResult* Result(unsigned int variation = 0)
     {
         return m_results.Result(variation);
     } // Result

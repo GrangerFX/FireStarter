@@ -154,7 +154,8 @@ bool CUDACompile::HasFunction(CUmodule& cuda_module, const std::string& function
 CUfunction CUDACompile::GetFunction(CUmodule& cuda_module, const std::string& functionName)
 {
     CUfunction function = nullptr;
-    checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName.c_str()));
+    if (!functionName.empty())
+        checkCUDAErrors(cuModuleGetFunction(&function, cuda_module, functionName.c_str()));
     return function;
 } // GetFunction
 

@@ -8,6 +8,7 @@
 
 class FireStarterExecute : public CUDAThread {
 private:
+    const MoneyMakerStocks* m_stocks = nullptr;
     float* m_hostResults = nullptr;
     float* m_deviceResults = nullptr;
     FireStarterResult* m_hostPopulation = nullptr;
@@ -20,20 +21,30 @@ private:
     SinSimNetwork* m_deviceNetworks = nullptr;
     MoneyMakerStocks* m_hostStocks = nullptr;
     MoneyMakerStocks* m_deviceStocks = nullptr;
-    const MoneyMakerStocks* m_stocks = nullptr;
+    FireStarterData* m_hostTradingData = nullptr;
+    FireStarterData* m_deviceTradingData = nullptr;
+    FireStarterCode* m_hostTradingCode = nullptr;
+    FireStarterCode* m_deviceTradingCode = nullptr;
+    float* m_hostTradingProfits = nullptr;
+    float* m_deviceTradingProfits = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
     SerialThread m_compilerThread;
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
+    CUfunction m_executeTest = nullptr;
     std::string m_executeProgramName;
     std::string m_executeFunctionName;
+    std::string m_executeTestName;
     std::string m_executeCode;
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
     size_t m_networksSize = 0;
     size_t m_stocksSize = 0;
+    size_t m_tradingDataSize = 0;
+    size_t m_tradingCodeSize = 0;
+    size_t m_tradingProfitsSize = 0;
     size_t m_codesSize = 0;
     size_t m_parentCodeSize = 0;
     size_t m_executeIndex = 0;

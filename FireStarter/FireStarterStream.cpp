@@ -443,7 +443,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Save the best state and best solution.
 #if FIRESTARTER_SAVE_BESTSTATE
                 if (bestState.m_optimizeValid)
-                    complete->CompleteBestState(bestState);
+                    complete->CompleteSaveResults(bestState);
 #endif
             }
         }
@@ -526,7 +526,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
 
                 // Save the best state and best solution.
 #if FIRESTARTER_SAVE_BESTSTATE
-                complete->CompleteBestState(bestState);
+                complete->CompleteSaveResults(bestState);
 #endif
             }
         }
@@ -601,7 +601,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
 
             // Save the best state and best solution.
 #if FIRESTARTER_SAVE_BESTSTATE
-            complete->CompleteBestState(bestState);
+            complete->CompleteSaveResults(bestState);
 #endif
         }
 
@@ -711,6 +711,10 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     }
                     FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
 #endif
+#if 1
+                    if (bestState.m_optimizeValid)
+                        complete->CompleteSaveResults(bestState);
+#endif
                 } else
                     // Execute the initial GPU evolve.
                     executeEvolve->ExecuteMoneyMaker(evolveState);
@@ -734,7 +738,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                 // Save the best state and best solution.
 #if FIRESTARTER_SAVE_BESTSTATE
                 if (bestState.m_optimizeValid)
-                    complete->CompleteBestState(bestState);
+                    complete->CompleteSaveResults(bestState);
 #endif
             }
 #if 0

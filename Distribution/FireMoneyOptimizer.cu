@@ -6,7 +6,39 @@
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
     // EVALUATE //
-    // END //
+    n *= data[0];
+    n *= data[1];
+    data[2] = n;
+    data[3] = n;
+    n *= data[2];
+    data[4] = n;
+    data[2] = n;
+    n += data[4];
+    n *= data[5];
+    n *= data[6];
+    data[7] = n;
+    data[4] = n;
+    n *= data[8];
+    data[9] = n;
+    n *= data[10];
+    n *= data[11];
+    n *= data[6];
+    n += data[3];
+    n += data[12];
+    n *= data[13];
+    data[1] = n;
+    data[14] = n;
+    n += data[15];
+    data[6] = n;
+    data[16] = n;
+    data[17] = n;
+    n += data[18];
+    data[15] = n;
+    n += data[5];
+    n += data[18];
+    n *= data[19];
+    n *= data[13];
+// END //
     return n;
 } // MoneyCompiledEvaluate
 
@@ -184,14 +216,84 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
         FireStarterPopulation::PopulationResult(newPopulation, member)->InitResult(data, result, evolveAge, trades);
 } // MoneyOptimizer
 
-GPU_GLOBAL void MoneyTester(const FireStarterData* data, const MoneyMakerStocks* stocks, float* results)
+inline bool MoneyTesterEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stockData, unsigned int& trades, float& result)
+{
+    float minResult = result;
+    result = FIRESTARTER_START_RESULT;
+
+    float startingFunds = MONEYMAKER_FUNDS;
+    float funds = startingFunds;
+    float oldPrice = stockData[0];
+    unsigned int index = 1;
+    unsigned int shares = 0;
+    unsigned int numTrades = 0;
+
+    sharedData = data;
+
+    // Warmup evaluation ignoring the results.
+    for (unsigned int i = 1; i < MONEYMAKER_WARMUP; i++) {
+        float newPrice = stockData[index++];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+        // Trading evaluation using the result to buy or sell shares.
+        float n = fabsf(code.Evaluate(sharedData, priceChange));
+        if (!isfinite(n))
+            return false;
+    }
+
+    // Use the evaluation to trade the stock.
+    for (unsigned int i = 0; i < MONEYMAKER_TRADING; i++) {
+        float newPrice = stockData[index++];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+        // Trading evaluation using the result to buy or sell shares.
+        float n = fabsf(code.Evaluate(sharedData, priceChange));
+        if (!isfinite(n))
+            return false;
+
+        // If the evaluation > 1.0f, buy shares. If below -1.0f, sell shares.
+        if (n > 1.0f) {
+            if (!shares) {
+                shares = (unsigned int)(funds / newPrice);
+                funds -= shares * newPrice;
+                numTrades++;
+            }
+        } else if (n < -1.0f) {
+            if (shares) {
+                funds += newPrice * shares;
+                shares = 0;
+                numTrades++;
+            }
+        }
+    }
+
+    // The final funds after selling remaining shares.
+    float tradingFunds = funds + shares * stockData[index - 1];
+
+    // The result is the ratio between the starting funds and the final funds.
+    // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
+    trades = numTrades;
+    result = startingFunds / tradingFunds; // Inverse alpha.
+    return result < minResult;
+} // MoneyTesterEvaluate
+
+GPU_GLOBAL void MoneyTester(const MoneyMakerStocks* stocks, const FireStarterData* tradingData, const FireStarterCode* tradingCode, float* tradingProfits)
 {
     unsigned int stockIndex = threadIdx.x;
     if (stockIndex < stocks->numStocks) {
         const MoneyMakerStock& stockData = stocks->StockData(stockIndex);
         unsigned int trades = 0;
         float result = FIRESTARTER_START_RESULT;
-        MoneyOptimizeEvaluate(data, stockData, trades, result);
-        results[stockIndex] = result;
+
+        if (tradingCode) {
+            // The shared data for the threads in the warp.
+            GPU_SHARED FireStarterSharedData sharedData;
+            if (!MoneyTesterEvaluate(sharedData, tradingData, tradingCode, stockData, trades, result))
+                result = 0.0f;
+        } else
+            MoneyOptimizeEvaluate(tradingData, stockData, trades, result);
+        tradingProfits[stockIndex] = result;
     }
 } // MoneyTester
