@@ -115,14 +115,14 @@ void FireStarterComplete::SaveResults(const FireStarterState& bestState)
     }
 } // SaveResults
 
-void FireStarterComplete::DisplayResults(const FireStarterState& bestState, const MoneyMakerStocks* stocks)
+void FireStarterComplete::DisplayResults(const FireStarterState& bestState, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
     // Save the new best state.
     if (m_saveBestState)
         SaveResults(bestState);
 
     // Draw the graphs for both variations.
-    m_fireShow.FireShow(bestState, stocks);
+    m_fireShow.FireShow(bestState, stocks, tradingResults);
 } // DisplayResults
 
 void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation)
@@ -147,13 +147,13 @@ void FireStarterComplete::CompleteStatus(const FireStarterState& bestState, cons
     m_fireShow.ShowStatus(bestState, state, generation, m_generationTime, duration);
 } // CompleteStatus
 
-bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireStarterState& state, const MoneyMakerStocks* stocks)
+bool FireStarterComplete::CompleteState(FireStarterState& bestState, const FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
-    DispatchSync([this, &bestState, &state, stocks] {
+    DispatchSync([this, &bestState, &state, stocks, tradingResults] {
         // Skip if the best state was already completed.
         if (!bestState.Complete()) {        // Update the best state and display the results.
             if (UpdateBestState(bestState, state))
-                DisplayResults(bestState, stocks);
+                DisplayResults(bestState, stocks, tradingResults);
             else
                 bestState.m_age++;
 

@@ -698,15 +698,12 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     std::string resultText;
                     unsigned int numStocks = stocks->numStocks;
                     float tradingPercent = 0.0f;
-                    float* tradingProfits = executeOptimize->GetTradingProfits();
-                    if (tradingProfits) {
+                    const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
+                    if (tradingResults) {
                         for (unsigned int i = 0; i < numStocks; i++) {
                             const MoneyMakerStock& stock = stocks->Stock(i);
-#if 1
-                            tradingPercent = tradingProfits[i];
-#else
-                            FireStarterShow::TestMoneyMaker(bestState, stock, &tradingPercent);
-#endif
+                            const MoneyMakerStock& result = tradingResults->Stock(i);
+                            tradingPercent = result[0];
                             char* symbol = (char*)&stock.symbol;
                             float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
                             resultText += Format("%c%c%c%c: Result=%.4f%%\n", symbol[3], symbol[2], symbol[1], symbol[0], tradingReturns);

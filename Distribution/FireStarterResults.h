@@ -196,6 +196,11 @@ typedef struct FireStarterSharedData {
 
     inline FireStarterSharedData(void)
     {
+#ifndef __CUDACC__
+        // This initialization is only done for CPU simulations to make debugging easier.
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS * FIRESTARTER_WARP_THREADS; i++)
+            d[i] = 0.0f;
+#endif
     } // FireStarterSharedData
 } FireStarterSharedData;
 

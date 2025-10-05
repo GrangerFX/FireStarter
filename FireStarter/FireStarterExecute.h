@@ -21,12 +21,12 @@ private:
     SinSimNetwork* m_deviceNetworks = nullptr;
     MoneyMakerStocks* m_hostStocks = nullptr;
     MoneyMakerStocks* m_deviceStocks = nullptr;
+    MoneyMakerStocks* m_hostTradingResults = nullptr;
+    MoneyMakerStocks* m_deviceTradingResults = nullptr;
     FireStarterData* m_hostTradingData = nullptr;
     FireStarterData* m_deviceTradingData = nullptr;
     FireStarterCode* m_hostTradingCode = nullptr;
     FireStarterCode* m_deviceTradingCode = nullptr;
-    float* m_hostTradingProfits = nullptr;
-    float* m_deviceTradingProfits = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -42,9 +42,9 @@ private:
     size_t m_populationSize = 0;
     size_t m_networksSize = 0;
     size_t m_stocksSize = 0;
+    size_t m_tradingResultsSize = 0;
     size_t m_tradingDataSize = 0;
     size_t m_tradingCodeSize = 0;
-    size_t m_tradingProfitsSize = 0;
     size_t m_codesSize = 0;
     size_t m_parentCodeSize = 0;
     size_t m_executeIndex = 0;
@@ -83,7 +83,7 @@ public:
     void ExecuteRandom(void);
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);
-    float* GetTradingProfits(void);
+    const MoneyMakerStocks* GetTradingResults(void) const;
     FireStarterExecute(FireStarterManager* manager, size_t index = 0, int priority = 0);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute
