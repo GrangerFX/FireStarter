@@ -871,7 +871,11 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         threadIdx.y = 0;
         threadIdx.z = 0;
         for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+#if 0
+            MoneyTester(m_hostStocks, m_hostTradingData, nullptr, m_hostTradingProfits);
+#else
             MoneyTester(m_hostStocks, m_hostTradingData, m_hostTradingCode, m_hostTradingProfits);
+#endif
     } else if (m_simulateGPU) {
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingData, m_hostTradingData, m_tradingDataSize, cudaMemcpyHostToHost));
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingCode, m_hostTradingCode, m_tradingCodeSize, cudaMemcpyHostToHost));
@@ -884,7 +888,11 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         threadIdx.y = 0;
         threadIdx.z = 0;
         for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+#if 0
+            MoneyTester(m_deviceStocks, m_deviceTradingData, nullptr, m_deviceTradingProfits);
+#else
             MoneyTester(m_deviceStocks, m_deviceTradingData, m_deviceTradingCode, m_deviceTradingProfits);
+#endif
 
         checkCUDAErrors(cudaMemcpyAsync(m_hostTradingProfits, m_deviceTradingProfits, m_tradingProfitsSize, cudaMemcpyHostToHost));
     } else {
@@ -892,7 +900,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingCode, m_hostTradingCode, m_tradingCodeSize, cudaMemcpyHostToDevice, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingProfits, m_hostTradingProfits, m_tradingProfitsSize, cudaMemcpyHostToDevice, Stream()));
 
-#if 0
+#if 1
         FireStarterCode* nullCode = nullptr;
         void* arr[] = { reinterpret_cast<void*>(&m_deviceStocks),
                         reinterpret_cast<void*>(&m_deviceTradingData),
@@ -919,10 +927,12 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         Context()->Synchronize();
     }
 
+#if 0
     for (unsigned int i = 0; i < m_stocks->numStocks; i++) {
         float profit = m_hostTradingProfits[i];
         int foo = 1;
     }
+#endif
 #endif
 } // ExecuteMoneyOptimizePass
 
@@ -1230,6 +1240,11 @@ void FireStarterExecute::SimulateGPU(bool simulateGPU)
 {
     m_simulateGPU = simulateGPU;
 } // SimulateGPU
+
+float* FireStarterExecute::GetTradingProfits(void)
+{
+    return m_hostTradingProfits;
+} // GetTradingProfits
 
 FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", index), 0, priority)
 {

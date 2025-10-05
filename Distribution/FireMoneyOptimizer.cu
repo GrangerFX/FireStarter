@@ -5,7 +5,7 @@
 
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
-    // EVALUATE //
+// EVALUATE //
     n *= data[0];
     n *= data[1];
     data[2] = n;

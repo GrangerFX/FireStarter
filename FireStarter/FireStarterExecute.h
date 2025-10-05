@@ -83,6 +83,7 @@ public:
     void ExecuteRandom(void);
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);
+    float* GetTradingProfits(void);
     FireStarterExecute(FireStarterManager* manager, size_t index = 0, int priority = 0);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute
