@@ -1,0 +1,16 @@
+AAPL: Result=236.0692%
+NVDA: Result=122.8063%
+INTC: Result=0.0000%
+MSFT: Result=123.1228%
+AAPL: Result=224.9903%
+NVDA: Result=235.0934%
+INTC: Result=136.9852%
+MSFT: Result=112.4283%
+AAPL: Result=146.7660%
+NVDA: Result=0.0000%
+INTC: Result=0.0000%
+MSFT: Result=118.5805%
+AAPL: Result=146.7660%
+NVDA: Result=0.0000%
+INTC: Result=0.0000%
+MSFT: Result=118.5805%

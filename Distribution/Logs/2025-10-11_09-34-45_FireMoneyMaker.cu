@@ -3,7 +3,7 @@
 #include "MoneyMakerStocks.h"
 #include "CUDADefines.h"
 
-inline bool MoneyMakerEvaluate(const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stockData, unsigned long long seed, unsigned int& trades, float& result)
+inline bool MoneyMakerEvaluate(FireStarterSharedData& sharedData, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stockData, unsigned long long seed, unsigned int& trades, float& result)
 {
     float minResult = result;
     result = FIRESTARTER_START_RESULT;
@@ -15,7 +15,6 @@ inline bool MoneyMakerEvaluate(const FireStarterData& data, const FireStarterCod
     unsigned int shares = 0;
     unsigned int numTrades = 0;
 
-    GPU_SHARED FireStarterSharedData sharedData;
     sharedData = data;
 
     // Warmup evaluation ignoring the results.
@@ -86,6 +85,9 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
     // Get the stock data.
     const MoneyMakerStock& stockData = stocks->Stock();
 
+    // The shared data for the threads in the warp.
+    GPU_SHARED FireStarterSharedData sharedData;
+
     // The evolution code and data.
     FireStarterCode code;
     FireStarterData data;
@@ -103,7 +105,7 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        if (MoneyMakerEvaluate(data, code, stockData, memberSeed, memberTrades, memberResult))
+        if (MoneyMakerEvaluate(sharedData, data, code, stockData, memberSeed, memberTrades, memberResult))
             break;
     }
 
@@ -143,7 +145,7 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = memberResult * 0.99f;
             unsigned int curTrades = 0;
-            if (MoneyMakerEvaluate(data, code, stockData, memberSeed, curTrades, curResult)) {
+            if (MoneyMakerEvaluate(sharedData, data, code, stockData, memberSeed, curTrades, curResult)) {
                 memberResult = curResult;
                 memberTrades = curTrades;
             } else

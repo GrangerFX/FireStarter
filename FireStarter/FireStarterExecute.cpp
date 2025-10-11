@@ -821,8 +821,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         if (passes & 1)
             checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
         checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
-    }
-    else {
+    } else {
         // If the number off passes is odd, copy the new population to the old population for the next pass.
         if (passes & 1)
             checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
@@ -890,7 +889,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         threadIdx.y = 0;
         threadIdx.z = 0;
         for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-#if 0
+#if 1
             MoneyTester(m_deviceStocks, m_deviceTradingResults, m_deviceTradingData, nullptr);
 #else
             MoneyTester(m_deviceStocks, m_deviceTradingResults, m_deviceTradingData, m_deviceTradingCode);
@@ -902,7 +901,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingData, m_hostTradingData, m_tradingDataSize, cudaMemcpyHostToDevice, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingCode, m_hostTradingCode, m_tradingCodeSize, cudaMemcpyHostToDevice, Stream()));
 
-#if 1
+#if 0
         FireStarterCode* nullCode = nullptr;
         void* arr[] = { reinterpret_cast<void*>(&m_deviceStocks),
                         reinterpret_cast<void*>(&m_deviceTradingResults),
@@ -929,9 +928,10 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         Context()->Synchronize();
     }
 
-#if 0
+#if 1
     for (unsigned int i = 0; i < m_stocks->numStocks; i++) {
-        float profit = m_hostTradingProfits[i];
+        const MoneyMakerStock& stock = (*m_hostTradingResults)[i];
+        float result = stock[0];
         int foo = 1;
     }
 #endif

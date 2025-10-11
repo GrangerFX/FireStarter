@@ -55,6 +55,99 @@ void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int
     }
 } // EvaluateSinSim
 
+void FireStarterShow::EvaluateMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock)
+{
+    // The show data is generated on the CPU which prevents it from interrupting the GPU.
+    const FireStarterSettings& settings = state.Settings();
+    const FireStarterCode* code = state.Code();
+    FireStarterDataVector dataVector(state);
+    FireStarterData& workData = dataVector.Data();
+    unsigned int numValues = stock.numValues;
+
+    float oldPrice = stock[0];
+    m_targetData[0] = oldPrice;
+    m_evaluateData[0] = 0.0f;
+    for (unsigned int i = 1; i < numValues; i++) {
+        float newPrice = stock[i];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+        m_targetData[i] = newPrice;
+        m_evaluateData[i] = code->Evaluate(workData, priceChange, settings.m_instructions);
+    }
+} // EvaluateMoneyMaker
+
+void FireStarterShow::TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stockData, unsigned int& trades, float& result)
+{
+    const FireStarterSettings& settings = state.Settings();
+    const FireStarterCode* code = state.Code();
+    FireStarterDataVector dataVector(state);
+
+    float startingFunds = settings.m_funds;
+    float funds = startingFunds;
+    float oldPrice = stockData[0];
+    unsigned int index = 1;
+    unsigned int shares = 0;
+    unsigned int numTrades = 0;
+    unsigned int numValues = stockData.numValues;
+
+    FireStarterData& workData = dataVector.Data();
+
+    // Warmup evaluation ignoring the results.
+    for (unsigned int i = 1; (i < settings.m_warmup) && (index < numValues); i++) {
+        float newPrice = stockData[index++];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+        // Trading evaluation using the result to buy or sell shares.
+#if MONEYMAKER_RANDOM
+        float n = 1.1f * RANDOMFACTOR(seed);
+#else
+        float n = code->Evaluate(workData, priceChange, settings.m_instructions);
+#endif
+        if (!isfinite(n))
+            return;
+    }
+
+    // Use the evaluation to trade the stock.
+    for (unsigned int i = 0; (i < settings.m_trading) && (index < numValues); i++) {
+        float newPrice = stockData[index++];
+        float priceChange = newPrice / oldPrice;
+        oldPrice = newPrice;
+
+#if MONEYMAKER_RANDOM
+        float n = 1.1f * RANDOMFACTOR(seed);
+#else
+        float n = code->Evaluate(workData, priceChange, settings.m_instructions);
+#endif
+        if (!isfinite(n))
+            return;
+
+        // If the evaluation > 1.0f, buy shares. If below -1.0f, sell shares.
+        if (n > 1.0f) {
+            if (!shares) {
+                shares = (unsigned int)(funds / newPrice);
+                funds -= shares * newPrice;
+                numTrades++;
+            }
+        } else if (n < -1.0f) {
+            if (shares) {
+                funds += newPrice * shares;
+                shares = 0;
+                numTrades++;
+            }
+        }
+    }
+
+    // The final funds after selling remaining shares.
+    float tradingFunds = funds + shares * stockData[index - 1];
+
+    // The result is the ratio between the starting funds and the final funds.
+    // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
+    trades = numTrades;
+    result = startingFunds / tradingFunds; // Inverse alpha.
+} // TestMoneyMaker
+
 void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
     DispatchAsync([this, state, stocks, tradingResults] {
