@@ -1,0 +1,12 @@
+AAPL: Result=236.0692%  TestResult=236.0693%  Error=0.0635
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=119.8447%  TestResult=123.1228%  Error=23.1647
+AAPL: Result=230.0387%  TestResult=224.9903%  Error=47.3433
+NVDA: Result=235.0934%  TestResult=235.0933%  Error=2.5464
+INTC: Result=92.9670%  TestResult=136.9852%  Error=901.9556
+MSFT: Result=112.4283%  TestResult=112.4283%  Error=5.2242
+AAPL: Result=234.1262%  TestResult=146.7659%  Error=37.3482
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=119.1454%  TestResult=118.5805%  Error=26.2093

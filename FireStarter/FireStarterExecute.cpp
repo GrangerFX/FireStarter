@@ -851,10 +851,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
     state.m_optimizeValid = true;
 
     if (m_hostTradingResults)
-        if (m_stocks)
-            m_hostTradingResults->Init(m_stocks->numStocks, m_stocks->numValues);
-        else
-            m_hostTradingResults->Init();
+        m_hostTradingResults->Init(m_hostStocks->numStocks, m_hostStocks->numValues);
     if (m_hostTradingData) {
         const FireStarterResult& bestResult = state.Result();
         memcpy(m_hostTradingData, &bestResult.m_data, m_tradingDataSize);
@@ -902,7 +899,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingData, m_hostTradingData, m_tradingDataSize, cudaMemcpyHostToDevice, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingCode, m_hostTradingCode, m_tradingCodeSize, cudaMemcpyHostToDevice, Stream()));
 
-#if 0
+#if 1
         FireStarterCode* nullCode = nullptr;
         void* arr[] = { reinterpret_cast<void*>(&m_deviceStocks),
                         reinterpret_cast<void*>(&m_deviceTradingResults),

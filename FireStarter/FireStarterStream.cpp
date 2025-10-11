@@ -702,26 +702,33 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         for (unsigned int stockIndex = 0; stockIndex < numStocks; stockIndex++) {
                             const MoneyMakerStock& stock = stocks->Stock(stockIndex);
                             const MoneyMakerStock& result = tradingResults->Stock(stockIndex);
-                            float tradingPercent = result[0];
-                            
                             char* symbol = (char*)&stock.symbol;
-                            float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
-                            resultText += Format("%c%c%c%c: Result=%.4f%%", symbol[3], symbol[2], symbol[1], symbol[0], tradingReturns);
+                            resultText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
+
+                            float tradingPercent = result[0];
+                            if (tradingPercent) {
+                                float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
+                                resultText += Format("Result=%.4f%%", tradingReturns);
 #if MONEYMAKER_TESTER
-                            MoneyMakerStock* test = MoneyMakerStock::New(stock);
-                            float error = 0.0f;
-                            if (FireStarterShow::TestMoneyMaker(bestState, stock, *test)) {
-                                for (unsigned int i = 1; i < test->numValues; i++) {
-                                    float diff = fabsf((*test)[i] - result[i]);
-                                    error = MAX(error, diff);
-                                }
-                                float testPercent = (*test)[0];
-                                float testReturns = tradingPercent ? 100.0f * (1.0f / testPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
-                                resultText += Format("  TestResult=%.4f  Error=%.4f", testReturns, error);
-                            } else
-                                resultText += Format("  TestResult Failed!");
-                            test->Delete();
+                                MoneyMakerStock* test = MoneyMakerStock::New(stock);
+                                float error = 0.0f;
+                                if (FireStarterShow::TestMoneyMaker(optimizeState, stock, *test)) {
+                                    float testPercent = (*test)[0];
+                                    if (testPercent) {
+                                        for (unsigned int i = 1; i < test->numValues; i++) {
+                                            float diff = fabsf((*test)[i] - result[i]);
+                                            if (diff > error)
+                                                error = diff;
+                                        }
+                                        float testReturns = testPercent ? 100.0f * (1.0f / testPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
+                                        resultText += Format("  TestResult=%.4f%%  Error=%.4f", testReturns, error);
+                                    }
+                                } else
+                                    resultText += Format("  TestResult Failed!");
+                                test->Delete();
 #endif
+                            } else
+                                resultText += "Result Failed!";
                             resultText += "\n";
                         }
                         FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
