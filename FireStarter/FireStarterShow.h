@@ -20,7 +20,7 @@ private:
     void EvaluateMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock);
 
 public:
-    static void TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, unsigned int& trades, float& result);
+    static bool TestMoneyMaker(const FireStarterState& state, const MoneyMakerStock& stock, MoneyMakerStock& resultData);
     static void FireSolution(FireStarterWindow& window);
     void FireShow(const FireStarterState& state, const MoneyMakerStocks *stocks = nullptr, const MoneyMakerStocks* tradingResults = nullptr);
 	void ShowStatus(const FireStarterState& bestState, const FireStarterState& state, unsigned long long generation, double generationTime, double runTime, bool sync = false);

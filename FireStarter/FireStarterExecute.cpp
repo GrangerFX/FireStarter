@@ -863,7 +863,8 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         const FireStarterCode& bestCode = state.Code();
         memcpy(m_hostTradingCode, &bestCode, m_tradingCodeSize);
     }
-#if 1
+
+#if MONEYMAKER_TESTER
     if (0) {
         blockIdx.x = 0;
         blockIdx.y = 0;

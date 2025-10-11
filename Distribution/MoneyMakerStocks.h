@@ -36,7 +36,7 @@ typedef struct MoneyMakerStock
         return !(*this == other);
     } // operator!=
 
-    static inline size_t StockSize(unsigned int history = MONEYMAKER_HISTORY)
+    static inline size_t StockSize(unsigned int history)
     {
         return sizeof(MoneyMakerStock) + sizeof(float) * (history - MONEYMAKER_HISTORY);
     } // StockSize
@@ -44,6 +44,11 @@ typedef struct MoneyMakerStock
     static inline size_t StockSize(const FireStarterSettings& settings)
     {
         return StockSize(settings.m_history);
+    } // StockSize
+
+    inline size_t StockSize(void) const
+    {
+        return sizeof(MoneyMakerStock) + sizeof(float) * (numValues - MONEYMAKER_HISTORY);
     } // StockSize
 
     inline void Copy(const MoneyMakerStock* stock)
@@ -68,11 +73,62 @@ typedef struct MoneyMakerStock
 
     inline void Clear(void)
     {
+        minValue = 0.0f;
+        maxValue = 0.0f;
         for (unsigned int i = 0; i < numValues; i++)
             s[i] = 0.0f; // Clear all the history days
     } // Clear
 
+    inline void Init(unsigned int history = MONEYMAKER_HISTORY, unsigned int stockSymbol = 0)
+    {
+        symbol = stockSymbol;
+        numValues = history;
+        Clear();
+    } // Init
+
+    inline void Init(const FireStarterSettings& settings, unsigned int stocks = 0)
+    {
+        Init(stocks > settings.m_stocks ? stocks : settings.m_stocks, settings.m_history);
+    } // MoneyMakerStocks
+
 #ifndef __CUDACC__
+    static inline MoneyMakerStock* New(unsigned int history, unsigned int stockSymbol = 0)
+    {
+        size_t stockSize = MoneyMakerStock::StockSize(history);
+        MoneyMakerStock* newStock = (MoneyMakerStock*)malloc(stockSize);
+        newStock->Init(history, stockSymbol);
+        return newStock;
+    } // New
+
+    static inline MoneyMakerStock* New(const MoneyMakerStock* stock)
+    {
+        size_t stockSize = stock->StockSize();
+        MoneyMakerStock* newStock = (MoneyMakerStock*)malloc(stockSize);
+        memcpy(newStock, stock, stockSize);
+    } // New
+
+    static inline MoneyMakerStock* New(const MoneyMakerStock& stock)
+    {
+        size_t stockSize = stock.StockSize();
+        MoneyMakerStock* newStock = (MoneyMakerStock*)malloc(stockSize);
+        memcpy(newStock, &stock, stockSize);
+        return newStock;
+    } // New
+
+    static inline void Delete(MoneyMakerStock*& stocks)
+    {
+        if (stocks) {
+            free(stocks);
+            stocks = nullptr;
+        }
+    } // Delete
+
+    inline void Delete(void)
+    {
+        if (this)
+            free(this);
+    } // Delete
+
     bool Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history = MONEYMAKER_HISTORY, bool normalize = false);
 #endif
 
@@ -106,6 +162,16 @@ typedef struct MoneyMakerStocks
     static inline size_t StocksSize(const FireStarterSettings& settings)
     {
         return StocksSize(settings.m_stocks, settings.m_history);
+    } // StocksSize
+
+    static inline size_t StocksSize(const MoneyMakerStocks& stocks)
+    {
+        return StocksSize(stocks.numStocks, stocks.numValues);
+    } // StocksSize
+
+    static inline size_t StocksSize(const MoneyMakerStocks* stocks)
+    {
+        return StocksSize(stocks->numStocks, stocks->numValues);
     } // StocksSize
 
     inline size_t StocksSize(void) const
@@ -148,25 +214,13 @@ typedef struct MoneyMakerStocks
         StockData(stock)->Copy(stockData);
     } // Copy
 
-#ifndef __CUDACC__
-    inline bool Load(const std::string& path, unsigned int symbol, unsigned int stock = 0, bool normalize = false)
-    {
-        if (stock >= numStocks)
-            return false;
-        return StockData(stock)->Load(path, symbol, numValues, normalize);
-    } // Load
-#endif
-
     inline void Init(unsigned int stocks = MONEYMAKER_STOCKS, unsigned int history = MONEYMAKER_HISTORY)
     {
         numStocks = stocks;
         numValues = history;
         for (unsigned int i = 0; i < stocks; i++) {
             MoneyMakerStock& stock = Stock(i);
-            stock.symbol = 0;
-            stock.numValues = numValues;
-            stock.minValue = 0.0f;
-            stock.maxValue = 0.0f;
+            stock.Init(history);
         }
     } // Init
 
@@ -174,6 +228,50 @@ typedef struct MoneyMakerStocks
     {
         Init(stocks > settings.m_stocks ? stocks : settings.m_stocks, settings.m_history);
     } // MoneyMakerStocks
+
+#ifndef __CUDACC__
+    static inline MoneyMakerStocks* New(unsigned int stocks, unsigned int history)
+    {
+        size_t stocksSize = MoneyMakerStocks::StocksSize(stocks, history);
+        MoneyMakerStocks* newStocks = (MoneyMakerStocks*)malloc(stocksSize);
+        newStocks->Init(stocks, history);
+    } // New
+
+    static inline MoneyMakerStocks* New(const MoneyMakerStocks* stocks)
+    {
+        size_t stocksSize = stocks->StocksSize();
+        MoneyMakerStocks* newStocks = (MoneyMakerStocks*)malloc(stocksSize);
+        memcpy(newStocks, stocks, stocksSize);
+    } // New
+
+    static inline MoneyMakerStocks* New(const MoneyMakerStocks& stocks)
+    {
+        size_t stocksSize = stocks.StocksSize();
+        MoneyMakerStocks* newStocks = (MoneyMakerStocks*)malloc(stocksSize);
+        memcpy(newStocks, &stocks, stocksSize);
+    } // New
+
+    static inline void Delete(MoneyMakerStocks*& stocks)
+    {
+        if (stocks) {
+            free(stocks);
+            stocks = nullptr;
+        }
+    } // Delete
+
+    inline void Delete(void)
+    { 
+        if (this)
+            free(this);
+    } // Delete
+
+    inline bool Load(const std::string& path, unsigned int symbol, unsigned int stock = 0, bool normalize = false)
+    {
+        if (stock >= numStocks)
+            return false;
+        return StockData(stock)->Load(path, symbol, numValues, normalize);
+    } // Load
+#endif
 
     inline MoneyMakerStocks(unsigned int stocks = MONEYMAKER_STOCKS, unsigned int history = MONEYMAKER_HISTORY)
     {
