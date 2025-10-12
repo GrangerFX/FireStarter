@@ -1,0 +1,532 @@
+AAPL: Result=236.0692%  TestResult=236.0693%  Error=0.0000
+NVDA: Result=122.8063%  TestResult=122.8063%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=123.1228%  TestResult=123.1228%  Error=0.0000
+AAPL: Result=224.9903%  TestResult=224.9903%  Error=0.0000
+NVDA: Result=235.0934%  TestResult=235.0933%  Error=0.0000
+INTC: Result=136.9852%  TestResult=136.9852%  Error=0.0000
+MSFT: Result=112.4283%  TestResult=112.4283%  Error=0.0000
+AAPL: Result=146.7660%  TestResult=146.7659%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=118.5805%  TestResult=118.5805%  Error=0.0000
+AAPL: Result=115.7721%  TestResult=115.7721%  Error=0.0000
+NVDA: Result=227.2246%  TestResult=227.2246%  Error=0.0000
+INTC: Result=115.1755%  TestResult=115.1754%  Error=0.0000
+MSFT: Result=122.9244%  TestResult=122.9244%  Error=0.0000
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=120.1832%  TestResult=120.1832%  Error=0.0000
+AAPL: Result=137.5647%  TestResult=137.5647%  Error=0.0000
+NVDA: Result=140.2266%  TestResult=140.2267%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=122.5188%  TestResult=122.5188%  Error=0.0000
+AAPL: Result=131.0091%  TestResult=131.0091%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=116.1330%  TestResult=116.1330%  Error=0.0000
+AAPL: Result=159.1525%  TestResult=159.1525%  Error=0.0000
+NVDA: Result=125.6310%  TestResult=125.6310%  Error=0.0000
+INTC: Result=82.5174%  TestResult=82.5173%  Error=0.0000
+MSFT: Result=112.4895%  TestResult=112.4895%  Error=0.0000
+AAPL: Result=123.4267%  TestResult=123.4268%  Error=0.0000
+NVDA: Result=224.2005%  TestResult=224.2005%  Error=0.0000
+INTC: Result=191.1829%  TestResult=191.1828%  Error=0.0000
+MSFT: Result=124.3479%  TestResult=124.3479%  Error=0.0000
+AAPL: Result=97.6248%  TestResult=97.6248%  Error=0.0000
+NVDA: Result=114.7994%  TestResult=114.7993%  Error=0.0000
+INTC: Result=83.9496%  TestResult=83.9496%  Error=0.0000
+MSFT: Result=122.0611%  TestResult=122.0611%  Error=0.0000
+AAPL: Result=95.5835%  TestResult=95.5835%  Error=0.0000
+NVDA: Result=94.5778%  TestResult=94.5778%  Error=0.0000
+INTC: Result=74.8135%  TestResult=74.8135%  Error=0.0000
+MSFT: Result=118.7947%  TestResult=118.7947%  Error=0.0000
+AAPL: Result=107.4914%  TestResult=107.4913%  Error=0.0000
+NVDA: Result=189.6321%  TestResult=189.6321%  Error=0.0000
+INTC: Result=209.2335%  TestResult=209.2335%  Error=0.0000
+MSFT: Result=98.5005%  TestResult=98.5005%  Error=0.0000
+AAPL: Result=115.7255%  TestResult=115.7255%  Error=0.0000
+NVDA: Result=122.7118%  TestResult=122.7118%  Error=0.0000
+INTC: Result=133.4886%  TestResult=133.4886%  Error=0.0000
+MSFT: Result=123.3956%  TestResult=123.3956%  Error=0.0000
+AAPL: Result=103.2993%  TestResult=103.2993%  Error=0.0000
+NVDA: Result=110.9887%  TestResult=110.9886%  Error=0.0000
+INTC: Result=214.8111%  TestResult=214.8111%  Error=0.0000
+MSFT: Result=133.8391%  TestResult=133.8391%  Error=0.0000
+AAPL: Result=118.7959%  TestResult=118.7959%  Error=0.0000
+NVDA: Result=102.0453%  TestResult=102.0453%  Error=0.0000
+INTC: Result=163.2004%  TestResult=163.2004%  Error=0.0000
+MSFT: Result=118.6979%  TestResult=118.6979%  Error=0.0000
+AAPL: Result=90.5870%  TestResult=90.5870%  Error=0.0000
+NVDA: Result=235.1657%  TestResult=235.1656%  Error=0.0000
+INTC: Result=100.6015%  TestResult=100.6016%  Error=0.0000
+MSFT: Result=118.0036%  TestResult=118.0036%  Error=0.0000
+AAPL: Result=108.2814%  TestResult=108.2814%  Error=0.0000
+NVDA: Result=94.4842%  TestResult=94.4842%  Error=0.0000
+INTC: Result=75.1075%  TestResult=75.1076%  Error=0.0000
+MSFT: Result=117.5775%  TestResult=117.5775%  Error=0.0000
+AAPL: Result=111.8500%  TestResult=111.8500%  Error=0.0000
+NVDA: Result=178.6278%  TestResult=178.6278%  Error=0.0000
+INTC: Result=99.5567%  TestResult=99.5568%  Error=0.0000
+MSFT: Result=106.0449%  TestResult=106.0449%  Error=0.0000
+AAPL: Result=131.6780%  TestResult=131.6780%  Error=0.0000
+NVDA: Result=124.1662%  TestResult=124.1662%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=132.6954%  TestResult=132.6954%  Error=0.0000
+AAPL: Result=106.5930%  TestResult=106.5930%  Error=0.0000
+NVDA: Result=200.0531%  TestResult=200.0530%  Error=0.0000
+INTC: Result=95.9774%  TestResult=95.9774%  Error=0.0000
+MSFT: Result=119.6083%  TestResult=119.6083%  Error=0.0000
+AAPL: Result=93.9898%  TestResult=93.9898%  Error=0.0000
+NVDA: Result=120.8527%  TestResult=120.8527%  Error=0.0000
+INTC: Result=110.8243%  TestResult=110.8243%  Error=0.0000
+MSFT: Result=115.4490%  TestResult=115.4490%  Error=0.0000
+AAPL: Result=169.6941%  TestResult=169.6942%  Error=0.0000
+NVDA: Result=120.6927%  TestResult=120.6928%  Error=0.0000
+INTC: Result=111.2905%  TestResult=111.2905%  Error=0.0000
+MSFT: Result=131.2805%  TestResult=131.2805%  Error=0.0000
+AAPL: Result=99.0816%  TestResult=99.0816%  Error=0.0000
+NVDA: Result=104.5942%  TestResult=104.5942%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=122.6501%  TestResult=122.6501%  Error=0.0000
+AAPL: Result=134.8605%  TestResult=134.8605%  Error=0.0000
+NVDA: Result=160.1402%  TestResult=160.1402%  Error=0.0000
+INTC: Result=134.5071%  TestResult=134.5071%  Error=0.0000
+MSFT: Result=128.8044%  TestResult=128.8044%  Error=0.0000
+AAPL: Result=92.2314%  TestResult=92.2314%  Error=0.0000
+NVDA: Result=147.1736%  TestResult=147.1736%  Error=0.0000
+INTC: Result=65.8423%  TestResult=65.8423%  Error=0.0000
+MSFT: Result=109.0606%  TestResult=109.0606%  Error=0.0000
+AAPL: Result=173.5544%  TestResult=173.5546%  Error=0.0000
+NVDA: Result=144.8084%  TestResult=144.8085%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=122.1204%  TestResult=122.1204%  Error=0.0000
+AAPL: Result=216.3559%  TestResult=216.3559%  Error=0.0000
+NVDA: Result=135.9951%  TestResult=135.9952%  Error=0.0000
+INTC: Result=75.8331%  TestResult=75.8332%  Error=0.0000
+MSFT: Result=94.8705%  TestResult=94.8705%  Error=0.0000
+AAPL: Result=159.3871%  TestResult=159.3871%  Error=0.0000
+NVDA: Result=134.3561%  TestResult=134.3560%  Error=0.0000
+INTC: Result=97.8464%  TestResult=97.8464%  Error=0.0000
+MSFT: Result=115.1489%  TestResult=115.1489%  Error=0.0000
+AAPL: Result=216.4750%  TestResult=216.4751%  Error=0.0000
+NVDA: Result=81.4172%  TestResult=81.4172%  Error=0.0000
+INTC: Result=102.5493%  TestResult=102.5493%  Error=0.0000
+MSFT: Result=116.5353%  TestResult=116.5353%  Error=0.0000
+AAPL: Result=192.7271%  TestResult=192.7271%  Error=0.0000
+NVDA: Result=82.9641%  TestResult=82.9641%  Error=0.0000
+INTC: Result=140.8218%  TestResult=140.8218%  Error=0.0000
+MSFT: Result=134.0115%  TestResult=134.0115%  Error=0.0000
+AAPL: Result=163.0253%  TestResult=163.0253%  Error=0.0000
+NVDA: Result=173.3891%  TestResult=173.3891%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=120.5352%  TestResult=120.5352%  Error=0.0000
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=113.2700%  TestResult=113.2700%  Error=0.0000
+AAPL: Result=84.7220%  TestResult=84.7220%  Error=0.0000
+NVDA: Result=127.8386%  TestResult=127.8385%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=110.3023%  TestResult=110.3023%  Error=0.0000
+AAPL: Result=103.5482%  TestResult=103.5482%  Error=0.0000
+NVDA: Result=93.9634%  TestResult=93.9634%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=121.3642%  TestResult=121.3642%  Error=0.0000
+AAPL: Result=124.8301%  TestResult=124.8302%  Error=0.0000
+NVDA: Result=142.3431%  TestResult=142.3432%  Error=0.0000
+INTC: Result=183.9894%  TestResult=183.9894%  Error=0.0000
+MSFT: Result=114.0000%  TestResult=114.0000%  Error=0.0000
+AAPL: Result=85.9967%  TestResult=85.9966%  Error=0.0000
+NVDA: Result=118.5644%  TestResult=118.5644%  Error=0.0000
+INTC: Result=101.9750%  TestResult=101.9938%  Error=0.0000
+MSFT: Result=106.9898%  TestResult=106.9898%  Error=0.0000
+AAPL: Result=113.6276%  TestResult=113.6276%  Error=0.0000
+NVDA: Result=178.1752%  TestResult=178.1752%  Error=0.0000
+INTC: Result=107.4277%  TestResult=107.4276%  Error=0.0000
+MSFT: Result=122.9884%  TestResult=122.9884%  Error=0.0000
+AAPL: Result=199.3501%  TestResult=199.3500%  Error=0.0000
+NVDA: Result=190.5676%  TestResult=190.5676%  Error=0.0000
+INTC: Result=184.3989%  TestResult=184.3990%  Error=0.0000
+MSFT: Result=163.5642%  TestResult=163.5642%  Error=0.0000
+AAPL: Result=208.6437%  TestResult=208.6437%  Error=0.0000
+NVDA: Result=167.1756%  TestResult=167.1756%  Error=0.0000
+INTC: Result=165.6092%  TestResult=165.6092%  Error=0.0000
+MSFT: Result=150.0270%  TestResult=150.0269%  Error=0.0000
+AAPL: Result=209.6984%  TestResult=209.6984%  Error=0.0000
+NVDA: Result=232.5202%  TestResult=232.5202%  Error=0.0000
+INTC: Result=226.0723%  TestResult=226.0723%  Error=0.0000
+MSFT: Result=163.3850%  TestResult=163.3850%  Error=0.0000
+AAPL: Result=118.5050%  TestResult=118.5050%  Error=0.0000
+NVDA: Result=159.8847%  TestResult=159.8848%  Error=0.0000
+INTC: Result=134.8714%  TestResult=134.8715%  Error=0.0000
+MSFT: Result=109.3692%  TestResult=109.3692%  Error=0.0000
+AAPL: Result=102.9835%  TestResult=102.9835%  Error=0.0000
+NVDA: Result=128.1060%  TestResult=128.1060%  Error=0.0000
+INTC: Result=151.3145%  TestResult=151.3144%  Error=0.0000
+MSFT: Result=114.5017%  TestResult=114.5017%  Error=0.0000
+AAPL: Result=152.2818%  TestResult=152.2818%  Error=0.0000
+NVDA: Result=81.6997%  TestResult=81.6997%  Error=0.0000
+INTC: Result=90.8428%  TestResult=90.8428%  Error=0.0000
+MSFT: Result=124.5376%  TestResult=124.5376%  Error=0.0000
+AAPL: Result=206.8820%  TestResult=206.8820%  Error=0.0000
+NVDA: Result=177.0142%  TestResult=177.0142%  Error=0.0000
+INTC: Result=255.0293%  TestResult=255.0292%  Error=0.0000
+MSFT: Result=153.8403%  TestResult=153.8403%  Error=0.0000
+AAPL: Result=144.9616%  TestResult=144.9616%  Error=0.0000
+NVDA: Result=304.2706%  TestResult=304.2707%  Error=0.0000
+INTC: Result=216.4145%  TestResult=216.4145%  Error=0.0000
+MSFT: Result=148.9156%  TestResult=148.9156%  Error=0.0000
+AAPL: Result=97.8256%  TestResult=97.8256%  Error=0.0000
+NVDA: Result=109.3437%  TestResult=109.3436%  Error=0.0000
+INTC: Result=217.6975%  TestResult=217.6975%  Error=0.0000
+MSFT: Result=93.1833%  TestResult=93.1833%  Error=0.0000
+AAPL: Result=225.6329%  TestResult=225.6329%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=124.0521%  TestResult=124.0521%  Error=0.0000
+AAPL: Result=206.1601%  TestResult=206.1601%  Error=0.0000
+NVDA: Result=113.2717%  TestResult=113.2717%  Error=0.0000
+INTC: Result=102.6532%  TestResult=102.6532%  Error=0.0000
+MSFT: Result=131.2722%  TestResult=131.2722%  Error=0.0000
+AAPL: Result=103.3691%  TestResult=103.3691%  Error=0.0000
+NVDA: Result=146.1559%  TestResult=146.1560%  Error=0.0000
+INTC: Result=119.5928%  TestResult=119.5928%  Error=0.0000
+MSFT: Result=120.4536%  TestResult=120.4536%  Error=0.0000
+AAPL: Result=178.6279%  TestResult=178.6278%  Error=0.0000
+NVDA: Result=149.7867%  TestResult=149.7868%  Error=0.0000
+INTC: Result=163.0146%  TestResult=163.0146%  Error=0.0000
+MSFT: Result=132.6988%  TestResult=132.6988%  Error=0.0000
+AAPL: Result=127.0772%  TestResult=127.0772%  Error=0.0000
+NVDA: Result=186.0756%  TestResult=186.0756%  Error=0.0000
+INTC: Result=149.7951%  TestResult=149.7951%  Error=0.0000
+MSFT: Result=115.9555%  TestResult=115.9555%  Error=0.0000
+AAPL: Result=141.3977%  TestResult=141.3977%  Error=0.0000
+NVDA: Result=149.2911%  TestResult=149.2911%  Error=0.0000
+INTC: Result=182.3997%  TestResult=182.3997%  Error=0.0000
+MSFT: Result=138.8789%  TestResult=138.8789%  Error=0.0000
+AAPL: Result=221.4503%  TestResult=221.4503%  Error=0.0000
+NVDA: Result=180.0209%  TestResult=180.0209%  Error=0.0000
+INTC: Result=177.6127%  TestResult=177.6128%  Error=0.0000
+MSFT: Result=147.6501%  TestResult=147.6502%  Error=0.0000
+AAPL: Result=218.1371%  TestResult=218.1371%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result=142.5679%  TestResult=142.5678%  Error=0.0000
+MSFT: Result=117.8959%  TestResult=117.8959%  Error=0.0000
+AAPL: Result=123.9483%  TestResult=123.9484%  Error=0.0000
+NVDA: Result=140.6549%  TestResult=140.6548%  Error=0.0000
+INTC: Result=111.2339%  TestResult=111.2338%  Error=0.0000
+MSFT: Result=111.4085%  TestResult=111.4085%  Error=0.0000
+AAPL: Result=122.4252%  TestResult=122.4253%  Error=0.0000
+NVDA: Result=108.6002%  TestResult=108.6002%  Error=0.0000
+INTC: Result=112.5338%  TestResult=112.5338%  Error=0.0000
+MSFT: Result=130.0954%  TestResult=130.0954%  Error=0.0000
+AAPL: Result=111.2843%  TestResult=111.2842%  Error=0.0000
+NVDA: Result=170.7643%  TestResult=170.7644%  Error=0.0000
+INTC: Result=148.1025%  TestResult=148.1025%  Error=0.0000
+MSFT: Result=110.0116%  TestResult=110.0116%  Error=0.0000
+AAPL: Result=134.2975%  TestResult=134.2975%  Error=0.0000
+NVDA: Result=143.3368%  TestResult=143.3367%  Error=0.0000
+INTC: Result=101.0730%  TestResult=101.0730%  Error=0.0000
+MSFT: Result=128.8323%  TestResult=128.8323%  Error=0.0000
+AAPL: Result=212.9668%  TestResult=212.9668%  Error=0.0000
+NVDA: Result=152.4323%  TestResult=152.4323%  Error=0.0000
+INTC: Result=184.6928%  TestResult=184.6928%  Error=0.0000
+MSFT: Result=125.7289%  TestResult=125.7289%  Error=0.0000
+AAPL: Result=231.1084%  TestResult=231.1085%  Error=0.0000
+NVDA: Result=181.1402%  TestResult=181.1402%  Error=0.0000
+INTC: Result=208.5184%  TestResult=208.5184%  Error=0.0000
+MSFT: Result=161.4835%  TestResult=161.4835%  Error=0.0000
+AAPL: Result=231.7818%  TestResult=231.7818%  Error=0.0000
+NVDA: Result=149.6282%  TestResult=149.6283%  Error=0.0000
+INTC: Result=167.4929%  TestResult=167.4929%  Error=0.0000
+MSFT: Result=135.6560%  TestResult=135.6560%  Error=0.0000
+AAPL: Result=160.3913%  TestResult=160.3913%  Error=0.0000
+NVDA: Result=135.7514%  TestResult=135.7514%  Error=0.0000
+INTC: Result=103.6687%  TestResult=103.6686%  Error=0.0000
+MSFT: Result=96.9330%  TestResult=96.9330%  Error=0.0000
+AAPL: Result=109.6607%  TestResult=109.6607%  Error=0.0000
+NVDA: Result=166.2342%  TestResult=166.2342%  Error=0.0000
+INTC: Result=84.4074%  TestResult=84.4074%  Error=0.0000
+MSFT: Result=137.3243%  TestResult=137.3243%  Error=0.0000
+AAPL: Result=99.1584%  TestResult=99.1584%  Error=0.0000
+NVDA: Result=157.9142%  TestResult=157.9142%  Error=0.0000
+INTC: Result=113.2498%  TestResult=113.2498%  Error=0.0000
+MSFT: Result=133.2977%  TestResult=133.2977%  Error=0.0000
+AAPL: Result=110.5224%  TestResult=110.5224%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result=124.9332%  TestResult=124.9332%  Error=0.0000
+MSFT: Result=116.8831%  TestResult=116.8831%  Error=0.0000
+AAPL: Result=126.6678%  TestResult=126.6678%  Error=0.0000
+NVDA: Result=134.4777%  TestResult=134.4777%  Error=0.0000
+INTC: Result=162.6996%  TestResult=162.6996%  Error=0.0000
+MSFT: Result=114.3185%  TestResult=114.3185%  Error=0.0000
+AAPL: Result=93.2442%  TestResult=93.2442%  Error=0.0000
+NVDA: Result=131.1398%  TestResult=131.1398%  Error=0.0000
+INTC: Result=83.1180%  TestResult=83.1180%  Error=0.0000
+MSFT: Result=115.2371%  TestResult=115.2371%  Error=0.0000
+AAPL: Result=105.3552%  TestResult=105.3553%  Error=0.0000
+NVDA: Result=186.7193%  TestResult=186.7194%  Error=0.0000
+INTC: Result=125.0457%  TestResult=125.0456%  Error=0.0000
+MSFT: Result=90.9472%  TestResult=90.9472%  Error=0.0000
+AAPL: Result=116.9095%  TestResult=116.9095%  Error=0.0000
+NVDA: Result=135.7151%  TestResult=135.7151%  Error=0.0000
+INTC: Result=67.5906%  TestResult=67.5906%  Error=0.0000
+MSFT: Result=115.4242%  TestResult=115.4242%  Error=0.0000
+AAPL: Result=100.5079%  TestResult=100.5079%  Error=0.0000
+NVDA: Result=197.7649%  TestResult=197.7649%  Error=0.0000
+INTC: Result=129.3578%  TestResult=129.3579%  Error=0.0000
+MSFT: Result=120.7040%  TestResult=120.7040%  Error=0.0000
+AAPL: Result=234.2195%  TestResult=234.2195%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=123.0403%  TestResult=123.0403%  Error=0.0000
+AAPL: Result=146.9602%  TestResult=146.9602%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result Failed!
+AAPL: Result=139.7195%  TestResult=139.7195%  Error=0.0000
+NVDA: Result=186.9332%  TestResult=186.9332%  Error=0.0000
+INTC: Result=100.6110%  TestResult=100.6110%  Error=0.0000
+MSFT: Result=115.1630%  TestResult=115.1630%  Error=0.0000
+AAPL: Result=148.5094%  TestResult=148.5094%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result Failed!
+AAPL: Result=142.5547%  TestResult=142.5547%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=113.4637%  TestResult=113.4637%  Error=0.0000
+AAPL: Result=86.6523%  TestResult=86.6523%  Error=0.0000
+NVDA: Result=107.0113%  TestResult=107.0113%  Error=0.0000
+INTC: Result=90.2937%  TestResult=90.3840%  Error=0.0000
+MSFT: Result=112.7345%  TestResult=112.7345%  Error=0.0000
+AAPL: Result=122.5296%  TestResult=122.5297%  Error=0.0000
+NVDA: Result=123.7313%  TestResult=123.7314%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=123.2215%  TestResult=123.2215%  Error=0.0000
+AAPL: Result=203.3501%  TestResult=203.3502%  Error=0.0000
+NVDA: Result=161.3920%  TestResult=161.3919%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=126.6598%  TestResult=126.6598%  Error=0.0000
+AAPL: Result=130.7094%  TestResult=130.7094%  Error=0.0000
+NVDA: Result=127.5573%  TestResult=127.5573%  Error=0.0000
+INTC: Result=107.3929%  TestResult=107.3930%  Error=0.0000
+MSFT: Result=106.3351%  TestResult=106.3351%  Error=0.0000
+AAPL: Result=170.8949%  TestResult=170.8949%  Error=0.0000
+NVDA: Result=110.5372%  TestResult=110.5372%  Error=0.0000
+INTC: Result=146.3784%  TestResult=146.3784%  Error=0.0000
+MSFT: Result=122.3387%  TestResult=122.3387%  Error=0.0000
+AAPL: Result=137.2266%  TestResult=137.2266%  Error=0.0000
+NVDA: Result=134.9166%  TestResult=134.9166%  Error=0.0000
+INTC: Result=129.0166%  TestResult=129.0166%  Error=0.0000
+MSFT: Result=94.4887%  TestResult=94.4887%  Error=0.0000
+AAPL: Result=187.3324%  TestResult=187.3325%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result Failed!
+AAPL: Result=192.2839%  TestResult=192.2839%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=116.9187%  TestResult=116.9187%  Error=0.0000
+AAPL: Result=106.6321%  TestResult=106.6321%  Error=0.0000
+NVDA: Result=146.7427%  TestResult=146.7427%  Error=0.0000
+INTC: Result=174.8344%  TestResult=174.8344%  Error=0.0000
+MSFT: Result=117.6451%  TestResult=117.6451%  Error=0.0000
+AAPL: Result=97.9146%  TestResult=97.9146%  Error=0.0000
+NVDA: Result=101.4818%  TestResult=101.4818%  Error=0.0000
+INTC: Result=86.1556%  TestResult=86.1556%  Error=0.0000
+MSFT: Result=106.4068%  TestResult=106.4068%  Error=0.0000
+AAPL: Result=108.0488%  TestResult=108.0488%  Error=0.0000
+NVDA: Result=157.1458%  TestResult=157.1458%  Error=0.0000
+INTC: Result=95.9742%  TestResult=95.9742%  Error=0.0000
+MSFT: Result=132.9790%  TestResult=132.9790%  Error=0.0000
+AAPL: Result=139.4050%  TestResult=139.4050%  Error=0.0000
+NVDA: Result=163.0445%  TestResult=163.0445%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=119.3892%  TestResult=119.3892%  Error=0.0000
+AAPL: Result=99.6437%  TestResult=99.6437%  Error=0.0000
+NVDA: Result=150.3497%  TestResult=150.3498%  Error=0.0000
+INTC: Result=74.3400%  TestResult=74.3400%  Error=0.0000
+MSFT: Result=121.7956%  TestResult=121.7956%  Error=0.0000
+AAPL: Result=121.8942%  TestResult=121.8942%  Error=0.0000
+NVDA: Result=145.7466%  TestResult=145.7467%  Error=0.0000
+INTC: Result=123.8832%  TestResult=123.8832%  Error=0.0000
+MSFT: Result=122.3617%  TestResult=122.3617%  Error=0.0000
+AAPL: Result=112.5155%  TestResult=112.5156%  Error=0.0000
+NVDA: Result=176.3785%  TestResult=176.3785%  Error=0.0000
+INTC: Result=189.5144%  TestResult=189.5145%  Error=0.0000
+MSFT: Result=119.1051%  TestResult=119.1051%  Error=0.0000
+AAPL: Result=110.6669%  TestResult=110.6670%  Error=0.0000
+NVDA: Result=110.2444%  TestResult=110.2444%  Error=0.0000
+INTC: Result=107.0496%  TestResult=107.0496%  Error=0.0000
+MSFT: Result=122.6198%  TestResult=122.6198%  Error=0.0000
+AAPL: Result=224.2990%  TestResult=224.2990%  Error=0.0000
+NVDA: Result=167.9576%  TestResult=167.9576%  Error=0.0000
+INTC: Result=123.4706%  TestResult=123.4706%  Error=0.0000
+MSFT: Result=128.1821%  TestResult=128.1821%  Error=0.0000
+AAPL: Result=176.7806%  TestResult=176.7806%  Error=0.0000
+NVDA: Result=158.2847%  TestResult=158.2848%  Error=0.0000
+INTC: Result=91.7238%  TestResult=91.7238%  Error=0.0000
+MSFT: Result=126.6212%  TestResult=126.6212%  Error=0.0000
+AAPL: Result=120.5377%  TestResult=120.5376%  Error=0.0000
+NVDA: Result=134.1943%  TestResult=134.1943%  Error=0.0000
+INTC: Result=95.7779%  TestResult=95.7778%  Error=0.0000
+MSFT: Result=114.2237%  TestResult=114.2237%  Error=0.0000
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result Failed!
+AAPL: Result=204.8403%  TestResult=204.8403%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result=126.2751%  TestResult=126.2751%  Error=0.0000
+MSFT: Result=98.6223%  TestResult=98.6223%  Error=0.0000
+AAPL: Result=133.3464%  TestResult=133.3464%  Error=0.0000
+NVDA: Result=227.0639%  TestResult=227.0639%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=119.2368%  TestResult=119.2368%  Error=0.0000
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result Failed!
+AAPL: Result=148.3554%  TestResult=148.3554%  Error=0.0000
+NVDA: Result=148.5561%  TestResult=148.5561%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=125.1932%  TestResult=125.1932%  Error=0.0000
+AAPL: Result=107.6782%  TestResult=107.6781%  Error=0.0000
+NVDA: Result=207.2988%  TestResult=207.2988%  Error=0.0000
+INTC: Result=86.4654%  TestResult=86.4654%  Error=0.0000
+MSFT: Result=112.2975%  TestResult=112.2975%  Error=0.0000
+AAPL: Result=107.2191%  TestResult=107.2190%  Error=0.0000
+NVDA: Result=138.8328%  TestResult=138.8328%  Error=0.0000
+INTC: Result=92.9848%  TestResult=92.9848%  Error=0.0000
+MSFT: Result=111.8347%  TestResult=111.8347%  Error=0.0000
+AAPL: Result=120.6946%  TestResult=120.6946%  Error=0.0000
+NVDA: Result=114.5108%  TestResult=114.5108%  Error=0.0000
+INTC: Result=193.2597%  TestResult=193.2598%  Error=0.0000
+MSFT: Result=122.0816%  TestResult=122.0816%  Error=0.0000
+AAPL: Result=109.7171%  TestResult=109.7171%  Error=0.0000
+NVDA: Result=139.8214%  TestResult=139.8214%  Error=0.0000
+INTC: Result=109.9791%  TestResult=109.9791%  Error=0.0000
+MSFT: Result=119.2073%  TestResult=119.2073%  Error=0.0000
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=124.8677%  TestResult=124.8677%  Error=0.0000
+AAPL: Result=142.3137%  TestResult=142.3137%  Error=0.0000
+NVDA: Result=115.4602%  TestResult=115.4602%  Error=0.0000
+INTC: Result=148.0479%  TestResult=148.0480%  Error=0.0000
+MSFT: Result=117.2932%  TestResult=117.2932%  Error=0.0000
+AAPL: Result=123.4768%  TestResult=123.4768%  Error=0.0000
+NVDA: Result=154.9747%  TestResult=154.9747%  Error=0.0000
+INTC: Result=135.8164%  TestResult=135.8164%  Error=0.0000
+MSFT: Result=150.2765%  TestResult=150.2765%  Error=0.0000
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=111.6982%  TestResult=111.6982%  Error=0.0000
+AAPL: Result=225.2867%  TestResult=225.2866%  Error=0.0000
+NVDA: Result=295.6411%  TestResult=295.6412%  Error=0.0000
+INTC: Result=177.1633%  TestResult=177.1633%  Error=0.0000
+MSFT: Result=141.4385%  TestResult=141.4385%  Error=0.0000
+AAPL: Result=112.1362%  TestResult=112.1362%  Error=0.0000
+NVDA: Result=168.0619%  TestResult=168.0618%  Error=0.0000
+INTC: Result=114.7693%  TestResult=114.7692%  Error=0.0000
+MSFT: Result=133.6513%  TestResult=133.6513%  Error=0.0000
+AAPL: Result=112.1932%  TestResult=112.1931%  Error=0.0000
+NVDA: Result=107.9993%  TestResult=107.9993%  Error=0.0000
+INTC: Result=94.0863%  TestResult=94.0863%  Error=0.0000
+MSFT: Result=120.2935%  TestResult=120.2935%  Error=0.0000
+AAPL: Result=136.2728%  TestResult=136.2728%  Error=0.0000
+NVDA: Result=69.1602%  TestResult=69.1603%  Error=0.0000
+INTC: Result=71.2237%  TestResult=71.2236%  Error=0.0000
+MSFT: Result=148.4996%  TestResult=148.4996%  Error=0.0000
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=135.8800%  TestResult=135.8800%  Error=0.0000
+AAPL: Result=146.6466%  TestResult=146.6466%  Error=0.0000
+NVDA: Result=203.6644%  TestResult=203.6645%  Error=0.0000
+INTC: Result=142.5900%  TestResult=142.5900%  Error=0.0000
+MSFT: Result=164.8015%  TestResult=164.8015%  Error=0.0000
+AAPL: Result=111.8546%  TestResult=111.8546%  Error=0.0000
+NVDA: Result=140.5455%  TestResult=140.5455%  Error=0.0000
+INTC: Result=122.7062%  TestResult=122.7062%  Error=0.0000
+MSFT: Result=107.0355%  TestResult=107.0355%  Error=0.0000
+AAPL: Result=119.9002%  TestResult=119.9002%  Error=0.0000
+NVDA: Result=133.4464%  TestResult=133.4464%  Error=0.0000
+INTC: Result=150.2718%  TestResult=150.2718%  Error=0.0000
+MSFT: Result=114.2463%  TestResult=114.2463%  Error=0.0000
+AAPL: Result=92.9715%  TestResult=92.9715%  Error=0.0000
+NVDA: Result=92.0013%  TestResult=92.0013%  Error=0.0000
+INTC: Result=80.9487%  TestResult=80.9488%  Error=0.0000
+MSFT: Result=117.5129%  TestResult=117.5129%  Error=0.0000
+AAPL: Result=105.6725%  TestResult=105.6725%  Error=0.0000
+NVDA: Result=150.6743%  TestResult=150.6743%  Error=0.0000
+INTC: Result=122.0898%  TestResult=122.0897%  Error=0.0000
+MSFT: Result=111.4332%  TestResult=111.4332%  Error=0.0000
+AAPL: Result=100.6248%  TestResult=100.6248%  Error=0.0000
+NVDA: Result=208.6885%  TestResult=208.6886%  Error=0.0000
+INTC: Result=109.0111%  TestResult=109.0110%  Error=0.0000
+MSFT: Result=125.2751%  TestResult=125.2751%  Error=0.0000
+AAPL: Result=131.6702%  TestResult=131.6702%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=121.2253%  TestResult=121.2253%  Error=0.0000
+AAPL: Result=170.4512%  TestResult=170.4512%  Error=0.0000
+NVDA: Result=163.9578%  TestResult=163.9579%  Error=0.0000
+INTC: Result=102.6984%  TestResult=102.6983%  Error=0.0000
+MSFT: Result=118.2235%  TestResult=118.2235%  Error=0.0000
+AAPL: Result=217.0789%  TestResult=217.0789%  Error=0.0000
+NVDA: Result=130.6824%  TestResult=130.6824%  Error=0.0000
+INTC: Result=211.7755%  TestResult=211.7755%  Error=0.0000
+MSFT: Result=146.1911%  TestResult=146.1911%  Error=0.0000
+AAPL: Result=88.9356%  TestResult=88.9356%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result=48.4291%  TestResult=48.4292%  Error=0.0000
+MSFT: Result=104.6505%  TestResult=104.6505%  Error=0.0000
+AAPL: Result=104.1635%  TestResult=104.1636%  Error=0.0000
+NVDA: Result=162.0721%  TestResult=162.0721%  Error=0.0000
+INTC: Result=130.3974%  TestResult=130.3974%  Error=0.0000
+MSFT: Result=132.7628%  TestResult=132.7628%  Error=0.0000
+AAPL: Result=103.2280%  TestResult=103.2280%  Error=0.0000
+NVDA: Result=145.5702%  TestResult=145.5702%  Error=0.0000
+INTC: Result=73.6071%  TestResult=73.6070%  Error=0.0000
+MSFT: Result=107.8589%  TestResult=107.8589%  Error=0.0000
+AAPL: Result=102.6480%  TestResult=102.6480%  Error=0.0000
+NVDA: Result=173.3839%  TestResult=173.3839%  Error=0.0000
+INTC: Result Failed!
+MSFT: Result=134.3708%  TestResult=134.3708%  Error=0.0000
+AAPL: Result=107.4985%  TestResult=107.4986%  Error=0.0000
+NVDA: Result=157.2768%  TestResult=157.2768%  Error=0.0000
+INTC: Result=115.0380%  TestResult=115.0379%  Error=0.0000
+MSFT: Result=113.3962%  TestResult=113.3962%  Error=0.0000
+AAPL: Result=231.0519%  TestResult=231.0518%  Error=0.0000
+NVDA: Result=129.1876%  TestResult=129.1876%  Error=0.0000
+INTC: Result=97.8253%  TestResult=97.8253%  Error=0.0000
+MSFT: Result=103.1688%  TestResult=103.1688%  Error=0.0000
+AAPL: Result=97.8945%  TestResult=97.8945%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=114.0852%  TestResult=114.0852%  Error=0.0000
+AAPL: Result=117.8302%  TestResult=117.8302%  Error=0.0000
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=111.0043%  TestResult=111.0043%  Error=0.0000
+AAPL: Result=115.2655%  TestResult=115.2656%  Error=0.0000
+NVDA: Result=115.6600%  TestResult=115.6601%  Error=0.0000
+INTC: Result=107.0045%  TestResult=107.0045%  Error=0.0000
+MSFT: Result=110.5301%  TestResult=110.5301%  Error=0.0000
+AAPL: Result=169.7208%  TestResult=169.7208%  Error=0.0000
+NVDA: Result=87.7714%  TestResult=87.7714%  Error=0.0000
+INTC: Result=116.3463%  TestResult=116.3463%  Error=0.0000
+MSFT: Result=132.1717%  TestResult=132.1717%  Error=0.0000
+AAPL: Result=134.3799%  TestResult=134.3799%  Error=0.0000
+NVDA: Result=134.8759%  TestResult=134.8759%  Error=0.0000
+INTC: Result=80.2273%  TestResult=80.2273%  Error=0.0000
+MSFT: Result=140.2527%  TestResult=140.2527%  Error=0.0000
+AAPL: Result=104.7345%  TestResult=104.7345%  Error=0.0000
+NVDA: Result=129.5994%  TestResult=129.5994%  Error=0.0000
+INTC: Result=103.6675%  TestResult=103.6676%  Error=0.0000
+MSFT: Result=148.6525%  TestResult=148.6525%  Error=0.0000

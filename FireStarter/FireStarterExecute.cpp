@@ -899,7 +899,8 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingData, m_hostTradingData, m_tradingDataSize, cudaMemcpyHostToDevice, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingCode, m_hostTradingCode, m_tradingCodeSize, cudaMemcpyHostToDevice, Stream()));
 
-#if 1
+#if 0
+        // Note: This produces different results than the CPU interpreter due to accumulated errors.
         FireStarterCode* nullCode = nullptr;
         void* arr[] = { reinterpret_cast<void*>(&m_deviceStocks),
                         reinterpret_cast<void*>(&m_deviceTradingResults),
