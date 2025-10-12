@@ -420,6 +420,7 @@ private:
     float m_worstResult = 0.0f;
 
 public:
+    float GetBestResult(void);
     const FireStarterCode* GetBestCode(void);
     bool AddCode(const FireStarterCode* code, float result);
     float WorstResult(void);

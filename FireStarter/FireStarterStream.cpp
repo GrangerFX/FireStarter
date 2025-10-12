@@ -679,6 +679,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
                 // Get the best code to optimize.
+                float evolveResult = evolveState.m_bestCodes.GetBestResult();
                 const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
                 if (bestCode) {
                     optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, evolveID, test);
@@ -699,6 +700,18 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     float tradingPercent = 0.0f;
                     const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
                     if (tradingResults) {
+                        double duration = bestState.Duration();
+                        totalDuration += duration;
+                        float optimizeResult = optimizeState.MaxResults();
+                        float bestResult = bestState.MaxResults();
+                        float evolveReturns = evolveResult ? 100.0f * (1.0f / evolveResult) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
+                        float optimizeReturns = optimizeResult ? 100.0f * (1.0f / optimizeResult) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
+                        float bestReturns = bestResult ? 100.0f * (1.0f / bestResult) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
+                        std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.4f%%  Optimize Result=%.4f%%  Best Result=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, optimizeReturns, bestReturns, duration, duration / evolveState.m_generation, totalDuration);
+                        if (optimizeResult == bestResult)
+                            resultText += " *******";
+                        resultText += "\n";
+
                         for (unsigned int stockIndex = 0; stockIndex < numStocks; stockIndex++) {
                             const MoneyMakerStock& stock = stocks->Stock(stockIndex);
                             const MoneyMakerStock& result = tradingResults->Stock(stockIndex);
@@ -731,6 +744,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                 resultText += "Result Failed!";
                             resultText += "\n";
                         }
+                        resultText += "\n";
                         FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
                     }
 #if FIRESTARTER_SAVE_BESTSTATE && 1

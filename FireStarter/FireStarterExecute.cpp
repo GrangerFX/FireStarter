@@ -926,14 +926,6 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         checkCUDAErrors(cudaMemcpyAsync(m_hostTradingResults, m_deviceTradingResults, m_tradingResultsSize, cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
     }
-
-#if 1
-    for (unsigned int i = 0; i < m_stocks->numStocks; i++) {
-        const MoneyMakerStock& stock = (*m_hostTradingResults)[i];
-        float result = stock[0];
-        int foo = 1;
-    }
-#endif
 #endif
 } // ExecuteMoneyOptimizePass
 

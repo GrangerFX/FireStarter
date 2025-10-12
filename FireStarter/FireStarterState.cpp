@@ -2,6 +2,13 @@
 #include "Format.h"
 #include <algorithm>
 
+float FireStarterBestCodes::GetBestResult(void)
+{
+    if (!m_numCodes)
+        return 0.0f;
+    return m_bestResults[0];
+} // GetBestResult
+
 const FireStarterCode* FireStarterBestCodes::GetBestCode(void)
 {
     if (!m_numCodes)
