@@ -179,7 +179,7 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
             data[d] = oldData;
     }
 
-#if 1
+#if 0
     result = FIRESTARTER_START_RESULT;
     trades = 0;
     MoneyOptimizeEvaluate(data, stockData, trades, result);
@@ -231,7 +231,6 @@ inline bool MoneyTesterEvaluateCode(const FireStarterData* data, const FireStart
     float oldPrice = stockData[0];
     unsigned int index = 1;
     unsigned int shares = 0;
-    unsigned int numTrades = 0;
 
     GPU_SHARED FireStarterSharedData sharedData;
     sharedData = data;
@@ -267,13 +266,13 @@ inline bool MoneyTesterEvaluateCode(const FireStarterData* data, const FireStart
             if (!shares) {
                 shares = (unsigned int)(funds / newPrice);
                 funds -= shares * newPrice;
-                numTrades++;
+                trades++;
             }
         } else if (n < -1.0f) {
             if (shares) {
                 funds += newPrice * shares;
                 shares = 0;
-                numTrades++;
+                trades++;
             }
         }
     }
@@ -294,7 +293,6 @@ inline bool MoneyTesterEvaluateCompiled(const FireStarterData& data, const Money
     float oldPrice = stockData[0];
     unsigned int index = 1;
     unsigned int shares = 0;
-    unsigned int numTrades = 0;
 
     FireStarterData workData;
     workData = data;
@@ -330,13 +328,13 @@ inline bool MoneyTesterEvaluateCompiled(const FireStarterData& data, const Money
             if (!shares) {
                 shares = (unsigned int)(funds / newPrice);
                 funds -= shares * newPrice;
-                numTrades++;
+                trades++;
             }
         } else if (n < -1.0f) {
             if (shares) {
                 funds += newPrice * shares;
                 shares = 0;
-                numTrades++;
+                trades++;
             }
         }
     }
@@ -358,18 +356,17 @@ GPU_GLOBAL void MoneyTester(const MoneyMakerStocks* stocks, MoneyMakerStocks* tr
         MoneyMakerStock& resultData = tradingResults->Stock(stockIndex);
 
         // The shared data for the threads in the warp.
-        unsigned int testTrades = 0;
-        float testResult = 0.0f;
-#if 1
+#if 0
         unsigned int trades = 0;
         float result = FIRESTARTER_START_RESULT;
         bool good = MoneyOptimizeEvaluate(*tradingData, stockData, trades, result);
 #endif
+        unsigned int testTrades = 0;
+        float testResult = 0.0f;
         if (tradingCode)
             MoneyTesterEvaluateCode(tradingData, tradingCode, stockData, resultData, testTrades, testResult);
-        else {
+        else
             MoneyTesterEvaluateCompiled(*tradingData, stockData, resultData, testTrades, testResult);
-        }
         int foo = 1;
     }
 } // MoneyTester

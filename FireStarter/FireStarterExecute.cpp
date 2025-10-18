@@ -814,7 +814,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
             Context()->Synchronize();
         }
 
-        if (1 && (pass + 1 == passes)) {
+        if (0 && (pass + 1 == passes)) {
             if (m_simulateGPU)
                 checkCUDAErrors(cudaMemcpy(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
             else {
@@ -885,7 +885,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
     }
 
 #if MONEYMAKER_TESTER
-    if (1) {
+    if (0) {
         for (unsigned int i = 0; i < settings.m_registers; i++) {
             float data = m_hostTradingData->d[i];
             printf("tradingData[%u]= %.9f\n", i, data);
