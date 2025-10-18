@@ -722,24 +722,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             if (tradingPercent) {
                                 float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
                                 resultText += Format("Result=%.4f%%", tradingReturns);
-#if MONEYMAKER_TESTER
-                                MoneyMakerStock* test = MoneyMakerStock::New(stock);
-                                float error = 0.0f;
-                                if (FireStarterShow::TestMoneyMaker(optimizeState, stock, *test)) {
-                                    float testPercent = (*test)[0];
-                                    if (testPercent) {
-                                        for (unsigned int i = 1; i < test->numValues; i++) {
-                                            float diff = fabsf((*test)[i] - result[i]);
-                                            if (diff > error)
-                                                error = diff;
-                                        }
-                                        float testReturns = testPercent ? 100.0f * (1.0f / testPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
-                                        resultText += Format("  TestResult=%.4f%%  Error=%.4f", testReturns, error);
-                                    }
-                                } else
-                                    resultText += Format("  TestResult Failed!");
-                                test->Delete();
-#endif
                             } else
                                 resultText += "Result Failed!";
                             resultText += "\n";
@@ -747,7 +729,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         resultText += "\n";
                         FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
                     }
-#if FIRESTARTER_SAVE_BESTSTATE && 1
+#if FIRESTARTER_SAVE_BESTSTATE
                     if (bestState.m_optimizeValid)
                         complete->CompleteSaveResults(bestState);
 #endif
