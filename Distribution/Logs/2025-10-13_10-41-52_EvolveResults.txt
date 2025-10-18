@@ -1,0 +1,7 @@
+Seed: 0  Test:   0  Generation=  1  Evolve Result=205.6188%  Optimize Result=236.2903%  Best Result=236.2903%  Duration: 19.6  GenTime: 19.6  Total: 19.6 *******
+AAPL: Result=236.2903%  TestResult=145.5682%  Error=46.4860
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result=108.2288%  TestResult=109.1105%  Error=47.6689
+
+Seed: 0  Test:   0  Generation=  2  Evolve Result=10.00000000  Optimize Result=0.44436869  Training=19.6488%  Validation=9.8244%  Duration: 39.3  GenTime: 39.3  Total: 0.0  Average: 0.0
