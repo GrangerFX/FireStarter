@@ -12,7 +12,7 @@
 #define MONEYMAKER_WARMUP           16          // Days of stock used for warmup prior to trading
 #define MONEYMAKER_TRADING          240         // Days used for stock trading
 #define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_WARMUP + MONEYMAKER_TRADING)   // Days of stock history data
-#define MONEYMAKER_STOCKS           1           // Stocks with history data
+#define MONEYMAKER_STOCKS           4           // Stocks with history data
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #else
 #define MONEYMAKER_VARIATION        0           // Variation in the stock data start offset
