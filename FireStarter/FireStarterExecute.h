@@ -8,7 +8,7 @@
 
 class FireStarterExecute : public CUDAThread {
 private:
-    const MoneyMakerStocks* m_stocks = nullptr;
+    const MoneyMakerStocks* m_stocksData = nullptr;
     float* m_hostResults = nullptr;
     float* m_deviceResults = nullptr;
     FireStarterResult* m_hostPopulation = nullptr;

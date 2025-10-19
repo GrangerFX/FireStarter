@@ -25,11 +25,11 @@ inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], 
     return true;
 } // OptimizeEvaluate
 
-GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int population)
+GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
-    if (member >= population)
+    if (member >= populationSize)
         return;
 
     // Precalculate the target theta values and target samples.
@@ -108,7 +108,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
         // Copy the best data from among a random set of candidates.
         for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
             // Select evolving members with results better than the current result.
-            unsigned int candidate = RANDOMMOD(memberSeed, population);
+            unsigned int candidate = RANDOMMOD(memberSeed, populationSize);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate, variation);
             unsigned short candidateAge = candidateResult->EvolveAge1();
             if (candidateAge <= 1) {
