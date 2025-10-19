@@ -6,6 +6,38 @@
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
 // EVALUATE //
+    n += data[0];
+    data[1] = n;
+    n += data[2];
+    n *= data[3];
+    n += data[0];
+    n += data[4];
+    data[0] = n;
+    data[3] = n;
+    n += data[5];
+    n *= data[5];
+    n += data[5];
+    data[6] = n;
+    n += data[7];
+    n += data[8];
+    n += data[9];
+    data[5] = n;
+    data[10] = n;
+    n *= data[8];
+    n += data[11];
+    data[12] = n;
+    n += data[13];
+    n *= data[14];
+    n += data[0];
+    data[15] = n;
+    data[15] = n;
+    data[15] = n;
+    n += data[16];
+    n += data[10];
+    n *= data[6];
+    data[17] = n;
+    n += data[10];
+    data[18] = n;
 // END //
     return n;
 } // MoneyCompiledEvaluate
