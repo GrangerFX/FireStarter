@@ -8,6 +8,7 @@ typedef struct MoneyMakerStock
 {
     unsigned int symbol;
     unsigned int numValues;
+    unsigned int startValue;
     float minValue, maxValue;
     float s[MONEYMAKER_HISTORY];    // The stock price changes (current day price / previous day price).
 
@@ -129,7 +130,7 @@ typedef struct MoneyMakerStock
             free(this);
     } // Delete
 
-    bool Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history = MONEYMAKER_HISTORY, bool normalize = false);
+    bool Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history = MONEYMAKER_HISTORY, unsigned int start = 0, bool normalize = false);
 #endif
 
     inline MoneyMakerStock(const struct MoneyMakerStock& stock)
@@ -265,11 +266,11 @@ typedef struct MoneyMakerStocks
             free(this);
     } // Delete
 
-    inline bool Load(const std::string& path, unsigned int symbol, unsigned int stock = 0, bool normalize = false)
+    inline bool Load(const std::string& path, unsigned int symbol, unsigned int stock = 0, unsigned int start = 0, bool normalize = false)
     {
         if (stock >= numStocks)
             return false;
-        return StockData(stock)->Load(path, symbol, numValues, normalize);
+        return StockData(stock)->Load(path, symbol, numValues, start, normalize);
     } // Load
 #endif
 

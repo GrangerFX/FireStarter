@@ -786,7 +786,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
                         for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                             for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                                 for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                    MoneyOptimizer(newPopulation, oldPopulation, m_deviceStocks, registers, evolutionSeed, optimizeSeed, optimizePass, populationSize);
+                                    MoneyOptimizer(newPopulation, oldPopulation, m_deviceStocks, registers, optimizeSeed, optimizePass, populationSize);
 
             unsigned int hash = 0;
             for (unsigned int i = 0; i < settings.m_population; i++) {
@@ -799,7 +799,6 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
                             reinterpret_cast<void*>(&oldPopulation),
                             reinterpret_cast<void*>(&m_deviceStocks),
                             reinterpret_cast<void*>(&registers),
-                            reinterpret_cast<void*>(&evolutionSeed),
                             reinterpret_cast<void*>(&optimizeSeed),
                             reinterpret_cast<void*>(&optimizePass),
                             reinterpret_cast<void*>(&populationSize)

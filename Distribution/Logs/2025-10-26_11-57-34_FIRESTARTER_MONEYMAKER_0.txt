@@ -1,0 +1,85 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_MONEYMAKER
+evolveSeed = 0
+optimizeSeed = 0
+tests = 1
+streams = 1
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 256
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_MONEYMAKER: Generation=  2  Best=313.36822510%  Time=1.3418 Seconds  Time=41.0242 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  3  Best=324.08554077%  Time=1.3758 Seconds  Time=62.2579 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  4  Best=324.08554077%  Time=1.4692 Seconds  Time=83.6143 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  5  Best=340.63162231%  Time=1.3368 Seconds  Time=104.8329 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  6  Best=340.63162231%  Time=1.4535 Seconds  Time=126.1997 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  7  Best=340.63162231%  Time=1.4267 Seconds  Time=147.5233 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  8  Best=340.63162231%  Time=1.1464 Seconds  Time=168.5603 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  9  Best=340.63162231%  Time=1.4548 Seconds  Time=189.8859 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 10  Best=340.63162231%  Time=1.3404 Seconds  Time=211.1730 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 11  Best=340.63162231%  Time=1.3625 Seconds  Time=232.4156 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 12  Best=340.63162231%  Time=1.3372 Seconds  Time=253.6562 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 13  Best=340.63162231%  Time=1.2907 Seconds  Time=274.8564 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 14  Best=340.63162231%  Time=1.4674 Seconds  Time=296.2977 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 15  Best=340.63162231%  Time=1.2878 Seconds  Time=317.5513 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 16  Best=340.63162231%  Time=1.4176 Seconds  Time=338.9012 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 17  Best=340.63162231%  Time=1.3138 Seconds  Time=360.1633 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 18  Best=340.63162231%  Time=1.1664 Seconds  Time=381.2331 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 19  Best=340.63162231%  Time=1.3880 Seconds  Time=402.5899 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 20  Best=340.63162231%  Time=1.3130 Seconds  Time=423.8617 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 21  Best=340.63162231%  Time=1.2735 Seconds  Time=445.0921 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 22  Best=340.63162231%  Time=1.4420 Seconds  Time=466.4762 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 23  Best=340.63162231%  Time=1.4909 Seconds  Time=487.9133 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 24  Best=340.63162231%  Time=1.4906 Seconds  Time=509.3742 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 25  Best=340.63162231%  Time=1.3078 Seconds  Time=530.5996 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 26  Best=340.63162231%  Time=1.2796 Seconds  Time=551.8543 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 27  Best=340.63162231%  Time=1.3900 Seconds  Time=573.2085 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 28  Best=340.63162231%  Time=1.2971 Seconds  Time=594.4698 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 29  Best=340.63162231%  Time=1.3867 Seconds  Time=615.8185 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 30  Best=340.63162231%  Time=1.3886 Seconds  Time=637.1586 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 31  Best=340.63162231%  Time=1.3798 Seconds  Time=658.4988 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 32  Best=340.63162231%  Time=1.3083 Seconds  Time=679.7770 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 33  Best=340.63162231%  Time=1.4803 Seconds  Time=701.2040 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 34  Best=340.63162231%  Time=1.4397 Seconds  Time=722.6107 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 35  Best=340.63162231%  Time=1.4558 Seconds  Time=744.0199 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 36  Best=340.63162231%  Time=1.4440 Seconds  Time=765.4248 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 37  Best=340.63162231%  Time=1.4441 Seconds  Time=786.8291 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 38  Best=340.63162231%  Time=1.3368 Seconds  Time=808.1258 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 39  Best=340.63162231%  Time=1.5096 Seconds  Time=829.5616 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 40  Best=340.63162231%  Time=1.2895 Seconds  Time=850.7483 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 41  Best=340.63162231%  Time=1.3947 Seconds  Time=872.1028 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 42  Best=340.63162231%  Time=1.3857 Seconds  Time=893.4509 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 43  Best=340.63162231%  Time=1.3683 Seconds  Time=914.7673 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 44  Best=340.63162231%  Time=1.4023 Seconds  Time=936.1273 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 45  Best=340.63162231%  Time=1.4166 Seconds  Time=957.5015 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 46  Best=340.63162231%  Time=1.4559 Seconds  Time=978.8613 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 47  Best=340.63162231%  Time=1.5022 Seconds  Time=1000.3302 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 48  Best=340.63162231%  Time=1.4509 Seconds  Time=1021.7421 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 49  Best=340.63162231%  Time=1.5061 Seconds  Time=1043.1739 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 50  Best=340.63162231%  Time=1.4047 Seconds  Time=1064.5437 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 51  Best=340.63162231%  Time=1.2573 Seconds  Time=1085.7580 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 52  Best=340.63162231%  Time=1.1730 Seconds  Time=1106.8879 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 53  Best=340.63162231%  Time=1.3912 Seconds  Time=1128.2535 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 54  Best=340.63162231%  Time=1.4478 Seconds  Time=1149.6524 Seconds  Run Time=0.0000 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 55  Best=340.63162231%  Time=1.3776 Seconds  Time=1170.9935 Seconds  Run Time=0.0000 Seconds
