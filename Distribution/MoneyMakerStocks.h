@@ -210,9 +210,17 @@ typedef struct MoneyMakerStocks
         return Stock(stock);
     } // operator[]
 
-    inline void Copy(MoneyMakerStock* stockData, unsigned int stock = 0)
+    inline void Copy(const MoneyMakerStock* stockData, unsigned int stock = 0)
     {
         StockData(stock)->Copy(stockData);
+    } // Copy
+
+    inline void Copy(const MoneyMakerStocks* inputStocks)
+    {
+        numStocks = inputStocks->numStocks;
+        numDays = inputStocks->numDays;
+        for (unsigned int stock = 0; stock < numStocks; stock++)
+            Copy(inputStocks->StockData(stock), stock);
     } // Copy
 
     inline void Init(unsigned int stocks = MONEYMAKER_STOCKS, unsigned int history = MONEYMAKER_HISTORY)
