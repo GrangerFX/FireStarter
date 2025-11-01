@@ -7,6 +7,7 @@
 #include "FireStarterSource.h"
 #include "FireStarterUtil.h"
 #include "FireStarter_LoadState.h"
+#include "FireMoneyMaker.h"
 
 #define FIRESTARTER_STREAM_EVOLUTIONS 100
 
@@ -698,16 +699,15 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     // Output the results.
                     std::string resultText;
                     unsigned int numStocks = stocks->numStocks;
-                    float tradingPercent = 0.0f;
                     const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
                     if (tradingResults) {
                         double duration = bestState.Duration();
                         totalDuration += duration;
                         float optimizeResult = optimizeState.MaxResults();
                         float bestResult = bestState.MaxResults();
-                        float evolveReturns = evolveResult ? 100.0f * (1.0f / evolveResult) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
-                        float optimizeReturns = optimizeResult ? 100.0f * (1.0f / optimizeResult) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
-                        float bestReturns = bestResult ? 100.0f * (1.0f / bestResult) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
+                        float evolveReturns = AnnualizedReturns(evolveResult, evolveSettings.m_trading);
+                        float optimizeReturns = AnnualizedReturns(optimizeResult, evolveSettings.m_trading);
+                        float bestReturns = AnnualizedReturns(bestResult, evolveSettings.m_trading);
                         std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.4f%%  Optimize Result=%.4f%%  Best Result=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, optimizeReturns, bestReturns, duration, duration / evolveState.m_generation, totalDuration);
                         if (optimizeResult == bestResult)
                             resultText += " *******";
@@ -719,9 +719,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             char* symbol = (char*)&stock.symbol;
                             resultText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
 
-                            float tradingPercent = result[0];
-                            if (tradingPercent) {
-                                float tradingReturns = tradingPercent ? 100.0f * (1.0f / tradingPercent) * (252.0f / evolveSettings.m_trading) : 0.0f; // Percent gain per year.
+                            float tradingResult = result[0];
+                            if (tradingResult) {
+                                float tradingReturns = AnnualizedReturns(tradingResult);
                                 resultText += Format("Result=%.4f%%", tradingReturns);
                             } else
                                 resultText += "Result Failed!";
@@ -743,23 +743,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     break;
             }
             
-            // Output the test results.
-            if (!WillTerminate()) {
-                double duration = bestState.Duration();
-                totalDuration += duration;
-
-                std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.8f  Optimize Result=%.8f  Training=%.4f%%  Validation=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f  Average: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveState.MaxResults(), bestState.MaxResults(), duration, duration / evolveState.m_generation, totalDuration, totalDuration / testCount);
-                if (bestState.MaxResults() <= evolveSettings.m_target)
-                    resultText += " *******";
-                resultText += "\n";
-                FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
-
-                // Save the best state and best solution.
-#if FIRESTARTER_SAVE_BESTSTATE
-                if (bestState.m_optimizeValid)
-                    complete->CompleteSaveResults(bestState);
-#endif
-            }
 #if 0
             // Increment the evolve ID to make every evolution unique.
             // This will unfairly benefit some evolutions over others but create more opportumities for success.

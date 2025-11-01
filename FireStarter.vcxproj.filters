@@ -165,6 +165,9 @@
     <ClInclude Include="Distribution\MoneyMakerStocks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Distribution\FireMoneyMaker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Distribution\FireEvolver.cu">
