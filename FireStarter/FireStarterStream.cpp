@@ -652,7 +652,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
 
         // Load the stock market data;
-        MoneyMakerStocks* stocks = (MoneyMakerStocks*)malloc(MoneyMakerStocks::StocksSize(4, optimizeSettings.m_history));
+        MoneyMakerStocks* stocks = (MoneyMakerStocks*)malloc(MoneyMakerStocks::StocksSize(optimizeSettings.m_stocks, optimizeSettings.m_history));
         unsigned long long stockSeed = SEED9(evolveSettings.m_evolveSeed);
         unsigned int stockMod = optimizeSettings.m_variation + 1;
         stocks->Init(optimizeSettings, 4);

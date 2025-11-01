@@ -74,11 +74,11 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
             float maxValue = stock.maxValue;
             float lastValue = stock[0];
             float yScale = 0.5f * (float)height / (maxValue - minValue);
-            unsigned int numValues = MIN(stocks->numValues, tradingResults->numValues);
+            unsigned int numDays = MIN(stocks->numDays, tradingResults->numDays);
             unsigned int warmup = settings.m_warmup;
 
             // Draw the warmup line.
-            unsigned int warmupX = (width * warmup) / numValues;
+            unsigned int warmupX = (width * warmup) / numDays;
             for (unsigned int y = 0; y < height; y++) {
                 uchar4 &pixel(pixels[y * width + warmupX]);
                 pixel.x = 255;
@@ -90,19 +90,19 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
             bool holding = false;
             bool good = true;
             for (unsigned int x = 0; x < width; x++) {
-                unsigned int i = (x * numValues) / width;
+                unsigned int i = (x * numDays) / width;
                 float curValue = stock[i];
                 int y = (int)(height * 0.75f - (curValue - minValue) * yScale);
                 if ((y >= 0) && ((unsigned int)y < height)) {
                     if (i >= warmup) {
                         if (!holding && (results[i] > 1.0f)) {
                             unsigned int j = i + 1;
-                            while (j < numValues) {
+                            while (j < numDays) {
                                 if (results[j] < -1.0f)
                                     break;
                                 j++;
                             }
-                            if (j == numValues)
+                            if (j == numDays)
                                 j--;
                             good = stock[j] >= stock[i];
                             holding = true;

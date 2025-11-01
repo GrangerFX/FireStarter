@@ -7,8 +7,8 @@
 typedef struct MoneyMakerStock
 {
     unsigned int symbol;
-    unsigned int numValues;
-    unsigned int startValue;
+    unsigned int numDays;
+    unsigned int startDay;
     float minValue, maxValue;
     float s[MONEYMAKER_HISTORY];    // The stock price changes (current day price / previous day price).
 
@@ -24,7 +24,7 @@ typedef struct MoneyMakerStock
 
     inline bool operator==(const MoneyMakerStock& other) const
     {
-        if ((other.symbol != symbol) || (other.minValue != minValue) || (other.maxValue != maxValue) || (other.numValues != numValues))
+        if ((other.symbol != symbol) || (other.minValue != minValue) || (other.maxValue != maxValue) || (other.numDays != numDays))
             return false;
         for (int i = 0; i < MONEYMAKER_HISTORY; i++)
             if (s[i] != other[i])
@@ -49,16 +49,16 @@ typedef struct MoneyMakerStock
 
     inline size_t StockSize(void) const
     {
-        return sizeof(MoneyMakerStock) + sizeof(float) * (numValues - MONEYMAKER_HISTORY);
+        return sizeof(MoneyMakerStock) + sizeof(float) * (numDays - MONEYMAKER_HISTORY);
     } // StockSize
 
     inline void Copy(const MoneyMakerStock* stock)
     {
         symbol = stock->symbol;
-        numValues = stock->numValues;
+        numDays = stock->numDays;
         minValue = stock->minValue;
         maxValue = stock->maxValue;
-        for (unsigned int i = 0; i < numValues; i++)
+        for (unsigned int i = 0; i < numDays; i++)
             s[i] = (*stock)[i];
     } // Copy
 
@@ -76,14 +76,14 @@ typedef struct MoneyMakerStock
     {
         minValue = 0.0f;
         maxValue = 0.0f;
-        for (unsigned int i = 0; i < numValues; i++)
+        for (unsigned int i = 0; i < numDays; i++)
             s[i] = 0.0f; // Clear all the history days
     } // Clear
 
     inline void Init(unsigned int history = MONEYMAKER_HISTORY, unsigned int stockSymbol = 0)
     {
         symbol = stockSymbol;
-        numValues = history;
+        numDays = history;
         Clear();
     } // Init
 
@@ -152,7 +152,7 @@ typedef struct MoneyMakerStock
 typedef struct MoneyMakerStocks
 {
     unsigned int numStocks = MONEYMAKER_STOCKS;
-    unsigned int numValues = MONEYMAKER_HISTORY;
+    unsigned int numDays = MONEYMAKER_HISTORY;
     MoneyMakerStock s[MONEYMAKER_STOCKS];
 
     static inline size_t StocksSize(unsigned int stocks, unsigned int history)
@@ -167,27 +167,27 @@ typedef struct MoneyMakerStocks
 
     static inline size_t StocksSize(const MoneyMakerStocks& stocks)
     {
-        return StocksSize(stocks.numStocks, stocks.numValues);
+        return StocksSize(stocks.numStocks, stocks.numDays);
     } // StocksSize
 
     static inline size_t StocksSize(const MoneyMakerStocks* stocks)
     {
-        return StocksSize(stocks->numStocks, stocks->numValues);
+        return StocksSize(stocks->numStocks, stocks->numDays);
     } // StocksSize
 
     inline size_t StocksSize(void) const
     {
-        return StocksSize(numStocks, numValues);
+        return StocksSize(numStocks, numDays);
     } // StocksSize
 
     inline MoneyMakerStock* StockData(unsigned int stock = 0)
     {
-        return (MoneyMakerStock*)((char*)s + stock * MoneyMakerStock::StockSize(numValues));
+        return (MoneyMakerStock*)((char*)s + stock * MoneyMakerStock::StockSize(numDays));
     } // StockData
 
     inline const MoneyMakerStock* StockData(unsigned int stock = 0) const
     {
-        return (const MoneyMakerStock*)((char*)s + stock * MoneyMakerStock::StockSize(numValues));
+        return (const MoneyMakerStock*)((char*)s + stock * MoneyMakerStock::StockSize(numDays));
     } // StockData
 
     inline MoneyMakerStock& Stock(unsigned int stock = 0)
@@ -218,7 +218,7 @@ typedef struct MoneyMakerStocks
     inline void Init(unsigned int stocks = MONEYMAKER_STOCKS, unsigned int history = MONEYMAKER_HISTORY)
     {
         numStocks = stocks;
-        numValues = history;
+        numDays = history;
         for (unsigned int i = 0; i < stocks; i++) {
             MoneyMakerStock& stock = Stock(i);
             stock.Init(history);
@@ -270,7 +270,7 @@ typedef struct MoneyMakerStocks
     {
         if (stock >= numStocks)
             return false;
-        return StockData(stock)->Load(path, symbol, numValues, start, normalize);
+        return StockData(stock)->Load(path, symbol, numDays, start, normalize);
     } // Load
 #endif
 

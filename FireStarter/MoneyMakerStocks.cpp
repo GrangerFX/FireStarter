@@ -9,8 +9,8 @@ bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol
     FILE* file = NULL;
 
     symbol = stockSymbol;
-    numValues = history;
-    startValue = start;
+    numDays = history;
+    startDay = start;
     minValue = maxValue = 0.0f;
     errno_t err = fopen_s(&file, filePath.c_str(), "r");
     if (file) {
@@ -42,9 +42,9 @@ bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol
         fclose(file);
         
         // Load the training data from the most recent history of the stock.
-        unsigned int numValues = (unsigned int)theData.size();
-        if (numValues >= history) {
-            unsigned int index = numValues - (history + 1);
+        unsigned int dataSize = (unsigned int)theData.size();
+        if (dataSize >= history) {
+            unsigned int index = dataSize - (history + 1);
             float lastData = theData[index++];
             minValue = lastData;
             maxValue = lastData;

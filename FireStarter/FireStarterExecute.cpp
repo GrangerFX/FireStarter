@@ -851,7 +851,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
     state.m_optimizeValid = true;
 
     if (m_hostTradingResults)
-        m_hostTradingResults->Init(m_hostStocks->numStocks, m_hostStocks->numValues);
+        m_hostTradingResults->Init(m_hostStocks->numStocks, m_hostStocks->numDays);
     if (m_hostTradingData) {
         const FireStarterResult& bestResult = state.Result();
         memcpy(m_hostTradingData, &bestResult.m_data, m_tradingDataSize);
