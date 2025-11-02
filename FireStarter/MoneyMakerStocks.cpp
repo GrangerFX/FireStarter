@@ -3,14 +3,13 @@
 #include <stdio.h>
 #include <vector>
 
-bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history, unsigned int start, bool normalize)
+bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history, bool normalize)
 {
     bool result = false;
     FILE* file = NULL;
 
     symbol = stockSymbol;
     numDays = history;
-    startDay = start;
     minValue = maxValue = 0.0f;
     errno_t err = fopen_s(&file, filePath.c_str(), "r");
     if (file) {

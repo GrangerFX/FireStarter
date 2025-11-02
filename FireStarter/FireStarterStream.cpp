@@ -653,13 +653,11 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
         // Load the stock market data;
         MoneyMakerStocks* stocks = (MoneyMakerStocks*)malloc(MoneyMakerStocks::StocksSize(optimizeSettings.m_stocks, optimizeSettings.m_history));
-        unsigned long long stockSeed = SEED9(evolveSettings.m_evolveSeed);
-        unsigned int stockMod = optimizeSettings.m_variation + 1;
         stocks->Init(optimizeSettings, 4);
-        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL', 0, RANDOMMOD(stockSeed, stockMod));
-        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA', 1, RANDOMMOD(stockSeed, stockMod));
-        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/intc.us.txt", 'INTC', 2, RANDOMMOD(stockSeed, stockMod));
-        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/msft.us.txt", 'MSFT', 3, RANDOMMOD(stockSeed, stockMod));
+        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL', 0);
+        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA', 1);
+        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/intc.us.txt", 'INTC', 2);
+        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/msft.us.txt", 'MSFT', 3);
         executeEvolve->ExecuteSetStocks(evolveSettings, stocks);
         executeOptimize->ExecuteSetStocks(optimizeSettings, stocks);
 
