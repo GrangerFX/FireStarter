@@ -633,8 +633,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned long long optimizeID = 0;
 
         // Optimization for single variation optimization population.
-        if (optimizeSettings.m_variations == 1)
-            optimizeSettings.m_population = 65536;
+        optimizeSettings.m_population = 65536;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
@@ -652,8 +651,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
 
         // Load the stock market data;
-        MoneyMakerStocks* stocks = (MoneyMakerStocks*)malloc(MoneyMakerStocks::StocksSize(optimizeSettings.m_stocks, optimizeSettings.m_history));
-        stocks->Init(optimizeSettings, 4);
+        MoneyMakerStocks* stocks = (MoneyMakerStocks*)malloc(MoneyMakerStocks::StocksSize(evolveSettings.m_stocks, evolveSettings.m_history));
+        stocks->Init(evolveSettings, 4);
         stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL', 0);
         stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA', 1);
         stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/intc.us.txt", 'INTC', 2);
@@ -704,8 +703,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         float optimizeResult = optimizeState.MaxResults();
                         float bestResult = bestState.MaxResults();
                         float evolveReturns = AnnualizedReturns(evolveResult, evolveSettings.m_trading);
-                        float optimizeReturns = AnnualizedReturns(optimizeResult, evolveSettings.m_trading);
-                        float bestReturns = AnnualizedReturns(bestResult, evolveSettings.m_trading);
+                        float optimizeReturns = AnnualizedReturns(optimizeResult, optimizeSettings.m_trading);
+                        float bestReturns = AnnualizedReturns(bestResult, optimizeSettings.m_trading);
                         std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.4f%%  Optimize Result=%.4f%%  Best Result=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, optimizeReturns, bestReturns, duration, duration / evolveState.m_generation, totalDuration);
                         if (optimizeResult == bestResult)
                             resultText += " *******";
