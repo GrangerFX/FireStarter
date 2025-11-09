@@ -581,7 +581,7 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
             averageResult = curAverage;
             minIndex = i;
         }
-        state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult, curAverage); // Note: TODO: m_hostCodes should also use the curAverage.
+        state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult, curAverage);
     }
 
     // Update the state's best code.
