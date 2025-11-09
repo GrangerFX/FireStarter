@@ -7,7 +7,7 @@
 #define FIRESTARTER_VARIATIONS      1           // Target function variations
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
 
-#if 1
+#if 0
 #define MONEYMAKER_VARIATION        120         // Variation modulo for the stock data start offset
 #define MONEYMAKER_WARMUP           16          // Days of stock used for warmup prior to trading
 #define MONEYMAKER_TRADING          120         // Days used for stock trading

@@ -1,10 +1,10 @@
-// Run date: 11/09/25 09:50:52 Pacific Standard Time
-// Run duration = 353.007205 seconds
+// Run date: 11/08/25 15:47:20 Pacific Standard Time
+// Run duration = 498.970221 seconds
 // Run test = 0
 // Run generation = 2
 // Run evolution = 0
 // Run precision  = 10.00000000
-// Run max result = 0.73361981
+// Run max result = 1.00000000
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
@@ -61,49 +61,50 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0 = 2.26632118f;
-    float r1 = -0.62837791f;
-    float r2 = 1.23506355f;
-    float r3 = 2.27401733f;
-    float r4 = -2.35516191f;
-    float r5 = 1.66321421f;
-    float r6 = -0.11860473f;
-    float r7 = 0.63944370f;
-    float r8 = -1.22333789f;
-    float r9 = 0.77324736f;
-    float r10 = -0.52557832f;
-    float r11 = 0.31168708f;
-    float r12 = -2.52478456f;
-    float r13 = 1.91886842f;
-    float r14 = 0.59443736f;
-    float r15 = -2.23311281f;
-    float r16 = -2.13942790f;
-    float r17 = -2.41150308f;
-    float r18 = 1.73073006f;
+    float r0 = -1.09375620f;
+    float r1 = 1.06481779f;
+    float r2 = 1.37967837f;
+    float r3 = 0.69170308f;
+    float r4 = 1.85860586f;
+    float r5 = -0.42011374f;
+    float r6 = 1.41860271f;
+    float r7 = 0.60330445f;
+    float r8 = -2.13887286f;
+    float r9 = 1.57727790f;
+    float r10 = 1.55808496f;
+    float r11 = -1.78752327f;
+    float r12 = 0.65685564f;
+    float r13 = 0.55034947f;
+    float r14 = -0.81038642f;
+    float r15 = 1.94611502f;
+    float r16 = 1.79869044f;
+    float r17 = -0.15635423f;
+    float r18 = 0.32452238f;
+    float r19 = 0.38683063f;
 
-        n *= r0;
-            n += r2;
-        n += r3;
+        r0 = n;
+        r1 = n;
+        n *= r2;
+        r3 = n;
         n += r4;
-                    n += r8;
-        r9 = n;
-        n += r10;
+        n *= r0;
+        n *= r5;
+        n += r6;
+        n += r7;
+        r4 = n;
+                n += r9;
         r10 = n;
         n *= r11;
-        r4 = n;
-        n *= r12;
-        n *= r10;
+        n *= r1;
         n += r0;
-        n += r9;
-        n += r13;
-            n += r14;
-        n += r13;
-        n += r8;
-            n *= r2;
-        n += r16;
+                n += r13;
+            n *= r0;
         n += r4;
-            n *= r14;
-        n *= r17;
-            n += r18;
-    return n;
+        n += r15;
+        n *= r16;
+        n += r17;
+        n += r18;
+            r13 = n;
+            n += r16;
+        return n;
 } // Solution

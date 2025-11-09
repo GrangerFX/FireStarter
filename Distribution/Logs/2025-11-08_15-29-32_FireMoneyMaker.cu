@@ -52,7 +52,7 @@ inline bool MoneyMakerEvaluate(const FireStarterData& data, const FireStarterCod
     }
 
     // The final funds after selling remaining shares.
-    float tradingFunds = funds + shares * stock[index];
+    float tradingFunds = funds + shares * stock[index - 1];
 
     // The result is the ratio between the starting funds and the final funds.
     // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
