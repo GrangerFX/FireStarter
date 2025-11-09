@@ -50,8 +50,8 @@ GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStar
 
     // Evolve the program registers for each variation.
     unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
-    unsigned short evolveAge = 0xFFF;
-    unsigned short bestAge = 0;
+    unsigned int evolveAge = 0xFFF;
+    unsigned int bestAge = 0;
     unsigned int registers = 0;
     unsigned int oldRegisters = 0;
 

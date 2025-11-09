@@ -26,10 +26,10 @@ const FireStarterCode* FireStarterBestCodes::GetBestCode(void)
     return bestCode.CodePtr();
 } // GetBestCode
 
-bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
+bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result, float average)
 {
     // Skip bad results entirely.
-    if (result >= m_worstResult)
+    if ((result >= m_worstResult) || ((result == m_worstResult) && (average >= m_worstAverage)))
         return false;
 
     // Only add states with a unique instruction set.
@@ -40,26 +40,33 @@ bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
 
     // Insert the new code and result at the end of the list.
     float newResult = result;
+    float newAverage= average;
     size_t newIndex = (m_numCodes < m_maxCodes) ? m_numCodes : --m_numCodes;
     m_bestResults[newIndex] = newResult;
+    m_bestAverages[newIndex] = newAverage;
     m_bestCodes[newIndex] = newCode;
 
     for (size_t i = 0; i < m_numCodes; i++) {
         float curResult = m_bestResults[i];
-        if (curResult > newResult) {
+        float curAverage = m_bestAverages[i];
+        if ((curResult > newResult) || ((curResult == newResult) && (curAverage > newAverage))) {
             for (size_t j = i; j < m_numCodes; j++) {
                 FireStarterCodeVector curCode = m_bestCodes[j];
                 curResult = m_bestResults[j];
+                curAverage = m_bestAverages[j];
                 m_bestCodes[j] = newCode;
                 m_bestResults[j] = newResult;
+                m_bestAverages[j] = newAverage;
                 newCode = curCode;
                 newResult = curResult;
+                newAverage = curAverage;
             }
             break;
         }
     }
     m_bestCodes[m_numCodes] = newCode;
     m_bestResults[m_numCodes] = newResult;
+    m_bestAverages[m_numCodes] = newAverage;
     m_numCodes++;
     return true;
 } // AddCode
@@ -69,6 +76,11 @@ float FireStarterBestCodes::WorstResult(void)
     return m_worstResult;
 } // WorstResult
 
+float FireStarterBestCodes::WorstAverage(void)
+{
+    return m_worstAverage;
+} // WorstResult
+
 void FireStarterBestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
 {
     m_settings = settings;
@@ -76,11 +88,13 @@ void FireStarterBestCodes::InitBestCodes(const FireStarterSettings& settings, si
     m_codeSize = FireStarterCode::CodeSize(m_settings);
     m_numCodes = 0;
     m_worstResult = m_settings.m_startResult;
+    m_worstAverage = m_settings.m_startResult;
     m_bestCodes.resize(m_maxCodes);
     m_bestResults.resize(m_maxCodes);
     for (size_t i = 0; i < m_maxCodes; i++) {
         m_bestCodes[i].InitCode(settings);
         m_bestResults[i] = m_settings.m_startResult;
+        m_bestAverages[i] = m_settings.m_startResult;
     }
 } // InitBestCodes
 

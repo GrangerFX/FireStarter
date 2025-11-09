@@ -494,8 +494,9 @@ typedef struct FireStarterCode {
 
 typedef struct FireStarterResult {
     float m_maxResult;
-    unsigned short m_evolveAge1;
-    unsigned short m_evolveAge2;
+    float m_averageResult;
+    unsigned int m_evolveAge1;
+    unsigned int m_evolveAge2;
     FireStarterData m_data; // Note: Dynamically allocated!
 
     static inline size_t ResultSize(void)
@@ -523,22 +524,32 @@ typedef struct FireStarterResult {
         return m_maxResult;
     } // MaxResult
 
-    inline unsigned short* EvolveAge1(void)
+    inline float* AverageResult(void)
+    {
+        return &m_averageResult;
+    } // AverageResult
+
+    inline float AverageResult(void) const
+    {
+        return m_averageResult;
+    } // AverageResult
+
+    inline unsigned int* EvolveAge1(void)
     {
         return &m_evolveAge1;
     } // EvolveAge1
 
-    inline unsigned short EvolveAge1(void) const
+    inline unsigned int EvolveAge1(void) const
     {
         return m_evolveAge1;
     } // EvolveAge1
 
-    inline unsigned short* EvolveAge2(void)
+    inline unsigned int* EvolveAge2(void)
     {
         return &m_evolveAge2;
     } // EvolveAge2
 
-    inline unsigned short EvolveAge2(void) const
+    inline unsigned int EvolveAge2(void) const
     {
         return m_evolveAge2;
     } // EvolveAge2
@@ -602,7 +613,14 @@ typedef struct FireStarterResult {
         memcpy(dstData, srcData, FireStarterData::DataSize(settings.m_registers));
     } // CopyData
 
-    inline void InitResult(unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    inline void InitResult(float averageResult)
+    {
+        Data()->Clear();
+        m_maxResult = FIRESTARTER_START_RESULT;
+        m_averageResult = averageResult;
+    } // InitResult
+
+    inline void InitResult(unsigned int evolveAge1 = 0, unsigned int evolveAge2 = 0)
     {
         Data()->Clear();
         m_maxResult = FIRESTARTER_START_RESULT;
@@ -610,7 +628,14 @@ typedef struct FireStarterResult {
         m_evolveAge2 = evolveAge2;
     } // InitResult
 
-    inline void InitResult(const FireStarterSettings& settings, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    inline void InitResult(const FireStarterSettings& settings, float averageResult)
+    {
+        Data()->Clear(settings.m_registers);
+        m_maxResult = settings.m_startResult;
+        m_averageResult = averageResult;
+    } // InitResult
+
+    inline void InitResult(const FireStarterSettings& settings, unsigned int evolveAge1 = 0, unsigned int evolveAge2 = 0)
     {
         Data()->Clear(settings.m_registers);
         m_maxResult = settings.m_startResult;
@@ -618,7 +643,14 @@ typedef struct FireStarterResult {
         m_evolveAge2 = evolveAge2;
     } // InitResult
 
-    inline void InitResult(unsigned long long& seed, unsigned int uniqueRegisters, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    inline void InitResult(unsigned long long& seed, unsigned int uniqueRegisters, float averageResult)
+    {
+        Data()->InitData(seed, uniqueRegisters);
+        m_maxResult = FIRESTARTER_START_RESULT;
+        m_averageResult = averageResult;
+    } // InitResult
+
+    inline void InitResult(unsigned long long& seed, unsigned int uniqueRegisters, unsigned int evolveAge1 = 0, unsigned int evolveAge2 = 0)
     {
         Data()->InitData(seed, uniqueRegisters);
         m_maxResult = FIRESTARTER_START_RESULT;
@@ -626,7 +658,14 @@ typedef struct FireStarterResult {
         m_evolveAge2 = evolveAge2;
     } // InitResult
 
-    inline void InitResult(const FireStarterSettings& settings, unsigned long long& seed, unsigned int uniqueRegisters, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    inline void InitResult(const FireStarterSettings& settings, unsigned long long& seed, unsigned int uniqueRegisters, float averageResult)
+    {
+        Data()->InitData(seed, uniqueRegisters, settings.m_startScale, settings.m_registers);
+        m_maxResult = settings.m_startResult;
+        m_averageResult = averageResult;
+    } // InitResult
+
+    inline void InitResult(const FireStarterSettings& settings, unsigned long long& seed, unsigned int uniqueRegisters, unsigned int evolveAge1 = 0, unsigned int evolveAge2 = 0)
     {
         Data()->InitData(seed, uniqueRegisters, settings.m_startScale, settings.m_registers);
         m_maxResult = settings.m_startResult;
@@ -634,7 +673,14 @@ typedef struct FireStarterResult {
         m_evolveAge2 = evolveAge2;
     } // InitResult
 
-    inline void InitResult(const FireStarterData& data, float maxResult, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    inline void InitResult(const FireStarterData& data, float maxResult, float averageResult)
+    {
+        Data()->Copy(data);
+        m_maxResult = maxResult;
+        m_averageResult = averageResult;
+    } // InitResult
+
+    inline void InitResult(const FireStarterData& data, float maxResult, unsigned int evolveAge1 = 0, unsigned int evolveAge2 = 0)
     {
         Data()->Copy(data);
         m_maxResult = maxResult;
@@ -642,7 +688,17 @@ typedef struct FireStarterResult {
         m_evolveAge2 = evolveAge2;
     } // InitResult
 
-    inline void InitResult(const FireStarterData* data, float maxResult, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    inline void InitResult(const FireStarterData* data, float maxResult, float averageResult)
+    {
+        if (data)
+            Data()->Copy(data);
+        else
+            Data()->Clear();
+        m_maxResult = maxResult;
+        m_averageResult = averageResult;
+    } // InitResult
+
+    inline void InitResult(const FireStarterData* data, float maxResult, unsigned int evolveAge1 = 0, unsigned int evolveAge2 = 0)
     {
         if (data)
             Data()->Copy(data);
@@ -653,7 +709,17 @@ typedef struct FireStarterResult {
         m_evolveAge2 = evolveAge2;
     } // InitResult
 
-    inline void InitResult(const FireStarterData* data, const FireStarterSettings& settings, float maxResult, unsigned short evolveAge1 = 0, unsigned short evolveAge2 = 0)
+    inline void InitResult(const FireStarterData* data, const FireStarterSettings& settings, float maxResult, float averageResult)
+    {
+        if (data)
+            Data()->Copy(data, settings.m_registers);
+        else
+            Data()->Clear(settings.m_registers);
+        m_maxResult = maxResult;
+        m_averageResult = averageResult;
+    } // InitResult
+
+    inline void InitResult(const FireStarterData* data, const FireStarterSettings& settings, float maxResult, unsigned int evolveAge1 = 0, unsigned int evolveAge2 = 0)
     {
         if (data)
             Data()->Copy(data, settings.m_registers);

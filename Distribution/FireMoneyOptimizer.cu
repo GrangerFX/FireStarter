@@ -67,9 +67,10 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
     return true;
 } // MoneyOptimizeEvaluate
 
-inline bool MoneyOptimizeEvaluateStocks(const FireStarterData& data, const MoneyMakerStocks& stocks, float& result)
+inline bool MoneyOptimizeEvaluateStocks(const FireStarterData& data, const MoneyMakerStocks& stocks, float& maxResult, float& averageResult)
 {
-    float sessionsResult = 0.0f;
+    float sessionsMaxResult = 0.0f;
+    float sessionsAverageResult = 0.0f;
     unsigned int stock = 0;
     for (unsigned int session = 0; session < MONEYMAKER_SESSIONS; session++) {
         unsigned long long sessionSeed = SEED9(session);
@@ -77,15 +78,22 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterData& data, const Money
         float stockResult = FIRESTARTER_START_RESULT;
 
         if (!MoneyOptimizeEvaluate(data, stocks.Stock(stock), sessionStart, stockResult)) {
-            sessionsResult = FIRESTARTER_START_RESULT;
+            sessionsMaxResult = FIRESTARTER_START_RESULT;
+            sessionsAverageResult = FIRESTARTER_START_RESULT;
             break;
         }
-        sessionsResult += stockResult / MONEYMAKER_SESSIONS;
+        sessionsMaxResult = MAX(sessionsMaxResult, stockResult);
+        sessionsAverageResult += stockResult / MONEYMAKER_SESSIONS;
         if (++stock == MONEYMAKER_STOCKS)
             stock = 0;
     }
-    if (sessionsResult < result) {
-        result = sessionsResult;
+    if (sessionsMaxResult < maxResult) {
+        maxResult = sessionsMaxResult;
+        averageResult = sessionsAverageResult;
+        return true;
+    }
+    if ((sessionsMaxResult == maxResult) && (sessionsAverageResult < averageResult)) {
+        averageResult = sessionsAverageResult;
         return true;
     }
     return false;
@@ -105,8 +113,9 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
     unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation and member
 
     // Optimize the data for each generation.
-    unsigned short evolveAge;
+    unsigned int evolveAge;
     float result, memberResult;
+    float average, memberAverage;
     float evolutionScale;
 
     // The first generation is initalized with random numbers.
@@ -114,11 +123,13 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
         for (unsigned int i = 0; i < 10; i++) {
             data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
-            if (MoneyOptimizeEvaluateStocks(data, *stocks, result))
+            average = FIRESTARTER_START_RESULT;
+            if (MoneyOptimizeEvaluateStocks(data, *stocks, result, average))
                 break;
         }
         memberResult = FIRESTARTER_START_RESULT;
-        evolutionScale = FIRESTARTER_START_SCALE; // Validated as faster than 0.6f * memberResult  11/17/2024
+        memberAverage = FIRESTARTER_START_RESULT;
+        evolutionScale = FIRESTARTER_START_SCALE;
         evolveAge = 0;
     } else {
         // Later generations randomize a single register if they were copied.
@@ -126,16 +137,18 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
         data.Copy(oldResult.Data());
         evolveAge = oldResult.EvolveAge1();
         memberResult = result = oldResult.MaxResult();
+        memberAverage = average = oldResult.AverageResult();
         if (evolveAge > 1) {
             // Randomize a single register.
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * FIRESTARTER_START_SCALE * (evolveAge - 1);
-            if (MoneyOptimizeEvaluateStocks(data, *stocks, result))
-                memberResult = FIRESTARTER_START_RESULT; // Validated as being faster than result  11/17/2024
-            else
+            if (MoneyOptimizeEvaluateStocks(data, *stocks, result, average)) {
+                memberResult = FIRESTARTER_START_RESULT;
+                memberAverage = FIRESTARTER_START_RESULT;
+            } else
                 data[d] = oldData;
-            evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult; // Validated as being faster than 0.6f * FIRESTARTER_START_RESULT  11/17/2024
+            evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult;
         } else
             evolutionScale = FIRESTARTER_SCALE * memberResult;
     }
@@ -147,9 +160,11 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
         unsigned int curTrades = 0;
         float curResult = result * 0.99f; // Validated as being faster than * 1.0f or * 0.9f. About the same as * 0.999f.  11/17/2024
-        if (MoneyOptimizeEvaluateStocks(data, *stocks, curResult))
+        float curAverage = average * 0.99f; // Validated as being faster than * 1.0f or * 0.9f. About the same as * 0.999f.  11/17/2024
+        if (MoneyOptimizeEvaluateStocks(data, *stocks, curResult, curAverage)) {
             result = curResult;
-        else
+            average = curAverage;
+        } else
             data[d] = oldData;
     }
 
@@ -167,7 +182,7 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, populationSize);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate);
-            unsigned short candidateAge = candidateResult->EvolveAge1();
+            unsigned int candidateAge = candidateResult->EvolveAge1();
             if (candidateAge <= 1) {
                 float candidateMaxResult = candidateResult->MaxResult();
                 if (candidateMaxResult <= result)

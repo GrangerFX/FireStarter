@@ -44,7 +44,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
 
     // Evolve the program registers for each variation.
     FireStarterData data;
-    unsigned short evolveAge, initAge;
+    unsigned int evolveAge, initAge;
     float result, memberResult;
     float evolutionScale;
     unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation/variation/member
@@ -110,7 +110,7 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, populationSize);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate, variation);
-            unsigned short candidateAge = candidateResult->EvolveAge1();
+            unsigned int candidateAge = candidateResult->EvolveAge1();
             if (candidateAge <= 1) {
                 float candidateMaxResult = candidateResult->MaxResult();
                 if (candidateMaxResult <= result) {

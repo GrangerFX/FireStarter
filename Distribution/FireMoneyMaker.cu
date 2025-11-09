@@ -60,9 +60,10 @@ inline bool MoneyMakerEvaluate(const FireStarterData& data, const FireStarterCod
     return true;
 } // MoneyMakerEvaluate
 
-inline bool MoneyMakerEvaluateStocks(const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, float& result)
+inline bool MoneyMakerEvaluateStocks(const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, float& maxResult, float& averageResult)
 {
-    float sessionsResult = 0.0f;
+    float sessionsMaxResult = 0.0f;
+    float sessionsAverageResult = 0.0f;
     unsigned int stock = 0;
     for (unsigned int session = 0; session < MONEYMAKER_SESSIONS; session++) {
         unsigned long long sessionSeed = SEED9(session);
@@ -70,16 +71,23 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterData& data, const FireStar
         float stockResult = FIRESTARTER_START_RESULT;
 
         if (!MoneyMakerEvaluate(data, code, stocks.Stock(stock), sessionStart, stockResult)) {
-            sessionsResult = FIRESTARTER_START_RESULT;
+            sessionsMaxResult = FIRESTARTER_START_RESULT;
+            sessionsAverageResult = FIRESTARTER_START_RESULT;
             break;
         }
-        sessionsResult += stockResult / MONEYMAKER_SESSIONS;
+        sessionsMaxResult = MAX(sessionsMaxResult, stockResult);
+        sessionsAverageResult += stockResult / MONEYMAKER_SESSIONS;
         if (++stock == MONEYMAKER_STOCKS)
             stock = 0;
     }
     
-    if (sessionsResult < result) {
-        result = sessionsResult;
+    if (sessionsMaxResult < maxResult) {
+        maxResult = sessionsMaxResult;
+        averageResult = sessionsAverageResult;
+        return true;
+    }
+    if ((sessionsMaxResult == maxResult) && (sessionsAverageResult < averageResult)) {
+        averageResult = sessionsAverageResult;
         return true;
     }
     return false;
@@ -100,13 +108,14 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
     unsigned long long memberSeed = evolveSeed + SEED1(member);   // Unique seed for the member
 
     // The first pass is initalized with random numbers.
-    float result = FIRESTARTER_START_RESULT;
+    float maxResult = FIRESTARTER_START_RESULT;
+    float averageResult = FIRESTARTER_START_RESULT;
     unsigned int registers = 0;
     for (unsigned int i = 0; i < 10; i++) {
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        if (MoneyMakerEvaluateStocks(data, code, *stocks, result))
+        if (MoneyMakerEvaluateStocks(data, code, *stocks, maxResult, averageResult))
             break;
     }
 
@@ -115,26 +124,29 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
     FireStarterCode memberCode = code;
     FireStarterData bestData = data;
     FireStarterData memberData = data;
-    float bestResult = result;
-    float memberResult = result;
-    unsigned short bestAge = 0;
-    unsigned short memberAge = 0;
+    float bestResult = maxResult;
+    float memberResult = maxResult;
+    float bestAverage = averageResult;
+    float memberAverage = averageResult;
+    unsigned int bestAge = 0;
+    unsigned int memberAge = 0;
 
     // Evolve the code and data for each pass.
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Evolve the code and data.
         float evolutionScale;
-        if ((memberAge >= 6) || (result >= FIRESTARTER_START_RESULT)) {
+        if ((memberAge >= 6) || (maxResult >= FIRESTARTER_START_RESULT)) {
             evolutionScale = FIRESTARTER_START_SCALE;
             code.InitCode(memberSeed);
             registers = code.Optimize();
             data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
             memberResult = FIRESTARTER_START_RESULT;
-            result = FIRESTARTER_START_RESULT;
+            maxResult = FIRESTARTER_START_RESULT;
+            averageResult = FIRESTARTER_START_RESULT;
             memberAge = 0;
         } else {
             // Randomize a register each generation.
-            evolutionScale = result * FIRESTARTER_SCALE;
+            evolutionScale = maxResult * FIRESTARTER_SCALE;
             if (memberAge > 0)
                 data.RandomData(memberSeed, evolutionScale, registers);
         }
@@ -144,34 +156,39 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
-            float curResult = result * 0.99f;
+            float curMaxResult = maxResult * 0.99f;
+            float curAverageResult = averageResult * 0.99f;
             unsigned int curTrades = 0;
-            if (MoneyMakerEvaluateStocks(data, code, *stocks, curResult))
-                result = curResult;
-            else
+            if (MoneyMakerEvaluateStocks(data, code, *stocks, curMaxResult, curAverageResult)) {
+                maxResult = curMaxResult;
+                averageResult = curAverageResult;
+            } else
                 data[d] = old;
         }
 
         // Did the results improve?
-        if (!pass || (result < memberResult)) {
+        if (!pass || ((maxResult < memberResult) || ((maxResult == memberResult) && (averageResult < memberAverage)))) {
             // If the result was better, save the results.
             memberCode = code;
             memberData = data;
-            memberResult = result;
+            memberResult = maxResult;
+            memberAverage = averageResult;
             memberAge = 0;
 
             // Update the best result.
-            if (!pass || (result < bestResult)) {
+            if (!pass || (maxResult < bestResult)) {
                 bestCode = code;
                 bestData = data;
-                bestResult = result;
+                bestResult = maxResult;
+                bestAverage = averageResult;
                 bestAge = memberAge;
             }
         } else {
             // Revert to the original code and data.
             code = memberCode;
             data = memberData;
-            result = memberResult;
+            maxResult = memberResult;
+            averageResult = memberAverage;
             memberAge++;
         }
     }
@@ -184,5 +201,5 @@ GPU_GLOBAL void MoneyMaker(float* results, FireStarterResult* population, FireSt
 
     // Return the best data, result and age for debugging.
     if (population)
-        FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
+        FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAverage);
 } // MoneyMaker

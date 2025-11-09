@@ -413,17 +413,20 @@ private:
     std::set<std::vector<unsigned char>> m_testedCodes;
     std::vector<FireStarterCodeVector> m_bestCodes;
     std::vector<float> m_bestResults;
+    std::vector<float> m_bestAverages;
     FireStarterSettings m_settings;
     size_t m_codeSize = 0;
     size_t m_maxCodes = 0;
     size_t m_numCodes = 0;
     float m_worstResult = 0.0f;
+    float m_worstAverage = 0.f;
 
 public:
     float GetBestResult(void);
     const FireStarterCode* GetBestCode(void);
-    bool AddCode(const FireStarterCode* code, float result);
+    bool AddCode(const FireStarterCode* code, float result, float average = FIRESTARTER_START_RESULT);
     float WorstResult(void);
+    float WorstAverage(void);
     void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(void);
@@ -595,25 +598,25 @@ public:
             return m_results.MaxVariation();
     } // MaxVariation
 
-    inline unsigned short EvolveAge1(unsigned int variation) const
+    inline unsigned int EvolveAge1(unsigned int variation) const
     {
         const FireStarterResult* result = Result(variation);
         return result->EvolveAge1();
     } // EvolveAge1
 
-    inline unsigned short* EvolveAge1(unsigned int variation)
+    inline unsigned int* EvolveAge1(unsigned int variation)
     {
         FireStarterResult* result = Result(variation);
         return result->EvolveAge1();
     } // EvolveAge1
 
-    inline unsigned short EvolveAge2(unsigned int variation) const
+    inline unsigned int EvolveAge2(unsigned int variation) const
     {
         const FireStarterResult* result = Result(variation);
         return result->EvolveAge2();
     } // EvolveAge2
 
-    inline unsigned short* EvolveAge2(unsigned int variation)
+    inline unsigned int* EvolveAge2(unsigned int variation)
     {
         FireStarterResult* result = Result(variation);
         return result->EvolveAge2();

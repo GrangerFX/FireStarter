@@ -21,7 +21,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     FireStarterCode bestCode;
     FireStarterData bestData;
     unsigned int registers;
-    unsigned short bestAge;
+    unsigned int bestAge;
     float bestResult;
 
     // The first generation is initalized with random numbers.
@@ -35,7 +35,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     FireStarterCode code(bestCode);
     FireStarterData data(bestData);
     float result = bestResult;
-    unsigned short age = bestAge;
+    unsigned int age = bestAge;
 
     // Perform all the passes on the GPU.
     for (unsigned int pass = 0; pass < passes; pass++) {
