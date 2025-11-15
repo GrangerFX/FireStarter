@@ -16,7 +16,6 @@
 #define MONEYMAKER_SESSIONS         16         // Number of trading sessions
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define MONEYMAKER_ANUALIZED        1           // Set to 1 for annualized trading returns
-#define MONEYMAKER_WORST            1           // Set to 1 to use the worst result for training
 #else
 #define MONEYMAKER_VARIATION        120         // Variation modulo for the stock data start offset
 #define MONEYMAKER_WARMUP           16          // Days of stock used for warmup prior to trading
@@ -26,7 +25,6 @@
 #define MONEYMAKER_SESSIONS         128         // Number of trading sessions
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define MONEYMAKER_ANUALIZED        0           // Set to 1 for annualized trading returns
-#define MONEYMAKER_WORST            1           // Set to 1 to use the worst result for training
 #endif
 
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
