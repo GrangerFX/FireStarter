@@ -1,0 +1,48 @@
+Seed: 0  Test:   0  Generation=  1  Evolve Result=67.3045%  Optimize Result=74.6359%  Best Result=74.6359%  Duration: 350.7  GenTime: 350.7  Total: 350.7 *******
+AAPL: Result=65.4125%
+NVDA: Result=213.6279%
+INTC: Result=320.6555%
+MSFT: Result=41.6993%
+
+Seed: 0  Test:   0  Generation=  2  Evolve Result=73.1757%  Optimize Result=90.7487%  Best Result=90.7487%  Duration: 528.3  GenTime: 264.2  Total: 879.0 *******
+AAPL: Result=93.1086%
+NVDA: Result=401.8635%
+INTC: Result=148.2516%
+MSFT: Result=47.4112%
+
+Seed: 0  Test:   0  Generation=  3  Evolve Result=69.2495%  Optimize Result=94.8268%  Best Result=94.8268%  Duration: 706.1  GenTime: 235.4  Total: 1585.1 *******
+AAPL: Result=95.0613%
+NVDA: Result=379.1897%
+INTC: Result=168.6005%
+MSFT: Result=57.7247%
+
+Seed: 0  Test:   0  Generation=  4  Evolve Result=69.0603%  Optimize Result=85.2414%  Best Result=94.8268%  Duration: 884.6  GenTime: 221.1  Total: 2469.7
+AAPL: Result=24.8890%
+NVDA: Result=166.6989%
+INTC: Result=90.8754%
+MSFT: Result=41.2998%
+
+Seed: 0  Test:   0  Generation=  5  Evolve Result=72.0994%  Optimize Result=83.1077%  Best Result=94.8268%  Duration: 1062.5  GenTime: 212.5  Total: 3532.2
+AAPL: Result=74.6816%
+NVDA: Result=362.4500%
+INTC: Result=113.2005%
+MSFT: Result=54.9356%
+
+Seed: 0  Test:   0  Generation=  6  Evolve Result=74.8210%  Optimize Result=78.3917%  Best Result=94.8268%  Duration: 1240.3  GenTime: 206.7  Total: 4772.5
+AAPL: Result=56.0620%
+NVDA: Result=342.5683%
+INTC: Result=318.3243%
+MSFT: Result=30.5819%
+
+Seed: 0  Test:   0  Generation=  7  Evolve Result=70.2955%  Optimize Result=72.0639%  Best Result=94.8268%  Duration: 1418.1  GenTime: 202.6  Total: 6190.5
+AAPL: Result=61.4153%
+NVDA: Result=436.7379%
+INTC: Result=370.7741%
+MSFT: Result=55.7160%
+
+Seed: 0  Test:   0  Generation=  8  Evolve Result=69.7414%  Optimize Result=102.3420%  Best Result=102.3420%  Duration: 1596.3  GenTime: 199.5  Total: 7786.8 *******
+AAPL: Result=130.7462%
+NVDA: Result=324.5091%
+INTC: Result=196.2554%
+MSFT: Result=65.9568%
+

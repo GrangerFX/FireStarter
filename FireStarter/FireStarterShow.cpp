@@ -96,6 +96,15 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
                 if ((y >= 0) && ((unsigned int)y < height)) {
                     if (i >= warmup) {
                         if (settings.m_daytrade) {
+                            if (results[i] > 0.0f) {
+                                unsigned int j = i + settings.m_daytrade;
+                                if (j >= numDays)
+                                    j = numDays - 1;
+                                good = stock[j] >= stock[i];
+                                holding = true;
+                            } else
+                                holding = false;
+                        } else {
                             if (!holding && (results[i] > 0.0f)) {
                                 unsigned int j = i + 1;
                                 while (j < numDays) {
@@ -103,25 +112,11 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
                                         break;
                                     j++;
                                 }
-                                if (j == numDays)
-                                    j--;
+                                if (j >= numDays)
+                                    j = numDays - 1;
                                 good = stock[j] >= stock[i];
                                 holding = true;
                             } else if (holding && (results[i] <= 0.0f))
-                                holding = false;
-                        } else {
-                            if (!holding && (results[i] > 1.0f)) {
-                                unsigned int j = i + 1;
-                                while (j < numDays) {
-                                    if (results[j] < -1.0f)
-                                        break;
-                                    j++;
-                                }
-                                if (j == numDays)
-                                    j--;
-                                good = stock[j] >= stock[i];
-                                holding = true;
-                            } else if (holding && (results[i] < -1.0f))
                                 holding = false;
                         }
                     }
