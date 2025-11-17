@@ -38,6 +38,7 @@ inline bool MoneyMakerEvaluate(const FireStarterData& data, const FireStarterCod
             return false;
 
         // If the evaluation >= 1.0f, buy or hold shares. If below 1.0f, sell shares.
+#if !MONEYMAKER_DAYTRADE
         if (n >= 0.0f) {
             if (!shares) {
                 shares = (unsigned int)(funds / newPrice);
@@ -49,6 +50,17 @@ inline bool MoneyMakerEvaluate(const FireStarterData& data, const FireStarterCod
                 shares = 0;
             }
         }
+#else
+        if (n >= 0.0f) {
+            unsigned int tradeShares = (unsigned int)(MONEYMAKER_FUNDS / oldPrice);
+#if MONEYMAKER_DAYTRADE == 1
+            funds += tradeShares * (newPrice - oldPrice);
+#else
+            float tradePrice = stock[index + (MONEYMAKER_TRADING - 1)];
+            funds += tradeShares * (tradePrice - oldPrice);
+#endif
+        }
+#endif
     }
 
     // The final funds after selling remaining shares.

@@ -10,7 +10,8 @@
 #define MONEYMAKER_VARIATION        120         // Variation modulo for the stock data start offset
 #define MONEYMAKER_WARMUP           16          // Days of stock used for warmup prior to trading
 #define MONEYMAKER_TRADING          120         // Days used for stock trading
-#define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_WARMUP + MONEYMAKER_TRADING + 1)   // Days of stock history data
+#define MONEYMAKER_DAYTRADE         1
+#define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_WARMUP + MONEYMAKER_TRADING + MONEYMAKER_DAYTRADE)   // Days of stock history data
 #define MONEYMAKER_STOCKS           4           // Stocks with history data
 #define MONEYMAKER_SESSIONS         16          // Number of trading sessions
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
@@ -292,6 +293,7 @@ public:
     unsigned int m_variation =      MONEYMAKER_VARIATION;
     unsigned int m_warmup =         MONEYMAKER_WARMUP;
     unsigned int m_trading =        MONEYMAKER_TRADING;
+    unsigned int m_daytrade =       MONEYMAKER_DAYTRADE;
     float        m_funds =          MONEYMAKER_FUNDS;
 
     float        m_targetMin =      TARGET_MIN;

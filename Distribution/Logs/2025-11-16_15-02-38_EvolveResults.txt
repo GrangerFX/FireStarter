@@ -1,0 +1,30 @@
+Seed: 0  Test:   0  Generation=  1  Evolve Result=0.0000%  Optimize Result=0.0000%  Best Result=0.0000%  Duration: 350.1  GenTime: 350.1  Total: 350.1 *******
+AAPL: Result=0.0000%
+NVDA: Result=0.0000%
+INTC: Result=0.0000%
+MSFT: Result=0.0000%
+
+Seed: 0  Test:   0  Generation=  2  Evolve Result=0.0000%  Optimize Result=0.0000%  Best Result=0.0000%  Duration: 527.6  GenTime: 263.8  Total: 877.7 *******
+AAPL: Result=0.0000%
+NVDA: Result=0.0000%
+INTC: Result=0.0000%
+MSFT: Result=0.0000%
+
+Seed: 0  Test:   0  Generation=  3  Evolve Result=0.0000%  Optimize Result=0.0000%  Best Result=0.0000%  Duration: 705.8  GenTime: 235.3  Total: 1583.5 *******
+AAPL: Result=0.0000%
+NVDA: Result=0.0000%
+INTC: Result=0.0000%
+MSFT: Result=0.0000%
+
+Seed: 0  Test:   0  Generation=  4  Evolve Result=0.0000%  Optimize Result=0.0000%  Best Result=0.0000%  Duration: 883.1  GenTime: 220.8  Total: 2466.6 *******
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result Failed!
+
+Seed: 0  Test:   0  Generation=  5  Evolve Result=0.0000%  Optimize Result=-189.0000%  Best Result=0.0000%  Duration: 1056.3  GenTime: 211.3  Total: 3522.9
+AAPL: Result Failed!
+NVDA: Result Failed!
+INTC: Result Failed!
+MSFT: Result Failed!
+

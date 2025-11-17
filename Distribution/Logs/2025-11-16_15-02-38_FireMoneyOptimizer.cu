@@ -6,6 +6,38 @@
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
 // EVALUATE //
+    data[0] = n;
+    n += data[1];
+    data[2] = n;
+    n += data[2];
+    n += data[3];
+    n *= data[4];
+    data[5] = n;
+    n *= data[6];
+    data[3] = n;
+    n += data[7];
+    n += data[8];
+    n *= data[3];
+    n += data[9];
+    n += data[10];
+    n *= data[11];
+    n *= data[12];
+    n *= data[13];
+    data[3] = n;
+    data[14] = n;
+    n *= data[11];
+    data[15] = n;
+    data[16] = n;
+    data[14] = n;
+    n += data[5];
+    n *= data[4];
+    n *= data[17];
+    data[9] = n;
+    n += data[18];
+    n *= data[17];
+    data[3] = n;
+    data[12] = n;
+    n += data[11];
 // END //
     return n;
 } // MoneyCompiledEvaluate
@@ -45,6 +77,7 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
             return false;
 
         // If the evaluation >= 1.0f, buy shares. If below 1.0f, sell shares.
+#if !MONEYMAKER_DAYTRADE
         if (n >= 0.0f) {
             if (!shares) {
                 shares = (unsigned int)(funds / newPrice);
@@ -56,6 +89,17 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
                 shares = 0;
             }
         }
+#else
+        if (n >= 0.0f) {
+            unsigned int tradeShares = (unsigned int)(MONEYMAKER_FUNDS / oldPrice);
+#if MONEYMAKER_DAYTRADE == 1
+            funds += tradeShares * (newPrice - oldPrice);
+#else
+            float tradePrice = stock[index + (MONEYMAKER_TRADING - 1)];
+            funds += tradeShares * (tradePrice - oldPrice);
+#endif
+        }
+#endif
     }
 
     // The final funds after selling remaining shares.
@@ -229,6 +273,7 @@ inline bool MoneyTesterEvaluate(const FireStarterData& data, const MoneyMakerSto
             return false;
 
         // If the evaluation >= 1.0f, buy shares. If below 1.0f, sell shares.
+#if !MONEYMAKER_DAYTRADE
         if (n >= 0.0f) {
             if (!shares) {
                 shares = (unsigned int)(funds / newPrice);
@@ -240,6 +285,17 @@ inline bool MoneyTesterEvaluate(const FireStarterData& data, const MoneyMakerSto
                 shares = 0;
             }
         }
+#else
+        if (n >= 0.0f) {
+            unsigned int tradeShares = (unsigned int)(MONEYMAKER_FUNDS / oldPrice);
+#if MONEYMAKER_DAYTRADE == 1
+            funds += tradeShares * (newPrice - oldPrice);
+#else
+            float tradePrice = stock[index + (MONEYMAKER_TRADING - 1)];
+            funds += tradeShares * (tradePrice - oldPrice);
+#endif
+        }
+#endif
     }
 
     // The final funds after selling remaining shares.
