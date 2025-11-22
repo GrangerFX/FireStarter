@@ -138,13 +138,12 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
 
     const FireStarterSettings& settings = state.Settings();
     unsigned int tabs = 1;
-    std::string solutionCode;
-    solutionCode += "#pragma once\r\n";
+    text += "#pragma once\r\n";
     if (state.m_settings.m_mode == FIRESTARTER_MONEYMAKER)
-        solutionCode += "#include \"MoneyMakerStocks.h\"\r\n";
+        text += "#include \"MoneyMakerStocks.h\"\r\n";
     else
-        solutionCode += "#include <math.h>\r\n";
-    solutionCode += "\r\n";
+        text += "#include <math.h>\r\n";
+    text += "\r\n";
     state.SaveStats(text);
 
     if (state.m_settings.m_mode != FIRESTARTER_MONEYMAKER) {
