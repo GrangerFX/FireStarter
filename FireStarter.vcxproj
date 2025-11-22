@@ -138,6 +138,7 @@
     <ClInclude Include="Distribution\FireStarterSettings.h" />
     <ClInclude Include="Distribution\FireStarterTarget.h" />
     <ClInclude Include="Distribution\FireStarter_LoadState.h" />
+    <ClInclude Include="Distribution\FireStarter_MoneyMakerSolution.h" />
     <ClInclude Include="Distribution\HashRandom.h" />
     <ClInclude Include="Distribution\FireStarter_Solution.h" />
     <ClInclude Include="Distribution\cnprintf.h" />

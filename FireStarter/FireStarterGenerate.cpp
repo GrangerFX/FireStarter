@@ -140,24 +140,36 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     unsigned int tabs = 1;
     std::string solutionCode;
     solutionCode += "#pragma once\r\n";
-    solutionCode += "#include <math.h>\r\n";
+    if (state.m_settings.m_mode == FIRESTARTER_MONEYMAKER)
+        solutionCode += "#include \"MoneyMakerStocks.h\"\r\n";
+    else
+        solutionCode += "#include <math.h>\r\n";
     solutionCode += "\r\n";
     state.SaveStats(text);
-    text += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
-    text += Format("#define SOLUTION_VARIATION %d\r\n", FIRESTARTER_VARIATION);
-    text += "\r\n";
-    text += targetCode;
+
+    if (state.m_settings.m_mode != FIRESTARTER_MONEYMAKER) {
+        text += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
+        text += Format("#define SOLUTION_VARIATION %d\r\n", FIRESTARTER_VARIATION);
+        text += "\r\n";
+        text += targetCode;
+    }
 
     for (unsigned int v = 0; v < settings.m_variations; v++) {
         const FireStarterResult* result = state.Result(v);
         const FireStarterData* data = result->Data();
 
         text += "\r\n";
-        if (settings.m_variations > 1)
-            text += Format("inline float Solution%d(float n)\r\n", v);
-        else
-            text += "inline float Solution(float n)\r\n";
-        text += "{\r\n";
+        if (state.m_settings.m_mode == FIRESTARTER_MONEYMAKER) {
+            text += "inline float MoneyMakerSolution(MoneyMakerStock& stock)\r\n";
+            text += "{\r\n";
+            text += "    float n = 0.0f;\r\n";
+        } else {
+            if (settings.m_variations > 1)
+                text += Format("inline float Solution%d(float n)\r\n", v);
+            else
+                text += "inline float Solution(float n)\r\n";
+            text += "{\r\n";
+        }
 
         if (generateGPU) {
             // First pass: Determine the length of the text string.
@@ -215,10 +227,14 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
         text += generateText;
 
         text += "    return n;\r\n";
-        if (settings.m_variations > 1)
-            text += Format("} // Solution%d\r\n", v);
-        else
-            text += "} // Solution\r\n";
+        if (state.m_settings.m_mode == FIRESTARTER_MONEYMAKER) {
+            text += "} // MoneyMakerSolution\r\n";
+        } else {
+            if (settings.m_variations > 1)
+                text += Format("} // Solution%d\r\n", v);
+            else
+                text += "} // Solution\r\n";
+        }
     }
 
     if (settings.m_variations > 1) {

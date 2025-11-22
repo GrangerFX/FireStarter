@@ -214,20 +214,15 @@ public:
 
         switch (op) {
             case Operation_multiply:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
                 break;
 
             case Operation_add:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n += r%u;\r\n", reg);
                 break;
 
             case Operation_store:
-                if (!instructionLast) {
-                    GenerateTabs(buffer, size, length, tabs);
-                    anprintf(buffer, size, length, "r%u = n;\r\n", reg);
-                }
+                anprintf(buffer, size, length, "r%u = n;\r\n", reg);
                 break;
         }
 #else
@@ -289,11 +284,10 @@ public:
 
     inline void GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int numInstructions, const FireStarterRegisterUsage* registerUsage, unsigned int numRegisters, const FireStarterData* data) const
     {
-#if FIRESTARTER_FIRSTLIGHT || (FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER)
+#if FIRESTARTER_FIRSTLIGHT
         // Generate the solution function registers.
         for (unsigned int i = 0; i < numRegisters; i++) {
-            for (unsigned int j = 0; j < tabs; j++)
-                anprintf(buffer, size, length, "    ");
+            GenerateTabs(buffer, size, length, tabs);
             anprintf(buffer, size, length, "float r%u = %.8ff;\r\n", i, data->d[i]);
         }
         anprintf(buffer, size, length, "\r\n");
@@ -305,6 +299,33 @@ public:
             float f = (float)data->d[reg];
             GenerateSolution(buffer, size, length, tabs, reg, f, i, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
         }
+#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
+        // Generate the MoneyMaker solution function registers.
+        for (unsigned int i = 0; i < numRegisters; i++) {
+            GenerateTabs(buffer, size, length, tabs);
+            anprintf(buffer, size, length, "float r%u = %.8ff;\r\n", i, data->d[i]);
+        }
+        anprintf(buffer, size, length, "\r\n");
+
+        // Loop for each day in the stock data.
+        GenerateTabs(buffer, size, length, tabs);
+        anprintf(buffer, size, length, "for (unsigned int d = 0; d < stock.numDays; d++) {\r\n");
+        tabs++;
+
+        // Get the current day's stock price.
+        GenerateTabs(buffer, size, length, tabs);
+        anprintf(buffer, size, length, "n = stock[d];\r\n");
+
+        // Generate the MoneyMaker solution function code.
+        for (unsigned int i = 0; i < numInstructions; i++) {
+            unsigned int reg = Register(i);
+            const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
+            float f = (float)data->d[reg];
+            GenerateSolution(buffer, size, length, tabs, reg, f, i, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
+        }
+        tabs--;
+        GenerateTabs(buffer, size, length, tabs);
+        anprintf(buffer, size, length, "}\r\n");
 #else
         // Find the first and last instruction register usage.
         unsigned int maxRegister = 0;
@@ -319,8 +340,7 @@ public:
         }
 
         // Generate the solution function registers.
-        for (unsigned int i = 0; i < tabs; i++)
-            anprintf(buffer, size, length, "    ");
+        GenerateTabs(buffer, size, length, tabs);
         anprintf(buffer, size, length, "float r0");
         for (unsigned int i = 1; i <= maxRegister; i++)
             anprintf(buffer, size, length, ", r%u", i);

@@ -94,35 +94,45 @@ FireStarterBestCodes::FireStarterBestCodes(void)
     InitBestCodes(FireStarterSettings());
 } // FireStarterBestCodes
 
-void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix, const std::string& postfix)
+void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix, const std::string& postfix)
 {
-    code += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";
-    code += prefix + Format("instructions = %u", settings.m_instructions) + postfix + "\r\n";
-    code += prefix + Format("registers = %u", settings.m_registers) + postfix + "\r\n";
-    code += prefix + Format("opcodes = %u", settings.m_opcodes) + postfix + "\r\n";
-    code += "\r\n";
-    code += prefix + Format("targetMin = %ff", settings.m_targetMin) + postfix + "\r\n";
-    code += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
-    code += prefix + Format("target = %ff", settings.m_target) + postfix + "\r\n";
-    code += "\r\n";
-    code += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
-    code += prefix + Format("evolveSeed = %u", settings.m_evolveSeed) + postfix + "\r\n";
-    code += prefix + Format("optimizeSeed = %u", settings.m_optimizeSeed) + postfix + "\r\n";
-    code += prefix + Format("tests = %u", settings.m_tests) + postfix + "\r\n";
-    code += prefix + Format("streams = %u", settings.m_streams) + postfix + "\r\n";
-    code += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
-    code += prefix + Format("states = %u", settings.m_states) + postfix + "\r\n";
-    code += prefix + Format("population = %u", settings.m_population) + postfix + "\r\n";
-    code += prefix + Format("generations = %u", settings.m_generations) + postfix + "\r\n";
-    code += prefix + Format("passes = %u", settings.m_passes) + postfix + "\r\n";
-    code += prefix + Format("samples = %u", settings.m_samples) + postfix + "\r\n";
-    code += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";
-    code += prefix + Format("candidates = %u", settings.m_candidates) + postfix + "\r\n";
-    code += prefix + Format("optimize = %u", settings.m_optimize) + postfix + "\r\n";
-    code += "\r\n";
-    code += prefix + Format("scale = %ff", settings.m_scale) + postfix + "\r\n";
-    code += prefix + Format("startScale = %ff", settings.m_startScale) + postfix + "\r\n";
-    code += prefix + Format("startResult = %ff", settings.m_startResult) + postfix + "\r\n";
+    text += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";
+    text += prefix + Format("instructions = %u", settings.m_instructions) + postfix + "\r\n";
+    text += prefix + Format("registers = %u", settings.m_registers) + postfix + "\r\n";
+    text += prefix + Format("opcodes = %u", settings.m_opcodes) + postfix + "\r\n";
+    text += "\r\n";
+    text += prefix + Format("targetMin = %ff", settings.m_targetMin) + postfix + "\r\n";
+    text += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
+    text += prefix + Format("target = %ff", settings.m_target) + postfix + "\r\n";
+    text += "\r\n";
+    text += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
+    text += prefix + Format("evolveSeed = %u", settings.m_evolveSeed) + postfix + "\r\n";
+    text += prefix + Format("optimizeSeed = %u", settings.m_optimizeSeed) + postfix + "\r\n";
+    text += prefix + Format("tests = %u", settings.m_tests) + postfix + "\r\n";
+    text += prefix + Format("streams = %u", settings.m_streams) + postfix + "\r\n";
+    text += prefix + Format("units = %u", settings.m_units) + postfix + "\r\n";
+    text += prefix + Format("states = %u", settings.m_states) + postfix + "\r\n";
+    text += prefix + Format("population = %u", settings.m_population) + postfix + "\r\n";
+    text += prefix + Format("generations = %u", settings.m_generations) + postfix + "\r\n";
+    text += prefix + Format("passes = %u", settings.m_passes) + postfix + "\r\n";
+    text += prefix + Format("samples = %u", settings.m_samples) + postfix + "\r\n";
+    text += prefix + Format("iterations = %u", settings.m_iterations) + postfix + "\r\n";
+    text += prefix + Format("candidates = %u", settings.m_candidates) + postfix + "\r\n";
+    text += prefix + Format("optimize = %u", settings.m_optimize) + postfix + "\r\n";
+    text += "\r\n";
+    text += prefix + Format("scale = %ff", settings.m_scale) + postfix + "\r\n";
+    text += prefix + Format("startScale = %ff", settings.m_startScale) + postfix + "\r\n";
+    text += prefix + Format("startResult = %ff", settings.m_startResult) + postfix + "\r\n";
+    text += "\r\n";
+    if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
+        text += prefix + Format("stocks = %u", settings.m_stocks) + postfix + "\r\n";
+        text += prefix + Format("sessions = %u", settings.m_sessions) + postfix + "\r\n";
+        text += prefix + Format("history = %u", settings.m_history) + postfix + "\r\n";
+        text += prefix + Format("variation = %u", settings.m_variation) + postfix + "\r\n";
+        text += prefix + Format("warmup = %u", settings.m_warmup) + postfix + "\r\n";
+        text += prefix + Format("trading = %u", settings.m_trading) + postfix + "\r\n";
+        text += prefix + Format("funds = %ff", settings.m_funds) + postfix + "\r\n";
+    }
 } // SettingsText
 
 void FireStarterState::SaveSettings(std::string& text) const
@@ -157,6 +167,7 @@ void FireStarterState::SaveStats(std::string& text) const
     text += Format("// Run evolution = %llu\r\n", m_evolution);
     text += Format("// Run precision  = %.8f\r\n", m_precision);
     text += Format("// Run max result = %.8f\r\n", MaxResults());
+    text += "\r\n";
     SettingsText(m_settings, text, "// Run ");
     text += "\r\n";
 } // SaveStats

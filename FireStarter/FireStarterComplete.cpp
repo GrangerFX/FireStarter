@@ -56,7 +56,11 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
 void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
 {
     static float bestSolution = 1.0e+12f;
-    const std::string saveFile = "FireStarter_Solution.h";
+    std::string saveFile;
+    if (bestState.m_settings.m_mode == FIRESTARTER_MONEYMAKER)
+        saveFile = "FireStarter_MoneyMakerSolution.h";
+    else
+        saveFile = "FireStarter_Solution.h";
     std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%lld", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
     std::string solutionCode;
 

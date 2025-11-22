@@ -803,7 +803,7 @@ public:
         InitGenerationSeed();
     } // NextGeneration
 
-    static void SettingsText(const FireStarterSettings& settings, std::string& code, const std::string& prefix = "", const std::string& postfix = "");
+    static void SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix = "", const std::string& postfix = "");
     void SaveSettings(std::string& code) const;
     void SaveCode(std::string& code) const;
     void SaveStats(std::string& code) const;
