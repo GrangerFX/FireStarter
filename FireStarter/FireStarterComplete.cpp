@@ -93,7 +93,8 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
             bestState = state;
 
             // Test the precision of the results.
-            bestState.m_precision = bestState.TestResults();
+            if (bestState.m_settings.m_mode != FIRESTARTER_MONEYMAKER)
+                bestState.m_precision = bestState.TestResults();
 
             // Reset the best state age to zero.
             bestState.m_age = 0;
