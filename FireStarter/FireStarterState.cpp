@@ -101,9 +101,19 @@ void FireStarterState::SettingsText(const FireStarterSettings& settings, std::st
     text += prefix + Format("registers = %u", settings.m_registers) + postfix + "\r\n";
     text += prefix + Format("opcodes = %u", settings.m_opcodes) + postfix + "\r\n";
     text += "\r\n";
-    text += prefix + Format("targetMin = %ff", settings.m_targetMin) + postfix + "\r\n";
-    text += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
-    text += prefix + Format("target = %ff", settings.m_target) + postfix + "\r\n";
+    if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
+        text += prefix + Format("stocks = %u", settings.m_stocks) + postfix + "\r\n";
+        text += prefix + Format("sessions = %u", settings.m_sessions) + postfix + "\r\n";
+        text += prefix + Format("history = %u", settings.m_history) + postfix + "\r\n";
+        text += prefix + Format("variation = %u", settings.m_variation) + postfix + "\r\n";
+        text += prefix + Format("warmup = %u", settings.m_warmup) + postfix + "\r\n";
+        text += prefix + Format("trading = %u", settings.m_trading) + postfix + "\r\n";
+        text += prefix + Format("funds = %ff", settings.m_funds) + postfix + "\r\n";
+    } else {
+        text += prefix + Format("targetMin = %ff", settings.m_targetMin) + postfix + "\r\n";
+        text += prefix + Format("targetMax = %ff", settings.m_targetMax) + postfix + "\r\n";
+        text += prefix + Format("target = %ff", settings.m_target) + postfix + "\r\n";
+    }
     text += "\r\n";
     text += prefix + Format("mode = %s", settings.Mode()) + postfix + "\r\n";
     text += prefix + Format("evolveSeed = %u", settings.m_evolveSeed) + postfix + "\r\n";
@@ -124,15 +134,6 @@ void FireStarterState::SettingsText(const FireStarterSettings& settings, std::st
     text += prefix + Format("startScale = %ff", settings.m_startScale) + postfix + "\r\n";
     text += prefix + Format("startResult = %ff", settings.m_startResult) + postfix + "\r\n";
     text += "\r\n";
-    if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
-        text += prefix + Format("stocks = %u", settings.m_stocks) + postfix + "\r\n";
-        text += prefix + Format("sessions = %u", settings.m_sessions) + postfix + "\r\n";
-        text += prefix + Format("history = %u", settings.m_history) + postfix + "\r\n";
-        text += prefix + Format("variation = %u", settings.m_variation) + postfix + "\r\n";
-        text += prefix + Format("warmup = %u", settings.m_warmup) + postfix + "\r\n";
-        text += prefix + Format("trading = %u", settings.m_trading) + postfix + "\r\n";
-        text += prefix + Format("funds = %ff", settings.m_funds) + postfix + "\r\n";
-    }
 } // SettingsText
 
 void FireStarterState::SaveSettings(std::string& text) const
@@ -165,7 +166,8 @@ void FireStarterState::SaveStats(std::string& text) const
     text += Format("// Run test = %llu\r\n", m_test);
     text += Format("// Run generation = %llu\r\n", m_generation);
     text += Format("// Run evolution = %llu\r\n", m_evolution);
-    text += Format("// Run precision  = %.8f\r\n", m_precision);
+    if (m_settings.m_mode != FIRESTARTER_MONEYMAKER)
+        text += Format("// Run precision  = %.8f\r\n", m_precision);
     text += Format("// Run max result = %.8f\r\n", MaxResults());
     text += "\r\n";
     SettingsText(m_settings, text, "// Run ");
