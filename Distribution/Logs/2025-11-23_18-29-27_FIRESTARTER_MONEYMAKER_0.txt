@@ -1,0 +1,45 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+stocks = 8
+sessions = 64
+history = 257
+variation = 120
+warmup = 16
+trading = 120
+funds = 1000.000000f
+
+mode = FIRESTARTER_MONEYMAKER
+evolveSeed = 0
+optimizeSeed = 0
+tests = 1
+streams = 1
+units = 1
+states = 1
+population = 65536
+generations = 10
+passes = 256
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_MONEYMAKER: Generation=  2  Best=51.78110123%  Time=20.2230 Seconds  Run Time=1402.1012 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  3  Best=55.21713638%  Time=20.0705 Seconds  Run Time=2112.9934 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  4  Best=57.10566711%  Time=18.7373 Seconds  Run Time=2822.7609 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  5  Best=59.41397476%  Time=20.3105 Seconds  Run Time=3534.1313 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  6  Best=59.41397476%  Time=17.8574 Seconds  Run Time=4243.0866 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  7  Best=59.41397476%  Time=17.0722 Seconds  Run Time=4951.0430 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  8  Best=59.41397476%  Time=16.9398 Seconds  Run Time=5659.0647 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  9  Best=59.41397476%  Time=20.4281 Seconds  Run Time=6370.5243 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 10  Best=59.41397476%  Time=15.8456 Seconds  Run Time=7077.2440 Seconds
