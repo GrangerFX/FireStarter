@@ -1,0 +1,60 @@
+Seed: 0  Test:   0  Generation=  1  Evolve Result=58.0206%  Optimize Result=76.1557%  Best Result=76.1557%  Duration: 774.4  GenTime: 774.4  Total: 774.4 *******
+AAPL: Result=155.0103%
+NVDA: Result=292.7549%
+INTC: Result=433.2932%
+MSFT: Result=89.6470%
+QCOM: Result=102.3624%
+AMZN: Result=102.9798%
+GOOG: Result=218.3492%
+Result=334.9079%
+
+Seed: 0  Test:   0  Generation=  2  Evolve Result=64.4703%  Optimize Result=76.5038%  Best Result=76.5038%  Duration: 1166.9  GenTime: 583.5  Total: 1941.3 *******
+AAPL: Result=98.1995%
+NVDA: Result=268.7980%
+INTC: Result=459.6816%
+MSFT: Result=104.0447%
+QCOM: Result=84.7183%
+AMZN: Result=101.9003%
+GOOG: Result=216.7239%
+Result=321.9404%
+
+Seed: 0  Test:   0  Generation=  3  Evolve Result=62.1795%  Optimize Result=63.6162%  Best Result=76.5038%  Duration: 1558.8  GenTime: 519.6  Total: 3500.1
+AAPL: Result=101.8897%
+NVDA: Result=352.1754%
+INTC: Result=465.7296%
+MSFT: Result=108.8389%
+QCOM: Result=97.0156%
+AMZN: Result=107.8309%
+GOOG: Result=144.8155%
+Result=325.2756%
+
+Seed: 0  Test:   0  Generation=  4  Evolve Result=62.9431%  Optimize Result=64.2905%  Best Result=76.5038%  Duration: 1950.7  GenTime: 487.7  Total: 5450.8
+AAPL: Result=130.9615%
+NVDA: Result=336.6100%
+INTC: Result=474.3061%
+MSFT: Result=101.7106%
+QCOM: Result=97.2760%
+AMZN: Result=83.4793%
+GOOG: Result=120.2456%
+Result=222.4744%
+
+Seed: 0  Test:   0  Generation=  5  Evolve Result=60.9618%  Optimize Result=66.7359%  Best Result=76.5038%  Duration: 2343.6  GenTime: 468.7  Total: 7794.3
+AAPL: Result=62.2555%
+NVDA: Result=437.4846%
+INTC: Result=400.4071%
+MSFT: Result=59.5913%
+QCOM: Result=180.1253%
+AMZN: Result=83.1179%
+GOOG: Result=105.6299%
+Result=323.7047%
+
+Seed: 0  Test:   0  Generation=  6  Evolve Result=59.6095%  Optimize Result=63.5422%  Best Result=76.5038%  Duration: 2735.3  GenTime: 455.9  Total: 10529.6
+AAPL: Result=115.6814%
+NVDA: Result=283.9129%
+INTC: Result=327.8018%
+MSFT: Result=103.6426%
+QCOM: Result=63.9030%
+AMZN: Result=71.3665%
+GOOG: Result=112.2825%
+Result=327.3417%
+
