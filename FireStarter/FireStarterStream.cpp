@@ -651,12 +651,17 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
 
         // Load the stock market data;
-        MoneyMakerStocks* stocks = (MoneyMakerStocks*)malloc(MoneyMakerStocks::StocksSize(evolveSettings.m_stocks, evolveSettings.m_history));
-        stocks->Init(evolveSettings, 4);
-        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL', 0);
-        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA', 1);
-        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/intc.us.txt", 'INTC', 2);
-        stocks->Load("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/msft.us.txt", 'MSFT', 3);
+        MoneyMakerManager stockManager(evolveSettings);
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/intc.us.txt", 'INTC');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/msft.us.txt", 'MSFT');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/qcom.us.txt", 'QCOM');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amzn.us.txt", 'AMZN');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/goog.us.txt", 'GOOG');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt", 'AMD');
+        MoneyMakerStocks* stocks = stockManager.Stocks();
+        const MoneyMakerStock& stock = stocks->Stock(5);
         executeEvolve->ExecuteSetStocks(evolveSettings, stocks);
         executeOptimize->ExecuteSetStocks(optimizeSettings, stocks);
 
@@ -695,7 +700,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
                     // Output the results.
                     std::string resultText;
-                    unsigned int numStocks = stocks->numStocks;
+                    unsigned int numStocks = stocks->size();
                     const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
                     if (tradingResults) {
                         double duration = bestState.Duration();
@@ -760,9 +765,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
-
-        // Delete the stock data
-        free(stocks);
     }, sync);
 } // MoneyMakerStream
 

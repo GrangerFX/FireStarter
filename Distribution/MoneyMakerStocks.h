@@ -2,6 +2,7 @@
 #include "FireStarterSettings.h"
 #ifndef __CUDACC__
 #include <string>
+#include <vector>
 #endif
 
 typedef struct MoneyMakerStock
@@ -35,6 +36,11 @@ typedef struct MoneyMakerStock
     {
         return !(*this == other);
     } // operator!=
+
+    inline unsigned int size(void)
+    {
+        return numDays;
+    } // size
 
     static inline size_t StockSize(unsigned int history)
     {
@@ -174,6 +180,11 @@ typedef struct MoneyMakerStocks
         return StocksSize(stocks->numStocks, stocks->numDays);
     } // StocksSize
 
+    inline unsigned int size(void)
+    {
+        return numStocks;
+    } // size
+
     inline size_t StocksSize(void) const
     {
         return StocksSize(numStocks, numDays);
@@ -291,3 +302,37 @@ typedef struct MoneyMakerStocks
         Init(settings);
     } // MoneyMakerStocks
 } MoneyMakerStocks;
+
+#ifndef __CUDACC__
+class MoneyMakerManager {
+public:
+    std::vector<unsigned char> m_data;
+
+    inline unsigned int size(void)
+    {
+        return Stocks()->size();
+    } // size
+
+    inline MoneyMakerStocks* Stocks(void)
+    {
+        return (MoneyMakerStocks*)(m_data.data());
+    } // Stocks
+
+    inline bool AddStock(const std::string& path, unsigned int symbol,bool normalize = false)
+    {
+        unsigned int numStocks = Stocks()->numStocks;
+        unsigned int numDays = Stocks()->numDays;
+        numStocks++;
+        m_data.resize(MoneyMakerStocks::StocksSize(numStocks, numDays));
+        Stocks()->numStocks = numStocks;
+        return Stocks()->StockData(numStocks - 1)->Load(path, symbol, numDays, normalize);
+    } // AddStock
+
+    MoneyMakerManager(const FireStarterSettings& settings)
+    {
+        m_data.resize(MoneyMakerStocks::StocksSize(0, settings.m_history));
+        MoneyMakerStocks* stocks = Stocks();
+        stocks->Init(0, settings.m_history);
+    } // MoneyMakerStocks
+}; // MoneyMakerManager
+#endif
