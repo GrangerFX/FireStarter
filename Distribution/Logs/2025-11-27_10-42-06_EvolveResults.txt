@@ -1,0 +1,30 @@
+Seed: 0  Test:   0  Generation=  1  Evolve Result=27.5995%  Optimize Result=35.1587%  Best Result=35.1587%  Duration: 961.4  GenTime: 961.4  Total: 961.4 *******
+AAPL: Result=-20.1797%
+NVDA: Result=21.1630%
+INTC: Result Failed!
+MSFT: Result=6.1983%
+QCOM: Result=31.9583%
+AMZN: Result=17.1290%
+GOOG: Result=-3.0517%
+AMD : Result=23.9284%
+
+Seed: 0  Test:   0  Generation=  2  Evolve Result=27.4765%  Optimize Result=30.9674%  Best Result=35.1587%  Duration: 1449.0  GenTime: 724.5  Total: 2410.4
+AAPL: Result=13.8904%
+NVDA: Result=85.3535%
+INTC: Result=-3.1027%
+MSFT: Result=21.4980%
+QCOM: Result=11.9388%
+AMZN: Result=16.4355%
+GOOG: Result=5.9120%
+AMD : Result=-7.4083%
+
+Seed: 0  Test:   0  Generation=  3  Evolve Result=27.6296%  Optimize Result=31.1307%  Best Result=35.1587%  Duration: 1936.9  GenTime: 645.6  Total: 4347.3
+AAPL: Result=2.2288%
+NVDA: Result=86.3710%
+INTC: Result=-38.0243%
+MSFT: Result=14.7379%
+QCOM: Result=30.0350%
+AMZN: Result=54.9269%
+GOOG: Result=-7.1488%
+AMD : Result=-16.2221%
+
