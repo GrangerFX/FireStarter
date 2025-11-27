@@ -659,7 +659,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/qcom.us.txt", 'QCOM');
         stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amzn.us.txt", 'AMZN');
         stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/goog.us.txt", 'GOOG');
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt", 'AMD');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt",  'AMD ');
         MoneyMakerStocks* stocks = stockManager.Stocks();
         const MoneyMakerStock& stock = stocks->Stock(5);
         executeEvolve->ExecuteSetStocks(evolveSettings, stocks);
@@ -723,7 +723,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
                             float tradingResult = result[0];
                             if (tradingResult) {
-                                float tradingReturns = MoneyMakerReturns(tradingResult);
+                                float tradingReturns = MoneyMakerReturns(tradingResult, MONEYMAKER_VARIATION + MONEYMAKER_TRADING - 1);
                                 resultText += Format("Result=%.4f%%", tradingReturns);
                             } else
                                 resultText += "Result Failed!";
