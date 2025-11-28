@@ -2,11 +2,11 @@
 #include "MoneyMakerStocks.h"
 
 // Run date: 11/27/25 20:07:29 Pacific Standard Time
-// Run duration = 1401.888939 seconds
+// Run duration = 7070.102077 seconds
 // Run test = 0
-// Run generation = 2
+// Run generation = 10
 // Run evolution = 0
-// Run max result = 0.85777068
+// Run max result = 0.84307379
 
 // Run variations = 1
 // Run instructions = 32
@@ -45,61 +45,61 @@
 inline float MoneyMakerSolution(MoneyMakerStock& stock)
 {
     float n = 0.0f;
-    float r0 = 0.17017202f;
-    float r1 = -7.63781738f;
-    float r2 = -1.33505714f;
-    float r3 = -0.13815707f;
-    float r4 = -1.98055375f;
-    float r5 = 0.92471325f;
-    float r6 = 1.32705843f;
-    float r7 = -1.80078483f;
-    float r8 = -0.30130041f;
-    float r9 = -1.64323556f;
-    float r10 = -1.46666002f;
-    float r11 = -2.42664313f;
-    float r12 = 13.63387871f;
-    float r13 = -0.40922269f;
-    float r14 = -6.90860224f;
-    float r15 = -2.39408040f;
-    float r16 = -0.74804533f;
-    float r17 = -0.05863084f;
-    float r18 = -0.70322591f;
-    float r19 = -0.47407806f;
+    float r0 = 0.03024309f;
+    float r1 = -1.68628490f;
+    float r2 = 1.97368562f;
+    float r3 = 0.65136719f;
+    float r4 = 1.31740022f;
+    float r5 = 0.32855299f;
+    float r6 = -1.75528789f;
+    float r7 = -0.51342744f;
+    float r8 = -1.52033877f;
+    float r9 = -1.85572720f;
+    float r10 = -10.81688118f;
+    float r11 = -0.86881995f;
+    float r12 = -0.88412923f;
+    float r13 = 0.22137272f;
+    float r14 = 0.23034726f;
+    float r15 = 0.69916779f;
+    float r16 = 0.72428644f;
+    float r17 = -1.25570428f;
+    float r18 = 0.40216294f;
+    float r19 = -0.15681975f;
 
     for (unsigned int d = 0; d < stock.numDays; d++) {
         n = stock[d];
         r0 = n;
         n += r1;
-        n *= r0;
         r2 = n;
-        r3 = n;
-        r4 = n;
-        n *= r5;
-        n *= r6;
-        n += r7;
-        n *= r8;
-        n += r9;
-        r2 = n;
-        r10 = n;
-        r11 = n;
-        n += r3;
-        r1 = n;
-        n += r6;
-        n *= r12;
-        n *= r13;
-        n *= r9;
-        n *= r14;
-        r15 = n;
-        n += r16;
-        r17 = n;
-        n += r18;
-        r10 = n;
         n *= r3;
+        n *= r4;
+        n *= r5;
+        r6 = n;
+        n *= r7;
+        n += r0;
+        r8 = n;
+        r9 = n;
+        n *= r10;
+        n += r4;
+        r10 = n;
+        n *= r1;
+        n += r10;
+        r11 = n;
+        n *= r8;
+        r5 = n;
+        n *= r12;
         n += r13;
-        r14 = n;
-        n *= r15;
-        r19 = n;
-        n *= r6;
+        n += r14;
+        n += r15;
+        r0 = n;
+        n += r11;
+        r16 = n;
+        n += r17;
+        r5 = n;
+        n += r6;
+        n += r18;
+        n *= r16;
+        n *= r19;
     }
     return n;
 } // MoneyMakerSolution
