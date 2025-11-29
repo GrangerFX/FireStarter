@@ -93,7 +93,7 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterData& data, const Money
     return false;
 } // MoneyOptimizeEvaluateStocks
 
-GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationSize)
+GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
@@ -192,7 +192,7 @@ GPU_GLOBAL void MoneyOptimizer(FireStarterResult* newPopulation, const FireStart
         FireStarterPopulation::PopulationResult(newPopulation, member)->InitResult(data, result, evolveAge);
 } // MoneyOptimizer
 
-inline bool MoneyTesterEvaluate(const FireStarterData& data, const MoneyMakerStock& stockData, MoneyMakerStock& resultData, float& result)
+inline bool MoneyTesterEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStock& stockData, MoneyMakerStock& resultData, float& result)
 {
     float startingFunds = MONEYMAKER_FUNDS;
     float funds = startingFunds;
@@ -255,7 +255,7 @@ inline bool MoneyTesterEvaluate(const FireStarterData& data, const MoneyMakerSto
     return true;
 } // MoneyTesterEvaluate
 
-GPU_GLOBAL void MoneyTester(const MoneyMakerStocks* stocks, MoneyMakerStocks* tradingResults, const FireStarterData* tradingData)
+GPU_GLOBAL void MoneyTester(const FireStarterSettings* settings, const MoneyMakerStocks* stocks, MoneyMakerStocks* tradingResults, const FireStarterData* tradingData)
 {
     unsigned int stockIndex = threadIdx.x;
     if (stockIndex < stocks->numStocks) {
@@ -264,7 +264,7 @@ GPU_GLOBAL void MoneyTester(const MoneyMakerStocks* stocks, MoneyMakerStocks* tr
 
         // The shared data for the threads in the warp.
         float testResult = 0.0f;
-        MoneyTesterEvaluate(*tradingData, stockData, resultData, testResult);
+        MoneyTesterEvaluate(settings, *tradingData, stockData, resultData, testResult);
         int foo = 1;
     }
 } // MoneyTester

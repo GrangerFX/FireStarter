@@ -11,6 +11,8 @@ private:
     const MoneyMakerStocks* m_stocksData = nullptr;
     float* m_hostResults = nullptr;
     float* m_deviceResults = nullptr;
+    FireStarterSettings* m_hostSettings = nullptr;
+    FireStarterSettings* m_deviceSettings = nullptr;
     FireStarterResult* m_hostPopulation = nullptr;
     FireStarterResult* m_devicePopulation0 = nullptr;
     FireStarterResult* m_devicePopulation1 = nullptr;
@@ -38,6 +40,7 @@ private:
     std::string m_executeFunctionName;
     std::string m_executeTestName;
     std::string m_executeCode;
+    size_t m_settingsSize = 0;
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
     size_t m_networksSize = 0;
