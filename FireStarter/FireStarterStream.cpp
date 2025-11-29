@@ -715,21 +715,31 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             resultText += " *******";
                         resultText += "\n";
 
+                        float tradingAverage = 0.0f;
+                        float differenceAverage = 0.0f;
                         for (unsigned int stockIndex = 0; stockIndex < numStocks; stockIndex++) {
                             const MoneyMakerStock& stock = stocks->Stock(stockIndex);
                             const MoneyMakerStock& result = tradingResults->Stock(stockIndex);
                             char* symbol = (char*)&stock.symbol;
                             resultText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
 
+                            float stockFirstValue = stock[MONEYMAKER_WARMUP];
+                            float stockLastValue = stock[MONEYMAKER_HISTORY - 1];
+                            float stockReturns = MoneyMakerReturns(stockLastValue / stockFirstValue, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
+                            resultText += Format("Stock Returns=%.4f%%  ", stockReturns);
+
                             float tradingResult = result[0];
                             if (tradingResult) {
-                                float tradingReturns = MoneyMakerReturns(tradingResult, MONEYMAKER_VARIATION + MONEYMAKER_TRADING - 1);
-                                resultText += Format("Result=%.4f%%", tradingReturns);
+                                float tradingReturns = MoneyMakerReturns(tradingResult, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
+                                float tradingDifference = tradingReturns - stockReturns;
+                                resultText += Format("Trading Returns=%.4f%%  Difference==%.4f%%", tradingReturns, tradingDifference);
+                                tradingAverage += tradingReturns / numStocks;
+                                differenceAverage += tradingDifference / numStocks;
                             } else
                                 resultText += "Result Failed!";
                             resultText += "\n";
                         }
-                        resultText += "\n";
+                        resultText += Format("Average Returns=%.4f%%  Average Difference==%.4f%%\n\n", tradingAverage, differenceAverage);
                         FireStarterSource::AppendSource(resultText, Format("Logs\\%s_EvolveResults.txt", streamDate.c_str()));
                     }
 #if FIRESTARTER_SAVE_BESTSTATE

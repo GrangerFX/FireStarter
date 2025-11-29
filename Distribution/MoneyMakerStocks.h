@@ -37,7 +37,7 @@ typedef struct MoneyMakerStock
         return !(*this == other);
     } // operator!=
 
-    inline unsigned int size(void)
+    inline unsigned int size(void) const
     {
         return numDays;
     } // size
@@ -180,7 +180,7 @@ typedef struct MoneyMakerStocks
         return StocksSize(stocks->numStocks, stocks->numDays);
     } // StocksSize
 
-    inline unsigned int size(void)
+    inline unsigned int size(void) const
     {
         return numStocks;
     } // size
@@ -308,12 +308,17 @@ class MoneyMakerManager {
 public:
     std::vector<unsigned char> m_data;
 
-    inline unsigned int size(void)
+    inline unsigned int size(void) const
     {
         return Stocks()->size();
     } // size
 
     inline MoneyMakerStocks* Stocks(void)
+    {
+        return (MoneyMakerStocks*)(m_data.data());
+    } // Stocks
+
+    inline const MoneyMakerStocks* Stocks(void) const
     {
         return (MoneyMakerStocks*)(m_data.data());
     } // Stocks
