@@ -10,7 +10,7 @@ inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
     return n;
 } // MoneyCompiledEvaluate
 
-inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, float& result)
+inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, float& result)
 {
     float startingFunds = MONEYMAKER_FUNDS;
     float funds = startingFunds;
@@ -69,7 +69,7 @@ inline bool MoneyOptimizeEvaluate(const FireStarterData& data, const MoneyMakerS
     return true;
 } // MoneyOptimizeEvaluate
 
-inline bool MoneyOptimizeEvaluateStocks(const FireStarterData& data, const MoneyMakerStocks& stocks, float& result)
+inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStocks& stocks, float& result)
 {
     float sessionsResult = 0.0f;
     unsigned int stock = 0;
@@ -78,7 +78,7 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterData& data, const Money
         unsigned int sessionStart = RANDOMMOD(sessionSeed, MONEYMAKER_VARIATION + 1);
         float stockResult = FIRESTARTER_START_RESULT;
 
-        if (!MoneyOptimizeEvaluate(data, stocks.Stock(stock), sessionStart, stockResult)) {
+        if (!MoneyOptimizeEvaluate(settings, data, stocks.Stock(stock), sessionStart, stockResult)) {
             sessionsResult = FIRESTARTER_START_RESULT;
             break;
         }
@@ -116,7 +116,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
         for (unsigned int i = 0; i < 10; i++) {
             data.InitData(memberSeed, registers);
             result = FIRESTARTER_START_RESULT;
-            if (MoneyOptimizeEvaluateStocks(data, *stocks, result))
+            if (MoneyOptimizeEvaluateStocks(settings, data, *stocks, result))
                 break;
         }
         memberResult = FIRESTARTER_START_RESULT;
@@ -133,7 +133,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * FIRESTARTER_START_SCALE * (evolveAge - 1);
-            if (MoneyOptimizeEvaluateStocks(data, *stocks, result))
+            if (MoneyOptimizeEvaluateStocks(settings, data, *stocks, result))
                 memberResult = FIRESTARTER_START_RESULT; // Validated as being faster than result  11/17/2024
             else
                 data[d] = oldData;
@@ -149,7 +149,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
         unsigned int curTrades = 0;
         float curResult = result * 0.99f; // Validated as being faster than * 1.0f or * 0.9f. About the same as * 0.999f.  11/17/2024
-        if (MoneyOptimizeEvaluateStocks(data, *stocks, curResult))
+        if (MoneyOptimizeEvaluateStocks(settings, data, *stocks, curResult))
             result = curResult;
         else
             data[d] = oldData;

@@ -3,7 +3,7 @@
 #include "MoneyMakerStocks.h"
 #include "CUDADefines.h"
 
-inline bool MoneyMakerEvaluate(const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock, unsigned int startDay, float& result)
+inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock, unsigned int startDay, float& result)
 {
     float startingFunds = MONEYMAKER_FUNDS;
     float funds = startingFunds;
@@ -62,7 +62,7 @@ inline bool MoneyMakerEvaluate(const FireStarterData& data, const FireStarterCod
     return true;
 } // MoneyMakerEvaluate
 
-inline bool MoneyMakerEvaluateStocks(const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, float& result)
+inline bool MoneyMakerEvaluateStocks(const FireStarterSettings *settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, float& result)
 {
     float sessionsResult = 0.0f;
     unsigned int stock = 0;
@@ -71,7 +71,7 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterData& data, const FireStar
         unsigned int sessionStart = RANDOMMOD(sessionSeed, MONEYMAKER_VARIATION + 1);
         float stockResult = FIRESTARTER_START_RESULT;
 
-        if (!MoneyMakerEvaluate(data, code, stocks.Stock(stock), sessionStart, stockResult)) {
+        if (!MoneyMakerEvaluate(settings, data, code, stocks.Stock(stock), sessionStart, stockResult)) {
             sessionsResult = FIRESTARTER_START_RESULT;
             break;
         }
@@ -108,7 +108,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        if (MoneyMakerEvaluateStocks(data, code, *stocks, result))
+        if (MoneyMakerEvaluateStocks(settings, data, code, *stocks, result))
             break;
     }
 
@@ -148,7 +148,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = result * 0.99f;
             unsigned int curTrades = 0;
-            if (MoneyMakerEvaluateStocks(data, code, *stocks, curResult))
+            if (MoneyMakerEvaluateStocks(settings, data, code, *stocks, curResult))
                 result = curResult;
             else
                 data[d] = old;
