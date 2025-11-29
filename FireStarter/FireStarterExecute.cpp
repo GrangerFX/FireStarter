@@ -178,8 +178,10 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         m_tradingDataSize = tradingDataSize;
         m_tradingCodeSize = tradingCodeSize;
 
-        if (m_settingsSize)
+        if (m_settingsSize) {
             checkCUDAErrors(cudaMallocHost(&m_hostSettings, m_settingsSize));
+            memcpy(m_hostSettings, &settings, m_settingsSize);
+        }
         if (m_resultsSize)
             checkCUDAErrors(cudaMallocHost(&m_hostResults, m_resultsSize));
         if (m_codesSize)
@@ -198,8 +200,10 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             checkCUDAErrors(cudaMallocHost(&m_hostTradingCode, m_tradingCodeSize));
 
         if (m_simulateGPU) {
-            if (m_settingsSize)
+            if (m_settingsSize) {
                 checkCUDAErrors(cudaMallocHost(&m_deviceSettings, m_settingsSize));
+                memcpy(m_deviceSettings, &settings, m_settingsSize);
+            }
             if (m_resultsSize)
                 checkCUDAErrors(cudaMallocHost(&m_deviceResults, m_resultsSize));
             if (m_codesSize)
@@ -221,8 +225,10 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             if (m_tradingCodeSize)
                 checkCUDAErrors(cudaMallocHost(&m_deviceTradingCode, m_tradingCodeSize));
         } else {
-            if (m_settingsSize)
+            if (m_settingsSize) {
                 checkCUDAErrors(cudaMallocAsync(&m_deviceSettings, m_settingsSize, Stream()));
+                checkCUDAErrors(cudaMemcpyAsync(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToDevice, Stream()));
+            }
             if (m_resultsSize)
                 checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
             if (m_codesSize)
