@@ -5,10 +5,7 @@
 
 inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock, unsigned int startDay, float& result)
 {
-    float startingFunds = settings->m_funds;
-    float funds = startingFunds;
-    unsigned int warmup = settings->m_warmup;
-    unsigned int trading = settings->m_trading;
+    float funds = settings->m_funds;
     unsigned int index = startDay;
     unsigned int shares = 0;
 
@@ -18,7 +15,7 @@ inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireSt
     // Warmup evaluation ignoring the results.
     // Starts at 1 because the first day is used to set the oldPrice.
     float oldPrice = stock[index++];
-    for (unsigned int i = 1; i < warmup; i++) {
+    for (unsigned int i = 1; i < settings->m_warmup; i++) {
         float newPrice = stock[index++];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
@@ -31,7 +28,7 @@ inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireSt
 
     // Use the evaluation to trade the stock.
     // Starts at 1 to give an extra day to settle the final trade.
-    for (unsigned int i = 1; i < trading; i++) {
+    for (unsigned int i = 1; i < settings->m_trading; i++) {
         float newPrice = stock[index++];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
@@ -56,32 +53,29 @@ inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireSt
     }
 
     // The final funds after selling remaining shares.
-    float tradingFunds = funds + shares * stock[index];
+    funds += shares * stock[index];
 
     // The result is the ratio between the starting funds and the final funds.
     // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
-    result = startingFunds / tradingFunds; // Inverse alpha.
+    result = settings->m_funds / funds; // Inverse alpha.
     return true;
 } // MoneyMakerEvaluate
 
 inline bool MoneyMakerEvaluateStocks(const FireStarterSettings *settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, float& result)
 {
-    unsigned int numStocks = settings->m_stocks;
-    unsigned int sessions = settings->m_sessions;
-    unsigned int variation = settings->m_variation;
     float sessionsResult = 0.0f;
     unsigned int stock = 0;
-    for (unsigned int session = 0; session < sessions; session++) {
+    for (unsigned int session = 0; session < settings->m_sessions; session++) {
         unsigned long long sessionSeed = SEED9(session);
-        unsigned int sessionStart = RANDOMMOD(sessionSeed, variation + 1);
-        float stockResult = FIRESTARTER_START_RESULT;
+        unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
+        float stockResult = settings->m_startResult;
 
         if (!MoneyMakerEvaluate(settings, data, code, stocks.Stock(stock), sessionStart, stockResult)) {
-            sessionsResult = FIRESTARTER_START_RESULT;
+            sessionsResult = settings->m_startResult;
             break;
         }
-        sessionsResult += stockResult / sessions;
-        if (++stock == numStocks)
+        sessionsResult += stockResult / settings->m_sessions;
+        if (++stock == settings->m_stocks)
             stock = 0;
     }
     
@@ -107,7 +101,9 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     unsigned long long memberSeed = evolveSeed + SEED1(member);   // Unique seed for the member
 
     // The first pass is initalized with random numbers.
-    float result = FIRESTARTER_START_RESULT;
+    float startResult = settings->m_startResult;
+    float startScale = settings->m_startScale;
+    float result = startResult;
     unsigned int registers = 0;
     for (unsigned int i = 0; i < 10; i++) {
         code.InitCode(memberSeed);
@@ -131,23 +127,23 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     for (unsigned int pass = 0; pass < passes; pass++) {
         // Evolve the code and data.
         float evolutionScale;
-        if ((memberAge >= 6) || (result >= FIRESTARTER_START_RESULT)) {
-            evolutionScale = FIRESTARTER_START_SCALE;
+        if ((memberAge >= 6) || (result >= startResult)) {
+            evolutionScale = startScale;
             code.InitCode(memberSeed);
             registers = code.Optimize();
             data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-            memberResult = FIRESTARTER_START_RESULT;
-            result = FIRESTARTER_START_RESULT;
+            memberResult = startResult;
+            result = startResult;
             memberAge = 0;
         } else {
             // Randomize a register each generation.
-            evolutionScale = result * FIRESTARTER_SCALE;
+            evolutionScale = result * startScale;
             if (memberAge > 0)
                 data.RandomData(memberSeed, evolutionScale, registers);
         }
 
         // Iterate to evolve the data.
-        for (unsigned int i = 0; i < FIRESTARTER_EVOLVE_GPU_ITERATIONS; i++) {
+        for (unsigned int i = 0; i < settings->m_iterations; i++) {
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);

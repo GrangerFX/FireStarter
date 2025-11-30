@@ -12,10 +12,7 @@ inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 
 inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, float& result)
 {
-    unsigned int warmup = settings->m_warmup;
-    unsigned int trading = settings->m_trading;
-    float startingFunds = settings->m_funds;
-    float funds = startingFunds;
+    float funds = settings->m_funds;
     unsigned int index = startDay;
     unsigned int shares = 0;
 
@@ -25,7 +22,7 @@ inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const Fir
     // Warmup evaluation ignoring the results.
     // Starts at 1 because the first day is used to set the oldPrice.
     float oldPrice = stock[index++];
-    for (unsigned int i = 1; i < warmup; i++) {
+    for (unsigned int i = 1; i < settings->m_warmup; i++) {
         float newPrice = stock[index++];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
@@ -38,7 +35,7 @@ inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const Fir
 
     // Use the evaluation to trade the stock.
     // Starts at 1 to give an extra day to settle the final trade.
-    for (unsigned int i = 1; i < trading; i++) {
+    for (unsigned int i = 1; i < settings->m_trading; i++) {
         float newPrice = stock[index++];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
@@ -63,32 +60,30 @@ inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const Fir
     }
 
     // The final funds after selling remaining shares.
-    float tradingFunds = funds + shares * stock[index];
+    funds += shares * stock[index];
 
     // The result is the ratio between the starting funds and the final funds.
     // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
-    result = startingFunds / tradingFunds; // Inverse alpha.
+    result = settings->m_funds / funds; // Inverse alpha.
     return true;
 } // MoneyOptimizeEvaluate
 
 inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStocks& stocks, float& result)
 {
-    unsigned int sessions = settings->m_sessions;
-    unsigned int variation = settings->m_variation;
-    unsigned int numStocks = settings->m_stocks;
+    float startResult = settings->m_startResult;
     float sessionsResult = 0.0f;
     unsigned int stock = 0;
-    for (unsigned int session = 0; session < sessions; session++) {
+    for (unsigned int session = 0; session < settings->m_sessions; session++) {
         unsigned long long sessionSeed = SEED9(session);
-        unsigned int sessionStart = RANDOMMOD(sessionSeed, variation + 1);
-        float stockResult = FIRESTARTER_START_RESULT;
+        unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
+        float stockResult = startResult;
 
         if (!MoneyOptimizeEvaluate(settings, data, stocks.Stock(stock), sessionStart, stockResult)) {
-            sessionsResult = FIRESTARTER_START_RESULT;
+            sessionsResult = startResult;
             break;
         }
-        sessionsResult += stockResult / sessions;
-        if (++stock == numStocks)
+        sessionsResult += stockResult / settings->m_sessions;
+        if (++stock == settings->m_stocks)
             stock = 0;
     }
     if (sessionsResult < result) {
@@ -120,12 +115,12 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
     if (!optimizePass) {
         for (unsigned int i = 0; i < 10; i++) {
             data.InitData(memberSeed, registers);
-            result = FIRESTARTER_START_RESULT;
+            result = settings->m_startResult;
             if (MoneyOptimizeEvaluateStocks(settings, data, *stocks, result))
                 break;
         }
-        memberResult = FIRESTARTER_START_RESULT;
-        evolutionScale = FIRESTARTER_START_SCALE; // Validated as faster than 0.6f * memberResult  11/17/2024
+        memberResult = settings->m_startResult;
+        evolutionScale = settings->m_startScale; // Validated as faster than 0.6f * memberResult  11/17/2024
         evolveAge = 0;
     } else {
         // Later generations randomize a single register if they were copied.
@@ -137,14 +132,14 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
             // Randomize a single register.
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
-            data[d] = oldData + RANDOMFACTOR(memberSeed) * FIRESTARTER_START_SCALE * (evolveAge - 1);
+            data[d] = oldData + RANDOMFACTOR(memberSeed) * settings->m_startScale * (evolveAge - 1);
             if (MoneyOptimizeEvaluateStocks(settings, data, *stocks, result))
-                memberResult = FIRESTARTER_START_RESULT; // Validated as being faster than result  11/17/2024
+                memberResult = settings->m_startResult; // Validated as being faster than result  11/17/2024
             else
                 data[d] = oldData;
-            evolutionScale = (2.0f * FIRESTARTER_SCALE) * memberResult; // Validated as being faster than 0.6f * FIRESTARTER_START_RESULT  11/17/2024
+            evolutionScale = (2.0f * settings->m_scale) * memberResult; // Validated as being faster than 0.6f * startResult  11/17/2024
         } else
-            evolutionScale = FIRESTARTER_SCALE * memberResult;
+            evolutionScale = settings->m_scale * memberResult;
     }
 
     // Iterate to optimize the data.
@@ -170,7 +165,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
 
         // The genetic part of genetic programming and a major optimization:
         // Copy the best data from among a random set of candidates.
-        for (int i = 0; i < FIRESTARTER_CANDIDATES; i++) {
+        for (unsigned int i = 0; i < settings->m_candidates; i++) {
             // Select evolving members with results better than the current result.
             unsigned int candidate = RANDOMMOD(memberSeed, populationSize);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate);
