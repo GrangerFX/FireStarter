@@ -68,7 +68,8 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const 
     unsigned int sessions = settings->m_sessions * settings->m_stocks;
     unsigned int stock = 0;
     for (unsigned int session = 0; session < sessions; session++) {
-        unsigned long long sessionSeed = SEED9(session);
+        unsigned long long sessionSeed = SEED9(session) + seed;
+//      unsigned long long sessionSeed = SEED9(session);  // Matches earlier versions
         unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
         float stockResult = settings->m_startResult;
 
