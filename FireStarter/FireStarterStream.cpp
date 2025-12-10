@@ -420,8 +420,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
                     // Execute optimize for any completed compile jobs.
                     executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete);
-                }
-                else
+                } else
                     // Execute the initial GPU evolve.
                     executeEvolve->ExecuteEvolve(evolveState);
 
