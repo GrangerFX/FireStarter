@@ -550,7 +550,6 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long evolutionSeed = state.EvolutionSeed();
-    unsigned int passes = settings.m_passes;
     unsigned int variation = FIRESTARTER_VARIATION;
     unsigned int stock = 0;
 
@@ -568,7 +567,7 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
                     for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                         for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                MoneyMaker(m_deviceSettings, m_deviceResults, m_devicePopulation0, m_deviceCodes, m_deviceStocks, evolutionSeed, passes, populationSize);
+                                MoneyMaker(m_deviceSettings, m_deviceResults, m_devicePopulation0, m_deviceCodes, m_deviceStocks, evolutionSeed);
         if (m_populationSize)
             checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
         checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
@@ -579,9 +578,7 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
                         reinterpret_cast<void*>(&m_devicePopulation0),
                         reinterpret_cast<void*>(&m_deviceCodes),
                         reinterpret_cast<void*>(&m_deviceStocks),
-                        reinterpret_cast<void*>(&evolutionSeed),
-                        reinterpret_cast<void*>(&passes),
-                        reinterpret_cast<void*>(&populationSize)
+                        reinterpret_cast<void*>(&evolutionSeed)
         };
 
         checkCUDAErrors(cuLaunchKernel(m_executeFunction,
@@ -603,7 +600,7 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
     bool validResult = false;
     float minResult = m_hostResults[0];
     unsigned int minIndex = 0;
-    for (unsigned int i = 1; i < populationSize; i++) {
+    for (unsigned int i = 1; i < settings.m_population; i++) {
         float curResult = m_hostResults[i];
         if (curResult < minResult) {
             minResult = curResult;

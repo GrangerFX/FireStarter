@@ -681,6 +681,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
+                // Execute the initial GPU evolve.
+                executeEvolve->ExecuteMoneyMaker(evolveState);
+
                 // Get the best code to optimize.
                 float evolveResult = evolveState.m_bestCodes.GetBestResult();
                 const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
@@ -690,9 +693,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
                     // Compile the optimize code asynchronously.
                     executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
-
-                    // Execute the next GPU evolve while the optimize code is compiling.
-                    executeEvolve->ExecuteMoneyMaker(evolveState);
 
                     // Execute optimize for any completed compile jobs.
                     executeOptimize->ExecuteMoneyOptimize(optimizeState, bestState, complete);
@@ -745,9 +745,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     if (bestState.m_optimizeValid)
                         complete->CompleteSaveResults(bestState);
 #endif
-                } else
-                    // Execute the initial GPU evolve.
-                    executeEvolve->ExecuteMoneyMaker(evolveState);
+                }
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
