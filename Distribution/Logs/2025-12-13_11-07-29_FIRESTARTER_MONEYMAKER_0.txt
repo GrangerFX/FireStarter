@@ -1,0 +1,51 @@
+CUDA devices = 1
+Device 0: NVIDIA GeForce RTX 4090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+stocks = 4
+sessions = 16
+history = 496
+variation = 360
+warmup = 16
+trading = 120
+funds = 1000.000000f
+
+mode = FIRESTARTER_MONEYMAKER
+evolveSeed = 0
+optimizeSeed = 0
+tests = 1
+streams = 1
+units = 1
+states = 1
+population = 65536
+generations = 16
+passes = 16
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_MONEYMAKER: Generation=  2  Best=39.29336548%  Time=1.2737 Seconds  Run Time=39.0268 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  3  Best=41.80717087%  Time=1.4304 Seconds  Run Time=59.4393 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  4  Best=41.80717087%  Time=1.2939 Seconds  Run Time=79.6696 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  5  Best=44.88088989%  Time=1.2753 Seconds  Run Time=99.9671 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  6  Best=44.88088989%  Time=1.4465 Seconds  Run Time=120.4040 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  7  Best=44.88088989%  Time=1.4355 Seconds  Run Time=140.8607 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  8  Best=44.88088989%  Time=1.4307 Seconds  Run Time=161.3567 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  9  Best=44.88088989%  Time=1.3411 Seconds  Run Time=181.8477 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 10  Best=46.57616425%  Time=1.3716 Seconds  Run Time=202.1533 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 11  Best=46.57616425%  Time=1.4245 Seconds  Run Time=222.5971 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 12  Best=46.57616425%  Time=1.3938 Seconds  Run Time=242.9436 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 13  Best=46.57616425%  Time=1.3923 Seconds  Run Time=263.3997 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 14  Best=46.57616425%  Time=1.4371 Seconds  Run Time=283.7972 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 15  Best=46.57616425%  Time=1.4211 Seconds  Run Time=304.2384 Seconds
+FIRESTARTER_MONEYMAKER: Generation= 16  Best=46.57616425%  Time=1.2984 Seconds  Run Time=324.5260 Seconds
