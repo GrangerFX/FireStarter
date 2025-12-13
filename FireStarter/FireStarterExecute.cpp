@@ -554,6 +554,11 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
     unsigned int variation = FIRESTARTER_VARIATION;
     unsigned int stock = 0;
 
+    static double lastTime = 0.0 ;                  // Note: DEBUG!
+    double entryTime = SimpleTimer::RunDuration();  // Note: DEBUG!
+    Context()->Synchronize();                       // Note: DEBUG!
+    double startTime = SimpleTimer::RunDuration();  // Note: DEBUG!
+
     float averageResult = 0.0f;
     if (m_simulateGPU) {
         blockDim = cudaBlockSize;
@@ -593,8 +598,8 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
         checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
     }
-
-    // Get the best variation results.
+    double endTime = SimpleTimer::RunDuration();   // Note: DEBUG!
+    
     bool validResult = false;
     float minResult = m_hostResults[0];
     unsigned int minIndex = 0;
@@ -618,6 +623,14 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
 
     // Update the state's best code.
     state.InitCode(settings, m_hostCodes, minResult, minIndex);
+
+    double exitTime = SimpleTimer::RunDuration();   // Note: DEBUG!
+    std::string resultText = Format("MoneyMaker: Entry = % .2f  Start = % .2f  End = % .2f  Exit = % .2f  Time = % .2f\n", entryTime - lastTime, startTime - lastTime, endTime - lastTime, exitTime - lastTime, endTime - startTime);   // Note: DEBUG!
+    static std::string fileDate;   // Note: DEBUG!
+    if (fileDate.empty())   // Note: DEBUG!
+        fileDate = FileNameDate(SimpleTimer::RunSecond()).c_str();   // Note: DEBUG!
+    FireStarterSource::AppendSource(resultText, Format("Logs\\%s_MoneyMakerDebug.txt", fileDate.c_str()));   // Note: DEBUG!
+    lastTime = exitTime;    // Note: DEBUG!
 } // ExecuteMoneyMakerPass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
