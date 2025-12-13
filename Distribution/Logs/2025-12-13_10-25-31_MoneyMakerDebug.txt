@@ -1,0 +1,16 @@
+MoneyMaker: Entry =  0.85  Start =  0.85  End =  40.33  Exit =  40.33  Time =  39.48
+MoneyMaker: Entry =  0.00  Start =  0.00  End =  39.40  Exit =  39.40  Time =  39.40
+MoneyMaker: Entry =  1.35  Start =  1.35  End =  40.87  Exit =  40.88  Time =  39.52
+MoneyMaker: Entry =  1.25  Start =  1.25  End =  40.75  Exit =  40.75  Time =  39.49
+MoneyMaker: Entry =  1.42  Start =  1.42  End =  40.89  Exit =  40.89  Time =  39.47
+MoneyMaker: Entry =  1.46  Start =  1.46  End =  40.94  Exit =  40.95  Time =  39.48
+MoneyMaker: Entry =  1.30  Start =  1.30  End =  40.74  Exit =  40.75  Time =  39.44
+MoneyMaker: Entry =  1.34  Start =  1.34  End =  40.82  Exit =  40.83  Time =  39.48
+MoneyMaker: Entry =  1.32  Start =  1.32  End =  40.81  Exit =  40.82  Time =  39.48
+MoneyMaker: Entry =  1.22  Start =  1.22  End =  40.63  Exit =  40.64  Time =  39.41
+MoneyMaker: Entry =  1.42  Start =  1.42  End =  40.86  Exit =  40.87  Time =  39.45
+MoneyMaker: Entry =  1.41  Start =  1.41  End =  40.89  Exit =  40.90  Time =  39.48
+MoneyMaker: Entry =  1.39  Start =  1.39  End =  40.87  Exit =  40.88  Time =  39.48
+MoneyMaker: Entry =  1.38  Start =  1.38  End =  40.77  Exit =  40.78  Time =  39.40
+MoneyMaker: Entry =  1.40  Start =  1.40  End =  40.84  Exit =  40.85  Time =  39.44
+MoneyMaker: Entry =  1.20  Start =  1.20  End =  40.66  Exit =  40.67  Time =  39.46
