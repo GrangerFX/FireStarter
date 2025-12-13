@@ -9,8 +9,8 @@ inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireSt
     unsigned int index = startDay;
     unsigned int shares = 0;
 
-    GPU_SHARED FireStarterSharedData workData;
-//    FireStarterSharedData workData;
+//    GPU_SHARED FireStarterSharedData workData;
+    FireStarterSharedData workData;
     workData = data;
 
     // Warmup evaluation ignoring the results.

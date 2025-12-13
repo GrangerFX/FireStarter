@@ -709,7 +709,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         float evolveReturns = MoneyMakerReturns(evolveResult, evolveSettings.m_trading);
                         float optimizeReturns = MoneyMakerReturns(optimizeResult, optimizeSettings.m_trading);
                         float bestReturns = MoneyMakerReturns(bestResult, optimizeSettings.m_trading);
-                        std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.4f%%  Optimize Result=%.4f%%  Best Result=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, optimizeReturns, bestReturns, duration, duration / evolveState.m_generation, totalDuration);
+                        std::string resultText = Format("Seed: %u  Test: %3u  Generation=%3u  Evolve Result=%.4f%%  Optimize Result=%.4f%%  Best Result=%.4f%%  Duration: %2.1f  GenTime: %.1f  Total: %.1f", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, optimizeReturns, bestReturns, duration, duration / (evolveState.m_generation + 1), totalDuration);
                         if (optimizeResult == bestResult)
                             resultText += " *******";
                         resultText += "\n";
