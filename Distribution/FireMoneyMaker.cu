@@ -25,29 +25,8 @@ inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireSt
 
         // Trading evaluation using the result to buy or sell shares.
         float n = code.Evaluate(workData, priceChange);
-        if (!isfinite(n))
-            return false;
-
-        // If the evaluation >= 1.0f, buy or hold shares. If below 1.0f, sell shares.
-        if (n >= 0.0f) {
-            if (!shares) {
-                shares = (unsigned int)(funds / newPrice);
-                funds -= shares * newPrice;
-            }
-        } else {
-            if (shares) {
-                funds += newPrice * shares;
-                shares = 0;
-            }
-        }
     }
 
-    // The final funds after selling remaining shares.
-    funds += shares * stock[index];
-
-    // The result is the ratio between the starting funds and the final funds.
-    // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
-    result = settings->m_funds / funds; // Inverse alpha.
     return true;
 } // MoneyMakerEvaluate
 
@@ -60,17 +39,7 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const 
         unsigned int sessionStart = 0;
         float stockResult = settings->m_startResult;
 
-        if (!MoneyMakerEvaluate(settings, data, code, stocks.Stock(stock), stockResult))
-            return false;
-        sessionsResult += stockResult;
-        if (++stock == settings->m_stocks)
-            stock = 0;
-    }
-    return false;
-    sessionsResult /= sessions;
-    if (sessionsResult < result) {
-        result = sessionsResult;
-        return true;
+        MoneyMakerEvaluate(settings, data, code, stocks.Stock(stock), stockResult);
     }
     return false;
 } // MoneyMakerEvaluateStocks
