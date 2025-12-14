@@ -4,29 +4,14 @@
 #include "CUDADefines.h"
 
 #if 1
-inline void MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock)
-{
-    float funds = settings->m_funds;
-    unsigned int index = 0;
-    unsigned int shares = 0;
-
-    GPU_SHARED FireStarterSharedData workData;
-    workData = data;
-
-    for (unsigned int i = 1; i < 64; i++) {
-        float n = code.Evaluate(workData, stock[index++]);
-    }
-} // MoneyMakerEvaluate
-
 inline void MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, unsigned long long seed, float& result)
 {
-    float sessionsResult = 0.0f;
-    unsigned int sessions = settings->m_sessions * settings->m_stocks;
-    unsigned int stock = 0;
-    for (unsigned int session = 0; session < sessions; session++) {
-        unsigned int sessionStart = 0;
-        MoneyMakerEvaluate(settings, data, code, stocks.Stock(stock));
-    }
+    const MoneyMakerStock& stock = stocks.Stock(0);
+    GPU_SHARED FireStarterSharedData workData;
+    workData = data;
+    for (unsigned int session = 0; session < settings->m_sessions; session++)
+        for (unsigned int i = 1; i < 64; i++)
+            float n = code.Evaluate(workData, stock[i]);
 } // MoneyMakerEvaluateStocks
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
