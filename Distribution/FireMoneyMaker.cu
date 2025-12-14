@@ -53,13 +53,20 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
         // Evolve the code and data.
         float evolutionScale;
 #if 1
-        evolutionScale = startScale;
-        code.InitCode(memberSeed);
-        registers = code.Optimize();
-        data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        memberResult = startResult;
-        result = startResult;
-        memberAge = 0;
+        if (pass & 1) {
+            evolutionScale = startScale;
+            code.InitCode(memberSeed);
+            registers = code.Optimize();
+            data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
+            memberResult = startResult;
+            result = startResult;
+            memberAge = 0;
+        } else {
+            // Randomize a register each generation.
+            evolutionScale = result * startScale;
+            if (memberAge > 0)
+                data.RandomData(memberSeed, evolutionScale, registers);
+        }
 #else
         if ((memberAge >= 6) || (result >= startResult)) {
             evolutionScale = startScale;
