@@ -13,11 +13,14 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     if (member >= settings->m_population)
         return;
 
+
     // The evolution code and data.
     FireStarterCode code;
     FireStarterData data;
-
-    unsigned long long memberSeed = evolveSeed + SEED1(member);   // Unique seed for the member
+    unsigned long long memberSeed = evolveSeed + SEED1(member);
+    data.InitData(memberSeed, FIRESTARTER_REGISTERS, 1.0f);
+    GPU_SHARED FireStarterSharedData workData;
+    workData = data;
 
     // The first pass is initalized with random numbers.
     float startResult = settings->m_startResult;
@@ -31,15 +34,13 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
         if (!(pass & 1)) {
             code.InitCode(memberSeed);
             registers = code.Optimize();
-            data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
+//            data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
         }
 
         // Iterate to evolve the data.
+        GPU_SHARED FireStarterSharedData workData;
+        workData = data;
         for (unsigned int i = 0; i < settings->m_iterations; i++) {
-//            unsigned int d = RANDOMMOD(memberSeed, registers);
-//            data[d] += startScale * RANDOMFACTOR(memberSeed);
-            GPU_SHARED FireStarterSharedData workData;
-            workData = data;
             for (unsigned int session = 0; session < settings->m_sessions; session++)
                 for (unsigned int i = 1; i < 64; i++)
                     float n = code.Evaluate(workData, stock[i]);
