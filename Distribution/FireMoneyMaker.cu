@@ -4,7 +4,7 @@
 #include "CUDADefines.h"
 
 #if 1
-inline void MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, unsigned long long seed, float& result)
+inline void MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks)
 {
     const MoneyMakerStock& stock = stocks.Stock(0);
     GPU_SHARED FireStarterSharedData workData;
@@ -31,63 +31,34 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     // The first pass is initalized with random numbers.
     float startResult = settings->m_startResult;
     float startScale = settings->m_startScale;
-    float result = startResult;
     unsigned int registers = 0;
 
-    // Keep track of the current and best code, data and results.
-    FireStarterCode memberCode = code;
-    FireStarterData memberData = data;
-    float memberResult = result;
-    unsigned short memberAge = 0;
-
     // Evolve the code and data for each pass.
+    const MoneyMakerStock& stock = stocks->Stock(0);
     for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
         // Evolve the code and data.
-        float evolutionScale;
-#if 1
         if (!(pass & 1)) {
-            evolutionScale = startScale;
             code.InitCode(memberSeed);
             registers = code.Optimize();
             data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-            memberResult = startResult;
-            result = startResult;
-            memberAge = 0;
-        } else
-            // Randomize a register each generation.
-            evolutionScale = result * startScale;
-#else
-        if ((memberAge >= 6) || (result >= startResult)) {
-            evolutionScale = startScale;
-            code.InitCode(memberSeed);
-            registers = code.Optimize();
-            data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-            memberResult = startResult;
-            result = startResult;
-            memberAge = 0;
-        } else {
-            // Randomize a register each generation.
-            evolutionScale = result * startScale;
-            if (memberAge > 0)
-                data.RandomData(memberSeed, evolutionScale, registers);
         }
-#endif
 
         // Iterate to evolve the data.
         for (unsigned int i = 0; i < settings->m_iterations; i++) {
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float old = data[d];
-            data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
-            float curResult = result * 0.99f;
-            unsigned int curTrades = 0;
-            MoneyMakerEvaluateStocks(settings, data, code, *stocks, evolveSeed, curResult);
+            data[d] = old + startScale * RANDOMFACTOR(memberSeed);
+#if 1
+            GPU_SHARED FireStarterSharedData workData;
+            workData = data;
+            for (unsigned int session = 0; session < settings->m_sessions; session++)
+                for (unsigned int i = 1; i < 64; i++)
+                    float n = code.Evaluate(workData, stock[i]);
+#else
+            MoneyMakerEvaluateStocks(settings, data, code, *stocks);
+#endif
             data[d] = old;
         }
-
-        memberCode = code;
-        memberData = data;
-        memberResult = result;
-        memberAge = 0;
     }
 } // MoneyMaker
 #else
