@@ -4,15 +4,6 @@
 #include "CUDADefines.h"
 
 #if 1
-inline void MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks)
-{
-    const MoneyMakerStock& stock = stocks.Stock(0);
-    GPU_SHARED FireStarterSharedData workData;
-    workData = data;
-    for (unsigned int session = 0; session < settings->m_sessions; session++)
-        for (unsigned int i = 1; i < 64; i++)
-            float n = code.Evaluate(workData, stock[i]);
-} // MoneyMakerEvaluateStocks
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
 GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned long long evolveSeed)
@@ -45,19 +36,13 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
 
         // Iterate to evolve the data.
         for (unsigned int i = 0; i < settings->m_iterations; i++) {
-            unsigned int d = RANDOMMOD(memberSeed, registers);
-            float old = data[d];
-            data[d] = old + startScale * RANDOMFACTOR(memberSeed);
-#if 1
+//            unsigned int d = RANDOMMOD(memberSeed, registers);
+//            data[d] += startScale * RANDOMFACTOR(memberSeed);
             GPU_SHARED FireStarterSharedData workData;
             workData = data;
             for (unsigned int session = 0; session < settings->m_sessions; session++)
                 for (unsigned int i = 1; i < 64; i++)
                     float n = code.Evaluate(workData, stock[i]);
-#else
-            MoneyMakerEvaluateStocks(settings, data, code, *stocks);
-#endif
-            data[d] = old;
         }
     }
 } // MoneyMaker
