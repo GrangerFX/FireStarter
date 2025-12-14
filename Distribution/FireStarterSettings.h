@@ -12,7 +12,7 @@
 #define MONEYMAKER_TRADING          120         // Days used for stock trading
 #define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_WARMUP + MONEYMAKER_TRADING)   // Days of stock history data
 #define MONEYMAKER_STOCKS           1           // Stocks with history data
-#define MONEYMAKER_SESSIONS         32          // Number of trading sessions
+#define MONEYMAKER_SESSIONS         64          // Number of trading sessions
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define MONEYMAKER_ANUALIZED        1           // Set to 1 for annualized trading returns
 #define MONEYMAKER_COMBINED         1           // Set to 1 to generate combined data for all stocks
