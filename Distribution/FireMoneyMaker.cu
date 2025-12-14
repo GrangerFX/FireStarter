@@ -10,9 +10,8 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
-    if (member >= settings->m_population)
+    if (member >= 8192)
         return;
-
 
     // The evolution code and data.
     FireStarterCode code;
@@ -23,28 +22,22 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     workData = data;
 
     // The first pass is initalized with random numbers.
-    float startResult = settings->m_startResult;
-    float startScale = settings->m_startScale;
-    unsigned int registers = 0;
+    float startResult = 10.0f;
+    float startScale = 2.5f;
 
     // Evolve the code and data for each pass.
     const MoneyMakerStock& stock = stocks->Stock(0);
-    for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
+    for (unsigned int pass = 0; pass < 16; pass++) {
         // Evolve the code and data.
-        if (!(pass & 1)) {
+        if (!(pass & 1))
             code.InitCode(memberSeed);
-            registers = code.Optimize();
-//            data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        }
 
         // Iterate to evolve the data.
         GPU_SHARED FireStarterSharedData workData;
         workData = data;
-        for (unsigned int i = 0; i < settings->m_iterations; i++) {
-            for (unsigned int session = 0; session < settings->m_sessions; session++)
-                for (unsigned int i = 1; i < 64; i++)
-                    float n = code.Evaluate(workData, stock[i]);
-        }
+        for (unsigned int session = 0; session < 4096; session++)
+            for (unsigned int i = 1; i < 64; i++)
+                float n = code.Evaluate(workData, stock[i]);
     }
 } // MoneyMaker
 #else
