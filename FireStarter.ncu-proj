@@ -52,7 +52,7 @@
         "activity/profile/pythonstackincludeexcludeoptions": "",
         "activity/profile/rangefilteroptions": "",
         "activity/profile/rangereplayoptions": "",
-        "activity/profile/replaymode": "Application",
+        "activity/profile/replaymode": "Kernel",
         "activity/profile/samplingBufferSize": 33554432,
         "activity/profile/samplingInterval": 5,
         "activity/profile/samplingIntervalAuto": true,
