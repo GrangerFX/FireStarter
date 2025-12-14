@@ -52,7 +52,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
         // Evolve the code and data.
         float evolutionScale;
-#if 1
+#if 0
         if ((memberAge >= 6) || (result >= startResult)) {
             evolutionScale = startScale;
             code.InitCode(memberSeed);
@@ -82,7 +82,6 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
             data[d] = old;
         }
 
-#if 1
         memberCode = code;
         memberData = data;
         memberResult = result;
@@ -91,31 +90,6 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
         bestCode = code;
         bestData = data;
         bestResult = result;
-        bestAge = memberAge;
-#else
-        // Did the results improve?
-        if (!pass || (result < memberResult)) {
-            // If the result was better, save the results.
-            memberCode = code;
-            memberData = data;
-            memberResult = result;
-            memberAge = 0;
-
-            // Update the best result.
-            if (!pass || (result < bestResult)) {
-                bestCode = code;
-                bestData = data;
-                bestResult = result;
-                bestAge = memberAge;
-            }
-        } else {
-            // Revert to the original code and data.
-            code = memberCode;
-            data = memberData;
-            result = memberResult;
-            memberAge++;
-        }
-#endif
     }
 } // MoneyMaker
 #else
