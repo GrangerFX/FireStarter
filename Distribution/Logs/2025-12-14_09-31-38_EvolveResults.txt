@@ -1,0 +1,11 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Result=12.7100%  Optimize Result=27.5853%  Best Result=27.5853%  Duration: 20.3  GenTime: 20.3  Total: 20.3 *******
+AAPL: Stock Returns=-8.9764%  Trading Returns=12.4475%  Difference==21.4239%
+NVDA: Stock Returns=-38.5816%  Trading Returns=259.4655%  Difference==298.0471%
+INTC: Stock Returns=31.8297%  Trading Returns=1.5729%  Difference==-30.2568%
+MSFT: Stock Returns=-19.8035%  Trading Returns=32.9115%  Difference==52.7150%
+QCOM: Stock Returns=-15.9356%  Trading Returns=40.9211%  Difference==56.8567%
+AMZN: Stock Returns=-22.2712%  Trading Returns=34.9713%  Difference==57.2425%
+GOOG: Stock Returns=-17.1474%  Trading Returns=31.1661%  Difference==48.3135%
+AMD : Stock Returns=-20.2532%  Trading Returns=62.5349%  Difference==82.7881%
+Average Returns=59.4989%  Average Difference==73.3913%
+
