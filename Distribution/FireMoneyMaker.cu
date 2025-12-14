@@ -4,10 +4,10 @@
 #include "CUDADefines.h"
 
 #if 1
-inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock, unsigned int startDay, float& result)
+inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock,  float& result)
 {
     float funds = settings->m_funds;
-    unsigned int index = startDay;
+    unsigned int index = 0;
     unsigned int shares = 0;
 
     GPU_SHARED FireStarterSharedData workData;
@@ -57,16 +57,16 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const 
     unsigned int sessions = settings->m_sessions * settings->m_stocks;
     unsigned int stock = 0;
     for (unsigned int session = 0; session < sessions; session++) {
-        unsigned long long sessionSeed = SEED9(session) + seed;
-        unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
+        unsigned int sessionStart = 0;
         float stockResult = settings->m_startResult;
 
-        if (!MoneyMakerEvaluate(settings, data, code, stocks.Stock(stock), sessionStart, stockResult))
+        if (!MoneyMakerEvaluate(settings, data, code, stocks.Stock(stock), stockResult))
             return false;
         sessionsResult += stockResult;
         if (++stock == settings->m_stocks)
             stock = 0;
     }
+    return false;
     sessionsResult /= sessions;
     if (sessionsResult < result) {
         result = sessionsResult;
