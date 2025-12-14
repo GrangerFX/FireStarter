@@ -597,6 +597,7 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
     }
     double endTime = SimpleTimer::RunDuration();   // Note: DEBUG!
     
+#if 0
     bool validResult = false;
     float minResult = m_hostResults[0];
     unsigned int minIndex = 0;
@@ -620,6 +621,7 @@ void FireStarterExecute::ExecuteMoneyMakerPass(FireStarterState& state)
 
     // Update the state's best code.
     state.InitCode(settings, m_hostCodes, minResult, minIndex);
+#endif
 
     double exitTime = SimpleTimer::RunDuration();   // Note: DEBUG!
     std::string resultText = Format("MoneyMaker: Entry = % .2f  Start = % .2f  End = % .2f  Exit = % .2f  Time = % .2f\n", entryTime - lastTime, startTime - lastTime, endTime - lastTime, exitTime - lastTime, endTime - startTime);   // Note: DEBUG!

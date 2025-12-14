@@ -52,6 +52,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
         // Evolve the code and data.
         float evolutionScale;
+#if 0
         if ((memberAge >= 6) || (result >= startResult)) {
             evolutionScale = startScale;
             code.InitCode(memberSeed);
@@ -60,8 +61,9 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
             memberResult = startResult;
             result = startResult;
             memberAge = 0;
-        }
-        else {
+        } else 
+#endif
+        {
             // Randomize a register each generation.
             evolutionScale = result * startScale;
             if (memberAge > 0)
@@ -79,40 +81,12 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
             data[d] = old;
         }
 
-        // Did the results improve?
-        if (!pass || (result < memberResult)) {
-            // If the result was better, save the results.
-            memberCode = code;
-            memberData = data;
-            memberResult = result;
-            memberAge = 0;
-
-            // Update the best result.
-            if (!pass || (result < bestResult)) {
-                bestCode = code;
-                bestData = data;
-                bestResult = result;
-                bestAge = memberAge;
-            }
-        }
-        else {
-            // Revert to the original code and data.
-            code = memberCode;
-            data = memberData;
-            result = memberResult;
-            memberAge++;
-        }
+        // Revert to the original code and data.
+        code = memberCode;
+        data = memberData;
+        result = memberResult;
+        memberAge++;
     }
-
-    // Return the optimized best code.
-    codes[member].Copy(bestCode);
-
-    // Return the array of results or the entire population data.
-    results[member] = bestResult;
-
-    // Return the best data, result and age for debugging.
-    if (population)
-        FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // MoneyMaker
 #else
 inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock, unsigned int startDay, float& result)
