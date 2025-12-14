@@ -33,19 +33,11 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     float startScale = settings->m_startScale;
     float result = startResult;
     unsigned int registers = 0;
-    code.InitCode(memberSeed);
-    registers = code.Optimize();
-    data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-    MoneyMakerEvaluateStocks(settings, data, code, *stocks, evolveSeed, result);
 
     // Keep track of the current and best code, data and results.
-    FireStarterCode bestCode = code;
     FireStarterCode memberCode = code;
-    FireStarterData bestData = data;
     FireStarterData memberData = data;
-    float bestResult = result;
     float memberResult = result;
-    unsigned short bestAge = 0;
     unsigned short memberAge = 0;
 
     // Evolve the code and data for each pass.
@@ -53,7 +45,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
         // Evolve the code and data.
         float evolutionScale;
 #if 1
-        if (pass & 1) {
+        if (!(pass & 1)) {
             evolutionScale = startScale;
             code.InitCode(memberSeed);
             registers = code.Optimize();
@@ -61,12 +53,9 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
             memberResult = startResult;
             result = startResult;
             memberAge = 0;
-        } else {
+        } else
             // Randomize a register each generation.
             evolutionScale = result * startScale;
-            if (memberAge > 0)
-                data.RandomData(memberSeed, evolutionScale, registers);
-        }
 #else
         if ((memberAge >= 6) || (result >= startResult)) {
             evolutionScale = startScale;
@@ -99,10 +88,6 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
         memberData = data;
         memberResult = result;
         memberAge = 0;
-
-        bestCode = code;
-        bestData = data;
-        bestResult = result;
     }
 } // MoneyMaker
 #else
