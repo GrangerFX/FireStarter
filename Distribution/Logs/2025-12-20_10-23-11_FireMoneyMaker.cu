@@ -3,6 +3,45 @@
 #include "MoneyMakerStocks.h"
 #include "CUDADefines.h"
 
+#if 0
+
+// Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
+GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned long long evolveSeed)
+{
+    // Determine the member to be optimized.
+    unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
+    if (member >= FIRESTARTER_MONEYMAKER_POPULATION)
+        return;
+
+    // The evolution code and data.
+    FireStarterCode code;
+    FireStarterData data;
+    unsigned long long memberSeed = evolveSeed + SEED1(member);
+    data.InitData(memberSeed, FIRESTARTER_REGISTERS, 1.0f);
+    GPU_SHARED FireStarterSharedData workData;
+//    FireStarterSharedData workData;
+    workData = data;
+
+    // The first pass is initalized with random numbers.
+    float startResult = 10.0f;
+    float startScale = 2.5f;
+
+    // Evolve the code and data for each pass.
+    const MoneyMakerStock& stock = stocks->Stock(0);
+    for (unsigned int pass = 0; pass < FIRESTARTER_MONEYMAKER_PASSES; pass++) {
+        // Evolve the code and data.
+        if (!(pass & 1))
+            code.InitCode(memberSeed);
+
+        // Iterate to evolve the data.
+        GPU_SHARED FireStarterSharedData workData;
+        workData = data;
+        for (unsigned int session = 0; session < MONEYMAKER_SESSIONS * MONEYMAKER_TRADING; session++)
+            for (unsigned int i = 1; i < FIRESTARTER_MONEYMAKER_ITERATIONS; i++)
+                float n = code.Evaluate(workData, stock[i]);
+    }
+} // MoneyMaker
+#else
 inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock, unsigned int startDay, float& result)
 {
     float funds = settings->m_funds;
@@ -61,6 +100,7 @@ inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireSt
     return true;
 } // MoneyMakerEvaluate
 
+#if 1
 inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, unsigned long long seed, float& result)
 {
     float sessionsResult = 0.0f;
@@ -68,6 +108,7 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const 
     unsigned int stock = 0;
     for (unsigned int session = 0; session < sessions; session++) {
         unsigned long long sessionSeed = SEED9(session) + seed;
+//      unsigned long long sessionSeed = SEED9(session);  // Matches earlier versions
         unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
         float stockResult = settings->m_startResult;
 
@@ -84,6 +125,43 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const 
     }
     return false;
 } // MoneyMakerEvaluateStocks
+#else
+inline bool MoneyMakerEvaluateStock(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock, unsigned long long seed, float& result)
+{
+    float stockResult = 0.0f;
+    for (unsigned int session = 0; session < settings->m_sessions; session++) {
+        unsigned long long sessionSeed = seed + SEED9(session);
+        unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
+        float sessionResult = settings->m_startResult;
+
+        if (!MoneyMakerEvaluate(settings, data, code, stock, sessionStart, sessionResult))
+            return false;
+        stockResult += sessionResult;
+    }
+    result = stockResult / settings->m_sessions;
+    return true;
+} // MoneyMakerEvaluateStock
+
+inline bool MoneyMakerEvaluateStocks(const FireStarterSettings *settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, unsigned long long seed, float& result)
+{
+    unsigned int stock = 0;
+    float stocksResult = 0.0f;
+    for (unsigned int stock = 0; stock < settings->m_stocks; stock++) {
+        unsigned long long stockSeed = 0; //  seed + SEED8(stock);
+        float stockResult = 0.0f;
+
+        if (!MoneyMakerEvaluateStock(settings, data, code, stocks.Stock(stock), stockSeed, stockResult))
+            return false;
+        stocksResult += stockResult;
+    }
+    stocksResult /= settings->m_stocks;
+    if (stocksResult < result) {
+        result = stocksResult;
+        return true;
+    }
+    return false;
+} // MoneyMakerEvaluateStocks
+#endif
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
 GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned long long evolveSeed)
@@ -188,3 +266,4 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     if (population)
         FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // MoneyMaker
+#endif
