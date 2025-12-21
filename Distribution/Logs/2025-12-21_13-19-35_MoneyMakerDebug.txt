@@ -1,0 +1,1 @@
+MoneyMaker: Entry =  0.42  Start =  0.42  End =  571.70  Exit =  571.93  Time =  571.28
