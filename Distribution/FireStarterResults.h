@@ -119,11 +119,11 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterSharedData {
-    float d[FIRESTARTER_REGISTERS * FIRESTARTER_WARP_THREADS];
+    float d[FIRESTARTER_REGISTERS * FIRESTARTER_BLOCK_THREADS];
 
     inline unsigned int index(unsigned int i) const
     {
-        return i * FIRESTARTER_WARP_THREADS + threadIdx.x;
+        return i * FIRESTARTER_BLOCK_THREADS + threadIdx.x;
     } // index
 
     inline float& operator[](unsigned int i)
@@ -198,7 +198,7 @@ typedef struct FireStarterSharedData {
     {
 #ifndef __CUDACC__
         // This initialization is only done for CPU simulations to make debugging easier.
-        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS * FIRESTARTER_WARP_THREADS; i++)
+        for (unsigned int i = 0; i < FIRESTARTER_REGISTERS * FIRESTARTER_BLOCK_THREADS; i++)
             d[i] = 0.0f;
 #endif
     } // FireStarterSharedData

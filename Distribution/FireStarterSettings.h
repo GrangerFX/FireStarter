@@ -48,6 +48,7 @@
 #define FIRESTARTER_SM_WARPS_5090   64          // RTX 5090
 
 #define FIRESTARTER_WARP_THREADS    32          // Threads per warp (CUDA hardware constant)
+#define FIRESTARTER_BLOCK_THREADS   1024        // Maximum threads per block (threadIdx.x) consistent on all consumer GPUs for the past decade.
 
 //#define FIRESTARTER_POPULATION      8192 * FIRESTARTER_WARP_THREADS = 262,144
 //#define FIRESTARTER_POPULATION      FIRESTARTER_SM_COUNT_4090 * FIRESTARTER_SM_WARPS_4090 * FIRESTARTER_WARP_THREADS = 

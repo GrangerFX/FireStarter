@@ -9,7 +9,7 @@ inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireSt
     unsigned int index = startDay;
     unsigned int shares = 0;
 
-#if 0
+#if 1
     FireStarterData workData = data;
 #else
     GPU_SHARED FireStarterSharedData workData;
@@ -97,6 +97,12 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     asm(".pragma \"enable_smem_spilling\";");
 #endif
 
+#if 0
+    GPU_SHARED const MoneyMakerStocks stockData = *stocks;
+#else
+    const MoneyMakerStocks& stockData = *stocks;
+#endif
+
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
     if (member >= settings->m_population)
@@ -117,7 +123,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        if (MoneyMakerEvaluateStocks(settings, data, code, *stocks, evolveSeed, result))
+        if (MoneyMakerEvaluateStocks(settings, data, code, stockData, evolveSeed, result))
             break;
     }
 
@@ -157,7 +163,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = result * 0.99f;
             unsigned int curTrades = 0;
-            if (MoneyMakerEvaluateStocks(settings, data, code, *stocks, evolveSeed, curResult))
+            if (MoneyMakerEvaluateStocks(settings, data, code, stockData, evolveSeed, curResult))
                 result = curResult;
             else
                 data[d] = old;

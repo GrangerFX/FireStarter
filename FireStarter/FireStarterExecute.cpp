@@ -791,7 +791,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
     unsigned int populationSize = settings.m_population;
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;   // Same as the threads per CUDA core warp.
     unsigned int blocksPerGrid = (populationSize + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
