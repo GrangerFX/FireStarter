@@ -119,11 +119,11 @@ typedef struct FireStarterData {
 } FireStarterData;
 
 typedef struct FireStarterSharedData {
-    float d[FIRESTARTER_REGISTERS * FIRESTARTER_WARP_THREADS];
+    float d[FIRESTARTER_REGISTERS * (FIRESTARTER_WARP_THREADS + 1)];
 
     inline unsigned int index(unsigned int i) const
     {
-        return i * FIRESTARTER_WARP_THREADS + threadIdx.x;
+        return i * (FIRESTARTER_WARP_THREADS + 1) + threadIdx.x;
     } // index
 
     inline float& operator[](unsigned int i)
