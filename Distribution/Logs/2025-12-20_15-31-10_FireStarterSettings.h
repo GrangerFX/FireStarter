@@ -2,7 +2,6 @@
 #include "FireStarterTarget.h"
 
 #define FIRESTARTER_WARP_THREADS    32          // Threads per warp (CUDA hardware constant)
-#define FIRESTARTER_SM_WARPS        48          // Threads per SM (CUDA hardware constant)
 #define FIRESTARTER_INSTRUCTIONS    32          // Code instructions
 #define FIRESTARTER_REGISTERS       30          // Data maximum registers
 #define FIRESTARTER_VARIATIONS      1           // Target function variations
@@ -39,9 +38,7 @@
 #define FIRESTARTER_SM_COUNT_4090   128         // RTX 4090
 #define FIRESTARTER_SM_COUNT_5090   170         // RTX 5090
 
-//#define FIRESTARTER_POPULATION      64 * FIRESTARTER_SM_COUNT_4080 * FIRESTARTER_WARP_THREADS  // Old population size = 8192 * FIRESTARTER_WARP_THREADS = 262,144
-#define FIRESTARTER_POPULATION      FIRESTARTER_SM_COUNT_5090 * FIRESTARTER_SM_WARPS * FIRESTARTER_WARP_THREADS // Full occupancy = 261,120
-
+#define FIRESTARTER_POPULATION      64 * FIRESTARTER_SM_COUNT_5090 * FIRESTARTER_WARP_THREADS  // For debugging display of the population contents only.
 #define FIRESTARTER_PASSES          512         // Evolve or optimize passes
 #define FIRESTARTER_ITERATIONS      64          // Data evolution iterations
 #define FIRESTARTER_SAMPLES         15          // Samples per iteration
@@ -180,8 +177,8 @@
 #define FIRESTARTER_MONEYMAKER_UNITS            1
 #define FIRESTARTER_MONEYMAKER_STATES           1
 #define FIRESTARTER_MONEYMAKER_GENERATIONS      1
-#define FIRESTARTER_MONEYMAKER_POPULATION       FIRESTARTER_POPULATION
-#define FIRESTARTER_MONEYMAKER_PASSES           32
+#define FIRESTARTER_MONEYMAKER_POPULATION       4 * FIRESTARTER_SM_COUNT_5090 * FIRESTARTER_WARP_THREADS
+#define FIRESTARTER_MONEYMAKER_PASSES           256
 #define FIRESTARTER_MONEYMAKER_ITERATIONS       FIRESTARTER_ITERATIONS
 #define FIRESTARTER_MONEYMAKER_SAMPLES          FIRESTARTER_SAMPLES
 #define FIRESTARTER_MONEYMAKER_OPTIMIZE         1
