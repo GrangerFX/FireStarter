@@ -682,7 +682,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
                 // Execute the initial GPU evolve.
-                executeEvolve->ExecuteMoneyMaker(evolveState);
+                executeEvolve->ExecuteMoneyEvolve(evolveState);
 
                 // Get the best code to optimize.
                 float evolveResult = evolveState.m_bestCodes.GetBestResult();

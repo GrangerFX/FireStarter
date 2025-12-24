@@ -13,11 +13,12 @@ private:
     float* m_deviceResults = nullptr;
     FireStarterSettings* m_hostSettings = nullptr;
     FireStarterSettings* m_deviceSettings = nullptr;
+    FireStarterCode* m_hostCodes = nullptr;
+    FireStarterCode* m_deviceCodes0 = nullptr;
+    FireStarterCode* m_deviceCodes1 = nullptr;
     FireStarterResult* m_hostPopulation = nullptr;
     FireStarterResult* m_devicePopulation0 = nullptr;
     FireStarterResult* m_devicePopulation1 = nullptr;
-    FireStarterCode* m_hostCodes = nullptr;
-    FireStarterCode* m_deviceCodes = nullptr;
     FireStarterCode* m_deviceParentCode = nullptr;
     SinSimNetwork* m_hostNetworks = nullptr;
     SinSimNetwork* m_deviceNetworks = nullptr;
@@ -59,7 +60,7 @@ private:
     void ExecuteEvolvePass(FireStarterState& state);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
-    void ExecuteMoneyMakerPass(FireStarterState& state);
+    void ExecuteMoneyEvolvePass(FireStarterState& state);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteMoneyOptimizePass(FireStarterState& state);
@@ -78,7 +79,7 @@ public:
     void ExecuteEvolveNew(FireStarterState& evolveState);
     void ExecuteEvolveSinSim(FireStarterState& evolveState);
     void ExecuteSinSim(FireStarterState& evolveState);
-    void ExecuteMoneyMaker(FireStarterState& evolveState);
+    void ExecuteMoneyEvolve(FireStarterState& evolveState);
     void ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& optimizeState);

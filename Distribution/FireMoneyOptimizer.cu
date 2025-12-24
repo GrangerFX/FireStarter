@@ -131,18 +131,19 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
 } // MoneyOptimizeEvaluateStocks
 #endif
 
-GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationSize)
+GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
-    if (member >= populationSize)
+    if (member >= settings->m_population)
         return;
+    unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation and member
 
     // The optimized data.
     FireStarterData data;
 
-    // Choose a random starting offset for each stock.
-    unsigned long long memberSeed = optimizeSeed + SEED11(member); // Unique seed for the generation and member
+    // The stock data.
+    const MoneyMakerStocks& stockData = *stocks;
 
     // Optimize the data for each generation.
     unsigned short evolveAge;
@@ -154,7 +155,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
         for (unsigned int i = 0; i < 10; i++) {
             data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
             result = settings->m_startResult;
-            if (MoneyOptimizeEvaluateStocks(settings, data, *stocks, optimizeSeed, result))
+            if (MoneyOptimizeEvaluateStocks(settings, data, stockData, optimizeSeed, result))
                 break;
         }
         memberResult = settings->m_startResult;
@@ -171,7 +172,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
             unsigned int d = RANDOMMOD(memberSeed, registers);
             float oldData = data[d];
             data[d] = oldData + RANDOMFACTOR(memberSeed) * settings->m_startScale * (evolveAge - 1);
-            if (MoneyOptimizeEvaluateStocks(settings, data, *stocks, optimizeSeed, result))
+            if (MoneyOptimizeEvaluateStocks(settings, data, stockData, optimizeSeed, result))
                 memberResult = settings->m_startResult; // Validated as being faster than result  11/17/2024
             else
                 data[d] = oldData;
@@ -187,7 +188,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
         data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
         unsigned int curTrades = 0;
         float curResult = result * 0.99f; // Validated as being faster than * 1.0f or * 0.9f. About the same as * 0.999f.  11/17/2024
-        if (MoneyOptimizeEvaluateStocks(settings, data, *stocks, optimizeSeed, curResult))
+        if (MoneyOptimizeEvaluateStocks(settings, data, stockData, optimizeSeed, curResult))
             result = curResult;
         else
             data[d] = oldData;
@@ -205,7 +206,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
         // Copy the best data from among a random set of candidates.
         for (unsigned int i = 0; i < settings->m_candidates; i++) {
             // Select evolving members with results better than the current result.
-            unsigned int candidate = RANDOMMOD(memberSeed, populationSize);
+            unsigned int candidate = RANDOMMOD(memberSeed, settings->m_population);
             const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate);
             unsigned short candidateAge = candidateResult->EvolveAge1();
             if (candidateAge <= 1) {

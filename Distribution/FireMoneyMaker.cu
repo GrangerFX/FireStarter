@@ -3,18 +3,12 @@
 #include "MoneyMakerStocks.h"
 #include "CUDADefines.h"
 
-inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStock& stock, unsigned int startDay, float& result)
+inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireStarterCode& code, const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, float& result)
 {
+    FireStarterData workData = data;
     float funds = settings->m_funds;
     unsigned int index = startDay;
     unsigned int shares = 0;
-
-#if 1
-    FireStarterData workData = data;
-#else
-    GPU_SHARED FireStarterSharedData workData;
-    workData = data;
-#endif
 
     // Warmup evaluation ignoring the results.
     // Starts at 1 because the first day is used to set the oldPrice.
@@ -65,7 +59,7 @@ inline bool MoneyMakerEvaluate(const FireStarterSettings* settings, const FireSt
     return true;
 } // MoneyMakerEvaluate
 
-inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const FireStarterData& data, const FireStarterCode& code, const MoneyMakerStocks& stocks, unsigned long long seed, float& result)
+inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const FireStarterCode& code, const FireStarterData& data, const MoneyMakerStocks& stocks, unsigned long long seed, float& result)
 {
     float sessionsResult = 0.0f;
     unsigned int sessions = settings->m_sessions * settings->m_stocks;
@@ -75,7 +69,7 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const 
         unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
         float stockResult = settings->m_startResult;
 
-        if (!MoneyMakerEvaluate(settings, data, code, stocks.Stock(stock), sessionStart, stockResult))
+        if (!MoneyMakerEvaluate(settings, code, data, stocks.Stock(stock), sessionStart, stockResult))
             return false;
         sessionsResult += stockResult;
         if (++stock == settings->m_stocks)
@@ -89,20 +83,11 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const 
     return false;
 } // MoneyMakerEvaluateStocks
 
-// Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, FireStarterResult* population, FireStarterCode* codes, MoneyMakerStocks* stocks, const unsigned long long evolveSeed)
-{
-    // Required for CUDA 13.0+ to enable shared memory spilling
-#if 0 && defined(__CUDACC__) &&  defined(__CUDA_ARCH__) && (CUDART_VERSION >= 13000)
-    asm(".pragma \"enable_smem_spilling\";");
-#endif
-
 #if 0
-    GPU_SHARED MoneyMakerStocks stockData;
-    stockData = *stocks;
-#else
+// Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
+GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results, FireStarterCode* codes, FireStarterResult* population, MoneyMakerStocks* stocks, const unsigned long long evolveSeed)
+{
     const MoneyMakerStocks& stockData = *stocks;
-#endif
 
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -124,7 +109,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        if (MoneyMakerEvaluateStocks(settings, data, code, stockData, evolveSeed, result))
+        if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolveSeed, result))
             break;
     }
 
@@ -164,7 +149,7 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = result * 0.99f;
             unsigned int curTrades = 0;
-            if (MoneyMakerEvaluateStocks(settings, data, code, stockData, evolveSeed, curResult))
+            if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolveSeed, curResult))
                 result = curResult;
             else
                 data[d] = old;
@@ -201,6 +186,117 @@ GPU_GLOBAL void MoneyMaker(const FireStarterSettings* settings, float* results, 
     results[member] = bestResult;
 
     // Return the best data, result and age for debugging.
-    if (population)
+    if (population && FIRESTARTER_EVOLVE_RESULTS)
         FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
-} // MoneyMaker
+} // MoneyEvolve
+#else
+GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, FireStarterCode* oldCodes, FireStarterCode* newCodes, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
+{
+    // Determine the member to be optimized.
+    unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
+    if (member >= settings->m_population)
+        return;
+    unsigned long long memberSeed = evolutionSeed + SEED1(member);   // Unique seed for the member
+
+    // The evolution code and data.
+    FireStarterCode code;
+    FireStarterData data;
+
+    // The stock data.
+    const MoneyMakerStocks& stockData = *stocks;
+
+    // Evolve the code data for each generation.
+    float memberResult = settings->m_startResult;
+    float result = settings->m_startResult;
+    float evolutionScale = settings->m_startScale;
+    unsigned int registers = 0;
+    unsigned short evolveAge = 0;
+
+    const FireStarterResult& oldResult = *FireStarterPopulation::PopulationResult(oldPopulation, member);
+    if (evolutionPass) {
+        memberResult = result = oldResult.MaxResult();
+        evolveAge = oldResult.EvolveAge1();
+    }
+
+    // The first generation is initalized with random numbers.
+    if (!evolutionPass || (evolveAge >= 6) || (result >= settings->m_startResult)) {
+        // The first pass is initalized with random numbers.
+        for (unsigned int i = 0; i < 10; i++) {
+            code.InitCode(memberSeed);
+            registers = code.Optimize();
+            data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
+            if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolutionSeed, result))
+                break;
+        }
+    } else {
+        // Later generations randomize a single register if they were copied.
+        code.Copy(oldCodes[member]);
+        const FireStarterResult& oldResult = *FireStarterPopulation::PopulationResult(oldPopulation, member);
+        data.Copy(oldResult.Data());
+        if (evolveAge > 1) {
+            // Randomize a single register.
+            unsigned int d = RANDOMMOD(memberSeed, registers);
+            float oldData = data[d];
+            data[d] = oldData + RANDOMFACTOR(memberSeed) * settings->m_startScale * (evolveAge - 1);
+            if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolutionSeed, result))
+                memberResult = settings->m_startResult; // Validated as being faster than result  11/17/2024
+            else
+                data[d] = oldData;
+            evolutionScale = (2.0f * settings->m_scale) * memberResult; // Validated as being faster than 0.6f * startResult  11/17/2024
+        } else
+            evolutionScale = settings->m_scale * memberResult;
+    }
+
+    // Iterate to optimize the data.
+    for (unsigned int i = 0; i < FIRESTARTER_OPTIMIZE_ITERATIONS; i++) {
+        unsigned int d = RANDOMMOD(memberSeed, registers);
+        float oldData = data[d];
+        data[d] = oldData + evolutionScale * RANDOMFACTOR(memberSeed);
+        unsigned int curTrades = 0;
+        float curResult = result * 0.99f; // Validated as being faster than * 1.0f or * 0.9f. About the same as * 0.999f.  11/17/2024
+        if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolutionSeed, result))
+            result = curResult;
+        else
+            data[d] = oldData;
+    }
+
+    // Save the results if they improved or switch to another member's old results.
+    if (!evolutionPass || (result < memberResult))
+        // If the result was better, save the results.
+        evolveAge = 0;
+    else {
+        // If the result was worse, copy a result from among the previous generation's results.
+        unsigned int bestCandidate = member;
+
+        // The genetic part of genetic programming and a major optimization:
+        // Copy the best data from among a random set of candidates.
+        for (unsigned int i = 0; i < settings->m_candidates; i++) {
+            // Select evolving members with results better than the current result.
+            unsigned int candidate = RANDOMMOD(memberSeed, settings->m_population);
+            const FireStarterResult* candidateResult = FireStarterPopulation::PopulationResult(oldPopulation, candidate);
+            unsigned short candidateAge = candidateResult->EvolveAge1();
+            if (candidateAge <= 1) {
+                float candidateMaxResult = candidateResult->MaxResult();
+                if (candidateMaxResult <= result)
+                    bestCandidate = candidate;
+            }
+        }
+
+        // Switch to the selected member's data and results.
+        if (bestCandidate != member) {
+            code.Copy(oldCodes[bestCandidate]);
+            const FireStarterResult* bestCandidateResult = FireStarterPopulation::PopulationResult(oldPopulation, bestCandidate);
+            data = bestCandidateResult->Data();
+            result = bestCandidateResult->MaxResult();
+            evolveAge = evolveAge ? evolveAge + 1 : 2;
+        } else
+            evolveAge = 1;
+    }
+
+    // Return the best code.
+    newCodes[member].Copy(code);
+
+    // Return the best data, result and age.
+    FireStarterPopulation::PopulationResult(newPopulation, member)->InitResult(data, result, evolveAge);
+} // MoneyEvolve
+#endif
