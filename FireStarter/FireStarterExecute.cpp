@@ -657,7 +657,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
     double startTime = SimpleTimer::RunDuration();  // Note: DEBUG!
 
     for (unsigned int evolutionPass = 0; evolutionPass < settings.m_passes; evolutionPass++) {
-        unsigned long long evolutionSeed = state.OptimizationSeed(evolutionPass);
+        unsigned long long evolutionSeed = state.EvolutionSeed(evolutionPass);
         if (evolutionPass & 1) {
             newCodes = m_deviceCodes0;
             oldCodes = m_deviceCodes1;

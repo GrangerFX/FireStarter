@@ -680,9 +680,9 @@ public:
         return MaxResults() * m_generation;
     } // EvolveWeight
 
-    inline unsigned long long EvolutionSeed(void) const
+    inline unsigned long long EvolutionSeed(unsigned long long evolvePass = 0) const
     {
-        return SEED1(m_settings.m_evolveSeed) + SEED2(m_generation) + SEED3(m_id) + SEED4(m_test);
+        return SEED1(m_settings.m_evolveSeed) + SEED2(evolvePass) + SEED3(m_generation) + SEED4(m_id) + SEED5(m_test);
     } // EvolutionSeed
 
     inline unsigned long long OptimizationSeed(unsigned long long optimizationPass = 0) const

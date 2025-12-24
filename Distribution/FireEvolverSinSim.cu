@@ -15,7 +15,7 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
     GPU_SHARED FireStarterSharedData sharedData;
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member) + SEED10(variation);   // Unique seed for the member
+    unsigned long long memberSeed = seed + SEED0(member) + SEED10(variation);   // Unique seed for the member
 
     // Initialize or load the code, data, result and age.
     FireStarterCode bestCode;

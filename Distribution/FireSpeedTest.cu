@@ -44,7 +44,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
+    unsigned long long memberSeed = seed + SEED0(member);   // Unique seed for the member
     unsigned short evolveAge = 0;
     unsigned short bestAge = 0;
     unsigned int registers = 0;
@@ -155,7 +155,7 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
+    unsigned long long memberSeed = seed + SEED0(member);   // Unique seed for the member
     unsigned short evolveAge = 0;
     unsigned short bestAge = 0;
     unsigned int registers = 0;

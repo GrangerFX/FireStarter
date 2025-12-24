@@ -85,7 +85,7 @@ inline bool MoneyMakerEvaluateStocks(const FireStarterSettings* settings, const 
 
 #if 0
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results, FireStarterCode* codes, FireStarterResult* population, MoneyMakerStocks* stocks, const unsigned long long evolveSeed)
+GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results, FireStarterCode* codes, FireStarterResult* population, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed)
 {
     const MoneyMakerStocks& stockData = *stocks;
 
@@ -98,7 +98,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     FireStarterCode code;
     FireStarterData data;
 
-    unsigned long long memberSeed = evolveSeed + SEED1(member);   // Unique seed for the member
+    unsigned long long memberSeed = evolutionSeed + SEED0(member);   // Unique seed for the member
 
     // The first pass is initalized with random numbers.
     float startResult = settings->m_startResult;
@@ -109,7 +109,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
         code.InitCode(memberSeed);
         registers = code.Optimize();
         data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-        if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolveSeed, result))
+        if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolutionSeed, result))
             break;
     }
 
@@ -149,7 +149,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
             data[d] = old + evolutionScale * RANDOMFACTOR(memberSeed);
             float curResult = result * 0.99f;
             unsigned int curTrades = 0;
-            if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolveSeed, curResult))
+            if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolutionSeed, curResult))
                 result = curResult;
             else
                 data[d] = old;
@@ -196,7 +196,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, FireStarterCode
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
     if (member >= settings->m_population)
         return;
-    unsigned long long memberSeed = evolutionSeed + SEED1(member);   // Unique seed for the member
+    unsigned long long memberSeed = evolutionSeed + SEED0(member);   // Unique seed for the member
 
     // The evolution code and data.
     FireStarterCode code;

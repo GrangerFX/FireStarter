@@ -45,7 +45,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
+    unsigned long long memberSeed = seed + SEED0(member);   // Unique seed for the member
     unsigned short evolveAge = 0;
     unsigned short bestAge = 0;
     unsigned int registers = 0;
@@ -163,7 +163,7 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     }
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member);   // Unique seed for the member
+    unsigned long long memberSeed = seed + SEED0(member);   // Unique seed for the member
     unsigned short evolveAge = 0xFFF;
     unsigned short bestAge = 0;
     unsigned int registers = 0;

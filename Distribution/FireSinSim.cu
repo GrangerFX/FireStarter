@@ -10,7 +10,7 @@ GPU_GLOBAL void SinSim(SinSimNetwork* networks, const unsigned int variation, co
         return;
 
     // Evolve the program registers for each variation.
-    unsigned long long memberSeed = seed + SEED1(member) + SEED2(generation);   // Unique seed for the member
+    unsigned long long memberSeed = seed + SEED0(member) + SEED2(generation);   // Unique seed for the member
 
     // The first generation is initalized with random numbers.
     SinSimNetwork bestNetwork;
