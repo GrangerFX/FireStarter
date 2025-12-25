@@ -96,7 +96,7 @@ public:
         checkCUDAErrors(cuDeviceGet(&m_device, device));
         
         // More latency but better thread utilization.
-        checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_AUTO, m_device));
+        checkCUDAErrors(cuCtxCreate(&m_context, nullptr, CU_CTX_SCHED_AUTO, m_device));
 
         // Less latency but worse thread utilization.
 //      checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_SPIN, m_device));

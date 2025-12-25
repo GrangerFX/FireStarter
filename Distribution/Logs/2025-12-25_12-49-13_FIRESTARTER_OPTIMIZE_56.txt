@@ -1,0 +1,46 @@
+CUDA devices = 2
+Device 0: NVIDIA GeForce RTX 5090
+Device 1: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_OPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 384
+samples = 15
+iterations = 64
+candidates = 0
+attempts = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation=  2 *Result=0.00000456  Best=0.00000456   Time=0.049  Run Time=0.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation=  3  Result=0.00292248  Best=0.00000456   Time=0.048  Run Time=1.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation=  4  Result=0.00004020  Best=0.00000456   Time=0.048  Run Time=1.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation=  5  Result=0.00017440  Best=0.00000456   Time=0.047  Run Time=1.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation=  6  Result=0.00035912  Best=0.00000456   Time=0.048  Run Time=2.4
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation=  7  Result=0.00033511  Best=0.00000456   Time=0.048  Run Time=2.8
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation=  8 *Result=0.00000434  Best=0.00000434   Time=0.050  Run Time=3.2
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation=  9  Result=0.00040336  Best=0.00000434   Time=0.047  Run Time=3.6
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation= 10  Result=0.00030478  Best=0.00000434   Time=0.047  Run Time=4.1
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation= 11  Result=0.00018254  Best=0.00000434   Time=0.047  Run Time=4.5
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation= 12  Result=0.00005281  Best=0.00000434   Time=0.047  Run Time=4.9
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation= 13  Result=0.00100446  Best=0.00000434   Time=0.049  Run Time=5.3
+FIRESTARTER_OPTIMIZE: Seed=0  Test=56  Generation= 14 *Result=0.00000007  Best=0.00000007   Time=0.048  Run Time=5.7
