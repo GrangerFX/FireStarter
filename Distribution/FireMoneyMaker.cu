@@ -204,25 +204,18 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, FireStarterCode
     // The first generation is initalized with random numbers.
     if (!evolutionPass) {
         // The evolution code and data.
-        FireStarterCode bestCode;
-        FireStarterData bestData;
-        float bestResult = settings->m_startResult;
+        FireStarterCode code;
+        FireStarterData data;
+        float result = settings->m_startResult;
         for (unsigned int i = 0; i < settings->m_iterations; i++) {
-            FireStarterCode curCode;
-            FireStarterData curData;
-            curCode.InitCode(memberSeed);
-            unsigned int registers = curCode.Optimize();
-            curData.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
-            float curResult = bestResult;
-
-            if (MoneyMakerEvaluateStocks(settings, curCode, curData, stockData, evolutionSeed, curResult)) {
-                bestResult = curResult;
-                bestCode = curCode;
-                bestData = curData;
-            }
+            code.InitCode(memberSeed);
+            unsigned int registers = code.Optimize();
+            data.InitData(memberSeed, registers, 1.0f); // Scale matches HatTrick.
+            if (MoneyMakerEvaluateStocks(settings, code, data, stockData, evolutionSeed, result))
+                break;
         }
-        newCodes[member].Copy(bestCode);
-        FireStarterPopulation::PopulationResult(newPopulation, member)->InitResult(bestData, bestResult, 0);
+        newCodes[member].Copy(code);
+        FireStarterPopulation::PopulationResult(newPopulation, member)->InitResult(data, result, 0);
         return;
     } else {
         // Start with the best code and data from the last pass.
