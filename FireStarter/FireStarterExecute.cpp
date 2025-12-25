@@ -679,14 +679,20 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
                         for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                             for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                                 for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                    MoneyEvolve(m_deviceSettings, m_deviceCodes0, m_deviceCodes1, m_devicePopulation0, m_devicePopulation1, m_deviceStocks, evolutionSeed, evolutionPass);
+                                    MoneyEvolve(m_deviceSettings,
+                                                newCodes,
+                                                oldCodes,
+                                                newPopulation,
+                                                oldPopulation,
+                                                m_deviceStocks,
+                                                evolutionSeed,
+                                                evolutionPass);
         } else {
             void* arr[] = { reinterpret_cast<void*>(&m_deviceSettings),
-                            reinterpret_cast<void*>(&m_deviceResults),
-                            reinterpret_cast<void*>(&m_deviceCodes0),
-                            reinterpret_cast<void*>(&m_deviceCodes1),
-                            reinterpret_cast<void*>(&m_devicePopulation0),
-                            reinterpret_cast<void*>(&m_devicePopulation1),
+                            reinterpret_cast<void*>(&newCodes),
+                            reinterpret_cast<void*>(&oldCodes),
+                            reinterpret_cast<void*>(&newPopulation),
+                            reinterpret_cast<void*>(&oldPopulation),
                             reinterpret_cast<void*>(&m_deviceStocks),
                             reinterpret_cast<void*>(&evolutionSeed),
                             reinterpret_cast<void*>(&evolutionPass)
@@ -710,20 +716,17 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
     if (m_simulateGPU) {
         checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, newCodes, m_codesSize, cudaMemcpyHostToHost));
         checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
-        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
     } else {
         checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, newCodes, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
     }
 
     // Find the best results.
-    bool validResult = false;
-    float minResult = m_hostResults[0];
+    float minResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, 0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < settings.m_population; i++) {
-        float curResult = m_hostResults[i];
+        float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i);
         if (curResult < minResult) {
             minResult = curResult;
             minIndex = i;
