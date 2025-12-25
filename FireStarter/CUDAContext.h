@@ -2,6 +2,9 @@
 #include "CUDADefines.h"
 #include "CUDAErrors.h"
 
+#define CUDA_DEVICE     0
+#define CUDA_PRIORITY   0
+
 class CUDAContext {
 private:
     CUdevice m_device = 0;
@@ -81,7 +84,7 @@ public:
         checkCUDAErrors(cuCtxPopCurrent(&oldContext));
     } // PopContext
 
-    inline CUDAContext(int device = 0, int priority = 0)
+    inline CUDAContext(int device = CUDA_DEVICE, int priority = CUDA_PRIORITY)
     {
         // Initialize CUDA only once per process.
         Initialize();

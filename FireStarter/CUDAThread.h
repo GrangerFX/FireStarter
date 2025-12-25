@@ -32,7 +32,7 @@ public:
     } // TerminateThread
 
     // Note: int is used instead of bool for correct type matching.
-    inline CUDAThread(const std::string& threadName = "CUDAThread", int device = 0, int priority = 0) : SerialThread(threadName)
+    inline CUDAThread(const std::string& threadName = "CUDAThread", int device = CUDA_DEVICE, int priority = CUDA_PRIORITY) : SerialThread(threadName)
     {
         DispatchSync([this, device, priority] {
             m_CUDAContext = new CUDAContext(device, priority);

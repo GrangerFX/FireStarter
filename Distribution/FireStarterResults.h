@@ -218,6 +218,11 @@ typedef struct FireStarterCodeInstruction {
 #endif
     } // RandomInstruction
 
+    inline void RandomRegister(unsigned long long& seed, unsigned int registers = FIRESTARTER_REGISTERS)
+    {
+        reg = RANDOMMOD(seed, registers);
+    } // RandomInstruction
+
     inline float Evaluate(float& data, float &n) const
     {
 #if FIRESTARTER_FIRSTLIGHT
@@ -396,6 +401,12 @@ typedef struct FireStarterCode {
     {
         unsigned int i = RANDOMMOD(seed, instructions);
         c[i].RandomInstruction(seed, registers, opcodes);
+    } // RandomInstruction
+
+    inline void RandomRegister(unsigned long long& seed, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS)
+    {
+        unsigned int i = RANDOMMOD(seed, instructions);
+        c[i].RandomRegister(seed, registers);
     } // RandomInstruction
 
     static inline FireStarterCode* Member(FireStarterCode* codes, const FireStarterSettings& settings, unsigned int index)
