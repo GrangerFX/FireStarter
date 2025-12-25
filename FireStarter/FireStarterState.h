@@ -539,6 +539,11 @@ public:
         return m_timer.Duration();
     } // Duration
 
+    inline double RunDuration(void) const
+    {
+        return m_timer.RunDuration();
+    } // RunDuration
+
     inline size_t ResultSize(void) const
     {
         return FireStarterResult::ResultSize(m_settings.m_registers);

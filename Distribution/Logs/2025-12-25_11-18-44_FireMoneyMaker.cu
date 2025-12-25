@@ -190,7 +190,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
         FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // MoneyEvolve
 #endif
-#if 1
+#if 0
 GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, FireStarterCode* oldCodes, FireStarterCode* newCodes, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
 {
     // Determine the member to be optimized.
@@ -300,7 +300,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, FireStarterCode
 } // MoneyEvolve
 #endif
 
-#if 0
+#if 1
 GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, FireStarterCode* newCodes, FireStarterCode* oldCodes, FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed, const unsigned long long evolutionPass)
 {
     // Determine the member to be optimized.

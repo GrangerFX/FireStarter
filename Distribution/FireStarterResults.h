@@ -488,6 +488,13 @@ typedef struct FireStarterCode {
             c[i].RandomInstruction(seed, registers, opcodes);
     } // InitCode
 
+    inline unsigned int InitOptimizedCode(unsigned long long& seed, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS, unsigned int opcodes = FIRESTARTER_OPCODES)
+    {
+        for (unsigned int i = 0; i < instructions; i++)
+            c[i].RandomInstruction(seed, registers, opcodes);
+        return Optimize(instructions, registers);
+    } // InitOptimizedCode
+
     inline FireStarterCode(const struct FireStarterCode& code)
     {
         Copy(code);
