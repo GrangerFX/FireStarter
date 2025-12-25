@@ -57,7 +57,7 @@ private:
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
     void ExecuteSelectPass(FireStarterState& state, const FireStarterSettings& selectSettings);
-    void ExecuteEvolvePass(FireStarterState& state);
+    void ExecuteEvolveGPUPass(FireStarterState& state);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteMoneyEvolvePass(FireStarterState& state);
@@ -75,7 +75,7 @@ public:
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
     void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);
-    void ExecuteEvolve(FireStarterState& evolveState);
+    void ExecuteEvolveGPU(FireStarterState& evolveState);
     void ExecuteEvolveNew(FireStarterState& evolveState);
     void ExecuteEvolveSinSim(FireStarterState& evolveState);
     void ExecuteSinSim(FireStarterState& evolveState);

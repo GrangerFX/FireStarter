@@ -347,7 +347,7 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
     state.InitCode(selectSettings, m_hostCodes, minResult, minIndex);
 } // ExecuteSelectPass
 
-void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
+void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -413,7 +413,8 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
 
     // Update the state's best code.
     state.InitCode(settings, m_hostCodes, minResult, minIndex);
-} // ExecuteEvolvePass
+    state.MaxResult(variation) = minResult;
+} // ExecuteEvolveGPUPass
 
 void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation)
 {
@@ -1192,16 +1193,16 @@ void FireStarterExecute::ExecuteSelect(FireStarterState& selectState, const Fire
     });
 } // ExecuteSelect
 
-void FireStarterExecute::ExecuteEvolve(FireStarterState& evolveState)
+void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& evolveState)
 {
     DispatchSync([this, &evolveState] {
         if (GenerateEvolve(evolveState.Settings().m_mode)) {
             evolveState.m_timer.Start();
             if (InitPopulation(evolveState.Settings()))
-                ExecuteEvolvePass(evolveState);
+                ExecuteEvolveGPUPass(evolveState);
         }
     });
-} // ExecuteEvolve
+} // ExecuteEvolveGPU
 
 void FireStarterExecute::ExecuteEvolveNew(FireStarterState& evolveState)
 {

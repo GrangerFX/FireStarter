@@ -371,8 +371,10 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         double totalDuration = 0.0;
 
         // Optimization for single variation optimization population.
-        if (optimizeSettings.m_variations == 1)
+        if (optimizeSettings.m_variations == 1) {
             optimizeSettings.m_population = 65536;
+            optimizeSettings.m_passes = 384;
+        }
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
@@ -406,7 +408,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
-#if 1
+#if 0
                 // Execute the initial GPU evolve.
                 executeEvolve->ExecuteEvolve(evolveState);
                 const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
@@ -434,13 +436,13 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                     executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
 
                     // Execute the next GPU evolve while the optimize code is compiling.
-                    executeEvolve->ExecuteEvolve(evolveState);
+                    executeEvolve->ExecuteEvolveGPU(evolveState);
 
                     // Execute optimize for any completed compile jobs.
                     executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete);
                 } else
                     // Execute the initial GPU evolve.
-                    executeEvolve->ExecuteEvolve(evolveState);
+                    executeEvolve->ExecuteEvolveGPU(evolveState);
 #endif
 
                 // Exit after a set number of generations.
@@ -841,7 +843,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
                 // Loop until the the optimize completion condition or the host program is quit.
                 while (!WillTerminate() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize) && !bestState.Complete()) {
                     // Optimize the current generation.
-                    execute->ExecuteEvolve(optimizeState);
+                    execute->ExecuteEvolveGPU(optimizeState);
 
                     // Update the results in the UI and check for completion.
                     complete->CompleteState(bestState, optimizeState);
