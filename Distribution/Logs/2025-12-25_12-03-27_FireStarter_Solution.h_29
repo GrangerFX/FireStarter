@@ -2,12 +2,12 @@
 #include <math.h>
 
 // Run date: 12/25/25 12:03:27 Pacific Standard Time
-// Run duration = 37.347685 seconds
-// Run test = 13
+// Run duration = 143.675257 seconds
+// Run test = 29
 // Run generation = 1
 // Run evolution = 0
-// Run precision  = 0.00000036
-// Run max result = 0.00000014
+// Run precision  = 0.00000098
+// Run max result = 0.00000023
 
 // Run variations = 1
 // Run instructions = 32
@@ -66,39 +66,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6;
+    float r0, r1, r2, r3, r4;
 
-    r0 = n += -3.14159274f;
-    r1 = n *= -1.95410669f;
-    n *= 0.05602034f;
-    n *= r0;
-    n *= 2.74752927f;
-    n *= 4.69789696f;
-    r0 = n += 5.37094927f;
-    n *= 0.01658271f;
-    r2 = n *= -0.14977968f;
-    r3 = n += -0.12121665f;
-    n *= 0.85536844f;
-    r4 = n *= -0.51183701f;
-    r5 = n *= -0.81761903f;
-    r6 = n *= -3.13112521f;
-    n *= r3;
-    n *= -10.85231972f;
-    n += 3.78717518f;
-    n *= r2;
-    n += -0.94000137f;
-    r2 = n *= -0.63526469f;
-    n *= r0;
-    r0 = n *= 0.04699256f;
-    n += 1.72276115f;
-    n += r2;
-    n *= r0;
-    n += r4;
-    n += 0.44111031f;
-    n += r5;
+    n *= -0.74901301f;
+    r0 = n += 2.35309386f;
+    n += 0.00000001f;
+    r1 = n *= 0.46553832f;
     n *= r1;
-    n *= r6;
-    n *= -1.44358706f;
-    n *= -2.75828481f;
+    r1 = n += -1.20002246f;
+    r2 = n *= 0.20993683f;
+    n += -3.56408596f;
+    n += 2.32837725f;
+    n += -2.08891296f;
+    n += 3.53637052f;
+    r3 = n *= -3.54336548f;
+    n += 12.62938690f;
+    n *= 2.37491250f;
+    n *= 0.02924143f;
+    n *= -0.06407134f;
+    n *= 5.27648258f;
+    n = r1 *= n;
+    r4 = n += 1.43883443f;
+    n *= r3;
+    n *= 1.34522867f;
+    r3 = n *= 3.29677892f;
+    n *= -1.62418509f;
+    n *= 0.31089762f;
+    n += -0.50193518f;
+    n *= 2.03978205f;
+    n += r3;
+    n += r2;
+    n *= r1;
+    n *= r4;
+    n *= r0;
+    n *= -1.57488513f;
     return n;
 } // Solution

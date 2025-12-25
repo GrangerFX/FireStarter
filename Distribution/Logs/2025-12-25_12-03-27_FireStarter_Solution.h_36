@@ -2,12 +2,12 @@
 #include <math.h>
 
 // Run date: 12/25/25 12:03:27 Pacific Standard Time
-// Run duration = 37.347685 seconds
-// Run test = 13
-// Run generation = 1
+// Run duration = 203.541734 seconds
+// Run test = 36
+// Run generation = 2
 // Run evolution = 0
-// Run precision  = 0.00000036
-// Run max result = 0.00000014
+// Run precision  = 0.00000690
+// Run max result = 0.00000047
 
 // Run variations = 1
 // Run instructions = 32
@@ -66,39 +66,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6;
+    float r0, r1, r2, r3, r4;
 
-    r0 = n += -3.14159274f;
-    r1 = n *= -1.95410669f;
-    n *= 0.05602034f;
-    n *= r0;
-    n *= 2.74752927f;
-    n *= 4.69789696f;
-    r0 = n += 5.37094927f;
-    n *= 0.01658271f;
-    r2 = n *= -0.14977968f;
-    r3 = n += -0.12121665f;
-    n *= 0.85536844f;
-    r4 = n *= -0.51183701f;
-    r5 = n *= -0.81761903f;
-    r6 = n *= -3.13112521f;
-    n *= r3;
-    n *= -10.85231972f;
-    n += 3.78717518f;
+    n *= -0.16020542f;
+    n += -1.88150990f;
+    n += -0.20608699f;
+    n *= 0.71747613f;
+    n += 2.43957353f;
+    r0 = n += -0.58066672f;
+    r1 = n *= 2.43337083f;
+    n *= 1.44269907f;
+    n = r1 *= n;
+    r2 = n += -1.47826707f;
+    n += 1.06921649f;
+    n *= -0.01135041f;
+    n *= 5.72826529f;
+    r3 = n += 0.44481009f;
+    n = r3 *= n;
+    n *= -10.45979881f;
+    r4 = n *= 1.96208453f;
+    n *= -0.02766378f;
+    n = r2 *= n;
     n *= r2;
-    n += -0.94000137f;
-    r2 = n *= -0.63526469f;
+    n += 1.11244166f;
+    n *= -0.57471466f;
+    n += r1;
+    n += 0.17844568f;
+    n *= -4.05427265f;
+    n += 2.00054646f;
+    n *= r4;
+    n += -2.10575533f;
+    n *= r3;
+    n *= 2.01923013f;
+    n *= -0.96357495f;
     n *= r0;
-    r0 = n *= 0.04699256f;
-    n += 1.72276115f;
-    n += r2;
-    n *= r0;
-    n += r4;
-    n += 0.44111031f;
-    n += r5;
-    n *= r1;
-    n *= r6;
-    n *= -1.44358706f;
-    n *= -2.75828481f;
     return n;
 } // Solution

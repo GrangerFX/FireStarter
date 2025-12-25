@@ -2,12 +2,12 @@
 #include <math.h>
 
 // Run date: 12/25/25 12:03:27 Pacific Standard Time
-// Run duration = 37.347685 seconds
-// Run test = 13
+// Run duration = 265.515420 seconds
+// Run test = 46
 // Run generation = 1
 // Run evolution = 0
-// Run precision  = 0.00000036
-// Run max result = 0.00000014
+// Run precision  = 0.00000339
+// Run max result = 0.00000026
 
 // Run variations = 1
 // Run instructions = 32
@@ -66,39 +66,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6;
+    float r0, r1, r2, r3, r4;
 
-    r0 = n += -3.14159274f;
-    r1 = n *= -1.95410669f;
-    n *= 0.05602034f;
-    n *= r0;
-    n *= 2.74752927f;
-    n *= 4.69789696f;
-    r0 = n += 5.37094927f;
-    n *= 0.01658271f;
-    r2 = n *= -0.14977968f;
-    r3 = n += -0.12121665f;
-    n *= 0.85536844f;
-    r4 = n *= -0.51183701f;
-    r5 = n *= -0.81761903f;
-    r6 = n *= -3.13112521f;
-    n *= r3;
-    n *= -10.85231972f;
-    n += 3.78717518f;
-    n *= r2;
-    n += -0.94000137f;
-    r2 = n *= -0.63526469f;
-    n *= r0;
-    r0 = n *= 0.04699256f;
-    n += 1.72276115f;
-    n += r2;
-    n *= r0;
-    n += r4;
-    n += 0.44111031f;
-    n += r5;
+    n *= 1.47784293f;
+    r0 = n += -4.64278030f;
+    r1 = n *= 0.12886339f;
     n *= r1;
-    n *= r6;
-    n *= -1.44358706f;
-    n *= -2.75828481f;
+    n *= 2.39274836f;
+    n *= 1.20389521f;
+    r1 = n += -1.03110087f;
+    n += 0.70258737f;
+    n *= -0.10845101f;
+    n += -7.04413509f;
+    n *= -0.26504999f;
+    r2 = n += -2.02039957f;
+    r3 = n *= 0.92219764f;
+    n *= -2.07707405f;
+    n *= r3;
+    n *= -0.56333506f;
+    r3 = n *= 0.44899499f;
+    n = r3 += n;
+    n += r2;
+    r2 = n *= -3.30970430f;
+    r4 = n *= -5.71677828f;
+    n *= r2;
+    n += r4;
+    n = r3 *= n;
+    n += 1.00445199f;
+    n += -0.77251583f;
+    n *= -10.02356243f;
+    n += 7.66770267f;
+    n *= r1;
+    n *= -1.15242565f;
+    n *= r3;
+    n *= r0;
     return n;
 } // Solution

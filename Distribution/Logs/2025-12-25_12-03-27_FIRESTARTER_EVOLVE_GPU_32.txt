@@ -1,0 +1,56 @@
+CUDA devices = 2
+Device 0: NVIDIA GeForce RTX 5090
+Device 1: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_GPU
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 256
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 *New Result=0.00017289  MinIndex=0  EvolveAge=0  Best=0.00017289   BestAge=0  Time=0.034  Run Time=0.7
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00082459  MinIndex=0  EvolveAge=0  Best=0.00017289   BestAge=2  Time=0.039  Run Time=1.0
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00066865  MinIndex=0  EvolveAge=0  Best=0.00017289   BestAge=4  Time=0.031  Run Time=1.2
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 *New Result=0.00011326  MinIndex=0  EvolveAge=0  Best=0.00011326   BestAge=0  Time=0.034  Run Time=1.5
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 *New Result=0.00002095  MinIndex=0  EvolveAge=0  Best=0.00002095   BestAge=0  Time=0.190  Run Time=1.9
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 *New Result=0.00001374  MinIndex=0  EvolveAge=0  Best=0.00001374   BestAge=0  Time=0.034  Run Time=2.2
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 *New Result=0.00000144  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=0  Time=0.032  Run Time=2.5
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00058024  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=2  Time=0.035  Run Time=2.8
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00022650  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=4  Time=0.035  Run Time=3.1
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00041615  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=6  Time=0.034  Run Time=3.4
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00091421  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=8  Time=0.035  Run Time=3.6
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00163776  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=10  Time=0.035  Run Time=3.9
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00010073  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=12  Time=0.035  Run Time=4.2
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00047201  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=14  Time=0.034  Run Time=4.5
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00614116  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=16  Time=0.037  Run Time=4.8
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  1  Old Result=10.00000000 >New Result=0.00017289  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=18  Time=0.038  Run Time=4.8
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  2  Old Result=10.00000000 >New Result=0.00004625  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=20  Time=0.032  Run Time=5.5
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  2  Old Result=10.00000000 >New Result=0.00614784  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=22  Time=0.032  Run Time=5.8
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  2  Old Result=10.00000000 >New Result=0.00082444  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=24  Time=0.032  Run Time=6.1
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  2  Old Result=10.00000000 >New Result=0.00033097  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=26  Time=0.032  Run Time=6.4
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  2  Old Result=10.00000000 >New Result=0.00001788  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=28  Time=0.032  Run Time=6.6
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  2  Old Result=10.00000000 >New Result=0.00027238  MinIndex=0  EvolveAge=0  Best=0.00000144   BestAge=30  Time=0.031  Run Time=6.9
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=32  Generation=  2  Old Result=10.00000000 *New Result=0.00000060  MinIndex=0  EvolveAge=0  Best=0.00000060   BestAge=0  Time=0.034  Run Time=7.2

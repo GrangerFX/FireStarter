@@ -1,0 +1,41 @@
+CUDA devices = 2
+Device 0: NVIDIA GeForce RTX 5090
+Device 1: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 3
+
+targetMin = 0.000000f
+targetMax = 6.283185f
+target = 0.000001f
+
+mode = FIRESTARTER_EVOLVE_GPU
+evolveSeed = 0
+optimizeSeed = 0
+tests = 256
+streams = 1
+units = 1
+states = 1
+population = 65536
+generations = 0
+passes = 256
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=65  Generation=  1  Old Result=10.00000000 *New Result=0.00000143  MinIndex=0  EvolveAge=0  Best=0.00000143   BestAge=0  Time=0.033  Run Time=0.7
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=65  Generation=  1  Old Result=10.00000000 >New Result=0.00007260  MinIndex=0  EvolveAge=0  Best=0.00000143   BestAge=2  Time=0.031  Run Time=0.9
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=65  Generation=  1  Old Result=10.00000000 >New Result=0.00058562  MinIndex=0  EvolveAge=0  Best=0.00000143   BestAge=4  Time=0.032  Run Time=1.2
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=65  Generation=  1  Old Result=10.00000000 >New Result=0.00002527  MinIndex=0  EvolveAge=0  Best=0.00000143   BestAge=6  Time=0.031  Run Time=1.5
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=65  Generation=  1  Old Result=10.00000000 >New Result=0.00032364  MinIndex=0  EvolveAge=0  Best=0.00000143   BestAge=8  Time=0.032  Run Time=1.8
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=65  Generation=  1  Old Result=10.00000000 >New Result=0.00001381  MinIndex=0  EvolveAge=0  Best=0.00000143   BestAge=10  Time=0.033  Run Time=2.0
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=65  Generation=  1  Old Result=10.00000000 >New Result=0.00011609  MinIndex=0  EvolveAge=0  Best=0.00000143   BestAge=12  Time=0.031  Run Time=2.3
+FIRESTARTER_EVOLVE_GPU: Seed=0  Test=65  Generation=  1  Old Result=10.00000000 *New Result=0.00000025  MinIndex=0  EvolveAge=0  Best=0.00000025   BestAge=0  Time=0.187  Run Time=2.7

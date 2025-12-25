@@ -406,6 +406,24 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
+#if 1
+                // Execute the initial GPU evolve.
+                executeEvolve->ExecuteEvolve(evolveState);
+                const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
+                while (bestCode) {
+                    optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, 0, test);
+                    optimizeState.CopyCode(bestCode);
+
+                    // Compile the optimize code asynchronously.
+                    executeOptimize->ExecuteGenerateOptimize(optimizeState);
+
+                    // Execute optimize for any completed compile jobs.
+                    executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete);
+                    if (bestState.Complete())
+                        break;
+                    bestCode = evolveState.m_bestCodes.GetBestCode();
+                }
+#else
                 // Get the best code to optimize.
                 const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
                 if (bestCode) {
@@ -423,6 +441,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 } else
                     // Execute the initial GPU evolve.
                     executeEvolve->ExecuteEvolve(evolveState);
+#endif
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)
