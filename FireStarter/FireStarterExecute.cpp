@@ -548,81 +548,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     state.InitNetwork(settings, minNetwork, minIndex);
 } // ExecuteSinSimPass
 
-#if 0
-void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
-{
-    // Launch the calculation kernel
-    FireStarterSettings settings = state.Settings();
-    unsigned int populationSize = settings.m_population;
-    unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
-    unsigned int blocksPerGrid = (populationSize + (threadsPerBlock - 1)) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    unsigned long long evolutionSeed = state.EvolutionSeed();
-    unsigned int stock = 0;
-
-    float averageResult = 0.0f;
-    if (m_simulateGPU) {
-        blockDim = cudaBlockSize;
-        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
-            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
-                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
-                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
-                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
-                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                MoneyEvolve(m_deviceSettings, m_deviceResults, m_deviceCodes0, m_devicePopulation0, m_deviceStocks, evolutionSeed);
-        checkCUDAErrors(cudaMemcpy(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
-        checkCUDAErrors(cudaMemcpy(m_hostCodes, m_deviceCodes0, m_codesSize, cudaMemcpyHostToHost));
-        if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS)
-            checkCUDAErrors(cudaMemcpy(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
-    } else {
-        void* arr[] = { reinterpret_cast<void*>(&m_deviceSettings),
-                        reinterpret_cast<void*>(&m_deviceResults),
-                        reinterpret_cast<void*>(&m_devicePopulation0),
-                        reinterpret_cast<void*>(&m_deviceCodes0),
-                        reinterpret_cast<void*>(&m_deviceStocks),
-                        reinterpret_cast<void*>(&evolutionSeed)
-        };
-
-        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-            0,                                                  // shared mem
-            Stream(),                                           // stream
-            &arr[0],                                            // arguments
-            0));
-
-        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes0, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
-        if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS)
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
-        Context()->Synchronize();
-    }
-    
-    bool validResult = false;
-    float bestResult = m_hostResults[0];
-    unsigned int bestIndex = 0;
-    for (unsigned int i = 1; i < settings.m_population; i++) {
-        float curResult = m_hostResults[i];
-        if (curResult < bestResult) {
-            bestResult = curResult;
-            bestIndex = i;
-        }
-        if (curResult < state.m_bestCodes.WorstResult())
-            state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
-    }
-
-    if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS) {
-        const FireStarterCode& minCode = m_hostCodes->Member(settings, bestIndex);
-        const FireStarterResult& minResult = m_hostPopulation->Member(settings, bestIndex);
-        unsigned int minAge = minResult.m_evolveAge1;
-        int foo = 1;
-    }
-
-    // Update the state's best code.
-    state.InitCode(settings, m_hostCodes, bestResult, bestIndex);
-} // ExecuteMoneyEvolvePass
-#else
+#if MONEYMAKER_EVOLVE_NEW
 void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
 {
     // Launch the calculation kernel
@@ -722,6 +648,87 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
 
     // Update the state's best code.
     state.InitCode(settings, m_hostCodes, minResult, minIndex);
+} // ExecuteMoneyEvolvePass
+#else
+void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
+{
+    // Launch the calculation kernel
+    FireStarterSettings settings = state.Settings();
+    unsigned int populationSize = settings.m_population;
+    unsigned int threadsPerBlock = FIRESTARTER_BLOCK_THREADS;
+    unsigned int blocksPerGrid = (populationSize + (threadsPerBlock - 1)) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long evolutionSeed = state.EvolutionSeed();
+    unsigned int stock = 0;
+
+    float averageResult = 0.0f;
+    if (m_simulateGPU) {
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                MoneyEvolve(m_deviceSettings,
+                                            m_deviceResults,
+                                            m_deviceCodes0,
+                                            m_devicePopulation0,
+                                            m_deviceStocks,
+                                            evolutionSeed);
+        checkCUDAErrors(cudaMemcpy(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpy(m_hostCodes, m_deviceCodes0, m_codesSize, cudaMemcpyHostToHost));
+        if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS)
+            checkCUDAErrors(cudaMemcpy(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
+    }
+    else {
+        void* arr[] = { reinterpret_cast<void*>(&m_deviceSettings),
+                        reinterpret_cast<void*>(&m_deviceResults),
+                        reinterpret_cast<void*>(&m_deviceCodes0),
+                        reinterpret_cast<void*>(&m_devicePopulation0),
+                        reinterpret_cast<void*>(&m_deviceStocks),
+                        reinterpret_cast<void*>(&evolutionSeed)
+        };
+
+        checkCUDAErrors(cuLaunchKernel(m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
+
+        checkCUDAErrors(cudaMemcpyAsync(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostCodes, m_deviceCodes0, m_codesSize, cudaMemcpyDeviceToHost, Stream()));
+        if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS)
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+        Context()->Synchronize();
+    }
+
+    bool validResult = false;
+    float bestResult = m_hostResults[0];
+    unsigned int bestIndex = 0;
+    for (unsigned int i = 1; i < settings.m_population; i++) {
+        float curResult = m_hostResults[i];
+        if (curResult < bestResult) {
+            bestResult = curResult;
+            bestIndex = i;
+        }
+        if (curResult < state.m_bestCodes.WorstResult())
+            state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
+    }
+
+    if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS) {
+        const FireStarterCode& minCode = m_hostCodes->Member(settings, bestIndex);
+        const FireStarterResult& minResult = m_hostPopulation->Member(settings, bestIndex);
+        unsigned int minAge = minResult.m_evolveAge1;
+        int foo = 1;
+    }
+
+    // Update the state's best code.
+    state.InitCode(settings, m_hostCodes, bestResult, bestIndex);
+    state.MaxResult() = bestResult;
 } // ExecuteMoneyEvolvePass
 #endif
 

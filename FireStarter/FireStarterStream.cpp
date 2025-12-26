@@ -653,6 +653,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
         // Optimization for single variation optimization population.
         optimizeSettings.m_population = 65536;
+        optimizeSettings.m_passes = 384;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
@@ -711,70 +712,67 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                 std::string evolveText = Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Result=%.4f%%  Duration: %2.1f  Run Duration: %.1f\n", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, duration, runDuration);
                 FireStarterSource::AppendSource(evolveText, streamResultsPath);
 
-                for (int i = 0; i < 10; i++) {
-                    // Get the best code to optimize.
-                    const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
-                    if (bestCode) {
-                        optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, evolveID, test);
-                        optimizeState.CopyCode(bestCode);
+                // Get the best code to optimize.
+                while (const FireStarterCode *bestCode = evolveState.m_bestCodes.GetBestCode()) {
+                    optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, evolveID, test);
+                    optimizeState.CopyCode(bestCode);
 
-                        // Compile the optimize code asynchronously.
-                        executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
+                    // Compile the optimize code asynchronously.
+                    executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
 
-                        // Execute optimize for any completed compile jobs.
-                        executeOptimize->ExecuteMoneyOptimize(optimizeState, bestState, complete);
+                    // Execute optimize for any completed compile jobs.
+                    executeOptimize->ExecuteMoneyOptimize(optimizeState, bestState, complete);
 
-                        // Output the results.
-                        unsigned int numStocks = stocks->size();
-                        const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
-                        if (tradingResults) {
-                            float optimizeResult = optimizeState.MaxResults();
-                            float bestResult = bestState.MaxResults();
-                            float optimizeReturns = MoneyMakerReturns(optimizeResult, optimizeSettings.m_trading);
-                            float bestReturns = MoneyMakerReturns(bestResult, optimizeSettings.m_trading);
-                            double curDuration = bestState.Duration();
-                            double optimizeDuration = curDuration - duration;
-                            duration = curDuration;
-                            runDuration = bestState.RunDuration();
+                    // Output the results.
+                    unsigned int numStocks = stocks->size();
+                    const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
+                    if (tradingResults) {
+                        float optimizeResult = optimizeState.MaxResults();
+                        float bestResult = bestState.MaxResults();
+                        float optimizeReturns = MoneyMakerReturns(optimizeResult, optimizeSettings.m_trading);
+                        float bestReturns = MoneyMakerReturns(bestResult, optimizeSettings.m_trading);
+                        double curDuration = bestState.Duration();
+                        double optimizeDuration = curDuration - duration;
+                        duration = curDuration;
+                        runDuration = bestState.RunDuration();
 
-                            std::string optimizeText = Format("\nOptimize Result=%.4f%%  Best Result=%.4f%%  Duration: %.1f  Run Duration: %.1f", optimizeReturns, bestReturns, optimizeDuration, runDuration);
-                            if (optimizeResult == bestResult)
-                                optimizeText += " *******";
+                        std::string optimizeText = Format("\nOptimize Result=%.4f%%  Best Result=%.4f%%  Duration: %.1f  Run Duration: %.1f", optimizeReturns, bestReturns, optimizeDuration, runDuration);
+                        if (optimizeResult == bestResult)
+                            optimizeText += " *******";
+                        optimizeText += "\n";
+
+                        float tradingAverage = 0.0f;
+                        float differenceAverage = 0.0f;
+                        for (unsigned int stockIndex = 0; stockIndex < numStocks; stockIndex++) {
+                            const MoneyMakerStock& stock = stocks->Stock(stockIndex);
+                            const MoneyMakerStock& result = tradingResults->Stock(stockIndex);
+                            char* symbol = (char*)&stock.symbol;
+                            optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
+
+                            float stockFirstValue = stock[MONEYMAKER_WARMUP];
+                            float stockLastValue = stock[MONEYMAKER_HISTORY - 1];
+                            float stockReturns = MoneyMakerReturns(stockLastValue / stockFirstValue, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
+                            optimizeText += Format("Stock Returns=%.4f%%  ", stockReturns);
+
+                            float tradingResult = result[0];
+                            if (tradingResult) {
+                                float tradingReturns = MoneyMakerReturns(tradingResult, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
+                                float tradingDifference = tradingReturns - stockReturns;
+                                optimizeText += Format("Trading Returns=%.4f%%  Difference==%.4f%%", tradingReturns, tradingDifference);
+                                tradingAverage += tradingReturns / numStocks;
+                                differenceAverage += tradingDifference / numStocks;
+                            } else
+                                optimizeText += "Result Failed!";
                             optimizeText += "\n";
-
-                            float tradingAverage = 0.0f;
-                            float differenceAverage = 0.0f;
-                            for (unsigned int stockIndex = 0; stockIndex < numStocks; stockIndex++) {
-                                const MoneyMakerStock& stock = stocks->Stock(stockIndex);
-                                const MoneyMakerStock& result = tradingResults->Stock(stockIndex);
-                                char* symbol = (char*)&stock.symbol;
-                                optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
-
-                                float stockFirstValue = stock[MONEYMAKER_WARMUP];
-                                float stockLastValue = stock[MONEYMAKER_HISTORY - 1];
-                                float stockReturns = MoneyMakerReturns(stockLastValue / stockFirstValue, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
-                                optimizeText += Format("Stock Returns=%.4f%%  ", stockReturns);
-
-                                float tradingResult = result[0];
-                                if (tradingResult) {
-                                    float tradingReturns = MoneyMakerReturns(tradingResult, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
-                                    float tradingDifference = tradingReturns - stockReturns;
-                                    optimizeText += Format("Trading Returns=%.4f%%  Difference==%.4f%%", tradingReturns, tradingDifference);
-                                    tradingAverage += tradingReturns / numStocks;
-                                    differenceAverage += tradingDifference / numStocks;
-                                } else
-                                    optimizeText += "Result Failed!";
-                                optimizeText += "\n";
-                            }
-                            optimizeText += Format("Average Returns=%.4f%%  Average Difference==%.4f%%\n", tradingAverage, differenceAverage);
-                            FireStarterSource::AppendSource(optimizeText, streamResultsPath);
                         }
+                        optimizeText += Format("Average Returns=%.4f%%  Average Difference==%.4f%%\n", tradingAverage, differenceAverage);
+                        FireStarterSource::AppendSource(optimizeText, streamResultsPath);
                     }
-#if FIRESTARTER_SAVE_BESTSTATE
-                    if (bestState.m_optimizeValid)
-                        complete->CompleteSaveResults(bestState);
-#endif
                 }
+#if FIRESTARTER_SAVE_BESTSTATE
+                if (bestState.m_optimizeValid)
+                    complete->CompleteSaveResults(bestState);
+#endif
 
                 // Exit after a set number of generations.
                 if (++evolveState.m_generation == evolveSettings.m_generations)

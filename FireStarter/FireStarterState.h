@@ -582,12 +582,12 @@ public:
             return m_results.MaxResults();
     } // MaxResults
 
-    inline float MaxResult(unsigned int variation) const
+    inline float MaxResult(unsigned int variation = 0) const
     {
         return m_results.MaxResult(variation);
     } // MaxResult
 
-    inline float& MaxResult(unsigned int variation)
+    inline float& MaxResult(unsigned int variation = 0)
     {
         return m_results.MaxResult(variation);
     } // MaxResult
