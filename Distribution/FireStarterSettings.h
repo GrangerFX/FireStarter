@@ -71,7 +71,6 @@
 #define FIRESTARTER_EVOLVE_SEED     FIRESTARTER_SEED
 #define FIRESTARTER_OPTIMIZE_SEED   FIRESTARTER_SEED
 
-// First 16 tests of 16 states for unlimited generations is the standard evolve test.
 #define FIRESTARTER_START_TEST      0           // The starting test index.
 #define FIRESTARTER_TESTS           256
 
@@ -88,7 +87,7 @@
 #define FIRESTARTER_OPTIMIZE        10          // Optimize a previously CPU evolved state.
 #define FIRESTARTER_SOLUTION        11          // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           12          // Number of modes
-#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_GPU
+#define FIRESTARTER_MODE            FIRESTARTER_MONEYMAKER
 
 #define FIRESTARTER_RANDOM_STREAMS              8
 #define FIRESTARTER_RANDOM_UNITS                1
@@ -382,7 +381,7 @@ public:
             case FIRESTARTER_SELECT:
                 return "FireSelect.cu";
             case FIRESTARTER_EVOLVE_GPU:
-                return "FireEvolver.cu";
+                return "FireEvolverGPU.cu";
             case FIRESTARTER_EVOLVE_NEW:
                 return "FireEvolverNew.cu";
             case FIRESTARTER_EVOLVE_SINSIM:

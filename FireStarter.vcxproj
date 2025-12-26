@@ -171,12 +171,7 @@
     <ClInclude Include="FireStarter\SimpleTimer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Distribution\FireEvolver.cu">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </None>
+    <None Include="Distribution\FireEvolverGPU.cu" />
     <None Include="Distribution\FireEvolverNew.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>

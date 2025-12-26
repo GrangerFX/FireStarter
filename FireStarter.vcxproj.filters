@@ -173,9 +173,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Distribution\FireEvolver.cu">
-      <Filter>CUDA Files</Filter>
-    </None>
     <None Include="Distribution\FireEvolverNew.cu">
       <Filter>CUDA Files</Filter>
     </None>
@@ -204,6 +201,9 @@
       <Filter>CUDA Files</Filter>
     </None>
     <None Include="Distribution\FireMoneyOptimizer.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireEvolverGPU.cu">
       <Filter>CUDA Files</Filter>
     </None>
   </ItemGroup>

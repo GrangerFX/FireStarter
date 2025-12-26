@@ -4,7 +4,7 @@
 #include "CUDACompile.h"
 
 // Note: Including these all the time is a very easy way to check for compiler errors.
-#include "FireEvolver.cu"
+#include "FireEvolverGPU.cu"
 #include "FireEvolverNew.cu"
 #include "FireEvolverSinSim.cu"
 #include "FireGenerate.cu"
