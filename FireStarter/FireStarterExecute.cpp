@@ -220,6 +220,7 @@ void FireStarterExecute::ExecuteEvolvePass(FireStarterState& state)
 
         // Update the state's best code.
         state.InitCode(settings, m_hostCodes, minResult, minIndex);
+        state.MaxResult(0) = minResult;
     }
 } // ExecuteEvolvePass
 
