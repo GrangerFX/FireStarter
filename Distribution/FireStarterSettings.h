@@ -426,7 +426,7 @@ public:
             case FIRESTARTER_SELECT:
                 return "Selecter";
             case FIRESTARTER_EVOLVE_GPU:
-                return "Evolver";
+                return "EvolverGPU";
             case FIRESTARTER_EVOLVE_NEW:
                 return "EvolverNew";
             case FIRESTARTER_EVOLVE_SINSIM:

@@ -368,7 +368,7 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
                     for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                         for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                Evolver(m_deviceResults, m_devicePopulation0, m_deviceCodes0, variation, seed, passes, populationSize);
+                                EvolverGPU(m_deviceResults, m_devicePopulation0, m_deviceCodes0, variation, seed, passes, populationSize);
         if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS)
             checkCUDAErrors(cudaMemcpy(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
         checkCUDAErrors(cudaMemcpy(m_hostResults, m_deviceResults, m_resultsSize, cudaMemcpyHostToHost));

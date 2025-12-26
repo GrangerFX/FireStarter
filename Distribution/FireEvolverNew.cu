@@ -143,7 +143,7 @@ GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireSt
     // Return the variation data for debugging.
     if (population)
         FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
-} // Evolver
+} // EvolverNew
 #else
 GPU_GLOBAL void EvolverNew(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {

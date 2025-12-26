@@ -20,7 +20,7 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
 
 #if FIRESTARTER_VARIATIONS == 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -131,10 +131,10 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     // Return the variation data for debugging.
     if (population)
         FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
-} // Evolver
+} // EvolverGPU
 #else
 // Multi-variation version.
-GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
@@ -287,5 +287,5 @@ GPU_GLOBAL void Evolver(float* results, FireStarterResult* population, FireStart
     if (population)
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             FireStarterPopulation::PopulationResult(population, member, v)->InitResult(bestData[v], bestVariationResults[v], bestAge);
-} // Evolver
+} // EvolverGPU
 #endif
