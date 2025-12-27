@@ -169,6 +169,7 @@
     <ClInclude Include="FireStarter\FireStarterWindow.h" />
     <ClInclude Include="FireStarter\SimpleOutput.h" />
     <ClInclude Include="FireStarter\SimpleTimer.h" />
+    <ClInclude Include="FireStarter\Sin.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Distribution\FireEvolverGPU.cu" />

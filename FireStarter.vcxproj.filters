@@ -171,6 +171,9 @@
     <ClInclude Include="Distribution\FireStarter_MoneyMakerSolution.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FireStarter\Sin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Distribution\FireEvolverNew.cu">
