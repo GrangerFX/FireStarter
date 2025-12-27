@@ -1,0 +1,177 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Result=28.8006%  Duration: 508.6  Run Duration: 511.4
+
+Optimize Result=42.8100%  Best Result=42.8100%  Duration: 31.6  Run Duration: 543.0 *******
+AAPL: Stock Returns=-8.9764%  Trading Returns=23.1154%  Difference==32.0918%
+NVDA: Stock Returns=-38.5816%  Trading Returns=285.4273%  Difference==324.0089%
+INTC: Stock Returns=31.8297%  Trading Returns=24.0240%  Difference==-7.8057%
+MSFT: Stock Returns=-19.8035%  Trading Returns=31.1403%  Difference==50.9438%
+QCOM: Stock Returns=-15.9356%  Trading Returns=57.8387%  Difference==73.7743%
+AMZN: Stock Returns=-22.2712%  Trading Returns=24.7217%  Difference==46.9930%
+GOOG: Stock Returns=-17.1474%  Trading Returns=41.1059%  Difference==58.2534%
+AMD : Stock Returns=-20.2532%  Trading Returns=97.8012%  Difference==118.0544%
+Average Returns=73.1468%  Average Difference==87.0392%
+
+Optimize Result=44.1317%  Best Result=44.1317%  Duration: 32.4  Run Duration: 575.4 *******
+AAPL: Stock Returns=-8.9764%  Trading Returns=21.7224%  Difference==30.6988%
+NVDA: Stock Returns=-38.5816%  Trading Returns=266.7836%  Difference==305.3652%
+INTC: Stock Returns=31.8297%  Trading Returns=17.5791%  Difference==-14.2506%
+MSFT: Stock Returns=-19.8035%  Trading Returns=17.9936%  Difference==37.7971%
+QCOM: Stock Returns=-15.9356%  Trading Returns=49.2948%  Difference==65.2304%
+AMZN: Stock Returns=-22.2712%  Trading Returns=37.9620%  Difference==60.2332%
+GOOG: Stock Returns=-17.1474%  Trading Returns=29.7746%  Difference==46.9220%
+AMD : Stock Returns=-20.2532%  Trading Returns=136.1172%  Difference==156.3704%
+Average Returns=72.1534%  Average Difference==86.0458%
+
+Optimize Result=42.2527%  Best Result=44.1317%  Duration: 32.2  Run Duration: 607.6
+AAPL: Stock Returns=-8.9764%  Trading Returns=23.1816%  Difference==32.1580%
+NVDA: Stock Returns=-38.5816%  Trading Returns=226.8775%  Difference==265.4591%
+INTC: Stock Returns=31.8297%  Trading Returns=38.1124%  Difference==6.2827%
+MSFT: Stock Returns=-19.8035%  Trading Returns=16.4989%  Difference==36.3024%
+QCOM: Stock Returns=-15.9356%  Trading Returns=50.4661%  Difference==66.4017%
+AMZN: Stock Returns=-22.2712%  Trading Returns=34.0817%  Difference==56.3529%
+GOOG: Stock Returns=-17.1474%  Trading Returns=23.2275%  Difference==40.3749%
+AMD : Stock Returns=-20.2532%  Trading Returns=117.0099%  Difference==137.2631%
+Average Returns=66.1820%  Average Difference==80.0744%
+
+Optimize Result=42.8922%  Best Result=44.1317%  Duration: 33.5  Run Duration: 641.1
+AAPL: Stock Returns=-8.9764%  Trading Returns=21.7224%  Difference==30.6988%
+NVDA: Stock Returns=-38.5816%  Trading Returns=242.8882%  Difference==281.4698%
+INTC: Stock Returns=31.8297%  Trading Returns=31.6245%  Difference==-0.2052%
+MSFT: Stock Returns=-19.8035%  Trading Returns=16.2480%  Difference==36.0515%
+QCOM: Stock Returns=-15.9356%  Trading Returns=49.2948%  Difference==65.2304%
+AMZN: Stock Returns=-22.2712%  Trading Returns=36.2804%  Difference==58.5516%
+GOOG: Stock Returns=-17.1474%  Trading Returns=24.8324%  Difference==41.9798%
+AMD : Stock Returns=-20.2532%  Trading Returns=127.8002%  Difference==148.0534%
+Average Returns=68.8364%  Average Difference==82.7288%
+
+Optimize Result=46.5604%  Best Result=46.5604%  Duration: 33.8  Run Duration: 674.9 *******
+AAPL: Stock Returns=-8.9764%  Trading Returns=26.9481%  Difference==35.9245%
+NVDA: Stock Returns=-38.5816%  Trading Returns=214.4307%  Difference==253.0123%
+INTC: Stock Returns=31.8297%  Trading Returns=21.5240%  Difference==-10.3057%
+MSFT: Stock Returns=-19.8035%  Trading Returns=20.2740%  Difference==40.0774%
+QCOM: Stock Returns=-15.9356%  Trading Returns=55.0969%  Difference==71.0325%
+AMZN: Stock Returns=-22.2712%  Trading Returns=38.7248%  Difference==60.9960%
+GOOG: Stock Returns=-17.1474%  Trading Returns=15.7695%  Difference==32.9170%
+AMD : Stock Returns=-20.2532%  Trading Returns=95.2720%  Difference==115.5252%
+Average Returns=61.0050%  Average Difference==74.8974%
+
+Optimize Result=42.3445%  Best Result=46.5604%  Duration: 33.3  Run Duration: 708.2
+AAPL: Stock Returns=-8.9764%  Trading Returns=28.0934%  Difference==37.0698%
+NVDA: Stock Returns=-38.5816%  Trading Returns=275.2905%  Difference==313.8721%
+INTC: Stock Returns=31.8297%  Trading Returns=17.8138%  Difference==-14.0159%
+MSFT: Stock Returns=-19.8035%  Trading Returns=17.9936%  Difference==37.7971%
+QCOM: Stock Returns=-15.9356%  Trading Returns=41.6587%  Difference==57.5943%
+AMZN: Stock Returns=-22.2712%  Trading Returns=33.0663%  Difference==55.3375%
+GOOG: Stock Returns=-17.1474%  Trading Returns=25.4470%  Difference==42.5945%
+AMD : Stock Returns=-20.2532%  Trading Returns=121.4779%  Difference==141.7311%
+Average Returns=70.1051%  Average Difference==83.9976%
+
+Optimize Result=42.6283%  Best Result=46.5604%  Duration: 33.9  Run Duration: 742.1
+AAPL: Stock Returns=-8.9764%  Trading Returns=25.7340%  Difference==34.7104%
+NVDA: Stock Returns=-38.5816%  Trading Returns=268.1937%  Difference==306.7753%
+INTC: Stock Returns=31.8297%  Trading Returns=14.0879%  Difference==-17.7418%
+MSFT: Stock Returns=-19.8035%  Trading Returns=31.4280%  Difference==51.2314%
+QCOM: Stock Returns=-15.9356%  Trading Returns=51.4757%  Difference==67.4113%
+AMZN: Stock Returns=-22.2712%  Trading Returns=24.1330%  Difference==46.4042%
+GOOG: Stock Returns=-17.1474%  Trading Returns=39.9515%  Difference==57.0989%
+AMD : Stock Returns=-20.2532%  Trading Returns=109.7368%  Difference==129.9900%
+Average Returns=70.5926%  Average Difference==84.4850%
+
+Optimize Result=35.3231%  Best Result=46.5604%  Duration: 34.2  Run Duration: 776.3
+AAPL: Stock Returns=-8.9764%  Trading Returns=19.0598%  Difference==28.0362%
+NVDA: Stock Returns=-38.5816%  Trading Returns=100.4642%  Difference==139.0458%
+INTC: Stock Returns=31.8297%  Trading Returns=33.3759%  Difference==1.5462%
+MSFT: Stock Returns=-19.8035%  Trading Returns=32.9966%  Difference==52.8001%
+QCOM: Stock Returns=-15.9356%  Trading Returns=15.2885%  Difference==31.2241%
+AMZN: Stock Returns=-22.2712%  Trading Returns=45.8950%  Difference==68.1662%
+GOOG: Stock Returns=-17.1474%  Trading Returns=18.8853%  Difference==36.0327%
+AMD : Stock Returns=-20.2532%  Trading Returns=54.6525%  Difference==74.9056%
+Average Returns=40.0772%  Average Difference==53.9696%
+
+Optimize Result=41.9624%  Best Result=46.5604%  Duration: 33.6  Run Duration: 809.8
+AAPL: Stock Returns=-8.9764%  Trading Returns=17.5471%  Difference==26.5235%
+NVDA: Stock Returns=-38.5816%  Trading Returns=224.2742%  Difference==262.8557%
+INTC: Stock Returns=31.8297%  Trading Returns=37.8488%  Difference==6.0191%
+MSFT: Stock Returns=-19.8035%  Trading Returns=32.6620%  Difference==52.4655%
+QCOM: Stock Returns=-15.9356%  Trading Returns=36.1961%  Difference==52.1317%
+AMZN: Stock Returns=-22.2712%  Trading Returns=26.0962%  Difference==48.3674%
+GOOG: Stock Returns=-17.1474%  Trading Returns=36.0864%  Difference==53.2338%
+AMD : Stock Returns=-20.2532%  Trading Returns=70.9871%  Difference==91.2403%
+Average Returns=60.2122%  Average Difference==74.1046%
+
+Optimize Result=41.5916%  Best Result=46.5604%  Duration: 31.7  Run Duration: 841.5
+AAPL: Stock Returns=-8.9764%  Trading Returns=21.7224%  Difference==30.6988%
+NVDA: Stock Returns=-38.5816%  Trading Returns=252.1657%  Difference==290.7473%
+INTC: Stock Returns=31.8297%  Trading Returns=35.5929%  Difference==3.7632%
+MSFT: Stock Returns=-19.8035%  Trading Returns=16.2480%  Difference==36.0515%
+QCOM: Stock Returns=-15.9356%  Trading Returns=50.0141%  Difference==65.9497%
+AMZN: Stock Returns=-22.2712%  Trading Returns=34.0817%  Difference==56.3529%
+GOOG: Stock Returns=-17.1474%  Trading Returns=23.6884%  Difference==40.8359%
+AMD : Stock Returns=-20.2532%  Trading Returns=104.4605%  Difference==124.7137%
+Average Returns=67.2467%  Average Difference==81.1391%
+
+Optimize Result=38.2027%  Best Result=46.5604%  Duration: 33.4  Run Duration: 874.9
+AAPL: Stock Returns=-8.9764%  Trading Returns=8.9611%  Difference==17.9375%
+NVDA: Stock Returns=-38.5816%  Trading Returns=178.3139%  Difference==216.8955%
+INTC: Stock Returns=31.8297%  Trading Returns=9.3513%  Difference==-22.4784%
+MSFT: Stock Returns=-19.8035%  Trading Returns=20.1379%  Difference==39.9414%
+QCOM: Stock Returns=-15.9356%  Trading Returns=46.4032%  Difference==62.3388%
+AMZN: Stock Returns=-22.2712%  Trading Returns=36.6061%  Difference==58.8773%
+GOOG: Stock Returns=-17.1474%  Trading Returns=31.5651%  Difference==48.7125%
+AMD : Stock Returns=-20.2532%  Trading Returns=93.2935%  Difference==113.5467%
+Average Returns=53.0790%  Average Difference==66.9714%
+
+Optimize Result=35.9186%  Best Result=46.5604%  Duration: 35.3  Run Duration: 910.2
+AAPL: Stock Returns=-8.9764%  Trading Returns=8.6817%  Difference==17.6581%
+NVDA: Stock Returns=-38.5816%  Trading Returns=67.2200%  Difference==105.8015%
+INTC: Stock Returns=31.8297%  Trading Returns=1.9530%  Difference==-29.8767%
+MSFT: Stock Returns=-19.8035%  Trading Returns=37.6649%  Difference==57.4684%
+QCOM: Stock Returns=-15.9356%  Trading Returns=46.2808%  Difference==62.2164%
+AMZN: Stock Returns=-22.2712%  Trading Returns=21.4643%  Difference==43.7356%
+GOOG: Stock Returns=-17.1474%  Trading Returns=47.4574%  Difference==64.6048%
+AMD : Stock Returns=-20.2532%  Trading Returns=63.6865%  Difference==83.9397%
+Average Returns=36.8011%  Average Difference==50.6935%
+
+Optimize Result=39.8341%  Best Result=46.5604%  Duration: 32.8  Run Duration: 943.0
+AAPL: Stock Returns=-8.9764%  Trading Returns=27.5772%  Difference==36.5536%
+NVDA: Stock Returns=-38.5816%  Trading Returns=246.4946%  Difference==285.0761%
+INTC: Stock Returns=31.8297%  Trading Returns=28.4372%  Difference==-3.3925%
+MSFT: Stock Returns=-19.8035%  Trading Returns=30.5984%  Difference==50.4018%
+QCOM: Stock Returns=-15.9356%  Trading Returns=58.1274%  Difference==74.0630%
+AMZN: Stock Returns=-22.2712%  Trading Returns=48.8780%  Difference==71.1493%
+GOOG: Stock Returns=-17.1474%  Trading Returns=35.0711%  Difference==52.2185%
+AMD : Stock Returns=-20.2532%  Trading Returns=50.1866%  Difference==70.4398%
+Average Returns=65.6713%  Average Difference==79.5637%
+
+Optimize Result=39.2846%  Best Result=46.5604%  Duration: 34.0  Run Duration: 977.0
+AAPL: Stock Returns=-8.9764%  Trading Returns=13.7771%  Difference==22.7535%
+NVDA: Stock Returns=-38.5816%  Trading Returns=373.5320%  Difference==412.1135%
+INTC: Stock Returns=31.8297%  Trading Returns=1.1577%  Difference==-30.6720%
+MSFT: Stock Returns=-19.8035%  Trading Returns=32.9269%  Difference==52.7304%
+QCOM: Stock Returns=-15.9356%  Trading Returns=33.1747%  Difference==49.1103%
+AMZN: Stock Returns=-22.2712%  Trading Returns=39.5561%  Difference==61.8273%
+GOOG: Stock Returns=-17.1474%  Trading Returns=23.1604%  Difference==40.3078%
+AMD : Stock Returns=-20.2532%  Trading Returns=45.9800%  Difference==66.2332%
+Average Returns=70.4081%  Average Difference==84.3005%
+
+Optimize Result=31.4630%  Best Result=46.5604%  Duration: 34.0  Run Duration: 1011.0
+AAPL: Stock Returns=-8.9764%  Trading Returns=18.5358%  Difference==27.5122%
+NVDA: Stock Returns=-38.5816%  Trading Returns=182.9807%  Difference==221.5622%
+INTC: Stock Returns=31.8297%  Trading Returns=15.7594%  Difference==-16.0703%
+MSFT: Stock Returns=-19.8035%  Trading Returns=42.4274%  Difference==62.2309%
+QCOM: Stock Returns=-15.9356%  Trading Returns=43.7223%  Difference==59.6579%
+AMZN: Stock Returns=-22.2712%  Trading Returns=26.0723%  Difference==48.3435%
+GOOG: Stock Returns=-17.1474%  Trading Returns=15.9317%  Difference==33.0791%
+AMD : Stock Returns=-20.2532%  Trading Returns=55.9464%  Difference==76.1996%
+Average Returns=50.1720%  Average Difference==64.0644%
+
+Optimize Result=42.8100%  Best Result=46.5604%  Duration: 31.8  Run Duration: 1042.7
+AAPL: Stock Returns=-8.9764%  Trading Returns=23.1154%  Difference==32.0918%
+NVDA: Stock Returns=-38.5816%  Trading Returns=285.4273%  Difference==324.0089%
+INTC: Stock Returns=31.8297%  Trading Returns=24.0240%  Difference==-7.8057%
+MSFT: Stock Returns=-19.8035%  Trading Returns=31.1403%  Difference==50.9438%
+QCOM: Stock Returns=-15.9356%  Trading Returns=57.8387%  Difference==73.7743%
+AMZN: Stock Returns=-22.2712%  Trading Returns=24.7217%  Difference==46.9930%
+GOOG: Stock Returns=-17.1474%  Trading Returns=41.1059%  Difference==58.2534%
+AMD : Stock Returns=-20.2532%  Trading Returns=97.8012%  Difference==118.0544%
+Average Returns=73.1468%  Average Difference==87.0392%
