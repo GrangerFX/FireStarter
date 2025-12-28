@@ -8,7 +8,6 @@
 
 class FireStarterExecute : public CUDAThread {
 private:
-    const MoneyMakerStocks* m_stocksData = nullptr;
     float* m_hostResults = nullptr;
     float* m_deviceResults = nullptr;
     FireStarterSettings* m_hostSettings = nullptr;
@@ -46,7 +45,6 @@ private:
     size_t m_populationSize = 0;
     size_t m_networksSize = 0;
     size_t m_stocksSize = 0;
-    size_t m_tradingResultsSize = 0;
     size_t m_tradingDataSize = 0;
     size_t m_tradingCodeSize = 0;
     size_t m_codesSize = 0;
@@ -56,6 +54,8 @@ private:
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
+    void FinishStocks(void);
+    bool InitStocks(const MoneyMakerStocks* stocks);
     void ExecuteSelectPass(FireStarterState& state, const FireStarterSettings& selectSettings);
     void ExecuteEvolveGPUPass(FireStarterState& state);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
@@ -63,15 +63,15 @@ private:
     void ExecuteMoneyEvolvePass(FireStarterState& state);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
-    void ExecuteMoneyOptimizePass(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
+    void ExecuteMoneyOptimizePass(FireStarterState& state);
     bool GenerateEvolve(unsigned int mode);
     bool GenerateOptimize(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
     bool ExecuteJob(void);
 
 public:
-    void ExecuteSetStocks(const FireStarterSettings& settings, const MoneyMakerStocks *stocks);
+    void ExecuteSetStocks(const MoneyMakerStocks *stocks);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
     void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);

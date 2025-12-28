@@ -68,8 +68,8 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
         m_window.Erase();
 
         if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
-            const MoneyMakerStock& stock = stocks->Stock(0);
-            const MoneyMakerStock& results = tradingResults->Stock(0);
+            const MoneyMakerStock& stock = stocks->Stock(settings.m_stock);
+            const MoneyMakerStock& results = tradingResults->Stock(settings.m_stock);
             float minValue = stock.minValue;
             float maxValue = stock.maxValue;
             float lastValue = stock[0];

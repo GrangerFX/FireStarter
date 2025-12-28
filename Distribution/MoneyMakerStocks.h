@@ -202,22 +202,22 @@ typedef struct MoneyMakerStocks
 
     inline MoneyMakerStock& Stock(unsigned int stock = 0)
     {
-        return *StockData(stock);
+        return *StockData(stock % numStocks);
     } // Stock
 
     inline const MoneyMakerStock& Stock(unsigned int stock = 0) const
     {
-        return *StockData(stock);
+        return *StockData(stock % numStocks);
     } // Stock
 
     inline MoneyMakerStock& operator[](unsigned int stock)
     {
-        return Stock(stock);
+        return Stock(stock % numStocks);
     } // operator[]
 
     const inline MoneyMakerStock& operator[](unsigned int stock) const
     {
-        return Stock(stock);
+        return Stock(stock % numStocks);
     } // operator[]
 
     inline void Copy(const MoneyMakerStock* stockData, unsigned int stock = 0)

@@ -41,10 +41,6 @@ void FireStarterExecute::FinishPopulation(void)
     m_hostCodes = nullptr;
     checkCUDAErrors(cudaFreeHost(m_hostNetworks));
     m_hostNetworks = nullptr;
-    checkCUDAErrors(cudaFreeHost(m_hostStocks));
-    m_hostStocks = nullptr;
-    checkCUDAErrors(cudaFreeHost(m_hostTradingResults));
-    m_hostTradingResults = nullptr;
     checkCUDAErrors(cudaFreeHost(m_hostTradingData));
     m_hostTradingData = nullptr;
     checkCUDAErrors(cudaFreeHost(m_hostTradingCode));
@@ -71,12 +67,6 @@ void FireStarterExecute::FinishPopulation(void)
 
         checkCUDAErrors(cudaFreeHost(m_deviceNetworks));
         m_deviceNetworks = nullptr;
-
-        checkCUDAErrors(cudaFreeHost(m_deviceStocks));
-        m_deviceStocks = nullptr;
-
-        checkCUDAErrors(cudaFreeHost(m_deviceTradingResults));
-        m_deviceTradingResults = nullptr;
 
         checkCUDAErrors(cudaFreeHost(m_deviceTradingData));
         m_deviceTradingData = nullptr;
@@ -106,12 +96,6 @@ void FireStarterExecute::FinishPopulation(void)
         checkCUDAErrors(cudaFreeAsync(m_deviceNetworks, Stream()));
         m_deviceNetworks = nullptr;
 
-        checkCUDAErrors(cudaFreeAsync(m_deviceStocks, Stream()));
-        m_deviceStocks = nullptr;
-
-        checkCUDAErrors(cudaFreeAsync(m_deviceTradingResults, Stream()));
-        m_deviceTradingResults = nullptr;
-
         checkCUDAErrors(cudaFreeAsync(m_deviceTradingData, Stream()));
         m_deviceTradingData = nullptr;
 
@@ -127,8 +111,6 @@ void FireStarterExecute::FinishPopulation(void)
     m_codesSize = 0;
     m_parentCodeSize = 0;
     m_networksSize = 0;
-    m_stocksSize = 0;
-    m_tradingResultsSize = 0;
     m_tradingDataSize = 0;
     m_tradingCodeSize = 0;
 } // FinishPopulation
@@ -142,8 +124,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     size_t codesSize = 0;
     size_t parentCodeSize = 0;
     size_t networksSize = 0;
-    size_t stocksSize = 0;
-    size_t tradingResultsSize = 0;
     size_t tradingDataSize = 0;
     size_t tradingCodeSize = 0;
 
@@ -156,8 +136,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             parentCodeSize = FireStarterCode::CodeSize(settings);
         if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
             settingsSize = sizeof(FireStarterSettings);
-            stocksSize = m_stocksData ? m_stocksData->StocksSize() : 0;
-            tradingResultsSize = stocksSize;
             tradingDataSize = FireStarterData::DataSize(settings);
             tradingCodeSize = FireStarterCode::CodeSize(settings);
         }
@@ -167,7 +145,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         networksSize = settings.m_population * sizeof(SinSimNetwork);
 
     // Reallocate the data if the sizes has changed.
-    if ((m_settingsSize != settingsSize) || (m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize) || (parentCodeSize != m_parentCodeSize) || (networksSize != m_networksSize) || (stocksSize != m_stocksSize) || (tradingDataSize != m_tradingDataSize) || (tradingResultsSize != m_tradingResultsSize)) {
+    if ((m_settingsSize != settingsSize) || (m_resultsSize != resultsSize) || (m_populationSize != populationSize) || (codesSize != m_codesSize) || (parentCodeSize != m_parentCodeSize) || (networksSize != m_networksSize) || (tradingDataSize != m_tradingDataSize)) {
         FinishPopulation();
         m_settingsSize = settingsSize;
         m_resultsSize = resultsSize;
@@ -175,8 +153,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         m_codesSize = codesSize;
         m_parentCodeSize = parentCodeSize;
         m_networksSize = networksSize;
-        m_stocksSize = stocksSize;
-        m_tradingResultsSize = tradingResultsSize;
         m_tradingDataSize = tradingDataSize;
         m_tradingCodeSize = tradingCodeSize;
 
@@ -192,20 +168,14 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             checkCUDAErrors(cudaMallocHost(&m_hostPopulation, m_populationSize));
         if (m_networksSize)
             checkCUDAErrors(cudaMallocHost(&m_hostNetworks, m_networksSize));
-        if (m_stocksSize)
-            checkCUDAErrors(cudaMallocHost(&m_hostStocks, m_stocksSize));
-        if (m_tradingResultsSize)
-            checkCUDAErrors(cudaMallocHost(&m_hostTradingResults, m_tradingResultsSize));
         if (m_tradingDataSize)
             checkCUDAErrors(cudaMallocHost(&m_hostTradingData, m_tradingDataSize));
         if (m_tradingCodeSize)
             checkCUDAErrors(cudaMallocHost(&m_hostTradingCode, m_tradingCodeSize));
 
         if (m_simulateGPU) {
-            if (m_settingsSize) {
+            if (m_settingsSize)
                 checkCUDAErrors(cudaMallocHost(&m_deviceSettings, m_settingsSize));
-                memcpy(m_deviceSettings, &settings, m_settingsSize);
-            }
             if (m_resultsSize)
                 checkCUDAErrors(cudaMallocHost(&m_deviceResults, m_resultsSize));
             if (m_codesSize) {
@@ -220,19 +190,13 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
                 checkCUDAErrors(cudaMallocHost(&m_deviceParentCode, m_parentCodeSize));
             if (m_networksSize)
                 checkCUDAErrors(cudaMallocHost(&m_deviceNetworks, m_networksSize));
-            if (m_stocksSize)
-                checkCUDAErrors(cudaMallocHost(&m_deviceStocks, m_stocksSize));
-            if (m_tradingResultsSize)
-                checkCUDAErrors(cudaMallocHost(&m_deviceTradingResults, m_tradingResultsSize));
             if (m_tradingDataSize)
                 checkCUDAErrors(cudaMallocHost(&m_deviceTradingData, m_tradingDataSize));
             if (m_tradingCodeSize)
                 checkCUDAErrors(cudaMallocHost(&m_deviceTradingCode, m_tradingCodeSize));
         } else {
-            if (m_settingsSize) {
+            if (m_settingsSize)
                 checkCUDAErrors(cudaMallocAsync(&m_deviceSettings, m_settingsSize, Stream()));
-                checkCUDAErrors(cudaMemcpyAsync(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToDevice, Stream()));
-            }
             if (m_resultsSize)
                 checkCUDAErrors(cudaMallocAsync(&m_deviceResults, m_resultsSize, Stream()));
             if (m_codesSize) {
@@ -247,11 +211,6 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
                 checkCUDAErrors(cudaMallocAsync(&m_deviceParentCode, m_parentCodeSize, Stream()));
             if (m_networksSize)
                 checkCUDAErrors(cudaMallocAsync(&m_deviceNetworks, m_networksSize, Stream()));
-            if (m_stocksSize)
-                checkCUDAErrors(cudaMallocAsync(&m_deviceStocks, m_stocksSize, Stream()));
-            if (m_tradingResultsSize)
-                checkCUDAErrors(cudaMallocAsync(&m_deviceTradingResults, m_tradingResultsSize, Stream()));
-            if (m_tradingDataSize)
                 checkCUDAErrors(cudaMallocAsync(&m_deviceTradingData, m_tradingDataSize, Stream()));
             if (m_tradingCodeSize)
                 checkCUDAErrors(cudaMallocAsync(&m_deviceTradingCode, m_tradingCodeSize, Stream()));
@@ -265,13 +224,62 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         result = result && (!m_populationSize || (m_hostPopulation && m_devicePopulation0 && m_devicePopulation1));
         result = result && (!m_parentCodeSize || m_deviceParentCode);
         result = result && (!m_networksSize || (m_hostNetworks && m_deviceNetworks));
-        result = result && (!m_stocksSize || (m_hostStocks && m_deviceStocks));
-        result = result && (!m_tradingResultsSize || (m_hostTradingResults && m_deviceTradingResults));
         result = result && (!m_tradingDataSize || (m_hostTradingData && m_deviceTradingData));
         result = result && (!m_tradingCodeSize || (m_hostTradingCode && m_deviceTradingCode));
     }
     return result;
 } // InitPopulation
+
+void FireStarterExecute::FinishStocks(void)
+{
+    checkCUDAErrors(cudaFreeHost(m_hostStocks));
+    checkCUDAErrors(cudaFreeHost(m_hostTradingResults));
+    m_hostStocks = nullptr;
+    m_hostTradingResults = nullptr;
+    if (m_simulateGPU) {
+        checkCUDAErrors(cudaFreeHost(m_deviceStocks));
+        checkCUDAErrors(cudaFreeHost(m_deviceTradingResults));
+        m_deviceStocks = nullptr;
+        m_deviceTradingResults = nullptr;
+    } else {
+        checkCUDAErrors(cudaFreeAsync(m_deviceStocks, Stream()));
+        checkCUDAErrors(cudaFreeAsync(m_deviceTradingResults, Stream()));
+        m_deviceStocks = nullptr;
+        m_deviceTradingResults = nullptr;
+        Context()->Synchronize();
+    }
+    m_stocksSize = 0;
+} // FinishStocks
+
+bool FireStarterExecute::InitStocks(const MoneyMakerStocks* stocks)
+{
+    size_t stocksSize = stocksSize = stocks ? stocks->StocksSize() : 0;
+    if (stocksSize != m_stocksSize) {
+        FinishStocks();
+        m_stocksSize = stocksSize;
+        if (m_stocksSize) {
+            checkCUDAErrors(cudaMallocHost(&m_hostStocks, m_stocksSize));
+            checkCUDAErrors(cudaMemcpy(m_hostStocks, stocks, m_stocksSize, cudaMemcpyHostToHost));
+
+            checkCUDAErrors(cudaMallocHost(&m_hostTradingResults, m_stocksSize));
+            m_hostTradingResults->Init(stocks->numStocks, stocks->numDays);
+
+            if (m_simulateGPU) {
+                checkCUDAErrors(cudaMallocHost(&m_deviceStocks, m_stocksSize));
+                checkCUDAErrors(cudaMallocHost(&m_deviceTradingResults, m_stocksSize));
+                checkCUDAErrors(cudaMemcpy(m_deviceStocks, m_hostStocks, m_stocksSize, cudaMemcpyHostToHost));
+                checkCUDAErrors(cudaMemcpy(m_deviceTradingResults, m_hostTradingResults, m_stocksSize, cudaMemcpyHostToHost));
+            } else {
+                checkCUDAErrors(cudaMallocAsync(&m_deviceStocks, m_stocksSize, Stream()));
+                checkCUDAErrors(cudaMallocAsync(&m_deviceTradingResults, m_stocksSize, Stream()));
+                checkCUDAErrors(cudaMemcpyAsync(m_deviceStocks, m_hostStocks, m_stocksSize, cudaMemcpyHostToDevice, Stream()));
+                checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingResults, m_hostTradingResults, m_stocksSize, cudaMemcpyHostToDevice, Stream()));
+                Context()->Synchronize();
+            }
+        }
+    }
+    return (!m_stocksSize || (m_hostStocks && m_deviceStocks && m_hostTradingResults && m_deviceTradingResults));
+} // InitStocks
 
 void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireStarterSettings& selectSettings)
 {
@@ -580,6 +588,8 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
 
         float averageResult = 0.0f;
         if (m_simulateGPU) {
+            checkCUDAErrors(cudaMemcpy(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToHost));
+
             blockDim = cudaBlockSize;
             for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
                 for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
@@ -596,6 +606,8 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
                                                 evolutionSeed,
                                                 evolutionPass);
         } else {
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToDevice, Stream()));
+            
             void* arr[] = { reinterpret_cast<void*>(&m_deviceSettings),
                             reinterpret_cast<void*>(&newCodes),
                             reinterpret_cast<void*>(&oldCodes),
@@ -630,24 +642,29 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
     }
 
     // Find the best results.
-    float minResult = settings.m_startResult;
-    unsigned int minIndex = 0;
+    float bestResult = settings.m_startResult;
+    unsigned int bestIndex = 0;
+    unsigned int goodResults = 0;
     for (unsigned int i = 0; i < settings.m_population; i++) {
         float curResult = FireStarterPopulation::PopulationMaxResult(m_hostPopulation, settings, i);
-        if (curResult < minResult) {
-            minResult = curResult;
-            minIndex = i;
+        if (curResult < settings.m_startResult) {
+            if (curResult < minResult) {
+                bestResult = curResult;
+                bestIndex = i;
+            }
+            if (curResult < state.m_bestCodes.WorstResult())
+                state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
+            goodResults++;
         }
-        if (curResult < state.m_bestCodes.WorstResult())
-            state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
     }
 
-    const FireStarterCode& bestCode = m_hostCodes->Member(settings, minIndex);
-    const FireStarterResult& bestResult = m_hostPopulation->Member(settings, minIndex);
+    float goodPercent = 100.0f * (float)goodResults / (float)settings.m_population;
+    const FireStarterCode& bestCode = m_hostCodes->Member(settings, bestIndex);
+    const FireStarterResult& bestResult = m_hostPopulation->Member(settings, bestIndex);
     unsigned int bestAge = bestResult.m_evolveAge1;
 
     // Update the state's best code.
-    state.InitCode(settings, m_hostCodes, minResult, minIndex);
+    state.InitCode(settings, m_hostCodes, bestResult, bestIndex);
 } // ExecuteMoneyEvolvePass
 #else
 void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
@@ -664,6 +681,8 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
 
     float averageResult = 0.0f;
     if (m_simulateGPU) {
+        checkCUDAErrors(cudaMemcpy(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToHost));
+
         blockDim = cudaBlockSize;
         for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
             for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
@@ -683,6 +702,8 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
             checkCUDAErrors(cudaMemcpy(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
     }
     else {
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToDevice, Stream()));
+
         void* arr[] = { reinterpret_cast<void*>(&m_deviceSettings),
                         reinterpret_cast<void*>(&m_deviceResults),
                         reinterpret_cast<void*>(&m_deviceCodes0),
@@ -706,19 +727,23 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
         Context()->Synchronize();
     }
 
-    bool validResult = false;
-    float bestResult = m_hostResults[0];
+    float bestResult = settings.m_startResult;
+    unsigned int goodResults = 0;
     unsigned int bestIndex = 0;
-    for (unsigned int i = 1; i < settings.m_population; i++) {
+    for (unsigned int i = 0; i < settings.m_population; i++) {
         float curResult = m_hostResults[i];
-        if (curResult < bestResult) {
-            bestResult = curResult;
-            bestIndex = i;
+        if (curResult < settings.m_startResult) {
+            if (curResult < bestResult) {
+                bestResult = curResult;
+                bestIndex = i;
+            }
+            if (curResult < state.m_bestCodes.WorstResult())
+                state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
+            goodResults++;
         }
-        if (curResult < state.m_bestCodes.WorstResult())
-            state.m_bestCodes.AddCode(m_hostCodes->Member(settings, i), curResult);
     }
 
+    float goodPercent = 100.0f * (float)goodResults / (float)settings.m_population;
     if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS) {
         const FireStarterCode& minCode = m_hostCodes->Member(settings, bestIndex);
         const FireStarterResult& minResult = m_hostPopulation->Member(settings, bestIndex);
@@ -914,6 +939,8 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         }
 
         if (m_simulateGPU) {
+            checkCUDAErrors(cudaMemcpy(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToHost));
+
             blockDim = cudaBlockSize;
             for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
                 for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
@@ -930,6 +957,8 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
                 hash ^= *(unsigned int*)&curResult;
             }
         } else {
+            checkCUDAErrors(cudaMemcpyAsync(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToDevice, Stream()));
+
             void* arr[] = { reinterpret_cast<void*>(&m_deviceSettings),
                             reinterpret_cast<void*>(&newPopulation),
                             reinterpret_cast<void*>(&oldPopulation),
@@ -985,8 +1014,6 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
     state.m_bestResult = minResult;
     state.m_optimizeValid = true;
 
-    if (m_hostTradingResults)
-        m_hostTradingResults->Init(m_hostStocks->numStocks, m_hostStocks->numDays);
     if (m_hostTradingData) {
         const FireStarterResult& bestResult = state.Result();
         memcpy(m_hostTradingData, &bestResult.m_data, m_tradingDataSize);
@@ -996,28 +1023,24 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
         memcpy(m_hostTradingCode, &bestCode, m_tradingCodeSize);
     }
 
-    if (0) {
-        blockDim  = { m_hostStocks->numStocks, 1, 1 };
-        blockIdx  = { 0, 0, 0 };
-        threadIdx = { 0, 0, 0 };
-        MoneyTester(m_deviceSettings, m_hostStocks, m_hostTradingResults, m_hostTradingData);
-    } else if (m_simulateGPU) {
-        checkCUDAErrors(cudaMemcpy(m_deviceTradingResults, m_hostTradingResults, m_tradingResultsSize, cudaMemcpyHostToHost));
+    if (m_simulateGPU) {
+        checkCUDAErrors(cudaMemcpy(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpy(m_deviceTradingResults, m_hostTradingResults, m_stocksSize, cudaMemcpyHostToHost));
         checkCUDAErrors(cudaMemcpy(m_deviceTradingData, m_hostTradingData, m_tradingDataSize, cudaMemcpyHostToHost));
-        checkCUDAErrors(cudaMemcpy(m_deviceTradingCode, m_hostTradingCode, m_tradingCodeSize, cudaMemcpyHostToHost));
 
-        blockDim  = { m_hostStocks->numStocks, 1, 1 };
+        blockDim  = { settings.m_stocks, 1, 1 };
         blockIdx  = { 0, 0, 0 };
         threadIdx = { 0, 0, 0 };
-        for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+        for (threadIdx.x = 0; threadIdx.x < blockDim.x; threadIdx.x++)
             MoneyTester(m_deviceSettings, m_deviceStocks, m_deviceTradingResults, m_deviceTradingData);
 
-        checkCUDAErrors(cudaMemcpyAsync(m_hostTradingResults, m_deviceTradingResults, m_tradingResultsSize, cudaMemcpyHostToHost));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostTradingResults, m_deviceTradingResults, m_stocksSize, cudaMemcpyHostToHost));
     } else {
         cudaGridSize = { 1, 1, 1 };
-        cudaBlockSize = { FIRESTARTER_WARP_THREADS, 1, 1 };
+        cudaBlockSize = { settings.m_stocks, 1, 1 };
 
-        checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingResults, m_hostTradingResults, m_tradingResultsSize, cudaMemcpyHostToDevice, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToDevice, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingResults, m_hostTradingResults, m_stocksSize, cudaMemcpyHostToDevice, Stream()));
         checkCUDAErrors(cudaMemcpyAsync(m_deviceTradingData, m_hostTradingData, m_tradingDataSize, cudaMemcpyHostToDevice, Stream()));
 
         FireStarterCode* nullCode = nullptr;
@@ -1035,7 +1058,7 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
             &arr[0],                                            // arguments
             0));
 
-        checkCUDAErrors(cudaMemcpyAsync(m_hostTradingResults, m_deviceTradingResults, m_tradingResultsSize, cudaMemcpyDeviceToHost, Stream()));
+        checkCUDAErrors(cudaMemcpyAsync(m_hostTradingResults, m_deviceTradingResults, m_stocksSize, cudaMemcpyDeviceToHost, Stream()));
         Context()->Synchronize();
     }
 } // ExecuteMoneyOptimizePass
@@ -1153,18 +1176,10 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     return false;
 } // GenerateOptimize
 
-void FireStarterExecute::ExecuteSetStocks(const FireStarterSettings& settings, const MoneyMakerStocks *stocks)
+void FireStarterExecute::ExecuteSetStocks(const MoneyMakerStocks *stocks)
 {
-    DispatchSync([this, settings, stocks] {
-        m_stocksData = stocks;
-        InitPopulation(settings);
-        checkCUDAErrors(cudaMemcpy(m_hostStocks, m_stocksData, m_stocksSize, cudaMemcpyHostToHost));
-        if (m_simulateGPU)
-            checkCUDAErrors(cudaMemcpy(m_deviceStocks, m_hostStocks, m_stocksSize, cudaMemcpyHostToHost));
-        else {
-            checkCUDAErrors(cudaMemcpyAsync(m_deviceStocks, m_hostStocks, m_stocksSize, cudaMemcpyHostToDevice, Stream()));
-            Context()->Synchronize();
-        }
+    DispatchSync([this, stocks] {
+        InitStocks(stocks);
     });
 } // ExecuteSetStocks
 
@@ -1282,6 +1297,8 @@ void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& optimizeState, F
     DispatchSync([this, complete, &optimizeState, &bestState] {
         if (m_executeFunction) {
             if (InitPopulation(optimizeState.Settings())) {
+                // Initialize the optimize pass at zero.
+                optimizeState.m_optimize_pass = 0;
                 while (!WillTerminate() && !bestState.Complete() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
                     // Execute the optimization passes.
                     optimizeState.m_timer.Start();
@@ -1335,6 +1352,7 @@ void FireStarterExecute::ExecuteFinish(void)
             m_executeJob = nullptr;
         }
         FinishPopulation();
+        FinishStocks();
         CUDACompile::ReleaseModule(m_executeModule);
         m_executeFunction = nullptr;
     });
