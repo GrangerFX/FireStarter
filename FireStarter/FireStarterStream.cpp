@@ -722,7 +722,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                 double runDuration = evolveState.RunDuration();
                 float evolveResult = evolveState.m_bestCodes.GetBestResult();
                 float evolveReturns = MoneyMakerReturns(evolveResult, evolveSettings.m_trading);
-                std::string evolveText = Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Result=%.4f%%  Duration: %2.1f  Run Duration: %.1f\n\n", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, duration, runDuration);
+                std::string evolveText = Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Returns=%.4f%%  Duration: %2.1f  Run Duration: %.1f\n\n", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, duration, runDuration);
                 FireStarterSource::AppendSource(evolveText, streamResultsPath);
 
                 // Get the best code to optimize.
@@ -747,7 +747,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         duration = curDuration;
                         runDuration = bestStates[s].RunDuration();
 
-                        std::string optimizeText = Format("Optimize Result=%.4f%%  Best Result=%.4f%%  Duration: %.1f  Run Duration: %.1f", optimizeReturns, bestReturns, optimizeDuration, runDuration);
+                        std::string optimizeText = Format("Optimize Returns=%.4f%%  Best Returns=%.4f%%  Duration: %.1f  Run Duration: %.1f", optimizeReturns, bestReturns, optimizeDuration, runDuration);
                         if (optimizeResult == bestResult)
                             optimizeText += " *******";
                         optimizeText += "\n";
