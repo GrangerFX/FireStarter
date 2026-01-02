@@ -421,7 +421,7 @@ private:
 
 public:
     float GetBestResult(void);
-    const FireStarterCode* GetBestCode(void);
+    const FireStarterCode* GetBestCode(float *result = nullptr);
     bool AddCode(const FireStarterCode* code, float result);
     float WorstResult(void);
     void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);

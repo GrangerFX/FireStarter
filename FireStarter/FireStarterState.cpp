@@ -9,10 +9,12 @@ float FireStarterBestCodes::GetBestResult(void)
     return m_bestResults[0];
 } // GetBestResult
 
-const FireStarterCode* FireStarterBestCodes::GetBestCode(void)
+const FireStarterCode* FireStarterBestCodes::GetBestCode(float* result)
 {
     if (!m_numCodes)
         return nullptr;
+    if (result)
+        *result = m_bestResults[0];
     const FireStarterCodeVector& bestCode = m_bestCodes[0];
     float bestResult = m_bestResults[0];
     for (size_t i = 1; i < m_maxCodes; i++) {
