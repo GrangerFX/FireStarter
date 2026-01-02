@@ -1,0 +1,48 @@
+AAPL:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=46.5488%  Duration: 69.1  Run Duration: 69.6
+
+Best Returns[0]=46.5488%
+Optimize Returns=63.6580%  Best Returns=63.6580%  Duration: 737.5  Run Duration: 807.2 *******
+AAPL: Stock Returns=-8.9764%  Trading Returns=27.3037%  Difference==36.2801%
+
+NVDA:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=168.4637%  Duration: 70.1  Run Duration: 899.2
+
+Best Returns[0]=168.4637%
+Optimize Returns=314.7512%  Best Returns=314.7512%  Duration: 3.7  Run Duration: 902.9 *******
+NVDA: Stock Returns=-38.5816%  Trading Returns=321.9987%  Difference==360.5803%
+
+INTC:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=82.0208%  Duration: 69.2  Run Duration: 1575.6
+
+Best Returns[0]=82.0208%
+Optimize Returns=126.7055%  Best Returns=126.7055%  Duration: 4.7  Run Duration: 1580.4 *******
+INTC: Stock Returns=31.8297%  Trading Returns=89.9073%  Difference==58.0776%
+
+MSFT:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=37.0607%  Duration: 70.0  Run Duration: 1651.1
+
+Best Returns[0]=37.0607%
+Optimize Returns=57.3690%  Best Returns=57.3690%  Duration: 4.4  Run Duration: 1655.5 *******
+MSFT: Stock Returns=-19.8035%  Trading Returns=45.1877%  Difference==64.9912%
+
+QCOM:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=63.4287%  Duration: 68.9  Run Duration: 1725.3
+
+Best Returns[0]=63.4287%
+Optimize Returns=118.7440%  Best Returns=118.7440%  Duration: 4.7  Run Duration: 1730.0 *******
+QCOM: Stock Returns=-15.9356%  Trading Returns=100.5747%  Difference==116.5103%
+
+AMZN:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=54.4457%  Duration: 69.9  Run Duration: 1800.7
+
+Best Returns[0]=54.4457%
+Optimize Returns=82.9028%  Best Returns=82.9028%  Duration: 4.7  Run Duration: 1805.4 *******
+AMZN: Stock Returns=-22.2712%  Trading Returns=53.4508%  Difference==75.7220%
+
+GOOG:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=40.7017%  Duration: 69.1  Run Duration: 1875.3
+
+Best Returns[0]=40.7017%
+Optimize Returns=63.5974%  Best Returns=63.5974%  Duration: 5.4  Run Duration: 1880.6 *******
+GOOG: Stock Returns=-17.1474%  Trading Returns=35.4007%  Difference==52.5482%
+
+AMD :  Seed: 0  Test:   0  Generation=  0  Evolve Returns=66.8799%  Duration: 69.3  Run Duration: 1950.7
+
+Best Returns[0]=66.8799%
+Optimize Returns=154.1727%  Best Returns=154.1727%  Duration: 5.1  Run Duration: 1955.8 *******
+AMD : Stock Returns=-20.2532%  Trading Returns=204.8608%  Difference==225.1140%
+
