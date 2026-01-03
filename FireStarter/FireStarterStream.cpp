@@ -652,10 +652,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned long long optimizeID = 0;
 
         // Optimization for single variation optimization population.
-        optimizeSettings.m_population = 65536;
-        optimizeSettings.m_passes = 384;
-//        optimizeSettings.m_population = FIRESTARTER_POPULATION;
-//        optimizeSettings.m_passes = 128;
+        optimizeSettings.m_population = FIRESTARTER_POPULATION;
+        optimizeSettings.m_passes = 128;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
