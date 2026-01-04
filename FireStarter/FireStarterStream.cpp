@@ -813,7 +813,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                         float tradingReturns = MoneyMakerReturns(tradingResult, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
                                         float tradingDifference = tradingReturns - stockReturns;
                                         float tradingWins = result.maxValue;
-                                        optimizeText += Format("Trading Returns=%.2f%%  Difference==%.2f%%   Wining Trades=%.2f%%", tradingReturns, tradingDifference, 100.0f * tradingWins);
+                                        optimizeText += Format("Trading Returns=%.2f%%  Difference==%.2f%%   Winning Trades=%.2f%%", tradingReturns, tradingDifference, 100.0f * tradingWins);
                                         tradingAverage += tradingReturns / numOptimize;
                                         differenceAverage += tradingDifference / numOptimize;
                                     } else
