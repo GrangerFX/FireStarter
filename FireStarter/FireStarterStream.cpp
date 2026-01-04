@@ -653,7 +653,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
         // Optimization for single variation optimization population.
         optimizeSettings.m_population = FIRESTARTER_POPULATION;
-        optimizeSettings.m_passes = 128;
+        optimizeSettings.m_passes = 384;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
@@ -692,6 +692,12 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned int numOptimize = 1;
         evolveSettings.m_stocks = 1;
         optimizeSettings.m_stocks = 1;
+#if MONEYMAKER_OPTIMIZE_ONE
+        // Optimize the entire trading and variation ranges in a single session.
+        optimizeSettings.m_sessions = 1;
+        optimizeSettings.m_trading += optimizeSettings.m_variation;
+        optimizeSettings.m_variation = 0;
+#endif
 #elif MONEYMAKER_OPTIMIZE_ONE
         // Optimize each stock individually.
         unsigned int numEvolve = 1;

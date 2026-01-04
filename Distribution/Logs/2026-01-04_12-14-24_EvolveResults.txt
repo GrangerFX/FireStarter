@@ -1,0 +1,24 @@
+AAPL:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=45.49%  Duration: 137.7  Run Duration: 138.0
+Optimize Returns=86.08%  Stock Returns=-8.98%  Trading Returns=86.08%  Difference==95.05%   Wining Trades=59.50%
+
+NVDA:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=149.11%  Duration: 139.8  Run Duration: 284.7
+Optimize Returns=689.35%  Stock Returns=-38.58%  Trading Returns=689.35%  Difference==727.93%   Wining Trades=61.80%
+
+INTC:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=84.60%  Duration: 137.7  Run Duration: 429.2
+Optimize Returns=292.19%  Stock Returns=31.83%  Trading Returns=292.19%  Difference==260.36%   Wining Trades=60.96%
+
+MSFT:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=32.42%  Duration: 139.0  Run Duration: 574.0
+Optimize Returns=96.28%  Stock Returns=-19.80%  Trading Returns=96.28%  Difference==116.08%   Wining Trades=61.17%
+
+QCOM:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=62.88%  Duration: 137.8  Run Duration: 719.0
+Optimize Returns=226.45%  Stock Returns=-15.94%  Trading Returns=226.45%  Difference==242.39%   Wining Trades=61.38%
+
+AMZN:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=52.43%  Duration: 139.3  Run Duration: 865.2
+Optimize Returns=194.23%  Stock Returns=-22.27%  Trading Returns=194.23%  Difference==216.50%   Wining Trades=63.05%
+
+GOOG:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=44.32%  Duration: 137.1  Run Duration: 1009.2
+Optimize Returns=153.51%  Stock Returns=-17.15%  Trading Returns=153.51%  Difference==170.66%   Wining Trades=62.21%
+
+AMD :  Seed: 0  Test:   0  Generation=  0  Evolve Returns=51.21%  Duration: 137.9  Run Duration: 1154.5
+Optimize Returns=399.31%  Stock Returns=-20.25%  Trading Returns=399.31%  Difference==419.57%   Wining Trades=62.63%
+

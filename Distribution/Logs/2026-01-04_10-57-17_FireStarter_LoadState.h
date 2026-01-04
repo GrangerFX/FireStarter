@@ -1,12 +1,12 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 01/04/26 12:14:24 Pacific Standard Time
-// Run duration = 1161.178374 seconds
+// Run date: 01/04/26 10:57:17 Pacific Standard Time
+// Run duration = 1225.129232 seconds
 // Run test = 0
 // Run generation = 1
 // Run evolution = 0
-// Run max result = 0.11619814
+// Run max result = 0.61489886
 
 // Run variations = 1
 // Run instructions = 32
@@ -14,11 +14,11 @@
 // Run opcodes = 3
 
 // Run stocks = 1
-// Run sessions = 1
+// Run sessions = 16
 // Run history = 496
-// Run variation = 0
+// Run variation = 360
 // Run warmup = 16
-// Run trading = 480
+// Run trading = 120
 // Run funds = 1000.000000f
 
 // Run mode = FIRESTARTER_MONEYMAKER
@@ -49,11 +49,11 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_opcodes = 3;
 
     settings.m_stocks = 1;
-    settings.m_sessions = 1;
+    settings.m_sessions = 16;
     settings.m_history = 496;
-    settings.m_variation = 0;
+    settings.m_variation = 360;
     settings.m_warmup = 16;
-    settings.m_trading = 480;
+    settings.m_trading = 120;
     settings.m_funds = 1000.000000f;
 
     settings.m_mode = FIRESTARTER_MONEYMAKER;
@@ -80,28 +80,28 @@ inline void LoadSettings(FireStarterSettings& settings)
 // Variation: 0
 inline void LoadVariation0(FireStarterResult* result)
 {
-    *(result->MaxResult()) = 0.11619814f;
+    *(result->MaxResult()) = 0.61489886f;
     *(result->EvolveAge1()) = 1;
     *(result->EvolveAge2()) = 0;
     FireStarterData *data = result->Data();
-    data->d[0] = 0.49672040f;
-    data->d[1] = -1.20314336f;
-    data->d[2] = 0.47471562f;
-    data->d[3] = -0.42398787f;
-    data->d[4] = -0.98853725f;
-    data->d[5] = -0.38411987f;
-    data->d[6] = -0.31374583f;
-    data->d[7] = 0.84004778f;
-    data->d[8] = 0.23974696f;
-    data->d[9] = -0.02986494f;
-    data->d[10] = 0.44174957f;
-    data->d[11] = 0.36784431f;
-    data->d[12] = 0.50782228f;
-    data->d[13] = 0.77208346f;
-    data->d[14] = -0.10663326f;
-    data->d[15] = 0.08185998f;
-    data->d[16] = -2.21650410f;
-    data->d[17] = -0.08771869f;
+    data->d[0] = -0.62180454f;
+    data->d[1] = -0.98301709f;
+    data->d[2] = 0.07149205f;
+    data->d[3] = -0.94399977f;
+    data->d[4] = -0.91253096f;
+    data->d[5] = -0.34018049f;
+    data->d[6] = 0.80638701f;
+    data->d[7] = -0.69080603f;
+    data->d[8] = 0.40333331f;
+    data->d[9] = 0.91659814f;
+    data->d[10] = -0.67376769f;
+    data->d[11] = 0.24548906f;
+    data->d[12] = 0.09206752f;
+    data->d[13] = -0.97386634f;
+    data->d[14] = -0.15404987f;
+    data->d[15] = 0.17159320f;
+    data->d[16] = -2.99242878f;
+    data->d[17] = -0.81881595f;
     data->d[18] = 0.00000000f;
     data->d[19] = 0.00000000f;
     data->d[20] = 0.00000000f;
@@ -174,7 +174,7 @@ inline void LoadState(FireStarterState& state)
     state.m_test = 0;
     state.m_seed = 1610532691304413459;
     state.m_optimize_pass = 0;
-    state.m_bestResult = 0.11619814f;
+    state.m_bestResult = 0.61489886f;
     state.m_oldResult = 10.00000000f;
     state.m_evolveWeight = 0.000000f;
     state.m_optimizeValid = true;

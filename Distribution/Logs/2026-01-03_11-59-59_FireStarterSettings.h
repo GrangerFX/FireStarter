@@ -12,7 +12,7 @@
 #define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_WARMUP + MONEYMAKER_TRADING)   // Days of stock history data
 #define MONEYMAKER_STOCK            0           // Starting stock
 #define MONEYMAKER_STOCKS           8           // Stocks with history data
-#define MONEYMAKER_SESSIONS         16          // Number of trading sessions
+#define MONEYMAKER_SESSIONS         8           // Number of trading sessions
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define MONEYMAKER_WINS             0           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
 #define MONEYMAKER_ANUALIZED        1           // Set to 1 for annualized trading returns
