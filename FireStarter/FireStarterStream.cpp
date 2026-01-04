@@ -686,23 +686,25 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         executeOptimize->ExecuteSetStocks(stocks);
 
         unsigned int startStock = evolveSettings.m_stock;
-#if MONEYMAKER_EVOLVE_ONE
+#if MONEYMAKER_EVOLVE_EACH
         // Evolve and optimize each stock individually
         unsigned int numEvolve = evolveSettings.m_stocks;
         unsigned int numOptimize = 1;
         evolveSettings.m_stocks = 1;
         optimizeSettings.m_stocks = 1;
-#if MONEYMAKER_OPTIMIZE_ONE
+#if MONEYMAKER_OPTIMIZE_EACH
         // Optimize the entire trading and variation ranges in a single session.
         optimizeSettings.m_sessions = 1;
         optimizeSettings.m_trading += optimizeSettings.m_variation;
         optimizeSettings.m_variation = 0;
 #endif
-#elif MONEYMAKER_OPTIMIZE_ONE
+#elif MONEYMAKER_OPTIMIZE_EACH
         // Optimize each stock individually.
         unsigned int numEvolve = 1;
         unsigned int numOptimize = optimizeSettings.m_stocks;
         optimizeSettings.m_stocks = 1;
+        optimizeSettings.m_trading += optimizeSettings.m_variation;
+        optimizeSettings.m_variation = 0;
 #else
         unsigned int numEvolve = 1;
         unsigned int numOptimize = 1;
