@@ -773,6 +773,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             executeOptimize->ExecuteMoneyOptimize(optimizeState, bestStates[optimize], complete);
 
                             // Output the results.
+                            unsigned int numTradingResults = optimizeState.Settings().m_stocks;
                             float optimizeResult = optimizeState.MaxResults();
                             float bestResult = bestStates[optimize].MaxResults();
                             float optimizeReturns = MoneyMakerReturns(optimizeResult, optimizeSettings.m_trading);
@@ -788,7 +789,10 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                 optimizeText += " *******";
                             optimizeText += "\n";
 #else
-                            optimizeText += Format("Optimize Returns=%.2f%%  ", optimizeReturns, optimizeDuration, runDuration);
+                            if (numTradingResults == 1)
+                                optimizeText += Format("Optimize Returns=%.2f%%  ", optimizeReturns, optimizeDuration, runDuration);
+                            else
+                                optimizeText += Format("Optimize Returns=%.2f%%  Duration: %.1f  Run Duration: %.1f\n", optimizeReturns, optimizeDuration, runDuration);
 #endif
 
                             // Test the trading on the same stocks used for optimization.
@@ -796,34 +800,42 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             if (tradingResults) {
                                 float tradingAverage = 0.0f;
                                 float differenceAverage = 0.0f;
-                                unsigned int numResults = optimizeState.Settings().m_stocks;
-                                for (unsigned int tradeResult = 0; tradeResult < numResults; tradeResult++) {
+                                float tradingWinsAverage = 0.0f;
+                                float validationWinsAverage = 0.0f;
+                                for (unsigned int tradeResult = 0; tradeResult < numTradingResults; tradeResult++) {
                                     unsigned int stockIndex = optimizeState.Settings().m_stock + tradeResult;
                                     const MoneyMakerStock& stock = stocks->Stock(stockIndex);
                                     const MoneyMakerStock& result = tradingResults->Stock(stockIndex);
 #if MONEYMAKER_OPTIMIZE_ALL
                                     char* symbol = (char*)&stock.symbol;
                                     optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
-#endif 
-                                    float stockFirstValue = stock[MONEYMAKER_WARMUP];
-                                    float stockLastValue = stock[MONEYMAKER_HISTORY - 1];
-                                    float stockReturns = MoneyMakerReturns(stockLastValue / stockFirstValue, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
+#endif
+                                    unsigned int tradingDays = optimizeSettings.m_trading + optimizeSettings.m_variation;
+                                    unsigned int tradeFirstDay = optimizeSettings.m_warmup;
+                                    unsigned int tradeLastDay = tradeFirstDay + tradingDays - 1;
+                                    float stockFirstValue = stock[tradeFirstDay];
+                                    float stockLastValue = stock[tradeLastDay];
+                                    float stockReturns = MoneyMakerReturns(stockLastValue / stockFirstValue, tradingDays);
                                     optimizeText += Format("Stock Returns=%.2f%%  ", stockReturns);
 
-                                    float tradingResult = result.minValue;
+                                    float tradingResult = result.tradingResult;
                                     if (tradingResult) {
-                                        float tradingReturns = MoneyMakerReturns(tradingResult, MONEYMAKER_VARIATION + MONEYMAKER_TRADING);
+                                        float tradingReturns = MoneyMakerReturns(tradingResult, tradingDays);
                                         float tradingDifference = tradingReturns - stockReturns;
-                                        float tradingWins = result.maxValue;
-                                        optimizeText += Format("Trading Returns=%.2f%%  Difference==%.2f%%   Winning Trades=%.2f%%", tradingReturns, tradingDifference, 100.0f * tradingWins);
+                                        float tradingWins = result.tradingWins;
+                                        float validationWins = result.validationWins;
+                                        optimizeText += Format("Trading Returns=%.2f%%  Difference==%.2f%%   Winning Trades=%.2f%%  Winning Validation=%.2f%%", tradingReturns, tradingDifference, 100.0f * tradingWins, 100.0f * validationWins);
                                         tradingAverage += tradingReturns / numOptimize;
                                         differenceAverage += tradingDifference / numOptimize;
+                                        tradingWinsAverage += tradingWins / numOptimize;
+                                        validationWinsAverage += validationWins / numOptimize;
                                     } else
-                                        optimizeText += "Result Failed!";
+                                        optimizeText += "Trading Result Failed!";
+
                                     optimizeText += "\n";
                                 }
                                 if (numOptimize > 1)
-                                    optimizeText += Format("Average Returns=%.2f%%  Average Difference==%.2f%%\n\n", tradingAverage, differenceAverage);
+                                    optimizeText += Format("Average Returns=%.2f%%  Average Difference=%.2f%%  Average Trading Wins=%.2f%%  Average Validation Wins=%.2f%%\n\n", tradingAverage, differenceAverage, tradingWinsAverage, vali);
                             }
 
                         }

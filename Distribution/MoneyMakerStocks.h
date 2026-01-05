@@ -7,9 +7,10 @@
 
 typedef struct MoneyMakerStock
 {
-    unsigned int symbol;
-    unsigned int numDays;
+    unsigned int symbol, numDays;
     float minValue, maxValue;
+    float tradingResult, tradingWins;
+    float validationResult, validationWins;
     float s[MONEYMAKER_HISTORY];    // The stock price changes (current day price / previous day price).
 
     inline float& operator[](unsigned int i)
@@ -21,21 +22,6 @@ typedef struct MoneyMakerStock
     {
         return s[i];
     } // operator[]
-
-    inline bool operator==(const MoneyMakerStock& other) const
-    {
-        if ((other.symbol != symbol) || (other.minValue != minValue) || (other.maxValue != maxValue) || (other.numDays != numDays))
-            return false;
-        for (int i = 0; i < MONEYMAKER_HISTORY; i++)
-            if (s[i] != other[i])
-                return false;
-        return true;
-    } // operator==
-
-    inline bool operator!=(const MoneyMakerStock& other) const
-    {
-        return !(*this == other);
-    } // operator!=
 
     inline unsigned int size(void) const
     {
@@ -63,6 +49,10 @@ typedef struct MoneyMakerStock
         numDays = stock->numDays;
         minValue = stock->minValue;
         maxValue = stock->maxValue;
+        tradingResult = stock->tradingResult;
+        tradingWins = stock->tradingWins;
+        validationResult = stock->validationResult;
+        validationWins = stock->validationWins;
         for (unsigned int i = 0; i < numDays; i++)
             s[i] = (*stock)[i];
     } // Copy
@@ -81,6 +71,10 @@ typedef struct MoneyMakerStock
     {
         minValue = 0.0f;
         maxValue = 0.0f;
+        tradingResult = 0.0f;
+        tradingWins = 0.0f;
+        validationResult = 0.0f;
+        validationWins = 0.0f;
         for (unsigned int i = 0; i < numDays; i++)
             s[i] = 0.0f; // Clear all the history days
     } // Clear
