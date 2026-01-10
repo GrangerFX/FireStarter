@@ -774,6 +774,11 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
                             // Output the results.
                             unsigned int numTradingResults = optimizeState.Settings().m_stocks;
+                            if (numTradingResults == 1) {
+                                char* symbol = (char*)&stocks->Stock(optimizeState.Settings().m_stock).symbol;
+                                optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
+                            }
+
                             float optimizeResult = optimizeState.MaxResults();
                             float bestResult = bestStates[optimize].MaxResults();
                             float optimizeReturns = MoneyMakerReturns(optimizeResult, optimizeSettings.m_trading);
@@ -806,10 +811,12 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                     unsigned int stockIndex = optimizeState.Settings().m_stock + tradeResult;
                                     const MoneyMakerStock& stock = stocks->Stock(stockIndex);
                                     const MoneyMakerStock& result = tradingResults->Stock(stockIndex);
-#if MONEYMAKER_OPTIMIZE_ALL
-                                    char* symbol = (char*)&stock.symbol;
-                                    optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
-#endif
+
+                                    if (numTradingResults > 1) {
+                                        char* symbol = (char*)&stock.symbol;
+                                        optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
+                                    }
+
                                     unsigned int tradingDays = optimizeSettings.m_trading + optimizeSettings.m_variation;
                                     unsigned int tradeFirstDay = optimizeSettings.m_warmup;
                                     unsigned int tradeLastDay = tradeFirstDay + tradingDays - 1;
@@ -835,7 +842,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                     optimizeText += "\n";
                                 }
                                 if (numOptimize > 1)
-                                    optimizeText += Format("Average Returns=%.2f%%  Average Difference=%.2f%%  Average Trading Wins=%.2f%%  Average Validation Wins=%.2f%%\n\n", tradingAverage, differenceAverage, tradingWinsAverage, vali);
+                                    optimizeText += Format("Average Returns=%.2f%%  Average Difference=%.2f%%  Average Trading Wins=%.2f%%  Average Validation Wins=%.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage, 100.0f * validationWinsAverage);
                             }
 
                         }

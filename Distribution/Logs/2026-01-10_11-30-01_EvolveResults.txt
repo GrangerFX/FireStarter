@@ -1,0 +1,26 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Returns=54.50%  Duration: 956.6  Run Duration: 957.0
+AAPL: Optimize Returns=64.07%  Stock Returns=86.10%  Trading Returns=220.42%  Difference==134.32%   Winning Trades=64.07%  Winning Validation=46.03%
+Average Returns=27.55%  Average Difference=16.79%  Average Trading Wins=8.01%  Average Validation Wins=5.75%
+
+NVDA: Optimize Returns=65.01%  Stock Returns=42.76%  Trading Returns=634.97%  Difference==592.21%   Winning Trades=65.01%  Winning Validation=53.97%
+Average Returns=79.37%  Average Difference=74.03%  Average Trading Wins=8.13%  Average Validation Wins=6.75%
+
+INTC: Optimize Returns=63.83%  Stock Returns=168.87%  Trading Returns=283.07%  Difference==114.20%   Winning Trades=63.83%  Winning Validation=36.51%
+Average Returns=35.38%  Average Difference=14.28%  Average Trading Wins=7.98%  Average Validation Wins=4.56%
+
+MSFT: Optimize Returns=64.54%  Stock Returns=84.98%  Trading Returns=204.91%  Difference==119.93%   Winning Trades=64.54%  Winning Validation=53.97%
+Average Returns=25.61%  Average Difference=14.99%  Average Trading Wins=8.07%  Average Validation Wins=6.75%
+
+QCOM: Optimize Returns=64.54%  Stock Returns=79.51%  Trading Returns=318.31%  Difference==238.80%   Winning Trades=64.54%  Winning Validation=44.44%
+Average Returns=39.79%  Average Difference=29.85%  Average Trading Wins=8.07%  Average Validation Wins=5.56%
+
+AMZN: Optimize Returns=63.36%  Stock Returns=76.23%  Trading Returns=248.41%  Difference==172.18%   Winning Trades=63.36%  Winning Validation=58.73%
+Average Returns=31.05%  Average Difference=21.52%  Average Trading Wins=7.92%  Average Validation Wins=7.34%
+
+GOOG: Optimize Returns=65.01%  Stock Returns=82.60%  Trading Returns=258.99%  Difference==176.40%   Winning Trades=65.01%  Winning Validation=52.38%
+Average Returns=32.37%  Average Difference=22.05%  Average Trading Wins=8.13%  Average Validation Wins=6.55%
+
+AMD : Optimize Returns=64.54%  Stock Returns=123.19%  Trading Returns=299.40%  Difference==176.22%   Winning Trades=64.54%  Winning Validation=52.38%
+Average Returns=37.43%  Average Difference=22.03%  Average Trading Wins=8.07%  Average Validation Wins=6.55%
+
+

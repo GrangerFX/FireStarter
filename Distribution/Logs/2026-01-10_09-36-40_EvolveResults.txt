@@ -1,0 +1,11 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Returns=54.75%  Duration: 1182.5  Run Duration: 1185.7
+Optimize Returns=55.82%  Duration: 167.6  Run Duration: 1353.4
+Stock Returns=86.10%  Trading Returns=118.40%  Difference==32.30%   Winning Trades=55.56%  Winning Validation=53.97%
+Stock Returns=42.76%  Trading Returns=282.89%  Difference==240.13%   Winning Trades=55.08%  Winning Validation=55.56%
+Stock Returns=168.87%  Trading Returns=108.34%  Difference==-60.52%   Winning Trades=53.66%  Winning Validation=57.14%
+Stock Returns=84.98%  Trading Returns=117.40%  Difference==32.42%   Winning Trades=54.14%  Winning Validation=63.49%
+Stock Returns=79.51%  Trading Returns=167.45%  Difference==87.94%   Winning Trades=57.92%  Winning Validation=61.90%
+Stock Returns=76.23%  Trading Returns=134.83%  Difference==58.60%   Winning Trades=52.48%  Winning Validation=55.56%
+Stock Returns=82.60%  Trading Returns=130.47%  Difference==47.88%   Winning Trades=57.21%  Winning Validation=58.73%
+Stock Returns=123.19%  Trading Returns=169.18%  Difference==45.99%   Winning Trades=55.08%  Winning Validation=65.08%
+

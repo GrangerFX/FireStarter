@@ -7,8 +7,8 @@
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
 
 #define MONEYMAKER_VARIATION        360         // Variation modulo for the stock data start offset
-#define MONEYMAKER_WARMUP           0           // Days of stock used for warmup prior to trading
-#define MONEYMAKER_TRADING          64          // Days used for stock trading
+#define MONEYMAKER_WARMUP           16          // Days of stock used for warmup prior to trading
+#define MONEYMAKER_TRADING          64         // Days used for stock trading
 #define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
 #define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_WARMUP + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
 #define MONEYMAKER_STOCK            0           // Starting stock
@@ -18,7 +18,7 @@
 #define MONEYMAKER_WINS             1           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
 #define MONEYMAKER_ANUALIZED        1           // Set to 1 for annualized trading returns
 #define MONEYMAKER_EVOLVE_EACH      0           // Set to 1 to evolve each stock individually
-#define MONEYMAKER_OPTIMIZE_EACH    1           // Set to 1 to optimize each stock individually
+#define MONEYMAKER_OPTIMIZE_EACH    0           // Set to 1 to optimize each stock individually
 #define MONEYMAKER_OPTIMIZE_ALL     0           // Set to 1 to optimize all the best codes.
 #define MONEYMAKER_EVOLVE_NEW       0           // Set to 1 to use new experimental moneymaker evolution code
 

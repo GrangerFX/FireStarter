@@ -18,7 +18,7 @@
 #define MONEYMAKER_WINS             1           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
 #define MONEYMAKER_ANUALIZED        1           // Set to 1 for annualized trading returns
 #define MONEYMAKER_EVOLVE_EACH      0           // Set to 1 to evolve each stock individually
-#define MONEYMAKER_OPTIMIZE_EACH    1           // Set to 1 to optimize each stock individually
+#define MONEYMAKER_OPTIMIZE_EACH    0           // Set to 1 to optimize each stock individually
 #define MONEYMAKER_OPTIMIZE_ALL     0           // Set to 1 to optimize all the best codes.
 #define MONEYMAKER_EVOLVE_NEW       0           // Set to 1 to use new experimental moneymaker evolution code
 

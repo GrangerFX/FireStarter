@@ -1,24 +1,24 @@
 #pragma once
 #include "MoneyMakerStocks.h"
 
-// Run date: 01/10/26 11:30:01 Pacific Standard Time
-// Run duration = 1074.546451 seconds
+// Run date: 01/10/26 10:09:46 Pacific Standard Time
+// Run duration = 1103.722177 seconds
 // Run test = 0
 // Run generation = 1
 // Run evolution = 0
-// Run max result = 1.56088603
+// Run max result = 1.80411565
 
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
 // Run opcodes = 3
 
-// Run stocks = 1
+// Run stocks = 8
 // Run sessions = 32
 // Run history = 488
-// Run variation = 0
+// Run variation = 360
 // Run warmup = 0
-// Run trading = 424
+// Run trading = 64
 // Run funds = 1000.000000f
 
 // Run mode = FIRESTARTER_MONEYMAKER
@@ -45,23 +45,23 @@
 inline float MoneyMakerSolution(MoneyMakerStock& stock)
 {
     float n = 0.0f;
-    float r0 = 0.94945568f;
-    float r1 = 0.79163551f;
-    float r2 = -1.11389637f;
-    float r3 = -0.59644425f;
-    float r4 = -0.37579331f;
-    float r5 = -0.88664979f;
-    float r6 = -0.06008696f;
-    float r7 = 0.41961420f;
-    float r8 = 0.41086686f;
-    float r9 = -0.20390992f;
-    float r10 = 0.16891547f;
-    float r11 = -0.27011293f;
-    float r12 = 0.96011025f;
-    float r13 = 0.78312904f;
-    float r14 = 0.01041491f;
-    float r15 = -0.71728504f;
-    float r16 = -0.86807048f;
+    float r0 = -0.21384530f;
+    float r1 = -0.02207928f;
+    float r2 = 0.31457233f;
+    float r3 = -0.67801970f;
+    float r4 = 0.55225754f;
+    float r5 = 0.89960092f;
+    float r6 = -0.74667543f;
+    float r7 = -0.72156030f;
+    float r8 = -0.89170611f;
+    float r9 = 0.59148151f;
+    float r10 = -0.35982621f;
+    float r11 = 0.26930323f;
+    float r12 = 0.64089394f;
+    float r13 = -0.15094578f;
+    float r14 = 0.31807280f;
+    float r15 = -1.00938010f;
+    float r16 = 0.48493841f;
 
     for (unsigned int d = 0; d < stock.numDays; d++) {
         n = stock[d];
