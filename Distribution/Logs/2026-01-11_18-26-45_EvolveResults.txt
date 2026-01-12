@@ -1,0 +1,11 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Returns=22.29%  Duration: 988.0  Run Duration: 988.4
+Optimize Returns=37.73%  Duration: 198.6  Run Duration: 1186.9
+AAPL: Stock Returns=9.60%  Trading Returns=23.41%  Difference==13.82%   Winning Trades=58.63%  Winning Validation=50.79%  Stock Validation=10.41%  Validation Returns=18.89%
+NVDA: Stock Returns=79.56%  Trading Returns=210.83%  Difference==131.27%   Winning Trades=56.50%  Winning Validation=57.14%  Stock Validation=248.13%  Validation Returns=174.68%
+INTC: Stock Returns=-24.24%  Trading Returns=27.74%  Difference==51.98%   Winning Trades=54.37%  Winning Validation=44.44%  Stock Validation=-14.47%  Validation Returns=-29.50%
+MSFT: Stock Returns=10.51%  Trading Returns=7.00%  Difference==-3.51%   Winning Trades=52.25%  Winning Validation=66.67%  Stock Validation=128.52%  Validation Returns=89.07%
+QCOM: Stock Returns=15.32%  Trading Returns=39.10%  Difference==23.79%   Winning Trades=52.48%  Winning Validation=53.97%  Stock Validation=29.93%  Validation Returns=5.71%
+AMZN: Stock Returns=18.53%  Trading Returns=19.26%  Difference==0.72%   Winning Trades=51.06%  Winning Validation=55.56%  Stock Validation=94.78%  Validation Returns=59.02%
+GOOG: Stock Returns=12.52%  Trading Returns=31.97%  Difference==19.44%   Winning Trades=55.79%  Winning Validation=52.38%  Stock Validation=79.52%  Validation Returns=68.09%
+AMD : Stock Returns=-11.19%  Trading Returns=55.97%  Difference==67.16%   Winning Trades=52.96%  Winning Validation=55.56%  Stock Validation=300.10%  Validation Returns=227.63%
+
