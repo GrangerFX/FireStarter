@@ -741,7 +741,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         evolveText += Format("%c%c%c%c:  ", symbol[3], symbol[2], symbol[1], symbol[0]);
                     }
 
-                    evolveText += Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Returns=%3.2f%%  Duration: %.1f  Run Duration: %.1f\n", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, duration, runDuration);
+                    evolveText += Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Returns=%6.2f%%  Duration: %7.1f  Run Duration: %7.1f\n", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, duration, runDuration);
                     FireStarterSource::AppendSource(evolveText, streamResultsPath);
 
                     // Get the best code to optimize.
@@ -758,12 +758,13 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         FireStarterState optimizeState = FireStarterState(optimizeSettings, evolveState.m_generation + 1, 0, evolveID, test);
                         optimizeState.CopyCode(bestCode);
                         executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
+                        unsigned int numTradingResults = optimizeState.Settings().m_stocks;
 
                         std::vector<FireStarterState> bestStates(numOptimize);
                         float bestEvolveReturns = MoneyMakerReturns(bestEvolveResult, evolveSettings.m_trading);
-                        std::string optimizeText;
 #if MONEYMAKER_OPTIMIZE_ALL
-                        optimizeText = Format("Best Returns[%d]=%3.2f%%\n", bestCount, bestEvolveReturns);
+                        std::string bestResturnsText = Format("\nBest Returns[%d]=%6.2f%%\n", bestCount, bestEvolveReturns);
+                        FireStarterSource::AppendSource(bestResturnsText, streamResultsPath);
 #endif
                         for (unsigned int optimize = 0; optimize < numOptimize; optimize++) {
                             // Optimize the evolved code for the current stock.
@@ -773,7 +774,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             executeOptimize->ExecuteMoneyOptimize(optimizeState, bestStates[optimize], complete);
 
                             // Output the results.
-                            unsigned int numTradingResults = optimizeState.Settings().m_stocks;
+                            std::string optimizeText;
                             if (numTradingResults == 1) {
                                 char* symbol = (char*)&stocks->Stock(optimizeState.Settings().m_stock).symbol;
                                 optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
@@ -789,15 +790,12 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             runDuration = bestStates[optimize].RunDuration();
 
 #if MONEYMAKER_OPTIMIZE_ALL
-                            optimizeText += Format("Optimize Returns=%3.2f%%  Best Returns=%3.2f%%  Duration: %.1f  Run Duration: %.1f", optimizeReturns, bestReturns, optimizeDuration, runDuration);
+                            optimizeText += Format("Optimize Returns=%6.2f%%  Best Returns=%6.2f%%  Duration: %7.1f  Run Duration: %7.1f", optimizeReturns, bestReturns, optimizeDuration, runDuration);
                             if (optimizeResult == bestResult)
                                 optimizeText += " *******";
                             optimizeText += "\n";
 #else
-                            if (numTradingResults == 1)
-                                optimizeText += Format("Optimize Returns=%3.2f%%  ", optimizeReturns, optimizeDuration, runDuration);
-                            else
-                                optimizeText += Format("Optimize Returns=%3.2f%%  Duration: %.1f  Run Duration: %.1f\n", optimizeReturns, optimizeDuration, runDuration);
+                            optimizeText += Format("Optimize Returns=%6.2f%%  Duration: %7.1f  Run Duration: %7.1f\n", optimizeReturns, optimizeDuration, runDuration);
 #endif
 
                             // Test the trading on the same stocks used for optimization.
@@ -829,7 +827,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                     float validationLastValue = stock[validationLastDay - 1];
                                     float stockTradeReturns = MoneyMakerReturns(tradeFirstValue / tradeLastValue, tradingDays); // Note: Inverted.
                                     float stockValidationReturns = MoneyMakerReturns(validationFirstValue / validationLastValue, validationDays); // Note: Inverted.
-                                    optimizeText += Format("Stock Returns=%3.2f%%  ", stockTradeReturns);
+                                    optimizeText += Format("Stock Returns=%6.2f%%  ", stockTradeReturns);
 
                                     float tradingResult = result.tradingResult;
                                     if (tradingResult) {
@@ -838,7 +836,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                         float tradingWins = result.tradingWins;
                                         float validationReturns = MoneyMakerReturns(result.validationResult, optimizeSettings.m_validation);
                                         float validationWins = result.validationWins;
-                                        optimizeText += Format("Trading Returns=%3.2f%%  Difference==%3.2f%%   Winning Trades=%3.2f%%  Winning Validation=%3.2f%%  Stock Validation=%3.2f%%  Validation Returns=%3.2f%%", tradingReturns, tradingDifference, 100.0f * tradingWins, 100.0f * validationWins, stockValidationReturns, validationReturns);
+                                        optimizeText += Format("Trading Returns=%6.2f%%  Difference==%6.2f%%   Winning Trades=%6.2f%%  Winning Validation=%6.2f%%  Stock Validation=%6.2f%%  Validation Returns=%6.2f%%", tradingReturns, tradingDifference, 100.0f * tradingWins, 100.0f * validationWins, stockValidationReturns, validationReturns);
                                         tradingAverage += tradingReturns / numOptimize;
                                         differenceAverage += tradingDifference / numOptimize;
                                         tradingWinsAverage += tradingWins / numOptimize;
@@ -848,13 +846,11 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
                                     optimizeText += "\n";
                                 }
-                                if (numOptimize > 1)
-                                    optimizeText += Format("Average Returns=%3.2f%%  Average Difference=%3.2f%%  Average Trading Wins=%3.2f%%  Average Validation Wins=%3.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage, 100.0f * validationWinsAverage);
+                                if (numTradingResults > 1)
+                                    optimizeText += Format("Average Returns=%6.2f%%  Average Difference=%6.2f%%  Average Trading Wins=%6.2f%%  Average Validation Wins=%6.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage, 100.0f * validationWinsAverage);
                             }
-
+                            FireStarterSource::AppendSource(optimizeText, streamResultsPath);
                         }
-                        optimizeText += "\n";
-                        FireStarterSource::AppendSource(optimizeText, streamResultsPath);
 
                         // Save the best state. Note: TODO: Output all evolve and optimize states?
 #if FIRESTARTER_SAVE_BESTSTATE
