@@ -7,10 +7,9 @@
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
 
 #define MONEYMAKER_VARIATION        360         // Variation modulo for the stock data start offset
-#define MONEYMAKER_WARMUP           0           // Days of stock used for warmup prior to trading
 #define MONEYMAKER_TRADING          64          // Days used for stock trading
 #define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
-#define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_WARMUP + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
+#define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
 #define MONEYMAKER_STOCK            0           // Starting stock
 #define MONEYMAKER_STOCKS           8           // Stocks with history data
 #define MONEYMAKER_SESSIONS         32          // Number of trading sessions
@@ -317,7 +316,6 @@ public:
     unsigned int m_sessions =       MONEYMAKER_SESSIONS;
     unsigned int m_history =        MONEYMAKER_HISTORY;
     unsigned int m_variation =      MONEYMAKER_VARIATION;
-    unsigned int m_warmup =         MONEYMAKER_WARMUP;
     unsigned int m_trading =        MONEYMAKER_TRADING;
     unsigned int m_validation =     MONEYMAKER_VALIDATION;
     float        m_funds =          MONEYMAKER_FUNDS;

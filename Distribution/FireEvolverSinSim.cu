@@ -61,10 +61,10 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
                 float sample = code.Evaluate(sharedData, input);
 
                 // Grade the candidate samples.
-                if (s >= FIRESTARTER_SINSIM_SAMPLES - FIRESTARTER_SINSIM_WARMUP) {
+                if (s >= FIRESTARTER_SINSIM_SAMPLES) {
                     float target = SinSimNetwork::SinSimTargetSample(s);
                     float difference = sample - target;
-                    newResult += fabsf(difference) * (1.0f / (FIRESTARTER_SINSIM_SAMPLES - FIRESTARTER_SINSIM_WARMUP));
+                    newResult += fabsf(difference) * (1.0f / FIRESTARTER_SINSIM_SAMPLES);
                 }
             }
 

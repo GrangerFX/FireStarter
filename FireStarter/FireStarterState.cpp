@@ -108,7 +108,6 @@ void FireStarterState::SettingsText(const FireStarterSettings& settings, std::st
         text += prefix + Format("sessions = %u", settings.m_sessions) + postfix + "\r\n";
         text += prefix + Format("history = %u", settings.m_history) + postfix + "\r\n";
         text += prefix + Format("variation = %u", settings.m_variation) + postfix + "\r\n";
-        text += prefix + Format("warmup = %u", settings.m_warmup) + postfix + "\r\n";
         text += prefix + Format("trading = %u", settings.m_trading) + postfix + "\r\n";
         text += prefix + Format("funds = %ff", settings.m_funds) + postfix + "\r\n";
     } else {

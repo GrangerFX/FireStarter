@@ -17,7 +17,6 @@
 // Run sessions = 32
 // Run history = 488
 // Run variation = 0
-// Run warmup = 0
 // Run trading = 424
 // Run funds = 1000.000000f
 
@@ -52,7 +51,6 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_sessions = 32;
     settings.m_history = 488;
     settings.m_variation = 0;
-    settings.m_warmup = 0;
     settings.m_trading = 424;
     settings.m_funds = 1000.000000f;
 

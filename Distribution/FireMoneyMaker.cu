@@ -7,29 +7,18 @@
 inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireStarterCode& code, const FireStarterData& data, const MoneyMakerStock& stock, unsigned int startDay, float& result)
 {
     FireStarterData workData(data);
+    bool holding = false;
     unsigned int wins = 0;
     unsigned int index = startDay;
-    unsigned int shares = 0;
-
-    // Warmup evaluation ignoring the results.
-    // Starts at 1 because the first day is used to set the oldPrice.
-    float oldPrice = stock[index++];
-    for (unsigned int i = 1; i < settings->m_warmup; i++) {
-        float newPrice = stock[index++];
-        float priceChange = newPrice / oldPrice;
-        oldPrice = newPrice;
-
-        // Trading evaluation using the result to buy or sell shares.
-        float n = code.Evaluate(workData, priceChange);
-        if (!isfinite(n))
-            return false;
-    }
+    float oldPrice = stock[index];
 
     // Use the evaluation to trade the stock.
-    // Starts at 1 to give an extra day to settle the final trade.
+    // Starts at 1 because the first day is used to set the oldPrice.
     for (unsigned int i = 1; i < settings->m_trading; i++) {
-        float newPrice = stock[index++];
+        float newPrice = stock[++index];
         float priceChange = newPrice / oldPrice;
+        if ((newPrice > oldPrice) == holding)
+            wins++;
         oldPrice = newPrice;
 
         // Trading evaluation using the result to buy or sell shares.
@@ -37,14 +26,8 @@ inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireS
         if (!isfinite(n))
             return false;
 
-        // If the evaluation >= 1.0f, check if the trade would be a winner.
-        if (n >= 0.0f) {
-            if (stock[index] > newPrice)
-                wins++;
-        } else {
-            if (stock[index] <= newPrice)
-                wins++;
-        }
+        // If the evaluation >= 0.0f, buy shares. If below 0.0f, sell shares.
+        holding = n >= 0.0f;
     }
 
     // The result is the ratio between the daily trade wins and losses.
@@ -57,27 +40,14 @@ inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireS
 {
     FireStarterData workData(data);
     float funds = settings->m_funds;
-    unsigned int index = startDay;
     unsigned int shares = 0;
-
-    // Warmup evaluation ignoring the results.
-    // Starts at 1 because the first day is used to set the oldPrice.
-    float oldPrice = stock[index++];
-    for (unsigned int i = 1; i < settings->m_warmup; i++) {
-        float newPrice = stock[index++];
-        float priceChange = newPrice / oldPrice;
-        oldPrice = newPrice;
-
-        // Trading evaluation using the result to buy or sell shares.
-        float n = code.Evaluate(workData, priceChange);
-        if (!isfinite(n))
-            return false;
-    }
+    unsigned int index = startDay;
+    float oldPrice = stock[index];
 
     // Use the evaluation to trade the stock.
-    // Starts at 1 to give an extra day to settle the final trade.
+    // Starts at 1 because the first day is used to set the oldPrice.
     for (unsigned int i = 1; i < settings->m_trading; i++) {
-        float newPrice = stock[index++];
+        float newPrice = stock[++index];
         float priceChange = newPrice / oldPrice;
         oldPrice = newPrice;
 
@@ -86,7 +56,7 @@ inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireS
         if (!isfinite(n))
             return false;
 
-        // If the evaluation >= 1.0f, buy or hold shares. If below 1.0f, sell shares.
+        // If the evaluation >= 0.0f, buy shares. If below 0.0f, sell shares.
         if (n >= 0.0f) {
             if (!shares) {
                 shares = (unsigned int)(funds / newPrice);

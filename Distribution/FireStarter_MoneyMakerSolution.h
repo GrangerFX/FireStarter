@@ -17,7 +17,6 @@
 // Run sessions = 32
 // Run history = 488
 // Run variation = 0
-// Run warmup = 0
 // Run trading = 424
 // Run funds = 1000.000000f
 
