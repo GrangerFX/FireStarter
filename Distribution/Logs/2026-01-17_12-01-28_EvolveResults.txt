@@ -1,0 +1,9 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Returns= 22.29%  Duration:  1036.4  Run Duration:  1036.9
+AAPL: Optimize Returns= 51.56%  Optimize Duration:   155.7  Run Duration:  1192.5  Stock Returns=  9.60%  Validation Returns= 10.41%  Trading Returns= 51.56%  Difference== 41.97%   Winning Trades= 56.97%Validation Returns= 10.32%
+NVDA: Optimize Returns=367.31%  Optimize Duration:   168.4  Run Duration:  1361.0  Stock Returns= 79.56%  Validation Returns=248.13%  Trading Returns=367.31%  Difference==287.76%   Winning Trades= 60.28%Validation Returns=  0.00%
+INTC: Optimize Returns=113.76%  Optimize Duration:   178.3  Run Duration:  1539.3  Stock Returns=-24.24%  Validation Returns=-14.47%  Trading Returns=113.76%  Difference==138.00%   Winning Trades= 54.85%Validation Returns= 20.91%
+MSFT: Optimize Returns= 48.36%  Optimize Duration:   158.8  Run Duration:  1698.1  Stock Returns= 10.51%  Validation Returns=128.52%  Trading Returns= 48.36%  Difference== 37.85%   Winning Trades= 57.92%Validation Returns=  3.95%
+QCOM: Optimize Returns=121.82%  Optimize Duration:   166.5  Run Duration:  1864.7  Stock Returns= 15.32%  Validation Returns= 29.93%  Trading Returns=121.82%  Difference==106.50%   Winning Trades= 58.63%Validation Returns=  0.00%
+AMZN: Optimize Returns= 74.07%  Optimize Duration:   166.7  Run Duration:  2031.3  Stock Returns= 18.53%  Validation Returns= 94.78%  Trading Returns= 74.07%  Difference== 55.54%   Winning Trades= 56.26%Validation Returns= 75.65%
+GOOG: Optimize Returns= 65.49%  Optimize Duration:   171.7  Run Duration:  2203.0  Stock Returns= 12.52%  Validation Returns= 79.52%  Trading Returns= 65.49%  Difference== 52.97%   Winning Trades= 60.76%Validation Returns=  0.00%
+AMD : Optimize Returns= 65.49%  Optimize Duration:     0.0  Run Duration:  2203.0  Stock Returns=-11.19%  Validation Returns=300.10%  Trading Failed!

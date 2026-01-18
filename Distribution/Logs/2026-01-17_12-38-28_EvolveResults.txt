@@ -1,0 +1,2 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Returns= 22.29%  Duration:  1013.6  Run Duration:  1014.2
+AAPL: Optimize Returns= 51.56%  Optimize Duration:   155.9  Run Duration:  1170.1  Stock Returns=  9.60%  Stock Validation= 10.41%  Trading Returns= 51.56%  Difference== 41.97%   Winning Trades= 56.97%  Validation Returns= 10.32%
