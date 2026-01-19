@@ -323,9 +323,9 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Time=%.4f Seconds Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
     } else if (state.PassMode() == FIRESTARTER_MONEYMAKER) {
 #if MONEYMAKER_WINS
-        float returns = 100.0f / bestResult; // Percent of winning trades.
+        float returns = 100.0f / bestResult;  // Remove inversion.
 #else
-        float returns = MoneyMakerReturns(bestResult); // Percent gain per year.
+        float returns = MoneyMakerReturns(1.0f - bestResult); // Remove inversion.
 #endif
         statusString = Format("%s: Generation=%3u  Best=%.8f%%  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), generation, returns, generationTime, runTime);
     } else {

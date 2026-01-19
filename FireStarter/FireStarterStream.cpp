@@ -732,7 +732,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     double duration = evolveState.Duration();
                     double runDuration = evolveState.RunDuration();
                     float evolveResult = evolveState.m_bestCodes.GetBestResult();
-                    float evolveReturns = MoneyMakerReturns(evolveResult);
+                    float evolveReturns = MoneyMakerReturns(1.0f - evolveResult); // Remove inversion.
                     if (evolveSettings.m_stocks == 1) {
                         const MoneyMakerStock& stock = stocks->Stock(evolveState.Settings().m_stock % numStocks);
                         char* symbol = (char*)&stock.symbol;
@@ -759,8 +759,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         unsigned int numTradingResults = optimizeState.Settings().m_stocks;
 
                         std::vector<FireStarterState> bestStates(numOptimize);
-                        float bestEvolveReturns = MoneyMakerReturns(bestEvolveResult);
 #if MONEYMAKER_OPTIMIZE_ALL
+                        float bestEvolveReturns = MoneyMakerReturns(1.0f - bestEvolveResult); // Remove inversion.
                         std::string bestResturnsText = Format("\nBest Returns[%d]=%6.2f%%\n", bestCount, bestEvolveReturns);
                         FireStarterSource::AppendSource(bestResturnsText, streamResultsPath);
 #endif
@@ -780,8 +780,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
                             float optimizeResult = optimizeState.MaxResults();
                             float bestResult = bestStates[optimize].MaxResults();
-                            float optimizeReturns = MoneyMakerReturns(optimizeResult);
-                            float bestReturns = MoneyMakerReturns(bestResult);
+                            float optimizeReturns = MoneyMakerReturns(1.0f - optimizeResult); // Remove inversion.
+                            float bestReturns = MoneyMakerReturns(1.0f - bestResult); // Remove inversion.
                             double curDuration = evolveState.Duration();
                             double optimizeDuration = curDuration - duration;
                             duration = curDuration;
@@ -805,7 +805,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                 for (unsigned int tradeIndex = 0; tradeIndex < numTradingResults; tradeIndex++) {
                                     unsigned int stockIndex = optimizeState.Settings().m_stock + tradeIndex;
                                     const MoneyMakerStock& stock = stocks->Stock(stockIndex);
-                                    const MoneyMakerStock& result = tradingResults->Stock(stockIndex);
+                                    const MoneyMakerStock& tester = tradingResults->Stock(stockIndex);
 
                                     if (numTradingResults > 1) {
                                         char* symbol = (char*)&stock.symbol;
@@ -828,24 +828,25 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                     float validationProfit = validationLastValue - validationFirstValue;
                                     float validationPercent = validationProfit / validationFirstValue;
                                     float validationDailyPercent = validationPercent / (validationDays - 1);
-                                    float stockTradeReturns = MoneyMakerReturns(1.0f - tradingDailyPercent);            // Note: Inverted.
-                                    float stockValidationReturns = MoneyMakerReturns(1.0f - validationDailyPercent);    // Note: Inverted.
-                                    optimizeText += Format("Stock Returns=%6.2f%%  Stock Validation=%6.2f%%  ", stockTradeReturns, stockValidationReturns);
+                                    float stockTradeReturns = MoneyMakerReturns(tradingDailyPercent);
+                                    float stockValidationReturns = MoneyMakerReturns(validationDailyPercent);
 
-                                    float tradingResult = result.tradingResult;
+                                    float tradingResult = tester.tradingResult;
                                     if (tradingResult) {
+                                        float tradingWins = 100.0f * tester.tradingWins;
                                         float tradingReturns = MoneyMakerReturns(tradingResult);
                                         float tradingDifference = tradingReturns - stockTradeReturns;
-                                        float tradingWins = 100.0f * result.tradingWins;
                                         tradingAverage += tradingReturns / numOptimize;
                                         differenceAverage += tradingDifference / numOptimize;
                                         tradingWinsAverage += tradingWins / numOptimize;
-                                        optimizeText += Format("Trading Returns=%6.2f%%  Difference==%6.2f%%   Winning Trades=%6.2f%%  ", tradingReturns, tradingDifference, tradingWins);
+                                        optimizeText += Format("Trading: Wins=%6.2f%%  Returns=%6.2f%%  Stock=%6.2f%%  Difference==%6.2f%%   ", tradingWins, tradingReturns, stockTradeReturns, tradingDifference);
 
-                                        float validationResult = result.validationResult;
+                                        float validationResult = tester.validationResult;
                                         if (validationResult) {
+                                            float validationWins = 100.0f * tester.validationWins;
                                             float validationReturns = MoneyMakerReturns(validationResult);
-                                            optimizeText += Format("Validation Returns=%6.2f%%", validationReturns);
+                                            float validationDifference = validationReturns - stockValidationReturns;
+                                            optimizeText += Format("Validation: Wins=%6.2f%%  Returns=%6.2f%%  Stock=%6.2f%%  Difference==%6.2f%%   ", validationWins, validationReturns, stockValidationReturns, validationDifference);
                                         } else
                                             optimizeText += Format("Validation Failed!");
 
