@@ -325,7 +325,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
 #if MONEYMAKER_WINS
         float returns = 100.0f / bestResult; // Percent of winning trades.
 #else
-        float returns = MoneyMakerReturns(bestResult, settings.m_trading); // Percent gain per year.
+        float returns = MoneyMakerReturns(bestResult); // Percent gain per year.
 #endif
         statusString = Format("%s: Generation=%3u  Best=%.8f%%  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), generation, returns, generationTime, runTime);
     } else {
