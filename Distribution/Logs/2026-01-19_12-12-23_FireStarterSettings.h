@@ -19,7 +19,7 @@
 #define MONEYMAKER_WINS             0           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
 #define MONEYMAKER_EVOLVE_EACH      0           // Set to 1 to evolve each stock individually
 #define MONEYMAKER_OPTIMIZE_EACH    1           // Set to 1 to optimize each stock individually
-#define MONEYMAKER_OPTIMIZE_ALL     1           // Set to 1 to optimize all the best codes.
+#define MONEYMAKER_OPTIMIZE_ALL     0           // Set to 1 to optimize all the best codes.
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
