@@ -1,0 +1,209 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Returns=  27.70%  Duration:   753.9  Run Duration:   754.2
+
+Best Returns[0]=  27.70%
+Optimize Returns=  25.18%  Best Returns=  25.18%  Duration:   165.6  Run Duration:   919.8 *******
+AAPL: Trading: Wins=  55.56%  Returns=  22.14%  Stock=  14.12%  Difference==   8.03%   Validation: Wins=  53.33%  Returns=   1.41%  Stock=   2.60%  Difference==  -1.18%   
+NVDA: Trading: Wins=  57.92%  Returns= 298.49%  Stock= 158.50%  Difference== 140.00%   Validation: Wins=  60.00%  Returns= 145.15%  Stock= 149.30%  Difference==  -4.14%   
+INTC: Trading: Wins=  53.19%  Returns=  -0.19%  Stock= -21.07%  Difference==  20.88%   Validation: Wins=  40.00%  Returns=  10.35%  Stock=-133.71%  Difference== 144.06%   
+MSFT: Trading: Wins=  56.03%  Returns=  30.33%  Stock=  30.11%  Difference==   0.22%   Validation: Wins=  46.67%  Returns=  40.45%  Stock=  50.08%  Difference==  -9.62%   
+QCOM: Trading: Wins=  57.68%  Returns=  45.24%  Stock=  29.42%  Difference==  15.82%   Validation: Wins=  40.00%  Returns= -33.97%  Stock= -39.46%  Difference==   5.49%   
+AMZN: Trading: Wins=  51.54%  Returns=  39.59%  Stock=  43.95%  Difference==  -4.36%   Validation: Wins=  66.67%  Returns=  59.27%  Stock=  60.38%  Difference==  -1.11%   
+GOOG: Trading: Wins=  56.03%  Returns=  18.49%  Stock=  18.08%  Difference==   0.41%   Validation: Wins=  73.33%  Returns= 106.26%  Stock= 125.90%  Difference== -19.64%   
+AMD : Trading: Wins=  52.01%  Returns=  40.08%  Stock=  22.94%  Difference==  17.14%   Validation: Wins=  73.33%  Returns= 284.71%  Stock= 347.91%  Difference== -63.20%   
+Average Returns= 494.19%  Average Difference= 198.14%  Average Trading Wins=43995.27%  Average Validation Wins= -63.20%
+
+
+Best Returns[1]=  27.27%
+Optimize Returns=  35.82%  Best Returns=  35.82%  Duration:   152.1  Run Duration:  1071.8 *******
+AAPL: Trading: Wins=  54.85%  Returns=  16.60%  Stock=  14.12%  Difference==   2.48%   Validation: Wins=  53.33%  Returns=   1.41%  Stock=   2.60%  Difference==  -1.18%   
+NVDA: Trading: Wins=  57.68%  Returns= 278.08%  Stock= 158.50%  Difference== 119.58%   Validation: Wins=  60.00%  Returns= 145.15%  Stock= 149.30%  Difference==  -4.14%   
+INTC: Trading: Wins=  52.72%  Returns=  -4.09%  Stock= -21.07%  Difference==  16.98%   Validation: Wins=  40.00%  Returns=  10.35%  Stock=-133.71%  Difference== 144.06%   
+MSFT: Trading: Wins=  56.26%  Returns=  31.97%  Stock=  30.11%  Difference==   1.86%   Validation: Wins=  46.67%  Returns=  40.45%  Stock=  50.08%  Difference==  -9.62%   
+QCOM: Trading: Wins=  58.87%  Returns=  58.78%  Stock=  29.42%  Difference==  29.36%   Validation: Wins=  40.00%  Returns= -33.97%  Stock= -39.46%  Difference==   5.49%   
+AMZN: Trading: Wins=  51.54%  Returns=  40.05%  Stock=  43.95%  Difference==  -3.90%   Validation: Wins=  66.67%  Returns=  59.27%  Stock=  60.38%  Difference==  -1.11%   
+GOOG: Trading: Wins=  56.74%  Returns=  26.66%  Stock=  18.08%  Difference==   8.57%   Validation: Wins=  73.33%  Returns= 106.26%  Stock= 125.90%  Difference== -19.64%   
+AMD : Trading: Wins=  51.77%  Returns=  35.34%  Stock=  22.94%  Difference==  12.41%   Validation: Wins=  73.33%  Returns= 284.71%  Stock= 347.91%  Difference== -63.20%   
+Average Returns= 483.39%  Average Difference= 187.34%  Average Trading Wins=44042.55%  Average Validation Wins= -63.20%
+
+
+Best Returns[2]=  26.82%
+Optimize Returns=  24.56%  Best Returns=  24.56%  Duration:   160.5  Run Duration:  1232.3 *******
+AAPL: Trading: Wins=  55.56%  Returns=  22.67%  Stock=  14.12%  Difference==   8.55%   Validation: Wins=  53.33%  Returns=   1.41%  Stock=   2.60%  Difference==  -1.18%   
+NVDA: Trading: Wins=  59.10%  Returns= 344.82%  Stock= 158.50%  Difference== 186.33%   Validation: Wins=  60.00%  Returns= 145.15%  Stock= 149.30%  Difference==  -4.14%   
+INTC: Trading: Wins=  51.30%  Returns=  -9.17%  Stock= -21.07%  Difference==  11.90%   Validation: Wins=  46.67%  Returns=  21.44%  Stock=-133.71%  Difference== 155.15%   
+MSFT: Trading: Wins=  56.03%  Returns=  30.20%  Stock=  30.11%  Difference==   0.09%   Validation: Wins=  46.67%  Returns=  40.45%  Stock=  50.08%  Difference==  -9.62%   
+QCOM: Trading: Wins=  58.39%  Returns=  48.97%  Stock=  29.42%  Difference==  19.55%   Validation: Wins=  40.00%  Returns= -33.97%  Stock= -39.46%  Difference==   5.49%   
+AMZN: Trading: Wins=  50.59%  Returns=  27.04%  Stock=  43.95%  Difference== -16.90%   Validation: Wins=  66.67%  Returns=  59.27%  Stock=  60.38%  Difference==  -1.11%   
+GOOG: Trading: Wins=  56.50%  Returns=  23.38%  Stock=  18.08%  Difference==   5.29%   Validation: Wins=  73.33%  Returns= 106.26%  Stock= 125.90%  Difference== -19.64%   
+AMD : Trading: Wins=  52.25%  Returns=  45.75%  Stock=  22.94%  Difference==  22.81%   Validation: Wins=  66.67%  Returns= 232.14%  Stock= 347.91%  Difference==-115.77%   
+Average Returns= 533.66%  Average Difference= 237.61%  Average Trading Wins=43971.63%  Average Validation Wins=-115.77%
+
+
+Best Returns[3]=  26.71%
+Optimize Returns=  26.37%  Best Returns=  26.37%  Duration:   177.3  Run Duration:  1409.6 *******
+AAPL: Trading: Wins=  52.48%  Returns=   5.16%  Stock=  14.12%  Difference==  -8.96%   Validation: Wins=  60.00%  Returns=   2.35%  Stock=   2.60%  Difference==  -0.24%   
+NVDA: Trading: Wins=  55.56%  Returns= 154.41%  Stock= 158.50%  Difference==  -4.08%   Validation: Wins=  53.33%  Returns= 128.72%  Stock= 149.30%  Difference== -20.57%   
+INTC: Trading: Wins=  51.30%  Returns= -20.20%  Stock= -21.07%  Difference==   0.87%   Validation: Wins=  53.33%  Returns= 102.85%  Stock=-133.71%  Difference== 236.56%   
+MSFT: Trading: Wins=  54.37%  Returns=  18.36%  Stock=  30.11%  Difference== -11.75%   Validation: Wins=  40.00%  Returns=  21.40%  Stock=  50.08%  Difference== -28.68%   
+QCOM: Trading: Wins=  53.43%  Returns=  22.49%  Stock=  29.42%  Difference==  -6.93%   Validation: Wins=  46.67%  Returns= -19.25%  Stock= -39.46%  Difference==  20.21%   
+AMZN: Trading: Wins=  52.01%  Returns=  23.67%  Stock=  43.95%  Difference== -20.27%   Validation: Wins=  53.33%  Returns=  49.12%  Stock=  60.38%  Difference== -11.26%   
+GOOG: Trading: Wins=  54.14%  Returns=  14.72%  Stock=  18.08%  Difference==  -3.37%   Validation: Wins=  66.67%  Returns=  98.45%  Stock= 125.90%  Difference== -27.45%   
+AMD : Trading: Wins=  51.54%  Returns=  18.86%  Stock=  22.94%  Difference==  -4.08%   Validation: Wins=  66.67%  Returns= 258.13%  Stock= 347.91%  Difference== -89.78%   
+Average Returns= 237.48%  Average Difference= -58.57%  Average Trading Wins=42482.27%  Average Validation Wins= -89.78%
+
+
+Best Returns[4]=  26.53%
+Optimize Returns=  21.83%  Best Returns=  21.83%  Duration:   152.1  Run Duration:  1561.7 *******
+AAPL: Trading: Wins=  55.08%  Returns=  14.35%  Stock=  14.12%  Difference==   0.24%   Validation: Wins=  60.00%  Returns=  25.60%  Stock=   2.60%  Difference==  23.01%   
+NVDA: Trading: Wins=  58.63%  Returns= 311.09%  Stock= 158.50%  Difference== 152.60%   Validation: Wins=  66.67%  Returns= 156.24%  Stock= 149.30%  Difference==   6.94%   
+INTC: Trading: Wins=  52.72%  Returns=  -3.84%  Stock= -21.07%  Difference==  17.23%   Validation: Wins=  53.33%  Returns=  58.97%  Stock=-133.71%  Difference== 192.68%   
+MSFT: Trading: Wins=  55.79%  Returns=  19.03%  Stock=  30.11%  Difference== -11.08%   Validation: Wins=  53.33%  Returns=  44.22%  Stock=  50.08%  Difference==  -5.86%   
+QCOM: Trading: Wins=  57.92%  Returns=  54.75%  Stock=  29.42%  Difference==  25.34%   Validation: Wins=  46.67%  Returns=   7.56%  Stock= -39.46%  Difference==  47.02%   
+AMZN: Trading: Wins=  52.01%  Returns=  41.58%  Stock=  43.95%  Difference==  -2.37%   Validation: Wins=  60.00%  Returns=  58.87%  Stock=  60.38%  Difference==  -1.52%   
+GOOG: Trading: Wins=  56.97%  Returns=  28.74%  Stock=  18.08%  Difference==  10.65%   Validation: Wins=  80.00%  Returns= 131.38%  Stock= 125.90%  Difference==   5.48%   
+AMD : Trading: Wins=  51.06%  Returns=  42.52%  Stock=  22.94%  Difference==  19.58%   Validation: Wins=  80.00%  Returns= 321.28%  Stock= 347.91%  Difference== -26.63%   
+Average Returns= 508.23%  Average Difference= 212.18%  Average Trading Wins=44018.91%  Average Validation Wins= -26.63%
+
+
+Best Returns[5]=  26.51%
+Optimize Returns=  26.28%  Best Returns=  26.28%  Duration:   158.7  Run Duration:  1720.4 *******
+AAPL: Trading: Wins=  55.08%  Returns=  14.35%  Stock=  14.12%  Difference==   0.24%   Validation: Wins=  60.00%  Returns=  25.60%  Stock=   2.60%  Difference==  23.01%   
+NVDA: Trading: Wins=  58.63%  Returns= 311.09%  Stock= 158.50%  Difference== 152.60%   Validation: Wins=  66.67%  Returns= 156.24%  Stock= 149.30%  Difference==   6.94%   
+INTC: Trading: Wins=  52.72%  Returns=  -3.84%  Stock= -21.07%  Difference==  17.23%   Validation: Wins=  53.33%  Returns=  58.97%  Stock=-133.71%  Difference== 192.68%   
+MSFT: Trading: Wins=  55.79%  Returns=  19.03%  Stock=  30.11%  Difference== -11.08%   Validation: Wins=  53.33%  Returns=  44.22%  Stock=  50.08%  Difference==  -5.86%   
+QCOM: Trading: Wins=  57.92%  Returns=  54.75%  Stock=  29.42%  Difference==  25.34%   Validation: Wins=  46.67%  Returns=   7.56%  Stock= -39.46%  Difference==  47.02%   
+AMZN: Trading: Wins=  52.01%  Returns=  41.58%  Stock=  43.95%  Difference==  -2.37%   Validation: Wins=  60.00%  Returns=  58.87%  Stock=  60.38%  Difference==  -1.52%   
+GOOG: Trading: Wins=  56.97%  Returns=  28.74%  Stock=  18.08%  Difference==  10.65%   Validation: Wins=  80.00%  Returns= 131.38%  Stock= 125.90%  Difference==   5.48%   
+AMD : Trading: Wins=  51.06%  Returns=  42.52%  Stock=  22.94%  Difference==  19.58%   Validation: Wins=  80.00%  Returns= 321.28%  Stock= 347.91%  Difference== -26.63%   
+Average Returns= 508.23%  Average Difference= 212.18%  Average Trading Wins=44018.91%  Average Validation Wins= -26.63%
+
+
+Best Returns[6]=  26.26%
+Optimize Returns=  23.35%  Best Returns=  23.35%  Duration:   151.0  Run Duration:  1871.3 *******
+AAPL: Trading: Wins=  55.32%  Returns=  20.58%  Stock=  14.12%  Difference==   6.46%   Validation: Wins=  53.33%  Returns=   1.41%  Stock=   2.60%  Difference==  -1.18%   
+NVDA: Trading: Wins=  57.21%  Returns= 252.09%  Stock= 158.50%  Difference==  93.59%   Validation: Wins=  60.00%  Returns= 145.15%  Stock= 149.30%  Difference==  -4.14%   
+INTC: Trading: Wins=  53.19%  Returns=  -0.21%  Stock= -21.07%  Difference==  20.85%   Validation: Wins=  40.00%  Returns=  10.35%  Stock=-133.71%  Difference== 144.06%   
+MSFT: Trading: Wins=  56.26%  Returns=  32.60%  Stock=  30.11%  Difference==   2.49%   Validation: Wins=  53.33%  Returns=  44.15%  Stock=  50.08%  Difference==  -5.93%   
+QCOM: Trading: Wins=  57.45%  Returns=  44.57%  Stock=  29.42%  Difference==  15.15%   Validation: Wins=  40.00%  Returns= -33.97%  Stock= -39.46%  Difference==   5.49%   
+AMZN: Trading: Wins=  52.01%  Returns=  45.60%  Stock=  43.95%  Difference==   1.65%   Validation: Wins=  73.33%  Returns=  86.89%  Stock=  60.38%  Difference==  26.51%   
+GOOG: Trading: Wins=  56.74%  Returns=  23.28%  Stock=  18.08%  Difference==   5.19%   Validation: Wins=  73.33%  Returns= 106.26%  Stock= 125.90%  Difference== -19.64%   
+AMD : Trading: Wins=  51.77%  Returns=  44.17%  Stock=  22.94%  Difference==  21.23%   Validation: Wins=  73.33%  Returns= 284.71%  Stock= 347.91%  Difference== -63.20%   
+Average Returns= 462.66%  Average Difference= 166.62%  Average Trading Wins=43995.27%  Average Validation Wins= -63.20%
+
+
+Best Returns[7]=  26.17%
+Optimize Returns=  21.17%  Best Returns=  21.17%  Duration:   173.6  Run Duration:  2045.0 *******
+AAPL: Trading: Wins=  54.14%  Returns=  18.27%  Stock=  14.12%  Difference==   4.16%   Validation: Wins=  46.67%  Returns=  10.68%  Stock=   2.60%  Difference==   8.09%   
+NVDA: Trading: Wins=  52.72%  Returns=  82.41%  Stock= 158.50%  Difference== -76.09%   Validation: Wins=  46.67%  Returns=  60.51%  Stock= 149.30%  Difference== -88.78%   
+INTC: Trading: Wins=  50.59%  Returns= -11.92%  Stock= -21.07%  Difference==   9.14%   Validation: Wins=  46.67%  Returns= -82.49%  Stock=-133.71%  Difference==  51.22%   
+MSFT: Trading: Wins=  49.17%  Returns=  12.78%  Stock=  30.11%  Difference== -17.33%   Validation: Wins=  46.67%  Returns=  41.70%  Stock=  50.08%  Difference==  -8.38%   
+QCOM: Trading: Wins=  52.72%  Returns=  16.68%  Stock=  29.42%  Difference== -12.74%   Validation: Wins=  33.33%  Returns= -15.42%  Stock= -39.46%  Difference==  24.04%   
+AMZN: Trading: Wins=  48.46%  Returns=  38.02%  Stock=  43.95%  Difference==  -5.93%   Validation: Wins=  66.67%  Returns=  59.27%  Stock=  60.38%  Difference==  -1.11%   
+GOOG: Trading: Wins=  53.43%  Returns=  36.51%  Stock=  18.08%  Difference==  18.43%   Validation: Wins=  73.33%  Returns= 143.47%  Stock= 125.90%  Difference==  17.58%   
+AMD : Trading: Wins=  50.12%  Returns=  16.05%  Stock=  22.94%  Difference==  -6.89%   Validation: Wins=  66.67%  Returns= 148.01%  Stock= 347.91%  Difference==-199.91%   
+Average Returns= 208.80%  Average Difference= -87.25%  Average Trading Wins=41134.75%  Average Validation Wins=-199.91%
+
+
+Best Returns[8]=  26.12%
+Optimize Returns=  27.39%  Best Returns=  27.39%  Duration:   174.7  Run Duration:  2219.7 *******
+AAPL: Trading: Wins=  54.14%  Returns=  19.51%  Stock=  14.12%  Difference==   5.39%   Validation: Wins=  60.00%  Returns=  25.60%  Stock=   2.60%  Difference==  23.01%   
+NVDA: Trading: Wins=  56.97%  Returns= 203.64%  Stock= 158.50%  Difference==  45.14%   Validation: Wins=  53.33%  Returns= 119.65%  Stock= 149.30%  Difference== -29.65%   
+INTC: Trading: Wins=  53.66%  Returns=   9.18%  Stock= -21.07%  Difference==  30.24%   Validation: Wins=  53.33%  Returns=  58.97%  Stock=-133.71%  Difference== 192.68%   
+MSFT: Trading: Wins=  55.56%  Returns=  23.50%  Stock=  30.11%  Difference==  -6.61%   Validation: Wins=  53.33%  Returns=  44.22%  Stock=  50.08%  Difference==  -5.86%   
+QCOM: Trading: Wins=  60.28%  Returns=  88.51%  Stock=  29.42%  Difference==  59.09%   Validation: Wins=  46.67%  Returns=   7.56%  Stock= -39.46%  Difference==  47.02%   
+AMZN: Trading: Wins=  51.06%  Returns=  34.89%  Stock=  43.95%  Difference==  -9.06%   Validation: Wins=  60.00%  Returns=  58.87%  Stock=  60.38%  Difference==  -1.52%   
+GOOG: Trading: Wins=  57.45%  Returns=  30.97%  Stock=  18.08%  Difference==  12.88%   Validation: Wins=  80.00%  Returns= 131.38%  Stock= 125.90%  Difference==   5.48%   
+AMD : Trading: Wins=  52.72%  Returns=  65.28%  Stock=  22.94%  Difference==  42.34%   Validation: Wins=  66.67%  Returns= 261.78%  Stock= 347.91%  Difference== -86.14%   
+Average Returns= 475.48%  Average Difference= 179.43%  Average Trading Wins=44184.40%  Average Validation Wins= -86.14%
+
+
+Best Returns[9]=  26.08%
+Optimize Returns=  23.80%  Best Returns=  23.80%  Duration:   153.6  Run Duration:  2373.2 *******
+AAPL: Trading: Wins=  55.32%  Returns=  21.62%  Stock=  14.12%  Difference==   7.51%   Validation: Wins=  53.33%  Returns=   1.41%  Stock=   2.60%  Difference==  -1.18%   
+NVDA: Trading: Wins=  58.16%  Returns= 280.79%  Stock= 158.50%  Difference== 122.29%   Validation: Wins=  60.00%  Returns= 145.15%  Stock= 149.30%  Difference==  -4.14%   
+INTC: Trading: Wins=  52.96%  Returns=   3.90%  Stock= -21.07%  Difference==  24.96%   Validation: Wins=  40.00%  Returns=  10.35%  Stock=-133.71%  Difference== 144.06%   
+MSFT: Trading: Wins=  56.50%  Returns=  32.18%  Stock=  30.11%  Difference==   2.07%   Validation: Wins=  46.67%  Returns=  40.45%  Stock=  50.08%  Difference==  -9.62%   
+QCOM: Trading: Wins=  58.16%  Returns=  45.05%  Stock=  29.42%  Difference==  15.63%   Validation: Wins=  40.00%  Returns= -33.97%  Stock= -39.46%  Difference==   5.49%   
+AMZN: Trading: Wins=  51.30%  Returns=  36.84%  Stock=  43.95%  Difference==  -7.11%   Validation: Wins=  66.67%  Returns=  59.27%  Stock=  60.38%  Difference==  -1.11%   
+GOOG: Trading: Wins=  56.50%  Returns=  26.61%  Stock=  18.08%  Difference==   8.53%   Validation: Wins=  73.33%  Returns= 106.26%  Stock= 125.90%  Difference== -19.64%   
+AMD : Trading: Wins=  52.25%  Returns=  35.48%  Stock=  22.94%  Difference==  12.54%   Validation: Wins=  73.33%  Returns= 284.71%  Stock= 347.91%  Difference== -63.20%   
+Average Returns= 482.47%  Average Difference= 186.42%  Average Trading Wins=44113.47%  Average Validation Wins= -63.20%
+
+
+Best Returns[10]=  26.02%
+Optimize Returns=  23.81%  Best Returns=  23.81%  Duration:   158.7  Run Duration:  2531.9 *******
+AAPL: Trading: Wins=  54.14%  Returns=  14.65%  Stock=  14.12%  Difference==   0.53%   Validation: Wins=  60.00%  Returns=  25.60%  Stock=   2.60%  Difference==  23.01%   
+NVDA: Trading: Wins=  57.92%  Returns= 265.09%  Stock= 158.50%  Difference== 106.59%   Validation: Wins=  53.33%  Returns= 119.65%  Stock= 149.30%  Difference== -29.65%   
+INTC: Trading: Wins=  52.48%  Returns=   3.03%  Stock= -21.07%  Difference==  24.10%   Validation: Wins=  53.33%  Returns=  58.97%  Stock=-133.71%  Difference== 192.68%   
+MSFT: Trading: Wins=  55.56%  Returns=  23.50%  Stock=  30.11%  Difference==  -6.61%   Validation: Wins=  53.33%  Returns=  44.22%  Stock=  50.08%  Difference==  -5.86%   
+QCOM: Trading: Wins=  60.05%  Returns=  79.46%  Stock=  29.42%  Difference==  50.04%   Validation: Wins=  46.67%  Returns=   7.56%  Stock= -39.46%  Difference==  47.02%   
+AMZN: Trading: Wins=  50.83%  Returns=  34.22%  Stock=  43.95%  Difference==  -9.73%   Validation: Wins=  60.00%  Returns=  58.87%  Stock=  60.38%  Difference==  -1.52%   
+GOOG: Trading: Wins=  56.74%  Returns=  27.17%  Stock=  18.08%  Difference==   9.09%   Validation: Wins=  80.00%  Returns= 131.38%  Stock= 125.90%  Difference==   5.48%   
+AMD : Trading: Wins=  53.19%  Returns=  57.13%  Stock=  22.94%  Difference==  34.19%   Validation: Wins=  73.33%  Returns= 268.72%  Stock= 347.91%  Difference== -79.20%   
+Average Returns= 504.25%  Average Difference= 208.20%  Average Trading Wins=44089.84%  Average Validation Wins= -79.20%
+
+
+Best Returns[11]=  26.01%
+Optimize Returns=  22.19%  Best Returns=  22.19%  Duration:   156.1  Run Duration:  2688.0 *******
+AAPL: Trading: Wins=  55.32%  Returns=  21.38%  Stock=  14.12%  Difference==   7.26%   Validation: Wins=  53.33%  Returns=   1.41%  Stock=   2.60%  Difference==  -1.18%   
+NVDA: Trading: Wins=  56.74%  Returns= 218.11%  Stock= 158.50%  Difference==  59.61%   Validation: Wins=  60.00%  Returns= 145.15%  Stock= 149.30%  Difference==  -4.14%   
+INTC: Trading: Wins=  53.19%  Returns=   3.15%  Stock= -21.07%  Difference==  24.22%   Validation: Wins=  40.00%  Returns=  10.35%  Stock=-133.71%  Difference== 144.06%   
+MSFT: Trading: Wins=  56.03%  Returns=  30.33%  Stock=  30.11%  Difference==   0.22%   Validation: Wins=  46.67%  Returns=  40.45%  Stock=  50.08%  Difference==  -9.62%   
+QCOM: Trading: Wins=  57.68%  Returns=  50.32%  Stock=  29.42%  Difference==  20.90%   Validation: Wins=  40.00%  Returns= -33.97%  Stock= -39.46%  Difference==   5.49%   
+AMZN: Trading: Wins=  51.54%  Returns=  42.10%  Stock=  43.95%  Difference==  -1.85%   Validation: Wins=  66.67%  Returns=  59.27%  Stock=  60.38%  Difference==  -1.11%   
+GOOG: Trading: Wins=  56.26%  Returns=  19.27%  Stock=  18.08%  Difference==   1.18%   Validation: Wins=  73.33%  Returns= 106.26%  Stock= 125.90%  Difference== -19.64%   
+AMD : Trading: Wins=  52.01%  Returns=  35.09%  Stock=  22.94%  Difference==  12.15%   Validation: Wins=  73.33%  Returns= 284.71%  Stock= 347.91%  Difference== -63.20%   
+Average Returns= 419.74%  Average Difference= 123.69%  Average Trading Wins=43877.07%  Average Validation Wins= -63.20%
+
+
+Best Returns[12]=  25.91%
+Optimize Returns=  24.95%  Best Returns=  24.95%  Duration:   167.6  Run Duration:  2855.6 *******
+AAPL: Trading: Wins=  55.56%  Returns=  21.83%  Stock=  14.12%  Difference==   7.71%   Validation: Wins=  66.67%  Returns=  34.00%  Stock=   2.60%  Difference==  31.41%   
+NVDA: Trading: Wins=  57.68%  Returns= 273.19%  Stock= 158.50%  Difference== 114.69%   Validation: Wins=  53.33%  Returns= 141.22%  Stock= 149.30%  Difference==  -8.07%   
+INTC: Trading: Wins=  53.43%  Returns=   7.24%  Stock= -21.07%  Difference==  28.31%   Validation: Wins=  53.33%  Returns=  75.77%  Stock=-133.71%  Difference== 209.48%   
+MSFT: Trading: Wins=  55.08%  Returns=  17.70%  Stock=  30.11%  Difference== -12.41%   Validation: Wins=  46.67%  Returns=  38.04%  Stock=  50.08%  Difference== -12.04%   
+QCOM: Trading: Wins=  57.92%  Returns=  53.36%  Stock=  29.42%  Difference==  23.94%   Validation: Wins=  60.00%  Returns=  26.31%  Stock= -39.46%  Difference==  65.77%   
+AMZN: Trading: Wins=  51.30%  Returns=  41.38%  Stock=  43.95%  Difference==  -2.57%   Validation: Wins=  60.00%  Returns=  42.20%  Stock=  60.38%  Difference== -18.18%   
+GOOG: Trading: Wins=  56.50%  Returns=  29.17%  Stock=  18.08%  Difference==  11.09%   Validation: Wins=  73.33%  Returns= 109.45%  Stock= 125.90%  Difference== -16.44%   
+AMD : Trading: Wins=  53.43%  Returns=  74.61%  Stock=  22.94%  Difference==  51.67%   Validation: Wins=  66.67%  Returns= 242.14%  Stock= 347.91%  Difference==-105.78%   
+Average Returns= 518.48%  Average Difference= 222.43%  Average Trading Wins=44089.84%  Average Validation Wins=-105.78%
+
+
+Best Returns[13]=  25.73%
+Optimize Returns=  23.30%  Best Returns=  23.30%  Duration:   147.1  Run Duration:  3002.7 *******
+AAPL: Trading: Wins=  53.90%  Returns=  13.60%  Stock=  14.12%  Difference==  -0.51%   Validation: Wins=  53.33%  Returns=   1.41%  Stock=   2.60%  Difference==  -1.18%   
+NVDA: Trading: Wins=  57.21%  Returns= 232.47%  Stock= 158.50%  Difference==  73.97%   Validation: Wins=  46.67%  Returns= 108.56%  Stock= 149.30%  Difference== -40.73%   
+INTC: Trading: Wins=  51.30%  Returns= -10.97%  Stock= -21.07%  Difference==  10.10%   Validation: Wins=  46.67%  Returns=  21.44%  Stock=-133.71%  Difference== 155.15%   
+MSFT: Trading: Wins=  55.56%  Returns=  29.40%  Stock=  30.11%  Difference==  -0.71%   Validation: Wins=  46.67%  Returns=  40.45%  Stock=  50.08%  Difference==  -9.62%   
+QCOM: Trading: Wins=  59.34%  Returns=  67.13%  Stock=  29.42%  Difference==  37.71%   Validation: Wins=  40.00%  Returns= -33.97%  Stock= -39.46%  Difference==   5.49%   
+AMZN: Trading: Wins=  50.83%  Returns=  26.45%  Stock=  43.95%  Difference== -17.49%   Validation: Wins=  66.67%  Returns=  59.27%  Stock=  60.38%  Difference==  -1.11%   
+GOOG: Trading: Wins=  56.26%  Returns=  17.51%  Stock=  18.08%  Difference==  -0.57%   Validation: Wins=  73.33%  Returns= 106.26%  Stock= 125.90%  Difference== -19.64%   
+AMD : Trading: Wins=  52.72%  Returns=  50.65%  Stock=  22.94%  Difference==  27.71%   Validation: Wins=  60.00%  Returns= 221.78%  Stock= 347.91%  Difference==-126.14%   
+Average Returns= 426.24%  Average Difference= 130.19%  Average Trading Wins=43711.59%  Average Validation Wins=-126.14%
+
+
+Best Returns[14]=  25.64%
+Optimize Returns=  15.52%  Best Returns=  15.52%  Duration:   144.2  Run Duration:  3147.0 *******
+AAPL: Trading: Wins=  53.19%  Returns=   6.05%  Stock=  14.12%  Difference==  -8.07%   Validation: Wins=  53.33%  Returns=   9.41%  Stock=   2.60%  Difference==   6.81%   
+NVDA: Trading: Wins=  57.21%  Returns= 191.50%  Stock= 158.50%  Difference==  33.01%   Validation: Wins=  33.33%  Returns=  82.56%  Stock= 149.30%  Difference== -66.74%   
+INTC: Trading: Wins=  51.77%  Returns=  -0.81%  Stock= -21.07%  Difference==  20.25%   Validation: Wins=  46.67%  Returns= -50.01%  Stock=-133.71%  Difference==  83.70%   
+MSFT: Trading: Wins=  56.50%  Returns=  35.10%  Stock=  30.11%  Difference==   4.99%   Validation: Wins=  46.67%  Returns=  37.97%  Stock=  50.08%  Difference== -12.11%   
+QCOM: Trading: Wins=  57.68%  Returns=  51.75%  Stock=  29.42%  Difference==  22.33%   Validation: Wins=  40.00%  Returns= -31.25%  Stock= -39.46%  Difference==   8.21%   
+AMZN: Trading: Wins=  51.06%  Returns=  25.75%  Stock=  43.95%  Difference== -18.20%   Validation: Wins=  66.67%  Returns=  68.34%  Stock=  60.38%  Difference==   7.96%   
+GOOG: Trading: Wins=  55.79%  Returns=  20.12%  Stock=  18.08%  Difference==   2.04%   Validation: Wins=  73.33%  Returns= 104.50%  Stock= 125.90%  Difference== -21.40%   
+AMD : Trading: Wins=  49.65%  Returns=  25.03%  Stock=  22.94%  Difference==   2.09%   Validation: Wins=  46.67%  Returns= 116.21%  Stock= 347.91%  Difference==-231.71%   
+Average Returns= 354.48%  Average Difference=  58.44%  Average Trading Wins=43286.05%  Average Validation Wins=-231.71%
+
+
+Best Returns[15]=  14.18%
+Optimize Returns=  25.18%  Best Returns=  25.18%  Duration:   165.8  Run Duration:  3312.8 *******
+AAPL: Trading: Wins=  55.56%  Returns=  22.14%  Stock=  14.12%  Difference==   8.03%   Validation: Wins=  53.33%  Returns=   1.41%  Stock=   2.60%  Difference==  -1.18%   
+NVDA: Trading: Wins=  57.92%  Returns= 298.49%  Stock= 158.50%  Difference== 140.00%   Validation: Wins=  60.00%  Returns= 145.15%  Stock= 149.30%  Difference==  -4.14%   
+INTC: Trading: Wins=  53.19%  Returns=  -0.19%  Stock= -21.07%  Difference==  20.88%   Validation: Wins=  40.00%  Returns=  10.35%  Stock=-133.71%  Difference== 144.06%   
+MSFT: Trading: Wins=  56.03%  Returns=  30.33%  Stock=  30.11%  Difference==   0.22%   Validation: Wins=  46.67%  Returns=  40.45%  Stock=  50.08%  Difference==  -9.62%   
+QCOM: Trading: Wins=  57.68%  Returns=  45.24%  Stock=  29.42%  Difference==  15.82%   Validation: Wins=  40.00%  Returns= -33.97%  Stock= -39.46%  Difference==   5.49%   
+AMZN: Trading: Wins=  51.54%  Returns=  39.59%  Stock=  43.95%  Difference==  -4.36%   Validation: Wins=  66.67%  Returns=  59.27%  Stock=  60.38%  Difference==  -1.11%   
+GOOG: Trading: Wins=  56.03%  Returns=  18.49%  Stock=  18.08%  Difference==   0.41%   Validation: Wins=  73.33%  Returns= 106.26%  Stock= 125.90%  Difference== -19.64%   
+AMD : Trading: Wins=  52.01%  Returns=  40.08%  Stock=  22.94%  Difference==  17.14%   Validation: Wins=  73.33%  Returns= 284.71%  Stock= 347.91%  Difference== -63.20%   
+Average Returns= 494.19%  Average Difference= 198.14%  Average Trading Wins=43995.27%  Average Validation Wins= -63.20%
+
