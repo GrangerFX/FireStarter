@@ -10,14 +10,14 @@ private:
     CUdevice m_device = 0;
     CUcontext m_context = nullptr;
     CUstream m_stream = nullptr;
+    inline static bool m_initialized = false;
 
     // Initialize CUDA only once per process.
     static inline void Initialize(void)
     {
-        static bool initialized = false;
-        if (!initialized) {
+        if (!m_initialized) {
             checkCUDAErrors(cuInit(0));
-            initialized = true;
+            m_initialized = true;
         }
     } // Initialize
 

@@ -6,6 +6,38 @@
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
 // EVALUATE //
+    data[0] = n;
+    n *= data[1];
+    data[2] = n;
+    n *= data[3];
+    n *= data[2];
+    n += data[4];
+    data[5] = n;
+    data[6] = n;
+    data[7] = n;
+    data[8] = n;
+    n += data[9];
+    data[10] = n;
+    n += data[3];
+    data[11] = n;
+    n += data[12];
+    n += data[3];
+    n *= data[13];
+    data[6] = n;
+    n += data[14];
+    n *= data[8];
+    data[9] = n;
+    n *= data[2];
+    n += data[15];
+    n += data[16];
+    n += data[6];
+    n += data[17];
+    data[18] = n;
+    n *= data[15];
+    n *= data[1];
+    n += data[18];
+    n *= data[1];
+    n *= data[15];
 // END //
     return n;
 } // MoneyCompiledEvaluate
@@ -39,8 +71,7 @@ inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const Fir
 
     // The result is the ratio between the daily trade wins and losses.
     // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
-    float winsPercent = wins / float(tradingDays - 1);
-    result = 1.0f - winsPercent;
+    result = (tradingDays - 1) / float(MAX(wins, 1));
     return true;
 } // MoneyOptimizeEvaluate
 #else
@@ -263,13 +294,15 @@ inline bool MoneyTesterEvaluate(const FireStarterSettings* settings, const FireS
     // Note: The final day of trading is undone by this line of code.
     float tradingFunds = funds + shares * stock[index];
     float tradingWins = wins / float(tradingDays - 1);
-    wins = 0;
-    shares = 0;
-    holding = false;
 
-//  workData = data;
+#if !MONEYMAKER_OPTIMIZE_EACH
+    workData = data;
+#endif
 
     // Validation of future days not used during evolution or optimization.
+    holding = false;
+    wins = 0;
+    shares = 0;
     funds = settings->m_funds;
     for (unsigned int i = 1; i < validationDays; i++) {
         float newPrice = stock[++index];
