@@ -32,8 +32,8 @@ inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireS
 
     // The result is the ratio between the daily trade wins and losses.
     // Note: This ratio is inverted to prefer smaller numbers for compatibility with FireStarter.
-    float winsPercent = wins / float(tradingDays - 1);
-    result = 1.0f - winsPercent;
+    float dailyWinsPercent = wins / float(tradingDays - 1);
+    result = 1.0f - dailyWinsPercent;
     return true;
 } // MoneyEvolveEvaluate
 #else

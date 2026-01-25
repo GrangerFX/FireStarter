@@ -5,22 +5,22 @@
 #define FIRESTARTER_REGISTERS       30          // Data maximum registers
 #define FIRESTARTER_VARIATIONS      1           // Target function variations
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
+#define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define MONEYMAKER_VARIATION        360         // Variation modulo for the stock data start offset
-#define MONEYMAKER_TRADING_MIN      16          // Minimum days used for stock trading
-#define MONEYMAKER_TRADING_MAX      16          // Maximum days used for stock trading
-#define MONEYMAKER_VALIDATION       16          // Days used for prediction validation
+#define MONEYMAKER_TRADING_MIN      32          // Minimum days used for stock trading
+#define MONEYMAKER_TRADING_MAX      64          // Maximum days used for stock trading
+#define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
 #define MONEYMAKER_ANNUAL           252         // Trading days per year for annualized returns.
 #define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING_MAX + MONEYMAKER_VALIDATION)   // Days of stock history data
 #define MONEYMAKER_STOCK            0           // Starting stock
 #define MONEYMAKER_STOCKS           8           // Stocks with history data
-#define MONEYMAKER_SESSIONS         128          // Number of trading sessions
+#define MONEYMAKER_SESSIONS         64          // Number of trading sessions
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define MONEYMAKER_WINS             1           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
 #define MONEYMAKER_EVOLVE_EACH      0           // Set to 1 to evolve each stock individually
 #define MONEYMAKER_OPTIMIZE_EACH    0           // Set to 1 to optimize each stock individually
 #define MONEYMAKER_OPTIMIZE_ALL     1           // Set to 1 to optimize all the best codes.
-#define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    0           // Generate the settings and code using the GPU.
