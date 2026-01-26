@@ -733,7 +733,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     double runDuration = evolveState.RunDuration();
                     float evolveResult = evolveState.m_bestCodes.GetBestResult();
 #if MONEYMAKER_WINS
-                    float evolveReturns = 1.0f - evolveResult; // Remove inversion.
+                    float evolveReturns = (1.0f - evolveResult) * 100.0f; // Remove inversion.
 #else
                     float evolveReturns = MoneyMakerReturns(1.0f - evolveResult); // Remove inversion.
 #endif
@@ -785,8 +785,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             float optimizeResult = optimizeState.MaxResults();
                             float bestResult = bestStates[optimize].MaxResults();
 #if MONEYMAKER_WINS
-                            float optimizeReturns = 1.0f - optimizeResult; // Remove inversion.
-                            float bestReturns = 1.0f - bestResult; // Remove inversion.
+                            float optimizeReturns = (1.0f - optimizeResult) * 100.0f; // Remove inversion.
+                            float bestReturns = (1.0f - bestResult) * 100.0f; // Remove inversion.
 #else
                             float optimizeReturns = MoneyMakerReturns(1.0f - optimizeResult); // Remove inversion.
                             float bestReturns = MoneyMakerReturns(1.0f - bestResult); // Remove inversion.
