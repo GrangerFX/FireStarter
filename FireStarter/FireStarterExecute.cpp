@@ -700,8 +700,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
         checkCUDAErrors(cudaMemcpy(m_hostCodes, m_deviceCodes0, m_codesSize, cudaMemcpyHostToHost));
         if (m_populationSize && FIRESTARTER_EVOLVE_RESULTS)
             checkCUDAErrors(cudaMemcpy(m_hostPopulation, m_devicePopulation0, m_populationSize, cudaMemcpyHostToHost));
-    }
-    else {
+    } else {
         checkCUDAErrors(cudaMemcpyAsync(m_deviceSettings, &settings, m_settingsSize, cudaMemcpyHostToDevice, Stream()));
 
         void* arr[] = { reinterpret_cast<void*>(&m_deviceSettings),

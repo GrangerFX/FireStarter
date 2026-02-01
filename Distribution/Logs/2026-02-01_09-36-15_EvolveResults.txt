@@ -1,0 +1,16 @@
+AAPL:  Seed: 0  Test:   0  Generation=  0  Evolve Returns= -17.82%  Duration:    98.6  Run Duration:   100.6
+AAPL: Optimize Returns=  55.76%  Optimize Duration:     1.1  Run Duration:   101.7  Trading: Wins=  65.08%  Returns=  63.61%  Stock=  17.12%  Difference==  46.49%   Validation: Wins=  47.62%  Returns=   3.37%  Stock=  -7.14%  Difference==  10.51%   
+NVDA:  Seed: 0  Test:   0  Generation=  0  Evolve Returns= -37.41%  Duration:    98.1  Run Duration:   200.5
+NVDA: Optimize Returns= 110.52%  Optimize Duration:     1.0  Run Duration:   201.6  Trading: Wins=  61.90%  Returns= 118.94%  Stock=  42.64%  Difference==  76.30%   Validation Failed!
+INTC:  Seed: 0  Test:   0  Generation=  0  Evolve Returns= -16.29%  Duration:   114.7  Run Duration:   317.1
+INTC: Optimize Returns= 212.78%  Optimize Duration:     1.0  Run Duration:   318.1  Trading: Wins=  68.25%  Returns= 153.34%  Stock=  39.80%  Difference== 113.53%   Validation: Wins=  58.73%  Returns=  47.80%  Stock=  47.09%  Difference==   0.71%   
+MSFT:  Seed: 0  Test:   0  Generation=  0  Evolve Returns= -18.46%  Duration:   102.0  Run Duration:   420.9
+MSFT: Optimize Returns=  63.26%  Optimize Duration:     1.2  Run Duration:   422.1  Trading: Wins=  73.02%  Returns=  98.01%  Stock=  56.67%  Difference==  41.34%   Validation: Wins=  66.67%  Returns=  45.03%  Stock=  40.91%  Difference==   4.13%   
+QCOM:  Seed: 0  Test:   0  Generation=  0  Evolve Returns= -15.25%  Duration:   100.2  Run Duration:   523.2
+QCOM: Optimize Returns=  95.75%  Optimize Duration:     1.4  Run Duration:   524.6  Trading: Wins=  68.25%  Returns= 116.59%  Stock=  43.59%  Difference==  73.00%   Validation: Wins=  41.27%  Returns=   3.91%  Stock=  89.89%  Difference== -85.98%   
+AMZN:  Seed: 0  Test:   0  Generation=  0  Evolve Returns= -19.51%  Duration:    99.2  Run Duration:   624.6
+AMZN: Optimize Returns= 188.12%  Optimize Duration:     1.1  Run Duration:   625.7  Trading: Wins=  76.19%  Returns= 155.23%  Stock=  14.30%  Difference== 140.94%   Validation: Wins=  38.10%  Returns=  -6.23%  Stock=  65.84%  Difference== -72.07%   
+GOOG:  Seed: 0  Test:   0  Generation=  0  Evolve Returns= -16.71%  Duration:    99.2  Run Duration:   725.7
+GOOG: Optimize Returns=  85.85%  Optimize Duration:     1.0  Run Duration:   726.7  Trading: Wins=  68.25%  Returns=  86.66%  Stock=  10.35%  Difference==  76.31%   Validation: Wins=  60.32%  Returns=  45.84%  Stock=  25.13%  Difference==  20.70%   
+AMD :  Seed: 0  Test:   0  Generation=  0  Evolve Returns= -18.22%  Duration:    99.3  Run Duration:   826.7
+AMD : Optimize Returns= 268.67%  Optimize Duration:     1.1  Run Duration:   827.8  Trading: Wins=  68.25%  Returns= 132.96%  Stock=  19.54%  Difference== 113.42%   Validation: Wins=  38.10%  Returns=  65.77%  Stock= 189.79%  Difference==-124.02%   
