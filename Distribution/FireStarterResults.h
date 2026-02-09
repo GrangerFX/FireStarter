@@ -275,6 +275,10 @@ typedef struct FireStarterCodeInstruction {
             case Operation_store:
                 data = n;
                 break;
+
+            case Operation_load:
+                n = data;
+                break;
         }
 #else
         n = op == Operation_data_multiply ? data *= n : data += n;

@@ -115,6 +115,10 @@ public:
                 GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "data[%u] = n;\r\n", reg);
                 break;
+            case Operation_load:
+                GenerateTabs(buffer, size, length, tabs);
+                anprintf(buffer, size, length, "n = data[%u];\r\n", reg);
+                break;
         }
 #else
         // Insert leading tabs (four spaces).
@@ -223,6 +227,10 @@ public:
 
             case Operation_store:
                 anprintf(buffer, size, length, "r%u = n;\r\n", reg);
+                break;
+
+            case Operation_load:
+                anprintf(buffer, size, length, "n = r%u;\r\n", reg);
                 break;
         }
 #else

@@ -1,0 +1,9 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Returns=   0.00%  Duration:   810.0  Run Duration:   812.1
+AAPL: Optimize Returns=   0.00%  Optimize Duration:     9.0  Run Duration:   821.0  Trading Failed!
+NVDA: Optimize Returns=   0.00%  Optimize Duration:     8.6  Run Duration:   829.7  Trading Failed!
+INTC: Optimize Returns=   0.00%  Optimize Duration:     8.7  Run Duration:   838.3  Trading Failed!
+MSFT: Optimize Returns=   0.00%  Optimize Duration:     8.6  Run Duration:   846.9  Trading Failed!
+QCOM: Optimize Returns=   0.00%  Optimize Duration:     8.6  Run Duration:   855.6  Trading Failed!
+AMZN: Optimize Returns=   0.00%  Optimize Duration:     8.7  Run Duration:   864.3  Trading Failed!
+GOOG: Optimize Returns=   0.00%  Optimize Duration:     8.6  Run Duration:   872.9  Trading Failed!
+AMD : Optimize Returns=   0.00%  Optimize Duration:     8.6  Run Duration:   881.5  Trading Failed!
