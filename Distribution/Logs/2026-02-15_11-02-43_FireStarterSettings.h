@@ -273,7 +273,7 @@ const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_add,
     Operation_multiply,
     Operation_store,
-//    Operation_load,
+    Operation_load,
 };
 #else
 // Simple accumulator multiply or add instructions.

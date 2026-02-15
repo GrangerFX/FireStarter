@@ -1,0 +1,11 @@
+Seed: 0  Test:   0  Generation=  0  Evolve Returns=   0.00%  Duration:  1028.7  Run Duration:  1029.1
+Optimize Returns=   0.00%  Optimize Duration:    77.3  Run Duration:  1106.4  AAPL: Trading Failed!
+NVDA: Trading Failed!
+INTC: Trading Failed!
+MSFT: Trading Failed!
+QCOM: Trading Failed!
+AMZN: Trading Failed!
+GOOG: Trading Failed!
+AMD : Trading Failed!
+Average Returns=   0.00%  Average Difference=   0.00%  Average Trading Wins=   0.00%  Average Validation Wins=   0.00%
+

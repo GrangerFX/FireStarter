@@ -1,22 +1,22 @@
 #pragma once
 #include "MoneyMakerStocks.h"
 
-// Run date: 02/15/26 11:02:43 Pacific Standard Time
-// Run duration = 1106.353768 seconds
+// Run date: 02/15/26 10:41:56 Pacific Standard Time
+// Run duration = 1109.866266 seconds
 // Run test = 0
 // Run generation = 1
 // Run evolution = 0
-// Run max result = 1.00000000
+// Run max result = 0.99948752
 
 // Run variations = 1
 // Run instructions = 32
 // Run registers = 30
 // Run opcodes = 4
 
-// Run stocks = 8
+// Run stocks = 1
 // Run sessions = 16
 // Run history = 544
-// Run variation = 360
+// Run variation = 0
 // Run trading = 120
 // Run funds = 1000.000000f
 
@@ -44,26 +44,26 @@
 inline float MoneyMakerSolution(MoneyMakerStock& stock)
 {
     float n = 0.0f;
-    float r0 = 0.44066873f;
-    float r1 = -0.28451121f;
-    float r2 = -0.31254959f;
-    float r3 = -0.10417556f;
-    float r4 = -0.47893819f;
-    float r5 = 0.13633195f;
-    float r6 = 0.85146350f;
-    float r7 = -0.48820826f;
-    float r8 = -0.15108044f;
-    float r9 = 0.82604027f;
-    float r10 = -0.42409495f;
-    float r11 = 0.96105450f;
-    float r12 = -0.54876876f;
-    float r13 = -0.34348738f;
-    float r14 = 0.28402013f;
-    float r15 = 0.60087126f;
-    float r16 = -0.98762882f;
-    float r17 = -0.63568574f;
-    float r18 = 0.34929597f;
-    float r19 = -0.22221391f;
+    float r0 = 0.45445511f;
+    float r1 = -0.32779032f;
+    float r2 = -0.26509017f;
+    float r3 = 0.64751422f;
+    float r4 = -0.23034224f;
+    float r5 = 0.64463568f;
+    float r6 = 0.46717075f;
+    float r7 = -0.18762572f;
+    float r8 = -0.75397503f;
+    float r9 = 0.81733954f;
+    float r10 = 0.22065434f;
+    float r11 = 0.75465608f;
+    float r12 = 0.89877194f;
+    float r13 = -0.41321224f;
+    float r14 = 0.48412427f;
+    float r15 = 0.88978606f;
+    float r16 = 0.72634810f;
+    float r17 = -0.59696883f;
+    float r18 = -0.17019744f;
+    float r19 = 0.68239361f;
 
     for (unsigned int d = 0; d < stock.numDays; d++) {
         n = stock[d];
