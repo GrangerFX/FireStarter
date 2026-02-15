@@ -120,7 +120,7 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
     for (unsigned int session = 0; session < sessions; session++) {
         unsigned long long sessionSeed = SEED9(session) + seed;
         unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
-        unsigned int sessionDays = RANDOMRANGE(sessionSeed, settings->m_tradingMin, settings->m_tradingMax);
+        unsigned int sessionDays = settings->m_trading;
         float stockResult = settings->m_startResult;
 
         if (!MoneyOptimizeEvaluate(settings, data, stocks->Stock(stock + settings->m_stock), sessionStart, sessionDays, stockResult))
@@ -241,7 +241,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
 inline bool MoneyTesterEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStock& stock, MoneyMakerStock& trades)
 {
     FireStarterData workData(data);
-    unsigned int tradingDays = settings->m_variation + settings->m_tradingMax;
+    unsigned int tradingDays = settings->m_variation + settings->m_trading;
     unsigned int validationDays = settings->m_validation;
     bool holding = false;
     unsigned int wins = 0;

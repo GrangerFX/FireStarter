@@ -8,11 +8,10 @@
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define MONEYMAKER_VARIATION        360         // Variation modulo for the stock data start offset
-#define MONEYMAKER_TRADING_MIN      32          // Minimum days used for stock trading
-#define MONEYMAKER_TRADING_MAX      64          // Maximum days used for stock trading
+#define MONEYMAKER_TRADING          64          // Days used for stock trading
 #define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
 #define MONEYMAKER_ANNUAL           252         // Trading days per year for annualized returns.
-#define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING_MAX + MONEYMAKER_VALIDATION)   // Days of stock history data
+#define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
 #define MONEYMAKER_STOCK            0           // Starting stock
 #define MONEYMAKER_STOCKS           8           // Stocks with history data
 #define MONEYMAKER_SESSIONS         32          // Number of trading sessions
@@ -319,8 +318,7 @@ public:
     unsigned int m_sessions =       MONEYMAKER_SESSIONS;
     unsigned int m_history =        MONEYMAKER_HISTORY;
     unsigned int m_variation =      MONEYMAKER_VARIATION;
-    unsigned int m_tradingMin =     MONEYMAKER_TRADING_MIN;
-    unsigned int m_tradingMax =     MONEYMAKER_TRADING_MAX;
+    unsigned int m_trading =        MONEYMAKER_TRADING;
     unsigned int m_validation =     MONEYMAKER_VALIDATION;
     float        m_funds =          MONEYMAKER_FUNDS;
 

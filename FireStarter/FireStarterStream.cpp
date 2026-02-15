@@ -821,7 +821,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                         optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
                                     }
 
-                                    unsigned int tradingDays = optimizeSettings.m_variation + optimizeSettings.m_tradingMax;
+                                    unsigned int tradingDays = optimizeSettings.m_variation + optimizeSettings.m_trading;
                                     unsigned int tradeFirstDay = 0;
                                     unsigned int tradeLastDay = tradeFirstDay + tradingDays;
                                     unsigned int validationDays = optimizeSettings.m_validation;

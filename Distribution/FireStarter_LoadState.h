@@ -52,8 +52,7 @@ inline void LoadSettings(FireStarterSettings& settings)
     settings.m_sessions = 32;
     settings.m_history = 488;
     settings.m_variation = 0;
-    settings.m_tradingMin = 32;
-    settings.m_tradingMax = 64;
+    settings.m_trading = 64;
     settings.m_funds = 1000.000000f;
 
     settings.m_mode = FIRESTARTER_MONEYMAKER;

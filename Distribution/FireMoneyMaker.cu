@@ -114,7 +114,7 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
     for (unsigned int session = 0; session < sessions; session++) {
         unsigned long long sessionSeed = SEED9(session) + seed;
         unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
-        unsigned int sessionDays = RANDOMRANGE(sessionSeed, settings->m_tradingMin, settings->m_tradingMax);
+        unsigned int sessionDays = settings->m_trading;
         float stockResult = settings->m_startResult;
         if (!MoneyEvolveEvaluate(settings, code, data, stocks->Stock(stock + settings->m_stock), sessionStart, sessionDays, stockResult))
             return false;
