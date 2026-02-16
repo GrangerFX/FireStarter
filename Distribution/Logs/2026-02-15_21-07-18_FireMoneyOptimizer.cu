@@ -6,6 +6,38 @@
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
 // EVALUATE //
+    n *= data[0];
+    n += data[1];
+    n += data[2];
+    n *= data[0];
+    data[3] = n;
+    data[4] = n;
+    data[5] = n;
+    n += data[6];
+    n += data[7];
+    n *= data[5];
+    n += data[3];
+    n += data[8];
+    n *= data[9];
+    data[10] = n;
+    n *= data[11];
+    n += data[8];
+    n += data[7];
+    n += data[12];
+    data[11] = n;
+    data[13] = n;
+    n += data[14];
+    n += data[0];
+    data[6] = n;
+    n += data[11];
+    n += data[2];
+    data[15] = n;
+    n += data[11];
+    data[16] = n;
+    n *= data[11];
+    data[17] = n;
+    data[18] = n;
+    data[19] = n;
 // END //
     return n;
 } // MoneyCompiledEvaluate
@@ -81,9 +113,6 @@ inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const Fir
     // The final funds after selling remaining shares and converting to daily returns.
     funds += shares * stock[index];
 
-    // Caclulate the trading profit and daily profit.
-    float tradingProfit = funds - settings->m_funds;
-
 #if MONEYMAKER_ADDEDVALUE
     // Calculate the stock performance during the trading days.
     float stockStartPrice = stock[startDay];
@@ -92,18 +121,25 @@ inline bool MoneyOptimizeEvaluate(const FireStarterSettings* settings, const Fir
     float stockFunds = settings->m_funds * stockPerformance;
     float stockProfit = stockFunds - settings->m_funds;
 
+    // Caclulate the trading profit and daily profit.
+    float tradingProfit = funds - settings->m_funds;
+
     // The result profit is the trading profit minus the stock profit to measure added value.
     float resultProfit = tradingProfit - stockProfit;
     float resultPercent = resultProfit / settings->m_funds;
     float resultDailyPercent = resultPercent / (tradingDays - 1);
-#else
-    // Caclulate the trading profit and daily profit.
-    float tradingPercent = tradingProfit / settings->m_funds;
-    float resultDailyPercent = tradingPercent / (tradingDays - 1);
-#endif
 
     // The result is inverted to prefer smaller numbers for compatibility with FireStarter.
     result = 1.0f - resultDailyPercent;
+#else
+    // Caclulate the trading profit and daily profit.
+    float tradingProfit = funds - settings->m_funds;
+    float tradingPercent = tradingProfit / settings->m_funds;
+    float tradingDailyPercent = tradingPercent / (tradingDays - 1);
+
+    // The result is inverted to prefer smaller numbers for compatibility with FireStarter.
+    result = 1.0f - tradingDailyPercent;
+#endif
     return true;
 } // MoneyOptimizeEvaluate
 #endif
@@ -121,7 +157,11 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
 
         if (!MoneyOptimizeEvaluate(settings, data, stocks->Stock(stock + settings->m_stock), sessionStart, sessionDays, stockResult))
             return false;
+#if 1
+        sessionsResult = MAX(sessionsResult, stockResult);
+#else
         sessionsResult += stockResult / sessions;
+#endif
         if (++stock == settings->m_stocks)
             stock = 0;
     }

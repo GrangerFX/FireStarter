@@ -8,13 +8,13 @@
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
 #define MONEYMAKER_VARIATION        360         // Variation modulo for the stock data start offset
-#define MONEYMAKER_TRADING          64          // Days used for stock trading
+#define MONEYMAKER_TRADING          120         // Days used for stock trading
 #define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
 #define MONEYMAKER_ANNUAL           252         // Trading days per year for annualized returns.
 #define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
 #define MONEYMAKER_STOCK            0           // Starting stock
 #define MONEYMAKER_STOCKS           8           // Stocks with history data
-#define MONEYMAKER_SESSIONS         32          // Number of trading sessions
+#define MONEYMAKER_SESSIONS         16          // Number of trading sessions
 #define MONEYMAKER_FUNDS            1000.0f     // Starting trading funds
 #define MONEYMAKER_ADDEDVALUE       1           // Set to 1 to compare the value of the predicted trades vs a buy-and-hold strategy.
 #define MONEYMAKER_WINS             0           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
@@ -273,7 +273,7 @@ const FireStarterOpcode fireStarterOpcodes[] = {
     Operation_add,
     Operation_multiply,
     Operation_store,
-    Operation_load,
+//    Operation_load,
 };
 #else
 // Simple accumulator multiply or add instructions.

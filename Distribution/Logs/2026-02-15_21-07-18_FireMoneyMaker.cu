@@ -75,9 +75,6 @@ inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireS
     // Note: The final day of trading is undone by this line of code.
     funds += shares * stock[index];
 
-    // Caclulate the trading profit and daily profit.
-    float tradingProfit = funds - settings->m_funds;
-
 #if MONEYMAKER_ADDEDVALUE
     // Calculate the stock performance during the trading days.
     float stockStartPrice = stock[startDay];
@@ -86,18 +83,25 @@ inline bool MoneyEvolveEvaluate(const FireStarterSettings* settings, const FireS
     float stockFunds = settings->m_funds * stockPerformance;
     float stockProfit = stockFunds - settings->m_funds;
 
+    // Caclulate the trading profit and daily profit.
+    float tradingProfit = funds - settings->m_funds;
+
     // The result profit is the trading profit minus the stock profit to measure added value.
     float resultProfit = tradingProfit - stockProfit;
     float resultPercent = resultProfit / settings->m_funds;
     float resultDailyPercent = resultPercent / (tradingDays - 1);
-#else
-    // Caclulate the trading profit and daily profit.
-    float tradingPercent = tradingProfit / settings->m_funds;
-    float resultDailyPercent = tradingPercent / (tradingDays - 1);
-#endif
 
     // The result is inverted to prefer smaller numbers for compatibility with FireStarter.
     result = 1.0f - resultDailyPercent;
+#else
+    // Caclulate the trading profit and daily profit.
+    float tradingProfit = funds - settings->m_funds;
+    float tradingPercent = tradingProfit / settings->m_funds;
+    float tradingDailyPercent = tradingPercent / (tradingDays - 1);
+
+    // The result is inverted to prefer smaller numbers for compatibility with FireStarter.
+    result = 1.0f - tradingDailyPercent;
+#endif
     return true;
 } // MoneyEvolveEvaluate
 #endif
@@ -114,7 +118,11 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
         float stockResult = settings->m_startResult;
         if (!MoneyEvolveEvaluate(settings, code, data, stocks->Stock(stock + settings->m_stock), sessionStart, sessionDays, stockResult))
             return false;
+#if 1
+        sessionsResult = MAX(sessionsResult, stockResult);
+#else
         sessionsResult += stockResult / sessions;
+#endif
         if (++stock == settings->m_stocks)
             stock = 0;
     }

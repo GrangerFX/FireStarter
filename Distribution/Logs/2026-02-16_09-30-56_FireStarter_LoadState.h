@@ -1,12 +1,12 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 02/16/26 09:55:18 Pacific Standard Time
-// Run duration = 1232.173066 seconds
+// Run date: 02/16/26 09:30:56 Pacific Standard Time
+// Run duration = 1246.623551 seconds
 // Run test = 0
 // Run generation = 1
 // Run evolution = 0
-// Run max result = 0.99924463
+// Run max result = 0.99856555
 
 // Run variations = 1
 // Run instructions = 32
@@ -78,7 +78,7 @@ inline void LoadSettings(FireStarterSettings& settings)
 // Variation: 0
 inline void LoadVariation0(FireStarterResult* result)
 {
-    *(result->MaxResult()) = 0.99924463f;
+    *(result->MaxResult()) = 0.99856555f;
     *(result->EvolveAge1()) = 1;
     *(result->EvolveAge2()) = 0;
     FireStarterData *data = result->Data();
@@ -172,7 +172,7 @@ inline void LoadState(FireStarterState& state)
     state.m_test = 0;
     state.m_seed = 1610532691304413459;
     state.m_optimize_pass = 0;
-    state.m_bestResult = 0.99924463f;
+    state.m_bestResult = 0.99856555f;
     state.m_oldResult = 10.00000000f;
     state.m_evolveWeight = 0.000000f;
     state.m_optimizeValid = true;
