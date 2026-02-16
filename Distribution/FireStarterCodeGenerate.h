@@ -38,11 +38,9 @@ public:
         FireStarterOpcode op = Operation(instruction);
         unsigned int reg = Register(instruction);
 
-#if FIRESTARTER_FIRSTLIGHT
+        GenerateTabs(buffer, size, length, tabs);
         switch (op) {
-#if FIRESTARTER_MADD
             case Operation_data_multiply:
-                GenerateTabs(buffer, size, length, tabs);
                 if (instructionLast)
                     anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
                 else
@@ -50,193 +48,56 @@ public:
                 break;
 
             case Operation_data_add:
-                GenerateTabs(buffer, size, length, tabs);
                 if (instructionLast)
                     anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
                 else
                     anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
                 break;
-#else
-            case Operation_noop:
-                break;
 
             case Operation_store:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "data[%u] = n;\r\n", reg);
                 break;
 
+            case Operation_load:
+                anprintf(buffer, size, length, "n = data[%u];\r\n", reg);
+                break;
+
             case Operation_square:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= n;\r\n");
                 break;
 
             case Operation_multiply:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
                 break;
 
             case Operation_divide:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n /= data[%u];\r\n", reg);
                 break;
 
             case Operation_add:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
                 break;
 
             case Operation_subtract:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n -= data[%u];\r\n", reg);
                 break;
 
             case Operation_min:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = data[%u] < n ? data[%u] : n;\r\n", reg, reg);
                 break;
 
             case Operation_max:
-                GenerateTabs(buffer, size, length, tabs);
                 anprintf(buffer, size, length, "n = data[%u] > n ? data[%u] : n;\r\n", reg, reg);
                 break;
-#endif
         }
-#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
-        switch (op) {
-            case Operation_multiply:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
-                break;
-            case Operation_add:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
-                break;
-            case Operation_store:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "data[%u] = n;\r\n", reg);
-                break;
-            case Operation_load:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n = data[%u];\r\n", reg);
-                break;
-        }
-#else
-        // Insert leading tabs (four spaces).
-        GenerateTabs(buffer, size, length, tabs);
-
-        switch (op) {
-            case Operation_data_multiply:
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n *= data[%u];\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = data[%u] *= n;\r\n", reg);
-                break;
-
-            case Operation_data_add:
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n += data[%u];\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = data[%u] += n;\r\n", reg);
-                break;
-        }
-#endif
     } // GenerateEvaluate
 
-    inline void GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int reg, float data, unsigned int instruction, bool instructionFirst, bool instructionLast) const
+    inline void GenerateSolution(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int reg, float data, unsigned int instruction, bool instructionFirst = false, bool instructionLast = false) const
     {
+        GenerateTabs(buffer, size, length, tabs);
+        
         // Convert the instructions.
         FireStarterOpcode op = Operation(instruction);
-
-#if FIRESTARTER_FIRSTLIGHT
-        switch (op) {
-#if FIRESTARTER_MADD
-            case Operation_data_multiply:
-                GenerateTabs(buffer, size, length, tabs);
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = r%u *= n;\r\n", reg);
-                break;
-
-            case Operation_data_add:
-                GenerateTabs(buffer, size, length, tabs);
-                if (instructionLast)
-                    anprintf(buffer, size, length, "n += r%u;\r\n", reg);
-                else
-                    anprintf(buffer, size, length, "n = r%u += n;\r\n", reg);
-                break;
-#else
-            case Operation_noop:
-                break;
-
-            case Operation_store:
-                if (!instructionLast) {
-                    GenerateTabs(buffer, size, length, tabs);
-                    anprintf(buffer, size, length, "r%u = n;\r\n", reg);
-                }
-                break;
-
-            case Operation_square:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n *= n;\r\n");
-                break;
-
-            case Operation_multiply:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
-                break;
-
-            case Operation_divide:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n /= r%u;\r\n", reg);
-                break;
-
-            case Operation_add:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n += r%u;\r\n", reg);
-                break;
-
-            case Operation_subtract:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n -= r%u;\r\n", reg);
-                break;
-
-            case Operation_min:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n = r%u < n ? r%u : n;\r\n", reg, reg);
-                break;
-
-            case Operation_max:
-                GenerateTabs(buffer, size, length, tabs);
-                anprintf(buffer, size, length, "n = r%u > n ? r%u : n;\r\n", reg, reg);
-                break;
-#endif
-        }
-#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
-        // Insert leading tabs (four spaces).
-        GenerateTabs(buffer, size, length, tabs);
-
-        switch (op) {
-            case Operation_multiply:
-                anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
-                break;
-
-            case Operation_add:
-                anprintf(buffer, size, length, "n += r%u;\r\n", reg);
-                break;
-
-            case Operation_store:
-                anprintf(buffer, size, length, "r%u = n;\r\n", reg);
-                break;
-
-            case Operation_load:
-                anprintf(buffer, size, length, "n = r%u;\r\n", reg);
-                break;
-        }
-#else
-        // Insert leading tabs (four spaces).
-        GenerateTabs(buffer, size, length, tabs);
-
         switch (op) {
             case Operation_data_multiply:
                 if (instructionFirst)
@@ -263,8 +124,43 @@ public:
                     else
                         anprintf(buffer, size, length, "n = r%u += n;\r\n", reg);
                 break;
+
+            case Operation_store:
+                anprintf(buffer, size, length, "r%u = n;\r\n", reg);
+                break;
+
+            case Operation_load:
+                anprintf(buffer, size, length, "n = r%u;\r\n", reg);
+                break;
+
+            case Operation_square:
+                anprintf(buffer, size, length, "n *= n;\r\n");
+                break;
+
+            case Operation_multiply:
+                anprintf(buffer, size, length, "n *= r%u;\r\n", reg);
+                break;
+
+            case Operation_divide:
+                anprintf(buffer, size, length, "n /= r%u;\r\n", reg);
+                break;
+
+            case Operation_add:
+                anprintf(buffer, size, length, "n += r%u;\r\n", reg);
+                break;
+
+            case Operation_subtract:
+                anprintf(buffer, size, length, "n -= r%u;\r\n", reg);
+                break;
+
+            case Operation_min:
+                anprintf(buffer, size, length, "n = r%u < n ? r%u : n;\r\n", reg, reg);
+                break;
+
+            case Operation_max:
+                anprintf(buffer, size, length, "n = r%u > n ? r%u : n;\r\n", reg, reg);
+                break;
         }
-#endif
     } // GenerateSolution
 
     inline void GenerateData(char* buffer, size_t size, size_t& length, unsigned int tabs, unsigned int numRegisters, const FireStarterData* data) const
@@ -305,7 +201,7 @@ public:
             unsigned int reg = Register(i);
             const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
             float f = (float)data->d[reg];
-            GenerateSolution(buffer, size, length, tabs, reg, f, i, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
+            GenerateSolution(buffer, size, length, tabs, reg, f, i);
         }
 #elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
         // Generate the MoneyMaker solution function registers.
@@ -329,7 +225,7 @@ public:
             unsigned int reg = Register(i);
             const FireStarterRegisterInfo& dataRegister = registerUsage->Register(reg);
             float f = (float)data->d[reg];
-            GenerateSolution(buffer, size, length, tabs, reg, f, i, i == dataRegister.instructionFirst, i == dataRegister.instructionLast);
+            GenerateSolution(buffer, size, length, tabs, reg, f, i);
         }
         tabs--;
         GenerateTabs(buffer, size, length, tabs);

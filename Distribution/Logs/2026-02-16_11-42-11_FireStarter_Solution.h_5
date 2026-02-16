@@ -2,12 +2,12 @@
 #include <math.h>
 
 // Run date: 02/16/26 11:42:11 Pacific Standard Time
-// Run duration = 52.934944 seconds
-// Run test = 9
-// Run generation = 5
+// Run duration = 27.577282 seconds
+// Run test = 5
+// Run generation = 2
 // Run evolution = 0
-// Run precision  = 0.00000066
-// Run max result = 0.00000011
+// Run precision  = 0.00000291
+// Run max result = 0.00000086
 
 // Run variations = 1
 // Run instructions = 32
@@ -66,39 +66,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4;
+    float r0, r1, r2, r3, r4, r5, r6;
 
-    n += -4.02559519f;
-    n *= 0.52832788f;
-    n += 0.41605645f;
-    n += 0.05098671f;
-    r0 = n *= 0.94814390f;
-    r1 = n *= -0.71172547f;
-    n *= r1;
-    r1 = n += -1.24083841f;
-    r2 = n *= -3.21109366f;
-    n *= -4.13846827f;
-    n += 4.35599661f;
-    n *= 0.02586727f;
-    r3 = n *= 0.63748634f;
-    n += -4.43516541f;
-    r4 = n *= -0.32544014f;
-    n *= 2.18802333f;
-    n += -3.93711615f;
-    n += 2.84427762f;
-    n *= r3;
-    r3 = n += -1.55042541f;
-    n *= r1;
+    n *= 0.06086301f;
+    n += -0.62256169f;
+    n *= 0.49210915f;
+    n *= -1.82011878f;
+    r0 = n += -0.38636336f;
+    r1 = n *= -1.36388552f;
+    n = r1 *= n;
+    r2 = n += -0.64036614f;
+    r3 = n += -0.68829042f;
+    n *= 0.36398318f;
+    n += -1.61370397f;
+    n *= 1.10211980f;
+    n *= -1.53904009f;
+    r4 = n *= -2.03519869f;
+    n *= -1.48828316f;
+    r5 = n *= -0.20155196f;
+    n *= -0.07627602f;
+    r6 = n += 2.91883349f;
     n += r4;
-    n = r3 += n;
-    n = r2 += n;
-    n *= -1.52148724f;
-    n *= 1.26560843f;
-    n *= 0.53969491f;
-    n += -1.82685852f;
-    n += 1.05720747f;
-    n += r2;
-    n *= r0;
+    n *= r2;
+    r2 = n *= -0.61333251f;
+    r4 = n += -1.40450263f;
+    n += r3;
+    r3 = n *= 1.09013975f;
     n *= r3;
+    n *= r1;
+    n = r5 += n;
+    n *= r4;
+    n *= r5;
+    n += r6;
+    n *= r0;
+    n *= r2;
     return n;
 } // Solution

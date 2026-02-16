@@ -211,11 +211,7 @@ typedef struct FireStarterCodeInstruction {
     inline void RandomInstruction(unsigned long long& seed, unsigned int registers = FIRESTARTER_REGISTERS, unsigned int opcodes = FIRESTARTER_OPCODES)
     {
         reg = RANDOMMOD(seed, registers);
-#if FIRESTARTER_MADD
-        op = i & 1 ? Operation_data_add : Operation_data_multiply;
-#else
         op = fireStarterOpcodes[RANDOMMOD(seed, opcodes)];
-#endif
     } // RandomInstruction
 
     inline void RandomRegister(unsigned long long& seed, unsigned int registers = FIRESTARTER_REGISTERS)
@@ -227,11 +223,12 @@ typedef struct FireStarterCodeInstruction {
     {
 #if FIRESTARTER_FIRSTLIGHT
         switch (op) {
-            case Operation_noop:
-                break;
-
             case Operation_store:
                 data = n;
+                break;
+
+            case Operation_load:
+                n = data;
                 break;
 
             case Operation_square:
@@ -264,13 +261,6 @@ typedef struct FireStarterCodeInstruction {
         }
 #elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
         switch (op) {
-            case Operation_add:
-                n += data;
-                break;
-
-            case Operation_multiply:
-                n *= data;
-                break;
 
             case Operation_store:
                 data = n;
@@ -278,6 +268,14 @@ typedef struct FireStarterCodeInstruction {
 
             case Operation_load:
                 n = data;
+                break;
+
+            case Operation_multiply:
+                n *= data;
+                break;
+
+            case Operation_add:
+                n += data;
                 break;
         }
 #else
@@ -375,29 +373,15 @@ typedef struct FireStarterCode {
 
     inline float Evaluate(FireStarterData& data, float n, unsigned int instructions = FIRESTARTER_INSTRUCTIONS) const
     {
-#if FIRESTARTER_MADD
-        for (unsigned int i = 0; i < instructions; i += 2) {
-            n = data[c[i].reg] *= n;
-            n = data[c[i + 1].reg] += n;
-        }
-#else
         for (unsigned int i = 0; i < instructions; i++)
             c[i].Evaluate(data[c[i].reg], n);
-#endif
         return n;
     } // Evaluate
 
     inline float Evaluate(FireStarterSharedData& data, float n, unsigned int instructions = FIRESTARTER_INSTRUCTIONS) const
     {
-#if FIRESTARTER_MADD
-        for (unsigned int i = 0; i < instructions; i += 2) {
-            n = data[c[i].reg] *= n;
-            n = data[c[i + 1].reg] += n;
-        }
-#else
         for (unsigned int i = 0; i < instructions; i++)
             c[i].Evaluate(data[c[i].reg], n);
-#endif
         return n;
     } // Evaluate
 
