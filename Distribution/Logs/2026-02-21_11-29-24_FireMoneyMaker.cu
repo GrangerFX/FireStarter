@@ -107,7 +107,7 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
     float sessionsResult = 0.0f;
     unsigned int sessions = settings->m_sessions * settings->m_stocks;
     unsigned int stock = 0;
-#if 1
+#if 0
     unsigned int variation = settings->m_variation + 1;                             // Don't optimize the validation days.
 #else
     unsigned int variation = settings->m_validation + settings->m_variation + 1;    // Also test the validation days to compare with not optimizing the validation days.

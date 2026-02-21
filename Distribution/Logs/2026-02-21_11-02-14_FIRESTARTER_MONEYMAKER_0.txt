@@ -1,0 +1,52 @@
+CUDA devices = 2
+Device 0: NVIDIA GeForce RTX 5090
+Device 1: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 4
+
+stocks = 1
+sessions = 32
+history = 488
+variation = 0
+trading = 64
+funds = 1000.000000f
+
+mode = FIRESTARTER_MONEYMAKER
+evolveSeed = 0
+optimizeSeed = 0
+tests = 1
+streams = 1
+units = 1
+states = 1
+population = 348160
+generations = 1
+passes = 384
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=27.11026764%  Time=18.2942 Seconds  Run Time=18.6147 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=15.5889 Seconds  Run Time=15.8796 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=19.2105 Seconds  Run Time=19.5083 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=31.44664764%  Time=18.9198 Seconds  Run Time=19.2206 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=15.6129 Seconds  Run Time=15.9027 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=15.6796 Seconds  Run Time=15.9709 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=16.9270 Seconds  Run Time=17.2223 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=15.6039 Seconds  Run Time=15.8979 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=15.6143 Seconds  Run Time=15.7709 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=15.6043 Seconds  Run Time=15.8987 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=15.6204 Seconds  Run Time=15.9111 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=18.9678 Seconds  Run Time=19.2589 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=17.1588 Seconds  Run Time=17.4492 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14445686%  Time=17.8957 Seconds  Run Time=18.1868 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=-0.29139519%  Time=10.5646 Seconds  Run Time=10.8561 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=27.11026764%  Time=18.3869 Seconds  Run Time=18.4053 Seconds

@@ -268,30 +268,30 @@ typedef struct FireStarterCodeInstruction {
                 break;
         }
 #elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
-#if 1
-        
+#if 0        
         if (op == Operation_multiply)
             n *= data;
         else if (op == Operation_add)
             n += data;
         else
             data = n;
-#else
+#endif
+#if 1
         switch (op) {
-            case Operation_store:
-                data = n;
-                break;
-
-            case Operation_load:
-                n = data;
-                break;
-
             case Operation_multiply:
                 n *= data;
                 break;
 
             case Operation_add:
                 n += data;
+                break;
+
+            case Operation_store:
+                data = n;
+                break;
+
+            case Operation_load:
+                n = data;
                 break;
         }
 #endif

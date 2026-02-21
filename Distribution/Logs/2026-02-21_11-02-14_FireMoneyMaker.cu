@@ -107,15 +107,9 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
     float sessionsResult = 0.0f;
     unsigned int sessions = settings->m_sessions * settings->m_stocks;
     unsigned int stock = 0;
-#if 1
-    unsigned int variation = settings->m_variation + 1;                             // Don't optimize the validation days.
-#else
-    unsigned int variation = settings->m_validation + settings->m_variation + 1;    // Also test the validation days to compare with not optimizing the validation days.
-#endif
-
     for (unsigned int session = 0; session < sessions; session++) {
         unsigned long long sessionSeed = SEED9(session) + seed;
-        unsigned int sessionStart = RANDOMMOD(sessionSeed, variation);
+        unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
         unsigned int sessionDays = settings->m_trading;
         float stockResult = settings->m_startResult;
         if (!MoneyEvolveEvaluate(settings, code, data, stocks->Stock(stock + settings->m_stock), sessionStart, sessionDays, stockResult))

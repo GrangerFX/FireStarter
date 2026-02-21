@@ -6,6 +6,38 @@
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
 // EVALUATE //
+    n += data[0];
+    data[1] = n;
+    data[2] = n;
+    n = data[3];
+    n = data[2];
+    n *= data[4];
+    data[5] = n;
+    data[6] = n;
+    n *= data[7];
+    data[2] = n;
+    n = data[6];
+    data[7] = n;
+    data[8] = n;
+    n += data[9];
+    n = data[10];
+    data[8] = n;
+    n += data[11];
+    n *= data[12];
+    n = data[13];
+    data[11] = n;
+    n += data[8];
+    n = data[14];
+    n += data[15];
+    data[12] = n;
+    n *= data[16];
+    n *= data[0];
+    n = data[3];
+    n = data[12];
+    n += data[2];
+    n += data[17];
+    n += data[9];
+    n += data[18];
 // END //
     return n;
 } // MoneyCompiledEvaluate
@@ -113,15 +145,9 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
     float sessionsResult = 0.0f;
     unsigned int sessions = settings->m_sessions * settings->m_stocks;
     unsigned int stock = 0;
-#if 1
-    unsigned int variation = settings->m_variation + 1;                             // Don't optimize the validation days.
-#else
-    unsigned int variation = settings->m_validation + settings->m_variation + 1;    // Also test the validation days to compare with not optimizing the validation days.
-#endif
-
     for (unsigned int session = 0; session < sessions; session++) {
         unsigned long long sessionSeed = SEED9(session) + seed;
-        unsigned int sessionStart = RANDOMMOD(sessionSeed, variation);
+        unsigned int sessionStart = RANDOMMOD(sessionSeed, settings->m_variation + 1);
         unsigned int sessionDays = settings->m_trading;
         float stockResult = settings->m_startResult;
 

@@ -7,7 +7,7 @@
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
-#define MONEYMAKER_VARIATION        128         // Variation modulo for the stock data start offset
+#define MONEYMAKER_VARIATION        360         // Variation modulo for the stock data start offset
 #define MONEYMAKER_TRADING          64          // Days used for stock trading
 #define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
 #define MONEYMAKER_ANNUAL           252         // Trading days per year for annualized returns.

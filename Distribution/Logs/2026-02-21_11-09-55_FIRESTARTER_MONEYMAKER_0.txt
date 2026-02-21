@@ -1,0 +1,50 @@
+CUDA devices = 2
+Device 0: NVIDIA GeForce RTX 5090
+Device 1: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 4
+
+stocks = 1
+sessions = 64
+history = 488
+variation = 0
+trading = 64
+funds = 1000.000000f
+
+mode = FIRESTARTER_MONEYMAKER
+evolveSeed = 0
+optimizeSeed = 0
+tests = 1
+streams = 1
+units = 1
+states = 1
+population = 348160
+generations = 1
+passes = 384
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=27.11026764%  Time=36.5202 Seconds  Run Time=36.6910 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=59.81562042%  Time=53.5281 Seconds  Run Time=53.8286 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=56.78901672%  Time=45.4479 Seconds  Run Time=45.7632 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=19.03531647%  Time=35.4325 Seconds  Run Time=35.7414 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=31.44063950%  Time=37.9389 Seconds  Run Time=38.1061 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=35.46760178%  Time=38.6455 Seconds  Run Time=38.9535 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14595795%  Time=33.0117 Seconds  Run Time=33.3182 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14595795%  Time=36.3340 Seconds  Run Time=36.6437 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14595795%  Time=31.3652 Seconds  Run Time=31.5313 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14595795%  Time=38.5840 Seconds  Run Time=38.7507 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=32.85856247%  Time=38.5545 Seconds  Run Time=38.8592 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=58.85431671%  Time=50.0520 Seconds  Run Time=50.3635 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14595795%  Time=31.2407 Seconds  Run Time=31.4066 Seconds
+FIRESTARTER_MONEYMAKER: Generation=  1  Best=26.14595795%  Time=31.3791 Seconds  Run Time=31.5444 Seconds

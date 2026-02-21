@@ -1,12 +1,12 @@
 #pragma once
 #include "FireStarterState.h"
 
-// Run date: 02/21/26 12:13:13 Pacific Standard Time
-// Run duration = 917.778588 seconds
+// Run date: 02/21/26 11:29:24 Pacific Standard Time
+// Run duration = 714.182909 seconds
 // Run test = 0
 // Run generation = 1
 // Run evolution = 0
-// Run max result = 0.99995524
+// Run max result = 0.99975389
 
 // Run variations = 1
 // Run instructions = 32
@@ -78,34 +78,34 @@ inline void LoadSettings(FireStarterSettings& settings)
 // Variation: 0
 inline void LoadVariation0(FireStarterResult* result)
 {
-    *(result->MaxResult()) = 0.99995524f;
+    *(result->MaxResult()) = 0.99975389f;
     *(result->EvolveAge1()) = 1;
     *(result->EvolveAge2()) = 0;
     FireStarterData *data = result->Data();
-    data->d[0] = -0.69815719f;
-    data->d[1] = -0.34535515f;
-    data->d[2] = -0.44368905f;
-    data->d[3] = 0.09832863f;
-    data->d[4] = 0.21280445f;
-    data->d[5] = -0.98837918f;
-    data->d[6] = 0.77997637f;
-    data->d[7] = 0.83465153f;
-    data->d[8] = -0.97635227f;
-    data->d[9] = -0.91027719f;
-    data->d[10] = 0.87259066f;
-    data->d[11] = -0.47829527f;
-    data->d[12] = -0.44722599f;
-    data->d[13] = 0.54958290f;
-    data->d[14] = 0.86987466f;
-    data->d[15] = 0.05732891f;
-    data->d[16] = 0.96524501f;
-    data->d[17] = 0.11671919f;
-    data->d[18] = 0.00000000f;
-    data->d[19] = 0.00000000f;
-    data->d[20] = 0.00000000f;
-    data->d[21] = 0.00000000f;
-    data->d[22] = 0.00000000f;
-    data->d[23] = 0.00000000f;
+    data->d[0] = -0.70597517f;
+    data->d[1] = -0.50853759f;
+    data->d[2] = 0.33330628f;
+    data->d[3] = 0.92933512f;
+    data->d[4] = -0.59427547f;
+    data->d[5] = 0.90233576f;
+    data->d[6] = 0.32836863f;
+    data->d[7] = 0.43145534f;
+    data->d[8] = -0.94177556f;
+    data->d[9] = -0.46426105f;
+    data->d[10] = 0.79127997f;
+    data->d[11] = 0.14442140f;
+    data->d[12] = -0.97871447f;
+    data->d[13] = -0.52819937f;
+    data->d[14] = -0.07901499f;
+    data->d[15] = 0.41033551f;
+    data->d[16] = 0.41284692f;
+    data->d[17] = 0.59449291f;
+    data->d[18] = -0.62201965f;
+    data->d[19] = -0.31669414f;
+    data->d[20] = -0.80335838f;
+    data->d[21] = 0.19589131f;
+    data->d[22] = 0.64818627f;
+    data->d[23] = -0.84838885f;
     data->d[24] = 0.00000000f;
     data->d[25] = 0.00000000f;
     data->d[26] = 0.00000000f;
@@ -121,38 +121,38 @@ inline void LoadResult(FireStarterState& state)
 
 inline unsigned int LoadCode(FireStarterCode* code)
 {
-    code->SetOperation(0, (FireStarterOpcode)9, 0);
+    code->SetOperation(0, (FireStarterOpcode)3, 0);
     code->SetOperation(1, (FireStarterOpcode)9, 1);
-    code->SetOperation(2, (FireStarterOpcode)5, 2);
-    code->SetOperation(3, (FireStarterOpcode)10, 3);
+    code->SetOperation(2, (FireStarterOpcode)9, 2);
+    code->SetOperation(3, (FireStarterOpcode)9, 3);
     code->SetOperation(4, (FireStarterOpcode)9, 4);
-    code->SetOperation(5, (FireStarterOpcode)3, 5);
-    code->SetOperation(6, (FireStarterOpcode)10, 6);
-    code->SetOperation(7, (FireStarterOpcode)3, 7);
-    code->SetOperation(8, (FireStarterOpcode)5, 8);
-    code->SetOperation(9, (FireStarterOpcode)10, 9);
-    code->SetOperation(10, (FireStarterOpcode)9, 2);
-    code->SetOperation(11, (FireStarterOpcode)9, 0);
-    code->SetOperation(12, (FireStarterOpcode)10, 10);
-    code->SetOperation(13, (FireStarterOpcode)5, 0);
-    code->SetOperation(14, (FireStarterOpcode)5, 11);
+    code->SetOperation(5, (FireStarterOpcode)10, 5);
+    code->SetOperation(6, (FireStarterOpcode)10, 4);
+    code->SetOperation(7, (FireStarterOpcode)10, 6);
+    code->SetOperation(8, (FireStarterOpcode)10, 7);
+    code->SetOperation(9, (FireStarterOpcode)5, 8);
+    code->SetOperation(10, (FireStarterOpcode)10, 9);
+    code->SetOperation(11, (FireStarterOpcode)3, 0);
+    code->SetOperation(12, (FireStarterOpcode)5, 9);
+    code->SetOperation(13, (FireStarterOpcode)10, 10);
+    code->SetOperation(14, (FireStarterOpcode)10, 11);
     code->SetOperation(15, (FireStarterOpcode)9, 12);
-    code->SetOperation(16, (FireStarterOpcode)10, 11);
-    code->SetOperation(17, (FireStarterOpcode)10, 13);
-    code->SetOperation(18, (FireStarterOpcode)5, 2);
-    code->SetOperation(19, (FireStarterOpcode)5, 14);
-    code->SetOperation(20, (FireStarterOpcode)5, 15);
-    code->SetOperation(21, (FireStarterOpcode)9, 16);
-    code->SetOperation(22, (FireStarterOpcode)5, 11);
-    code->SetOperation(23, (FireStarterOpcode)10, 9);
-    code->SetOperation(24, (FireStarterOpcode)3, 2);
-    code->SetOperation(25, (FireStarterOpcode)10, 17);
-    code->SetOperation(26, (FireStarterOpcode)10, 1);
-    code->SetOperation(27, (FireStarterOpcode)5, 5);
-    code->SetOperation(28, (FireStarterOpcode)9, 13);
-    code->SetOperation(29, (FireStarterOpcode)3, 16);
-    code->SetOperation(30, (FireStarterOpcode)3, 1);
-    code->SetOperation(31, (FireStarterOpcode)9, 3);
+    code->SetOperation(16, (FireStarterOpcode)9, 13);
+    code->SetOperation(17, (FireStarterOpcode)10, 4);
+    code->SetOperation(18, (FireStarterOpcode)9, 14);
+    code->SetOperation(19, (FireStarterOpcode)5, 15);
+    code->SetOperation(20, (FireStarterOpcode)5, 16);
+    code->SetOperation(21, (FireStarterOpcode)10, 17);
+    code->SetOperation(22, (FireStarterOpcode)10, 18);
+    code->SetOperation(23, (FireStarterOpcode)9, 19);
+    code->SetOperation(24, (FireStarterOpcode)3, 20);
+    code->SetOperation(25, (FireStarterOpcode)10, 21);
+    code->SetOperation(26, (FireStarterOpcode)10, 4);
+    code->SetOperation(27, (FireStarterOpcode)9, 0);
+    code->SetOperation(28, (FireStarterOpcode)3, 5);
+    code->SetOperation(29, (FireStarterOpcode)5, 22);
+    code->SetOperation(30, (FireStarterOpcode)3, 5);
+    code->SetOperation(31, (FireStarterOpcode)9, 23);
     return code->Optimize();
 } // LoadCode
 
@@ -172,7 +172,7 @@ inline void LoadState(FireStarterState& state)
     state.m_test = 0;
     state.m_seed = 1610532691304413459;
     state.m_optimize_pass = 0;
-    state.m_bestResult = 0.99995524f;
+    state.m_bestResult = 0.99975389f;
     state.m_oldResult = 10.00000000f;
     state.m_evolveWeight = 0.000000f;
     state.m_optimizeValid = true;
