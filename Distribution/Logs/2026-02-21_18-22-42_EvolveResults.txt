@@ -1,0 +1,35 @@
+AAPL:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=  13.26%  Duration:  1096.9  Run Duration:  1097.2
+
+Best Returns[0]=  13.26%
+AAPL: Optimize Returns=  29.24%  Best Returns=  29.24%  Duration:   146.3  Run Duration:  1243.5 *******
+Trading: Wins=  55.56%  Returns=   1.29%  Stock= -27.99%  Difference==  29.28%   Validation: Wins=  58.73%  Returns=  69.91%  Stock= 141.24%  Difference== -71.33%   
+
+Best Returns[1]=   7.54%
+AAPL: Optimize Returns=  54.60%  Best Returns=  54.60%  Duration:   166.5  Run Duration:  1410.0 *******
+Trading: Wins=  65.08%  Returns=  26.57%  Stock= -27.99%  Difference==  54.56%   Validation: Wins=  31.75%  Returns=   7.55%  Stock= 141.24%  Difference==-133.70%   
+
+Best Returns[2]=   7.07%
+AAPL: Optimize Returns=  52.77%  Best Returns=  52.77%  Duration:   218.0  Run Duration:  1628.0 *******
+Trading: Wins=  65.08%  Returns=  24.85%  Stock= -27.99%  Difference==  52.84%   Validation Failed!
+
+Best Returns[3]=   4.26%
+AAPL: Optimize Returns=  44.20%  Best Returns=  44.20%  Duration:   150.6  Run Duration:  1778.6 *******
+Trading: Wins=  55.56%  Returns=  16.14%  Stock= -27.99%  Difference==  44.12%   Validation: Wins=  34.92%  Returns=   7.48%  Stock= 141.24%  Difference==-133.77%   
+
+Best Returns[4]=   3.69%
+AAPL: Optimize Returns=  21.92%  Best Returns=  21.92%  Duration:   127.6  Run Duration:  1906.3 *******
+Trading: Wins=  55.56%  Returns=  -6.09%  Stock= -27.99%  Difference==  21.90%   Validation: Wins=  66.67%  Returns=  85.23%  Stock= 141.24%  Difference== -56.02%   
+
+Best Returns[5]=   3.52%
+AAPL: Optimize Returns=  21.92%  Best Returns=  21.92%  Duration:   128.1  Run Duration:  2034.4 *******
+Trading: Wins=  55.56%  Returns=  -6.09%  Stock= -27.99%  Difference==  21.90%   Validation: Wins=  68.25%  Returns=  93.24%  Stock= 141.24%  Difference== -48.01%   
+
+Best Returns[6]=   3.52%
+AAPL: Optimize Returns=  37.76%  Best Returns=  37.76%  Duration:   135.4  Run Duration:  2169.8 *******
+Trading: Wins=  61.90%  Returns=   9.82%  Stock= -27.99%  Difference==  37.81%   Validation: Wins=  39.68%  Returns=  27.02%  Stock= 141.24%  Difference==-114.22%   
+
+Best Returns[7]=   3.52%
+AAPL: Optimize Returns=  37.76%  Best Returns=  37.76%  Duration:   131.3  Run Duration:  2301.1 *******
+Trading: Wins=  61.90%  Returns=   9.82%  Stock= -27.99%  Difference==  37.81%   Validation: Wins=  39.68%  Returns=  27.02%  Stock= 141.24%  Difference==-114.22%   
+
+Best Returns[8]=   3.47%

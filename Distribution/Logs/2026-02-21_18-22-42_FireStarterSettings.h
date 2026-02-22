@@ -19,7 +19,7 @@
 #define MONEYMAKER_ADDEDVALUE       1           // Set to 1 to compare the value of the predicted trades vs a buy-and-hold strategy.
 #define MONEYMAKER_WINS             0           // Set to 1 to grade by wins vs losses. Set to 0 for profits.
 #define MONEYMAKER_EVOLVE_EACH      0           // Set to 1 to evolve each stock individually
-#define MONEYMAKER_OPTIMIZE_SINGLE  1           // Set to 1 to optimize using a single session
+#define MONEYMAKER_OPTIMIZE_SINGLE  0           // Set to 1 to optimize using a single session
 #define MONEYMAKER_OPTIMIZE_EACH    1           // Set to 1 to optimize each stock individually
 #define MONEYMAKER_OPTIMIZE_ALL     1           // Set to 1 to optimize all the best codes.
 
