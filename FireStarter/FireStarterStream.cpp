@@ -806,6 +806,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 #endif
 
                             // Test the trading on the same stocks used for optimization.
+                            executeOptimize->ExecuteMoneyTest(optimizeState, optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
                             const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
                             if (tradingResults) {
                                 float tradingAverage = 0.0f;

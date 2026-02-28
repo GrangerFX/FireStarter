@@ -27,8 +27,6 @@ private:
     MoneyMakerStocks* m_deviceTradingResults = nullptr;
     FireStarterData* m_hostTradingData = nullptr;
     FireStarterData* m_deviceTradingData = nullptr;
-    FireStarterCode* m_hostTradingCode = nullptr;
-    FireStarterCode* m_deviceTradingCode = nullptr;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
@@ -46,7 +44,6 @@ private:
     size_t m_networksSize = 0;
     size_t m_stocksSize = 0;
     size_t m_tradingDataSize = 0;
-    size_t m_tradingCodeSize = 0;
     size_t m_codesSize = 0;
     size_t m_parentCodeSize = 0;
     size_t m_executeIndex = 0;
@@ -65,6 +62,7 @@ private:
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
     void ExecuteMoneyOptimizePass(FireStarterState& state);
+    void ExecuteMoneyTestPass(FireStarterState& state, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays);
     bool GenerateEvolve(unsigned int mode);
     bool GenerateOptimize(FireStarterState& state);
     bool Compile(FireStarterJob* &job);
@@ -84,6 +82,7 @@ public:
     void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete);
     void ExecuteOptimize(FireStarterState& optimizeState);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
+    MoneyMakerStocks* ExecuteMoneyTest(FireStarterState& testState, unsigned int startDay = MONEYMAKER_VARIATION, unsigned int tradingDays = MONEYMAKER_TRADING, unsigned int validationDays = MONEYMAKER_VALIDATION);
     void ExecuteRandom(void);
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);

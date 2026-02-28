@@ -6,6 +6,38 @@
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
 // EVALUATE //
+    data[0] = n;
+    data[1] = n;
+    n += data[2];
+    data[3] = n;
+    data[4] = n;
+    n = data[5];
+    n += data[6];
+    n = data[7];
+    n = data[8];
+    n = data[9];
+    n += data[10];
+    data[11] = n;
+    n += data[10];
+    n = data[12];
+    n = data[13];
+    n *= data[7];
+    n += data[14];
+    n *= data[5];
+    data[15] = n;
+    data[7] = n;
+    n += data[5];
+    n += data[16];
+    n = data[17];
+    data[18] = n;
+    n *= data[19];
+    data[2] = n;
+    n *= data[10];
+    n += data[1];
+    data[10] = n;
+    n *= data[11];
+    n *= data[5];
+    n *= data[20];
 // END //
     return n;
 } // MoneyCompiledEvaluate
@@ -256,132 +288,116 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
 } // MoneyOptimizer
 
 // Note: The tester combines the variation with the trading days for complete evaluation.
-inline bool MoneyTesterEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStock& stock, MoneyMakerStock& trades, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays)
+inline bool MoneyTesterEvaluate(const FireStarterSettings* settings, const FireStarterData& data, const MoneyMakerStock& stock, MoneyMakerStock& trades)
 {
     FireStarterData workData(data);
+    unsigned int tradingDays = settings->m_trading;
+    unsigned int validationDays = settings->m_validation;
     bool holding = false;
     unsigned int wins = 0;
     float startingFunds = settings->m_funds;
     float funds = startingFunds;
     unsigned int shares = 0;
-    unsigned int index = startDay;
+    unsigned int index = settings->m_variation;
     float oldPrice = stock[index];
-
-    // Initialize the trading and validation results to 0.
-    trades.tradingResult = 0.0f;
-    trades.tradingWins = 0.0f;
-    trades.validationResult = 0.0f;
-    trades.validationWins = 0.0f;
 
     // Use the evaluation to trade the stock.
     // Starts at 1 because the first day is used to set the oldPrice.
-    if (tradingDays > 1) {
-        trades[index] = 0.0f;
-        for (unsigned int i = 1; i < tradingDays; i++) {
-            float newPrice = stock[++index];
-            float priceChange = newPrice / oldPrice;
-            if ((newPrice >= oldPrice) == holding)
-                wins++;
-            oldPrice = newPrice;
+    trades[0] = 0.0f;
+    for (unsigned int i = 1; i < tradingDays; i++) {
+        float newPrice = stock[++index];
+        float priceChange = newPrice / oldPrice;
+        if ((newPrice >= oldPrice) == holding)
+            wins++;
+        oldPrice = newPrice;
 
-            // Trading evaluation using the result to buy or sell shares.
-            float n = MoneyCompiledEvaluate(workData, priceChange);
-            trades[index] = n;
-            if (!isfinite(n))
-                return false;
+        // Trading evaluation using the result to buy or sell shares.
+        float n = MoneyCompiledEvaluate(workData, priceChange);
+        trades[index] = n;
+        if (!isfinite(n))
+            return false;
 
-            // If the evaluation >= 1.0f, buy shares. If below 1.0f, sell shares.
-            if (n >= 0.0f) {
-                holding = true;
-                if (!shares) {
-                    shares = (unsigned int)(funds / newPrice);
-                    funds -= shares * newPrice;
-                }
-            } else {
-                holding = false;
-                if (shares) {
-                    funds += newPrice * shares;
-                    shares = 0;
-                }
+        // If the evaluation >= 1.0f, buy shares. If below 1.0f, sell shares.
+        if (n >= 0.0f) {
+            holding = true;
+            if (!shares) {
+                shares = (unsigned int)(funds / newPrice);
+                funds -= shares * newPrice;
             }
-        }
-
-        // The final funds after selling remaining shares.
-        // Note: The final day of trading is undone by this line of code.
-        float tradingFunds = funds + shares * stock[index];
-        unsigned int tradingWins = wins;
-
-        // Caclulate the trading profit and daily profit.
-        float tradingProfit = tradingFunds - startingFunds;
-        float tradingPercent = tradingProfit / startingFunds;
-        float tradingDailyPercent = tradingPercent / (tradingDays - 1);
-
-        // Calculate the final results (not inverted).
-        trades.tradingResult = tradingDailyPercent;
-
-        // The winning trade percent is also calculated. This makes it easier to compare predictive power.
-        trades.tradingWins = tradingWins / float(tradingDays - 1);  // Winning trade percent.
-        
-        // Validation of future days not used during evolution or optimization.
-        // The validation uses the same work data as the trading.
-        if (validationDays > 0) {
-            trades[index] = 0.0f;
-            for (unsigned int i = 0; i < validationDays; i++) {
-                float newPrice = stock[++index];
-                float priceChange = newPrice / oldPrice;
-                if ((newPrice >= oldPrice) == holding)
-                    wins++;
-                oldPrice = newPrice;
-
-                // Trading evaluation using the result to buy or sell shares.
-                float n = MoneyCompiledEvaluate(workData, priceChange);
-                trades[index] = n;
-                if (!isfinite(n))
-                    return false;
-
-                // If the evaluation >= 1.0f, buy shares. If below 1.0f, sell shares.
-                if (n >= 0.0f) {
-                    holding = true;
-                    if (!shares) {
-                        shares = (unsigned int)(funds / newPrice);
-                        funds -= shares * newPrice;
-                    }
-                } else {
-                    holding = false;
-                    if (shares) {
-                        funds += newPrice * shares;
-                        shares = 0;
-                    }
-                }
+        } else {
+            holding = false;
+            if (shares) {
+                funds += newPrice * shares;
+                shares = 0;
             }
-
-            // The final validation funds and wins after selling remaining shares.
-            // Note: The final day of validation is undone by this line of code.
-            float validationFunds = funds + shares * stock[index];
-            unsigned int validationWins = wins - tradingWins;
-
-            // Min and max values are not used.
-            trades.minValue = 0.0f;
-            trades.maxValue = 0.0f;
-
-            // Caclulate the trading profit and daily profit.
-            float validationProfit = validationFunds - tradingFunds;
-            float validationPercent = validationProfit / tradingFunds;
-            float validationDailyPercent = validationPercent / (validationDays - 1);
-
-            // Calculate the final results (not inverted).
-            trades.validationResult = validationDailyPercent;
-
-            // The winning trade percent is also calculated. This makes it easier to compare predictive power.
-            trades.validationWins = validationWins / float(validationDays - 1); // Winning validation percent.
         }
     }
+
+    // The final funds after selling remaining shares.
+    // Note: The final day of trading is undone by this line of code.
+    float tradingFunds = funds + shares * stock[index];
+    unsigned int tradingWins = wins;
+
+    // Validation of future days not used during evolution or optimization.
+    for (unsigned int i = 1; i < validationDays; i++) {
+        float newPrice = stock[++index];
+        float priceChange = newPrice / oldPrice;
+        if ((newPrice >= oldPrice) == holding)
+            wins++;
+        oldPrice = newPrice;
+
+        // Trading evaluation using the result to buy or sell shares.
+        float n = MoneyCompiledEvaluate(workData, priceChange);
+        trades[index] = n;
+        if (!isfinite(n))
+            return false;
+
+        // If the evaluation >= 1.0f, buy shares. If below 1.0f, sell shares.
+        if (n >= 0.0f) {
+            holding = true;
+            if (!shares) {
+                shares = (unsigned int)(funds / newPrice);
+                funds -= shares * newPrice;
+            }
+        } else {
+            holding = false;
+            if (shares) {
+                funds += newPrice * shares;
+                shares = 0;
+            }
+        }
+    }
+
+    // The final validation funds and wins after selling remaining shares.
+    // Note: The final day of validation is undone by this line of code.
+    float validationFunds = funds + shares * stock[index];
+    unsigned int validationWins = wins - tradingWins;
+
+    // Min and max values are not used.
+    trades.minValue = 0.0f;
+    trades.maxValue = 0.0f;
+
+    // Caclulate the trading profit and daily profit.
+    float tradingProfit = tradingFunds - startingFunds;
+    float tradingPercent = tradingProfit / startingFunds;
+    float tradingDailyPercent = tradingPercent / (tradingDays - 1);
+    float validationProfit = validationFunds - tradingFunds;
+    float validationPercent = validationProfit / tradingFunds;
+    float validationDailyPercent = validationPercent / (validationDays - 1);
+
+    // Calculate the final results (not inverted).
+    trades.tradingResult = tradingDailyPercent;
+    trades.validationResult = validationDailyPercent;
+
+    // The winning trade percent is also calculated. This makes it easier to compare predictive power.
+    trades.tradingWins = tradingWins / float(tradingDays - 1);          // Winning trade percent.
+    trades.validationWins = validationWins / float(validationDays - 1); // Winning validation percent.
     return true;
 } // MoneyTesterEvaluate
 
-GPU_GLOBAL void MoneyTester(const FireStarterSettings* settings, const MoneyMakerStocks* stocks, MoneyMakerStocks* tradingResults, const FireStarterData* tradingData, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays)
+GPU_GLOBAL void MoneyTester(const FireStarterSettings* settings, const MoneyMakerStocks* stocks, MoneyMakerStocks* tradingResults, const FireStarterData* tradingData)
 {
     unsigned int stockIndex = threadIdx.x;
     if (stockIndex < settings->m_stocks)
-        MoneyTesterEvaluate(settings, *tradingData, stocks->Stock(stockIndex + settings->m_stock), tradingResults->Stock(stockIndex + settings->m_stock), startDay, tradingDays, validationDays);
+        MoneyTesterEvaluate(settings, *tradingData, stocks->Stock(stockIndex + settings->m_stock), tradingResults->Stock(stockIndex + settings->m_stock));
 } // MoneyTester
