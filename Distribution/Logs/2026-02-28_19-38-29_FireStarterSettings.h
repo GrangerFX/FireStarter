@@ -7,10 +7,11 @@
 #define FIRESTARTER_VARIATION       0           // Target function starting variaton
 #define FIRESTARTER_TARGET          0.000001f   // Target precision to stop processing
 
-#define MONEYMAKER_OFFSET           0           // Starting offset in days for stock trading.
+#define MONEYMAKER_OFFSET           100         // Starting offset in days for stock trading.
 #define MONEYMAKER_VARIATION        256         // Variation modulo for the stock data start offset
 #define MONEYMAKER_TRADING          64          // Days used for stock trading
 #define MONEYMAKER_VALIDATION       64          // Days used for prediction validation
+#define MONEYMAKER_ANNUAL           252         // Trading days per year for annualized returns.
 #define MONEYMAKER_HISTORY          (MONEYMAKER_VARIATION + MONEYMAKER_TRADING + MONEYMAKER_VALIDATION)   // Days of stock history data
 #define MONEYMAKER_STOCK            0           // Starting stock
 #define MONEYMAKER_STOCKS           1           // Stocks with history data
@@ -21,7 +22,7 @@
 #define MONEYMAKER_EVOLVE_EACH      0           // Set to 1 to evolve each stock individually
 #define MONEYMAKER_OPTIMIZE_SINGLE  0           // Set to 1 to optimize using a single session
 #define MONEYMAKER_OPTIMIZE_EACH    1           // Set to 1 to optimize each stock individually
-#define MONEYMAKER_OPTIMIZE_ALL     0           // Set to 1 to optimize all the best codes.
+#define MONEYMAKER_OPTIMIZE_ALL     1           // Set to 1 to optimize all the best codes.
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    0           // Generate the settings and code using the GPU.

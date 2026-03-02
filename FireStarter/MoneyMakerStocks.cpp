@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <vector>
 
-bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history, bool normalize)
+bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history, unsigned int offset, bool normalize)
 {
     bool result = false;
     FILE* file = NULL;
@@ -42,8 +42,12 @@ bool MoneyMakerStock::Load(const std::string& filePath, unsigned int stockSymbol
         
         // Load the training data from the most recent history of the stock.
         unsigned int dataSize = (unsigned int)theData.size();
-        if (dataSize >= history) {
+        if (dataSize > history) {
             unsigned int index = dataSize - (history + 1);
+            if (offset > index)
+                index = 0;
+            else
+                index -= offset;
             float lastData = theData[index++];
             minValue = lastData;
             maxValue = lastData;

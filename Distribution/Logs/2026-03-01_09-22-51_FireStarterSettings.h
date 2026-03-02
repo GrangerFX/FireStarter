@@ -21,7 +21,7 @@
 #define MONEYMAKER_EVOLVE_EACH      0           // Set to 1 to evolve each stock individually
 #define MONEYMAKER_OPTIMIZE_SINGLE  0           // Set to 1 to optimize using a single session
 #define MONEYMAKER_OPTIMIZE_EACH    1           // Set to 1 to optimize each stock individually
-#define MONEYMAKER_OPTIMIZE_ALL     0           // Set to 1 to optimize all the best codes.
+#define MONEYMAKER_OPTIMIZE_ALL     1           // Set to 1 to optimize all the best codes.
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    0           // Generate the settings and code using the GPU.

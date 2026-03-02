@@ -129,7 +129,7 @@ typedef struct MoneyMakerStock
             free(this);
     } // Delete
 
-    bool Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history = MONEYMAKER_HISTORY, bool normalize = false);
+    bool Load(const std::string& filePath, unsigned int stockSymbol, unsigned int history = MONEYMAKER_HISTORY, unsigned int offset = MONEYMAKER_OFFSET, bool normalize = false);
 #endif
 
     inline MoneyMakerStock(const struct MoneyMakerStock& stock)
@@ -317,14 +317,14 @@ public:
         return (MoneyMakerStocks*)(m_data.data());
     } // Stocks
 
-    inline bool AddStock(const std::string& path, unsigned int symbol,bool normalize = false)
+    inline bool AddStock(const std::string& path, unsigned int symbol, unsigned int offset = 0, bool normalize = false)
     {
         unsigned int numStocks = Stocks()->numStocks;
         unsigned int numDays = Stocks()->numDays;
         numStocks++;
         m_data.resize(MoneyMakerStocks::StocksSize(numStocks, numDays));
         Stocks()->numStocks = numStocks;
-        return Stocks()->StockData(numStocks - 1)->Load(path, symbol, numDays, normalize);
+        return Stocks()->StockData(numStocks - 1)->Load(path, symbol, numDays, offset, normalize);
     } // AddStock
 
     MoneyMakerManager(const FireStarterSettings& settings)

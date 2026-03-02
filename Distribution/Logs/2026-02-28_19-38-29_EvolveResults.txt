@@ -1,0 +1,225 @@
+AAPL:  Seed: 0  Test:   0  Generation=  0  Evolve Returns=   4.10%  Duration:  1091.2  Run Duration:  1091.7
+
+Best Returns[0]=   4.10%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   143.0  Run Duration:  1234.7 *******
+Trading 0: Wins=  58.73%  Returns=  30.19%  Stock=  32.07%  Difference==  -1.88%   
+Trading 1: Wins=  53.97%  Returns=  37.79%  Stock=  50.40%  Difference== -12.61%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[1]=   4.10%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   140.5  Run Duration:  1375.2 *******
+Trading 0: Wins=  57.14%  Returns=  27.55%  Stock=  32.07%  Difference==  -4.52%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[2]=   4.10%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   134.9  Run Duration:  1510.1 *******
+Trading 0: Wins=  58.73%  Returns=  30.59%  Stock=  32.07%  Difference==  -1.48%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=   2.23%  Stock=   5.50%  Difference==  -3.27%   
+
+Best Returns[3]=   4.10%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   143.1  Run Duration:  1653.3 *******
+Trading 0: Wins=  57.14%  Returns=  27.55%  Stock=  32.07%  Difference==  -4.52%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[4]=   4.10%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   145.6  Run Duration:  1798.9 *******
+Trading 0: Wins=  58.73%  Returns=  30.19%  Stock=  32.07%  Difference==  -1.88%   
+Trading 1: Wins=  53.97%  Returns=  37.79%  Stock=  50.40%  Difference== -12.61%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[5]=   4.10%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   148.4  Run Duration:  1947.2 *******
+Trading 0: Wins=  57.14%  Returns=  27.55%  Stock=  32.07%  Difference==  -4.52%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[6]=   3.70%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   144.0  Run Duration:  2091.2 *******
+Trading 0: Wins=  57.14%  Returns=  27.55%  Stock=  32.07%  Difference==  -4.52%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[7]=   3.30%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   152.5  Run Duration:  2243.7 *******
+Trading 0: Wins=  58.73%  Returns=  30.59%  Stock=  32.07%  Difference==  -1.48%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=   2.23%  Stock=   5.50%  Difference==  -3.27%   
+
+Best Returns[8]=   3.30%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   152.8  Run Duration:  2396.5 *******
+Trading 0: Wins=  57.14%  Returns=  27.55%  Stock=  32.07%  Difference==  -4.52%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[9]=   3.30%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   126.4  Run Duration:  2522.9 *******
+Trading 0: Wins=  58.73%  Returns=  30.19%  Stock=  32.07%  Difference==  -1.88%   
+Trading 1: Wins=  53.97%  Returns=  37.79%  Stock=  50.40%  Difference== -12.61%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[10]=   3.30%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   125.9  Run Duration:  2648.8 *******
+Trading 0: Wins=  57.14%  Returns=  27.55%  Stock=  32.07%  Difference==  -4.52%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[11]=   3.30%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   126.2  Run Duration:  2775.1 *******
+Trading 0: Wins=  57.14%  Returns=  27.55%  Stock=  32.07%  Difference==  -4.52%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=   2.23%  Stock=   5.50%  Difference==  -3.27%   
+
+Best Returns[12]=   3.30%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   154.5  Run Duration:  2929.5 *******
+Trading 0: Wins=  58.73%  Returns=  30.59%  Stock=  32.07%  Difference==  -1.48%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=   2.23%  Stock=   5.50%  Difference==  -3.27%   
+
+Best Returns[13]=   3.30%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   148.7  Run Duration:  3078.2 *******
+Trading 0: Wins=  57.14%  Returns=  27.55%  Stock=  32.07%  Difference==  -4.52%   
+Trading 1: Wins=  52.38%  Returns=  35.16%  Stock=  50.40%  Difference== -15.25%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   
+
+Best Returns[14]=   3.30%
+AAPL: Optimize Returns= -35.74%  Best Returns= -35.74%  Duration:    85.5  Run Duration:  3163.7 *******
+Trading 0: Wins=  60.32%  Returns=  25.23%  Stock=  32.07%  Difference==  -6.84%   
+Trading 1: Wins=  53.97%  Returns=  37.79%  Stock=  50.40%  Difference== -12.61%   
+Trading 2: Wins=  49.21%  Returns=  13.76%  Stock=  14.11%  Difference==  -0.35%   
+Trading 3: Wins=  41.27%  Returns= -44.10%  Stock= -45.85%  Difference==   1.75%   
+Trading 4: Wins=  44.44%  Returns= -25.05%  Stock= -29.13%  Difference==   4.08%   
+Trading 5: Wins=  63.49%  Returns=  83.43%  Stock=  96.02%  Difference== -12.60%   
+Trading 6: Wins=  66.67%  Returns=  95.34%  Stock= 115.41%  Difference== -20.07%   
+Trading 7: Wins=  65.08%  Returns=  56.13%  Stock=  54.66%  Difference==   1.46%   
+Trading 8: Wins=  60.32%  Returns=  15.85%  Stock=   9.16%  Difference==   6.69%   
+Trading 9: Wins=  55.56%  Returns=  10.59%  Stock=   8.94%  Difference==   1.65%   
+Validation: Wins=  57.14%  Returns=   5.37%  Stock=   5.50%  Difference==  -0.13%   
+
+Best Returns[15]=  -4.14%
+AAPL: Optimize Returns= -24.28%  Best Returns= -24.28%  Duration:   143.5  Run Duration:  3307.2 *******
+Trading 0: Wins=  58.73%  Returns=  30.19%  Stock=  32.07%  Difference==  -1.88%   
+Trading 1: Wins=  53.97%  Returns=  37.79%  Stock=  50.40%  Difference== -12.61%   
+Trading 2: Wins=  50.79%  Returns=  16.52%  Stock=  14.11%  Difference==   2.41%   
+Trading 3: Wins=  44.44%  Returns= -31.25%  Stock= -45.85%  Difference==  14.60%   
+Trading 4: Wins=  46.03%  Returns= -14.96%  Stock= -29.13%  Difference==  14.17%   
+Trading 5: Wins=  61.90%  Returns=  81.61%  Stock=  96.02%  Difference== -14.41%   
+Trading 6: Wins=  69.84%  Returns= 106.80%  Stock= 115.41%  Difference==  -8.61%   
+Trading 7: Wins=  71.43%  Returns=  75.48%  Stock=  54.66%  Difference==  20.82%   
+Trading 8: Wins=  61.90%  Returns=  22.18%  Stock=   9.16%  Difference==  13.02%   
+Trading 9: Wins=  53.97%  Returns=  12.00%  Stock=   8.94%  Difference==   3.06%   
+Validation: Wins=  55.56%  Returns=  -1.25%  Stock=   5.50%  Difference==  -6.75%   

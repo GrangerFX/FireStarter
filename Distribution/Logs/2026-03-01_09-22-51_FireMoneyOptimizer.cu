@@ -6,6 +6,38 @@
 inline float MoneyCompiledEvaluate(FireStarterData& data, float n)
 {
 // EVALUATE //
+    data[0] = n;
+    n = data[1];
+    data[2] = n;
+    n += data[3];
+    n = data[4];
+    n *= data[1];
+    n *= data[5];
+    n = data[6];
+    n = data[1];
+    n += data[7];
+    data[5] = n;
+    data[8] = n;
+    data[4] = n;
+    data[9] = n;
+    n = data[10];
+    n = data[11];
+    data[12] = n;
+    n *= data[13];
+    n = data[14];
+    n *= data[7];
+    n += data[6];
+    n = data[11];
+    data[4] = n;
+    n = data[15];
+    n += data[13];
+    n += data[1];
+    n += data[4];
+    n *= data[4];
+    n += data[0];
+    data[16] = n;
+    n += data[14];
+    data[17] = n;
 // END //
     return n;
 } // MoneyCompiledEvaluate
@@ -146,7 +178,7 @@ inline bool MoneyOptimizeEvaluateStocks(const FireStarterSettings* settings, con
 
         if (!MoneyOptimizeEvaluate(settings, data, stocks->Stock(stock + settings->m_stock), sessionStart, sessionDays, stockResult))
             return false;
-#if 0
+#if 1
         sessionsResult = MAX(sessionsResult, stockResult);
 #else
         sessionsResult += stockResult / sessions;

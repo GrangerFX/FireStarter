@@ -672,14 +672,14 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 
         // Load the stock market data;
         MoneyMakerManager stockManager(evolveSettings);
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL');
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA');
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/intc.us.txt", 'INTC');
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/msft.us.txt", 'MSFT');
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/qcom.us.txt", 'QCOM');
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amzn.us.txt", 'AMZN');
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/goog.us.txt", 'GOOG');
-        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt",  'AMD ');
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/aapl.us.txt", 'AAPL', evolveSettings.m_offset);
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/nvda.us.txt", 'NVDA', evolveSettings.m_offset);
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/intc.us.txt", 'INTC', evolveSettings.m_offset);
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/msft.us.txt", 'MSFT', evolveSettings.m_offset);
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/2/qcom.us.txt", 'QCOM', evolveSettings.m_offset);
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amzn.us.txt", 'AMZN', evolveSettings.m_offset);
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/goog.us.txt", 'GOOG', evolveSettings.m_offset);
+        stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt",  'AMD ', evolveSettings.m_offset);
         MoneyMakerStocks* stocks = stockManager.Stocks();
         unsigned int numStocks = stocks->size();
         executeEvolve->ExecuteSetStocks(stocks);
@@ -694,15 +694,13 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         optimizeSettings.m_stocks = 1;
 #if MONEYMAKER_OPTIMIZE_EACH
         // Optimize the entire trading and variation ranges in a single session.
-        optimizeSettings.m_sessions = 1;
-        optimizeSettings.m_variation = 0;
+        optimizeSettings.m_stocks = 1;
 #endif
 #elif MONEYMAKER_OPTIMIZE_EACH
         // Optimize each stock individually.
         unsigned int numEvolve = 1;
         unsigned int numOptimize = optimizeSettings.m_stocks;
         optimizeSettings.m_stocks = 1;
-        optimizeSettings.m_variation = 0;
 #else
         unsigned int numEvolve = 1;
         unsigned int numOptimize = 1;
@@ -803,9 +801,68 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             optimizeText += "\n";
 #else
                             optimizeText += Format("Optimize Returns=%7.2f%%  Optimize Duration: %7.1f  Run Duration: %7.1f  ", optimizeReturns, optimizeDuration, runDuration);
+                            optimizeText += "\n";
 #endif
 
-                            // Test the trading on the same stocks used for optimization.
+#if 1
+                            unsigned int numTests = 10;
+                            for (unsigned int i = 0; i <= numTests; i++) {
+                                unsigned int testStartDay, testNumDays;
+                                // Test the trading on the same stocks used for optimization.
+                                if (i == numTests) {
+                                    testStartDay = optimizeSettings.m_variation + optimizeSettings.m_trading;
+                                    testNumDays = optimizeSettings.m_validation;
+                                } else {
+                                    testStartDay = (optimizeSettings.m_variation * i) / (numTests - 1);
+                                    testNumDays = optimizeSettings.m_trading;
+                                }
+                                executeOptimize->ExecuteMoneyTest(optimizeState, testStartDay, testNumDays, 0);
+                                const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
+                                if (tradingResults) {
+                                    float tradingAverage = 0.0f;
+                                    float differenceAverage = 0.0f;
+                                    float tradingWinsAverage = 0.0f;
+                                    for (unsigned int tradeIndex = 0; tradeIndex < numTradingResults; tradeIndex++) {
+                                        unsigned int stockIndex = optimizeState.Settings().m_stock + tradeIndex;
+                                        const MoneyMakerStock& stock = stocks->Stock(stockIndex);
+                                        const MoneyMakerStock& tester = tradingResults->Stock(stockIndex);
+
+                                        if (numTradingResults > 1) {
+                                            char* symbol = (char*)&stock.symbol;
+                                            optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
+                                        }
+
+                                        unsigned int tradeFirstDay = testStartDay;
+                                        unsigned int tradeLastDay = testStartDay + testNumDays;
+                                        float tradeFirstValue = stock[tradeFirstDay];
+                                        float tradeLastValue = stock[tradeLastDay - 1];
+                                        float tradingProfit = tradeLastValue - tradeFirstValue;
+                                        float tradingPercent = tradingProfit / tradeFirstValue;
+                                        float tradingDailyPercent = tradingPercent / (testNumDays - 1);
+                                        float stockTradeReturns = MoneyMakerReturns(tradingDailyPercent);
+
+                                        float tradingResult = tester.tradingResult;
+                                        if (tradingResult) {
+                                            float tradingWins = 100.0f * tester.tradingWins;
+                                            float tradingReturns = MoneyMakerReturns(tradingResult);
+                                            float tradingDifference = tradingReturns - stockTradeReturns;
+                                            tradingAverage += tradingReturns / numOptimize;
+                                            differenceAverage += tradingDifference / numOptimize;
+                                            tradingWinsAverage += tradingWins / numOptimize;
+                                            if (i == numTests)
+                                                optimizeText += "Validation: ";
+                                            else
+                                                optimizeText += Format("Trading %u: ", i);
+                                            optimizeText += Format("Wins=%7.2f%%  Returns=%7.2f%%  Stock=%7.2f%%  Difference==%7.2f%%   ", tradingWins, tradingReturns, stockTradeReturns, tradingDifference);
+                                        } else
+                                            optimizeText += "Trading Failed!";
+                                        optimizeText += "\n";
+                                    }
+                                    if (numTradingResults > 1)
+                                        optimizeText += Format("Average Returns=%7.2f%%  Average Difference=%7.2f%%  Average Trading Wins=%7.2f%%  Average Validation Wins=%7.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage);
+                                }
+                            }
+#else
                             executeOptimize->ExecuteMoneyTest(optimizeState, optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
                             const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
                             if (tradingResults) {
@@ -822,8 +879,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                         optimizeText += Format("%c%c%c%c: ", symbol[3], symbol[2], symbol[1], symbol[0]);
                                     }
 
-                                    unsigned int tradingDays = optimizeSettings.m_variation + optimizeSettings.m_trading;
-                                    unsigned int tradeFirstDay = 0;
+                                    unsigned int tradingDays = optimizeSettings.m_trading;
+                                    unsigned int tradeFirstDay = optimizeSettings.m_variation;
                                     unsigned int tradeLastDay = tradeFirstDay + tradingDays;
                                     unsigned int validationDays = optimizeSettings.m_validation;
                                     unsigned int validationFirstDay = tradeLastDay;
@@ -867,6 +924,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                 if (numTradingResults > 1)
                                     optimizeText += Format("Average Returns=%7.2f%%  Average Difference=%7.2f%%  Average Trading Wins=%7.2f%%  Average Validation Wins=%7.2f%%\n\n", tradingAverage, differenceAverage, 100.0f * tradingWinsAverage);
                             }
+#endif
                             FireStarterSource::AppendSource(optimizeText, streamResultsPath);
                         }
 
