@@ -134,10 +134,10 @@ GPU_GLOBAL void Selecter(float* results, FireStarterResult* population, FireStar
     // Return the optimized best code.
     codes[member].Copy(bestCode);
 
-    // Return the array of results or the entire population data.
+    // Return the best result.
     results[member] = bestResult;
 
-    // Return the variation data for debugging.
+    // Return the population data for debugging.
     if (population)
         FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // Selecter

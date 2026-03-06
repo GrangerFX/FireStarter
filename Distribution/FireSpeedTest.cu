@@ -120,10 +120,10 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     // Return the optimized best code.
     codes[member].Copy(bestCode);
 
-    // Return the array of results or the entire population data.
+    // Return the best result.
     results[member] = bestResult;
 
-    // Return the variation data for debugging.
+    // Return the population data for debugging.
     if (population)
         FireStarterPopulation::PopulationResult(population, member, 0)->InitResult(data, bestResult);
 } // SpeedTest
@@ -253,10 +253,10 @@ GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireSta
     // Return the optimized best code.
     codes[member].Copy(bestCode);
 
-    // Return the array of results or the entire population data.
+    // Return the best result.
     results[member] = bestResult;
 
-    // Return the variation data for debugging.
+    // Return the population data for debugging.
     if (population)
         for (unsigned int v = 0; v < FIRESTARTER_VARIATIONS; v++)
             FireStarterPopulation::PopulationResult(population, member, v)->InitResult(data[v], variationResult[v]);

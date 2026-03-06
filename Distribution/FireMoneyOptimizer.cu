@@ -255,8 +255,7 @@ GPU_GLOBAL void MoneyOptimizer(const FireStarterSettings* settings, FireStarterR
     }
 
     // Return the best data, result and age.
-    if (newPopulation)
-        FireStarterPopulation::PopulationResult(newPopulation, member)->InitResult(data, result, evolveAge);
+    FireStarterPopulation::PopulationResult(newPopulation, member)->InitResult(data, result, evolveAge);
 } // MoneyOptimizer
 
 // Note: The tester combines the variation with the trading days for complete evaluation.

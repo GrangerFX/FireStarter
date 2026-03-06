@@ -130,6 +130,6 @@ GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterRes
             evolveAge = 1;
     }
 
-    if (newPopulation)
-        FireStarterPopulation::PopulationResult(newPopulation, member, variation)->InitResult(data, result, evolveAge, initAge);
+    // Return the best data, result and age.
+    FireStarterPopulation::PopulationResult(newPopulation, member, variation)->InitResult(data, result, evolveAge, initAge);
 } // Optimizer

@@ -223,11 +223,11 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     // Return the optimized best code.
     codes[member].Copy(bestCode);
 
-    // Return the array of results or the entire population data.
+    // Return the best result.
     results[member] = bestResult;
 
-    // Return the best data, result and age for debugging.
-    if (population && FIRESTARTER_EVOLVE_RESULTS)
+    // Return the population data for debugging.
+    if (population)
         FireStarterPopulation::PopulationResult(population, member)->InitResult(bestData, bestResult, bestAge);
 } // MoneyEvolve
 

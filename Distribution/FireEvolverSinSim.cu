@@ -88,11 +88,12 @@ GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, Fir
         }
     }
 
-    // Return the array of results or the entire population data.
+    // Return the best result.
     results[member] = bestResult;
 
-    // Return the variation data for debugging.
-    FireStarterPopulation::PopulationResult(population, member, variation)->InitResult(bestData, bestResult, bestAge);
+    // Return the population data for debugging.
+    if (population)
+        FireStarterPopulation::PopulationResult(population, member, variation)->InitResult(bestData, bestResult, bestAge);
 
     // Return the optimized best code.
     codes[member].Copy(bestCode);
