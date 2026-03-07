@@ -434,30 +434,27 @@ public:
     } // FireStarterResultVector
 }; // class FireStarterResultVector
 
-
-class FireStarterBestCodes {
-public:
-    std::set<std::vector<unsigned char>> m_testedCodes;
-    std::vector<FireStarterCodeVector> m_bestCodes;
-    std::vector<float> m_bestResults;
-    FireStarterSettings m_settings;
-    size_t m_codeSize = 0;
-    size_t m_maxCodes = 0;
-    size_t m_numCodes = 0;
-    float m_worstResult = 0.0f;
-
-    float GetBestResult(void);
-    const float GetBestCode(FireStarterCodeVector &bestCode);
-    bool AddCode(const FireStarterCode* code, float result);
-    float WorstResult(void);
-    void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
-    FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
-    FireStarterBestCodes(void);
-}; // class FireStarterBestCodes
-
-class FireStarterSerialBestCodes : public SerialThread {
+class FireStarterBestCodes : public SerialThread {
 private:
-    FireStarterBestCodes m_bestCodes;
+    class BestCodes {
+    public:
+        std::set<std::vector<unsigned char>> m_testedCodes;
+        std::vector<FireStarterCodeVector> m_bestCodes;
+        std::vector<float> m_bestResults;
+        FireStarterSettings m_settings;
+        size_t m_codeSize = 0;
+        size_t m_maxCodes = 0;
+        size_t m_numCodes = 0;
+        float m_worstResult = 0.0f;
+
+        float GetBestResult(void);
+        const float GetBestCode(FireStarterCodeVector& bestCode);
+        bool AddCode(const FireStarterCode* code, float result);
+        float WorstResult(void);
+        void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
+        BestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
+        BestCodes(void);
+    } m_bestCodes;
 
 public:
     float GetBestResult(void);
@@ -465,17 +462,17 @@ public:
     bool AddCode(const FireStarterCode* code, float result);
     float WorstResult(void);
     void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
-    FireStarterSerialBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
-    FireStarterSerialBestCodes(const FireStarterSerialBestCodes& copy);
-    FireStarterSerialBestCodes(void);
-}; // FireStarterSerialBestCodes
+    FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
+    FireStarterBestCodes(const FireStarterBestCodes& copy);
+    FireStarterBestCodes(void);
+}; // FireStarterBestCodes
 
 class FireStarterState {
 public:
     FireStarterSettings m_settings;
     FireStarterResultVector m_results;
     FireStarterCodeVector m_code;
-    FireStarterSerialBestCodes m_bestCodes;
+    FireStarterBestCodes m_bestCodes;
     SinSimNetwork m_network;
     SimpleTimer m_timer;
     std::string m_evaluateCode;

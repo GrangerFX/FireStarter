@@ -2,12 +2,12 @@
 #include "Format.h"
 #include <algorithm>
 
-float FireStarterBestCodes::GetBestResult(void)
+float FireStarterBestCodes::BestCodes::GetBestResult(void)
 {
     return m_numCodes ? m_bestResults[0] : 0.0f;
 } // GetBestResult
 
-const float FireStarterBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
+const float FireStarterBestCodes::BestCodes::GetBestCode(FireStarterCodeVector& bestCode)
 {
     if (!m_numCodes) {
         bestCode.InitCode();
@@ -26,7 +26,7 @@ const float FireStarterBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
     return bestResult;
 } // GetBestCode
 
-bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
+bool FireStarterBestCodes::BestCodes::AddCode(const FireStarterCode* code, float result)
 {
     // Skip bad results entirely.
     if (result >= m_worstResult)
@@ -64,12 +64,12 @@ bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
     return true;
 } // AddCode
 
-float FireStarterBestCodes::WorstResult(void)
+float FireStarterBestCodes::BestCodes::WorstResult(void)
 {
     return m_worstResult;
 } // WorstResult
 
-void FireStarterBestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
+void FireStarterBestCodes::BestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
 {
     m_settings = settings;
     m_maxCodes = maxCodes;
@@ -84,17 +84,17 @@ void FireStarterBestCodes::InitBestCodes(const FireStarterSettings& settings, si
     }
 } // InitBestCodes
 
-FireStarterBestCodes::FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes)
+FireStarterBestCodes::BestCodes::BestCodes(const FireStarterSettings& settings, size_t maxCodes)
 {
     InitBestCodes(settings, maxCodes);
-} // FireStarterBestCodes
+} // BestCodes
 
-FireStarterBestCodes::FireStarterBestCodes(void)
+FireStarterBestCodes::BestCodes::BestCodes(void)
 {
     InitBestCodes(FireStarterSettings());
-} // FireStarterBestCodes
+} // BestCodes
 
-float FireStarterSerialBestCodes::GetBestResult(void)
+float FireStarterBestCodes::GetBestResult(void)
 {
     float bestResult = 0.0f;
     DispatchSync([this, &bestResult] {
@@ -103,7 +103,7 @@ float FireStarterSerialBestCodes::GetBestResult(void)
     return bestResult;
 } // GetBestResult
 
-const float FireStarterSerialBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
+const float FireStarterBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
 {
     float result = 0.0f;
     DispatchSync([this, &bestCode, &result] {
@@ -112,7 +112,7 @@ const float FireStarterSerialBestCodes::GetBestCode(FireStarterCodeVector& bestC
     return result;
 } // GetBestCode
 
-bool FireStarterSerialBestCodes::AddCode(const FireStarterCode* code, float result)
+bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
 {
     bool added = false;
     DispatchAsync([this, code, result, &added] {
@@ -121,7 +121,7 @@ bool FireStarterSerialBestCodes::AddCode(const FireStarterCode* code, float resu
     return added;
 } // AddCode
 
-float FireStarterSerialBestCodes::WorstResult(void)
+float FireStarterBestCodes::WorstResult(void)
 {
     float worstResult = 0.0f;
     DispatchSync([this, &worstResult] {
@@ -130,26 +130,26 @@ float FireStarterSerialBestCodes::WorstResult(void)
     return worstResult;
 } // WorstResult
 
-void FireStarterSerialBestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
+void FireStarterBestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
 {
     DispatchAsync([this, settings, maxCodes] {
         m_bestCodes.InitBestCodes(settings, maxCodes);
     });
 } // InitBestCodes
 
-FireStarterSerialBestCodes::FireStarterSerialBestCodes(const FireStarterSettings& settings, size_t maxCodes) : SerialThread("BestCodes")
+FireStarterBestCodes::FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes) : SerialThread("BestCodes")
 {
     InitBestCodes(settings, maxCodes);
-} // FireStarterSerialBestCodes
+} // FireStarterBestCodes
 
-FireStarterSerialBestCodes::FireStarterSerialBestCodes(const FireStarterSerialBestCodes& copy) : SerialThread("BestCodes")
+FireStarterBestCodes::FireStarterBestCodes(const FireStarterBestCodes& copy) : SerialThread("BestCodes")
 {
     m_bestCodes = copy.m_bestCodes;
-} // FireStarterSerialBestCodes
+} // FireStarterBestCodes
 
-FireStarterSerialBestCodes::FireStarterSerialBestCodes(void) : SerialThread("BestCodes")
+FireStarterBestCodes::FireStarterBestCodes(void) : SerialThread("BestCodes")
 {
-} // FireStarterSerialBestCodes
+} // FireStarterBestCodes
 
 void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix, const std::string& postfix)
 {
