@@ -427,8 +427,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 }
 #else
                 // Get the best code to optimize.
-                const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
-                if (bestCode) {
+                FireStarterCodeVector bestCode(optimizeSettings);
+                float bestResult = evolveState.m_bestCodes.GetBestCode(bestCode);
+                if (bestResult) {
                     optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, 0, test);
                     optimizeState.CopyCode(bestCode);
 
@@ -645,15 +646,11 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
         FireStarterSettings evolveSettings(m_streamSettings);
-        FireStarterSettings optimizeSettings(m_streamSettings);
+        FireStarterSettings optimizeSettings(FIRESTARTER_MONEYOPTIMIZE);
         std::string streamResultsPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
 
         unsigned long long evolveID = 0;
         unsigned long long optimizeID = 0;
-
-        // Optimization for single variation optimization population.
-        optimizeSettings.m_population = FIRESTARTER_POPULATION;
-        optimizeSettings.m_passes = 384;
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
@@ -747,11 +744,12 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     // Get the best code to optimize.
                     unsigned int bestCount = 0;
                     float bestEvolveResult = 0.0f;
+                    FireStarterCodeVector bestCode(optimizeSettings);
 #if MONEYMAKER_OPTIMIZE_ALL
                     evolveText += "\n";
-                    while (const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode(&bestEvolveResult))
+                    while ((bestEvolveResult = evolveState.m_bestCodes.GetBestCode(bestCode)) != 0.0f)
 #else
-                    if (const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode(&bestEvolveResult))
+                    if ((bestEvolveResult = evolveState.m_bestCodes.GetBestCode(bestCode)) != 0.0f)
 #endif
                     {
                         // Compile the optimize code asynchronously.
@@ -1179,6 +1177,7 @@ void FireStarterStreams::ExecuteStreams(void)
                     streams[stream]->SinSimStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_MONEYMAKER:
+                case FIRESTARTER_MONEYOPTIMIZE:
                     streams[stream]->MoneyMakerStream(m_server, m_testCount);
                     break;
                 case FIRESTARTER_SPEED_TEST:

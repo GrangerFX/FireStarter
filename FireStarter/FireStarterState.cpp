@@ -4,28 +4,26 @@
 
 float FireStarterBestCodes::GetBestResult(void)
 {
-    if (!m_numCodes)
-        return 0.0f;
-    return m_bestResults[0];
+    return m_numCodes ? m_bestResults[0] : 0.0f;
 } // GetBestResult
 
-const FireStarterCode* FireStarterBestCodes::GetBestCode(float* result)
+const float FireStarterBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
 {
-    if (!m_numCodes)
-        return nullptr;
-    if (result)
-        *result = m_bestResults[0];
-    const FireStarterCodeVector& bestCode = m_bestCodes[0];
+    if (!m_numCodes) {
+        bestCode.InitCode();
+        return 0.0f;
+    }
+    bestCode = m_bestCodes[0];
     float bestResult = m_bestResults[0];
     for (size_t i = 1; i < m_maxCodes; i++) {
         m_bestCodes[i - 1] = m_bestCodes[i];
         m_bestResults[i - 1] = m_bestResults[i];
     }
-    m_bestCodes[m_maxCodes - 1] = bestCode;
-    m_bestResults[m_maxCodes - 1] = bestResult;
     m_numCodes--;
     m_worstResult = m_settings.m_startResult;
-    return bestCode.CodePtr();
+    m_bestCodes[m_maxCodes - 1] = bestCode;
+    m_bestResults[m_maxCodes - 1] = bestResult;
+    return bestResult;
 } // GetBestCode
 
 bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
@@ -96,6 +94,63 @@ FireStarterBestCodes::FireStarterBestCodes(void)
     InitBestCodes(FireStarterSettings());
 } // FireStarterBestCodes
 
+float FireStarterSerialBestCodes::GetBestResult(void)
+{
+    float bestResult = 0.0f;
+    DispatchSync([this, &bestResult] {
+        bestResult = m_bestCodes.GetBestResult();
+    });
+    return bestResult;
+} // GetBestResult
+
+const float FireStarterSerialBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
+{
+    float result = 0.0f;
+    DispatchSync([this, &bestCode, &result] {
+        result = m_bestCodes.GetBestCode(bestCode);
+    });
+    return result;
+} // GetBestCode
+
+bool FireStarterSerialBestCodes::AddCode(const FireStarterCode* code, float result)
+{
+    bool added = false;
+    DispatchAsync([this, code, result, &added] {
+        added = m_bestCodes.AddCode(code, result);
+    });
+    return added;
+} // AddCode
+
+float FireStarterSerialBestCodes::WorstResult(void)
+{
+    float worstResult = 0.0f;
+    DispatchSync([this, &worstResult] {
+        worstResult = m_bestCodes.WorstResult();
+    });
+    return worstResult;
+} // WorstResult
+
+void FireStarterSerialBestCodes::InitBestCodes(const FireStarterSettings& settings, size_t maxCodes)
+{
+    DispatchAsync([this, settings, maxCodes] {
+        m_bestCodes.InitBestCodes(settings, maxCodes);
+    });
+} // InitBestCodes
+
+FireStarterSerialBestCodes::FireStarterSerialBestCodes(const FireStarterSettings& settings, size_t maxCodes) : SerialThread("BestCodes")
+{
+    InitBestCodes(settings, maxCodes);
+} // FireStarterSerialBestCodes
+
+FireStarterSerialBestCodes::FireStarterSerialBestCodes(const FireStarterSerialBestCodes& copy) : SerialThread("BestCodes")
+{
+    m_bestCodes = copy.m_bestCodes;
+} // FireStarterSerialBestCodes
+
+FireStarterSerialBestCodes::FireStarterSerialBestCodes(void) : SerialThread("BestCodes")
+{
+} // FireStarterSerialBestCodes
+
 void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix, const std::string& postfix)
 {
     text += prefix + Format("variations = %u", settings.m_variations) + postfix + "\r\n";
@@ -103,7 +158,7 @@ void FireStarterState::SettingsText(const FireStarterSettings& settings, std::st
     text += prefix + Format("registers = %u", settings.m_registers) + postfix + "\r\n";
     text += prefix + Format("opcodes = %u", settings.m_opcodes) + postfix + "\r\n";
     text += "\r\n";
-    if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
+    if ((settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)) {
         text += prefix + Format("stocks = %u", settings.m_stocks) + postfix + "\r\n";
         text += prefix + Format("sessions = %u", settings.m_sessions) + postfix + "\r\n";
         text += prefix + Format("history = %u", settings.m_history) + postfix + "\r\n";
@@ -167,7 +222,7 @@ void FireStarterState::SaveStats(std::string& text) const
     text += Format("// Run test = %llu\r\n", m_test);
     text += Format("// Run generation = %llu\r\n", m_generation);
     text += Format("// Run evolution = %llu\r\n", m_evolution);
-    if (m_settings.m_mode != FIRESTARTER_MONEYMAKER)
+    if ((PassMode() != FIRESTARTER_MONEYMAKER) && (PassMode() != FIRESTARTER_MONEYOPTIMIZE))
         text += Format("// Run precision  = %.8f\r\n", m_precision);
     text += Format("// Run max result = %.8f\r\n", MaxResults());
     text += "\r\n";

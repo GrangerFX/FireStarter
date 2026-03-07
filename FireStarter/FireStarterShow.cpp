@@ -67,7 +67,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
         // Erase the window.
         m_window.Erase();
 
-        if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
+        if ((settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)) {
             const MoneyMakerStock& stock = stocks->Stock(settings.m_stock);
             const MoneyMakerStock& results = tradingResults->Stock(settings.m_stock);
             float minValue = stock.minValue;
@@ -321,7 +321,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
         statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Time=%.4f Seconds Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
-    } else if (state.PassMode() == FIRESTARTER_MONEYMAKER) {
+    } else if ((state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
 #if MONEYMAKER_WINS
         float returns = 100.0f / bestResult;  // Remove inversion.
 #else
@@ -347,14 +347,14 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
             else
                 resultString = ">New Result";
             statusString += Format("  Old Result=%2.8f %s=%.8f", state.m_oldResult, resultString.c_str(), maxResult);
-            if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM) || (state.PassMode() == FIRESTARTER_MONEYMAKER)) {
+            if ((state.PassMode() == FIRESTARTER_SELECT) || (state.PassMode() == FIRESTARTER_EVOLVE_GPU) || (state.PassMode() == FIRESTARTER_EVOLVE_NEW) || (state.PassMode() == FIRESTARTER_EVOLVE_SINSIM) || (state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
                 statusString += Format("  MinIndex=%u", state.m_minIndex);
                 if (settings.m_variations == 1)
                     statusString += Format("  EvolveAge=%u", state.m_minIndex, (unsigned int)state.EvolveAge1(0));
             }
-        } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE)) {
+        } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)) {
             statusString += Format("  Generation=%3u", generation);
-            if ((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
+            if ((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)) {
                 if (settings.m_optimize > 1)
                     statusString += Format("  Optimize=%u", state.m_optimize_pass);
             } else {
@@ -372,7 +372,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
         statusString += Format("  Best=%.8f ", bestResult);
         if (state.PassMode() == FIRESTARTER_EVOLVE_CPU)
             statusString += Format("BestError=%.8f", bestError);
-        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE) ||(state.PassMode() == FIRESTARTER_SPEED_TEST)))
+        if (!((state.PassMode() == FIRESTARTER_OPTIMIZE) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE) || (state.PassMode() == FIRESTARTER_SPEED_TEST)))
             statusString += Format("  BestAge=%u", bestState.m_age);
 
         // Comment out this line when doing diffs to compare the results.

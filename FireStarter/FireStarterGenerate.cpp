@@ -139,14 +139,14 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     const FireStarterSettings& settings = state.Settings();
     unsigned int tabs = 1;
     text += "#pragma once\r\n";
-    if (state.m_settings.m_mode == FIRESTARTER_MONEYMAKER)
+    if ((state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE))
         text += "#include \"MoneyMakerStocks.h\"\r\n";
     else
         text += "#include <math.h>\r\n";
     text += "\r\n";
     state.SaveStats(text);
 
-    if (state.m_settings.m_mode != FIRESTARTER_MONEYMAKER) {
+    if ((state.PassMode() != FIRESTARTER_MONEYMAKER) && (state.PassMode() != FIRESTARTER_MONEYOPTIMIZE)) {
         text += Format("#define SOLUTION_VARIATIONS %d\r\n", settings.m_variations);
         text += Format("#define SOLUTION_VARIATION %d\r\n", FIRESTARTER_VARIATION);
         text += "\r\n";
@@ -158,7 +158,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
         const FireStarterData* data = result->Data();
 
         text += "\r\n";
-        if (state.m_settings.m_mode == FIRESTARTER_MONEYMAKER) {
+        if ((state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
             text += "inline float MoneyMakerSolution(MoneyMakerStock& stock)\r\n";
             text += "{\r\n";
             text += "    float n = 0.0f;\r\n";
@@ -226,7 +226,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
         text += generateText;
 
         text += "    return n;\r\n";
-        if (state.m_settings.m_mode == FIRESTARTER_MONEYMAKER) {
+        if ((state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
             text += "} // MoneyMakerSolution\r\n";
         } else {
             if (settings.m_variations > 1)

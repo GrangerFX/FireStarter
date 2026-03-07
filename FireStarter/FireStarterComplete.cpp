@@ -57,7 +57,7 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
 {
     static float bestSolution = 1.0e+12f;
     std::string saveFile;
-    if (bestState.m_settings.m_mode == FIRESTARTER_MONEYMAKER)
+    if ((bestState.PassMode() == FIRESTARTER_MONEYMAKER) || (bestState.PassMode() == FIRESTARTER_MONEYOPTIMIZE))
         saveFile = "FireStarter_MoneyMakerSolution.h";
     else
         saveFile = "FireStarter_Solution.h";
@@ -93,7 +93,7 @@ bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const Fir
             bestState = state;
 
             // Test the precision of the results.
-            if (bestState.m_settings.m_mode != FIRESTARTER_MONEYMAKER)
+            if ((bestState.PassMode() != FIRESTARTER_MONEYMAKER) && (bestState.PassMode() != FIRESTARTER_MONEYOPTIMIZE))
                 bestState.m_precision = bestState.TestResults();
 
             // Reset the best state age to zero.

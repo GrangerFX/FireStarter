@@ -203,7 +203,7 @@ public:
             float f = (float)data->d[reg];
             GenerateSolution(buffer, size, length, tabs, reg, f, i);
         }
-#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
+#elif (FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER) || (FIRESTARTER_MODE == FIRESTARTER_MONEYOPTIMIZE)
         // Generate the MoneyMaker solution function registers.
         for (unsigned int i = 0; i < numRegisters; i++) {
             GenerateTabs(buffer, size, length, tabs);

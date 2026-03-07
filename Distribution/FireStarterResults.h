@@ -267,7 +267,7 @@ typedef struct FireStarterCodeInstruction {
                 n = data > n ? data : n;
                 break;
         }
-#elif FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER
+#elif (FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER) || (FIRESTARTER_MODE == FIRESTARTER_MONEYOPTIMIZE)
 #if 0        
         if (op == Operation_multiply)
             n *= data;

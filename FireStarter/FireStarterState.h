@@ -3,6 +3,7 @@
 #include "FireStarterPacket.h"
 #include "FireSinSim.h"
 #include "SimpleTimer.h"
+#include "SerialThread.h"
 #include <vector>
 #include <string>
 #include <set>
@@ -69,6 +70,11 @@ public:
         return m_codeVector.data();
     } // data
 
+    inline unsigned int Instructions(void) const
+    {
+        return (unsigned int)(m_codeVector.size() / sizeof(FireStarterCodeInstruction));
+    } // Instructions
+
     inline const std::vector<unsigned char>& Vector(void) const
     {
         return m_codeVector;
@@ -94,9 +100,9 @@ public:
         return *CodePtr();
     } // Code
 
-    void InitCode(const FireStarterSettings& settings, const FireStarterCode* code = nullptr)
+    void InitCode(unsigned int instructions, const FireStarterCode* code = nullptr)
     {
-        size_t codeSize = FireStarterCode::CodeSize(settings);
+        size_t codeSize = FireStarterCode::CodeSize(instructions);
         m_codeVector.resize(codeSize);
 #if FIRESTARTER_STATE_DEBUG
         m_codeDebug = CodePtr();
@@ -104,6 +110,21 @@ public:
         if (code)
             memcpy(m_codeVector.data(), code, codeSize);
     } // InitCode
+
+    void InitCode(const FireStarterSettings& settings, const FireStarterCode* code = nullptr)
+    {
+        InitCode(settings.m_instructions, code);
+    } // InitCode
+
+    void InitCode(const FireStarterCode* code = nullptr)
+    {
+        InitCode(Instructions(), code);
+    } // InitCode
+
+    FireStarterCodeVector(unsigned int instructions, const FireStarterCode* code = nullptr)
+    {
+        InitCode(instructions, code);
+    } // FireStarterCodeVector
 
     FireStarterCodeVector(const FireStarterSettings& settings, const FireStarterCode* code = nullptr)
     {
@@ -179,6 +200,11 @@ public:
     {
         return m_dataVector;
     } // vector
+
+    inline unsigned int Registers(void) const
+    {
+        return (unsigned int)(m_dataVector.size() / sizeof(float));
+    } // Registers
 
     inline FireStarterData* DataPtr(void)
     {
@@ -408,8 +434,9 @@ public:
     } // FireStarterResultVector
 }; // class FireStarterResultVector
 
+
 class FireStarterBestCodes {
-private:
+public:
     std::set<std::vector<unsigned char>> m_testedCodes;
     std::vector<FireStarterCodeVector> m_bestCodes;
     std::vector<float> m_bestResults;
@@ -419,22 +446,36 @@ private:
     size_t m_numCodes = 0;
     float m_worstResult = 0.0f;
 
-public:
     float GetBestResult(void);
-    const FireStarterCode* GetBestCode(float *result = nullptr);
+    const float GetBestCode(FireStarterCodeVector &bestCode);
     bool AddCode(const FireStarterCode* code, float result);
     float WorstResult(void);
     void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(void);
-}; // FireStarterBestCodes
+}; // class FireStarterBestCodes
+
+class FireStarterSerialBestCodes : public SerialThread {
+private:
+    FireStarterBestCodes m_bestCodes;
+
+public:
+    float GetBestResult(void);
+    const float GetBestCode(FireStarterCodeVector& bestCode);
+    bool AddCode(const FireStarterCode* code, float result);
+    float WorstResult(void);
+    void InitBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
+    FireStarterSerialBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
+    FireStarterSerialBestCodes(const FireStarterSerialBestCodes& copy);
+    FireStarterSerialBestCodes(void);
+}; // FireStarterSerialBestCodes
 
 class FireStarterState {
 public:
     FireStarterSettings m_settings;
     FireStarterResultVector m_results;
     FireStarterCodeVector m_code;
-    FireStarterBestCodes m_bestCodes;
+    FireStarterSerialBestCodes m_bestCodes;
     SinSimNetwork m_network;
     SimpleTimer m_timer;
     std::string m_evaluateCode;
@@ -576,7 +617,7 @@ public:
 
     inline float MaxResults(void) const
     {
-        if (m_settings.m_mode == FIRESTARTER_SINSIM)
+        if (PassMode() == FIRESTARTER_SINSIM)
             return m_network.grade;
         else
             return m_results.MaxResults();
@@ -594,7 +635,7 @@ public:
 
     inline unsigned int MaxVariation(void) const
     {
-        if (m_settings.m_mode == FIRESTARTER_SINSIM)
+        if (PassMode() == FIRESTARTER_SINSIM)
             return 0;
         else
             return m_results.MaxVariation();
@@ -732,6 +773,16 @@ public:
         Code()->RandomInstruction(m_seed, m_settings.m_instructions, m_settings.m_registers, m_settings.m_opcodes);
     } // RandomInstruction
 
+    inline void CopyCode(const FireStarterCodeVector& srcCode, unsigned int uniqueRegisters = 0)
+    {
+        if (!srcCode.size() || (srcCode.size() != CodeSize()))
+            std::terminate();
+        m_code = srcCode;
+        if (!uniqueRegisters)
+            uniqueRegisters = OptimizeCode();
+        m_uniqueRegisters = uniqueRegisters;
+    } // CopyCode
+
     inline void CopyCode(const FireStarterCode* srcCode, unsigned int uniqueRegisters = 0)
     {
         FireStarterCodeGenerate* dstCode = Code();
@@ -742,7 +793,7 @@ public:
             m_uniqueRegisters = uniqueRegisters;
         } else
             std::terminate();
-    } // CopyInstructions
+    } // CopyCode
 
     inline void CopyCode(const FireStarterState& srcState)
     {

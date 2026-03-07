@@ -118,7 +118,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
     size_t tradingDataSize = 0;
     size_t tradingCodeSize = 0;
 
-    if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
+    if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
         resultsSize = settings.m_population * sizeof(float);
 #if FIRESTARTER_EVOLVE_RESULTS
         populationSize = FireStarterPopulation::PopulationSize(settings);   // Only allocate this if FIRESTARTER_EVOLVE_RESULTS is set to 1
@@ -127,11 +127,13 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if (settings.m_mode == FIRESTARTER_SELECT)
             parentCodeSize = FireStarterCode::CodeSize(settings);
-        if (settings.m_mode == FIRESTARTER_MONEYMAKER) {
+        if ((settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)) {
             settingsSize = sizeof(FireStarterSettings);
             tradingDataSize = FireStarterData::DataSize(settings);
             tradingCodeSize = FireStarterCode::CodeSize(settings);
         }
+        if (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)
+            populationSize = FireStarterPopulation::PopulationSize(settings);
     } else if ((settings.m_mode == FIRESTARTER_RANDOM) || (settings.m_mode == FIRESTARTER_EVOLVE_CPU) || (settings.m_mode == FIRESTARTER_OPTIMIZE))
         populationSize = FireStarterPopulation::PopulationSize(settings);
     else if (settings.m_mode == FIRESTARTER_SINSIM)
