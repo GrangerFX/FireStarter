@@ -1,0 +1,37 @@
+CUDA devices = 2
+Device 0: NVIDIA GeForce RTX 5090
+Device 1: NVIDIA GeForce RTX 5090
+
+variations = 1
+instructions = 32
+registers = 30
+opcodes = 4
+
+stocks = 1
+sessions = 256
+history = 384
+variation = 256
+trading = 64
+funds = 1000.000000f
+
+mode = FIRESTARTER_MONEYOPTIMIZE
+evolveSeed = 0
+optimizeSeed = 0
+tests = 1
+streams = 1
+units = 1
+states = 1
+population = 348160
+generations = 1
+passes = 384
+samples = 15
+iterations = 64
+candidates = 0
+optimize = 1
+
+scale = 0.300000f
+startScale = 2.500000f
+startResult = 10.000000f
+
+
+FIRESTARTER_MONEYOPTIMIZE: Generation=  1  Best=15.59865475%  Time=166.0356 Seconds  Run Time=166.0752 Seconds
