@@ -140,7 +140,6 @@ private:
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
-    SerialThread m_compilerThread;
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
     CUfunction m_executeTest = nullptr;

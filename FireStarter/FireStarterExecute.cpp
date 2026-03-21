@@ -1185,7 +1185,6 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index
 
 FireStarterExecute::~FireStarterExecute(void)
 {
-    m_compilerThread.TerminateThread();
     ExecuteFinish();
     delete m_executeGenerate;
 } // ~FireStarterExecute(void)

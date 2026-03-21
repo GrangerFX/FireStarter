@@ -596,9 +596,15 @@ public:
         barrier.wait();
     } // ParallelFor
 
-    // Note: int is used instead of bool for correct type matching.
-    inline SerialThread(const std::string& threadName = "SerialThread", bool pollThread = false) : m_threadName(threadName), m_pollThread(pollThread)
+#define SERIAL_THREAD_DEFAULT_NAME "SerialThread"
+#define SERIAL_THREAD_REQUIRE_NAME 0
+    inline SerialThread(const std::string& threadName = SERIAL_THREAD_DEFAULT_NAME, bool pollThread = false) : m_threadName(threadName), m_pollThread(pollThread)
     {
+#if SERIAL_THREAD_REQUIRE_NAME
+        if (m_threadName == SERIAL_THREAD_DEFAULT_NAME) {
+            std::terminate();
+        }
+#endif
         if (m_pollThread)
             m_threadId = std::this_thread::get_id();
         else {

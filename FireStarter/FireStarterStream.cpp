@@ -379,9 +379,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
 
-        // A serial thread for compiling the optimize pass.
-        SerialThread compiler;
-
         // Create the evolution completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
@@ -496,9 +493,6 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
 
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
-
-        // A serial thread for compiling the optimize pass.
-        SerialThread compiler;
 
         // Create the evolution completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
@@ -1209,7 +1203,7 @@ void FireStarterStreams::ExecuteStreams(void)
     });
 } // ExecuteStreams
 
-FireStarterStreams::FireStarterStreams(const FireStarterWindow& window) : m_window(window), m_testCount(0)
+FireStarterStreams::FireStarterStreams(const FireStarterWindow& window) : SerialThread("FireStarterStreams"), m_window(window), m_testCount(0)
 {
 } // FireStarterStreams
 
