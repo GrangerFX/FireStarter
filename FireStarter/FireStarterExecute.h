@@ -123,7 +123,7 @@ public:
     } // ~CUDAMemory
 };
 
-class FireStarterExecute : public SerialThread {
+class FireStarterExecute : public CUDAThread {
 private:
     CUDAThreads m_CUDAThreads;
     CUDAMemory<FireStarterSettings>* m_CUDASettings = nullptr;

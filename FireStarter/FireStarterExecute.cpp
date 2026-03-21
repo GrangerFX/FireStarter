@@ -91,7 +91,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 #endif
         if (settings.m_mode != FIRESTARTER_SPEED_TEST)
             codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
-        if (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE)
+        if (settings.m_mode != FIRESTARTER_MONEYOPTIMIZE)
             populationSize = FireStarterPopulation::PopulationSize(settings);
         if (settings.m_mode == FIRESTARTER_SELECT)
             parentCodeSize = FireStarterCode::CodeSize(settings);
@@ -1169,7 +1169,7 @@ const MoneyMakerStocks* FireStarterExecute::GetTradingResults(void) const
     return m_CUDATradingResults->HostPtr();
 } // GetTradingResults
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, int priority) : SerialThread(Format("FireStarterExecute%zu", index), priority)
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", index), 0, priority)
 {
     m_executeManager = manager;
     m_executeIndex = index;
