@@ -4,6 +4,7 @@
 #include "FireStarterUtil.h"
 #include "FireMoneyMaker.h"
 #include "CUDACompile.h"
+#include <algorithm>
 
 void FireStarterShow::DeallocateEvaluateData(void)
 {
@@ -150,7 +151,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
 
                     if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
                         float error = fabsf(result - target);
-                        maxError = max(maxError, error);
+                        maxError = std::max(maxError, error);
                     }
                     long long y = (long long)(center + target * yScale);
                     if ((y >= 0) && (y < height)) {
@@ -179,7 +180,7 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
 
                         if ((theta >= settings.m_targetMin) && (theta <= settings.m_targetMax)) {
                             float error = fabsf(result - target);
-                            maxError = max(maxError, error);
+                            maxError = std::max(maxError, error);
                         }
                         long long y = (long long)(center + target * yScale);
                         if ((y >= 0) && (y < height)) {
@@ -238,7 +239,7 @@ void FireStarterShow::FireSolution(FireStarterWindow& window)
 #endif
             if ((theta >= SOLUTION_MIN) && (theta <= SOLUTION_MAX)) {
                 float error = fabsf(solution - target);
-                maxError = max(maxError, error);
+                maxError = std::max(maxError, error);
             }
             int y = (int)(center + target * yScale);
             if ((y >= 0) && (y < (int)height)) {

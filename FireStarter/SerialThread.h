@@ -7,7 +7,10 @@
 #include <functional>
 #include <condition_variable>
 #include <algorithm>
-#ifdef WIN32
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
 #include <Windows.h>
 #endif
 
@@ -302,7 +305,7 @@ private:
 
     inline void Thread(void)
     {
-#ifdef WIN32
+#ifdef _WIN32
         SetThreadDescription(GetCurrentThread(), std::wstring(m_threadName.begin(), m_threadName.end()).data());
 #endif
         SerialThreadWork work;
