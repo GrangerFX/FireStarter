@@ -11,21 +11,41 @@ typedef std::vector<CUDAThread*> CUDAThreads;
 template<typename T>
 class CUDAMemory {
 private:
-    CUDAThreads& m_threads;
+    const CUDAThreads* m_threads = nullptr;
     std::vector<T*> m_devicePtrs;
     T* m_hostPtr = nullptr;
     size_t m_size = 0;
 
 public:
+    bool Allocated(void) const
+    {
+        if (m_threads && m_hostPtr && m_devicePtrs.size() && m_size)
+            return true;
+        return false;
+    } // Allocated
+
     inline size_t MemorySize(void) const
     {
         return m_size;
     } // MemorySize
 
+    inline T* HostPtr(void) const
+    {
+        return m_hostPtr;
+    } // HostPtr
+
     inline T*& HostPtr(void)
     {
         return m_hostPtr;
     } // HostPtr
+
+    inline T* DevicePtr(size_t index = 0) const
+    {
+        if (m_devicePtrs.size() > index)
+            return m_devicePtrs[index];
+        else
+            return nullptr;
+    } // DevicePtr
 
     inline T*& DevicePtr(size_t index = 0)
     {
@@ -34,27 +54,31 @@ public:
 
     inline void HostInit(const T* srcPtr, size_t size = 0, size_t offset = 0) const
     {
-        if (!size)
-            size = m_size;
-        else if (size > m_size)
-            size = m_size;
-        if (srcPtr) {
-            char* hostPtr = (char*)m_hostPtr + offset;
-            memcpy(hostPtr, srcPtr, size);
+        if (m_hostPtr) {
+            if (!size)
+                size = m_size;
+            else if (size > m_size)
+                size = m_size;
+            if (srcPtr) {
+                char* hostPtr = (char*)m_hostPtr + offset;
+                memcpy(hostPtr, srcPtr, size);
+            }
         }
     } // HostInit
 
     inline void DeviceInit(const T* srcPtr, size_t index, size_t size = 0, size_t offset = 0) const
     {
-        if (!size)
-            size = m_size;
-        else if (size > m_size)
-            size = m_size;
-        char* devicePtr = (char*)m_devicePtrs[index] + offset;
-        if (srcPtr)
-            checkCUDAErrors(cudaMemcpyAsync(devicePtr, srcPtr, size, cudaMemcpyHostToDevice, m_threads[index]->Stream()));
-        else
-            checkCUDAErrors(cudaMemsetAsync(devicePtr, 0, size, m_threads[index]->Stream()));
+        if (m_devicePtrs[index]) {
+            if (!size)
+                size = m_size;
+            else if (size > m_size)
+                size = m_size;
+            char* devicePtr = (char*)m_devicePtrs[index] + offset;
+            if (srcPtr)
+                checkCUDAErrors(cudaMemcpyAsync(devicePtr, srcPtr, size, cudaMemcpyHostToDevice, (*m_threads)[index]->Stream()));
+            else
+                checkCUDAErrors(cudaMemsetAsync(devicePtr, 0, size, (*m_threads)[index]->Stream()));
+        }
     } // DeviceInit
 
     inline void DevicesInit(const T* srcPtr, size_t size = 0) const
@@ -63,80 +87,98 @@ public:
             size = m_size;
         else if (size > m_size)
             size = m_size;
-        if (srcPtr)
+        if (srcPtr) {
             for (size_t i = 0; i < m_devicePtrs.size(); i++)
-                checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], srcPtr, size, cudaMemcpyHostToDevice, m_threads[i]->Stream()));
-        else
+                if (m_devicePtrs[i])
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], srcPtr, size, cudaMemcpyHostToDevice, (*m_threads)[i]->Stream()));
+        } else {
             for (size_t i = 0; i < m_devicePtrs.size(); i++)
-                checkCUDAErrors(cudaMemsetAsync(m_devicePtrs[i], 0, size, m_threads[i]->Stream()));
+                if (m_devicePtrs[i])
+                    checkCUDAErrors(cudaMemsetAsync(m_devicePtrs[i], 0, size, (*m_threads)[i]->Stream()));
+        }
     } // DevicesInit
 
     inline void HostToDevices(void) const
     {
-        for (size_t i = 0; i < m_devicePtrs.size(); i++)
-            checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], m_hostPtr, m_size, cudaMemcpyHostToDevice, m_threads[i]->Stream()));
+        if (m_hostPtr)
+            for (size_t i = 0; i < m_devicePtrs.size(); i++)
+                if (m_devicePtrs[i])
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], m_hostPtr, m_size, cudaMemcpyHostToDevice, (*m_threads)[i]->Stream()));
     } // HostToDevices
 
     inline void DevicesToHost(size_t deviceSize) const
     {
-        for (size_t i = 0; i < m_devicePtrs.size(); i++) {
-            size_t offset = i * deviceSize;
-            if (offset < m_size) {
-                size_t size = offset + deviceSize <= m_size ? deviceSize : m_size - offset;
-                char* hostPtr = (char*)m_hostPtr + offset;
-                char* dstPtr = (char*)m_devicePtrs[i] + offset;
-                checkCUDAErrors(cudaMemcpyAsync(hostPtr, m_devicePtrs[i], size, cudaMemcpyDeviceToHost, m_threads[i]->Stream()));
-            } else
-                break;
-        }
+        if (m_hostPtr)
+            for (size_t i = 0; i < m_devicePtrs.size(); i++) {
+                if (m_devicePtrs[i]) {
+                    size_t offset = i * deviceSize;
+                    if (offset < m_size) {
+                        size_t size = offset + deviceSize <= m_size ? deviceSize : m_size - offset;
+                        char* hostPtr = (char*)m_hostPtr + offset;
+                        char* dstPtr = (char*)m_devicePtrs[i] + offset;
+                        checkCUDAErrors(cudaMemcpyAsync(hostPtr, m_devicePtrs[i], size, cudaMemcpyDeviceToHost, (*m_threads)[i]->Stream()));
+                    } else
+                        break;
+                }
+            }
     } // DevicesToHost
 
     inline void DeviceToHost(size_t index = 0) const
     {
-        if (index < m_devicePtrs.size())
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtrs[index], m_size, cudaMemcpyDeviceToHost, m_threads[index]->Stream()));
+        if (m_hostPtr && (index < m_devicePtrs.size()) && m_devicePtrs[index])
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtrs[index], m_size, cudaMemcpyDeviceToHost, (*m_threads)[index]->Stream()));
     } // DeviceToHost
 
-    inline CUDAMemory(CUDAThreads& threads, size_t size = sizeof(T)) : m_threads(threads), m_size(size)
+    inline void Clear(void)
     {
+        for (size_t i = 0; i < m_devicePtrs.size(); i++)
+            if (m_devicePtrs[i])
+                checkCUDAErrors(cudaFreeAsync(m_devicePtrs[i], (*m_threads)[i]->Stream()));
+         m_devicePtrs.clear();
+        if (m_hostPtr) {
+            checkCUDAErrors(cudaFreeHost(m_hostPtr));
+            m_hostPtr = nullptr;
+        }
+    } // Clear
+
+    inline void Init(const CUDAThreads& threads, size_t size = sizeof(T))
+    {
+        m_threads = &threads;
+        m_size = size;
         if (m_size) {
-             for (size_t i = 0; i < m_threads.size(); i++) {
+            for (size_t i = 0; i < m_threads->size(); i++) {
                 T* devicePtr = nullptr;
-                checkCUDAErrors(cudaMallocAsync(&devicePtr, m_size, m_threads[i]->Stream()));
+                checkCUDAErrors(cudaMallocAsync(&devicePtr, m_size, (*m_threads)[i]->Stream()));
                 m_devicePtrs.push_back(devicePtr);
             }
             checkCUDAErrors(cudaMallocHost(&m_hostPtr, m_size));
         }
+    } // Init
+
+    inline CUDAMemory(void)
+    {
     } // CUDAMemory
 
     inline ~CUDAMemory(void)
     {
-        if (m_threads.size())
-            for (size_t i = 0; i < m_devicePtrs.size(); i++)
-                if (m_devicePtrs[i])
-                    checkCUDAErrors(cudaFreeAsync(m_devicePtrs[i], m_threads[i]->Stream()));
-        else
-            if ((m_devicePtrs.size() == 1) && m_devicePtrs[0])
-                checkCUDAErrors(cudaFreeHost(m_devicePtrs[0]));
-        if (m_hostPtr)
-            checkCUDAErrors(cudaFreeHost(m_hostPtr));
+        Clear();
     } // ~CUDAMemory
 };
 
 class FireStarterExecute : public CUDAThread {
 private:
     CUDAThreads m_CUDAThreads;
-    CUDAMemory<FireStarterSettings>* m_CUDASettings = nullptr;
-    CUDAMemory<float>* m_CUDAResults = nullptr;
-    CUDAMemory<FireStarterCode>* m_CUDACodes0 = nullptr;
-    CUDAMemory<FireStarterCode>* m_CUDACodes1 = nullptr;
-    CUDAMemory<FireStarterResult>* m_CUDAPopulation0 = nullptr;
-    CUDAMemory<FireStarterResult>* m_CUDAPopulation1 = nullptr;
-    CUDAMemory<FireStarterCode>* m_CUDAParentCode = nullptr;
-    CUDAMemory<SinSimNetwork>* m_CUDANetworks = nullptr;
-    CUDAMemory<FireStarterData>* m_CUDATradingData = nullptr;
-    CUDAMemory<MoneyMakerStocks>* m_CUDAStocks = nullptr;
-    CUDAMemory<MoneyMakerStocks>* m_CUDATradingResults = nullptr;
+    CUDAMemory<FireStarterSettings> m_CUDASettings;
+    CUDAMemory<float> m_CUDAResults;
+    CUDAMemory<FireStarterCode> m_CUDACodes0;
+    CUDAMemory<FireStarterCode> m_CUDACodes1;
+    CUDAMemory<FireStarterResult> m_CUDAPopulation0;
+    CUDAMemory<FireStarterResult> m_CUDAPopulation1;
+    CUDAMemory<FireStarterCode> m_CUDAParentCode;
+    CUDAMemory<SinSimNetwork> m_CUDANetworks;
+    CUDAMemory<FireStarterData> m_CUDATradingData;
+    CUDAMemory<MoneyMakerStocks> m_CUDAStocks;
+    CUDAMemory<MoneyMakerStocks> m_CUDATradingResults;
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
