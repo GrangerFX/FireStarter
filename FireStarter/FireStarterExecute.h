@@ -165,7 +165,7 @@ public:
     } // ~CUDAMemory
 };
 
-class FireStarterExecute : public CUDAThread {
+class FireStarterExecute : public SerialThread {
 private:
     CUDAThreads m_CUDAThreads;
     CUDAMemory<FireStarterSettings> m_CUDASettings;
@@ -212,7 +212,7 @@ private:
     {
         const CUDAContext* context = Context(index);
         if (context)
-            context->Stream();
+            return context->Stream();
         return nullptr;
     } // Stream
 

@@ -959,7 +959,8 @@ bool FireStarterExecute::ExecuteGenerateEvolve(unsigned int mode, bool sync)
     if (m_executeFunction)
         return true;
     bool result = false;
-    Dispatch([this, mode, &result] {
+    // Note: TODO: Generate code and execution pointers for each CUDA thread.
+    m_CUDAThreads[0]->Dispatch([this, mode, &result] {
         result = GenerateEvolve(mode);
     }, sync);
     return result;
@@ -967,9 +968,9 @@ bool FireStarterExecute::ExecuteGenerateEvolve(unsigned int mode, bool sync)
 
 bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync)
 {
-    // Must copy the intitState pointer in case it becomes invalid when the code below is called.
     bool result = false;
-    Dispatch([this, &optimizeState, &result] {
+    // Note: TODO: Generate code and execution pointers for each CUDA thread.
+    m_CUDAThreads[0]->Dispatch([this, &optimizeState, &result] {
         result = GenerateOptimize(optimizeState);
     }, sync);
     return result;
@@ -1153,7 +1154,7 @@ const MoneyMakerStocks* FireStarterExecute::GetTradingResults(void) const
     return m_CUDATradingResults.HostPtr();
 } // GetTradingResults
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", index), 0, priority)
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, int priority) : SerialThread(Format("FireStarterExecute%zu", index), priority)
 {
     m_executeManager = manager;
     m_executeIndex = index;
@@ -1171,4 +1172,7 @@ FireStarterExecute::~FireStarterExecute(void)
 {
     ExecuteFinish();
     delete m_executeGenerate;
+    for (CUDAThread* thread : m_CUDAThreads)
+        delete thread;
+    m_CUDAThreads.clear();
 } // ~FireStarterExecute(void)

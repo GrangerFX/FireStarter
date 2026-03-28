@@ -18,13 +18,10 @@ void FireStarterShow::DeallocateEvaluateData(void)
 void FireStarterShow::AllocateEvaluateData(size_t evaluateSize)
 {
     if (evaluateSize != m_evaluateSize) {
-        if (evaluateSize != m_evaluateSize) {
-            DeallocateEvaluateData();
-            m_evaluateSize = evaluateSize;
-            m_targetData.resize(evaluateSize, 0.0f);
-            m_evaluateData.resize(evaluateSize, 0.0f);
-        }
-        Context()->Synchronize();
+        DeallocateEvaluateData();
+        m_evaluateSize = evaluateSize;
+        m_targetData.resize(evaluateSize, 0.0f);
+        m_evaluateData.resize(evaluateSize, 0.0f);
     }
 } // AllocateEvaluateData
 

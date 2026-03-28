@@ -88,7 +88,7 @@ HRESULT Initialize(HINSTANCE hInstance)
 				if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
                     if (msg.message == WM_QUIT) {
                         // Force the process to exit immediately. CUDA will also be terminated.
-                        exit(0);
+                        ExitProcess(0);
                         break;
                     }
 					TranslateMessage(&msg);
