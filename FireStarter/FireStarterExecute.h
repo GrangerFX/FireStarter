@@ -6,12 +6,21 @@
 #include "CUDAThread.h"
 #include "MoneyMakerStocks.h"
 
-typedef std::vector<CUDAThread*> CUDAThreads;
+class CUDADevice : public CUDAThread {
+public:
+    CUmodule m_executeModule = nullptr;
+    CUfunction m_executeFunction = nullptr;
+    CUfunction m_executeTest = nullptr;
+
+    CUDADevice(const std::string& threadName = "CUDAThread", int device = CUDA_DEVICE, int priority = CUDA_PRIORITY) : CUDAThread(threadName, device, priority) {}
+}; // class CUDADevice
+
+typedef std::vector<CUDADevice*> CUDADevices;
 
 template<typename T>
 class CUDAMemory {
 private:
-    const CUDAThreads* m_threads = nullptr;
+    const CUDADevices* m_devices = nullptr;
     std::vector<T*> m_devicePtrs;
     T* m_hostPtr = nullptr;
     size_t m_size = 0;
@@ -19,7 +28,7 @@ private:
 public:
     bool Allocated(void) const
     {
-        if (m_threads && m_hostPtr && m_devicePtrs.size() && m_size)
+        if (m_devices && m_hostPtr && m_devicePtrs.size() && m_size)
             return true;
         return false;
     } // Allocated
@@ -75,9 +84,9 @@ public:
                 size = m_size;
             char* devicePtr = (char*)m_devicePtrs[index] + offset;
             if (srcPtr)
-                checkCUDAErrors(cudaMemcpyAsync(devicePtr, srcPtr, size, cudaMemcpyHostToDevice, (*m_threads)[index]->Stream()));
+                checkCUDAErrors(cudaMemcpyAsync(devicePtr, srcPtr, size, cudaMemcpyHostToDevice, (*m_devices)[index]->Stream()));
             else
-                checkCUDAErrors(cudaMemsetAsync(devicePtr, 0, size, (*m_threads)[index]->Stream()));
+                checkCUDAErrors(cudaMemsetAsync(devicePtr, 0, size, (*m_devices)[index]->Stream()));
         }
     } // DeviceInit
 
@@ -90,11 +99,11 @@ public:
         if (srcPtr) {
             for (size_t i = 0; i < m_devicePtrs.size(); i++)
                 if (m_devicePtrs[i])
-                    checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], srcPtr, size, cudaMemcpyHostToDevice, (*m_threads)[i]->Stream()));
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], srcPtr, size, cudaMemcpyHostToDevice, (*m_devices)[i]->Stream()));
         } else {
             for (size_t i = 0; i < m_devicePtrs.size(); i++)
                 if (m_devicePtrs[i])
-                    checkCUDAErrors(cudaMemsetAsync(m_devicePtrs[i], 0, size, (*m_threads)[i]->Stream()));
+                    checkCUDAErrors(cudaMemsetAsync(m_devicePtrs[i], 0, size, (*m_devices)[i]->Stream()));
         }
     } // DevicesInit
 
@@ -103,7 +112,7 @@ public:
         if (m_hostPtr)
             for (size_t i = 0; i < m_devicePtrs.size(); i++)
                 if (m_devicePtrs[i])
-                    checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], m_hostPtr, m_size, cudaMemcpyHostToDevice, (*m_threads)[i]->Stream()));
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], m_hostPtr, m_size, cudaMemcpyHostToDevice, (*m_devices)[i]->Stream()));
     } // HostToDevices
 
     inline void DevicesToHost(size_t deviceSize) const
@@ -116,7 +125,7 @@ public:
                         size_t size = offset + deviceSize <= m_size ? deviceSize : m_size - offset;
                         char* hostPtr = (char*)m_hostPtr + offset;
                         char* dstPtr = (char*)m_devicePtrs[i] + offset;
-                        checkCUDAErrors(cudaMemcpyAsync(hostPtr, m_devicePtrs[i], size, cudaMemcpyDeviceToHost, (*m_threads)[i]->Stream()));
+                        checkCUDAErrors(cudaMemcpyAsync(hostPtr, m_devicePtrs[i], size, cudaMemcpyDeviceToHost, (*m_devices)[i]->Stream()));
                     } else
                         break;
                 }
@@ -126,14 +135,14 @@ public:
     inline void DeviceToHost(size_t index = 0) const
     {
         if (m_hostPtr && (index < m_devicePtrs.size()) && m_devicePtrs[index])
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtrs[index], m_size, cudaMemcpyDeviceToHost, (*m_threads)[index]->Stream()));
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtrs[index], m_size, cudaMemcpyDeviceToHost, (*m_devices)[index]->Stream()));
     } // DeviceToHost
 
     inline void Clear(void)
     {
         for (size_t i = 0; i < m_devicePtrs.size(); i++)
             if (m_devicePtrs[i])
-                checkCUDAErrors(cudaFreeAsync(m_devicePtrs[i], (*m_threads)[i]->Stream()));
+                checkCUDAErrors(cudaFreeAsync(m_devicePtrs[i], (*m_devices)[i]->Stream()));
          m_devicePtrs.clear();
         if (m_hostPtr) {
             checkCUDAErrors(cudaFreeHost(m_hostPtr));
@@ -141,14 +150,14 @@ public:
         }
     } // Clear
 
-    inline void Init(const CUDAThreads& threads, size_t size = sizeof(T))
+    inline void Init(const CUDADevices& devices, size_t size = sizeof(T))
     {
-        m_threads = &threads;
+        m_devices = &devices;
         m_size = size;
         if (m_size) {
-            for (size_t i = 0; i < m_threads->size(); i++) {
+            for (size_t i = 0; i < m_devices->size(); i++) {
                 T* devicePtr = nullptr;
-                checkCUDAErrors(cudaMallocAsync(&devicePtr, m_size, (*m_threads)[i]->Stream()));
+                checkCUDAErrors(cudaMallocAsync(&devicePtr, m_size, (*m_devices)[i]->Stream()));
                 m_devicePtrs.push_back(devicePtr);
             }
             checkCUDAErrors(cudaMallocHost(&m_hostPtr, m_size));
@@ -167,7 +176,7 @@ public:
 
 class FireStarterExecute : public SerialThread {
 private:
-    CUDAThreads m_CUDAThreads;
+    CUDADevices m_CUDADevices;
     CUDAMemory<FireStarterSettings> m_CUDASettings;
     CUDAMemory<float> m_CUDAResults;
     CUDAMemory<FireStarterCode> m_CUDACodes0;
@@ -182,9 +191,6 @@ private:
     FireStarterGenerate* m_executeGenerate = nullptr;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
-    CUmodule m_executeModule = nullptr;
-    CUfunction m_executeFunction = nullptr;
-    CUfunction m_executeTest = nullptr;
     std::string m_executeProgramName;
     std::string m_executeFunctionName;
     std::string m_executeTestName;
@@ -203,8 +209,8 @@ private:
 
     inline const CUDAContext* Context(size_t index = 0) const
     {
-        if (m_CUDAThreads.size() >= index)
-            return m_CUDAThreads[index]->Context();
+        if (m_CUDADevices.size() >= index)
+            return m_CUDADevices[index]->Context();
         return nullptr;
     } // Context
 

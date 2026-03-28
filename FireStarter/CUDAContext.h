@@ -7,6 +7,8 @@
 
 class CUDAContext {
 private:
+    int m_CUDA_device = CUDA_DEVICE;
+    int m_CUDA_priority = CUDA_PRIORITY;
     CUdevice m_device = 0;
     CUcontext m_context = nullptr;
     CUstream m_stream = nullptr;
@@ -86,6 +88,9 @@ public:
 
     inline CUDAContext(int device = CUDA_DEVICE, int priority = CUDA_PRIORITY)
     {
+        m_CUDA_device = device;
+        m_CUDA_priority = priority;
+
         // Initialize CUDA only once per process.
         Initialize();
 

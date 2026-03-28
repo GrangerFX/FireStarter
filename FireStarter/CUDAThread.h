@@ -6,6 +6,7 @@ class CUDAThread : public SerialThread
 {
 private:
     CUDAContext* m_CUDAContext = nullptr;
+    int m_device = 0;
 
 public:
     inline CUDAContext* Context(void)
@@ -34,6 +35,7 @@ public:
     // Note: int is used instead of bool for correct type matching.
     inline CUDAThread(const std::string& threadName = "CUDAThread", int device = CUDA_DEVICE, int priority = CUDA_PRIORITY) : SerialThread(threadName)
     {
+        m_device = device;
         DispatchSync([this, device, priority] {
             m_CUDAContext = new CUDAContext(device, priority);
         });
