@@ -1,0 +1,2 @@
+Seed: 0  Test:   0  Generation= 10  Evolve Result=0.00453544  Optimize Result=0.00000009  Duration: 5.7  GenTime: 0.6  Total: 5.7  Average: 5.7 *******
+Seed: 0  Test:   1  Generation=  2  Evolve Result=0.00463718  Optimize Result=0.00000014  Duration: 1.0  GenTime: 0.5  Total: 6.7  Average: 3.4 *******
