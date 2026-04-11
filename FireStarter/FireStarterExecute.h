@@ -21,9 +21,12 @@ template<typename T>
 class CUDAMemory {
 private:
     const CUDADevices* m_devices = nullptr;
-    std::vector<T*> m_devicePtrs;
     T* m_hostPtr = nullptr;
+    std::vector<T*> m_devicePtrs;
+    std::vector<size_t> m_splitStart;
+    std::vector<size_t> m_splitCount;
     size_t m_size = 0;
+    size_t m_count = 0;
 
 public:
     bool Allocated(void) const
@@ -60,6 +63,20 @@ public:
     {
         return m_devicePtrs[index];
     } // DevicePtr
+
+    inline size_t SplitStart(size_t index = 0) const
+    {
+        if (index < m_splitStart.size())
+            return m_splitStart[index];
+        return 0;
+    } // SplitStart
+
+    inline size_t SplitCount(size_t index = 0) const
+    {
+        if (index < m_splitCount.size())
+            return m_splitCount[index];
+        return 0;
+    } // SplitCount
 
     inline void HostInit(const T* srcPtr, size_t size = 0, size_t offset = 0) const
     {
@@ -115,21 +132,22 @@ public:
                     checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], m_hostPtr, m_size, cudaMemcpyHostToDevice, (*m_devices)[i]->Stream()));
     } // HostToDevices
 
-    inline void DevicesToHost(size_t deviceSize) const
+    inline void DevicesToHost(void) const
     {
-        if (m_hostPtr)
+        if (m_hostPtr) {
+            size_t numDevices = m_devices->size();
             for (size_t i = 0; i < m_devicePtrs.size(); i++) {
-                if (m_devicePtrs[i]) {
-                    size_t offset = i * deviceSize;
-                    if (offset < m_size) {
-                        size_t size = offset + deviceSize <= m_size ? deviceSize : m_size - offset;
-                        char* hostPtr = (char*)m_hostPtr + offset;
-                        char* dstPtr = (char*)m_devicePtrs[i] + offset;
-                        checkCUDAErrors(cudaMemcpyAsync(hostPtr, m_devicePtrs[i], size, cudaMemcpyDeviceToHost, (*m_devices)[i]->Stream()));
+                if (m_devicePtrs[i] && m_splitCount[i]) {
+                    size_t splitOffset = m_splitStart[i] * sizeof(T);
+                    if (splitOffset < m_size) {
+                        char* hostPtr = (char*)m_hostPtr + splitOffset;
+                        char* dstPtr = (char*)m_devicePtrs[i] + splitOffset;
+                        checkCUDAErrors(cudaMemcpyAsync(hostPtr, m_devicePtrs[i] + m_splitStart[i], m_splitCount[i] * sizeof(T), cudaMemcpyDeviceToHost, (*m_devices)[i]->Stream()));
                     } else
                         break;
                 }
             }
+        }
     } // DevicesToHost
 
     inline void DeviceToHost(size_t index = 0) const
@@ -152,17 +170,42 @@ public:
 
     inline void Init(const CUDADevices& devices, size_t size = sizeof(T))
     {
+        size_t numDevices = devices.size();
         m_devices = &devices;
         m_size = size;
-        if (m_size) {
-            for (size_t i = 0; i < m_devices->size(); i++) {
+        m_count = size / sizeof(T);
+        if (m_size && numDevices) {
+            m_devicePtrs.resize(numDevices);
+            m_splitStart.resize(numDevices);
+            m_splitCount.resize(numDevices);
+            for (size_t i = 0; i < numDevices; i++) {
                 T* devicePtr = nullptr;
                 checkCUDAErrors(cudaMallocAsync(&devicePtr, m_size, (*m_devices)[i]->Stream()));
-                m_devicePtrs.push_back(devicePtr);
+                m_devicePtrs[i] = devicePtr;
+                m_splitStart[i] = 0;
+                m_splitCount[i] = m_count;
             }
             checkCUDAErrors(cudaMallocHost(&m_hostPtr, m_size));
+        } else {
+            m_devicePtrs.clear();
+            m_splitStart.clear();
+            m_splitCount.clear();
         }
     } // Init
+
+    inline void Split(const CUDADevices& devices, size_t size = sizeof(T))
+    {
+        Init(devices, size);
+        size_t numDevices = m_devices->size();
+        size_t splitStart = 0;
+        size_t splitCount = (m_count + numDevices - 1) / numDevices;
+        for (size_t i = 0; i < numDevices; i++) {
+            size_t splitEnd = MIN(splitStart + splitCount, m_count);
+            m_splitStart[i] = splitStart;
+            m_splitCount[i] = splitEnd - splitStart;
+            splitStart = splitEnd;
+        }
+    } // Split
 
     inline CUDAMemory(void)
     {

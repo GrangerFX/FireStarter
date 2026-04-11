@@ -108,14 +108,14 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         if (m_settingsSize)
             m_CUDASettings.Init(m_CUDADevices, m_settingsSize);
         if (m_resultsSize)
-            m_CUDAResults.Init(m_CUDADevices, m_resultsSize);
+            m_CUDAResults.Split(m_CUDADevices, m_resultsSize);
         if (m_codesSize) {
-            m_CUDACodes0.Init(m_CUDADevices, m_codesSize);
-            m_CUDACodes1.Init(m_CUDADevices, m_codesSize);
+            m_CUDACodes0.Split(m_CUDADevices, m_codesSize);
+            m_CUDACodes1.Split(m_CUDADevices, m_codesSize);
         }
         if (m_populationSize) {
-            m_CUDAPopulation0.Init(m_CUDADevices, m_populationSize);
-            m_CUDAPopulation1.Init(m_CUDADevices, m_populationSize);
+            m_CUDAPopulation0.Split(m_CUDADevices, m_populationSize);
+            m_CUDAPopulation1.Split(m_CUDADevices, m_populationSize);
         }
         if (m_parentCodeSize)
             m_CUDAParentCode.Init(m_CUDADevices, m_parentCodeSize);
@@ -247,29 +247,36 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
                     for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                         for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes0.HostPtr(), variation, seed, passes, populationSize);
+                                EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes0.HostPtr(), variation, seed, passes, populationSize, 0, populationSize);
     } else {
-        void* arr[] = { reinterpret_cast<void*>(&m_CUDAResults.DevicePtr()),
-                        reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr()),
-                        reinterpret_cast<void*>(&m_CUDACodes0.DevicePtr()),
-                        reinterpret_cast<void*>(&variation),
-                        reinterpret_cast<void*>(&seed),
-                        reinterpret_cast<void*>(&passes),
-                        reinterpret_cast<void*>(&populationSize)
-        };
+        for (size_t i = 0; i < m_CUDADevices.size(); i++) {
+            unsigned int splitStart = (unsigned int)m_CUDAPopulation0.SplitStart(i);
+            unsigned int splitCount = (unsigned int)m_CUDAPopulation0.SplitCount(i);
+            void* arr[] = { reinterpret_cast<void*>(&m_CUDAResults.DevicePtr(i)),
+                            reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr(i)),
+                            reinterpret_cast<void*>(&m_CUDACodes0.DevicePtr(i)),
+                            reinterpret_cast<void*>(&variation),
+                            reinterpret_cast<void*>(&seed),
+                            reinterpret_cast<void*>(&passes),
+                            reinterpret_cast<void*>(&populationSize),
+                            reinterpret_cast<void*>(&splitStart),
+                            reinterpret_cast<void*>(&splitCount)
+            };
 
-        checkCUDAErrors(cuLaunchKernel(m_CUDADevices[0]->m_executeFunction,
-            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-            0,                                                  // shared mem
-            Stream(),                                           // stream
-            &arr[0],                                            // arguments
-            0));
+            checkCUDAErrors(cuLaunchKernel(m_CUDADevices[0]->m_executeFunction,
+                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+                0,                                                  // shared mem
+                Stream(),                                           // stream
+                &arr[0],                                            // arguments
+                0));
+        }
 
-        m_CUDAPopulation0.DeviceToHost();
-        m_CUDAResults.DeviceToHost();
-        m_CUDACodes0.DeviceToHost();
-        Context()->Synchronize();
+        m_CUDAPopulation0.DevicesToHost();
+        m_CUDAResults.DevicesToHost();
+        m_CUDACodes0.DevicesToHost();
+        for (size_t i = 0; i < m_CUDADevices.size(); i++)
+            Context(i)->Synchronize();
     }
 
     bool validResult = false;
@@ -1160,6 +1167,9 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index
     m_executeManager = manager;
     m_executeIndex = index;
     m_numDevices = CUDAContext::CUDADevices();
+#if !FIRESTARTER_MULTI_GPU
+    m_numDevices = MIN(m_numDevices, 1);
+#endif
     if (m_numDevices) {
         for (unsigned int i = 0; i < m_numDevices; i++) {
             CUDADevice* thread = new CUDADevice(Format("FireStarterExecuteThread%zu", index), i, priority);
