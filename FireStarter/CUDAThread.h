@@ -24,6 +24,13 @@ public:
         return context->Stream();
     } // Stream
   
+    inline void CUDASyncronize(void)
+    {
+        DispatchSync([this] {
+            m_CUDAContext->Synchronize();
+        });
+    } // CUDASyncronize
+
     inline bool TerminateThread(void) final
     {
         return DispatchSync([this] {

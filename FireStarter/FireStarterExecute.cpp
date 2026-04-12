@@ -1,7 +1,6 @@
 #include "FireStarterExecute.h"
 #include "FireStarterSource.h"
 #include "FireStarterUtil.h"
-#include "CUDACompile.h"
 
 // Note: Including these all the time is a very easy way to check for compiler errors.
 #include "FireEvolverGPU.cu"
@@ -29,11 +28,17 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
     return curFloat;
 } // AtomicMin
 
-void FireStarterExecute::CUDASyncThreads(void)
+void FireStarterExecute::SyncCUDAThreads(void)
 {
-    for (size_t i = 0; i < m_CUDADevices.size(); i++)
-        m_CUDADevices[i]->Synchronize();
-} // CUDASyncThreads
+    for (size_t i = 0; i < m_numDevices; i++)
+        m_CUDADevices[i]->CUDASyncronize(); // Synchronizes both the thread and the CUDA context.
+} // SyncCUDAThreads
+
+void FireStarterExecute::ClearCUDAThreads(void)
+{
+    for (size_t i = 0; i < m_numDevices; i++)
+        m_CUDADevices[i]->Clear();          // Clears the CUDA code module and function pointers.
+} // ClearCUDAThreads
 
 void FireStarterExecute::FinishPopulation(void)
 {
@@ -60,7 +65,7 @@ void FireStarterExecute::FinishPopulation(void)
     m_CUDATradingData.Clear();
     m_tradingDataSize = 0;
 
-    CUDASyncThreads();
+    SyncCUDAThreads();
 } // FinishPopulation
 
 bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
@@ -123,7 +128,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
             m_CUDANetworks.Init(m_CUDADevices, m_networksSize);
         if (m_tradingDataSize)
             m_CUDATradingData.Init(m_CUDADevices, m_tradingDataSize);
-        CUDASyncThreads();
+        SyncCUDAThreads();
     }
     return result; // Always true curently.
 } // InitPopulation
@@ -133,7 +138,7 @@ void FireStarterExecute::FinishStocks(void)
     m_CUDAStocks.Clear();
     m_CUDATradingResults.Clear();
     m_stocksSize = 0;
-    CUDASyncThreads();
+    SyncCUDAThreads();
 } // FinishStocks
 
 bool FireStarterExecute::InitStocks(const MoneyMakerStocks* stocks)
@@ -151,7 +156,7 @@ bool FireStarterExecute::InitStocks(const MoneyMakerStocks* stocks)
             m_CUDATradingResults.HostPtr()->Init(stocks->numStocks, stocks->numDays);
             m_CUDATradingResults.HostToDevices();
 
-            CUDASyncThreads();
+            SyncCUDAThreads();
         }
     }
     return true;
@@ -231,15 +236,15 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
     unsigned int populationSize = settings.m_population;
-    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = (populationSize + (threadsPerBlock - 1)) / threadsPerBlock;
-    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-    dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
     unsigned int passes = settings.m_passes;
     unsigned int variation = FIRESTARTER_VARIATION;
 
     if (m_simulateGPU) {
+        unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+        unsigned int blocksPerGrid = (populationSize + (threadsPerBlock - 1)) / threadsPerBlock;
+        dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+        dim3 cudaGridSize(blocksPerGrid, 1, 1);
         blockDim = cudaBlockSize;
         for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
             for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
@@ -249,9 +254,13 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
                             for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
                                 EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes0.HostPtr(), variation, seed, passes, populationSize, 0, populationSize);
     } else {
-        for (size_t i = 0; i < m_CUDADevices.size(); i++) {
+        for (size_t i = 0; i < m_numDevices; i++) {
             unsigned int splitStart = (unsigned int)m_CUDAPopulation0.SplitStart(i);
             unsigned int splitCount = (unsigned int)m_CUDAPopulation0.SplitCount(i);
+            unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+            unsigned int blocksPerGrid = (splitCount + (threadsPerBlock - 1)) / threadsPerBlock;
+            dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+            dim3 cudaGridSize(blocksPerGrid, 1, 1);
             void* arr[] = { reinterpret_cast<void*>(&m_CUDAResults.DevicePtr(i)),
                             reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr(i)),
                             reinterpret_cast<void*>(&m_CUDACodes0.DevicePtr(i)),
@@ -263,20 +272,19 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
                             reinterpret_cast<void*>(&splitCount)
             };
 
-            checkCUDAErrors(cuLaunchKernel(m_CUDADevices[0]->m_executeFunction,
+            checkCUDAErrors(cuLaunchKernel(m_CUDADevices[i]->m_executeFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
                 cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
                 0,                                                  // shared mem
-                Stream(),                                           // stream
+                Stream(i),                                          // stream
                 &arr[0],                                            // arguments
                 0));
         }
 
-        m_CUDAPopulation0.DevicesToHost();
         m_CUDAResults.DevicesToHost();
         m_CUDACodes0.DevicesToHost();
-        for (size_t i = 0; i < m_CUDADevices.size(); i++)
-            Context(i)->Synchronize();
+        m_CUDAPopulation0.DevicesToHost();
+        SyncCUDAThreads();
     }
 
     bool validResult = false;
@@ -857,21 +865,33 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
         printf("%s\n", job->m_log.c_str());
 
     // Initialize the results and compile the CUDA module.
-    if (!job->m_ptx.empty())
-        if (CUDACompile::CompileModule(m_CUDADevices[0]->m_executeModule, job->m_ptx)) {
-            m_executeFunctionName = FireStarterSettings::OptimizeFunctionName(job->m_state.PassMode());
-            m_executeTestName = FireStarterSettings::OptimizeTestName(job->m_state.PassMode());
-            m_CUDADevices[0]->m_executeFunction = CUDACompile::GetFunction(m_CUDADevices[0]->m_executeModule, m_executeFunctionName);
-            m_CUDADevices[0]->m_executeTest = CUDACompile::GetFunction(m_CUDADevices[0]->m_executeModule, m_executeTestName);
-            if (m_CUDADevices[0]->m_executeFunction)
-                return true;
-            CUDACompile::ReleaseModule(m_CUDADevices[0]->m_executeModule);
+    bool result = true;
+    if (!job->m_ptx.empty()) {
+        for (size_t i = 0; (i < m_numDevices) && result; i++) {
+            if (CUDACompile::CompileModule(m_CUDADevices[i]->m_executeModule, job->m_ptx)) {
+                m_executeFunctionName = FireStarterSettings::OptimizeFunctionName(job->m_state.PassMode());
+                m_executeTestName = FireStarterSettings::OptimizeTestName(job->m_state.PassMode());
+                m_CUDADevices[i]->m_executeFunction = CUDACompile::GetFunction(m_CUDADevices[i]->m_executeModule, m_executeFunctionName);
+                m_CUDADevices[i]->m_executeTest = CUDACompile::GetFunction(m_CUDADevices[i]->m_executeModule, m_executeTestName);
+                if (!m_CUDADevices[i]->m_executeFunction)
+                    result = false;
+            } else
+                result = false;
         }
+    } else
+        result = false;
 
-    // Something went wrong so free the job.
-    m_executeManager->AddFree(job);
-    job = nullptr;
-    return false;
+    // If something went wrong so free the job.
+    if (!result) {
+        for (size_t i = 0; i < m_numDevices; i++) {
+            CUDACompile::ReleaseModule(m_CUDADevices[i]->m_executeModule);
+            m_CUDADevices[i]->m_executeFunction = nullptr;
+            m_CUDADevices[i]->m_executeTest = nullptr;
+        }
+        m_executeManager->AddFree(job);
+        job = nullptr;
+    }
+    return result;
 } // Compile
 
 bool FireStarterExecute::ExecuteJob(void)
@@ -906,20 +926,21 @@ bool FireStarterExecute::GenerateEvolve(unsigned int mode)
     }
 
     // Return immediately if the Evolver code has already been compiled.
-    if (m_CUDADevices[0]->m_executeFunction)
-        return true;
+    for (size_t i = 0; i < m_numDevices; i++)
+        m_CUDADevices[i]->Compile(m_executeCode, m_executeProgramName, m_executeFunctionName, m_executeTestName, false);
 
-    // Compile the code and get the Evolver function from the module.
-    if (CUDACompile::CompileProgram(m_CUDADevices[0]->m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_CUDADevices[0]->m_executeFunction = CUDACompile::GetFunction(m_CUDADevices[0]->m_executeModule, m_executeFunctionName);
-        m_CUDADevices[0]->m_executeTest = CUDACompile::GetFunction(m_CUDADevices[0]->m_executeModule, m_executeTestName);
-        if (m_CUDADevices[0]->m_executeFunction)
-            return true;
-    }
-    CUDACompile::ReleaseModule(m_CUDADevices[0]->m_executeModule);
-    m_CUDADevices[0]->m_executeFunction = nullptr;
-    m_CUDADevices[0]->m_executeTest = nullptr;
-    return false;
+    // Synchronize all the CUDA device threads and their CUDA contexts.
+    SyncCUDAThreads();
+
+    // Make sure all the threads compiled correctly.
+    bool result = true;
+    for (size_t i = 0; i < m_numDevices; i++)
+        if (!m_CUDADevices[i]->m_executeFunction)
+            result = false;
+    if (!result) 
+        for (size_t i = 0; i < m_numDevices; i++)
+            m_CUDADevices[i]->Clear();
+    return result;
 } // GenerateEvolve
 
 bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
@@ -943,16 +964,23 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
 
     // Compile the code and get the Optimizer function from the module.
-    if (CUDACompile::CompileProgram(m_CUDADevices[0]->m_executeModule, m_executeCode, m_executeProgramName)) {
-        m_CUDADevices[0]->m_executeFunction = CUDACompile::GetFunction(m_CUDADevices[0]->m_executeModule, m_executeFunctionName);
-        m_CUDADevices[0]->m_executeTest = CUDACompile::GetFunction(m_CUDADevices[0]->m_executeModule, m_executeTestName);
-        if (m_CUDADevices[0]->m_executeFunction)
-            return true;
+    bool result = true;
+    for (size_t i = 0; (i < m_numDevices) && result; i++) {
+        if (CUDACompile::CompileProgram(m_CUDADevices[i]->m_executeModule, m_executeCode, m_executeProgramName)) {
+            m_CUDADevices[i]->m_executeFunction = CUDACompile::GetFunction(m_CUDADevices[i]->m_executeModule, m_executeFunctionName);
+            m_CUDADevices[i]->m_executeTest = CUDACompile::GetFunction(m_CUDADevices[i]->m_executeModule, m_executeTestName);
+            if (!m_CUDADevices[i]->m_executeFunction)
+                result = false;
+        } else
+            result = false;
     }
-    CUDACompile::ReleaseModule(m_CUDADevices[0]->m_executeModule);
-    m_CUDADevices[0]->m_executeFunction = nullptr;
-    m_CUDADevices[0]->m_executeTest = nullptr;
-    return false;
+    if (!result)
+        for (size_t i = 0; i < m_numDevices; i++) {
+            CUDACompile::ReleaseModule(m_CUDADevices[i]->m_executeModule);
+            m_CUDADevices[i]->m_executeFunction = nullptr;
+            m_CUDADevices[i]->m_executeTest = nullptr;
+        }
+    return result;
 } // GenerateOptimize
 
 void FireStarterExecute::ExecuteSetStocks(const MoneyMakerStocks *stocks)

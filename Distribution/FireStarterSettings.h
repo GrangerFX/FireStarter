@@ -24,7 +24,7 @@
 #define MONEYMAKER_OPTIMIZE_ALL     0           // Set to 1 to optimize all the best codes.
 
 #define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
-#define FIRESTARTER_MULTI_GPU       0           // Use all NVIDIA GPUs to speed processing of each generation.
+#define FIRESTARTER_MULTI_GPU       1           // Use all NVIDIA GPUs to speed processing of each generation.
 #define FIRESTARTER_GENERATE_GPU    0           // Generate the settings and code using the GPU.
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
 #define FIRESTARTER_SAVE_BESTCODE   0           // Save Optimizer.cu with the best evolved code.

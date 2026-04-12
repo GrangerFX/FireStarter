@@ -4,6 +4,7 @@
 #include "FireStarterManager.h"
 #include "FireSinSim.h"
 #include "CUDAThread.h"
+#include "CUDACompile.h"
 #include "MoneyMakerStocks.h"
 
 class CUDADevice : public CUDAThread {
@@ -12,7 +13,32 @@ public:
     CUfunction m_executeFunction = nullptr;
     CUfunction m_executeTest = nullptr;
 
-    CUDADevice(const std::string& threadName = "CUDAThread", int device = CUDA_DEVICE, int priority = CUDA_PRIORITY) : CUDAThread(threadName, device, priority) {}
+    inline void Compile(const std::string& programCode, const std::string& programName, const std::string& functionName, const std::string& testName, bool sync = false)
+    {
+        Dispatch([this, &programCode, &programName, &functionName, &testName, sync] {
+            // Compile the code and get the Evolver function from the module.
+            if (CUDACompile::CompileProgram(m_executeModule, programCode, programName)) {
+                m_executeFunction = CUDACompile::GetFunction(m_executeModule, functionName);
+                if (!m_executeFunction) {
+                    CUDACompile::ReleaseModule(m_executeModule);
+                    m_executeFunction = nullptr;
+                    m_executeTest = nullptr;
+                } else
+                    m_executeTest = CUDACompile::GetFunction(m_executeModule, testName);
+            }
+        }, sync);
+    } // Compile
+
+    inline void Clear(void)
+    {
+        DispatchSync([this] {
+            CUDACompile::ReleaseModule(m_executeModule);
+            m_executeFunction = nullptr;
+            m_executeTest = nullptr;
+        });
+    } // Clear
+
+    inline CUDADevice(const std::string& threadName = "CUDAThread", int device = CUDA_DEVICE, int priority = CUDA_PRIORITY) : CUDAThread(threadName, device, priority) {}
 }; // class CUDADevice
 
 typedef std::vector<CUDADevice*> CUDADevices;
@@ -132,29 +158,30 @@ public:
                     checkCUDAErrors(cudaMemcpyAsync(m_devicePtrs[i], m_hostPtr, m_size, cudaMemcpyHostToDevice, (*m_devices)[i]->Stream()));
     } // HostToDevices
 
+    inline void DeviceToHost(size_t index = 0) const
+    {
+        if (m_hostPtr && (index < m_devicePtrs.size()) && m_devicePtrs[index])
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtrs[index], m_size, cudaMemcpyDeviceToHost, (*m_devices)[index]->Stream()));
+    } // DeviceToHost
+
     inline void DevicesToHost(void) const
     {
         if (m_hostPtr) {
             size_t numDevices = m_devices->size();
-            for (size_t i = 0; i < m_devicePtrs.size(); i++) {
+            for (size_t i = 0; i < numDevices; i++) {
                 if (m_devicePtrs[i] && m_splitCount[i]) {
                     size_t splitOffset = m_splitStart[i] * sizeof(T);
                     if (splitOffset < m_size) {
                         char* hostPtr = (char*)m_hostPtr + splitOffset;
-                        char* dstPtr = (char*)m_devicePtrs[i] + splitOffset;
-                        checkCUDAErrors(cudaMemcpyAsync(hostPtr, m_devicePtrs[i] + m_splitStart[i], m_splitCount[i] * sizeof(T), cudaMemcpyDeviceToHost, (*m_devices)[i]->Stream()));
+                        char* devicePtr = (char*)m_devicePtrs[i] + splitOffset;
+                        size_t size = m_splitCount[i] * sizeof(T);
+                        checkCUDAErrors(cudaMemcpyAsync(hostPtr, devicePtr, size, cudaMemcpyDeviceToHost, (*m_devices)[i]->Stream()));
                     } else
                         break;
                 }
             }
         }
     } // DevicesToHost
-
-    inline void DeviceToHost(size_t index = 0) const
-    {
-        if (m_hostPtr && (index < m_devicePtrs.size()) && m_devicePtrs[index])
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtrs[index], m_size, cudaMemcpyDeviceToHost, (*m_devices)[index]->Stream()));
-    } // DeviceToHost
 
     inline void Clear(void)
     {
@@ -178,6 +205,7 @@ public:
             m_devicePtrs.resize(numDevices);
             m_splitStart.resize(numDevices);
             m_splitCount.resize(numDevices);
+            checkCUDAErrors(cudaMallocHost(&m_hostPtr, m_size));
             for (size_t i = 0; i < numDevices; i++) {
                 T* devicePtr = nullptr;
                 checkCUDAErrors(cudaMallocAsync(&devicePtr, m_size, (*m_devices)[i]->Stream()));
@@ -185,7 +213,6 @@ public:
                 m_splitStart[i] = 0;
                 m_splitCount[i] = m_count;
             }
-            checkCUDAErrors(cudaMallocHost(&m_hostPtr, m_size));
         } else {
             m_devicePtrs.clear();
             m_splitStart.clear();
@@ -195,15 +222,17 @@ public:
 
     inline void Split(const CUDADevices& devices, size_t size = sizeof(T))
     {
+        size_t numDevices = devices.size();
         Init(devices, size);
-        size_t numDevices = m_devices->size();
-        size_t splitStart = 0;
-        size_t splitCount = (m_count + numDevices - 1) / numDevices;
-        for (size_t i = 0; i < numDevices; i++) {
-            size_t splitEnd = MIN(splitStart + splitCount, m_count);
-            m_splitStart[i] = splitStart;
-            m_splitCount[i] = splitEnd - splitStart;
-            splitStart = splitEnd;
+        if (m_size && numDevices) {
+            size_t splitStart = 0;
+            size_t splitCount = (m_count + numDevices - 1) / numDevices;
+            for (size_t i = 0; i < numDevices; i++) {
+                size_t splitEnd = MIN(splitStart + splitCount, m_count);
+                m_splitStart[i] = splitStart;
+                m_splitCount[i] = splitEnd - splitStart;
+                splitStart = splitEnd;
+            }
         }
     } // Split
 
@@ -252,7 +281,7 @@ private:
 
     inline const CUDAContext* Context(size_t index = 0) const
     {
-        if (m_CUDADevices.size() >= index)
+        if (index < m_numDevices)
             return m_CUDADevices[index]->Context();
         return nullptr;
     } // Context
@@ -265,7 +294,8 @@ private:
         return nullptr;
     } // Stream
 
-    void CUDASyncThreads(void);
+    void SyncCUDAThreads(void);
+    void ClearCUDAThreads(void);
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
     void FinishStocks(void);
