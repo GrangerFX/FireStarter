@@ -270,6 +270,24 @@ public:
     inline void Split(const CUDADevices& devices, size_t size = sizeof(T))
     {
         size_t numDevices = devices.size();
+        size_t count = size / sizeof(T);
+        size_t splitCount = (count + numDevices - 1) / numDevices;
+        size_t spitSize = splitCount * sizeof(T);
+        Init(devices, spitSize);
+        if (m_size && numDevices) {
+            size_t splitStart = 0;
+            for (size_t i = 0; i < numDevices; i++) {
+                size_t splitEnd = MIN(splitStart + splitCount, count);
+                m_splitStart[i] = 0;
+                m_splitCount[i] = splitEnd - splitStart;
+                splitStart = splitEnd;
+            }
+        }
+    } // Split
+
+    inline void Merge(const CUDADevices& devices, size_t size = sizeof(T))
+    {
+        size_t numDevices = devices.size();
         Init(devices, size);
         if (m_size && numDevices) {
             size_t splitStart = 0;
@@ -281,7 +299,7 @@ public:
                 splitStart = splitEnd;
             }
         }
-    } // Split
+    } // Merge
 
     inline CUDAMemory(void)
     {

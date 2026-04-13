@@ -255,30 +255,60 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
                                 EvolverGPU(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes0.HostPtr(), variation, seed, passes, populationSize, 0, populationSize);
     } else {
         for (size_t i = 0; i < m_numDevices; i++) {
-            unsigned int splitStart = (unsigned int)m_CUDAPopulation0.SplitStart(i);
-            unsigned int splitCount = (unsigned int)m_CUDAPopulation0.SplitCount(i);
-            unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-            unsigned int blocksPerGrid = (splitCount + (threadsPerBlock - 1)) / threadsPerBlock;
-            dim3 cudaBlockSize(threadsPerBlock, 1, 1);
-            dim3 cudaGridSize(blocksPerGrid, 1, 1);
-            void* arr[] = { reinterpret_cast<void*>(&m_CUDAResults.DevicePtr(i)),
-                            reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr(i)),
-                            reinterpret_cast<void*>(&m_CUDACodes0.DevicePtr(i)),
-                            reinterpret_cast<void*>(&variation),
-                            reinterpret_cast<void*>(&seed),
-                            reinterpret_cast<void*>(&passes),
-                            reinterpret_cast<void*>(&populationSize),
-                            reinterpret_cast<void*>(&splitStart),
-                            reinterpret_cast<void*>(&splitCount)
-            };
+            struct KernelLaunchParams {
+                void* resultsPtr;
+                void* populationPtr;
+                void* codesPtr;
+                int variation;
+                unsigned long long seed;
+                unsigned int passes;
+                unsigned int populationSize;
+                unsigned int splitStart;
+                unsigned int splitCount;
 
-            checkCUDAErrors(cuLaunchKernel(m_CUDADevices[i]->m_executeFunction,
-                cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
-                cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
-                0,                                                  // shared mem
-                Stream(i),                                          // stream
-                &arr[0],                                            // arguments
-                0));
+                CUDADevice* device;
+                unsigned int threadsPerBlock;
+                unsigned int blocksPerGrid;
+            } params;
+
+            params.resultsPtr = m_CUDAResults.DevicePtr(i);
+            params.populationPtr = m_CUDAPopulation0.DevicePtr(i);
+            params.codesPtr = m_CUDACodes0.DevicePtr(i);
+            params.variation = variation;
+            params.seed = seed;
+            params.passes = passes;
+            params.populationSize = populationSize;
+            params.splitStart = (unsigned int)m_CUDAPopulation0.SplitStart(i);
+            params.splitCount = (unsigned int)m_CUDAPopulation0.SplitCount(i);
+
+            params.device = m_CUDADevices[i];
+            params.threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+            params.blocksPerGrid = (params.splitCount + (params.threadsPerBlock - 1)) / params.threadsPerBlock;
+
+            params.device->DispatchAsync([params] () mutable {
+                dim3 cudaBlockSize(params.threadsPerBlock, 1, 1);
+                dim3 cudaGridSize(params.blocksPerGrid, 1, 1);
+
+                CUDAParameters parameters;
+                parameters += reinterpret_cast<void*>(&params.resultsPtr);
+                parameters += reinterpret_cast<void*>(&params.populationPtr);
+                parameters += reinterpret_cast<void*>(&params.codesPtr);
+                parameters += reinterpret_cast<void*>(&params.variation);
+                parameters += reinterpret_cast<void*>(&params.seed);
+                parameters += reinterpret_cast<void*>(&params.passes);
+                parameters += reinterpret_cast<void*>(&params.populationSize);
+                parameters += reinterpret_cast<void*>(&params.splitStart);
+                parameters += reinterpret_cast<void*>(&params.splitCount);
+
+                checkCUDAErrors(cuLaunchKernel(params.device->m_executeFunction,
+                    cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+                    cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+                    0,                                                  // shared mem
+                    params.device->Stream(),                            // stream
+                    parameters.data(),                                  // arguments
+                    0));
+            });
+            SyncCUDAThreads();
         }
 
         m_CUDAResults.DevicesToHost();

@@ -5,6 +5,16 @@
 #define CUDA_DEVICE     0
 #define CUDA_PRIORITY   0
 
+class CUDAParameters : private std::vector<void*> {
+public:
+    using std::vector<void*>::data; // Explicitly pull in only what you want
+
+    void operator+=(void* p)
+    {
+        push_back(p);
+    } // operator+=
+}; // class CUDAParameters
+
 class CUDAContext {
 private:
     int m_CUDA_device = CUDA_DEVICE;
