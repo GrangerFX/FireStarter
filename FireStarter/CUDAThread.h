@@ -33,10 +33,20 @@ public:
 
     inline bool TerminateThread(void) final
     {
-        return DispatchSync([this] {
-            delete m_CUDAContext;
-            m_CUDAContext = nullptr;
-        }) && SerialThread::TerminateThread();
+        // Atomic 'check and set' - ensures cleanup only happens once
+        if (m_willTerminate.exchange(true))
+            return false;
+
+        // Ensure this runs on the worker thread to safely destroy CUDA resources
+        DispatchSync([this] {
+            if (m_CUDAContext) {
+                delete m_CUDAContext;
+                m_CUDAContext = nullptr;
+            }
+        });
+
+        // Let the base class finish the job (joining the thread, etc.)
+        return SerialThread::TerminateThread();
     } // TerminateThread
 
     // Note: int is used instead of bool for correct type matching.

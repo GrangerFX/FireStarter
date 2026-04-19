@@ -5,14 +5,62 @@
 #define CUDA_DEVICE     0
 #define CUDA_PRIORITY   0
 
-class CUDAParameters : private std::vector<void*> {
-public:
-    using std::vector<void*>::data; // Explicitly pull in only what you want
+class CUDAParameters {
+private:
+    mutable std::vector<void*> m_parameters;
+    std::vector<unsigned char> m_data;
+    std::vector<size_t> m_offsets;
 
-    void operator+=(void* p)
+public:
+    // Single parameter addition
+    template <typename T>
+    void operator+=(const T& parameter)
     {
-        push_back(p);
+        // Ensure we aren't trying to copy complex objects (strings, vectors, etc.)
+        static_assert(std::is_trivially_copyable<T>::value, "Only trivially copyable types can be CUDA parameters.");
+
+        // 1. Calculate 8-byte aligned offset
+        size_t oldSize = m_data.size();
+        size_t alignedOffset = (oldSize + 7) & ~7ULL;
+
+        // 2. Record the starting position
+        m_offsets.push_back(alignedOffset);
+
+        // 3. Resize and Copy
+        m_data.resize(alignedOffset + sizeof(T));
+        std::memcpy(m_data.data() + alignedOffset, &parameter, sizeof(T));
     } // operator+=
+
+    // Variadic helper to add multiple parameters at once
+    template <typename... Args>
+    void add(const Args&... args)
+    {
+        // C++11 fold-expression simulation using initializer list
+        int dummy[] = { 0, ((*this += args), 0)... };
+        static_cast<void>(dummy); // Avoid unused variable warning
+    } // add
+
+    // Returns the array of pointers required by cudaLaunchKernel
+    void** Parameters()
+    {
+        m_parameters.clear();
+        // Rebuild pointers from offsets in case m_data.data() moved
+        for (size_t off : m_offsets) {
+            m_parameters.push_back(static_cast<void*>(m_data.data() + off));
+        }
+        return m_parameters.data();
+    } // Parameters
+
+    // Useful for checking parameter count
+    size_t count() const
+    {
+        return m_offsets.size();
+    } // count
+
+    template <typename... Args>
+    CUDAParameters(const Args&... args) {
+        add(args...);
+    } // CUDAParameters
 }; // class CUDAParameters
 
 class CUDAContext {
@@ -82,6 +130,7 @@ public:
 
     inline void Synchronize(void) const
     {
+        SetContext();
         checkCUDAErrors(cudaStreamSynchronize(m_stream));
     } // Syncronize
 

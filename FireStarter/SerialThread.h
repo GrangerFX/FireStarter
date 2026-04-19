@@ -154,10 +154,11 @@ private:
     std::queue<SerialThreadWork> m_workQueue;
     const std::string m_threadName; // Used to identify threads in the debugger.
     const bool m_pollThread = false;
-    std::atomic<bool> m_willTerminate{ false };
     std::atomic<bool> m_waiting{ false };
     std::atomic<bool> m_working{ false };
     std::atomic<bool> m_terminate{ false };
+protected:
+    std::atomic<bool> m_willTerminate{ false };
 
     struct ParallelTask {
         size_t start, end;
