@@ -388,9 +388,6 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         // Create the execution unit used to optimize the best states.
         FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
 
-        // Generate and compile the evolve code.
-        executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
-
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {

@@ -25,12 +25,13 @@ inline bool OptimizeEvaluate(const FireStarterData& data, const float target[], 
     return true;
 } // OptimizeEvaluate
 
-GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationSize)
+GPU_GLOBAL void Optimizer(FireStarterResult* newPopulation, const FireStarterResult* oldPopulation, const unsigned int variation, const unsigned int registers, const unsigned long long optimizeSeed, const unsigned long long optimizePass, unsigned int populationSize, const unsigned int populationStart, const unsigned int populationCount)
 {
     // Determine the member to be optimized.
     unsigned int member = blockDim.x * blockIdx.x + threadIdx.x;
-    if (member >= populationSize)
+    if (member >= populationCount)
         return;
+    member += populationStart;
 
     // Precalculate the target theta values and target samples.
     float theta[FIRESTARTER_OPTIMIZE_SAMPLES];

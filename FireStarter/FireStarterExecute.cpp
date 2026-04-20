@@ -260,7 +260,7 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
             unsigned int blocksPerGrid = (populationSize + (threadsPerBlock - 1)) / threadsPerBlock;
             CUDAParameters parameters(m_CUDAResults.DevicePtr(i), m_CUDAPopulation0.DevicePtr(i), m_CUDACodes0.DevicePtr(i), variation, seed, passes, populationSize, (unsigned int)m_CUDAPopulation0.SplitStart(i), (unsigned int)m_CUDAPopulation0.SplitCount(i));
 
-            device->DispatchAsync([device, threadsPerBlock, blocksPerGrid, parameters] () mutable {
+            device->DispatchAsync([device, threadsPerBlock, blocksPerGrid, parameters]() mutable {
                 dim3 cudaBlockSize(threadsPerBlock, 1, 1);
                 dim3 cudaGridSize(blocksPerGrid, 1, 1);
 
@@ -541,7 +541,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                         for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                             for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                                 for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                    Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationSize);
+                                    Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationSize, 0, populationSize);
 
             unsigned int hash = 0;
             for (unsigned int i = 0; i < settings.m_population; i++) {
@@ -577,6 +577,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                         parameters.Parameters(),                            // arguments
                         0));
                 });
+                SyncCUDAThreads();
             }
             SyncCUDAThreads();
         }
@@ -946,13 +947,31 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
         }
     }
 
-    // Generate the evaluate code
+    // Generate the evaluate code. Note: The same code is used by all GPU threads.
     state.m_evaluateCode.clear();
-    m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
+    m_CUDADevices[0]->DispatchSync([this, &state] {
+        m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
+    });
 
     // Create the Optimizer code by replacing the evaluate code block.
     FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
 
+#if 1
+    // Compile the code and get the Optimizer function from the module.
+    for (size_t i = 0; i < m_numDevices; i++)
+        m_CUDADevices[i]->Compile(m_executeCode, m_executeProgramName, m_executeFunctionName, m_executeTestName, false);
+
+    // Synchronize all the CUDA device threads and their CUDA contexts.
+    SyncCUDAThreads();
+
+    bool result = true;
+    for (size_t i = 0; i < m_numDevices; i++)
+        if (!m_CUDADevices[i]->m_executeFunction)
+            result = false;
+    if (!result)
+        for (size_t i = 0; i < m_numDevices; i++)
+            m_CUDADevices[i]->Clear();
+#else
     // Compile the code and get the Optimizer function from the module.
     bool result = true;
     for (size_t i = 0; (i < m_numDevices) && result; i++) {
@@ -970,6 +989,8 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
             m_CUDADevices[i]->m_executeFunction = nullptr;
             m_CUDADevices[i]->m_executeTest = nullptr;
         }
+#endif
+
     return result;
 } // GenerateOptimize
 
@@ -984,22 +1005,13 @@ bool FireStarterExecute::ExecuteGenerateEvolve(unsigned int mode, bool sync)
 {
     if (m_CUDADevices[0]->m_executeFunction)
         return true;
-    bool result = false;
-    // Note: TODO: Generate code and execution pointers for each CUDA thread.
-    m_CUDADevices[0]->Dispatch([this, mode, &result] {
-        result = GenerateEvolve(mode);
-    }, sync);
-    return result;
+    else
+        return GenerateEvolve(mode);
 } // ExecuteGenerateEvolve
 
 bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync)
 {
-    bool result = false;
-    // Note: TODO: Generate code and execution pointers for each CUDA thread.
-    m_CUDADevices[0]->Dispatch([this, &optimizeState, &result] {
-        result = GenerateOptimize(optimizeState);
-    }, sync);
-    return result;
+    return GenerateOptimize(optimizeState);
 } // ExecuteGenerateOptimize
 
 void FireStarterExecute::ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings)

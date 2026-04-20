@@ -267,6 +267,8 @@ public:
         }
     } // Init
 
+#if 0
+    // Work on version that does not duplicate the entire memory for each GPU.
     inline void Split(const CUDADevices& devices, size_t size = sizeof(T))
     {
         size_t numDevices = devices.size();
@@ -284,8 +286,8 @@ public:
             }
         }
     } // Split
-
-    inline void Merge(const CUDADevices& devices, size_t size = sizeof(T))
+#else
+    inline void Split(const CUDADevices& devices, size_t size = sizeof(T))
     {
         size_t numDevices = devices.size();
         Init(devices, size);
@@ -299,7 +301,8 @@ public:
                 splitStart = splitEnd;
             }
         }
-    } // Merge
+    } // Split
+#endif
 
     inline CUDAMemory(void)
     {
