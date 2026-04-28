@@ -186,27 +186,32 @@ public:
             DeviceInit(srcPtr, i, size, offset);
     } // DevicesInit
 
+    inline void HostToDevice(size_t i = 0, bool sync = false) const
+    {
+        if (m_hostPtr && (i < m_devicePtrs.size()) && m_devicePtrs[i]) {
+            CUDADevice* device = (*m_devices)[i];
+            char* hostPtr = (char*)m_hostPtr;
+            char* devicePtr = (char*)m_devicePtrs[i];
+            size_t size = m_hostSize;
+
+            if (m_deviceSize != m_hostSize) {
+                hostPtr += m_splitOffset[i];
+                size = m_splitSize[i];
+            }
+            device->DispatchAsync([device, hostPtr, devicePtr, size] {
+                checkCUDAErrors(cudaMemcpyAsync(devicePtr, hostPtr, size, cudaMemcpyHostToDevice, device->Stream()));
+            });
+            if (sync)
+                device->CUDASyncronize();
+        }
+    } // HostToDevice
+
     inline void HostToDevices(bool sync = false) const
     {
-        size_t numDevices = m_devices->size();
         if (m_hostPtr) {
-            for (size_t i = 0; i < numDevices; i++) {
-                CUDADevice* device = (*m_devices)[i];
-                char* hostPtr = (char*)m_hostPtr;
-                char* devicePtr = (char*)m_devicePtrs[i];
-                size_t size = m_hostSize;
-
-                if (m_deviceSize < m_hostSize) {
-                    size_t splitOffset = m_splitOffset[i];
-                    hostPtr += splitOffset;
-                    size = m_splitSize[i];
-                }
-                device->DispatchAsync([device, hostPtr, devicePtr, size] {
-                    checkCUDAErrors(cudaMemcpyAsync(devicePtr, hostPtr, size, cudaMemcpyHostToDevice, device->Stream()));
-                });
-                if (sync)
-                    device->CUDASyncronize();
-            }
+            size_t numDevices = m_devices->size();
+            for (size_t i = 0; i < numDevices; i++)
+                HostToDevice(i, sync);
         }
     } // HostToDevices
 
@@ -222,7 +227,7 @@ public:
             if (m_deviceSize == m_hostSize)
                 devicePtr += splitOffset;
 
-            device->DispatchAsync([this, device, hostPtr, devicePtr, size] {
+            device->DispatchAsync([device, hostPtr, devicePtr, size] {
                 checkCUDAErrors(cudaMemcpyAsync(hostPtr, devicePtr, size, cudaMemcpyDeviceToHost, device->Stream()));
             });
             if (sync)

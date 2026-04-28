@@ -577,6 +577,17 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                 });
                 SyncCUDAThreads();
             }
+
+            // If there is more than one device, copy the new population to the host and back to the devices so that each device has the new population for the next pass.
+            if (m_numDevices > 1) {
+                if (pass & 1) {
+                    m_CUDAPopulation0.DevicesToHost();
+                    m_CUDAPopulation0.HostToDevices();
+                } else {
+                    m_CUDAPopulation1.DevicesToHost();
+                    m_CUDAPopulation1.HostToDevices();
+                }
+            }
             SyncCUDAThreads();
         }
 
@@ -592,7 +603,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             }
         m_CUDAPopulation0.DevicesToHost();
         if (m_numDevices > 1)
-            m_CUDAPopulation0.HostToDevices(); // Note: TODO: Need an efficient CUDAMemory function that folds each device into the host and back into each device.
+            m_CUDAPopulation0.HostToDevices();
         SyncCUDAThreads();
     }
 
