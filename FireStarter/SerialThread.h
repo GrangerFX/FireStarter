@@ -538,24 +538,24 @@ public:
 #else
     inline virtual bool TerminateThread(void)
     {
-        if (!m_willTerminate) {
-            m_willTerminate = true;
-            if (m_pollThread) {
-                PollThread();
-                std::unique_lock<std::mutex> lock(m_mutex);
-                Terminate();
-                std::queue<SerialThreadWork> empty;
-                std::swap(m_workQueue, empty);  // Clear the work queue.
-            } else {
-                DispatchSync([this] { Terminate(); });
-                std::unique_lock<std::mutex> lock(m_mutex);
-                m_thread.join();
-                std::queue<SerialThreadWork> empty;
-                std::swap(m_workQueue, empty);  // Clear the work queue.
-            }
-            return true;
+        // Atomic 'check and set' - ensures cleanup only happens once
+        if (m_willTerminate.exchange(true))
+            return false;
+
+        if (m_pollThread) {
+            PollThread();
+            std::unique_lock<std::mutex> lock(m_mutex);
+            Terminate();
+            std::queue<SerialThreadWork> empty;
+            std::swap(m_workQueue, empty);  // Clear the work queue.
+        } else {
+            DispatchSync([this] { Terminate(); });
+            std::unique_lock<std::mutex> lock(m_mutex);
+            m_thread.join();
+            std::queue<SerialThreadWork> empty;
+            std::swap(m_workQueue, empty);  // Clear the work queue.
         }
-        return false;
+        return true;
     } // TerminateThread
 #endif
 

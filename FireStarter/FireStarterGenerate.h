@@ -5,7 +5,7 @@
 class FireStarterGenerate {
 private:
 	std::string m_generateCode;
-	CUDAContext* m_CUDAContext = nullptr;
+	const CUDAContext m_CUDAContext;
 	CUmodule m_module = nullptr;
 	CUfunction m_evaluateFunction = nullptr;
 	CUfunction m_solutionFunction = nullptr;
@@ -21,6 +21,6 @@ public:
 	bool InitGenerateGPU(const FireStarterSettings& settings);
 	void GenerateEvaluate(const FireStarterState& state, std::string& text);
 	void GenerateSolution(const FireStarterState& state, std::string& text, const std::string& targetCode);
-	FireStarterGenerate(CUDAContext* context = nullptr);
+	FireStarterGenerate(const CUDAContext& context);
 	~FireStarterGenerate(void);
 }; // FireStarterGenerate

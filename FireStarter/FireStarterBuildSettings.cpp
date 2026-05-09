@@ -13,8 +13,8 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings)
 {
     DispatchSync([this, &settings] {
         if (m_fireSettingsFunction) {
-            CUDAContext* context = Context();
-            CUstream stream = context->Stream();
+            CUDAContext context = Context();
+            CUstream stream = context.Stream();
 
             // Launch the load settings kernel
             dim3 cudaBlockSize(WARP_THREADS, 1, 1);
@@ -36,7 +36,7 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings)
 
             // Unload the fire show code and destroy the CUDA context.
             checkCUDAErrors(cudaFreeAsync(fireSettings, stream));
-            context->Synchronize();
+            context.Synchronize();
         } else
             settings = FireStarterSettings();
 

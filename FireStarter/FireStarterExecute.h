@@ -38,7 +38,7 @@ public:
         });
     } // Clear
 
-    inline CUDADevice(const std::string& threadName = "CUDAThread", int device = CUDA_DEVICE, int priority = CUDA_PRIORITY) : CUDAThread(threadName, device, priority) {}
+    inline CUDADevice(const std::string& threadName = "CUDAThread", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : CUDAThread(threadName, deviceIndex, priority) {}
 }; // class CUDADevice
 
 typedef std::vector<CUDADevice*> CUDADevices;
@@ -356,19 +356,22 @@ private:
     size_t m_executeIndex = 0;
     bool m_simulateGPU = false;
 
-    inline const CUDAContext* Context(size_t index = 0) const
+    inline CUDADevice* Device(size_t index = 0)
     {
-        if (index < m_numDevices)
-            return m_CUDADevices[index]->Context();
-        return nullptr;
+        if (index < m_CUDADevices.size())
+            return m_CUDADevices[index];
+        else
+            return nullptr;
+    } // Device
+
+    inline const CUDAContext& Context(size_t index = 0) const
+    {
+        return m_CUDADevices[index]->Context();
     } // Context
 
     inline const CUstream Stream(size_t index = 0) const
     {
-        const CUDAContext* context = Context(index);
-        if (context)
-            return context->Stream();
-        return nullptr;
+        return m_CUDADevices[index]->Stream();
     } // Stream
 
     void SyncCUDAThreads(void);
@@ -411,6 +414,6 @@ public:
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);
     const MoneyMakerStocks* GetTradingResults(void) const;
-    FireStarterExecute(FireStarterManager* manager, size_t index = 0, int priority = 0);
+    FireStarterExecute(FireStarterManager* manager, size_t devices = 0, size_t index = 0, int priority = 0);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute

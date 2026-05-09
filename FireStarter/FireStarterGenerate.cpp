@@ -70,7 +70,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
         // First pass: Determine the length of the code string.
         dim3 cudaBlockSize(FIRESTARTER_WARP_THREADS, 1, 1);
         dim3 cudaGridSize(1, 1, 1);
-        CUstream stream = m_CUDAContext->Stream();
+        const CUstream& stream = m_CUDAContext.Stream();
         checkCUDAErrors(cudaMemcpyAsync(m_deviceCode, code, FireStarterCode::CodeSize(numInstructions), cudaMemcpyHostToDevice, stream));
         checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registersUsage, FireStarterRegisterUsage::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
 
@@ -91,7 +91,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
             &arr[0],                                            // arguments
             0));
         checkCUDAErrors(cudaMemcpyAsync(&stringSize, m_deviceString, sizeof(size_t), cudaMemcpyDeviceToHost, stream));
-        m_CUDAContext->Synchronize();
+        m_CUDAContext.Synchronize();
 
         // Second pass: Generate the code string.
         generateText.resize(stringSize, 0);
@@ -110,7 +110,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterState& state, std::s
             &arr[0],                                            // arguments
             0));
         checkCUDAErrors(cudaMemcpyAsync(generateText.data(), m_deviceString, stringSize, cudaMemcpyDeviceToHost, stream));
-        m_CUDAContext->Synchronize();
+        m_CUDAContext.Synchronize();
     } else {
         // Fallback to CPU (static code generation)
         size_t textLength = 0;
@@ -174,7 +174,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
             // First pass: Determine the length of the text string.
             dim3 cudaBlockSize(FIRESTARTER_WARP_THREADS, 1, 1);
             dim3 cudaGridSize(1, 1, 1);
-            CUstream stream = m_CUDAContext->Stream();
+            const CUstream& stream = m_CUDAContext.Stream();
             checkCUDAErrors(cudaMemcpyAsync(m_deviceCode, code, FireStarterCode::CodeSize(numInstructions), cudaMemcpyHostToDevice, stream));
             checkCUDAErrors(cudaMemcpyAsync(m_deviceRegisters, registersUsage, FireStarterRegisterUsage::RegistersSize(numRegisters), cudaMemcpyHostToDevice, stream));
             checkCUDAErrors(cudaMemcpyAsync(m_deviceData, data, FireStarterData::DataSize(numRegisters), cudaMemcpyHostToDevice, stream));
@@ -197,7 +197,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
                 &arr[0],                                            // arguments 
                 0));
             checkCUDAErrors(cudaMemcpyAsync(&stringSize, m_deviceString, sizeof(size_t), cudaMemcpyDeviceToHost, stream));
-            m_CUDAContext->Synchronize();
+            m_CUDAContext.Synchronize();
 
             // Second pass: Generate the text string.
             generateText.resize(stringSize, 0);
@@ -215,7 +215,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
                 &arr[0],                                            // arguments */
                 0));
             checkCUDAErrors(cudaMemcpyAsync(generateText.data(), m_deviceString, stringSize, cudaMemcpyDeviceToHost, stream));
-            m_CUDAContext->Synchronize();
+            m_CUDAContext.Synchronize();
         } else {
             size_t textLength = 0;
             code->GenerateSolution(nullptr, 0, textLength, tabs, numInstructions, registersUsage, numRegisters, data);
@@ -251,26 +251,23 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     }
 } // GenerateSolution
 
-FireStarterGenerate::FireStarterGenerate(CUDAContext* context)
+FireStarterGenerate::FireStarterGenerate(const CUDAContext& context) : m_CUDAContext(context)
 {
-    m_CUDAContext = context;
     FireStarterSource::LoadSource(m_generateCode, "FireGenerate.cu");
 } // FireStarterGenerate
 
 FireStarterGenerate::~FireStarterGenerate(void)
 {
-    if (m_CUDAContext) {
-        CUstream stream = m_CUDAContext->Stream();
-        if (m_module)
-            checkCUDAErrors(cuModuleUnload(m_module));
-        if (m_deviceCode)
-            checkCUDAErrors(cudaFreeAsync(m_deviceCode, stream));
-        if (m_deviceRegisters)
-            checkCUDAErrors(cudaFreeAsync(m_deviceRegisters, stream));
-        if (m_deviceData)
-            checkCUDAErrors(cudaFreeAsync(m_deviceData, stream));
-        if (m_deviceString)
-            checkCUDAErrors(cudaFreeAsync(m_deviceString, stream));
-        checkCUDAErrors(cudaStreamSynchronize(stream));
-    }
+    CUstream stream = m_CUDAContext.Stream();
+    if (m_module)
+        checkCUDAErrors(cuModuleUnload(m_module));
+    if (m_deviceCode)
+        checkCUDAErrors(cudaFreeAsync(m_deviceCode, stream));
+    if (m_deviceRegisters)
+        checkCUDAErrors(cudaFreeAsync(m_deviceRegisters, stream));
+    if (m_deviceData)
+        checkCUDAErrors(cudaFreeAsync(m_deviceData, stream));
+    if (m_deviceString)
+        checkCUDAErrors(cudaFreeAsync(m_deviceString, stream));
+    checkCUDAErrors(cudaStreamSynchronize(stream));
 } // ~FireStarterGenerate
