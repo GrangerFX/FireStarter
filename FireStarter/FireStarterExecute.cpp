@@ -940,7 +940,7 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
 
     // Generate the evaluate code. Note: The same code is used by all GPU threads.
     state.m_evaluateCode.clear();
-    DispatchSync([this, &state] {
+    Device()->DispatchSync([this, &state] {
         m_executeGenerate->GenerateEvaluate(state, state.m_evaluateCode);
     });
 

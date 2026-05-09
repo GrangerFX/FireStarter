@@ -74,7 +74,7 @@ private:
     inline static bool m_initialized = false;
 
     // Initialize CUDA only once per process.
-    static inline void Initialize(void)
+    static inline void CUDAInitialize(void)
     {
         static std::mutex CUDAContextMutex;
         CUDAContextMutex.lock();
@@ -88,13 +88,13 @@ private:
                 m_CUDA_devices = 0;
         }
         CUDAContextMutex.unlock();
-    } // Initialize
+    } // CUDAInitialize
 
 public:
     static inline int CUDADevices(void)
     {
         // Initialize CUDA only once per process.
-        Initialize();
+        CUDAInitialize();
         return m_CUDA_devices;
     } // CUDADevices
 
@@ -148,14 +148,14 @@ public:
         checkCUDAErrors(cuCtxPopCurrent(&oldContext));
     } // PopContext
 
-    inline CUDAContext(size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY)
+    inline void InitContext(size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY)
     {
-        // Initialize CUDA only once per process.
-        Initialize();
-
-        m_CUDA_priority = priority;
         if (m_CUDA_devices) {
-            m_CUDA_device = (int)(deviceIndex % m_CUDA_devices);
+            m_CUDA_priority = priority;
+            if (m_CUDA_devices)
+                m_CUDA_device = (int)(deviceIndex % m_CUDA_devices);
+            else
+                m_CUDA_device = 0;
 
             // Create a context and stream on the device.
             checkCUDAErrors(cuDeviceGet(&m_device, m_CUDA_device));
@@ -185,6 +185,17 @@ public:
             // Missing: Warps per SM: 64 for all current CUDA GPUs accourding to online documentation.
 #endif
         }
+    } // InitContext
+
+    inline CUDAContext(void)
+    {
+        CUDAContext::CUDAInitialize();  // Global initalization. Once for all contexts.
+    } // CUDAContext
+
+    inline CUDAContext(size_t deviceIndex, int priority = CUDA_PRIORITY)
+    {
+        CUDAContext::CUDAInitialize();  // Global initalization. Once for all contexts.
+        InitContext(deviceIndex, priority);
     } // CUDAContext
 
     inline ~CUDAContext(void)

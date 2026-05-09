@@ -13,7 +13,7 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings)
 {
     DispatchSync([this, &settings] {
         if (m_fireSettingsFunction) {
-            CUDAContext context = Context();
+            const CUDAContext& context = Context();
             CUstream stream = context.Stream();
 
             // Launch the load settings kernel
