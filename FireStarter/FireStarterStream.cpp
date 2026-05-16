@@ -27,7 +27,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         compile->AddCompiler();
 
         // Create the execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager, 1);
+        FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, randomSettings);
@@ -111,17 +111,17 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
         // Create the evolution execution units.
         std::vector<FireStarterExecute*> evolutionUnits;
         for (unsigned int i = 0; i < selectSettings.m_units; i++) {
-            FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, 1, i);
+            FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, i);
             evolutionUnits.push_back(evolutionUnit);
         }
 
         // Create the selection execution unit.
-        FireStarterExecute* executeSelect = new FireStarterExecute(manager, 1);
+        FireStarterExecute* executeSelect = new FireStarterExecute(manager);
 
         // Create the optimization execution unit.
         FireStarterExecute* executeOptimize = nullptr;
         if (selectSettings.m_optimize)
-            executeOptimize = new FireStarterExecute(manager, 1);
+            executeOptimize = new FireStarterExecute(manager);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, selectSettings, FIRESTARTER_SAVE_BESTSTATE);
@@ -251,14 +251,14 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
         // Create the evolution execution units.
         std::vector<FireStarterExecute*> evolutionUnits;
         for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
-            FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, 1, i);
+            FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, i);
             evolutionUnits.push_back(evolutionUnit);
         }
 
         // Create the optimization execution unit.
         FireStarterExecute* execute = nullptr;
         if (evolveSettings.m_optimize)
-            execute = new FireStarterExecute(manager, 1);
+            execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
@@ -370,6 +370,13 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         std::string streamDate = m_streamDate;
         double totalDuration = 0.0;
 
+#if FIRESTARTER_MULTI_GPU
+        size_t numDevices = CUDAContext::CUDADevices();
+        numDevices = MAX(numDevices, 1);
+#else
+        size_t numDevices = 1;
+#endif
+
         // Optimization for single variation optimization population.
         if (optimizeSettings.m_variations == 1) {
             optimizeSettings.m_population = 65536;
@@ -383,10 +390,14 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Create the execution unit used to evolve the best states.
-        FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0);
+        FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0, 0);  // Automatic GPU device allocation.
 
         // Create the execution unit used to optimize the best states.
-        FireStarterExecute* executeOptimize = new FireStarterExecute(manager, 1);
+        std::vector<FireStarterExecute*> optimizeUnits;
+        for (size_t i = 0; i < numDevices; i++) {
+            FireStarterExecute* optimizeUnit = new FireStarterExecute(manager, i);  // Automatic GPU device allocation.
+            optimizeUnits.push_back(optimizeUnit);
+        }
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
@@ -394,54 +405,49 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
             FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, 0, test);
-            FireStarterState optimizeState = FireStarterState(optimizeSettings, 0, 0, 0, test);
+            std::vector<FireStarterState> optimizeStates(numDevices);
             FireStarterState bestState = FireStarterState(optimizeSettings, 0, 0, 0, test);
 
             // Initialize the evolve state's best codes.
             evolveState.m_bestCodes.InitBestCodes(evolveSettings);
 
+            // Execute the initial GPU evolve.
+            if (!WillTerminate()) {
+                executeEvolve->ExecuteEvolveGPU(evolveState);
+                evolveState.m_generation++;
+            }
+
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
-#if 0
-                // Execute the initial GPU evolve.
-                executeEvolve->ExecuteEvolve(evolveState);
-                const FireStarterCode* bestCode = evolveState.m_bestCodes.GetBestCode();
-                while (bestCode) {
-                    optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, 0, test);
-                    optimizeState.CopyCode(bestCode);
-
-                    // Compile the optimize code asynchronously.
-                    executeOptimize->ExecuteGenerateOptimize(optimizeState);
-
-                    // Execute optimize for any completed compile jobs.
-                    executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete);
-                    if (bestState.Complete())
-                        break;
-                    bestCode = evolveState.m_bestCodes.GetBestCode();
-                }
-#else
                 // Get the best code to optimize.
-                FireStarterCodeVector bestCode(optimizeSettings);
-                float bestResult = evolveState.m_bestCodes.GetBestCode(bestCode);
-                if (bestResult) {
-                    optimizeState.InitState(optimizeSettings, evolveState.m_generation + 1, 0, 0, test);
-                    optimizeState.CopyCode(bestCode);
+                for (size_t i = 0; i < optimizeUnits.size(); i++) {
+                    FireStarterCodeVector bestCode(optimizeSettings);
+                    evolveState.m_bestCodes.GetBestCode(bestCode);
+                    optimizeStates[i].InitState(optimizeSettings, evolveState.m_generation, i, 0, test);
+                    optimizeStates[i].CopyCode(bestCode);
 
                     // Compile the optimize code asynchronously.
-                    executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
+                    optimizeUnits[i]->ExecuteGenerateOptimize(optimizeStates[i], false);
+                }
 
-                    // Execute the next GPU evolve while the optimize code is compiling.
+                // Execute the next GPU evolve while the optimize code is compiling.
+                if (!evolveSettings.m_generations || (evolveState.m_generation < evolveSettings.m_generations)) {
                     executeEvolve->ExecuteEvolveGPU(evolveState);
+                    evolveState.m_generation++;
+                }
 
-                    // Execute optimize for any completed compile jobs.
-                    executeOptimize->ExecuteEvolveOptimize(optimizeState, bestState, complete);
-                } else
-                    // Execute the initial GPU evolve.
-                    executeEvolve->ExecuteEvolveGPU(evolveState);
-#endif
+                // Check for termination mid-generation.
+                if (WillTerminate())
+                    break;
+
+                // Execute optimize for each unit.
+                for (size_t i = 0; i < optimizeUnits.size(); i++)
+                    optimizeUnits[i]->ExecuteEvolveOptimize(optimizeStates[i], bestState, complete, false);
+                for (size_t i = 0; i < optimizeUnits.size(); i++)
+                    optimizeUnits[i]->Synchronize();
 
                 // Exit after a set number of generations.
-                if (++evolveState.m_generation == evolveSettings.m_generations)
+                if (evolveSettings.m_generations && (evolveState.m_generation >= evolveSettings.m_generations))
                     break;
             }
 
@@ -472,7 +478,8 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
         // Finish processing and terminate the evolution execution units.
         delete executeEvolve;
-        delete executeOptimize;
+        for (size_t i = 0; i < optimizeUnits.size(); i++)
+            delete optimizeUnits[i];
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
@@ -495,7 +502,7 @@ void FireStarterStream::EvolveNewStream(FireStarterServer* server, std::atomic<u
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Create the execution unit used to evolve the best states.
-        FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 1);
+        FireStarterExecute* executeEvolve = new FireStarterExecute(manager);
 
         // Generate and compile the evolve code.
         executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
@@ -576,7 +583,7 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, sinSimSettings);
 
         // Create the execution unit used to evolve the best states.
-        FireStarterExecute* executeSinSim = new FireStarterExecute(manager, 1);
+        FireStarterExecute* executeSinSim = new FireStarterExecute(manager);
 
         // Generate and compile the evolve code.
         executeSinSim->ExecuteGenerateEvolve(sinSimSettings.m_mode);
@@ -653,10 +660,10 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Create the execution unit used to evolve the best states.
-        FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 1);
+        FireStarterExecute* executeEvolve = new FireStarterExecute(manager);
 
         // Create the execution unit used to optimize the best states.
-        FireStarterExecute* executeOptimize = new FireStarterExecute(manager, 1);
+        FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
 
         // Load the stock market data;
         MoneyMakerManager stockManager(evolveSettings);
@@ -966,7 +973,7 @@ void FireStarterStream::SpeedTestStream(FireStarterServer* server, std::atomic<u
         FireStarterManager* manager = new FireStarterManager();
 
         // Create the optimization execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager, 1);
+        FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, speedTestSettings);
@@ -1042,7 +1049,7 @@ void FireStarterStream::OptimizeStream(FireStarterServer* server, std::atomic<un
         FireStarterManager* manager = new FireStarterManager();
 
         // Create the optimization execution unit.
-        FireStarterExecute* execute = new FireStarterExecute(manager, 1);
+        FireStarterExecute* execute = new FireStarterExecute(manager);
 
         // Create the completion unit.
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, optimizeSettings);

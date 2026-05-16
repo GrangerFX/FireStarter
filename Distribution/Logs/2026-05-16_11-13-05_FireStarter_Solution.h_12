@@ -2,12 +2,12 @@
 #include <math.h>
 
 // Run date: 05/16/26 11:13:05 Pacific Daylight Time
-// Run duration = 5.602736 seconds
-// Run test = 0
-// Run generation = 7
+// Run duration = 39.505765 seconds
+// Run test = 12
+// Run generation = 5
 // Run evolution = 0
-// Run precision  = 0.00000060
-// Run max result = 0.00000012
+// Run precision  = 0.00000362
+// Run max result = 0.00000092
 
 // Run variations = 1
 // Run instructions = 32
@@ -66,39 +66,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3, r4, r5, r6;
+    float r0, r1, r2;
 
-    n += -0.81845975f;
-    n += -2.32313299f;
-    r0 = n *= 3.37804461f;
-    r1 = n *= 0.11375663f;
-    n *= -0.14926912f;
-    r2 = n *= 2.18402171f;
-    n *= -1.78420877f;
-    n *= r1;
-    n += 0.48800564f;
-    r1 = n += -1.15429449f;
-    r3 = n *= -0.49844804f;
-    n += 2.65265489f;
-    n *= 0.34916547f;
-    r4 = n *= -1.52426577f;
-    r5 = n *= 5.17694759f;
-    r6 = n *= 1.59667325f;
-    n *= r3;
-    n *= -2.17490435f;
-    n += -4.14890718f;
-    n *= -0.00529444f;
-    n += -2.29026580f;
-    n *= 0.00666296f;
-    n = r5 *= n;
-    n = r5 *= n;
-    n += -2.04305553f;
-    n += r6;
-    n *= r1;
-    n *= r4;
-    n *= r5;
+    r0 = n += -3.86690545f;
+    n += -1.69096673f;
+    r1 = n *= 0.74879611f;
+    n *= 2.12245226f;
+    n *= -0.94067246f;
+    n += r1;
     n *= r0;
-    n += -0.00000001f;
-    n += r2;
+    n *= -0.05481835f;
+    n *= 0.13214867f;
+    r0 = n *= 1.28430200f;
+    r1 = n *= 1.95378125f;
+    n += -4.53634119f;
+    n *= 0.04205098f;
+    n *= 9.80166054f;
+    n *= r0;
+    r0 = n *= -0.96947211f;
+    r2 = n += -1.13361335f;
+    n += -3.07324791f;
+    n *= 1.30805898f;
+    n *= r1;
+    n *= 1.47530389f;
+    n += -0.46394655f;
+    n += 4.46408844f;
+    n *= 0.32597053f;
+    r1 = n *= 1.27843249f;
+    n = r1 *= n;
+    n += 0.68524110f;
+    n += -3.71361876f;
+    n *= r1;
+    n *= r2;
+    n += r0;
+    n += -1.44945323f;
     return n;
 } // Solution

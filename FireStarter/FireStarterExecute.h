@@ -324,7 +324,7 @@ public:
     } // ~CUDAMemory
 }; // class CUDAMemory
 
-class FireStarterExecute : public CUDAThread {
+class FireStarterExecute : public SerialThread {
 private:
     CUDADevices m_CUDADevices;
     CUDAMemory<FireStarterSettings> m_CUDASettings;
@@ -405,8 +405,8 @@ public:
     void ExecuteEvolveSinSim(FireStarterState& evolveState);
     void ExecuteSinSim(FireStarterState& evolveState);
     void ExecuteMoneyEvolve(FireStarterState& evolveState);
-    void ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete);
-    void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete);
+    void ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
+    void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteOptimize(FireStarterState& optimizeState);
     void ExecuteOptimizeCount(std::atomic<unsigned int>& evolveCount); // Must be async because the compiles come back out of order.
     MoneyMakerStocks* ExecuteMoneyTest(FireStarterState& testState, unsigned int startDay = MONEYMAKER_VARIATION, unsigned int tradingDays = MONEYMAKER_TRADING, unsigned int validationDays = MONEYMAKER_VALIDATION);
@@ -414,6 +414,6 @@ public:
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);
     const MoneyMakerStocks* GetTradingResults(void) const;
-    FireStarterExecute(FireStarterManager* manager, size_t devices = 0, size_t index = 0, int priority = 0);
+    FireStarterExecute(FireStarterManager* manager, size_t index = 0, size_t devices = 1);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute

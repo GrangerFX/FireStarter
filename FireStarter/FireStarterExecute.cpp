@@ -1050,9 +1050,9 @@ void FireStarterExecute::ExecuteMoneyEvolve(FireStarterState& evolveState)
     });
 } // ExecuteMoneyEvolve
 
-void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete)
+void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync)
 {
-    DispatchSync([this, complete, &optimizeState, &bestState] {
+    Dispatch([this, complete, &optimizeState, &bestState] {
         if (Device()->m_executeFunction) {
             if (InitPopulation(optimizeState.Settings())) {
                 while (!WillTerminate() && !bestState.Complete() && (optimizeState.m_optimize_pass < optimizeState.Settings().m_optimize)) {
@@ -1069,12 +1069,12 @@ void FireStarterExecute::ExecuteEvolveOptimize(FireStarterState& optimizeState, 
                 }
             }
         }
-    });
+    }, sync);
 } // ExecuteEvolveOptimize
 
-void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete)
+void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync)
 {
-    DispatchSync([this, complete, &optimizeState, &bestState] {
+    Dispatch([this, complete, &optimizeState, &bestState] {
         if (Device()->m_executeFunction) {
             if (InitPopulation(optimizeState.Settings())) {
                 // Initialize the optimize pass at zero.
@@ -1093,7 +1093,7 @@ void FireStarterExecute::ExecuteMoneyOptimize(FireStarterState& optimizeState, F
                 }
             }
         }
-    });
+    }, sync);
 } // ExecuteMoneyOptimize
 
 MoneyMakerStocks* FireStarterExecute::ExecuteMoneyTest(FireStarterState& testState, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays)
@@ -1162,7 +1162,7 @@ const MoneyMakerStocks* FireStarterExecute::GetTradingResults(void) const
     return m_CUDATradingResults.HostPtr();
 } // GetTradingResults
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t devices, size_t index, int priority) : CUDAThread(Format("FireStarterExecute%zu", 0, index), priority)
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, size_t devices) : SerialThread(Format("FireStarterExecute%zu"))
 {
     m_executeManager = manager;
     m_executeIndex = index;
@@ -1176,7 +1176,7 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t devic
 #endif
     }
     for (unsigned int i = 0; i < m_numDevices; i++) {
-        CUDADevice* thread = new CUDADevice(Format("FireStarterExecuteThread%zu", index), index + i, priority);
+        CUDADevice* thread = new CUDADevice(Format("FireStarterExecuteThread%zu", index), index + i);
         m_CUDADevices.push_back(thread);
     }
     m_executeGenerate = new FireStarterGenerate(Device()->Context());
