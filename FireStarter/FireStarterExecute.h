@@ -140,7 +140,7 @@ public:
     {
         size_t numDevices = m_devices->size();
         for (size_t i = 0; i < numDevices; i++)
-            (*m_devices)[i]->CUDASyncronize(); // Synchronizes both the thread and the CUDA context.
+            (*m_devices)[i]->CUDASynchronize(); // Synchronizes both the thread and the CUDA context.
     } // SyncDevices
 
     inline void HostInit(const T* srcPtr, size_t size = 0, size_t offset = 0) const
@@ -202,7 +202,7 @@ public:
                 checkCUDAErrors(cudaMemcpyAsync(devicePtr, hostPtr, size, cudaMemcpyHostToDevice, device->Stream()));
             });
             if (sync)
-                device->CUDASyncronize();
+                device->CUDASynchronize();
         }
     } // HostToDevice
 
@@ -231,7 +231,7 @@ public:
                 checkCUDAErrors(cudaMemcpyAsync(hostPtr, devicePtr, size, cudaMemcpyDeviceToHost, device->Stream()));
             });
             if (sync)
-                device->CUDASyncronize();
+                device->CUDASynchronize();
         }
     } // DeviceToHost
 

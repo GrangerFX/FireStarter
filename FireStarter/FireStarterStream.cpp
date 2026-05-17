@@ -390,7 +390,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
         FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Create the execution unit used to evolve the best states.
-        FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0, 0);  // Automatic GPU device allocation.
+        FireStarterExecute* executeEvolve = new FireStarterExecute(manager, 0, numDevices);  // Automatic GPU device allocation.
 
         // Create the execution unit used to optimize the best states.
         std::vector<FireStarterExecute*> optimizeUnits;

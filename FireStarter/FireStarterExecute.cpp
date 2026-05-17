@@ -31,7 +31,7 @@ inline float AtomicMin(std::atomic<float>& minFloat, float newFloat)
 void FireStarterExecute::SyncCUDAThreads(void)
 {
     for (size_t i = 0; i < m_numDevices; i++)
-        Device(i)->CUDASyncronize(); // Synchronizes both the thread and the CUDA context.
+        Device(i)->CUDASynchronize(); // Synchronizes both the thread and the CUDA context.
 } // SyncCUDAThreads
 
 void FireStarterExecute::ClearCUDAThreads(void)
@@ -948,20 +948,17 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
 
     // Compile the code and get the Optimizer function from the module.
-    for (size_t i = 0; i < m_numDevices; i++)
-        Device(i)->Compile(m_executeCode, m_executeProgramName, m_executeFunctionName, m_executeTestName, false);
+    Device()->Compile(m_executeCode, m_executeProgramName, m_executeFunctionName, m_executeTestName, false);
 
     // Synchronize all the CUDA device threads and their CUDA contexts.
     SyncCUDAThreads();
 
-    bool result = true;
-    for (size_t i = 0; i < m_numDevices; i++)
-        if (!Device(i)->m_executeFunction)
-            result = false;
-    if (!result)
-        for (size_t i = 0; i < m_numDevices; i++)
-            Device(i)->Clear();
-
+    // Return the result.
+    bool result = false;
+    if (Device()->m_executeFunction)
+        result = true;
+    else
+        Device()->Clear();
     return result;
 } // GenerateOptimize
 
@@ -997,6 +994,7 @@ void FireStarterExecute::ExecuteSelect(FireStarterState& selectState, const Fire
 
 void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& evolveState)
 {
+    // Note: EvolveGPU has been converted to use multiple GPUs.
     DispatchSync([this, &evolveState] {
         if (GenerateEvolve(evolveState.Settings().m_mode)) {
             evolveState.m_timer.Start();
@@ -1025,7 +1023,7 @@ void FireStarterExecute::ExecuteEvolveSinSim(FireStarterState& evolveState)
             if (InitPopulation(evolveState.Settings()))
                 ExecuteEvolveNewPass(evolveState);
         }
-        });
+    });
 } // ExecuteEvolveNew
 
 void FireStarterExecute::ExecuteSinSim(FireStarterState& evolveState)
@@ -1167,14 +1165,6 @@ FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index
     m_executeManager = manager;
     m_executeIndex = index;
     m_numDevices = devices;
-    if (!m_numDevices) {
-#if FIRESTARTER_MULTI_GPU
-        m_numDevices = CUDAContext::CUDADevices();
-        m_numDevices = MAX(m_numDevices, 1);
-#else
-        m_numDevices = 1;
-#endif
-    }
     for (unsigned int i = 0; i < m_numDevices; i++) {
         CUDADevice* thread = new CUDADevice(Format("FireStarterExecuteThread%zu", index), index + i);
         m_CUDADevices.push_back(thread);

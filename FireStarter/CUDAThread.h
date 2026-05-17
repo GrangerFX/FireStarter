@@ -23,12 +23,12 @@ public:
         return m_CUDAContext.Device();
     } // Device
 
-    inline void CUDASyncronize(void)
+    inline void CUDASynchronize(void)
     {
         DispatchSync([this] {
             m_CUDAContext.Synchronize();
         });
-    } // CUDASyncronize
+    } // CUDASynchronize
 
     // Note: int is used instead of bool for correct type matching.
     inline CUDAThread(const std::string& threadName = "CUDAThread", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : SerialThread(threadName), m_CUDAContext()
