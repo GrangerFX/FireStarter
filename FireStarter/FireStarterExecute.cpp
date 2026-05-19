@@ -579,7 +579,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             CUDADevice* device = Device();
             FireStarterResult* cudaPopulation0 = m_CUDAPopulation0.DevicePtr();
             FireStarterResult* cudaPopulation1 = m_CUDAPopulation1.DevicePtr();
-            checkCUDAErrors(cudaMemcpyAsync(cudaPopulation1, cudaPopulation0, populationSize, cudaMemcpyDeviceToDevice, device->Stream()));
+            checkCUDAErrors(cudaMemcpyAsync(cudaPopulation1, cudaPopulation0, m_populationSize, cudaMemcpyDeviceToDevice, device->Stream()));
         }
         m_CUDAPopulation0.DevicesToHost();
         if (m_numDevices > 1)

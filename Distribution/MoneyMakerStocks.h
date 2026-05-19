@@ -105,6 +105,7 @@ typedef struct MoneyMakerStock
         size_t stockSize = stock->StockSize();
         MoneyMakerStock* newStock = (MoneyMakerStock*)malloc(stockSize);
         memcpy(newStock, stock, stockSize);
+        return newStock;
     } // New
 
     static inline MoneyMakerStock* New(const MoneyMakerStock& stock)
@@ -248,6 +249,7 @@ typedef struct MoneyMakerStocks
         size_t stocksSize = MoneyMakerStocks::StocksSize(stocks, history);
         MoneyMakerStocks* newStocks = (MoneyMakerStocks*)malloc(stocksSize);
         newStocks->Init(stocks, history);
+        return newStocks;
     } // New
 
     static inline MoneyMakerStocks* New(const MoneyMakerStocks* stocks)
@@ -255,6 +257,7 @@ typedef struct MoneyMakerStocks
         size_t stocksSize = stocks->StocksSize();
         MoneyMakerStocks* newStocks = (MoneyMakerStocks*)malloc(stocksSize);
         memcpy(newStocks, stocks, stocksSize);
+        return newStocks;
     } // New
 
     static inline MoneyMakerStocks* New(const MoneyMakerStocks& stocks)
@@ -262,6 +265,7 @@ typedef struct MoneyMakerStocks
         size_t stocksSize = stocks.StocksSize();
         MoneyMakerStocks* newStocks = (MoneyMakerStocks*)malloc(stocksSize);
         memcpy(newStocks, &stocks, stocksSize);
+        return newStocks;
     } // New
 
     static inline void Delete(MoneyMakerStocks*& stocks)
