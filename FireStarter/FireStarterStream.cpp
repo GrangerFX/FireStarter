@@ -44,10 +44,6 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
             // Evolve the first generation for the state.
             evolve->RandomState(evolveState);
 
-            // Compile the evolved program.
-            // Note: This does nothing when using a multiprocess server.
-            compile->CompileJob();
-
             // Execute the state.
             execute->ExecuteRandom();
 

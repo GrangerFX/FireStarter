@@ -539,7 +539,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                         for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
                             for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
                                 for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
-                                    Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationSize, 0, populationSize);
+                                    Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationSize);
 
             unsigned int hash = 0;
             for (unsigned int i = 0; i < settings.m_population; i++) {
@@ -562,7 +562,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             unsigned long long optimizeSeed = state.OptimizationSeed(optimizePass);
             FireStarterResult* newPopulation = pass & 1 ? m_CUDAPopulation0.DevicePtr() : m_CUDAPopulation1.DevicePtr();
             FireStarterResult* oldPopulation = pass & 1 ? m_CUDAPopulation1.DevicePtr() : m_CUDAPopulation0.DevicePtr();
-            CUDAParameters parameters(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationSize, (unsigned int)m_CUDAPopulation0.SplitStart(), (unsigned int)m_CUDAPopulation0.SplitCount());
+            CUDAParameters parameters(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationSize);
 
             checkCUDAErrors(cuLaunchKernel(device->m_executeFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
@@ -571,7 +571,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                 device->Stream(),                                   // stream
                 parameters.Parameters(),                            // arguments
                 0));
-            SyncCUDAThreads();
+            Device()->SynchronizeContext();
         }
 
         // If the number off passes is odd, copy the new population to the old population for the next pass.
@@ -584,7 +584,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
         m_CUDAPopulation0.DevicesToHost();
         if (m_numDevices > 1)
             m_CUDAPopulation0.HostToDevices();
-        SyncCUDAThreads();
+        Device()->Context().Synchronize();
     }
 
     // Get the best variation results.
@@ -878,18 +878,23 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
 
 bool FireStarterExecute::ExecuteJob(void)
 {
+    // Compile the next job.
     FireStarterJob* job = nullptr;
-    if (Compile(job)) {
+    Device()->DispatchSync([this, &job] {
+        Compile(job);
+    });
+
+    // If the compile was successful, execute the job and add it to the complete list.
+    if (job) {
         FireStarterState& state = job->m_state;
         if (InitPopulation(state.Settings())) {
-            ExecuteSmartOptimizePasses(state);
+            Device()->DispatchSync([this, &state] {
+                ExecuteSmartOptimizePasses(state);
+            });
             m_executeManager->AddComplete(job);
-        } else
-            m_executeManager->AddComplete();
-        return true;
+            return true;
+        }
     }
-    if (job)
-        m_executeManager->AddFree(job);
     m_executeManager->AddComplete();
     return false;
 } // ExecuteJob
@@ -948,10 +953,7 @@ bool FireStarterExecute::GenerateOptimize(FireStarterState& state)
     FireStarterSource::UpdateProgram(m_executeCode, state.m_evaluateCode, EVALUATE_CODE);
 
     // Compile the code and get the Optimizer function from the module.
-    Device()->Compile(m_executeCode, m_executeProgramName, m_executeFunctionName, m_executeTestName, false);
-
-    // Synchronize all the CUDA device threads and their CUDA contexts.
-    SyncCUDAThreads();
+    Device()->Compile(m_executeCode, m_executeProgramName, m_executeFunctionName, m_executeTestName, true);
 
     // Return the result.
     bool result = false;
@@ -1145,8 +1147,8 @@ void FireStarterExecute::ExecuteFinish(void)
         }
         FinishPopulation();
         FinishStocks();
-        CUDACompile::ReleaseModule(Device()->m_executeModule);
-        Device()->m_executeFunction = nullptr;
+        for (CUDADevice* device : m_CUDADevices)
+            device->Clear();
     });
 } // ExecuteFinish
 
@@ -1160,14 +1162,18 @@ const MoneyMakerStocks* FireStarterExecute::GetTradingResults(void) const
     return m_CUDATradingResults.HostPtr();
 } // GetTradingResults
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, size_t devices) : SerialThread(Format("FireStarterExecute%zu"))
+#if 1
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, size_t devices) : SerialThread(Format("FireStarterExecute%zu", index))
+#else
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, size_t devices) : CUDAThread(Format("FireStarterExecute%zu", index), index)
+#endif
 {
     m_executeManager = manager;
     m_executeIndex = index;
     m_numDevices = devices;
     for (unsigned int i = 0; i < m_numDevices; i++) {
-        CUDADevice* thread = new CUDADevice(Format("FireStarterExecuteThread%zu", index), index + i);
-        m_CUDADevices.push_back(thread);
+        CUDADevice* device = new CUDADevice(Format("FireStarterDevice%zu", index), index + i);
+        m_CUDADevices.push_back(device);
     }
     m_executeGenerate = new FireStarterGenerate(Device()->Context());
 } // FireStaterExecute
@@ -1176,7 +1182,7 @@ FireStarterExecute::~FireStarterExecute(void)
 {
     ExecuteFinish();
     delete m_executeGenerate;
-    for (CUDAThread* device : m_CUDADevices)
+    for (CUDADevice* device : m_CUDADevices)
         delete device;
     m_CUDADevices.clear();
 } // ~FireStarterExecute(void)

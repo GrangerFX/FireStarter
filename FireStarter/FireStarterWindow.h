@@ -36,7 +36,7 @@ public:
             if (stream && !m_deviceBase)
                 checkCUDAErrors(cudaMalloc(&m_deviceBase, m_size));
             if (!m_hostBase)
-                checkCUDAErrors(cudaMallocHost(&m_hostBase, m_size));
+                checkCUDAErrors(cudaHostAlloc(&m_hostBase, m_size, cudaHostAllocPortable));
         }
     } // Allocate
 

@@ -231,14 +231,6 @@ typedef struct FireStarterCodeInstruction {
                 n = data += n;
                 break;
 
-            case Operation_store:
-                data = n;
-                break;
-
-            case Operation_load:
-                n = data;
-                break;
-
             case Operation_square:
                 n *= n;
                 break;
@@ -265,6 +257,14 @@ typedef struct FireStarterCodeInstruction {
 
             case Operation_max:
                 n = data > n ? data : n;
+                break;
+
+            case Operation_store:
+                data = n;
+                break;
+
+            case Operation_load:
+                n = data;
                 break;
         }
 #elif (FIRESTARTER_MODE == FIRESTARTER_MONEYMAKER) || (FIRESTARTER_MODE == FIRESTARTER_MONEYOPTIMIZE)

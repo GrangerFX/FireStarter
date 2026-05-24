@@ -39,6 +39,10 @@ public:
     } // Clear
 
     inline CUDADevice(const std::string& threadName = "CUDAThread", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : CUDAThread(threadName, deviceIndex, priority) {}
+    inline ~CUDADevice(void)
+    {
+        Clear();
+    } // ~CUDADevice
 }; // class CUDADevice
 
 typedef std::vector<CUDADevice*> CUDADevices;
@@ -58,6 +62,14 @@ private:
     size_t m_deviceSize = 0;
 
 public:
+    CUDADevice* Device(size_t i = 0) const
+    {
+        if (i < m_devices->size())
+            return (*m_devices)[i];
+        else
+            return nullptr;
+    } // Device
+
     bool Allocated(void) const
     {
         if (m_devices && m_hostPtr && m_devicePtrs.size() && m_hostSize && m_deviceSize)
@@ -169,7 +181,7 @@ public:
             else if (size > m_deviceSize)
                 size = m_deviceSize;
             char* devicePtr = (char*)m_devicePtrs[i] + offset;
-            CUDADevice* device = (*m_devices)[i];
+            CUDADevice* device = Device(i);
             device->DispatchAsync([device, srcPtr, devicePtr, size] {
                 if (srcPtr)
                     checkCUDAErrors(cudaMemcpyAsync(devicePtr, srcPtr, size, cudaMemcpyHostToDevice, device->Stream()));
@@ -189,7 +201,7 @@ public:
     inline void HostToDevice(size_t i = 0, bool sync = false) const
     {
         if (m_hostPtr && (i < m_devicePtrs.size()) && m_devicePtrs[i]) {
-            CUDADevice* device = (*m_devices)[i];
+            CUDADevice* device = Device(i);
             char* hostPtr = (char*)m_hostPtr;
             char* devicePtr = (char*)m_devicePtrs[i];
             size_t size = m_hostSize;
@@ -218,7 +230,7 @@ public:
     inline void DeviceToHost(size_t i = 0, bool sync = false) const
     {
         if (m_hostPtr && (i < m_devicePtrs.size()) && m_devicePtrs[i]) {
-            CUDADevice* device = (*m_devices)[i];
+            CUDADevice* device = Device(i);
             size_t size = m_splitSize[i];
             size_t splitOffset = m_splitOffset[i];
             char* hostPtr = (char*)m_hostPtr + splitOffset;
@@ -251,9 +263,9 @@ public:
         size_t numDevices = m_devicePtrs.size();
         for (size_t i = 0; i < numDevices; i++)
             if (m_devicePtrs[i]) {
-                CUDADevice* device = (*m_devices)[i];
+                CUDADevice* device = Device(i);
                 void* devicePtr = m_devicePtrs[i];
-                (*m_devices)[i]->DispatchSync([device, devicePtr] {
+                device->DispatchSync([device, devicePtr] {
                     checkCUDAErrors(cudaFree(devicePtr));
                 });
             }
@@ -291,15 +303,15 @@ public:
             m_deviceElements = elements;
 
             // Allocate the host memory.
-            (*m_devices)[0]->DispatchAsync([this] {
-                checkCUDAErrors(cudaMallocHost(&m_hostPtr, m_hostSize, cudaHostAllocPortable));
+            Device()->DispatchAsync([this] {
+                checkCUDAErrors(cudaHostAlloc(&m_hostPtr, m_hostSize, cudaHostAllocPortable));
             });
 
             // Allocate device memory for each device and generate the split start and count for each device.
             for (size_t i = 0; i < numDevices; i++) {
-                CUDADevice* device = (*m_devices)[i];
+                CUDADevice* device = Device(i);
                 T** devicePtr = &m_devicePtrs[i];
-                (*m_devices)[i]->DispatchAsync([device, deviceSize, devicePtr] {
+                device->DispatchAsync([device, deviceSize, devicePtr] {
                     checkCUDAErrors(cudaMallocAsync(devicePtr, deviceSize, device->Stream()));
                     checkCUDAErrors(cudaMemsetAsync(*devicePtr, 0, deviceSize, device->Stream()));
                 });
@@ -324,7 +336,12 @@ public:
     } // ~CUDAMemory
 }; // class CUDAMemory
 
-class FireStarterExecute : public SerialThread {
+#if 1
+class FireStarterExecute : public SerialThread
+#else
+class FireStarterExecute : public CUDAThread
+#endif
+{
 private:
     CUDADevices m_CUDADevices;
     CUDAMemory<FireStarterSettings> m_CUDASettings;

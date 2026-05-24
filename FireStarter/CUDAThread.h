@@ -23,10 +23,17 @@ public:
         return m_CUDAContext.Device();
     } // Device
 
+    // Note: This must be called from this CUDAThread.
+    inline void SynchronizeContext(void)
+    {
+        m_CUDAContext.Synchronize();
+    } // SynchronizeContext
+
+    // Note: This must be not called from this CUDAThread.
     inline void CUDASynchronize(void)
     {
         DispatchSync([this] {
-            m_CUDAContext.Synchronize();
+            SynchronizeContext();
         });
     } // CUDASynchronize
 

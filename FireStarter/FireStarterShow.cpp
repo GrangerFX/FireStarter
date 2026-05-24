@@ -3,7 +3,6 @@
 #include "FireStarter_Solution.h"
 #include "FireStarterUtil.h"
 #include "FireMoneyMaker.h"
-#include "CUDACompile.h"
 #include <algorithm>
 
 void FireStarterShow::DeallocateEvaluateData(void)
