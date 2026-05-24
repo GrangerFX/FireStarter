@@ -2,13 +2,7 @@
 #include "FireStarterProcess.h"
 #include "FireStarterState.h"
 
-#define FIRESTARTERCOMPILER_LOGGING 0
-
-#if FIRESTARTERCOMPILER_LOGGING
-#define LOG printf
-#else
-#define LOG( ... ) {}
-#endif
+#define FIRESTARTERJOB_LOGGING 1
 
 class FireStarterJob {
 public:
@@ -58,8 +52,8 @@ public:
 	FireStarterJob* Get(bool wait = true);
 	double WaitTime(void);
 	size_t Size(void);
-	void Restart(void);
 	void Cancel(void);
+    void Restart(void);
     bool Aborted(void);
 	FireStarterJobQueue(const std::string &name);
 	~FireStarterJobQueue(void);

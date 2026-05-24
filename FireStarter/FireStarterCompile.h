@@ -1,6 +1,8 @@
 #pragma once
 #include "FireStarterManager.h"
 
+#define FIRESTARTERCOMPILER_LOGGING 1
+
 class FireStarterCompiler : public SerialThread {
 private:
 	class FireStarterCompile* m_compile = nullptr;
@@ -29,7 +31,7 @@ private:
 
 public:
 	void CompilerFinished(FireStarterCompiler* compiler);
-	bool CompileJob(bool sync);
+	bool CompileJob(bool sync = true);
 	FireStarterCompiler* AddCompiler(void);
 	FireStarterCompile(FireStarterManager* manager = nullptr, FireStarterServer* server = nullptr);
 	~FireStarterCompile(void);

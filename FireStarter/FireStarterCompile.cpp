@@ -1,8 +1,15 @@
 #include "FireStarterCompile.h"
 #include "CUDACompile.h"
 #include "Format.h"
+#include "PrintF.h"
 
 #define COMPILE_EXECUTE "CompileExecute"
+
+#if FIRESTARTERCOMPILER_LOGGING
+#define LOG printf
+#else
+#define LOG( ... ) {}
+#endif
 
 bool FireStarterCompiler::Compile(FireStarterManager* manager)
 {
@@ -45,7 +52,7 @@ void FireStarterCompiler::CompilerServer(void)
                 job = m_manager->GetCode();
                 if (job) {
 #if FIRESTARTERCOMPILER_LOGGING
-                    LOG("%s: Code:%d\n", m_process->ProcessPrefix().c_str(), job->m_state.m_generation);
+                    LOG("%s: Code:%lld\n", m_process->ProcessPrefix().c_str(), job->m_state.m_generation);
 #endif
                     FireStarterPacket sendPacket(COMPILE_EXECUTE);
                     bool result = true;
@@ -61,7 +68,7 @@ void FireStarterCompiler::CompilerServer(void)
                                 if (result) {
                                     if (!job->m_ptx.empty()) {
 #if FIRESTARTERCOMPILER_LOGGING
-                                        LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job->m_state.m_generation);
+                                        LOG("%s: Compile:%lld\n", m_process->ProcessPrefix().c_str(), job->m_state.m_generation);
 #endif
                                     } else {
                                         printf("Compile error: %s\n", job->m_log.c_str());
@@ -113,7 +120,7 @@ void FireStarterCompiler::CompilerClient(void)
                         result = job.Packetize(receivePacket);
                         if (result) {
 #if FIRESTARTERCOMPILER_LOGGING
-                            LOG("%s: Compile:%d\n", m_process->ProcessPrefix().c_str(), job.m_state.m_generation);
+                            LOG("%s: Compile:%lld\n", m_process->ProcessPrefix().c_str(), job.m_state.m_generation);
 #endif
                             bool compileResult = CUDACompile::Compile(job.m_ptx, job.m_log, job.m_program, job.m_programName, job.m_options);
                             if (job.m_log.size())
@@ -129,7 +136,7 @@ void FireStarterCompiler::CompilerClient(void)
                     } else {
                         // Error: Unknown command!
                         result = false;
-                        LOG("%s: Unknown command:%s\n", m_process->ProcessPrefix(), command.c_str());
+                        LOG("%s: Unknown command:%s\n", m_process->ProcessPrefix().c_str(), command.c_str());
                     }
                 } else {
                     LOG("%s: Bad compile packet!\n", m_process->ProcessPrefix().c_str());

@@ -94,7 +94,7 @@
 #define FIRESTARTER_MODES           13          // Number of modes
 #define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_GPU
 
-#define FIRESTARTER_RANDOM_STREAMS              8
+#define FIRESTARTER_RANDOM_STREAMS              1
 #define FIRESTARTER_RANDOM_UNITS                1
 #define FIRESTARTER_RANDOM_STATES               1
 #define FIRESTARTER_RANDOM_GENERATIONS          0

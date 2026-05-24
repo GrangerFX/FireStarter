@@ -18,9 +18,9 @@ void FireStarterEvolve::GenerateCode(FireStarterJob* job)
     m_evolveManager->AddCode(job);
 } // GenearateCode
 
-bool FireStarterEvolve::RandomState(const FireStarterState& state)
+bool FireStarterEvolve::RandomState(const FireStarterState& state, bool sync)
 {
-    DispatchSync([this, state] {
+    Dispatch([this, state] {
         FireStarterState evolveState(state);
         evolveState.InitGenerationSeed();
         const FireStarterSettings& settings = evolveState.Settings();
@@ -40,7 +40,7 @@ bool FireStarterEvolve::RandomState(const FireStarterState& state)
         } else
             // Pass along the null job to cause the next stage to exit.
             m_evolveManager->AddCode();
-    });
+    }, sync);
     return true;
 } // RandomState
 

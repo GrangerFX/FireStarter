@@ -1,11 +1,19 @@
 #include "FireStarterManager.h"
+#include "PrintF.h"
 
 #define MANAGER_JOB_MULTIPLIER 10
+
+#if FIRESTARTERJOB_LOGGING
+#define LOG printf
+#else
+#define LOG( ... ) {}
+#endif
 
 void FireStarterJobQueue::Add(FireStarterJob* job)
 {
     if (!IsRunning())
         return;
+    LOG("Adding job to %s queue  count=%llu\n", m_name.c_str(), m_sizeJobs);
     DispatchAsync([this, job] {
         if (job && !WillTerminate()) {
             job->m_next = nullptr;
@@ -15,9 +23,12 @@ void FireStarterJobQueue::Add(FireStarterJob* job)
                 m_firstJob = job;
             m_lastJob = job;
             m_sizeJobs++;
+            LOG("Added job to %s queue  count=%llu\n", m_name.c_str(), m_sizeJobs);
             m_semaphore.notify();
-        } else
+        } else {
+            LOG("Terminated %s queue  count=%llu\n", m_name.c_str(), m_sizeJobs);
             m_semaphore.terminate();
+        }
     });
 } // Add
 
@@ -29,6 +40,7 @@ FireStarterJob* FireStarterJobQueue::Get(bool wait)
     // Wait for a job to be added to the queue.
     FireStarterJob* job = nullptr;
     double waitTime = SimpleTimer::RunDuration();
+    LOG("Getting job from %s queue  count=%llu\n", m_name.c_str(), m_sizeJobs);
     if (wait ? m_semaphore.wait() : m_semaphore.trywait())
         DispatchSync([this, &job, waitTime] {
             // Remove the job from the queue.
@@ -41,6 +53,7 @@ FireStarterJob* FireStarterJobQueue::Get(bool wait)
                 m_sizeJobs--;
                 m_totalJobs++;
                 m_waitTime += SimpleTimer::RunDuration() - waitTime;
+                LOG("Got job from %s queue  count=%llu\n", m_name.c_str(), m_sizeJobs);
             }
         });
     if (!job)
@@ -48,22 +61,10 @@ FireStarterJob* FireStarterJobQueue::Get(bool wait)
     return job;
 } // Get
 
-void FireStarterJobQueue::Restart(void)
-{
-    m_semaphore.terminate();
-    DispatchSync([this] {
-        while (m_firstJob) {
-            FireStarterJob* job = m_firstJob;
-            m_firstJob = m_firstJob->m_next;
-            delete job;
-        }
-    });
-    m_semaphore.restart();
-    m_aborted = false;
-} // Restart
-
 void FireStarterJobQueue::Cancel(void)
 {
+    LOG("Canceling %s queue  count=%llu\n", m_name.c_str(), m_sizeJobs);
+
     // Release any waiting threads and return null jobs to new requests.
     m_semaphore.terminate();
 
@@ -78,6 +79,14 @@ void FireStarterJobQueue::Cancel(void)
         m_lastJob = nullptr;
     });
 } // Cancel
+
+void FireStarterJobQueue::Restart(void)
+{
+    Cancel();
+    LOG("Restarting %s queue  count=%llu\n", m_name.c_str(), m_sizeJobs);
+    m_semaphore.restart();
+    m_aborted = false;
+} // Restart
 
 bool FireStarterJobQueue::Aborted(void)
 {
