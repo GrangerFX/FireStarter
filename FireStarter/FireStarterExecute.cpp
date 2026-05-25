@@ -98,21 +98,21 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
         m_tradingDataSize = tradingDataSize;
 
         if (m_settingsSize)
-            m_CUDASettings.Init(CUDAContext(), m_settingsSize);
+            m_CUDASettings.Init(Context(), m_settingsSize);
         if (m_resultsSize)
-            m_CUDAResults.Init(CUDAContext(), m_resultsSize, settings.m_population);
+            m_CUDAResults.Init(Context(), m_resultsSize, settings.m_population);
         if (m_codesSize)
-            m_CUDACodes.Init(CUDAContext(), m_codesSize, settings.m_population);
+            m_CUDACodes.Init(Context(), m_codesSize, settings.m_population);
         if (m_populationSize) {
-            m_CUDAPopulation0.Init(CUDAContext(), m_populationSize, settings.m_population);
-            m_CUDAPopulation1.Init(CUDAContext(), m_populationSize, settings.m_population);
+            m_CUDAPopulation0.Init(Context(), m_populationSize, settings.m_population);
+            m_CUDAPopulation1.Init(Context(), m_populationSize, settings.m_population);
         }
         if (m_parentCodeSize)
-            m_CUDAParentCode.Init(CUDAContext(), m_parentCodeSize);
+            m_CUDAParentCode.Init(Context(), m_parentCodeSize);
         if (m_networksSize)
-            m_CUDANetworks.Init(CUDAContext(), m_networksSize, settings.m_population);
+            m_CUDANetworks.Init(Context(), m_networksSize, settings.m_population);
         if (m_tradingDataSize)
-            m_CUDATradingData.Init(CUDAContext(), m_tradingDataSize);
+            m_CUDATradingData.Init(Context(), m_tradingDataSize);
         SynchronizeContext();
     }
     return result; // Always true curently.
@@ -133,10 +133,10 @@ bool FireStarterExecute::InitStocks(const MoneyMakerStocks* stocks)
         FinishStocks();
         m_stocksSize = stocksSize;
         if (m_stocksSize) {
-            m_CUDAStocks.Init(CUDAContext(), m_stocksSize);
+            m_CUDAStocks.Init(Context(), m_stocksSize);
             m_CUDAStocks.Copy(stocks);
 
-            m_CUDATradingResults.Init(CUDAContext(), m_stocksSize);
+            m_CUDATradingResults.Init(Context(), m_stocksSize);
             m_CUDATradingResults.HostPtr()->Init(stocks->numStocks, stocks->numDays);
             m_CUDATradingResults.HostToDevice(true);
         }

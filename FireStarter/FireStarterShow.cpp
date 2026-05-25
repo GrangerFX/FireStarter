@@ -317,7 +317,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     float bestError = bestState.m_precision;
     bool isBestState = (state.m_id == bestState.m_id) && (state.m_generation == bestState.m_generation);
     if (state.PassMode() == FIRESTARTER_RANDOM) {
-        statusString = Format("%s: Seed=%10u  Generation=%3u  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10u  Time=%.4f Seconds  Time=%.4f Seconds Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_generation, generation, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_generation, generationTime, runTime);
+        statusString = Format("%s: Seed=%10llu  Result=%.8f  Best=%.8f  BestError=%.8f  BestSeed=%10llu  Time=%.4f Seconds  Time=%.4f Seconds  Run Time=%.4f Seconds", state.Mode(), settings.m_evolveSeed + state.m_id, maxResult, bestResult, bestError, bestState.m_settings.m_evolveSeed + bestState.m_id, generationTime, runTime);
     } else if ((state.PassMode() == FIRESTARTER_MONEYMAKER) || (state.PassMode() == FIRESTARTER_MONEYOPTIMIZE)) {
 #if MONEYMAKER_WINS
         float returns = 100.0f / bestResult;  // Remove inversion.

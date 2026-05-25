@@ -179,17 +179,18 @@ bool FireStarterComplete::CompleteRandom(FireStarterState& bestState, FireStarte
             m_manager->AddFree(job);
 
             // Keep the valid results.
-            if (newState.m_optimizeValid)
+            if (newState.m_optimizeValid) {
                 state = newState;
 
-            // Update the best state and display the results.
-            if (UpdateBestState(bestState, newState))
-                DisplayResults(bestState);
-            else
-                bestState.m_age++;
+                // Update the best state and display the results.
+                if (UpdateBestState(bestState, newState))
+                    DisplayResults(bestState);
+                else
+                    bestState.m_age++;
+            }
 
             // Update the render status after every pass.
-            CompleteStatus(state, newState);
+            CompleteStatus(bestState, newState);
             state.m_timer.Start();
         }
     });
