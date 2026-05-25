@@ -92,7 +92,7 @@
 #define FIRESTARTER_OPTIMIZE        11          // Optimize a previously evolved state.
 #define FIRESTARTER_SOLUTION        12          // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           13          // Number of modes
-#define FIRESTARTER_MODE            FIRESTARTER_RANDOM
+#define FIRESTARTER_MODE            FIRESTARTER_EVOLVE_GPU
 
 #define FIRESTARTER_RANDOM_STREAMS              1
 #define FIRESTARTER_RANDOM_UNITS                1

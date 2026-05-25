@@ -472,7 +472,6 @@ public:
     FireStarterSettings m_settings;
     FireStarterResultVector m_results;
     FireStarterCodeVector m_code;
-    FireStarterBestCodes m_bestCodes;
     SinSimNetwork m_network;
     SimpleTimer m_timer;
     std::string m_evaluateCode;
@@ -502,8 +501,6 @@ private:
         m_settings = other.m_settings;
         m_results = other.m_results;
         m_code = other.m_code;
-//      m_bestCodes = other.m_bestCodes;
-        m_bestCodes.InitBestCodes(m_settings);
         m_network = other.m_network;
 //      m_timer = other.m_timer;
         m_evaluateCode = other.m_evaluateCode;
@@ -881,11 +878,6 @@ public:
         m_code.InitCode(m_settings);
     } // InitCode
 
-    inline void InitBestCodes(void)
-    {
-        m_bestCodes.InitBestCodes(m_settings);
-    } // InitBestCodes
-
     inline void InitNetwork(void)
     {
         m_network.SinSimInitNetwork();
@@ -913,7 +905,7 @@ public:
         InitState(settings, generation, index, id, test);
     } // FireStarterState
 
-    inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_results(other.m_results), m_bestCodes(other.m_bestCodes)
+    inline FireStarterState(const FireStarterState& other) : m_code(other.m_code), m_results(other.m_results)
     {
         m_timer = other.m_timer;
         swap(other);

@@ -206,7 +206,6 @@ private:
     std::string m_executeFunctionName;
     std::string m_executeTestName;
     std::string m_executeCode;
-    size_t m_numDevices = 0;
     size_t m_settingsSize = 0;
     size_t m_resultsSize = 0;
     size_t m_populationSize = 0;
@@ -223,10 +222,10 @@ private:
     void FinishStocks(void);
     bool InitStocks(const MoneyMakerStocks* stocks);
     void ExecuteSelectPass(FireStarterState& state, const FireStarterSettings& selectSettings);
-    void ExecuteEvolveGPUPass(FireStarterState& state);
+    void ExecuteEvolveGPUPass(FireStarterState& state, FireStarterBestCodes& bestCodes);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
-    void ExecuteMoneyEvolvePass(FireStarterState& state);
+    void ExecuteMoneyEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteOptimizePasses(FireStarterState& state);
     void ExecuteSmartOptimizePasses(FireStarterState& state);
@@ -242,11 +241,11 @@ public:
     bool ExecuteGenerateEvolve(unsigned int mode);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
     void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);
-    void ExecuteEvolveGPU(FireStarterState& evolveState);
+    void ExecuteEvolveGPU(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync = true);
     void ExecuteEvolveNew(FireStarterState& evolveState);
     void ExecuteEvolveSinSim(FireStarterState& evolveState);
     void ExecuteSinSim(FireStarterState& evolveState);
-    void ExecuteMoneyEvolve(FireStarterState& evolveState);
+    void ExecuteMoneyEvolve(FireStarterState& evolveState, FireStarterBestCodes& bestCodes);
     void ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteOptimize(FireStarterState& optimizeState);
@@ -256,6 +255,6 @@ public:
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);
     const MoneyMakerStocks* GetTradingResults(void) const;
-    FireStarterExecute(FireStarterManager* manager, size_t index = 0, size_t devices = 1);
+    FireStarterExecute(FireStarterManager* manager, size_t index = 0);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute

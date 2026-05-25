@@ -211,7 +211,7 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
     state.InitCode(selectSettings, m_CUDACodes.HostPtr(), minResult, minIndex);
 } // ExecuteSelectPass
 
-void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
+void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStarterBestCodes& bestCodes)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -264,8 +264,8 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state)
             minResult = curResult;
             minIndex = i;
         }
-        if (curResult < state.m_bestCodes.WorstResult())
-            state.m_bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
+        if (curResult < bestCodes.WorstResult())
+            bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
     }
 
     // Update the state's best code.
@@ -402,7 +402,7 @@ void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int
     state.InitNetwork(settings, minNetwork, minIndex);
 } // ExecuteSinSimPass
 
-void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
+void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes)
 {
     // Launch the calculation kernel
     FireStarterSettings settings = state.Settings();
@@ -468,8 +468,8 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state)
                 bestResult = curResult;
                 bestIndex = i;
             }
-            if (curResult < state.m_bestCodes.WorstResult())
-                state.m_bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
+            if (curResult < bestCodes.WorstResult())
+                bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
             goodResults++;
         }
     }
@@ -932,16 +932,16 @@ void FireStarterExecute::ExecuteSelect(FireStarterState& selectState, const Fire
     });
 } // ExecuteSelect
 
-void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& evolveState)
+void FireStarterExecute::ExecuteEvolveGPU(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync)
 {
     // Note: EvolveGPU has been converted to use multiple GPUs.
-    DispatchSync([this, &evolveState] {
+    Dispatch([this, &evolveState, &bestCodes] {
         if (GenerateEvolve(evolveState.Settings().m_mode)) {
             evolveState.m_timer.Start();
             if (InitPopulation(evolveState.Settings()))
-                ExecuteEvolveGPUPass(evolveState);
+                ExecuteEvolveGPUPass(evolveState, bestCodes);
         }
-    });
+    }, sync);
 } // ExecuteEvolveGPU
 
 void FireStarterExecute::ExecuteEvolveNew(FireStarterState& evolveState)
@@ -977,13 +977,13 @@ void FireStarterExecute::ExecuteSinSim(FireStarterState& evolveState)
     });
 } // ExecuteSinSim
 
-void FireStarterExecute::ExecuteMoneyEvolve(FireStarterState& evolveState)
+void FireStarterExecute::ExecuteMoneyEvolve(FireStarterState& evolveState, FireStarterBestCodes& bestCodes)
 {
-    DispatchSync([this, &evolveState] {
+    DispatchSync([this, &evolveState, &bestCodes] {
         if (GenerateEvolve(evolveState.Settings().m_mode)) {
             evolveState.m_timer.Start();
             if (InitPopulation(evolveState.Settings()))
-                ExecuteMoneyEvolvePass(evolveState);
+                ExecuteMoneyEvolvePass(evolveState, bestCodes);
         }
     });
 } // ExecuteMoneyEvolve
@@ -1099,11 +1099,10 @@ const MoneyMakerStocks* FireStarterExecute::GetTradingResults(void) const
     return m_CUDATradingResults.HostPtr();
 } // GetTradingResults
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index, size_t devices) : CUDAThread(Format("FireStarterExecute%zu", index), index)
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, size_t index) : CUDAThread(Format("FireStarterExecute%zu", index), index)
 {
     m_executeManager = manager;
     m_executeIndex = index;
-    m_numDevices = devices;
     m_executeGenerate = new FireStarterGenerate(Context());
 } // FireStaterExecute
 

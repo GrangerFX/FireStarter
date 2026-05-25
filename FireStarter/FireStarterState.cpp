@@ -94,7 +94,7 @@ FireStarterBestCodes::BestCodes::BestCodes(void)
     InitBestCodes(FireStarterSettings());
 } // BestCodes
 
-#if 0
+#if 1
 float FireStarterBestCodes::GetBestResult(void)
 {
     float bestResult = 0.0f;
@@ -106,6 +106,11 @@ float FireStarterBestCodes::GetBestResult(void)
 
 const float FireStarterBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
 {
+    if (!m_bestCodes.m_numCodes) {
+        bestCode.InitCode();
+        return 0.0f;
+    }
+
     float result = 0.0f;
     DispatchSync([this, &bestCode, &result] {
         result = m_bestCodes.GetBestCode(bestCode);
@@ -115,6 +120,9 @@ const float FireStarterBestCodes::GetBestCode(FireStarterCodeVector& bestCode)
 
 bool FireStarterBestCodes::AddCode(const FireStarterCode* code, float result)
 {
+    if (result >= m_bestCodes.m_worstResult)
+        return false;
+
     bool added = false;
     DispatchAsync([this, code, result, &added] {
         added = m_bestCodes.AddCode(code, result);
@@ -480,7 +488,6 @@ void FireStarterState::InitState(const FireStarterSettings& settings, unsigned l
     InitGenerationSeed();
     InitResults();
     InitCode();
-    InitBestCodes();
     InitNetwork();
 } // InitState
 
