@@ -7,12 +7,6 @@
 #include <vector>
 #endif
 
-struct FireStarterRegisterInfo {
-    unsigned int registerIndex;
-    unsigned int instructionFirst;
-    unsigned int instructionLast;
-}; // struct FireStarterRegisterInfo
-
 typedef struct FireStarterData {
     float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
 
@@ -463,52 +457,6 @@ typedef struct FireStarterCode {
     {
         return Optimize(settings.m_instructions, settings.m_registers);
     } // Optimize
-
-    inline unsigned int RegisterInfo(std::vector<FireStarterRegisterInfo>& registerInfo, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS) const
-    {
-        // Optimize the registers based on the ones in use at any point in the code.
-        unsigned int uniqueRegisters = 0;
-        registerInfo.resize(registers);
-        for (unsigned int i = 0; i < registers; i++)
-            registerInfo[i] = FireStarterRegisterInfo(-1, instructions, instructions);
-        for (unsigned int i = 0; i < instructions; i++) {
-            FireStarterRegisterInfo& reg = registerInfo[Register(i)];
-
-            // Is this the first use of the register?
-            if (reg.instructionFirst == instructions) {
-                reg.instructionFirst = i;
-                uniqueRegisters++;
-            }
-
-            // Update the last use of the register.
-            reg.instructionLast = i;
-        }
-
-        std::vector<unsigned int> freeRegisters;
-        unsigned int numActiveRegisters = 0;
-        for (unsigned int i = 0; i < instructions; i++) {
-            unsigned int index = Register(i);
-            FireStarterRegisterInfo& reg = registerInfo[index];
-            if (reg.instructionLast > reg.instructionFirst)
-                if (reg.instructionFirst == i) {
-                    if (!freeRegisters.empty()) {
-                        reg.registerIndex = freeRegisters.back();
-                        freeRegisters.pop_back();
-                    } else
-                        reg.registerIndex = numActiveRegisters;
-                    numActiveRegisters++;
-                } else if (reg.instructionLast == i) {
-                    freeRegisters.push_back(reg.registerIndex);
-                    numActiveRegisters--;
-                }
-        }
-        return uniqueRegisters;
-    } // RegisterInfo
-
-    inline unsigned int RegisterInfo(std::vector<FireStarterRegisterInfo>& registerInfo, const FireStarterSettings& settings) const
-    {
-        return RegisterInfo(registerInfo, settings.m_instructions, settings.m_registers);
-    } // RegisterInfo
 
     inline void InitCode(unsigned int instructions = FIRESTARTER_INSTRUCTIONS)
     {

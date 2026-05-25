@@ -3,6 +3,52 @@
 #include "FireStarterCodeGenerate.h"
 #include "CUDACompile.h"
 
+unsigned int FireStarterGenerate::RegisterInfo(const FireStarterCode* code, std::vector<FireStarterRegisterInfo>& registerInfo, const FireStarterSettings& settings)
+{
+    // Optimize the registers based on the ones in use at any point in the code.
+    unsigned int instructions = settings.m_instructions;
+    unsigned int registers = settings.m_registers;
+    unsigned int uniqueRegisters = 0;
+
+    registerInfo.resize(registers);
+    for (unsigned int i = 0; i < registers; i++)
+        registerInfo[i] = FireStarterRegisterInfo(-1, instructions, instructions);
+    for (unsigned int i = 0; i < instructions; i++) {
+        FireStarterRegisterInfo& reg = registerInfo[code->Register(i)];
+
+        // Is this the first use of the register?
+        if (reg.instructionFirst == instructions) {
+            reg.instructionFirst = i;
+            uniqueRegisters++;
+        }
+
+        // Update the last use of the register.
+        reg.instructionLast = i;
+    }
+
+    std::vector<unsigned int> freeRegisters;
+    unsigned int numActiveRegisters = 0;
+    for (unsigned int i = 0; i < instructions; i++) {
+        unsigned int index = code->Register(i);
+        FireStarterRegisterInfo& reg = registerInfo[index];
+        if (reg.instructionLast > reg.instructionFirst)
+            if (reg.instructionFirst == i) {
+                if (!freeRegisters.empty()) {
+                    reg.registerIndex = freeRegisters.back();
+                    freeRegisters.pop_back();
+                }
+                else
+                    reg.registerIndex = numActiveRegisters;
+                numActiveRegisters++;
+            }
+            else if (reg.instructionLast == i) {
+                freeRegisters.push_back(reg.registerIndex);
+                numActiveRegisters--;
+            }
+    }
+    return uniqueRegisters;
+} // RegisterInfo
+
 bool FireStarterGenerate::InitGenerateGPU(const FireStarterSettings& settings)
 {
 #if FIRESTARTER_GENERATE_GPU
@@ -58,7 +104,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterSettings& settings, 
     // Generate the evaluate function.
     unsigned int numInstructions = settings.m_instructions;
     std::vector<FireStarterRegisterInfo> registerInfo;
-    unsigned int numRegisters = code->RegisterInfo(registerInfo, settings);
+    unsigned int numRegisters = RegisterInfo(code, registerInfo, settings);
     FireStarterRegisterUsage* registersUsage = (FireStarterRegisterUsage*)registerInfo.data();
     std::string generateText;
     unsigned int tabs = 1;
@@ -134,7 +180,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
     unsigned int numInstructions = settings.m_instructions;
     const FireStarterCodeGenerate* code = state.Code();
     std::vector<FireStarterRegisterInfo> registers;
-    unsigned int numRegisters = code->RegisterInfo(registers, settings.m_instructions, settings.m_registers);
+    unsigned int numRegisters = RegisterInfo(code, registers, settings);
     FireStarterRegisterUsage* registersUsage = (FireStarterRegisterUsage*)registers.data();
     std::string generateText;
 
