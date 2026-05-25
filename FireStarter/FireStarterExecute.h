@@ -7,324 +7,173 @@
 #include "CUDACompile.h"
 #include "MoneyMakerStocks.h"
 
-class CUDADevice : public CUDAThread {
+class CUDAModule {
 public:
     CUmodule m_executeModule = nullptr;
     CUfunction m_executeFunction = nullptr;
     CUfunction m_executeTest = nullptr;
 
-    inline void Compile(const std::string& programCode, const std::string& programName, const std::string& functionName, const std::string& testName, bool sync = false)
+    inline bool CompileProgram(const std::string& programCode, const std::string& programName, const std::string& functionName, const std::string& testName, bool sync = false)
     {
-        Dispatch([this, &programCode, &programName, &functionName, &testName, sync] {
-            // Compile the code and get the Evolver function from the module.
-            if (CUDACompile::CompileProgram(m_executeModule, programCode, programName)) {
-                m_executeFunction = CUDACompile::GetFunction(m_executeModule, functionName);
-                if (!m_executeFunction) {
-                    CUDACompile::ReleaseModule(m_executeModule);
-                    m_executeFunction = nullptr;
-                    m_executeTest = nullptr;
-                } else
-                    m_executeTest = CUDACompile::GetFunction(m_executeModule, testName);
+        // Compile the code and get the Evolver function from the module.
+        if (CUDACompile::CompileProgram(m_executeModule, programCode, programName)) {
+            m_executeFunction = CUDACompile::GetFunction(m_executeModule, functionName);
+            if (m_executeFunction) {
+                m_executeTest = CUDACompile::GetFunction(m_executeModule, testName);
+                return true;
             }
-        }, sync);
-    } // Compile
-
-    inline void Clear(void)
-    {
-        DispatchSync([this] {
             CUDACompile::ReleaseModule(m_executeModule);
             m_executeFunction = nullptr;
             m_executeTest = nullptr;
-        });
-    } // Clear
+        }
+        return false;
+    } // CompileProgram
 
-    inline CUDADevice(const std::string& threadName = "CUDAThread", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : CUDAThread(threadName, deviceIndex, priority) {}
-    inline ~CUDADevice(void)
+    inline bool CompileModule(const std::string& ptx, const std::string& functionName, const std::string& testName, bool sync = false)
     {
-        Clear();
-    } // ~CUDADevice
-}; // class CUDADevice
+        // Compile the code and get the Evolver function from the module.
+        if (CUDACompile::CompileModule(m_executeModule, ptx)) {
+            m_executeFunction = CUDACompile::GetFunction(m_executeModule, functionName);
+            if (m_executeFunction) {
+                m_executeTest = CUDACompile::GetFunction(m_executeModule, testName);
+                return true;
+            }
+        }
+        m_executeFunction = nullptr;
+        m_executeTest = nullptr;
+        return false;
+    } // CompileModule
 
-typedef std::vector<CUDADevice*> CUDADevices;
+    inline void ClearModule(void)
+    {
+        CUDACompile::ReleaseModule(m_executeModule);
+        m_executeFunction = nullptr;
+        m_executeTest = nullptr;
+    } // ClearModule
+
+    inline ~CUDAModule(void)
+    {
+        ClearModule();
+    } // ~CUDAModule
+}; // class CUDADevice
 
 template<typename T>
 class CUDAMemory {
 private:
-    const CUDADevices* m_devices = nullptr;
+    const CUDAContext* m_context;
     T* m_hostPtr = nullptr;
-    std::vector<T*> m_devicePtrs;
-    std::vector<size_t> m_splitOffset;
-    std::vector<size_t> m_splitSize;
+    T* m_devicePtr = nullptr;
+    size_t m_size = 0;
+    size_t m_count = 0;
     size_t m_elementSize = 0;
-    size_t m_hostElements = 0;
-    size_t m_hostSize = 0;
-    size_t m_deviceElements = 0;
-    size_t m_deviceSize = 0;
 
 public:
-    CUDADevice* Device(size_t i = 0) const
+    
+    inline void Clear(bool sync = false)
     {
-        if (i < m_devices->size())
-            return (*m_devices)[i];
-        else
-            return nullptr;
-    } // Device
+        if (m_hostPtr) {
+            checkCUDAErrors(cudaFreeHost(m_hostPtr));
+            m_hostPtr = nullptr;
+        }
+        if (m_devicePtr) {
+            checkCUDAErrors(cudaFree(m_devicePtr));
+            m_devicePtr = nullptr;
+            if (sync)
+                m_context->Synchronize();
+        }
+        m_size = 0;
+    } // Clear
+
+    inline void Init(const CUDAContext& context, size_t size = 0, size_t count = 1)
+    {
+        // Note: sizeof(T) cannot be relied upon because some structure sizes are dynamic.
+        Clear();
+        m_context = &context;
+        m_size = size;
+        if (m_size) {
+            m_count = count;
+            m_elementSize = m_size / m_count;
+
+            // Allocate the host memory.
+            checkCUDAErrors(cudaHostAlloc(&m_hostPtr, m_size, cudaHostAllocPortable));
+
+            // Allocate device memory for each device and generate the split start and count for each device.
+            checkCUDAErrors(cudaMallocAsync(&m_devicePtr, m_size, m_context->Stream()));
+            checkCUDAErrors(cudaMemsetAsync(m_devicePtr, 0, m_size, m_context->Stream()));
+            m_context->Synchronize();
+        } else
+            m_count = 0;
+    } // Init
 
     bool Allocated(void) const
     {
-        if (m_devices && m_hostPtr && m_devicePtrs.size() && m_hostSize && m_deviceSize)
+        if (m_hostPtr && m_devicePtr)
             return true;
         return false;
     } // Allocated
 
-    inline size_t HostSize(void) const
+    inline size_t Size(void) const
     {
-        return m_hostSize;
-    } // HostSize
-
-    inline size_t DeviceSize(void) const
-    {
-        return m_deviceSize;
-    } // DeviceSize
-
-    inline size_t HostElements(void) const
-    {
-        return m_hostElements;
-    } // HostSize
-
-    inline size_t DeviceElements(void) const
-    {
-        return m_deviceElements;
-    } // DeviceElements
-
-    inline T* HostPtr(void) const
-    {
-        return m_hostPtr;
-    } // HostPtr
+        return m_size;
+    } // Size
 
     inline T*& HostPtr(void)
     {
         return m_hostPtr;
     } // HostPtr
 
-    inline T* DevicePtr(size_t i = 0) const
+    inline T* HostPtr(void) const
     {
-        if (i < m_devicePtrs.size())
-            return m_devicePtrs[i];
-        else
-            return nullptr;
+        return m_hostPtr;
+    } // HostPtr
+
+    inline T*& DevicePtr(void)
+    {
+        return m_devicePtr;
     } // DevicePtr
 
-    inline T*& DevicePtr(size_t i = 0)
+    inline T* DevicePtr(void) const
     {
-        return m_devicePtrs[i];
+        return m_devicePtr;
     } // DevicePtr
 
-    inline size_t SplitOffset(size_t i = 0) const
+    inline bool Copy(const T* srcPtr, size_t size = 0, bool sync = false) const
     {
-        if (i < m_splitOffset.size())
-            return m_splitOffset[i];
-        return 0;
-    } // SplitStart
-
-    inline size_t SplitStart(size_t i = 0) const
-    {
-        if (i < m_splitOffset.size())
-            return m_splitOffset[i] / m_elementSize;
-        return 0;
-    } // SplitStart
-
-    inline size_t SplitSize(size_t i = 0) const
-    {
-        if (i < m_splitSize.size())
-            return m_splitSize[i];
-        return 0;
-    } // SplitSize
-
-    inline size_t SplitCount(size_t i = 0) const
-    {
-        if (i < m_splitSize.size())
-            return m_splitSize[i] / m_elementSize;
-        return 0;
-    } // SplitCount
-
-    inline void SyncDevices(void) const
-    {
-        size_t numDevices = m_devices->size();
-        for (size_t i = 0; i < numDevices; i++)
-            (*m_devices)[i]->CUDASynchronize(); // Synchronizes both the thread and the CUDA context.
-    } // SyncDevices
-
-    inline void HostInit(const T* srcPtr, size_t size = 0, size_t offset = 0) const
-    {
-        if (m_hostPtr) {
-            offset = MIN(offset, m_hostSize);
-            if (!size)
-                size = m_hostSize;
-            else if (size + offset > m_hostSize)
-                size = m_hostSize - offset;
-            if (size) {
-                char* hostPtr = (char*)m_hostPtr + offset;
-                if (srcPtr)
-                    memcpy(hostPtr, srcPtr, size);
-                else
-                    memset(hostPtr, 0, size);
+        if (Allocated() && (size == m_size)) {
+            if (size == m_size) {
+                if (srcPtr) {
+                    memcpy(m_hostPtr, srcPtr, size);
+                    checkCUDAErrors(cudaMemcpyAsync(m_devicePtr, srcPtr, size, cudaMemcpyHostToDevice, m_context->Stream()));
+                } else {
+                    memset(m_hostPtr, 0, size);
+                    checkCUDAErrors(cudaMemsetAsync(m_devicePtr, 0, size, m_context->Stream()));
+                }
+                if (sync)
+                    m_context->Synchronize();
             }
+            return true;
         }
-    } // HostInit
+        printf("CUDAMemory::Copy: Size mismatch! size = %zu, m_size = %zu\r\n", size, m_size);
+        return false;
+    } // Copy
 
-    inline void DeviceInit(const T* srcPtr, size_t i, size_t size = 0, size_t offset = 0) const
+    inline void HostToDevice(bool sync = false) const
     {
-        if (m_devicePtrs[i]) {
-            if (!size)
-                size = m_deviceSize;
-            else if (size > m_deviceSize)
-                size = m_deviceSize;
-            char* devicePtr = (char*)m_devicePtrs[i] + offset;
-            CUDADevice* device = Device(i);
-            device->DispatchAsync([device, srcPtr, devicePtr, size] {
-                if (srcPtr)
-                    checkCUDAErrors(cudaMemcpyAsync(devicePtr, srcPtr, size, cudaMemcpyHostToDevice, device->Stream()));
-                else
-                    checkCUDAErrors(cudaMemsetAsync(devicePtr, 0, size, device->Stream()));
-            });
-        }
-    } // DeviceInit
-
-    inline void DevicesInit(const T* srcPtr, size_t size = 0, size_t offset = 0) const
-    {
-        size_t numDevices = m_devices->size();
-        for (size_t i = 0; i < numDevices; i++)
-            DeviceInit(srcPtr, i, size, offset);
-    } // DevicesInit
-
-    inline void HostToDevice(size_t i = 0, bool sync = false) const
-    {
-        if (m_hostPtr && (i < m_devicePtrs.size()) && m_devicePtrs[i]) {
-            CUDADevice* device = Device(i);
-            char* hostPtr = (char*)m_hostPtr;
-            char* devicePtr = (char*)m_devicePtrs[i];
-            size_t size = m_hostSize;
-
-            if (m_deviceSize != m_hostSize) {
-                hostPtr += m_splitOffset[i];
-                size = m_splitSize[i];
-            }
-            device->DispatchAsync([device, hostPtr, devicePtr, size] {
-                checkCUDAErrors(cudaMemcpyAsync(devicePtr, hostPtr, size, cudaMemcpyHostToDevice, device->Stream()));
-            });
+        if (m_hostPtr && m_devicePtr) {
+            checkCUDAErrors(cudaMemcpyAsync(m_devicePtr, m_hostPtr, m_size, cudaMemcpyHostToDevice, m_context->Stream()));
             if (sync)
-                device->CUDASynchronize();
+                m_context->Synchronize();
         }
     } // HostToDevice
 
-    inline void HostToDevices(bool sync = false) const
+    inline void DeviceToHost(bool sync = false) const
     {
-        if (m_hostPtr) {
-            size_t numDevices = m_devices->size();
-            for (size_t i = 0; i < numDevices; i++)
-                HostToDevice(i, sync);
-        }
-    } // HostToDevices
-
-    inline void DeviceToHost(size_t i = 0, bool sync = false) const
-    {
-        if (m_hostPtr && (i < m_devicePtrs.size()) && m_devicePtrs[i]) {
-            CUDADevice* device = Device(i);
-            size_t size = m_splitSize[i];
-            size_t splitOffset = m_splitOffset[i];
-            char* hostPtr = (char*)m_hostPtr + splitOffset;
-            char* devicePtr = (char*)m_devicePtrs[i];
-
-            if (m_deviceSize == m_hostSize)
-                devicePtr += splitOffset;
-
-            device->DispatchAsync([device, hostPtr, devicePtr, size] {
-                checkCUDAErrors(cudaMemcpyAsync(hostPtr, devicePtr, size, cudaMemcpyDeviceToHost, device->Stream()));
-            });
+        if (m_hostPtr && m_devicePtr) {
+            checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtr, m_size, cudaMemcpyDeviceToHost, m_context->Stream()));
             if (sync)
-                device->CUDASynchronize();
+                m_context->Synchronize();
         }
     } // DeviceToHost
-
-    inline void DevicesToHost(bool sync = false) const
-    {
-        if (m_hostPtr) {
-            size_t numDevices = m_devices->size();
-            for (size_t i = 0; i < numDevices; i++)
-                DeviceToHost(i, false);
-        }
-        if (sync)
-            SyncDevices();
-    } // DevicesToHost
-
-    inline void Clear(void)
-    {
-        size_t numDevices = m_devicePtrs.size();
-        for (size_t i = 0; i < numDevices; i++)
-            if (m_devicePtrs[i]) {
-                CUDADevice* device = Device(i);
-                void* devicePtr = m_devicePtrs[i];
-                device->DispatchSync([device, devicePtr] {
-                    checkCUDAErrors(cudaFree(devicePtr));
-                });
-            }
-        if (m_hostPtr) {
-            checkCUDAErrors(cudaFreeHost(m_hostPtr));
-            m_hostPtr = nullptr;
-        }
-        m_devicePtrs.clear();
-        m_splitOffset.clear();
-        m_splitSize.clear();
-        m_hostSize = 0;
-        m_deviceSize = 0;
-        m_hostElements = 0;
-        m_deviceElements = 0;
-    } // Clear
-
-    inline void Init(const CUDADevices& devices, size_t size, size_t elements = 1, bool split = false)
-    {
-        // Note: sizeof(T) cannot be relied upon because some structure sizes are dynamic.
-        Clear();
-        size_t numDevices = devices.size();
-        m_devices = &devices;
-        m_hostSize = size;
-        m_hostElements = elements;
-        m_elementSize = m_hostSize / m_hostElements;
-        if (m_hostSize && numDevices) {
-            m_devicePtrs.resize(numDevices, 0);
-            m_splitOffset.resize(numDevices, 0);
-            m_splitSize.resize(numDevices, 0);
-            size_t splitElements = (elements + numDevices - 1) / numDevices;
-            size_t spitSize = splitElements * m_elementSize;
-            size_t splitOffset = 0;
-            size_t deviceSize = split ? spitSize : m_hostSize;
-            m_deviceSize = deviceSize;
-            m_deviceElements = elements;
-
-            // Allocate the host memory.
-            Device()->DispatchAsync([this] {
-                checkCUDAErrors(cudaHostAlloc(&m_hostPtr, m_hostSize, cudaHostAllocPortable));
-            });
-
-            // Allocate device memory for each device and generate the split start and count for each device.
-            for (size_t i = 0; i < numDevices; i++) {
-                CUDADevice* device = Device(i);
-                T** devicePtr = &m_devicePtrs[i];
-                device->DispatchAsync([device, deviceSize, devicePtr] {
-                    checkCUDAErrors(cudaMallocAsync(devicePtr, deviceSize, device->Stream()));
-                    checkCUDAErrors(cudaMemsetAsync(*devicePtr, 0, deviceSize, device->Stream()));
-                });
-
-                // Generate the split start and count for each device.
-                size_t splitEnd = MIN(splitOffset + spitSize, m_hostSize);
-                m_splitOffset[i] = splitOffset;
-                m_splitSize[i] = splitEnd - splitOffset;
-                splitOffset = splitEnd;
-            }
-            SyncDevices();
-        }
-    } // Init
 
     inline CUDAMemory(void)
     {
@@ -336,14 +185,10 @@ public:
     } // ~CUDAMemory
 }; // class CUDAMemory
 
-#if 1
-class FireStarterExecute : public SerialThread
-#else
 class FireStarterExecute : public CUDAThread
-#endif
 {
 private:
-    CUDADevices m_CUDADevices;
+    CUDAModule m_CUDAModule;
     CUDAMemory<FireStarterSettings> m_CUDASettings;
     CUDAMemory<float> m_CUDAResults;
     CUDAMemory<FireStarterCode> m_CUDACodes;
@@ -373,26 +218,6 @@ private:
     size_t m_executeIndex = 0;
     bool m_simulateGPU = false;
 
-    inline CUDADevice* Device(size_t index = 0)
-    {
-        if (index < m_CUDADevices.size())
-            return m_CUDADevices[index];
-        else
-            return nullptr;
-    } // Device
-
-    inline const CUDAContext& Context(size_t index = 0) const
-    {
-        return m_CUDADevices[index]->Context();
-    } // Context
-
-    inline const CUstream Stream(size_t index = 0) const
-    {
-        return m_CUDADevices[index]->Stream();
-    } // Stream
-
-    void SyncCUDAThreads(void);
-    void ClearCUDAThreads(void);
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);
     void FinishStocks(void);
@@ -408,13 +233,13 @@ private:
     void ExecuteMoneyOptimizePass(FireStarterState& state);
     void ExecuteMoneyTestPass(FireStarterState& state, unsigned int startDay, unsigned int tradingDays, unsigned int validationDays);
     bool GenerateEvolve(unsigned int mode);
-    bool GenerateOptimize(FireStarterState& state);
+    bool GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode);
     bool Compile(FireStarterJob* &job);
     bool ExecuteJob(void);
 
 public:
     void ExecuteSetStocks(const MoneyMakerStocks *stocks);
-    bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
+    bool ExecuteGenerateEvolve(unsigned int mode);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
     void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);
     void ExecuteEvolveGPU(FireStarterState& evolveState);

@@ -7,6 +7,12 @@
 #include <vector>
 #endif
 
+struct FireStarterRegisterInfo {
+    unsigned int registerIndex;
+    unsigned int instructionFirst;
+    unsigned int instructionLast;
+}; // struct FireStarterRegisterInfo
+
 typedef struct FireStarterData {
     float d[FIRESTARTER_REGISTERS]; // Note: Dynamically allocated!
 
@@ -443,7 +449,7 @@ typedef struct FireStarterCode {
         std::vector<unsigned int> regCount(registers, 0);
 #endif
         unsigned int uniqueRegisters = 0;
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++) {
+        for (unsigned int i = 0; i < instructions; i++) {
             unsigned int r = c[i].reg;
             int index = regCount[r];
             if (index == 0)
@@ -453,33 +459,56 @@ typedef struct FireStarterCode {
         return uniqueRegisters;
     } // Optimize
 
-    inline unsigned int Optimize2(unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS)
-    {
-        // Compact the registers keeping their order consistent.
-#ifdef __CUDACC__
-        unsigned int regCount[FIRESTARTER_REGISTERS] = {};
-        unsigned int regIndex[FIRESTARTER_REGISTERS] = {};
-#else
-        std::vector<unsigned int> regCount(registers, 0);
-        std::vector<unsigned int> regIndex(registers, 0);
-#endif
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            regCount[c[i].reg]++;
-
-        unsigned int uniqueRegisters = 0;
-        for (unsigned int i = 0; i < registers; i++)
-            if (regCount[i])
-                regIndex[i] = uniqueRegisters++;
-
-        for (unsigned int i = 0; i < FIRESTARTER_INSTRUCTIONS; i++)
-            c[i].reg = regIndex[c[i].reg];
-        return uniqueRegisters;
-    } // Optimize2
-
     inline unsigned int Optimize(const FireStarterSettings& settings)
     {
         return Optimize(settings.m_instructions, settings.m_registers);
     } // Optimize
+
+    inline unsigned int RegisterInfo(std::vector<FireStarterRegisterInfo>& registerInfo, unsigned int instructions = FIRESTARTER_INSTRUCTIONS, unsigned int registers = FIRESTARTER_REGISTERS) const
+    {
+        // Optimize the registers based on the ones in use at any point in the code.
+        unsigned int uniqueRegisters = 0;
+        registerInfo.resize(registers);
+        for (unsigned int i = 0; i < registers; i++)
+            registerInfo[i] = FireStarterRegisterInfo(-1, instructions, instructions);
+        for (unsigned int i = 0; i < instructions; i++) {
+            FireStarterRegisterInfo& reg = registerInfo[Register(i)];
+
+            // Is this the first use of the register?
+            if (reg.instructionFirst == instructions) {
+                reg.instructionFirst = i;
+                uniqueRegisters++;
+            }
+
+            // Update the last use of the register.
+            reg.instructionLast = i;
+        }
+
+        std::vector<unsigned int> freeRegisters;
+        unsigned int numActiveRegisters = 0;
+        for (unsigned int i = 0; i < instructions; i++) {
+            unsigned int index = Register(i);
+            FireStarterRegisterInfo& reg = registerInfo[index];
+            if (reg.instructionLast > reg.instructionFirst)
+                if (reg.instructionFirst == i) {
+                    if (!freeRegisters.empty()) {
+                        reg.registerIndex = freeRegisters.back();
+                        freeRegisters.pop_back();
+                    } else
+                        reg.registerIndex = numActiveRegisters;
+                    numActiveRegisters++;
+                } else if (reg.instructionLast == i) {
+                    freeRegisters.push_back(reg.registerIndex);
+                    numActiveRegisters--;
+                }
+        }
+        return uniqueRegisters;
+    } // RegisterInfo
+
+    inline unsigned int RegisterInfo(std::vector<FireStarterRegisterInfo>& registerInfo, const FireStarterSettings& settings) const
+    {
+        return RegisterInfo(registerInfo, settings.m_instructions, settings.m_registers);
+    } // RegisterInfo
 
     inline void InitCode(unsigned int instructions = FIRESTARTER_INSTRUCTIONS)
     {

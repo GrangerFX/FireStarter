@@ -749,7 +749,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                         // Compile the optimize code asynchronously.
                         FireStarterState optimizeState = FireStarterState(optimizeSettings, evolveState.m_generation + 1, 0, evolveID, test);
                         optimizeState.CopyCode(bestCode);
-                        executeOptimize->ExecuteGenerateOptimize(optimizeState, false);
+                        executeOptimize->ExecuteGenerateOptimize(optimizeState);
                         unsigned int numTradingResults = optimizeState.Settings().m_stocks;
 
                         std::vector<FireStarterState> bestStates(numOptimize);

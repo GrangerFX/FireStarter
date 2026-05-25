@@ -2,12 +2,6 @@
 #include "FireStarterResults.h"
 #include "cnprintf.h"
 
-struct FireStarterRegisterInfo {
-    unsigned int registerIndex;
-    unsigned int instructionFirst;
-    unsigned int instructionLast;
-}; // struct FireStarterRegisterInfo
-
 typedef struct FireStarterRegisterUsage {
     FireStarterRegisterInfo r[FIRESTARTER_REGISTERS];
 

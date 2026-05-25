@@ -20,13 +20,12 @@ inline bool EvolveEvaluate(FireStarterSharedData& sharedData, const FireStarterD
 
 #if FIRESTARTER_VARIATIONS == 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize, const unsigned int populationStart, const unsigned int populationCount)
+GPU_GLOBAL void EvolverGPU(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
     if (member >= populationCount)
         return;
-    member += populationStart;
 
     // The shared data for the threads in the warp.
     GPU_SHARED FireStarterSharedData sharedData;
