@@ -95,7 +95,7 @@ public:
             m_elementSize = m_size / m_count;
 
             // Allocate the host memory.
-            checkCUDAErrors(cudaHostAlloc(&m_hostPtr, m_size, cudaHostAllocPortable));
+            checkCUDAErrors(cudaMallocHost(&m_hostPtr, m_size));
 
             // Allocate device memory for each device and generate the split start and count for each device.
             checkCUDAErrors(cudaMallocAsync(&m_devicePtr, m_size, m_context->Stream()));

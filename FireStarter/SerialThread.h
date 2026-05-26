@@ -57,8 +57,6 @@
 //     });
 // });
 
-#define USE_GEMINI_IMPL 1
-
 #if __cplusplus >= 202002L || (defined(_MSVC_LANG) && _MSVC_LANG >= 202002L)
 #define HAS_DISPATCH_AFTER 1
 #else
@@ -342,21 +340,12 @@ public:
         return result;
     } // PollThread
 
-#if USE_GEMINI_IMPL
     // Implementation suggested by Gemini.
     static inline std::atomic<bool>& WillQuit() {
         // C++11/14 guarantees that static local initialization is thread-safe.
         static std::atomic<bool> m_willQuit{ false };
         return m_willQuit;
     } // WillQuit
-#else
-    // My original implementation.
-    static inline volatile bool& WillQuit(void)
-    {
-        static volatile bool m_willQuit = false;
-        return m_willQuit;
-    } // WillQuit
-#endif
 
     inline bool WillTerminate(void)
     {
@@ -399,7 +388,6 @@ public:
     } // DispatchMainAfter
 #endif
 
-#if USE_GEMINI_IMPL
     // Version recommended by Gemini. This version allows move semantics to be used when dispatching work, which can be more efficient for large work objects.
     inline bool DispatchAsync(SerialThreadWork work) // Pass by value
     {
@@ -411,19 +399,6 @@ public:
         }
         return false;
     } // DispatchAsync
-#else
-    // Original version.
-    inline bool DispatchAsync(const SerialThreadWork& work)
-    {
-        std::unique_lock<std::mutex> lock(m_mutex);
-        if (!m_terminate) {
-            m_workQueue.push(work);
-            m_cv.notify_one();
-            return true;
-        }
-        return false;
-    } // DispatchAsync
-#endif
 
     static inline bool DispatchMainAsync(const SerialThreadWork& work)
     {
@@ -433,7 +408,6 @@ public:
         return false;
     } // DispatchMainAsync
 
-#if USE_GEMINI_IMPL
     // Version recommended by Gemini. This version allows DispatchSync to be called from the worker thread itself without deadlocking.
     inline bool DispatchSync(const SerialThreadWork& work)
     {
@@ -467,28 +441,6 @@ public:
         }
         return false;
     } // DispatchSync
-#else
-    // Original version.
-    inline bool DispatchSync(const SerialThreadWork& work)
-    {
-        if (!m_terminate) {
-            SerialThreadSemaphore syncSemaphore;
-            if (DispatchAsync([this, &syncSemaphore, work] {
-                if (work)
-                    work();
-                syncSemaphore.notify();
-                })) {
-                if (m_pollThread)
-                    PollThread();
-
-                // Wait for the contditional variable to be notified.
-                syncSemaphore.wait();
-                return true;
-            }
-        }
-        return false;
-    } // DispatchSync
-#endif
 
     static inline bool DispatchMainSync(const SerialThreadWork& work)
     {
@@ -528,14 +480,6 @@ public:
         MainThread() = mainThread;
     } // SetMainThread
 
-#if !USE_GEMINI_IMPL
-    inline virtual bool TerminateThread(void)
-    {
-        if (m_willTerminate.exchange(true)) return false; // Atomic 'check and set'
-        Cleanup();
-        return true;
-    } // TerminateThread
-#else
     inline virtual bool TerminateThread(void)
     {
         // Atomic 'check and set' - ensures cleanup only happens once
@@ -557,24 +501,11 @@ public:
         }
         return true;
     } // TerminateThread
-#endif
 
     inline static void QuitThreads(void)
     {
         WillQuit() = true;
     } // QuitThreads
-
-#if !USE_GEMINI_IMPL
-    // Original code. Not needed if the new ~SerialThread() is used.
-    inline void FinishParallelThreads(void)
-    {
-        DispatchSync([this] {
-            // Wait for the threads to finish their tasks
-            if (!m_parallelThreads.empty())
-                std::for_each(m_parallelThreads.begin(), m_parallelThreads.end(), std::mem_fn(&std::thread::join));
-            });
-    } // FinishParallelThreads
-#endif
 
     inline void ParallelFor(size_t for_start, size_t for_end, std::function<void(size_t, size_t)> functor)
     {
@@ -614,7 +545,6 @@ public:
         }
     } // SerialThread
 
-#if USE_GEMINI_IMPL
     inline ~SerialThread(void)
     {
         // Destructor ensures the flag is set and cleanup happens
@@ -641,16 +571,4 @@ private:
         std::queue<SerialThreadWork> empty;
         std::swap(m_workQueue, empty);
     } // Cleanup()
-#else
-    inline ~SerialThread(void)
-    {
-        m_parallelCV.notify_all(); // Wake up parallel workers to exit
-        for (auto& t : m_parallelThreads)
-            if (t.joinable())
-                t.join();
-
-        FinishParallelThreads();
-        TerminateThread();
-    } // ~SerialThread
-#endif
 }; // class SerialThread
