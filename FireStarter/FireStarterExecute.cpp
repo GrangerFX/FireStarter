@@ -339,6 +339,75 @@ void FireStarterExecute::ExecuteEvolveNewPass(FireStarterState& state, unsigned 
     state.m_optimizeValid = true;
 } // ExecuteEvolveNewPass
 
+void FireStarterExecute::ExecuteEvolveSinSimPass(FireStarterState& state, unsigned int variation)
+{
+    // Launch the calculation kernel
+    FireStarterSettings settings = state.Settings();
+    unsigned int populationCount = settings.m_population;
+    unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
+    unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
+    dim3 cudaBlockSize(threadsPerBlock, 1, 1);
+    dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    unsigned long long generation = state.m_generation;
+    unsigned long long seed = state.EvolutionSeed();
+    unsigned int passes = settings.m_passes;
+
+    if (m_simulateGPU) {
+        blockDim = cudaBlockSize;
+        for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
+            for (blockIdx.y = 0; blockIdx.y < cudaGridSize.y; blockIdx.y++)
+                for (blockIdx.z = 0; blockIdx.z < cudaGridSize.z; blockIdx.z++)
+                    for (threadIdx.x = 0; threadIdx.x < cudaBlockSize.x; threadIdx.x++)
+                        for (threadIdx.y = 0; threadIdx.y < cudaBlockSize.y; threadIdx.y++)
+                            for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
+                                EvolverSinSim(m_CUDAResults.HostPtr(), m_CUDAPopulation0.HostPtr(), m_CUDACodes.HostPtr(), variation, seed, passes, populationCount);
+    }
+    else {
+        void* arr[] = { reinterpret_cast<void*>(&m_CUDAResults.DevicePtr()),
+                        reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr()),
+                        reinterpret_cast<void*>(&m_CUDACodes.DevicePtr()),
+                        reinterpret_cast<void*>(&variation),
+                        reinterpret_cast<void*>(&seed),
+                        reinterpret_cast<void*>(&passes),
+                        reinterpret_cast<void*>(&populationCount)
+        };
+
+        checkCUDAErrors(cuLaunchKernel(m_CUDAModule.m_executeFunction,
+            cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
+            cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
+            0,                                                  // shared mem
+            Stream(),                                           // stream
+            &arr[0],                                            // arguments
+            0));
+
+        m_CUDAPopulation0.DeviceToHost();
+        m_CUDACodes.DeviceToHost();
+        Context().Synchronize();
+    }
+
+    // Get the best variation results.
+    bool validResult = false;
+    float minResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, 0, variation);
+    unsigned int minIndex = 0;
+    for (unsigned int i = 1; i < populationCount; i++) {
+        const FireStarterCode* code = m_CUDACodes.HostPtr()->Member(settings, i);
+        float curResult = FireStarterPopulation::PopulationMaxResult(m_CUDAPopulation0.HostPtr(), settings, i, variation);
+        if (curResult < minResult) {
+            minResult = curResult;
+            minIndex = i;
+        }
+    }
+
+    // Update the state's best results.
+    state.InitResult(settings, m_CUDACodes.HostPtr(), m_CUDAPopulation0.HostPtr(), minIndex, variation);
+
+    // Note: The above is used by Optimize and does not init the following variables:
+    state.m_oldResult = state.m_bestResult;
+    state.m_bestResult = minResult;
+    state.m_minIndex = minIndex;
+    state.m_optimizeValid = true;
+} // ExecuteEvolveSinSimPass
+
 void FireStarterExecute::ExecuteSinSimPass(FireStarterState& state, unsigned int variation)
 {
     // Launch the calculation kernel
@@ -959,7 +1028,7 @@ void FireStarterExecute::ExecuteEvolveSinSim(FireStarterState& evolveState)
         if (GenerateEvolve(evolveState.Settings().m_mode)) {
             evolveState.m_timer.Start();
             if (InitPopulation(evolveState.Settings()))
-                ExecuteEvolveNewPass(evolveState);
+                ExecuteEvolveSinSimPass(evolveState);
         }
     });
 } // ExecuteEvolveNew

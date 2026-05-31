@@ -20,11 +20,11 @@ inline bool SpeedTestEvaluate(FireStarterSharedData& sharedData, const FireStart
 
 #if FIRESTARTER_VARIATIONS == 1
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void SpeedTest(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
-    if (member >= populationSize)
+    if (member >= populationCount)
         return;
 
     // The shared data for the threads in the warp.

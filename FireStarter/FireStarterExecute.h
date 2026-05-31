@@ -224,6 +224,7 @@ private:
     void ExecuteSelectPass(FireStarterState& state, const FireStarterSettings& selectSettings);
     void ExecuteEvolveGPUPass(FireStarterState& state, FireStarterBestCodes& bestCodes);
     void ExecuteEvolveNewPass(FireStarterState& state, unsigned int variation = 0);
+    void ExecuteEvolveSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteSinSimPass(FireStarterState& state, unsigned int variation = 0);
     void ExecuteMoneyEvolvePass(FireStarterState& state, FireStarterBestCodes& bestCodes);
     void ExecuteOptimizePass(FireStarterState& state, unsigned int variation = 0);

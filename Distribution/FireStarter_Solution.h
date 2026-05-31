@@ -1,13 +1,13 @@
 #pragma once
 #include <math.h>
 
-// Run date: 05/31/26 10:26:21 Pacific Daylight Time
-// Run duration = 92.730885 seconds
-// Run test = 12
-// Run generation = 3
-// Run evolution = 1
-// Run precision  = 0.00000084
-// Run max result = 0.00000013
+// Run date: 05/31/26 13:44:29 Pacific Daylight Time
+// Run duration = 1.573755 seconds
+// Run test = 9
+// Run generation = 0
+// Run evolution = 0
+// Run precision  = 1.00073600
+// Run max result = 0.00000000
 
 // Run variations = 1
 // Run instructions = 32
@@ -18,18 +18,18 @@
 // Run targetMax = 6.283185f
 // Run target = 0.000001f
 
-// Run mode = FIRESTARTER_EVOLVE_CPU
+// Run mode = FIRESTARTER_EVOLVE_SINSIM
 // Run evolveSeed = 0
 // Run optimizeSeed = 0
-// Run tests = 16
+// Run tests = 256
 // Run streams = 1
-// Run units = 8
-// Run states = 16
-// Run population = 348160
-// Run generations = 0
-// Run passes = 512
-// Run samples = 15
-// Run iterations = 64
+// Run units = 1
+// Run states = 1
+// Run population = 65536
+// Run generations = 1000
+// Run passes = 1
+// Run samples = 4096
+// Run iterations = 16
 // Run candidates = 0
 // Run optimize = 1
 
@@ -66,39 +66,39 @@ inline float SolutionTarget(float n, unsigned int variation = 0)
 
 inline float Solution(float n)
 {
-    float r0, r1, r2, r3;
+    float r0, r1, r2, r3, r4, r5, r6, r7;
 
-    r0 = n += -0.55914712f;
-    n += -4.37915182f;
-    n += 2.35585332f;
-    n *= r0;
-    r0 = n *= -0.03431507f;
-    r1 = n *= 0.03539900f;
+    r0 = n += 0.19993579f;
+    n *= -0.41866159f;
+    n *= -2.00612330f;
+    n *= -0.87044722f;
+    r1 = n *= -0.10171479f;
     n *= r1;
-    n += 0.89025581f;
-    n += -1.98681259f;
+    r1 = n *= -1.30208898f;
+    r2 = n *= -0.38119587f;
+    n *= r1;
+    r1 = n += 0.31904662f;
+    r3 = n *= 1.01700461f;
+    r4 = n *= 2.00670815f;
+    r5 = n *= 0.62454242f;
+    n = r4 *= n;
+    n *= r5;
+    r5 = n *= 1.85649443f;
     n = r0 *= n;
-    r1 = n *= -0.98063254f;
-    r2 = n *= 0.04635331f;
-    n = r1 += n;
-    r3 = n *= 1.97069311f;
-    n *= 5.40906811f;
-    n *= r2;
-    n += r3;
-    r3 = n += 0.10840137f;
-    n += r0;
-    n += 3.24698806f;
-    r0 = n *= 0.28613347f;
-    n = r1 += n;
-    r2 = n += 2.25551891f;
-    n *= 0.43780869f;
-    n = r2 *= n;
-    n *= r0;
-    n *= -0.07259586f;
-    n += 0.14630140f;
-    n *= -3.36792755f;
-    n += r2;
-    n *= r3;
+    r6 = n *= 1.52124012f;
+    n *= 1.29111755f;
+    n = r6 += n;
+    r7 = n *= 1.12245905f;
     n *= r1;
+    n *= -0.90207565f;
+    n += r6;
+    n *= r7;
+    n *= r3;
+    n *= r0;
+    n *= r4;
+    n *= 1.52545202f;
+    n += r5;
+    n *= -0.34389016f;
+    n *= r2;
     return n;
 } // Solution

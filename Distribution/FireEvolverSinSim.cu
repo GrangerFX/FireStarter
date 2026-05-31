@@ -4,11 +4,11 @@
 #include "CUDADefines.h"
 
 // SinSim based evolution.
-GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationSize)
+GPU_GLOBAL void EvolverSinSim(float* results, FireStarterResult* population, FireStarterCode* codes, const unsigned int variation, const unsigned long long seed, const unsigned int passes, const unsigned int populationCount)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
-    if (member >= populationSize)
+    if (member >= populationCount)
         return;
 
     // The shared data for the threads in the warp.
