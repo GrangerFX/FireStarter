@@ -215,7 +215,7 @@ private:
     size_t m_codesSize = 0;
     size_t m_parentCodeSize = 0;
     size_t m_executeIndex = 0;
-    bool m_simulateGPU = false;
+    bool m_simulateGPU = FIRESTARTER_SIMULATE_GPU;
 
     void FinishPopulation(void);
     bool InitPopulation(const FireStarterSettings& settings);

@@ -149,7 +149,7 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
     // Launch the calculation kernel
     unsigned int populationCount = selectSettings.m_population;
     unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
-    unsigned int blocksPerGrid = (selectSettings.m_population + (threadsPerBlock - 1)) / threadsPerBlock;
+    unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long seed = state.EvolutionSeed();
@@ -173,10 +173,10 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
                         reinterpret_cast<void*>(&m_CUDAPopulation0.DevicePtr()),
                         reinterpret_cast<void*>(&m_CUDACodes.DevicePtr()),
                         reinterpret_cast<void*>(&m_CUDAParentCode.DevicePtr()),
-                        reinterpret_cast<void*>(&variation),
                         reinterpret_cast<void*>(&seed),
                         reinterpret_cast<void*>(&passes),
-                        reinterpret_cast<void*>(&populationCount)
+                        reinterpret_cast<void*>(&populationCount),
+                        reinterpret_cast<void*>(&variation)
         };
 
         checkCUDAErrors(cuLaunchKernel(m_CUDAModule.m_executeFunction,
@@ -186,8 +186,6 @@ void FireStarterExecute::ExecuteSelectPass(FireStarterState& state, const FireSt
             Stream(),                                           // stream
             &arr[0],                                            // arguments
             0));
-
-        Context().Synchronize();
 
         m_CUDAPopulation0.DeviceToHost();
         m_CUDAResults.DeviceToHost();

@@ -188,9 +188,6 @@
     <None Include="Distribution\FireOptimizer.cu">
       <Filter>CUDA Files</Filter>
     </None>
-    <None Include="Distribution\FireSelect.cu">
-      <Filter>CUDA Files</Filter>
-    </None>
     <None Include="Distribution\FireSettings.cu">
       <Filter>CUDA Files</Filter>
     </None>
@@ -207,6 +204,9 @@
       <Filter>CUDA Files</Filter>
     </None>
     <None Include="Distribution\FireEvolverGPU.cu">
+      <Filter>CUDA Files</Filter>
+    </None>
+    <None Include="Distribution\FireSelect.cu">
       <Filter>CUDA Files</Filter>
     </None>
   </ItemGroup>
