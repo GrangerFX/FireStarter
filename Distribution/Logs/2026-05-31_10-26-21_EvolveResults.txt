@@ -1,0 +1,16 @@
+Duration: 6.6  Average: 7.2  Seed=0  Test=0  Generation=2  Best Generations=16  Evolutions=2  Evolve Result=0.00000086 *******
+Duration: 17.3  Average: 12.3  Seed=0  Test=1  Generation=7  Best Generations=9  Evolutions=1  Evolve Result=0.00000012 *******
+Duration: 4.3  Average: 9.6  Seed=0  Test=2  Generation=1  Best Generations=3  Evolutions=1  Evolve Result=0.00000009 *******
+Duration: 6.6  Average: 8.9  Seed=0  Test=3  Generation=2  Best Generations=18  Evolutions=2  Evolve Result=0.00000060 *******
+Duration: 19.6  Average: 11.0  Seed=0  Test=4  Generation=8  Best Generations=47  Evolutions=5  Evolve Result=0.00000021 *******
+Duration: 4.5  Average: 9.9  Seed=0  Test=5  Generation=1  Best Generations=3  Evolutions=1  Evolve Result=0.00000042 *******
+Duration: 4.4  Average: 9.1  Seed=0  Test=6  Generation=1  Best Generations=12  Evolutions=1  Evolve Result=0.00000024 *******
+Duration: 6.6  Average: 8.8  Seed=0  Test=7  Generation=2  Best Generations=17  Evolutions=2  Evolve Result=0.00000017 *******
+Duration: 2.2  Average: 8.1  Seed=0  Test=8  Generation=0  Best Generations=0  Evolutions=0  Evolve Result=0.00000047 *******
+Duration: 2.2  Average: 7.5  Seed=0  Test=9  Generation=0  Best Generations=0  Evolutions=0  Evolve Result=0.00000017 *******
+Duration: 6.6  Average: 7.4  Seed=0  Test=10  Generation=2  Best Generations=5  Evolutions=2  Evolve Result=0.00000096 *******
+Duration: 6.6  Average: 7.4  Seed=0  Test=11  Generation=2  Best Generations=11  Evolutions=2  Evolve Result=0.00000017 *******
+Duration: 4.4  Average: 7.1  Seed=0  Test=12  Generation=1  Best Generations=3  Evolutions=1  Evolve Result=0.00000013 *******
+Duration: 4.4  Average: 6.9  Seed=0  Test=13  Generation=1  Best Generations=7  Evolutions=1  Evolve Result=0.00000015 *******
+Duration: 4.5  Average: 6.8  Seed=0  Test=14  Generation=1  Best Generations=4  Evolutions=1  Evolve Result=0.00000017 *******
+Duration: 2.2  Average: 6.5  Seed=0  Test=15  Generation=0  Best Generations=0  Evolutions=0  Evolve Result=0.00000049 *******
