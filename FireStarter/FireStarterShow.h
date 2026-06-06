@@ -15,8 +15,9 @@ private:
 
     void DeallocateEvaluateData(void);
     void AllocateEvaluateData(size_t evaluateSize);
-    void EvaluateEvolve(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation);
     void EvaluateSinSim(const FireStarterState& state, unsigned int evaluateWidth);
+    void EvaluateEvolveSinSim(const FireStarterState& state, unsigned int evaluateWidth);
+    void EvaluateEvolve(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation);
 
 public:
     static void FireSolution(FireStarterWindow& window);

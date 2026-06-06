@@ -24,6 +24,34 @@ void FireStarterShow::AllocateEvaluateData(size_t evaluateSize)
     }
 } // AllocateEvaluateData
 
+void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int evaluateWidth)
+{
+    // The show data is generated on the CPU which prevents it from interrupting the GPU.
+    // Note: The SinSim data must be evaluated on a single thread.
+    const FireStarterSettings& settings = state.Settings();
+    SinSimNetwork network = *state.Network();
+    for (unsigned int i = 0; i < evaluateWidth; i++) {
+        float input = SinSimNetwork::SinSimInputSample(i);
+        m_targetData[i] = SinSimNetwork::SinSimTargetSample(i);
+        m_evaluateData[i] = network.SinSimTestNetwork(input);
+    }
+} // EvaluateSinSim
+
+void FireStarterShow::EvaluateEvolveSinSim(const FireStarterState& state, unsigned int evaluateWidth)
+{
+    // The show data is generated on the CPU which prevents it from interrupting the GPU.
+    // Note: The EvolveSinSim data must be evaluated on a single thread.
+    const FireStarterSettings& settings = state.Settings();
+    FireStarterDataVector dataVector;
+    const FireStarterCode* code = state.Code();
+    for (unsigned int i = 0; i < evaluateWidth; i++) {
+        state.DataVector(dataVector);
+        float input = SinSimNetwork::SinSimInputSample(i);
+        m_targetData[i] = SinSimNetwork::SinSimTargetSample(i);
+        m_evaluateData[i] = code->Evaluate(dataVector.Data(), input, settings.m_instructions);
+    }
+} // EvaluateEvolveSinSim
+
 void FireStarterShow::EvaluateEvolve(const FireStarterState& state, unsigned int evaluateWidth, float thetaStart, float thetaEnd, unsigned int variation)
 {
     // The show data is generated on the CPU which prevents it from interrupting the GPU.
@@ -39,19 +67,6 @@ void FireStarterShow::EvaluateEvolve(const FireStarterState& state, unsigned int
         m_evaluateData[i] = code->Evaluate(dataVector.Data(), theta, settings.m_instructions);
     }
 } // EvaluateEvolve
-
-void FireStarterShow::EvaluateSinSim(const FireStarterState& state, unsigned int evaluateWidth)
-{
-    // The show data is generated on the CPU which prevents it from interrupting the GPU.
-    // Note: The SinSim data must be evaluated on a single thread.
-    const FireStarterSettings& settings = state.Settings();
-    SinSimNetwork network = *state.Network();
-    for (unsigned int i = 0; i < evaluateWidth; i++) {
-        float input = SinSimNetwork::SinSimInputSample(i);
-        m_targetData[i] = SinSimNetwork::SinSimTargetSample(i);
-        m_evaluateData[i] = network.SinSimTestNetwork(input);
-    }
-} // EvaluateSinSim
 
 void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerStocks* stocks, const MoneyMakerStocks* tradingResults)
 {
@@ -114,29 +129,32 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
             float thetaEnd = TARGET_PI * ((0.5f * width) / xScale + 1.0f);
             float maxError = 0.0f;
 
-            // The -PI to +PI evaluation boundaries.
-            for (unsigned int y = 0; y < height; y++) {
-                int x0 = (width / 2) - xScale;
-                int x1 = (width / 2) + xScale;
-                if (x0 >= 0) {
-                    uchar4& pixel(pixels[y * width + x0]);
-                    pixel.x = 64;
-                    pixel.y = 128;
-                    pixel.z = 64;
-                };
-                if (x1 < (int)width) {
-                    uchar4& pixel(pixels[y * width + x1]);
-                    pixel.x = 64;
-                    pixel.y = 128;
-                    pixel.z = 64;
-                };
-            }
-
             if (settings.m_mode == FIRESTARTER_SINSIM) {
                 size_t codeSize = 0;
                 size_t evaluateSize = width * sizeof(float);
                 AllocateEvaluateData(evaluateSize);
 
+                // The warmup boundary.
+                unsigned int b0 = FIRESTARTER_SINSIM_WARMUP;
+                if ((b0 >= 0) && (b0 < width)) {
+                    for (unsigned int y = 0; y < height; y++) {
+                        uchar4& pixel(pixels[y * width + b0]);
+                        pixel.x = 64;
+                        pixel.y = 128;
+                        pixel.z = 64;
+                    };
+                }
+
+                // The sample boundary
+                unsigned int b1 = FIRESTARTER_SINSIM_WARMUP + FIRESTARTER_SINSIM_SAMPLES;
+                if ((b1 >= 0) && (b1 < width)) {
+                    for (unsigned int y = 0; y < height; y++) {
+                        uchar4& pixel(pixels[y * width + b1]);
+                        pixel.x = 64;
+                        pixel.y = 128;
+                        pixel.z = 64;
+                    };
+                }
                 // Evaluate the SinSim FireShow data.
                 EvaluateSinSim(state, width);
                 for (unsigned int x = 0; x < width; x++) {
@@ -161,9 +179,77 @@ void FireStarterShow::FireShow(const FireStarterState& state, const MoneyMakerSt
                         pixel.x = pixel.y = pixel.z = 255;
                     };
                 }
+            } else if (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) {
+                size_t codeSize = 0;
+                size_t evaluateSize = width * sizeof(float);
+                AllocateEvaluateData(evaluateSize);
+
+                // The warmup boundary.
+                unsigned int b0 = FIRESTARTER_SINSIM_WARMUP;
+                if ((b0 >= 0) && (b0 < width)) {
+                    for (unsigned int y = 0; y < height; y++) {
+                        uchar4& pixel(pixels[y * width + b0]);
+                        pixel.x = 64;
+                        pixel.y = 128;
+                        pixel.z = 64;
+                    };
+                }
+
+                // The sample boundary
+                unsigned int b1 = FIRESTARTER_SINSIM_WARMUP + FIRESTARTER_EVOLVE_SINSIM_SAMPLES;
+                if ((b1 >= 0) && (b1 < width)) {
+                    for (unsigned int y = 0; y < height; y++) {
+                        uchar4& pixel(pixels[y * width + b1]);
+                        pixel.x = 64;
+                        pixel.y = 128;
+                        pixel.z = 64;
+                    };
+                }
+
+                // Evaluate the SinSim FireShow data.
+                EvaluateEvolveSinSim(state, width);
+                for (unsigned int x = 0; x < width; x++) {
+                    float center = height * 0.66f;
+                    float target = m_targetData[x];
+                    float result = m_evaluateData[x];
+
+                    if (x >= FIRESTARTER_SINSIM_WARMUP) {
+                        float error = fabsf(result - target);
+                        maxError = std::max(maxError, error);
+                    }
+                    long long y = (long long)(center + target * yScale);
+                    if ((y >= 0) && (y < height)) {
+                        uchar4& pixel(pixels[y * width + x]);
+                        pixel.x = 255;
+                        pixel.y = 128;
+                    }
+                    y = (long long)(center + result * yScale);
+                    if ((y >= 0) && (y < height)) {
+                        uchar4& pixel(pixels[y * width + x]);
+                        pixel.x = pixel.y = pixel.z = 255;
+                    };
+                }
             } else {
                 size_t evaluateSize = width * sizeof(float);
                 AllocateEvaluateData(evaluateSize);
+
+                // The -PI to +PI evaluation boundaries.
+                int x0 = (width / 2) - xScale;
+                if (x0 >= 0)
+                    for (unsigned int y = 0; y < height; y++) {
+                        uchar4& pixel(pixels[y * width + x0]);
+                        pixel.x = 64;
+                        pixel.y = 128;
+                        pixel.z = 64;
+                    }
+                int x1 = (width / 2) + xScale;
+                if (x1 < (int)width)
+                    for (unsigned int y = 0; y < height; y++) {
+                        uchar4& pixel(pixels[y * width + x1]);
+                        pixel.x = 64;
+                        pixel.y = 128;
+                        pixel.z = 64;
+                    }
 
                 // Evaluate the evolve FireShow data.
                 for (unsigned int v = 0; v < settings.m_variations; v++) {
