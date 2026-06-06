@@ -29,7 +29,7 @@
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
 #define FIRESTARTER_SAVE_BESTCODE   0           // Save Optimizer.cu with the best evolved code.
 #define FIRESTARTER_AUTO_QUIT       1           // Automatically exit the app after completing the work.
-#define FIRESTARTER_SIMULATE_GPU    0           // Simulate the GPU on the CPU for testing and debugging.
+#define FIRESTARTER_SIMULATE_GPU    1           // Simulate the GPU on the CPU for testing and debugging.
 
 #define FIRESTARTER_EVOLVE_RESULTS  0           // Copy all of the evolve and optimize data to the host.
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
@@ -93,7 +93,7 @@
 #define FIRESTARTER_OPTIMIZE        11          // Optimize a previously evolved state.
 #define FIRESTARTER_SOLUTION        12          // Execute or validate the most recently evolved best state.
 #define FIRESTARTER_MODES           13          // Number of modes
-#define FIRESTARTER_MODE            FIRESTARTER_SINSIM
+#define FIRESTARTER_MODE            FIRESTARTER_MONEYMAKER
 
 #define FIRESTARTER_RANDOM_STREAMS              1
 #define FIRESTARTER_RANDOM_UNITS                1

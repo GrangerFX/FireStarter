@@ -60,7 +60,7 @@ public:
 template<typename T>
 class CUDAMemory {
 private:
-    const CUDAContext* m_context;
+    const CUDAContext* m_context = nullptr;
     T* m_hostPtr = nullptr;
     T* m_devicePtr = nullptr;
     size_t m_size = 0;
@@ -137,7 +137,7 @@ public:
         return m_devicePtr;
     } // DevicePtr
 
-    inline bool Copy(const T* srcPtr, size_t size = 0, bool sync = false) const
+    inline bool Copy(const T* srcPtr, size_t size, bool sync = false) const
     {
         if (Allocated() && (size == m_size)) {
             if (size == m_size) {

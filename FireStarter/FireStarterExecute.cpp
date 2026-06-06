@@ -134,7 +134,7 @@ bool FireStarterExecute::InitStocks(const MoneyMakerStocks* stocks)
         m_stocksSize = stocksSize;
         if (m_stocksSize) {
             m_CUDAStocks.Init(Context(), m_stocksSize);
-            m_CUDAStocks.Copy(stocks);
+            m_CUDAStocks.Copy(stocks, m_stocksSize);
 
             m_CUDATradingResults.Init(Context(), m_stocksSize);
             m_CUDATradingResults.HostPtr()->Init(stocks->numStocks, stocks->numDays);
