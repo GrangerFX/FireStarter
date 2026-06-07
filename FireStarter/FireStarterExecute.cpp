@@ -68,11 +68,7 @@ bool FireStarterExecute::InitPopulation(const FireStarterSettings& settings)
 
     if ((settings.m_mode == FIRESTARTER_SELECT) || (settings.m_mode == FIRESTARTER_EVOLVE_GPU) || (settings.m_mode == FIRESTARTER_EVOLVE_NEW) || (settings.m_mode == FIRESTARTER_EVOLVE_SINSIM) || (settings.m_mode == FIRESTARTER_MONEYMAKER) || (settings.m_mode == FIRESTARTER_MONEYOPTIMIZE) || (settings.m_mode == FIRESTARTER_SPEED_TEST)) {
         resultsSize = settings.m_population * sizeof(float);
-#if FIRESTARTER_EVOLVE_RESULTS
-        populationSize = FireStarterPopulation::PopulationSize(settings);   // Only allocate this if FIRESTARTER_EVOLVE_RESULTS is set to 1
-#endif
-        if (settings.m_mode != FIRESTARTER_SPEED_TEST)
-            codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
+        codesSize = settings.m_population * FireStarterCode::CodeSize(settings);
         if (settings.m_mode != FIRESTARTER_MONEYMAKER)
             populationSize = FireStarterPopulation::PopulationSize(settings);
         if (settings.m_mode == FIRESTARTER_SELECT)
@@ -259,6 +255,9 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
     for (unsigned int i = 1; i < populationCount; i++) {
         float curResult = m_CUDAResults.HostPtr()[i];
         if (curResult < minResult) {
+            if (!curResult) {
+                int foo = 1;
+            }
             minResult = curResult;
             minIndex = i;
         }
@@ -268,6 +267,8 @@ void FireStarterExecute::ExecuteEvolveGPUPass(FireStarterState& state, FireStart
 
     // Update the state's best code.
     state.InitCode(settings, m_CUDACodes.HostPtr(), minResult, minIndex);
+    if (m_CUDAPopulation0.HostPtr())
+        state.InitResult(settings, m_CUDAPopulation0.HostPtr(), minIndex, variation);
     state.MaxResult(variation) = minResult;
 } // ExecuteEvolveGPUPass
 
