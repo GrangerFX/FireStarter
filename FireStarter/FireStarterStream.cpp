@@ -720,7 +720,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 {
     Dispatch([this, server, &testCount] {
         // Evolve a number of states equal to the evolveSettings.m_seeds.
-        FireStarterSettings evolveSettings(m_streamSettings);
+        FireStarterSettings evolveSettings(FIRESTARTER_MONEYMAKER);
         FireStarterSettings optimizeSettings(FIRESTARTER_MONEYOPTIMIZE);
         std::string streamResultsPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
 
