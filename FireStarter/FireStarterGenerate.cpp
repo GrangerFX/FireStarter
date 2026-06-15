@@ -136,7 +136,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterSettings& settings, 
             &arr[0],                                            // arguments
             0));
         checkCUDAErrors(cudaMemcpyAsync(&stringSize, m_deviceString, sizeof(size_t), cudaMemcpyDeviceToHost, stream));
-        m_CUDAContext.Synchronize();
+        m_CUDAContext.SynchronizeContext();
 
         // Second pass: Generate the code string.
         generateText.resize(stringSize, 0);
@@ -155,7 +155,7 @@ void FireStarterGenerate::GenerateEvaluate(const FireStarterSettings& settings, 
             &arr[0],                                            // arguments
             0));
         checkCUDAErrors(cudaMemcpyAsync(generateText.data(), m_deviceString, stringSize, cudaMemcpyDeviceToHost, stream));
-        m_CUDAContext.Synchronize();
+        m_CUDAContext.SynchronizeContext();
     } else {
         // Fallback to CPU (static code generation)
         size_t textLength = 0;
@@ -244,7 +244,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
                 &arr[0],                                            // arguments 
                 0));
             checkCUDAErrors(cudaMemcpyAsync(&stringSize, m_deviceString, sizeof(size_t), cudaMemcpyDeviceToHost, stream));
-            m_CUDAContext.Synchronize();
+            m_CUDAContext.SynchronizeContext();
 
             // Second pass: Generate the text string.
             generateText.resize(stringSize, 0);
@@ -262,7 +262,7 @@ void FireStarterGenerate::GenerateSolution(const FireStarterState& state, std::s
                 &arr[0],                                            // arguments */
                 0));
             checkCUDAErrors(cudaMemcpyAsync(generateText.data(), m_deviceString, stringSize, cudaMemcpyDeviceToHost, stream));
-            m_CUDAContext.Synchronize();
+            m_CUDAContext.SynchronizeContext();
         } else {
             size_t textLength = 0;
             code->GenerateSolution(nullptr, 0, textLength, tabs, numInstructions, registersUsage, numRegisters, data);

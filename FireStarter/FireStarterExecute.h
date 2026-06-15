@@ -79,7 +79,7 @@ public:
             checkCUDAErrors(cudaFree(m_devicePtr));
             m_devicePtr = nullptr;
             if (sync)
-                m_context->Synchronize();
+                m_context->SynchronizeContext();
         }
         m_size = 0;
     } // Clear
@@ -100,7 +100,7 @@ public:
             // Allocate device memory for each device and generate the split start and count for each device.
             checkCUDAErrors(cudaMallocAsync(&m_devicePtr, m_size, m_context->Stream()));
             checkCUDAErrors(cudaMemsetAsync(m_devicePtr, 0, m_size, m_context->Stream()));
-            m_context->Synchronize();
+            m_context->SynchronizeContext();
         } else
             m_count = 0;
     } // Init
@@ -149,7 +149,7 @@ public:
                     checkCUDAErrors(cudaMemsetAsync(m_devicePtr, 0, size, m_context->Stream()));
                 }
                 if (sync)
-                    m_context->Synchronize();
+                    m_context->SynchronizeContext();
             }
             return true;
         }
@@ -162,7 +162,7 @@ public:
         if (m_hostPtr && m_devicePtr) {
             checkCUDAErrors(cudaMemcpyAsync(m_devicePtr, m_hostPtr, m_size, cudaMemcpyHostToDevice, m_context->Stream()));
             if (sync)
-                m_context->Synchronize();
+                m_context->SynchronizeContext();
         }
     } // HostToDevice
 
@@ -171,7 +171,7 @@ public:
         if (m_hostPtr && m_devicePtr) {
             checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtr, m_size, cudaMemcpyDeviceToHost, m_context->Stream()));
             if (sync)
-                m_context->Synchronize();
+                m_context->SynchronizeContext();
         }
     } // DeviceToHost
 
@@ -238,15 +238,16 @@ private:
     bool ExecuteJob(void);
 
 public:
-    void ExecuteSetStocks(const MoneyMakerStocks *stocks);
-    bool ExecuteGenerateEvolve(unsigned int mode);
+    inline size_t ExecuteIndex(void) const { return m_executeIndex; }
+    void ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync = true);
+    bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
     void ExecuteSelect(FireStarterState& selectState, const FireStarterSettings& selectSettings);
     void ExecuteEvolveGPU(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync = true);
     void ExecuteEvolveNew(FireStarterState& evolveState);
     void ExecuteEvolveSinSim(FireStarterState& evolveState);
     void ExecuteSinSim(FireStarterState& evolveState);
-    void ExecuteMoneyEvolve(FireStarterState& evolveState, FireStarterBestCodes& bestCodes);
+    void ExecuteMoneyEvolve(FireStarterState& evolveState, FireStarterBestCodes& bestCodes, bool sync = true);
     void ExecuteEvolveOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteMoneyOptimize(FireStarterState& optimizeState, FireStarterState& bestState, FireStarterComplete* complete, bool sync = true);
     void ExecuteOptimize(FireStarterState& optimizeState);
@@ -256,6 +257,66 @@ public:
     void ExecuteFinish(void);
     void SimulateGPU(bool simulateGPU);
     const MoneyMakerStocks* GetTradingResults(void) const;
-    FireStarterExecute(FireStarterManager* manager, size_t index = 0);
+    FireStarterExecute(FireStarterManager* manager, const std::string& unitName = "FireStarterExecute", size_t index = 0);
+    FireStarterExecute(const std::string& unitName = "FireStarterExecute", size_t index = 0);
     ~FireStarterExecute(void);
 }; // class FireStarterExecute
+
+class FireStarterUnits : public std::vector<FireStarterExecute*>
+{
+public:
+    void ExecuteSynchronize(void)
+    {
+        for (FireStarterExecute* unit : *this)
+            unit->Synchronize();
+    } // Synchronize
+
+    void ExecuteSetStocks(const MoneyMakerStocks* stocks)
+    {
+        for (FireStarterExecute* unit : *this)
+            unit->ExecuteSetStocks(stocks, false);
+        ExecuteSynchronize();
+    } // ExecuteSetStocks
+
+    void ExecuteGenerateEvolve(unsigned int mode)
+    {
+        for (FireStarterExecute* unit : *this)
+            unit->ExecuteGenerateEvolve(mode, false);
+        ExecuteSynchronize();
+    } // ExecuteGenerateEvolve
+
+    void ExecuteEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
+    {
+        for (FireStarterExecute* unit : *this)
+            unit->ExecuteEvolveGPU(evolveStates[unit->ExecuteIndex()], bestCodes, false);
+        ExecuteSynchronize();
+    } // ExecuteEvolve
+
+    void ExecuteMoneyEvolve(FireStarterStates& evolveStates, FireStarterBestCodes& bestCodes)
+    {
+        for (FireStarterExecute* unit : *this)
+            unit->ExecuteMoneyEvolve(evolveStates[unit->ExecuteIndex()], bestCodes, false);
+        ExecuteSynchronize();
+    } // ExecuteMoneyEvolve
+
+    FireStarterUnits(FireStarterManager* manager, size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
+    {
+        reserve(numUnits);
+        for (size_t i = 0; i < numUnits; i++)
+            push_back(new FireStarterExecute(manager, unitName, i));
+    } // FireStarterUnits
+
+    FireStarterUnits(size_t numUnits = 1, const std::string& unitName = "FireStarterUnit")
+    {
+        reserve(numUnits);
+        for (size_t i = 0; i < numUnits; i++)
+            push_back(new FireStarterExecute(unitName, i));
+    } // FireStarterUnits
+
+    ~FireStarterUnits(void)
+    {
+        for (FireStarterExecute* unit : *this)
+            delete unit;
+        clear();
+    } // ~FireStarterUnits
+}; // class FireStarterUnits

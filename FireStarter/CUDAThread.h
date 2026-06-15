@@ -23,10 +23,15 @@ public:
         return m_CUDAContext.Device();
     } // Device
 
+    inline void SetContext(void) const
+    {
+        m_CUDAContext.SetContext();
+    } // SetContext
+
     // Note: This must be called from this CUDAThread.
     inline void SynchronizeContext(void)
     {
-        m_CUDAContext.Synchronize();
+        m_CUDAContext.SynchronizeContext();
     } // SynchronizeContext
 
     // Note: This must be not called from this CUDAThread.
@@ -40,6 +45,7 @@ public:
     // Note: int is used instead of bool for correct type matching.
     inline CUDAThread(const std::string& threadName = "CUDAThread", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : SerialThread(threadName), m_CUDAContext()
     {
+        int foo = 1; // Note: DEBUG!
         DispatchAsync([this, deviceIndex, priority] {
             m_CUDAContext.InitContext(deviceIndex, priority);
         });

@@ -107,7 +107,7 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
         // Create the evolution execution units.
         std::vector<FireStarterExecute*> evolutionUnits;
         for (unsigned int i = 0; i < selectSettings.m_units; i++) {
-            FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, i);
+            FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, "SelectEvolveUnit", i);
             evolutionUnits.push_back(evolutionUnit);
         }
 
@@ -247,7 +247,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
         // Create the evolution execution units.
         std::vector<FireStarterExecute*> evolutionUnits;
         for (unsigned int i = 0; i < evolveSettings.m_units; i++) {
-            FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, i);
+            FireStarterExecute* evolutionUnit = new FireStarterExecute(manager, "EvolveCPUUnit", i);
             evolutionUnits.push_back(evolutionUnit);
         }
 
@@ -368,10 +368,12 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
 
 #if FIRESTARTER_MULTI_GPU
         size_t numDevices = CUDAContext::CUDADevices();
-        numDevices = MAX(numDevices, 1);
 #else
         size_t numDevices = 1;
 #endif
+        FireStarterStates evolveStates(numDevices);
+        FireStarterStates optimizeStates(numDevices);
+        FireStarterBestCodes bestCodes(evolveSettings);
 
         // Optimization for single variation optimization population.
         if (optimizeSettings.m_variations == 1) {
@@ -379,41 +381,24 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             optimizeSettings.m_passes = 384;
         }
 
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
-
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
+        FireStarterComplete* complete = new FireStarterComplete(m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
-        // Create the execution unit used to optimize the best states.
-        std::vector<FireStarterExecute*> evolveUnits;
-        std::vector<FireStarterExecute*> optimizeUnits;
-        for (size_t i = 0; i < numDevices; i++) {
-            FireStarterExecute* evolveUnit = new FireStarterExecute(manager, i);  // Automatic GPU device allocation.
-            FireStarterExecute* optimizeUnit = new FireStarterExecute(manager, i);  // Automatic GPU device allocation.
-            evolveUnits.push_back(evolveUnit);
-            optimizeUnits.push_back(optimizeUnit);
-        }
+        // Create the execution unit used to evolve and optimize the best states.
+        FireStarterUnits evolveUnits(numDevices, "Evolve");
+        FireStarterUnits optimizeUnits(numDevices, "Optimize");
 
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             // Initialize the states.
             unsigned long long test = FIRESTARTER_START_TEST + t;
-            std::vector<FireStarterState> evolveStates(numDevices);
-            std::vector<FireStarterState> optimizeStates(numDevices);
             FireStarterState bestState = FireStarterState(optimizeSettings, 0, 0, 0, test);
-            FireStarterBestCodes bestCodes(evolveSettings);
 
             // Execute the initial GPU evolve.
-            for (size_t i = 0; i < numDevices; i++) {
-                evolveStates[i].InitState(evolveSettings, 0, i, 0, test);
-                evolveUnits[i]->ExecuteEvolveGPU(evolveStates[i], bestCodes, false);
-                evolveStates[i].m_generation++;
-            }
-            for (size_t i = 0; i < numDevices; i++)
-                evolveUnits[i]->Synchronize();
-
+            evolveStates.InitStates(evolveSettings, test);
+            evolveUnits.ExecuteEvolve(evolveStates, bestCodes);
+ 
             // Evolve the current test.
             while (!WillTerminate() && !bestState.Complete()) {
                 // Get the best code to optimize.
@@ -433,8 +418,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                         evolveUnits[i]->ExecuteEvolveGPU(evolveStates[i], bestCodes, false);
                         evolveStates[i].m_generation++;
                     }
-                    for (size_t i = 0; i < numDevices; i++)
-                        evolveUnits[i]->Synchronize();
+                    evolveUnits.ExecuteSynchronize();
                 }
 
                 // Check for termination mid-generation.
@@ -444,8 +428,7 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
                 // Execute optimize for each unit.
                 for (size_t i = 0; i < numDevices; i++)
                     optimizeUnits[i]->ExecuteEvolveOptimize(optimizeStates[i], bestState, complete, false);
-                for (size_t i = 0; i < numDevices; i++)
-                    optimizeUnits[i]->Synchronize();
+                optimizeUnits.ExecuteSynchronize();
 
                 // Exit after a set number of generations.
                 if (evolveSettings.m_generations && (evolveStates[0].m_generation >= evolveSettings.m_generations))
@@ -472,21 +455,9 @@ void FireStarterStream::EvolveGPUStream(FireStarterServer* server, std::atomic<u
             }
         }
 
-        // Cancel any waiting jobs
-        manager->Cancel();
-
         // Delete the completion unit.
         complete->Synchronize();
         delete complete;
-
-        // Finish processing and terminate the evolution execution units.
-        for (size_t i = 0; i < numDevices; i++) {
-            delete evolveUnits[i];
-            delete optimizeUnits[i];
-        }
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
     }, sync);
 } // EvolveGPUStream
 
@@ -719,28 +690,28 @@ void FireStarterStream::SinSimStream(FireStarterServer* server, std::atomic<unsi
 void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<unsigned int>& testCount, bool sync)
 {
     Dispatch([this, server, &testCount] {
+#if FIRESTARTER_MULTI_GPU
+        size_t numDevices = CUDAContext::CUDADevices();
+#else
+        size_t numDevices = 1;
+#endif
+
         // Evolve a number of states equal to the evolveSettings.m_seeds.
+        // Note: These are used by the units so they must be declared first so they are destroyed last.
         FireStarterSettings evolveSettings(FIRESTARTER_MONEYMAKER);
         FireStarterSettings optimizeSettings(FIRESTARTER_MONEYOPTIMIZE);
+        FireStarterStates evolveStates(numDevices);
+        FireStarterStates optimizeStates(numDevices);
+        FireStarterBestCodes bestCodes;
         std::string streamResultsPath = Format("Logs\\%s_EvolveResults.txt", m_streamDate.c_str());
-
         unsigned long long evolveID = 0;
         unsigned long long optimizeID = 0;
-
-        // Create the compiler manager
-        FireStarterManager* manager = new FireStarterManager();
 
         // A serial thread for compiling the optimize pass.
         SerialThread compiler;
 
         // Create the evolution completion unit.
-        FireStarterComplete* complete = new FireStarterComplete(manager, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
-
-        // Create the execution unit used to evolve the best states.
-        FireStarterExecute* executeEvolve = new FireStarterExecute(manager);
-
-        // Create the execution unit used to optimize the best states.
-        FireStarterExecute* executeOptimize = new FireStarterExecute(manager);
+        FireStarterComplete* complete = new FireStarterComplete(nullptr, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
         // Load the stock market data;
         MoneyMakerManager stockManager(evolveSettings);
@@ -754,8 +725,13 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         stockManager.AddStock("../../StockMarketData/d_us_txt/data/daily/us/nasdaq stocks/1/amd.us.txt",  'AMD ', evolveSettings.m_offset);
         MoneyMakerStocks* stocks = stockManager.Stocks();
         unsigned int numStocks = stocks->size();
-        executeEvolve->ExecuteSetStocks(stocks);
-        executeOptimize->ExecuteSetStocks(stocks);
+
+        // Create the execution unit used to evolve and optimize the best states.
+        FireStarterUnits evolveUnits(numDevices, "MoneyEvolve");
+        FireStarterUnits optimizeUnits(numDevices, "MoneyOptimize");
+        evolveUnits.ExecuteSetStocks(stocks);
+        optimizeUnits.ExecuteSetStocks(stocks);
+        evolveUnits.ExecuteGenerateEvolve(evolveSettings.m_mode); // Generate and compile the evolve code.
 
         unsigned int startStock = evolveSettings.m_stock;
 #if MONEYMAKER_EVOLVE_EACH
@@ -778,29 +754,27 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned int numOptimize = 1;
 #endif
 
-        // Generate and compile the evolve code.
-        executeEvolve->ExecuteGenerateEvolve(evolveSettings.m_mode);
-
         // Loop until the the evolve completion condition or the host program is quit.
         unsigned int evolveTests = MAX(evolveSettings.m_tests, 1);
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             unsigned long long test = FIRESTARTER_START_TEST + t;
 
             for (unsigned int evolve = 0; evolve < numEvolve; evolve++) {
-                FireStarterState evolveState = FireStarterState(evolveSettings, 0, 0, evolveID, test);
-                evolveState.Settings().m_stock = startStock;
+                // Initialize the states for the current test.
+                evolveSettings.m_stock = startStock;
+                evolveStates.InitStates(evolveSettings, 0, evolveID, test);
 
                 // Initialize the evolve state's best codes
-                FireStarterBestCodes bestCodes(evolveSettings);
+                bestCodes.InitBestCodes(evolveSettings);
 
                 // Evolve the current test.
-                while (!WillTerminate() && !evolveState.Complete()) {
+                while (!WillTerminate() && !evolveStates.Complete()) {
                     // Execute the initial GPU evolve.
-                    executeEvolve->ExecuteMoneyEvolve(evolveState, bestCodes);
+                    evolveUnits.ExecuteMoneyEvolve(evolveStates, bestCodes);
                     std::string evolveText;
 
-                    double duration = evolveState.Duration();
-                    double runDuration = evolveState.RunDuration();
+                    double duration = evolveStates.Duration();
+                    double runDuration = evolveStates.RunDuration();
                     float evolveResult = bestCodes.GetBestResult();
 #if MONEYMAKER_WINS
                     float evolveReturns = (1.0f - evolveResult) * 100.0f; // Remove inversion.
@@ -808,12 +782,12 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     float evolveReturns = MoneyMakerReturns(1.0f - evolveResult); // Remove inversion.
 #endif
                     if (evolveSettings.m_stocks == 1) {
-                        const MoneyMakerStock& stock = stocks->Stock(evolveState.Settings().m_stock % numStocks);
+                        const MoneyMakerStock& stock = stocks->Stock(evolveSettings.m_stock % numStocks);
                         char* symbol = (char*)&stock.symbol;
                         evolveText += Format("%c%c%c%c:  ", symbol[3], symbol[2], symbol[1], symbol[0]);
                     }
 
-                    evolveText += Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Returns=%7.2f%%  Duration: %7.1f  Run Duration: %7.1f\n", evolveSettings.m_evolveSeed, test, evolveState.m_generation, evolveReturns, duration, runDuration);
+                    evolveText += Format("Seed: %u  Test: %3llu  Generation=%3llu  Evolve Returns=%7.2f%%  Duration: %7.1f  Run Duration: %7.1f\n", evolveSettings.m_evolveSeed, test, evolveStates[0].m_generation, evolveReturns, duration, runDuration);
                     FireStarterSource::AppendSource(evolveText, streamResultsPath);
 
                     // Get the best code to optimize.
@@ -828,9 +802,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 #endif
                     {
                         // Compile the optimize code asynchronously.
-                        FireStarterState optimizeState = FireStarterState(optimizeSettings, evolveState.m_generation + 1, 0, evolveID, test);
+                        FireStarterState optimizeState = FireStarterState(optimizeSettings, evolveStates[0].m_generation + 1, 0, evolveID, test);
                         optimizeState.CopyCode(bestCode);
-                        executeOptimize->ExecuteGenerateOptimize(optimizeState);
+                        optimizeUnits[0]->ExecuteGenerateOptimize(optimizeState);
                         unsigned int numTradingResults = optimizeState.Settings().m_stocks;
 
                         std::vector<FireStarterState> bestStates(numOptimize);
@@ -844,7 +818,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             optimizeState.Settings().m_stock = startStock + optimize;
                             bestStates[optimize].InitState(optimizeState.Settings(), optimizeState.m_generation + 1, 0, evolveID, test);
                             bestStates[optimize].CopyCode(bestCode);
-                            executeOptimize->ExecuteMoneyOptimize(optimizeState, bestStates[optimize], complete);
+                            optimizeUnits[0]->ExecuteMoneyOptimize(optimizeState, bestStates[optimize], complete);
 
                             // Output the results.
                             std::string optimizeText;
@@ -862,7 +836,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                             float optimizeReturns = MoneyMakerReturns(1.0f - optimizeResult); // Remove inversion.
                             float bestReturns = MoneyMakerReturns(1.0f - bestResult); // Remove inversion.
 #endif
-                            double curDuration = evolveState.Duration();
+                            double curDuration = evolveStates.Duration();
                             double optimizeDuration = curDuration - duration;
                             duration = curDuration;
                             runDuration = bestStates[optimize].RunDuration();
@@ -889,8 +863,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                     testStartDay = (optimizeSettings.m_variation * i) / (numTests - 1);
                                     testNumDays = optimizeSettings.m_trading;
                                 }
-                                executeOptimize->ExecuteMoneyTest(optimizeState, testStartDay, testNumDays, 0);
-                                const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
+                                optimizeUnits[0]->ExecuteMoneyTest(optimizeState, testStartDay, testNumDays, 0);
+                                const MoneyMakerStocks* tradingResults = optimizeUnits[0]->GetTradingResults();
                                 if (tradingResults) {
                                     float tradingAverage = 0.0f;
                                     float differenceAverage = 0.0f;
@@ -1011,7 +985,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     startStock++;
 
                     // Exit after a set number of generations.
-                    if (++evolveState.m_generation == evolveSettings.m_generations)
+                    if (++evolveStates[0].m_generation == evolveSettings.m_generations)
                         break;
                 }
             }
@@ -1023,19 +997,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
 #endif
         }
 
-        // Cancel any waiting jobs
-        manager->Cancel();
-
         // Delete the completion unit.
         complete->Synchronize();
         delete complete;
-
-        // Finish processing and terminate the evolution execution units.
-        delete executeEvolve;
-        delete executeOptimize;
-
-        // Delete the compilier manager and cancel any waiting jobs.
-        delete manager;
     }, sync);
 } // MoneyMakerStream
 

@@ -131,11 +131,12 @@ public:
         checkCUDAErrors(cuCtxSetCurrent(m_context));
     } // SetContext
 
-    inline void Synchronize(void) const
+    inline void SynchronizeContext(void) const
     {
-        SetContext();
+//      Note: This should not be needed. The context is created along with the CUDAThread and set at that time.
+//      SetContext();
         checkCUDAErrors(cudaStreamSynchronize(m_stream));
-    } // Syncronize
+    } // SynchronizeContext
 
     inline void PushContext(void) const
     {
@@ -168,7 +169,7 @@ public:
 
             checkCUDAErrors(cudaStreamCreateWithPriority(&m_stream, cudaStreamDefault, priority));
 
-#if 0
+#if 1
             // Get some information about the device.
             // A block is the kernal threads that run together the size as specified when the kernal is launched.
             // Note: My original idea was to find out how many kernel threads or warps I should send to the GPU in order to keep it fully loaded.

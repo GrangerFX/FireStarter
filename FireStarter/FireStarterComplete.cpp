@@ -291,13 +291,23 @@ void FireStarterComplete::CompleteSaveResults(const FireStarterState& bestState)
     });
 } // CompleteSaveResults
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : CUDAThread("FireStarterComplete"), m_manager(manager), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
+void FireStarterComplete::InitComplete(void)
 {
     DispatchSync([this] {
         if (LoadSolutionTargetCode())
             // Create the code generator.
             m_generate = new FireStarterGenerate(Context());
     });
+} // InitComplete
+
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : CUDAThread("FireStarterComplete"), m_manager(manager), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
+{
+    InitComplete();
+} // FireStarterComplete
+
+FireStarterComplete::FireStarterComplete(const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : CUDAThread("FireStarterComplete"), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
+{
+    InitComplete();
 } // FireStarterComplete
 
 FireStarterComplete::~FireStarterComplete(void)

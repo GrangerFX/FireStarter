@@ -10,7 +10,6 @@
 
 #define FIRESTARTER_STATE_DEBUG 1
 
-typedef std::vector<class FireStarterState> FireStarterStates;
 typedef std::set<std::vector<unsigned char>> TestedCodes;
 
 class FireStarterState;
@@ -915,6 +914,73 @@ public:
     {
     } // FireStarterState
 }; // class FireStarterState;
+
+class FireStarterStates : public std::vector<FireStarterState> {
+public:
+    inline double Duration(void) const
+    {
+        double duration = 0.0;
+        for (const FireStarterState& state : *this)
+            duration += state.Duration();
+        return duration;
+    } // Duration
+
+    inline double RunDuration(void) const
+    {
+        double runDuration = 0.0;
+        for (const FireStarterState& state : *this)
+            runDuration += state.RunDuration();
+        return runDuration;
+    } // RunDuration
+
+    inline bool Complete(void) const
+    {
+        for (FireStarterState state : *this)
+            if (!state.Complete())
+                return false;
+        return true;
+    } // Complete
+
+    inline void AddState(void)
+    {
+        unsigned long long index = (unsigned long long)size();
+        push_back(FireStarterState());
+        back().m_index = index;
+    } // AddState
+
+    inline void AddState(const FireStarterState& state)
+    {
+        unsigned long long index = (unsigned long long)size();
+        push_back(state);
+        back().m_index = index;
+    } // AddState
+
+    inline void AddState(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long id = 0, unsigned long long test = 0)
+    {
+        unsigned long long index = (unsigned long long)size();
+        push_back(FireStarterState(settings, generation, index, id, test));
+    } // AddState
+
+    inline void InitStates(const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long id = 0, unsigned long long test = 0)
+    {
+        for (FireStarterState& state : *this)
+            state.InitState(settings, generation, state.m_index, id, test);
+    } // InitStates
+
+    inline FireStarterStates(size_t states, const FireStarterSettings& settings, unsigned long long generation = 0, unsigned long long id = 0, unsigned long long test = 0)
+    {
+        reserve(states);
+        for (size_t i = 0; i < states; i++)
+            AddState(FireStarterState(settings, generation, id, test));
+    } // FireStarterStates
+
+    inline FireStarterStates(size_t states = 0)
+    {
+        reserve(states);
+        for (size_t i = 0; i < states; i++)
+            AddState(FireStarterState());
+    } // FireStarterStates
+}; // class FireStarterStates
 
 inline FireStarterDataVector::FireStarterDataVector(const FireStarterState* state, unsigned int variation)
 {

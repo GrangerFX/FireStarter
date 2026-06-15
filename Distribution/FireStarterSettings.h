@@ -23,13 +23,13 @@
 #define MONEYMAKER_OPTIMIZE_EACH    1           // Set to 1 to optimize each stock individually
 #define MONEYMAKER_OPTIMIZE_ALL     0           // Set to 1 to optimize all the best codes.
 
-#define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
 #define FIRESTARTER_MULTI_GPU       1           // Use all NVIDIA GPUs to speed processing of each generation.
+#define FIRESTARTER_SIMULATE_GPU    0           // Simulate the GPU on the CPU for testing and debugging.
+#define FIRESTARTER_MULTIPROCESS    0           // Use multi-processing to compile each generation.
 #define FIRESTARTER_GENERATE_GPU    0           // Generate the settings and code using the GPU.
 #define FIRESTARTER_SAVE_BESTSTATE  1           // Save the best state.
 #define FIRESTARTER_SAVE_BESTCODE   0           // Save Optimizer.cu with the best evolved code.
 #define FIRESTARTER_AUTO_QUIT       1           // Automatically exit the app after completing the work.
-#define FIRESTARTER_SIMULATE_GPU    0           // Simulate the GPU on the CPU for testing and debugging.
 
 #define FIRESTARTER_EVOLVE_RANDOM   1           // Number of random states to add each generation.
 
@@ -56,7 +56,7 @@
 
 //#define FIRESTARTER_POPULATION    8192 * FIRESTARTER_WARP_THREADS // = 262,144
 //#define FIRESTARTER_POPULATION    FIRESTARTER_SM_COUNT_4090 * FIRESTARTER_SM_WARPS_4090 * FIRESTARTER_WARP_THREADS // Full occupancy = 196,608
-#define FIRESTARTER_POPULATION      FIRESTARTER_SM_COUNT_5090 * FIRESTARTER_SM_WARPS_5090 * FIRESTARTER_WARP_THREADS // Full occupancy = 348,160
+#define FIRESTARTER_POPULATION      1024 // FIRESTARTER_SM_COUNT_5090 * FIRESTARTER_SM_WARPS_5090 * FIRESTARTER_WARP_THREADS // Full occupancy = 348,160
 
 #define FIRESTARTER_PASSES          512         // Evolve or optimize passes
 #define FIRESTARTER_ITERATIONS      64          // Data evolution iterations

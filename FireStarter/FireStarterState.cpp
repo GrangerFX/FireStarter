@@ -91,7 +91,7 @@ FireStarterBestCodes::BestCodes::BestCodes(const FireStarterSettings& settings, 
 
 FireStarterBestCodes::BestCodes::BestCodes(void)
 {
-    InitBestCodes(FireStarterSettings());
+    InitBestCodes(FireStarterSettings(), FIRESTARTER_NUM_BEST);
 } // BestCodes
 
 #if 1
