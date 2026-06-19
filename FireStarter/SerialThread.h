@@ -388,7 +388,11 @@ public:
     } // DispatchMainAfter
 #endif
 
-    // Version recommended by Gemini. This version allows move semantics to be used when dispatching work, which can be more efficient for large work objects.
+#ifdef __INTELLISENSE__
+    // Providing an empty inline body {} keeps both strict and loose parsers happy
+    template<typename T = SerialThreadWork>
+    inline bool DispatchAsync(T work) { return true; }
+#else
     inline bool DispatchAsync(SerialThreadWork work) // Pass by value
     {
         std::unique_lock<std::mutex> lock(m_mutex);
@@ -399,6 +403,7 @@ public:
         }
         return false;
     } // DispatchAsync
+#endif
 
     static inline bool DispatchMainAsync(const SerialThreadWork& work)
     {
@@ -408,7 +413,11 @@ public:
         return false;
     } // DispatchMainAsync
 
-    // Version recommended by Gemini. This version allows DispatchSync to be called from the worker thread itself without deadlocking.
+#ifdef __INTELLISENSE__
+    // Providing an empty inline body {} keeps both strict and loose parsers happy
+    template<typename T = SerialThreadWork>
+    inline bool DispatchSync(T work) { return true; }
+#else
     inline bool DispatchSync(const SerialThreadWork& work)
     {
         if (m_terminate)
@@ -441,6 +450,7 @@ public:
         }
         return false;
     } // DispatchSync
+#endif
 
     static inline bool DispatchMainSync(const SerialThreadWork& work)
     {

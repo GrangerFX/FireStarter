@@ -9,10 +9,10 @@ private:
 	CUmodule m_module = nullptr;
 	CUfunction m_evaluateFunction = nullptr;
 	CUfunction m_solutionFunction = nullptr;
-	FireStarterCode* m_deviceCode = nullptr;
-	FireStarterRegisterUsage* m_deviceRegisters = nullptr;
-	FireStarterData* m_deviceData = nullptr;
-	unsigned char* m_deviceString = nullptr;
+    CUdeviceptr m_deviceCode = 0;
+    CUdeviceptr m_deviceRegisters = 0;
+    CUdeviceptr m_deviceData = 0;
+	CUdeviceptr m_deviceString = 0;
 	unsigned int m_numInstructions = 0;
 	unsigned int m_numRegisters = 0;
 	size_t m_stringSize = 0;

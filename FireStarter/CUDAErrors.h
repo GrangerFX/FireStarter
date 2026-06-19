@@ -9,8 +9,8 @@ template <typename T> void __check_cuda_errors(T result, char const* const func,
 		const char* errorName = nullptr;
 		const char* errorString = nullptr;
 		if ((cuGetErrorName((CUresult)result, &errorName) != CUDA_SUCCESS) || (cuGetErrorString((CUresult)result, &errorString) != CUDA_SUCCESS)) {
-			errorName = cudaGetErrorName((cudaError_t)result);
-			errorString = cudaGetErrorString((cudaError_t)result);
+			cuGetErrorName((CUresult)result, &errorName);
+			cuGetErrorString((CUresult)result, &errorString);
 		}
 		printf("CUDA error at %s:%d code=%d: \"%s\": \"%s\" \"%s\"\n", file, line, static_cast<unsigned int>(result), errorName, errorString, func);
 		std::terminate();
@@ -23,9 +23,9 @@ template <typename T> bool __log_cuda_errors(std::string &log, T result, char co
 		const char* errorName = nullptr;
 		const char* errorString = nullptr;
 		if ((cuGetErrorName((CUresult)result, &errorName) != CUDA_SUCCESS) || (cuGetErrorString((CUresult)result, &errorString) != CUDA_SUCCESS)) {
-			errorName = cudaGetErrorName((cudaError_t)result);
-			errorString = cudaGetErrorString((cudaError_t)result);
-		}
+            cuGetErrorName((CUresult)result, &errorName);
+            cuGetErrorString((CUresult)result, &errorString);
+        }
 		log += Format("CUDA error at %s:%d code=%d: \"%s\": \"%s\" \"%s\"\n", file, line, static_cast<unsigned int>(result), errorName, errorString, func);
 		return false;
 	}

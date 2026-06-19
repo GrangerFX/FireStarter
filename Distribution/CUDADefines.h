@@ -15,7 +15,7 @@
 #else
 #define CUDA_API_PER_THREAD_DEFAULT_STREAM
 #include <cuda.h>
-#include <cuda_runtime.h>
+#include <vector_types.h>
 #include <cmath>
 #include <atomic>
 #define GPU_FUNCTION static inline

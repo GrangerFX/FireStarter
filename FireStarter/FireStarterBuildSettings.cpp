@@ -19,10 +19,11 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings)
             dim3 cudaBlockSize(WARP_THREADS, 1, 1);
             dim3 cudaGridSize(1, 1, 1);
 
-            FireStarterSettings* fireSettings = nullptr;
-            checkCUDAErrors(cudaMallocAsync(&fireSettings, sizeof(FireStarterSettings), stream));
+            CUdeviceptr deviceFireSettings = 0;
+            checkCUDAErrors(cuMemAllocAsync(&deviceFireSettings, sizeof(FireStarterSettings), stream));
+            checkCUDAErrors(cuMemsetD8Async(deviceFireSettings, 0, sizeof(FireStarterSettings), stream));
 
-            void* arr[] = { reinterpret_cast<void*>(&fireSettings) };
+            void* arr[] = { reinterpret_cast<void*>(&deviceFireSettings) };
 
             checkCUDAErrors(cuLaunchKernel(m_fireSettingsFunction,
                 cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
@@ -31,10 +32,10 @@ void FireStarterBuildSettings::FireSettings(FireStarterSettings& settings)
                 stream,                                             // CUDA stream
                 &arr[0],                                            // arguments
                 0));
-            checkCUDAErrors(cudaMemcpyAsync(&settings, fireSettings, sizeof(FireStarterSettings), cudaMemcpyDeviceToHost, stream));
+            checkCUDAErrors(cuMemcpyDtoHAsync(&settings, deviceFireSettings, sizeof(FireStarterSettings), stream));
 
             // Unload the fire show code and destroy the CUDA context.
-            checkCUDAErrors(cudaFreeAsync(fireSettings, stream));
+            checkCUDAErrors(cuMemFreeAsync(deviceFireSettings, stream));
             SynchronizeContext();
         } else
             settings = FireStarterSettings();

@@ -19,7 +19,7 @@ public:
     const FireStarterWindow* m_reference = nullptr; // Reference window for resolution changes.
     void* m_window = nullptr;                       // Handle to the app's main window (HWND)
     unsigned char* m_hostBase = nullptr;            // Pointer to the alligned native pixel format buffer in host memory
-    unsigned char* m_deviceBase = nullptr;          // Pointer to the alligned native pixel format buffer in device memory
+    CUdeviceptr m_deviceBase = 0;                   // Pointer to the alligned native pixel format buffer in device memory
     unsigned long m_width = 0;                      // Number of columns
     unsigned long m_height = 0;                     // Number of rows
     size_t m_size = 0;                              // The total size of the buffer in bytes
@@ -33,10 +33,11 @@ public:
     inline void Allocate(CUstream stream = nullptr)
     {
         if (m_size) {
-            if (stream && !m_deviceBase)
-                checkCUDAErrors(cudaMalloc(&m_deviceBase, m_size));
+            if (!m_deviceBase)
+                if (stream && !m_deviceBase)
+                    checkCUDAErrors(cuMemAllocAsync(&m_deviceBase, m_size, stream));
             if (!m_hostBase)
-                checkCUDAErrors(cudaHostAlloc(&m_hostBase, m_size, cudaHostAllocPortable));
+                checkCUDAErrors(cuMemHostAlloc((void**)&m_hostBase, m_size, 0));
         }
     } // Allocate
 
@@ -45,9 +46,9 @@ public:
         if (m_size) {
             Allocate(stream);
             if (stream)
-                cudaMemsetAsync(m_deviceBase, 0, m_size, stream);
+                checkCUDAErrors(cuMemsetD8Async(m_deviceBase, 0, m_size, stream));
             else
-                cudaMemset(m_hostBase, 0, m_size);
+                memset(m_hostBase, 0, m_size);
         }
     } // Erase
 
@@ -56,8 +57,8 @@ public:
         if (m_size) {
             Allocate(stream);
             if (stream) {
-                checkCUDAErrors(cudaMemcpyAsync(m_hostBase, m_deviceBase, m_size, cudaMemcpyDeviceToHost, stream));
-                checkCUDAErrors(cudaStreamSynchronize(stream));
+                checkCUDAErrors(cuMemcpyDtoHAsync(m_hostBase, m_deviceBase, m_size, stream));
+                checkCUDAErrors(cuStreamSynchronize(stream));
             }
         }
         return m_hostBase;
@@ -66,12 +67,12 @@ public:
     inline void Clear(void)
     {
         if (m_hostBase) {
-            checkCUDAErrors(cudaFreeHost(m_hostBase));
+            checkCUDAErrors(cuMemFreeHost(m_hostBase));
             m_hostBase = nullptr;
         }
         if (m_deviceBase) {
-            checkCUDAErrors(cudaFree(m_deviceBase));
-            m_deviceBase = nullptr;
+            checkCUDAErrors(cuMemFree((CUdeviceptr)m_deviceBase));
+            m_deviceBase = 0;
         }
         m_width = 0;
         m_height = 0;

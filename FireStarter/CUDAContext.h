@@ -1,4 +1,5 @@
 #pragma once
+
 #include "CUDADefines.h"
 #include "CUDAErrors.h"
 
@@ -70,45 +71,43 @@ private:
     CUdevice m_device = 0;
     CUcontext m_context = nullptr;
     CUstream m_stream = nullptr;
+
     inline static int m_CUDA_devices = 0;
     inline static bool m_initialized = false;
-    inline static std::vector<cudaDeviceProp> m_deviceProperties;
 
-    // Initialize CUDA only once per process.
+    // Using a simplified struct for driver-level device properties
+    struct DeviceProperties {
+        int multiProcessorCount = 0;
+        int maxThreadsPerMultiProcessor = 0;
+        int maxThreadsPerBlock = 0;
+        int warpSize = 32;
+    };
+    inline static std::vector<DeviceProperties> m_deviceProperties;
+
     static inline void CUDAInitialize(void)
     {
         static std::mutex CUDAContextMutex;
         CUDAContextMutex.lock();
         if (!m_initialized) {
+            // Initialize the Driver API
             checkCUDAErrors(cuInit(0));
             m_initialized = true;
 
-            // Find the number of CUDA devices.
             checkCUDAErrors(cuDeviceGetCount(&m_CUDA_devices));
-            if (m_CUDA_devices <= 0)
+            if (m_CUDA_devices <= 0) {
                 m_CUDA_devices = 0;
-            else {
+            } else {
                 for (int i = 0; i < m_CUDA_devices; i++) {
-                    // Get information about each CUDA device in the computer.
                     CUdevice device;
                     checkCUDAErrors(cuDeviceGet(&device, i));
-                    cudaDeviceProp deviceProperties;
-                    checkCUDAErrors(cudaGetDeviceProperties(&deviceProperties, device));
-                    m_deviceProperties.push_back(deviceProperties);
-#if 1
-                    // Get some information about the device.
-                    // A block is the kernal threads that run together the size as specified when the kernal is launched.
-                    // Note: My original idea was to find out how many kernel threads or warps I should send to the GPU in order to keep it fully loaded.
-                    // This actually makes no sense since the number of active threads being executed per SM is based on the registers and shared memory
-                    // they use up to the maximum per multiprocessor and/or block. These are then executed until they are all complete but not necessarilly
-                    // at the same time. Use the CUDA occupancy API to determine the number of kernel threads can run on a SM.
-                    int multiProcessorCount = deviceProperties.multiProcessorCount;                   // Number of multiprocessors on device: 128 (matches online documentation for the RTX 4090)
-                    int maxBlocksPerMultiProcessor = deviceProperties.maxBlocksPerMultiProcessor;     // Maximum number of resident blocks per multiprocessor: 24
-                    int maxThreadsPerMultiProcessor = deviceProperties.maxThreadsPerMultiProcessor;   // Maximum resident threads per multiprocessor: 1536
-                    int maxThreadsPerBlock = deviceProperties.maxThreadsPerBlock;                     // Maximum number of threads per block: 1024
-                    int warpSize = deviceProperties.warpSize;                                         // Warp size in threads: 32
-                    // Missing: Warps per SM: 64 for all current CUDA GPUs accourding to online documentation.
-#endif
+
+                    // Query specific attributes via Driver API
+                    DeviceProperties props;
+                    checkCUDAErrors(cuDeviceGetAttribute(&props.multiProcessorCount, CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, device));
+                    checkCUDAErrors(cuDeviceGetAttribute(&props.maxThreadsPerMultiProcessor, CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_MULTIPROCESSOR, device));
+                    checkCUDAErrors(cuDeviceGetAttribute(&props.maxThreadsPerBlock, CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK, device));
+                    checkCUDAErrors(cuDeviceGetAttribute(&props.warpSize, CU_DEVICE_ATTRIBUTE_WARP_SIZE, device));
+                    m_deviceProperties.push_back(props);
                 }
             }
         }
@@ -118,7 +117,6 @@ private:
 public:
     static inline int CUDADevices(void)
     {
-        // Initialize CUDA only once per process.
         CUDAInitialize();
         return m_CUDA_devices;
     } // CUDADevices
@@ -158,9 +156,7 @@ public:
 
     inline void SynchronizeContext(void) const
     {
-//      Note: This should not be needed. The context is created along with the CUDAThread and set at that time.
-//      SetContext();
-        checkCUDAErrors(cudaStreamSynchronize(m_stream));
+         checkCUDAErrors(cuStreamSynchronize(m_stream));
     } // SynchronizeContext
 
     inline void PushContext(void) const
@@ -178,42 +174,34 @@ public:
     {
         if (m_CUDA_devices) {
             m_CUDA_priority = priority;
-            if (m_CUDA_devices)
-                m_CUDA_device = (int)(deviceIndex % m_CUDA_devices);
-            else
-#if 1
-                m_CUDA_device = 0;                  // First CUDA device
-#else
-                m_CUDA_device = m_CUDA_devices - 1; // Last CUDA device
-#endif
-            // Create a context and stream on the device.
+            m_CUDA_device = (int)(deviceIndex % m_CUDA_devices);
+
             checkCUDAErrors(cuDeviceGet(&m_device, m_CUDA_device));
 
-            // More latency but better thread utilization.
+            // Create Driver Context. This automatically binds it to the current host thread.
             checkCUDAErrors(cuCtxCreate(&m_context, nullptr, CU_CTX_SCHED_AUTO, m_device));
 
-            // Less latency but worse thread utilization.
-    //      checkCUDAErrors(cuCtxCreate(&m_context, CU_CTX_SCHED_SPIN, m_device));
-
-            checkCUDAErrors(cudaStreamCreateWithPriority(&m_stream, cudaStreamDefault, priority));
+            // FIX: Use the Driver API to create the stream with priority.
+            // It explicitly honors the currently bound active context (m_context).
+            checkCUDAErrors(cuStreamCreateWithPriority(&m_stream, CU_STREAM_DEFAULT, priority));
         }
     } // InitContext
 
     inline CUDAContext(void)
     {
-        CUDAContext::CUDAInitialize();  // Global initalization. Once for all contexts.
+        CUDAContext::CUDAInitialize();
     } // CUDAContext
 
     inline CUDAContext(size_t deviceIndex, int priority = CUDA_PRIORITY)
     {
-        CUDAContext::CUDAInitialize();  // Global initalization. Once for all contexts.
+        CUDAContext::CUDAInitialize();
         InitContext(deviceIndex, priority);
     } // CUDAContext
 
     inline ~CUDAContext(void)
     {
         if (m_stream) {
-            checkCUDAErrors(cudaStreamDestroy(m_stream));
+            checkCUDAErrors(cuStreamDestroy(m_stream));
             m_stream = nullptr;
         }
         if (m_context) {

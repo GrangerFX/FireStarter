@@ -62,7 +62,7 @@ class CUDAMemory {
 private:
     const CUDAContext* m_context = nullptr;
     T* m_hostPtr = nullptr;
-    T* m_devicePtr = nullptr;
+    CUdeviceptr m_devicePtr = 0;
     size_t m_size = 0;
     size_t m_count = 0;
     size_t m_elementSize = 0;
@@ -72,12 +72,12 @@ public:
     inline void Clear(bool sync = false)
     {
         if (m_hostPtr) {
-            checkCUDAErrors(cudaFreeHost(m_hostPtr));
+            checkCUDAErrors(cuMemFreeHost(m_hostPtr));
             m_hostPtr = nullptr;
         }
         if (m_devicePtr) {
-            checkCUDAErrors(cudaFree(m_devicePtr));
-            m_devicePtr = nullptr;
+            checkCUDAErrors(cuMemFree(m_devicePtr));
+            m_devicePtr = 0;
             if (sync)
                 m_context->SynchronizeContext();
         }
@@ -95,11 +95,11 @@ public:
             m_elementSize = m_size / m_count;
 
             // Allocate the host memory.
-            checkCUDAErrors(cudaMallocHost(&m_hostPtr, m_size));
+            checkCUDAErrors(cuMemHostAlloc((void**)&m_hostPtr, m_size, 0));
 
             // Allocate device memory for each device and generate the split start and count for each device.
-            checkCUDAErrors(cudaMallocAsync(&m_devicePtr, m_size, m_context->Stream()));
-            checkCUDAErrors(cudaMemsetAsync(m_devicePtr, 0, m_size, m_context->Stream()));
+            checkCUDAErrors(cuMemAllocAsync(&m_devicePtr, m_size, m_context->Stream()));
+            checkCUDAErrors(cuMemsetD8Async(m_devicePtr, 0, m_size, m_context->Stream()));
             m_context->SynchronizeContext();
         } else
             m_count = 0;
@@ -127,12 +127,12 @@ public:
         return m_hostPtr;
     } // HostPtr
 
-    inline T*& DevicePtr(void)
+    inline CUdeviceptr& DevicePtr(void)
     {
         return m_devicePtr;
     } // DevicePtr
 
-    inline T* DevicePtr(void) const
+    inline CUdeviceptr DevicePtr(void) const
     {
         return m_devicePtr;
     } // DevicePtr
@@ -143,10 +143,10 @@ public:
             if (size == m_size) {
                 if (srcPtr) {
                     memcpy(m_hostPtr, srcPtr, size);
-                    checkCUDAErrors(cudaMemcpyAsync(m_devicePtr, srcPtr, size, cudaMemcpyHostToDevice, m_context->Stream()));
+                    checkCUDAErrors(cuMemcpyHtoDAsync(m_devicePtr, srcPtr, size, m_context->Stream()));
                 } else {
                     memset(m_hostPtr, 0, size);
-                    checkCUDAErrors(cudaMemsetAsync(m_devicePtr, 0, size, m_context->Stream()));
+                    checkCUDAErrors(cuMemsetD8Async(m_devicePtr, 0, size, m_context->Stream()));
                 }
                 if (sync)
                     m_context->SynchronizeContext();
@@ -160,7 +160,7 @@ public:
     inline void HostToDevice(bool sync = false) const
     {
         if (m_hostPtr && m_devicePtr) {
-            checkCUDAErrors(cudaMemcpyAsync(m_devicePtr, m_hostPtr, m_size, cudaMemcpyHostToDevice, m_context->Stream()));
+            checkCUDAErrors(cuMemcpyHtoDAsync(m_devicePtr, m_hostPtr, m_size, m_context->Stream()));
             if (sync)
                 m_context->SynchronizeContext();
         }
@@ -169,7 +169,7 @@ public:
     inline void DeviceToHost(bool sync = false) const
     {
         if (m_hostPtr && m_devicePtr) {
-            checkCUDAErrors(cudaMemcpyAsync(m_hostPtr, m_devicePtr, m_size, cudaMemcpyDeviceToHost, m_context->Stream()));
+            checkCUDAErrors(cuMemcpyDtoHAsync(m_hostPtr, m_devicePtr, m_size, m_context->Stream()));
             if (sync)
                 m_context->SynchronizeContext();
         }

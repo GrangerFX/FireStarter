@@ -502,7 +502,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
                                             evolutionSeed);
     } else {
         m_CUDASettings.Copy(&settings, m_settingsSize);
-        FireStarterResult* populationPtr = m_CUDAPopulation0.DevicePtr(); 
+        CUdeviceptr populationPtr = m_CUDAPopulation0.DevicePtr();
 
         void* arr[] = { reinterpret_cast<void*>(&m_CUDASettings.DevicePtr()),
                         reinterpret_cast<void*>(&m_CUDAResults.DevicePtr()),
@@ -596,7 +596,7 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             }
         }
         if (passes & 1)
-            checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+            memcpy(oldPopulation, newPopulation, m_populationSize);
     } else {
         for (unsigned int pass = 0; pass < passes; pass++) {
             unsigned int threadsPerBlock = FIRESTARTER_WARP_THREADS;   // Same as the threads per CUDA core warp.
@@ -606,8 +606,8 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
             unsigned int registers = state.m_uniqueRegisters;
             unsigned long long optimizePass = state.m_optimize_pass * passes + pass;
             unsigned long long optimizeSeed = state.OptimizationSeed(optimizePass);
-            FireStarterResult* newPopulation = pass & 1 ? m_CUDAPopulation0.DevicePtr() : m_CUDAPopulation1.DevicePtr();
-            FireStarterResult* oldPopulation = pass & 1 ? m_CUDAPopulation1.DevicePtr() : m_CUDAPopulation0.DevicePtr();
+            CUdeviceptr newPopulation = pass & 1 ? m_CUDAPopulation0.DevicePtr() : m_CUDAPopulation1.DevicePtr();
+            CUdeviceptr oldPopulation = pass & 1 ? m_CUDAPopulation1.DevicePtr() : m_CUDAPopulation0.DevicePtr();
             CUDAParameters parameters(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationCount);
 
             checkCUDAErrors(cuLaunchKernel(m_CUDAModule.m_executeFunction,
@@ -622,9 +622,9 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
 
         // If the number off passes is odd, copy the new population to the old population for the next pass.
         if (passes & 1) {
-            FireStarterResult* cudaPopulation0 = m_CUDAPopulation0.DevicePtr();
-            FireStarterResult* cudaPopulation1 = m_CUDAPopulation1.DevicePtr();
-            checkCUDAErrors(cudaMemcpyAsync(cudaPopulation1, cudaPopulation0, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
+            CUdeviceptr cudaPopulation0 = m_CUDAPopulation0.DevicePtr();
+            CUdeviceptr cudaPopulation1 = m_CUDAPopulation1.DevicePtr();
+            checkCUDAErrors(cuMemcpyDtoDAsync(cudaPopulation0, cudaPopulation1, m_populationSize, Stream()));
         }
         m_CUDAPopulation0.DeviceToHost();
         SynchronizeContext();
@@ -719,9 +719,6 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
     unsigned long long evolutionSeed = state.EvolutionSeed();
     unsigned long long passes = settings.m_passes;
-    FireStarterResult* newPopulation = nullptr;
-    FireStarterResult* oldPopulation = nullptr;
-    FireStarterResult* hostPopulation = nullptr;
 
     for (unsigned int pass = 0; pass < passes; pass++) {
         unsigned int registers = state.m_uniqueRegisters;
@@ -730,14 +727,8 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
 
         m_CUDASettings.Copy(&settings, m_settingsSize);
         if (m_simulateGPU) {
-            if (pass & 1) {
-                newPopulation = m_CUDAPopulation0.HostPtr();
-                oldPopulation = m_CUDAPopulation1.HostPtr();
-            } else {
-                newPopulation = m_CUDAPopulation1.HostPtr();
-                oldPopulation = m_CUDAPopulation0.HostPtr();
-            }
-            hostPopulation = newPopulation;
+            FireStarterResult* newPopulation = (pass & 1) ? m_CUDAPopulation0.HostPtr() : m_CUDAPopulation1.HostPtr();
+            FireStarterResult* oldPopulation = (pass & 1) ? m_CUDAPopulation1.HostPtr() : m_CUDAPopulation0.HostPtr();
 
             blockDim = cudaBlockSize;
             for (blockIdx.x = 0; blockIdx.x < cudaGridSize.x; blockIdx.x++)
@@ -755,15 +746,8 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
                 hash ^= *(unsigned int*)&curResult;
             }
         } else {
-            if (pass & 1) {
-                hostPopulation = m_CUDAPopulation0.HostPtr();
-                newPopulation = m_CUDAPopulation0.DevicePtr();
-                oldPopulation = m_CUDAPopulation1.DevicePtr();
-            } else {
-                hostPopulation = m_CUDAPopulation1.HostPtr();
-                newPopulation = m_CUDAPopulation1.DevicePtr();
-                oldPopulation = m_CUDAPopulation0.DevicePtr();
-            }
+            CUdeviceptr newPopulation = (pass & 1) ? m_CUDAPopulation0.DevicePtr() : m_CUDAPopulation1.DevicePtr();
+            CUdeviceptr oldPopulation = (pass & 1) ? m_CUDAPopulation1.DevicePtr() : m_CUDAPopulation0.DevicePtr();
 
             void* arr[] = { reinterpret_cast<void*>(&m_CUDASettings.DevicePtr()),
                             reinterpret_cast<void*>(&newPopulation),
@@ -789,18 +773,22 @@ void FireStarterExecute::ExecuteMoneyOptimizePass(FireStarterState& state)
 
     if (m_simulateGPU) {
         if (passes & 1)
-            checkCUDAErrors(cudaMemcpy(oldPopulation, newPopulation, m_populationSize, cudaMemcpyHostToHost));
+            memcpy(m_CUDAPopulation0.HostPtr(), m_CUDAPopulation1.HostPtr(), m_populationSize);
     } else {
         // If the number off passes is odd, copy the new population to the old population for the next pass.
-        if (passes & 1)
-            checkCUDAErrors(cudaMemcpyAsync(oldPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToDevice, Stream()));
-        checkCUDAErrors(cudaMemcpyAsync(hostPopulation, newPopulation, m_populationSize, cudaMemcpyDeviceToHost, Stream()));
+        if (passes & 1) {
+            CUdeviceptr cudaPopulation0 = m_CUDAPopulation0.DevicePtr();
+            CUdeviceptr cudaPopulation1 = m_CUDAPopulation1.DevicePtr();
+            checkCUDAErrors(cuMemcpyDtoDAsync(cudaPopulation0, cudaPopulation1, m_populationSize, Stream()));
+        }
+        m_CUDAPopulation0.DeviceToHost();
         SynchronizeContext();
     }
 
     // Gather the best results.
     // Note: The best result may get worse generation to generation before it improves.
     // This allows for better diversity among members when they struggle to evolve and yields better results.
+    FireStarterResult* hostPopulation = m_CUDAPopulation0.HostPtr();
     float minResult = FireStarterPopulation::PopulationMaxResult(hostPopulation, settings, 0);
     unsigned int minIndex = 0;
     for (unsigned int i = 1; i < settings.m_population; i++) {
