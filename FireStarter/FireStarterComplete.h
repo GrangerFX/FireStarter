@@ -9,7 +9,6 @@ private:
 	FireStarterShow m_fireShow;
     FireStarterSettings m_settings;
 	FireStarterManager* m_manager = nullptr;
-	FireStarterGenerate* m_generate = nullptr;
 	std::string m_solutionTargetCode;
 	size_t m_resultsCount = 0;
 	double m_resultsTime = 0.0;

@@ -940,7 +940,7 @@ bool FireStarterExecute::GenerateOptimize(const FireStarterSettings& settings, c
 
     // Generate the evaluate code. Note: The same code is used by all GPU threads.
     evaluateCode.clear();
-    m_executeGenerate->GenerateEvaluate(settings, code, evaluateCode);
+    m_executeGenerate.GenerateEvaluate(settings, code, evaluateCode);
 
     // Create the Optimizer code by replacing the evaluate code block.
     FireStarterSource::UpdateProgram(m_executeCode, evaluateCode, EVALUATE_CODE);
@@ -976,7 +976,7 @@ bool FireStarterExecute::ExecuteGenerateOptimize(FireStarterState& optimizeState
     Dispatch([this, &optimizeState, &result] {
         // Generate the evaluate code. Note: The same code is used by all GPU threads.
         optimizeState.m_evaluateCode.clear();
-        m_executeGenerate->GenerateEvaluate(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode);
+        m_executeGenerate.GenerateEvaluate(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode);
 
         return GenerateOptimize(optimizeState.Settings(), optimizeState.Code(), optimizeState.m_evaluateCode, optimizeState.PassMode());
     }, sync);
@@ -1163,22 +1163,19 @@ const MoneyMakerStocks* FireStarterExecute::GetTradingResults(void) const
     return m_CUDATradingResults.HostPtr();
 } // GetTradingResults
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::string& unitName, size_t index) : CUDAThread(Format("%s%zu", unitName.c_str(), index), index)
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::string& unitName, size_t index) : CUDAThread(Format("%s%zu", unitName.c_str(), index), index), m_executeGenerate(Context())
 {
     m_executeManager = manager;
     m_executeIndex = index;
-    m_executeGenerate = new FireStarterGenerate(Context());
 } // FireStaterExecute
 
-FireStarterExecute::FireStarterExecute(const std::string& unitName, size_t index) : CUDAThread(Format("%s%zu", unitName.c_str(), index), index)
+FireStarterExecute::FireStarterExecute(const std::string& unitName, size_t index) : CUDAThread(Format("%s%zu", unitName.c_str(), index), index), m_executeGenerate(Context())
 {
     m_executeManager = nullptr;
     m_executeIndex = index;
-    m_executeGenerate = new FireStarterGenerate(Context());
 } // FireStaterExecute
 
 FireStarterExecute::~FireStarterExecute(void)
 { 
     ExecuteFinish();
-    delete m_executeGenerate;
 } // ~FireStarterExecute(void)

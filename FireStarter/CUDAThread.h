@@ -46,7 +46,7 @@ public:
     inline CUDAThread(const std::string& threadName = "CUDAThread", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : SerialThread(threadName), m_CUDAContext()
     {
         int foo = 1; // Note: DEBUG!
-        DispatchAsync([this, deviceIndex, priority] {
+        DispatchSync([this, deviceIndex, priority] {
             m_CUDAContext.InitContext(deviceIndex, priority);
         });
     } // CUDAThread

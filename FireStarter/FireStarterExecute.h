@@ -199,7 +199,7 @@ private:
     CUDAMemory<FireStarterData> m_CUDATradingData;
     CUDAMemory<MoneyMakerStocks> m_CUDAStocks;
     CUDAMemory<MoneyMakerStocks> m_CUDATradingResults;
-    FireStarterGenerate* m_executeGenerate = nullptr;
+    FireStarterGenerate m_executeGenerate;
     FireStarterManager* m_executeManager = nullptr;
     FireStarterJob* m_executeJob = nullptr;
     std::string m_executeProgramName;

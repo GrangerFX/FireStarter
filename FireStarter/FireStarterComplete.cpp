@@ -64,11 +64,14 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
     std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%lld", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
     std::string solutionCode;
 
-    m_generate->GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
-    FireStarterSource::SaveSource(solutionCode, savePath);
-    if (bestState.m_precision < bestSolution) {
-        bestSolution = bestState.m_precision;
-        FireStarterSource::SaveSource(solutionCode, saveFile);
+    if (LoadSolutionTargetCode()) {
+        FireStarterGenerate generate(Context());
+        generate.GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
+        FireStarterSource::SaveSource(solutionCode, savePath);
+        if (bestState.m_precision < bestSolution) {
+            bestSolution = bestState.m_precision;
+            FireStarterSource::SaveSource(solutionCode, saveFile);
+        }
     }
 } // SaveSolution
 
@@ -293,11 +296,6 @@ void FireStarterComplete::CompleteSaveResults(const FireStarterState& bestState)
 
 void FireStarterComplete::InitComplete(void)
 {
-    DispatchSync([this] {
-        if (LoadSolutionTargetCode())
-            // Create the code generator.
-            m_generate = new FireStarterGenerate(Context());
-    });
 } // InitComplete
 
 FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : CUDAThread("FireStarterComplete"), m_manager(manager), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
