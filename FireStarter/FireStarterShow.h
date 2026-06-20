@@ -3,9 +3,9 @@
 #include "FireStarterWindow.h"
 #include "FireStarterGenerate.h"
 #include "MoneyMakerStocks.h"
-#include "CUDAThread.h"
+#include "SerialThread.h"
 
-class FireStarterShow : public CUDAThread {
+class FireStarterShow : public SerialThread {
 private:
 	FireStarterWindow m_window;
     size_t m_evaluateSize = 0;

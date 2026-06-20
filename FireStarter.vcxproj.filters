@@ -16,9 +16,6 @@
     <ClCompile Include="FireStarter\FireStarterComplete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FireStarter\FireStarterEvolve.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FireStarter\FireStarterExecute.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,9 +88,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FireStarter\FireStarterComplete.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FireStarter\FireStarterEvolve.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FireStarter\FireStarterExecute.h">

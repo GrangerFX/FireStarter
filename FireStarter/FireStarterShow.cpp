@@ -469,7 +469,7 @@ void FireStarterShow::ShowStatus(const FireStarterState& bestState, const FireSt
     m_window.DisplayText(statusString, sync);
 } // ShowStatus
 
-FireStarterShow::FireStarterShow(const FireStarterWindow& window) : CUDAThread("FireStarterShow"), m_window(window)
+FireStarterShow::FireStarterShow(const FireStarterWindow& window) : SerialThread("FireStarterShow"), m_window(window)
 {
 } // FireStarterShow
 

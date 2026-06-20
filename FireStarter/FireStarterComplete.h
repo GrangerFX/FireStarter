@@ -3,7 +3,7 @@
 #include "FireStarterGenerate.h"
 #include "FireStarterShow.h"
 
-class FireStarterComplete : public CUDAThread {
+class FireStarterComplete : public SerialThread {
 private:
 	FireStarterWindow m_window;
 	FireStarterShow m_fireShow;

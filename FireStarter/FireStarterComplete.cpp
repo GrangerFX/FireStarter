@@ -53,19 +53,31 @@ void FireStarterComplete::SaveBestCode(const FireStarterState& bestState)
     }
 } // SaveBestCode
 
+bool FireStarterComplete::LoadSolutionTargetCode(void)
+{
+    if (!m_solutionTargetCode.empty())
+        return true;
+    if (!FireStarterSource::LoadSource(m_solutionTargetCode, "FireStarterTarget.h"))
+        return false;
+    FireStarterSource::ReplaceSource(m_solutionTargetCode, "Target", "SolutionTarget");
+    FireStarterSource::ReplaceSource(m_solutionTargetCode, "TARGET_", "SOLUTION_");
+    return true;
+} // LoadSolutionTargetCode
+
 void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
 {
-    static float bestSolution = 1.0e+12f;
-    std::string saveFile;
-    if ((bestState.PassMode() == FIRESTARTER_MONEYMAKER) || (bestState.PassMode() == FIRESTARTER_MONEYOPTIMIZE))
-        saveFile = "FireStarter_MoneyMakerSolution.h";
-    else
-        saveFile = "FireStarter_Solution.h";
-    std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%lld", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
-    std::string solutionCode;
-
     if (LoadSolutionTargetCode()) {
-        FireStarterGenerate generate(Context());
+        static float bestSolution = 1.0e+12f;
+
+        std::string saveFile;
+        if ((bestState.PassMode() == FIRESTARTER_MONEYMAKER) || (bestState.PassMode() == FIRESTARTER_MONEYOPTIMIZE))
+            saveFile = "FireStarter_MoneyMakerSolution.h";
+        else
+            saveFile = "FireStarter_Solution.h";
+        std::string savePath = bestState.Settings().m_tests ? Format("Logs\\%s_%s_%lld", FileNameDate(SimpleTimer::RunSecond()).c_str(), saveFile.c_str(), bestState.m_test) : saveFile;
+        std::string solutionCode;
+
+        FireStarterGenerate generate;
         generate.GenerateSolution(bestState, solutionCode, m_solutionTargetCode);
         FireStarterSource::SaveSource(solutionCode, savePath);
         if (bestState.m_precision < bestSolution) {
@@ -74,15 +86,6 @@ void FireStarterComplete::SaveSolution(const FireStarterState& bestState)
         }
     }
 } // SaveSolution
-
-bool FireStarterComplete::LoadSolutionTargetCode(void)
-{
-    if (!FireStarterSource::LoadSource(m_solutionTargetCode, "FireStarterTarget.h"))
-        return false;
-    FireStarterSource::ReplaceSource(m_solutionTargetCode, "Target", "SolutionTarget");
-    FireStarterSource::ReplaceSource(m_solutionTargetCode, "TARGET_", "SOLUTION_");
-    return true;
-} // LoadSolutionTargetCode
 
 bool FireStarterComplete::UpdateBestState(FireStarterState& bestState, const FireStarterState& state)
 {
@@ -298,12 +301,12 @@ void FireStarterComplete::InitComplete(void)
 {
 } // InitComplete
 
-FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : CUDAThread("FireStarterComplete"), m_manager(manager), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
+FireStarterComplete::FireStarterComplete(FireStarterManager* manager, const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : SerialThread("FireStarterComplete"), m_manager(manager), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
 {
     InitComplete();
 } // FireStarterComplete
 
-FireStarterComplete::FireStarterComplete(const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : CUDAThread("FireStarterComplete"), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
+FireStarterComplete::FireStarterComplete(const FireStarterWindow& window, const FireStarterSettings& settings, bool saveBestState) : SerialThread("FireStarterComplete"), m_window(window), m_settings(settings), m_saveBestState(saveBestState), m_fireShow(window)
 {
     InitComplete();
 } // FireStarterComplete

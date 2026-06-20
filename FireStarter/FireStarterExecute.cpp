@@ -887,6 +887,21 @@ bool FireStarterExecute::Compile(FireStarterJob*& job)
     return result;
 } // Compile
 
+void FireStarterExecute::GenerateCode(FireStarterJob* job)
+{
+    // Generate the evaluate code
+    std::string evaluateCode;
+    m_executeGenerate.GenerateEvaluate(job->m_state.Settings(), job->m_state.Code(), evaluateCode);
+    job->m_state.m_evaluateCode = evaluateCode;
+
+    // Create the units code by replacing the defines, evaluate and optimize sections of the optimize code.
+    CUDACompile::CompileOptions(job->m_options);
+    job->m_programName = FireStarterSettings::EvolveProgramName(FIRESTARTER_OPTIMIZE);
+    job->m_program = m_executeCode;
+    FireStarterSource::UpdateProgram(job->m_program, evaluateCode, EVALUATE_CODE);
+    m_executeManager->AddCode(job);
+} // GenearateCode
+
 bool FireStarterExecute::ExecuteJob(void)
 {
     // Compile the next job.
@@ -948,6 +963,224 @@ bool FireStarterExecute::GenerateOptimize(const FireStarterSettings& settings, c
     // Compile the code and get the Optimizer function from the module.
     return m_CUDAModule.CompileProgram(m_executeCode, m_executeProgramName, m_executeFunctionName, m_executeTestName, true);
 } // GenerateOptimize
+
+bool FireStarterExecute::ExecuteRandomState(const FireStarterState& state, bool sync)
+{
+    Dispatch([this, state] {
+        FireStarterState evolveState(state);
+        evolveState.InitGenerationSeed();
+        const FireStarterSettings& settings = evolveState.Settings();
+        unsigned int numInstructions = settings.m_instructions;
+        float bestResult = evolveState.MaxResults();
+        FireStarterJob* job = m_executeManager->GetFree();
+        if (job) {
+            // Randomize the program.
+            job->m_state = evolveState;
+            job->m_state.RandomCode();
+
+            // Optimize the program registers.
+            job->m_state.OptimizeCode();
+
+            // Generate the evaluate code
+            GenerateCode(job);
+        } else
+            // Pass along the null job to cause the next stage to exit.
+            m_executeManager->AddCode();
+        }, sync);
+    return true;
+} // ExecuteRandomState
+
+bool FireStarterExecute::ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
+{
+    DispatchSync([this, test, &selectSettings, &optimizeSettings, &allStates, &testedCodes, generation] {
+        unsigned long long numStates = selectSettings.m_states;
+        unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM;
+        unsigned long long totalStates = allStates.size();
+
+        for (unsigned long long index = 0; index < numStates; index++) {
+            FireStarterJob* job = m_executeManager->GetFree();
+            if (job) {
+                FireStarterState& curState = job->m_state;
+
+                // Evolved states are generated first so they cannot used the random states created in this generation.
+                if (index < randomStates) {
+                    // Randomize the instructions.
+                    curState.InitState(optimizeSettings, 0, index, allStates.size(), test);
+
+                    // Keep randomizing the code until a unique set of instructions is found.
+                    const FireStarterCode* bestCode = nullptr;
+                    do {
+                        // Randomize the program.
+                        curState.RandomCode();
+
+                        // Optimize the program registers.
+                        curState.OptimizeCode();
+
+                        // Select the best candidate evolution variation.
+                        if (GenerateEvolve(selectSettings.m_mode)) {
+                            curState.m_timer.Start();
+                            if (InitPopulation(selectSettings))
+                                ExecuteSelectPass(curState, selectSettings);
+                        }
+                    } while (testedCodes.count(curState.CodeVector()));
+
+                    // Add the instructions to the set of unique instructions.
+                    testedCodes.insert(curState.CodeVector());
+
+                    // Set the state mode to optimize.
+                    curState.m_settings.SetMode(FIRESTARTER_OPTIMIZE);
+
+                    // Add the state to the list of active states.
+                    allStates.push_back(curState);
+                } else {
+                    // Find the best state to evolve based on a weighting algorithm.
+                    float evolveWeight = 0.0f;
+                    size_t evolveIndex = 0;
+                    for (size_t curIndex = 0; curIndex < totalStates; curIndex++) {
+                        FireStarterState& curState = allStates[curIndex];
+                        float curWeight = curState.SelectWeight();
+                        if (!curIndex || (curWeight < evolveWeight)) {
+                            evolveWeight = curWeight;
+                            evolveIndex = curIndex;
+                        }
+                    }
+
+                    // Loop until a unique new state is found.
+                    FireStarterState& oldState = allStates[evolveIndex];
+
+                    // Keep varying the code until a unique set of instructions is found.
+                    const FireStarterCode* bestCode = nullptr;
+                    do {
+                        // Copy and setup the new candidate state.
+                        // Note: The bestCodes are initialized instead of copied.
+                        curState = oldState;
+
+                        // Copy the program and result from the random index.
+                        curState.CopyCode(allStates[evolveIndex]);
+
+                        // Note: The age and generation will increment even if the current instructions are not unique by design.
+                        curState.m_age = ++oldState.m_age;
+                        curState.m_generation = ++oldState.m_generation;
+                        curState.m_evolution++;
+                        curState.m_index = index;
+                        curState.m_evolveIndex = evolveIndex;
+                        curState.m_oldResult = oldState.MaxResults();
+                        curState.m_evolveWeight = evolveWeight;
+                        curState.InitGenerationSeed();
+                        curState.m_timer.Start();
+
+                        // Select the best candidate evolution variation.
+                        ExecuteSelect(curState, selectSettings);
+                    } while (testedCodes.count(curState.CodeVector()));
+
+                    // Add the instructions to the set of unique instructions.
+                    testedCodes.insert(curState.CodeVector());
+
+                    // The optimize pass should be compared with the best result of the last generation and not from the select code evolution.
+                    curState.m_bestResult = oldState.m_bestResult;
+                }
+
+                // Generate the evaluate code
+                GenerateCode(job);
+            } else
+                // Pass along the null job to cause the next stage to exit.
+                m_executeManager->AddCode();
+        }
+    });
+    return true;
+} // ExecuteSelectStates
+
+bool FireStarterExecute::EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation)
+{
+    DispatchSync([this, test, &evolveSettings, &allStates, &testedCodes, generation] {
+        unsigned long long numStates = evolveSettings.m_states;
+        unsigned long long randomStates = generation == 0 ? numStates : FIRESTARTER_EVOLVE_RANDOM;
+        unsigned long long totalStates = allStates.size();
+
+        for (unsigned long long index = 0; index < numStates; index++) {
+            FireStarterJob* job = m_executeManager->GetFree();
+            if (job) {
+                // Evolved states are generated first so they cannot used the random states created in this generation.
+                if (index < randomStates) {
+                    // Randomize the instructions.
+                    FireStarterState& curState = job->m_state;
+                    curState.InitState(evolveSettings, 0, index, allStates.size(), test);
+
+                    // Keep randomizing instructions until a unique set of instructions is found.
+                    do {
+                        // Randomize the program.
+                        curState.RandomCode();
+
+                        // Optimize the program registers.
+                        curState.OptimizeCode();
+                    } while (testedCodes.count(curState.CodeVector()));
+
+                    // Add the instructions to the set of unique instructions.
+                    testedCodes.insert(curState.CodeVector());
+
+                    // Add the state to the list of active states.
+                    allStates.push_back(curState);
+                } else {
+                    // Find the best state to evolve based on a weighting algorithm.
+                    float evolveWeight = 0.0f;
+                    size_t evolveIndex = 0;
+                    for (size_t curIndex = 0; curIndex < totalStates; curIndex++) {
+                        FireStarterState& curState = allStates[curIndex];
+                        float curWeight = curState.EvolveWeight();
+                        if (!curIndex || (curWeight < evolveWeight)) {
+                            evolveWeight = curWeight;
+                            evolveIndex = curIndex;
+                        }
+                    }
+
+                    // Loop until a unique new state is found.
+                    for (;;) {
+                        // Copy and setup the new candidate state.
+                        FireStarterState& oldState = allStates[evolveIndex];
+                        FireStarterState& curState = job->m_state;
+                        curState = oldState;
+
+                        // Note: The age and generation will increment even if the current instructions are not unique by design.
+                        curState.m_age = ++oldState.m_age;
+                        curState.m_generation = ++oldState.m_generation;
+                        curState.m_evolution++;
+                        curState.m_index = index;
+                        curState.m_evolveIndex = evolveIndex;
+                        curState.m_oldResult = curState.MaxResults();
+                        curState.m_evolveWeight = evolveWeight;
+                        curState.InitGenerationSeed();
+                        curState.m_timer.Start();
+
+                        // Copy the program and result from the random index.
+                        curState.CopyCode(allStates[evolveIndex]);
+
+                        // Randomize 2 and 3 instructions alternately.
+                        curState.RandomInstruction();
+                        curState.RandomInstruction();
+                        if (generation & 1)
+                            curState.RandomInstruction();
+
+                        // Optimize the program registers.
+                        curState.OptimizeCode();
+
+                        // Check if the optimized instructions are unique.
+                        if (!testedCodes.count(curState.CodeVector())) {
+                            // Add the instructions to the set of unique instructions.
+                            testedCodes.insert(curState.CodeVector());
+                            break;
+                        }
+                    }
+                }
+
+                // Generate the evaluate code
+                GenerateCode(job);
+            } else
+                // Pass along the null job to cause the next stage to exit.
+                m_executeManager->AddCode();
+        }
+    });
+    return true;
+} // EvolveStates
 
 void FireStarterExecute::ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync)
 {
@@ -1163,13 +1396,13 @@ const MoneyMakerStocks* FireStarterExecute::GetTradingResults(void) const
     return m_CUDATradingResults.HostPtr();
 } // GetTradingResults
 
-FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::string& unitName, size_t index) : CUDAThread(Format("%s%zu", unitName.c_str(), index), index), m_executeGenerate(Context())
+FireStarterExecute::FireStarterExecute(FireStarterManager* manager, const std::string& unitName, size_t index) : CUDAThread(Format("%s%zu", unitName.c_str(), index), index), m_executeGenerate(&Context())
 {
     m_executeManager = manager;
     m_executeIndex = index;
 } // FireStaterExecute
 
-FireStarterExecute::FireStarterExecute(const std::string& unitName, size_t index) : CUDAThread(Format("%s%zu", unitName.c_str(), index), index), m_executeGenerate(Context())
+FireStarterExecute::FireStarterExecute(const std::string& unitName, size_t index) : CUDAThread(Format("%s%zu", unitName.c_str(), index), index), m_executeGenerate(&Context())
 {
     m_executeManager = nullptr;
     m_executeIndex = index;

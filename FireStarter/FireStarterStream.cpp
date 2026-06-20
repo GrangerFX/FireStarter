@@ -1,6 +1,5 @@
 #include "FireStarterStream.h"
 #include "FireStarterBuildSettings.h"
-#include "FireStarterEvolve.h"
 #include "FireStarterCompile.h"
 #include "FireStarterExecute.h"
 #include "FireStarterComplete.h"
@@ -18,9 +17,6 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         
         // Create the compiler manager
         FireStarterManager* manager = new FireStarterManager();
-
-        // Create the evolution code generator.
-        FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
         // Create the multi-process compiler.
         FireStarterCompile* compile = new FireStarterCompile(manager, server);
@@ -42,7 +38,7 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
             FireStarterState evolveState(evolveSettings, 0, m_streamIndex, test % tests, test);
 
             // Evolve the first generation for the state.
-            evolve->RandomState(evolveState);
+            execute->ExecuteRandomState(evolveState);
 
             // Execute the state.
             execute->ExecuteRandom();
@@ -73,9 +69,6 @@ void FireStarterStream::RandomStream(FireStarterServer* server, std::atomic<unsi
         // Delete the multi-process compiler.
         delete compile;
 
-        // Delete the evolution code generator.
-        delete evolve;
-
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
     }, sync);
@@ -100,9 +93,6 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
         FireStarterCompile* compile = new FireStarterCompile(manager, server);
         for (unsigned int i = 0; i < selectSettings.m_units; i++)
             compile->AddCompiler();
-
-        // Create the evolution code generator.
-        FireStarterEvolve* evolve = new FireStarterEvolve(manager);
 
         // Create the evolution execution units.
         std::vector<FireStarterExecute*> evolutionUnits;
@@ -137,7 +127,7 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
             unsigned long long generation = 0;
             while (!WillTerminate()) {
                 // Evolve a new generation.
-                evolve->SelectStates(executeSelect, test, selectSettings, optimizeSettings, allStates, testedCodes, generation);
+                executeSelect->ExecuteSelectStates(test, selectSettings, optimizeSettings, allStates, testedCodes, generation);
 
                 // Execute each state using one of the evolution execution units.
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
@@ -216,9 +206,6 @@ void FireStarterStream::EvolveSelectStream(FireStarterServer* server, std::atomi
         // Delete the multi-process compiler.
         delete compile;
 
-        // Delete the evolution code generator.
-        delete evolve;
-
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;
     }, sync);
@@ -242,7 +229,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             compile->AddCompiler();
 
         // Create the evolution code generator.
-        FireStarterEvolve* evolve = new FireStarterEvolve(manager);
+        FireStarterExecute* executeEvolve = new FireStarterExecute(manager, "EvolveCPU");
 
         // Create the evolution execution units.
         std::vector<FireStarterExecute*> evolutionUnits;
@@ -274,7 +261,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
             unsigned long long generation = 0;
             while (!WillTerminate()) {
                 // Evolve a new generation.
-                evolve->EvolveStates(test, evolveSettings, allStates, testedCodes, generation);
+                executeEvolve->EvolveStates(test, evolveSettings, allStates, testedCodes, generation);
 
                 // Execute each state using one of the evolution execution units.
                 // Note: ExecuteEvolveCPU must be async because the compiles come back out of order.
@@ -350,7 +337,7 @@ void FireStarterStream::EvolveCPUStream(FireStarterServer* server, std::atomic<u
         delete compile;
 
         // Delete the evolution code generator.
-        delete evolve;
+        delete executeEvolve;
 
         // Delete the compilier manager and cancel any waiting jobs.
         delete manager;

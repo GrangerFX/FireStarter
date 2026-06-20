@@ -69,7 +69,7 @@ private:
 
 public:
     
-    inline void Clear(bool sync = false)
+    inline void Clear(void)
     {
         if (m_hostPtr) {
             checkCUDAErrors(cuMemFreeHost(m_hostPtr));
@@ -78,8 +78,6 @@ public:
         if (m_devicePtr) {
             checkCUDAErrors(cuMemFree(m_devicePtr));
             m_devicePtr = 0;
-            if (sync)
-                m_context->SynchronizeContext();
         }
         m_size = 0;
     } // Clear
@@ -235,10 +233,14 @@ private:
     bool GenerateEvolve(unsigned int mode);
     bool GenerateOptimize(const FireStarterSettings& settings, const FireStarterCodeGenerate* code, std::string& evaluateCode, unsigned int mode);
     bool Compile(FireStarterJob* &job);
+    void GenerateCode(FireStarterJob* job);
     bool ExecuteJob(void);
 
 public:
     inline size_t ExecuteIndex(void) const { return m_executeIndex; }
+    bool ExecuteRandomState(const FireStarterState& state, bool sync = true);
+    bool ExecuteSelectStates(unsigned long long test, const FireStarterSettings& selectSettings, const FireStarterSettings& optimizeSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
+    bool EvolveStates(unsigned long long test, const FireStarterSettings& evolveSettings, FireStarterStates& allStates, TestedCodes& testedCodes, unsigned long long generation);
     void ExecuteSetStocks(const MoneyMakerStocks *stocks, bool sync = true);
     bool ExecuteGenerateEvolve(unsigned int mode, bool sync = true);
     bool ExecuteGenerateOptimize(FireStarterState& optimizeState, bool sync = true);
