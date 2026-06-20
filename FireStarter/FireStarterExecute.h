@@ -55,7 +55,7 @@ public:
     {
         ClearModule();
     } // ~CUDAModule
-}; // class CUDADevice
+}; // class CUDAModule
 
 template<typename T>
 class CUDAMemory {
