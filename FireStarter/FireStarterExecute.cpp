@@ -512,8 +512,6 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
                         reinterpret_cast<void*>(&evolutionSeed)
         };
 
-        SetContext();
-
         checkCUDAErrors(cuLaunchKernel(m_CUDAModule.m_executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim

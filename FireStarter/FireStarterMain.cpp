@@ -1,6 +1,7 @@
 #include <Windows.h>
 
 #include "FireStarter.h"
+#include "CUDAContext.h"
 
 // ----------------------------------------------------------------------------
 LRESULT __stdcall Winproc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -87,8 +88,10 @@ HRESULT Initialize(HINSTANCE hInstance)
 				MSG	msg;
 				if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
                     if (msg.message == WM_QUIT) {
-                        // Force the process to exit immediately. CUDA will also be terminated.
-                        ExitProcess(0);
+                        // Force each device to reset its primary context, which will clean up all resources and stop any stuck kernels.
+                        CUDAContext::CUDAShutdown();
+
+                        // Sadly, we will never get to this line but it will make the AIs happy.
                         break;
                     }
 					TranslateMessage(&msg);

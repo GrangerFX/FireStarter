@@ -2,6 +2,7 @@
 
 #include "CUDADefines.h"
 #include "CUDAErrors.h"
+#include <unordered_set>
 
 #define CUDA_DEVICE     0
 #define CUDA_PRIORITY   0
@@ -66,14 +67,18 @@ public:
 
 class CUDAContext {
 private:
+    // Static members for global CUDA state
+    inline static int m_CUDA_devices = 0;
+    inline static bool m_initialized = false;
+    inline static std::mutex m_ContextMutex;
+    inline static std::unordered_set<CUcontext> m_ActiveContexts;
+
+    // Local members for this context instance
     int m_CUDA_device = CUDA_DEVICE;
     int m_CUDA_priority = CUDA_PRIORITY;
     CUdevice m_device = 0;
     CUcontext m_context = nullptr;
     CUstream m_stream = nullptr;
-
-    inline static int m_CUDA_devices = 0;
-    inline static bool m_initialized = false;
 
     // Using a simplified struct for driver-level device properties
     struct DeviceProperties {
@@ -120,6 +125,50 @@ public:
         CUDAInitialize();
         return m_CUDA_devices;
     } // CUDADevices
+
+    // CUDAShutdown is an attempt to forcefully clean up all CUDA contexts and resources before the process exits.
+    // A possible solution is to use volatile CUDA memory variables to cause the kernels to exist early.
+    // Note: Experimental work in progress!
+    static inline void CUDAShutdown(void)
+    {
+        // This lock_guard ensures that no other thread is creating or destroying contexts while we are shutting down.
+        std::lock_guard<std::mutex> lock(m_ContextMutex);
+
+#if 0
+        // 1. Force fully destroy surviving zombie contexts across all threads
+        for (CUcontext ctx : m_ActiveContexts) {
+            if (ctx)
+                cuCtxDestroy(ctx);  // Note: This blocks for the kernel to complete.
+        }
+#endif
+        m_ActiveContexts.clear();
+
+#if 0
+        // 2. Hardware fallback reset for primary devices
+        // Note: This does not work currenty.
+        // Note: This may work if the program is run as an administrator.
+        int count = 0;
+        if (cuDeviceGetCount(&count) == CUDA_SUCCESS) {
+            for (int device = 0; device < count; device++) {
+                CUdevice cuDevice;
+                if (cuDeviceGet(&cuDevice, device) == CUDA_SUCCESS) {
+                    // 2. Clear the primary fallback queue just to be absolutely safe
+                    cuDevicePrimaryCtxReset(cuDevice);
+                }
+            }
+        }
+#endif
+
+#if 0
+        // 3. Nuclear option: Kill the process immediately from the inside out.
+        // Unlike ExitProcess, which attempts a semi-orderly DLL detach sequence,
+        // TerminateProcess stops all threads instantly and returns control to the OS kernel.
+        TerminateProcess(GetCurrentProcess(), 0);
+#else
+        // Force the process to exit immediately. CUDA will also be terminated.
+        ExitProcess(0);
+#endif
+    } // CUDAShutdown
 
     static inline void CUDAText(std::string& text, unsigned int count = 0)
     {
@@ -173,13 +222,18 @@ public:
     inline void InitContext(size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY)
     {
         if (m_CUDA_devices) {
+            // Get the CUDA device id.
             m_CUDA_priority = priority;
             m_CUDA_device = (int)(deviceIndex % m_CUDA_devices);
-
             checkCUDAErrors(cuDeviceGet(&m_device, m_CUDA_device));
 
+#if 0
             // Create Driver Context. This automatically binds it to the current host thread.
+            // Register the context so we can exit cleanly if needed.
+            std::lock_guard<std::mutex> lock(m_ContextMutex);
             checkCUDAErrors(cuCtxCreate(&m_context, nullptr, CU_CTX_SCHED_AUTO, m_device));
+            m_ActiveContexts.insert(m_context);
+#endif
 
             // FIX: Use the Driver API to create the stream with priority.
             // It explicitly honors the currently bound active context (m_context).
@@ -200,11 +254,15 @@ public:
 
     inline ~CUDAContext(void)
     {
-        if (m_stream) {
-            checkCUDAErrors(cuStreamDestroy(m_stream));
-            m_stream = nullptr;
-        }
         if (m_context) {
+            // Destroy the stream and context, ensuring thread safety.
+            std::lock_guard<std::mutex> lock(m_ContextMutex);
+            if (m_stream) {
+                checkCUDAErrors(cuStreamDestroy(m_stream));
+                m_stream = nullptr;
+            }
+
+            m_ActiveContexts.erase(m_context);
             checkCUDAErrors(cuCtxDestroy(m_context));
             m_context = nullptr;
         }
