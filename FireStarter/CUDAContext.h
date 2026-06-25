@@ -227,13 +227,11 @@ public:
             m_CUDA_device = (int)(deviceIndex % m_CUDA_devices);
             checkCUDAErrors(cuDeviceGet(&m_device, m_CUDA_device));
 
-#if 0
             // Create Driver Context. This automatically binds it to the current host thread.
             // Register the context so we can exit cleanly if needed.
             std::lock_guard<std::mutex> lock(m_ContextMutex);
             checkCUDAErrors(cuCtxCreate(&m_context, nullptr, CU_CTX_SCHED_AUTO, m_device));
             m_ActiveContexts.insert(m_context);
-#endif
 
             // FIX: Use the Driver API to create the stream with priority.
             // It explicitly honors the currently bound active context (m_context).
