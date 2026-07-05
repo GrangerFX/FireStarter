@@ -1,6 +1,7 @@
 #include "FireStarterExecute.h"
 #include "FireStarterSource.h"
 #include "FireStarterUtil.h"
+#include "CUDAContext.h"
 
 // Note: Including these all the time is a very easy way to check for compiler errors.
 #include "FireEvolverGPU.cu"
@@ -499,25 +500,18 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
                                             m_CUDACodes.HostPtr(),
                                             populationPtr,
                                             m_CUDAStocks.HostPtr(),
-                                            evolutionSeed);
+                                            evolutionSeed,
+                                            GPUKillSwitch());
     } else {
         m_CUDASettings.Copy(&settings, m_settingsSize);
-        CUdeviceptr populationPtr = m_CUDAPopulation0.DevicePtr();
-
-        void* arr[] = { reinterpret_cast<void*>(&m_CUDASettings.DevicePtr()),
-                        reinterpret_cast<void*>(&m_CUDAResults.DevicePtr()),
-                        reinterpret_cast<void*>(&m_CUDACodes.DevicePtr()),
-                        reinterpret_cast<void*>(&populationPtr),
-                        reinterpret_cast<void*>(&m_CUDAStocks.DevicePtr()),
-                        reinterpret_cast<void*>(&evolutionSeed)
-        };
+        CUDAParameters parameters(&m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed, GPUKillSwitch());
 
         checkCUDAErrors(cuLaunchKernel(m_CUDAModule.m_executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
             cudaBlockSize.x, cudaBlockSize.y, cudaBlockSize.z,  // block dim
             0,                                                  // shared mem
             Stream(),                                           // stream
-            &arr[0],                                            // arguments
+            parameters.Parameters(),                            // arguments
             0));
 
         m_CUDAResults.DeviceToHost();

@@ -128,11 +128,11 @@ inline bool MoneyEvolveEvaluateStocks(const FireStarterSettings* settings, const
 } // MoneyEvolveEvaluateStocks
 
 // Current best single variation version: Each thread has its own code. The goal is to maximize the number of candidates that can be tested in a given period of time.
-GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results, FireStarterCode* codes, FireStarterResult* population, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed)
+GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results, FireStarterCode* codes, FireStarterResult* population, MoneyMakerStocks* stocks, const unsigned long long evolutionSeed, volatile int* killSwitch)
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
-    if (member >= settings->m_population)
+    if ((member >= settings->m_population) || *killSwitch)
         return;
     unsigned long long memberSeed = evolutionSeed + SEED0(member);   // Unique seed for the member
 

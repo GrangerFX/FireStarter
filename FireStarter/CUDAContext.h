@@ -159,7 +159,7 @@ public:
         }
 #endif
 
-#if 0
+#if 1
         // 3. Nuclear option: Kill the process immediately from the inside out.
         // Unlike ExitProcess, which attempts a semi-orderly DLL detach sequence,
         // TerminateProcess stops all threads instantly and returns control to the OS kernel.
@@ -205,7 +205,25 @@ public:
 
     inline void SynchronizeContext(void) const
     {
+#if 0
+        while (true) {
+            // 1. Check stream status without blocking
+            CUresult status = cuStreamQuery(m_stream);
+
+            if (status == CUDA_ERROR_NOT_READY) {
+                // Kernel is still running.
+                // Yield CPU to keep usage low, but stay in User Mode.
+                // If TerminateProcess() happens now, it's a clean OS exit.
+                Sleep(1);
+            } else {
+                // Actual error occurred (e.g., CUDA_ERROR_LAUNCH_FAILED)
+                checkCUDAErrors(status);
+                return;
+            }
+        }
+#else
          checkCUDAErrors(cuStreamSynchronize(m_stream));
+#endif
     } // SynchronizeContext
 
     inline void PushContext(void) const
@@ -255,6 +273,7 @@ public:
         if (m_context) {
             // Destroy the stream and context, ensuring thread safety.
             std::lock_guard<std::mutex> lock(m_ContextMutex);
+
             if (m_stream) {
                 checkCUDAErrors(cuStreamDestroy(m_stream));
                 m_stream = nullptr;
