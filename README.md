@@ -8,16 +8,16 @@ Project FireStarter was created to experimentally develop and test various evolu
 The project started in 2018 after several other AI experiments going back to the early 1980s. The target function has always been a sin() function between -PI and PI. Over time both the accuracy and speed of finding a solution has increased dramatically.
 
 
-The Breakthroughs: 
+The Breakthroughs:
 
-GPU Data Evolution: Code and the data it uses can be evolved separately. This allows the code to be generated and compiled on either the CPU or GPU while the data used by the compiled code is evolved on the GPU. The data can be evolved many thousands of times faster than it can be on a CPU.
+GPU Data Evolution:Code and the data it uses can be evolved separately. This allows the code to be generated and compiled on either the CPU or GPU while the data used by the compiled code is evolved on the GPU. The data can be evolved many thousands of times faster than it can be on a CPU.
 
 GPU Random Code Evolution: Rather than attempting to evolve code by randomly changing instructions, this very simple method of evolution is based on population size alone. A very large population of randomly generated programs are generated and then emulated on the GPU. A relatively small number of generations of data evolution is then performed on each of them. This is at least ten times slower than GPU data evolution using compiled code but it allows early candidates to be found for full data evolution.
 
 CPU Code Evolution:
 A code evolution algorithm has been created that can solve more difficult problems. It uses natural selection among an ever increasing pool of candidate algorithms. It has a tree of code generations and weights that prefers newer and more successful members for evolution.
 
-The Results: 
+The Results:
 GPU random code evolution takes 2.1 seconds, on average, to generate a sin() function with six digits of accuracy on a RTX 5090. The code uses 32 instructions, up to 30 registers and just two opcodes. This code is entirely generated from scratch with the evolutionary algorithm knowing only if the results are better or worse than the original.
 
 To complicate the problem, three variations of sine waves can be generated using the same code but different data evolution. This implies that certain patterns of code can solve a range of problems.
@@ -28,7 +28,7 @@ Unexpected Results:
 For the small set of samples used to test the evolved code against sin(), the results are better than 6 digits of accuracy. It arranges the floating point math errors such that on those exact samples the precision is much higher than expected. The actual precision is about ten times less than the sampled precision.
 
 
-Example Result: Note: This is only one of a very large number of solutions that can be evolved.
+Example Result:Note: This is only one of a very large number of solutions that can be evolved.
 
     inline float Sin(float n)
     {

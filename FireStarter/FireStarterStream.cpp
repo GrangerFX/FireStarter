@@ -758,8 +758,10 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                 while (!WillTerminate() && !evolveStates.Complete()) {
                     // Execute the initial GPU evolve.
                     evolveUnits.ExecuteMoneyEvolve(evolveStates, bestCodes);
-                    std::string evolveText;
+                    if (WillTerminate())
+                        break;
 
+                    std::string evolveText;
                     double duration = evolveStates.Duration();
                     double runDuration = evolveStates.RunDuration();
                     float evolveResult = bestCodes.GetBestResult();

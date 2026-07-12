@@ -88,10 +88,13 @@ HRESULT Initialize(HINSTANCE hInstance)
 				MSG	msg;
 				if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
                     if (msg.message == WM_QUIT) {
-                        // Force each device to reset its primary context, which will clean up all resources and stop any stuck kernels.
-                        CUDAContext::CUDAShutdown();
+                        // Tell the threads to quit.
+                        SerialThread::QuitThreads();
 
-                        // Sadly, we will never get to this line but it will make the AIs happy.
+                        // Force each device to reset its primary context, which will clean up all resources and stop any stuck kernels.
+                        // Note: This does not work unless the CUDA kernels exited cleanly. Otherwise it leaves them in zombie state.
+                        // I reported this issue to NVIDIA and they apppear to have accepted it as a bug.
+                        CUDAContext::CUDAShutdown();
                         break;
                     }
 					TranslateMessage(&msg);

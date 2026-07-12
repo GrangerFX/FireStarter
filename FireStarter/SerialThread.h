@@ -318,7 +318,7 @@ protected:
         }
     } // Thread
 
-    inline void Terminate(void)
+    virtual inline void Terminate(void)
     {
 #if HAS_DISPATCH_AFTER
         m_timers.StopTimers();

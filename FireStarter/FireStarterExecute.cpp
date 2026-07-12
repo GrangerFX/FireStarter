@@ -480,6 +480,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
     unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
+    volatile int* killSwitch = GPUKillSwitch();
     unsigned long long evolutionSeed = state.EvolutionSeed();
     unsigned int stock = 0;
 
@@ -501,10 +502,10 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
                                             populationPtr,
                                             m_CUDAStocks.HostPtr(),
                                             evolutionSeed,
-                                            GPUKillSwitch());
+                                            killSwitch);
     } else {
         m_CUDASettings.Copy(&settings, m_settingsSize);
-        CUDAParameters parameters(&m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed, GPUKillSwitch());
+        CUDAParameters parameters(&m_CUDASettings.DevicePtr(), m_CUDAResults.DevicePtr(), m_CUDACodes.DevicePtr(), m_CUDAPopulation0.DevicePtr(), m_CUDAStocks.DevicePtr(), evolutionSeed, killSwitch);
 
         checkCUDAErrors(cuLaunchKernel(m_CUDAModule.m_executeFunction,
             cudaGridSize.x, cudaGridSize.y, cudaGridSize.z,     // grid dim
@@ -519,6 +520,10 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
         m_CUDAPopulation0.DeviceToHost();
         SynchronizeContext();
     }
+
+    // Check if the user quit the app.
+    if (WillTerminate())
+        return;
 
     float bestResult = settings.m_startResult;
     unsigned int goodResults = 0;
@@ -580,12 +585,9 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                                 for (threadIdx.z = 0; threadIdx.z < cudaBlockSize.z; threadIdx.z++)
                                     Optimizer(newPopulation, oldPopulation, variation, registers, optimizeSeed, optimizePass, populationCount);
 
-            unsigned int hash = 0;
-            for (unsigned int i = 0; i < settings.m_population; i++) {
-                const FireStarterResult* member = FireStarterPopulation::PopulationResult(newPopulation, settings, i);
-                float curResult = member->MaxResult();
-                hash ^= *(unsigned int*)&curResult;
-            }
+            // Check if the user quit the app.
+            if (WillTerminate())
+                return;
         }
         if (passes & 1)
             memcpy(oldPopulation, newPopulation, m_populationSize);
@@ -610,6 +612,10 @@ void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned i
                 parameters.Parameters(),                            // arguments
                 0));
             SynchronizeContext();
+
+            // Check if the user quit the app.
+            if (WillTerminate())
+                return;
         }
 
         // If the number off passes is odd, copy the new population to the old population for the next pass.

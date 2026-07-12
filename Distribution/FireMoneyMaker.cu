@@ -165,7 +165,7 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     unsigned short memberAge = 0;
 
     // Evolve the code and data for each pass.
-    for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
+    for (unsigned int pass = 0; (pass < settings->m_passes) && !*killSwitch; pass++) {
         // Evolve the code and data.
         float evolutionScale;
         if ((memberAge >= 6) || (result >= startResult)) {

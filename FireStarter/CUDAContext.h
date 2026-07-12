@@ -4,8 +4,17 @@
 #include "CUDAErrors.h"
 #include <unordered_set>
 
-#define CUDA_DEVICE     0
-#define CUDA_PRIORITY   0
+// Default device and priority.
+#define CUDA_DEVICE             0
+#define CUDA_PRIORITY           0
+
+// These were experiments based on suggestions from Google Gemini.
+// None of these resolved the CUDA process shutdown zombie GPU issue.
+// Note: TODO: Delete these if and when NVIDIA resolves the bug.
+#define CUDA_KILL_CONTEXTS      0   // Note: This one is not even thread safe.
+#define CUDA_KILL_DEVICES       0
+#define CUDA_KILL_PROCESS       0
+#define CUDA_POLL_SYNCHRONIZE   0
 
 class CUDAParameters {
 private:
@@ -71,7 +80,9 @@ private:
     inline static int m_CUDA_devices = 0;
     inline static bool m_initialized = false;
     inline static std::mutex m_ContextMutex;
+#if CUDA_KILL_CONTEXTS
     inline static std::unordered_set<CUcontext> m_ActiveContexts;
+#endif
 
     // Local members for this context instance
     int m_CUDA_device = CUDA_DEVICE;
@@ -134,16 +145,16 @@ public:
         // This lock_guard ensures that no other thread is creating or destroying contexts while we are shutting down.
         std::lock_guard<std::mutex> lock(m_ContextMutex);
 
-#if 0
+#if CUDA_KILL_CONTEXTS
         // 1. Force fully destroy surviving zombie contexts across all threads
         for (CUcontext ctx : m_ActiveContexts) {
             if (ctx)
                 cuCtxDestroy(ctx);  // Note: This blocks for the kernel to complete.
         }
-#endif
         m_ActiveContexts.clear();
+#endif
 
-#if 0
+#if CUDA_KILL_DEVICES
         // 2. Hardware fallback reset for primary devices
         // Note: This does not work currenty.
         // Note: This may work if the program is run as an administrator.
@@ -159,6 +170,7 @@ public:
         }
 #endif
 
+#if CUDA_KILL_PROCESS
 #if 1
         // 3. Nuclear option: Kill the process immediately from the inside out.
         // Unlike ExitProcess, which attempts a semi-orderly DLL detach sequence,
@@ -167,6 +179,7 @@ public:
 #else
         // Force the process to exit immediately. CUDA will also be terminated.
         ExitProcess(0);
+#endif
 #endif
     } // CUDAShutdown
 
@@ -205,7 +218,7 @@ public:
 
     inline void SynchronizeContext(void) const
     {
-#if 0
+#if CUDA_POLL_SYNCHRONIZE
         while (true) {
             // 1. Check stream status without blocking
             CUresult status = cuStreamQuery(m_stream);
@@ -249,7 +262,9 @@ public:
             // Register the context so we can exit cleanly if needed.
             std::lock_guard<std::mutex> lock(m_ContextMutex);
             checkCUDAErrors(cuCtxCreate(&m_context, nullptr, CU_CTX_SCHED_AUTO, m_device));
+#if CUDA_KILL_CONTEXTS
             m_ActiveContexts.insert(m_context);
+#endif
 
             // FIX: Use the Driver API to create the stream with priority.
             // It explicitly honors the currently bound active context (m_context).
@@ -279,7 +294,9 @@ public:
                 m_stream = nullptr;
             }
 
+#if CUDA_KILL_CONTEXTS
             m_ActiveContexts.erase(m_context);
+#endif
             checkCUDAErrors(cuCtxDestroy(m_context));
             m_context = nullptr;
         }
