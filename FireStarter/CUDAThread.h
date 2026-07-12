@@ -14,7 +14,7 @@ private:
 
 public:
 
-    inline int* GPUKillSwitch(void)
+    inline int*& GPUKillSwitch(void)
     {
 #if CUDA_KILL_SWITCH
         return m_GPUKillSwitch;
@@ -109,8 +109,11 @@ public:
             m_CUDAContext.InitContext(deviceIndex, priority);
 
 #if CUDA_KILL_SWITCH
+#if 1
+            checkCUDAErrors(cuMemAllocHost((void**)&m_GPUKillSwitch, sizeof(int)));
+#else
             // Allocate managed memory for the kill switch
-            cuMemAllocManaged((CUdeviceptr*)&m_GPUKillSwitch, sizeof(int), CU_MEM_ATTACH_GLOBAL);
+            checkCUDAErrors(cuMemAllocManaged((CUdeviceptr*)&m_GPUKillSwitch, sizeof(int), CU_MEM_ATTACH_GLOBAL));
 
             // Create the location struct for the CPU
             CUmemLocation cpuLocation = {};
@@ -119,6 +122,7 @@ public:
 
             // Pass the struct instead of 'CU_DEVICE_CPU'
             cuMemAdvise((CUdeviceptr)m_GPUKillSwitch, sizeof(int), CU_MEM_ADVISE_SET_ACCESSED_BY, cpuLocation);
+#endif
 
             // Initialize the value.
             *m_GPUKillSwitch = 0; // 0 = Run, 1 = Die
