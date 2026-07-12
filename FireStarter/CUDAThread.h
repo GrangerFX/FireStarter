@@ -2,7 +2,7 @@
 #include "SerialThread.h"
 #include "CUDAContext.h"
 
-#define CUDA_KILL_SWITCH    0
+#define CUDA_KILL_SWITCH    1
 
 class CUDAThread : public SerialThread
 {

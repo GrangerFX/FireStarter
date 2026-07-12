@@ -480,7 +480,7 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
     unsigned int blocksPerGrid = (populationCount + (threadsPerBlock - 1)) / threadsPerBlock;
     dim3 cudaBlockSize(threadsPerBlock, 1, 1);
     dim3 cudaGridSize(blocksPerGrid, 1, 1);
-    volatile int* killSwitch = GPUKillSwitch();
+    int* killSwitch = GPUKillSwitch();
     unsigned long long evolutionSeed = state.EvolutionSeed();
     unsigned int stock = 0;
 
