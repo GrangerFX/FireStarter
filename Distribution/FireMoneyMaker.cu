@@ -132,14 +132,13 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
 {
     // Determine the member to be optimized.
     unsigned int member = blockIdx.x * blockDim.x + threadIdx.x;
-    if ((member >= settings->m_population) || *killSwitch)
+    if ((member >= settings->m_population) || *(volatile int*)killSwitch)
         return;
     unsigned long long memberSeed = evolutionSeed + SEED0(member);   // Unique seed for the member
 
     // The evolution code and data.
     FireStarterCode code;
     FireStarterData data;
-
 
     // The first pass is initalized with random numbers.
     float startResult = settings->m_startResult;
@@ -165,7 +164,11 @@ GPU_GLOBAL void MoneyEvolve(const FireStarterSettings* settings, float* results,
     unsigned short memberAge = 0;
 
     // Evolve the code and data for each pass.
-    for (unsigned int pass = 0; (pass < settings->m_passes) && !*killSwitch; pass++) {
+    for (unsigned int pass = 0; pass < settings->m_passes; pass++) {
+        // Did the user terminate the evolution?
+        if (*(volatile int*)killSwitch)
+            return; // Return without setting the result value to indicate that the evolution was terminated.
+
         // Evolve the code and data.
         float evolutionScale;
         if ((memberAge >= 6) || (result >= startResult)) {

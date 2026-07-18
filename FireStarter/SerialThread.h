@@ -150,12 +150,12 @@ private:
     std::mutex m_mutex;
     std::condition_variable m_cv;
     std::queue<SerialThreadWork> m_workQueue;
-    const std::string m_threadName; // Used to identify threads in the debugger.
     const bool m_pollThread = false;
     std::atomic<bool> m_waiting{ false };
     std::atomic<bool> m_working{ false };
     std::atomic<bool> m_terminate{ false };
 protected:
+    std::string m_threadName; // Used to identify threads in the debugger.
     std::atomic<bool> m_willTerminate{ false };
 
     struct ParallelTask {
@@ -318,14 +318,6 @@ protected:
         }
     } // Thread
 
-    virtual inline void Terminate(void)
-    {
-#if HAS_DISPATCH_AFTER
-        m_timers.StopTimers();
-#endif
-        m_terminate = true;
-    } // Terminate
-
 public:
 
     inline bool PollThread(void)
@@ -376,7 +368,7 @@ public:
     {
         return DispatchAsync([this, duration, work] {
             m_timers.AddTimer(this, duration, work);
-            });
+        });
     } // DispatchAfter
 
     inline bool DispatchMainAfter(double duration, const SerialThreadWork& work)
@@ -496,19 +488,53 @@ public:
         if (m_willTerminate.exchange(true))
             return false;
 
+        // 1. Kill Serial or Parallel Worker
         if (m_pollThread) {
+            // Polling thread: drain any queued work, then set terminate and notify.
             PollThread();
             std::unique_lock<std::mutex> lock(m_mutex);
-            Terminate();
-            std::queue<SerialThreadWork> empty;
-            std::swap(m_workQueue, empty);  // Clear the work queue.
+#if HAS_DISPATCH_AFTER
+            m_timers.StopTimers();
+#endif
+            m_terminate = true;
+            m_cv.notify_all();
         } else {
-            DispatchSync([this] { Terminate(); });
-            std::unique_lock<std::mutex> lock(m_mutex);
-            m_thread.join();
-            std::queue<SerialThreadWork> empty;
-            std::swap(m_workQueue, empty);  // Clear the work queue.
+            // If called from the worker thread itself, perform the stop inline but do not join.
+            if (std::this_thread::get_id() == m_threadId) {
+#if HAS_DISPATCH_AFTER
+                m_timers.StopTimers();
+#endif
+                std::unique_lock<std::mutex> lock(m_mutex);
+                m_terminate = true;
+                m_cv.notify_all();
+            } else {
+                // Prefer dispatching a synchronous terminate lambda so the worker will dequeue it.
+                bool dispatched = DispatchSync([this] {
+#if HAS_DISPATCH_AFTER
+                    m_timers.StopTimers();
+#endif
+                    m_terminate = true;
+                });
+
+                // If dispatch failed (e.g., m_terminate already true), fall back to setting the flag and notifying.
+                if (!dispatched) {
+                    std::unique_lock<std::mutex> lock(m_mutex);
+#if HAS_DISPATCH_AFTER
+                    m_timers.StopTimers();
+#endif
+                    m_terminate = true;
+                    m_cv.notify_all();
+                }
+
+                // Join the worker thread if possible.
+                if (m_thread.joinable())
+                    m_thread.join();
+            }
         }
+
+        // 2. Wipe Queue
+        std::queue<SerialThreadWork> empty;
+        std::swap(m_workQueue, empty);  // Clear the work queue.
         return true;
     } // TerminateThread
 
@@ -538,15 +564,17 @@ public:
         barrier.wait();
     } // ParallelFor
 
-#define SERIAL_THREAD_DEFAULT_NAME "SerialThread"
-#define SERIAL_THREAD_REQUIRE_NAME 0
-    inline SerialThread(const std::string& threadName = SERIAL_THREAD_DEFAULT_NAME, bool pollThread = false) : m_threadName(threadName), m_pollThread(pollThread)
+#define SERIAL_THREAD_REQUIRE_NAME 1
+    inline SerialThread(const std::string threadName = "", bool pollThread = false) : m_threadName(threadName), m_pollThread(pollThread)
     {
+        if (threadName.empty()) {
 #if SERIAL_THREAD_REQUIRE_NAME
-        if (m_threadName == SERIAL_THREAD_DEFAULT_NAME) {
             std::terminate();
-        }
+#else
+            m_threadName = "SerialThread";
 #endif
+        }
+
         if (m_pollThread)
             m_threadId = std::this_thread::get_id();
         else {
@@ -557,28 +585,6 @@ public:
 
     inline ~SerialThread(void)
     {
-        // Destructor ensures the flag is set and cleanup happens
-        m_willTerminate = true;
-        Cleanup();
+        TerminateThread();
     } //  ~SerialThread
-
-private:
-    inline void Cleanup()
-    {
-        // The static parallel threads are shut down once by ther destructor.
-
-        // 1. Kill Serial Worker
-        if (m_pollThread)
-            Terminate(); // Inner flag m_terminate = true
-        else {
-            DispatchSync([this] { Terminate(); });
-            if (m_thread.joinable())
-                m_thread.join();
-        }
-
-        // 2. Wipe Queue
-        std::unique_lock<std::mutex> lock(m_mutex);
-        std::queue<SerialThreadWork> empty;
-        std::swap(m_workQueue, empty);
-    } // Cleanup()
 }; // class SerialThread

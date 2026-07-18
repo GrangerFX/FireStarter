@@ -23,7 +23,7 @@ public:
 #endif
     } // GPUKillSwitch
 
-    inline void Terminate(void) override
+    inline bool TerminateThread(void) override
     {
 #if CUDA_KILL_SWITCH
         if (m_GPUKillSwitch) {
@@ -39,8 +39,8 @@ public:
             });
         }
 #endif
-        SerialThread::Terminate();
-    } // Terminate
+        return SerialThread::TerminateThread();
+    } // TerminateThread
 
     inline const CUDAContext& Context(void) const
     {
@@ -102,9 +102,10 @@ public:
         });
     } // CUDASynchronize
 
-    // Note: int is used instead of bool for correct type matching.
-    inline CUDAThread(const std::string& threadName = "CUDAThread", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : SerialThread(threadName), m_CUDAContext()
+    inline CUDAThread(const std::string threadName = "", size_t deviceIndex = CUDA_DEVICE, int priority = CUDA_PRIORITY) : SerialThread(threadName), m_CUDAContext()
     {
+        if (threadName.empty())
+            m_threadName = "CUDAThread";
         DispatchSync([this, deviceIndex, priority] {
             m_CUDAContext.InitContext(deviceIndex, priority);
 
@@ -132,6 +133,5 @@ public:
 
     inline ~CUDAThread(void)
     {
-        Terminate();
     } // ~CUDAThread
 }; // class CUDAThread

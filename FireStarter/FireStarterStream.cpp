@@ -694,9 +694,6 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         unsigned long long evolveID = 0;
         unsigned long long optimizeID = 0;
 
-        // A serial thread for compiling the optimize pass.
-        SerialThread compiler;
-
         // Create the evolution completion unit.
         FireStarterComplete* complete = new FireStarterComplete(nullptr, m_streamWindow, evolveSettings, FIRESTARTER_SAVE_BESTSTATE);
 
@@ -746,7 +743,7 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
         for (unsigned int t = testCount++; (t < evolveTests) && !WillTerminate(); t = testCount++) {
             unsigned long long test = FIRESTARTER_START_TEST + t;
 
-            for (unsigned int evolve = 0; evolve < numEvolve; evolve++) {
+            for (unsigned int evolve = 0; (evolve < numEvolve) && !WillTerminate(); evolve++) {
                 // Initialize the states for the current test.
                 evolveSettings.m_stock = startStock;
                 evolveStates.InitStates(evolveSettings, 0, evolveID, test);
@@ -785,9 +782,9 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                     FireStarterCodeVector bestCode(optimizeSettings);
 #if MONEYMAKER_OPTIMIZE_ALL
                     evolveText += "\n";
-                    while ((bestEvolveResult = evolveState.m_bestCodes.GetBestCode(bestCode)) != 0.0f)
+                    while (!WillTerminate() && ((bestEvolveResult = evolveState.m_bestCodes.GetBestCode(bestCode)) != 0.0f))
 #else
-                    if ((bestEvolveResult = bestCodes.GetBestCode(bestCode)) != 0.0f)
+                    if (!WillTerminate() && (bestEvolveResult = bestCodes.GetBestCode(bestCode)) != 0.0f)
 #endif
                     {
                         // Compile the optimize code asynchronously.

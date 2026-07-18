@@ -159,6 +159,10 @@ FireStarterBestCodes::FireStarterBestCodes(const FireStarterBestCodes& copy) : S
 FireStarterBestCodes::FireStarterBestCodes(void) : SerialThread("BestCodes")
 {
 } // FireStarterBestCodes
+
+FireStarterBestCodes::~FireStarterBestCodes(void)
+{
+} // ~FireStarterBestCodes
 #else
 float FireStarterBestCodes::GetBestResult(void)
 {
@@ -206,6 +210,10 @@ FireStarterBestCodes::FireStarterBestCodes(const FireStarterBestCodes& copy)
 FireStarterBestCodes::FireStarterBestCodes(void)
 {
 } // FireStarterBestCodes
+
+FireStarterBestCodes::~FireStarterBestCodes(void)
+{
+} // ~FireStarterBestCodes
 #endif
 
 void FireStarterState::SettingsText(const FireStarterSettings& settings, std::string& text, const std::string& prefix, const std::string& postfix)

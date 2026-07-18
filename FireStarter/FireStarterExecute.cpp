@@ -541,36 +541,35 @@ void FireStarterExecute::ExecuteMoneyEvolvePass(FireStarterState& state, FireSta
     }
 
     // Check if the user quit the app.
-    if (WillTerminate())
-        return;
-
-    float bestResult = settings.m_startResult;
-    unsigned int goodResults = 0;
-    unsigned int bestIndex = 0;
-    for (unsigned int i = 0; i < settings.m_population; i++) {
-        float curResult = m_CUDAResults.HostPtr()[i];
-        if (curResult < settings.m_startResult) {
-            if (curResult < bestResult) {
-                bestResult = curResult;
-                bestIndex = i;
+    if (!WillTerminate()) {
+        float bestResult = settings.m_startResult;
+        unsigned int goodResults = 0;
+        unsigned int bestIndex = 0;
+        for (unsigned int i = 0; i < settings.m_population; i++) {
+            float curResult = m_CUDAResults.HostPtr()[i];
+            if (curResult < settings.m_startResult) {
+                if (curResult < bestResult) {
+                    bestResult = curResult;
+                    bestIndex = i;
+                }
+                if (curResult < bestCodes.WorstResult())
+                    bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
+                goodResults++;
             }
-            if (curResult < bestCodes.WorstResult())
-                bestCodes.AddCode(m_CUDACodes.HostPtr()->Member(settings, i), curResult);
-            goodResults++;
         }
-    }
 
-    float goodPercent = 100.0f * (float)goodResults / (float)settings.m_population;
-    if (m_CUDAPopulation0.Allocated()) {
-        const FireStarterCode& minCode = m_CUDACodes.HostPtr()->Member(settings, bestIndex);
-        const FireStarterResult& minResult = m_CUDAPopulation0.HostPtr()->Member(settings, bestIndex);
-        unsigned int minAge = minResult.m_evolveAge1;
-        int foo = 1;
-    }
+        float goodPercent = 100.0f * (float)goodResults / (float)settings.m_population;
+        if (m_CUDAPopulation0.Allocated()) {
+            const FireStarterCode& minCode = m_CUDACodes.HostPtr()->Member(settings, bestIndex);
+            const FireStarterResult& minResult = m_CUDAPopulation0.HostPtr()->Member(settings, bestIndex);
+            unsigned int minAge = minResult.m_evolveAge1;
+            int foo = 1;
+        }
 
-    // Update the state's best code.
-    state.InitCode(settings, m_CUDACodes.HostPtr(), bestResult, bestIndex);
-    state.MaxResult() = bestResult;
+        // Update the state's best code.
+        state.InitCode(settings, m_CUDACodes.HostPtr(), bestResult, bestIndex);
+        state.MaxResult() = bestResult;
+    }
 } // ExecuteMoneyEvolvePass
 
 void FireStarterExecute::ExecuteOptimizePass(FireStarterState& state, unsigned int variation)
