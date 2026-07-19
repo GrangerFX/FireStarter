@@ -896,8 +896,8 @@ void FireStarterStream::MoneyMakerStream(FireStarterServer* server, std::atomic<
                                 }
                             }
 #else
-                            executeOptimize->ExecuteMoneyTest(optimizeState, optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
-                            const MoneyMakerStocks* tradingResults = executeOptimize->GetTradingResults();
+                            optimizeUnits[0]->ExecuteMoneyTest(optimizeState, optimizeSettings.m_variation, optimizeSettings.m_trading, optimizeSettings.m_validation);
+                            const MoneyMakerStocks* tradingResults = optimizeUnits[0]->GetTradingResults();
                             if (tradingResults) {
                                 float tradingAverage = 0.0f;
                                 float differenceAverage = 0.0f;

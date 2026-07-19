@@ -464,7 +464,6 @@ public:
     FireStarterBestCodes(const FireStarterSettings& settings, size_t maxCodes = FIRESTARTER_NUM_BEST);
     FireStarterBestCodes(const FireStarterBestCodes& copy);
     FireStarterBestCodes(void);
-    ~FireStarterBestCodes(void);
 }; // FireStarterBestCodes
 
 class FireStarterState {

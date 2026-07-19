@@ -159,10 +159,6 @@ FireStarterBestCodes::FireStarterBestCodes(const FireStarterBestCodes& copy) : S
 FireStarterBestCodes::FireStarterBestCodes(void) : SerialThread("BestCodes")
 {
 } // FireStarterBestCodes
-
-FireStarterBestCodes::~FireStarterBestCodes(void)
-{
-} // ~FireStarterBestCodes
 #else
 float FireStarterBestCodes::GetBestResult(void)
 {
